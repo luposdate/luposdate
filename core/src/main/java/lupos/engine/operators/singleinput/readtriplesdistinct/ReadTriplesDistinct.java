@@ -1,11 +1,7 @@
 package lupos.engine.operators.singleinput.readtriplesdistinct;
 
-import java.util.*;
-
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
-
 
 public class ReadTriplesDistinct extends SingleInputOperator {
 	public QueryResult process(QueryResult bindings, int operandID) {

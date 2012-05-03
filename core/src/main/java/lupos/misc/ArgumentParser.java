@@ -13,9 +13,6 @@ import java.util.TreeSet;
  * arguments and getFoo(name) to retrieve a given argument. Argument names are
  * case insensitive. The argument --help will always be accepted and cause the
  * application to display the helptext and do nothing else.
- * 
- * @author Sebastian Hungerecker
- * 
  */
 public class ArgumentParser {
 	@SuppressWarnings("serial")

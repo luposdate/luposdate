@@ -42,7 +42,6 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 import lupos.misc.Tuple;
-import lupos.optimizations.logical.rules.DebugContainer;
 
 public class Dataset {
 

@@ -10,11 +10,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-import lupos.engine.operators.singleinput.generate.Generate;
 
-/**
- * @author B.Sc.Inf. Dana Linnepe
- */
 public class ReduceEnv extends SingleInputOperator {
 
 	private List<Variable> letThrough = new LinkedList<Variable>();

@@ -1,7 +1,6 @@
 package lupos.engine.operators.singleinput.sort;
 
 /**
- * @author Jan Kolbaum
  * This class is a subclass of Sort. It realsies sorting by using the quicksort algorithm
  */
 

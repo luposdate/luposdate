@@ -7,7 +7,6 @@ import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.AnonymousLiteral;
-import lupos.datastructures.items.literal.LanguageTaggedLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;

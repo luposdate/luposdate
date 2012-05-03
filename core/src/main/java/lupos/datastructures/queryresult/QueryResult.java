@@ -19,7 +19,6 @@ import lupos.datastructures.smallerinmemorylargerondisk.CollectionImplementation
 import lupos.engine.operators.index.adaptedRDF3X.MergeIndicesTripleIterator;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
-import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 

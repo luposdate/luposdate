@@ -6,7 +6,6 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 
 public class SortLimit extends SingleInputOperator {

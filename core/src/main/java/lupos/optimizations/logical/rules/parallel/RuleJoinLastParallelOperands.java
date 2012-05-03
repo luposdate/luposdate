@@ -16,15 +16,13 @@ import lupos.engine.operators.singleinput.parallel.ParallelOperand;
  * processors.
  * 
  * @see ParallelOperand
- * 
- * @author Olof-Joachim Frahm, Yu Huang, Christian Wolters
  */
 public class RuleJoinLastParallelOperands extends RuleJoinWithParallelOperands {
 
 	private boolean checkRecursiveForJoinOrOptional(final BasicOperator op) {
 		for (final OperatorIDTuple sop : op.getSucceedingOperators()) {
 			final FindJoinOrOptionalOperatorVisitor frov = new FindJoinOrOptionalOperatorVisitor();
-			final Object o = sop.getOperator().visit(frov);
+			sop.getOperator().visit(frov);
 			if (frov.found())
 				return true;
 		}
@@ -44,8 +42,7 @@ public class RuleJoinLastParallelOperands extends RuleJoinWithParallelOperands {
 		return "JoinLastParallelOperands";
 	}
 
-	private class FindJoinOrOptionalOperatorVisitor implements
-			SimpleOperatorGraphVisitor {
+	private class FindJoinOrOptionalOperatorVisitor implements SimpleOperatorGraphVisitor {
 
 		private boolean found = false;
 

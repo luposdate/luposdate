@@ -1,12 +1,9 @@
 package lupos.datastructures.bindings;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.rdf.Prefix;
 
 public class BindingsArrayPresortingNumbers extends BindingsArray {

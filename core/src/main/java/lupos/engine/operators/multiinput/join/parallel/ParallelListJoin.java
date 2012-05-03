@@ -20,10 +20,6 @@ import lupos.engine.operators.multiinput.join.HashFunction;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.misc.debug.DebugStep;
 
-/**
- * @author zeplin
- * 
- */
 public class ParallelListJoin extends Join {
 
 	private static final long serialVersionUID = 1L;

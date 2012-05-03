@@ -1,15 +1,11 @@
 package lupos.sparql1_1.operatorgraph.helper;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 import lupos.datastructures.items.Item;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.EmptyIndex;
-import lupos.engine.operators.index.EmptyIndexSubmittingQueryResultWithOneEmptyBindings;
-import lupos.engine.operators.index.IndexCollection;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.stream.Stream;
 import lupos.engine.operators.tripleoperator.TriggerOneTime;

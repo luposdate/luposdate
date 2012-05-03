@@ -10,7 +10,6 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;

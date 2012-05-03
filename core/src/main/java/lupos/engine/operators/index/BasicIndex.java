@@ -51,9 +51,6 @@ import lupos.optimizations.logical.statistics.VarBucket;
  * static way so new instantiations of this class to not yield a change in the
  * original index structure.
  * 
- * @author Sebastian Ebers
- * @see IndexMaps
- * 
  */
 public abstract class BasicIndex extends Operator {
 

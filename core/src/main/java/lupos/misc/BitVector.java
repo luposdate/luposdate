@@ -1,23 +1,5 @@
 package lupos.misc;
 
-/* BitVector.java
- *
- * Copyright (c) 1998, 2000 Douglass R. Cutting.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- */
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -33,24 +15,12 @@ import java.util.Iterator;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 
-/**
- * Optimized implementation of a vector of bits. This is more-or-less like
- * java.util.BitSet, but also includes the following:
- * <UL>
- * <LI>a count() method, which efficiently computes the number of one bits;</LI>
- * <LI>optimized read from and write to disk;</LI>
- * <LI>inlinable get() method;</LI>
- * </UL>
- */
-public final class BitVector implements Comparable<BitVector>,
-Iterable<Boolean> {
-	/** This is public just so that methods will inline. Please don't touch. */
+public final class BitVector implements Comparable<BitVector>, Iterable<Boolean> {
 	public byte[] bits;
 	private int size;
 	private int count = -1;
 
-	public BitVector(final LuposObjectInputStream in, final int n)
-	throws IOException {
+	public BitVector(final LuposObjectInputStream in, final int n) throws IOException {
 		readWithoutSize(in, n);
 	}
 

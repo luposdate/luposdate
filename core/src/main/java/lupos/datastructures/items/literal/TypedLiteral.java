@@ -10,7 +10,6 @@ import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapURILiteral;
 import lupos.datastructures.items.literal.string.StringURILiteral;
-import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;

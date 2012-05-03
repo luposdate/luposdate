@@ -3,9 +3,6 @@ package lupos.optimizations.sparql2core_sparql;
 /**
  * This class is a rule representation used to transform SPARQL expressions to
  * CoreSPARQL expressions
- * 
- * @author Jan Kolbaum
- * 
  */
 public class SPARQL2CoreSPARQL_rules extends SPARQLParserVisitorImplementationDumper {
 	// CONSTANTS

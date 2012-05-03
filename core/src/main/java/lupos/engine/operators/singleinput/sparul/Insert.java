@@ -1,6 +1,5 @@
 package lupos.engine.operators.singleinput.sparul;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import lupos.datastructures.items.Triple;

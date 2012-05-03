@@ -6,10 +6,10 @@ package lupos.engine.operators.singleinput.sort;
 import lupos.datastructures.queryresult.QueryResult;
 
 /**
- * @author Jan Kolbaum This is almost an abstract class, but as it needs to be
- *         instaciated in operatorPipe it is not. Nevertheless it should not be
- *         instaniated, as no useful results will be created. DO ONLY USE
- *         EXTENDING CLASSES
+ * This is almost an abstract class, but as it needs to be
+ * instaciated in operatorPipe it is not. Nevertheless it should not be
+ * instaniated, as no useful results will be created. 
+ * DO ONLY USE EXTENDING CLASSES
  */
 public abstract class CollectionSort extends Sort {
 

@@ -21,8 +21,6 @@ import lupos.datastructures.trie.TrieMap.TrieAndArraySizesDoNotFitException;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 
-//import java.util.*;
-
 public class CodeMapURILiteral extends URILiteral implements Externalizable {
 	/**
 	 * 

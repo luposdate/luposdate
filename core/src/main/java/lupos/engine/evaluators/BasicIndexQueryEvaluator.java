@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
@@ -61,7 +60,6 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
 import lupos.sparql1_1.ASTQuery;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SPARQL1_1Parser;
-import lupos.sparql1_1.SPARQL1_1ParserVisitor;
 import lupos.sparql1_1.SimpleNode;
 
 public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<Node> {

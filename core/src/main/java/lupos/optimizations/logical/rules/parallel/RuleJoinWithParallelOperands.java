@@ -25,8 +25,6 @@ import lupos.optimizations.logical.rules.Rule;
  * processors.
  * 
  * @see ParallelOperand
- * 
- * @author Olof-Joachim Frahm, Yu Huang, Christian Wolters
  */
 public class RuleJoinWithParallelOperands extends Rule {
 

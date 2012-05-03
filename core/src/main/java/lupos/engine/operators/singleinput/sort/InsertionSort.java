@@ -16,8 +16,6 @@ import lupos.sparql1_1.Node;
 /**
  * This class represents a static List which is used to sort every incoming
  * binding into a List given by this class.
- * 
- * @author Jan Kolbaum
  */
 
 public class InsertionSort extends CollectionSort {

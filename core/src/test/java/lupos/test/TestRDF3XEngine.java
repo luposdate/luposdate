@@ -17,8 +17,6 @@ import lupos.sparql1_1.Node;
 /**
  * This class shows how to use the RDF3X Query Evaluator to process a SPARQL
  * query
- * 
- * @author groppe
  */
 public class TestRDF3XEngine {
 

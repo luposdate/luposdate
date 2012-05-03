@@ -2,9 +2,6 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package lupos.sparql1_1;
 
-import lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor;
-import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
-
 public
 class ASTBindings extends SimpleNode {
   public ASTBindings(int id) {

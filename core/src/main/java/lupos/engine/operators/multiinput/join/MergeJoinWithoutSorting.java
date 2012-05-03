@@ -11,10 +11,6 @@ import lupos.datastructures.queryresult.SIPParallelIterator;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 
-/**
- * @author groppe
- * 
- */
 public class MergeJoinWithoutSorting extends Join {
 
 	/**

@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
-import lupos.datastructures.dbmergesortedds.DBMergeSortedMapOfCollections;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.smallerinmemorylargerondisk.CollectionImplementation;
 import lupos.datastructures.sorteddata.MapOfCollections;
 import lupos.datastructures.sorteddata.MapOfCollectionsImplementation;
 import lupos.engine.operators.index.Indices;

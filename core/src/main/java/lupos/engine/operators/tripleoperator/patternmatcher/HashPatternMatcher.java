@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import lupos.datastructures.items.Triple;
-import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 

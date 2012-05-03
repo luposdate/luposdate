@@ -13,10 +13,6 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.engine.operators.multiinput.MergeIterator;
 
-/**
- * @author groppe
- * 
- */
 public class MergeJoinWithoutSortingSeveralIterations extends Join {
 
 	/**

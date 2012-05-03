@@ -3,9 +3,7 @@ package lupos.optimizations.logical.rules.externalontology;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.VariableInInferenceRule;
@@ -13,14 +11,11 @@ import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.AddBinding;
 import lupos.engine.operators.singleinput.Filter;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-import lupos.optimizations.logical.rules.RuleEngine;
-import lupos.optimizations.logical.rules.RuleEngine.FindInOperatorGraph;
 
 public class RuleEliminateUnsatisfiableFilterAfterAdd extends Rule {
 	

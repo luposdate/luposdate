@@ -20,9 +20,6 @@ import lupos.misc.debug.DebugStep;
 /**
  * All operators are derived from this class. This class provides fundamental
  * methods for all operators.
- * 
- * @author groppe
- * 
  */
 public class BasicOperator implements Cloneable, Serializable {
 

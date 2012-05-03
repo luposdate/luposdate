@@ -6,7 +6,6 @@ import java.util.List;
 import lupos.datastructures.items.Triple;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.engine.operators.stream.TripleDeleter;

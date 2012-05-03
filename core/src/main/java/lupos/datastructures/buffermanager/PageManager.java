@@ -3,8 +3,6 @@ package lupos.datastructures.buffermanager;
 import java.io.IOException;
 
 import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 
 /**
  * This class manages the free pages in a file. The first page is reserved for
@@ -26,8 +24,8 @@ public class PageManager {
 	protected int maxNumberPages = 0;
 	protected boolean freePageBeforeEndOfFile = false;
 
-	public PageManager(final String name, final DBBPTree<?,?> dbbptree) throws IOException {
-		bufferManager = new BufferManager(name, dbbptree);
+	public PageManager(final String name) throws IOException {
+		bufferManager = new BufferManager(name);
 		// initialize page for storing released pages...
 		final byte[] page0 = getEmptyPage();
 		page0[0] = (byte) -128;

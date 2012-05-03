@@ -14,10 +14,6 @@ import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.join.HashFunction;
 import lupos.misc.debug.DebugStep;
 
-/**
- * @author zeplin
- * 
- */
 public class ParallelPreProcessJoin extends MultiInputOperator {
 
 	private static final long serialVersionUID = 1L;

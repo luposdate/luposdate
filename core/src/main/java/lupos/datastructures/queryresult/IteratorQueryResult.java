@@ -9,7 +9,6 @@ import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
 import lupos.engine.operators.singleinput.SIPFilterOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 

@@ -12,10 +12,10 @@ import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 
 /**
- * @author Jan Kolbaum This is almost an abstract class, but as it needs to be
- *         instaciated in operatorPipe it is not. Nevertheless it should not be
- *         instaniated, as no useful results will be created. DO ONLY USE
- *         EXTENDING CLASSES
+ * This is almost an abstract class, but as it needs to be
+ * instantiated in operatorPipe it is not. Nevertheless it should not be
+ * instantiated, as no useful results will be created. 
+ * DO ONLY USE EXTENDING CLASSES
  */
 public class Sort extends SingleInputOperator {
 

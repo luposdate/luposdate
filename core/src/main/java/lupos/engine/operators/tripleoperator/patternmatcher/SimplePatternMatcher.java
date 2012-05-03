@@ -1,7 +1,6 @@
 package lupos.engine.operators.tripleoperator.patternmatcher;
 
 import lupos.datastructures.items.Triple;
-import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 

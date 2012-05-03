@@ -14,8 +14,6 @@ import lupos.io.LuposObjectOutputStream;
  * Internally, it uses a code for its string representation. Furthermore, it
  * stores a code for the original content, too, such that the original content
  * can be retrieved (as required by the DAWG test cases)!
- * 
- * @author groppe
  */
 public class LazyLiteralOriginalContent extends LazyLiteral implements
 		Serializable {

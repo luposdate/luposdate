@@ -21,10 +21,6 @@ import lupos.engine.operators.multiinput.join.HashFunction;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.misc.debug.DebugStep;
 
-/**
- * @author zeplin
- * 
- */
 public class ParallelJoin extends Join {
 
 	// contains all ParallelJoiner-threads

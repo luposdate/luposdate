@@ -122,17 +122,14 @@ public class BufferManager {
 
 	protected ReentrantLock lock = new ReentrantLock();
 	
-	protected final DBBPTree<?,?> dbbptree;
-
-	public BufferManager(final String name, final DBBPTree<?,?> dbbptree) throws FileNotFoundException {
-		this(new File(name+ "_0"), dbbptree);
+	public BufferManager(final String name) throws FileNotFoundException {
+		this(new File(name+ "_0"));
 		this.fileName = name;
 	}
 
-	private BufferManager(final File file, final DBBPTree<?,?> dbbptree) throws FileNotFoundException {
+	private BufferManager(final File file) throws FileNotFoundException {
 		bufferedFile = new RandomAccessFile(file, "rw");
 		replacementStrategy = new LeastRecentlyUsed();
-		this.dbbptree=dbbptree;
 	}
 
 	/**

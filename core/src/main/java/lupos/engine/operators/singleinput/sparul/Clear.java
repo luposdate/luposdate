@@ -1,13 +1,11 @@
 package lupos.engine.operators.singleinput.sparul;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
-import lupos.engine.operators.singleinput.SingleInputOperator;
 
 public class Clear extends MultipleURIOperator {
 	

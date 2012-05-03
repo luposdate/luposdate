@@ -8,9 +8,6 @@ import lupos.misc.debug.DebugStep;
 
 /**
  * This class is the super class for all operators, which process bindings.
- * 
- * @author groppe
- * 
  */
 public class Operator extends BasicOperator {
 

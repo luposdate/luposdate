@@ -17,8 +17,6 @@ import lupos.sparql1_1.SimpleNode;
 /**
  * Class for the prefixes. This class holds all prefixes of the operators in the
  * OperatorGraph.
- * 
- * @author schleife
  */
 public class Prefix {
 	// defines whether the prefix class is active or not...

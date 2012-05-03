@@ -1,7 +1,5 @@
 package lupos.sparql1_1.operatorgraph;
 
-import java.util.LinkedList;
-
 import lupos.datastructures.items.Item;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.OperatorIDTuple;

@@ -10,11 +10,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-import lupos.engine.operators.singleinput.generate.Generate;
 
-/**
- * @author B.Sc.Inf. Dana Linnepe
- */
 public class ReduceEnvFilterVars extends SingleInputOperator {
 	private List<Variable> substitutionsVariableLeft = new LinkedList<Variable>();
 	private List<Variable> substitutionsVariableRight = new LinkedList<Variable>();

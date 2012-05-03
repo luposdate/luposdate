@@ -1,7 +1,5 @@
 package lupos.engine.operators.singleinput.sparul;
 
-import java.net.URISyntaxException;
-
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.Dataset;

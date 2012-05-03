@@ -28,8 +28,6 @@ import lupos.datastructures.items.literal.Literal;
  * These variables are stored statically and in the same order they have been
  * provided.
  * 
- * @author Sebastian Ebers and others
- * 
  */
 public class BindingsArray extends Bindings {
 

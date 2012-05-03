@@ -25,9 +25,6 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * The index structure has to be initialized previously. It is stored in a
  * static way so new instantiations of this class to not yield a change in the
  * original index structure.
- * 
- * @author Sebastian Ebers, modified by Jinghua Groppe
- * 
  */
 public class MemoryIndex extends BasicIndex {
 
@@ -55,31 +52,6 @@ public class MemoryIndex extends BasicIndex {
 		return new MemoryIndex(this.succeedingOperators,
 				this.triplePatterns, this.rdfGraph, this.indexCollection);
 	}
-
-	// public QueryResult process(final QueryResult queryResult) {
-	// final QueryResult queryResult2 = join(triplePatterns, this);
-	// if (queryResult2 == null) {
-	// return null;
-	// }
-	//
-	// /*
-	// * pass the succeeding operators which were externally provided to the
-	// operator pipe along
-	// * with the new bindings which have been determined by the join
-	// */
-	// // final long start = new Date().getTime();
-	// // for every binding found in the result of the previously performed
-	// // join of the triple elements ...
-	// for (final OperatorIDTuple succOperator : succeedingOperators) {
-	//
-	// ((Operator) succOperator.getOperator()).processAll(queryResult2,
-	// succOperator.getId());
-	// }
-	// // System.out.println("Time used to forward the  succOpps "+(new
-	// Date().getTime()-start));
-	// return queryResult2;
-	//
-	// }
 
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
@@ -204,34 +176,6 @@ public class MemoryIndex extends BasicIndex {
 			return null;
 		}
 	}
-
-	// private Collection<Triple> getFromMap(final MAP_PATTERN mapPattern, final
-	// String keyString,
-	// final Collection<Indices> indicesC) {
-	// /*
-	// *
-	// System.out.println("SM: "+subjectMap.size()+" PM: "+predicateMap.size()+
-	// " OM: "+objectMap.
-	// *
-	//size()+" SPM: "+subjectPredicateMap.size()+" SOM: "+subjectObjectMap.size(
-	// )+" SPOM: "+
-	// * subjectPredicateObjectMap.size()); try{ BufferedWriter out=new
-	// BufferedWriter(new
-	// * FileWriter("lala1")); out.write("PM: "+predicateObjectMap);
-	// out.close(); }
-	// * catch(IOException e) {
-	// *
-	// * }
-	// */
-	// final Collection<Triple> triples = new LinkedList<Triple>();
-	// Collection<Triple> ts = new LinkedList<Triple>();
-	// for (final Indices indices : indicesC) {
-	// ts = getFromMap(mapPattern, keyString, indices);
-	// if (ts != null)
-	// triples.addAll(ts);
-	// }
-	// return triples;
-	// }
 
 	private Collection<Triple> getFromMap(final MAP_PATTERN mapPattern,
 			final String keyString, final Indices indicesG) {

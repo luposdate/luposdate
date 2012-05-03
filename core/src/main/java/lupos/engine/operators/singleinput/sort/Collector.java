@@ -5,7 +5,6 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 
 /**
- * @author Jan Kolbaum
  * The Collector-Class collects incomming Bindings or QueryResults and forwards 
  * this collection of bindings to the current in forward stored class, 
  * if it is larger than a given limit. 

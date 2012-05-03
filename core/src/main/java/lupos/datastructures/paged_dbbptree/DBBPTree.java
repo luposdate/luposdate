@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -120,7 +119,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			f.mkdirs();
 			FileHelper.deleteFilesStartingWithPattern(DBBPTree.mainFolder,currentID+ ".dbbptree_");
 			pageManager = new PageManager(DBBPTree.mainFolder + currentID
-					+ ".dbbptree", this);
+					+ ".dbbptree");
 		} finally {
 			lock.unlock();
 		}
@@ -842,7 +841,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		try {
 			pageManager.close();
 			pageManager = new PageManager(DBBPTree.mainFolder + currentID
-					+ ".dbbptree", this);
+					+ ".dbbptree");
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -2113,7 +2112,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.currentID = currentID;
 		this.nodeDeSerializer = nodeDeSerializer;
 		pageManager = new PageManager(DBBPTree.mainFolder + currentID
-				+ ".dbbptree", this);
+				+ ".dbbptree");
 	}
 
 	public static DBBPTree readLuposObject(final LuposObjectInputStream lois)

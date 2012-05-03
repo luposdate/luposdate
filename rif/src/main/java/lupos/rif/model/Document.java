@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lupos.rif.IExpression;
 import lupos.rif.IRuleNode;
 import lupos.rif.IRuleVisitor;
 import lupos.rif.RIFException;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 
 public class Document extends AbstractRuleNode {
 	private String baseNamespace;

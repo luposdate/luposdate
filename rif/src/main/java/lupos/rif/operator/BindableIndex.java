@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndex;
 import lupos.engine.operators.index.Dataset;

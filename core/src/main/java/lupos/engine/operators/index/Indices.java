@@ -47,8 +47,6 @@ import lupos.optimizations.physical.PhysicalOptimizations;
  * Instances of this class are used as data structure for storing triples
  * indexed by various criteria.
  * 
- * @author ?, modified by Sebastian Ebers
- * 
  */
 public abstract class Indices extends TripleOperator implements TripleConsumer {
 

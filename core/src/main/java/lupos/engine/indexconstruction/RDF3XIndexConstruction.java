@@ -38,8 +38,6 @@ import lupos.io.LuposObjectOutputStream;
  * This class constructs the RDF3X indices on disk using a dictionary, which is
  * also constructed on disk...
  * 
- * @author groppe
- * 
  */
 public class RDF3XIndexConstruction {
 	private static final int k = 1000;

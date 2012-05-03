@@ -7,7 +7,6 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.index.IndexCollection;
 import lupos.engine.operators.singleinput.NotBoundException;
-import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.sparql1_1.ASTABSFuncNode;
 import lupos.sparql1_1.ASTAdditionNode;

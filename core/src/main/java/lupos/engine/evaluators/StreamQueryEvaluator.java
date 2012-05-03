@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
-import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.items.Item;
@@ -46,7 +44,6 @@ import lupos.engine.operators.tripleoperator.TriggerOneTime;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
-import lupos.engine.operators.tripleoperator.patternmatcher.SimplePatternMatcher;
 import lupos.misc.Tuple;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.misc.debug.DebugStep;

@@ -21,10 +21,6 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
 import lupos.misc.debug.DebugStep;
 
-/**
- * @author groppe
- * 
- */
 public class MergeJoin extends Join {
 
 	protected SortedBag<Bindings> left = null;

@@ -210,8 +210,6 @@ class SimpleNode implements Node {
 				Method set = null;
 				Method get = null;
 				for (int j = 0; j < methods.length; j++) {
-					final String field = fields[i].getName();
-					final String method = methods[j].getName();
 					if (methods[j].getName().toLowerCase().contains(
 							fields[i].getName().toLowerCase())) {
 						if (methods[j].getName().contains("set")) {

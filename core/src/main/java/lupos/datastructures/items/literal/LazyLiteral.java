@@ -30,8 +30,7 @@ import lupos.sparql1_1.SimpleNode;
  * This class determines the type of it (like URILiteral, AnonymousLiteral,
  * TypedLiteral, ...) lazy, i.e., only up on request by a special method.
  * Internally, it uses a code for its string representation.
- * 
- * @author groppe
+
  */
 public class LazyLiteral extends Literal implements Externalizable {
 

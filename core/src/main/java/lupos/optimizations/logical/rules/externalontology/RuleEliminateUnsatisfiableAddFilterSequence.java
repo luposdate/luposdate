@@ -16,7 +16,6 @@ import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-import lupos.optimizations.logical.rules.RuleEngine;
 
 /**
  * This class implements following rule to replace constant values in Index

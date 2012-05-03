@@ -4,12 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
-import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
-import lupos.rdf.Prefix;
-
-
 
 /**
  * Instances of this class store bindings in collections.<br>
