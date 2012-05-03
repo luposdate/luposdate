@@ -16,6 +16,7 @@
 	<modules>
 		<module>core</module>
 		<module>rif</module>
+		<module>endpoint</module>
 	</modules>
 
 	<dependencyManagement>
