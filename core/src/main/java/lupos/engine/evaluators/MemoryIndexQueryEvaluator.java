@@ -1,0 +1,161 @@
+package lupos.engine.evaluators;
+
+import java.util.Collection;
+import java.util.Date;
+
+import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.datastructures.dbmergesortedds.tosort.ToSort;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.URILiteral;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.trie.SuperTrie;
+import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.memoryindex.IndexCollection;
+import lupos.engine.operators.index.memoryindex.SevenMemoryIndices;
+import lupos.misc.Tuple;
+
+public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
+
+	protected enum Optimizations {
+		NONE, MOSTRESTRICTIONS, MOSTRESTRICTIONSLEASTENTRIES, LEASTENTRIES, BINARY;
+	}
+
+	public MemoryIndexQueryEvaluator() throws Exception {
+		super();
+	}
+
+	public MemoryIndexQueryEvaluator(final String[] arguments) throws Exception {
+		super(arguments);
+	}
+	
+	public MemoryIndexQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset,
+			final String type, final String externalontology,
+			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
+			final LiteralFactory.MapType codemap, final String[] tmpDirs,
+			final boolean loadindexinfo,
+			final PARALLELOPERANDS parallelOperands, final boolean blockwise,
+			final int limit, final int jointhreads, final int joinbuffer,
+			final Heap.HEAPTYPE heap, final ToSort.TOSORT tosort,
+			final int indexheap, final int mergeheapheight,
+			final Heap.HEAPTYPE mergeheaptype, final int chunk,
+			final int mergethreads, final int yagomax,
+			final SuperTrie.TRIETYPE stringsearch,
+			final QueryResult.TYPE resulttype, final STORAGE storage,
+			final JOIN join, final JOIN optional, final SORT sort,
+			final DISTINCT distinct,
+			final MERGE_JOIN_OPTIONAL merge_join_optional, final String encoding,
+			final lupos.engine.operators.index.Indices.DATA_STRUCT datastructure,
+			final Dataset.SORT datasetsort,
+			final Optimizations optimization){
+		super(debug, multiplequeries, compare, compareoptions, times, dataset,
+				type, externalontology,inmemoryexternalontologyinference, rdfs, codemap, tmpDirs, loadindexinfo,
+				parallelOperands, blockwise,
+				limit, jointhreads, joinbuffer,
+				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
+				stringsearch, resulttype, storage, join, optional, sort, distinct,
+				merge_join_optional, encoding,
+				datastructure, datasetsort);
+		init(datastructure, optimization);
+	}
+
+	private void init(final Indices.DATA_STRUCT datastructure,
+			final Optimizations optimization) {
+		Indices.setUsedDatastructure(datastructure);
+		switch (optimization) {
+		case MOSTRESTRICTIONS:
+			opt = BasicIndex.MOSTRESTRICTIONS;
+			break;
+		case MOSTRESTRICTIONSLEASTENTRIES:
+			opt = BasicIndex.MOSTRESTRICTIONSLEASTENTRIES;
+			break;
+		case LEASTENTRIES:
+			opt = BasicIndex.LEASTENTRIES;
+			break;
+		case BINARY:
+			opt = BasicIndex.Binary;
+			break;
+		default:
+			opt = BasicIndex.NONE;
+			break;
+		}
+	}
+
+	@Override
+	public void init() throws Exception {
+		super.init();
+		// IndexMaps.setUsedDatastructure((IndexMaps.DATA_STRUCT)args.getEnum(
+		// "datastructure"));
+		init((Indices.DATA_STRUCT) args.getEnum("datastructure"),
+				(Optimizations) this.args.getEnum("optimization"));
+	}
+
+	@Override
+	public void setupArguments() {
+		defaultOptimization = Optimizations.MOSTRESTRICTIONSLEASTENTRIES;
+		super.setupArguments();
+	}
+
+	// moved to lupos.rdf.Indices
+	@Override
+	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
+			final Collection<URILiteral> namedGraphs) throws Exception {
+		final Date a = new Date();
+		super.prepareInputData(defaultGraphs, namedGraphs);
+		dataset = new Dataset(defaultGraphs, namedGraphs, type,
+				getMaterializeOntology(), opt, new Dataset.IndicesFactory() {
+			public Indices createIndices(final URILiteral uriLiteral) {
+				return new SevenMemoryIndices(uriLiteral);
+			}
+
+			public lupos.engine.operators.index.IndexCollection createIndexCollection() {
+				IndexCollection ic=new IndexCollection();
+				ic.dataset=dataset;
+				return ic;
+			}
+		}, debug != DEBUG.NONE, inmemoryexternalontologyinference);
+		dataset.buildCompletelyAllIndices();
+		final long prepareTime = ((new Date()).getTime() - a.getTime());
+		return prepareTime;
+	}
+
+	public IndexCollection getIndexCollection() {
+		return (IndexCollection) indexCollection;
+	}
+
+	public static void main(final String[] args) {
+		_main(args, MemoryIndexQueryEvaluator.class);
+	}
+
+	@Override
+	public lupos.engine.operators.index.IndexCollection createIndexCollection() {
+		IndexCollection ic=new IndexCollection();
+		ic.dataset=dataset;
+		return ic;
+	}
+
+	@Override
+	public long prepareInputDataWithSourcesOfNamedGraphs(
+			Collection<URILiteral> defaultGraphs,
+			Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
+			throws Exception {
+		final Date a = new Date();
+		super.prepareInputDataWithSourcesOfNamedGraphs(defaultGraphs, namedGraphs);
+		dataset = new Dataset(defaultGraphs, namedGraphs,
+				getMaterializeOntology(), type, opt, new Dataset.IndicesFactory() {
+			public Indices createIndices(final URILiteral uriLiteral) {
+				return new SevenMemoryIndices(uriLiteral);
+			}
+
+			public lupos.engine.operators.index.IndexCollection createIndexCollection() {
+				IndexCollection ic=new IndexCollection();
+				ic.dataset=dataset;
+				return ic;
+			}
+		}, debug != DEBUG.NONE, inmemoryexternalontologyinference);
+		dataset.buildCompletelyAllIndices();
+		final long prepareTime = ((new Date()).getTime() - a.getTime());
+		return prepareTime;
+	}
+}

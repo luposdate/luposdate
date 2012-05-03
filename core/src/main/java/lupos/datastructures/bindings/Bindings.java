@@ -1,0 +1,322 @@
+package lupos.datastructures.bindings;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import lupos.datastructures.items.Triple;
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.AnonymousLiteral;
+import lupos.datastructures.items.literal.Literal;
+import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.rdf.Prefix;
+
+public abstract class Bindings implements Serializable, Comparable<Bindings> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5710553016507627379L;
+
+	/** The subclass extending Bindings to be actually used */
+	public static Class<? extends Bindings> instanceClass = BindingsArray.class;
+
+	public static Bindings createNewInstance() {
+		try {
+			return instanceClass.newInstance();
+		} catch (final InstantiationException e) {
+			System.err.println(e);
+		} catch (final IllegalAccessException e) {
+			System.err.println(e);
+		}
+		return new BindingsArray();
+	}
+
+	@Override
+	public abstract Bindings clone();
+
+	public abstract void add(final Variable var, final Literal lit);
+
+	public abstract Literal get(final Variable var);
+
+	/**
+	 * Returns the set of bound variables
+	 * 
+	 * @return the set of bound variables
+	 */
+	public abstract Set<Variable> getVariableSet();
+
+	public Iterator<Variable> getVariables() {
+		return getVariableSet().iterator();
+	}
+
+	public void addAll(final Bindings other) {
+		for (final Variable v : other.getVariableSet())
+			add(v, other.get(v));
+	}
+
+	@Override
+	public String toString() {
+		return toStringOnlyBindings();
+	}
+	
+	public String toString(Prefix prefix) {
+		return toStringOnlyBindings(prefix);
+	}
+
+	public String toStringOnlyBindings() {
+		String s = "{";
+		final Iterator<Variable> it = getVariables();
+		while (it.hasNext()) {
+			final Variable var = it.next();
+			s += var + "=" + get(var).originalString();
+			if (it.hasNext()) {
+				s += ", ";
+			}
+		}
+		s += "}";
+		return s;
+	}
+	
+	public String toStringOnlyBindings(Prefix prefix) {
+		String s = "{";
+		final Iterator<Variable> it = getVariables();
+		while (it.hasNext()) {
+			final Variable var = it.next();
+			s += var + "=";
+			if(get(var).originalStringDiffers())
+				 s += get(var).originalString();
+			else s += get(var).toString(prefix);
+			if (it.hasNext()) {
+				s += ", ";
+			}
+		}
+		s += "}";
+		return s;
+	}
+
+	public int compareTo(final Bindings b) {
+		final Set<Variable> sv = this.getVariableSet();
+		final Set<Variable> svb = b.getVariableSet();
+		// different number of variables?
+		if (sv.size() > svb.size())
+			return 1;
+		else if (svb.size() > sv.size())
+			return -1;
+		sv.removeAll(svb);
+		// different variables?
+		if (sv.size() > 0) {
+			svb.removeAll(this.getVariableSet());
+			// let minimum variable of both bindings decide which bindings is
+			// smaller!
+			Variable min1 = null;
+			for (final Variable v : sv) {
+				if (min1 == null || min1.compareTo(v) > 0)
+					min1 = v;
+			}
+			Variable min2 = null;
+			for (final Variable v : svb) {
+				if (min2 == null || min2.compareTo(v) > 0)
+					min2 = v;
+			}
+			return min1.compareTo(min2);
+		}
+		final Iterator<Variable> it = getVariables();
+		while (it.hasNext()) {
+			final Variable var = it.next();
+			final int compare = get(var)
+					.compareToNotNecessarilySPARQLSpecificationConform(
+							b.get(var));
+			if (compare != 0)
+				return compare;
+		}
+		return 0;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 0;
+		final Iterator<Variable> it = getVariables();
+		while (it.hasNext()) {
+			final Variable var = it.next();
+			hashCode += var.hashCode() + get(var).hashCode();
+		}
+		return hashCode;
+	}
+
+	@Override
+	public boolean equals(final Object other) {
+
+		if (other instanceof Bindings || other instanceof BindingsMap
+				|| other instanceof BindingsArray
+				|| other instanceof BindingsCollection) {
+			final Bindings otherBindings = (Bindings) other;
+
+			// check the equality of their keysets first
+			if (this.getVariableSet().equals(otherBindings.getVariableSet())) {
+
+				// and check the equality of the actual bindings afterwards
+				for (final Variable var : getVariableSet()) {
+					if (get(var)
+							.compareToNotNecessarilySPARQLSpecificationConform(
+									otherBindings.get(var)) != 0)
+						return false;
+				}
+				return true;
+			} else
+				return false;
+		}
+		return false;
+	}
+
+	public boolean equalsExceptAnonymousLiterals(final Object other) {
+
+		if (other instanceof Bindings || other instanceof BindingsMap
+				|| other instanceof BindingsArray
+				|| other instanceof BindingsCollection) {
+			final Bindings otherBindings = (Bindings) other;
+
+			// check the equality of their keysets first
+			if (this.getVariableSet().equals(otherBindings.getVariableSet())) {
+
+				// and check the equality of the actual bindings afterwards
+				for (final Variable var : getVariableSet()) {
+					if (get(var).toString().compareTo(
+							otherBindings.get(var).toString()) != 0
+							&& !(get(var) instanceof AnonymousLiteral && otherBindings
+									.get(var) instanceof AnonymousLiteral)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	public boolean equalsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
+
+		if (other instanceof Bindings || other instanceof BindingsMap
+				|| other instanceof BindingsArray
+				|| other instanceof BindingsCollection) {
+			final Bindings otherBindings = (Bindings) other;
+
+			// check the equality of their keysets first
+			if (this.getVariableSet().equals(otherBindings.getVariableSet())) {
+
+				// and check the equality of the actual bindings afterwards
+				for (final Variable var : getVariableSet()) {
+					if (get(var).toString().compareTo(
+							otherBindings.get(var).toString()) != 0
+							&& !(get(var) instanceof AnonymousLiteral && otherBindings
+									.get(var) instanceof AnonymousLiteral)
+							&& !(get(var).isURI() && otherBindings.get(var).isURI() && (get(var).toString().startsWith("<inlinedata:") || otherBindings.get(var).toString().startsWith("<inlinedata:")) )) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * This method adds a triple to the internal list of read triples for these
+	 * bindings. This method must be overridden by Bindings-subclasses, which
+	 * support this feature, e.g. BindingsArrayReadTriples
+	 */
+	public void addTriple(final Triple triple) {
+	}
+
+	/**
+	 * This method adds all triples to the internal list of read triples for
+	 * these bindings. This method must be overridden by Bindings-subclasses,
+	 * which support this feature, e.g. BindingsArrayReadTriples
+	 */
+	public void addAllTriples(final Collection<Triple> triples) {
+	}
+
+	/**
+	 * This method adds all triples of a given Bindings to the internal list of
+	 * read triples for these bindings. This method must be overridden by
+	 * Bindings-subclasses, which support this feature, e.g.
+	 * BindingsArrayReadTriples
+	 */
+	public void addAllTriples(final Bindings bindings) {
+	}
+
+	public void addAllPresortingNumbers(final Bindings bindings) {
+	}
+
+	/**
+	 * This method returns the internal list of read triples for these bindings.
+	 * This method must be overridden by Bindings-subclasses, which support this
+	 * feature, e.g. BindingsArrayReadTriples
+	 */
+	public List<Triple> getTriples() {
+		return null;
+	}
+
+	/**
+	 * adds a presorting number
+	 * 
+	 * @param tp
+	 *            the triple pattern from which this presorting number is
+	 * @param orderPattern
+	 *            the orderPattern of this presorting number
+	 * @param pos
+	 *            the presorting number itself
+	 * @param max
+	 *            its maximum value, i.e. the presorting number is in the range
+	 *            [0, max]
+	 * @param id
+	 *            the id of the index used in case that e.g. there are several
+	 *            default indices, which all have different presorting
+	 *            numberings
+	 */
+	public void addPresortingNumber(final TriplePattern tp,
+			final Object orderPattern, final int pos, final int max,
+			final int id) {
+	}
+
+	public abstract void init();
+
+	private void writeObject(final java.io.ObjectOutputStream out)
+			throws IOException {
+		final Set<Variable> sv = getVariableSet();
+		out.writeInt(sv.size());
+		for (final Variable v : sv) {
+			out.writeObject(v);
+			out.writeObject(get(v));
+		}
+		final Collection<Triple> ct = getTriples();
+		if (ct == null || ct.size() == 0)
+			out.writeBoolean(false);
+		else {
+			out.writeBoolean(true);
+			out.writeInt(ct.size());
+			for (final Triple t : ct) {
+				out.writeObject(t);
+			}
+		}
+	}
+
+	private void readObject(final java.io.ObjectInputStream in)
+			throws IOException, ClassNotFoundException {
+		init();
+		final int size = in.readInt();
+		for (int i = 0; i < size; i++) {
+			add((Variable) in.readObject(), (Literal) in.readObject());
+		}
+		final boolean triples = in.readBoolean();
+		if (triples) {
+			final int sizeTriples = in.readInt();
+			for (int j = 0; j < sizeTriples; j++) {
+				addTriple((Triple) in.readObject());
+			}
+		}
+	}
+}

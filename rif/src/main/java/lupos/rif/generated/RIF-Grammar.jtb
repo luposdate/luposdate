@@ -1,0 +1,308 @@
+/* Globale JavaCC/JJTree Einstellungen */
+
+options {
+  JAVA_UNICODE_ESCAPE = true ;
+  UNICODE_INPUT = false;
+  STATIC=false;
+  DEBUG_PARSER=false;
+  DEBUG_LOOKAHEAD=false;
+
+  //Output of JavaCC
+  OUTPUT_DIRECTORY="parser";
+
+  //Package of JTB-Visitors
+  JTB_VP="lupos.rif.generated.visitor";
+  //Package of JTB-AST-Classes
+  JTB_NP="lupos.rif.generated.syntaxtree";
+  //Generate Pointer to Parent-Node
+  JTB_PP=true;
+  JTB_O="jtb.generated.jj";
+  JTB_PRINTER=true;
+  JTB_JD=true;
+  
+}
+
+/* Parserklasse */
+
+PARSER_BEGIN(RIFParser)
+package lupos.rif.generated.parser;
+public class RIFParser{}
+PARSER_END(RIFParser)
+
+
+/* Spezialtoken */
+
+SKIP : { " " | "\t" | "\n" | "\r" | "\f" | <"(*" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? "*)">	}
+
+TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
+
+
+/* SEPARATORS */
+
+TOKEN :
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < COMMA: "," >
+| < DOT: "." >
+| < QUESTION: "?" >
+| < IMPL: ":-" >
+| < TO: "->" >
+| < EQUAL: "=" >
+| < R: "#" >
+| < RR: "##" >
+| < LBRACK: "[" >
+| < RBRACK: "]" >
+| < S: "|" >
+| < LMETA: "(*" >
+| < RMETA: "*)" >
+| < AT: "@" >
+| < H: "^^" >
+}
+
+/* Reservierte Worte */
+
+TOKEN [IGNORE_CASE] :
+{
+  < DOCUMENT: "document" >
+| < GROUP: "group" >
+| < FORALL: "forall" >
+| < BASE: "base" >
+| < PREFIX: "prefix" >
+| < IMPORT: "import" >
+| < AND: "and" >
+| < OR: "or" >
+| < EXTERNAL: "external" >
+| < EXISTS: "exists" >
+| < LIST: "list" >
+| < CONC: "conclusion" >
+}
+
+/* LITERALS */
+
+TOKEN :
+{
+	
+ <Q_URIref: ( "<" ("#")?(~["&","|",">","<"])*("#")? ">" ) | ("<" ( ("aaa" | "aaas" | "acap" | "cap" | "cid" | "crid" | "data" | "dav" | "dict" | "dns" | "fax" | "file" | "ftp" | "go" | "gopher" | "h323" | "http" | "https" | "iax" | "icap" | "im" | "imap" | "info" | "ipp" | "iris" | "iris.beep" | "iris.xpc" | "iris.xpcs" | "iris.lwz" | "ldap" | "mailto" | "mid" | "modem" | "msrp" | "msrps" | "mtqp" | "mupdate" | "news" | "nfs" | "nntp" | "opaquelocktoken" | "pop" | "pres" | "rtsp" | "service" | "shttp" | "sip" | "sips" | "snmp" | "soap.beep" | "soap.beeps" | "tag" | "tel" | "telnet" | "tftp" | "thismessage" | "tip" | "tv" | "urn" | "vemmi" | "xmlrpc.beep" | "xmlrpc.beeps" | "xmpp" | "z39.50r" | "z39.50s" | "afs" | "dtn" | "mailserver" | "pack" | "tn3270" | "prospero" | "snews" | "videotex" | "wais") ":" (~["&","|",">","<"])*)? ">") >							//NO & or | IN URI JK
+	| <QNAME_NS: (<NCNAME_PREFIX>)? ":" >
+	| <QNAME: (<NCNAME_PREFIX>)? ":" (<NCNAME1> | <NCNAME2> | <INTEGER_10> | <FLOATING_POINT> )? > // <INTEGER_10> | <FLOATING_POINT> added such that prefix:10 is also recognized as QName!
+	| <BNODE_LABEL: "_:" (<NCNAME1> | <NCNAME2>) >
+	| <NCNAME: <NCNAME1> | <NCNAME2> >
+	| <LANGTAG: "@" ( <A2Z> )+ ( "-" (<A2ZN>)+ )* >
+	| <INTEGER_10: ("-")? <DIGITS> >
+	| <FLOATING_POINT: ("-")? ( ([ "0"-"9" ])+ "."  (["0"-"9"])* (["E","e"] (["+","-"])? (["0"-"9"])+)? ) | ( "." (["0"-"9"])+ (["E","e"] (["+","-"])? (["0"-"9"])+)? ) | ( (["0"-"9"])+ ["E","e"] (["+","-"])? (["0"-"9"])+ ) >					//JK EXPONENT DIRECT IN FLOATING POINT AS USED NOWHERE ELSE
+	| <STRING_LITERAL1: "'" ( (~["\\","\n","\r","'"]) | ("\\" ~["\n","\r"]) )* "'" >
+	| <STRING_LITERAL2: "\"" ( (~["\\","\n","\r","\""]) | ("\\" ~["\n","\r"]) )* "\"" >
+	| <STRING_LITERALLONG1: "'''" ( (~["\\","'"]) | ("\\" ~["\n","\r"]) )* "'''" >											// ! changed JK
+	| <STRING_LITERALLONG2: "\"\"\"" ( (~["\\","\""]) | ("\\" ~["\n","\r"]) )* "\"\"\"" >									// ! changed JK
+	| <#A2ZN: ["A"-"Z"] | ["a"-"z"] | ["0"-"9"] >
+	| <#A2Z: ["A"-"Z"] | ["a"-"z"] >
+//	| <#EXPONENT: ["E","e"] (["+","-"])? (["0"-"9"])+ >
+	| <#DIGITS: (["0"-"9"])+ >
+	| <#NCCHAR1: 	["A"-"Z"] 			| ["a"-"z"] 			| ["\u00C0"-"\u00D6"] |
+					["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] 	| ["\u0370"-"\u037D"] |
+					["\u037F"-"\u1FFF"] | ["\u200C"-"\u200D"] 	| ["\u2070"-"\u218F"] |
+					["\u2C00"-"\u2FEF"] | ["\u3001"-"\uD7FF"] 	| ["\uF900"-"\uFFFD"] | ["\u00A1"-"\u00BF"] | ["\u2010"-"\u2040"] > //Last two character spaces are taken to guarantee compatability with the dawg testcases, but thus are not contained by sparql specification
+	| <#NCCHAR_END: <NCCHAR1> | "_" | ["0"-"9"] | "-">
+	| <#NCCHAR_END_WOUT: <NCCHAR1> | "_" | ["0"-"9"] > 
+	| <#NCCHAR_FULL: <NCCHAR_END> | "." >
+	| <#NCNAME1: <NCCHAR1> ((<NCCHAR_FULL>)* <NCCHAR_END_WOUT>)?>
+	| <#NCNAME2: "_" ((<NCCHAR_FULL>)* <NCCHAR_END_WOUT>)?>
+	| <#NCNAME_PREFIX: <NCCHAR1> (<NCCHAR_FULL>)* >
+}
+
+/* Grammatik */
+/* Regelsprache */
+
+/* Obereinheit */
+void CompilationUnit():{}
+{
+  RIFDocument() < EOF >}
+
+/* Umschließt jedes Dokument */
+void RIFDocument():
+{}
+{
+  < DOCUMENT > < LPAREN > ( RIFBase() )? ( RIFPrefix() )* ( RIFImport() )* ( RIFConclusion() )? ( RIFGroup() )? < RPAREN >}
+
+/* Conclusion */
+void RIFConclusion():
+{}
+{
+    < CONC > < LPAREN > RIFFormula() < RPAREN >}
+
+/* TODO */
+void RIFBase():
+{}
+{
+  < BASE > < LPAREN > RIFQuotedURIref() < RPAREN >}
+
+/* Namespace Definitionen */
+void RIFPrefix():
+{}
+{
+  < PREFIX > < LPAREN > RIFNCName() RIFQuotedURIref() < RPAREN >}
+
+/* TODO */
+void RIFImport():
+{}
+{
+  < IMPORT > < LPAREN > RIFQuotedURIref() ( RIFQuotedURIref() )? < RPAREN >}
+
+/* Gruppierung von Regeln oder Gruppen */
+void RIFGroup():
+{}
+{
+  < GROUP > < LPAREN > ( RIFRule() | RIFGroup() )* < RPAREN >
+}
+
+/* Eine Regel */
+void RIFRule():
+{}{
+   < FORALL > ( RIFVar() )+ < LPAREN > RIFClause() < RPAREN > | RIFClause()}
+
+/* Eine Klausel, entweder atomare Aussage bzw. Konjunktion von atomaren Aussagen oder Implikation */
+void RIFClause():
+{}
+{
+  (RIFAtomic() | < AND > < LPAREN > ( RIFAtomic() )* < RPAREN > )  ( < IMPL > RIFFormula() )?
+}
+
+/* Condition Language */
+
+/* Formel für Regelkörper (Rechte Seite einer Implikation) */
+void RIFFormula():
+{}
+{
+  < AND > < LPAREN > ( RIFFormula() )* < RPAREN >
+| < OR > < LPAREN > ( RIFFormula() )* < RPAREN >
+| < EXISTS > ( RIFVar() )+ < LPAREN > RIFFormula() < RPAREN >
+| RIFAtomic()}
+
+void RIFAtomic():
+{}
+{
+  LOOKAHEAD(3) RIFFrame() |
+  RIFTerm() ( (< EQUAL > | < R > | < RR >) RIFTerm() )?}
+
+void RIFUniterm():
+{}
+{
+  RIFVarOrURI() < LPAREN > ( LOOKAHEAD(2) RIFNCName() < TO > RIFTerm() | RIFTerm() )* < RPAREN >}
+
+void RIFFrame():
+{}
+{
+  RIFVarOrURI() < LBRACK > ( RIFTerm() < TO > RIFTerm() )* < RBRACK >}
+
+void RIFTerm():
+{}
+{
+   LOOKAHEAD(3) RIFUniterm() | RIFRDFLiteral() | RIFNumericLiteral() | RIFVar() | RIFURI() | RIFExternal() | RIFList()}
+
+void RIFExternal():
+{}
+{	< EXTERNAL > < LPAREN > RIFUniterm() < RPAREN >
+}
+
+void RIFList():
+{}
+{
+  < LIST > < LPAREN > ( < RPAREN > | ( RIFTerm() )+ ( < S > RIFTerm() )? < RPAREN > )}
+
+/* Terminale */
+
+void RIFRDFLiteral():
+{}
+{	
+	LOOKAHEAD((<STRING_LITERAL1>|<STRING_LITERAL2>|<STRING_LITERALLONG1>|<STRING_LITERALLONG2>)< H >) RIFTypedLiteral() |
+	LOOKAHEAD((<STRING_LITERAL1>|<STRING_LITERAL2>|<STRING_LITERALLONG1>|<STRING_LITERALLONG2>)<LANGTAG>) RIFLiteralWithLangTag() | 
+	RIFString()
+}
+
+/* z.b. 'jens'^^xsd:string */
+void RIFTypedLiteral():
+{}
+{
+	RIFString() < H > RIFURI()
+}
+
+/* z.B. 'Zeichenkette'@de */
+void RIFLiteralWithLangTag():
+{}
+{
+	RIFString() < LANGTAG >
+}
+
+/* eine Literal aus einer Zahl */
+void RIFNumericLiteral() :
+{}
+{
+	RIFInteger() | RIFFloatingPoint()
+}
+
+/* Eine Zeichenkette */
+void RIFString():
+{}
+{
+	<STRING_LITERAL1>
+	| <STRING_LITERAL2>	
+	| <STRING_LITERALLONG1>
+	| <STRING_LITERALLONG2>	
+}
+
+/* Variable oder Uri */
+void RIFVarOrURI() :
+{}
+{
+	RIFVar() | RIFURI()
+}
+
+/* eine Uri */
+void RIFURI() :
+{}
+{
+	RIFQuotedURIref() | RIFQName()
+}
+
+/* Qualified Name */
+void RIFQName():
+{}
+{
+	< QNAME >
+}
+
+/* Ganzzahl */
+void RIFInteger():
+{}
+{
+	< INTEGER_10 >
+}
+
+/* Fließkommazahl */
+void RIFFloatingPoint():
+{}
+{
+	< FLOATING_POINT >
+}
+
+/* Variable */
+void RIFVar():
+{}
+{
+  < QUESTION > RIFNCName()
+}
+
+/* einfacher Name für Variablen */
+void RIFNCName():
+{}
+{
+  < NCNAME >
+}
+
+/* URI wie <www.google.de> */
+void RIFQuotedURIref():
+{}
+{
+  < Q_URIref >
+}
