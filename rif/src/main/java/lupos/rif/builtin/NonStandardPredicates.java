@@ -5,6 +5,7 @@ import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 
+@Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class NonStandardPredicates {
 	@Builtin(Name = "is-literal")
 	public static BooleanLiteral is_literal(Argument arg) {
