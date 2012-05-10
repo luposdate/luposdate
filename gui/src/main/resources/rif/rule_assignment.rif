@@ -1,0 +1,17 @@
+Document(
+	Prefix(rdf     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+	Prefix(dc      <http://purl.org/dc/elements/1.1/>)
+	Prefix(dcterms <http://purl.org/dc/terms/>)
+	Prefix(bench   <http://localhost/vocabulary/bench/>)
+	Prefix(xsd     <http://www.w3.org/2001/XMLSchema#>)
+
+	Group (
+		Forall ?yr ?journal ?unbound( 
+			?journal[dcterms:published -> ?unbound] :- And(?journal # bench:Journal 
+			?journal[dc:title -> "Journal 1 (1940)"^^xsd:string]
+			?journal[dcterms:issued -> ?yr]
+			?unbound = ?yr
+			)
+  		)
+ 	)
+)

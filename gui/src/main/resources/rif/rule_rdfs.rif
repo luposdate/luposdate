@@ -1,0 +1,77 @@
+Document(
+	Prefix(rdf     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+	Prefix(dc      <http://purl.org/dc/elements/1.1/>)
+	Prefix(dcterms <http://purl.org/dc/terms/>)
+	Prefix(bench   <http://localhost/vocabulary/bench/>)
+	Prefix(xsd     <http://www.w3.org/2001/XMLSchema#>)
+	Prefix(rdfs    <http://www.w3.org/2000/01/rdf-schema#>)
+
+	(* http://www.w3.org/TR/rdf-mt/#RDFSRules *)
+	Group (
+		(* TODO rdfs1 *)
+		
+		(* rdfs2 *)
+		Forall ?u ?x ?a ?y(
+		  ?u # ?x :- And(?a[rdfs:domain -> ?x] ?u[?a -> ?y])
+		)
+		
+		(* rdfs3 *)
+		Forall ?a ?x ?u ?v (
+		   ?v # ?x :- And(?a[rdfs:range -> ?x] ?u[?a -> ?v])
+		)
+		
+		(* rdfs4 *)
+		Forall ?u ?a ?x (
+		   ?u # rdfs:Resource :- ?u[?a -> ?x]
+		)
+		
+		Forall ?u ?a ?x (
+		   ?x # rdfs:Resource :- ?u[?a -> ?x]
+		)
+		
+		(* rdfs5 *)
+		Forall ?u ?v ?x (
+		   ?u[rdfs:subPropertyOf -> ?x] :- And(?u[rdfs:subPropertyOf -> ?v] ?v[rdfs:subPropertyOf -> ?x])
+		)
+		
+		(* rdfs6 *)
+		Forall ?u (
+		   ?u[rdfs:subPropertyOf -> ?u] :- ?u # rdf:Property  
+		)
+		
+		(* rdfs7 *)
+		Forall ?a ?b ?u ?y (
+		   ?u[?b -> ?a] :- And(?a[rdfs:subPropertyOf -> ?b] ?u[?a -> ?y])
+		)
+		
+		(* rdfs8 *)
+		Forall ?u (
+		   ?u ## rdfs:Resource :- ?u # rdfs:Class
+		)
+		
+		(* rdfs9 *)
+		Forall ?u ?x ?v (
+		   ?v # ?x :- And(?u ## ?x ?v # ?u)
+		)
+		
+		(* rdfs10 *)
+		Forall ?u (
+		   ?u ## ?u :- ?u # rdfs:Class
+		)
+		
+		(* rdfs11 *)
+		Forall ?u ?x ?v (
+		   ?u ## ?x :- And(?u ## ?v ?v ## ?x)
+		)
+		
+		(* rdfs12 *)
+		Forall ?u (
+		   ?u[rdfs:subPropertyOf -> rdfs:member] :- ?u # rdfs:ContainerMembershipProperty
+		)
+		
+		(* rdfs13 *)
+		Forall ?u (
+		   ?u ## rdfs:Literal :- ?u # rdfs:Datatype
+		)
+ 	)
+)

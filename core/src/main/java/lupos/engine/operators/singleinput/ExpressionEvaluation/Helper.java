@@ -16,7 +16,7 @@ import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.engine.operators.singleinput.TypeErrorException;
-
+ 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 

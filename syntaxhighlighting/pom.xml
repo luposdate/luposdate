@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>luposdate</artifactId>
+		<groupId>de.uniluebeck.ifis</groupId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	<artifactId>luposdate.syntaxhighlighting</artifactId>
+
+	<name>Luposdate :: SyntaxHighlighting</name>
+
+	<packaging>jar</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.rif</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>xpref</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>jena</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

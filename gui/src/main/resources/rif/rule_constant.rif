@@ -1,0 +1,10 @@
+Document(
+ Prefix(ex <http://example.org/example#>)
+ Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+ Prefix(xs <http://www.w3.org/2001/XMLSchema#>)
+ 
+ Group(
+  ex:p("pass 1") :- And(External(pred:literal-equal("3"^^xs:integer "3"^^xs:integer)) External(pred:literal-equal("4"^^xs:integer "4"^^xs:integer)))
+  ex:p("pass 2") :- Or(External(pred:literal-equal("3"^^xs:integer "3"^^xs:integer)) External(pred:literal-equal("4"^^xs:integer "4"^^xs:integer)))
+ ) 
+)

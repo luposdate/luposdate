@@ -1,0 +1,18 @@
+Document(
+   Prefix(ex <http://example.org/example#>)
+   Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+   
+   Group (
+   
+    Forall ?x ?y ?z (
+     ?y=?z :- And ( ex:p(?x ?y) ex:p(?x ?z) External(pred:literal-not-equal(?y ?z)))
+    )
+
+    Forall ?x ?y ?z (
+     ex:ok() :- And ( ex:p(?x ?z) ex:p(?x ?y) ?z = ?y External(pred:literal-not-equal(?y ?z)))
+    )
+     
+    ex:p(ex:a ex:b)
+    ex:p(ex:a ex:c)
+   )
+)

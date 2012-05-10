@@ -1,0 +1,14 @@
+Document(
+  Prefix(cpt <http://example.com/concepts#>)
+  Prefix(ppl <http://example.com/people#>)
+  Prefix(bks <http://example.com/books#>)
+
+  Group
+  (
+    Forall ?Buyer ?Item ?Seller (
+        cpt:buy(?Buyer ?Item ?Seller) :- cpt:sell(?Seller ?Item ?Buyer)
+    )
+ 
+    cpt:sell(ppl:John bks:LeRif ppl:Mary)
+  )
+)

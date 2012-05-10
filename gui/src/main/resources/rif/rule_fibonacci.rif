@@ -1,0 +1,21 @@
+Document(
+  Base(<http://sample.de#>)
+  Prefix(cpt <http://example.com/concepts#>)
+  Prefix(ppl <http://example.com/people#>)
+  Prefix(bks <http://example.com/books#>)
+  Prefix(func <http://www.w3.org/2007/rif-builtin-function#>)
+  Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+
+
+  Group
+  (
+    :fib(0 0)
+    :fib(1 1)
+    Forall ?x ?rn ?r(
+        :fib(External(func:numeric-add(?x 2)) External(func:numeric-add(?r ?rn))) :- 
+        And(:fib(External(func:numeric-add(?x 1)) ?rn) 
+            :fib(?x ?r)
+            External(pred:numeric-less-than(?x 20)))
+    )
+  )
+)

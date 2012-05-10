@@ -1,0 +1,20 @@
+Document(
+	Prefix(rdf     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+	Prefix(dc      <http://purl.org/dc/elements/1.1/>)
+	Prefix(dcterms <http://purl.org/dc/terms/>)
+	Prefix(bench   <http://localhost/vocabulary/bench/>)
+	Prefix(xsd     <http://www.w3.org/2001/XMLSchema#>)
+	Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+
+	Group (
+		Forall ?yr ?journal ?title( 
+			?journal[dcterms:published -> ?yr] :- And(?journal # bench:Journal 
+			?journal[dc:title -> ?title]
+			?journal[dcterms:issued -> ?yr]
+		    Or( External(pred:literal-equal(?title "Journal 1 (1940)"))
+		    ?title = "Journal 1 (1941)"
+			 )
+		    )
+  		)
+ 	)
+)

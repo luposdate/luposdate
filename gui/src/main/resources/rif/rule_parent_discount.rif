@@ -1,0 +1,34 @@
+Document(
+	Prefix(ex <http://example.org/example#>)
+	Prefix(func <http://www.w3.org/2007/rif-builtin-function#>)
+	Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+	
+	Conclusion(?z # ex:YoungParent)
+	
+	Group (
+	 ex:littleJoeDoe[ex:parent -> ex:JoanDoe ex:parent -> ex:JohnDoe ex:age -> 10]
+	 ex:JohnDoe[ex:age -> 34]
+	 ex:JoanDoe[ex:age->"29"^^xs:string]
+	 
+	 Forall ?c ?p ?ca ?pa(
+	  ?p # ex:YoungParent :- 
+	  	And( 
+	  		?c[ ex:parent -> ?p ex:age -> ?ca ]
+	  		?p[ ex:age -> ?pa ]
+	  		External( pred:is-literal-integer( ?pa ) )
+	  		External( pred:is-literal-integer( ?ca ) )
+	  		External( pred:numeric-less-than(External( func:numeric-subtract( ?pa ?ca ) ) 25 ) ) ) )
+	  		
+	 Forall ?c ?p ?ca ?pa(
+	  ?p # ex:ParentToBeChecked :- 
+	  	And( 
+	  		?c[ ex:parent -> ?p ex:age -> ?ca ]
+	  		?p[ ex:age -> ?pa ]
+	  		Or (
+	  			 External( pred:is-literal-not-integer( ?pa ) )
+	  			 External( pred:is-literal-not-integer( ?ca ) )
+	  			 )
+	  	 )
+	   )
+	 )
+ )

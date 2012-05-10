@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences>
+
+  <sequence name="boxStyleSequence">
+    <option id="shape" name="Shape" datatype="xpref.datatypes.EnumDatatype" value="ROUNDBOX" source="lupos.gui.operatorgraph.DrawObject$Type" />
+    <option id="color1" name="Color 1" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="color2" name="Color 2" datatype="xpref.datatypes.ColorDatatype" value="#00FF00" />
+  </sequence>
+
+  <sequence name="parallelOperandsSequence">
+    <option id="type" name="Type" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$PARALLELOPERANDS" />
+    <option id="blockwise" name="Blockwise" datatype="xpref.datatypes.BooleanDatatype" value="false" dependsOn="type=ALL|LAST"/>
+    <option id="boundedQueue" name="Bounded Queue" datatype="xpref.datatypes.BooleanDatatype" value="false" dependsOn="type=ALL|LAST"/>
+    <option id="limit" name="Queue Limit" datatype="xpref.datatypes.IntegerDatatype" value="100" minimum="1" dependsOn="boundedQueue=true"/> <!-- should be dependsOn="type=ALL|LAST and boundedQueue=true" -->
+  </sequence>
+
+  <sequence name="formatSequence">
+ 	<option id="format" name="Format" datatype="xpref.datatypes.EnumDatatype" value="N3" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$FORMAT" help="The data format of the input data..."/>
+    <option id="multiple" name="Multiple data files" datatype="xpref.datatypes.BooleanDatatype" value="false" help="If Multiple is checked, then each line in the data file must contain the filename of another data file. This option allows to import data from several data files."/>
+  </sequence>
+
+  <sequence name="externalOntologySequence">
+  	<option id="enableExternalOntology" name="Enable" datatype="xpref.datatypes.BooleanDatatype" value="false"/>
+	<option id="fileExternalOntology" name="Filename" datatype="xpref.datatypes.FileChooseDatatype" mode="FILES_ONLY" value="" help="The filename of the external ontology..." dependsOn="enableExternalOntology=true"/>  
+ 	<option id="formatExternalOntology" name="Fomat of external ontology" datatype="xpref.datatypes.EnumDatatype" value="N3" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$FORMAT" help="The data format of the external ontology..." dependsOn="enableExternalOntology=true"/>
+	<option id="inmemoryexternalontologyinference" name="Compute in memory" datatype="xpref.datatypes.BooleanDatatype" value="true" help="specifies if the inference computations in external ontologies are done in memory (or disks are used for temporary data)" dependsOn="enableExternalOntology=true"/>      
+  </sequence>
+
+  <sequence name="yagomaxSequence">
+  	<option id="enableYagoMax" name="Enable" datatype="xpref.datatypes.BooleanDatatype" value="false"/>
+    <option id="yagomaxNumber" name="Max. Number of Triples" datatype="xpref.datatypes.IntegerDatatype" value="1" minimum="1" help="specifies the maximum triples read by the YAGO parser (less than or equal to 0 for all triples)..." dependsOn="enableYagoMax=true"/>
+  </sequence>
+  
+  <sequence name="parallelMergeJoinSequence">
+  	<option id="enableParallelMergeJoin" name="Enable" datatype="xpref.datatypes.BooleanDatatype" value="false"/>
+    <option id="parallelMergeJoinNumber" name="Number of merge join threads with partitioned input" datatype="xpref.datatypes.IntegerDatatype" value="2" minimum="2" help="specifies the number of parallel merge join threads with partitioned input..." dependsOn="enableParallelMergeJoin=true"/>
+  </sequence>
+
+  <sequence name="repetitionSequence">
+  	<option id="enableRepetitions" name="Enable" datatype="xpref.datatypes.BooleanDatatype" value="false"/>
+    <option id="repetitionNumber" name="Number of repetitions" datatype="xpref.datatypes.IntegerDatatype" value="2" minimum="1" help="For measuring the execution times x-times and present the average in seconds." dependsOn="enableRepetitions=true"/>
+  </sequence>
+
+  <page id="general" name="General">
+    <options>
+      <text>This preferences page contains the general options for query engines.</text>
+      <option id="debug" name="Debug" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.QueryEvaluator$DEBUG" help="Displays additional information for debugging purposes."/>
+      <line />
+      <option id="multiplequeries" name="Multiple queries?" datatype="xpref.datatypes.BooleanDatatype" value="false" help="Whether the queryfile contains the query itself (no-multiplequeries) or a filename of a query in each line of the queryfile."/>
+      <line />
+      <option id="compare" name="Compare results with following query evaluator:" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.QueryEvaluator$compareEvaluator" help="For comparing the result of this engine with another."/>
+      <option id="compareoptions" name="Command line options of the compared query evaluator" datatype="xpref.datatypes.StringDatatype" value="" help="The options of the evaluator specified in compare with which the results of this evaluator will be compared to." dependsOn="compare=RDF3X|ADAPTIVE|ICEIS2007|INDEX|JENA|SESAME|STREAM|VLDB2008"/>      
+      <line />
+      <option id="times" name="Repetitions for measuring execution times" datatype="repetitionSequence" value="" help="For measuring the execution times x-times and present the average in seconds."/>      
+      <line />
+	  <option id="dataset" name="Specify a dataset" datatype="xpref.datatypes.StringDatatype" value="" help="Specify a dataset"/>      
+      <option id="gui" name="GUI starts up after program start (or running command line mode)" datatype="xpref.datatypes.BooleanDatatype" value="true" help="By using command line parameter --gui false no GUI is started after program start and just the command line is used..." visible="commandline"/>
+    </options>
+  </page>
+  <page id="jena" name="Jena">
+    <options>
+      <text>This preferences page contains the options for the Jena query evaluator.</text>
+      <optionbox name="Input Data">
+ 	  	<option id="formatJena" name="Fomat of input data" datatype="xpref.datatypes.EnumDatatype" value="N3" source="lupos.engine.evaluators.JenaQueryEvaluator$FORMAT" help="The data format of the input data..."/>
+ 	  </optionbox>
+      <optionbox name="Inference">
+      	<option id="ontologyJena" name="Type of Ontology" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.JenaQueryEvaluator$ONTOLOGY" help="Usage of ontology reasoning based on RDF Schema or OWL"/>
+ 	  </optionbox>
+    </options>
+  </page>
+  <page id="sesame" name="Sesame">
+    <options>
+      <text>This preferences page contains the options for the Sesame query evaluator.</text>
+      <optionbox name="Input Data">
+ 		  <option id="formatSesame" name="Fomat of input data" datatype="xpref.datatypes.EnumDatatype" value="N3" source="lupos.engine.evaluators.SesameQueryEvaluator$FORMAT" help="The data format of the input data..."/>
+ 	  </optionbox>
+      <optionbox name="Inference">
+	      <option id="ontologySesame" name="Type of Ontology" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.SesameQueryEvaluator$ONTOLOGY" help="Usage of ontology reasoning based on RDF Schema"/>
+ 	  </optionbox>
+    </options>
+  </page>
+  <page id="luposdate" name="LUPOSDATE Query Engines">
+    <page id="index" name="Query Engines using Indices">
+    	<page id="inmemory" name="In Memory Query Evaluator">
+    		<options>
+      			<text>This preferences page contains the options for the In Memory query evaluator.</text>
+				<optionbox name="Optimization Parameters">      			      
+	      			<option id="optimizationInMemory" name="Optimization" datatype="xpref.datatypes.EnumDatatype" value="MOSTRESTRICTIONSLEASTENTRIES" source="lupos.engine.evaluators.MemoryIndexQueryEvaluator$Optimizations" help="Specify the optimization that should be applied"/>
+	      		</optionbox>
+      		</options>
+    	</page>
+    	<page id="rdf3x" name="RDF3X">
+    		<options>
+      			<text>This preferences page contains the options for the RDF3X query evaluator.</text>
+      			<optionbox name="Reuse Index">
+      				<option id="loadindexinfo" name="Load Index Info from File" datatype="xpref.datatypes.BooleanDatatype" value="false" help="Instead of importing data, the indices of a previous run of RDF3XQueryEvaluator will be used. For this purpose, the input file must contain the file written via --writeindexinfo in the previous run. See also --writeindexinfo File."/>      
+					<option id="writeindexinfo" name="Write Index Info to File" datatype="xpref.datatypes.FileChooseDatatype" mode="FILES_ONLY" value="" help="Information about the used indices are written to a given file. This file can be later used to directly use the previously constructed indices instead of importing the data again. See also readindexinfo."/>
+				</optionbox>
+				<optionbox name="Optimization Parameters">      			      
+      				<option id="optimizationRDF3X" name="Optimization" datatype="xpref.datatypes.EnumDatatype" value="MERGEJOIN" source="lupos.engine.evaluators.RDF3XQueryEvaluator$Optimizations" help="Specify the optimization that should be applied"/>
+      				<option id="parallelmergejoin" name="Parallel Merge Join" datatype="parallelMergeJoinSequence" value="" help="merge joins are parallelized by using range partitioning"/>
+      				<option id="sip" name="Sideways Information Passing (SIP)" datatype="xpref.datatypes.BooleanDatatype" value="true" help="enables or disbales sideways information passing in LazyLiteralTripleKeyDBBPTree!"/>      
+      			</optionbox>
+<!--    		<optionbox name="Presorting numbers">
+      				<option id="arraysortRDF3X" name="Arraysort" datatype="xpref.datatypes.EnumDatatype" value="DISKBITVECTOR" source="lupos.engine.operators.index.mergeJoin.MergeJoinIndex$ArraySort" help="Specify the array sort algorithm that should be applied" dependsOn="optimizationRDF3X=MERGEJOINSORT|MERGEJOINSORTSIMPLE"/>
+      				<option id="spaceRDF3X" name="Space" datatype="xpref.datatypes.IntegerDatatype" value="1" minimum="1" help="Only when using the option optimization MERGEJOINSORT/MERGEJOINSORTSIMPLE: defines the spaces left between the presorting numbers, such that some updates can be done without renumbering the whole data..." dependsOn="optimizationRDF3X=MERGEJOINSORT|MERGEJOINSORTSIMPLE"/>
+      			</optionbox>
+-->
+<!--
+      			<optionbox name="Index Construction">
+  	      			<option id="indexconstruction" name="Special Index Construction" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.RDF3XQueryEvaluator$READOPTIONS" help="defines whether the heaps should be written out or parallel mergesortedmaps are used..."/>
+    	  			<option id="bagnumber" name="Number of Bags" datatype="xpref.datatypes.IntegerDatatype" value="1000" minimum="1" help="The number of bags used for distribution sort..." dependsOn="indexconstruction=LARGEINDEPENDANTBAGS|LARGEINDEPENDANTBAGSFULLTRIPLEKEYS|PARALLELLARGEINDEPENDANTBAGS|PARALLELLARGEINDEPENDANTBAGSFULLTRIPLEKEYS"/>
+				</optionbox>
+-->     
+      		</options>
+    	</page>
+<!--
+    	<page id="hexastore" name="Hexastore">
+    		<options>
+      			<text>This preferences page contains the options for the Hexastore query evaluator.</text>
+				<optionbox name="Optimization Parameters">      			      
+	      			<option id="optimizationHexastore" name="Optimization" datatype="xpref.datatypes.EnumDatatype" value="MERGEJOIN" source="lupos.engine.evaluators.HexastoreQueryEvaluator$Optimizations" help="Specify the optimization that should be applied"/>
+				</optionbox>      			      
+      			<optionbox name="Presorting numbers">
+	      			<option id="arraysortHexastore" name="Arraysort" datatype="xpref.datatypes.EnumDatatype" value="DISKBITVECTOR" source="lupos.engine.operators.index.mergeJoin.MergeJoinIndex$ArraySort" help="Specify the array sort algorithm that should be applied"  dependsOn="optimizationHexastore=MERGEJOINSORT|MERGEJOINSORTSIMPLE"/>
+    	  			<option id="spaceHexastore" name="Space" datatype="xpref.datatypes.IntegerDatatype" value="1" minimum="1" help="Only when using the option optimization MERGEJOINSORT/MERGEJOINSORTSIMPLE: defines the spaces left between the presorting numbers, such that some updates can be done without renumbering the whole data..." dependsOn="optimizationHexastore=MERGEJOINSORT|MERGEJOINSORTSIMPLE"/>      
+				</optionbox>      			      
+      		</options>
+    	</page>
+    	<page id="iceis2007" name="ICEIS2007">
+    		<options>
+      			<text>This preferences page contains the options for the ICEIS2007 query evaluator.</text>
+    			<optionbox name="Optimization Parameters">      			      
+		  			<option id="optimizationICEIS2007" name="Optimization" datatype="xpref.datatypes.EnumDatatype" value="BINARY" source="lupos.engine.evaluators.ICEIS2007QueryEvaluator$Optimizations" help="Specify the optimization that should be applied"/>
+		  		</optionbox>
+      		</options>
+    	</page>
+    	<page id="adaptive" name="Adaptive">
+    		<options>
+      			<text>This preferences page contains the options for the Adaptive query evaluator.</text>
+				<optionbox name="Optimization Parameters">      			      
+	      			<option id="joinevaluator" name="Used Join Evaluator" datatype="xpref.datatypes.EnumDatatype" value="INDEX" source="lupos.engine.evaluators.AdaptiveIndexForJoinsOverManyTriplePatternsQueryEvaluator$JoinEvaluator" help="The join evaluator, which is used to compute the join of two triple patterns..."/>
+	      		</optionbox>
+      		</options>
+    	</page>
+-->
+    	<options>
+      		<text>This preferences page contains the options for the query evaluators using indices.</text>
+    		<optionbox name="Datastructure Parameters">
+      			<option id="datastructure" name="Datastructure" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.operators.index.Indices$DATA_STRUCT" help="Decides whether to use a Hashmap, B+-Tree in memory, or on harddrive as the internal data structure"/>
+      		</optionbox>
+			<optionbox name="Index Construction">      			      
+	      		<option id="sortduringindexconstruction" name="Sort during Index Construction" datatype="xpref.datatypes.EnumDatatype" value="NORMAL" source="lupos.engine.operators.index.Dataset$SORT" help="specifies whether distributed sorting should be used, normal sorting or a string search tree!"/>
+	      	</optionbox>
+    	</options>
+    </page>
+    <page id="stream" name="Stream Query Evaluator">
+    	<options>
+      		<text>This preferences page contains the options for the Stream query evaluator.</text>
+			<optionbox name="Physical Optimization">      			      
+	      		<option id="matcher" name="Matcher" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.StreamQueryEvaluator$MATCHER" help="Specify the pattern matcher algorithm to be used"/>
+	      	</optionbox>
+    	</options>
+    </page>
+    <options>
+      <text>This preferences page contains the general options for the LUPOSDATE query evaluators.</text>
+      <optionbox name="Input Data">
+      	<option id="formatLUPOSDATE" name="Format of the input data" datatype="formatSequence" value="" help="The data format of the input data."/>
+      	<option id="encoding" name="Encoding of data files" value="UTF-8" datatype="xpref.datatypes.CollectionDatatype" source="lupos.engine.evaluators.CommonCoreQueryEvaluator supportedCharSets" help="Encoding to be used to read in the data files..."/>
+      	<option id="tmpdirs" name="Directory for indices and temporary data" datatype="xpref.datatypes.FileChooseDatatype" mode="DIRECTORIES_ONLY" value="{{tmp}}" minimum="1" help="The type of storage used for all operators, indices and (intermediate) results. You can also specify several temporary directories in order to e.g. use several hard disks for performance reasons."/>
+      </optionbox>
+      <optionbox name="Inference">
+      	<option id="rdfsLUPOSDATE" name="RDFS" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$RDFS" help="Usage of ontology reasoning based on RDF Schema"/>
+		<option id="externalontology" name="External Ontology" datatype="externalOntologySequence" value="" help="specifies an external ontology, which is used to optimize RDFS inference by replacing triple patterns adressing RDFS triple by concrete ones regarding the external ontology..."/>   
+      </optionbox>
+      <optionbox name="Physical Optimization">
+	      <option id="codemap" name="Codemap" datatype="xpref.datatypes.EnumDatatype" value="PREFIXCODEMAP" source="lupos.datastructures.items.literal.LiteralFactory$MapType" help="The type of map used for administrating the codes for values."/>
+	      <line/>
+	      <option id="storage" name="Storage" datatype="xpref.datatypes.EnumDatatype" value="MEMORY" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$STORAGE" help="The type of storage used for all operators, indices and (intermediate) results."/>
+	      <option id="result" name="Query Result" datatype="xpref.datatypes.EnumDatatype" value="ADAPTIVE" source="lupos.datastructures.queryresult.QueryResult$TYPE" help="Specify the storage type of the result"/>
+	      <line/>
+	      <option id="join" name="Join" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$JOIN" help="Specify the join algorithm to be used"/>
+	      <option id="optional" name="Optional" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$JOIN" help="Specify the join algorithm to be used in the optional operator"/>
+	      <option id="sort" name="Sort" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$SORT" help="Specify the sort algorithm to be used"/>
+	      <option id="distinct" name="Distinct" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$DISTINCT" help="Specify the distinct algorithm to be used"/>
+      </optionbox>
+      <optionbox name="Parallel Database Options">
+		  <option id="paralleloperands" name="Parallel Operands" datatype="parallelOperandsSequence" value="" help="specifies whether or not ParallelOperands are added as operands of joins in order to compute operand results in parallel."/>
+		  <line/>
+	      <option id="merge_join_optional" name="Mergejoin/-optional" datatype="xpref.datatypes.EnumDatatype" value="SEQUENTIAL" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$MERGE_JOIN_OPTIONAL" help="Specifies if MergeJoinWithoutSorting, MergeJoinSort, MergeWithoutSortingOptional and MergeJoinOptional should be replaced by their parallel versions."/>
+		  <line/>      
+	      <option id="jointhreads" name="Join Threads" datatype="xpref.datatypes.IntegerDatatype" value="8" minimum="1" help="specifies the number of threads to start for the parallel join operators..."/>      
+	      <option id="joinbuffer" name="Join Buffer" datatype="xpref.datatypes.IntegerDatatype" value="50" minimum="1" help="specifies the maximum size for the buffer for the parallel join operators..."/>
+      </optionbox>
+      <optionbox name="Datastructure Parameters">
+	      <option id="stringsearch" name="Type of Trie" datatype="xpref.datatypes.EnumDatatype" value="NORMAL" source="lupos.datastructures.trie.SuperTrie$TRIETYPE" help="The type of trie used if a trie is applied..."/>
+	      <line/>
+	      <option id="tosort" name="Tosort" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.datastructures.dbmergesortedds.tosort.ToSort$TOSORT" help="specifies the tosort type to be used in heaps for the initial runs (if no heaps are used, i.e. tosort!=NONE)"/>
+	      <option id="chunk" name="Chunk" datatype="xpref.datatypes.IntegerDatatype" value="3" minimum="1" help="defines the chunk fraction of the data for SortedChunksHeap..." dependsOn="tosort=MERGESORT|PARALLELMERGESORT|QUICKSORT|HEAPSORT"/>
+	      <option id="heap" name="Heap" datatype="xpref.datatypes.EnumDatatype" value="SEQUENTIAL" source="lupos.datastructures.dbmergesortedds.heap.Heap$HEAPTYPE" help="specifies the heap type to be used" dependsOn="tosort=NONE"/>
+	      <option id="indexheap" name="Heap Depth" datatype="xpref.datatypes.IntegerDatatype" value="16" minimum="1" help="specifies the heap height used for index construction" dependsOn="tosort=NONE"/>      
+	      <line/>
+	      <option id="mergeheaptype" name="Mergeheap" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.datastructures.dbmergesortedds.heap.Heap$HEAPTYPE" help="The heap type to be used for merging the initial runs for external merge sort."/>
+	      <option id="mergeheapheight" name="Mergeheap Depth" datatype="xpref.datatypes.IntegerDatatype" value="10" minimum="1" help="The heap size to be used for merging the initial runs for external merge sort." dependsOn="mergeheaptype=SEQUENTIAL|OPTIMIZEDSEQUENTIAL|PARALLEL|PARALLEL8|PARALLEL16|PARALLEL32|LAZYOPTIMIZEDSEQUENTIAL|LAZYPARALLEL|LAZYPARALLEL8|LAZYPARALLEL16|LAZYPARALLEL32|SORTANDMERGEHEAP|SORTANDMERGEHEAPUSINGMERGESORT"/>
+	      <option id="mergethreads" name="Mergethreads" datatype="xpref.datatypes.IntegerDatatype" value="1" minimum="1" help="specifies the number of threads to start for the merging phase of merge sort (=1 means sequential merging)." dependsOn="mergeheaptype=SEQUENTIAL|OPTIMIZEDSEQUENTIAL|PARALLEL|PARALLEL8|PARALLEL16|PARALLEL32|LAZYOPTIMIZEDSEQUENTIAL|LAZYPARALLEL|LAZYPARALLEL8|LAZYPARALLEL16|LAZYPARALLEL32|SORTANDMERGEHEAP|SORTANDMERGEHEAPUSINGMERGESORT"/>
+      </optionbox>
+      <optionbox name="YAGO Parser">
+      	<option id="yagomax" name="Max. Number of Triples" datatype="yagomaxSequence" value="" help="specifies the maximum triples read by the YAGO parser (less than or equal to 0 for all triples)..."/>
+      </optionbox>
+    </options>
+  </page>
+    <page id="viewer" name="Viewer">
+    <page id="operatorGraph" name="OperatorGraph">
+      <options>
+        <text>This preferences page contains the options for the operator graph visualizations of queries.</text>
+        <option id="operatorGraph_usePrefixes" name="Use prefixes on first run" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+        <option id="operatorGraph_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="operatorGraph_useStyledBoxes=true">
+          <option id="operatorGraph_style_join" name="Join" datatype="boxStyleSequence" value="ROUNDBOX | #00FF00 | #FFFFFF" />
+          <option id="operatorGraph_style_optional" name="Optional" datatype="boxStyleSequence" value="ROUNDBOX | #FFFFFF | #00FF00" />
+          <option id="operatorGraph_style_union" name="Union" datatype="boxStyleSequence" value="ROUNDBOX | #FF00FF | #FFFFFF" />
+          <option id="operatorGraph_style_basicindex" name="BasicIndex" datatype="boxStyleSequence" value="SIMPLEBOX | #FF7F00 | #FFFFFF" />
+          <option id="operatorGraph_style_indexcollection" name="IndexCollection" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
+          <option id="operatorGraph_style_result" name="Result" datatype="boxStyleSequence" value="SIMPLEBOX | #FF1493 | #FFFFFF" />
+          <option id="operatorGraph_style_basicoperator" name="BasicOperator" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
+          <option id="operatorGraph_style_filter" name="Filter" datatype="boxStyleSequence" value="SIMPLEBOX | #8085FF | #FFFFFF" />
+          <option id="operatorGraph_style_projection" name="Projection" datatype="boxStyleSequence" value="SIMPLEBOX | #00FFFF | #FFFFFF" />
+          <option id="operatorGraph_style_sort" name="Sort" datatype="boxStyleSequence" value="SIMPLEBOX | #FF7F00 | #FFFFFF" />
+          <option id="operatorGraph_style_limit" name="Limit" datatype="boxStyleSequence" value="SIMPLEBOX | #FF1493 | #FFFFFF" />
+          <option id="operatorGraph_style_offset" name="Offset" datatype="boxStyleSequence" value="SIMPLEBOX | #FFFF00 | #FFFFFF" />
+          <option id="operatorGraph_style_annotations" name="Annotations" datatype="boxStyleSequence" value="ROUNDBOX | #FFFF00 | #FF7F00" />
+          <line />
+          <option id="operatorGraph_style_prefix" name="Prefixes" datatype="boxStyleSequence" value="ROUNDBOX | #C0C0C0 | #808080" />
+        </optionbox>
+      </options>
+    </page>
+    <page id="ast" name="Abstract syntax tree">
+      <options>
+        <text>This preferences page contains the options for the abstract syntax trees of queries.</text>
+        <option id="ast_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="ast_useStyledBoxes=true">
+          <option id="ast_style_terminalnode" name="Terminal" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FF0000 | #FFFFFF" />
+          <option id="ast_style_nonterminalnode" name="Nonterminal" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #00FF00 | #55FF55" />
+          <option id="ast_style_queryheadnode" name="Queryhead" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FF00FF | #FFFFFF" />
+          <option id="ast_style_operatornode" name="Operator" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FFFF00 | #FFFFFF" />
+          <option id="ast_style_triplepatternnode" name="Triplepattern" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FF0000 | #FFFFFF" />
+          <option id="ast_style_functionnode" name="Function" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #00FFFF | #FFFFFF" />
+          <option id="ast_style_highleveloperatornode" name="High-Level Operator" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #00FF00 | #FFFFFF" />
+        </optionbox>
+      </options>
+    </page>
+        
+    <options>
+      <text>This preferences page contains the general options for the viewers of operator graphs, abstract syntax trees and visual data and query editors.</text>
+      <option id="viewer_font" name="Font at 100% zoom" datatype="xpref.datatypes.FontDatatype" value="Serif; 16" maximum="3" />
+      <line />
+      <option id="viewer_zoom" name="Zoom factor on first run" datatype="xpref.datatypes.IntegerDatatype" value="100" minimum="1" />
+      <line />
+      <option id="viewer_spacing" name="Spacing between rows and columns at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="60" />
+      <line />
+      <option id="viewer_useColoredArrows" name="Use colored arrows" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    </options>
+  </page>
+</preferences>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -11,6 +8,7 @@
 	<artifactId>luposdate</artifactId>
 
 	<packaging>pom</packaging>
+	
 	<version>1.0-SNAPSHOT</version>
 
 	<modules>
@@ -18,6 +16,10 @@
 		<module>rif</module>
 		<module>endpoint</module>
 		<module>integrationthirdpartyevaluators</module>
+    	<module>syntaxhighlighting</module>
+	    <module>operatorgraph</module>
+	    <module>visualeditor</module>
+	    <module>gui</module>
 	</modules>
 
 	<dependencyManagement>
@@ -28,7 +30,55 @@
 				<artifactId>luposdate.core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.rif</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.endpoint</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.integrationthirdpartyevaluators</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.syntaxhighlighting</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.operatorgraph</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.visualeditor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.gui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+    				<groupId>de.uniluebeck.ifis</groupId>
+    				<artifactId>xpref</artifactId>
+    				<version>0.1-SNAPSHOT</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
@@ -60,6 +110,20 @@
 				<version>2.6.5</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20090211</version>
+			</dependency>
+            
+      		<!--you can download the lookandfeel jar from http://www.jtattoo.net/Download.html-->          
+	      	<!--Then install this library to maven using the following command: mvn install:install-file -Dfile=JTattoo.jar -DgroupId=jtattoo -DartifactId=jtattoo -Dversion=1.3 -Dpackaging=jar-->          
+      		<dependency>
+				<groupId>jtattoo</groupId>
+				<artifactId>jtattoo</artifactId>
+				<version>1.3</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
@@ -69,7 +133,37 @@
         	<name>Aduna Software</name>
         	<url>http://repo.aduna-software.org/maven2/releases/</url>
     	</repository>
+    	
+    	<repository>
+			<id>itm-maven-repository-releases</id>
+			<url>http://www.itm.uni-luebeck.de/projects/maven/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		
+		<repository>
+			<id>itm-maven-repository-snapshots</id>
+			<url>http://www.itm.uni-luebeck.de/projects/maven/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
 	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 	
@@ -85,6 +179,24 @@
 				</configuration>
 			</plugin>
 
+			<!-- for one jar: mvn shade:shade -->
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.3.0</version>
+				<executions>
+					<execution>
+						<configuration>
+							<mainClass>lupos.gui.Demo_Applet</mainClass>
+							<attachToBuild>true</attachToBuild> 
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 			<!-- mvn license:check / mvn license:format -->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>

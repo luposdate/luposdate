@@ -1,0 +1,15 @@
+Document(
+ Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+ Prefix(func <http://www.w3.org/2007/rif-builtin-function#>)
+ Prefix(ex <http://example.org/example#>)
+ 
+ Group (
+  ex:factorial(0) = 1
+  
+  Forall ?N (
+   ex:factorial(?N) = External(func:numeric-multiply(
+    ?N
+    ex:factorial(External(func:numeric-subtract(?N 1))))) :- External(pred:numeric-between(?N 0 10))
+    ) 
+  )
+)

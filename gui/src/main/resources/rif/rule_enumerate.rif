@@ -1,0 +1,19 @@
+Document(
+  Prefix(cpt <http://example.com/concepts#>)
+  Prefix(ppl <http://example.com/people#>)
+  Prefix(bks <http://example.com/books#>)
+  Prefix(func <http://www.w3.org/2007/rif-builtin-function#>)
+  Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+
+
+  Group
+  (
+    cpt:number(0)
+    Forall ?x (
+        cpt:number(External(func:numeric-add(?x 1))) :- And(
+                                                         cpt:number(?x)
+                                                         External(pred:numeric-less-than(?x 100))
+                                                        )
+    )
+  )
+)

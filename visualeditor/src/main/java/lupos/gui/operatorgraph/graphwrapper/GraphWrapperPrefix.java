@@ -1,0 +1,170 @@
+package lupos.gui.operatorgraph.graphwrapper;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.util.Hashtable;
+import java.util.LinkedList;
+
+import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
+import lupos.gui.operatorgraph.DrawObject;
+import lupos.gui.operatorgraph.GraphWrapperIDTuple;
+import lupos.gui.operatorgraph.OperatorGraph;
+import lupos.gui.operatorgraph.prefix.Prefix;
+import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
+import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
+import xpref.datatypes.BooleanDatatype;
+
+public class GraphWrapperPrefix extends GraphWrapperEditable {
+	public GraphWrapperPrefix(final Prefix element) {
+		super(element);
+	}
+
+	@Override
+	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
+		return ((Prefix) this.element).draw(this, parent);
+	}
+
+	@Override
+	public LinkedList<GraphWrapper> getContainerElements() {
+		return new LinkedList<GraphWrapper>();
+	}
+
+	@Override
+	public LinkedList<GraphWrapper> getPrecedingElements() {
+		return new LinkedList<GraphWrapper>();
+	}
+
+	@Override
+	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
+		return new LinkedList<GraphWrapperIDTuple>();
+	}
+
+	public boolean hasPredicates() {
+		return false;
+	}
+
+	@Override
+	public boolean isContainer() {
+		return false;
+	}
+
+	@Override
+	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(
+			final OperatorGraph parent) {
+		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
+	}
+
+	@Override
+	public StringBuffer serializeObjectAndTree() {
+		return new StringBuffer();
+	}
+
+	@Override
+	public boolean validateObject(final boolean showErrors, final Object data) {
+		return true;
+	}
+
+	@Override
+	public String toString(final Prefix prefixInstance) {
+		return this.toString();
+	}
+
+	@Override
+	public void drawBackground(final Graphics2D g2d, final Dimension size) {
+		try {
+			if (!BooleanDatatype.getValues("operatorGraph_useStyledBoxes").get(
+					0).booleanValue()) {
+				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1,
+						size.height - 1, Color.WHITE, Color.BLACK);
+			} else {
+				final DrawObject drawObject = this
+				.getOperatorStyle("operatorGraph_style_prefix");
+
+				if (drawObject != null) {
+					drawObject.draw(g2d, 0, 0, size.width, size.height);
+				} else {
+					DrawObject.drawGradientPaintRoundBox(g2d, 0, 0, size.width,
+							size.height, Color.LIGHT_GRAY, Color.GRAY);
+				}
+			}
+		} catch (final Exception e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void drawAnnotationsBackground(final Graphics2D g2d,
+			final Dimension size) {
+	}
+
+	@Override
+	public boolean usePrefixesActive() {
+		return true;
+	}
+
+	@Override
+	public Prefix getElement() {
+		return (Prefix) this.element;
+	}
+
+	@Override
+	public String getWantedPreferencesID() {
+		return "";
+	}
+
+	@Override
+	public boolean variableInUse(final String string) {
+		return false;
+	}
+
+	@Override
+	public void addSucceedingElement(final GraphWrapperIDTuple gwidt) {
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
+	public AbstractGuiComponent getGUIComponent() {
+		return null;
+	}
+
+	@Override
+	public void addPrecedingElement(final GraphWrapper gw) {
+	}
+
+	@Override
+	public boolean canAddSucceedingElement() {
+		return false;
+	}
+
+	@Override
+	public void deleteAnnotation(final GraphWrapper gw) {
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
+	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(
+			final VisualGraph parent) {
+		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
+	}
+
+	@Override
+	public void removeSucceedingElement(final GraphWrapper gw) {
+	}
+
+	@Override
+	public void delete(final boolean subtree) {
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
+	public AbstractGuiComponent getAnnotationLabel(final GraphWrapper gw) {
+		return null;
+	}
+
+	@Override
+	public StringBuffer serializeOperator() {
+		return new StringBuffer();
+	}
+}

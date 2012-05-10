@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences>
+  <sequence name="enableColorSequence">
+    <option id="colorEnable" name="enable" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="colorTransparency" dependsOn="colorEnable=true" name="transparency" datatype="xpref.datatypes.IntegerDatatype" value="255" minimum="0" maximum="255"/>
+    <option id="color" dependsOn="colorEnable=true" name="color" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+  </sequence>
+
+  <sequence name="enableIntMin1Sequence">
+    <option id="integerEnable" name="enable" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="integer" dependsOn="integerEnable=true" name="value" datatype="xpref.datatypes.IntegerDatatype" value="60" minimum="1" />
+  </sequence>
+
+  <sequence name="syntaxStyleSequence">
+    <option id="bold" name="bold" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="italic" name="italic" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="foregroundColor" name="foreground" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="backgroundColor" name="background" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="backgroundTransparency" name="transparency" datatype="xpref.datatypes.IntegerDatatype" value="255" minimum="0" maximum="255" />
+  </sequence>
+  
+  <sequence name="fontSequence">
+    <option id="fontEnable" name="enable" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+    <option id="font" dependsOn="fontEnable=true" name="font" datatype="xpref.datatypes.FontDatatype" value="Courier New; 12" />
+  </sequence>
+
+  <sequence name="boxStyleSequence">
+    <option id="shape" name="Shape" datatype="xpref.datatypes.EnumDatatype" value="ROUNDBOX" source="lupos.gui.operatorgraph.DrawObject$Type" />
+    <option id="color1" name="Color 1" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="color2" name="Color 2" datatype="xpref.datatypes.ColorDatatype" value="#00FF00" />
+  </sequence>
+
+  <page id="demo_applet" name="Demo Applet">
+    <options>
+      <text>This preferences page contains the general options of the Demo Applet.</text>
+      <option id="lookAndFeel" name="Look &amp; Feel" datatype="xpref.datatypes.CollectionDatatype" value="Aluminium" source="lupos.gui.Demo_Applet generateLookAndFeelList" />
+      <option id="lineCount" name="Activate the line counter?" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+      <line />
+      <option id="currentLineColor" name="Color of current line" datatype="enableColorSequence" value="true | 255 | #CADFF5" />
+      <line />
+      <option id="errorLine" name="Error line" datatype="enableColorSequence" value="true | 75 | #FF0000" />
+      <line />
+      <option id="textFieldFont" name="Font of the TextFields" datatype="fontSequence" value="true | Courier New; 12" />
+      <option id="standardFont" name="Main Font of the application" datatype="fontSequence" value="true | Courier New; 12" />
+      <line />
+      <option id="clearErrorField" name="Clear error field on evaluate" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+      <line />
+      <option id="applet_usePrefixes" name="Use prefixes on first run" datatype="xpref.datatypes.BooleanDatatype" value="true"/>
+    </options>
+  </page>
+  <page id="syntax_highlighting" name="Syntax Highlighting">
+    <options>
+      <text>This preferences page contains the options for the syntax highlighting for SPARQL queries, RDF data and query results.</text>
+      <option id="syntaxHighlighting" name="Enable syntax highlighting" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+      <optionbox name="Colors for syntax highlighting" dependsOn="syntaxHighlighting=true">
+        <option id="syntaxHighlighting_reservedword" name="Reserved word" datatype="syntaxStyleSequence" value="true | false | #7C007C | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_identifier" name="Identifier" datatype="syntaxStyleSequence" value="false | false | #7C007C | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_literal" name="Literal" datatype="syntaxStyleSequence" value="false | false | #0000FF | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_number" name="Number" datatype="syntaxStyleSequence" value="false | false | #000080 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_separator" name="Separator" datatype="syntaxStyleSequence" value="false | false | #B03060 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_operator" name="Operator" datatype="syntaxStyleSequence" value="false | false | #000000 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_comment" name="Comment" datatype="syntaxStyleSequence" value="false | true | #4D4D4D | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_whitespace" name="Whitespace" datatype="syntaxStyleSequence" value="false | false | #000000 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_error" name="Error" datatype="syntaxStyleSequence" value="false | false | #FF0000 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_variable" name="Variable" datatype="syntaxStyleSequence" value="false | false | #7016A8 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_uri" name="URI" datatype="syntaxStyleSequence" value="false | false | #00B200 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_qualifieduri" name="QualifiedURI" datatype="syntaxStyleSequence" value="false | false | #007C00 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_langtag" name="Langtag" datatype="syntaxStyleSequence" value="false | false | #8080FF | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_blanknode" name="Blanknode" datatype="syntaxStyleSequence" value="false | false | #6F6F25 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_boolean" name="Boolean" datatype="syntaxStyleSequence" value="true | true | #B03060 | #FFFFFF | 0" />
+      </optionbox>
+    </options>
+  </page>
+  <page id="viewer" name="Viewer">
+    <page id="operatorGraph" name="OperatorGraph">
+      <options>
+        <text>This preferences page contains the options for the operator graph visualizations of queries.</text>
+        <option id="operatorGraph_usePrefixes" name="Use prefixes on first run" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+        <option id="operatorGraph_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="operatorGraph_useStyledBoxes=true">
+          <option id="operatorGraph_style_join" name="Join" datatype="boxStyleSequence" value="ROUNDBOX | #00FF00 | #FFFFFF" />
+          <option id="operatorGraph_style_optional" name="Optional" datatype="boxStyleSequence" value="ROUNDBOX | #FFFFFF | #00FF00" />
+          <option id="operatorGraph_style_union" name="Union" datatype="boxStyleSequence" value="ROUNDBOX | #FF00FF | #FFFFFF" />
+          <option id="operatorGraph_style_basicindex" name="BasicIndex" datatype="boxStyleSequence" value="SIMPLEBOX | #FF7F00 | #FFFFFF" />
+          <option id="operatorGraph_style_indexcollection" name="IndexCollection" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
+          <option id="operatorGraph_style_result" name="Result" datatype="boxStyleSequence" value="SIMPLEBOX | #FF1493 | #FFFFFF" />
+          <option id="operatorGraph_style_basicoperator" name="BasicOperator" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
+          <option id="operatorGraph_style_filter" name="Filter" datatype="boxStyleSequence" value="SIMPLEBOX | #8085FF | #FFFFFF" />
+          <option id="operatorGraph_style_projection" name="Projection" datatype="boxStyleSequence" value="SIMPLEBOX | #00FFFF | #FFFFFF" />
+          <option id="operatorGraph_style_sort" name="Sort" datatype="boxStyleSequence" value="SIMPLEBOX | #FF7F00 | #FFFFFF" />
+          <option id="operatorGraph_style_limit" name="Limit" datatype="boxStyleSequence" value="SIMPLEBOX | #FF1493 | #FFFFFF" />
+          <option id="operatorGraph_style_offset" name="Offset" datatype="boxStyleSequence" value="SIMPLEBOX | #FFFF00 | #FFFFFF" />
+          <option id="operatorGraph_style_annotations" name="Annotations" datatype="boxStyleSequence" value="ROUNDBOX | #FFFF00 | #FF7F00" />
+          <line />
+          <option id="operatorGraph_style_prefix" name="Prefixes" datatype="boxStyleSequence" value="ROUNDBOX | #C0C0C0 | #808080" />
+        </optionbox>
+      </options>
+    </page>
+    <page id="ast" name="Abstract syntax tree">
+      <options>
+        <text>This preferences page contains the options for the abstract syntax trees of queries.</text>
+        <option id="ast_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="ast_useStyledBoxes=true">
+          <option id="ast_style_terminalnode" name="Terminal" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FF0000 | #FFFFFF" />
+          <option id="ast_style_nonterminalnode" name="Nonterminal" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #00FF00 | #55FF55" />
+          <option id="ast_style_queryheadnode" name="Queryhead" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FF00FF | #FFFFFF" />
+          <option id="ast_style_operatornode" name="Operator" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FFFF00 | #FFFFFF" />
+          <option id="ast_style_triplepatternnode" name="Triplepattern" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #FF0000 | #FFFFFF" />
+          <option id="ast_style_functionnode" name="Function" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #00FFFF | #FFFFFF" />
+          <option id="ast_style_highleveloperatornode" name="High-Level Operator" datatype="boxStyleSequence" value="OUTERLINEDOCTAGON | #00FF00 | #FFFFFF" />
+        </optionbox>
+      </options>
+    </page>
+    <page id="queryEditor" name="QueryEditor">
+      <options>
+        <text>This preferences page contains the options for the visual query editor.</text>
+        <option id="queryEditor_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="queryEditor_useStyledBoxes=true">
+          <option id="queryEditor_style_filter" name="Filter" datatype="boxStyleSequence" value="ROUNDBOX | #FF0000 | #FFFF00" />
+          <option id="queryEditor_style_graph" name="Graph" datatype="boxStyleSequence" value="ROUNDBOX | #FFFF00 | #FF0000" />
+          <option id="queryEditor_style_multiinputoperator" name="MultiInputOperator" datatype="boxStyleSequence" value="ROUNDBOX | #007FFF | #00C8FF" />
+          <option id="queryEditor_style_rdfterm" name="RDFTerm" datatype="boxStyleSequence" value="ROUNDBOX | #FF7F00 | #FF0000" />
+          <option id="queryEditor_style_retrievedata" name="Query head" datatype="boxStyleSequence" value="ROUNDBOX | #7FFF00 | #00FF00" />
+          <option id="queryEditor_style_operator" name="Operator" datatype="boxStyleSequence" value="ROUNDBOX | #D3D3D3 | #808080" />
+          <line />
+          <option id="queryEditor_style_annotation" name="Annotation" datatype="boxStyleSequence" value="ROUNDBOX | #FFA500 | #FFA500" />
+          <option id="queryEditor_style_predicate" name="Predicate" datatype="boxStyleSequence" value="ROUNDBOX | #DEDEDE | #FFFF00" />
+          <option id="queryEditor_style_optionallabel" name="Optional-Label" datatype="boxStyleSequence" value="ROUNDBOX | #DEDEDE | #FFA500" />
+          <line />
+          <option id="queryEditor_style_prefix" name="Prefixes" datatype="boxStyleSequence" value="ROUNDBOX | #C0C0C0 | #808080" />
+        </optionbox>
+      </options>
+    </page>
+    <page id="dataEditor" name="DataEditor">
+      <options>
+        <text>This preferences page contains the options for the visual data editor.</text>
+        <option id="dataEditor_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="dataEditor_useStyledBoxes=true">
+          <option id="dataEditor_style_rdfterm" name="RDFTerm" datatype="boxStyleSequence" value="ROUNDBOX | #FF7F00 | #FF0000" />
+          <option id="dataEditor_style_operator" name="Operator" datatype="boxStyleSequence" value="ROUNDBOX | #D3D3D3 | #808080" />
+          <line />
+          <option id="dataEditor_style_annotation" name="Annotation" datatype="boxStyleSequence" value="ROUNDBOX | #FFA500 | #FFA500" />
+          <option id="dataEditor_style_predicate" name="Predicate" datatype="boxStyleSequence" value="ROUNDBOX | #DEDEDE | #FFFF00" />
+          <line />
+          <option id="dataEditor_style_prefix" name="Prefixes" datatype="boxStyleSequence" value="ROUNDBOX | #C0C0C0 | #808080" />
+        </optionbox>
+      </options>
+    </page>
+    <page id="condensedViewViewer" name="CondensedViewViewer">
+      <options>
+        <text>This preferences page contains the options for the condensed data viewer.</text>
+        <option id="condensedViewViewer_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="condensedViewViewer_useStyledBoxes=true">
+          <option id="condensedViewViewer_style_rdfterm" name="RDFTerm" datatype="boxStyleSequence" value="ROUNDBOX | #FF7F00 | #FF0000" />
+          <option id="condensedViewViewer_style_operator" name="Operator" datatype="boxStyleSequence" value="ROUNDBOX | #D3D3D3 | #808080" />
+          <line />
+          <option id="condensedViewViewer_style_annotation" name="Annotation" datatype="boxStyleSequence" value="ROUNDBOX | #FFA500 | #FFA500" />
+          <option id="condensedViewViewer_style_predicate" name="Predicate" datatype="boxStyleSequence" value="ROUNDBOX | #DEDEDE | #FFFF00" />
+          <line />
+          <option id="condensedViewViewer_style_prefix" name="Prefixes" datatype="boxStyleSequence" value="ROUNDBOX | #C0C0C0 | #808080" />
+        </optionbox>
+      </options>
+    </page>
+    <page id="ruleEditorPane" name="RuleEditor">
+      <options>
+        <text>This preferences page contains the options for the visual rule editor.</text>
+        <option id="ruleEditorPane_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="ruleEditorPane_useStyledBoxes=true">
+          <option id="ruleEditorPane_style_operator" name="Operator" datatype="boxStyleSequence" value="ROUNDBOX | #D3D3D3 | #808080" />
+          <option id="ruleEditorPane_style_jumpoveroperator" name="JumpOverOperator" datatype="boxStyleSequence" value="ROUNDBOX | #FE8888 | #FF0000" />
+          <line />
+          <option id="ruleEditorPane_style_annotation" name="Annotation" datatype="boxStyleSequence" value="ROUNDBOX | #FFA500 | #FFA500" />
+        </optionbox>
+      </options>
+    </page>
+    
+    <options>
+      <text>This preferences page contains the general options for the viewers of operator graphs, abstract syntax trees and visual data and query editors.</text>
+      <option id="viewer_font" name="Font at 100% zoom" datatype="xpref.datatypes.FontDatatype" value="Serif; 16" maximum="3" />
+      <line />
+      <option id="viewer_zoom" name="Zoom factor on first run" datatype="xpref.datatypes.IntegerDatatype" value="100" minimum="1" />
+      <line />
+      <option id="viewer_spacing" name="Spacing between rows and columns at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="60" />
+      <line />
+      <option id="viewer_useColoredArrows" name="Use colored arrows" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    </options>
+  </page>
+</preferences>
