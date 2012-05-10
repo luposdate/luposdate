@@ -10,9 +10,9 @@
 		<relativePath>../</relativePath>
 	</parent>
 
-	<artifactId>luposdate.gui</artifactId>
+	<artifactId>luposdate.queryeditor</artifactId>
 
-	<name>Luposdate :: GUI</name>
+	<name>Luposdate :: Queryeditor</name>
 
 	<packaging>jar</packaging>
 
@@ -21,15 +21,10 @@
 	</properties>
 
 	<dependencies>
-	
-		<dependency>
-			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.core</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.rif</artifactId>
+			<artifactId>luposdate.core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -54,29 +49,19 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.queryeditor</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.dataeditor</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>xpref</artifactId>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>jtattoo</groupId>
-			<artifactId>jtattoo</artifactId>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
 		</dependency>
-			
+
 	</dependencies>
 </project>

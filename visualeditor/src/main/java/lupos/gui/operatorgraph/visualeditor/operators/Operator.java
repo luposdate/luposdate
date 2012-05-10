@@ -14,7 +14,6 @@ import lupos.gui.operatorgraph.prefix.IPrefix;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.AnnotationPanel;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.OperatorContainer;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.misc.util.OperatorIDTuple;
@@ -452,4 +451,17 @@ public abstract class Operator implements IPrefix {
 	public abstract StringBuffer serializeOperatorAndTree(HashSet<Operator> visited);
 
 	public abstract boolean variableInUse(String variable, HashSet<Operator> visited);
+	
+	private String getXPrefIDPrefix() {
+		String className = this.getGUIComponent().getParentQG().visualEditor.getXPrefPrefix();
+		return className.substring(0, 1).toLowerCase() + className.substring(1);
+	}
+	
+	public String getXPrefID() {
+		return getXPrefIDPrefix() + "_style_operator";
+	}
+	
+	public String getXPrefIDForAnnotation(){		
+		return getXPrefIDPrefix() + "_style_annotation";
+	}
 }

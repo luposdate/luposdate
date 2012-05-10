@@ -16,8 +16,6 @@ import javax.swing.JOptionPane;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.operators.JTFOperator;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.QueryEditor;
 import lupos.gui.operatorgraph.visualeditor.util.FocusThread;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
@@ -57,7 +55,8 @@ public class OperatorPanel extends AbstractGuiComponent<Operator> {
 		this.textField = new JTextFieldResizing(text, font, this);
 		this.textField.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
-				if(operator instanceof RDFTerm && parent.visualEditor instanceof QueryEditor && ((QueryEditor) parent.visualEditor).isInSuggestionMode()) {
+				if(parent.visualEditor instanceof Suggester && 
+						((Suggester<Operator>) parent.visualEditor).isInSuggestionMode(operator)) {
 					makeSuggestions();
 				}
 				else {

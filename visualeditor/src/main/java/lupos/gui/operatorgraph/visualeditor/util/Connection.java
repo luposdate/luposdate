@@ -9,8 +9,8 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.MultiInputOperator;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.OperatorContainer;
+import lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator;
+import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
 
 /**
  * This class handles the request to create a new connection between two

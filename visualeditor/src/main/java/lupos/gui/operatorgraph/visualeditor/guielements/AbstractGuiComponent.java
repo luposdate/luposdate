@@ -10,9 +10,7 @@ import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.QueryEditor;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.OperatorContainer;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.QueryRDFTerm;
+import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
 import lupos.gui.operatorgraph.visualeditor.util.Connection;
 
 public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent {
@@ -99,7 +97,7 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 			return;
 		}
 
-		if(this.operator instanceof QueryRDFTerm && ((QueryEditor) this.parent.visualEditor).isInSuggestionMode()) { // make suggestions
+		if(this.parent.visualEditor instanceof Suggester && ((Suggester<T>)this.parent.visualEditor).isInSuggestionMode(this.operator)) { // make suggestions
 			makeSuggestions();
 
 			return;
@@ -154,7 +152,7 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 	protected void makeSuggestions() {
 		this.parent.visualEditor.getStatusBar().clear();
 
-		((QueryEditor) this.parent.visualEditor).makeSuggestions((QueryRDFTerm) this.operator);
+		((Suggester<T>) this.parent.visualEditor).makeSuggestions(this.operator);
 	}
 
 	public boolean handleConnectionMode() {

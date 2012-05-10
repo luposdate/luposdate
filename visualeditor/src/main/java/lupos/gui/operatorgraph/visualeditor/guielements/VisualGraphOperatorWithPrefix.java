@@ -23,6 +23,8 @@ public abstract class VisualGraphOperatorWithPrefix extends VisualGraphOperator 
 
 		this.construct();
 	}
+	
+	public abstract VisualGraphOperatorWithPrefix newInstance(VisualEditor<Operator> visualEditor, Prefix prefix);
 
 	public void clearAll() {
 		this.prefix = new VEPrefix(true);

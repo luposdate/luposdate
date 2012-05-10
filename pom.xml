@@ -19,6 +19,8 @@
     	<module>syntaxhighlighting</module>
 	    <module>operatorgraph</module>
 	    <module>visualeditor</module>
+	    <module>queryeditor</module>
+	    <module>dataeditor</module>
 	    <module>gui</module>
 	</modules>
 
@@ -64,6 +66,18 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.visualeditor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.queryeditor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.dataeditor</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

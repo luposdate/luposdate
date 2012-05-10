@@ -17,18 +17,10 @@ import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
 import lupos.gui.operatorgraph.prefix.Prefix;
-import lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.CondensedRDFTerm;
-import lupos.gui.operatorgraph.visualeditor.dataeditor.operators.DataRDFTerm;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.Filter;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.Graph;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.MultiInputOperator;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.OperatorContainer;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.Optional;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.QueryRDFTerm;
-import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.RetrieveData;
+import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
 import lupos.misc.util.OperatorIDTuple;
 import xpref.datatypes.BooleanDatatype;
 
@@ -161,37 +153,10 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 			else {
 				DrawObject drawObject = null;
 
-				if(this.element instanceof Filter) {
-					drawObject = this.getOperatorStyle("queryEditor_style_filter");
-				}
-				else if(this.element instanceof Graph) {
-					drawObject = this.getOperatorStyle("queryEditor_style_graph");
-				}
-				else if(this.element instanceof MultiInputOperator) {
-					drawObject = this.getOperatorStyle("queryEditor_style_multiinputoperator");
-				}
-				else if(this.element instanceof OperatorContainer) {
+				if(this.element instanceof OperatorContainer) {
 					drawObject = new DrawObject(Type.SIMPLEBOX, InnerAttribute.GRADIENTPAINT, OuterAttribute.NONE, Color.WHITE, Color.WHITE);
-				}
-				else if(this.element instanceof CondensedRDFTerm) {
-					drawObject = this.getOperatorStyle("condensedViewViewer_style_rdfterm");
-				}
-				else if(this.element instanceof DataRDFTerm) {
-					drawObject = this.getOperatorStyle("dataEditor_style_rdfterm");
-				}
-				else if(this.element instanceof QueryRDFTerm) {
-					drawObject = this.getOperatorStyle("queryEditor_style_rdfterm");
-				}
-				else if(this.element instanceof RetrieveData) {
-					drawObject = this.getOperatorStyle("queryEditor_style_retrievedata");
-				}
-				// TODO
-//				else if(this.element instanceof JumpOverOperator) {
-//					drawObject = this.getOperatorStyle("ruleEditorPane_style_jumpoveroperator");
-//				}
-
-				if(drawObject == null) {
-					drawObject = this.getOperatorStyle(className + "_style_operator");
+				} else {
+					drawObject = this.getOperatorStyle(((Operator)this.element).getXPrefID());
 				}
 
 				if(drawObject != null) {
@@ -212,30 +177,21 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d, final Dimension size) {
 		try {
-			String className = ((Operator) this.element).getGUIComponent().getParentQG().visualEditor.getXPrefPrefix();
-			className = className.substring(0, 1).toLowerCase() + className.substring(1);
+			AbstractGuiComponent<Operator> component = ((Operator) this.element).getGUIComponent();
+			boolean already=false;
+			if(component!=null){
+				String className = component.getParentQG().visualEditor.getXPrefPrefix();
+				className = className.substring(0, 1).toLowerCase() + className.substring(1);
 
-			if(!BooleanDatatype.getValues(className + "_useStyledBoxes").get(0).booleanValue()) {
-				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1, size.height - 1, Color.WHITE, Color.BLACK);
+				if(!BooleanDatatype.getValues(className + "_useStyledBoxes").get(0).booleanValue()) {
+					DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1, size.height - 1, Color.WHITE, Color.BLACK);
+					already = true;
+				}
 			}
-			else {
+			if(!already){
 				DrawObject drawObject = null;
-
-				if(this.element instanceof Optional) {
-					drawObject = this.getOperatorStyle("queryEditor_style_optionallabel");
-				}
-				else if(this.element instanceof CondensedRDFTerm) {
-					drawObject = this.getOperatorStyle("condensedViewViewer_style_predicate");
-				}
-				else if(this.element instanceof DataRDFTerm) {
-					drawObject = this.getOperatorStyle("dataEditor_style_predicate");
-				}
-				else if(this.element instanceof QueryRDFTerm) {
-					drawObject = this.getOperatorStyle("queryEditor_style_predicate");
-				}
-				else {
-					drawObject = this.getOperatorStyle(className + "_style_annotation");
-				}
+				
+				drawObject = this.getOperatorStyle(((Operator) this.element).getXPrefIDForAnnotation());
 
 				if(drawObject != null) {
 					drawObject.draw(g2d, 0, 0, size.width, size.height);
