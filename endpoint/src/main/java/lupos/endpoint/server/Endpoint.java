@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.util.Collections;
@@ -59,15 +60,10 @@ public class Endpoint {
 	}
 	
 	/**
-	 * PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{
-	 * ?s rdf:type ?o. }
-	 * 
-	 * 
-	 * 
 	 * HTTP Request Example
 	 * http://localhost:8080/sparql?query=PREFIX+rdf%3A%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E+SELECT+*+WHERE%7B+%3Fs+rdf%3Atype+%3Fo.+%7D&format=application%2Fsparql-results%2Bxml
-	 * 
-	 * 
+	 * for query
+	 * PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{?s rdf:type ?o. }
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length < 1) {
@@ -75,6 +71,13 @@ public class Endpoint {
 			return;
 		}
 		try {
+			final String localHost = InetAddress.getLocalHost().getHostName();
+			System.out.println("Starting LUPOSDATE Endpoint on host: "+localHost);
+			System.out.println("Canonical host name: "+InetAddress.getLocalHost().getCanonicalHostName());			
+			for (InetAddress ia : InetAddress.getAllByName(localHost)){
+				System.out.println("IP: "+ia);
+			}
+			
 			evaluator = new RDF3XQueryEvaluator();
 			evaluator.loadLargeScaleIndices(args[0]);
 			
@@ -82,7 +85,9 @@ public class Endpoint {
 			
 			Endpoint.registerStandardContexts();
 			
-			Endpoint.startServer();			
+			Endpoint.startServer();
+			System.out.println("Endpoint ready to receive requests...");
+			System.out.println("_____________________________________");
 		} catch (Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -151,8 +156,8 @@ public class Endpoint {
 		private final static String format = "format=";
 		private final static String query = "query=";
 					
-		public void handle(HttpExchange t) throws IOException {
-			
+		public void handle(HttpExchange t) throws IOException {			
+			System.out.println("\n-> Receiving request from: "+t.getRequestHeaders().get("Host"));
 			String response = Endpoint.getResponse(t);
 			String[] responseParts = response.split("[&]");
 			if(responseParts.length>0){
@@ -161,7 +166,9 @@ public class Endpoint {
 				Formatter formatter = registeredFormatter.get(formatParameter.toLowerCase());
 				if(formatter == null){
 					t.getResponseHeaders().add("Content-type", "text/plain");
-					sendString(t, "Bad Request: format " + formatParameter + " not supported");
+					final String answer = "Bad Request: format " + formatParameter + " not supported"; 
+					System.out.println(answer);
+					Endpoint.sendString(t, answer);
 					return;
 				}
 				// now look for a query parameter
@@ -169,8 +176,11 @@ public class Endpoint {
 				if(queryParameter!=null){					
 					try {
 						synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
+							System.out.println("Evaluating query:\n"+queryParameter);
 							QueryResult queryResult = evaluator.getResult(queryParameter);
-							t.getResponseHeaders().add("Content-type", formatter.getMIMEType(queryResult));
+							final String mimeType = formatter.getMIMEType(queryResult);
+							System.out.println("Done, sending response using MIME type "+mimeType);
+							t.getResponseHeaders().add("Content-type", mimeType);
 							t.sendResponseHeaders(200, 0);
 							OutputStream os = t.getResponseBody();
 							formatter.writeResult(os, evaluator.getVariablesOfQuery(), queryResult);
@@ -182,18 +192,24 @@ public class Endpoint {
 						System.err.println(e);
 						e.printStackTrace();
 						t.getResponseHeaders().add("Content-type", "text/plain");
-						Endpoint.sendString(t, "Error:\n"+e.getMessage());
+						final String answer = "Error:\n"+e.getMessage();
+						System.out.println(answer);
+						Endpoint.sendString(t, answer);
 						return;
 					} catch (Exception e){
 						System.err.println(e);
 						e.printStackTrace();
 						t.getResponseHeaders().add("Content-type", "text/plain");
-						Endpoint.sendString(t, "Error:\n"+e.getMessage());
+						final String answer = "Error:\n"+e.getMessage();
+						System.out.println(answer);
+						Endpoint.sendString(t, answer);
 						return;
 					}
 				} else {
 					t.getResponseHeaders().add("Content-type", "text/plain");
-					sendString(t, "Bad Request: query parameter missing");
+					final String answer = "Bad Request: query parameter missing";
+					System.out.println(answer);
+					Endpoint.sendString(t, answer);
 					return;
 				}
 			}

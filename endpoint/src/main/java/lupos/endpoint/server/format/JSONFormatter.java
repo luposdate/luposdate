@@ -15,7 +15,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public class JSONFormatter extends HeadBodyFormatter {
 
 	public JSONFormatter() {
-		super("JSON");
+		super("JSON", "application/sparql-results+json");
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 
 
 	public XMLFormatter() {
-		super("XML");
+		super("XML", "application/sparql-results+xml"); //$NON-NLS-1$
 	}
 	
 	public void writeBooleanResult(final OutputStream os, final boolean result) throws IOException{

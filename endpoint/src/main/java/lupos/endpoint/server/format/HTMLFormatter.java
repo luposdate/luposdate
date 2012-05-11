@@ -52,12 +52,12 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	private final boolean colored;
 
 	public HTMLFormatter(final boolean colored) {
-		super(colored?"Colored HTML":"HTML");
+		super(colored?"Colored HTML":"text/html");
 		this.colored = colored;
 	}
 	
 	public void writeStartColor(final OutputStream os, final String color) throws IOException{
-		if(colored){
+		if(this.colored){
 			os.write("<font color=\"#".getBytes());
 			os.write(color.getBytes());
 			os.write("\">".getBytes());
@@ -65,11 +65,12 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	}
 	
 	public void writeEndColor(final OutputStream os) throws IOException{
-		if(colored){
+		if(this.colored){
 			os.write("</font>".getBytes());
 		}
 	}
 	
+	@Override
 	public void writeBooleanResult(final OutputStream os, final boolean result) throws IOException{
 		os.write(HTMLFormatter.XML_1.getBytes());
 		os.write(HTMLFormatter.XML_Boolean_2.getBytes());
@@ -79,10 +80,12 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write(HTMLFormatter.XML_Boolean_3.getBytes());			
 	}
 	
+	@Override
 	public void writeStartHead(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_1.getBytes());
 	}
 	
+	@Override
 	public void writeVariableInHead(final OutputStream os, final Variable v) throws IOException{
 		os.write(HTMLFormatter.XML_Var_1.getBytes());
 		this.writeStartColor(os, HTMLFormatter.COLOR_VAR);
@@ -91,36 +94,44 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write(HTMLFormatter.XML_Var_2.getBytes());
 	}
 
+	@Override
 	public void writeEndHead(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_2.getBytes());
 	}
 	
+	@Override
 	public void writeStartResult(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Result_1.getBytes());
 	}
 
+	@Override
 	public void writeEndResult(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Result_2.getBytes());
 	}
 	
+	@Override
 	public void writeEpilogue(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_3.getBytes());
 	}
 	
+	@Override
 	public void writeStartBinding(final OutputStream os, final Variable v) throws IOException{
 		os.write(HTMLFormatter.XML_Binding_1.getBytes());
 	}
 	
+	@Override
 	public void writeEndBinding(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Binding_2.getBytes());
 	}
 	
+	@Override
 	public void writeBlankNode(final OutputStream os, AnonymousLiteral blankNode) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_BLANKNODE);
 		os.write(blankNode.originalString().getBytes());
 		this.writeEndColor(os);
 	}
 	
+	@Override
 	public void writeURI(final OutputStream os, URILiteral uri) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_URI);
 		os.write("&lt;".getBytes());
@@ -129,12 +140,14 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeEndColor(os);
 	}
 	
+	@Override
 	public void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
 		os.write(literal.originalString().getBytes());
 		this.writeEndColor(os);
 	}
 	
+	@Override
 	public void writeTypedLiteral(final OutputStream os, TypedLiteral literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
 		os.write(literal.getOriginalContent().getBytes());
@@ -145,6 +158,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeURI(os, literal.getTypeLiteral());
 	}
 	
+	@Override
 	public void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
 		os.write(literal.getContent().getBytes());

@@ -24,6 +24,10 @@ public abstract class HeadBodyFormatter extends Formatter {
 		super(formatName);
 	}
 	
+	public HeadBodyFormatter(final String formatName, final String key){
+		super(formatName, key);
+	}
+	
 	public abstract void writeBooleanResult(final OutputStream os, final boolean result) throws IOException;
 	
 	public abstract void writeStartHead(final OutputStream os) throws IOException;

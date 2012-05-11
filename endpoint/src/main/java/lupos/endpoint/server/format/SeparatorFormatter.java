@@ -19,6 +19,10 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 		super(formatName);
 	}
 	
+	public SeparatorFormatter(String formatName, final String key) {
+		super(formatName, key);
+	}
+	
 	public abstract void writeSeparator(OutputStream os) throws IOException;
 
 	@Override

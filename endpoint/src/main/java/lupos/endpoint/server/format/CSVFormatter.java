@@ -9,7 +9,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public class CSVFormatter extends SeparatorFormatter {
 
 	public CSVFormatter() {
-		super("CSV");
+		super("CSV", "text/csv");
 	}
 	
 	@Override

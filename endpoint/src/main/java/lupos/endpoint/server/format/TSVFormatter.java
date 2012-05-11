@@ -11,7 +11,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public class TSVFormatter extends SeparatorFormatter {
 
 	public TSVFormatter() {
-		super("TSV");
+		super("TSV", "text/tsv");
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class TSVFormatter extends SeparatorFormatter {
 		if (queryResult instanceof GraphResult) {
 			return "application/rdf+xml";
 		} else {
-			return "text/csv";
+			return "text/tsv";
 		}
 	}
 }

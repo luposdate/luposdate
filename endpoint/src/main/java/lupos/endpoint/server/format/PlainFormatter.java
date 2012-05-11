@@ -10,7 +10,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public class PlainFormatter extends Formatter {
 
 	public PlainFormatter() {
-		super("Plain");
+		super("Plain", "text/plain");
 	}
 
 	@Override
