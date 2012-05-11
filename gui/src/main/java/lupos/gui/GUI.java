@@ -65,142 +65,142 @@ public class GUI implements IXPref {
 		} else
 			args = new String[] {};
 
-		final JTextComponent textarea = editorPane ? new JEditorPane(
-				"text/html", "") : new JTextArea();
-				final StringBuilder content = new StringBuilder();
-				if (editorPane)
-					content.append("<html><code>");
+		final JTextComponent textarea = editorPane ? new JEditorPane("text/html", "") : new JTextArea();
 
-				textarea.setEditable(false);
-				final JPanel panel = new JPanel(new BorderLayout());
+		final StringBuilder content = new StringBuilder();
+		if (editorPane)
+			content.append("<html><code>");
 
-				final JButton buttonPref = new JButton("Preferences");
-				buttonPref.addActionListener(new ActionListener() {
-					public void actionPerformed(final ActionEvent e) {
-						try {
-							pref.showDialog(accessToFileSystem);
-						} catch (final Exception e1) {
-							System.err.println(e1);
-							e1.printStackTrace();
-						}
+		textarea.setEditable(false);
+		final JPanel panel = new JPanel(new BorderLayout());
+
+		final JButton buttonPref = new JButton("Preferences");
+		buttonPref.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				try {
+					pref.showDialog(accessToFileSystem);
+				} catch (final Exception e1) {
+					System.err.println(e1);
+					e1.printStackTrace();
+				}
+			}
+		});
+		final JButton buttonGenerateDoc = new JButton("Generate Doc");
+		buttonGenerateDoc.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				try {
+					lock.lock();
+					try {
+						final HTMLFormatter htmlformatter = new HTMLFormatter(
+								GUI.pref);
+						htmlformatter.setShortenDataTypes(true);
+						new GUI.BrowserForCommandLineOptions(GUI.pref
+								.parseCommandLineOptions(
+										new String[] { "--helpall" },
+										htmlformatter), "text/html",
+										"Command Line Options for GUI", false);
+					} catch (final CommandLineOptionException e1) {
+						System.err.println(e1);
+						e1.printStackTrace();
+					} catch (final Exception e1) {
+						System.err.println(e1);
+						e1.printStackTrace();
 					}
-				});
-				final JButton buttonGenerateDoc = new JButton("Generate Doc");
-				buttonGenerateDoc.addActionListener(new ActionListener() {
+				} finally {
+					lock.unlock();
+				}
+			}
+		});
+		final JPanel panel3 = new JPanel(new FlowLayout(5, 0, 5));
+		panel3.add(buttonGenerateDoc);
+		panel3.add(buttonPref);
+
+		final JPanel panel5 = new JPanel(new BorderLayout());
+		panel5.add(panel3, BorderLayout.EAST);
+
+		final JPanel panel6 = new JPanel(new FlowLayout(5, 0, 5));
+		panel6.add(new JLabel(" Query Evaluator: "));
+
+		final JComboBox comboBoxEvaluator = new JComboBox(EvaluatorCreator.EVALUATORS.values());
+
+		comboBoxEvaluator.setLightWeightPopupEnabled(false);
+		panel6.add(comboBoxEvaluator);
+
+		panel5.add(panel6, BorderLayout.WEST);
+
+		panel.add(panel5, BorderLayout.NORTH);
+
+		final TextField textfieldDataFile = createFileChooser(" Data File: ",
+				dataFile, panel);
+
+		final JPanel panel2 = new JPanel(new BorderLayout());
+
+		final TextField textfieldQueryFile = createFileChooser(" Query File: ",
+				queryFile, panel2);
+
+		panel.add(panel2, BorderLayout.SOUTH);
+
+		final JPanel outerPanel = new JPanel(new BorderLayout());
+		outerPanel.add(panel, BorderLayout.NORTH);
+
+		initJFrame(
+				args,
+				"preferencesLUPOSDATECore.xml",
+				"LUPOSDATE Query Evaluators",
+				new ActionListener() {
+					volatile boolean processingQuery = false;
+
 					public void actionPerformed(final ActionEvent e) {
-						try {
-							lock.lock();
+						if (!processingQuery) {
 							try {
-								final HTMLFormatter htmlformatter = new HTMLFormatter(
-										GUI.pref);
-								htmlformatter.setShortenDataTypes(true);
-								new GUI.BrowserForCommandLineOptions(GUI.pref
-										.parseCommandLineOptions(
-												new String[] { "--helpall" },
-												htmlformatter), "text/html",
-												"Command Line Options for GUI", false);
-							} catch (final CommandLineOptionException e1) {
-								System.err.println(e1);
-								e1.printStackTrace();
+								content.delete(0, content.length());
+								content.append("<html><code>");
+								final QueryEvaluator evaluator =((EvaluatorCreator.EVALUATORS) comboBoxEvaluator.getSelectedItem()).create(pref);
+								processingQuery = true;
+								System.out.println("Configuration:"
+										+ pref.toString() + "\n\n");
+								SwingUtilities.invokeLater(new Runnable() {
+									public void run() {
+										final Thread thread = new Thread() {
+											@Override
+											public void run() {
+												QueryEvaluator._main(evaluator,
+														textfieldDataFile
+														.getText(),
+														textfieldQueryFile
+														.getText());
+												processingQuery = false;
+											}
+										};
+										thread.start();
+									}
+								});
 							} catch (final Exception e1) {
 								System.err.println(e1);
 								e1.printStackTrace();
 							}
-						} finally {
-							lock.unlock();
+						} else {
+							JOptionPane
+							.showMessageDialog(
+									null,
+									"A query is currently processed.\nPlease try again after current query processing has finished...");
 						}
 					}
+
+				}, outerPanel, BorderLayout.NORTH, textarea, content,
+				new IXPref() {
+					public void preferencesChanged() {
+					}
+
 				});
-				final JPanel panel3 = new JPanel(new FlowLayout(5, 0, 5));
-				panel3.add(buttonGenerateDoc);
-				panel3.add(buttonPref);
-
-				final JPanel panel5 = new JPanel(new BorderLayout());
-				panel5.add(panel3, BorderLayout.EAST);
-
-				final JPanel panel6 = new JPanel(new FlowLayout(5, 0, 5));
-				panel6.add(new JLabel(" Query Evaluator: "));
-
-				final JComboBox comboBoxEvaluator = new JComboBox(EvaluatorCreator.EVALUATORS.values());
-				
-				comboBoxEvaluator.setLightWeightPopupEnabled(false);
-				panel6.add(comboBoxEvaluator);
-
-				panel5.add(panel6, BorderLayout.WEST);
-
-				panel.add(panel5, BorderLayout.NORTH);
-
-				final TextField textfieldDataFile = createFileChooser(" Data File: ",
-						dataFile, panel);
-
-				final JPanel panel2 = new JPanel(new BorderLayout());
-
-				final TextField textfieldQueryFile = createFileChooser(" Query File: ",
-						queryFile, panel2);
-
-				panel.add(panel2, BorderLayout.SOUTH);
-
-				final JPanel outerPanel = new JPanel(new BorderLayout());
-				outerPanel.add(panel, BorderLayout.NORTH);
-
-				initJFrame(
-						args,
-						"preferencesLUPOSDATECore.xml",
-						"LUPOSDATE Query Evaluators",
-						new ActionListener() {
-							volatile boolean processingQuery = false;
-
-							public void actionPerformed(final ActionEvent e) {
-								if (!processingQuery) {
-									try {
-										content.delete(0, content.length());
-										content.append("<html><code>");
-										final QueryEvaluator evaluator =((EvaluatorCreator.EVALUATORS) comboBoxEvaluator.getSelectedItem()).create(pref);
-										processingQuery = true;
-										System.out.println("Configuration:"
-												+ pref.toString() + "\n\n");
-										SwingUtilities.invokeLater(new Runnable() {
-											public void run() {
-												final Thread thread = new Thread() {
-													@Override
-													public void run() {
-														QueryEvaluator._main(evaluator,
-																textfieldDataFile
-																.getText(),
-																textfieldQueryFile
-																.getText());
-														processingQuery = false;
-													}
-												};
-												thread.start();
-											}
-										});
-									} catch (final Exception e1) {
-										System.err.println(e1);
-										e1.printStackTrace();
-									}
-								} else {
-									JOptionPane
-									.showMessageDialog(
-											null,
-									"A query is currently processed.\nPlease try again after current query processing has finished...");
-								}
-							}
-
-						}, outerPanel, BorderLayout.NORTH, textarea, content,
-						new IXPref() {
-							public void preferencesChanged() {
-							}
-
-						});
 	}
 
 	public static Image getIcon(final boolean accessToFileSystem) {
+		URL url = GUI.class.getResource("/icons/demo.gif");
 		if (accessToFileSystem)
-			return new ImageIcon("data" + File.separator + "demo.gif")
-		.getImage();
+			return new ImageIcon(url.getFile()).getImage();
 		else
-			return new ImageIcon(GUI.class.getResource("/demo.gif")).getImage();
+			return new ImageIcon(url).getImage();
 	}
 
 	private static JPanel getMainPanel(final ActionListener startButtonAction,

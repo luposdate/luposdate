@@ -1,3 +1,8 @@
+# Extract all inproceedings with properties dc:creator, 
+# bench:booktitle, dc:title, swrc:pages, dcterms:partOf, 
+# rdfs:seeAlso, foaf:homepage dcterms:issued, and 
+# optionally bench:abstract, including these properties, ordered by year.
+
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX swrc:    <http://swrc.ontoware.org/ontology#>

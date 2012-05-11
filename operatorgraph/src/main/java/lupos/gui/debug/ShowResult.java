@@ -50,6 +50,7 @@ public class ShowResult extends CollectRIFResult {
 
 	public ShowResult(final EvaluationDemoToolBar evaluationDemoToolbar,
 			final Result result) {
+		super(false);
 		this.evaluationDemoToolbar = evaluationDemoToolbar;
 		this.result = result;
 	}

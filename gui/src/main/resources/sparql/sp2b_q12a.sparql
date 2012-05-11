@@ -1,3 +1,7 @@
+# Return yes if a person occurs as author of 
+# at least one inproceeding and article, no otherwise. 
+# This query is the boolean counterpart of Q5a.
+
 PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 PREFIX bench: <http://localhost/vocabulary/bench/>

@@ -1,0 +1,567 @@
+@prefix ub:      <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix instance:<http://www.Department0.University0.edu/> .
+
+instance:GraduateStudent1 rdf:type ub:GraduateStudent .
+instance:GraduateStudent1 ub:name "GraduateStudent1" .
+instance:GraduateStudent1 ub:takesCourse instance:Course0 .
+
+instance:GraduateStudent2 rdf:type ub:GraduateStudent .
+instance:GraduateStudent2 ub:name "GraduateStudent2" .
+instance:GraduateStudent2 ub:takesCourse instance:GraduateCourse1.
+
+instance:GraduateStudent3 rdf:type ub:GraduateStudent .
+instance:GraduateStudent3 ub:name "GraduateStudent3" .
+instance:GraduateStudent3 ub:takesCourse instance:GraduateCourse1.
+
+instance:GraduateStudent4 rdf:type ub:GraduateStudent .
+instance:GraduateStudent4 ub:name "GraduateStudent4" .
+instance:GraduateStudent4 ub:takesCourse instance:GraduateCourse1.
+
+instance:GraduateStudent5 rdf:type ub:GraduateStudent .
+instance:GraduateStudent5 ub:name "GraduateStudent5" .
+instance:GraduateStudent5 ub:takesCourse instance:GraduateCourse1.
+
+instance:GraduateStudent6 rdf:type ub:GraduateStudent .
+instance:GraduateStudent6 ub:name "GraduateStudent6" .
+instance:GraduateStudent6 ub:takesCourse instance:GraduateCourse1.
+
+instance:GraduateStudent7 rdf:type ub:GraduateStudent .
+instance:GraduateStudent7 ub:name "GraduateStudent7" .
+instance:GraduateStudent7 ub:takesCourse instance:GraduateCourse0.
+
+instance:GraduateStudent8 rdf:type ub:GraduateStudent .
+instance:GraduateStudent8 ub:name "GraduateStudent8" .
+instance:GraduateStudent8 ub:takesCourse instance:GraduateCourse0.
+
+instance:GraduateStudent9 rdf:type ub:GraduateStudent .
+instance:GraduateStudent9 ub:name "GraduateStudent9" .
+instance:GraduateStudent9 ub:takesCourse instance:GraduateCourse0.
+
+
+instance:UndergraduateStudent1 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent1 ub:name "UndergraduateStudent1" .
+instance:UndergraduateStudent1 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent2 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent2 ub:name "UndergraduateStudent2" .
+instance:UndergraduateStudent2 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent3 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent3 ub:name "UndergraduateStudent3" .
+instance:UndergraduateStudent3 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent4 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent4 ub:name "UndergraduateStudent4" .
+instance:UndergraduateStudent4 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent5 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent5 ub:name "UndergraduateStudent5" .
+instance:UndergraduateStudent5 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent6 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent6 ub:name "UndergraduateStudent6" .
+instance:UndergraduateStudent6 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent7 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent7 ub:name "UndergraduateStudent7" .
+instance:UndergraduateStudent7 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent8 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent8 ub:name "UndergraduateStudent8" .
+instance:UndergraduateStudent8 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent9 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent9 ub:name "UndergraduateStudent9" .
+instance:UndergraduateStudent9 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent10 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent10 ub:name "UndergraduateStudent10" .
+instance:UndergraduateStudent10 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent11 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent11 ub:name "UndergraduateStudent11" .
+instance:UndergraduateStudent11 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent12 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent12 ub:name "UndergraduateStudent12" .
+instance:UndergraduateStudent12 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent13 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent13 ub:name "UndergraduateStudent13" .
+instance:UndergraduateStudent13 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent14 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent14 ub:name "UndergraduateStudent14" .
+instance:UndergraduateStudent14 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent15 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent15 ub:name "UndergraduateStudent15" .
+instance:UndergraduateStudent15 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent16 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent16 ub:name "UndergraduateStudent16" .
+instance:UndergraduateStudent16 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent17 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent17 ub:name "UndergraduateStudent17" .
+instance:UndergraduateStudent17 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent18 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent18 ub:name "UndergraduateStudent18" .
+instance:UndergraduateStudent18 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent19 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent19 ub:name "UndergraduateStudent19" .
+instance:UndergraduateStudent19 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent20 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent20 ub:name "UndergraduateStudent20" .
+instance:UndergraduateStudent20 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent21 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent21 ub:name "UndergraduateStudent21" .
+instance:UndergraduateStudent21 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent22 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent22 ub:name "UndergraduateStudent22" .
+instance:UndergraduateStudent22 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent23 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent23 ub:name "UndergraduateStudent23" .
+instance:UndergraduateStudent23 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent24 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent24 ub:name "UndergraduateStudent24" .
+instance:UndergraduateStudent24 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent25 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent25 ub:name "UndergraduateStudent25" .
+instance:UndergraduateStudent25 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent26 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent26 ub:name "UndergraduateStudent26" .
+instance:UndergraduateStudent26 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent27 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent27 ub:name "UndergraduateStudent27" .
+instance:UndergraduateStudent27 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent28 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent28 ub:name "UndergraduateStudent28" .
+instance:UndergraduateStudent28 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent29 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent29 ub:name "UndergraduateStudent29" .
+instance:UndergraduateStudent29 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent30 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent30 ub:name "UndergraduateStudent30" .
+instance:UndergraduateStudent30 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent31 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent31 ub:name "UndergraduateStudent31" .
+instance:UndergraduateStudent31 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent32 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent32 ub:name "UndergraduateStudent32" .
+instance:UndergraduateStudent32 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent33 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent33 ub:name "UndergraduateStudent33" .
+instance:UndergraduateStudent33 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent34 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent34 ub:name "UndergraduateStudent34" .
+instance:UndergraduateStudent34 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent35 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent35 ub:name "UndergraduateStudent35" .
+instance:UndergraduateStudent35 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent36 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent36 ub:name "UndergraduateStudent36" .
+instance:UndergraduateStudent36 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent37 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent37 ub:name "UndergraduateStudent37" .
+instance:UndergraduateStudent37 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent38 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent38 ub:name "UndergraduateStudent38" .
+instance:UndergraduateStudent38 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent39 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent39 ub:name "UndergraduateStudent39" .
+instance:UndergraduateStudent39 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent40 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent40 ub:name "UndergraduateStudent40" .
+instance:UndergraduateStudent40 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent41 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent41 ub:name "UndergraduateStudent41" .
+instance:UndergraduateStudent41 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent42 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent42 ub:name "UndergraduateStudent42" .
+instance:UndergraduateStudent42 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent43 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent43 ub:name "UndergraduateStudent43" .
+instance:UndergraduateStudent43 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent44 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent44 ub:name "UndergraduateStudent44" .
+instance:UndergraduateStudent44 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent45 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent45 ub:name "UndergraduateStudent45" .
+instance:UndergraduateStudent45 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent46 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent46 ub:name "UndergraduateStudent46" .
+instance:UndergraduateStudent46 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent47 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent47 ub:name "UndergraduateStudent47" .
+instance:UndergraduateStudent47 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent48 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent48 ub:name "UndergraduateStudent48" .
+instance:UndergraduateStudent48 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent49 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent49 ub:name "UndergraduateStudent49" .
+instance:UndergraduateStudent49 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent50 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent50 ub:name "UndergraduateStudent50" .
+instance:UndergraduateStudent50 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent51 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent51 ub:name "UndergraduateStudent51" .
+instance:UndergraduateStudent51 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent52 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent52 ub:name "UndergraduateStudent52" .
+instance:UndergraduateStudent52 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent53 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent53 ub:name "UndergraduateStudent53" .
+instance:UndergraduateStudent53 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent54 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent54 ub:name "UndergraduateStudent54" .
+instance:UndergraduateStudent54 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent55 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent55 ub:name "UndergraduateStudent55" .
+instance:UndergraduateStudent55 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent56 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent56 ub:name "UndergraduateStudent56" .
+instance:UndergraduateStudent56 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent57 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent57 ub:name "UndergraduateStudent57" .
+instance:UndergraduateStudent57 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent58 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent58 ub:name "UndergraduateStudent58" .
+instance:UndergraduateStudent58 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent59 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent59 ub:name "UndergraduateStudent59" .
+instance:UndergraduateStudent59 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent60 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent60 ub:name "UndergraduateStudent60" .
+instance:UndergraduateStudent60 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent61 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent61 ub:name "UndergraduateStudent61" .
+instance:UndergraduateStudent61 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent62 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent62 ub:name "UndergraduateStudent62" .
+instance:UndergraduateStudent62 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent63 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent63 ub:name "UndergraduateStudent63" .
+instance:UndergraduateStudent63 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent64 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent64 ub:name "UndergraduateStudent64" .
+instance:UndergraduateStudent64 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent65 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent65 ub:name "UndergraduateStudent65" .
+instance:UndergraduateStudent65 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent66 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent66 ub:name "UndergraduateStudent66" .
+instance:UndergraduateStudent66 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent67 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent67 ub:name "UndergraduateStudent67" .
+instance:UndergraduateStudent67 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent68 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent68 ub:name "UndergraduateStudent68" .
+instance:UndergraduateStudent68 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent69 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent69 ub:name "UndergraduateStudent69" .
+instance:UndergraduateStudent69 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent70 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent70 ub:name "UndergraduateStudent70" .
+instance:UndergraduateStudent70 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent71 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent71 ub:name "UndergraduateStudent71" .
+instance:UndergraduateStudent71 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent72 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent72 ub:name "UndergraduateStudent72" .
+instance:UndergraduateStudent72 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent73 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent73 ub:name "UndergraduateStudent73" .
+instance:UndergraduateStudent73 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent74 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent74 ub:name "UndergraduateStudent74" .
+instance:UndergraduateStudent74 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent75 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent75 ub:name "UndergraduateStudent75" .
+instance:UndergraduateStudent75 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent76 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent76 ub:name "UndergraduateStudent76" .
+instance:UndergraduateStudent76 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent77 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent77 ub:name "UndergraduateStudent77" .
+instance:UndergraduateStudent77 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent78 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent78 ub:name "UndergraduateStudent78" .
+instance:UndergraduateStudent78 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent79 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent79 ub:name "UndergraduateStudent79" .
+instance:UndergraduateStudent79 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent80 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent80 ub:name "UndergraduateStudent80" .
+instance:UndergraduateStudent80 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent81 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent81 ub:name "UndergraduateStudent81" .
+instance:UndergraduateStudent81 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent82 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent82 ub:name "UndergraduateStudent82" .
+instance:UndergraduateStudent82 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent83 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent83 ub:name "UndergraduateStudent83" .
+instance:UndergraduateStudent83 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent84 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent84 ub:name "UndergraduateStudent84" .
+instance:UndergraduateStudent84 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent85 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent85 ub:name "UndergraduateStudent85" .
+instance:UndergraduateStudent85 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent86 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent86 ub:name "UndergraduateStudent86" .
+instance:UndergraduateStudent86 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent87 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent87 ub:name "UndergraduateStudent87" .
+instance:UndergraduateStudent87 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent88 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent88 ub:name "UndergraduateStudent88" .
+instance:UndergraduateStudent88 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent89 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent89 ub:name "UndergraduateStudent89" .
+instance:UndergraduateStudent89 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent90 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent90 ub:name "UndergraduateStudent90" .
+instance:UndergraduateStudent90 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent91 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent91 ub:name "UndergraduateStudent91" .
+instance:UndergraduateStudent91 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent92 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent92 ub:name "UndergraduateStudent92" .
+instance:UndergraduateStudent92 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent93 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent93 ub:name "UndergraduateStudent93" .
+instance:UndergraduateStudent93 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent94 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent94 ub:name "UndergraduateStudent94" .
+instance:UndergraduateStudent94 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent95 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent95 ub:name "UndergraduateStudent95" .
+instance:UndergraduateStudent95 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent96 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent96 ub:name "UndergraduateStudent96" .
+instance:UndergraduateStudent96 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent97 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent97 ub:name "UndergraduateStudent97" .
+instance:UndergraduateStudent97 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent98 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent98 ub:name "UndergraduateStudent98" .
+instance:UndergraduateStudent98 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent99 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent99 ub:name "UndergraduateStudent99" .
+instance:UndergraduateStudent99 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent100 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent100 ub:name "UndergraduateStudent100" .
+instance:UndergraduateStudent100 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent101 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent101 ub:name "UndergraduateStudent101" .
+instance:UndergraduateStudent101 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent102 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent102 ub:name "UndergraduateStudent102" .
+instance:UndergraduateStudent102 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent103 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent103 ub:name "UndergraduateStudent103" .
+instance:UndergraduateStudent103 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent104 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent104 ub:name "UndergraduateStudent104" .
+instance:UndergraduateStudent104 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent105 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent105 ub:name "UndergraduateStudent105" .
+
+instance:UndergraduateStudent106 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent106 ub:name "UndergraduateStudent106" .
+instance:UndergraduateStudent106 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent107 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent107 ub:name "UndergraduateStudent107" .
+instance:UndergraduateStudent107 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent108 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent108 ub:name "UndergraduateStudent108" .
+instance:UndergraduateStudent108 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent109 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent109 ub:name "UndergraduateStudent109" .
+instance:UndergraduateStudent109 ub:takesCourse instance:GraduateCourse0.
+
+instance:UndergraduateStudent110 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent110 ub:name "UndergraduateStudent110" .
+instance:UndergraduateStudent110 ub:takesCourse instance:Course0 .
+
+instance:UndergraduateStudent111 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent111 ub:name "UndergraduateStudent111" .
+
+instance:UndergraduateStudent112 rdf:type ub:UndergraduateStudent .
+instance:UndergraduateStudent112 ub:name "UndergraduateStudent112" .
+  
+
+
+instance:Publication0 rdf:type ub:Publication .
+instance:Publication0 ub:publicationAuthor instance:AssistantProfessor0.
+
+instance:Publication1 rdf:type ub:Publication .
+instance:Publication1 ub:publicationAuthor instance:AssistantProfessor0.
+
+instance:Publication2 rdf:type ub:Publication .
+instance:Publication2 ub:publicationAuthor instance:AssistantProfessor0.
+
+instance:Publication3 rdf:type ub:Publication .
+instance:Publication3 ub:publicationAuthor instance:AssistantProfessor0.
+
+
+
+<http://www.University0.edu> rdf:type ub:University .
+<http://www.Department0.University0.edu> rdf:type ub:Department .
+<http://www.Department0.University0.edu> ub:subOrganizationOf <http://www.University0.edu> .
+
+instance:GraduateStudent1 ub:memberOf <http://www.Department0.University0.edu> .
+instance:GraduateStudent1 ub:undergraduateDegreeFrom <http://www.University0.edu>.
+
+instance:GraduateStudent5 ub:memberOf <http://www.Department0.University0.edu> .
+instance:GraduateStudent5 ub:undergraduateDegreeFrom <http://www.University0.edu>.
+
+instance:UndergraduateStudent50 ub:memberOf <http://www.Department0.University0.edu> .
+instance:UndergraduateStudent50 ub:undergraduateDegreeFrom <http://www.University0.edu>.
+    
+    
+       
+instance:FullProfessor0 rdf:type ub:FullProfessor .
+instance:FullProfessor0 ub:worksFor <http://www.Department0.University0.edu> .
+instance:FullProfessor0 ub:name "FullProfessor0" .
+instance:FullProfessor0 ub:emailAddress "FullProfessor0@Department0.University0.edu" .
+instance:FullProfessor0 ub:telephone "+49 (0) 451 500 123456789 - 0".
+    
+instance:FullProfessor1 rdf:type ub:FullProfessor .
+instance:FullProfessor1 ub:worksFor <http://www.Department0.University0.edu> .
+instance:FullProfessor1 ub:name "FullProfessor1" .
+instance:FullProfessor1 ub:emailAddress "FullProfessor0@Department1.University0.edu" .
+instance:FullProfessor1 ub:telephone "+49 (0) 451 500 123456789 - 1".
+    
+instance:FullProfessor2 rdf:type ub:FullProfessor .
+instance:FullProfessor2 ub:worksFor <http://www.Department0.University0.edu> .
+instance:FullProfessor2 ub:name "FullProfessor2" .
+instance:FullProfessor2 ub:emailAddress "FullProfessor0@Department2.University0.edu" .
+instance:FullProfessor2 ub:telephone "+49 (0) 451 500 123456789 - 2".
+    
+instance:AssociateProfessor0 rdf:type ub:AssociateProfessor .
+instance:AssociateProfessor0 ub:worksFor <http://www.Department0.University0.edu> .
+instance:AssociateProfessor0 ub:name "AssociateProfessor0" .
+instance:AssociateProfessor0 ub:emailAddress "AssociateProfessor0@Department0.University0.edu" .
+instance:AssociateProfessor0 ub:telephone "+49 (0) 451 500 123456789 - 00".
+    
+instance:AssistantProfessor0 rdf:type ub:AssistantProfessor .
+instance:AssistantProfessor0 ub:worksFor <http://www.Department0.University0.edu> .
+instance:AssistantProfessor0 ub:name "AssistantProfessor0" .
+instance:AssistantProfessor0 ub:emailAddress "AssistantProfessor0@Department0.University0.edu" .
+instance:AssistantProfessor0 ub:telephone "+49 (0) 451 500 123456789 - 000".
+    
+instance:GraduateCourse0 rdf:type ub:Course .
+instance:AssistantProfessor0 ub:teacherOf instance:GraduateCourse0 .
+
+instance:GraduateStudent1 ub:advisor instance:AssistantProfessor0 .
+instance:UndergraduateStudent11 ub:advisor instance:AssistantProfessor0 .
+instance:UndergraduateStudent22 ub:advisor instance:AssistantProfessor0 .
+instance:UndergraduateStudent33 ub:advisor instance:AssistantProfessor0 .
+instance:UndergraduateStudent44 ub:advisor instance:AssistantProfessor0 .
+instance:UndergraduateStudent55 ub:advisor instance:AssistantProfessor0 .
+
+
+instance:GraduateCourse1 rdf:type ub:Course .
+instance:FullProfessor1 ub:teacherOf instance:GraduateCourse1 .
+
+instance:GraduateStudent2 ub:advisor instance:FullProfessor1 .
+instance:GraduateStudent3 ub:advisor instance:FullProfessor1 .
+instance:GraduateStudent4 ub:advisor instance:FullProfessor1 .
+instance:GraduateStudent5 ub:advisor instance:FullProfessor1 .

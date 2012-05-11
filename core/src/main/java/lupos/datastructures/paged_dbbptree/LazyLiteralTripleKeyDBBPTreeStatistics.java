@@ -462,7 +462,6 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		double step = (double) distance / MAXNUMBERBUCKETS;
 		if (step < 1.0)
 			step = 1.0;
-		final double current = 0;
 		final PrefixSearchIteratorMaxMinDistanceJump it = (minimum == null) ? new PrefixSearchIteratorMaxMinDistanceJump(
 				key)
 				: new PrefixSearchIteratorMaxMinDistanceJump(key, minimum,
@@ -542,8 +541,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			InputStream fis;
 			try {
 				fis = new PageInputStream(filename, pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(
-						fis, null);
+				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
 				final boolean leaf = in.readLuposBoolean();
 				if (leaf) { // leaf node reached!
 					while (true) {
@@ -614,8 +612,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			InputStream fis;
 			try {
 				fis = new PageInputStream(filename, pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(
-						fis, null);
+				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
 				final boolean leaf = in.readLuposBoolean();
 				lastTriple = null;
 				if (leaf) { // leaf node reached!
@@ -779,8 +776,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			InputStream fis;
 			try {
 				fis = new PageInputStream(fileName, pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(
-						fis, null);
+				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
 				final boolean leaf = in.readLuposBoolean();
 				lastTriple = null;
 				if (leaf) { // leaf node reached!
@@ -1109,8 +1105,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			InputStream fis;
 			try {
 				fis = new PageInputStream(fileName, pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(
-						fis, null);
+				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
 				final boolean leaf = in.readLuposBoolean();
 				lastTriple = null;
 				if (leaf) { // leaf node reached!
@@ -1214,8 +1209,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		InputStream fis;
 		try {
 			fis = new PageInputStream(filename, pageManager);
-			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(
-					fis, null);
+			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
 			final boolean leaf = in.readLuposBoolean();
 			Triple lastTriple = null;
 			if (leaf) { // leaf node reached!
@@ -1326,8 +1320,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		InputStream fis;
 		try {
 			fis = new PageInputStream(filename, pageManager);
-			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(
-					fis, null);
+			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
 			final boolean leaf = in.readLuposBoolean();
 			if (leaf) { // leaf node reached!
 				Triple lastTriple = null;

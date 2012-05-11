@@ -1,0 +1,6 @@
+PREFIX  p1: <http://www.p/>
+SELECT *
+WHERE {
+?x301 p1:hasWonPrize ?x311;
+      p1:actedIn ?x330.
+} 

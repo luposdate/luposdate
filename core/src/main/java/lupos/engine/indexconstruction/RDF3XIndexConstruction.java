@@ -69,9 +69,13 @@ public class RDF3XIndexConstruction {
 	public static void main(final String[] args) {
 		try {
 
+			System.out.println("Program to construct an RDF3X Index for LUPOSDATE...");
+			System.out.println("[help is printed when using less than 4 command line arguments]");
+			System.out.println("_______________________________________________________________");
+			
 			if (args.length < 4) {
-				System.out
-				.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <directory for indices> [<datafile2> [<datafile3> ...]] ");
+				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <directory for indices> [<datafile2> [<datafile3> ...]]");
+				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 /luposdateindex");
 				return;
 			}
 

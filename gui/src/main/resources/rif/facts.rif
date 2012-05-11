@@ -1,0 +1,27 @@
+Document(
+  Base(<http://example.de#>)
+  Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+
+  Group
+  (
+    :verheiratet(:Daniel :Daniela)
+    :verheiratet(:Peter :Petra)
+    :verheiratet(:Paula :Paul)
+    :verheiratet(:Inga :Klaus)
+    :verheiratet(:Josef :Josefine)
+    :verheiratet(:Herbert :Ida)
+    :verheiratet(:Fritz :Marianne)
+    :KindVon(:Josef :Inga)
+    :KindVon(:Josef :Klaus)
+    :KindVon(:Paul :Inga)
+    :KindVon(:Paul :Klaus)
+    :KindVon(:Inga :Peter)
+    :KindVon(:Inga :Petra)
+    :KindVon(:Daniel :Paul)
+    :KindVon(:Daniel :Marianne)
+    :KindVon(:Marianne :Ida)
+    :KindVon(:Marianne :Herbert)
+    :KindVon(:Sabine :Eva)
+    :KindVon(:Sabine :Egon)
+ )
+)

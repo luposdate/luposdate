@@ -1,0 +1,17 @@
+# Return all authors, which authored at least two documents
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX bench: <http://localhost/vocabulary/bench/> 
+
+SELECT DISTINCT ?name
+WHERE {
+  ?document dc:creator ?author .
+  ?author foaf:name ?name.
+  ?document2 dc:creator ?author2 .
+  ?author2 foaf:name ?name2.
+  Filter(?author=?author2 && ?document!=?document2)
+}

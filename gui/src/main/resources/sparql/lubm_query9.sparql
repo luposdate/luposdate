@@ -1,0 +1,12 @@
+# Return the names of students, who do not visit any course
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?X
+WHERE
+{?Y ub:name ?X .
+ {?Y rdf:type ub:UndergraduateStudent.}
+ UNION
+ {?Y rdf:type ub:GraduateStudent.}
+ OPTIONAL{?Y ub:takesCourse ?Z}
+ FILTER(!BOUND(?Z))}

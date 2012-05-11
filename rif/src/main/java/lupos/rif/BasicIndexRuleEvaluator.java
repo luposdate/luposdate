@@ -174,14 +174,18 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 	@Override
 	public QueryResult getResult() throws Exception {
-		final CollectRIFResult cr = new CollectRIFResult();
+		return this.getResult(false);
+	}
+	
+	public QueryResult getResult(final boolean oneTime) throws Exception {
+		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
 		this.evaluator.evaluateQuery();
 		return cr.getResult();	
 	}
 	
-	public CollectRIFResult getCollectedResults() throws Exception {
-		final CollectRIFResult cr = new CollectRIFResult();
+	public CollectRIFResult getCollectedResults(final boolean oneTime) throws Exception {
+		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
 		this.evaluator.evaluateQuery();
 		return cr;
@@ -260,7 +264,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	 * @throws Exception
 	 */
 	public RuleResult inferTriplesAndStoreInDataset() throws Exception {
-		CollectRIFResult cr = this.getCollectedResults();
+		CollectRIFResult cr = this.getCollectedResults(true);
 		RuleResult result = new RuleResult();
 		if(this.evaluator instanceof BasicIndexQueryEvaluator){
 			for(QueryResult qr: cr.getQueryResults()){

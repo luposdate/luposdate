@@ -1,3 +1,7 @@
+# Return yes if an author has published with Paul Erdoes or 
+# with an author that has published with Paul Erdoes, and no otherwise. 
+# This query is the boolean counterpart of Q8.
+
 PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#> 
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>

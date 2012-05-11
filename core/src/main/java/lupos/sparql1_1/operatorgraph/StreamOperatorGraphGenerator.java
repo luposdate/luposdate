@@ -51,7 +51,7 @@ public class StreamOperatorGraphGenerator extends
 	}
 
 	public void visit(final lupos.sparql1_1.ASTStream node) {
-		final CollectResult cr = new CollectResult();
+		final CollectResult cr = new CollectResult(false);
 		this.result.addApplication(cr);
 		if (node.isTriples()) {
 			indexScanCreator_Stream.setStream(new StreamTriples(cr, node.getValue()));
@@ -73,7 +73,7 @@ public class StreamOperatorGraphGenerator extends
 		final Window window = (dot == ASTType.TYPE.TRIPLES) ? new WindowTriples(slidingNumber) : new WindowDuration(slidingNumber);						
 		if (indexScanCreator_Stream.getStream() == null) {
 			System.out.println("Query uses Window operations, but did not define a stream, asssuming STREAM INTERMEDIATERESULT TRIPLES 1");
-			final CollectResult cr = new CollectResult();
+			final CollectResult cr = new CollectResult(false);
 			this.result.addApplication(cr);
 			indexScanCreator_Stream.setStream(new StreamTriples(cr, 1));
 		}

@@ -1,3 +1,7 @@
+# Return all subjects that stand in any relation to Paul Erdoes. 
+# In our scenario, the query might also be formulated as 
+# "Return publications and venues in which Paul Erdoes is involved either as author or as editor".
+
 PREFIX person: <http://localhost/persons/>
 
 SELECT ?subject ?predicate

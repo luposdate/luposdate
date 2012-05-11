@@ -443,14 +443,18 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	@Override
 	public QueryResult getResult() throws Exception {
-		final CollectAllResults cr = new CollectAllResults();
+		return this.getResult(false);
+	}
+
+	public QueryResult getResult(final boolean oneTime) throws Exception {
+		final CollectAllResults cr = new CollectAllResults(oneTime);
 		result.addApplication(cr);
 		evaluateQuery();
 		return cr.getResult();
 	}
 
-	public CollectAllResults getCollectedResults() throws Exception {
-		final CollectAllResults cr = new CollectAllResults();
+	public CollectAllResults getCollectedResults(final boolean oneTime) throws Exception {
+		final CollectAllResults cr = new CollectAllResults(oneTime);
 		result.addApplication(cr);
 		evaluateQuery();
 		return cr;

@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 /**
  * Class to parse arguments. Use addFooOption(name, defaultValue) to define
- * which types of arguments are accpeted and then use parse to parse the
+ * which types of arguments are accepted and then use parse to parse the
  * arguments and getFoo(name) to retrieve a given argument. Argument names are
  * case insensitive. The argument --help will always be accepted and cause the
  * application to display the helptext and do nothing else.

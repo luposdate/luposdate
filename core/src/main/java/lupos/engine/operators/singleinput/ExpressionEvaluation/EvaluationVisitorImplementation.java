@@ -845,7 +845,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 		Result result = setupEvaluator(evaluator, (IndexCollection) collection.deepClone());
 		
-		CollectResult cr = new CollectResult();
+		CollectResult cr = new CollectResult(false);
 		result.addApplication(cr);
 
 		evaluator.logicalOptimization();

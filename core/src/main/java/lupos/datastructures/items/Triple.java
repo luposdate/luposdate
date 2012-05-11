@@ -84,10 +84,20 @@ public class Triple implements Iterable<Literal>, Serializable,
 		return "(" + subject + "," + predicate + "," + object + ")";
 	}
 
+	public String toN3String() {
+		return subject + " " + predicate + " " + object + " .";
+	}
+
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "(" + subject.toString(prefixInstance) + ","
 				+ predicate.toString(prefixInstance) + ","
 				+ object.toString(prefixInstance) + ")";
+	}
+
+	public String toN3String(final lupos.rdf.Prefix prefixInstance) {
+		return subject.toString(prefixInstance) + " "
+				+ predicate.toString(prefixInstance) + " "
+				+ object.toString(prefixInstance) + " .";
 	}
 
 	@Override

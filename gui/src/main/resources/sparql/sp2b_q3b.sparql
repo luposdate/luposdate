@@ -1,3 +1,5 @@
+# Select all articles with property swrc:month.
+
 PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX bench: <http://localhost/vocabulary/bench/>
 PREFIX swrc:  <http://swrc.ontoware.org/ontology#>

@@ -27,36 +27,6 @@ public interface ILuposToken {
 	public abstract String getContents();
 
 	/**
-	 * Determine if this token is a comment. Sometimes comments should be
-	 * ignored (compiling code) other times they should be used (syntax
-	 * highlighting). This provides a method to check in case you feel you
-	 * should ignore comments.
-	 * 
-	 * @return true if this token represents a comment.
-	 */
-//	public abstract boolean isComment();
-
-	/**
-	 * Determine if this token is whitespace. Sometimes whitespace should be
-	 * ignored (compiling code) other times they should be used (code
-	 * beautification). This provides a method to check in case you feel you
-	 * should ignore whitespace.
-	 * 
-	 * @return true if this token represents whitespace.
-	 */
-//	public abstract boolean isWhiteSpace();
-
-	/**
-	 * Determine if this token is an error. Lets face it, not all code conforms
-	 * to spec. The lexer might know about an error if a string literal is not
-	 * closed, for example.
-	 * 
-	 * @return true if this token is an error.
-	 */
-//	public abstract boolean isError();
-
-
-	/**
 	 * get a String that explains the error, if this token is an error.
 	 * 
 	 * @return a String that explains the error, if this token is an error, null

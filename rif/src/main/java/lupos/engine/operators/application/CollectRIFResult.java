@@ -6,21 +6,42 @@ import lupos.rif.datatypes.EqualityResult;
 import lupos.rif.datatypes.RuleResult;
 
 public class CollectRIFResult extends CollectResult {
+	
+	public CollectRIFResult(boolean oneTime) {
+		super(oneTime);
+	}
+
 	protected RuleResult rr;
 	protected EqualityResult er;
 
 	public void call(final QueryResult res) {
 		if (res != null) {
 			if (res instanceof EqualityResult) {
-				if (er == null)
-					er = new EqualityResult();
-				er.getEqualityResult().addAll(
-						((EqualityResult) res).getEqualityResult());
+				if(oneTime){
+					if (er == null){
+						er = (EqualityResult) res;
+					} else {
+						er.getEqualityResult().addAll(((EqualityResult) res).getEqualityResult());
+					}
+				} else {
+					if (er == null){
+						er = new EqualityResult();
+					}
+					er.getEqualityResult().addAll(((EqualityResult) res).getEqualityResult());
+				}
 			} else if (res instanceof RuleResult) {
-				if (rr == null)
-					rr = new RuleResult();
-				rr.getPredicateResults().addAll(
-						((RuleResult) res).getPredicateResults());
+				if(oneTime){
+					if (rr == null){
+						rr = (RuleResult) res;
+					} else {
+						rr.getPredicateResults().addAll(((RuleResult) res).getPredicateResults());
+					}
+				} else {
+					if (rr == null){
+						rr = new RuleResult();
+					}
+					rr.getPredicateResults().addAll(((RuleResult) res).getPredicateResults());
+				}
 			} else super.call(res);
 		}
 	}

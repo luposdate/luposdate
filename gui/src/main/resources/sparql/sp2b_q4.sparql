@@ -1,3 +1,6 @@
+# Select all distinct pairs of article author names for authors 
+# that have published in the same journal.
+
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX bench:   <http://localhost/vocabulary/bench/>
 PREFIX dc:      <http://purl.org/dc/elements/1.1/>

@@ -1,3 +1,5 @@
+# Check if the person John_Q_Public exists in the database.
+
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX person: <http://localhost/persons/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>

@@ -1,0 +1,8 @@
+PREFIX  p1: <http://www.p/>
+SELECT DISTINCT  
+              ?x330 ?b
+WHERE {
+?x301 p1:hasWonPrize ?x311;
+      p1:actedIn ?x330.
+?x330 p1:hasBudget ?b.
+} order by ?b

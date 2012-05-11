@@ -1,0 +1,9 @@
+# Return ordered distinct documents
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?document
+WHERE {
+  ?document rdf:type ?class.
+}
+order by ?document

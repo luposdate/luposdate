@@ -2122,7 +2122,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor,
 													System.out.println("Evaluate query ...");
 
 													if (evaluator instanceof CommonCoreQueryEvaluator || evaluator instanceof BasicIndexRuleEvaluator) {
-														final CollectRIFResult crr = new CollectRIFResult();
+														final CollectRIFResult crr = new CollectRIFResult(false);
 														Result resultOperator = (evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator(): ((BasicIndexRuleEvaluator)evaluator).getResultOperator();
 														resultOperator.addApplication(crr);
 														evaluator.evaluateQuery();

@@ -8,27 +8,56 @@ import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 
 public class CollectResult implements Application {
+	
+	protected final boolean oneTime;
 	protected QueryResult qr;
 	protected GraphResult gr;
 	protected List<BooleanResult> br_list;
 	protected Application.Type type;
+	
+	public CollectResult(final boolean oneTime){
+		this.oneTime = oneTime;
+	}
 
 	public void call(final QueryResult res) {
 		if (res != null) {
 			if (res instanceof GraphResult) {
-				if (gr == null)
-					gr = new GraphResult(((GraphResult) res).getTemplate());
-				gr.addAll((GraphResult) res);
+				if(oneTime){
+					if (gr == null){
+						gr = (GraphResult) res;
+					} else {
+						gr.addAll((GraphResult) res);
+					}
+				} else {
+					if (gr == null){
+						gr = new GraphResult(((GraphResult) res).getTemplate());
+					}
+					gr.addAll((GraphResult) res);
+				}
 			} else if (res instanceof BooleanResult) {
-				if (br_list == null)
+				if (br_list == null){
 					br_list = new LinkedList<BooleanResult>();
-				final BooleanResult br = new BooleanResult();
-				br.addAll(res);
-				br_list.add(br);
+				}
+				if(oneTime){
+					br_list.add((BooleanResult)res);
+				} else {
+					final BooleanResult br = new BooleanResult();
+					br.addAll(res);
+					br_list.add(br);
+				}
 			} else {
-				if (qr == null)
-					qr = QueryResult.createInstance();
-				qr.addAll(res);
+				if(oneTime){
+					if (qr == null){
+						qr = res;
+					} else {
+						qr.addAll(res);
+					}
+				} else {
+					if (qr == null){
+						qr = QueryResult.createInstance();
+					}
+					qr.addAll(res);
+				}
 			}
 		}
 	}

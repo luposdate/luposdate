@@ -11,7 +11,6 @@ import java.util.TreeMap;
 
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM;
-import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 import lupos.misc.Tuple;
 
 public class Colorer extends Thread {
@@ -405,7 +404,7 @@ public class Colorer extends Thread {
 						// check if the two tokens combined are an error
 						if(previousToken.getBeginChar()+previousToken.getContents().length()==token.getBeginChar()){
 							// there is no space between them => check them further...
-							// it looks like it is only a problem (for SPARQL queries/RIF rules/RDF data) if two reserved words are written together...
+							// it looks like it is a problem (for SPARQL queries/RIF rules/RDF data) if e.g. two reserved words are written together...
 							// decision is made in TYPE_ENUM classes...
 							if(token.getDescription().errorWhenDirectlyFollowingToken(previousToken.getDescription())){
 								token = token.create(token.getDescription().getErrorEnum(), previousToken.getContents()+token.getContents(), previousToken.getBeginChar());
@@ -413,6 +412,7 @@ public class Colorer extends Thread {
 						}
 					}
 					
+					// some scanners are not perfect: With this, we can allow to combine two tokens into one
 					TYPE_ENUM typeToBeCombined = token.getDescription().combineWith(token.getContents());
 					if(typeToBeCombined!=null){
 						ILuposToken nextToken2 = parser.getNextToken(content);
@@ -425,6 +425,9 @@ public class Colorer extends Thread {
 						}
 					}
 					
+					// make some type of context-sensitive check for errors:
+					// determine the next token and check if it is in the expected set of tokens of the current token
+					// (otherwise e.g. the RIF scanners seldom detects errors)
 					Set<ILuposToken> expected = token.getDescription().expectedNextTokens();
 					if(expected!=null){
 						nextToken = parser.getNextToken(content);

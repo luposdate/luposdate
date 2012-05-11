@@ -1,0 +1,1239 @@
+<http://www.p/actedIn> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/bornInLocation> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/bornInLocation> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/bornOnDate> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/bornOnDate> <http://www.p/range> "yagoTimeInterval".
+<http://www.p/createdOn> <http://www.p/range> "yagoTimePoint".
+<http://www.p/dealsWith> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/dealsWith> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/describes> <http://www.p/domain> "yagoURL".
+<http://www.p/diedInLocation> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/diedInLocation> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/diedOnDate> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/diedOnDate> <http://www.p/range> "yagoTimeInterval".
+<http://www.p/directed> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/discovered> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/domain> <http://www.p/domain> "yagoRelation".
+<http://www.p/domain> <http://www.p/range> "yagoClass".
+<http://www.p/establishedOnDate> <http://www.p/range> "yagoTimeInterval".
+<http://www.p/exports> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/exports> <http://www.p/range> "yagoClass".
+<http://www.p/familyNameOf> <http://www.p/domain> "yagoWord".
+<http://www.p/familyNameOf> <http://www.p/range> "wordnet_person_100007846".
+<http://www.p/familyNameOf> <http://www.p/subPropertyOf> "means".
+<http://www.p/foundIn> <http://www.p/domain> "yagoFact".
+<http://www.p/foundIn> <http://www.p/range> "yagoURL".
+<http://www.p/givenNameOf> <http://www.p/domain> "yagoWord".
+<http://www.p/givenNameOf> <http://www.p/range> "wordnet_person_100007846".
+<http://www.p/givenNameOf> <http://www.p/subPropertyOf> "means".
+<http://www.p/graduatedFrom> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/happenedIn> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/hasArea> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasArea> <http://www.p/range> "yagoArea".
+<http://www.p/hasBudget> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasCallingCode> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasCallingCode> <http://www.p/range> "yagoCallingCode".
+<http://www.p/hasCapital> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasCapital> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/hasChild> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/hasChild> <http://www.p/range> "wordnet_person_100007846".
+<http://www.p/hasCurrency> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasDoctoralAdvisor> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/hasDoctoralAdvisor> <http://www.p/range> "wordnet_person_100007846".
+<http://www.p/hasDuration> <http://www.p/range> "yagoDuration".
+<http://www.p/hasEconomicGrowth> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasEconomicGrowth> <http://www.p/range> "yagoProportion".
+<http://www.p/hasExpenses> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasExport> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasExport> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasGDPPPP> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasGDPPPP> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasGini> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasGini> <http://www.p/range> "yagoRationalNumber".
+<http://www.p/hasHDI> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasHDI> <http://www.p/range> "yagoRationalNumber".
+<http://www.p/hasHeight> <http://www.p/range> "yagoLength".
+<http://www.p/hasISBN> <http://www.p/range> "yagoISBN".
+<http://www.p/hasImdb> <http://www.p/domain> "wordnet_movie_106613686".
+<http://www.p/hasImdb> <http://www.p/range> "yagoIdentifier".
+<http://www.p/hasImport> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasImport> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasInflation> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasInflation> <http://www.p/range> "yagoProportion".
+<http://www.p/hasLabor> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasLabor> <http://www.p/range> "yagoNonNegativeInteger".
+<http://www.p/hasMotto> <http://www.p/range> "yagoString".
+<http://www.p/hasNominalGDP> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasNominalGDP> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasOfficialLanguage> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasOfficialLanguage> <http://www.p/range> "wordnet_language_106282651".
+<http://www.p/hasPages> <http://www.p/range> "yagoNonNegativeInteger".
+<http://www.p/hasPopulation> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasPopulation> <http://www.p/range> "yagoNonNegativeInteger".
+<http://www.p/hasPopulationDensity> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasPopulationDensity> <http://www.p/range> "yagoDensityPerArea".
+<http://www.p/hasPoverty> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasPoverty> <http://www.p/range> "yagoProportion".
+<http://www.p/hasProductionLanguage> <http://www.p/range> "wordnet_language_106282651".
+<http://www.p/hasRevenue> <http://www.p/range> "yagoMonetaryValue".
+<http://www.p/hasTLD> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasTLD> <http://www.p/range> "yagoTLD".
+<http://www.p/hasUTCOffset> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasUTCOffset> <http://www.p/range> "yagoInteger".
+<http://www.p/hasUnemployment> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasUnemployment> <http://www.p/range> "yagoProportion".
+<http://www.p/hasValue> <http://www.p/domain> "yagoQuantity".
+<http://www.p/hasValue> <http://www.p/range> "yagoNumber".
+<http://www.p/hasWaterPart> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/hasWaterPart> <http://www.p/range> "yagoProportion".
+<http://www.p/hasWebsite> <http://www.p/range> "yagoURL".
+<http://www.p/hasWeight> <http://www.p/range> "yagoWeight".
+<http://www.p/hasWonPrize> <http://www.p/range> "wordnet_award_106696483".
+<http://www.p/imports> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/imports> <http://www.p/range> "yagoClass".
+<http://www.p/inTimeZone> <http://www.p/domain> "wordnet_location_100027167".
+<http://www.p/interestedIn> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/isCalled> <http://www.p/range> "yagoWord".
+<http://www.p/isCitizenOf> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/isCitizenOf> <http://www.p/range> "wordnet_country_108544813".
+<http://www.p/isLeaderOf> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/isMarriedTo> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/isMarriedTo> <http://www.p/range> "wordnet_person_100007846".
+<http://www.p/isMemberOf> <http://www.p/domain> "yagoClass".
+<http://www.p/isMemberOf> <http://www.p/range> "yagoClass".
+<http://www.p/isMemberOf> <http://www.p/subPropertyOf> "isMereonymOf".
+<http://www.p/isNativeNameOf> <http://www.p/domain> "yagoWord".
+<http://www.p/isNativeNameOf> <http://www.p/subPropertyOf> "means".
+<http://www.p/isNumber> <http://www.p/range> "yagoNonNegativeInteger".
+<http://www.p/isOfGenre> <http://www.p/range> "yagoClass".
+<http://www.p/isPartOf> <http://www.p/domain> "yagoClass".
+<http://www.p/isPartOf> <http://www.p/range> "yagoClass".
+<http://www.p/isPartOf> <http://www.p/subPropertyOf> "isMereonymOf".
+<http://www.p/isSubstanceOf> <http://www.p/domain> "yagoClass".
+<http://www.p/isSubstanceOf> <http://www.p/range> "yagoClass".
+<http://www.p/isSubstanceOf> <http://www.p/subPropertyOf> "isMereonymOf".
+<http://www.p/livesIn> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/livesIn> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/madeCoverFor> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/means> <http://www.p/domain> "yagoWord".
+<http://www.p/originatesFrom> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/plays> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/plays> <http://www.p/range> "yagoClass".
+<http://www.p/politicianOf> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/politicianOf> <http://www.p/range> "wordnet_location_100027167".
+<http://www.p/producedInCountry> <http://www.p/range> "wordnet_country_108544813".
+<http://www.p/producedInYear> <http://www.p/range> "yagoYear".
+<http://www.p/range> <http://www.p/domain> "yagoRelation".
+<http://www.p/range> <http://www.p/range> "yagoClass".
+<http://www.p/subClassOf> <http://www.p/domain> "yagoClass".
+<http://www.p/subClassOf> <http://www.p/range> "yagoClass".
+<http://www.p/subPropertyOf> <http://www.p/domain> "yagoRelation".
+<http://www.p/subPropertyOf> <http://www.p/range> "yagoRelation".
+<http://www.p/type> <http://www.p/range> "yagoClass".
+<http://www.p/using> <http://www.p/domain> "yagoFact".
+<http://www.p/using> <http://www.p/range> "wordnet_computer_system_103085915".
+<http://www.p/worksAt> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/writtenInYear> <http://www.p/range> "yagoDate".
+<http://www.p/wrote> <http://www.p/domain> "wordnet_person_100007846".
+<http://www.p/Actrius> <http://www.p/hasDuration> "5400.0#s".
+<http://www.p/Actrius> <http://www.p/hasImdb> "0115462".
+<http://www.p/Actrius> <http://www.p/hasProductionLanguage> "Catalan_language".
+<http://www.p/Actrius> <http://www.p/isCalled> "Actrius".
+<http://www.p/Actrius> <http://www.p/isCalled> "Actrices".
+<http://www.p/Actrius> <http://www.p/means> "Actrius".
+<http://www.p/Actrius> <http://www.p/producedInCountry> <http://www.p/Spain>.
+<http://www.p/Actrius> <http://www.p/producedInYear> "1996".
+<http://www.p/Actrius> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Actrius> <http://www.p/type> <http://www.p/wikicategory_1996_films>.
+<http://www.p/Actrius> <http://www.p/type> <http://www.p/wikicategory_Catalan-language_films>.
+<http://www.p/Actrius> <http://www.p/type> <http://www.p/wikicategory_Spanish_films>.
+<http://www.p/Merc_Pons> <http://www.p/actedIn> <http://www.p/Actrius>.
+<http://www.p/Merc_Pons> <http://www.p/bornOnDate> "1966".
+<http://www.p/Merc_Pons> <http://www.p/type> <http://www.p/wikicategory_Catalan_actors>.
+<http://www.p/Merc_Pons> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Merc_Pons> <http://www.p/type> <http://www.p/wikicategory_Spanish_actors>.
+<http://www.p/Apocalypse_Now> <http://www.p/hasBudget> "31500000#dollar".
+<http://www.p/Apocalypse_Now> <http://www.p/hasDuration> "9180.0#s".
+<http://www.p/Apocalypse_Now> <http://www.p/hasImdb> "0078788".
+<http://www.p/Apocalypse_Now> <http://www.p/hasWonPrize> <http://www.p/Palme_dOr>.
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Dommedag nu".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apokalipsa danas".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Czas Apokalipsy".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apocalypse Now".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Ilmestyskirja. Nyt.".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apocalypse".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apocalypse Now Film".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apmmedag nu".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apas Apokalipsy".
+<http://www.p/Apocalypse_Now> <http://www.p/isCalled> "Apmestyskirja. Nyt.".
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_1979_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Epic_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Existentialist_works>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_short_fiction>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Francis_Ford_Coppola>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Films_featuring_a_Best_Supporting_Actor_Golden_Globe_winning_performance>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_French-language_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Khmer-language_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Palme_d Or_winners>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Surrealist_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_United_Artists_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Vietnam_War_films>.
+<http://www.p/Apocalypse_Now> <http://www.p/type> <http://www.p/wikicategory_Vietnamese-language_films>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Apocalypse_Now>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Wall_Street_film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/The_Final_Countdown_film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Catch_Me_if_You_Can>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/The_Subject_Was_Roses>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/The_Dead_Zone_film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/O_film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Gettysburg_film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Truth_or_Consequences_N.M._film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Who_Killed_the_Electric_Car?>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Rage_1972_film>.
+<http://www.p/Martin_Sheen> <http://www.p/actedIn> <http://www.p/Eyewitness_TV>.
+<http://www.p/Martin_Sheen> <http://www.p/bornOnDate> "1940-08-03".
+<http://www.p/Martin_Sheen> <http://www.p/directed> <http://www.p/Cadence_film>.
+<http://www.p/Martin_Sheen> <http://www.p/hasChild> <http://www.p/Renee_Estevez>.
+<http://www.p/Martin_Sheen> <http://www.p/hasHeight> "1.7018#m".
+<http://www.p/Martin_Sheen> <http://www.p/isCalled> "Martin Sheen".
+<http://www.p/Martin_Sheen> <http://www.p/livesIn> <http://www.p/Dayton_Ohio>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_American_activists>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_American_anti-war_activists>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_American_pacifists>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_Ohio_actors>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_People_from_Dayton_Ohio>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_Roman_Catholic_activists>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_American_Roman_Catholics>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_Spanish-Americans>.
+<http://www.p/Martin_Sheen> <http://www.p/type> <http://www.p/wikicategory_Irish-Americans>.
+<http://www.p/Animaniacs> <http://www.p/hasDuration> "1800.0#s".
+<http://www.p/Animaniacs> <http://www.p/hasImdb> "0105941".
+<http://www.p/Animaniacs> <http://www.p/hasWonPrize> <http://www.p/Peabody_Award>.
+<http://www.p/Animaniacs> <http://www.p/isCalled> "Animaniacs".
+<http://www.p/Animaniacs> <http://www.p/isCalled> "Animaniacy".
+<http://www.p/Animaniacs> <http://www.p/isCalled> "Animaaniset".
+<http://www.p/Animaniacs> <http://www.p/means> "Animaniacs".
+<http://www.p/Animaniacs> <http://www.p/means> "Animaniacs_video_game".
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_1993_television_program_debuts>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_1998_television_program_series_endings>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_Fox_network_shows>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_Kids_WB_shows>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_Peabody_Award_winners>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_Television_programs_featuring_anthropomorphic_characters>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._Cartoons>.
+<http://www.p/Animaniacs> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/Sherri_Stoner> <http://www.p/actedIn> <http://www.p/Animaniacs>.
+<http://www.p/Sherri_Stoner> <http://www.p/bornOnDate> "1965".
+<http://www.p/Sherri_Stoner> <http://www.p/type> <http://www.p/wikicategory_American_screenwriters>.
+<http://www.p/Sherri_Stoner> <http://www.p/type> <http://www.p/wikicategory_American_television_writers>.
+<http://www.p/Sherri_Stoner> <http://www.p/type> <http://www.p/wikicategory_American_voice_actors>.
+<http://www.p/Sherri_Stoner> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Sherri_Stoner> <http://www.p/type> <http://www.p/wikicategory_Women_screenwriters>.
+<http://www.p/Sherri_Stoner> <http://www.p/type> <http://www.p/wikicategory_Women_television_writers>.
+<http://www.p/Army_of_Darkness> <http://www.p/hasDuration> "4860.0#s".
+<http://www.p/Army_of_Darkness> <http://www.p/hasImdb> "0106308".
+<http://www.p/Army_of_Darkness> <http://www.p/hasPredecessor> <http://www.p/Evil_Dead_II>.
+<http://www.p/Army_of_Darkness> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Armee der Finsternis".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Vojska tame".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "L armata delle tenebre".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Army of Darkness".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Pimeyden armeija".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Arjska tame".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Ararmata delle tenebre".
+<http://www.p/Army_of_Darkness> <http://www.p/isCalled> "Armeyden armeija".
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_1990s_horror_films>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_1993_films>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_Comedy_horror_films>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_Feature_films>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Sam_Raimi>.
+<http://www.p/Army_of_Darkness> <http://www.p/type> <http://www.p/wikicategory_Time_travel_films>.
+<http://www.p/Marcus_Gilbert> <http://www.p/actedIn> <http://www.p/Army_of_Darkness>.
+<http://www.p/Marcus_Gilbert> <http://www.p/bornOnDate> "1958".
+<http://www.p/Marcus_Gilbert> <http://www.p/isCalled> "Marcus Gilbert".
+<http://www.p/Marcus_Gilbert> <http://www.p/type> <http://www.p/wikicategory_British_film_actors>.
+<http://www.p/Marcus_Gilbert> <http://www.p/type> <http://www.p/wikicategory_British_soap_opera_actors>.
+<http://www.p/Marcus_Gilbert> <http://www.p/type> <http://www.p/wikicategory_British_television_actors>.
+<http://www.p/Marcus_Gilbert> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/hasBudget> "110000#dollar".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/hasDuration> "11400.0#s".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/hasImdb> "0004972".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Zrozeni naroda".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Die Geburt einer Nation".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "El nacimiento de una nacion".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Naissance d une nation".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "La nascita di una nazione".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Narodziny narodu".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "The Birth of a Nation".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Kansakunnan synty".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "The Geburt einer Nation".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Th nacimiento de una nacion".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Thissance d une nation".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Th nascita di una nazione".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Throdziny narodu".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/isCalled> "Thnsakunnan synty".
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_1915_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_American_Civil_War_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_American_silent_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Epic_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_fiction_books>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_plays>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_D._W._Griffith>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Historical_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Race-related_films>.
+<http://www.p/The_Birth_of_a_Nation> <http://www.p/type> <http://www.p/wikicategory_Silent_films>.
+<http://www.p/Mae_Marsh> <http://www.p/actedIn> <http://www.p/The_Birth_of_a_Nation>.
+<http://www.p/Mae_Marsh> <http://www.p/actedIn> <http://www.p/Brute_Force_1914_film>.
+<http://www.p/Mae_Marsh> <http://www.p/bornOnDate> "1894".
+<http://www.p/Mae_Marsh> <http://www.p/diedOnDate> "1968".
+<http://www.p/Mae_Marsh> <http://www.p/isCalled> "Mae Marsh".
+<http://www.p/Mae_Marsh> <http://www.p/type> <http://www.p/wikicategory_American_actors>.
+<http://www.p/Mae_Marsh> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Mae_Marsh> <http://www.p/type> <http://www.p/wikicategory_American_silent_film_actors>.
+<http://www.p/Mae_Marsh> <http://www.p/type> <http://www.p/wikicategory_People_from_New_Mexico>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/hasDuration> "1500.0#s".
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/hasImdb> "0055662".
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/isCalled> "The Beverly Hillbillies".
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/livesIn> <http://www.p/Bel-Air_Los_Angeles_California>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wikicategory_1962_television_program_debuts>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wikicategory_1971_television_program_series_endings>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wikicategory_CBS_network_shows>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wikicategory_Fictional_hillbillies>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wikicategory_Nielsen_Ratings_winners>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wikicategory_Sitcoms>.
+<http://www.p/The_Beverly_Hillbillies> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/Sharon_Tate> <http://www.p/actedIn> <http://www.p/The_Beverly_Hillbillies>.
+<http://www.p/Sharon_Tate> <http://www.p/actedIn> <http://www.p/Eye_of_the_Devil>.
+<http://www.p/Sharon_Tate> <http://www.p/bornOnDate> "1943-01-24".
+<http://www.p/Sharon_Tate> <http://www.p/diedOnDate> "1969-08-09".
+<http://www.p/Sharon_Tate> <http://www.p/hasWebsite> <http://www.p/sharontate.net>.
+<http://www.p/Sharon_Tate> <http://www.p/isCalled> "Sharon Tate".
+<http://www.p/Sharon_Tate> <http://www.p/isMarriedTo> <http://www.p/Roman_Polanski>.
+<http://www.p/Sharon_Tate> <http://www.p/livesIn> <http://www.p/Dallas_Texas>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_American_models>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_American_murder_victims>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_Murdered_entertainers>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_Murdered_pregnant_women>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_People_from_Dallas>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_Texas_actors>.
+<http://www.p/Sharon_Tate> <http://www.p/type> <http://www.p/wikicategory_American_Roman_Catholics>.
+<http://www.p/Blade_Runner> <http://www.p/hasBudget> "28000000#dollar".
+<http://www.p/Blade_Runner> <http://www.p/hasDuration> "7020.0#s".
+<http://www.p/Blade_Runner> <http://www.p/hasImdb> "0083658".
+<http://www.p/Blade_Runner> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Blade_Runner> <http://www.p/isCalled> "Blade Runner film".
+<http://www.p/Blade_Runner> <http://www.p/isCalled> "Blade Runner".
+<http://www.p/Blade_Runner> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_1982_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Cantonese-language_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Dystopian_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Existentialist_works>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Fictional-language_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Fictional_characters_who_have_been_genetically_engineered>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_science_fiction_books>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_the_works_of_Philip_K._Dick>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Ridley_Scott>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_German-language_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Japanese-language_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Robot_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Science_fiction_action_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Tech-noir_films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Blade_Runner> <http://www.p/type> <http://www.p/wordnet_certificate_106471345>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Blade_Runner>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Splash_film>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Speedway_Junky>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Legal_Eagles>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Keeping_Up_with_the_Steins>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/My_Favorite_Martian_film>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Cord_film>.
+<http://www.p/Daryl_Hannah> <http://www.p/actedIn> <http://www.p/Hard_Cash>.
+<http://www.p/Daryl_Hannah> <http://www.p/bornOnDate> "1960-12-03".
+<http://www.p/Daryl_Hannah> <http://www.p/isCalled> "Daryl Hannah".
+<http://www.p/Daryl_Hannah> <http://www.p/livesIn> <http://www.p/Chicago>.
+<http://www.p/Daryl_Hannah> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Daryl_Hannah> <http://www.p/type> <http://www.p/wikicategory_Actors_from_Chicago>.
+<http://www.p/Daryl_Hannah> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Daryl_Hannah> <http://www.p/type> <http://www.p/wikicategory_American_vegetarians>.
+<http://www.p/Daryl_Hannah> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Daryl_Hannah> <http://www.p/type> <http://www.p/wikicategory_People_from_Chicago>.
+<http://www.p/Blazing_Saddles> <http://www.p/hasBudget> "2600000#dollar".
+<http://www.p/Blazing_Saddles> <http://www.p/hasImdb> "0071230".
+<http://www.p/Blazing_Saddles> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Blazing_Saddles> <http://www.p/isCalled> "Der wilde wilde Westen".
+<http://www.p/Blazing_Saddles> <http://www.p/isCalled> "Mezzogiorno e mezzo di fuoco".
+<http://www.p/Blazing_Saddles> <http://www.p/isCalled> "Blr wilde wilde Westen".
+<http://www.p/Blazing_Saddles> <http://www.p/isCalled> "Blzzogiorno e mezzo di fuoco".
+<http://www.p/Blazing_Saddles> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wikicategory_1974_films>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wikicategory_Parody_films>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Blazing_Saddles> <http://www.p/type> <http://www.p/wikicategory_Western_comedy_films>.
+<http://www.p/Harvey_Korman> <http://www.p/actedIn> <http://www.p/Blazing_Saddles>.
+<http://www.p/Harvey_Korman> <http://www.p/actedIn> <http://www.p/Huckleberry_Finn_1974_film>.
+<http://www.p/Harvey_Korman> <http://www.p/bornOnDate> "1927".
+<http://www.p/Harvey_Korman> <http://www.p/isCalled> "Harvey Korman".
+<http://www.p/Harvey_Korman> <http://www.p/type> <http://www.p/wikicategory_Actors_from_Chicago>.
+<http://www.p/Harvey_Korman> <http://www.p/type> <http://www.p/wikicategory_American_actors>.
+<http://www.p/Harvey_Korman> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Harvey_Korman> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Harvey_Korman> <http://www.p/type> <http://www.p/wikicategory_American_voice_actors>.
+<http://www.p/Harvey_Korman> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Blue_Velvet> <http://www.p/hasBudget> "6000000#dollar".
+<http://www.p/Blue_Velvet> <http://www.p/hasDuration> "7200.0#s".
+<http://www.p/Blue_Velvet> <http://www.p/hasImdb> "0090756".
+<http://www.p/Blue_Velvet> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Blue_Velvet> <http://www.p/isCalled> "Velluto blu".
+<http://www.p/Blue_Velvet> <http://www.p/isCalled> "Blue Velvet".
+<http://www.p/Blue_Velvet> <http://www.p/isCalled> "Bllluto blu".
+<http://www.p/Blue_Velvet> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wordnet_album_106591815>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_1986_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_Crime_thriller_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_David_Lynch>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_Independent_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_Mystery_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_North_Carolina_films>.
+<http://www.p/Blue_Velvet> <http://www.p/type> <http://www.p/wikicategory_Surrealist_films>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Blue_Velvet>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Quantum_Leap_TV_series>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Married_to_the_Mob>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Catchfire>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Human_Highway>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Compulsion_film>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/The_Boy_with_Green_Hair>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Long_Days_Journey_into_Night_1962_film>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Tracks_1976_film>.
+<http://www.p/Dean_Stockwell> <http://www.p/actedIn> <http://www.p/Mr._Wrong_film>.
+<http://www.p/Dean_Stockwell> <http://www.p/bornOnDate> "1936-03-05".
+<http://www.p/Dean_Stockwell> <http://www.p/hasHeight> "1.6764000000000001#m".
+<http://www.p/Dean_Stockwell> <http://www.p/isCalled> "Dean Stockwell".
+<http://www.p/Dean_Stockwell> <http://www.p/isMarriedTo> <http://www.p/Millie_Perkins>.
+<http://www.p/Dean_Stockwell> <http://www.p/livesIn> <http://www.p/Hollywood_Los_Angeles_California>.
+<http://www.p/Dean_Stockwell> <http://www.p/produced> <http://www.p/Citizen_Soldier_film>.
+<http://www.p/Dean_Stockwell> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Dean_Stockwell> <http://www.p/type> <http://www.p/wikicategory_American_child_actors>.
+<http://www.p/Dean_Stockwell> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Dean_Stockwell> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Dean_Stockwell> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Dean_Stockwell> <http://www.p/type> <http://www.p/wikicategory_People_from_Los_Angeles>.
+<http://www.p/Barry_Lyndon> <http://www.p/hasBudget> "11000000#dollar".
+<http://www.p/Barry_Lyndon> <http://www.p/hasDuration> "11040.0#s".
+<http://www.p/Barry_Lyndon> <http://www.p/hasImdb> "0072684".
+<http://www.p/Barry_Lyndon> <http://www.p/isCalled> "Barri lindon".
+<http://www.p/Barry_Lyndon> <http://www.p/isCalled> "Barry Lyndon film".
+<http://www.p/Barry_Lyndon> <http://www.p/isCalled> "Barry Lyndon".
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_1975_films>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_British_films>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_Drama_films>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Stanley_Kubrick>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_Period_films>.
+<http://www.p/Barry_Lyndon> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Marisa_Berenson> <http://www.p/actedIn> <http://www.p/Barry_Lyndon>.
+<http://www.p/Marisa_Berenson> <http://www.p/actedIn> <http://www.p/S.O.B._1981_film>.
+<http://www.p/Marisa_Berenson> <http://www.p/bornOnDate> "1946-02-15".
+<http://www.p/Marisa_Berenson> <http://www.p/isCalled> "Marisa Berenson".
+<http://www.p/Marisa_Berenson> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Marisa_Berenson> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Marisa_Berenson> <http://www.p/type> <http://www.p/wikicategory_American_models>.
+<http://www.p/Marisa_Berenson> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Marisa_Berenson> <http://www.p/type> <http://www.p/wikicategory_People_from_New_York_City>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/hasBudget> "7000000#dollar".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/hasDuration> "5160.0#s".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/hasImdb> "0103893".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/isCalled> "Buffy tueuse de vampires".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/isCalled> "Buffy - L'Ammazza Vampiri film".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/isCalled> "Buffy vampyyrintappaja elokuva".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/isCalled> "Buffy the Vampire Slayer film".
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_1990s_horror_films>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_1992_films>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_20th_Century_Fox_films>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_Comedy_horror_films>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Buffy_the_Vampire_Slayer_film> <http://www.p/type> <http://www.p/wikicategory_Teen_comedy_films>.
+<http://www.p/Hilary_Swank> <http://www.p/actedIn> <http://www.p/Buffy_the_Vampire_Slayer_film>.
+<http://www.p/Hilary_Swank> <http://www.p/actedIn> <http://www.p/The_Gift_film>.
+<http://www.p/Hilary_Swank> <http://www.p/bornOnDate> "1974-07-30".
+<http://www.p/Hilary_Swank> <http://www.p/hasHeight> "1.651#m".
+<http://www.p/Hilary_Swank> <http://www.p/hasWonPrize> <http://www.p/Academy_Award_for_Best_Actress>.
+<http://www.p/Hilary_Swank> <http://www.p/hasWonPrize> <http://www.p/Golden_Globe_Award_for_Best_Actress_-_Motion_Picture_Drama>.
+<http://www.p/Hilary_Swank> <http://www.p/isCalled> "Hilary Swank".
+<http://www.p/Hilary_Swank> <http://www.p/isMarriedTo> <http://www.p/Chad_Lowe>.
+<http://www.p/Hilary_Swank> <http://www.p/livesIn> <http://www.p/Lincoln_Nebraska>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_American_vegetarians>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_Best_Actress_Academy_Award_winners>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_People_from_Bellingham_Washington>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_People_from_Lincoln_Nebraska>.
+<http://www.p/Hilary_Swank> <http://www.p/type> <http://www.p/wikicategory_Washington_state_actors>.
+<http://www.p/Blackadder> <http://www.p/familyNameOf> "Todd_Blackadder".
+<http://www.p/Blackadder> <http://www.p/familyNameOf> "Elizabeth_Blackadder".
+<http://www.p/Blackadder> <http://www.p/familyNameOf> "Robert_Blackadder".
+<http://www.p/Blackadder> <http://www.p/familyNameOf> "Edmund_Blackadder".
+<http://www.p/Blackadder> <http://www.p/familyNameOf> "Mr._E._Blackadder".
+<http://www.p/Blackadder> <http://www.p/familyNameOf> "Lord_Edmund_Blackadder_V".
+<http://www.p/Blackadder> <http://www.p/hasDuration> "1800.0#s".
+<http://www.p/Blackadder> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Blackadder> <http://www.p/hasWebsite> <http://www.bbc.co.uk/comedy/blackadder>.
+<http://www.p/Blackadder> <http://www.p/isCalled> "Blackadder".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Crna Guja".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Sorte Orm".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Musta Kyy".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Svarte Orm".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Blna Guja".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Blrte Orm".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Blsta Kyy".
+<http://www.p/Blackadder> <http://www.p/isCalled> "Blarte Orm".
+<http://www.p/Blackadder> <http://www.p/isOfGenre> <http://www.p/wordnet_period_piece_103916581>.
+<http://www.p/Blackadder> <http://www.p/means> "Blackadder".
+<http://www.p/Blackadder> <http://www.p/means> "Blackadder_clipper".
+<http://www.p/Blackadder> <http://www.p/producedInCountry> <http://www.p/United_Kingdom>.
+<http://www.p/Blackadder> <http://www.p/type> <http://www.p/wikicategory_1983_television_program_debuts>.
+<http://www.p/Blackadder> <http://www.p/type> <http://www.p/wikicategory_BBC_television_sitcoms>.
+<http://www.p/Blackadder> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/Stephen_Fry> <http://www.p/actedIn> <http://www.p/Blackadder>.
+<http://www.p/Stephen_Fry> <http://www.p/actedIn> <http://www.p/Whatever_Happened_to_Harold_Smith?>.
+<http://www.p/Stephen_Fry> <http://www.p/bornOnDate> "1957-08-24".
+<http://www.p/Stephen_Fry> <http://www.p/created> <http://www.p/Bright_Young_Things>.
+<http://www.p/Stephen_Fry> <http://www.p/created> <http://www.p/Dambusters_2008_film>.
+<http://www.p/Stephen_Fry> <http://www.p/directed> <http://www.p/Bright_Young_Things>.
+<http://www.p/Stephen_Fry> <http://www.p/hasWebsite> <http://www.p/stephenfry.com>.
+<http://www.p/Stephen_Fry> <http://www.p/isCalled> "Stephen Fry".
+<http://www.p/Stephen_Fry> <http://www.p/livesIn> <http://www.p/London>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Alternate_history_writers>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Alumni_of_Queens_College_Cambridge>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Audio_book_narrators>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_comedians>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_comedy_writers>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_film_actors>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_game_show_hosts>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_novelists>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_radio_writers>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_science_fiction_writers>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_television_actors>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Gay_actors_from_the_United_Kingdom>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Gay_writers>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_LGBT_directors>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_LGBT_people_from_England>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_LGBT_writers_from_the_United_Kingdom>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_People_associated_with_the_University_of_Dundee>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_People_from_Hampstead>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_People_with_bipolar_disorder>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Real_people_associated_with_the_Harry_Potter_books>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Rectors_of_the_University_of_Dundee>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_LGBT_Jews>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_English_Jews>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Cambridge_Footlights>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Old_Uppinghamians>.
+<http://www.p/Stephen_Fry> <http://www.p/type> <http://www.p/wikicategory_Old_Greshamians>.
+<http://www.p/Stephen_Fry> <http://www.p/wrote> <http://www.p/The_Liar>.
+<http://www.p/Stephen_Fry> <http://www.p/wrote> <http://www.p/The_Stars_Tennis_Balls>.
+<http://www.p/Braveheart> <http://www.p/hasBudget> "53000000#dollar".
+<http://www.p/Braveheart> <http://www.p/hasDuration> "10620.0#s".
+<http://www.p/Braveheart> <http://www.p/hasImdb> "0112573".
+<http://www.p/Braveheart> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Braveheart> <http://www.p/isCalled> "Braveheart".
+<http://www.p/Braveheart> <http://www.p/isCalled> "Braveheart Film".
+<http://www.p/Braveheart> <http://www.p/isCalled> "Hrabro srce".
+<http://www.p/Braveheart> <http://www.p/isCalled> "Braveheart - Cuore impavido".
+<http://www.p/Braveheart> <http://www.p/isCalled> "Waleczne serce".
+<http://www.p/Braveheart> <http://www.p/isCalled> "Brleczne serce".
+<http://www.p/Braveheart> <http://www.p/means> "Braveheart".
+<http://www.p/Braveheart> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_1995_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_20th_Century_Fox_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_Best_Picture_Academy_Award_winners>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_Epic_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Mel_Gibson>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_Historical_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_Paramount_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_War_films>.
+<http://www.p/Braveheart> <http://www.p/type> <http://www.p/wikicategory_Wars_of_Scottish_Independence>.
+<http://www.p/Brendan_Gleeson> <http://www.p/actedIn> <http://www.p/Braveheart>.
+<http://www.p/Brendan_Gleeson> <http://www.p/actedIn> <http://www.p/Beowulf_2007_film>.
+<http://www.p/Brendan_Gleeson> <http://www.p/actedIn> <http://www.p/In_My_Country>.
+<http://www.p/Brendan_Gleeson> <http://www.p/actedIn> <http://www.p/I_Went_Down_Film>.
+<http://www.p/Brendan_Gleeson> <http://www.p/bornOnDate> "1955-03-29".
+<http://www.p/Brendan_Gleeson> <http://www.p/hasHeight> "1.8542000000000003#m".
+<http://www.p/Brendan_Gleeson> <http://www.p/isCalled> "Brendan Gleeson".
+<http://www.p/Brendan_Gleeson> <http://www.p/livesIn> <http://www.p/Dublin>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_Irish_character_actors>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_Irish_film_actors>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_Irish_stage_actors>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_Irish_television_actors>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_People_from_County_Dublin>.
+<http://www.p/Brendan_Gleeson> <http://www.p/type> <http://www.p/wikicategory_People_from_Dublin>.
+<http://www.p/Batman_1989_film> <http://www.p/hasBudget> "35000000#dollar".
+<http://www.p/Batman_1989_film> <http://www.p/hasDuration> "7560.0#s".
+<http://www.p/Batman_1989_film> <http://www.p/hasImdb> "0096895".
+<http://www.p/Batman_1989_film> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Batman_1989_film> <http://www.p/hasSuccessor> <http://www.p/Batman_Returns>.
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman Film".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman 1989".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman film 1989".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman filme 1989".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman film tahun 1989".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman film 1989".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman filme".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman film#Batman .281989.29".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman film z roku 1989".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman vuoden 1989 elokuva".
+<http://www.p/Batman_1989_film> <http://www.p/isCalled> "Batman film".
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_1989_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Batman_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Best_Art_Direction_Academy_Award_winners>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Feature_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Tim_Burton>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Pinewood_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Superhero_films>.
+<http://www.p/Batman_1989_film> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Batman_1989_film>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Shane_film>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Sudden_Fear>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/City_Slickers>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Angels_Revenge>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Barabbas_1962_film>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Bagdad_Cafe>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Tango__Cash>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/I_Died_a_Thousand_Times>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Companeros>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/The_Horsemen>.
+<http://www.p/Jack_Palance> <http://www.p/actedIn> <http://www.p/Africa_Express>.
+<http://www.p/Jack_Palance> <http://www.p/bornOnDate> "1919-02-18".
+<http://www.p/Jack_Palance> <http://www.p/diedOnDate> "2006-11-10".
+<http://www.p/Jack_Palance> <http://www.p/hasWonPrize> <http://www.p/Academy_Award_for_Best_Supporting_Actor>.
+<http://www.p/Jack_Palance> <http://www.p/hasWonPrize> <http://www.p/Golden_Globe_Award_for_Best_Supporting_Actor_-_Motion_Picture>.
+<http://www.p/Jack_Palance> <http://www.p/isCalled> "Jack Palance".
+<http://www.p/Jack_Palance> <http://www.p/livesIn> <http://www.p/Hazle_Township_Pennsylvania>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_American_stage_actors>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_Pennsylvania_actors>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_People_from_the_Scranton--Wilkes-Barre_metropolitan_area>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_Spaghetti_Western_actors>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_Stanford_University_alumni>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_Western_film_actors>.
+<http://www.p/Jack_Palance> <http://www.p/type> <http://www.p/wikicategory_Ukrainian-Americans>.
+<http://www.p/Batman_1966_film> <http://www.p/hasBudget> "1377800#dollar".
+<http://www.p/Batman_1966_film> <http://www.p/hasDuration> "6300.0#s".
+<http://www.p/Batman_1966_film> <http://www.p/hasImdb> "0060153".
+<http://www.p/Batman_1966_film> <http://www.p/isCalled> "Batman 1966".
+<http://www.p/Batman_1966_film> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Batman_1966_film> <http://www.p/type> <http://www.p/wikicategory_1966_films>.
+<http://www.p/Batman_1966_film> <http://www.p/type> <http://www.p/wikicategory_20th_Century_Fox_films>.
+<http://www.p/Batman_1966_film> <http://www.p/type> <http://www.p/wikicategory_Batman_films>.
+<http://www.p/Batman_1966_film> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_television_series>.
+<http://www.p/Batman_1966_film> <http://www.p/type> <http://www.p/wikicategory_Superhero_films>.
+<http://www.p/Adam_West> <http://www.p/actedIn> <http://www.p/Batman_1966_film>.
+<http://www.p/Adam_West> <http://www.p/actedIn> <http://www.p/Batman_TV_series>.
+<http://www.p/Adam_West> <http://www.p/actedIn> <http://www.p/The_Batman_TV_series>.
+<http://www.p/Adam_West> <http://www.p/bornOnDate> "1928-09-19".
+<http://www.p/Adam_West> <http://www.p/hasHeight> "1.8796000000000002#m".
+<http://www.p/Adam_West> <http://www.p/hasWebsite> <http://www.p/adamwest.com>.
+<http://www.p/Adam_West> <http://www.p/isCalled> "Adam West".
+<http://www.p/Adam_West> <http://www.p/livesIn> <http://www.p/Walla_Walla_Washington>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_American_character_actors>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_American_voice_actors>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_People_from_Seattle>.
+<http://www.p/Adam_West> <http://www.p/type> <http://www.p/wikicategory_Whitman_College_alumni>.
+<http://www.p/Batman_Returns> <http://www.p/hasBudget> "80000000#dollar".
+<http://www.p/Batman_Returns> <http://www.p/hasDuration> "7560.0#s".
+<http://www.p/Batman_Returns> <http://www.p/hasImdb> "0103776".
+<http://www.p/Batman_Returns> <http://www.p/hasPredecessor> <http://www.p/Batman_1989_film>.
+<http://www.p/Batman_Returns> <http://www.p/hasSuccessor> <http://www.p/Batman_Forever>.
+<http://www.p/Batman_Returns> <http://www.p/isCalled> "Batmani tagasitulek".
+<http://www.p/Batman_Returns> <http://www.p/isCalled> "Batman - Il ritorno".
+<http://www.p/Batman_Returns> <http://www.p/isCalled> "Batman Returns".
+<http://www.p/Batman_Returns> <http://www.p/isCalled> "Batman sa vracia".
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_1992_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Batman_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Christmas_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Feature_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Films_about_penguins>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Tim_Burton>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Pinewood_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Sequel_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Superhero_films>.
+<http://www.p/Batman_Returns> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Batman_Returns>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Kangaroo_Jack>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/The_Rundown>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/New_Rose_Hotel_film>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Joe_Dirt>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/The_Affair_of_the_Necklace>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Envy_film>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Scotland_Pa.>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Around_the_Bend>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Poolhall_Junkies>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/The_Opportunists>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Vendetta_1999_film>.
+<http://www.p/Christopher_Walken> <http://www.p/actedIn> <http://www.p/Wild_Side_1995_film>.
+<http://www.p/Christopher_Walken> <http://www.p/bornOnDate> "1943-03-31".
+<http://www.p/Christopher_Walken> <http://www.p/hasHeight> "1.9050000000000002#m".
+<http://www.p/Christopher_Walken> <http://www.p/hasWonPrize> <http://www.p/Academy_Award_for_Best_Supporting_Actor>.
+<http://www.p/Christopher_Walken> <http://www.p/hasWonPrize> <http://www.p/BAFTA_Award_for_Best_Actor_in_a_Supporting_Role>.
+<http://www.p/Christopher_Walken> <http://www.p/isCalled> "Christopher Walken".
+<http://www.p/Christopher_Walken> <http://www.p/isMarriedTo> <http://www.p/Georgianne_Walken>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_Actors_Studio_alumni>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_American_character_actors>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_American_child_actors>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_American_tap_dancers>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_American_video_game_actors>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_New_York_actors>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_People_from_Queens>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_German-Americans>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_Scottish-Americans>.
+<http://www.p/Christopher_Walken> <http://www.p/type> <http://www.p/wikicategory_American_Methodists>.
+<http://www.p/Batman__Robin_film> <http://www.p/hasBudget> "125000000#dollar".
+<http://www.p/Batman__Robin_film> <http://www.p/hasDuration> "7500.0#s".
+<http://www.p/Batman__Robin_film> <http://www.p/hasImdb> "0118688".
+<http://www.p/Batman__Robin_film> <http://www.p/hasPredecessor> <http://www.p/Batman_Forever>.
+<http://www.p/Batman__Robin_film> <http://www.p/hasSuccessor> <http://www.p/Batman_Begins>.
+<http://www.p/Batman__Robin_film> <http://www.p/isCalled> "Batman y Robin".
+<http://www.p/Batman__Robin_film> <http://www.p/isCalled> "Batman ja Robin".
+<http://www.p/Batman__Robin_film> <http://www.p/isCalled> "Batman and Robin".
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_1997_films>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_Batman_films>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_Feature_films>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Joel_Schumacher>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_Sequel_films>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_Superhero_films>.
+<http://www.p/Batman__Robin_film> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Alicia_Silverstone> <http://www.p/actedIn> <http://www.p/Batman__Robin_film>.
+<http://www.p/Alicia_Silverstone> <http://www.p/actedIn> <http://www.p/Excess_Baggage>.
+<http://www.p/Alicia_Silverstone> <http://www.p/actedIn> <http://www.p/Candles_on_Bay_Street>.
+<http://www.p/Alicia_Silverstone> <http://www.p/bornOnDate> "1976-10-04".
+<http://www.p/Alicia_Silverstone> <http://www.p/hasHeight> "1.7018#m".
+<http://www.p/Alicia_Silverstone> <http://www.p/isCalled> "Alicia Silverstone".
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_models>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_stage_actors>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_vegans>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_voice_actors>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_California_actors>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_Jewish_actors>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_Jewish_American_models>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_People_from_San_Francisco>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_People_from_the_San_Francisco_Bay_Area>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_English_Americans>.
+<http://www.p/Alicia_Silverstone> <http://www.p/type> <http://www.p/wikicategory_American_Jews>.
+<http://www.p/Batman_Forever> <http://www.p/hasBudget> "100000000#dollar".
+<http://www.p/Batman_Forever> <http://www.p/hasDuration> "7320.0#s".
+<http://www.p/Batman_Forever> <http://www.p/hasImdb> "0112462".
+<http://www.p/Batman_Forever> <http://www.p/hasPredecessor> <http://www.p/Batman_Returns>.
+<http://www.p/Batman_Forever> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Batman_Forever> <http://www.p/hasSuccessor> <http://www.p/Batman__Robin_film>.
+<http://www.p/Batman_Forever> <http://www.p/isCalled> "Batman igaveseks".
+<http://www.p/Batman_Forever> <http://www.p/isCalled> "Batman zauvijek".
+<http://www.p/Batman_Forever> <http://www.p/isCalled> "Batman Forever".
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wordnet_album_106591815>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_1995_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_Batman_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_Feature_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Joel_Schumacher>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_Sequel_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_Superhero_films>.
+<http://www.p/Batman_Forever> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Chris_ODonnell> <http://www.p/actedIn> <http://www.p/Batman_Forever>.
+<http://www.p/Chris_ODonnell> <http://www.p/actedIn> <http://www.p/Blue_Sky_film>.
+<http://www.p/Chris_ODonnell> <http://www.p/bornOnDate> "1970-06-26".
+<http://www.p/Chris_ODonnell> <http://www.p/hasWonPrize> <http://www.p/Golden_Globe_Award_for_Best_Supporting_Actor_-_Motion_Picture>.
+<http://www.p/Chris_ODonnell> <http://www.p/isCalled> "Chris O'Donnell".
+<http://www.p/Chris_ODonnell> <http://www.p/produced> <http://www.p/The_Bachelor_film>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_Actors_from_Chicago>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_American_male_models>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_American_stage_actors>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_Boston_College_alumni>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_People_from_Winnetka_Illinois>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_American_Roman_Catholics>.
+<http://www.p/Chris_ODonnell> <http://www.p/type> <http://www.p/wikicategory_Irish-Americans>.
+<http://www.p/Citizen_Kane> <http://www.p/hasBudget> "686034#dollar".
+<http://www.p/Citizen_Kane> <http://www.p/hasDuration> "7140.0#s".
+<http://www.p/Citizen_Kane> <http://www.p/hasImdb> "0033467".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Den store mand".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Quarto potere film".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Civis Cane".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Pilietis Keinas".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Obywatel Kane".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Citizen Kane".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Kansalainen Kane".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "En sensation".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Cin store mand".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Ciarto potere film".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Cilietis Keinas".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Ciywatel Kane".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Cinsalainen Kane".
+<http://www.p/Citizen_Kane> <http://www.p/isCalled> "Ci sensation".
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_1941_films>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_Directorial_debut_films>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_Drama_films>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_Films_about_the_media>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Orson_Welles>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_RKO_films>.
+<http://www.p/Citizen_Kane> <http://www.p/type> <http://www.p/wikicategory_San_Diego_films>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/Citizen_Kane>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/All_That_Heaven_Allows>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/Johnny_Belinda_1948_film>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/The_Swan_film>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/The_Campbell_Playhouse>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/The_Stratton_Story>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/Jane_Eyre_1944_film>.
+<http://www.p/Agnes_Moorehead> <http://www.p/actedIn> <http://www.p/The_Revolt_of_Mamie_Stover_film>.
+<http://www.p/Agnes_Moorehead> <http://www.p/bornOnDate> "1900-12-06".
+<http://www.p/Agnes_Moorehead> <http://www.p/diedOnDate> "1974-04-30".
+<http://www.p/Agnes_Moorehead> <http://www.p/hasWonPrize> <http://www.p/Golden_Globe_Award_for_Best_Supporting_Actress_-_Motion_Picture>.
+<http://www.p/Agnes_Moorehead> <http://www.p/isCalled> "Agnes Moorehead".
+<http://www.p/Agnes_Moorehead> <http://www.p/livesIn> <http://www.p/Clinton_Massachusetts>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_American_character_actors>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_American_radio_actors>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_American_stage_actors>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_People_from_St._Louis_Missouri>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_People_from_Worcester_County_Massachusetts>.
+<http://www.p/Agnes_Moorehead> <http://www.p/type> <http://www.p/wikicategory_American_Presbyterians>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Tigar i zmaj".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Tiger and Dragon".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Tigre et dragon".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "La tigre e il dragone".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Przyczajony tygrys ukryty smok".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Wo hu cang long".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Crouching Tiger Hidden Dragon".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Kaplan ve Ejderha".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Crgar i zmaj".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Crger and Dragon".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Crgre et dragon".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Cr tigre e il dragone".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Crzyczajony tygrys ukryty smok".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Cr hu cang long".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/isCalled> "Crplan ve Ejderha".
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_2000_films>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Best_Foreign_Language_Film_Academy_Award_winners>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Best_Original_Music_Score_Academy_Award_winners>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Chinese_sword_era_films>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_fiction_books>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Mandarin-language_films>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Martial_arts_films>.
+<http://www.p/Crouching_Tiger_Hidden_Dragon> <http://www.p/type> <http://www.p/wikicategory_Sony_Pictures_Classics_films>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/actedIn> <http://www.p/Crouching_Tiger_Hidden_Dragon>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/actedIn> <http://www.p/House_of_Harmony>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/actedIn> <http://www.p/Wing_Chun_film>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/bornOnDate> "1946-12-04".
+<http://www.p/Cheng_Pei-pei> <http://www.p/isCalled> "Cheng Pei-pei".
+<http://www.p/Cheng_Pei-pei> <http://www.p/livesIn> <http://www.p/Shanghai>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/type> <http://www.p/wikicategory_Hong_Kong_actors>.
+<http://www.p/Cheng_Pei-pei> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Chariots_of_Fire> <http://www.p/hasBudget> "5500000#dollar".
+<http://www.p/Chariots_of_Fire> <http://www.p/hasDuration> "7380.0#s".
+<http://www.p/Chariots_of_Fire> <http://www.p/hasImdb> "0082158".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Die Stunde des Siegers".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chariots Of Fire".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Les Chariots de feu film".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Momenti di gloria".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Ildvognene".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Rydwany ognia".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chariots of Fire".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Tulivaunut".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Che Stunde des Siegers".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chs Chariots de feu film".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chmenti di gloria".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chdvognene".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chdwany ognia".
+<http://www.p/Chariots_of_Fire> <http://www.p/isCalled> "Chlivaunut".
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_1981_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_20th_Century_Fox_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_Best_Picture_Academy_Award_winners>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_British_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_Christian_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_French-language_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_Running_films>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_Sports_films_based_on_actual_events>.
+<http://www.p/Chariots_of_Fire> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Alice_Krige> <http://www.p/actedIn> <http://www.p/Chariots_of_Fire>.
+<http://www.p/Alice_Krige> <http://www.p/actedIn> <http://www.p/Twilight_of_the_Ice_Nymphs>.
+<http://www.p/Alice_Krige> <http://www.p/bornOnDate> "1954-06-28".
+<http://www.p/Alice_Krige> <http://www.p/hasHeight> "1.651#m".
+<http://www.p/Alice_Krige> <http://www.p/isCalled> "Alice Krige".
+<http://www.p/Alice_Krige> <http://www.p/isMarriedTo> <http://www.p/Paul_Schoolman>.
+<http://www.p/Alice_Krige> <http://www.p/livesIn> <http://www.p/Upington_Northern_Cape>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_Alumni_of_the_Central_School_of_Speech_and_Drama>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_British_film_actors>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_British_television_actors>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_People_from_the_Northern_Cape_Province>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_South_African_actors>.
+<http://www.p/Alice_Krige> <http://www.p/type> <http://www.p/wikicategory_Old_Rhodians>.
+<http://www.p/Cheers> <http://www.p/hasDuration> "1440.0#s".
+<http://www.p/Cheers> <http://www.p/hasImdb> "0083399".
+<http://www.p/Cheers> <http://www.p/hasSuccessor> <http://www.p/Frasier>.
+<http://www.p/Cheers> <http://www.p/isCalled> "Cheers".
+<http://www.p/Cheers> <http://www.p/isCalled> "Sams Bar".
+<http://www.p/Cheers> <http://www.p/isCalled> "Cin cin serie televisiva".
+<http://www.p/Cheers> <http://www.p/isCalled> "Chms Bar".
+<http://www.p/Cheers> <http://www.p/isCalled> "Chn cin serie televisiva".
+<http://www.p/Cheers> <http://www.p/means> "Cheers".
+<http://www.p/Cheers> <http://www.p/means> "Cheers_album".
+<http://www.p/Cheers> <http://www.p/means> "Cheers_Soda".
+<http://www.p/Cheers> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_1982_television_program_debuts>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_1990s_comedy_TV_shows_in_the_United_States>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_1993_television_program_series_endings>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_Fictional_bars_and_inns>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_NBC_network_shows>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_Nielsen_Ratings_winners>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wikicategory_Sitcoms>.
+<http://www.p/Cheers> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/George_Wendt> <http://www.p/actedIn> <http://www.p/Cheers>.
+<http://www.p/George_Wendt> <http://www.p/actedIn> <http://www.p/Dreamscape_film>.
+<http://www.p/George_Wendt> <http://www.p/actedIn> <http://www.p/Guilty_by_Suspicion>.
+<http://www.p/George_Wendt> <http://www.p/actedIn> <http://www.p/Ruperts_Land_film>.
+<http://www.p/George_Wendt> <http://www.p/bornOnDate> "1948-10-17".
+<http://www.p/George_Wendt> <http://www.p/isCalled> "George Wendt".
+<http://www.p/George_Wendt> <http://www.p/livesIn> <http://www.p/Chicago>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_Actors_from_Chicago>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_Illinois_actors>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_Rockhurst_University_alumni>.
+<http://www.p/George_Wendt> <http://www.p/type> <http://www.p/wikicategory_Second_City_alumni>.
+<http://www.p/Brass_Eye> <http://www.p/hasDuration> "1500.0#s".
+<http://www.p/Brass_Eye> <http://www.p/producedInCountry> <http://www.p/United_Kingdom>.
+<http://www.p/Brass_Eye> <http://www.p/type> <http://www.p/wikicategory_Parodies>.
+<http://www.p/Brass_Eye> <http://www.p/type> <http://www.p/wikicategory_Satirical_television_programmes>.
+<http://www.p/Brass_Eye> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/actedIn> <http://www.p/Brass_Eye>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/actedIn> <http://www.p/The_Day_Today>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/bornInLocation> <http://www.p/Bristol>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/bornOnDate> "1965-09-05".
+<http://www.p/Chris_Morris_satirist> <http://www.p/created> <http://www.p/Brass_Eye>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/created> <http://www.p/The_Day_Today>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/created> <http://www.p/Jam_TV_series>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/created> <http://www.p/Nathan_Barley>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/created> <http://www.p/Why_Bother?>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/isCitizenOf> <http://www.p/United_Kingdom>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/isOfGenre> <http://www.p/wordnet_black_humor_107068133>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wordnet_comedian_109940146>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_Alumni_of_the_University_of_Bristol>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_British_radio_writers>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_British_satirists>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_English_comedians>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_English_satirists>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_People_of_Irish_descent_in_Great_Britain>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_Shock_jocks>.
+<http://www.p/Chris_Morris_satirist> <http://www.p/type> <http://www.p/wikicategory_Transgressive_artists>.
+<http://www.p/Destry_Rides_Again> <http://www.p/hasDuration> "5640.0#s".
+<http://www.p/Destry_Rides_Again> <http://www.p/hasImdb> "0031225".
+<http://www.p/Destry_Rides_Again> <http://www.p/isCalled> "Der grosse Bluff 1939".
+<http://www.p/Destry_Rides_Again> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Destry_Rides_Again> <http://www.p/type> <http://www.p/wikicategory_1939_films>.
+<http://www.p/Destry_Rides_Again> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Destry_Rides_Again> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_western_novels>.
+<http://www.p/Destry_Rides_Again> <http://www.p/type> <http://www.p/wikicategory_Gambling_films>.
+<http://www.p/Destry_Rides_Again> <http://www.p/type> <http://www.p/wikicategory_Western_comedy_films>.
+<http://www.p/Mischa_Auer> <http://www.p/actedIn> <http://www.p/Destry_Rides_Again>.
+<http://www.p/Mischa_Auer> <http://www.p/bornOnDate> "1905-11-17".
+<http://www.p/Mischa_Auer> <http://www.p/diedOnDate> "1967-03-05".
+<http://www.p/Mischa_Auer> <http://www.p/isCalled> "Mischa Auer".
+<http://www.p/Mischa_Auer> <http://www.p/isCalled> "Misha Auer".
+<http://www.p/Mischa_Auer> <http://www.p/livesIn> <http://www.p/Saint_Petersburg>.
+<http://www.p/Mischa_Auer> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Mischa_Auer> <http://www.p/type> <http://www.p/wikicategory_People_from_Saint_Petersburg>.
+<http://www.p/Mischa_Auer> <http://www.p/type> <http://www.p/wikicategory_Russian_film_actors>.
+<http://www.p/Doctor_Who> <http://www.p/hasDuration> "1500.0#s".
+<http://www.p/Doctor_Who> <http://www.p/hasImdb> "0056751".
+<http://www.p/Doctor_Who> <http://www.p/hasWebsite> <http://www.bbc.co.uk/doctorwho>.
+<http://www.p/Doctor_Who> <http://www.p/isCalled> "Doutor Who".
+<http://www.p/Doctor_Who> <http://www.p/isCalled> "Ki vagy doki?".
+<http://www.p/Doctor_Who> <http://www.p/isCalled> "Doctor Who".
+<http://www.p/Doctor_Who> <http://www.p/isCalled> "Do vagy doki?".
+<http://www.p/Doctor_Who> <http://www.p/producedInCountry> <http://www.p/United_Kingdom>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_1963_television_program_debuts>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_1989_television_program_series_endings>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_2005_television_program_debuts>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_BBC_television_programmes>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_BBC_Wales_television_programmes>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_British_science_fiction_television_programmes>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_Space_operas>.
+<http://www.p/Doctor_Who> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/Companion_Doctor_Who> <http://www.p/actedIn> <http://www.p/Doctor_Who>.
+<http://www.p/Companion_Doctor_Who> <http://www.p/type> <http://www.p/wikicategory_Fictional_sidekicks>.
+<http://www.p/Dressed_to_Kill> <http://www.p/hasBudget> "6500000#dollar".
+<http://www.p/Dressed_to_Kill> <http://www.p/hasDuration> "6300.0#s".
+<http://www.p/Dressed_to_Kill> <http://www.p/hasImdb> "0080661".
+<http://www.p/Dressed_to_Kill> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Dressed_to_Kill> <http://www.p/isCalled> "Pulsions".
+<http://www.p/Dressed_to_Kill> <http://www.p/isCalled> "Dressed to Kill".
+<http://www.p/Dressed_to_Kill> <http://www.p/isCalled> "Tappava tunnustus".
+<http://www.p/Dressed_to_Kill> <http://www.p/isCalled> "Drlsions".
+<http://www.p/Dressed_to_Kill> <http://www.p/isCalled> "Drppava tunnustus".
+<http://www.p/Dressed_to_Kill> <http://www.p/producedInCountry> <http://www.p/United_States>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_1980_films>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_1980s_horror_films>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Brian_De_Palma>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_Independent_films>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_Psychological_thriller_films>.
+<http://www.p/Dressed_to_Kill> <http://www.p/type> <http://www.p/wikicategory_Slasher_films>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/actedIn> <http://www.p/Dressed_to_Kill>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/actedIn> <http://www.p/Terror_in_the_Aisles>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/bornOnDate> "1950-06-24".
+<http://www.p/Nancy_Allen_actress> <http://www.p/isCalled> "Nancy Allen".
+<http://www.p/Nancy_Allen_actress> <http://www.p/isMarriedTo> <http://www.p/Brian_De_Palma>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/livesIn> <http://www.p/New_York_City>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/type> <http://www.p/wikicategory_American_television_actors>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Nancy_Allen_actress> <http://www.p/type> <http://www.p/wikicategory_People_from_New_York_City>.
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/hasDuration> "1800.0#s".
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/hasImdb> "0061247".
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/producedInCountry> <http://www.p/United_Kingdom>.
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/type> <http://www.p/wikicategory_1967_television_program_debuts>.
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/type> <http://www.p/wikicategory_British_television_sketch_shows>.
+<http://www.p/Do_Not_Adjust_Your_Set> <http://www.p/type> <http://www.p/wordnet_series_108457976>.
+<http://www.p/Michael_Palin> <http://www.p/actedIn> <http://www.p/Do_Not_Adjust_Your_Set>.
+<http://www.p/Michael_Palin> <http://www.p/actedIn> <http://www.p/Twice_a_Fortnight>.
+<http://www.p/Michael_Palin> <http://www.p/bornOnDate> "1943".
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/Monty_Pythons_Flying_Circus>.
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/And_Now_for_Something_Completely_Different>.
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/Parrot_Sketch_Not_Included_-_20_Years_of_Monty_Python>.
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/Python_Night_-_30_Years_of_Monty_Python>.
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/Monty_Python_Live_At_Aspen>.
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/Time_Bandits>.
+<http://www.p/Michael_Palin> <http://www.p/created> <http://www.p/Monty_Pythons_The_Meaning_of_Life>.
+<http://www.p/Michael_Palin> <http://www.p/isCalled> "Michael Palin".
+<http://www.p/Michael_Palin> <http://www.p/produced> <http://www.p/Another_Monty_Python_Record>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_Alumni_of_Brasenose_College_Oxford>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_Commanders_of_the_Order_of_the_British_Empire>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_comedians>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_comedy_writers>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_diarists>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_film_actors>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_screenwriters>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_television_actors>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_television_presenters>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_television_writers>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_English_travel_writers>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_Honorary_Fellows_of_Brasenose_College_Oxford>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_People_from_Sheffield>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_People_from_Suffolk>.
+<http://www.p/Michael_Palin> <http://www.p/type> <http://www.p/wikicategory_Old_Salopians>.
+<http://www.p/Michael_Palin> <http://www.p/wrote> <http://www.p/Himalaya_book>.
+<http://www.p/Michael_Palin> <http://www.p/wrote> <http://www.p/Pole_to_Pole_book>.
+<http://www.p/Michael_Palin> <http://www.p/wrote> <http://www.p/Full_Circle_-_Michael_Palin>.
+<http://www.p/Michael_Palin> <http://www.p/wrote> <http://www.p/Around_the_World_in_80_Days_Michael_Palin_book>.
+<http://www.p/Michael_Palin> <http://www.p/wrote> <http://www.p/Sahara_Michael_Palin>.
+<http://www.p/Michael_Palin> <http://www.p/wrote> <http://www.p/Hemingway_Adventure_book>.
+<http://www.p/Das_Boot_film> <http://www.p/hasDuration> "12960.0#s".
+<http://www.p/Das_Boot_film> <http://www.p/hasImdb> "0082096".
+<http://www.p/Das_Boot_film> <http://www.p/hasProductionLanguage> "German_language".
+<http://www.p/Das_Boot_film> <http://www.p/isCalled> "El submarino".
+<http://www.p/Das_Boot_film> <http://www.p/isCalled> "Das Boot film".
+<http://www.p/Das_Boot_film> <http://www.p/isCalled> "U-Boot 96".
+<http://www.p/Das_Boot_film> <http://www.p/isCalled> "Das Boot".
+<http://www.p/Das_Boot_film> <http://www.p/isCalled> "Da submarino".
+<http://www.p/Das_Boot_film> <http://www.p/isCalled> "DaBoot 96".
+<http://www.p/Das_Boot_film> <http://www.p/producedInCountry> <http://www.p/West_Germany>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_1981_films>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_Columbia_Pictures_films>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_military_fiction>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Wolfgang_Petersen>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_German-language_films>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_West_German_films>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_World_War_II_films>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_World_War_II_television_programmes>.
+<http://www.p/Das_Boot_film> <http://www.p/type> <http://www.p/wikicategory_Television_miniseries>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/actedIn> <http://www.p/Das_Boot_film>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/bornOnDate> "1956".
+<http://www.p/Herbert_Groenemeyer> <http://www.p/created> <http://www.p/Mensch_album>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/created> <http://www.p/12_Herbert_Groenemeyer_album>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/type> <http://www.p/wikicategory_German_actors>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/type> <http://www.p/wikicategory_German_musicians>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/type> <http://www.p/wikicategory_German_singers>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Herbert_Groenemeyer> <http://www.p/type> <http://www.p/wikicategory_People_from_Goettingen>.
+<http://www.p/Escape_from_New_York> <http://www.p/hasBudget> "7000000#dollar".
+<http://www.p/Escape_from_New_York> <http://www.p/hasDuration> "5940.0#s".
+<http://www.p/Escape_from_New_York> <http://www.p/hasImdb> "0082340".
+<http://www.p/Escape_from_New_York> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Escape_from_New_York> <http://www.p/hasSuccessor> <http://www.p/Escape_from_L.A.>.
+<http://www.p/Escape_from_New_York> <http://www.p/hasWebsite> <http://www.p/theofficialjohncarpenter.com/pages/themovies/ny/ny.html>.
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Die Klapperschlange".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "1997 Rescate en Nueva York".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "New York 1997".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "1997: fuga da New York".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Escape from New York".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Ucieczka z Nowego Jorku".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Ese Klapperschlange".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Es97 Rescate en Nueva York".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Esw York 1997".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Es97: fuga da New York".
+<http://www.p/Escape_from_New_York> <http://www.p/isCalled> "Esieczka z Nowego Jorku".
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wordnet_album_106591815>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_1981_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Action_thriller_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Dystopian_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_John_Carpenter>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Independent_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Post-apocalyptic_science_fiction_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Science_fiction_action_films>.
+<http://www.p/Escape_from_New_York> <http://www.p/type> <http://www.p/wikicategory_Space_Westerns>.
+<http://www.p/Tom_Atkins> <http://www.p/actedIn> <http://www.p/Escape_from_New_York>.
+<http://www.p/Tom_Atkins> <http://www.p/type> <http://www.p/wikicategory_Cincinnati_television_anchors>.
+<http://www.p/Tom_Atkins> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Tom_Atkins> <http://www.p/type> <http://www.p/wikicategory_Ohio_politicians>.
+<http://www.p/Tom_Atkins> <http://www.p/type> <http://www.p/wikicategory_Politicians_from_Cincinnati>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/hasBudget> "65000000#dollar".
+<http://www.p/Eyes_Wide_Shut> <http://www.p/hasDuration> "9540.0#s".
+<http://www.p/Eyes_Wide_Shut> <http://www.p/hasImdb> "0120663".
+<http://www.p/Eyes_Wide_Shut> <http://www.p/isCalled> "Eyes Wide Shut".
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_1999_films>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Drama_films>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Erotic_films>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Films_based_on_fiction_books>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Films_directed_by_Stanley_Kubrick>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Obscenity_controversies>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Posthumous_works>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Surrealist_films>.
+<http://www.p/Eyes_Wide_Shut> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Todd_Field> <http://www.p/actedIn> <http://www.p/Eyes_Wide_Shut>.
+<http://www.p/Todd_Field> <http://www.p/actedIn> <http://www.p/Ruby_in_Paradise>.
+<http://www.p/Todd_Field> <http://www.p/bornOnDate> "1964-02-24".
+<http://www.p/Todd_Field> <http://www.p/directed> <http://www.p/In_the_Bedroom>.
+<http://www.p/Todd_Field> <http://www.p/directed> <http://www.p/Little_Children_film>.
+<http://www.p/Todd_Field> <http://www.p/isCalled> "Todd Field".
+<http://www.p/Todd_Field> <http://www.p/isMarriedTo> <http://www.p/Serena_Rathbun>.
+<http://www.p/Todd_Field> <http://www.p/livesIn> <http://www.p/Pomona_California>.
+<http://www.p/Todd_Field> <http://www.p/type> <http://www.p/wordnet_actor_109765278>.
+<http://www.p/Todd_Field> <http://www.p/type> <http://www.p/wikicategory_American_film_actors>.
+<http://www.p/Todd_Field> <http://www.p/type> <http://www.p/wikicategory_American_film_directors>.
+<http://www.p/Todd_Field> <http://www.p/type> <http://www.p/wikicategory_California_actors>.
+<http://www.p/Todd_Field> <http://www.p/type> <http://www.p/wikicategory_California_directors>.
+<http://www.p/Todd_Field> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Enter_the_Dragon> <http://www.p/hasDuration> "5880.0#s".
+<http://www.p/Enter_the_Dragon> <http://www.p/hasImdb> "0070034".
+<http://www.p/Enter_the_Dragon> <http://www.p/isCalled> "Der Mann mit der Todeskralle".
+<http://www.p/Enter_the_Dragon> <http://www.p/isCalled> "I tre dell Operazione Drago".
+<http://www.p/Enter_the_Dragon> <http://www.p/isCalled> "Enter the Dragon".
+<http://www.p/Enter_the_Dragon> <http://www.p/isCalled> "Enr Mann mit der Todeskralle".
+<http://www.p/Enter_the_Dragon> <http://www.p/isCalled> "Entre dell Operazione Drago".
+<http://www.p/Enter_the_Dragon> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Enter_the_Dragon> <http://www.p/type> <http://www.p/wikicategory_1973_films>.
+<http://www.p/Enter_the_Dragon> <http://www.p/type> <http://www.p/wikicategory_English-language_films>.
+<http://www.p/Enter_the_Dragon> <http://www.p/type> <http://www.p/wikicategory_Kung_fu_films>.
+<http://www.p/Enter_the_Dragon> <http://www.p/type> <http://www.p/wikicategory_Posthumous_works>.
+<http://www.p/Enter_the_Dragon> <http://www.p/type> <http://www.p/wikicategory_Warner_Bros._films>.
+<http://www.p/Bolo_Yeung> <http://www.p/actedIn> <http://www.p/Enter_the_Dragon>.
+<http://www.p/Bolo_Yeung> <http://www.p/actedIn> <http://www.p/The_Image_of_Bruce_Lee>.
+<http://www.p/Bolo_Yeung> <http://www.p/bornOnDate> "1938".
+<http://www.p/Bolo_Yeung> <http://www.p/isCalled> "Yang Sze".
+<http://www.p/Bolo_Yeung> <http://www.p/isCalled> "Bolo Yeung".
+<http://www.p/Bolo_Yeung> <http://www.p/isCalled> "Bong Sze".
+<http://www.p/Bolo_Yeung> <http://www.p/type> <http://www.p/wikicategory_Chinese_actors>.
+<http://www.p/Bolo_Yeung> <http://www.p/type> <http://www.p/wikicategory_Living_people>.
+<http://www.p/Evil_Dead_II> <http://www.p/hasBudget> "3500000#dollar".
+<http://www.p/Evil_Dead_II> <http://www.p/hasDuration> "5100.0#s".
+<http://www.p/Evil_Dead_II> <http://www.p/hasImdb> "0092991".
+<http://www.p/Evil_Dead_II> <http://www.p/hasPredecessor> <http://www.p/The_Evil_Dead>.
+<http://www.p/Evil_Dead_II> <http://www.p/hasProductionLanguage> "English_language".
+<http://www.p/Evil_Dead_II> <http://www.p/hasSuccessor> <http://www.p/Army_of_Darkness>.
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Tanz der Teufel II - Jetzt wird noch mehr getanzt".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Zla smrt II".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "La Casa 2".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Evil Dead 2".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Evil Dead II".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Evil Dead II - Dead by dawn".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Eva smrt II".
+<http://www.p/Evil_Dead_II> <http://www.p/isCalled> "Ev Casa 2".
+<http://www.p/Evil_Dead_II> <http://www.p/type> <http://www.p/wordnet_movie_106613686>.
+<http://www.p/Evil_Dead_II> <http://www.p/type> <http://www.p/wikicategory_1980s_horror_films>.
+<http://www.p/Evil_Dead_II> <http://www.p/type> <http://www.p/wikicategory_1987_films>.
+<http://www.p/Evil_Dead_II> <http://www.p/type> <http://www.p/wikicategory_American_films>.
+<http://www.p/Evil_Dead_II> <http://www.p/type> <http://www.p/wikicategory_Comedy_horror_films>.
