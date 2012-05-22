@@ -64,6 +64,11 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.endpoint</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>xpref</artifactId>
 		</dependency>
 	

@@ -735,15 +735,15 @@ public abstract class QueryEvaluator<A> {
 	 * write out all pages in buffer managers including dictionary and RDF data indices
 	 * @throws IOException
 	 */
-	public static void writeOutModifiedPages(BasicIndexQueryEvaluator evaluator) throws IOException{
-		writeOutModifiedPagesOfDictionary();
-		evaluator.writeOutAllModifiedPagesInRDFDataIndices();
+	public static void writeOutModifiedPages(BasicIndexQueryEvaluator evaluator, String dir) throws IOException{
+		QueryEvaluator.writeOutModifiedPagesOfDictionary();
+		evaluator.writeOutAllModifiedPagesInRDFDataIndices(dir);
 	}
 
-	private static String toString(final long[] oa) {
+	public static String toString(final long[] oa) {
 		String s = "(";
 		boolean first = true;
-		for (final Object o : oa) {
+		for (final long o : oa) {
 			if (first)
 				first = false;
 			else
@@ -753,11 +753,11 @@ public abstract class QueryEvaluator<A> {
 		return s + ")";
 	}
 
-	private static double computeStandardDeviationOfTheSample(final long[] array) {
+	public static double computeStandardDeviationOfTheSample(final long[] array) {
 		return Math.sqrt(computeInnerTerm(array) / (array.length));
 	}
 
-	private static double computeSampleStandardDeviation(final long[] array) {
+	public static double computeSampleStandardDeviation(final long[] array) {
 		return Math.sqrt(computeInnerTerm(array) / ((double) array.length - 1));
 	}
 

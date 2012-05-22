@@ -22,16 +22,20 @@ import lupos.endpoint.server.format.JSONFormatter;
 import lupos.endpoint.server.format.PlainFormatter;
 import lupos.endpoint.server.format.TSVFormatter;
 import lupos.endpoint.server.format.XMLFormatter;
-import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+@SuppressWarnings("restriction")
 public class Endpoint {
 	
 	private static RDF3XQueryEvaluator evaluator;
+	private static String dir;
+	
+	// enable or disable logging into console
+	private static boolean log = false;
 	
 	private final static Map<String, Formatter> registeredFormatter = Collections.synchronizedMap(new HashMap<String, Formatter>());
 	
@@ -40,7 +44,8 @@ public class Endpoint {
 	private static HTMLForm htmlForm = new StandardHTMLForm();
 	
 	public static void registerFormatter(final Formatter formatter){
-		Endpoint.registeredFormatter.put(formatter.getKey(), formatter);
+		Endpoint.registeredFormatter.put(formatter.getKey().toLowerCase(), formatter);
+		Endpoint.registeredFormatter.put(formatter.getName().toLowerCase(), formatter);
 	}
 
 	public static Map<String, Formatter> getRegisteredFormatters(){
@@ -70,6 +75,10 @@ public class Endpoint {
 			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices>");
 			return;
 		}
+		Endpoint.initAndStartServer(args[0]);
+	}
+	
+	public static void initAndStartServer(final String directory){
 		try {
 			final String localHost = InetAddress.getLocalHost().getHostName();
 			System.out.println("Starting LUPOSDATE Endpoint on host: "+localHost);
@@ -78,12 +87,10 @@ public class Endpoint {
 				System.out.println("IP: "+ia);
 			}
 			
-			evaluator = new RDF3XQueryEvaluator();
-			evaluator.loadLargeScaleIndices(args[0]);
+			Endpoint.evaluator = new RDF3XQueryEvaluator();
+			Endpoint.dir = directory;
+			Endpoint.evaluator.loadLargeScaleIndices(Endpoint.dir);
 			
-			Endpoint.registerStandardFormatter();
-			
-			Endpoint.registerStandardContexts();
 			
 			Endpoint.startServer();
 			System.out.println("Endpoint ready to receive requests...");
@@ -92,6 +99,14 @@ public class Endpoint {
 			System.err.println(e);
 			e.printStackTrace();
 		}		
+	}
+	
+	/**
+	 * register the standard formatters and contexts of the server...
+	 */
+	static {
+		Endpoint.registerStandardFormatter();		
+		Endpoint.registerStandardContexts();
 	}
 	
 	public static void registerStandardFormatter(){
@@ -142,7 +157,7 @@ public class Endpoint {
 				}
 				builder.append(readLine);
 			}
-			response=builder.toString();;
+			response=builder.toString();
 		} else if (requestMethod.equalsIgnoreCase("GET")) {				
 			response = t.getRequestURI().getRawQuery();
 		} else {
@@ -156,6 +171,7 @@ public class Endpoint {
 		private final static String format = "format=";
 		private final static String query = "query=";
 					
+		@Override
 		public void handle(HttpExchange t) throws IOException {			
 			System.out.println("\n-> Receiving request from: "+t.getRequestHeaders().get("Host"));
 			String response = Endpoint.getResponse(t);
@@ -183,9 +199,12 @@ public class Endpoint {
 							t.getResponseHeaders().add("Content-type", mimeType);
 							t.sendResponseHeaders(200, 0);
 							OutputStream os = t.getResponseBody();
+							if(log){
+								os = new OutputStreamLogger(os);
+							}
 							formatter.writeResult(os, evaluator.getVariablesOfQuery(), queryResult);
-							CommonCoreQueryEvaluator.writeOutModifiedPages(evaluator);
 							os.close();
+							evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
 						}
 						return;
 					} catch (Error e) {
@@ -218,6 +237,7 @@ public class Endpoint {
 	}
 	
 	public static class HTMLFormHandler implements HttpHandler {
+		@Override
 		public void handle(HttpExchange t) throws IOException {
 			Endpoint.htmlForm.sendHTMLForm(t);
 		}
@@ -270,6 +290,7 @@ public class Endpoint {
 		private static String HTML_OPTION_3 = "</option>\n   ";
 
 
+		@Override
 		public void sendHTMLForm(final HttpExchange t) throws IOException {
 			final StringBuilder toSend = new StringBuilder(StandardHTMLForm.HTML_FORM_1);
 			for(final Formatter formatter: Endpoint.getRegisteredFormatters().values()){
@@ -282,6 +303,29 @@ public class Endpoint {
 			toSend.append(StandardHTMLForm.HTML_FORM_2);
 			Endpoint.sendString(t, toSend.toString());
 		}
-
+	}
+	
+	public static class OutputStreamLogger extends OutputStream {
+		
+		private final OutputStream piped;
+		
+		public OutputStreamLogger(final OutputStream piped){
+			this.piped = piped;
+		}
+		
+		@Override
+		public void write(int b) throws IOException {
+			if(b>=0){
+				for(char c: Character.toChars(b)){
+					System.out.print(c);
+				}
+			}
+			this.piped.write(b);
+		}
+		
+		@Override
+		public void close() throws IOException{
+			this.piped.close();
+		}
 	}
 }

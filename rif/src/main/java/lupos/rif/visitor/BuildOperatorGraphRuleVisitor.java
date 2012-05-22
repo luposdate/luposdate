@@ -236,7 +236,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				&& booleanIndex.getSucceedingOperators().isEmpty())
 			indexScanCreator.getRoot().removeSucceedingOperator(booleanIndex);
 
-		// Falls Conclusion vorhanden, noch Result anhŠngen, zum Sammeln der
+		// Falls Conclusion vorhanden, noch Result anhï¿½ngen, zum Sammeln der
 		// Ergebnisse
 		if (!(finalResult instanceof Result)) {
 			if (obj.getConclusion() != null
@@ -255,7 +255,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	}
 
 	private BasicOperator patternFromConclusion(IExpression conclusion) {
-		// Annahme, Conclusion ist PrŠdikat
+		// Annahme, Conclusion ist Prï¿½dikat
 		final RulePredicate pred = (RulePredicate) conclusion;
 		if (pred.isTriple())
 			return unitermToTriplePattern(pred);

@@ -762,11 +762,15 @@ public class Dataset {
 		});
 	}
 
-	public void writeIndexInfo(final LuposObjectOutputStream out)
+	public void writeIndexInfo(final LuposObjectOutputStream out, final Integer currentFileID)
 			throws IOException {
 		this.buildCompletelyAllIndices();
-		out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree
-					.getCurrentFileID());
+		if(currentFileID==null){
+			out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID());
+		} else {
+			out.writeLuposInt(currentFileID);
+		}
+
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 				((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral
@@ -787,8 +791,7 @@ public class Dataset {
 			}
 		}
 		out.writeLuposInt(defaultGraphData.size());
-		for (final Entry<URILiteral, Indices> entry : defaultGraphData
-				.entrySet()) {
+		for (final Entry<URILiteral, Indices> entry : defaultGraphData.entrySet()) {
 			LiteralFactory.writeLuposLiteral(entry.getKey(), out);
 			entry.getValue().writeIndexInfo(out);
 		}

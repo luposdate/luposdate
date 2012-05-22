@@ -267,8 +267,17 @@ public class LiteralFactory {
 			return createURILiteralWithoutLazyLiteralWithoutException(content);
 	}
 
-	public static Literal createTypedLiteral(final String content,
-			final String type) throws java.net.URISyntaxException {
+	public static Literal createTypedLiteralWithoutException(final String content, final String type) {
+		try {
+			return LiteralFactory.createTypedLiteral(content, type);
+		} catch (URISyntaxException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static Literal createTypedLiteral(final String content, final String type) throws java.net.URISyntaxException {
 		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(
 				content, type);
 		if (LazyLiteral.getHm() != null
@@ -282,10 +291,8 @@ public class LiteralFactory {
 			return typedLiteral;
 	}
 
-	public static Literal createTypedLiteral(final String content,
-			final URILiteral type) throws java.net.URISyntaxException {
-		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(
-				content, type);
+	public static Literal createTypedLiteral(final String content, final URILiteral type) throws java.net.URISyntaxException {
+		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(content, type);
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			if (typedLiteral.originalStringDiffers())

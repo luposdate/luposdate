@@ -32,7 +32,7 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 	}
 
 	@Override
-	public void writeStartHead(OutputStream os) throws IOException {		
+	public void writeStartHead(OutputStream os) throws IOException { // do not need here
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 	}
 
 	@Override
-	public void writeStartResult(OutputStream os) throws IOException {
+	public void writeStartResult(OutputStream os) throws IOException { // do not need here
 	}
 
 	@Override
@@ -63,11 +63,11 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 	}
 
 	@Override
-	public void writeEpilogue(OutputStream os) throws IOException {
+	public void writeEpilogue(OutputStream os) throws IOException { // do not need here
 	}
 
 	@Override
-	public void writeFirstStartBinding(final OutputStream os, Variable v) throws IOException {		
+	public void writeFirstStartBinding(final OutputStream os, Variable v) throws IOException { // do not need here
 	}
 	
 	@Override
@@ -76,7 +76,7 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 	}
 
 	@Override
-	public void writeEndBinding(OutputStream os) throws IOException {
+	public void writeEndBinding(OutputStream os) throws IOException { // do not need here
 	}
 
 	@Override
@@ -104,6 +104,7 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 		os.write(literal.originalString().getBytes());
 	}
 	
+	@Override
 	public Collection<Variable> getVariablesToIterateOnForOneBindings(Set<Variable> variables, Bindings bindings){
 		return variables;
 	}

@@ -48,6 +48,16 @@
       <option id="applet_usePrefixes" name="Use prefixes on first run" datatype="xpref.datatypes.BooleanDatatype" value="true"/>
     </options>
   </page>
+  <page id="evaluator" name="Evaluator">
+  	<options>
+		<text>This preferences page contains the options for the evaluators.</text>
+    	<option id="repetitionsOfExecution" name="Times of repetition for execution time experiments" datatype="xpref.datatypes.IntegerDatatype" value="1" minimum="1" />
+		<line />
+		<option id="serviceCallApproach" name="Service call approach" datatype="xpref.datatypes.EnumDatatype" value="Fetch_As_Needed" source="lupos.sparql1_1.operatorgraph.ServiceApproaches"/>
+		<option id="serviceCallBitVectorApproach" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Bitvector approach" datatype="xpref.datatypes.EnumDatatype" value="MD5" source="lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin$APPROACH"/>
+    	<option id="serviceCallBitVectorSubstring" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Size of bitvector" datatype="xpref.datatypes.IntegerDatatype" value="8" minimum="1" />
+  	</options>
+  </page>
   <page id="syntax_highlighting" name="Syntax Highlighting">
     <options>
       <text>This preferences page contains the options for the syntax highlighting for SPARQL queries, RDF data and query results.</text>

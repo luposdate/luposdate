@@ -2,7 +2,9 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
 
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.LanguageTaggedLiteral;
@@ -52,7 +54,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	private final boolean colored;
 
 	public HTMLFormatter(final boolean colored) {
-		super(colored?"Colored HTML":"text/html");
+		super(colored?"Colored HTML":"HTML");
 		this.colored = colored;
 	}
 	
@@ -168,13 +170,40 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write(literal.getOriginalLanguage().getBytes());
 		this.writeEndColor(os);
 	}
+	
+	@Override
+	public void writeResult(OutputStream os, Set<Variable> variables, QueryResult queryResult) throws IOException {
+		if(queryResult instanceof GraphResult){
+			os.write(HTMLFormatter.XML_1.getBytes());
+			this.writeTableHeadEntry(os, "subject");
+			this.writeTableHeadEntry(os, "predicate");
+			this.writeTableHeadEntry(os, "object");
+			os.write(HTMLFormatter.XML_2.getBytes());
+			for(Triple triple: ((GraphResult)queryResult).getGraphResultTriples()){
+				this.writeStartResult(os);
+				for(Literal literal: triple){
+					os.write(HTMLFormatter.XML_Binding_1.getBytes());
+					this.writeLiteral(os, literal);
+					this.writeEndBinding(os);
+				}
+				this.writeEndResult(os);
+			}
+			os.write(HTMLFormatter.XML_3.getBytes());
+		} else {
+			super.writeResult(os, variables, queryResult);
+		}
+	}
+	
+	protected void writeTableHeadEntry(OutputStream os, String entry) throws IOException {
+		os.write("<th>".getBytes());
+		this.writeStartColor(os, HTMLFormatter.COLOR_VAR);
+		os.write(entry.getBytes());
+		this.writeEndColor(os);
+		os.write("</th>".getBytes());
+	}
 
 	@Override
-	public String getMIMEType(final QueryResult queryResult) {
-		if(queryResult instanceof GraphResult){
-			return "application/rdf+xml";
-		} else {
-			return "text/html";
-		}
+	public String getMIMEType(final QueryResult queryResult) {		
+		return "text/html";
 	}		
 }

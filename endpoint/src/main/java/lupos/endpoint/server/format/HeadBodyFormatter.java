@@ -68,6 +68,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 	
 	public abstract void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException;
 	
+	@SuppressWarnings("unused")
 	public Collection<Variable> getVariablesToIterateOnForOneBindings(Set<Variable> variables, Bindings bindings){
 		return bindings.getVariableSet();
 	}
@@ -75,7 +76,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 	@Override
 	public void writeResult(OutputStream os, Set<Variable> variables, QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
-			// TODO RDF/XML, Turtle...
+			super.writeResult(os, variables, queryResult);
 		} else if(queryResult instanceof BooleanResult){
 			this.writeBooleanResult(os, ((BooleanResult) queryResult).isTrue());
 		} else {
@@ -109,28 +110,8 @@ public abstract class HeadBodyFormatter extends Formatter {
 						this.writeStartBinding(os, v);
 					}
 					
-					Literal l=bindings.get(v);					
-					if(l!=null){
-						if(l instanceof LazyLiteral){
-							l=((LazyLiteral)l).getLiteral();
-						}
-
-						if (l.isBlank()){
-							this.writeBlankNode(os, (AnonymousLiteral) l);
-						} else if(l.isURI()){
-							this.writeURI(os, (URILiteral) l);
-						} else {
-							// literal => <literal>
-							if(l instanceof TypedLiteral){
-								this.writeTypedLiteral(os, (TypedLiteral)l);
-							} else 
-								if(l instanceof LanguageTaggedLiteral){
-									this.writeLanguageTaggedLiteral(os, (LanguageTaggedLiteral)l);
-								} else {
-									this.writeSimpleLiteral(os, l);
-								}
-						}
-					}
+					this.writeLiteral(os, bindings.get(v));					
+					
 					this.writeEndBinding(os);
 				}
 				this.writeEndResult(os);
@@ -138,5 +119,25 @@ public abstract class HeadBodyFormatter extends Formatter {
 			this.writeEpilogue(os);		
 		}
 	}
-
+	
+	protected void writeLiteral(final OutputStream os, Literal literal) throws IOException{
+		if(literal!=null){
+			Literal materializedLiteral = (literal instanceof LazyLiteral)?((LazyLiteral)literal).getLiteral(): literal; 
+			if (materializedLiteral.isBlank()){
+				this.writeBlankNode(os, (AnonymousLiteral) materializedLiteral);
+			} else if(materializedLiteral.isURI()){
+				this.writeURI(os, (URILiteral) materializedLiteral);
+			} else {
+				// literal => <literal>
+				if(materializedLiteral instanceof TypedLiteral){
+					this.writeTypedLiteral(os, (TypedLiteral)materializedLiteral);
+				} else 
+					if(materializedLiteral instanceof LanguageTaggedLiteral){
+						this.writeLanguageTaggedLiteral(os, (LanguageTaggedLiteral)materializedLiteral);
+					} else {
+						this.writeSimpleLiteral(os, materializedLiteral);
+					}
+			}
+		}
+	}
 }

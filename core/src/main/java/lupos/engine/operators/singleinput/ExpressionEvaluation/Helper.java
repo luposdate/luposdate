@@ -1174,13 +1174,12 @@ public class Helper {
 		}
 	}
 
-	public static String applyHashFunction(String hashFunction,
-			String inputParameter) {
+	public static String applyHashFunction(String hashFunction, String inputParameter) {
 		try {
-			MessageDigest md5 = MessageDigest.getInstance(hashFunction);
-			md5.reset();
-			md5.update(inputParameter.getBytes());
-			byte[] result = md5.digest();
+			MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
+			messageDigest.reset();
+			messageDigest.update(inputParameter.getBytes());
+			byte[] result = messageDigest.digest();
 			StringBuffer hexString = new StringBuffer();
 			hexString.append("\"");
 			for (int i = 0; i < result.length; i++) {
@@ -1194,6 +1193,17 @@ public class Helper {
 			}
 			hexString.append("\"");
 			return hexString.toString();
+		} catch (NoSuchAlgorithmException e) {
+			throw new Error(e.getMessage());
+		}
+	
+	}
+	
+	public static int getLengthOfHashFunction(String hashFunction) {
+		try {
+			MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
+			messageDigest.reset();
+			return messageDigest.getDigestLength()*2;
 		} catch (NoSuchAlgorithmException e) {
 			throw new Error(e.getMessage());
 		}

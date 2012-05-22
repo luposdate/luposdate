@@ -18,8 +18,6 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * It is used for the optimizations MergeJoinSort, MergeJoinSortSimple and
  * MergeJoinSortLazyLiteral
  * 
- * @author groppe
- * 
  */
 public abstract class FastSort extends SingleInputOperator {
 

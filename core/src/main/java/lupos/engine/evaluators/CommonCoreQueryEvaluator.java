@@ -106,7 +106,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	private PARALLELOPERANDS parallelOperands;
 
 	public void parallelOperator(final BasicOperator bo) {
-		switch (parallelOperands) {
+		switch (this.parallelOperands) {
 		case LAST:
 		case ALL:
 			final RuleEngineForParallelOperator refpo = new RuleEngineForParallelOperator();
@@ -117,7 +117,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	public List<DebugContainer<BasicOperatorByteArray>> parallelOperatorDebugByteArray(
 			final BasicOperator bo, final Prefix prefixInstance) {
-		switch (parallelOperands) {
+		switch (this.parallelOperands) {
 		case ALL:
 		case LAST:
 			final RuleEngineForParallelOperator refpo = new RuleEngineForParallelOperator();
@@ -437,7 +437,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		debug.add(new DebugContainer<BasicOperatorByteArray>(
 				"After physical optimization...", "physicaloptimizationRule",
 				BasicOperatorByteArray.getBasicOperatorByteArray(
-						rootNode.deepClone(), prefixInstance)));
+						this.rootNode.deepClone(), prefixInstance)));
 		return debug;
 	}
 
@@ -448,20 +448,20 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	public QueryResult getResult(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
-		result.addApplication(cr);
+		this.result.addApplication(cr);
 		evaluateQuery();
 		return cr.getResult();
 	}
 
 	public CollectAllResults getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
-		result.addApplication(cr);
+		this.result.addApplication(cr);
 		evaluateQuery();
 		return cr;
 	}
 
 	public BasicOperator getRootNode() {
-		return rootNode;
+		return this.rootNode;
 	}
 
 	public void setRootNode(BasicOperator rootNode) {

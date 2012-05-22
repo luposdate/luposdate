@@ -163,6 +163,10 @@ public class BasicOperator implements Cloneable, Serializable {
 		this.addSucceedingOperator(new OperatorIDTuple(succeedingOperator, 0));
 	}
 
+	public void addSucceedingOperator(BasicOperator succeedingOperator, int operandID) {
+		this.addSucceedingOperator(new OperatorIDTuple(succeedingOperator, operandID));
+	}
+
 	/**
 	 * This method adds all of a list of succeeding operators
 	 * 

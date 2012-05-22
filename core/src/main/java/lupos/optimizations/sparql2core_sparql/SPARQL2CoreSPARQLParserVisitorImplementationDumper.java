@@ -361,7 +361,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 				throw new NotBoundException("Variable "
 						+ ((lupos.sparql1_1.ASTVar) n).getName() + " not bound");
 		} else {
-			if(!(n instanceof ASTExists || n instanceof ASTNotExists)){
+			if(!(n instanceof ASTExists || n instanceof ASTNotExists || n instanceof ASTBoundFuncNode)){
 				for(int i=0; i<n.jjtGetNumChildren(); i++){
 					checkFilterConstraint(n.jjtGetChild(i), variables);
 				}

@@ -47,9 +47,10 @@ public class XMLFormatter extends HeadBodyFormatter {
 
 
 	public XMLFormatter() {
-		super("XML", "application/sparql-results+xml"); //$NON-NLS-1$
+		super("XML", "application/sparql-results+xml");
 	}
 	
+	@Override
 	public void writeBooleanResult(final OutputStream os, final boolean result) throws IOException{
 		os.write(XMLFormatter.XML_1.getBytes());
 		os.write(XMLFormatter.XML_Boolean_2.getBytes());
@@ -57,49 +58,59 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_Boolean_3.getBytes());			
 	}
 	
+	@Override
 	public void writeStartHead(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_1.getBytes());
 	}
 	
+	@Override
 	public void writeVariableInHead(final OutputStream os, final Variable v) throws IOException{
 		os.write(XMLFormatter.XML_Var_1.getBytes());
 		os.write(v.getName().getBytes());
 		os.write(XMLFormatter.XML_Var_2.getBytes());
 	}
 
+	@Override
 	public void writeEndHead(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_2.getBytes());
 	}
 	
+	@Override
 	public void writeStartResult(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Result_1.getBytes());
 	}
 
+	@Override
 	public void writeEndResult(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Result_2.getBytes());
 	}
 	
+	@Override
 	public void writeEpilogue(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_3.getBytes());
 	}
 	
+	@Override
 	public void writeStartBinding(final OutputStream os, final Variable v) throws IOException{
 		os.write(XMLFormatter.XML_Binding_1.getBytes());
 		os.write(v.getName().getBytes());
 		os.write(XMLFormatter.XML_Binding_2.getBytes());
 	}
 	
+	@Override
 	public void writeEndBinding(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Binding_3.getBytes());
 	}
 	
+	@Override
 	public void writeBlankNode(final OutputStream os, AnonymousLiteral blankNode) throws IOException{
 		// blank node => <bnode>
 		os.write(XMLFormatter.XML_BNode_1.getBytes());
-		os.write(blankNode.originalString().getBytes());
+		os.write(blankNode.getBlankNodeLabel().getBytes());
 		os.write(XMLFormatter.XML_BNode_2.getBytes());						
 	}
 	
+	@Override
 	public void writeURI(final OutputStream os, URILiteral uri) throws IOException{
 		// uri => <uri>
 		os.write(XMLFormatter.XML_URI_1.getBytes());
@@ -107,6 +118,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_URI_2.getBytes());
 	}
 	
+	@Override
 	public void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException{
 		// literal => <literal>
 		os.write(XMLFormatter.XML_LITERAL_1.getBytes());
@@ -116,6 +128,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());
 	}
 	
+	@Override
 	public void writeTypedLiteral(final OutputStream os, TypedLiteral literal) throws IOException{
 		// literal => <literal>
 		os.write(XMLFormatter.XML_LITERAL_1.getBytes());
@@ -128,6 +141,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());
 	}
 	
+	@Override
 	public void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException{
 		// literal => <literal>
 		os.write(XMLFormatter.XML_LITERAL_1.getBytes());
@@ -143,7 +157,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 	@Override
 	public String getMIMEType(final QueryResult queryResult) {
 		if(queryResult instanceof GraphResult){
-			return "application/rdf+xml";
+			return super.getMIMEType(queryResult);
 		} else {
 			return "application/sparql-results+xml";
 		}

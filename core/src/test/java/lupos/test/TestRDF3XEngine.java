@@ -27,6 +27,8 @@ public class TestRDF3XEngine {
 	private final static String updateQuery2 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> DELETE DATA { <a> rdf:type <b> }";
 	private final static String updateQuery3 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> INSERT { ?s rdf:type2 ?o } WHERE { ?s rdf:type ?o. }";
 	private final static String query4 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{ ?s rdf:type2 ?o. }";
+	
+	protected static String dir;
 
 	/**
 	 * Remark: Before using this program, please import
@@ -47,11 +49,14 @@ public class TestRDF3XEngine {
 				return;
 			}
 			
-			final String dir = args[0];
+			TestRDF3XEngine.dir = args[0];
 	
 			// set up parameters of evaluator and initialize the evaluator...
 			final RDF3XQueryEvaluator evaluator = new RDF3XQueryEvaluator();
 			evaluator.loadLargeScaleIndices(dir);
+			
+			TestRDF3XEngine.test(evaluator);
+			
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -103,7 +108,7 @@ public class TestRDF3XEngine {
 			// before or during this command),
 			// the indices may remain in an inconsistent state
 			// and must be build from scratch in these rare cases...
-			CommonCoreQueryEvaluator.writeOutModifiedPages(evaluator);
+			CommonCoreQueryEvaluator.writeOutModifiedPages(evaluator, TestRDF3XEngine.dir);
 			
 			// the whole database is dumped into files...
 			// (10000 triples in one file...)

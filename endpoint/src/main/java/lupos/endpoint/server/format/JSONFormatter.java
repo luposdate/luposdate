@@ -135,7 +135,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 	@Override
 	public String getMIMEType(QueryResult queryResult) {
 		if (queryResult instanceof GraphResult) {
-			return "application/rdf+xml";
+			return super.getMIMEType(queryResult);
 		} else {
 			return "application/sparql-results+json";
 		}

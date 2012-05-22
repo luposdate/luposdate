@@ -84,15 +84,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return currentFileID;
 	}
 
-	public DBBPTree(final Comparator<? super K> comparator, final int k,
-			final int k_, final NodeDeSerializer<K, V> nodeDeSerializer)
-	throws IOException {
+	public DBBPTree(final Comparator<? super K> comparator, final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
 		init(comparator, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
-	public DBBPTree(final int k, final int k_,
-			final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
+	public DBBPTree(final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
 		init(null, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
@@ -2111,8 +2108,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.valueClass = valueClass;
 		this.currentID = currentID;
 		this.nodeDeSerializer = nodeDeSerializer;
-		pageManager = new PageManager(DBBPTree.mainFolder + currentID
-				+ ".dbbptree");
+		pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree");
 	}
 
 	public static DBBPTree readLuposObject(final LuposObjectInputStream lois)
@@ -2126,11 +2122,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		final int firstLeafFileName = lois.readLuposInt();
 		final Class keyClass = (Class) lois.readObject();
 		final Class valueClass = (Class) lois.readObject();
-		final NodeDeSerializer nodeDeSerializer = (NodeDeSerializer) lois
-		.readObject();
-		final DBBPTree dbbptree = new DBBPTree(k, k_, size, comp, rootFilename,
-				firstLeafFileName, keyClass, valueClass, currentID,
-				nodeDeSerializer);
+		final NodeDeSerializer nodeDeSerializer = (NodeDeSerializer) lois.readObject();
+		final DBBPTree dbbptree = new DBBPTree(k, k_, size, comp, rootFilename, firstLeafFileName, keyClass, valueClass, currentID, nodeDeSerializer);
 		dbbptree.pageManager.initAfterLoading();
 		return dbbptree;
 	}

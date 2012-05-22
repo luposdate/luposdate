@@ -2,15 +2,21 @@ package lupos.engine.evaluators;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
+import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
+import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
+import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.operators.index.BasicIndex;
@@ -113,7 +119,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 	
 	public void loadLargeScaleIndices(final String dir) throws Exception{
-		String datafile=dir+"/"+INDICESINFOFILE;
+		String datafile=dir+File.separator+INDICESINFOFILE;
 		
 		this.setupArguments();
 		this.getArgs().set("debug", DEBUG.NONE);
@@ -151,11 +157,11 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		final Date a = new Date();
 		super.prepareInputData(defaultGraphs, namedGraphs);
 		long timeUsed;
-		if (loadindexinfo) {
+		if (this.loadindexinfo) {
 			final LuposObjectInputStream in = new LuposObjectInputStream(
 					new BufferedInputStream(defaultGraphs.iterator().next()
 							.openStream()), null);
-			dataset = new Dataset(
+			this.dataset = new Dataset(
 					type,
 					getMaterializeOntology(),
 					opt,
@@ -174,7 +180,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 			in.close();
 			timeUsed = ((new Date()).getTime() - a.getTime());
 		} else {
-			dataset = new Dataset(
+			this.dataset = new Dataset(
 					defaultGraphs,
 					namedGraphs,
 					type,
@@ -193,19 +199,27 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 								}
 							}, debug != DEBUG.NONE,
 					inmemoryexternalontologyinference);
-			dataset.buildCompletelyAllIndices();
+			this.dataset.buildCompletelyAllIndices();
 			timeUsed = ((new Date()).getTime() - a.getTime());
 		}
-		if (writeindexinfo.compareTo("") != 0) {
-			final LuposObjectOutputStream out = new LuposObjectOutputStream(
-					new BufferedOutputStream(new FileOutputStream(
-							writeindexinfo)));
-			dataset.writeIndexInfo(out);
+		if (this.writeindexinfo.compareTo("") != 0) {
+			final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(this.writeindexinfo)));
+			this.dataset.writeIndexInfo(out, null);
 			out.close();
 		}
 		return timeUsed;
 	}
 	
+	public void writeOutIndexFile(String dir) throws FileNotFoundException, IOException {
+		final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(dir+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE)));
+		this.dataset.writeIndexInfo(out, 14);
+		out.close();
+	}
+
+	public void writeOutIndexFileAndModifiedPages(String dir) throws FileNotFoundException, IOException {
+		CommonCoreQueryEvaluator.writeOutModifiedPages(this, dir);
+	}
+
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			Collection<URILiteral> defaultGraphs,
@@ -260,10 +274,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 			timeUsed = ((new Date()).getTime() - a.getTime());
 		}
 		if (writeindexinfo.compareTo("") != 0) {
-			final LuposObjectOutputStream out = new LuposObjectOutputStream(
-					new BufferedOutputStream(new FileOutputStream(
-							writeindexinfo)));
-			dataset.writeIndexInfo(out);
+			final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(writeindexinfo)));
+			dataset.writeIndexInfo(out, null);
 			out.close();
 		}
 		return timeUsed;

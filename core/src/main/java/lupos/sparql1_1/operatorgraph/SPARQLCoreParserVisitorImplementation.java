@@ -58,6 +58,10 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	protected static boolean useSortedMinus = true;	
 	protected CommonCoreQueryEvaluator<Node> evaluator;
 	protected IndexScanCreatorInterface indexScanCreator;
+	
+	public static Class<? extends ServiceGenerator> serviceGeneratorClass = ServiceGenerator.class;
+	protected ServiceGenerator serviceGenerator; 
+	
 		
 	protected Variable getVariable(String subject, String object, String variable){
 		while(subject.startsWith("?") || subject.startsWith("$"))
@@ -66,16 +70,16 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			object=object.substring(1);
 		while(variable.startsWith("?") || variable.startsWith("$"))
 			variable=variable.substring(1);
-		String newVariable=variable+var;
+		String newVariable=variable+this.var;
 		while(newVariable.equals(subject) || newVariable.equals(object) ){
-			var++;			
-			newVariable=variable+var;			
+			this.var++;			
+			newVariable=variable+this.var;			
 		}
 		return new Variable(newVariable);
 	}
 
 	public Result getResult() {
-		return result;
+		return this.result;
 	}
 	
 	public BasicOperator getOperatorgraphRoot(){
@@ -83,11 +87,26 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 
 	public SPARQLCoreParserVisitorImplementation() {
-		result = new Result();
+		this.result = new Result();
+		try {
+			this.serviceGenerator = serviceGeneratorClass.newInstance();
+		} catch (InstantiationException e) {
+			this.serviceGenerator = new ServiceGenerator();
+			System.err.println();
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			this.serviceGenerator = new ServiceGenerator();
+			System.err.println();
+			e.printStackTrace();
+		}
 	}
 	
 	public void setIndexScanGenerator(IndexScanCreatorInterface indexScanCreator){
 		this.indexScanCreator = indexScanCreator; 
+	}
+	
+	public IndexScanCreatorInterface getIndexScanGenerator(){
+		return this.indexScanCreator;
 	}
 
 	public void visitChildrenWithoutStringConcatenation(final Node n, final OperatorConnection connection) {
@@ -96,6 +115,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 	
+	@Override
 	public void visit(final ASTConstructQuery node, final OperatorConnection connection) {
 		// Dealing with the STREAM clause
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -133,6 +153,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	@Override
 	public void visit(final ASTAskQuery node, final OperatorConnection connection) {
 		final int numberChildren = node.jjtGetNumChildren();
 
@@ -153,22 +174,27 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	@Override
 	public void visit(final ASTOrderConditions node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new Sort(node));
 	}
 
+	@Override
 	public void visit(final ASTLimit node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new Limit(node.getLimit()));
 	}
 
+	@Override
 	public void visit(final ASTOffset node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new Offset(node.getOffset()));
 	}
 
+	@Override
 	public void visit(final ASTOptionalConstraint node, final OperatorConnection connection, Item graphConstraint) {
 		node.jjtGetChild(0).accept(this, connection, graphConstraint);
 	}
 
+	@Override
 	public void visit(final ASTUnionConstraint node, final OperatorConnection connection, Item graphConstraint) {
 		final Union union = new Union();
 		connection.connectAndSetAsNewOperatorConnection(union);
@@ -211,14 +237,14 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 	
 	public Collection<TriplePattern> collectTriplePatternOfChildren(final Node node){
-		Collection<TriplePattern> result = new LinkedList<TriplePattern>();
+		Collection<TriplePattern> resultantTriplePatterns = new LinkedList<TriplePattern>();
 		for(int i=0; i<node.jjtGetNumChildren(); i++){
 			Node child = node.jjtGetChild(i);
 			if(child instanceof ASTTripleSet){
-				result.add(this.getTriplePattern((ASTTripleSet)child));
+				resultantTriplePatterns.add(this.getTriplePattern((ASTTripleSet)child));
 			}
 		}
-		return result;
+		return resultantTriplePatterns;
 	}
 
 	public static Item getItem(final Node n) {
@@ -256,18 +282,28 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				|| n instanceof ASTSelectQuery);
 	}
 	
-	protected boolean handleHigherConstructToJoin(Node n, OperatorConnection connection, Item graphConstraint){
+	protected boolean handleHigherConstructToJoin(final Node n, final OperatorConnection connection, final Item graphConstraint){
 		if (isHigherConstructToJoin(n)) {
-			if(n instanceof ASTService || n instanceof ASTGraphConstraint){
+			if(n instanceof ASTService){
+				ASTService service = (ASTService) n;
+				if(this.serviceGenerator.countsAsJoinPartner(service)){
+					this.serviceGenerator.insertIndependantFederatedQueryOperator(service, connection, this.indexScanCreator);
+					return true;
+				} else {
+					return false;
+				}
+			} else if(n instanceof ASTGraphConstraint){
 				n.accept(this, connection);
 			} else {
 				n.accept(this, connection, graphConstraint);
 			}
 			return true;
-		} else return false;
+		} else {
+			return false;
+		}
 	}
 	
-	protected void createMultipleOccurence(int i, LinkedList<ASTTripleSet> multipleOccurencesToJoin, OperatorConnection connection, Item graphConstraint) throws ParseException{
+	protected void createMultipleOccurence(int i, LinkedList<ASTTripleSet> multipleOccurencesToJoin, OperatorConnection connection, Item graphConstraint) {
 		try{
 			Variable subject;
 			Variable object;
@@ -417,6 +453,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 	
+	@Override
 	public BasicOperator visit(ASTGivenOccurences node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
@@ -431,7 +468,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		int maximalDepth = node.getUpperLimit();
 		
 		if(minimalDepth == 0){
-			BasicOperator leftSide = zeroPath(node, connection, graphConstraint, subject, object, subjectNode, objectNode);
+			BasicOperator leftSide = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
 			leftSide.addSucceedingOperator(new OperatorIDTuple(union,unionPartner));
 			unionPartner++;
 			minimalDepth++;
@@ -510,13 +547,14 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection;
 	}
 
+	@Override
 	public BasicOperator visit(ASTOptionalOccurence node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
 		BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
 		Union union = new Union();
 		
-		BasicOperator leftSide = zeroPath(node, connection, graphConstraint, subject, object, subjectNode, objectNode);
+		BasicOperator leftSide = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
 		leftSide.addSucceedingOperator(new OperatorIDTuple(union,0));
 		
 		Projection projection = new Projection();
@@ -531,6 +569,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection;
 	}
 
+	@Override
 	public BasicOperator visit(ASTArbitraryOccurences node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
@@ -573,7 +612,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			union.addSucceedingOperator(new OperatorIDTuple(projection,0));
 			
 			//Zero Operator
-			BasicOperator startingPoint = zeroPath(node, connection, graphConstraint, subject, object, subjectNode, objectNode);
+			BasicOperator startingPoint = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
 			
 			startingPoint.addSucceedingOperator(new OperatorIDTuple(union,0));
 			
@@ -584,7 +623,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection;
 	}
 
-	private BasicOperator zeroPath(Node node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode) {		
+	private BasicOperator zeroPath(Node node, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode) {		
 		if (!getItem(subjectNode).isVariable() && !getItem(objectNode).isVariable()){
 			Projection projection = new Projection();
 			projection.addProjectionElement(subject);
@@ -644,6 +683,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	@Override
 	public BasicOperator visit(ASTArbitraryOccurencesNotZero node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
@@ -690,12 +730,14 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		
 	}
 
+	@Override
 	public BasicOperator visit(ASTInvers node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
 		return node.jjtGetChild(0).accept(this, connection, graphConstraint, object, subject, subjectNode, objectNode);
 	}
 
+	@Override
 	public BasicOperator visit(ASTNegatedPath node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
@@ -737,6 +779,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection;
 	}
 	
+	@Override
 	public BasicOperator visit(ASTQuotedURIRef node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
@@ -748,6 +791,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 
 
+	@Override
 	public BasicOperator visit(ASTPathAlternative node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {		
@@ -765,9 +809,10 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection; 
 	}
 
+	@Override
 	public BasicOperator visit(ASTPathSequence node, OperatorConnection connection,
 			Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode) {
-		Item[] items = {subject, getItem(node.jjtGetChild(0)), (Item) getVariable(subject.toString(),object.toString(), "b")};
+		Item[] items = {subject, getItem(node.jjtGetChild(0)), getVariable(subject.toString(),object.toString(), "b")};
 		TriplePattern tp = new TriplePattern(items);
 		LinkedList<TriplePattern> temp = new LinkedList<TriplePattern>();
 		temp.add(tp);
@@ -785,6 +830,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 
 
+	@Override
 	public void visit(final ASTSelectQuery node, final OperatorConnection connection) {
 		visit(node, connection, null);
 	}
@@ -794,6 +840,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		node.jjtGetChild(0).accept(this, connection, graphConstraint);
 	}
 	
+	@Override
 	public void visit(final ASTSelectQuery node,
 			final OperatorConnection connection, Item graphConstraint) {
 
@@ -805,8 +852,8 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 				Node n = node.jjtGetChild(i);
 				if (n instanceof ASTVar) {
-					ASTVar var = (ASTVar) n;
-					if (var.getName().equals(graphConstraint.getName())) {
+					ASTVar variable = (ASTVar) n;
+					if (variable.getName().equals(graphConstraint.getName())) {
 						graphVariableIsSelected = true;
 					}
 				}
@@ -860,11 +907,11 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			LinkedList<AddComputedBinding> listOfAddComputedBindings = new LinkedList<AddComputedBinding>();
 			for (int i = 0; i < numberChildren; i++) {
 				if (node.jjtGetChild(i) instanceof ASTVar) {
-					final ASTVar var = (ASTVar) node.jjtGetChild(i);
-					p.addProjectionElement(new Variable(var.getName()));
+					final ASTVar variable = (ASTVar) node.jjtGetChild(i);
+					p.addProjectionElement(new Variable(variable.getName()));
 					onlyAggregations = false;
 				} else if (node.jjtGetChild(i) instanceof ASTAs) {
-					final ASTVar var = (ASTVar) node.jjtGetChild(i)
+					final ASTVar variable = (ASTVar) node.jjtGetChild(i)
 							.jjtGetChild(1);
 					final lupos.sparql1_1.Node constraint = node.jjtGetChild(i)
 							.jjtGetChild(0);
@@ -878,7 +925,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 					if (!(constraint instanceof ASTAggregation)) {
 						onlyAggregations = false;
 					}
-					final Variable var2 = new Variable(var.getName());
+					final Variable var2 = new Variable(variable.getName());
 					p.addProjectionElement(var2);
 					AddComputedBinding acb = group ? new GroupByAddComputedBinding()
 							: new AddComputedBinding();
@@ -926,7 +973,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		for (int j = 0; j < numberChildren; j++) {
 			final Projection p = new Projection();
 			LinkedList<AddComputedBinding> listOfAddComputedBindings = new LinkedList<AddComputedBinding>();
-			ASTVar var = null;
+			ASTVar variable = null;
 			Node childi = node.jjtGetChild(j);
 			onlyAggregations = true;
 			if (childi instanceof ASTGroup) {
@@ -940,7 +987,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 
 					} else if (childi.jjtGetChild(i) instanceof ASTAs) {
 						
-						var = (ASTVar) childi.jjtGetChild(i).jjtGetChild(1);
+						variable = (ASTVar) childi.jjtGetChild(i).jjtGetChild(1);
 						final lupos.sparql1_1.Node constraint = childi
 								.jjtGetChild(i).jjtGetChild(0);
 
@@ -954,7 +1001,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 						if (!(constraint instanceof ASTAggregation)) {
 							onlyAggregations = false;
 						}
-						final Variable var2 = new Variable(var.getName());
+						final Variable var2 = new Variable(variable.getName());
 						p.addProjectionElement(var2);
 
 						AddComputedBinding acb = new GroupByAddComputedBinding();
@@ -1010,17 +1057,17 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 
 	}
 
-	private boolean hasThisVariable(Node node, Item var) {
-		boolean result = false;
+	private boolean hasThisVariable(Node node, Item variable) {
+		boolean resultOfMethod = false;
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node n = node.jjtGetChild(i);
 			if (n instanceof ASTVar
-					&& ((ASTVar) n).getName().equals(var.getName())) {
+					&& ((ASTVar) n).getName().equals(variable.getName())) {
 				return true;
 			}
-			result |= hasThisVariable(n, var);
+			resultOfMethod |= hasThisVariable(n, variable);
 		}
-		return result;
+		return resultOfMethod;
 	}
 
 	private LinkedList<AddComputedBinding> topologicalSorting(
@@ -1036,8 +1083,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			Iterator<Entry<Variable, Filter>> i = acb.getProjections()
 					.entrySet().iterator();
 			while (i.hasNext()) {
-				Map.Entry<Variable, Filter> mapEntry = (Map.Entry<Variable, Filter>) i
-						.next();
+				Map.Entry<Variable, Filter> mapEntry = i.next();
 				variableList.add(mapEntry.getKey());
 			}
 		}
@@ -1047,8 +1093,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			Iterator<Entry<Variable, Filter>> i = acb.getProjections()
 					.entrySet().iterator();
 			while (i.hasNext()) {
-				Map.Entry<Variable, Filter> mapEntry = (Map.Entry<Variable, Filter>) i
-						.next();
+				Map.Entry<Variable, Filter> mapEntry = i.next();
 				Filter filter = mapEntry.getValue();
 				Set<Variable> set = filter.getUsedVariables();
 				Object[] valueArray = set.toArray();
@@ -1056,8 +1101,8 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				LinkedList<Integer> varList = new LinkedList<Integer>();
 				for (int k = 0; k < variableList.size(); k++) {
 					int counter = 0;
-					for (Object var : valueArray) {
-						if (var.equals(variableList.get(k))) {
+					for (Object variable : valueArray) {
+						if (variable.equals(variableList.get(k))) {
 							varList.add(k);
 						}
 						counter++;
@@ -1122,6 +1167,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 
 	}
 
+	@Override
 	public void visit(final ASTFilterConstraint node,
 			final OperatorConnection connection, Item graphConstraint) {
 		Filter filter = new Filter(node);
@@ -1198,18 +1244,18 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		LinkedList<Variable> groupVariables = new LinkedList<Variable>();
 		for (int k = 0; k < childi.jjtGetNumChildren(); k++) {
 			if (childi.jjtGetChild(k) instanceof ASTVar) {
-				ASTVar var = (ASTVar) childi.jjtGetChild(k);
-				groupVariables.add(new Variable(var.getName()));
+				ASTVar variable = (ASTVar) childi.jjtGetChild(k);
+				groupVariables.add(new Variable(variable.getName()));
 			} else if (childi.jjtGetChild(k) instanceof ASTAs) {
-				ASTVar var = (ASTVar) childi.jjtGetChild(k).jjtGetChild(1);
-				groupVariables.add(new Variable(var.getName()));
+				ASTVar variable = (ASTVar) childi.jjtGetChild(k).jjtGetChild(1);
+				groupVariables.add(new Variable(variable.getName()));
 			}
 		}
 		LinkedList<Variable> selectVariables = new LinkedList<Variable>();
 		for (int k = 0; k < node.jjtGetNumChildren(); k++) {
 			if (node.jjtGetChild(k) instanceof ASTVar) {
-				ASTVar var = (ASTVar) node.jjtGetChild(k);
-				selectVariables.add(new Variable(var.getName()));
+				ASTVar variable = (ASTVar) node.jjtGetChild(k);
+				selectVariables.add(new Variable(variable.getName()));
 			}
 		}
 		for (int k = 0; k < groupVariables.size(); k++) {
@@ -1288,7 +1334,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	 *            ASTQuery-Node
 	 */
 	public void visit(final ASTQuery node) {
-		BasicOperator lastOperator = result;
+		BasicOperator lastOperator = this.result;
 
 		// dealing with the BINDINGS clause
 		final int numberChildren = node.jjtGetNumChildren();
@@ -1296,8 +1342,6 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			if (node.jjtGetChild(i) instanceof ASTBindings) {
 				QueryResult bindingsQR = QueryResult.createInstance();
 				Bindings binding = new BindingsMap();
-				ASTVar var2;
-				Variable var;
 
 				// Getting the variables which are used in the BINDINGS clause
 				LinkedList<Variable> varList = new LinkedList<Variable>();
@@ -1305,9 +1349,9 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				for (int k = 0; k < node.jjtGetChild(i).jjtGetNumChildren(); k++) {
 					if (node.jjtGetChild(i).jjtGetChild(k) instanceof ASTVar) {
 
-						var2 = (ASTVar) node.jjtGetChild(i).jjtGetChild(k);
-						var = new Variable(var2.getName());
-						varList.add(var);
+						ASTVar var2 = (ASTVar) node.jjtGetChild(i).jjtGetChild(k);
+						Variable variable = new Variable(var2.getName());
+						varList.add(variable);
 
 					}
 				}
@@ -1332,10 +1376,9 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				}
 
 				// Inserting the join operation
-				ComputeBindings computeBindings = new ComputeBindings(
-						bindingsQR);
+				ComputeBindings computeBindings = new ComputeBindings(bindingsQR);
 				Join join = new Join();
-				join.addSucceedingOperator(result);
+				join.addSucceedingOperator(this.result);
 				
 				computeBindings.addSucceedingOperator(new OperatorIDTuple(join,1));
 				
@@ -1383,10 +1426,10 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 				final Node n = node.jjtGetChild(i);
 				if (n instanceof ASTBind) {
-					ASTVar var = (ASTVar) n.jjtGetChild(1);
-					final Variable var2 = new Variable(var.getName());
-					Bind b = new Bind(var2);
-					b.addProjectionElement(var2, n.jjtGetChild(0));
+					ASTVar variable = (ASTVar) n.jjtGetChild(1);
+					final Variable variable2 = new Variable(variable.getName());
+					Bind b = new Bind(variable2);
+					b.addProjectionElement(variable2, n.jjtGetChild(0));
 					connection.connectAndSetAsNewOperatorConnection(b, 0);
 				}
 			}
@@ -1405,26 +1448,28 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 						Sort sortRight = new Sort();
 						minus = new SortedMinus(sortLeft, sortRight);
 
-						connection.connectAndSetAsNewOperatorConnection(minus,
-								1);
-						connection
-								.connectAndSetAsNewOperatorConnection(sortRight);
+						connection.connectAndSetAsNewOperatorConnection(minus, 1);
+						connection.connectAndSetAsNewOperatorConnection(sortRight);
 						n.accept(this, connection, graphConstraint);
 						connection.setOperatorConnection(minus, 0);
-						connection
-								.connectAndSetAsNewOperatorConnection(sortLeft);
-
+						connection.connectAndSetAsNewOperatorConnection(sortLeft);
 					} else {
 						minus = new Minus();
 
-						connection.connectAndSetAsNewOperatorConnection(minus,
-								1);
+						connection.connectAndSetAsNewOperatorConnection(minus, 1);
 						n.accept(this, connection, graphConstraint);
 						connection.setOperatorConnection(minus, 0);
 					}
-
 				}
 			}
+			
+			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+				final Node n = node.jjtGetChild(i);
+				if (n instanceof ASTService) {
+					this.serviceGenerator.insertFederatedQueryOperator((ASTService)n, connection);
+				}
+			}
+			
 			int numberUnionOrGraphConstraints = 0;
 			final LinkedList<TriplePattern> triplePatternToJoin = new LinkedList<TriplePattern>();
 			final LinkedList<ASTTripleSet> multipleOccurencesToJoin = new LinkedList<ASTTripleSet>();
@@ -1439,7 +1484,9 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 						triplePatternToJoin.add(tp);
 					}
 				} else if (isHigherConstructToJoin(n)) {
-					numberUnionOrGraphConstraints++;
+					if(!(n instanceof ASTService) ||  this.serviceGenerator.countsAsJoinPartner((ASTService)n)){
+						numberUnionOrGraphConstraints++;
+					}
 				}
 			}
 			int numberJoinPartner = numberUnionOrGraphConstraints;
@@ -1500,6 +1547,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		throw new UnsupportedOperationException("Named graphs are not supported by this evaluator!");
 	}
 	
+	@SuppressWarnings("unused") 
 	public void visit(final ASTStream node) {
 		throw new UnsupportedOperationException("Streams are not supported by this evaluator!");
 	}

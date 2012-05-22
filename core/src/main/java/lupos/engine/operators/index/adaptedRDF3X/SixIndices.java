@@ -734,6 +734,13 @@ public class SixIndices extends Indices {
                 (((OptimizedDBBPTreeGeneration) POS).getDBBPTree()).writeLuposObject(out);
                 (((OptimizedDBBPTreeGeneration) OSP).getDBBPTree()).writeLuposObject(out);
                 (((OptimizedDBBPTreeGeneration) OPS).getDBBPTree()).writeLuposObject(out);
+            } else if(SPO instanceof DBBPTree){
+            	((DBBPTree) SPO).writeLuposObject(out);
+            	((DBBPTree) SOP).writeLuposObject(out);
+            	((DBBPTree) PSO).writeLuposObject(out);
+            	((DBBPTree) POS).writeLuposObject(out);
+            	((DBBPTree) OSP).writeLuposObject(out);
+            	((DBBPTree) OPS).writeLuposObject(out);
             }
             if (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
                 for (int i = 0; i < statisticsIndicesForFastHistogramComputation.length; i++) {
@@ -747,13 +754,20 @@ public class SixIndices extends Indices {
     @Override
     public void writeOutAllModifiedPages() throws IOException {
         if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
-            if (SPO instanceof OptimizedDBBPTreeGeneration) {
+        	if (SPO instanceof OptimizedDBBPTreeGeneration) {
                 (((OptimizedDBBPTreeGeneration) SPO).getDBBPTree()).writeAllModifiedPages();
                 (((OptimizedDBBPTreeGeneration) SOP).getDBBPTree()).writeAllModifiedPages();
                 (((OptimizedDBBPTreeGeneration) PSO).getDBBPTree()).writeAllModifiedPages();
                 (((OptimizedDBBPTreeGeneration) POS).getDBBPTree()).writeAllModifiedPages();
                 (((OptimizedDBBPTreeGeneration) OSP).getDBBPTree()).writeAllModifiedPages();
                 (((OptimizedDBBPTreeGeneration) OPS).getDBBPTree()).writeAllModifiedPages();
+            } else if (SPO instanceof DBBPTree) {
+            	((DBBPTree) SPO).writeAllModifiedPages();
+            	((DBBPTree) SOP).writeAllModifiedPages();
+            	((DBBPTree) PSO).writeAllModifiedPages();
+            	((DBBPTree) POS).writeAllModifiedPages();
+            	((DBBPTree) OSP).writeAllModifiedPages();
+            	((DBBPTree) OPS).writeAllModifiedPages();
             }
         }
     }

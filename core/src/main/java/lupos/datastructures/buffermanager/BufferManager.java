@@ -54,28 +54,34 @@ public class BufferManager {
 	 */
 	public class LeastRecentlyUsed implements REPLACEMENTSTRATEGY {
 		protected HashMap<Integer, Long> timestamps = new HashMap<Integer, Long>();
+		
+		private long currentTime = 0;
 
+		@Override
 		public void accessNow(final int pagenumber) {
-			timestamps.put(pagenumber, System.currentTimeMillis());
+			this.timestamps.put(pagenumber, currentTime++);
 		}
 
+		@Override
 		public int getToBeReplaced() {
 			Entry<Integer, Long> min = null;
-			for (final Entry<Integer, Long> entry : timestamps.entrySet()) {
+			for (final Entry<Integer, Long> entry : this.timestamps.entrySet()) {
 				if (min == null || entry.getValue() < min.getValue())
 					min = entry;
 			}
 			final int key = min.getKey();
-			timestamps.remove(key);
+			this.timestamps.remove(key);
 			return key;
 		}
 
+		@Override
 		public void releasePage(final int pagenumber) {
-			timestamps.remove(pagenumber);
+			this.timestamps.remove(pagenumber);
 		}
 		
+		@Override
 		public void releaseAll(){
-			timestamps.clear();
+			this.timestamps.clear();
 		}		
 	}
 
@@ -85,7 +91,7 @@ public class BufferManager {
 
 		public Page(final byte[] page) {
 			this.page = page;
-			modified = false;
+			this.modified = false;
 		}
 
 		public Page(final byte[] page, final boolean modified) {
@@ -93,15 +99,16 @@ public class BufferManager {
 			this.modified = modified;
 		}
 		
+		@Override
 		public String toString(){
 			StringBuilder sb=new StringBuilder();
-			if(modified)
+			if(this.modified)
 				sb.append('m');
 			sb.append('[');
-			sb.append((page[0]+128));
-			for(int i=1;i<page.length;i++){
+			sb.append((this.page[0]+128));
+			for(int i=1;i<this.page.length;i++){
 				sb.append(',');
-				sb.append((page[i]+128));
+				sb.append((this.page[i]+128));
 			}
 			sb.append(']');
 			return sb.toString();
@@ -123,13 +130,13 @@ public class BufferManager {
 	protected ReentrantLock lock = new ReentrantLock();
 	
 	public BufferManager(final String name) throws FileNotFoundException {
-		this(new File(name+ "_0"));
+		this(new File(name + "_0"));
 		this.fileName = name;
 	}
 
 	private BufferManager(final File file) throws FileNotFoundException {
-		bufferedFile = new RandomAccessFile(file, "rw");
-		replacementStrategy = new LeastRecentlyUsed();
+		this.bufferedFile = new RandomAccessFile(file, "rw");
+		this.replacementStrategy = new LeastRecentlyUsed();
 	}
 
 	/**
@@ -142,14 +149,12 @@ public class BufferManager {
 	 */
 	private void jumpToPage(final int pagenumber) throws IOException {
 		final int newFile = pagenumber / JAVALIMITFILESIZE;
-		if (newFile != currentFile) {
-			bufferedFile.close();
-			bufferedFile = new RandomAccessFile(new File(fileName + "_"
-					+ newFile), "rw");
-			currentFile = newFile;
+		if (newFile != this.currentFile) {
+			this.bufferedFile.close();
+			this.bufferedFile = new RandomAccessFile(new File(this.fileName + "_" + newFile), "rw");
+			this.currentFile = newFile;
 		}
-		bufferedFile.seek((pagenumber - currentFile * JAVALIMITFILESIZE)
-				* PAGESIZE);
+		this.bufferedFile.seek((pagenumber - this.currentFile * BufferManager.JAVALIMITFILESIZE) * BufferManager.PAGESIZE);
 	}
 
 	/**
@@ -167,7 +172,7 @@ public class BufferManager {
 		if (page.modified) {
 			// write outside in file
 			jumpToPage(pagenumber);
-			bufferedFile.write(page.page);
+			this.bufferedFile.write(page.page);
 			page.modified = false;
 		}
 	}
@@ -181,12 +186,12 @@ public class BufferManager {
 	 * @throws IOException
 	 */
 	private void handleFullBuffer() throws IOException {
-		if (bufferedPages.size() >= MAXPAGESINBUFFER) {
-			final int toBeReplaced = replacementStrategy.getToBeReplaced();
-			final Page pageToBeReplaced = bufferedPages.get(toBeReplaced);
+		if (this.bufferedPages.size() >= BufferManager.MAXPAGESINBUFFER) {
+			final int toBeReplaced = this.replacementStrategy.getToBeReplaced();
+			final Page pageToBeReplaced = this.bufferedPages.get(toBeReplaced);
 			if (pageToBeReplaced != null) {
 				writeModifiedPage(pageToBeReplaced, toBeReplaced);
-				bufferedPages.remove(toBeReplaced);
+				this.bufferedPages.remove(toBeReplaced);
 			}
 		}
 	}
@@ -202,21 +207,22 @@ public class BufferManager {
 	 * @throws IOException
 	 */
 	public byte[] getPage(final int pagenumber) throws IOException {
-		lock.lock();
+		this.lock.lock();
 		try {
-			Page page = bufferedPages.get(pagenumber);
+			Page page = this.bufferedPages.get(pagenumber);
 			if (page == null) {
 				handleFullBuffer();
 				// load page
 				jumpToPage(pagenumber);
 				final byte[] pageContent = new byte[PAGESIZE];
-				bufferedFile.read(pageContent);
-				page = new Page(pageContent);				
+				this.bufferedFile.read(pageContent);
+				page = new Page(pageContent);
+				this.bufferedPages.put(pagenumber, page);
 			} 
-			replacementStrategy.accessNow(pagenumber);
+			this.replacementStrategy.accessNow(pagenumber);
 			return page.page;
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
@@ -233,21 +239,21 @@ public class BufferManager {
 	 */
 	public void modifyPage(final int pagenumber, final byte[] pageContent)
 			throws IOException {
-		lock.lock();
+		this.lock.lock();
 		try {
-			Page page = bufferedPages.get(pagenumber);
+			Page page = this.bufferedPages.get(pagenumber);
 			if (page == null) {
 				handleFullBuffer();
 				page = new Page(pageContent, true);
-				bufferedPages.put(pagenumber, page);
+				this.bufferedPages.put(pagenumber, page);
 			} else {
 				page.page = pageContent;
 				page.modified = true;
 			}
-			replacementStrategy.accessNow(pagenumber);
+			this.replacementStrategy.accessNow(pagenumber);
 			
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
@@ -256,12 +262,12 @@ public class BufferManager {
 	 * on disk.
 	 */
 	public void releasePage(final int pagenumber) {
-		lock.lock();
+		this.lock.lock();
 		try {
-			replacementStrategy.releasePage(pagenumber);
-			bufferedPages.remove(pagenumber);
+			this.replacementStrategy.releasePage(pagenumber);
+			this.bufferedPages.remove(pagenumber);
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 	
@@ -270,12 +276,12 @@ public class BufferManager {
 	 * on disk.
 	 */
 	public void releaseAllPages(){
-		lock.lock();
+		this.lock.lock();
 		try {
-			replacementStrategy.releaseAll();
-			bufferedPages.clear();
+			this.replacementStrategy.releaseAll();
+			this.bufferedPages.clear();
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}		
 	}
 
@@ -285,13 +291,13 @@ public class BufferManager {
 	 * @throws IOException
 	 */
 	public void writeAllModifiedPages() throws IOException {
-		lock.lock();
+		this.lock.lock();
 		try {
-			for (final Entry<Integer, Page> entry : bufferedPages.entrySet()) {
+			for (final Entry<Integer, Page> entry : this.bufferedPages.entrySet()) {
 				writeModifiedPage(entry.getValue(), entry.getKey());
 			}
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
@@ -309,6 +315,6 @@ public class BufferManager {
 	 * if the buffer manager is not used any more...
 	 */
 	public void close() throws IOException {
-		bufferedFile.close();
+		this.bufferedFile.close();
 	}
 }

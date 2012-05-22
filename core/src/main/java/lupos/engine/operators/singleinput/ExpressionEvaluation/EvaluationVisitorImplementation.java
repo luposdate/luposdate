@@ -1447,7 +1447,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	protected boolean handleInAndNotIn(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		Object arg1 = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		Node child1 = node.jjtGetChild(1);
-		for(int i=1; i<child1.jjtGetNumChildren(); i++) {
+		for(int i=0; i<child1.jjtGetNumChildren(); i++) {
 			Object arg2 = Helper.unlazy(child1.jjtGetChild(i).accept(this, b, d));
 			if(Helper.equals(arg1, arg2))
 				return true;

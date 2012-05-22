@@ -137,16 +137,21 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				.getEnum("sortduringindexconstruction"));
 	}
 	
-	public void writeOutAllModifiedPagesInRDFDataIndices() throws IOException {
-		dataset.writeOutAllModifiedPages();
+	public void writeOutAllModifiedPagesInRDFDataIndices(final String dir) throws IOException {
+		this.dataset.writeOutAllModifiedPages();
+		if(dir!=null){
+			if(this instanceof RDF3XQueryEvaluator){
+				((RDF3XQueryEvaluator)this).writeOutIndexFile(dir);
+			}
+		}
 	}
 	
 	public void buildCompletelyAllIndices() {
-		dataset.buildCompletelyAllIndices();
+		this.dataset.buildCompletelyAllIndices();
 	}
 
 	protected ONTOLOGY getMaterializeOntology() {
-		switch (rdfs) {
+		switch (this.rdfs) {
 		case RDFS:
 			return ONTOLOGY.RDFS;
 		case RUDIMENTARYRDFS:
@@ -159,7 +164,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 	protected boolean isNonOptimizedRDFS() {
-		switch (rdfs) {
+		switch (this.rdfs) {
 		case RDFS:
 		case RUDIMENTARYRDFS:
 		case ALTERNATIVERDFS:

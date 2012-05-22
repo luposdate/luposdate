@@ -28,7 +28,7 @@ public class TSVFormatter extends SeparatorFormatter {
 	@Override
 	public String getMIMEType(QueryResult queryResult) {
 		if (queryResult instanceof GraphResult) {
-			return "application/rdf+xml";
+			return super.getMIMEType(queryResult);
 		} else {
 			return "text/tsv";
 		}
