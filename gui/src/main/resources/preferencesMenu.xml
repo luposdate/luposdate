@@ -55,7 +55,7 @@
 		<line />
 		<option id="serviceCallApproach" name="Service call approach" datatype="xpref.datatypes.EnumDatatype" value="Fetch_As_Needed" source="lupos.sparql1_1.operatorgraph.ServiceApproaches"/>
 		<option id="serviceCallBitVectorApproach" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Bitvector approach" datatype="xpref.datatypes.EnumDatatype" value="MD5" source="lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin$APPROACH"/>
-    	<option id="serviceCallBitVectorSubstring" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Size of bitvector" datatype="xpref.datatypes.IntegerDatatype" value="8" minimum="1" />
+    	<option id="serviceCallBitVectorSize" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Size of bitvector" datatype="xpref.datatypes.IntegerDatatype" value="8" minimum="1" />
   	</options>
   </page>
   <page id="syntax_highlighting" name="Syntax Highlighting">

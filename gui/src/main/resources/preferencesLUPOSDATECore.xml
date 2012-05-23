@@ -184,6 +184,11 @@
 	      <option id="sort" name="Sort" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$SORT" help="Specify the sort algorithm to be used"/>
 	      <option id="distinct" name="Distinct" datatype="xpref.datatypes.EnumDatatype" value="DEFAULT" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$DISTINCT" help="Specify the distinct algorithm to be used"/>
       </optionbox>
+      <optionbox name="Service Call / Federated Queries">
+		<option id="serviceCallApproach" name="Service call approach" datatype="xpref.datatypes.EnumDatatype" value="Fetch_As_Needed" source="lupos.sparql1_1.operatorgraph.ServiceApproaches"/>
+		<option id="serviceCallBitVectorApproach" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Bitvector approach" datatype="xpref.datatypes.EnumDatatype" value="MD5" source="lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin$APPROACH"/>
+    	<option id="serviceCallBitVectorSize" dependsOn="serviceCallApproach=Bitvector_Join_Approach" name="Size of bitvector" datatype="xpref.datatypes.IntegerDatatype" value="8" minimum="1" />
+      </optionbox>
       <optionbox name="Parallel Database Options">
 		  <option id="paralleloperands" name="Parallel Operands" datatype="parallelOperandsSequence" value="" help="specifies whether or not ParallelOperands are added as operands of joins in order to compute operand results in parallel."/>
 		  <line/>

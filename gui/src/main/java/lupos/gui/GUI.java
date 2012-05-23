@@ -40,7 +40,9 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import lupos.engine.evaluators.EvaluatorCreator;
 import lupos.engine.evaluators.QueryEvaluator;
+import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
 import lupos.misc.FileHelper;
+import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 import xpref.IXPref;
 import xpref.XPref;
 import xpref.datatypes.BooleanDatatype;
@@ -157,8 +159,14 @@ public class GUI implements IXPref {
 								content.append("<html><code>");
 								final QueryEvaluator evaluator =((EvaluatorCreator.EVALUATORS) comboBoxEvaluator.getSelectedItem()).create(pref);
 								processingQuery = true;
-								System.out.println("Configuration:"
-										+ pref.toString() + "\n\n");
+								// do some initialization for federated queries...
+								ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
+								serviceApproach.setup();
+								FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallBitVectorApproach");
+								bitVectorApproach.setup();
+								FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
+								
+								System.out.println("Configuration:" + pref.toString() + "\n\n");
 								SwingUtilities.invokeLater(new Runnable() {
 									public void run() {
 										final Thread thread = new Thread() {
