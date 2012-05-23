@@ -22,6 +22,7 @@ import lupos.endpoint.server.format.JSONFormatter;
 import lupos.endpoint.server.format.PlainFormatter;
 import lupos.endpoint.server.format.TSVFormatter;
 import lupos.endpoint.server.format.XMLFormatter;
+import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -193,7 +194,7 @@ public class Endpoint {
 					try {
 						synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
 							System.out.println("Evaluating query:\n"+queryParameter);
-							QueryResult queryResult = evaluator.getResult(queryParameter);
+							QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, false):Endpoint.evaluator.getResult(queryParameter);
 							final String mimeType = formatter.getMIMEType(queryResult);
 							System.out.println("Done, sending response using MIME type "+mimeType);
 							t.getResponseHeaders().add("Content-type", mimeType);
@@ -202,9 +203,9 @@ public class Endpoint {
 							if(log){
 								os = new OutputStreamLogger(os);
 							}
-							formatter.writeResult(os, evaluator.getVariablesOfQuery(), queryResult);
+							formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
 							os.close();
-							evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
+							Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
 						}
 						return;
 					} catch (Error e) {

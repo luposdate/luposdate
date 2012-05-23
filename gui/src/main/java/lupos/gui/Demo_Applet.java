@@ -109,7 +109,6 @@ import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.ParseException;
 import lupos.sparql1_1.TokenMgrError;
-import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
 import org.openrdf.query.MalformedQueryException;
@@ -314,7 +313,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			queryInputTab.add(evalPanel, BorderLayout.SOUTH);
 
 			// add a new tab for query input to the tabbed pane
-			this.tabbedPane_globalMainpane.add(TAB_TITLE_QUERY, queryInputTab);
+			this.tabbedPane_globalMainpane.add(this.TAB_TITLE_QUERY, queryInputTab);
 
 			final JSplitPane splitPane_rifInput = generateJSplitPane(
 					this.generateRifTab(), this.generateRifInputErrorBox());
@@ -326,17 +325,17 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			rifInputTab.add(splitPane_rifInput, BorderLayout.CENTER);
 			rifInputTab.add(rifEvalPanel, BorderLayout.SOUTH);
 
-			this.tabbedPane_globalMainpane.add(TAB_TITLE_RULES, rifInputTab);
+			this.tabbedPane_globalMainpane.add(this.TAB_TITLE_RULES, rifInputTab);
 
 			final JSplitPane splitPane_dataInput = generateJSplitPane(
 					this.generateDataTab(), this.generateDataInputErrorBox());
 
 			// add a new tab for data input to the tabbed pane
-			this.tabbedPane_globalMainpane.add(TAB_TITLE_DATA,
+			this.tabbedPane_globalMainpane.add(this.TAB_TITLE_DATA,
 					splitPane_dataInput);
 
 			// add a new tab for evaluation results to the tabbed pane
-			this.tabbedPane_globalMainpane.add(TAB_TITLE_RESULT, new JPanel());
+			this.tabbedPane_globalMainpane.add(this.TAB_TITLE_RESULT, new JPanel());
 
 			this.masterpanel.add(this.tabbedPane_globalMainpane,
 					BorderLayout.CENTER);
@@ -461,9 +460,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private void enableOrDisableEvaluationDemoButtonSPARQL() {
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		if (chosen.compareTo("Jena") == 0 || chosen.compareTo("Sesame") == 0) {
-			bt_evalDemo.setEnabled(false);
+			this.bt_evalDemo.setEnabled(false);
 		} else
-			bt_evalDemo.setEnabled(true);
+			this.bt_evalDemo.setEnabled(true);
 	}
 	
 	private boolean isEvaluatorWithSupportOfRIFChosen(){
@@ -473,19 +472,19 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	private void enableOrDisableEvaluationButtonsRIF() {
 		boolean enable=isEvaluatorWithSupportOfRIFChosen();
-		bt_rifEvaluate.setEnabled(enable);
-		bt_rifMeasureExecutionTimes.setEnabled(enable);
+		this.bt_rifEvaluate.setEnabled(enable);
+		this.bt_rifMeasureExecutionTimes.setEnabled(enable);
 	}
 
 	private void enableOrDisableEvaluationDemoButtonRIF() {
-		bt_rifEvalDemo.setEnabled(isEvaluatorWithSupportOfRIFChosen());
+		this.bt_rifEvalDemo.setEnabled(isEvaluatorWithSupportOfRIFChosen());
 	}
 
 	private void enableOrDisableButtons(final boolean queryOrRif) {
 		if(queryOrRif){
 			enableOrDisableEvaluationDemoButtonSPARQL();
-			bt_evaluate.setEnabled(true);
-			bt_MeasureExecutionTimes.setEnabled(true);
+			this.bt_evaluate.setEnabled(true);
+			this.bt_MeasureExecutionTimes.setEnabled(true);
 		} else {
 			enableOrDisableEvaluationDemoButtonRIF();
 			enableOrDisableEvaluationButtonsRIF();
@@ -560,8 +559,10 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
+			@Override
 			public void actionPerformed(final ActionEvent arg0) {
-				new AdvancedQueryEditor(tp_queryInput.getText(), tp_dataInput.getText(), myself, getIcon(webdemo));
+				new AdvancedQueryEditor(Demo_Applet.this.tp_queryInput.getText(), Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
 			}
 		});
 
@@ -572,7 +573,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.queryInputSP = new JScrollPane(this.tp_queryInput);
 
 		return generateInputTab(bt_visualEdit, null,
-				"Choose a SPARQL query:\t", this.getQueries(), PATH_QUERIES,
+				"Choose a SPARQL query:\t", this.getQueries(), this.PATH_QUERIES,
 				"Clear query field", this.tp_queryInput, this.queryInputSP);
 	}
 
@@ -641,6 +642,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		// create clear-button, add actionListener and add it to Applet...
 		final JButton bt_clear = new JButton("Clear error field");
 		bt_clear.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				inputErrors.setText("");
 				input.disableErrorLine();
@@ -651,17 +653,17 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		rowpanel.add(clearpanel, BorderLayout.EAST);
 
-		final JPanel masterpanel = new JPanel(new BorderLayout());
-		masterpanel.add(rowpanel, BorderLayout.NORTH);
+		final JPanel masterpanel1 = new JPanel(new BorderLayout());
+		masterpanel1.add(rowpanel, BorderLayout.NORTH);
 
 		inputErrors.setFont(new Font("Courier New", Font.PLAIN, 12));
 		inputErrors.setEditable(false);
 
 		final JScrollPane scroll = new JScrollPane(inputErrors);
 
-		masterpanel.add(scroll, BorderLayout.CENTER);
+		masterpanel1.add(scroll, BorderLayout.CENTER);
 
-		return masterpanel;
+		return masterpanel1;
 	}
 
 	/**
@@ -671,8 +673,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent arg0) {
-				new DataEditor(tp_dataInput.getText(), myself, getIcon(webdemo));
+				new DataEditor(Demo_Applet.this.tp_dataInput.getText(), myself, getIcon(Demo_Applet.this.webdemo));
 			}
 		});
 

@@ -191,11 +191,6 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return cr;
 	}
 
-//	public Dataset getDataset() {
-//		return evaluator.getDataset();
-//	}
-
-	
 	public Result getResultOperator(){
 		return this.evaluator.getResultOperator();
 	}
@@ -213,10 +208,6 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public CommonCoreQueryEvaluator<Node> getEvaluator() {
 		return this.evaluator;
 	}
-
-//	public IndexCollection createIndexCollection() {
-//		return evaluator.createIndexCollection();
-//	}
 
 	@Override
 	public long prepareInputData(Collection<URILiteral> defaultGraphs,

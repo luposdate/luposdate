@@ -452,6 +452,13 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		evaluateQuery();
 		return cr.getResult();
 	}
+	
+	public QueryResult getResult(final String query, final boolean oneTime) throws Exception {
+		compileQuery(query);
+		logicalOptimization();
+		physicalOptimization();
+		return getResult(oneTime);
+	}
 
 	public CollectAllResults getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
