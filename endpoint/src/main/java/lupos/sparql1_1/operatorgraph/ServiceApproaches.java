@@ -39,6 +39,11 @@ public enum ServiceApproaches {
 		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
 			return ServiceGeneratorFetchAsNeeded.class;
 		}
+	}, Fetch_As_Needed_With_Cache(){
+		@Override
+		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
+			return ServiceGeneratorFetchAsNeededWithCache.class;
+		}
 	}, Semijoin_Approach(){
 		@Override
 		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
@@ -47,7 +52,9 @@ public enum ServiceApproaches {
 	}, Bitvector_Join_Approach(){
 		@Override
 		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
-			return ServiceGeneratorBitVectorJoin.class;
+			return (nonStandardSPARQLBitVectorJoin)?
+					ServiceGeneratorBitVectorJoinNonStandardSPARQL.class:
+					ServiceGeneratorBitVectorJoin.class;
 		}
 	}, Join_At_Endpoint(){
 		@Override
@@ -59,5 +66,11 @@ public enum ServiceApproaches {
 	
 	public void setup(){
 		SPARQLCoreParserVisitorImplementation.serviceGeneratorClass = this.serviceGeneratorClass();
+	}
+	
+	private static boolean nonStandardSPARQLBitVectorJoin = false;
+	
+	public static void setNonStandardSPARQLBitVectorJoin(final boolean nonStandardSPARQLBitVectorJoin){
+		ServiceApproaches.nonStandardSPARQLBitVectorJoin = nonStandardSPARQLBitVectorJoin;
 	}
 }

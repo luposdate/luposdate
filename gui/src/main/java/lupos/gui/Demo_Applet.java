@@ -105,6 +105,7 @@ import lupos.engine.operators.application.IterateOneTimeThrough;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
+import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinNonStandardSPARQL;
 import lupos.gui.debug.EvaluationDemoToolBar;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -1367,10 +1368,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	public QueryEvaluator<Node> setupEvaluator(final EvaluationMode mode)
 			throws Throwable {
 		ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
-		serviceApproach.setup();
 		FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallBitVectorApproach");
 		bitVectorApproach.setup();
+		serviceApproach.setup();
 		FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
+		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
 		final QueryEvaluator<Node> evaluator = (QueryEvaluator<Node>) this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex()).newInstance();
 		evaluator.setupArguments();
 		evaluator.getArgs().set("debug", DEBUG.ALL);

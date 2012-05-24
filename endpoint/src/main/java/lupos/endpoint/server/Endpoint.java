@@ -47,6 +47,7 @@ import lupos.endpoint.server.format.TSVFormatter;
 import lupos.endpoint.server.format.XMLFormatter;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
+import lupos.engine.operators.singleinput.federated.BitVectorFilterFunction;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -191,6 +192,11 @@ public class Endpoint {
 	}
 
 	public static class SPARQLHandler implements HttpHandler {
+		
+		public SPARQLHandler(){
+			super();
+			BitVectorFilterFunction.register();
+		}
 		
 		private final static String format = "format=";
 		private final static String query = "query=";

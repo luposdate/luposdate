@@ -544,10 +544,11 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		final Literal name = LazyLiteral.getLiteral(node.jjtGetChild(0));
 		ExternalFunction externalFunction = EvaluationVisitorImplementation.externalFunctions.get(name);
 		if(externalFunction!=null){
-			int number = node.jjtGetNumChildren()-1;
+			Node child1 = node.jjtGetChild(1);
+			int number = child1.jjtGetNumChildren();
 			Object[] args = new Object[number];
 			for(int i=0; i<number; i++){
-				args[i] = node.jjtGetChild(i+1).accept(this, b, d);
+				args[i] = child1.jjtGetChild(i).accept(this, b, d);
 			}
 			return externalFunction.evaluate(args);
 		}

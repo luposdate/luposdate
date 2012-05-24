@@ -24,23 +24,24 @@
 package lupos.engine.operators.singleinput.federated;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.Client;
-import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
-import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 
-public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceedingJoin {
+public class FederatedQueryFetchAsNeededWithCache extends FederatedQueryFetchAsNeeded {
 
-	public FederatedQueryFetchAsNeeded(Node federatedQuery) {
+	public HashMap<Bindings, QueryResult> cache = new HashMap<Bindings, QueryResult>(); 
+	
+	public FederatedQueryFetchAsNeededWithCache(Node federatedQuery) {
 		super(federatedQuery);
 	}
 
@@ -83,17 +84,37 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 				try {
 					if(!this.bindingsIterator.hasNext()){
 						return null;
-					}
+					}					
 					Bindings bindingsTemp = this.bindingsIterator.next();
+					
+					Bindings bindingsKey = bindingsTemp.clone();
+					Set<Variable> otherVars = bindingsKey.getVariableSet();
+					otherVars.removeAll(FederatedQueryFetchAsNeededWithCache.this.variablesInServiceCall);
+					otherVars.remove(FederatedQueryFetchAsNeededWithCache.this.endpoint);
+					for(Variable var: otherVars){
+						bindingsKey.add(var, null);
+					}
+					
+					QueryResult cached = FederatedQueryFetchAsNeededWithCache.this.cache.get(bindingsKey);
+					if(cached!=null){
+						return cached.iterator();
+					}
+					
 					final String fQuery = toStringQuery(bindingsTemp);
-					if (!FederatedQueryFetchAsNeeded.this.endpoint.isVariable()) {
-						return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeeded.this.endpoint).getString(), fQuery), bindingsTemp);
+					if (!FederatedQueryFetchAsNeededWithCache.this.endpoint.isVariable()) {
+						QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeededWithCache.this.endpoint).getString(), fQuery), bindingsTemp));
+						queryResult.materialize();
+						FederatedQueryFetchAsNeededWithCache.this.cache.put(bindingsKey, queryResult);
+						return queryResult.iterator();
 					} else {
-						Literal endpointURI = bindingsTemp.get((Variable) FederatedQueryFetchAsNeeded.this.endpoint);
+						Literal endpointURI = bindingsTemp.get((Variable) FederatedQueryFetchAsNeededWithCache.this.endpoint);
 						if (endpointURI instanceof LazyLiteral)
 							endpointURI = ((LazyLiteral) endpointURI).getLiteral();
 						if (endpointURI instanceof URILiteral) {
-							return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp);
+							QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp));
+							queryResult.materialize();
+							FederatedQueryFetchAsNeededWithCache.this.cache.put(bindingsKey, queryResult);
+							return queryResult.iterator();
 						} else {
 							// ignore or error message?
 						}
@@ -108,57 +129,5 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 		});	
 	}
 
-	public String toStringQuery(final Bindings bindings) {
-		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() {
-			@Override
-			public String visit(final ASTVar node) {
-				Variable var = new Variable(node.getName());
-				if ((bindings.get(var) != null)) {
-					return bindings.get(var).toString();
-				} else
-					return "?" + node.getName();
-			}
-		};
 
-		return "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
-	}
-	
-	public static class IteratorQueryResultAndOneBindings implements ParallelIterator<Bindings>{
-		
-		private final Iterator<Bindings> it;
-		private final Bindings bindings;
-		
-		public IteratorQueryResultAndOneBindings(final QueryResult queryResult, final Bindings bindings){
-			this.it = queryResult.oneTimeIterator();
-			this.bindings = bindings;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.it.hasNext();
-		}
-
-		@Override
-		public Bindings next() {
-			if(!hasNext()){
-				return null;
-			}
-			Bindings result = this.it.next();
-			result.addAll(this.bindings);
-			return result;
-		}
-
-		@Override
-		public void remove() {
-			this.it.remove();
-		}
-
-		@Override
-		public void close() {
-			if(this.it instanceof ParallelIterator){
-				((ParallelIterator<Bindings>)this.it).close();
-			}
-		}
-		
-	}
 }

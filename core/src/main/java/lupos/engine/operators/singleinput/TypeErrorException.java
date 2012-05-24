@@ -25,4 +25,12 @@ package lupos.engine.operators.singleinput;
 
 public class TypeErrorException extends Exception {
 
+	public TypeErrorException(){
+		super();
+	}
+	
+	public TypeErrorException(String msg){
+		super(msg);
+	}
+
 }

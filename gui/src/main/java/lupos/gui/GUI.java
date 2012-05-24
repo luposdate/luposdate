@@ -64,6 +64,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import lupos.engine.evaluators.EvaluatorCreator;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
+import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinNonStandardSPARQL;
 import lupos.misc.FileHelper;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 import xpref.IXPref;
@@ -116,8 +117,7 @@ public class GUI implements IXPref {
 				try {
 					lock.lock();
 					try {
-						final HTMLFormatter htmlformatter = new HTMLFormatter(
-								GUI.pref);
+						final HTMLFormatter htmlformatter = new HTMLFormatter(GUI.pref);
 						htmlformatter.setShortenDataTypes(true);
 						new GUI.BrowserForCommandLineOptions(GUI.pref
 								.parseCommandLineOptions(
@@ -184,10 +184,11 @@ public class GUI implements IXPref {
 								processingQuery = true;
 								// do some initialization for federated queries...
 								ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
-								serviceApproach.setup();
 								FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallBitVectorApproach");
 								bitVectorApproach.setup();
+								serviceApproach.setup();
 								FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
+								FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
 								
 								System.out.println("Configuration:" + pref.toString() + "\n\n");
 								SwingUtilities.invokeLater(new Runnable() {

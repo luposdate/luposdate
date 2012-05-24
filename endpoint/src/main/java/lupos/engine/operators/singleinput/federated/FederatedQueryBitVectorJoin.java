@@ -36,6 +36,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.sparql1_1.Node;
+import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
 public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoin {
 	
@@ -81,13 +82,18 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 	
 	public static enum APPROACH {
 		// the hashfunctions must be declared in the same order as in HASHFUNCTION! 
-		MD5, SHA1, SHA256, SHA384, SHA512, Value;
+		MD5, SHA1, SHA256, SHA384, SHA512, Value, NonStandardSPARQL;
 		public void setup(){
-			if(this==Value){
-				FederatedQueryBitVectorJoin.approachClass = SemiJoinToStringHelper.class;
+			if(this==NonStandardSPARQL){
+				ServiceApproaches.setNonStandardSPARQLBitVectorJoin(true);
 			} else {
-				FederatedQueryBitVectorJoin.approachClass = BitVectorJoinToStringHelper.class;
-				FederatedQueryBitVectorJoin.hashFunction = HASHFUNCTION.values()[this.ordinal()];
+				ServiceApproaches.setNonStandardSPARQLBitVectorJoin(false);
+				if(this==Value){
+					FederatedQueryBitVectorJoin.approachClass = SemiJoinToStringHelper.class;
+				} else {
+					FederatedQueryBitVectorJoin.approachClass = BitVectorJoinToStringHelper.class;
+					FederatedQueryBitVectorJoin.hashFunction = HASHFUNCTION.values()[this.ordinal()];
+				}
 			}
 		}
 	}

@@ -21,10 +21,16 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.singleinput.ExpressionEvaluation;
+package lupos.sparql1_1.operatorgraph;
 
-import lupos.engine.operators.singleinput.TypeErrorException;
+import lupos.engine.operators.singleinput.federated.FederatedQueryFetchAsNeededWithCache;
+import lupos.sparql1_1.ASTService;
+import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
 
-public interface ExternalFunction {
-	public Object evaluate(Object[] args) throws TypeErrorException;
+public class ServiceGeneratorFetchAsNeededWithCache extends ServiceGenerator {
+	
+	@Override
+	public void insertFederatedQueryOperator(final ASTService node, final OperatorConnection connection){
+		connection.connectAndSetAsNewOperatorConnection(new FederatedQueryFetchAsNeededWithCache(node));
+	}
 }
