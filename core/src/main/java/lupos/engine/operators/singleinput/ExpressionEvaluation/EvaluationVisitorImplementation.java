@@ -152,6 +152,16 @@ import lupos.sparql1_1.SimpleNode;
 
 public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<Node, Object>, Object> {
 
+	protected static HashMap<URILiteral, ExternalFunction> externalFunctions = new HashMap<URILiteral, ExternalFunction>();
+	
+	/**
+	 * call this function to register an external function
+	 * @param name name of the external function
+	 * @param externalFunction the external function
+	 */
+	public static void registerExternalFunction(final URILiteral name, final ExternalFunction externalFunction){
+		externalFunctions.put(name, externalFunction);
+	}
 	
 	// for each ASTExists and ASTNotExists an IndexCollection and Result is
 	// stored by the Filter
@@ -528,10 +538,19 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 		return false;
 	}
-
+	
 	@Override
 	public Object evaluate(ASTFunctionCall node, Bindings b, Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		final Literal name = LazyLiteral.getLiteral(node.jjtGetChild(0));
+		ExternalFunction externalFunction = EvaluationVisitorImplementation.externalFunctions.get(name);
+		if(externalFunction!=null){
+			int number = node.jjtGetNumChildren()-1;
+			Object[] args = new Object[number];
+			for(int i=0; i<number; i++){
+				args[i] = node.jjtGetChild(i+1).accept(this, b, d);
+			}
+			return externalFunction.evaluate(args);
+		}
 		if (name.toString().startsWith("<http://www.w3.org/2001/XMLSchema#")) {
 			return Helper.cast(name.toString(), resultOfChildZero(node.jjtGetChild(1), b, d));
 		}
