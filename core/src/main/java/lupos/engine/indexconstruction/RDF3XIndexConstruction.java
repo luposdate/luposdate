@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.SortedSet;
@@ -57,6 +58,7 @@ import lupos.engine.operators.index.Indices.DATA_STRUCT;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.LuposObjectOutputStream;
+import lupos.misc.TimeInterval;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
@@ -102,9 +104,11 @@ public class RDF3XIndexConstruction {
 				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 /luposdateindex");
 				return;
 			}
-
-			LiteralFactory
-			.setType(LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
+			
+			Date start = new Date();
+			System.out.println("Starting time: "+start);
+			
+			LiteralFactory.setType(LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
 
 			final String datafile = args[0];
@@ -310,14 +314,16 @@ public class RDF3XIndexConstruction {
 			};
 			codeMapConstructionThread.start();
 
-			final Indices indices = new SixIndices(defaultGraphs.iterator().next());
-
 			try {
 				codeMapConstructionThread.join();
 			} catch (final InterruptedException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
+			
+			Date intermediate = new Date();
+			TimeInterval codemapInterval = new TimeInterval(start, intermediate);
+			System.out.println("Codemap constructed in: " + codemapInterval);
 
 			// for debugging purposes:
 //			final TripleConsumer interTripleConsumer = new TripleConsumer() {
@@ -336,6 +342,7 @@ public class RDF3XIndexConstruction {
 //			new GenerateIDTriplesUsingStringSearch2(rdfURL, dataFormat,
 //					interTripleConsumer);
 
+			final Indices indices = new SixIndices(defaultGraphs.iterator().next());
 			new GenerateIDTriplesUsingStringSearch2(defaultGraphs, dataFormat, indices);
 			
 			// write out index info
@@ -352,7 +359,11 @@ public class RDF3XIndexConstruction {
 			indices.writeIndexInfo(out);
 			out.writeLuposInt(0);
 			out.close();
-			System.out.println("Done, RDF3X index constructed!");
+			Date end = new Date(); 
+			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
+			
+			TimeInterval interval = new TimeInterval(start, end);			
+			System.out.println("Used time: " + interval);
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
