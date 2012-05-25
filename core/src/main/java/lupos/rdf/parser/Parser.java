@@ -196,12 +196,12 @@ public abstract class Parser {
 		if (next == '\"') {
 			// String!
 			String s = "" + next;
-			// boolean marked = false;
+			boolean marked = false;
 			do {
-				// marked = (!marked && next == '\\');
+				marked = (!marked && next == '\\');
 				next = nextCharacter();
 				s += next;
-			} while (next != '\"');// || marked);
+			} while (next != '\"' || marked);
 			next = jumpOverBlanks();
 			if (next == '^') {
 				// typed literal!
@@ -219,6 +219,13 @@ public abstract class Parser {
 					e.printStackTrace();
 					return null;
 				}
+			} if(next =='@') { // language-tagged literal
+				String lang = "";
+				while (next != ' ' && next != '.' && next != ',' && next != ';' && next != '"' && next != '<') {
+					lang += next;
+					next = nextCharacter();
+				}
+				return LiteralFactory.createLanguageTaggedLiteralWithoutLazyLiteral(s, lang);
 			} else {
 				back = next;
 				backFlag = true;
