@@ -109,6 +109,24 @@ public class SixIndices extends Indices {
             return null;
         }
     }
+    
+    public PrefixSearchMinMax<TripleKey, Triple> getIndex(final CollationOrder order) {
+    	switch(order){
+    		default:
+    		case SPO:
+    			return this.SPO;
+    		case SOP:
+    			return this.SOP;
+    		case PSO:
+    			return this.PSO;
+    		case POS:
+    			return this.POS;
+    		case OSP:
+    			return this.OSP;
+    		case OPS:
+    			return this.OPS;
+    	}
+    }
 
     public SixIndices(final URILiteral uriLiteral) {
         rdfName = uriLiteral;

@@ -55,6 +55,7 @@ import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Indices.DATA_STRUCT;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.LuposObjectOutputStream;
@@ -324,6 +325,7 @@ public class RDF3XIndexConstruction {
 			Date intermediate = new Date();
 			TimeInterval codemapInterval = new TimeInterval(start, intermediate);
 			System.out.println("Codemap constructed in: " + codemapInterval);
+			System.out.println("Codemap contains "+LazyLiteral.getHm().size()+" entries!");
 
 			// for debugging purposes:
 //			final TripleConsumer interTripleConsumer = new TripleConsumer() {
@@ -364,6 +366,7 @@ public class RDF3XIndexConstruction {
 			
 			TimeInterval interval = new TimeInterval(start, end);			
 			System.out.println("Used time: " + interval);
+			System.out.println("Number of imported triples: "+((SixIndices)indices).getIndex(CollationOrder.SPO).size());
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
