@@ -163,7 +163,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private final String TAB_TITLE_DATA = "RDF data";
 	private final String TAB_TITLE_RESULT = "Evaluation result";
 
-	protected DEMO_ENUM webdemo = DEMO_ENUM.PROJECT_DEMO;
+	protected DEMO_ENUM webdemo = DEMO_ENUM.ECLIPSE;
 	private String PATH_QUERIES;
 	private String PATH_RULES;
 	private String PATH_DATA;
@@ -398,23 +398,26 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	public static LinkedList<String> generateLookAndFeelList() {
 		final LinkedList<String> lafList = new LinkedList<String>();
 
-		lafList.add("Acryl");
-		lafList.add("Aero");
-		lafList.add("Aluminium");
-		lafList.add("Bernstein");
-		lafList.add("Fast");
-		lafList.add("HiFi");
-		lafList.add("Luna");
-		lafList.add("McWin");
-		lafList.add("Mint");
-		lafList.add("Noire");
-		lafList.add("Smart");
+//		lafList.add("Acryl");
+//		lafList.add("Aero");
+//		lafList.add("Aluminium");
+//		lafList.add("Bernstein");
+//		lafList.add("Fast");
+//		lafList.add("HiFi");
+//		lafList.add("Luna");
+//		lafList.add("McWin");
+//		lafList.add("Mint");
+//		lafList.add("Noire");
+//		lafList.add("Smart");
 
 		final UIManager.LookAndFeelInfo[] lafInfo = UIManager
 				.getInstalledLookAndFeels();
 
 		for (int i = 0; i < lafInfo.length; i++) {
 			lafList.add(lafInfo[i].getName());
+			if(lafInfo[i].getName().compareTo("Metal")==0){
+				lafList.add("Metal Ocean");
+			}
 		}
 
 		return lafList;
@@ -1165,10 +1168,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private JButton createEvaluationDemoButton(final Boolean enabled) {
 		// create OperatorGraph-button, add actionListener and add it to
 		// Applet...
-		final JButton bt_evalDemo = new JButton("Evaluation Demo");
-		bt_evalDemo.setMargin(new Insets(0, 0, 0, 0));
-		bt_evalDemo.setEnabled(enabled);
-		return bt_evalDemo;
+		final JButton bt_evalDemo_local = new JButton("Eval. Demo");
+		bt_evalDemo_local.setEnabled(enabled);
+		return bt_evalDemo_local;
 	}
 
 	private JPanel generatePrefixCheckBox() {
@@ -2713,19 +2715,19 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final HashMap<String, String> classesLAF = new HashMap<String, String>();
 
-		classesLAF.put("Acryl", "com.jtattoo.plaf.acryl.AcrylLookAndFeel");
-		classesLAF.put("Aero", "com.jtattoo.plaf.aero.AeroLookAndFeel");
-		classesLAF.put("Aluminium",
-				"com.jtattoo.plaf.aluminium.AluminiumLookAndFeel");
-		classesLAF.put("Bernstein",
-				"com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
-		classesLAF.put("Fast", "com.jtattoo.plaf.fast.FastLookAndFeel");
-		classesLAF.put("HiFi", "com.jtattoo.plaf.hifi.HiFiLookAndFeel");
-		classesLAF.put("Luna", "com.jtattoo.plaf.luna.LunaLookAndFeel");
-		classesLAF.put("McWin", "com.jtattoo.plaf.mcwin.McWinLookAndFeel");
-		classesLAF.put("Mint", "com.jtattoo.plaf.mint.MintLookAndFeel");
-		classesLAF.put("Noire", "com.jtattoo.plaf.noire.NoireLookAndFeel");
-		classesLAF.put("Smart", "com.jtattoo.plaf.smart.SmartLookAndFeel");
+//		classesLAF.put("Acryl", "com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+//		classesLAF.put("Aero", "com.jtattoo.plaf.aero.AeroLookAndFeel");
+//		classesLAF.put("Aluminium",
+//				"com.jtattoo.plaf.aluminium.AluminiumLookAndFeel");
+//		classesLAF.put("Bernstein",
+//				"com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
+//		classesLAF.put("Fast", "com.jtattoo.plaf.fast.FastLookAndFeel");
+//		classesLAF.put("HiFi", "com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+//		classesLAF.put("Luna", "com.jtattoo.plaf.luna.LunaLookAndFeel");
+//		classesLAF.put("McWin", "com.jtattoo.plaf.mcwin.McWinLookAndFeel");
+//		classesLAF.put("Mint", "com.jtattoo.plaf.mint.MintLookAndFeel");
+//		classesLAF.put("Noire", "com.jtattoo.plaf.noire.NoireLookAndFeel");
+//		classesLAF.put("Smart", "com.jtattoo.plaf.smart.SmartLookAndFeel");
 
 		final UIManager.LookAndFeelInfo[] lafInfo = UIManager
 				.getInstalledLookAndFeels();
@@ -2734,40 +2736,42 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			classesLAF.put(lafInfo[i].getName(), lafInfo[i].getClassName());
 		}
 		try {
-			final String chosen = CollectionDatatype.getValues("lookAndFeel")
-					.get(0);
-			final String lookAndFeel = classesLAF.get(chosen);
+			String chosen = CollectionDatatype.getValues("lookAndFeel").get(0);
 			try {
 				// reset to default theme
 				if (chosen.compareTo("Metal") == 0) {
-					javax.swing.plaf.metal.MetalLookAndFeel
-							.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme());
-				} else if (chosen.compareTo("Fast") == 0) {
-					com.jtattoo.plaf.fast.FastLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Smart") == 0) {
-					com.jtattoo.plaf.smart.SmartLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Acryl") == 0) {
-					com.jtattoo.plaf.acryl.AcrylLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Aero") == 0) {
-					com.jtattoo.plaf.aero.AeroLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Bernstein") == 0) {
-					com.jtattoo.plaf.bernstein.BernsteinLookAndFeel
-							.setTheme("Default");
-				} else if (chosen.compareTo("Aluminium") == 0) {
-					com.jtattoo.plaf.aluminium.AluminiumLookAndFeel
-							.setTheme("Default");
-				} else if (chosen.compareTo("McWin") == 0) {
-					com.jtattoo.plaf.mcwin.McWinLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Mint") == 0) {
-					com.jtattoo.plaf.mint.MintLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Hifi") == 0) {
-					com.jtattoo.plaf.hifi.HiFiLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Noire") == 0) {
-					com.jtattoo.plaf.noire.NoireLookAndFeel.setTheme("Default");
-				} else if (chosen.compareTo("Luna") == 0) {
-					com.jtattoo.plaf.luna.LunaLookAndFeel.setTheme("Default");
+					javax.swing.plaf.metal.MetalLookAndFeel.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme());
+				} else if (chosen.compareTo("Metal Ocean") == 0) {
+					javax.swing.plaf.metal.MetalLookAndFeel.setCurrentTheme(new javax.swing.plaf.metal.OceanTheme());
+					chosen = "Metal";
 				}
+//				} else if (chosen.compareTo("Fast") == 0) {
+//					com.jtattoo.plaf.fast.FastLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Smart") == 0) {
+//					com.jtattoo.plaf.smart.SmartLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Acryl") == 0) {
+//					com.jtattoo.plaf.acryl.AcrylLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Aero") == 0) {
+//					com.jtattoo.plaf.aero.AeroLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Bernstein") == 0) {
+//					com.jtattoo.plaf.bernstein.BernsteinLookAndFeel
+//							.setTheme("Default");
+//				} else if (chosen.compareTo("Aluminium") == 0) {
+//					com.jtattoo.plaf.aluminium.AluminiumLookAndFeel
+//							.setTheme("Default");
+//				} else if (chosen.compareTo("McWin") == 0) {
+//					com.jtattoo.plaf.mcwin.McWinLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Mint") == 0) {
+//					com.jtattoo.plaf.mint.MintLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Hifi") == 0) {
+//					com.jtattoo.plaf.hifi.HiFiLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Noire") == 0) {
+//					com.jtattoo.plaf.noire.NoireLookAndFeel.setTheme("Default");
+//				} else if (chosen.compareTo("Luna") == 0) {
+//					com.jtattoo.plaf.luna.LunaLookAndFeel.setTheme("Default");
+//				}
 
+				final String lookAndFeel = classesLAF.get(chosen);
 				UIManager.setLookAndFeel(lookAndFeel);
 
 				this.defaultFont = UIManager.getFont("Label.font");
@@ -2776,7 +2780,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			} catch (final ClassNotFoundException e) {
 				System.err
 						.println("Couldn't find class for specified look and feel:"
-								+ lookAndFeel);
+								+ classesLAF.get(chosen));
 				System.err
 						.println("Did you include the L&F library in the class path?");
 				System.err.println("Using the default look and feel.");
@@ -2784,13 +2788,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				e.printStackTrace();
 			} catch (final UnsupportedLookAndFeelException e) {
 				System.err.println("Can't use the specified look and feel ("
-						+ lookAndFeel + ") on this platform.");
+						+ classesLAF.get(chosen) + ") on this platform.");
 				System.err.println("Using the default look and feel.");
 
 				e.printStackTrace();
 			} catch (final Exception e) {
 				System.err.println("Couldn't get specified look and feel ("
-						+ lookAndFeel + "), for some reason.");
+						+ classesLAF.get(chosen) + "), for some reason.");
 				System.err.println("Using the default look and feel.");
 
 				e.printStackTrace();

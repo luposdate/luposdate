@@ -58,7 +58,7 @@
   <page id="demo_applet" name="Demo Applet">
     <options>
       <text>This preferences page contains the general options of the Demo Applet.</text>
-      <option id="lookAndFeel" name="Look &amp; Feel" datatype="xpref.datatypes.CollectionDatatype" value="Aluminium" source="lupos.gui.Demo_Applet generateLookAndFeelList" />
+      <option id="lookAndFeel" name="Look &amp; Feel" datatype="xpref.datatypes.CollectionDatatype" value="Metal Ocean" source="lupos.gui.Demo_Applet generateLookAndFeelList" />
       <option id="lineCount" name="Activate the line counter?" datatype="xpref.datatypes.BooleanDatatype" value="true" />
       <line />
       <option id="currentLineColor" name="Color of current line" datatype="enableColorSequence" value="true | 255 | #CADFF5" />
