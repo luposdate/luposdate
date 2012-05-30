@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.endpoint.server.Endpoint;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.XMLFormatter;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
@@ -55,6 +56,7 @@ public class SaveResult {
 			final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(args[i+1]));
 			formatter.writeResult(outputStream, evaluator.getVariablesOfQuery(), queryResult);
 			outputStream.close();
+			evaluator.writeOutIndexFileAndModifiedPages(args[0]);
 		}
 		System.out.println("\nDone!");
 	}
