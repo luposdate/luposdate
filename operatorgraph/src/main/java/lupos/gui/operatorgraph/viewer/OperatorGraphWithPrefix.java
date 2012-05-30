@@ -87,7 +87,7 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 			return;
 		}
 
-		final GraphBox prefixBox = new GraphBox(this, prefixGW);
+		final GraphBox prefixBox = this.graphBoxCreator.createGraphBox(this, prefixGW);
 		prefixBox.setX(2 * (int) Math.ceil(this.PADDING));
 		prefixBox.setY(this.getMaxY()
 				+ (int) Math.ceil(this.SPACING));

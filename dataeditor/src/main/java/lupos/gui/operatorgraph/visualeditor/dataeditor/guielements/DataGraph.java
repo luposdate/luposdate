@@ -43,7 +43,9 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 	}
 
 	@Override
-	protected void handleAddOperator(final Operator newOp) {}
+	protected void handleAddOperator(final Operator newOp) {
+		// do not need here
+	}
 
 	@Override
 	protected boolean validateAddOperator(final int x, final int y, final String newClassName) {
@@ -77,7 +79,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 			return;
 		}
 
-		final GraphBox prefixBox = new GraphBox(this, prefixGW);
+		final GraphBox prefixBox = this.graphBoxCreator.createGraphBox(this, prefixGW);
 		prefixBox.setX(2* (int) Math.ceil(this.PADDING));
 		prefixBox.setY(this.getMaxY() + (int) Math.ceil(this.SPACING));
 		prefixBox.arrange(flipX, flipY, rotate, arrange);
@@ -89,7 +91,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 
 	@Override
 	public VisualGraphOperatorWithPrefix newInstance(
-			VisualEditor<Operator> visualEditor, Prefix prefix) {
-		return new DataGraph(visualEditor, prefix);
+			VisualEditor<Operator> visualEditorParameter, Prefix prefixParamater) {
+		return new DataGraph(visualEditorParameter, prefixParamater);
 	}
 }

@@ -1057,7 +1057,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 						final Operator newOp = (Operator) data;
 						newOp.setParents();
 
-						final GraphBox graphBox = new GraphBox(
+						final GraphBox graphBox = this.visualGraphs.get(0).graphBoxCreator.createGraphBox(
 								this.visualGraphs.get(0),
 								new GraphWrapperOperator(newOp));
 						graphBox.setY(rowY);
@@ -1140,7 +1140,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 					final TripleContainer tc = new TripleContainer(lhso);
 					tc.setParents();
 
-					final GraphBox graphBox = new GraphBox(
+					final GraphBox graphBox = this.visualGraphs.get(0).graphBoxCreator.createGraphBox(
 							this.visualGraphs.get(0), new GraphWrapperOperator(
 									tc));
 					graphBox.setY(rowY);

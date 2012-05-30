@@ -111,7 +111,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 			final GraphWrapper gw = this.createGraphWrapper(newOp);
 
 			// create the GraphBox at the right position...
-			final GraphBox box = new GraphBox(this, gw);
+			final GraphBox box = this.graphBoxCreator.createGraphBox(this, gw);
 			box.setY(y);
 			box.updateX(x, y, new HashSet<GraphBox>());
 			box.arrange(false, false, false, Arrange.values()[0]);
@@ -154,7 +154,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		}
 
 		// create the GraphBox at the right position...
-		final GraphBox box = new GraphBox(this, gw);
+		final GraphBox box = this.graphBoxCreator.createGraphBox(this, gw);
 		box.setX(x);
 		box.setY(y);
 		box.arrange(false, false, false, Arrange.values()[0]);
@@ -217,9 +217,12 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		super.setZoomFactors(zoomFactor);
 	}
 
-	public void clear() {}
+	public void clear() {
+		// do not need to handle this here
+	}
 
 
+	@Override
 	public void mouseMoved(final MouseEvent me) {
 		// get connection mode...
 		final Connection<T> connectionMode = this.visualEditor.connectionMode;
@@ -236,6 +239,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		}
 	}
 
+	@Override
 	public void mouseClicked(final MouseEvent me) {
 		if(this.visualEditor.isInInsertMode) { // deal with insert mode...
 			this.addOperator(me.getX(), me.getY());
@@ -246,11 +250,26 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		}
 	}
 
-	public void mouseDragged(final MouseEvent me) {}
-	public void mouseEntered(final MouseEvent me) {}
-	public void mouseExited(final MouseEvent me) {}
-	public void mousePressed(final MouseEvent me) {}
-	public void mouseReleased(final MouseEvent me) {}
+	@Override
+	public void mouseDragged(final MouseEvent me) {
+		// need only e.g. mouseClicked to listen
+	}
+	@Override
+	public void mouseEntered(final MouseEvent me) {
+		// need only e.g. mouseClicked to listen		
+	}
+	@Override
+	public void mouseExited(final MouseEvent me) {
+		// need only e.g. mouseClicked to listen		
+	}
+	@Override
+	public void mousePressed(final MouseEvent me) {
+		// need only e.g. mouseClicked to listen		
+	}
+	@Override
+	public void mouseReleased(final MouseEvent me) {
+		// need only e.g. mouseClicked to listen		
+	}
 
 
 	protected abstract boolean validateAddOperator(int x, int y, String newClassName);

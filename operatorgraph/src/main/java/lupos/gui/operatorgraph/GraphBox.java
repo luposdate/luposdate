@@ -45,19 +45,19 @@ import lupos.gui.operatorgraph.guielements.ContainerArrange;
  * Represents one box in the graph.
  */
 public class GraphBox {
-	private GraphWrapper op;
+	protected GraphWrapper op;
 	public int height = 0;
 	public int width = 0;
-	private int x = -1;
-	private int y = -1;
+	protected int x = -1;
+	protected int y = -1;
 	protected AbstractSuperGuiComponent element;
-	private Hashtable<GraphWrapper, AbstractSuperGuiComponent> lineAnnotations = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
-	private final OperatorGraph parent;
+	protected Hashtable<GraphWrapper, AbstractSuperGuiComponent> lineAnnotations = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
+	protected final OperatorGraph parent;
 
 	/**
 	 * Line Colors for the arrows between the elements.
 	 */
-	private static Color[] lineColors = {
+	protected static Color[] lineColors = {
 		Color.black, Color.blue, Color.green, Color.red, Color.cyan,
 		Color.GRAY, Color.magenta, Color.orange, Color.DARK_GRAY
 	};
@@ -65,9 +65,22 @@ public class GraphBox {
 	/**
 	 * index of lineColors for the line color.
 	 */
-	private static int lineColor = 0;
+	protected static int lineColor = 0;
 
-	private int[] colorIndices = null;
+	protected int[] colorIndices = null;
+	
+	public static interface GraphBoxCreator{
+		public GraphBox createGraphBox(final OperatorGraph parent, final GraphWrapper op);
+	}
+	
+	public static class StandardGraphBoxCreator implements GraphBoxCreator {
+
+		@Override
+		public GraphBox createGraphBox(OperatorGraph parent, GraphWrapper op) {
+			return new GraphBox(parent, op);
+		}
+		
+	}
 
 	/**
 	 * Constructor for the box.
@@ -77,7 +90,7 @@ public class GraphBox {
 	 * @param op
 	 *            element to put in the box
 	 */
-	public GraphBox(final OperatorGraph parent, final GraphWrapper op) {
+	private GraphBox(final OperatorGraph parent, final GraphWrapper op) {
 		this.parent = parent;
 
 		this.updateColorIndizes(op);
@@ -85,8 +98,8 @@ public class GraphBox {
 		this.initBox(op);
 	}
 
-	public void initBox(final GraphWrapper op) {
-		this.op = op;
+	public void initBox(final GraphWrapper graphWrapper) {
+		this.op = graphWrapper;
 
 		this.element = this.op.createObject(this.parent);
 
@@ -131,11 +144,11 @@ public class GraphBox {
 			final Point startPoint = GraphBox.determineEdgePoint(this.x,
 					this.y,
 					this.width, this.height, childBox.x, childBox.y,
-					childBox.width, childBox.height);
+					childBox.width);
 
 			final Point endPoint = GraphBox.determineEdgePoint(childBox.x,
 					childBox.y, childBox.width, childBox.height, this.x,
-					this.y, this.width, this.height);
+					this.y, this.width);
 
 			int colorIndex = 0;
 
@@ -183,13 +196,12 @@ public class GraphBox {
 				final Point point1 = GraphBox.determineEdgePoint(
 						annotationPoint.x, annotationPoint.y,
 						annotationDimension.width, annotationDimension.height,
-						this.x, this.y, this.width, this.height);
+						this.x, this.y, this.width);
 
 				final Point endPoint1 = GraphBox.determineEdgePoint(this.x,
 						this.y,
 						this.width, this.height, annotationPoint.x,
-						annotationPoint.y, annotationDimension.width,
-						annotationDimension.height);
+						annotationPoint.y, annotationDimension.width);
 
 				drawConnection(g, point1.x, point1.y, endPoint1.x, endPoint1.y,
 						false);
@@ -197,13 +209,13 @@ public class GraphBox {
 				final Point point2 = GraphBox.determineEdgePoint(childBox.x,
 						childBox.y, childBox.width, childBox.height,
 						annotationPoint.x, annotationPoint.y,
-						annotationDimension.width, annotationDimension.height);
+						annotationDimension.width);
 
 				final Point endPoint2 = GraphBox
 						.determineEdgePoint(annotationPoint.x,
 								annotationPoint.y, annotationDimension.width,
 								annotationDimension.height, childBox.x,
-								childBox.y, childBox.width, childBox.height);
+								childBox.y, childBox.width);
 
 				drawConnection(g, point2.x, point2.y, endPoint2.x, endPoint2.y,
 						true);
@@ -211,9 +223,9 @@ public class GraphBox {
 		}
 	}
 
-	private static Point determineEdgePoint(final int x, final int y,
+	protected static Point determineEdgePoint(final int x, final int y,
 			final int width, final int height, final int x2, final int y2,
-			final int width2, final int height2) {
+			final int width2) {
 		if (y < y2) {
 			final int diffy = y2 - y;
 			if (x2 + width2 < x && x - x2 - width2 > diffy) {
@@ -237,7 +249,7 @@ public class GraphBox {
 		}
 	}
 
-	private synchronized JPanel drawLineAnnotation(final GraphWrapper childGW, final boolean align) {
+	protected synchronized JPanel drawLineAnnotation(final GraphWrapper childGW, final boolean align) {
 		// get current child box...
 		final GraphBox childBox = this.parent.getBoxes().get(childGW);
 
@@ -267,12 +279,12 @@ public class GraphBox {
 			// determine start point of the connection...
 			final Point startPoint = GraphBox.determineEdgePoint(this.x,
 					this.y, this.width, this.height, childBox.x, childBox.y,
-					childBox.width, childBox.height);
+					childBox.width);
 
 			// determine end point of the connection...
 			final Point endPoint = GraphBox.determineEdgePoint(childBox.x,
 					childBox.y, childBox.width, childBox.height, this.x,
-					this.y, this.width, this.height);
+					this.y, this.width);
 
 			// determine center of the connection...
 			centerX = (startPoint.x + endPoint.x) / 2;
@@ -281,25 +293,25 @@ public class GraphBox {
 
 		// position panel for predicate so, that center of predicate panel is
 		// equal to center of the arrow...
-		int x = centerX - (annotationPanel.getPreferredSize().width / 2);
-		final int y = centerY - (annotationPanel.getPreferredSize().height / 2);
+		int x_ = centerX - (annotationPanel.getPreferredSize().width / 2);
+		final int y_ = centerY - (annotationPanel.getPreferredSize().height / 2);
 
-		if(align == true && x < this.parent.PADDING) {
-			final int diff = Math.abs((int) this.parent.PADDING - x);
+		if(align == true && x_ < this.parent.PADDING) {
+			final int diff = Math.abs((int) this.parent.PADDING - x_);
 
-			childBox.updateX(childBox.getX() + diff, y, new HashSet<GraphBox>());
+			childBox.updateX(childBox.getX() + diff, y_, new HashSet<GraphBox>());
 
 			this.x += diff;
 
-			x += diff;
+			x_ += diff;
 		}
 
 		// connection in opposite direction does exist and was already drawn...
 		if(this.op.getPrecedingElements().contains(childGW) && this.parent.annotationWasProcessed(childGW, this.op)) {
-			x += this.lineAnnotations.get(childGW).getPreferredSize().width + 10;
+			x_ += this.lineAnnotations.get(childGW).getPreferredSize().width + 10;
 		}
 
-		annotationPanel.setBounds(x, y, annotationPanel.getPreferredSize().width, annotationPanel.getPreferredSize().height);
+		annotationPanel.setBounds(x_, y_, annotationPanel.getPreferredSize().width, annotationPanel.getPreferredSize().height);
 
 		this.parent.add(annotationPanel); // add predicate panel to the parent object...
 
@@ -308,7 +320,7 @@ public class GraphBox {
 		return annotationPanel;
 	}
 
-	public void updateX(final int x, final int y,
+	public void updateX(final int x_, final int y_,
 			final HashSet<GraphBox> visited) {
 		if (visited.contains(this)) {
 			return;
@@ -316,22 +328,22 @@ public class GraphBox {
 
 		visited.add(this);
 
-		final int offset = this.x - x;
+		final int offset = this.x - x_;
 
-		this.setX(x);
+		this.setX(x_);
 
 		// --- update position of subtree - begin ---
 		for (final Object o : this.getOp().getSucceedingElements()) {
 			final GraphWrapperIDTuple gwIDt = (GraphWrapperIDTuple) o;
-			final GraphBox box = parent.getBoxes().get(gwIDt.getOperator());
-			if (box.y > y) {
-				box.updateX(box.getX() + offset, y, visited);
+			final GraphBox box = this.parent.getBoxes().get(gwIDt.getOperator());
+			if (box.y > y_) {
+				box.updateX(box.getX() + offset, y_, visited);
 			}
 		}
 		// --- update position of subtree - end ---
 	}
 
-	private void drawLineAnnotations(final boolean align) {
+	protected void drawLineAnnotations(final boolean align) {
 		final List<GraphWrapper> list = new LinkedList<GraphWrapper>();
 		list.addAll(this.lineAnnotations.keySet());
 
@@ -391,11 +403,11 @@ public class GraphBox {
 		}
 	}
 
-	private static int yCor(final int len, final double dir) {
+	protected static int yCor(final int len, final double dir) {
 		return (int) (len * Math.cos(dir));
 	}
 
-	private static int xCor(final int len, final double dir) {
+	protected static int xCor(final int len, final double dir) {
 		return (int) (len * Math.sin(dir));
 	}
 
@@ -490,18 +502,23 @@ public class GraphBox {
 	}
 
 	public OperatorGraph getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	public void updateColorIndizes() {
 		this.updateColorIndizes(this.op);
 	}
 
-	public void updateColorIndizes(final GraphWrapper op) {
-		this.colorIndices = new int[op.getSucceedingElements().size()];
+	public void updateColorIndizes(final GraphWrapper graphWrapper) {
+		this.colorIndices = new int[graphWrapper.getSucceedingElements().size()];
 
-		for(int i = 0; i < op.getSucceedingElements().size(); i += 1) {
+		for(int i = 0; i < graphWrapper.getSucceedingElements().size(); i += 1) {
 			this.colorIndices[i] = GraphBox.lineColor++ % GraphBox.lineColors.length;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return this.op.hashCode();
 	}
 }

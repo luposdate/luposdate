@@ -129,8 +129,7 @@ public abstract class Connection<T> {
 			// mouse position...
 			this.dummyOperator = this.queryGraph.createDummyOperator();
 			this.dummyGW = this.queryGraph.createGraphWrapper(this.dummyOperator);
-			final GraphBox dummyBox = new GraphBox(this.queryGraph,
-					this.dummyGW);
+			final GraphBox dummyBox = this.queryGraph.graphBoxCreator.createGraphBox(this.queryGraph,this.dummyGW);
 
 			this.queryGraph.getBoxes().put(this.dummyGW, dummyBox);
 

@@ -49,6 +49,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import lupos.gui.debug.AbstractCommentPanel;
+import lupos.gui.operatorgraph.GraphBox.GraphBoxCreator;
+import lupos.gui.operatorgraph.GraphBox.StandardGraphBoxCreator;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.guielements.ContainerArrange;
@@ -126,7 +128,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * used to lock accesses to the comments list!
 	 */
 	private final ReentrantLock commentsLock = new ReentrantLock();
-
+	
+	public GraphBoxCreator graphBoxCreator = new StandardGraphBoxCreator();
+	
 	protected OperatorGraph() {
 		try {
 			this.setLayout(null); // we don't want any LayoutManager
@@ -233,8 +237,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 		visited.add(op);
 
-		if (!boxes.containsKey(op)) {
-			boxes.put(op, new GraphBox(this, op));
+		if (!this.boxes.containsKey(op)) {
+			this.boxes.put(op, this.graphBoxCreator.createGraphBox(this, op));
 		}
 
 		// walk trough the children of the current operator and add them
