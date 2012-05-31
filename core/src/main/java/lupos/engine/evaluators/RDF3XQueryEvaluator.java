@@ -163,7 +163,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		defaultGraphs.add(rdfURL);
 		System.out.println("Load indices...");
 		this.prepareInputData(defaultGraphs, new LinkedList<URILiteral>());
-		System.out.println("Indices loaded with "+LazyLiteral.getV().size()+" in the codemap and "+this.dataset.getDefaultGraphIndices().iterator().next().numberOfTriples()+"triples in the evaluation indices!");
+		System.out.println("Indices loaded with "+LazyLiteral.getV().size()+" in the codemap and "+this.dataset.getDefaultGraphIndices().iterator().next().numberOfTriples()+" triples in the evaluation indices!");
 	}
 
 	@Override

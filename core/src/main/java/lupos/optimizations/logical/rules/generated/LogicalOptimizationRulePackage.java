@@ -31,6 +31,7 @@ public class LogicalOptimizationRulePackage extends RulePackage {
     public LogicalOptimizationRulePackage() {
         this.rules = new Rule[] {
 		        new FactoroutANDinFilterRule(),
+		        new FactoroutORinFilterRule(),
 		        new PushFilterRule(),
 		        new ConstantPropagationofFilterinIndexRule(),
 		        new CombineUnionsRule(),
