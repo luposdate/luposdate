@@ -64,6 +64,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	protected String writeindexinfo;
 
 	public RDF3XQueryEvaluator() throws Exception {
+		// initialization must later be done...
 	}
 
 	public RDF3XQueryEvaluator(final String[] args) throws Exception {
@@ -108,24 +109,23 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		this.writeindexinfo = writeindexinfo;
 		this.optimization = optimization;
 		if (optimization == Optimizations.MERGEJOIN)
-			opt = BasicIndex.MERGEJOIN;
+			this.opt = BasicIndex.MERGEJOIN;
 		else if (optimization == Optimizations.BINARY)
-			opt = BasicIndex.Binary;
+			this.opt = BasicIndex.Binary;
 		else if (optimization == Optimizations.NARYMERGEJOIN)
-			opt = BasicIndex.NARYMERGEJOIN;
+			this.opt = BasicIndex.NARYMERGEJOIN;
 		else if (optimization == Optimizations.NONE)
-			opt = BasicIndex.NONE;
+			this.opt = BasicIndex.NONE;
 	}
 
 	@Override
 	public void setupArguments() {
-		defaultOptimization = Optimizations.MERGEJOIN;	
-		args
-				.addBooleanOption(
+		this.defaultOptimization = Optimizations.MERGEJOIN;	
+		this.args.addBooleanOption(
 						"loadindexinfo",
 						"Instead of importing data, the indices of a previous run of RDF3XQueryEvaluator will be used. For this purpose, the input file must contain the file written via --writeindexinfo in the previous run. See also --writeindexinfo File.",
 						false);
-		args
+		this.args
 				.addStringOption(
 						"writeindexinfo",
 						"Information about the used indices are written to a given file. This file can be later used to directly use the previously constructed indices instead of importing the data again. See also --readindexinfo.",
@@ -136,7 +136,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	@Override
 	public void init() throws Exception {
 		super.init();
-		init(args.getBool("loadindexinfo"), args
+		init(this.args.getBool("loadindexinfo"), this.args
 				.getString("writeindexinfo"),
 				(Optimizations) this.args.getEnum("optimization"));
 	}
@@ -147,31 +147,23 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		this.setupArguments();
 		this.getArgs().set("debug", DEBUG.NONE);
 		this.getArgs().set("result", QueryResult.TYPE.MEMORY);
-		this.getArgs()
-				.set("codemap",
-						LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
-		this.getArgs().set("distinct",
-				CommonCoreQueryEvaluator.DISTINCT.DBSETBLOCKING);
-		this.getArgs().set("optional",
-				CommonCoreQueryEvaluator.JOIN.HASH);
+		this.getArgs().set("codemap", LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
+		this.getArgs().set("distinct", CommonCoreQueryEvaluator.DISTINCT.DBSETBLOCKING);
+		this.getArgs().set("optional", CommonCoreQueryEvaluator.JOIN.HASH);
 		this.getArgs().set("join", CommonCoreQueryEvaluator.JOIN.HASH);
-		this.getArgs().set("datastructure",
-				Indices.DATA_STRUCT.DBBPTREE);
+		this.getArgs().set("datastructure", Indices.DATA_STRUCT.DBBPTREE);
 		this.getArgs().set("tmpDir", dir);
-		this.getArgs().set("sortduringindexconstruction",
-				Dataset.SORT.STRINGSEARCHTREE);
+		this.getArgs().set("sortduringindexconstruction", Dataset.SORT.STRINGSEARCHTREE);
 		this.getArgs().set("loadindexinfo", true);
 		this.init();
 
 		// load indices!
-		final URILiteral rdfURL = LiteralFactory
-				.createStringURILiteral("<file:" + datafile + ">");
+		final URILiteral rdfURL = LiteralFactory.createStringURILiteral("<file:" + datafile + ">");
 		final LinkedList<URILiteral> defaultGraphs = new LinkedList<URILiteral>();
 		defaultGraphs.add(rdfURL);
-		System.out.println("Load indices!");
-		this.prepareInputData(defaultGraphs,
-				new LinkedList<URILiteral>());
-
+		System.out.println("Load indices...");
+		this.prepareInputData(defaultGraphs, new LinkedList<URILiteral>());
+		System.out.println("Indices loaded with "+LazyLiteral.getV().size()+" in the codemap and "+this.dataset.getDefaultGraphIndices().iterator().next().numberOfTriples()+"triples in the evaluation indices!");
 	}
 
 	@Override

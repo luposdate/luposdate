@@ -23,7 +23,6 @@
  */
 package lupos.datastructures.items.literal;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -55,7 +54,7 @@ import lupos.sparql1_1.SimpleNode;
  * Internally, it uses a code for its string representation.
 
  */
-public class LazyLiteral extends Literal implements Externalizable {
+public class LazyLiteral extends Literal {
 
 	/**
 	 * 
@@ -66,6 +65,7 @@ public class LazyLiteral extends Literal implements Externalizable {
 	private Literal materializedLiteral = null;
 
 	public LazyLiteral() {
+		// nothing to initialize
 	}
 
 	public LazyLiteral(final String content) {
@@ -75,7 +75,7 @@ public class LazyLiteral extends Literal implements Externalizable {
 		} else {
 			this.code = v.size() + 1;
 			hm.put(content, new Integer(this.code));
-			if (code == Integer.MAX_VALUE)
+			if (this.code == Integer.MAX_VALUE)
 				System.err.println("Literal code overflow! Not good!");
 			v.put(new Integer(this.code), content);
 		}
@@ -97,10 +97,10 @@ public class LazyLiteral extends Literal implements Externalizable {
 	}
 
 	public Literal getLiteral() {
-		if (materializedLiteral == null) {
-			materializedLiteral = getLiteral(this.originalString());
+		if (this.materializedLiteral == null) {
+			this.materializedLiteral = getLiteral(this.originalString());
 		}
-		return materializedLiteral;
+		return this.materializedLiteral;
 	}
 
 	@Override
@@ -114,9 +114,9 @@ public class LazyLiteral extends Literal implements Externalizable {
 
 	@Override
 	public String toString() {
-		if (materializedContent == null)
-			materializedContent = v.get(code);
-		return materializedContent;
+		if (this.materializedContent == null)
+			this.materializedContent = v.get(this.code);
+		return this.materializedContent;
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class LazyLiteral extends Literal implements Externalizable {
 	}
 
 	public boolean isMaterialized() {
-		return (materializedLiteral != null);
+		return (this.materializedLiteral != null);
 	}
 
 	protected static StringIntegerMap hm = null;
@@ -169,11 +169,10 @@ public class LazyLiteral extends Literal implements Externalizable {
 
 	public static Literal getLiteral(final String content) {
 		try {
-			final SimpleNode node = SPARQL1_1Parser
-					.parseGraphTerm(content, null);
-
+			final SimpleNode node = SPARQL1_1Parser.parseGraphTerm(content, null);
 			return getLiteral(node);
 		} catch (final Throwable t) {
+			System.err.println("Trying to parse string "+content+" for transforming it to a literal...");
 			System.err.println(t);
 			t.printStackTrace();
 			return null;
@@ -184,9 +183,10 @@ public class LazyLiteral extends Literal implements Externalizable {
 		return getLiteral(n, false);
 	}
 
-	public static Literal getLiteral(Node n, final boolean allowLazyLiteral) {
+	public static Literal getLiteral(final Node node, final boolean allowLazyLiteral) {
 		Literal literal = null;
-
+		Node n = node;
+		
 		if (n instanceof ASTNIL) {
 			try {
 				literal = (allowLazyLiteral) ? LiteralFactory
@@ -358,22 +358,24 @@ public class LazyLiteral extends Literal implements Externalizable {
 		return literal;
 	}
 
-	public void readExternal(final ObjectInput in) throws IOException,
-			ClassNotFoundException {
-		code = LuposObjectInputStream.readLuposInt(in);
+	@Override
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+		this.code = LuposObjectInputStream.readLuposInt(in);
 		// code = in.readInt();
 	}
 
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
-		LuposObjectOutputStream.writeLuposInt(code, out);
-		// out.writeInt(code);
+		LuposObjectOutputStream.writeLuposInt(this.code, out);
 	}
 	
+	@Override
 	public boolean isBlank() {
 		Literal literal = this.getLiteral();
 		return (literal instanceof AnonymousLiteral);
 	}
 
+	@Override
 	public boolean isURI() {
 		Literal literal = this.getLiteral();
 		return (literal instanceof URILiteral);

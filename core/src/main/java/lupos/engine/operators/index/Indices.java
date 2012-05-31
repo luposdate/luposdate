@@ -54,7 +54,6 @@ import lupos.engine.operators.rdfs.RudimentaryRDFSchemaInference;
 import lupos.engine.operators.rdfs.index.RDFSPutIntoIndices;
 import lupos.engine.operators.rdfs.index.RDFSPutIntoIndicesCyclicComputation;
 import lupos.engine.operators.singleinput.Result;
-import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
@@ -71,7 +70,7 @@ import lupos.optimizations.physical.PhysicalOptimizations;
  * indexed by various criteria.
  * 
  */
-public abstract class Indices extends TripleOperator implements TripleConsumer {
+public abstract class Indices extends TripleOperator {
 
 	protected static int HEAPHEIGHT = 16;
 
@@ -132,7 +131,7 @@ public abstract class Indices extends TripleOperator implements TripleConsumer {
 	protected URILiteral rdfName = null;
 
 	public URILiteral getRdfName() {
-		return rdfName;
+		return this.rdfName;
 	}
 
 	public void setRdfName(final URILiteral rdfName) {
@@ -212,6 +211,7 @@ public abstract class Indices extends TripleOperator implements TripleConsumer {
 	public abstract void init(DATA_STRUCT ds);
 
 	public void build() {
+		// may be overridden...
 	}
 
 	public static int getHEAPHEIGHT() {
@@ -457,4 +457,6 @@ public abstract class Indices extends TripleOperator implements TripleConsumer {
 		System.err
 				.println("Reading index info is not supported by this type of index!");
 	}
+	
+	public abstract int numberOfTriples();
 }

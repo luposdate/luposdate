@@ -64,6 +64,7 @@ public abstract class Literal implements Item, Comparable<Literal>,
 			return false;
 	}
 
+	@Override
 	public int compareTo(final Literal other) {
 
 		return ComparatorAST.intComp(this, other);
@@ -76,14 +77,17 @@ public abstract class Literal implements Item, Comparable<Literal>,
 
 	public abstract String[] getUsedStringRepresentations();
 
+	@Override
 	public Literal getLiteral(final Bindings b) {
 		return this;
 	}
 
+	@Override
 	public String getName() {
 		return toString();
 	}
 
+	@Override
 	public boolean isVariable() {
 		return false;
 	}
@@ -113,6 +117,7 @@ public abstract class Literal implements Item, Comparable<Literal>,
 		return toString();
 	}
 	
+	@SuppressWarnings("unused")
 	public String toString(Prefix prefix){
 		return toString();
 	}

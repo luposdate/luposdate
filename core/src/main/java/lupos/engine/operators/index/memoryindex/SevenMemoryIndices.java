@@ -327,4 +327,9 @@ public class SevenMemoryIndices extends Indices {
 	
 	public void writeOutAllModifiedPages() throws IOException {
 	}
+
+	@Override
+	public int numberOfTriples() {
+		return subjectPredicateObjectMap.size();
+	}
 }

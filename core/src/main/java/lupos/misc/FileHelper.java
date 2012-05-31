@@ -80,6 +80,7 @@ public class FileHelper {
 	static public boolean deleteFilesStartingWithPattern(final String dir, final String pattern){
 		File dirFile = new File(dir);
 		String filesToDelete[] = dirFile.list(new FilenameFilter(){
+			@Override
 			public boolean accept(File arg0, String arg1) {
 				return arg1.startsWith(pattern);
 			}
@@ -101,9 +102,10 @@ public class FileHelper {
 	public static String readFile(final String filename) {
 		return readFile(filename, new GetReader() {
 
-			public Reader getReader(final String filename)
+			@Override
+			public Reader getReader(final String filenameParameter)
 			throws FileNotFoundException {
-				return new FileReader(new File(filename));
+				return new FileReader(new File(filenameParameter));
 			}
 
 		});
@@ -112,15 +114,15 @@ public class FileHelper {
 	public static String readFile(final String filename, final boolean fromJar) {
 		return FileHelper.readFile(filename, new FileHelper.GetReader() {
 
-			public Reader getReader(final String filename)
-			throws FileNotFoundException {
+			@Override
+			public Reader getReader(final String filenameParameter) throws FileNotFoundException {
 				if (fromJar) {
 					InputStream stream = null;
 
-					stream = this.getClass().getResourceAsStream(filename);
+					stream = this.getClass().getResourceAsStream(filenameParameter);
 					return new java.io.InputStreamReader(stream);
 				} else
-					return new FileReader(new File(filename));
+					return new FileReader(new File(filenameParameter));
 			}
 		});
 	}
@@ -259,8 +261,7 @@ public class FileHelper {
 		return content;
 	}
 
-	public static void printFileContent(final String filename,
-			final int lineNumber, final boolean removeLine) {
+	public static void printFileContent(final String filename, final int lineNumber, final boolean removeLine) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(filename));
@@ -295,8 +296,7 @@ public class FileHelper {
 
 	public static void writeFile(final String fileName, final String content) {
 		try {
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(
-					fileName));
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 			writer.write(content);
 			writer.close();
 		} catch (final IOException e) {
@@ -306,14 +306,21 @@ public class FileHelper {
 	}
 
 	public static void main(final String args[]) {
-		if (args.length < 2)
-			System.out
-			.println("Usage: java lupos.misc.FileHelper [-r] Filename linenumber");
-		else {
-			if (args[0].compareTo("-r") == 0) {
-				printFileContent(args[1], new Integer(args[2]), true);
-			} else
-				printFileContent(args[0], new Integer(args[1]), false);
+		if (args.length < 2){
+			System.out.println("Usage: java lupos.misc.FileHelper command commandoptions[-r] Filename linenumber");
+			System.out.println("       command: print commandoptions: [-r] Filename linenumber");
+			System.out.println("       command: replace commandoptions: infile toBeReplaced replacement outfile");			
+		} else {
+			if(args[0].compareTo("print") == 0){
+				if (args[1].compareTo("-r") == 0) {
+					printFileContent(args[2], new Integer(args[1]), true);
+				} else
+					printFileContent(args[1], new Integer(args[2]), false);
+			} else if(args[0].compareTo("replace") == 0){
+				final String content = FileHelper.fastReadFile(args[1]);
+				final String result = content.replaceAll(args[2], args[3]);
+				FileHelper.writeFile(args[4], result);
+			}
 		}
 	}
 }

@@ -812,4 +812,9 @@ public class SixIndices extends Indices {
             }
         }
     }
+
+	@Override
+	public int numberOfTriples() {
+		return SPO.size();
+	}
 }

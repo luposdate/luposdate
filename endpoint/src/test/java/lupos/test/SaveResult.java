@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.endpoint.server.Endpoint;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.XMLFormatter;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;

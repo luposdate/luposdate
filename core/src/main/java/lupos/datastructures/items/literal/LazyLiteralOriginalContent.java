@@ -26,7 +26,6 @@ package lupos.datastructures.items.literal;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
@@ -38,8 +37,7 @@ import lupos.io.LuposObjectOutputStream;
  * stores a code for the original content, too, such that the original content
  * can be retrieved (as required by the DAWG test cases)!
  */
-public class LazyLiteralOriginalContent extends LazyLiteral implements
-		Serializable {
+public class LazyLiteralOriginalContent extends LazyLiteral {
 
 	/**
 	 * 
@@ -49,6 +47,7 @@ public class LazyLiteralOriginalContent extends LazyLiteral implements
 	private String originalString = null;
 
 	public LazyLiteralOriginalContent() {
+		// nothing to initialize...
 	}
 
 	public LazyLiteralOriginalContent(final String content,
@@ -60,7 +59,7 @@ public class LazyLiteralOriginalContent extends LazyLiteral implements
 		} else {
 			this.codeOriginalContent = v.size() + 1;
 			hm.put(originalContent, new Integer(this.codeOriginalContent));
-			if (codeOriginalContent == Integer.MAX_VALUE)
+			if (this.codeOriginalContent == Integer.MAX_VALUE)
 				System.err.println("Literal code overflow! Not good!");
 			v.put(new Integer(this.codeOriginalContent), originalContent);
 		}
@@ -75,7 +74,7 @@ public class LazyLiteralOriginalContent extends LazyLiteral implements
 		} else {
 			this.codeOriginalContent = v.size() + 1;
 			hm.put(originalContent, new Integer(this.codeOriginalContent));
-			if (codeOriginalContent == Integer.MAX_VALUE)
+			if (this.codeOriginalContent == Integer.MAX_VALUE)
 				System.err.println("Literal code overflow! Not good!");
 			v.put(new Integer(this.codeOriginalContent), originalContent);
 		}
@@ -101,9 +100,9 @@ public class LazyLiteralOriginalContent extends LazyLiteral implements
 
 	@Override
 	public String originalString() {
-		if (originalString == null)
-			originalString = v.get(codeOriginalContent);
-		return originalString;
+		if (this.originalString == null)
+			this.originalString = v.get(this.codeOriginalContent);
+		return this.originalString;
 	}
 
 	public int getCodeOriginalContent() {
@@ -119,14 +118,12 @@ public class LazyLiteralOriginalContent extends LazyLiteral implements
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
 		super.readExternal(in);
-		codeOriginalContent = LuposObjectInputStream.readLuposInt(in);
-		// codeOriginalContent = in.readInt();
+		this.codeOriginalContent = LuposObjectInputStream.readLuposInt(in);
 	}
 
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		super.writeExternal(out);
-		LuposObjectOutputStream.writeLuposInt(codeOriginalContent, out);
-		// out.writeInt(codeOriginalContent);
+		LuposObjectOutputStream.writeLuposInt(this.codeOriginalContent, out);
 	}
 }
