@@ -339,21 +339,22 @@ public class DepthFirstVoidVisitor implements IVoidVisitor {
   /**
    * Visits a {@link RIFAtomic} node, whose children are the following :
    * <p>
-   * f0 -> . %0 RIFFrame()<br>
-   * .. .. | %1 #0 RIFTerm()<br>
-   * .. .. . .. #1 ( $0 ( &0 < EQUAL ><br>
-   * .. .. . .. .. . .. | &1 < R ><br>
-   * .. .. . .. .. . .. | &2 < RR > ) $1 RIFTerm() )?<br>
+   * f0 -> RIFTerm()<br>
+   * f1 -> ( %0 ( #0 ( &0 < EQUAL ><br>
+   * .. .. . .. | &1 < R ><br>
+   * .. .. . .. | &2 < RR > ) #1 RIFTerm() )<br>
+   * .. .. | %1 RIFFrame() )?<br>
    *
    * @param n the node to visit
    */
   public void visit(final RIFAtomic n) {
-    // f0 -> . %0 RIFFrame()
-    // .. .. | %1 #0 RIFTerm()
-    // .. .. . .. #1 ( $0 ( &0 < EQUAL >
-    // .. .. . .. .. . .. | &1 < R >
-    // .. .. . .. .. . .. | &2 < RR > ) $1 RIFTerm() )?
+    // f0 -> RIFTerm()
     n.f0.accept(this);
+    // f1 -> ( %0 ( #0 ( &0 < EQUAL >
+    // .. .. . .. | &1 < R >
+    // .. .. . .. | &2 < RR > ) #1 RIFTerm() )
+    // .. .. | %1 RIFFrame() )?
+    n.f1.accept(this);
   }
 
   /**
@@ -382,22 +383,19 @@ public class DepthFirstVoidVisitor implements IVoidVisitor {
   /**
    * Visits a {@link RIFFrame} node, whose children are the following :
    * <p>
-   * f0 -> RIFVarOrURI()<br>
-   * f1 -> < LBRACK ><br>
-   * f2 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*<br>
-   * f3 -> < RBRACK ><br>
+   * f0 -> < LBRACK ><br>
+   * f1 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*<br>
+   * f2 -> < RBRACK ><br>
    *
    * @param n the node to visit
    */
   public void visit(final RIFFrame n) {
-    // f0 -> RIFVarOrURI()
+    // f0 -> < LBRACK >
     n.f0.accept(this);
-    // f1 -> < LBRACK >
+    // f1 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*
     n.f1.accept(this);
-    // f2 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*
+    // f2 -> < RBRACK >
     n.f2.accept(this);
-    // f3 -> < RBRACK >
-    n.f3.accept(this);
   }
 
   /**

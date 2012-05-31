@@ -29,16 +29,19 @@ import lupos.rif.generated.visitor.*;
 /**
  * JTB node class for the production RIFAtomic:<br>
  * Corresponding grammar :<br>
- * f0 -> . %0 RIFFrame()<br>
- * .. .. | %1 #0 RIFTerm()<br>
- * .. .. . .. #1 ( $0 ( &0 < EQUAL ><br>
- * .. .. . .. .. . .. | &1 < R ><br>
- * .. .. . .. .. . .. | &2 < RR > ) $1 RIFTerm() )?<br>
+ * f0 -> RIFTerm()<br>
+ * f1 -> ( %0 ( #0 ( &0 < EQUAL ><br>
+ * .. .. . .. | &1 < R ><br>
+ * .. .. . .. | &2 < RR > ) #1 RIFTerm() )<br>
+ * .. .. | %1 RIFFrame() )?<br>
  */
 public class RIFAtomic implements INode {
 
   /** A child node */
-  public NodeChoice f0;
+  public RIFTerm f0;
+
+  /** A child node */
+  public NodeOptional f1;
 
   /** The parent pointer */
   private INode parent;
@@ -47,14 +50,18 @@ public class RIFAtomic implements INode {
   private static final long serialVersionUID = 144L;
 
   /**
-   * Constructs the node with its child node.
+   * Constructs the node with all its children nodes.
    *
-   * @param n0 the child node
+   * @param n0 first child node
+   * @param n1 next child node
    */
-  public RIFAtomic(final NodeChoice n0) {
+  public RIFAtomic(final RIFTerm n0, final NodeOptional n1) {
     f0 = n0;
     if (f0 != null)
       f0.setParent(this);
+    f1 = n1;
+    if (f1 != null)
+      f1.setParent(this);
   }
 
   /**

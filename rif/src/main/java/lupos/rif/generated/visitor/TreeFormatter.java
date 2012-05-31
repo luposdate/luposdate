@@ -447,6 +447,9 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   @Override
   public void visit(final RIFAtomic n) {
     n.f0.accept(this);
+    if(n.f1.present()){
+    	n.f1.accept(this);
+    }
   }
 
   /**
@@ -476,10 +479,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   public void visit(final RIFFrame n) {
     n.f0.accept(this);
     n.f1.accept(this);
-    if (n.f2.present()) {
-      processList(n.f2);
-    }
-    n.f3.accept(this);
+    n.f2.accept(this);
   }
 
   /**

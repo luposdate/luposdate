@@ -227,4 +227,9 @@ public class TypedLiteral extends Literal implements Externalizable {
 		type.writeExternal(out);
 		LuposObjectOutputStream.writeLuposLiteral(content, out);
 	}
+
+	@Override
+	public Literal createThisLiteralNew() {
+		return LiteralFactory.createTypedLiteralWithoutException(this.content.originalString(), this.type.originalString());
+	}
 }

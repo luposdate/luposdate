@@ -35,6 +35,7 @@ import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.LiteralFactory;
 
 public class PlainStringLiteral extends Literal implements Item,
 		Comparable<Literal>, Externalizable {
@@ -140,5 +141,10 @@ public class PlainStringLiteral extends Literal implements Item,
 		final PlainStringLiteral object = new PlainStringLiteral(triple
 				.getObject().originalString());
 		return new Triple(subject, predicate, object);
+	}
+
+	@Override
+	public Literal createThisLiteralNew() {
+		return LiteralFactory.createLiteral(this.content);
 	}
 }

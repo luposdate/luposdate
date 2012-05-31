@@ -151,6 +151,14 @@ public class SixIndices extends Indices {
     protected final static boolean parallel = true;
 
     private void addTriple(final Triple t) {
+    	if(LiteralFactory.getMapType().equals(MapType.LAZYLITERAL)
+    			|| LiteralFactory.getMapType().equals(MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)){
+    		for(int i=0; i<3; i++){
+    			if(!(t.getPos(i) instanceof LazyLiteral)){
+    				t.setPos(i, t.getPos(i).createThisLiteralNew());
+    			}
+    		}
+    	}
         if (parallel) {
             if (boundedBuffersForAdders == null) {
                 boundedBuffersForAdders = new BoundedBuffer[6];

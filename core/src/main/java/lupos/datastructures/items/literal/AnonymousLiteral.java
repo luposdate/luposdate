@@ -83,4 +83,9 @@ public class AnonymousLiteral extends Literal implements Externalizable {
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		LuposObjectOutputStream.writeLuposLiteral(content, out);
 	}
+
+	@Override
+	public Literal createThisLiteralNew() {
+		return LiteralFactory.createAnonymousLiteral(this.content.originalString());
+	}
 }

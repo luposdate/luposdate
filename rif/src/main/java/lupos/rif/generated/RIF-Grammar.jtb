@@ -119,7 +119,7 @@ void CompilationUnit():{}
 {
   RIFDocument() < EOF >}
 
-/* Umschlie§t jedes Dokument */
+/* Umschlieï¿½t jedes Dokument */
 void RIFDocument():
 {}
 {
@@ -170,7 +170,7 @@ void RIFClause():
 
 /* Condition Language */
 
-/* Formel fŸr Regelkšrper (Rechte Seite einer Implikation) */
+/* Formel fï¿½r Regelkï¿½rper (Rechte Seite einer Implikation) */
 void RIFFormula():
 {}
 {
@@ -182,8 +182,8 @@ void RIFFormula():
 void RIFAtomic():
 {}
 {
-  LOOKAHEAD(3) RIFFrame() |
-  RIFTerm() ( (< EQUAL > | < R > | < RR >) RIFTerm() )?}
+  RIFTerm() ( ((< EQUAL > | < R > | < RR >) RIFTerm()) | RIFFrame() )?
+}
 
 void RIFUniterm():
 {}
@@ -193,7 +193,7 @@ void RIFUniterm():
 void RIFFrame():
 {}
 {
-  RIFVarOrURI() < LBRACK > ( RIFTerm() < TO > RIFTerm() )* < RBRACK >}
+  < LBRACK > ( RIFTerm() < TO > RIFTerm() )* < RBRACK > }
 
 void RIFTerm():
 {}
@@ -279,7 +279,7 @@ void RIFInteger():
 	< INTEGER_10 >
 }
 
-/* Flie§kommazahl */
+/* Flieï¿½kommazahl */
 void RIFFloatingPoint():
 {}
 {
@@ -293,7 +293,7 @@ void RIFVar():
   < QUESTION > RIFNCName()
 }
 
-/* einfacher Name fŸr Variablen */
+/* einfacher Name fï¿½r Variablen */
 void RIFNCName():
 {}
 {

@@ -46,7 +46,7 @@ public class RIFParser implements RIFParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-/* Umschlie§t jedes Dokument */
+/* Umschlieï¿½t jedes Dokument */
   final public RIFDocument RIFDocument() throws ParseException {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
@@ -468,7 +468,7 @@ public class RIFParser implements RIFParserConstants {
   }
 
 /* Condition Language */
-/* Formel fŸr Regelkšrper (Rechte Seite einer Implikation) */
+/* Formel fï¿½r Regelkï¿½rper (Rechte Seite einer Implikation) */
   final public RIFFormula RIFFormula() throws ParseException {
   // --- JTB generated node declarations ---
   NodeChoice n0 = null;
@@ -639,84 +639,72 @@ public class RIFParser implements RIFParserConstants {
 
   final public RIFAtomic RIFAtomic() throws ParseException {
   // --- JTB generated node declarations ---
-  NodeChoice n0 = null;
-  RIFFrame n1 = null;
-  NodeSequence n2 = null;
-  RIFTerm n3 = null;
-  NodeOptional n4 = new NodeOptional();
-  NodeSequence n5 = null;
-  NodeChoice n6 = null;
+  RIFTerm n0 = null;
+  NodeOptional n1 = new NodeOptional();
+  NodeChoice n2 = null;
+  NodeSequence n3 = null;
+  NodeChoice n4 = null;
+  NodeToken n5 = null;
+  Token n6 = null;
   NodeToken n7 = null;
   Token n8 = null;
   NodeToken n9 = null;
   Token n10 = null;
-  NodeToken n11 = null;
-  Token n12 = null;
-  RIFTerm n13 = null;
-    if (jj_2_1(3)) {
-      n1 = RIFFrame();
-      n0 = new NodeChoice(n1, 0, 2);
-    } else {
+  RIFTerm n11 = null;
+  RIFFrame n12 = null;
+    n0 = RIFTerm();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case EQUAL:
+    case R:
+    case RR:
+    case LBRACK:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case QUESTION:
-      case EXTERNAL:
-      case LIST:
-      case Q_URIref:
-      case QNAME:
-      case INTEGER_10:
-      case FLOATING_POINT:
-      case STRING_LITERAL1:
-      case STRING_LITERAL2:
-      case STRING_LITERALLONG1:
-      case STRING_LITERALLONG2:
-      n2 = new NodeSequence(2);
-        n3 = RIFTerm();
-      n2.addNode(n3);
+      case EQUAL:
+      case R:
+      case RR:
+          n3 = new NodeSequence(2);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case EQUAL:
+          n6 = jj_consume_token(EQUAL);
+              n5 = JTBToolkit.makeNodeToken(n6);
+              n4 = new NodeChoice(n5, 0, 3);
+          break;
         case R:
+          n8 = jj_consume_token(R);
+              n7 = JTBToolkit.makeNodeToken(n8);
+              n4 = new NodeChoice(n7, 1, 3);
+          break;
         case RR:
-        n5 = new NodeSequence(2);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case EQUAL:
-            n8 = jj_consume_token(EQUAL);
-            n7 = JTBToolkit.makeNodeToken(n8);
-            n6 = new NodeChoice(n7, 0, 3);
-            break;
-          case R:
-            n10 = jj_consume_token(R);
-            n9 = JTBToolkit.makeNodeToken(n10);
-            n6 = new NodeChoice(n9, 1, 3);
-            break;
-          case RR:
-            n12 = jj_consume_token(RR);
-            n11 = JTBToolkit.makeNodeToken(n12);
-            n6 = new NodeChoice(n11, 2, 3);
-            break;
-          default:
-            jj_la1[17] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
-          }
-        n5.addNode(n6);
-          n13 = RIFTerm();
-        n5.addNode(n13);
-        n4.addNode(n5);
+          n10 = jj_consume_token(RR);
+              n9 = JTBToolkit.makeNodeToken(n10);
+              n4 = new NodeChoice(n9, 2, 3);
           break;
         default:
-          jj_la1[18] = jj_gen;
-          ;
+          jj_la1[17] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
         }
-      n2.addNode(n4);
-      n0 = new NodeChoice(n2, 1, 2);
+          n3.addNode(n4);
+        n11 = RIFTerm();
+          n3.addNode(n11);
+        n2 = new NodeChoice(n3, 0, 2);
+        break;
+      case LBRACK:
+        n12 = RIFFrame();
+        n2 = new NodeChoice(n12, 1, 2);
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[18] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+      n1.addNode(n2);
+      break;
+    default:
+      jj_la1[19] = jj_gen;
+      ;
     }
-    {if (true) return new RIFAtomic(n0);}
+    {if (true) return new RIFAtomic(n0, n1);}
     throw new Error("Missing return statement in function");
   }
 
@@ -759,7 +747,7 @@ public class RIFParser implements RIFParserConstants {
         jj_la1[20] = jj_gen;
         break label_9;
       }
-      if (jj_2_2(2)) {
+      if (jj_2_1(2)) {
         n5 = new NodeSequence(3);
         n6 = RIFNCName();
         n5.addNode(n6);
@@ -802,20 +790,18 @@ public class RIFParser implements RIFParserConstants {
 
   final public RIFFrame RIFFrame() throws ParseException {
   // --- JTB generated node declarations ---
-  RIFVarOrURI n0 = null;
-  NodeToken n1 = null;
-  Token n2 = null;
-  NodeListOptional n3 = new NodeListOptional();
-  NodeSequence n4 = null;
-  RIFTerm n5 = null;
-  NodeToken n6 = null;
-  Token n7 = null;
-  RIFTerm n8 = null;
-  NodeToken n9 = null;
-  Token n10 = null;
-    n0 = RIFVarOrURI();
-    n2 = jj_consume_token(LBRACK);
-    n1 = JTBToolkit.makeNodeToken(n2);
+  NodeToken n0 = null;
+  Token n1 = null;
+  NodeListOptional n2 = new NodeListOptional();
+  NodeSequence n3 = null;
+  RIFTerm n4 = null;
+  NodeToken n5 = null;
+  Token n6 = null;
+  RIFTerm n7 = null;
+  NodeToken n8 = null;
+  Token n9 = null;
+    n1 = jj_consume_token(LBRACK);
+    n0 = JTBToolkit.makeNodeToken(n1);
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -836,20 +822,20 @@ public class RIFParser implements RIFParserConstants {
         jj_la1[22] = jj_gen;
         break label_10;
       }
-      n4 = new NodeSequence(3);
-      n5 = RIFTerm();
-      n4.addNode(n5);
-      n7 = jj_consume_token(TO);
-      n6 = JTBToolkit.makeNodeToken(n7);
-      n4.addNode(n6);
-      n8 = RIFTerm();
-      n4.addNode(n8);
+      n3 = new NodeSequence(3);
+      n4 = RIFTerm();
       n3.addNode(n4);
+      n6 = jj_consume_token(TO);
+      n5 = JTBToolkit.makeNodeToken(n6);
+      n3.addNode(n5);
+      n7 = RIFTerm();
+      n3.addNode(n7);
+      n2.addNode(n3);
     }
-    n3.nodes.trimToSize();
-    n10 = jj_consume_token(RBRACK);
-    n9 = JTBToolkit.makeNodeToken(n10);
-    {if (true) return new RIFFrame(n0, n1, n3, n9);}
+    n2.nodes.trimToSize();
+    n9 = jj_consume_token(RBRACK);
+    n8 = JTBToolkit.makeNodeToken(n9);
+    {if (true) return new RIFFrame(n0, n2, n8);}
     throw new Error("Missing return statement in function");
   }
 
@@ -863,7 +849,7 @@ public class RIFParser implements RIFParserConstants {
   RIFURI n5 = null;
   RIFExternal n6 = null;
   RIFList n7 = null;
-    if (jj_2_3(3)) {
+    if (jj_2_2(3)) {
       n1 = RIFUniterm();
       n0 = new NodeChoice(n1, 0, 7);
     } else {
@@ -1029,10 +1015,10 @@ public class RIFParser implements RIFParserConstants {
   RIFTypedLiteral n1 = null;
   RIFLiteralWithLangTag n2 = null;
   RIFString n3 = null;
-    if (jj_2_4(2147483647)) {
+    if (jj_2_3(2147483647)) {
       n1 = RIFTypedLiteral();
       n0 = new NodeChoice(n1, 0, 3);
-    } else if (jj_2_5(2147483647)) {
+    } else if (jj_2_4(2147483647)) {
       n2 = RIFLiteralWithLangTag();
       n0 = new NodeChoice(n2, 1, 3);
     } else {
@@ -1219,7 +1205,7 @@ public class RIFParser implements RIFParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-/* Flie§kommazahl */
+/* Flieï¿½kommazahl */
   final public RIFFloatingPoint RIFFloatingPoint() throws ParseException {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
@@ -1243,7 +1229,7 @@ public class RIFParser implements RIFParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-/* einfacher Name fŸr Variablen */
+/* einfacher Name fï¿½r Variablen */
   final public RIFNCName RIFNCName() throws ParseException {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
@@ -1293,24 +1279,22 @@ public class RIFParser implements RIFParserConstants {
     finally { jj_save(3, xla); }
   }
 
-  private boolean jj_2_5(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_5(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(4, xla); }
+  private boolean jj_3R_39() {
+    if (jj_3R_44()) return true;
+    return false;
   }
 
   private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_41()) {
+    if (jj_3R_39()) {
     jj_scanpos = xsp;
-    if (jj_3R_42()) return true;
+    if (jj_3R_40()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_37() {
+  private boolean jj_3R_31() {
     if (jj_scan_token(QNAME)) return true;
     return false;
   }
@@ -1320,107 +1304,48 @@ public class RIFParser implements RIFParserConstants {
     return false;
   }
 
-  private boolean jj_3R_16() {
-    if (jj_3R_20()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_44() {
-    if (jj_3R_45()) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_12() {
-    if (jj_3R_15()) return true;
-    if (jj_scan_token(LBRACK)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_16()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(RBRACK)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_31() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_30() {
-    if (jj_3R_36()) return true;
+  private boolean jj_3R_42() {
+    if (jj_3R_43()) return true;
     return false;
   }
 
   private boolean jj_3R_23() {
+    if (jj_3R_31()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_30()) {
+    if (jj_3R_22()) {
     jj_scanpos = xsp;
-    if (jj_3R_31()) return true;
+    if (jj_3R_23()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_43() {
-    if (jj_3R_45()) return true;
+  private boolean jj_3R_41() {
+    if (jj_3R_43()) return true;
     return false;
   }
 
-  private boolean jj_3R_36() {
+  private boolean jj_3R_30() {
     if (jj_scan_token(Q_URIref)) return true;
     return false;
   }
 
-  private boolean jj_3R_19() {
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(45)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(46)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(47)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(48)) return true;
-    }
-    }
-    }
-    if (jj_scan_token(LANGTAG)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
+  private boolean jj_3R_17() {
     if (jj_3R_20()) return true;
     return false;
   }
 
-  private boolean jj_3R_34() {
-    if (jj_scan_token(EXTERNAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_18()) {
-    jj_scanpos = xsp;
-    if (jj_3R_19()) return true;
-    }
+  private boolean jj_3R_18() {
+    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -1437,38 +1362,44 @@ public class RIFParser implements RIFParserConstants {
     }
     }
     }
-    if (jj_scan_token(H)) return true;
+    if (jj_scan_token(LANGTAG)) return true;
     return false;
   }
 
-  private boolean jj_3R_40() {
-    if (jj_3R_45()) return true;
+  private boolean jj_3R_16() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
-  private boolean jj_3R_13() {
-    if (jj_scan_token(NCNAME)) return true;
+  private boolean jj_3R_34() {
+    if (jj_scan_token(EXTERNAL)) return true;
     return false;
   }
 
-  private boolean jj_3R_39() {
-    if (jj_3R_44()) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_3R_13()) return true;
-    if (jj_scan_token(TO)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17() {
+  private boolean jj_3R_14() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_2()) {
+    if (jj_3R_16()) {
     jj_scanpos = xsp;
-    if (jj_3R_21()) return true;
+    if (jj_3R_17()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(45)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(46)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(47)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(48)) return true;
+    }
+    }
+    }
+    if (jj_scan_token(H)) return true;
     return false;
   }
 
@@ -1477,7 +1408,38 @@ public class RIFParser implements RIFParserConstants {
     return false;
   }
 
-  private boolean jj_3R_51() {
+  private boolean jj_3R_12() {
+    if (jj_scan_token(NCNAME)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_12()) return true;
+    if (jj_scan_token(TO)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_3R_42()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_1()) {
+    jj_scanpos = xsp;
+    if (jj_3R_18()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_36() {
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_49() {
     if (jj_scan_token(STRING_LITERALLONG2)) return true;
     return false;
   }
@@ -1490,30 +1452,30 @@ public class RIFParser implements RIFParserConstants {
   private boolean jj_3R_32() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_38()) {
+    if (jj_3R_36()) {
     jj_scanpos = xsp;
-    if (jj_3R_39()) {
+    if (jj_3R_37()) {
     jj_scanpos = xsp;
-    if (jj_3R_40()) return true;
+    if (jj_3R_38()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_50() {
-    if (jj_scan_token(STRING_LITERALLONG1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    if (jj_3R_15()) return true;
+  private boolean jj_3R_13() {
+    if (jj_3R_14()) return true;
     if (jj_scan_token(LPAREN)) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_17()) { jj_scanpos = xsp; break; }
+      if (jj_3R_15()) { jj_scanpos = xsp; break; }
     }
     if (jj_scan_token(RPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    if (jj_scan_token(STRING_LITERALLONG1)) return true;
     return false;
   }
 
@@ -1522,28 +1484,28 @@ public class RIFParser implements RIFParserConstants {
     return false;
   }
 
-  private boolean jj_3R_22() {
+  private boolean jj_3R_19() {
     if (jj_scan_token(QUESTION)) return true;
-    if (jj_3R_13()) return true;
+    if (jj_3R_12()) return true;
     return false;
   }
 
   private boolean jj_3R_27() {
-    if (jj_3R_23()) return true;
+    if (jj_3R_20()) return true;
     return false;
   }
 
-  private boolean jj_3R_49() {
+  private boolean jj_3R_47() {
     if (jj_scan_token(STRING_LITERAL2)) return true;
     return false;
   }
 
   private boolean jj_3R_26() {
-    if (jj_3R_22()) return true;
+    if (jj_3R_19()) return true;
     return false;
   }
 
-  private boolean jj_3R_48() {
+  private boolean jj_3R_46() {
     if (jj_scan_token(STRING_LITERAL1)) return true;
     return false;
   }
@@ -1553,16 +1515,16 @@ public class RIFParser implements RIFParserConstants {
     return false;
   }
 
-  private boolean jj_3R_45() {
+  private boolean jj_3R_43() {
     Token xsp;
     xsp = jj_scanpos;
+    if (jj_3R_46()) {
+    jj_scanpos = xsp;
+    if (jj_3R_47()) {
+    jj_scanpos = xsp;
     if (jj_3R_48()) {
     jj_scanpos = xsp;
-    if (jj_3R_49()) {
-    jj_scanpos = xsp;
-    if (jj_3R_50()) {
-    jj_scanpos = xsp;
-    if (jj_3R_51()) return true;
+    if (jj_3R_49()) return true;
     }
     }
     }
@@ -1574,20 +1536,20 @@ public class RIFParser implements RIFParserConstants {
     return false;
   }
 
-  private boolean jj_3R_47() {
+  private boolean jj_3R_45() {
     if (jj_scan_token(FLOATING_POINT)) return true;
     return false;
   }
 
-  private boolean jj_3_3() {
-    if (jj_3R_14()) return true;
+  private boolean jj_3_2() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
-  private boolean jj_3R_20() {
+  private boolean jj_3R_21() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_3()) {
+    if (jj_3_2()) {
     jj_scanpos = xsp;
     if (jj_3R_24()) {
     jj_scanpos = xsp;
@@ -1609,18 +1571,13 @@ public class RIFParser implements RIFParserConstants {
     return false;
   }
 
-  private boolean jj_3R_46() {
+  private boolean jj_3R_44() {
     if (jj_scan_token(INTEGER_10)) return true;
     return false;
   }
 
-  private boolean jj_3R_42() {
-    if (jj_3R_47()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_41() {
-    if (jj_3R_46()) return true;
+  private boolean jj_3R_40() {
+    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -1643,12 +1600,12 @@ public class RIFParser implements RIFParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x10000000,0x20000000,0x40000000,0x0,0x4000000,0x0,0x8c001000,0x8c001000,0x1000,0x88001000,0x1000,0x80001000,0x2000,0x80001000,0x80001000,0x1000,0x80001000,0x38000,0x38000,0x1000,0x1000,0x1000,0x1000,0x1000,0x1000,0x100000,0x1200,0x0,0x0,0x0,0x1000,0x0,};
+      jj_la1_0 = new int[] {0x10000000,0x20000000,0x40000000,0x0,0x4000000,0x0,0x8c001000,0x8c001000,0x1000,0x88001000,0x1000,0x80001000,0x2000,0x80001000,0x80001000,0x1000,0x80001000,0x38000,0x78000,0x78000,0x1000,0x1000,0x1000,0x1000,0x1000,0x100000,0x1200,0x0,0x0,0x0,0x1000,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x10,0x0,0x20,0x1f8aa,0x1f8aa,0x0,0x1f8aa,0x1f8aa,0x1f8aa,0x0,0x1f8af,0x1f8af,0x0,0x1f8af,0x0,0x0,0x1f8aa,0x1faaa,0x1f8aa,0x1f8aa,0x1f8aa,0x1f8aa,0x0,0x1f8aa,0x1e000,0x1800,0x1e000,0xa0,0xa0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x10,0x0,0x20,0x1f8aa,0x1f8aa,0x0,0x1f8aa,0x1f8aa,0x1f8aa,0x0,0x1f8af,0x1f8af,0x0,0x1f8af,0x0,0x0,0x0,0x1faaa,0x1f8aa,0x1f8aa,0x1f8aa,0x1f8aa,0x0,0x1f8aa,0x1e000,0x1800,0x1e000,0xa0,0xa0,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[5];
+  final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -1876,7 +1833,7 @@ public class RIFParser implements RIFParserConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1887,7 +1844,6 @@ public class RIFParser implements RIFParserConstants {
             case 1: jj_3_2(); break;
             case 2: jj_3_3(); break;
             case 3: jj_3_4(); break;
-            case 4: jj_3_5(); break;
           }
         }
         p = p.next;

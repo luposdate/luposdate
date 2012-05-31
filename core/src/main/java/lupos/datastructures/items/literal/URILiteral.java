@@ -80,4 +80,9 @@ public abstract class URILiteral extends Literal implements Externalizable {
 	public abstract String getString();
 
 	public abstract void update(String s) throws java.net.URISyntaxException;
+	
+	@Override
+	public Literal createThisLiteralNew(){
+		return LiteralFactory.createURILiteralWithoutException(this.originalString());
+	}
 }

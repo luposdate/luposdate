@@ -114,4 +114,9 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 		LuposObjectOutputStream.writeLuposLiteral(content, out);
 		LuposObjectOutputStream.writeLuposLiteral(lang, out);
 	}
+
+	@Override
+	public Literal createThisLiteralNew() {
+		return LiteralFactory.createLanguageTaggedLiteral(this.content.originalString(), this.lang.originalString());
+	}
 }

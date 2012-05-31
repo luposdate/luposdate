@@ -29,24 +29,20 @@ import lupos.rif.generated.visitor.*;
 /**
  * JTB node class for the production RIFFrame:<br>
  * Corresponding grammar :<br>
- * f0 -> RIFVarOrURI()<br>
- * f1 -> < LBRACK ><br>
- * f2 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*<br>
- * f3 -> < RBRACK ><br>
+ * f0 -> < LBRACK ><br>
+ * f1 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*<br>
+ * f2 -> < RBRACK ><br>
  */
 public class RIFFrame implements INode {
 
   /** A child node */
-  public RIFVarOrURI f0;
+  public NodeToken f0;
 
   /** A child node */
-  public NodeToken f1;
+  public NodeListOptional f1;
 
   /** A child node */
-  public NodeListOptional f2;
-
-  /** A child node */
-  public NodeToken f3;
+  public NodeToken f2;
 
   /** The parent pointer */
   private INode parent;
@@ -60,9 +56,8 @@ public class RIFFrame implements INode {
    * @param n0 first child node
    * @param n1 next child node
    * @param n2 next child node
-   * @param n3 next child node
    */
-  public RIFFrame(final RIFVarOrURI n0, final NodeToken n1, final NodeListOptional n2, final NodeToken n3) {
+  public RIFFrame(final NodeToken n0, final NodeListOptional n1, final NodeToken n2) {
     f0 = n0;
     if (f0 != null)
       f0.setParent(this);
@@ -72,30 +67,23 @@ public class RIFFrame implements INode {
     f2 = n2;
     if (f2 != null)
       f2.setParent(this);
-    f3 = n3;
-    if (f3 != null)
-      f3.setParent(this);
   }
 
   /**
    * Constructs the node with only its non NodeToken child node(s).
    *
    * @param n0 first child node
-   * @param n1 next child node
    */
-  public RIFFrame(final RIFVarOrURI n0, final NodeListOptional n1) {
-    f0 = n0;
+  public RIFFrame(final NodeListOptional n0) {
+    f0 = new NodeToken("[");
     if (f0 != null)
         f0.setParent(this);
-    f1 = new NodeToken("[");
+    f1 = n0;
     if (f1 != null)
         f1.setParent(this);
-    f2 = n1;
+    f2 = new NodeToken("]");
     if (f2 != null)
         f2.setParent(this);
-    f3 = new NodeToken("]");
-    if (f3 != null)
-        f3.setParent(this);
   }
 
   /**

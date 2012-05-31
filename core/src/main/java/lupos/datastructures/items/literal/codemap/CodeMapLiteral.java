@@ -212,4 +212,9 @@ public class CodeMapLiteral extends Literal implements Item,
 		} else
 			return s;
 	}
+
+	@Override
+	public Literal createThisLiteralNew() {
+		return LiteralFactory.createLiteral(this.originalString());
+	}
 }

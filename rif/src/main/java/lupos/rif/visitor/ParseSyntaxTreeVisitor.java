@@ -253,37 +253,36 @@ public class ParseSyntaxTreeVisitor implements
 	}
 
 	public Object visit(final RIFAtomic n, final IRuleNode argu) {
-		if (n.f0.which == 0)
-			return n.f0.choice.accept(this, argu);
+		if (n.f1.present()){
+			if(((NodeChoice)n.f1.node).which == 1){			
+				return ((NodeChoice)n.f1.node).choice.accept(this, argu);
+			}
+		}
 
-		final List<INode> seq = (List<INode>) n.f0.choice.accept(this, argu);
-		final NodeOptional comparsion = (NodeOptional) seq.get(1);
-		if (!comparsion.present())
-			return seq.get(0).accept(this, argu);
+		
+		if (n.f1.node==null)
+			return n.f0.accept(this, argu);
 		else {
-			final List<INode> rightSeq = (List<INode>) comparsion.node.accept(
-					this, argu);
-			final String operator = (String) rightSeq.get(0).accept(this, null);
+			final List<INode> seq = ((List<INode>)((NodeChoice) n.f1.node).choice.accept(this, argu));
+			final String operator = (String) seq.get(0).accept(this, null);
 			if (operator.equals("#") || operator.equals("##")) {
 				final Uniterm term = new RulePredicate(true);
 				term.setParent(argu);
-				final IExpression leftTerm = (IExpression) seq.get(0).accept(
-						this, term);
-				final IExpression rightTerm = (IExpression) rightSeq.get(1)
-						.accept(this, term);
+				final IExpression leftTerm = (IExpression) n.f0.accept(this, term);
+				final IExpression rightTerm = (IExpression) seq.get(1).accept(this, term);
 				term.termParams.add(leftTerm);
 				term.termParams.add(rightTerm);
 				try {
 					if (operator.equals("#"))
 						term.termName = new Constant(
 								LiteralFactory
-										.createURILiteral("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
+										.createURILiteralWithoutLazyLiteral("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
 								term);
 					else
 
 						term.termName = new Constant(
 								LiteralFactory
-										.createURILiteral("<http://www.w3.org/2000/01/rdf-schema#subClassOf>"),
+										.createURILiteralWithoutLazyLiteral("<http://www.w3.org/2000/01/rdf-schema#subClassOf>"),
 								term);
 				} catch (URISyntaxException e) {
 					throw new RIFException(e.getMessage());
@@ -292,8 +291,8 @@ public class ParseSyntaxTreeVisitor implements
 			}
 			final Equality comp = new Equality();
 			comp.setParent(argu);
-			comp.rightExpr = (IExpression) rightSeq.get(1).accept(this, comp);
-			comp.leftExpr = (IExpression) seq.get(0).accept(this, comp);
+			comp.rightExpr = (IExpression) seq.get(1).accept(this, comp);
+			comp.leftExpr = (IExpression) n.f0.accept(this, comp);
 			return comp;
 		}
 	}
@@ -315,14 +314,14 @@ public class ParseSyntaxTreeVisitor implements
 	}
 
 	public Object visit(final RIFFrame n, final IRuleNode argu) {
-		final List<INode> args = (List<INode>) n.f2.accept(this, argu);
+		final List<INode> args = (List<INode>) n.f1.accept(this, argu);
 		final AbstractExpressionContainer and = new Conjunction();
 		for (final INode node : args) {
 			final List<INode> nodeSeq = (List<INode>) node.accept(this, argu);
 			final Uniterm term = new RulePredicate(true);
 			term.setParent(argu);
 			term.termName = (IExpression) nodeSeq.get(0).accept(this, term);
-			term.termParams.add((IExpression) n.f0.accept(this, term));
+			term.termParams.add((IExpression) ((RIFAtomic)n.getParent().getParent().getParent()).f0.accept(this, term));
 			term.termParams
 					.add((IExpression) nodeSeq.get(2).accept(this, term));
 			if (args.size() == 1)
@@ -383,7 +382,7 @@ public class ParseSyntaxTreeVisitor implements
 		final Literal type = ((Constant) n.f2.accept(this, argu)).getLiteral();
 		Literal literal;
 		try {
-			literal = LiteralFactory.createTypedLiteral(content.toString(),
+			literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral(content.toString(),
 					type.toString());
 		} catch (final URISyntaxException e) {
 			throw new RIFException(e.getMessage());
@@ -395,7 +394,7 @@ public class ParseSyntaxTreeVisitor implements
 		final TypedLiteral content = (TypedLiteral) ((Constant) n.f0.accept(
 				this, argu)).getLiteral();
 		final String langTag = (String) n.f1.accept(this, argu);
-		final Literal literal = LiteralFactory.createLanguageTaggedLiteral(
+		final Literal literal = LiteralFactory.createLanguageTaggedLiteralWithoutLazyLiteral(
 				content.getContent(), langTag);
 		return new Constant(literal, argu);
 	}
@@ -408,7 +407,7 @@ public class ParseSyntaxTreeVisitor implements
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal = null;
 		try {
-			literal = LiteralFactory.createTypedLiteral(content,
+			literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral(content,
 					"<http://www.w3.org/2001/XMLSchema#string>");
 		} catch (final URISyntaxException e) {
 			throw new RIFException(e.getMessage());
@@ -433,7 +432,7 @@ public class ParseSyntaxTreeVisitor implements
 				throw new RIFException("Literal " + content
 						+ " requires Declaration of BASE!");
 			try {
-				literal = LiteralFactory.createURILiteral("<" + baseNamespace
+				literal = LiteralFactory.createURILiteralWithoutLazyLiteral("<" + baseNamespace
 						+ parts[1] + ">");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
@@ -442,7 +441,7 @@ public class ParseSyntaxTreeVisitor implements
 			if (!prefixMap.containsKey(parts[0]))
 				throw new RIFException("Undeclared Prefix " + parts[0]);
 			try {
-				literal = LiteralFactory.createURILiteral("<"
+				literal = LiteralFactory.createURILiteralWithoutLazyLiteral("<"
 						+ prefixMap.get(parts[0]) + parts[1] + ">");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
@@ -455,7 +454,7 @@ public class ParseSyntaxTreeVisitor implements
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal;
 		try {
-			literal = LiteralFactory.createTypedLiteral("\"" + content + "\"",
+			literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral("\"" + content + "\"",
 					"<http://www.w3.org/2001/XMLSchema#integer>");
 		} catch (final URISyntaxException e) {
 			throw new RIFException(e.toString());
@@ -468,14 +467,14 @@ public class ParseSyntaxTreeVisitor implements
 		Literal literal = null;
 		if (content.contains("e") || content.contains("E"))
 			try {
-				literal = LiteralFactory.createTypedLiteral("\"" + content
+				literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral("\"" + content
 						+ "\"", "<http://www.w3.org/2001/XMLSchema#double>");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
 			}
 		else
 			try {
-				literal = LiteralFactory.createTypedLiteral("\"" + content
+				literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral("\"" + content
 						+ "\"", "<http://www.w3.org/2001/XMLSchema#decimal>");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
@@ -491,7 +490,7 @@ public class ParseSyntaxTreeVisitor implements
 		final String uriRef = (String) n.f0.accept(this, argu);
 		Literal literal;
 		try {
-			literal = LiteralFactory.createURILiteral(uriRef);
+			literal = LiteralFactory.createURILiteralWithoutLazyLiteral(uriRef);
 		} catch (final URISyntaxException e) {
 			throw new RIFException(e.toString());
 		}

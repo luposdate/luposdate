@@ -123,8 +123,7 @@ public class BuiltinHelper {
 
 	public static Literal createXSLiteral(Object value, String type) {
 		if (type.equals("string") && value.toString().length() > 2)
-			value = value.toString()
-					.substring(1, value.toString().length() - 1);
+			value = value.toString().substring(1, value.toString().length() - 1);
 		try {
 			return LiteralFactory.createTypedLiteralWithoutLazyLiteral("\""
 					+ value.toString() + "\"",

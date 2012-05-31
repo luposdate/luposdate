@@ -111,7 +111,7 @@ public class Generate extends SingleInputOperator {
 					triple.setPos(i, (Literal) valueOrVariable[i]);
 			}
 
-			if (triple.getSubject() == null || triple.getPredicate()==null || triple.getObject()==null || !(triple.getPredicate() instanceof URILiteral && (triple.getSubject() instanceof AnonymousLiteral || triple.getSubject() instanceof URILiteral))) {
+			if (triple.getSubject() == null || triple.getPredicate()==null || triple.getObject()==null || !(triple.getPredicate().isURI() && (triple.getSubject().isBlank() || triple.getSubject().isURI()))) {
 				System.err.println("Tried to generate triple "
 								+ triple
 								+ ", which does not conform to the RDF conventions (B v U) X U X (B v U v L), where B is the set of blank nodes, U the set of URIs and L the set of literals!");

@@ -49,7 +49,8 @@ public class RIFBuiltinFactory {
 					NumericFunctions.class, NumericPredicates.class,
 					StringPredicates.class, StringFunctions.class,
 					TimePredicates.class, TimeFunctions.class,
-					NonStandardPredicates.class);
+					NonStandardPredicates.class,
+					NonStandardFunctions.class);
 	private static final Map<String, Tuple<Builtin, Method>> builtins = new HashMap<String, Tuple<Builtin, Method>>();
 
 	public static boolean canBind(URILiteral builtin) {

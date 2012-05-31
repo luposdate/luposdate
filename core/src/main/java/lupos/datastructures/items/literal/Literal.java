@@ -121,4 +121,6 @@ public abstract class Literal implements Item, Comparable<Literal>,
 	public String toString(Prefix prefix){
 		return toString();
 	}
+
+	public abstract Literal createThisLiteralNew();
 }

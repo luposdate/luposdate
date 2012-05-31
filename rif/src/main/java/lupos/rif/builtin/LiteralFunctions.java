@@ -36,13 +36,9 @@ public class LiteralFunctions {
 		if (arg.arguments.size() == 2
 				&& arg.arguments.get(0) instanceof TypedLiteral
 				&& arg.arguments.get(1) instanceof TypedLiteral) {
-			final String content = ((TypedLiteral) arg.arguments.get(0))
-					.getContent();
-			final String lang = ((TypedLiteral) arg.arguments.get(1))
-					.getContent();
-			return LiteralFactory
-					.createLanguageTaggedLiteralWithoutLazyLiteral(content,
-							lang.substring(1, lang.length() - 1));
+			final String content = ((TypedLiteral) arg.arguments.get(0)).getContent();
+			final String lang = ((TypedLiteral) arg.arguments.get(1)).getContent();
+			return LiteralFactory.createLanguageTaggedLiteralWithoutLazyLiteral(content, lang.substring(1, lang.length() - 1));
 		} else
 			return null;
 	}

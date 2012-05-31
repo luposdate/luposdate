@@ -141,7 +141,7 @@ public class ChildrenSyntaxTreeVisitor implements IRetArguVisitor<List<INode>, O
 	}
 
 	public List<INode> visit(RIFAtomic n, Object argu) {
-		return list(n.f0.choice);
+		return list(n.f1.node);
 	}
 
 	public List<INode> visit(RIFUniterm n, Object argu) {
@@ -149,7 +149,7 @@ public class ChildrenSyntaxTreeVisitor implements IRetArguVisitor<List<INode>, O
 	}
 
 	public List<INode> visit(RIFFrame n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3);
+		return list(((RIFAtomic)n.getParent().getParent().getParent()).f0, n.f0, n.f1, n.f2);
 	}
 
 	public List<INode> visit(RIFTerm n, Object argu) {

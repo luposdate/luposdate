@@ -380,4 +380,9 @@ public class LazyLiteral extends Literal {
 		Literal literal = this.getLiteral();
 		return (literal instanceof URILiteral);
 	}
+
+	@Override
+	public Literal createThisLiteralNew() {
+		return this.getLiteral().createThisLiteralNew();
+	}
 }
