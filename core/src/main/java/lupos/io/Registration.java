@@ -24,6 +24,7 @@
 package lupos.io;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -422,39 +423,39 @@ public class Registration {
 		public void serialize(final Bindings t, final LuposObjectOutputStream out) throws IOException {
 			if (t instanceof BindingsArray) {
 				final BindingsArray ba = (BindingsArray) t;
-				final Map<Variable, Integer> hm = BindingsArray
-				.getPosVariables();
-				int usedVars = 0;
-				int differentFromPreviousBindings = 0;
-				int i = 1;
+				final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+				BigInteger usedVars = BigInteger.ZERO;
+				BigInteger differentFromPreviousBindings = BigInteger.ZERO;
+				BigInteger i = BigInteger.ONE;
+				BigInteger TWO = BigInteger.valueOf(2);
 				for (final Variable v : hm.keySet()) {
 					if (ba.get(v) != null) {
-						usedVars += i;
+						usedVars = usedVars.add(i);
 						if (out.previousBindings == null
-								|| out.previousBindings.get(v) == null)
-							differentFromPreviousBindings += i;
-						else if (ba.get(v) instanceof LazyLiteralOriginalContent) {
+								|| out.previousBindings.get(v) == null){
+							differentFromPreviousBindings = differentFromPreviousBindings.add(i);
+						} else if (ba.get(v) instanceof LazyLiteralOriginalContent) {
 							if (!(out.previousBindings.get(v) instanceof LazyLiteralOriginalContent)
 									|| ((LazyLiteralOriginalContent) ba.get(v))
 									.getCodeOriginalContent() != ((LazyLiteralOriginalContent) out.previousBindings
 											.get(v)).getCodeOriginalContent()) {
-								differentFromPreviousBindings += i;
+								differentFromPreviousBindings = differentFromPreviousBindings.add(i);
 							}
 						} else if (ba.get(v) instanceof LazyLiteral) {
 							if (!(out.previousBindings.get(v) instanceof LazyLiteral)
 									|| ((LazyLiteral) ba.get(v)).getCode() != ((LazyLiteral) out.previousBindings
 											.get(v)).getCode()) {
-								differentFromPreviousBindings += i;
+								differentFromPreviousBindings = differentFromPreviousBindings.add(i);
 							}
 						} else if (ba.get(v).originalString().compareTo(
 								out.previousBindings.get(v).originalString()) != 0) {
-							differentFromPreviousBindings += i;
+							differentFromPreviousBindings = differentFromPreviousBindings.add(i);
 						}
 					}
-					i = i * 2;
+					i = i.multiply(TWO);
 				}
-				out.writeLuposInt(usedVars);
-				out.writeLuposInt(differentFromPreviousBindings);
+				out.writeLuposBigInteger(usedVars, hm.size());
+				out.writeLuposBigInteger(differentFromPreviousBindings, hm.size());
 				for (final Variable v : hm.keySet()) {
 					if (ba.get(v) != null) {
 						if (out.previousBindings == null

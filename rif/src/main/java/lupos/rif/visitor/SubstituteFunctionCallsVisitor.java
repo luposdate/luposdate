@@ -94,6 +94,7 @@ public class SubstituteFunctionCallsVisitor implements
 
 	public IRuleNode visit(Rule obj, Object arg) throws RIFException {
 		currentVariableScope = obj;
+		aliasCtr = 0;
 		obj.setHead((IExpression) obj.getHead().accept(this, obj));
 
 		// Equalities (mit Aliasvariablen) aus Head entfernen

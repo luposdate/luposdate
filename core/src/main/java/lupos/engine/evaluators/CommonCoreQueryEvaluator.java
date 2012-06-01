@@ -108,12 +108,12 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	protected Result result;
 	protected STORAGE storage;
-	protected JOIN join;
-	protected JOIN optional;
-	protected SORT sort;
+	public JOIN join;
+	public JOIN optional;
+	public SORT sort;
 	public DISTINCT distinct;
-	protected MERGE_JOIN_OPTIONAL merge_join_optional;
-	protected RDFS rdfs;
+	public MERGE_JOIN_OPTIONAL merge_join_optional;
+	public RDFS rdfs;
 	protected boolean inmemoryexternalontologyinference;
 	protected String externalontology;
 	protected String type;

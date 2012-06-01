@@ -59,6 +59,7 @@ public class ResolveListsRuleVisitor implements
 	}
 
 	public IRuleNode visit(Rule obj, IRuleNode arg) throws RIFException {
+		listCtr = 0;
 		obj.setParent(arg);
 		currentVariableScope = obj;
 		obj.setBody((IExpression) obj.getBody().accept(this, obj));

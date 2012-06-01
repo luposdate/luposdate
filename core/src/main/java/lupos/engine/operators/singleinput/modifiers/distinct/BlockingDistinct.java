@@ -49,8 +49,9 @@ public class BlockingDistinct extends Distinct {
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
-		while (itb.hasNext())
-			bindings.add(itb.next());
+		while (itb.hasNext()){
+			this.bindings.add(itb.next());
+		}
 		return null;
 	}
 

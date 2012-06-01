@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
@@ -260,6 +261,25 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		}
 		return (E) ts;
 	}
+	
+	public BigInteger readLuposBigInteger(final int numberOfBits) throws IOException {
+		BigInteger result = BigInteger.ZERO;
+		BigInteger factor = BigInteger.ONE;
+		final BigInteger BYTE = BigInteger.valueOf(256);
+		int remainingBits = numberOfBits;
+		while(remainingBits>0){
+			final int currentValueByte = this.is.read();
+			if(currentValueByte<0){
+				// EOF reached!
+				return null;
+			}
+			final BigInteger currentValue = BigInteger.valueOf(currentValueByte);
+			result = result.add(currentValue.multiply(factor));
+			factor = factor.multiply(BYTE);
+			remainingBits-=8;
+		}
+		return result;
+	}
 
 	public Bindings readLuposBindings() throws IOException {
 		if (Bindings.instanceClass == BindingsMap.class) {
@@ -275,34 +295,34 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 			}
 			return b;
 		} else {
-			final int usedVars = readLuposInt();
-			if (usedVars < 0)
-				return null;
-			final int differentFromPreviousBindings = readLuposInt();
 			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			BigInteger usedVars = readLuposBigInteger(hm.size());
+			if (usedVars == null)
+				return null;
+			BigInteger differentFromPreviousBindings = readLuposBigInteger(hm.size());
 			final Bindings b = Bindings.createNewInstance();
-			int i = 1;
-			for (final Variable v : hm.keySet()) {
-				if ((usedVars / i) % 2 == 1) {
-					if (previousBindings == null
-							|| (differentFromPreviousBindings / i) % 2 == 1) {
+			final BigInteger TWO = BigInteger.valueOf(2);
+			for (final Variable v : hm.keySet()) {				
+				if (usedVars.mod(TWO).compareTo(BigInteger.ONE)==0) {
+					if (this.previousBindings == null || differentFromPreviousBindings.mod(TWO).compareTo(BigInteger.ONE)==0) {
 						Literal lit;
 						lit = readLiteral();
 						b.add(v, lit);
 					} else {
-						b.add(v, previousBindings.get(v));
+						b.add(v, this.previousBindings.get(v));
 					}
 				}
-				i *= 2;
+				usedVars = usedVars.shiftRight(1);
+				differentFromPreviousBindings = differentFromPreviousBindings.shiftRight(1);
 			}
-			previousBindings = b;
+			this.previousBindings = b;
 			if (b instanceof BindingsArrayReadTriples) {
 				final int number = readLuposInt();
 				if (number == 0)
 					return b;
 				if (number < 0)
 					return null;
-				final int tripleType = is.read();
+				final int tripleType = this.is.read();
 				for (int j = 0; j < number; j++) {
 					Triple t;
 					if (tripleType == 1) {

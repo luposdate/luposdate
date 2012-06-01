@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -227,6 +228,18 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		os.write(i2);
 		os.write(i3);
 		os.write(i4);
+	}
+	
+	public void writeLuposBigInteger(final BigInteger value, final int numberOfBits) throws IOException {
+		int remainingBits = numberOfBits;
+		BigInteger remainingValue = value;
+		final BigInteger BYTE = BigInteger.valueOf(256);
+		while(remainingBits>0){
+			BigInteger[] result = remainingValue.divideAndRemainder(BYTE);
+			remainingValue = result[0];
+			this.os.write(result[1].intValue()%256);
+			remainingBits-=8;
+		}
 	}
 
 	public void writeLuposInt1Byte(final int i) throws IOException {

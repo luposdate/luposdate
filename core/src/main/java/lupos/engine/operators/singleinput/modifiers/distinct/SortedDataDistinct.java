@@ -39,30 +39,36 @@ public class SortedDataDistinct extends Distinct {
 			Bindings next = null;
 			Bindings previous = null;
 
+			@Override
 			public boolean hasNext() {
-				if (next != null)
+				if (this.next != null)
 					return true;
-				next = next();
-				return (next != null);
+				this.next = next();
+				return (this.next != null);
 			}
 
+			@Override
 			public Bindings next() {
-				if (next != null) {
-					final Bindings znext = next;
-					next = null;
+				if (this.next != null) {
+					final Bindings znext = this.next;
+					this.next = null;
 					return znext;
 				}
-				Bindings b = itb.next();
-				if (previous == null) {
-					previous = b;
+				if(!this.itb.hasNext()){
+					return null;
+				}
+				Bindings b = this.itb.next();
+				if (this.previous == null) {
+					this.previous = b;
 					return b;
 				}
-				while (b != null && b.equals(previous))
-					b = itb.next();
-				previous = b;
+				while (b != null && b.equals(this.previous))
+					b = this.itb.next();
+				this.previous = b;
 				return b;
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}

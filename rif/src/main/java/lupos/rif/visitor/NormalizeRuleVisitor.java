@@ -50,7 +50,7 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		if (obj.exprs.size() == 1)
 			return obj.exprs.get(0).accept(this, arg);
 		// Umwandlung in Disjunktive Normalform
-		if (generateDNF) {
+		if (this.generateDNF) {
 			// 1. Oder nach hinten verschieben
 			// nur wenn ein OR enthalten ist anwendbar
 			int orCtr = 0;
