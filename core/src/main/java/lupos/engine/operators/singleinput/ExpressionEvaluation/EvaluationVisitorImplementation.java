@@ -606,7 +606,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTInteger node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return new BigInteger(node.getValue().toString());
+		return LazyLiteral.getLiteral(node);
 	}
 
 	@Override

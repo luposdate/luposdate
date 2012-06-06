@@ -85,15 +85,14 @@ public class TurtleParser {
 		return number;
 	}
 
-	public static Literal printResource2Literal(final Resource r,
-			final HashMap<Resource, Integer> blanknodeNames, int global_id) {
+	public static Literal printResource2Literal(final Resource r, final HashMap<Resource, Integer> blanknodeNames, int global_id) {
 		if (r.isAnon()) {
 			Integer id = blanknodeNames.get(r);
 			if (id == null) {
 				id = blanknodeNames.size();
 				blanknodeNames.put(r, id);
 			}
-			return new AnonymousLiteral("_:b"+global_id+"_" + id);
+			return LiteralFactory.createAnonymousLiteral("_:b"+global_id+"_" + id);
 		} else
 			try {
 				return LiteralFactory.createURILiteral("<" + r.getURI() + ">");
@@ -102,8 +101,7 @@ public class TurtleParser {
 			}
 	}
 
-	public static Literal printNTripleLiteral2Literal(
-			final com.hp.hpl.jena.rdf.model.Literal l) {
+	public static Literal printNTripleLiteral2Literal(final com.hp.hpl.jena.rdf.model.Literal l) {
 		String s1 = "\"";
 		final char ar[] = l.getLexicalForm().toCharArray();
 
@@ -122,15 +120,13 @@ public class TurtleParser {
 			// info
 			// if it
 			// exists
-			return LiteralFactory.createLanguageTaggedLiteral(s1,
-					l.getLanguage());
+			return LiteralFactory.createLanguageTaggedLiteral(s1, l.getLanguage());
 		}
 		if (l.getDatatypeURI() != null) {// add datatype info if it exists
 			final String s2 = l.getDatatypeURI();
 			if (s2.length() > 0) {
 				try {
-					return TypedLiteralOriginalContent.createTypedLiteral(s1,
-							"<" + s2 + ">");
+					return LiteralFactory.createTypedLiteral(s1, "<" + s2 + ">");
 					// }
 				} catch (final Exception e) {
 					return LiteralFactory.createLiteral(s1 + "^^" + s2);

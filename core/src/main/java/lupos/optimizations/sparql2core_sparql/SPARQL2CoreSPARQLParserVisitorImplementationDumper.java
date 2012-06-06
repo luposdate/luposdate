@@ -305,7 +305,17 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			return true;
 		else if (node instanceof ASTUnionConstraint)
 			return true;
-		else if (node instanceof ASTGroupConstraint)
+//		else if (node instanceof ASTGroupConstraint)
+//			return false;
+		else if(node instanceof ASTSelectQuery || 
+				node instanceof ASTAskQuery ||
+				node instanceof ASTConstructQuery ||
+				node instanceof ASTDescribeQuery ||
+				node instanceof ASTQuery ||
+				node instanceof ASTExists ||
+				node instanceof ASTNotExists ||
+				node instanceof ASTService				
+				)
 			return false;
 		else
 			return inScopeOfOptionalOrUnion(node.jjtGetParent());
@@ -314,9 +324,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	private void checkFilterOfGroupConstraint(final Node node,
 			final HashSet<String> variables) {
 		if (node instanceof ASTGroupConstraint) {
-			final HashSet<String> variablesNew = (inScopeOfOptionalOrUnion(node.jjtGetParent())) ? (HashSet<String>) variables
-					.clone()
-					: new HashSet<String>();
+			final HashSet<String> variablesNew = (inScopeOfOptionalOrUnion(node.jjtGetParent())) ? (HashSet<String>) variables.clone() : new HashSet<String>();
 			boundVariables(node, variablesNew);
 
 			final int numberOfChildren = node.jjtGetNumChildren();
@@ -338,17 +346,13 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			}
 		} else if (node instanceof ASTUnionConstraint) {
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-				final HashSet<String> variablesClone = (HashSet<String>) variables
-						.clone();
-				checkFilterOfGroupConstraint(node.jjtGetChild(i),
-						variablesClone);
+				final HashSet<String> variablesClone = (HashSet<String>) variables.clone();
+				checkFilterOfGroupConstraint(node.jjtGetChild(i), variablesClone);
 			}
 		} else if (node instanceof ASTOptionalConstraint) {
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-				final HashSet<String> variablesClone = (HashSet<String>) variables
-						.clone();
-				checkFilterOfGroupConstraint(node.jjtGetChild(i),
-						variablesClone);
+				final HashSet<String> variablesClone = (HashSet<String>) variables.clone();
+				checkFilterOfGroupConstraint(node.jjtGetChild(i), variablesClone);
 			}
 		}
 	}
@@ -399,16 +403,16 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		boolean indicator = true;
 		if (vars_in_filter.size() > 0) {
 			indicator = false;
-			for (final Iterator<ASTVar> iter = vars_in_filter.iterator(); iter
-					.hasNext();) {
+			for (final Iterator<ASTVar> iter = vars_in_filter.iterator(); iter.hasNext();) {
 				indicator = indicator || vars_in_scope.contains(iter.next());
 			}
 		}
 	}
 
-	private void checkChildren(final ArrayList<ASTVar> vars_in_scope,
-			final ArrayList<ASTVar> vars_in_filter, final Node currentNode, boolean filter) {
-		if (currentNode instanceof ASTVar) {
+	private void checkChildren(final ArrayList<ASTVar> vars_in_scope, final ArrayList<ASTVar> vars_in_filter, final Node currentNode, boolean filter) {
+		if (currentNode instanceof ASTFilterConstraint) {
+			filter = true;
+		} else if (currentNode instanceof ASTVar) {
 			if (filter) {
 				if (!vars_in_filter.contains(currentNode))
 					vars_in_filter.add((ASTVar) currentNode);
@@ -416,12 +420,8 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 				if (!vars_in_scope.contains(currentNode))
 					vars_in_scope.add((ASTVar) currentNode);
 			}
-		}
-		if (currentNode instanceof ASTGroupConstraint) {
+		} else if (currentNode instanceof ASTGroupConstraint) {
 			nestedGroups((ASTGroupConstraint) currentNode);
-		}
-		if (currentNode instanceof ASTFilterConstraint) {
-			filter = true;
 		}
 		for (int i = 0; i < currentNode.jjtGetNumChildren(); i++) {
 			checkChildren(vars_in_scope, vars_in_filter, currentNode

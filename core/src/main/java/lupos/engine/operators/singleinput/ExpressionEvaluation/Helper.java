@@ -117,9 +117,13 @@ public class Helper {
 			return (BigInteger) a;
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
+			String content = tl.getContent().substring(1,
+					tl.getContent().length() - 1);
+			while(content.startsWith("+")){
+				content = content.substring(1,content.length());
+			}				
 			if (isInteger(tl.getType()))
-				return new BigInteger(tl.getContent().substring(1,
-						tl.getContent().length() - 1));
+				return new BigInteger(content);
 		}
 		throw new TypeErrorException();
 	}
@@ -135,17 +139,20 @@ public class Helper {
 			return ((BigDecimal) a).floatValue();
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
+			String content = tl.getContent().substring(1,
+					tl.getContent().length() - 1);
+			while(content.startsWith("+")){
+				content = content.substring(1,content.length());
+			}				
 			if (isInteger(tl.getType()))
-				return (new BigInteger(tl.getContent().substring(1,
-						tl.getContent().length() - 1))).floatValue();
+				return (new BigInteger(content)).floatValue();
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#float>") == 0
 					|| tl.getType().compareTo(
 							"<http://www.w3.org/2001/XMLSchema#double>") == 0
 					|| tl.getType().compareTo(
 							"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
-				return Float.parseFloat(tl.getContent().substring(1,
-						tl.getContent().length() - 1));
+				return Float.parseFloat(content);
 		}
 		throw new TypeErrorException();
 	}
@@ -161,19 +168,21 @@ public class Helper {
 			return ((BigDecimal) a).doubleValue();
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
+			String content = tl.getContent().substring(1,
+					tl.getContent().length() - 1);
+			while(content.startsWith("+")){
+				content = content.substring(1,content.length());
+			}				
 			if (isInteger(tl.getType()))
-				return (new BigInteger(tl.getContent().substring(1,
-						tl.getContent().length() - 1))).doubleValue();
+				return (new BigInteger(content)).doubleValue();
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#float>") == 0)
-				return (double) Float.parseFloat(tl.getContent().substring(1,
-						tl.getContent().length() - 1));
+				return (double) Float.parseFloat(content);
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#double>") == 0
 					|| tl.getType().compareTo(
 							"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
-				return Double.parseDouble(tl.getContent().substring(1,
-						tl.getContent().length() - 1));
+				return Double.parseDouble(content);
 		}
 		throw new TypeErrorException();
 	}
@@ -190,21 +199,22 @@ public class Helper {
 			return new BigDecimal((BigInteger) a);
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
+			String content = tl.getContent().substring(1,
+					tl.getContent().length() - 1);
+			while(content.startsWith("+")){
+				content = content.substring(1,content.length());
+			}				
 			if (isInteger(tl.getType()))
-				return new BigDecimal(new BigInteger(tl.getContent().substring(
-						1, tl.getContent().length() - 1)));
+				return new BigDecimal(new BigInteger(content));
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#float>") == 0)
-				return new BigDecimal(Float.parseFloat(tl.getContent()
-						.substring(1, tl.getContent().length() - 1)));
+				return new BigDecimal(Float.parseFloat(content));
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#double>") == 0)
-				return new BigDecimal(Double.parseDouble(tl.getContent()
-						.substring(1, tl.getContent().length() - 1)));
+				return new BigDecimal(Double.parseDouble(content));
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
-				return new BigDecimal(tl.getContent().substring(1,
-						tl.getContent().length() - 1));
+				return new BigDecimal(content);
 		}
 		throw new TypeErrorException();
 	}
@@ -394,28 +404,22 @@ public class Helper {
 			final String tmp_b = "".concat(String.valueOf(b));
 			return tmp_a.equals(tmp_b);
 		} else {
-			if ((a instanceof String || a instanceof Character)
-					&& (b instanceof Literal)
-					|| (b instanceof String || b instanceof Character)
-					&& (a instanceof Literal)) {
+			if ((a instanceof String || a instanceof Character || (a instanceof Literal && (((Literal)a).isSimpleLiteral() || ((Literal)a).isXMLSchemaStringLiteral())))
+				&& (b instanceof String || b instanceof Character ||(b instanceof Literal && (((Literal)b).isSimpleLiteral() || ((Literal)b).isXMLSchemaStringLiteral())))) {
 				return getString(a).equals(getString(b));
 			} else if (a instanceof TypedLiteral
 					&& (b instanceof BigInteger || b instanceof BigDecimal)
 					|| b instanceof TypedLiteral
 					&& (a instanceof BigInteger || a instanceof BigDecimal)) {
-				final Object type = getCoercionType(a, b);
-				if (type == BigInteger.class) {
-					return getInteger(a).compareTo(getInteger(b)) == 0;
-				} else if (type == Float.class) {
-					return getFloat(a).compareTo(getFloat(b)) == 0;
-				} else if (type == Double.class) {
-					return getDouble(a).compareTo(getDouble(b)) == 0;
-				} else if (type == BigDecimal.class) {
-					return getBigDecimal(a).compareTo(getBigDecimal(b)) == 0;
-				} else
-					throw new TypeErrorException();
+				return compareNumeric(a, b);
 			} else if (a instanceof TypedLiteral && b instanceof TypedLiteral) {
-
+				if(isNumeric(a) || isNumeric(b)){
+					try{
+						return compareNumeric(a, b);
+					} catch(java.lang.NumberFormatException e){
+						// just compare the types and the content in the following!
+					}
+				}
 				// if ((((TypedLiteral) a).getType().compareTo(
 				// "<http://www.w3.org/2001/XMLSchema#date>") == 0
 				// || ((TypedLiteral) a).getType().compareTo(
@@ -436,8 +440,8 @@ public class Helper {
 				// return (getDate((TypedLiteral) a).compareTo(
 				// getDate((TypedLiteral) b)) == 0);
 				// } else {
-				return ((TypedLiteral) a).getContent().compareTo(
-						((TypedLiteral) b).getContent()) == 0;
+				return ((TypedLiteral) a).getContent().compareTo(((TypedLiteral) b).getContent()) == 0 &&
+						((TypedLiteral) a).getType().compareTo(((TypedLiteral) b).getType()) == 0;
 				// }
 			}
 		}
@@ -447,6 +451,20 @@ public class Helper {
 		} catch (final Exception e) {
 			return a == b;
 		}
+	}
+	
+	private static boolean compareNumeric(final Object a, final Object b) throws TypeErrorException {
+		final Object type = getCoercionType(a, b);
+		if (type == BigInteger.class) {
+			return getInteger(a).compareTo(getInteger(b)) == 0;
+		} else if (type == Float.class) {
+			return getFloat(a).compareTo(getFloat(b)) == 0;
+		} else if (type == Double.class) {
+			return getDouble(a).compareTo(getDouble(b)) == 0;
+		} else if (type == BigDecimal.class) {
+			return getBigDecimal(a).compareTo(getBigDecimal(b)) == 0;
+		} else
+			throw new TypeErrorException();
 	}
 
 	public static void typeCheck(final Object a, final Object b)
@@ -474,16 +492,14 @@ public class Helper {
 				if (((TypedLiteral) b).getType().compareTo(
 						"<http://www.w3.org/2001/XMLSchema#string>") != 0)
 					throw new TypeErrorException();
-			} else if (b.getClass() != CodeMapLiteral.class
-					&& b.getClass() != StringLiteral.class)
+			} else if(!(b instanceof Literal && ((Literal)b).isSimpleLiteral()))
 				throw new TypeErrorException();
 		} else if (b instanceof String && !(a instanceof String)) {
 			if (a instanceof TypedLiteral) {
 				if (((TypedLiteral) a).getType().compareTo(
 						"<http://www.w3.org/2001/XMLSchema#string>") != 0)
 					throw new TypeErrorException();
-			} else if (a.getClass() != CodeMapLiteral.class
-					&& a.getClass() != StringLiteral.class)
+			} else if (!(a instanceof Literal && ((Literal)a).isSimpleLiteral()))
 				throw new TypeErrorException();
 		} else if (a instanceof TypedLiteral && b instanceof TypedLiteral) {
 			final String typea = ((TypedLiteral) a).getType();
@@ -582,17 +598,13 @@ public class Helper {
 			try {
 				final Object type = getCoercionType(a, b);
 				if (type == BigInteger.class) {
-					getInteger(a);
-					getInteger(b);
+					return !getInteger(a).equals(getInteger(b));
 				} else if (type == Double.class) {
-					getDouble(a);
-					getDouble(b);
+					return !getDouble(a).equals(getDouble(b));
 				} else if (type == Float.class) {
-					getFloat(a);
-					getFloat(b);
+					return !getFloat(a).equals(getFloat(b));
 				} else if (type == BigDecimal.class) {
-					getBigDecimal(a);
-					getBigDecimal(b);
+					return !getBigDecimal(a).equals(getBigDecimal(b));
 				}
 			} catch (final TypeErrorException tee) {
 			} catch (final NumberFormatException nfe) {
@@ -754,8 +766,7 @@ public class Helper {
 				return tl.toString();
 		} else if (o instanceof Literal || o instanceof String) {
 			if ((o.toString().startsWith("\"") && o.toString().endsWith("\""))
-					|| (o.toString().startsWith("'") && o.toString().endsWith(
-							"'")))
+					|| (o.toString().startsWith("'") && o.toString().endsWith("'")))
 				return o.toString().substring(1, o.toString().length() - 1);
 			else
 				return o.toString();

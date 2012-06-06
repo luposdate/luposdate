@@ -24,6 +24,8 @@
 package lupos.engine.operators.index;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,10 +45,12 @@ import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.LanguageTaggedLiteral;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.queryresult.IdIteratorQueryResult;
@@ -59,6 +63,7 @@ import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
 import lupos.engine.operators.index.memoryindex.MemoryIndex;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
+import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.TriplePattern.BooleanAndUnknown;
 import lupos.misc.Tuple;
@@ -411,20 +416,18 @@ public abstract class BasicIndex extends Operator {
 			if (tp.getPos(0).equals(var) || tp.getPos(1).equals(var))
 				return true;
 			if (tp.getPos(2).equals(var)) {
-				final BooleanAndUnknown bau = tp
-						.getObjectOriginalStringMayDiffer();
+				final BooleanAndUnknown bau = tp.getObjectOriginalStringMayDiffer();
 				if (bau == BooleanAndUnknown.UNKNOWN) {
-					final Collection<TriplePattern> ztp = this
-							.getTriplePattern();
+					final Collection<TriplePattern> ztp = this.getTriplePattern();
 					final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
 					try {
 						ctp.add(tp);
 						this.setTriplePatterns(ctp);
 						if (this instanceof RDF3XIndex) {
 							((RDF3XIndex) this)
-									.setCollationOrder(OptimizeJoinOrder
-											.getCollationOrder(tp,
-													new LinkedList<Variable>()));
+							.setCollationOrder(OptimizeJoinOrder
+									.getCollationOrder(tp,
+											new LinkedList<Variable>()));
 
 						} 
 						final QueryResult qr = this.join(indexCollection.dataset);
@@ -436,8 +439,43 @@ public abstract class BasicIndex extends Operator {
 						try {
 							while (itb.hasNext()) {
 								final Bindings b = itb.next();
-								if (b.get(var).originalStringDiffers())
+								Literal literal = b.get(var);
+								if (literal.originalStringDiffers()){
 									return false;
+								} else if(!LiteralFactory.semanticInterpretationOfLiterals){
+									if(literal instanceof LazyLiteral){
+										literal = ((LazyLiteral) literal).getLiteral();
+									}
+									if(literal instanceof LanguageTaggedLiteral){
+										final String language = ((LanguageTaggedLiteral)literal).getLanguage();
+										if(language.compareTo(language.toUpperCase())!=0){
+											return false;
+										}
+									} else if(literal instanceof TypedLiteral){
+										if(Helper.isNumeric(literal)){
+											String content = Helper.unquote(((TypedLiteral) literal).getContent());
+											if(content.startsWith("+")){
+												return false;
+											}
+											try{
+												Object type = Helper.getType(literal);
+												String content2;
+												if(type instanceof BigInteger){
+													content2 = Helper.getInteger(literal).toString();
+												} else if(type instanceof Double){
+													content2 = Helper.getDouble(literal).toString();
+												} else if(type instanceof Float){
+													content2 = Helper.getFloat(literal).toString();
+												} else content2 = Helper.getBigDecimal(literal).toString();
+												if(content2.compareTo(content)!=0){
+													return false;
+												}
+											} catch(Exception e) { 
+												return false; 
+											}
+										}
+									}
+								}
 							}
 						} finally {
 							if (itb instanceof ParallelIterator)

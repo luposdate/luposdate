@@ -111,7 +111,7 @@ public class RDF3XIndexConstruction {
 			
 			LiteralFactory.setType(LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
-
+			
 			final String datafile = args[0];
 			final String dataFormat = args[1];
 			CommonCoreQueryEvaluator.encoding = args[2];

@@ -232,18 +232,9 @@ public class LazyLiteral extends Literal {
 			final ASTStringLiteral lit = (ASTStringLiteral) n;
 			final String quotedContent = lit.getStringLiteral();
 
-			try {
-				literal = (allowLazyLiteral) ? LiteralFactory
-						.createTypedLiteral(quotedContent,
-								"<http://www.w3.org/2001/XMLSchema#string>")
-						: TypedLiteralOriginalContent.createTypedLiteral(
-								quotedContent,
-								"<http://www.w3.org/2001/XMLSchema#string>");
-			} catch (final URISyntaxException e) {
-				literal = (allowLazyLiteral) ? LiteralFactory
-						.createLiteral(quotedContent) : LiteralFactory
-						.createLiteralWithoutLazyLiteral(quotedContent);
-			}
+			literal = (allowLazyLiteral) ? 
+					LiteralFactory.createLiteral(quotedContent)
+					: LiteralFactory.createLiteralWithoutLazyLiteral(quotedContent);
 		} else if (n instanceof ASTInteger) {
 			final ASTInteger lit = (ASTInteger) n;
 			final String content = String.valueOf(lit.getValue());
@@ -371,16 +362,34 @@ public class LazyLiteral extends Literal {
 	
 	@Override
 	public boolean isBlank() {
-		Literal literal = this.getLiteral();
-		return (literal instanceof AnonymousLiteral);
+		return this.getLiteral().isBlank();
 	}
 
 	@Override
 	public boolean isURI() {
-		Literal literal = this.getLiteral();
-		return (literal instanceof URILiteral);
+		return this.getLiteral().isURI();
+	}
+	
+	@Override
+	public boolean isTypedLiteral(){
+		return this.getLiteral().isTypedLiteral();
+	}
+	
+	@Override
+	public boolean isLanguageTaggedLiteral(){
+		return this.getLiteral().isLanguageTaggedLiteral();
+	}
+	
+	@Override
+	public boolean isSimpleLiteral(){
+		return this.getLiteral().isSimpleLiteral();
 	}
 
+	@Override
+	public boolean isXMLSchemaStringLiteral(){
+		return this.getLiteral().isXMLSchemaStringLiteral();
+	}
+	
 	@Override
 	public Literal createThisLiteralNew() {
 		return this.getLiteral().createThisLiteralNew();

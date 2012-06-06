@@ -169,8 +169,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return hashCode;
 	}
 
-	@Override
-	public boolean equals(final Object other) {
+	public boolean equals(final Object other, final BindingsEqualComparison bindingsEqualComparison) {
 
 		if (other instanceof Bindings || other instanceof BindingsMap
 				|| other instanceof BindingsArray
@@ -182,10 +181,9 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 
 				// and check the equality of the actual bindings afterwards
 				for (final Variable var : getVariableSet()) {
-					if (get(var)
-							.compareToNotNecessarilySPARQLSpecificationConform(
-									otherBindings.get(var)) != 0)
+					if (!bindingsEqualComparison.equals(get(var), otherBindings.get(var))){
 						return false;
+					}
 				}
 				return true;
 			} else
@@ -193,57 +191,74 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		}
 		return false;
 	}
-
-	public boolean equalsExceptAnonymousLiterals(final Object other) {
-
-		if (other instanceof Bindings || other instanceof BindingsMap
-				|| other instanceof BindingsArray
-				|| other instanceof BindingsCollection) {
-			final Bindings otherBindings = (Bindings) other;
-
-			// check the equality of their keysets first
-			if (this.getVariableSet().equals(otherBindings.getVariableSet())) {
-
-				// and check the equality of the actual bindings afterwards
-				for (final Variable var : getVariableSet()) {
-					if (get(var).toString().compareTo(
-							otherBindings.get(var).toString()) != 0
-							&& !(get(var) instanceof AnonymousLiteral && otherBindings
-									.get(var) instanceof AnonymousLiteral)) {
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-		return false;
+	
+	@Override
+	public boolean equals(final Object other) {
+		return this.equals(other, Bindings.bindingsValueEqualComparison);
+	}
+	
+	public boolean semanticallyEquals(final Object other) {
+		return this.equals(other, Bindings.bindingsEqualComparisonSemanticInterpretation);
 	}
 
-	
+	public boolean equalsExceptAnonymousLiterals(final Object other) {
+		return this.equals(other, new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation));
+	}
+
 	public boolean equalsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
+		return this.equals(other, new Iris(new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation)));
+	}
+	
+	public boolean semanticallyEqualsExceptAnonymousLiterals(final Object other) {
+		return this.equals(other, new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation));
+	}
 
-		if (other instanceof Bindings || other instanceof BindingsMap
-				|| other instanceof BindingsArray
-				|| other instanceof BindingsCollection) {
-			final Bindings otherBindings = (Bindings) other;
-
-			// check the equality of their keysets first
-			if (this.getVariableSet().equals(otherBindings.getVariableSet())) {
-
-				// and check the equality of the actual bindings afterwards
-				for (final Variable var : getVariableSet()) {
-					if (get(var).toString().compareTo(
-							otherBindings.get(var).toString()) != 0
-							&& !(get(var) instanceof AnonymousLiteral && otherBindings
-									.get(var) instanceof AnonymousLiteral)
-							&& !(get(var).isURI() && otherBindings.get(var).isURI() && (get(var).toString().startsWith("<inlinedata:") || otherBindings.get(var).toString().startsWith("<inlinedata:")) )) {
-						return false;
-					}
-				}
-				return true;
-			}
+	public boolean semanticallyEqualsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
+		return this.equals(other, new Iris(new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation)));
+	}
+	
+	private static interface BindingsEqualComparison{
+		public boolean equals(final Literal first, final Literal second);
+	}
+	
+	private static class BindingsValueEqualComparison implements BindingsEqualComparison{
+		@Override
+		public boolean equals(final Literal first, final Literal second){
+			return first.valueEquals(second);
 		}
-		return false;
+	}
+	
+	private static BindingsValueEqualComparison bindingsValueEqualComparison = new BindingsValueEqualComparison();
+	
+	private static class BindingsEqualComparisonSemanticInterpretation implements BindingsEqualComparison{
+		@Override
+		public boolean equals(final Literal first, final Literal second){
+			return first.compareToNotNecessarilySPARQLSpecificationConform(second)==0;
+		}
+	}
+	
+	private static BindingsEqualComparisonSemanticInterpretation bindingsEqualComparisonSemanticInterpretation = new BindingsEqualComparisonSemanticInterpretation();
+
+	private static class Blanks implements BindingsEqualComparison{
+		private final BindingsEqualComparison pipedComparison;
+		public Blanks(final BindingsEqualComparison pipedComparison){
+			this.pipedComparison = pipedComparison;
+		}
+		@Override
+		public boolean equals(final Literal first, final Literal second) {
+			return this.pipedComparison.equals(first, second) || first.isBlank() || second.isBlank();
+		}
+	}
+
+	private static class Iris implements BindingsEqualComparison{
+		private final BindingsEqualComparison pipedComparison;
+		public Iris(final BindingsEqualComparison pipedComparison){
+			this.pipedComparison = pipedComparison;
+		}
+		@Override
+		public boolean equals(final Literal first, final Literal second) {
+			return this.pipedComparison.equals(first, second) || (first.isURI() && first.toString().startsWith("<inlinedata:")) || (second.isURI() && second.toString().startsWith("<inlinedata:"));
+		}
 	}
 
 	/**

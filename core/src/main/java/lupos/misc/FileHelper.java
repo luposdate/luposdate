@@ -293,6 +293,33 @@ public class FileHelper {
 			}
 		}
 	}
+	
+	public static void searchFile(final String filename, final String searchText) {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line;
+			int i = 0;
+			while ((line = reader.readLine()) != null) {
+					if(line.contains(searchText)){
+						System.out.println(i+":"+line);
+					}
+				i++;
+			}
+		} catch (final FileNotFoundException fnfe) {
+			System.out.println("File " + filename + " not found, exiting.");
+		} catch (final IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (final IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}
 
 	public static void writeFile(final String fileName, final String content) {
 		try {
@@ -310,6 +337,7 @@ public class FileHelper {
 			System.out.println("Usage: java lupos.misc.FileHelper command commandoptions[-r] Filename linenumber");
 			System.out.println("       command: print commandoptions: [-r] Filename linenumber");
 			System.out.println("       command: replace commandoptions: infile toBeReplaced replacement outfile");			
+			System.out.println("       command: contains commandoptions: Filename searchText");			
 		} else {
 			if(args[0].compareTo("print") == 0){
 				if (args[1].compareTo("-r") == 0) {
@@ -320,6 +348,8 @@ public class FileHelper {
 				final String content = FileHelper.fastReadFile(args[1]);
 				final String result = content.replaceAll(args[2], args[3]);
 				FileHelper.writeFile(args[4], result);
+			} else if(args[0].compareTo("contains") == 0){
+				searchFile(args[1], args[2]);
 			}
 		}
 	}

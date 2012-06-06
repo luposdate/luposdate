@@ -167,37 +167,74 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 		return true;
 	}
-
-	public boolean containsAllExceptAnonymousLiterals(final QueryResult qr) {
+	
+	private static enum TYPE_OF_TEST {
+		NORMAL, NORMALEXCEPTBLANKS, NORMALEXCEPTBLANKSANDIRIRS, SEMANTICINTERPRETATION, SEMANTICINTERPRETATIONEXCEPTBLANKS, SEMANTICINTERPRETATIONEXCEPTBLANKSANDIRIRS  
+	}
+	
+	private boolean containsAll(final QueryResult qr, TYPE_OF_TEST type) {
 		if (qr == null)
 			return false;
 		for (final Bindings b : qr) {
 			boolean flag = false;
-			for (final Bindings b2 : this)
-				if (b2.equalsExceptAnonymousLiterals(b))
-					flag = true;
+			for (final Bindings b2 : this){
+				switch(type){
+					default:
+					case NORMAL:
+						if (b2.equals(b))
+							flag = true;
+						break;
+					case NORMALEXCEPTBLANKS:
+						if (b2.equalsExceptAnonymousLiterals(b))
+							flag = true;
+						break;
+					case NORMALEXCEPTBLANKSANDIRIRS:
+						if (b2.equalsExceptAnonymousLiteralsAndInlineDataIRIs(b))
+							flag = true;
+						break;
+					case SEMANTICINTERPRETATION: 
+						if (b2.semanticallyEquals(b))
+							flag = true;
+						break;
+					case SEMANTICINTERPRETATIONEXCEPTBLANKS: 
+						if (b2.semanticallyEqualsExceptAnonymousLiterals(b))
+							flag = true;
+						break;
+					case SEMANTICINTERPRETATIONEXCEPTBLANKSANDIRIRS:
+						if (b2.semanticallyEqualsExceptAnonymousLiteralsAndInlineDataIRIs(b))
+							flag = true;
+						break;
+				}
+			}
 			if (!flag)
 				return false;
 		}
 		return true;
+	}
+
+
+	public boolean containsAllExceptAnonymousLiterals(final QueryResult qr) {
+		return this.containsAll(qr, TYPE_OF_TEST.NORMALEXCEPTBLANKS);
+	}
+
+	public boolean semanticallyContainsAllExceptAnonymousLiteralsAndInlineDataIRIs(final QueryResult qr) {
+		return this.containsAll(qr, TYPE_OF_TEST.NORMALEXCEPTBLANKSANDIRIRS);
+	}
+
+	public boolean semanticallyContainsAll(final QueryResult qr) {
+		return this.containsAll(qr, TYPE_OF_TEST.SEMANTICINTERPRETATION);
+	}
+
+	public boolean semanticallyContainsAllExceptAnonymousLiterals(final QueryResult qr) {
+		return this.containsAll(qr, TYPE_OF_TEST.SEMANTICINTERPRETATIONEXCEPTBLANKS);
 	}
 
 	public boolean containsAllExceptAnonymousLiteralsAndInlineDataIRIs(final QueryResult qr) {
-		if (qr == null)
-			return false;
-		for (final Bindings b : qr) {
-			boolean flag = false;
-			for (final Bindings b2 : this)
-				if (b2.equalsExceptAnonymousLiteralsAndInlineDataIRIs(b))
-					flag = true;
-			if (!flag)
-				return false;
-		}
-		return true;
+		return this.containsAll(qr, TYPE_OF_TEST.SEMANTICINTERPRETATIONEXCEPTBLANKSANDIRIRS);
 	}
 
 	public boolean remove(final Bindings b) {
-		return bindings.remove(b);
+		return this.bindings.remove(b);
 	}
 
 	public boolean removeAll(final QueryResult res) {
@@ -344,8 +381,7 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof QueryResult)
-			return containsAll((QueryResult) o)
-					&& ((QueryResult) o).containsAll(this);
+			return containsAll((QueryResult) o) && ((QueryResult) o).containsAll(this);
 		else
 			return false;
 	}

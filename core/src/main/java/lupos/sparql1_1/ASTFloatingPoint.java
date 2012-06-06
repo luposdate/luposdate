@@ -49,11 +49,17 @@ class ASTFloatingPoint extends SimpleNode {
   }
 
   public void setValue(String value) {
-	while(value.startsWith("+"))
-		value=value.substring(1);
 	this.value = value;
   }
 
+  public String getValueWithoutLeadingPlus(){
+	  String zValue = this.value;
+	  while(zValue.startsWith("+")){
+		  zValue = zValue.substring(1, zValue.length());
+	  }
+	  return zValue;
+  }
+  
   @Override
   public String toString() {
 	return super.toString() + "  " + value;

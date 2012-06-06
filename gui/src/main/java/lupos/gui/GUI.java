@@ -61,6 +61,7 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
+import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.evaluators.EvaluatorCreator;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
@@ -189,7 +190,7 @@ public class GUI implements IXPref {
 								serviceApproach.setup();
 								FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
 								FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
-								
+								LiteralFactory.semanticInterpretationOfLiterals = xpref.datatypes.BooleanDatatype.getFirstValue("semanticInterpretationOfDatatypes");
 								System.out.println("Configuration:" + pref.toString() + "\n\n");
 								SwingUtilities.invokeLater(new Runnable() {
 									public void run() {

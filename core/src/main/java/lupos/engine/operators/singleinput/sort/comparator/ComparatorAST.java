@@ -237,7 +237,32 @@ public class ComparatorAST implements ComparatorBindings {
 			}
 			return l0.toString().compareTo(l1.toString());
 		}
-
+		
+		// this is undefined in the SPARQL specification, but we define the following order between RDF literals of different types:
+		// 1. Simple literals 2. language tagged literals 3. typed literals
+		// first simple literals:
+		if(l0.isSimpleLiteral() || l1.isSimpleLiteral()){
+			if (!(l0.isSimpleLiteral())) {
+				return 1;
+			}
+			if (!(l1.isSimpleLiteral())) {
+				return -1;
+			}
+			return l0.toString().compareTo(l1.toString());
+		}
+		
+		// second language tagged literals
+		if(l0.isLanguageTaggedLiteral() || l1.isLanguageTaggedLiteral()){
+			if (!(l0.isLanguageTaggedLiteral())) {
+				return 1;
+			}
+			if (!(l1.isLanguageTaggedLiteral())) {
+				return -1;
+			}
+			return l0.toString().compareTo(l1.toString());
+		}
+		
+		// third typed literals:
 		// Numeric comparision?
 		if (l0 instanceof TypedLiteral && l1 instanceof TypedLiteral) {
 			final TypedLiteral tl0 = (TypedLiteral) l0;

@@ -194,6 +194,9 @@
       	<option id="encoding" name="Encoding of data files" value="UTF-8" datatype="xpref.datatypes.CollectionDatatype" source="lupos.engine.evaluators.CommonCoreQueryEvaluator supportedCharSets" help="Encoding to be used to read in the data files..."/>
       	<option id="tmpdirs" name="Directory for indices and temporary data" datatype="xpref.datatypes.FileChooseDatatype" mode="DIRECTORIES_ONLY" value="{{tmp}}" minimum="1" help="The type of storage used for all operators, indices and (intermediate) results. You can also specify several temporary directories in order to e.g. use several hard disks for performance reasons."/>
       </optionbox>
+      <optionbox name="Unique Representation of Literals">
+		<option id="semanticInterpretationOfDatatypes" name="Unique representation of literals during storing" datatype="xpref.datatypes.BooleanDatatype" value="false" help="Semantic Interpretation of Datatypes during storing (e.g. +5 and 5 are stored with unique representations)"/>		
+      </optionbox>
       <optionbox name="Inference">
       	<option id="rdfsLUPOSDATE" name="RDFS" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.engine.evaluators.CommonCoreQueryEvaluator$RDFS" help="Usage of ontology reasoning based on RDF Schema"/>
 		<option id="externalontology" name="External Ontology" datatype="externalOntologySequence" value="" help="specifies an external ontology, which is used to optimize RDFS inference by replacing triple patterns adressing RDFS triple by concrete ones regarding the external ontology..."/>   

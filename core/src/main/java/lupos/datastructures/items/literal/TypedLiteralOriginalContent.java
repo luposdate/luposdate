@@ -23,7 +23,6 @@
  */
 package lupos.datastructures.items.literal;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -33,8 +32,7 @@ import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 
-public class TypedLiteralOriginalContent extends TypedLiteral implements
-Externalizable {
+public class TypedLiteralOriginalContent extends TypedLiteral {
 
 	/**
 	 * 
@@ -43,6 +41,7 @@ Externalizable {
 	protected Literal originalContent;
 
 	public TypedLiteralOriginalContent() {
+		// nothing to initialize for default constructor...
 	}
 
 	protected TypedLiteralOriginalContent(final String content,
@@ -53,8 +52,8 @@ Externalizable {
 	protected TypedLiteralOriginalContent(final String content2,
 			final URILiteral type) {
 		super(content2, type);
-		originalContent = (this.content.toString().compareTo(content2) != 0) ? LiteralFactory
-				.createLiteralWithoutLazyLiteral(content2)
+		this.originalContent = (this.content.toString().compareTo(content2) != 0) ? 
+				LiteralFactory.createLiteralWithoutLazyLiteral(content2)
 				: this.content;
 	}
 
@@ -62,12 +61,10 @@ Externalizable {
 			final URILiteral type) {
 		super(codeContent, type);
 		this.originalContent = this.content;
-		final String uniqueRepresentation = checkContent(originalContent
-				.toString(), this.type);
-		this.content = (uniqueRepresentation.compareTo(originalContent
-				.toString()) != 0) ? LiteralFactory
-						.createLiteralWithoutLazyLiteral(uniqueRepresentation)
-						: this.originalContent;
+		final String uniqueRepresentation = checkContent(this.originalContent.toString(), this.type);
+		this.content = (uniqueRepresentation.compareTo(this.originalContent.toString()) != 0) ? 
+				LiteralFactory.createLiteralWithoutLazyLiteral(uniqueRepresentation)
+				: this.originalContent;
 	}
 
 	public static TypedLiteral createTypedLiteral(final String content2,
@@ -97,29 +94,29 @@ Externalizable {
 
 	@Override
 	public String getOriginalContent() {
-		return originalContent.toString();
+		return this.originalContent.toString();
 	}
 
 	@Override
 	public String originalString() {
-		return commonToOriginalString(originalContent.toString());
+		return commonToOriginalString(this.originalContent.toString());
 	}
 
 	@Override
 	public String toString(lupos.rdf.Prefix prefixInstance) {
-		return commonToOriginalString(originalContent.toString(), prefixInstance);
+		return commonToOriginalString(this.originalContent.toString(), prefixInstance);
 	}
 	
 	@Override
 	public String[] getUsedStringRepresentations() {
-		final String[] typeRepr = type.getUsedStringRepresentations();
-		return new String[] { content.toString(), originalContent.toString(),
+		final String[] typeRepr = this.type.getUsedStringRepresentations();
+		return new String[] { this.content.toString(), this.originalContent.toString(),
 				typeRepr[0], typeRepr[1] };
 	}
 
+	@Override
 	public String printYagoStringWithPrefix() {
-		return originalContent.printYagoStringWithPrefix() + "^^"
-		+ type.printYagoStringWithPrefix();
+		return this.originalContent.printYagoStringWithPrefix() + "^^" + this.type.printYagoStringWithPrefix();
 	}
 
 	@Override
@@ -135,12 +132,12 @@ Externalizable {
 	public void readExternal(final ObjectInput in) throws IOException,
 	ClassNotFoundException {
 		super.readExternal(in);
-		originalContent = LuposObjectInputStream.readLuposLiteral(in);
+		this.originalContent = LuposObjectInputStream.readLuposLiteral(in);
 	}
 
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		super.writeExternal(out);
-		LuposObjectOutputStream.writeLuposLiteral(originalContent, out);
+		LuposObjectOutputStream.writeLuposLiteral(this.originalContent, out);
 	}
 }

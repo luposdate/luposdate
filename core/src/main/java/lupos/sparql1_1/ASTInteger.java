@@ -35,7 +35,7 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor
 public
 class ASTInteger extends SimpleNode {
   
-  private BigInteger value;
+  private String value;
 
   public ASTInteger(int id) {
     super(id);
@@ -45,22 +45,24 @@ class ASTInteger extends SimpleNode {
     super(p, id);
   }
 
-  public BigInteger getValue() {
-	return value;
+  public String getValue() {
+	return this.value;
+  }
+  
+  public String getValueWithoutLeadingPlus(){
+	  String zValue = this.value;
+	  while(zValue.startsWith("+")){
+		  zValue = zValue.substring(1, zValue.length());
+	  }
+	  return zValue;
+  }
+  
+  public BigInteger getBigInteger(){
+	  return new BigInteger(this.getValueWithoutLeadingPlus());
   }
 
-  public void setValue(final BigInteger value) {
+  public void setValue(final String value) {
 	this.value = value;
-  }
-
-  public void setValue(final int value) {
-	this.value = new BigInteger("" + value);
-  }
-
-  public void setStringInt(String value) {
-	while(value.startsWith("+"))
-		value=value.substring(1);
-	this.value = new BigInteger(value);
   }
 
   @Override

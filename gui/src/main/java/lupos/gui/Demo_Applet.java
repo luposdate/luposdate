@@ -1375,6 +1375,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		serviceApproach.setup();
 		FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
 		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
+		LiteralFactory.semanticInterpretationOfLiterals = xpref.datatypes.BooleanDatatype.getFirstValue("semanticInterpretationOfDatatypes");
 		final QueryEvaluator<Node> evaluator = (QueryEvaluator<Node>) this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex()).newInstance();
 		evaluator.setupArguments();
 		evaluator.getArgs().set("debug", DEBUG.ALL);

@@ -32,8 +32,7 @@ import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 import lupos.rdf.Prefix;
 
-public abstract class Literal implements Item, Comparable<Literal>,
-		Externalizable {
+public abstract class Literal implements Item, Comparable<Literal>, Externalizable {
 
 	/**
 	 * 
@@ -46,20 +45,8 @@ public abstract class Literal implements Item, Comparable<Literal>,
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj.getClass() == Literal.class || obj instanceof StringLiteral
-				|| obj instanceof CodeMapLiteral) {
-			final Literal lit = (Literal) obj;
-			return toString().equals(lit.toString());
-		} else if (obj instanceof TypedLiteral) {
-			final TypedLiteral tl = (TypedLiteral) obj;
-			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#string>") == 0)
-				return (tl.toString().compareTo(this.toString()) == 0);
-			else
-				return false;
-		} else if (obj instanceof Literal) {
-			return this
-					.compareToNotNecessarilySPARQLSpecificationConform((Literal) obj) == 0;
+		if (obj instanceof Literal) {
+			return this.valueEquals((Literal) obj);
 		} else
 			return false;
 	}
@@ -70,11 +57,10 @@ public abstract class Literal implements Item, Comparable<Literal>,
 		return ComparatorAST.intComp(this, other);
 	}
 
-	public int compareToNotNecessarilySPARQLSpecificationConform(
-			final Literal other) {
+	public int compareToNotNecessarilySPARQLSpecificationConform(final Literal other) {
 		return ComparatorAST.intComp(this, other);
 	}
-
+	
 	public abstract String[] getUsedStringRepresentations();
 
 	@Override
@@ -98,6 +84,22 @@ public abstract class Literal implements Item, Comparable<Literal>,
 
 	public boolean isURI() {
 		return (this instanceof URILiteral);
+	}
+	
+	public boolean isTypedLiteral(){
+		return (this instanceof TypedLiteral);
+	}
+	
+	public boolean isLanguageTaggedLiteral(){
+		return (this instanceof LanguageTaggedLiteral);
+	}
+	
+	public boolean isSimpleLiteral(){
+		return !(this.isBlank() || this.isLanguageTaggedLiteral() || this.isTypedLiteral() || this.isURI());
+	}
+	
+	public boolean isXMLSchemaStringLiteral(){
+		return false;
 	}
 
 	public String originalString() {

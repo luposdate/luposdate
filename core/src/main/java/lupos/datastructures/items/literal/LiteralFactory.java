@@ -35,6 +35,15 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 
 public class LiteralFactory {
+	
+	/**
+	 * setting semanticInterpretationOfLiterals to true leads to
+	 * handle e.g. +4 like 3 or "hello"@en like "hello"@EN, i.e.
+	 * some values are interpreted according to their datatypes.
+	 * However, some test cases of W3C state that this is not
+	 * 100% according to their specification! 
+	 */
+	public static boolean semanticInterpretationOfLiterals = false;
 
 	public static void writeLuposLiteral(final Literal lit,
 			final LuposObjectOutputStream out) throws IOException {
@@ -263,8 +272,7 @@ public class LiteralFactory {
 
 	public static LanguageTaggedLiteral createLanguageTaggedLiteralWithoutLazyLiteral(
 			final String content, final String language) {
-		return LanguageTaggedLiteralOriginalLanguage
-				.createLanguageTaggedLiteral(content, language);
+		return LanguageTaggedLiteralOriginalLanguage.createLanguageTaggedLiteral(content, language);
 	}
 
 	public static AnonymousLiteral createAnonymousLiteralWithoutLazyLiteral(

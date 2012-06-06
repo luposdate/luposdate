@@ -76,6 +76,8 @@
   <page id="evaluator" name="Evaluator">
   	<options>
 		<text>This preferences page contains the options for the evaluators.</text>
+		<option id="semanticInterpretationOfDatatypes" name="Unique representations of literals" datatype="xpref.datatypes.BooleanDatatype" value="false" help="Semantic Interpretation of Datatypes during storing (e.g. +5 and 5 are stored with unique representations)"/>		
+		<line />
     	<option id="repetitionsOfExecution" name="Times of repetition for execution time experiments" datatype="xpref.datatypes.IntegerDatatype" value="1" minimum="1" />
 		<line />
 		<option id="serviceCallApproach" name="Service call approach" datatype="xpref.datatypes.EnumDatatype" value="Fetch_As_Needed" source="lupos.sparql1_1.operatorgraph.ServiceApproaches"/>

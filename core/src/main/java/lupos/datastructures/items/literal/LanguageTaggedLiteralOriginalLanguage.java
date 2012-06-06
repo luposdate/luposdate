@@ -71,9 +71,12 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 				: this.originalLang;
 	}
 
-	public static boolean originalLangDiffersFromUniqueRepresentation(
-			final String language) {
-		return (language.toUpperCase().compareTo(language) != 0);
+	public static boolean originalLangDiffersFromUniqueRepresentation(final String language) {
+		if(LiteralFactory.semanticInterpretationOfLiterals==false){
+			return false;
+		}else {
+			return (language.toUpperCase().compareTo(language) != 0);
+		}
 	}
 
 	public static boolean originalLangDiffersFromUniqueRepresentation(
