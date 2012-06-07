@@ -1031,7 +1031,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			} else if(lastBindings.get(o).compareToNotNecessarilySPARQLSpecificationConform(b.get(o))!=0){
 				printer.println(",");
 				printer.print("    "+b.get(o));				
-			} else System.err.println("Duplicate triple in B+-tree. Should never occurr!");
+			} else {
+				System.err.println("Duplicate triple in index. Should never occur! Triple: "+b);
+			}
 			lastBindings=b;
 		}
 		if(lastBindings!=null)

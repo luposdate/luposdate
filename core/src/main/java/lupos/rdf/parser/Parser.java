@@ -179,7 +179,7 @@ public abstract class Parser {
 	private Literal nextLiteral() throws EOFException {
 		char next = jumpOverBlanks();
 		while (next == '@') {
-			next=handlePrefix();
+			next = handlePrefix();
 		}
 		if (next == '.') {
 			subject = null;
@@ -325,8 +325,7 @@ public abstract class Parser {
 				System.out.println("Prefix:" + namespace);
 				System.out.println("Postfix:" + postfix);
 				System.out.println("Position in line:" + pos);
-				System.out.println("Line Number:" + linenumber + " Line:"
-						+ line);
+				System.out.println("Line Number:" + linenumber + " Line:" + line);
 			}
 			return LiteralFactory.createURILiteralWithoutLazyLiteral("<"
 					+ prefixe.get(namespace) + postfix + ">");
@@ -349,8 +348,15 @@ public abstract class Parser {
 
 	protected char jumpOverBlanks() throws EOFException {
 		char next = nextCharacter();
-		while (next == ' ' || next == '\n')
+		while (next == ' ' || next == '\n'){
 			next = nextCharacter();
+		}
+		if(next == '#'){ // jump over comments
+			while(next!='\n'){
+				next = nextCharacter();
+			}
+			return jumpOverBlanks();
+		}
 		return next;
 	}
 

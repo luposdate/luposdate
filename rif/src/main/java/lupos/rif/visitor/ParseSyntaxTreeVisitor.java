@@ -405,13 +405,14 @@ public class ParseSyntaxTreeVisitor implements
 
 	public Object visit(final RIFString n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
-		Literal literal = null;
-		try {
-			literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral(content,
-					"<http://www.w3.org/2001/XMLSchema#string>");
-		} catch (final URISyntaxException e) {
-			throw new RIFException(e.getMessage());
-		}
+//		Literal literal = null;
+//		try {
+//			literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral(content,
+//					"<http://www.w3.org/2001/XMLSchema#string>");
+//		} catch (final URISyntaxException e) {
+//			throw new RIFException(e.getMessage());
+//		}
+		Literal literal = LiteralFactory.createLiteral(content);
 		return new Constant(literal, argu);
 	}
 

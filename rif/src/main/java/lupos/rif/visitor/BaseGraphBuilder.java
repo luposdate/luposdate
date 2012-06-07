@@ -24,7 +24,6 @@
 package lupos.rif.visitor;
 
 import lupos.datastructures.items.Item;
-import lupos.engine.operators.index.IndexCollection;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rif.IExpression;
 import lupos.rif.IRuleVisitor;

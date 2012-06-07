@@ -42,7 +42,7 @@ import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
 
-public class PredicatePattern extends Operator {
+public class PredicatePattern extends Operator implements Iterable<Item> {
 	private URILiteral patternName;
 	private List<Item> patternArgs;
 
@@ -82,13 +82,13 @@ public class PredicatePattern extends Operator {
 		final QueryResult result = QueryResult.createInstance();
 		final RuleResult input = (RuleResult) (queryResult instanceof QueryResultDebug ? ((QueryResultDebug) queryResult)
 				.getOriginalQueryResult() : queryResult);
-		// Pattern auf alle PrŠdikate anwenden
+		// Pattern auf alle Prï¿½dikate anwenden
 		final Iterator<Predicate> predicateIterator = input
 				.getPredicateIterator();
 		while (predicateIterator.hasNext()) {
 			final Predicate pred = predicateIterator.next();
-			// Nur PrŠdikate, in dem die Anzahl der Parameter Ÿbereinstimmt
-			// Ÿberhaut betrachten
+			// Nur Prï¿½dikate, in dem die Anzahl der Parameter ï¿½bereinstimmt
+			// ï¿½berhaut betrachten
 			if (pred.getParameters().size() == patternArgs.size()
 					&& pred.getName().equals(patternName)) {
 				final Bindings bind = Bindings.createNewInstance();
@@ -145,5 +145,36 @@ public class PredicatePattern extends Operator {
 	
 	public void setPredicateName(URILiteral name) {
 		this.patternName = name;
+	}
+
+	@Override
+	public Iterator<Item> iterator() {
+		return new Iterator<Item>(){
+			private Item next = PredicatePattern.this.patternName;
+			private Iterator<Item> iterator = PredicatePattern.this.patternArgs.iterator();
+
+			@Override
+			public boolean hasNext() {
+				if(this.next!=null){
+					return true;
+				}				
+				return this.iterator.hasNext();
+			}
+
+			@Override
+			public Item next() {
+				if(this.next!=null){
+					Item zNext = this.next;
+					this.next = null;
+					return zNext;
+				}				
+				return this.iterator.next();
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}			
+		};
 	}
 }
