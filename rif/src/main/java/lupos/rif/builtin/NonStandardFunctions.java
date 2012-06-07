@@ -40,11 +40,13 @@ public class NonStandardFunctions {
 				literal = ((LazyLiteral) literal).getLiteral(); 
 			}
 			String content = null;
-			if (literal instanceof LanguageTaggedLiteral){
+			if (literal.isLanguageTaggedLiteral()){
 				content = ((LanguageTaggedLiteral) literal).getContent();
-			} else if (literal instanceof TypedLiteral){
+			} else if (literal.isTypedLiteral()){
 				content = ((TypedLiteral) literal).getContent();
-			} else content = arg.toString();
+			} else if(literal.isSimpleLiteral()){
+				content = literal.toString();
+			} else content = literal.toString();
 			if(content.length()>=2){
 				content = content.substring(1, content.length() - 1);
 				if(content.startsWith("_:")){

@@ -122,19 +122,31 @@ public class RulePredicate extends Uniterm {
 	}
 
 	public boolean isRecursive() {
-		return isRecursive;
+		return this.isRecursive;
 	}
 
 	public Object toDataStructure() {
-		if (isTriple())
-			return new Triple(((Constant) termParams.get(0)).getLiteral(),
-					((Constant) termName).getLiteral(),
-					((Constant) termParams.get(1)).getLiteral());
-		else {
+		if (isTriple()){
+			Literal subject = (this.termParams.get(0) instanceof Constant)?
+					((Constant) this.termParams.get(0)).getLiteral():
+					(Literal)((External) this.termParams.get(0)).evaluate(Bindings.createNewInstance());
+
+			Literal predicate = (this.termName instanceof Constant)?
+					((Constant) this.termName).getLiteral():
+					(Literal)((External) this.termName).evaluate(Bindings.createNewInstance());
+
+			Literal object = (this.termParams.get(1) instanceof Constant)?
+					((Constant) this.termParams.get(1)).getLiteral():
+					(Literal)((External) this.termParams.get(1)).evaluate(Bindings.createNewInstance());
+
+			return new Triple(subject, predicate, object);
+		} else {
 			final Predicate pred = new Predicate();
-			pred.setName(((Constant) termName).getLiteral());
-			for (IExpression expr : termParams) {
-				pred.getParameters().add(((Constant) expr).getLiteral());
+			pred.setName(((Constant) this.termName).getLiteral());
+			for (IExpression expr : this.termParams) {
+				pred.getParameters().add(	(expr instanceof Constant)?
+											((Constant) expr).getLiteral():
+											(Literal)((External) expr).evaluate(Bindings.createNewInstance()));
 			}
 			return pred;
 		}
