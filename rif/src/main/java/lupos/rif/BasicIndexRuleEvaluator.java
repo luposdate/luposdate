@@ -29,14 +29,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.swing.JProgressBar;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
@@ -47,17 +41,13 @@ import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
-import lupos.engine.evaluators.DebugContainerQuery;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.engine.evaluators.StreamQueryEvaluator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.Application;
-import lupos.engine.operators.application.CollectAllResults;
 import lupos.engine.operators.application.CollectRIFResult;
 import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.IndexCollection;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
@@ -65,6 +55,7 @@ import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.Construct;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.generate.Generate;
+import lupos.engine.operators.singleinput.sparul.Insert;
 import lupos.engine.operators.stream.Window;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
@@ -81,6 +72,7 @@ import lupos.rif.generated.parser.RIFParser;
 import lupos.rif.generated.syntaxtree.CompilationUnit;
 import lupos.rif.model.Document;
 import lupos.rif.operator.ConstructPredicate;
+import lupos.rif.operator.InsertIndex;
 import lupos.rif.visitor.BuildOperatorGraphRuleVisitor;
 import lupos.rif.visitor.NormalizeRuleVisitor;
 import lupos.rif.visitor.ParseSyntaxTreeVisitor;
@@ -130,11 +122,11 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.rifDocument.accept(dependencyVisitor, null);
 		this.rifDocument.accept(filteringVisitor, null);
 
-		Class<?> clazz = Bindings.instanceClass;
+		Class<? extends Bindings> clazz = Bindings.instanceClass;
 		Bindings.instanceClass = BindingsMap.class;
-		final Result res = (Result) rifDocument.accept(forward, null);
+		final Result res = (Result) this.rifDocument.accept(forward, null);
 		this.evaluator.setResult(res);
-		Bindings.instanceClass = (Class<? extends Bindings>) clazz;
+		Bindings.instanceClass = clazz;
 
 		final BasicOperator root = indexScanCreator.getRoot();
 		this.evaluator.setRootNode(root);
@@ -255,15 +247,17 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	}
 	
 	public IndexCollection getIndexCollection() {
-		return (IndexCollection) evaluator.getRootNode();
+		return (IndexCollection) this.evaluator.getRootNode();
 	}
 
+	@Override
 	public void setupArguments() {
 		if(this.evaluator != null) {
 			this.evaluator.setupArguments();
 		}
 	}
 
+	@Override
 	public void init() throws Exception {
 		if(this.evaluator != null) {
 			this.evaluator.init();
@@ -400,7 +394,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			for(BasicOperator tpOrIndexScan: new LinkedList<BasicOperator>(toBeConnectedTo)){
 				if(tpOrIndexScan instanceof TriplePattern){
 					TriplePattern tpi = (TriplePattern) tpOrIndexScan;
-					if(isMatching(tpi, generateItems)){
+					if(BasicIndexRuleEvaluator.isMatching(tpi, generateItems)){
 						generate.addSucceedingOperator(tpOrIndexScan);
 					}
 				} else {
@@ -408,7 +402,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 					if(bi.getTriplePattern()!=null && bi.getTriplePattern().size()>0){
 						LinkedList<TriplePattern> matchingTPs = new LinkedList<TriplePattern>();
 						for(TriplePattern inIndexScan: bi.getTriplePattern()){
-							if(isMatching(inIndexScan, generateItems)){
+							if(BasicIndexRuleEvaluator.isMatching(inIndexScan, generateItems)){
 								matchingTPs.add(inIndexScan);
 								break;
 							}
@@ -465,16 +459,66 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				// this generate operator is not connected to any other operator and thus can be deleted!
 				deletePrecedingOperators(generate);
 			}
-		}		
+		}
+		// determine those operators, which are not connected to the result operator (or an insert operator), and delete them
+		HashSet<BasicOperator> visited = new HashSet<BasicOperator>();
+		HashSet<BasicOperator> connectedOperators = new HashSet<BasicOperator>();
+		LinkedList<BasicOperator> path = new LinkedList<BasicOperator>();
+		path.add(rootInference);
+		BasicIndexRuleEvaluator.determineOperatorsConnectedWithResultOrInsert(rootInference, path, visited, connectedOperators);
+		
+		for(BasicOperator bo: visited){
+			if(!connectedOperators.contains(bo)){
+				bo.removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators();
+			}
+		}
+		
 		// add the first operations of the inference operator graph to the operator graph of the query 
 		for(OperatorIDTuple rootChild: new LinkedList<OperatorIDTuple>(rootInference.getSucceedingOperators())){
 			rootInference.removeSucceedingOperator(rootChild);
 			BasicOperator rootChildOperator = rootChild.getOperator();
 			rootChildOperator.removePrecedingOperator(rootInference);
 			rootChildOperator.addPrecedingOperator(rootQuery);
-			rootQuery.addSucceedingOperator(rootChild);
+			if(rootChildOperator instanceof InsertIndex) {
+				// these operators are used to insert facts/triples => should occur as leftmost operators after the root such that they are evaluated first!
+				LinkedList<OperatorIDTuple> list = new LinkedList<OperatorIDTuple>(rootQuery.getSucceedingOperators());
+				list.addFirst(rootChild);
+				rootQuery.setSucceedingOperators(list);
+			} else {
+				rootQuery.addSucceedingOperator(rootChild);
+			}
 		}
 		
+	}
+	
+	public static void determineOperatorsConnectedWithResultOrInsert(final BasicOperator currentOperator, final LinkedList<BasicOperator> currentPath, final HashSet<BasicOperator> visited, final HashSet<BasicOperator> connectedOperators){
+		if(currentOperator instanceof Result || currentOperator instanceof Insert){
+			BasicIndexRuleEvaluator.addToConnectedOperators(currentPath, connectedOperators);
+		} else {
+			if(visited.contains(currentOperator)){
+				if(connectedOperators.contains(currentOperator)){
+					BasicIndexRuleEvaluator.addToConnectedOperators(currentPath, connectedOperators);
+				}
+				return;
+			} else {
+				visited.add(currentOperator);
+				for(OperatorIDTuple opIDTuple: currentOperator.getSucceedingOperators()){
+					BasicOperator suc = opIDTuple.getOperator();
+					currentPath.addLast(suc);
+					BasicIndexRuleEvaluator.determineOperatorsConnectedWithResultOrInsert(suc, currentPath, visited, connectedOperators);
+					currentPath.removeLast();
+				}
+			}
+		}
+	}
+	
+	private static void addToConnectedOperators(final Collection<BasicOperator> toBeAdded, final HashSet<BasicOperator> connectedOperators){
+		for(BasicOperator inPath: toBeAdded){
+			connectedOperators.add(inPath);
+			if(!connectedOperators.contains(inPath)){
+				BasicIndexRuleEvaluator.addToConnectedOperators(inPath.getCycleOperands(), connectedOperators);
+			}
+		}
 	}
 	
 	private static boolean isMatching(final TriplePattern tp, final Item[] generateItems){

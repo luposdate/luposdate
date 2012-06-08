@@ -999,6 +999,17 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 	
+	public void removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators() {
+		for (final OperatorIDTuple oidtuple : this.getSucceedingOperators()) {
+			oidtuple.getOperator().removePrecedingOperator(this);
+		}
+		this.succeedingOperators.clear();
+		for (final BasicOperator prec : this.getPrecedingOperators()) {
+			prec.removeSucceedingOperator(this);
+		}
+		this.precedingOperators.clear();
+	}
+	
 	protected Message forwardMessageDebug(final Message msg,
 			final DebugStep debugstep) {
 		msg.setVisited(this);
