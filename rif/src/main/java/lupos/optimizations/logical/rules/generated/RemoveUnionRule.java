@@ -118,9 +118,13 @@ public class RemoveUnionRule extends Rule {
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         for(BasicOperator over : this.u.getPrecedingOperators()) {
-            over.addSucceedingOperators(com.google.common.collect.Lists.newArrayList(this.u.getSucceedingOperators()));
+        	for(OperatorIDTuple opID: this.u.getSucceedingOperators()){
+        		over.addSucceedingOperator(new OperatorIDTuple(opID));
+            	opID.getOperator().addPrecedingOperator(over);
+        	}
         }
         
-        this.deleteOperator(this.u, _startNodes);
+        this.u.removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators();
+        this.deleteNodeFromStartNodeMapNullCheck(this.u, _startNodes);
     }
 }

@@ -35,7 +35,7 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor
 public
 class ASTInteger extends SimpleNode {
   
-  private String value;
+  private String valueInteger;
 
   public ASTInteger(int id) {
     super(id);
@@ -46,11 +46,11 @@ class ASTInteger extends SimpleNode {
   }
 
   public String getValue() {
-	return this.value;
+	return this.valueInteger;
   }
   
   public String getValueWithoutLeadingPlus(){
-	  String zValue = this.value;
+	  String zValue = this.valueInteger;
 	  while(zValue.startsWith("+")){
 		  zValue = zValue.substring(1, zValue.length());
 	  }
@@ -62,23 +62,26 @@ class ASTInteger extends SimpleNode {
   }
 
   public void setValue(final String value) {
-	this.value = value;
+	this.valueInteger = value;
   }
 
   @Override
   public String toString() {
-	return super.toString() + "  " + value;
+	return super.toString() + "  " + this.valueInteger;
   }
 	
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+  @Override
+  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
+  @Override
   public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
 
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
 	    return visitor.evaluate(this, b, data);

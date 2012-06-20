@@ -25,37 +25,49 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package lupos.sparql1_1;
 
-public
-class ASTLangTag extends SimpleNode {
+import lupos.datastructures.bindings.Bindings;
+import lupos.engine.operators.singleinput.NotBoundException;
+import lupos.engine.operators.singleinput.TypeErrorException;
+import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
+
+public class ASTLangTag extends SimpleNode {
 	private String langTag;
-  public ASTLangTag(int id) {
-    super(id);
-  }
+	public ASTLangTag(int id) {
+		super(id);
+	}
 
-  public ASTLangTag(SPARQL1_1Parser p, int id) {
-    super(p, id);
-  }
+	public ASTLangTag(SPARQL1_1Parser p, int id) {
+		super(p, id);
+	}
 
 
-  /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
-    return visitor.visit(this);
-  }
+	/** Accept the visitor. **/
+	@Override
+	public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+		return visitor.visit(this);
+	}
 
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+	@Override
+	public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 
-public String getLangTag() {
-	return langTag;
-}
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+		return visitor.evaluate(this, b, data);
+	}  
 
-public void setLangTag(String langTag) {
-	this.langTag = langTag;
-}
-@Override
-public String toString() {
-	return super.toString()+" "+langTag;
-}
+	public String getLangTag() {
+		return this.langTag;
+	}
+
+	public void setLangTag(String langTag) {
+		this.langTag = langTag;
+	}
+	@Override
+	public String toString() {
+		return super.toString()+" "+this.langTag;
+	}
 }
 /* JavaCC - OriginalChecksum=697f576ef2521d37225f4efb1b07d7b4 (do not edit this line) */

@@ -26,6 +26,8 @@ package lupos.endpoint.server.format;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.LanguageTaggedLiteral;
@@ -137,7 +139,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 	public void writeURI(final OutputStream os, URILiteral uri) throws IOException{
 		// uri => <uri>
 		os.write(XMLFormatter.XML_URI_1.getBytes());
-		os.write(uri.getString().getBytes());
+		os.write(StringEscapeUtils.escapeXml(uri.getString()).getBytes());
 		os.write(XMLFormatter.XML_URI_2.getBytes());
 	}
 	
@@ -147,7 +149,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_1.getBytes());
 		// <literal>S</literal>
 		os.write(XMLFormatter.XML_LITERAL_2.getBytes());
-		os.write(Helper.unquote(literal.originalString()).getBytes());
+		os.write(StringEscapeUtils.escapeXml(Helper.unquote(literal.originalString())).getBytes());
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());
 	}
 	
@@ -157,10 +159,10 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_1.getBytes());
 		// <literal datatype="datatype">content</literal>
 		os.write(" datatype=\"".getBytes());
-		os.write(literal.getTypeLiteral().getString().getBytes());
+		os.write(StringEscapeUtils.escapeXml(literal.getTypeLiteral().getString()).getBytes());
 		os.write("\"".getBytes());		
 		os.write(XMLFormatter.XML_LITERAL_2.getBytes());
-		os.write(Helper.unquote(literal.getOriginalContent()).getBytes());
+		os.write(StringEscapeUtils.escapeXml(Helper.unquote(literal.getOriginalContent())).getBytes());
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());
 	}
 	
@@ -170,10 +172,10 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_1.getBytes());
 		// <literal xml:lang="lang">content</literal>								
 		os.write(" xml:lang=\"".getBytes());
-		os.write(literal.getOriginalLanguage().getBytes());
+		os.write(StringEscapeUtils.escapeXml(literal.getOriginalLanguage()).getBytes());
 		os.write("\"".getBytes());							
 		os.write(XMLFormatter.XML_LITERAL_2.getBytes());
-		os.write(Helper.unquote(literal.getContent()).getBytes());
+		os.write(StringEscapeUtils.escapeXml(Helper.unquote(literal.getContent())).getBytes());
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());		
 	}
 

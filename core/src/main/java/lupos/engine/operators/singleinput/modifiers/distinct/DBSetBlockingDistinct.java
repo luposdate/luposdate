@@ -50,20 +50,25 @@ public class DBSetBlockingDistinct extends BlockingDistinct {
 		final Iterator<Bindings> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
 
+			@SuppressWarnings("rawtypes")
+			@Override
 			public void close() {
-				((DBMergeSortedSet) bindings).release();
+				((DBMergeSortedSet) DBSetBlockingDistinct.this.bindings).release();
 				if (itb instanceof ParallelIterator)
 					((ParallelIterator) itb).close();
 			}
 
+			@Override
 			public boolean hasNext() {
 				return itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
 				return itb.next();
 			}
 
+			@Override
 			public void remove() {
 				itb.remove();
 			}

@@ -50,7 +50,7 @@ public class LazyBlockingDistinct extends Distinct {
 	protected QueryResult operandsData;
 
 	public LazyBlockingDistinct() {
-		bindings = new HashSet<Bindings>();
+		this.bindings = new HashSet<Bindings>();
 	}
 
 	public LazyBlockingDistinct(final Set<Bindings> bindings) {
@@ -60,10 +60,10 @@ public class LazyBlockingDistinct extends Distinct {
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
-		if (operandsData == null) {
-			operandsData = queryResult;
+		if (this.operandsData == null) {
+			this.operandsData = queryResult;
 		} else
-			operandsData.addAll(queryResult);
+			this.operandsData.addAll(queryResult);
 		return null;
 	}
 
@@ -71,19 +71,23 @@ public class LazyBlockingDistinct extends Distinct {
 		final Iterator<Bindings> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
 
+			@Override
 			public void close() {
 				// derived classes may override the above method in order to
 				// release some resources here!
 			}
 
+			@Override
 			public boolean hasNext() {
 				return itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
 				return itb.next();
 			}
 
+			@Override
 			public void remove() {
 				itb.remove();
 			}
@@ -93,44 +97,49 @@ public class LazyBlockingDistinct extends Distinct {
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		bindings.clear();
-		if (operandsData != null) {
-			final Iterator<Bindings> itb2 = operandsData.oneTimeIterator();
+		this.bindings.clear();
+		if (this.operandsData != null) {
+			final Iterator<Bindings> itb2 = this.operandsData.oneTimeIterator();
 			while (itb2.hasNext())
-				bindings.add(itb2.next());
+				this.bindings.add(itb2.next());
 		}
 		final QueryResult qr = QueryResult.createInstance(getIterator());
 		if (this.succeedingOperators.size() > 1)
 			qr.materialize();
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			opId.processAll(qr);
 		}
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.deleteAllAtSucceedingOperators();
 		preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
 	}
 
+	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
-		operandsData.removeAll(queryResult);
+		this.operandsData.removeAll(queryResult);
 		return null;
 	}
 
+	@Override
 	public void deleteQueryResult(final int operandID) {
-		bindings.clear();
-		if (operandsData != null)
-			operandsData.release();
-		operandsData = null;
+		this.bindings.clear();
+		if (this.operandsData != null)
+			this.operandsData.release();
+		this.operandsData = null;
 	}
 
+	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
@@ -139,18 +148,19 @@ public class LazyBlockingDistinct extends Distinct {
 		return msg;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		bindings.clear();
-		if (operandsData != null) {
-			final Iterator<Bindings> itb2 = operandsData.oneTimeIterator();
+		this.bindings.clear();
+		if (this.operandsData != null) {
+			final Iterator<Bindings> itb2 = this.operandsData.oneTimeIterator();
 			while (itb2.hasNext())
-				bindings.add(itb2.next());
+				this.bindings.add(itb2.next());
 		}
 		final QueryResult qr = QueryResult.createInstance(getIterator());
 		if (this.succeedingOperators.size() > 1)
 			qr.materialize();
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 					debugstep, this, opId.getOperator(), true);
 			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId

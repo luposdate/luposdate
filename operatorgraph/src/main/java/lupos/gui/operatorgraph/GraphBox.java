@@ -90,7 +90,7 @@ public class GraphBox {
 	 * @param op
 	 *            element to put in the box
 	 */
-	private GraphBox(final OperatorGraph parent, final GraphWrapper op) {
+	protected GraphBox(final OperatorGraph parent, final GraphWrapper op) {
 		this.parent = parent;
 
 		this.updateColorIndizes(op);
@@ -130,11 +130,20 @@ public class GraphBox {
 
 		this.parent.add(this.element);
 	}
+	
+	/**
+	 * This method may be overridden by subclasses to add more functionality...
+	 * @return those succeeding elements of this operator, which are to draw
+	 */
+	public List<GraphWrapperIDTuple> getSucceedingsElementsToDraw(){
+		return this.op.getSucceedingElements();
+	}
 
 	public void draw(final Graphics2D g) {
 		// walk through child boxes...
-		for(int i = 0; i < this.op.getSucceedingElements().size(); i += 1) {
-			final GraphWrapper childGW = (this.op.getSucceedingElements().get(i)).getOperator();
+		List<GraphWrapperIDTuple> children = this.getSucceedingsElementsToDraw();
+		for(int i = 0; i < children.size(); i += 1) {
+			final GraphWrapper childGW = (children.get(i)).getOperator();
 			final GraphBox childBox = this.parent.getBoxes().get(childGW);
 
 			// check for direct circle with one drawn direction...

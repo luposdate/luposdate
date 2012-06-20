@@ -24,10 +24,8 @@
 package lupos.engine.operators.index;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
@@ -136,10 +135,10 @@ public abstract class BasicIndex extends Operator {
 				this.intersectionVariables.addAll(varsOfTP);
 				this.unionVariables.addAll(varsOfTP);
 			}
-		final Item rdfGraph = getGraphConstraint();
-		if (rdfGraph != null && rdfGraph.isVariable()) {
-			this.intersectionVariables.add((Variable) rdfGraph);
-			this.unionVariables.add((Variable) rdfGraph);
+		final Item rdfGraphLocal = getGraphConstraint();
+		if (rdfGraphLocal != null && rdfGraphLocal.isVariable()) {
+			this.intersectionVariables.add((Variable) rdfGraphLocal);
+			this.unionVariables.add((Variable) rdfGraphLocal);
 		}
 	}
 
@@ -170,11 +169,11 @@ public abstract class BasicIndex extends Operator {
 		 * operator pipe along with the new bindings which have been determined
 		 * by the join
 		 */
-		if (succeedingOperators.size() > 1)
+		if (this.succeedingOperators.size() > 1)
 			queryResult.materialize();
 		// for every binding found in the result of the previously performed
 		// join of the triple elements ...
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
+		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
 			// and pass the new QueryResult object along with the current
 			// succeeding operator's
 			// identifier to the OperatorPipe's process method
@@ -210,13 +209,13 @@ public abstract class BasicIndex extends Operator {
 						final Variable graphConstraint = (Variable) graphConstraintItem;
 
 						// check if named graphs were provided at query time
-						if (indexCollection.namedGraphs != null
-								&& indexCollection.namedGraphs.size() > 0) {
+						if (this.indexCollection.namedGraphs != null
+								&& this.indexCollection.namedGraphs.size() > 0) {
 
 							// Convert the named graphs' names into URILiterals
 							// to be applicable
 							// later on
-							for (final String name : indexCollection.namedGraphs) {
+							for (final String name : this.indexCollection.namedGraphs) {
 
 								final Indices indices = dataset
 								.getNamedGraphIndices(LiteralFactory
@@ -315,12 +314,13 @@ public abstract class BasicIndex extends Operator {
 	public abstract QueryResult join(Indices indices, Bindings bindings);
 
 	public void replace(final Variable var, final Item item) {
-		for (final TriplePattern tp : triplePatterns)
+		for (final TriplePattern tp : this.triplePatterns)
 			tp.replace(var, item);
 
 	}
 
-	public void optimizeJoinOrder(final int opt, final Dataset dataset) {
+	@SuppressWarnings("unused")
+	public void optimizeJoinOrder(final int opt, final Dataset datasetParameter) {
 		switch (opt) {
 		case MOSTRESTRICTIONS:
 			optimizeJoinOrderAccordingToMostRestrictions();
@@ -328,12 +328,13 @@ public abstract class BasicIndex extends Operator {
 		}
 	}
 
+	@SuppressWarnings("null")
 	public void optimizeJoinOrderAccordingToMostRestrictions() {
-		if (triplePatterns == null)
+		if (this.triplePatterns == null)
 			return;
 		final HashSet<String> usedVariables = new HashSet<String>();
 		final Collection<TriplePattern> remainingTP = new LinkedList<TriplePattern>();
-		remainingTP.addAll(triplePatterns);
+		remainingTP.addAll(this.triplePatterns);
 		final Collection<TriplePattern> newTriplePattern = new LinkedList<TriplePattern>();
 		while (remainingTP.size() > 0) {
 			int minOpenPositions = 4;
@@ -356,22 +357,34 @@ public abstract class BasicIndex extends Operator {
 	}
 
 	public Collection<TriplePattern> getTriplePattern() {
-		return triplePatterns;
+		return this.triplePatterns;
 	}
 
 	public void setTriplePatterns(final Collection<TriplePattern> triplePatterns) {
 		this.triplePatterns = triplePatterns;
 		final HashSet<Variable> hsv = new HashSet<Variable>();
-		intersectionVariables = hsv;
-		unionVariables = hsv;
+		this.intersectionVariables = hsv;
+		this.unionVariables = hsv;
+	}
+	
+	public Set<Variable> getVarsInTriplePatterns(){
+		HashSet<Variable> vars = new HashSet<Variable>();
+		for(TriplePattern tp: this.getTriplePattern()){
+			for(Item item: tp){
+				if(item.isVariable()){
+					vars.add((Variable) item);
+				}
+			}
+		}
+		return vars;
 	}
 
 	public void setGraphConstraint(final Item graph) {
-		rdfGraph = graph;
+		this.rdfGraph = graph;
 	}
 
 	public Item getGraphConstraint() {
-		return rdfGraph;
+		return this.rdfGraph;
 	}
 
 	@Override
@@ -384,8 +397,8 @@ public abstract class BasicIndex extends Operator {
 		else
 			s += " no triple pattern";
 
-		if (rdfGraph != null) {
-			s += "\nGraph" + rdfGraph;
+		if (this.rdfGraph != null) {
+			s += "\nGraph" + this.rdfGraph;
 		}
 
 		return s;
@@ -412,7 +425,7 @@ public abstract class BasicIndex extends Operator {
 
 	public boolean occurInSubjectOrPredicateOrObjectOriginalStringDoesNotDiffer(
 			final Variable var) {
-		for (final TriplePattern tp : triplePatterns) {
+		for (final TriplePattern tp : this.triplePatterns) {
 			if (tp.getPos(0).equals(var) || tp.getPos(1).equals(var))
 				return true;
 			if (tp.getPos(2).equals(var)) {
@@ -430,7 +443,7 @@ public abstract class BasicIndex extends Operator {
 											new LinkedList<Variable>()));
 
 						} 
-						final QueryResult qr = this.join(indexCollection.dataset);
+						final QueryResult qr = this.join(this.indexCollection.dataset);
 						if (qr == null) {
 							this.setTriplePatterns(ztp);
 							return true;
@@ -479,7 +492,7 @@ public abstract class BasicIndex extends Operator {
 							}
 						} finally {
 							if (itb instanceof ParallelIterator)
-								((ParallelIterator) itb).close();
+								((ParallelIterator<Bindings>) itb).close();
 						}
 					} finally {
 						this.setTriplePatterns(ztp);
@@ -733,14 +746,12 @@ public abstract class BasicIndex extends Operator {
 					id = ((IdIteratorQueryResult) qrSize).getIDOfLastBinding();				
 				size++;
 			}
-			if (min != null) {
-				for (int id = 0; id < maxId; id++) {
-					if (min[id] != null)
-						for (int i = 0; i < min[id].length; i++) {
-							tp.addMinMaxPresortingNumbers(i, min[id].length,
-									id, min[id][i], max[id][i]);
-						}
-				}
+			for (int id = 0; id < maxId; id++) {
+				if (min[id] != null)
+					for (int i = 0; i < min[id].length; i++) {
+						tp.addMinMaxPresortingNumbers(i, min[id].length,
+								id, min[id][i], max[id][i]);
+					}
 			}
 		}
 
@@ -792,12 +803,9 @@ public abstract class BasicIndex extends Operator {
 				// relational index approach!
 				final DBMergeSortedBag<Bindings> sort = new DBMergeSortedBag<Bindings>(
 						HEAPHEIGHT, new Comparator<Bindings>() {
-							public int compare(final Bindings arg0,
-									final Bindings arg1) {
-								return arg0
-										.get(v)
-										.compareToNotNecessarilySPARQLSpecificationConform(
-												arg1.get(v));
+							@Override
+							public int compare(final Bindings arg0, final Bindings arg1) {
+								return arg0.get(v).compareToNotNecessarilySPARQLSpecificationConform(arg1.get(v));
 							}
 						}, Bindings.class);
 				final Iterator<Bindings> itb = qr.oneTimeIterator();
@@ -915,11 +923,11 @@ public abstract class BasicIndex extends Operator {
 		 * operator pipe along with the new bindings which have been determined
 		 * by the join
 		 */
-		if (succeedingOperators.size() > 1)
+		if (this.succeedingOperators.size() > 1)
 			queryResult.materialize();
 		// for every binding found in the result of the previously performed
 		// join of the triple elements ...
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
+		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
 			// and pass the new QueryResult object along with the current
 			// succeeding operator's
 			// identifier to the OperatorPipe's process method
@@ -956,17 +964,17 @@ public abstract class BasicIndex extends Operator {
 
 		@Override
 		public boolean hasNext() {
-			if(next!=null)
+			if(this.next!=null)
 				return true;
-			next = computeNext();
-			return (next!=null);
+			this.next = computeNext();
+			return (this.next!=null);
 		}
 
 		@Override
 		public Bindings next() {
-			if(next!=null){
-				Bindings znext = next;
-				next = null;
+			if(this.next!=null){
+				Bindings znext = this.next;
+				this.next = null;
 				return znext;
 			} else return computeNext();			
 		}
@@ -977,15 +985,15 @@ public abstract class BasicIndex extends Operator {
 				inter = this.originalIterator.next();
 				if(inter==null)
 					return null;
-			} while(inter.get(var)!= null && inter.get(var).compareToNotNecessarilySPARQLSpecificationConform(literal)!=0 && inter.get(var).compareToNotNecessarilySPARQLSpecificationConform(emptyURI)!=0);
+			} while(inter.get(this.var)!= null && inter.get(this.var).compareToNotNecessarilySPARQLSpecificationConform(this.literal)!=0 && inter.get(this.var).compareToNotNecessarilySPARQLSpecificationConform(emptyURI)!=0);
 			// comparison with emptyURI for running W3C testcases successfully (import of relative URI was meant to be the URI of the named graph!)
-			inter.add(var, literal);
+			inter.add(this.var, this.literal);
 			return inter;
 		}
 
 		@Override
 		public void remove() {
-			originalIterator.remove();
+			this.originalIterator.remove();
 		}
 		
 	}

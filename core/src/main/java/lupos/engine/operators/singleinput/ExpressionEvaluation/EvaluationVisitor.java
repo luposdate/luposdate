@@ -62,6 +62,7 @@ import lupos.sparql1_1.ASTInteger;
 import lupos.sparql1_1.ASTIriFuncNode;
 import lupos.sparql1_1.ASTLangFuncNode;
 import lupos.sparql1_1.ASTLangMatchesFuncNode;
+import lupos.sparql1_1.ASTLangTag;
 import lupos.sparql1_1.ASTLcaseFuncNode;
 import lupos.sparql1_1.ASTLessThanEqualsNode;
 import lupos.sparql1_1.ASTLessThanNode;
@@ -187,6 +188,8 @@ public interface EvaluationVisitor<D, R> {
 	public R evaluate(ASTDoubleCircumflex node, Bindings b, D d) throws NotBoundException, TypeErrorException;
 
 	public R evaluate(ASTFloatingPoint node, Bindings b, D d) throws NotBoundException, TypeErrorException;
+
+	public R evaluate(ASTLangTag node, Bindings b, D d) throws NotBoundException, TypeErrorException;
 	
 	public R evaluate(ASTisBlankFuncNode node, Bindings b, D d) throws NotBoundException, TypeErrorException;
 	

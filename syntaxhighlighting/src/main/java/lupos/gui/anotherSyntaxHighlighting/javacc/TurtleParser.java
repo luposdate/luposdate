@@ -31,12 +31,10 @@ import com.hp.hpl.jena.n3.turtle.parser.TurtleParserConstants;
 
 import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-import lupos.gui.anotherSyntaxHighlighting.SemanticWebToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
-import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
 
-public class TurtleParser implements PARSER {
+public class TurtleParser extends SemanticWebParser {
 
 	private static TYPE__SemanticWeb[] TOKEN_MAP;
 	private final com.hp.hpl.jena.n3.turtle.parser.TurtleParser parser;

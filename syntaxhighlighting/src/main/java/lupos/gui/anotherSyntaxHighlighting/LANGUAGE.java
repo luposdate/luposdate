@@ -34,6 +34,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import lupos.gui.anotherSyntaxHighlighting.javacc.SemanticWebToken;
+
 import xpref.datatypes.BooleanDatatype;
 import xpref.datatypes.ColorDatatype;
 import xpref.datatypes.FontDatatype;

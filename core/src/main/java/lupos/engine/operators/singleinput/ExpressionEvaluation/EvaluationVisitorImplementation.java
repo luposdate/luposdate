@@ -97,6 +97,7 @@ import lupos.sparql1_1.ASTInteger;
 import lupos.sparql1_1.ASTIriFuncNode;
 import lupos.sparql1_1.ASTLangFuncNode;
 import lupos.sparql1_1.ASTLangMatchesFuncNode;
+import lupos.sparql1_1.ASTLangTag;
 import lupos.sparql1_1.ASTLcaseFuncNode;
 import lupos.sparql1_1.ASTLessThanEqualsNode;
 import lupos.sparql1_1.ASTLessThanNode;
@@ -606,6 +607,11 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTInteger node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return LazyLiteral.getLiteral(node);
+	}
+
+	@Override
+	public Object evaluate(ASTLangTag node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return LazyLiteral.getLiteral(node);
 	}
 

@@ -37,32 +37,36 @@ import lupos.misc.debug.DebugStep;
 
 public class InMemoryListDistinct extends Distinct {
 
-	LinkedList<Bindings> bindings = new LinkedList<Bindings>();
+	protected LinkedList<Bindings> bindings = new LinkedList<Bindings>();
 
+	@Override
 	public QueryResult process(final QueryResult _bindings, final int operandID) {
 		for (final Bindings b : _bindings) {
-			if (!bindings.contains(b)) {
-				bindings.add(b);
+			if (!this.bindings.contains(b)) {
+				this.bindings.add(b);
 			}
 		}
 		return null;
 	}
 
+	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		for (final Bindings b : bindings) {
-			for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final Bindings b : this.bindings) {
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(b);
 			}
 		}
-		bindings.clear();
+		this.bindings.clear();
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
@@ -70,18 +74,19 @@ public class InMemoryListDistinct extends Distinct {
 		return msg;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
 		final QueryResult qr = QueryResult.createInstance();
-		for (final Bindings b : bindings)
+		for (final Bindings b : this.bindings)
 			qr.add(b);
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 					debugstep, this, opId.getOperator(), true);
 			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
 					.getId(), debugstep);
 		}
-		bindings.clear();
+		this.bindings.clear();
 		return msg;
 	}
 }

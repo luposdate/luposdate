@@ -35,6 +35,10 @@ public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperat
 		super(op, id);
 	}
 
+	public OperatorIDTuple(final OperatorIDTuple opID) {
+		super(opID.op, opID.id);
+	}
+
 	public void processAll(final Bindings b) {
 		final QueryResult bindings = QueryResult.createInstance();
 		bindings.add(b);

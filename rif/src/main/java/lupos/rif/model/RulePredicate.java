@@ -138,7 +138,7 @@ public class RulePredicate extends Uniterm {
 			Literal object = (this.termParams.get(1) instanceof Constant)?
 					((Constant) this.termParams.get(1)).getLiteral():
 					(Literal)((External) this.termParams.get(1)).evaluate(Bindings.createNewInstance());
-
+					
 			return new Triple(subject, predicate, object);
 		} else {
 			final Predicate pred = new Predicate();

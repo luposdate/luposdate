@@ -64,6 +64,23 @@ import lupos.misc.Tuple;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.misc.debug.DebugStep;
 import lupos.optimizations.logical.rules.DebugContainer;
+import lupos.optimizations.logical.rules.generated.RIFRules0RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules15RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules16RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules1RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules2RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules3RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules4RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules5RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules6RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules7RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules8RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules9RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules10RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules11RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules12RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules13RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules14RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRulesRulePackage;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
@@ -143,8 +160,36 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public long logicalOptimization() {
 		Date start = new Date();
 		this.evaluator.logicalOptimization();
-		final RIFRulesRulePackage rules = new RIFRulesRulePackage();
-		rules.applyRules(this.evaluator.getRootNode());
+		final RIFRules0RulePackage rules0 = new RIFRules0RulePackage();
+		rules0.applyRules(this.evaluator.getRootNode());
+		final RIFRules1RulePackage rules1 = new RIFRules1RulePackage();
+		rules1.applyRules(this.evaluator.getRootNode());
+		final RIFRules2RulePackage rules2 = new RIFRules2RulePackage();
+		rules2.applyRules(this.evaluator.getRootNode());
+		final RIFRules3RulePackage rules3 = new RIFRules3RulePackage();
+		rules3.applyRules(this.evaluator.getRootNode());
+		final RIFRules4RulePackage rules4 = new RIFRules4RulePackage();
+		rules4.applyRules(this.evaluator.getRootNode());
+		final RIFRules5RulePackage rules5 = new RIFRules5RulePackage();
+		rules5.applyRules(this.evaluator.getRootNode());
+		final RIFRules6RulePackage rules6 = new RIFRules6RulePackage();
+		rules6.applyRules(this.evaluator.getRootNode());
+		final RIFRules7RulePackage rules7 = new RIFRules7RulePackage();
+		rules7.applyRules(this.evaluator.getRootNode());
+		final RIFRules8RulePackage rules8 = new RIFRules8RulePackage();
+		rules8.applyRules(this.evaluator.getRootNode());
+		final RIFRules9RulePackage rules9 = new RIFRules9RulePackage();
+		rules9.applyRules(this.evaluator.getRootNode());
+		final RIFRules10RulePackage rules10 = new RIFRules10RulePackage();
+		rules10.applyRules(this.evaluator.getRootNode());
+		final RIFRules11RulePackage rules11 = new RIFRules11RulePackage();
+		rules11.applyRules(this.evaluator.getRootNode());
+		final RIFRules12RulePackage rules12 = new RIFRules12RulePackage();
+		rules12.applyRules(this.evaluator.getRootNode());
+		final RIFRules13RulePackage rules13 = new RIFRules13RulePackage();
+		rules13.applyRules(this.evaluator.getRootNode());
+		final RIFRules14RulePackage rules14 = new RIFRules14RulePackage();
+		rules14.applyRules(this.evaluator.getRootNode());
 		this.evaluator.getRootNode().sendMessage(new BoundVariablesMessage());
 		this.evaluator.logicalOptimization();
 		return new Date().getTime() - start.getTime();
@@ -160,8 +205,36 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				.getBasicOperatorByteArray(this.evaluator.getRootNode().deepClone(),
 						prefixInstance)));
 		result.addAll(this.evaluator.logicalOptimizationDebugByteArray(prefixInstance));
-		final RIFRulesRulePackage rules = new RIFRulesRulePackage();
-		result.addAll(rules.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules0RulePackage rules0 = new RIFRules0RulePackage();
+		result.addAll(rules0.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules1RulePackage rules1 = new RIFRules1RulePackage();
+		result.addAll(rules1.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules2RulePackage rules2 = new RIFRules2RulePackage();
+		result.addAll(rules2.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules3RulePackage rules3 = new RIFRules3RulePackage();
+		result.addAll(rules3.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules4RulePackage rules4 = new RIFRules4RulePackage();
+		result.addAll(rules4.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules5RulePackage rules5 = new RIFRules5RulePackage();
+		result.addAll(rules5.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules6RulePackage rules6 = new RIFRules6RulePackage();
+		result.addAll(rules6.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules7RulePackage rules7 = new RIFRules7RulePackage();
+		result.addAll(rules7.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules8RulePackage rules8 = new RIFRules8RulePackage();
+		result.addAll(rules8.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules9RulePackage rules9 = new RIFRules9RulePackage();
+		result.addAll(rules9.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules10RulePackage rules10 = new RIFRules10RulePackage();
+		result.addAll(rules10.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules11RulePackage rules11 = new RIFRules11RulePackage();
+		result.addAll(rules11.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules12RulePackage rules12 = new RIFRules12RulePackage();
+		result.addAll(rules12.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules13RulePackage rules13 = new RIFRules13RulePackage();
+		result.addAll(rules13.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
+		final RIFRules14RulePackage rules14 = new RIFRules14RulePackage();
+		result.addAll(rules14.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
 		this.evaluator.getRootNode().sendMessage(new BoundVariablesMessage());
 		result.addAll(this.evaluator.logicalOptimizationDebugByteArray(prefixInstance));
 		return result;
@@ -169,12 +242,28 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	
 	@Override
 	public long physicalOptimization() {
-		return this.evaluator.physicalOptimization();
+		long start = (new Date()).getTime();
+		this.evaluator.physicalOptimization();
+		final RIFRules15RulePackage rules15 = new RIFRules15RulePackage();
+		rules15.applyRules(this.evaluator.getRootNode());
+		final RIFRules16RulePackage rules16 = new RIFRules16RulePackage();
+		rules16.applyRules(this.evaluator.getRootNode());
+		this.getRootNode().deleteParents();
+		this.getRootNode().setParents();
+		this.getRootNode().detectCycles();
+//		this.getRootNode().sendMessage(new BoundVariablesMessage());		
+		return (new Date()).getTime() - start;
 	}
 
 	@Override
-	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefix) {
-		return this.evaluator.physicalOptimizationDebugByteArray(prefix);
+	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
+		physicalOptimization();
+		final LinkedList<DebugContainer<BasicOperatorByteArray>> debugResult = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
+		debugResult.add(new DebugContainer<BasicOperatorByteArray>(
+				"After physical optimization...", "physicaloptimizationRule",
+				BasicOperatorByteArray.getBasicOperatorByteArray(
+						this.getRootNode().deepClone(), prefixInstance)));
+		return debugResult;
 	}
 
 	@Override
@@ -196,7 +285,18 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
 		this.evaluator.evaluateQuery();
-		return cr.getResult();	
+		return cr.getResult();
+	}
+
+	public QueryResult[] getResults() throws Exception {
+		return this.getResults(false);
+	}
+	
+	public QueryResult[] getResults(final boolean oneTime) throws Exception {
+		final CollectRIFResult cr = new CollectRIFResult(oneTime);
+		this.evaluator.getResultOperator().addApplication(cr);
+		this.evaluator.evaluateQuery();
+		return cr.getQueryResults();	
 	}
 	
 	public CollectRIFResult getCollectedResults(final boolean oneTime) throws Exception {
@@ -460,6 +560,10 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				deletePrecedingOperators(generate);
 			}
 		}
+		
+		rootInference.deleteParents();
+		rootInference.setParents();
+		rootInference.detectCycles();
 		// determine those operators, which are not connected to the result operator (or an insert operator), and delete them
 		HashSet<BasicOperator> visited = new HashSet<BasicOperator>();
 		HashSet<BasicOperator> connectedOperators = new HashSet<BasicOperator>();
@@ -488,7 +592,9 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				rootQuery.addSucceedingOperator(rootChild);
 			}
 		}
-		
+		rootQuery.deleteParents();
+		rootQuery.setParents();
+		rootQuery.detectCycles();
 	}
 	
 	public static void determineOperatorsConnectedWithResultOrInsert(final BasicOperator currentOperator, final LinkedList<BasicOperator> currentPath, final HashSet<BasicOperator> visited, final HashSet<BasicOperator> connectedOperators){
@@ -514,9 +620,11 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	
 	private static void addToConnectedOperators(final Collection<BasicOperator> toBeAdded, final HashSet<BasicOperator> connectedOperators){
 		for(BasicOperator inPath: toBeAdded){
-			connectedOperators.add(inPath);
 			if(!connectedOperators.contains(inPath)){
+				connectedOperators.add(inPath);
 				BasicIndexRuleEvaluator.addToConnectedOperators(inPath.getCycleOperands(), connectedOperators);
+			} else {
+				connectedOperators.add(inPath);
 			}
 		}
 	}

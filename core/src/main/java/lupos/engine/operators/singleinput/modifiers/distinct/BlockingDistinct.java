@@ -59,19 +59,23 @@ public class BlockingDistinct extends Distinct {
 		final Iterator<Bindings> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
 
+			@Override
 			public void close() {
 				// derived classes may override the above method in order to
 				// release some resources here!
 			}
 
+			@Override
 			public boolean hasNext() {
 				return itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
 				return itb.next();
 			}
 
+			@Override
 			public void remove() {
 				itb.remove();
 			}
@@ -87,16 +91,19 @@ public class BlockingDistinct extends Distinct {
 		// final QueryResult qr = QueryResult.createInstance();
 		// for (final Bindings b : bindings)
 		// qr.add(b);
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			opId.processAll(qr);
 		}
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
 	}
+	
+	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
 		// problem: it does not count the number of occurences of a binding
@@ -104,18 +111,21 @@ public class BlockingDistinct extends Distinct {
 		// {} instead of { ?a=<a> }!!!!!!
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
 		while (itb.hasNext())
-			bindings.remove(itb.next());
+			this.bindings.remove(itb.next());
 		return null;
 	}
 
+	@Override
 	public void deleteAll(final int operandID) {
-		bindings.clear();
+		this.bindings.clear();
 	}
 
+	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
@@ -123,6 +133,7 @@ public class BlockingDistinct extends Distinct {
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
 		final QueryResult qr = QueryResult.createInstance(getIterator());
@@ -131,7 +142,7 @@ public class BlockingDistinct extends Distinct {
 		// final QueryResult qr = QueryResult.createInstance();
 		// for (final Bindings b : bindings)
 		// qr.add(b);
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 					debugstep, this, opId.getOperator(), true);
 			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId

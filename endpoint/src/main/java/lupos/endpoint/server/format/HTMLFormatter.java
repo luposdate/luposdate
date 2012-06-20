@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.AnonymousLiteral;
@@ -160,7 +162,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	public void writeURI(final OutputStream os, URILiteral uri) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_URI);
 		os.write("&lt;".getBytes());
-		os.write(uri.getString().getBytes());
+		os.write(StringEscapeUtils.escapeHtml(uri.getString()).getBytes());
 		os.write("&gt;".getBytes());
 		this.writeEndColor(os);
 	}
@@ -168,7 +170,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	@Override
 	public void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
-		os.write(literal.originalString().getBytes());
+		os.write(StringEscapeUtils.escapeHtml(literal.originalString()).getBytes());
 		this.writeEndColor(os);
 	}
 	
@@ -186,11 +188,11 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	@Override
 	public void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
-		os.write(literal.getContent().getBytes());
+		os.write(StringEscapeUtils.escapeHtml(literal.getContent()).getBytes());
 		this.writeEndColor(os);
 		this.writeStartColor(os, HTMLFormatter.COLOR_LANG);
 		os.write("@".getBytes());
-		os.write(literal.getOriginalLanguage().getBytes());
+		os.write(StringEscapeUtils.escapeHtml(literal.getOriginalLanguage()).getBytes());
 		this.writeEndColor(os);
 	}
 	

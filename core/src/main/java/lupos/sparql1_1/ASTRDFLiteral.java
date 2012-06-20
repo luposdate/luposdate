@@ -42,14 +42,17 @@ class ASTRDFLiteral extends SimpleNode {
 
 
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+  @Override
+   public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
+  @Override
   public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
 
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
 	    return visitor.evaluate(this, b, data);

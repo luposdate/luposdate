@@ -675,7 +675,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				break;
 			case HASHSETBLOCKING:
 				to = "HashBlockingDistinct";
-				;
+				break;
+			case LAZYHASHSETBLOCKING:
+				to = "HashBlockingDistinct";
 				break;
 			case HASHSET:
 				to = "InMemoryDistinct";

@@ -51,76 +51,86 @@ public class Triple implements Iterable<Literal>, Serializable,
 	}
 
 	public Triple() {
+		// standard constructor without initialization...
+	}
+
+	public Triple(Literal[] literals) {
+		this(literals[0], literals[1], literals[2]);
 	}
 
 	public Literal getSubject() {
-		return subject;
+		return this.subject;
 	}
 
 	public Literal getPredicate() {
-		return predicate;
+		return this.predicate;
 	}
 
 	public Literal getObject() {
-		return object;
+		return this.object;
 	}
 
+	@Override
 	public Iterator<Literal> iterator() {
 		return new Iterator<Literal>() {
 			int pos = 0;
 
+			@Override
 			public boolean hasNext() {
-				return pos <= 2;
+				return this.pos <= 2;
 			}
 
+			@Override
 			public Literal next() {
-				return getPos(pos++);
+				return getPos(this.pos++);
 			}
 
+			@Override
 			public void remove() {
+				throw new UnsupportedOperationException();
 			}
 		};
 	}
 
 	public Literal getPos(final int i) {
 		if (i == 0)
-			return subject;
+			return this.subject;
 		else if (i == 1)
-			return predicate;
+			return this.predicate;
 		else if (i == 2)
-			return object;
+			return this.object;
 		else
 			return null;
 	}
 
 	public void setPos(final int i, final Literal lit) {
 		if (i == 0)
-			subject = lit;
+			this.subject = lit;
 		else if (i == 1)
-			predicate = lit;
+			this.predicate = lit;
 		else if (i == 2)
-			object = lit;
+			this.object = lit;
 	}
 
 	@Override
 	public String toString() {
-		return "(" + subject + "," + predicate + "," + object + ")";
+		return "(" + this.subject + "," + this.predicate + "," + this.object + ")";
 	}
 
 	public String toN3String() {
-		return subject + " " + predicate + " " + object + " .";
+		return this.subject + " " + this.predicate + " " + this.object + " .";
 	}
 
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
-		return "(" + subject.toString(prefixInstance) + ","
-				+ predicate.toString(prefixInstance) + ","
-				+ object.toString(prefixInstance) + ")";
+		return "(" + this.subject.toString(prefixInstance) + ","
+				+ this.predicate.toString(prefixInstance) + ","
+				+ this.object.toString(prefixInstance) + ")";
 	}
 
 	public String toN3String(final lupos.rdf.Prefix prefixInstance) {
-		return subject.toString(prefixInstance) + " "
-				+ predicate.toString(prefixInstance) + " "
-				+ object.toString(prefixInstance) + " .";
+		return this.subject.toString(prefixInstance) + " "
+				+ this.predicate.toString(prefixInstance) + " "
+				+ this.object.toString(prefixInstance) + " .";
 	}
 
 	@Override
@@ -130,7 +140,7 @@ public class Triple implements Iterable<Literal>, Serializable,
 
 	@Override
 	public Triple clone() {
-		final Triple t = new Triple(subject, predicate, object);
+		final Triple t = new Triple(this.subject, this.predicate, this.object);
 		return t;
 	}
 
@@ -139,23 +149,23 @@ public class Triple implements Iterable<Literal>, Serializable,
 		if (obj instanceof Triple) {
 			final Triple t = (Triple) obj;
 			// consider null values such that prefix search can be done!
-			return ((subject == null || t.getSubject() == null || subject
-					.equals(t.getSubject()))
-					&& (predicate == null || t.getPredicate() == null || predicate
-							.equals(t.getPredicate())) && (object == null
-					|| t.getObject() == null || object.equals(t.getObject())));
+			return ((this.subject == null || t.getSubject() == null || this.subject.equals(t.getSubject()))
+					&& (this.predicate == null || t.getPredicate() == null || this.predicate
+							.equals(t.getPredicate())) && (this.object == null
+					|| t.getObject() == null || this.object.equals(t.getObject())));
 		} else
 			return false;
 	}
 
 	public boolean equivalentExceptAnonymousLiterals(final Triple t) {
-		return ((subject == null || t.getSubject() == null
-				|| subject.equals(t.getSubject()) || (subject instanceof AnonymousLiteral && t.subject instanceof AnonymousLiteral))
-				&& (predicate == null || t.getPredicate() == null
-						|| predicate.equals(t.getPredicate()) || (predicate instanceof AnonymousLiteral && t.predicate instanceof AnonymousLiteral)) && (object == null
-				|| t.getObject() == null || object.equals(t.getObject()) || (object instanceof AnonymousLiteral && t.object instanceof AnonymousLiteral)));
+		return ((this.subject == null || t.getSubject() == null
+				|| this.subject.equals(t.getSubject()) || (this.subject instanceof AnonymousLiteral && t.subject instanceof AnonymousLiteral))
+				&& (this.predicate == null || t.getPredicate() == null
+						|| this.predicate.equals(t.getPredicate()) || (this.predicate instanceof AnonymousLiteral && t.predicate instanceof AnonymousLiteral)) && 
+						(this.object == null || t.getObject() == null || this.object.equals(t.getObject()) || (this.object instanceof AnonymousLiteral && t.object instanceof AnonymousLiteral)));
 	}
 
+	@Override
 	public int compareTo(final Triple arg0) {
 		for (int pos = 0; pos < 3; pos++) {
 			final int compare = this.getPos(pos)

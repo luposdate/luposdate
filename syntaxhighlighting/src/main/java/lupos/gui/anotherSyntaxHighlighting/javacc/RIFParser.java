@@ -28,14 +28,12 @@ import java.io.Reader;
 
 import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-import lupos.gui.anotherSyntaxHighlighting.SemanticWebToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
-import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
 import lupos.rif.generated.parser.RIFParserConstants;
 import lupos.rif.generated.parser.Token;
 
-public class RIFParser implements PARSER {
+public class RIFParser extends SemanticWebParser {
 
 	private static TYPE__SemanticWeb[] TOKEN_MAP;
 	private final lupos.rif.generated.parser.RIFParser parser;

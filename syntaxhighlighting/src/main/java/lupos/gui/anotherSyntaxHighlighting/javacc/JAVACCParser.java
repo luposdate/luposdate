@@ -28,9 +28,8 @@ import java.io.Reader;
 
 import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
+import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-import lupos.gui.anotherSyntaxHighlighting.SemanticWebToken;
-import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 
 /**
  * SPARQL Parser Implements ILuposParser
@@ -46,8 +45,8 @@ public class JAVACCParser implements ILuposParser {
 	/**
 	 * token information
 	 */
-	private SemanticWebToken currentToken = null;
-	private final TYPE__SemanticWeb[] TOKEN_MAP;
+	private ILuposToken currentToken = null;
+	private final TYPE_ENUM[] TOKEN_MAP;
 
 	/**
 	 * Offset information
@@ -67,12 +66,13 @@ public class JAVACCParser implements ILuposParser {
 	}
 
 	
-	protected SemanticWebToken testOfComment(final String content, int beginChar, final int endChar){
+	protected ILuposToken testOfComment(final String content, final int beginChar, final int endChar){
+		int beginCharVar = beginChar;
 		// jump over leading returns
-		while(beginChar<endChar && content.charAt(beginChar)=='\n'){
-			beginChar++;
+		while(beginCharVar<endChar && content.charAt(beginCharVar)=='\n'){
+			beginCharVar++;
 		}
-		for(int i=beginChar; i<endChar && !this.parser.endOfSearchOfComment(content, i); i++){
+		for(int i=beginCharVar; i<endChar && !this.parser.endOfSearchOfComment(content, i); i++){
 			if(this.parser.isStartOfComment(content, i)){
 				return this.parser.handleComment(content, i);
 			}
@@ -93,9 +93,11 @@ public class JAVACCParser implements ILuposParser {
 			return null;
 
 		TOKEN sparql1_1token = null;
-		SemanticWebToken token = null;
+		ILuposToken token = null;
 
-		int beginChar = (this.currentToken!=null)? this.currentToken.getEndChar() - 1 : this.beginCharOffset - 1;
+		int beginChar = (this.currentToken!=null)? 
+				this.currentToken.getBeginChar() + this.currentToken.getContents().length() - 1 : 
+				this.beginCharOffset - 1;
 		
 		// catch thrown error if unknown token exists
 		try {
@@ -130,7 +132,7 @@ public class JAVACCParser implements ILuposParser {
 			token = testOfComment(content, startOfBeginChar, beginChar);
 			
 			if(token == null){
-				token = new SemanticWebToken(this.TOKEN_MAP[sparql1_1token.getKind()], image, beginChar);
+				token = this.parser.create(this.TOKEN_MAP[sparql1_1token.getKind()], image, beginChar);
 			} else {
 				setReader(this.stream, token.getBeginChar() + token.getContents().length(), this.endCharOffset);
 			}
@@ -141,7 +143,7 @@ public class JAVACCParser implements ILuposParser {
 			if(token!=null){
 				setReader(this.stream, token.getBeginChar() + token.getContents().length(), this.endCharOffset);
 			} else {
-				token = new SemanticWebToken(TYPE__SemanticWeb.ERROR, content.substring(beginChar, beginChar+1), beginChar);			
+				token = this.parser.createErrorToken(content.substring(beginChar, beginChar+1), beginChar);			
 				setReader(this.stream, beginChar+1, this.endCharOffset);
 			}
 		}
@@ -242,13 +244,14 @@ public class JAVACCParser implements ILuposParser {
 	 * 
 	 * @return Returns true if the end of file is reached within parsing.
 	 */
+	@Override
 	public boolean isEOF() {
-		return eof;
+		return this.eof;
 	}
 		
-	protected static void checkTopicMap(final String[] images, final TYPE__SemanticWeb[] tokenMap){
+	protected static void checkTopicMap(final String[] images, final TYPE_ENUM[] tokenMap){
 		int index = 0;
-		for(TYPE__SemanticWeb type: tokenMap){
+		for(TYPE_ENUM type: tokenMap){
 			if(type == null){
 				System.err.println("WARNING: Token map not set for image " + images[index]);
 			}
@@ -256,7 +259,7 @@ public class JAVACCParser implements ILuposParser {
 		}
 	}
 	
-	protected static void insertIntoTokenMap(final String[] images, final TYPE__SemanticWeb[] tokenMap, final String[] imagesToSet, final TYPE__SemanticWeb type){
+	protected static void insertIntoTokenMap(final String[] images, final TYPE_ENUM[] tokenMap, final String[] imagesToSet, final TYPE_ENUM type){
 		for(String currentImage: imagesToSet){
 			boolean flag = false;
 			for(int i=0; i<images.length; i++){
@@ -282,11 +285,13 @@ public class JAVACCParser implements ILuposParser {
 	
 	public static interface PARSER {
 		public TOKEN getNextToken();
-		public TYPE__SemanticWeb[] getTokenMap();
+		public TYPE_ENUM[] getTokenMap();
 		public void ReInit(Reader reader);
 		public void ReInit(InputStream inputstream);
 		public boolean isStartOfComment(final String content, final int beginChar);
-		public SemanticWebToken handleComment(final String content, final int beginChar);
+		public ILuposToken handleComment(final String content, final int beginChar);
 		public boolean endOfSearchOfComment(final String content, final int beginChar);
+		public ILuposToken create(TYPE_ENUM description, String contents, int beginChar);
+		public ILuposToken createErrorToken(String contents, int beginChar);
 	}
 }

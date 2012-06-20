@@ -28,15 +28,13 @@ import java.io.Reader;
 
 import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-import lupos.gui.anotherSyntaxHighlighting.SemanticWebToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
-import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SPARQL1_1ParserConstants;
 import lupos.sparql1_1.Token;
 
-public class SPARQLParser implements PARSER {
+public class SPARQLParser extends SemanticWebParser {
 
 	private static TYPE__SemanticWeb[] TOKEN_MAP;
 	private final SPARQL1_1Parser parser;

@@ -49,7 +49,6 @@ import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.singleinput.modifiers.distinct.Distinct;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.misc.Tuple;
 import lupos.rif.IExpression;
 import lupos.rif.RIFException;
 import lupos.rif.builtin.RIFBuiltinFactory;
@@ -63,7 +62,6 @@ import lupos.rif.model.ExistExpression;
 import lupos.rif.model.External;
 import lupos.rif.model.Rule;
 import lupos.rif.model.RulePredicate;
-import lupos.rif.model.RuleVariable;
 import lupos.rif.model.Uniterm;
 import lupos.rif.operator.BooleanIndex;
 import lupos.rif.operator.ConstructEquality;
@@ -347,9 +345,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 					// herstellen
 					for (BasicOperator producer : entry.getValue())
 						for (BasicOperator consumer : consumers) {
-							producer.addSucceedingOperator(new OperatorIDTuple(
-									consumer, producer.getSucceedingOperators()
-											.size()));
+							producer.addSucceedingOperator(new OperatorIDTuple(consumer, producer.getSucceedingOperators().size()));
 							// Sonderfall: Falls PredicatePattern ->
 							// Dann: PredicatePattern -> Distinct ->
 							if (consumer instanceof PredicatePattern) {
@@ -360,10 +356,10 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 										distinctFound = true;
 								if (!distinctFound) {
 									final Distinct distinct = new Distinct();
-									distinct.getSucceedingOperators().addAll(
-											consumer.getSucceedingOperators());
-									consumer.setSucceedingOperator(new OperatorIDTuple(
-											distinct, 0));
+									for(OperatorIDTuple opID: consumer.getSucceedingOperators()){										
+										distinct.getSucceedingOperators().add(new OperatorIDTuple(opID));
+									}
+									consumer.setSucceedingOperator(new OperatorIDTuple(distinct, 0));
 								}
 							}
 						}
@@ -389,14 +385,11 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			// Result immer auf linker Seite, damit keine Linksrekursion
 			// auftreten kann
 			if (!subOperator.getSucceedingOperators().isEmpty()) {
-				OperatorIDTuple temp = subOperator.getSucceedingOperators()
-						.get(0);
-				subOperator.getSucceedingOperators().set(0,
-						new OperatorIDTuple(finalResult, 0));
+				OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
+				subOperator.getSucceedingOperators().set(0,new OperatorIDTuple(finalResult, 0));
 				subOperator.addSucceedingOperator(temp);
 			} else
-				subOperator.setSucceedingOperator(new OperatorIDTuple(
-						finalResult, 0));
+				subOperator.setSucceedingOperator(new OperatorIDTuple(finalResult, 0));
 		}
 		if (subOperators.isEmpty()) {
 			// IndexCollection verzweist auf EmptyIndex und der direkt auf
@@ -409,8 +402,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			final EmptyIndex empty = new EmptyIndex(finalResult == null ? null
 					: new OperatorIDTuple(finalResult, 0),
 					new ArrayList<TriplePattern>(), null);
-			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(empty,
-					this.indexScanCreator.getRoot().getSucceedingOperators().size()));
+			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(empty, this.indexScanCreator.getRoot().getSucceedingOperators().size()));
 			if (finalResult == null)
 				finalResult = empty;
 		}
@@ -499,9 +491,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			for (TriplePattern pattern : construct.getTemplates()) {
 				Generate generateTriplesOp = new Generate(pattern.getItems());
 				generateTriplesOp.addPrecedingOperator(subOperator);
-				subOperator.addSucceedingOperator(new OperatorIDTuple(
-						generateTriplesOp, subOperator.getSucceedingOperators()
-								.size()));
+				subOperator.addSucceedingOperator(new OperatorIDTuple(generateTriplesOp, subOperator.getSucceedingOperators().size()));
 				// TripleProduzenten registrieren
 				add(this.tripleProducer, new KeyTriplePattern(pattern), generateTriplesOp);
 			}
@@ -581,8 +571,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			mainIndex = it.next();
 			while (it.hasNext()) {
 				BasicIndex mergeIndex = it.next();
-				mainIndex.getTriplePattern().addAll(
-						mergeIndex.getTriplePattern());
+				mainIndex.getTriplePattern().addAll(mergeIndex.getTriplePattern());
 				mergeIndex.getSucceedingOperators().clear();
 				mergeIndex.removeFromOperatorGraph();
 				operands.remove(mergeIndex);
@@ -607,8 +596,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				operand.getSucceedingOperators().clear();
 				operand.setSucceedingOperator(new OperatorIDTuple(tempJoin, 0));
 				bottomJoin.getSucceedingOperators().clear();
-				bottomJoin.setSucceedingOperator(new OperatorIDTuple(tempJoin,
-						1));
+				bottomJoin.setSucceedingOperator(new OperatorIDTuple(tempJoin, 1));
 				tempJoin.setSucceedingOperator((OperatorIDTuple) arg);
 				bottomJoin = tempJoin;
 			}

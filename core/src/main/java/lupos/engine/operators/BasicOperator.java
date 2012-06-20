@@ -102,6 +102,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * The standard constructor
 	 */
 	public BasicOperator() {
+		// no initializations...
 	}
 
 	/**
@@ -134,14 +135,14 @@ public class BasicOperator implements Cloneable, Serializable {
 	 *            The replacement operator
 	 */
 	public void replaceWith(final BasicOperator replacement) {
-		for (final BasicOperator preOp : precedingOperators) {
+		for (final BasicOperator preOp : this.precedingOperators) {
 			for (final OperatorIDTuple opid : preOp.succeedingOperators) {
 				if (opid.getOperator().equals(this)) {
 					opid.setOperator(replacement);
 				}
 			}
 		}
-		for (final OperatorIDTuple sucOp : succeedingOperators) {
+		for (final OperatorIDTuple sucOp : this.succeedingOperators) {
 			for (int i = 0; i < sucOp.getOperator().precedingOperators.size(); i++) {
 				if (sucOp.getOperator().precedingOperators.get(i).equals(this)) {
 					sucOp.getOperator().precedingOperators.set(i, replacement);
@@ -193,12 +194,11 @@ public class BasicOperator implements Cloneable, Serializable {
 	/**
 	 * This method adds all of a list of succeeding operators
 	 * 
-	 * @param succeedingOperators
+	 * @param succeedingOperatorsParamter
 	 *            list of succeeding operators
 	 */
-	public void addSucceedingOperators(
-			final List<OperatorIDTuple> succeedingOperators) {
-		this.succeedingOperators.addAll(succeedingOperators);
+	public void addSucceedingOperators(final List<OperatorIDTuple> succeedingOperatorsParamter) {
+		this.succeedingOperators.addAll(succeedingOperatorsParamter);
 	}
 
 	/**
@@ -218,19 +218,18 @@ public class BasicOperator implements Cloneable, Serializable {
 	 */
 	public void addPrecedingOperator(final BasicOperator precedingOperator) {
 		if (precedingOperator != null) {
-			precedingOperators.add(precedingOperator);
+			this.precedingOperators.add(precedingOperator);
 		}
 	}
 
 	/**
 	 * This method adds a collection of preceding operators
 	 * 
-	 * @param precedingOperators
+	 * @param precedingOperatorsParameter
 	 *            the preceding operators
 	 */
-	public void addPrecedingOperators(
-			final Collection<BasicOperator> precedingOperators) {
-		for (final BasicOperator precedingOperator : precedingOperators) {
+	public void addPrecedingOperators(final Collection<BasicOperator> precedingOperatorsParameter) {
+		for (final BasicOperator precedingOperator : precedingOperatorsParameter) {
 			this.precedingOperators.add(precedingOperator);
 		}
 	}
@@ -243,7 +242,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 */
 	public void removePrecedingOperator(final BasicOperator precedingOperator) {
 		if (precedingOperator != null) {
-			precedingOperators.remove(precedingOperator);
+			this.precedingOperators.remove(precedingOperator);
 		}
 	}
 
@@ -258,9 +257,9 @@ public class BasicOperator implements Cloneable, Serializable {
 			boolean change = true;
 			while (change) {
 				change = false;
-				for (final OperatorIDTuple oit : succeedingOperators) {
+				for (final OperatorIDTuple oit : this.succeedingOperators) {
 					if (oit.getOperator().equals(succeedingOperator)) {
-						succeedingOperators.remove(oit);
+						this.succeedingOperators.remove(oit);
 						change = true;
 						break;
 					}
@@ -270,7 +269,9 @@ public class BasicOperator implements Cloneable, Serializable {
 	}
 
 	public void removeSucceedingOperator(OperatorIDTuple opIDT) {
-		while(this.succeedingOperators.remove(opIDT));
+		while(this.succeedingOperators.remove(opIDT)){
+			// action plus break conditions is in the loop head!
+		}
 	}
 
 	/**
@@ -283,7 +284,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	public void setPrecedingOperator(final BasicOperator precedingOperator) {
 		this.precedingOperators = new LinkedList<BasicOperator>();
 		if (precedingOperator != null)
-			precedingOperators.add(precedingOperator);
+			this.precedingOperators.add(precedingOperator);
 	}
 
 	/**
@@ -319,7 +320,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * @return the first OperatorIDTuple, which contains op
 	 */
 	public OperatorIDTuple getOperatorIDTuple(final BasicOperator op) {
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			if (opid.getOperator().equals(op))
 				return opid;
 		}
@@ -337,8 +338,8 @@ public class BasicOperator implements Cloneable, Serializable {
 	 */
 	public void replaceOperatorIDTuple(final OperatorIDTuple oit1,
 			final OperatorIDTuple oit2) {
-		succeedingOperators.remove(oit1);
-		succeedingOperators.add(oit2);
+		this.succeedingOperators.remove(oit1);
+		this.succeedingOperators.add(oit2);
 	}
 
 	/**
@@ -352,6 +353,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			 */
 			private static final long serialVersionUID = 6919722882143749999L;
 
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				basicOperator.precedingOperators = new LinkedList<BasicOperator>();
 				return null;
@@ -372,6 +374,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			 */
 			private static final long serialVersionUID = -3649188246478511485L;
 			
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				for (final OperatorIDTuple opid : basicOperator.succeedingOperators) {
 					final BasicOperator op = opid.getOperator();
@@ -396,25 +399,26 @@ public class BasicOperator implements Cloneable, Serializable {
 	 *         merged message of all operands, which has been received from the
 	 *         succeeding operators
 	 */
-	public Message receive(Message msg, final BasicOperator from) {
+	public Message receive(Message message, final BasicOperator from) {
+		Message msg = message;
 		if (from != null) {
-			Map<BasicOperator, Message> received = messages.get(msg.getId());
+			Map<BasicOperator, Message> received = this.messages.get(msg.getId());
 			if (received == null) {
 				received = new HashMap<BasicOperator, Message>();
-				messages.put(msg.getId(), received);
+				this.messages.put(msg.getId(), received);
 			}
 			received.put(from, msg);
 
 			final HashSet<BasicOperator> operatorsWithoutCycles = new HashSet<BasicOperator>();
-			operatorsWithoutCycles.addAll(precedingOperators);
-			operatorsWithoutCycles.removeAll(cycleOperands);
+			operatorsWithoutCycles.addAll(this.precedingOperators);
+			operatorsWithoutCycles.removeAll(this.cycleOperands);
 
 			if (!received.keySet().containsAll(operatorsWithoutCycles)) {
 				return null;
 			}
 
-			if (received.keySet().containsAll(precedingOperators)) {
-				messages.remove(msg.getId());
+			if (received.keySet().containsAll(this.precedingOperators)) {
+				this.messages.remove(msg.getId());
 			}
 			msg = msg.merge(received.values(), this);
 		}
@@ -436,7 +440,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	protected Message forwardMessage(final Message msg) {
 		msg.setVisited(this);
 		Message result = msg;
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			if (!msg.hasVisited(opid.getOperator())) {
 				final Message msg2 = msg.clone();
 				result = opid.getOperator().receive(msg2, this);
@@ -448,14 +452,13 @@ public class BasicOperator implements Cloneable, Serializable {
 	/**
 	 * This method merges several received messages
 	 * 
-	 * @param messages
+	 * @param messagesParameter
 	 *            the received messages
 	 * @param msg
 	 *            the last received message
 	 * @return the merged message
 	 */
-	public Message mergeMessages(final Collection<Message> messages,
-			final Message msg) {
+	public Message mergeMessages(final Collection<Message> messagesParameter, final Message msg) {
 		return msg;
 	}
 
@@ -481,35 +484,43 @@ public class BasicOperator implements Cloneable, Serializable {
 		return msg;
 	}
 
-	public Message preProcessMessageDebug(final Message msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message preProcessMessageDebug(final Message msg, final DebugStep debugstep) {
 		return preProcessMessage(msg);
 	}
 
-	public Message preProcessMessageDebug(final StartOfEvaluationMessage msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message preProcessMessageDebug(final StartOfEvaluationMessage msg, final DebugStep debugstep) {
 		return preProcessMessage(msg);
 	}
 	
-	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		return preProcessMessage(msg);
 	}
 
-	public Message preProcessMessageDebug(final BoundVariablesMessage msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message preProcessMessageDebug(final BoundVariablesMessage msg, final DebugStep debugstep) {
 		return preProcessMessage(msg);
 	}
 
-	public Message postProcessMessageDebug(final Message msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message postProcessMessageDebug(final Message msg, final DebugStep debugstep) {
 		return postProcessMessage(msg);
 	}
 
-	public Message postProcessMessageDebug(final StartOfEvaluationMessage msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message postProcessMessageDebug(final StartOfEvaluationMessage msg, final DebugStep debugstep) {
 		return postProcessMessage(msg);
 	}
 	
-	public Message postProcessMessageDebug(final EndOfEvaluationMessage msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message postProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		return postProcessMessage(msg);
 	}
 
-	public Message postProcessMessageDebug(final BoundVariablesMessage msg, DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message postProcessMessageDebug(final BoundVariablesMessage msg, final DebugStep debugstep) {
 		return postProcessMessage(msg);
 	}
 
@@ -518,26 +529,25 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * This method computes the intersection and union of used variables. Note
 	 * that some operators override this method.
 	 * 
-	 * @param messages
+	 * @param messagesParameter
 	 *            the messages received from the operands of this operator
 	 * @param msg
 	 *            the last received message
 	 * @return the merged message
 	 */
-	public Message mergeMessages(final Collection<Message> messages,
-			final BoundVariablesMessage msg) {
-		intersectionVariables = new HashSet<Variable>();
-		intersectionVariables.addAll(msg.getVariables());
-		for (final Message m : messages) {
-			intersectionVariables.retainAll(((BoundVariablesMessage) m)
+	public Message mergeMessages(final Collection<Message> messagesParameter, final BoundVariablesMessage msg) {
+		this.intersectionVariables = new HashSet<Variable>();
+		this.intersectionVariables.addAll(msg.getVariables());
+		for (final Message m : messagesParameter) {
+			this.intersectionVariables.retainAll(((BoundVariablesMessage) m)
 					.getVariables());
 		}
-		unionVariables = new HashSet<Variable>();
-		for (final Message m : messages) {
-			unionVariables.addAll(((BoundVariablesMessage) m).getVariables());
+		this.unionVariables = new HashSet<Variable>();
+		for (final Message m : messagesParameter) {
+			this.unionVariables.addAll(((BoundVariablesMessage) m).getVariables());
 		}
 		final BoundVariablesMessage msg2 = new BoundVariablesMessage(msg);
-		msg2.setVariables(unionVariables);
+		msg2.setVariables(this.unionVariables);
 		return msg2;
 	}
 
@@ -583,8 +593,8 @@ public class BasicOperator implements Cloneable, Serializable {
 	 *            the last received message
 	 * @return the merged message
 	 */
-	public Message mergeMessages(final Collection<Message> messages,
-			final EndOfEvaluationMessage msg) {
+	@SuppressWarnings("unused")
+	public Message mergeMessages(final Collection<Message> messagesParameter, final EndOfEvaluationMessage msg) {
 		return msg;
 	}
 
@@ -619,8 +629,8 @@ public class BasicOperator implements Cloneable, Serializable {
 	 *            the last received message
 	 * @return the merged message
 	 */
-	public Message mergeMessages(final Collection<Message> messages,
-			final StartOfEvaluationMessage msg) {
+	@SuppressWarnings("unused")
+	public Message mergeMessages(final Collection<Message> messagesParameter, final StartOfEvaluationMessage msg) {
 		return msg;
 	}
 
@@ -639,21 +649,21 @@ public class BasicOperator implements Cloneable, Serializable {
 	 */
 	public void cloneFrom(final BasicOperator op) {
 		if (op.succeedingOperators != null) {
-			succeedingOperators = new LinkedList<OperatorIDTuple>();
-			succeedingOperators.addAll(op.succeedingOperators);
+			this.succeedingOperators = new LinkedList<OperatorIDTuple>();
+			this.succeedingOperators.addAll(op.succeedingOperators);
 		}
 		if (op.precedingOperators != null) {
-			precedingOperators = new LinkedList<BasicOperator>();
-			precedingOperators.addAll(op.precedingOperators);
+			this.precedingOperators = new LinkedList<BasicOperator>();
+			this.precedingOperators.addAll(op.precedingOperators);
 		}
-		messages = op.messages;
+		this.messages = op.messages;
 		if (op.intersectionVariables != null) {
-			intersectionVariables = new LinkedList<Variable>();
-			intersectionVariables.addAll(op.intersectionVariables);
+			this.intersectionVariables = new LinkedList<Variable>();
+			this.intersectionVariables.addAll(op.intersectionVariables);
 		}
 		if (op.unionVariables != null) {
-			unionVariables = new LinkedList<Variable>();
-			unionVariables.addAll(op.unionVariables);
+			this.unionVariables = new LinkedList<Variable>();
+			this.unionVariables.addAll(op.unionVariables);
 		}
 	}
 
@@ -669,6 +679,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			result = (BasicOperator) super.clone();
 			result.cloneFrom(this);
 		} catch (final CloneNotSupportedException ex) {
+			// just return null;
 		}
 		return result;
 	}
@@ -688,24 +699,25 @@ public class BasicOperator implements Cloneable, Serializable {
 
 			final Map<BasicOperator, BasicOperator> clones = new HashMap<BasicOperator, BasicOperator>();
 
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				BasicOperator cloneCurrent;
-				if (clones.containsKey(basicOperator)) {
-					cloneCurrent = clones.get(basicOperator);
+				if (this.clones.containsKey(basicOperator)) {
+					cloneCurrent = this.clones.get(basicOperator);
 				} else {
 					cloneCurrent = basicOperator.clone();
-					clones.put(basicOperator, cloneCurrent);
+					this.clones.put(basicOperator, cloneCurrent);
 				}
 
 				final LinkedList<OperatorIDTuple> newSucc = new LinkedList<OperatorIDTuple>();
 
 				for (final OperatorIDTuple opid : basicOperator.succeedingOperators) {
 					BasicOperator clone = null;
-					if (clones.containsKey(opid.getOperator())) {
-						clone = clones.get(opid.getOperator());
+					if (this.clones.containsKey(opid.getOperator())) {
+						clone = this.clones.get(opid.getOperator());
 					} else {
 						clone = opid.getOperator().clone();
-						clones.put(opid.getOperator(), clone);
+						this.clones.put(opid.getOperator(), clone);
 					}
 					newSucc.add(new OperatorIDTuple(clone, opid.getId()));
 				}
@@ -738,7 +750,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * @return the union of used variables
 	 */
 	public Collection<Variable> getUnionVariables() {
-		return unionVariables;
+		return this.unionVariables;
 	}
 
 	/**
@@ -747,8 +759,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * @param sortCriterium
 	 *            the intersection of used variables
 	 */
-	public void setIntersectionVariables(
-			final Collection<Variable> sortCriterium) {
+	public void setIntersectionVariables(final Collection<Variable> sortCriterium) {
 		this.intersectionVariables = sortCriterium;
 	}
 
@@ -758,7 +769,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * @return the intersection of used variables
 	 */
 	public Collection<Variable> getIntersectionVariables() {
-		return intersectionVariables;
+		return this.intersectionVariables;
 	}
 
 	/**
@@ -809,7 +820,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			return null;
 		hs.add(this);
 		final Object result = visitor.visit(this);
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			opid.getOperator().visit(visitor, hs);
 		}
 		return result;
@@ -854,7 +865,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			return result;
 		}
 
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			result = opid.getOperator().visitAndStop(visitor, hs);
 
 			if(result != null) {
@@ -876,7 +887,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * @return The object retrieved from processing the visitor on this
 	 *         operator.
 	 */
-	public Object visit(final OperatorGraphVisitor visitor, final Object data) {
+	public<T> Object visit(final OperatorGraphVisitor<T> visitor, final T data) {
 		return visit(visitor, data, new HashSet<BasicOperator>());
 	}
 
@@ -891,13 +902,13 @@ public class BasicOperator implements Cloneable, Serializable {
 	 * @return The object retrieved from processing the visitor on this
 	 *         operator.
 	 */
-	private Object visit(final OperatorGraphVisitor visitor, final Object data,
+	private<T> Object visit(final OperatorGraphVisitor<T> visitor, final T data,
 			final HashSet<BasicOperator> hs) {
 		if (hs.contains(this))
 			return null;
 		hs.add(this);
-		final Object result = visitor.visit(this, data);
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		final T result = visitor.visit(this, data);
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			opid.getOperator().visit(visitor, result, hs);
 		}
 		return result;
@@ -914,6 +925,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			 */
 			private static final long serialVersionUID = 5010278675133006511L;
 
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				basicOperator.cycleOperands.clear();
 				return null;
@@ -937,7 +949,7 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 		hs.add(this);
 		visited.add(this);
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			final int i = hs.indexOf(opid.getOperator());
 			if (i >= 0) {
 				opid.getOperator().cycleOperands.add(this);
@@ -947,14 +959,14 @@ public class BasicOperator implements Cloneable, Serializable {
 				}
 			}
 		}
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			opid.getOperator().detectCycles(hs, visited);
 		}
 		hs.remove(this);
 	}
 
 	public HashSet<BasicOperator> getCycleOperands() {
-		return cycleOperands;
+		return this.cycleOperands;
 	}
 
 	public void setCycleOperands(final HashSet<BasicOperator> cycleOperands) {
@@ -966,6 +978,7 @@ public class BasicOperator implements Cloneable, Serializable {
 		return this.getClass().getSimpleName();
 	}
 	
+	@SuppressWarnings("unused")
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return this.toString();
 	}
@@ -1014,7 +1027,7 @@ public class BasicOperator implements Cloneable, Serializable {
 			final DebugStep debugstep) {
 		msg.setVisited(this);
 		Message result = msg;
-		for (final OperatorIDTuple opid : succeedingOperators) {
+		for (final OperatorIDTuple opid : this.succeedingOperators) {
 			if (!msg.hasVisited(opid.getOperator())) {
 				final Message msg2 = msg.clone();
 				result = opid.getOperator().receiveDebug(msg2, this, debugstep);
@@ -1023,33 +1036,32 @@ public class BasicOperator implements Cloneable, Serializable {
 		return result;
 	}
 	
-	public Message preProcessMessageDebug(
-			final ComputeIntermediateResultMessage msg,
-			final DebugStep debugstep) {
+	@SuppressWarnings("unused")
+	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		return msg;
 	}
 	
-	public Message receiveDebug(Message msg, final BasicOperator from,
-			final DebugStep debugstep) {
+	public Message receiveDebug(final Message message, final BasicOperator from, final DebugStep debugstep) {
+		Message msg = message;
 		if (from != null) {
 			debugstep.stepMessage(from, this, msg);
-			Map<BasicOperator, Message> received = messages.get(msg.getId());
+			Map<BasicOperator, Message> received = this.messages.get(msg.getId());
 			if (received == null) {
 				received = new HashMap<BasicOperator, Message>();
-				messages.put(msg.getId(), received);
+				this.messages.put(msg.getId(), received);
 			}
 			received.put(from, msg);
 
 			final HashSet<BasicOperator> operatorsWithoutCycles = new HashSet<BasicOperator>();
-			operatorsWithoutCycles.addAll(precedingOperators);
-			operatorsWithoutCycles.removeAll(cycleOperands);
+			operatorsWithoutCycles.addAll(this.precedingOperators);
+			operatorsWithoutCycles.removeAll(this.cycleOperands);
 
 			if (!received.keySet().containsAll(operatorsWithoutCycles)) {
 				return null;
 			}
 
-			if (received.keySet().containsAll(precedingOperators)) {
-				messages.remove(msg.getId());
+			if (received.keySet().containsAll(this.precedingOperators)) {
+				this.messages.remove(msg.getId());
 			}
 			msg = msg.merge(received.values(), this);
 		}
@@ -1071,6 +1083,7 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public boolean remainsSortedData(Collection<Variable> sortCriterium){
 		return false;
 	}

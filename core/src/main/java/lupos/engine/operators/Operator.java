@@ -70,13 +70,16 @@ public class Operator extends BasicOperator {
 		return process(queryResult, operandID);
 	}
 
+	@SuppressWarnings("unused")
 	public void deleteQueryResult(final int operandID) {
+		// to be overriden if an operator intermediately stores a QueryResult (e.g. pipeline-breakers) and a QueryResult must be deleted...
 	}
 
 	/**
 	 * The standard constructor
 	 */
 	public Operator() {
+		// no initialization
 	}
 
 	/**
@@ -112,10 +115,10 @@ public class Operator extends BasicOperator {
 		final QueryResult opp = process(queryResult, operandID);
 		if (opp == null)
 			return;
-		if (succeedingOperators.size() > 1) {
+		if (this.succeedingOperators.size() > 1) {
 			opp.materialize();
 		}
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			((Operator) opId.getOperator()).processAll(opp, opId.getId());
 		}
 	}
@@ -134,11 +137,11 @@ public class Operator extends BasicOperator {
 		if (!this.isPipelineBreaker()) {
 			if (opp == null)
 				return;
-			if (succeedingOperators.size() > 1) {
+			if (this.succeedingOperators.size() > 1) {
 				opp.materialize();
 			}
 		}
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			if (this.isPipelineBreaker()) {
 				((Operator) opId.getOperator()).deleteAll(opId.getId());
 			} else
@@ -152,7 +155,7 @@ public class Operator extends BasicOperator {
 	}
 
 	public void deleteAllAtSucceedingOperators() {
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			((Operator) opId.getOperator()).deleteAll(opId.getId());
 		}
 	}
@@ -192,11 +195,11 @@ public class Operator extends BasicOperator {
 		if (!this.isPipelineBreaker()) {
 			if (opp == null)
 				return;
-			if (succeedingOperators.size() > 1) {
+			if (this.succeedingOperators.size() > 1) {
 				opp.materialize();
 			}
 		}
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			if (this.isPipelineBreaker()) {
 				debugstep.stepDeleteAll(this, opId.getOperator());
 				((Operator) opId.getOperator()).deleteAllDebug(opId.getId(),
@@ -211,7 +214,7 @@ public class Operator extends BasicOperator {
 	}
 	
 	public void deleteAllDebugAtSucceedingOperators(final DebugStep debugstep) {
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			debugstep.stepDeleteAll(this, opId.getOperator());
 			((Operator) opId.getOperator()).deleteAllDebug(opId.getId(),
 					debugstep);
@@ -228,19 +231,17 @@ public class Operator extends BasicOperator {
 	 * @param operandID
 	 *            the operand number
 	 */
-	public void processAllDebug(final QueryResult queryResult,
-			final int operandID, final DebugStep debugstep) {
+	public void processAllDebug(final QueryResult queryResult, final int operandID, final DebugStep debugstep) {
 		final QueryResult opp = process(queryResult, operandID);
-		if (opp == null)
+		if (opp == null){
 			return;
-		if (succeedingOperators.size() > 1) {
+		}
+		if (this.succeedingOperators.size() > 1) {
 			opp.materialize();
 		}
-		for (final OperatorIDTuple opId : succeedingOperators) {
-			final QueryResultDebug qrDebug = new QueryResultDebug(opp,
-					debugstep, this, opId.getOperator(), true);
-			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
-					.getId(), debugstep);
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
+			final QueryResultDebug qrDebug = new QueryResultDebug(opp, debugstep, this, opId.getOperator(), true);
+			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 		}
 	}
 }

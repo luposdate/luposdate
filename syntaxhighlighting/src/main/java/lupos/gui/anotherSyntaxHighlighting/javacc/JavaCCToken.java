@@ -21,23 +21,17 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.anotherSyntaxHighlighting;
+package lupos.gui.anotherSyntaxHighlighting.javacc;
 
+import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM;
-import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 
+public abstract class JavaCCToken implements ILuposToken {
+	protected final int ID;
+	protected final String contents;
 
-/**
- * {@link SemanticWebToken}
- *
- */
-public class SemanticWebToken implements ILuposToken {
-	
-	private final int ID;
-	private final String contents;
-
-	private final int beginChar;
-	private final int endChar;
+	protected final int beginChar;
+	protected final int endChar;
 	
 	/**
 	 * Create a new token. The constructor is typically called by the parser.
@@ -55,7 +49,7 @@ public class SemanticWebToken implements ILuposToken {
 	 *            the offset into the input in characters at which this token
 	 *            ended
 	 */
-	public SemanticWebToken(int ID, String contents, int beginChar, int endChar) {
+	public JavaCCToken(int ID, String contents, int beginChar, int endChar) {
 		this.ID = ID;
 		this.contents = new String(contents);
 		this.beginChar = beginChar;
@@ -63,20 +57,10 @@ public class SemanticWebToken implements ILuposToken {
 	}
 
 
-	public SemanticWebToken(TYPE__SemanticWeb description, String contents, int beginChar) {
+	public JavaCCToken(TYPE_ENUM description, String contents, int beginChar) {
 		this(description.ordinal(), contents, beginChar, beginChar + contents.length());
 	}
 
-	/**
-	 * A description of this token. The description should be appropriate for
-	 * syntax highlighting. For example "comment" is returned for a comment.
-	 * 
-	 * @return a description of this token.
-	 */
-	@Override
-	public TYPE__SemanticWeb getDescription() {
-		return TYPE__SemanticWeb.values()[this.ID];
-	}
 
 	/**
 	 * get a String that explains the error, if this token is an error.
@@ -111,33 +95,29 @@ public class SemanticWebToken implements ILuposToken {
 	 * @return the iD
 	 */
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
 
 	/**
 	 * @return the contents
 	 */
+	@Override
 	public String getContents() {
-		return contents;
+		return this.contents;
 	}
 
 	/**
 	 * @return the beginChar
 	 */
+	@Override
 	public int getBeginChar() {
-		return beginChar;
+		return this.beginChar;
 	}
 
 	/**
 	 * @return the endChar
 	 */
 	public int getEndChar() {
-		return endChar;
-	}
-
-
-	@Override
-	public ILuposToken create(TYPE_ENUM description, String contents, int beginChar) {
-		return new SemanticWebToken((TYPE__SemanticWeb)description, contents, beginChar);
+		return this.endChar;
 	}
 }

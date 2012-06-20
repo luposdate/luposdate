@@ -901,6 +901,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			case HASHSETBLOCKING:
 				to = "HashBlockingDistinct";
 				break;
+			case LAZYHASHSETBLOCKING:
+				to = "HashBlockingDistinct";
+				break;
 			case HASHSET:
 				to = "InMemoryDistinct";
 				break;

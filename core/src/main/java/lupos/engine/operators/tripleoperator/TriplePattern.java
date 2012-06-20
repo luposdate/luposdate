@@ -426,7 +426,7 @@ TripleDeleter, Iterable<Item> {
 
 	public HashSet<Variable> getVariables() {
 		final HashSet<Variable> h = new HashSet<Variable>();
-		for (final Item i : items) {
+		for (final Item i : this.items) {
 			if (i.isVariable()) {
 				h.add((Variable) i);
 			}

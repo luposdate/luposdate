@@ -26,5 +26,5 @@ package lupos.engine.operators.singleinput;
 import lupos.engine.operators.Operator;
 
 public abstract class SingleInputOperator extends Operator {
-
+	// just use this class in class hierarchy to check for operators with one operand by "myOperator instanceof SingleInputOperator"
 }

@@ -89,7 +89,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	}
 
 	public enum DISTINCT {
-		DEFAULT, DBSETBLOCKING, HASHSETBLOCKING, HASHSET, SMALLERINHASHSETLARGERINDBSET;
+		DEFAULT, DBSETBLOCKING, HASHSETBLOCKING, HASHSET, SMALLERINHASHSETLARGERINDBSET, LAZYHASHSETBLOCKING;
 	}
 
 	public enum STORAGE {
@@ -453,8 +453,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	}
 	
 	@Override
-	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(
-			final Prefix prefixInstance) {
+	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
 		physicalOptimization();
 		final LinkedList<DebugContainer<BasicOperatorByteArray>> debug = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 		debug.add(new DebugContainer<BasicOperatorByteArray>(
@@ -475,6 +474,17 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		evaluateQuery();
 		return cr.getResult();
 	}
+
+	public QueryResult[] getResults() throws Exception {
+		return this.getResults(false);
+	}
+
+	public QueryResult[] getResults(final boolean oneTime) throws Exception {
+		final CollectAllResults cr = new CollectAllResults(oneTime);
+		this.result.addApplication(cr);
+		evaluateQuery();
+		return cr.getQueryResults();
+	}
 	
 	public QueryResult getResult(final String query, final boolean oneTime) throws Exception {
 		compileQuery(query);
@@ -482,6 +492,13 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		physicalOptimization();
 		return getResult(oneTime);
 	}
+	
+	public QueryResult[] getResults(final String query, final boolean oneTime) throws Exception {
+		compileQuery(query);
+		logicalOptimization();
+		physicalOptimization();
+		return getResults(oneTime);
+	}	
 
 	public CollectAllResults getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);

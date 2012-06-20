@@ -33,7 +33,7 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor
 public
 class ASTFloatingPoint extends SimpleNode {
 
-  private String value;
+  private String valueFloatingPoint;
 
   public ASTFloatingPoint(int id) {
     super(id);
@@ -45,15 +45,15 @@ class ASTFloatingPoint extends SimpleNode {
 
 
   public String getValue() {
-	return value;
+	return this.valueFloatingPoint;
   }
 
   public void setValue(String value) {
-	this.value = value;
+	this.valueFloatingPoint = value;
   }
 
   public String getValueWithoutLeadingPlus(){
-	  String zValue = this.value;
+	  String zValue = this.valueFloatingPoint;
 	  while(zValue.startsWith("+")){
 		  zValue = zValue.substring(1, zValue.length());
 	  }
@@ -62,18 +62,21 @@ class ASTFloatingPoint extends SimpleNode {
   
   @Override
   public String toString() {
-	return super.toString() + "  " + value;
+	return super.toString() + "  " + this.valueFloatingPoint;
   }
 
   /** Accept the visitor. **/
+  @Override
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
+    @Override
   public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
   
+  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
 	    return visitor.evaluate(this, b, data);
