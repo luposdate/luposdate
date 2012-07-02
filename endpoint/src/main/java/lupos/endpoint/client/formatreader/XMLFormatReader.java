@@ -59,6 +59,8 @@ public class XMLFormatReader extends MIMEFormatReader {
 	private volatile boolean decision = false;
 	private volatile boolean booleanResult = false;
 	private volatile boolean resultOfBooleanResult;
+	
+	protected static int BUFFERSIZE = 50;
 
 	public XMLFormatReader() {
 		super("XML", XMLFormatReader.MIMETYPE);
@@ -71,7 +73,7 @@ public class XMLFormatReader extends MIMEFormatReader {
 
 	@Override
 	public QueryResult getQueryResult(final InputStream inputStream) {
-		final BoundedBuffer<Bindings> boundedBuffer = new BoundedBuffer<Bindings>();
+		final BoundedBuffer<Bindings> boundedBuffer = new BoundedBuffer<Bindings>(BUFFERSIZE);
 		
 		final ParseThread parseThread = new ParseThread(inputStream, boundedBuffer);
 		parseThread.start();
@@ -128,7 +130,12 @@ public class XMLFormatReader extends MIMEFormatReader {
 				@Override
 				public void close() {
 					boundedBuffer.stopIt();
-				}			
+				}
+				
+				@Override
+				public void finalize(){
+					this.close();
+				}
 			});
 		}
 	}

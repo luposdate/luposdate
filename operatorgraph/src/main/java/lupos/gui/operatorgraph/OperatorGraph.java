@@ -340,7 +340,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 	}
 
 	public void addToRootList(final GraphWrapper gw) {
-		this.rootList.add(gw);
+		if(!this.rootList.contains(gw)){
+			this.rootList.add(gw);
+		}
 	}
 
 	/**

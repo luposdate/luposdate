@@ -26,6 +26,7 @@ package lupos.gui.operatorgraph.visualeditor.queryeditor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -711,7 +712,7 @@ public class AdvancedQueryEditor extends QueryEditor {
 		}
 	}
 
-	private JPanel generatePrefixCheckBox(final QueryResult resultQueryEvaluator) {
+	private JPanel generatePrefixCheckBox(final QueryResult resultQueryEvaluator, final Container toValidate) {
 		// create CheckBox for line colors, add actionListener and add it to
 		// Applet...
 		final JCheckBox cb_prefixes = new JCheckBox("Use prefixes", true);
@@ -729,7 +730,9 @@ public class AdvancedQueryEditor extends QueryEditor {
 
 				resultpanel.removeAll();
 				updateBrowserContent(resultQueryEvaluator);
-				frame.getContentPane().validate();
+				if(toValidate!=null){
+					toValidate.validate();
+				}
 			}
 		});
 
@@ -854,8 +857,7 @@ public class AdvancedQueryEditor extends QueryEditor {
 	private void outputTableResult(final Object[][] rows,
 			final String[] tableHead, final QueryResult resultQueryEvaluator,
 			final JPanel toBeAddedBeforeTable) {
-		this.resultpanel.add(this.generatePrefixCheckBox(resultQueryEvaluator),
-				BorderLayout.NORTH);
+		this.resultpanel.add(this.generatePrefixCheckBox(resultQueryEvaluator, this.resultpanel), BorderLayout.NORTH);
 
 		if (this.usePrefixes) {
 			final JPanel pPanel = new JPanel(new BorderLayout());

@@ -47,10 +47,10 @@ import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
 
 public class ContainerPanel extends AbstractGuiComponent<Operator> implements ContainerArrange{
 	private static final long serialVersionUID = 1L;
-	private VisualGraph<Operator> qg = null;
-	private final JScrollPane graphSP;
-	private final JPanel graphPanel;
-	private final JLabel resizeLabel;
+	protected VisualGraph<Operator> qg = null;
+	protected final JScrollPane graphSP;
+	protected final JPanel graphPanel;
+	protected final JLabel resizeLabel;
 
 	public ContainerPanel(final OperatorContainer operator, final GraphWrapper gw, final JPanel graphPanel, final VisualGraph<Operator> qg, final VisualGraph<Operator> parent) {
 		super(parent, gw, operator, true);

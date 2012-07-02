@@ -109,9 +109,7 @@ public class Client {
 			Thread.dumpStack();
 			System.err.println("Just try out application/sparql-results+xml as default...");
 			reader = Client.registeredFormatReaders.get("application/sparql-results+xml");
-			if(reader!=null){
-				reader.getQueryResult(response.getSecond());
-			} else {
+			if(reader==null){
 				return null;
 			}
 		}		
@@ -146,7 +144,7 @@ public class Client {
 			httpurirequest = new HttpGet(urlAndParams);
 		} else {
 			HttpPost httppost = new HttpPost(url);
-			httppost.setEntity(new UrlEncodedFormEntity(content, HTTP.UTF_8));
+			httppost.setEntity(new UrlEncodedFormEntity(content, org.apache.commons.lang.CharEncoding.UTF_8));
 			httpurirequest = httppost;
 		}
 		HttpResponse response = httpclient.execute(httpurirequest);

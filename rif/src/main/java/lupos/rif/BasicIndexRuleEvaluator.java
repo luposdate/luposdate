@@ -41,7 +41,9 @@ import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
+import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.evaluators.QueryEvaluator;
+import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.evaluators.StreamQueryEvaluator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
@@ -81,7 +83,6 @@ import lupos.optimizations.logical.rules.generated.RIFRules11RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules12RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules13RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules14RulePackage;
-import lupos.optimizations.logical.rules.generated.RIFRulesRulePackage;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
@@ -106,10 +107,55 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	private CompilationUnit compilationUnit;
 	private Document rifDocument;
 
+	/**
+	 * This constructor initializes the rule evaluator using the given query evaluator as underlying query evaluator
+	 * @param evaluator the underlying query evaluator
+	 * @throws Exception
+	 */
 	public BasicIndexRuleEvaluator(final CommonCoreQueryEvaluator<Node> evaluator)
 			throws Exception {
 		super();
 		this.evaluator = evaluator;
+	}
+	
+	/**
+	 * this constructor setups a rule evaluator, which works in main memory
+	 * @throws Exception 
+	 */
+	public BasicIndexRuleEvaluator() throws Exception{
+		this(false);
+	}
+	
+	/**
+	 * this constructor setups a rule evaluator, which works in main memory
+	 * @param stream if stream is true the rule evaluator for streams is used, otherwise the main memory evaluator
+	 * @throws Exception 
+	 */
+	public BasicIndexRuleEvaluator(boolean stream) throws Exception{
+		super();
+		this.evaluator = (stream)? new StreamQueryEvaluator(): new MemoryIndexQueryEvaluator(); 
+		this.evaluator.setupArguments();
+		this.evaluator.getArgs().set("debug", DEBUG.ALL);
+		this.evaluator.getArgs().set("result", QueryResult.TYPE.MEMORY);
+		this.evaluator.getArgs().set("codemap", LiteralFactory.MapType.HASHMAP);
+		this.evaluator.getArgs().set("distinct", CommonCoreQueryEvaluator.DISTINCT.HASHSET);
+		this.evaluator.getArgs().set("optional", CommonCoreQueryEvaluator.JOIN.HASHMAPINDEX);
+		this.evaluator.getArgs().set("type", "Turtle");
+		this.evaluator.getArgs().set("datastructure", Indices.DATA_STRUCT.HASHMAP);
+		this.evaluator.init();	
+	}
+	
+	/**
+	 * this constructor setups a rule evaluator, which uses disk-based indices
+	 * (it uses a RDF3XQueryEvaluator as underlying query evaluator)
+	 * @param directoryOfIndices the directory, in which the indices have been constructed
+	 * @throws Exception 
+	 */
+	public BasicIndexRuleEvaluator(String directoryOfIndices) throws Exception{
+		super();
+		RDF3XQueryEvaluator rdf3xEvaluator = new RDF3XQueryEvaluator();
+		rdf3xEvaluator.loadLargeScaleIndices(directoryOfIndices);
+		this.evaluator = rdf3xEvaluator;
 	}
 
 	@Override

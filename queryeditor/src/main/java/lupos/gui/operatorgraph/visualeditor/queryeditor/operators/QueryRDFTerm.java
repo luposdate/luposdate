@@ -29,6 +29,7 @@ import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
+import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
 
 public class QueryRDFTerm extends RDFTerm {
 	public QueryRDFTerm(Prefix prefix) {

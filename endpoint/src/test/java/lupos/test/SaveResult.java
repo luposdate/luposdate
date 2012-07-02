@@ -27,7 +27,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.XMLFormatter;

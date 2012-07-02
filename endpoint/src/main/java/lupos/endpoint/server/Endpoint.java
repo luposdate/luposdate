@@ -227,6 +227,7 @@ public class Endpoint {
 							final String mimeType = formatter.getMIMEType(queryResult);
 							System.out.println("Done, sending response using MIME type "+mimeType);
 							t.getResponseHeaders().add("Content-type", mimeType);
+							t.getResponseHeaders().add("Transfer-encoding", "chunked");
 							t.sendResponseHeaders(200, 0);
 							OutputStream os = t.getResponseBody();
 							if(log){

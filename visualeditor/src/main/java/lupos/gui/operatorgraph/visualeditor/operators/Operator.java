@@ -437,11 +437,13 @@ public abstract class Operator implements IPrefix {
 			}
 		}
 
+		this.annotationLabels.get(child).delete();
+		
 		if(child.getPrecedingOperators().size() == 0) {
-			this.annotationLabels.get(child).getParentQG().addToRootList(this.annotationLabels.get(child).getParentQG().createGraphWrapper(child));
+			VisualGraph<Operator> parentGQ = this.annotationLabels.get(child).getParentQG();
+			parentGQ.addToRootList(parentGQ.createGraphWrapper(child));
 		}
 
-		this.annotationLabels.get(child).delete();
 		this.annotationLabels.remove(child);
 	}
 
