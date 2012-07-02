@@ -42,9 +42,9 @@ public class HashFunction {
 	}
 
 	public HashFunction() {
-		functionElements = new long[MAXCOMPONENTS];
+		this.functionElements = new long[MAXCOMPONENTS];
 		for (int i = 0; i < this.functionElements.length; i++) {
-			functionElements[i] = (long) (Math.random() * prim);
+			this.functionElements[i] = (long) (Math.random() * prim);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class HashFunction {
 	public long hash(final String s) {
 		long hash = 0;
 		for (int i = 0; i < Math.min(s.length(), this.functionElements.length); i++) {
-			hash = (hash + ((s.charAt(i) * functionElements[i]) % prim) % prim);
+			hash = (hash + ((s.charAt(i) * this.functionElements[i]) % prim) % prim);
 		}
 		return hash;
 	}
@@ -76,7 +76,7 @@ public class HashFunction {
 		for (final Literal lit : key) {
 			if (i >= this.functionElements.length)
 				break;
-			hash = (hash + ((lit.hashCode() * functionElements[i]) % prim)
+			hash = (hash + ((lit.hashCode() * this.functionElements[i]) % prim)
 					% prim);
 			if (hash < 0)
 				hash *= -1;
@@ -86,7 +86,7 @@ public class HashFunction {
 	}
 
 	public long hash(final Literal lit) {
-		long hash = (lit.hashCode() * functionElements[0]) % prim;
+		long hash = (lit.hashCode() * this.functionElements[0]) % prim;
 		if (hash < 0)
 			hash *= -1;
 		return hash;

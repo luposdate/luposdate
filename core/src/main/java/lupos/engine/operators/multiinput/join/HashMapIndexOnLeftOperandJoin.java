@@ -23,16 +23,14 @@
  */
 package lupos.engine.operators.multiinput.join;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
 
-public class HybridIndexJoin extends IndexJoin {
-
-	@SuppressWarnings("unchecked")
+public class HashMapIndexOnLeftOperandJoin extends IndexOnLeftOperandJoin {
 	@Override
-	public void init() {
-		this.lba = new MapImplementation[2];
-		this.lba[0] = new MapImplementation<String, QueryResult>();
-		this.lba[1] = new MapImplementation<String, QueryResult>();
+	public Map<String, QueryResult> createDatastructure() {
+		return new HashMap<String, QueryResult>();
 	}
 }

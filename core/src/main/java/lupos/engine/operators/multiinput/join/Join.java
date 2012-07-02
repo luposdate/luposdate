@@ -40,10 +40,11 @@ public class Join extends MultiInputOperator {
 	protected int realCardinality = -1;
 
 	public Join() {
+		// no initializations...
 	}
 
 	public double getEstimatedCardinality() {
-		return estimatedCardinality;
+		return this.estimatedCardinality;
 	}
 
 	public void setEstimatedCardinality(final double estimatedCardinality) {
@@ -51,7 +52,7 @@ public class Join extends MultiInputOperator {
 	}
 
 	public int getRealCardinality() {
-		return realCardinality;
+		return this.realCardinality;
 	}
 
 	public void setRealCardinality(final int realCardinality) {
@@ -165,6 +166,37 @@ public class Join extends MultiInputOperator {
 		return true;
 	}
 
+	public static Bindings joinBindingsAndReturnBindings(final Bindings bindings1, final Bindings bindings2) {
+
+		// only the keys of the second bindings object have to be
+		// checked since the the first bindings object is updated
+		for (final Variable b2key : bindings2.getVariableSet()) {
+
+			final Literal literalB2 = bindings2.get(b2key);
+			final Literal literalB1 = bindings1.get(b2key);
+
+			// if the literal computed from the second bindings conflicts with
+			// the corresponding one located in the first bindings object,
+			// null is returned to indicate an unsolvable conflict
+			if (literalB1 != null) {
+				if (!literalB1.valueEquals(literalB2)) {
+					return null;
+				}
+			}
+
+			// otherwise add the new binding of the key and literal to
+			// the first bindings object
+			else {
+				bindings1.add(b2key, literalB2);
+			}
+
+		}
+
+		bindings1.addAllTriples(bindings2);
+		bindings1.addAllPresortingNumbers(bindings2);
+		return bindings1;
+	}
+	
 	public static boolean joinBindings_tmp(final QueryResult result,
 			final Bindings bindings1, final Bindings bindings2) {
 

@@ -36,57 +36,62 @@ public class StringIntegerMapJava implements StringIntegerMap {
 	private Map<String, Integer> m;
 	private Map<String, Integer> original;
 
+	@SuppressWarnings("rawtypes")
 	public StringIntegerMapJava(final MapType mapType) {
 		switch (mapType) {
 		case HASHMAP:
-			original = new HashMap<String, Integer>();
+			this.original = new HashMap<String, Integer>();
 			break;
 		case DBBPTREE:
 			try {
-				original = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
+				this.original = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
 						300, 300,
 						new StandardNodeDeSerializer<String, Integer>(
 								String.class, Integer.class));
-				((lupos.datastructures.paged_dbbptree.DBBPTree)original).setName("Dictionary: String->Integer");
+				((lupos.datastructures.paged_dbbptree.DBBPTree)this.original).setName("Dictionary: String->Integer");
 			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
 			break;
 		default:
-			original = new MapImplementation<String, Integer>();
+			this.original = new MapImplementation<String, Integer>();
 			break;
 		}
-		if (original != null)
-			m = Collections.synchronizedMap(original);
+		if (this.original != null)
+			this.m = Collections.synchronizedMap(this.original);
 	}
 
 	public StringIntegerMapJava(final Map<String, Integer> map) {
-		original = map;
-		m = Collections.synchronizedMap(map);
+		this.original = map;
+		this.m = Collections.synchronizedMap(map);
 	}
 
+	@Override
 	public Integer get(final String s) {
-		return m.get(s);
+		return this.m.get(s);
 	}
 
+	@Override
 	public void put(final String s, final int value) {
-		m.put(s, value);
+		this.m.put(s, value);
 	}
 
+	@Override
 	public int size() {
-		return m.size();
+		return this.m.size();
 	}
 
+	@Override
 	public void clear() {
-		m.clear();
+		this.m.clear();
 	}
 
 	public Map<String, Integer> getMap() {
-		return m;
+		return this.m;
 	}
 
 	public Map<String, Integer> getOriginalMap() {
-		return original;
+		return this.original;
 	}
 }

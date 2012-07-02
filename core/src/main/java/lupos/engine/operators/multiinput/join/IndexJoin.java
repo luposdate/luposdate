@@ -52,8 +52,7 @@ public abstract class IndexJoin extends Join {
 	public abstract void init();
 
 	@Override
-	public synchronized QueryResult process(final QueryResult bindings,
-			final int operandID) {
+	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
 		final QueryResult result = QueryResult.createInstance();
 
 		int otherOperand = 1-operandID;
@@ -63,17 +62,17 @@ public abstract class IndexJoin extends Join {
 
 			final Bindings binding = itbindings.next();
 			String keyJoin = "";
-			final Iterator<Variable> it = intersectionVariables.iterator();
+			final Iterator<Variable> it = this.intersectionVariables.iterator();
 			while (it.hasNext()) {
 				final Literal literal = binding.get(it.next());
 				if (literal == null) {
-					cartesianProduct[operandID].add(binding);
+					this.cartesianProduct[operandID].add(binding);
 					// build the cartesian product
-					for (final Bindings b2 : cartesianProduct[otherOperand]) {
+					for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 						joinBindings(result, binding.clone(), b2);
 					}
 
-					for (final QueryResult qr : lba[otherOperand].values()) {
+					for (final QueryResult qr : this.lba[otherOperand].values()) {
 						for (final Bindings b2 : qr) {
 							joinBindings(result, binding.clone(), b2);
 						}
@@ -88,13 +87,13 @@ public abstract class IndexJoin extends Join {
 			if (keyJoin == null)
 				continue;
 
-			QueryResult lb = lba[operandID].get(keyJoin);
+			QueryResult lb = this.lba[operandID].get(keyJoin);
 			if (lb == null)
 				lb = QueryResult.createInstance();
 			lb.add(binding);
-			lba[operandID].put(keyJoin, lb);
+			this.lba[operandID].put(keyJoin, lb);
 
-			final QueryResult toJoin = lba[otherOperand].get(keyJoin);
+			final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
 			if (toJoin != null) {
 
 				final Iterator<Bindings> itb = toJoin.iterator();
@@ -106,7 +105,7 @@ public abstract class IndexJoin extends Join {
 			}
 
 			// build cartesian product
-			for (final Bindings b2 : cartesianProduct[otherOperand]) {
+			for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 				joinBindings(result, binding.clone(), b2);
 			}
 		}
@@ -135,13 +134,13 @@ public abstract class IndexJoin extends Join {
 		while (itbindings.hasNext()) {
 			final Bindings binding = itbindings.next();
 			String keyJoin = "";
-			final Iterator<Variable> it = intersectionVariables.iterator();
+			final Iterator<Variable> it = this.intersectionVariables.iterator();
 			while (it.hasNext()) {
 				final Literal literal = binding.get(it.next());
 				if (literal == null) {
-					cartesianProduct[operandID].add(binding);
+					this.cartesianProduct[operandID].add(binding);
 					// build the cartesian product
-					for (final Bindings b2 : cartesianProduct[otherOperand]) {
+					for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 						if(joinBindings(result, binding.clone(), b2)){
 							if (operandID == 1) {
 								joinPartnerFromLeftOperand.add(b2);
@@ -151,7 +150,7 @@ public abstract class IndexJoin extends Join {
 						}
 					}
 
-					for (final QueryResult qr : lba[otherOperand].values()) {
+					for (final QueryResult qr : this.lba[otherOperand].values()) {
 						for (final Bindings b2 : qr) {
 							if(joinBindings(result, binding.clone(), b2)){
 								if (operandID == 1) {
@@ -172,13 +171,13 @@ public abstract class IndexJoin extends Join {
 			if (keyJoin == null)
 				continue;
 			
-			QueryResult lb = lba[operandID].get(keyJoin);
+			QueryResult lb = this.lba[operandID].get(keyJoin);
 			if (lb == null)
 				lb = QueryResult.createInstance();
 			lb.add(binding);
-			lba[operandID].put(keyJoin, lb);
+			this.lba[operandID].put(keyJoin, lb);
 
-			final QueryResult toJoin = lba[otherOperand].get(keyJoin);
+			final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
 			if (toJoin != null) {
 
 				final Iterator<Bindings> itb = toJoin.iterator();
@@ -196,7 +195,7 @@ public abstract class IndexJoin extends Join {
 				}
 			}
 			// build cartesian product
-			for (final Bindings b2 : cartesianProduct[otherOperand]) {
+			for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 				if(joinBindings(result, binding.clone(), b2)){
 					if (operandID == 1) {
 						joinPartnerFromLeftOperand.add(b2);
@@ -215,19 +214,21 @@ public abstract class IndexJoin extends Join {
 	}
 
 	public Map<String, QueryResult>[] getLba() {
-		return lba;
+		return this.lba;
 	}
 
 	public QueryResult[] getCartesianProduct() {
-		return cartesianProduct;
+		return this.cartesianProduct;
 	}
 
+	@Override
 	public void deleteAll(final int operandID) {
-		cartesianProduct[operandID].release();
-		cartesianProduct[operandID] = QueryResult.createInstance();
-		lba[operandID].clear();
+		this.cartesianProduct[operandID].release();
+		this.cartesianProduct[operandID] = QueryResult.createInstance();
+		this.lba[operandID].clear();
 	}
 
+	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
 		final QueryResult result = QueryResult.createInstance();
@@ -243,17 +244,17 @@ public abstract class IndexJoin extends Join {
 
 			final Bindings binding = itbindings.next();
 			String keyJoin = "";
-			final Iterator<Variable> it = intersectionVariables.iterator();
+			final Iterator<Variable> it = this.intersectionVariables.iterator();
 			while (it.hasNext()) {
 				final Literal literal = binding.get(it.next());
 				if (literal == null) {
-					cartesianProduct[operandID].remove(binding);
+					this.cartesianProduct[operandID].remove(binding);
 					// build the cartesian product
-					for (final Bindings b2 : cartesianProduct[otherOperand]) {
+					for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 						joinBindings(result, binding.clone(), b2);
 					}
 
-					for (final QueryResult qr : lba[otherOperand].values()) {
+					for (final QueryResult qr : this.lba[otherOperand].values()) {
 						for (final Bindings b2 : qr) {
 							joinBindings(result, binding.clone(), b2);
 						}
@@ -268,12 +269,12 @@ public abstract class IndexJoin extends Join {
 			if (keyJoin == null)
 				continue;
 
-			final QueryResult lb = lba[operandID].get(keyJoin);
+			final QueryResult lb = this.lba[operandID].get(keyJoin);
 			if (lb != null)
 				lb.remove(binding);
-			lba[operandID].put(keyJoin, lb);
+			this.lba[operandID].put(keyJoin, lb);
 
-			final QueryResult toJoin = lba[otherOperand].get(keyJoin);
+			final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
 			if (toJoin != null) {
 
 				final Iterator<Bindings> itb = toJoin.iterator();
@@ -285,7 +286,7 @@ public abstract class IndexJoin extends Join {
 			}
 
 			// build cartesian product
-			for (final Bindings b2 : cartesianProduct[otherOperand]) {
+			for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 				joinBindings(result, binding.clone(), b2);
 			}
 		}
