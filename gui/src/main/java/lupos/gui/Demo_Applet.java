@@ -700,21 +700,22 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		bt_visualEdit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
-				new DataEditor(Demo_Applet.this.tp_dataInput.getText(), myself, getIcon(Demo_Applet.this.webdemo));
+				new DataEditor(Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
 			}
 		});
 
 		final JButton bt_CondensedView = new JButton("Condense Data");
 		bt_CondensedView.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if (prefixInstance == null)
-					prefixInstance = new ViewerPrefix(usePrefixes.isTrue(), null);
+				if (Demo_Applet.this.prefixInstance == null)
+					Demo_Applet.this.prefixInstance = new ViewerPrefix(Demo_Applet.this.usePrefixes.isTrue(), null);
 				final CondensedViewToolBar toolBar = new CondensedViewToolBar(
 						Demo_Applet.this.tp_dataInput.getText(),
-						prefixInstance);
-				final CondensedViewViewer operatorGraphViewer = new CondensedViewViewer(
-						prefixInstance, false, getIcon(webdemo), toolBar);
-				toolBar.setOperatorGraphViewer(operatorGraphViewer);
+						Demo_Applet.this.prefixInstance);
+				final CondensedViewViewer operatorGraphViewer1 = new CondensedViewViewer(
+						Demo_Applet.this.prefixInstance, false, getIcon(Demo_Applet.this.webdemo), toolBar);
+				toolBar.setOperatorGraphViewer(operatorGraphViewer1);
 
 				repaint();
 			}
@@ -784,6 +785,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		// create select-button, add actionListener and add it to Applet...
 		final JButton bt_select = new JButton("Select");
 		bt_select.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				// open file and write content to textarea...
 				tp_input.setText(Demo_Applet.this.getResourceAsString(PATH + cb_data.getSelectedItem().toString()));
@@ -800,6 +802,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		// create clear-button, add actionListener and add it to Applet...
 		final JButton bt_clear = new JButton(clearText);
 		bt_clear.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				tp_input.setText("");
 				tp_input.disableErrorLine();
@@ -980,10 +983,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		this.comboBox_sparqlInference.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				SPARQLINFERENCE sparqlinference = (SPARQLINFERENCE)comboBox_sparqlInference.getSelectedItem();
-				comboBox_sparqlInferenceMaterialization.setEnabled(sparqlinference.isMaterializationChoice());
-				checkBox_sparqlInferenceGenerated.setEnabled(sparqlinference.isGeneratedChoice());
+				SPARQLINFERENCE sparqlinference = (SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem();
+				Demo_Applet.this.comboBox_sparqlInferenceMaterialization.setEnabled(sparqlinference.isMaterializationChoice());
+				Demo_Applet.this.checkBox_sparqlInferenceGenerated.setEnabled(sparqlinference.isGeneratedChoice());
 			}
 		});
 		
@@ -991,7 +995,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		
 		// create evaluate-button, add actionListener and add it to Applet...
 		this.bt_evaluate = new JButton("Evaluate");
-		bt_evaluate.addActionListener(new ActionListener() {
+		this.bt_evaluate.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 
 				if (prepareForEvaluation(false)) {
@@ -1003,8 +1008,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		});
 
-		bt_evalDemo = this.createEvaluationDemoButton(true);
-		bt_evalDemo.addActionListener(new ActionListener() {
+		this.bt_evalDemo = this.createEvaluationDemoButton(true);
+		this.bt_evalDemo.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				if (prepareForEvaluation(false)) {
 
@@ -1016,7 +1022,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		});
 
 		this.bt_MeasureExecutionTimes = new JButton("Execution Times");
-		bt_MeasureExecutionTimes.addActionListener(new ActionListener() {
+		this.bt_MeasureExecutionTimes.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				if (prepareForEvaluation(false)) {
 					evaluateSPARQLQuery(EvaluationMode.TIMES);
@@ -1033,7 +1040,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private JPanel generateRifEvalPanel() {
 		// create evaluate-button, add actionListener and add it to Applet...
 		this.bt_rifEvaluate = new JButton("Evaluate");
-		bt_rifEvaluate.addActionListener(new ActionListener() {
+		this.bt_rifEvaluate.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 
 				if (prepareForEvaluation(false)) {
@@ -1045,8 +1053,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		});
 
-		bt_rifEvalDemo = this.createEvaluationDemoButton(true);
-		bt_rifEvalDemo.addActionListener(new ActionListener() {
+		this.bt_rifEvalDemo = this.createEvaluationDemoButton(true);
+		this.bt_rifEvalDemo.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				if (prepareForEvaluation(false)) {
 
@@ -1058,7 +1067,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		});
 
 		this.bt_rifMeasureExecutionTimes = new JButton("Execution Times");
-		bt_rifMeasureExecutionTimes.addActionListener(new ActionListener() {
+		this.bt_rifMeasureExecutionTimes.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				if (prepareForEvaluation(false)) {
 
@@ -1082,7 +1092,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	private boolean prepareForEvaluation(final boolean rif) {
-		if (operatorGraphViewer != null && operatorGraphViewer.isVisible()) {
+		if (this.operatorGraphViewer != null && this.operatorGraphViewer.isVisible()) {
 			if (JOptionPane
 					.showConfirmDialog(
 							null,
@@ -1091,8 +1101,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE) != 0)
 				return false;
-			operatorGraphViewer.processWindowEvent(new WindowEvent(
-					operatorGraphViewer, WindowEvent.WINDOW_CLOSING));
+			this.operatorGraphViewer.processWindowEvent(new WindowEvent(
+					this.operatorGraphViewer, WindowEvent.WINDOW_CLOSING));
 		}
 //		if (Indices.operatorGraphViewer != null
 //				&& Indices.operatorGraphViewer.isVisible()) {
@@ -1118,16 +1128,16 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		if (rif)
-			tp_rifInput.disableErrorLine();
+			this.tp_rifInput.disableErrorLine();
 		else
-			tp_queryInput.disableErrorLine();
-		tp_dataInput.disableErrorLine();
+			this.tp_queryInput.disableErrorLine();
+		this.tp_dataInput.disableErrorLine();
 
-		if (resultpanel != null) {
+		if (this.resultpanel != null) {
 			remove(this.resultpanel);
 		}
 
-		data = tp_dataInput.getText();
+		this.data = this.tp_dataInput.getText();
 
 		return true;
 	}
@@ -1393,7 +1403,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	private static enum EvaluationMode {
 		RESULT, TIMES, DEMO
-	};
+	}
 
 	private abstract class Evaluation {
 		
@@ -1403,9 +1413,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		
 		public abstract String getQuery();
 
-		public abstract long compileQuery(String query) throws Exception;
+		public abstract long compileQuery(String queryParameter) throws Exception;
 
-		public abstract DebugViewerCreator compileQueryDebugByteArray(String query) throws Exception;
+		public abstract DebugViewerCreator compileQueryDebugByteArray(String queryParameter) throws Exception;
 
 		public abstract JButton getButtonEvaluate();
 
@@ -1421,20 +1431,20 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 		
 		public void enableDemoButtonDependingOnEvaluator(){
-			this.getButtonEvalDemo().setEnabled(evaluatorSuitableForDemo((String)cobo_evaluator.getSelectedItem()));
+			this.getButtonEvalDemo().setEnabled(evaluatorSuitableForDemo((String)Demo_Applet.this.cobo_evaluator.getSelectedItem()));
 		}
 		
 		public abstract boolean evaluatorSuitableForDemo(String s);
 
 		public void enableEvaluateButtonDependingOnEvaluator(){
-			boolean enable = evaluatorSuitableForEvaluation((String)cobo_evaluator.getSelectedItem());
+			boolean enable = evaluatorSuitableForEvaluation((String)Demo_Applet.this.cobo_evaluator.getSelectedItem());
 			this.getButtonEvaluate().setEnabled(enable);
 			this.getButtonMeasureExecutionTimes().setEnabled(enable);
 		}
 		
 		public abstract boolean evaluatorSuitableForEvaluation(String s);
 		
-		public abstract long prepareInputData(Collection<URILiteral> defaultGraphs, LinkedList<URILiteral> namedGraphs) throws Exception;
+		public abstract long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception;
 	}
 	
 	public class SPARQLEvaluation extends Evaluation {
@@ -1447,39 +1457,46 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			this.evaluator = evaluator;
 		}
 
+		@Override
 		public String getQuery() {
-			return tp_queryInput.getText();
+			return Demo_Applet.this.tp_queryInput.getText();
 		}
 
-		public long compileQuery(final String query) throws Exception {
+		@Override
+		public long compileQuery(final String queryParameter) throws Exception {
 			final long a = (new Date()).getTime();
-			evaluator.compileQuery(query);
+			this.evaluator.compileQuery(queryParameter);
 			integrateInferenceOperatorgraph();
 			return (new Date()).getTime() - a;
 		}
 
-		public DebugViewerCreator compileQueryDebugByteArray(final String query)
+		@Override
+		public DebugViewerCreator compileQueryDebugByteArray(final String queryParameter)
 				throws Exception {
-			DebugViewerCreator result = new SPARQLDebugViewerCreator(evaluator.compileQueryDebugByteArray(query, prefixInstance));
+			DebugViewerCreator result = new SPARQLDebugViewerCreator(this.evaluator.compileQueryDebugByteArray(queryParameter, Demo_Applet.this.prefixInstance));
 			integrateInferenceOperatorgraph();
 			return result;
 		}
 
+		@Override
 		public JButton getButtonEvaluate() {
-			return bt_evaluate;
+			return Demo_Applet.this.bt_evaluate;
 		}
 
+		@Override
 		public JButton getButtonEvalDemo() {
-			return bt_evalDemo;
+			return Demo_Applet.this.bt_evalDemo;
 		}
 
+		@Override
 		public JButton getButtonMeasureExecutionTimes() {
-			return bt_MeasureExecutionTimes;
+			return Demo_Applet.this.bt_MeasureExecutionTimes;
 		}
 
 
+		@Override
 		public QueryEvaluator<Node> getEvaluator() {
-			return evaluator;
+			return this.evaluator;
 		}
 
 		@Override
@@ -1493,61 +1510,61 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 		
 		private void setupInference(){
-			final Object chosen=comboBox_sparqlInference.getSelectedItem();
-			if(chosen != SPARQLINFERENCE.NONE && (evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator)){
-				if(evaluator instanceof JenaQueryEvaluator && (chosen == SPARQLINFERENCE.OWL2RL) 
+			final Object chosen=Demo_Applet.this.comboBox_sparqlInference.getSelectedItem();
+			if(chosen != SPARQLINFERENCE.NONE && (this.evaluator instanceof JenaQueryEvaluator || this.evaluator instanceof SesameQueryEvaluator)){
+				if(this.evaluator instanceof JenaQueryEvaluator && (chosen == SPARQLINFERENCE.OWL2RL) 
 				   || chosen == SPARQLINFERENCE.RDFS) {
 					JOptionPane.showMessageDialog(Demo_Applet.this,
 							"Jena and Sesame evaluators do not support different rulesets and materialization strategies!\nUsing their standard inference for "+chosen+"...",
 							"Ontology support of Jena and Sesame evaluators",
 							JOptionPane.INFORMATION_MESSAGE);
-					if(evaluator instanceof JenaQueryEvaluator){
+					if(this.evaluator instanceof JenaQueryEvaluator){
 						if(chosen == SPARQLINFERENCE.OWL2RL){
-							((JenaQueryEvaluator)evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.OWL);
-						} else ((JenaQueryEvaluator)evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.RDFS);						
+							((JenaQueryEvaluator)this.evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.OWL);
+						} else ((JenaQueryEvaluator)this.evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.RDFS);						
 						return;
-					} else if(evaluator instanceof SesameQueryEvaluator){
-						((SesameQueryEvaluator)evaluator).setOntology(SesameQueryEvaluator.ONTOLOGY.RDFS);
+					} else if(this.evaluator instanceof SesameQueryEvaluator){
+						((SesameQueryEvaluator)this.evaluator).setOntology(SesameQueryEvaluator.ONTOLOGY.RDFS);
 						return;
 					}
 				}
 				JOptionPane.showMessageDialog(Demo_Applet.this,
-						"The "+((evaluator instanceof JenaQueryEvaluator)?"Jena":"Sesame")+" evaluator does not support this type of inference ("+chosen+")...\nEvaluate query without considering inference!",
+						"The "+((this.evaluator instanceof JenaQueryEvaluator)?"Jena":"Sesame")+" evaluator does not support this type of inference ("+chosen+")...\nEvaluate query without considering inference!",
 						"Inference support of Jena and Sesame evaluators",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 
 		private void inference() throws Exception {
-			if(evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator){
+			if(this.evaluator instanceof JenaQueryEvaluator || this.evaluator instanceof SesameQueryEvaluator){
 				return;
 			}
-			ruleApplicationsForMaterialization = null;
-			materializationInfo = null;
-			inferenceRules = ((SPARQLINFERENCE)comboBox_sparqlInference.getSelectedItem()).getRuleSet(rulesets);
-			if(inferenceRules != null){
-				BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)evaluator);
-				birqe.compileQuery(inferenceRules);
-				materializationInfo = new RIFDebugViewerCreator(birqe.getCompilationUnit(), birqe.getDocument());				
+			Demo_Applet.this.ruleApplicationsForMaterialization = null;
+			Demo_Applet.this.materializationInfo = null;
+			Demo_Applet.this.inferenceRules = ((SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem()).getRuleSet(Demo_Applet.this.rulesets);
+			if(Demo_Applet.this.inferenceRules != null){
+				BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)this.evaluator);
+				birqe.compileQuery(Demo_Applet.this.inferenceRules);
+				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(birqe.getCompilationUnit(), birqe.getDocument());				
 
 				// TODO improve RIF logical optimization such that it is fast enough for large operatorgraphs!
 				// as workaround here only use the logical optimization of the underlying evaluator!
 				System.out.println("Logical optimization...");
-				if (ruleApplicationsForMaterialization != null) {
-					ruleApplicationsForMaterialization.addAll(evaluator.logicalOptimizationDebugByteArray(prefixInstance));
+				if (Demo_Applet.this.ruleApplicationsForMaterialization != null) {
+					Demo_Applet.this.ruleApplicationsForMaterialization.addAll(this.evaluator.logicalOptimizationDebugByteArray(Demo_Applet.this.prefixInstance));
 				} else {
-					ruleApplicationsForMaterialization = evaluator.logicalOptimizationDebugByteArray(prefixInstance);
+					Demo_Applet.this.ruleApplicationsForMaterialization = this.evaluator.logicalOptimizationDebugByteArray(Demo_Applet.this.prefixInstance);
 				}
 
 				System.out.println("Physical optimization...");
 
-				if (ruleApplicationsForMaterialization != null) {
-					ruleApplicationsForMaterialization.addAll(birqe.physicalOptimizationDebugByteArray(prefixInstance));
+				if (Demo_Applet.this.ruleApplicationsForMaterialization != null) {
+					Demo_Applet.this.ruleApplicationsForMaterialization.addAll(birqe.physicalOptimizationDebugByteArray(Demo_Applet.this.prefixInstance));
 				} else {
-					ruleApplicationsForMaterialization = birqe.physicalOptimizationDebugByteArray(prefixInstance);
+					Demo_Applet.this.ruleApplicationsForMaterialization = birqe.physicalOptimizationDebugByteArray(Demo_Applet.this.prefixInstance);
 				}
 								
-				if(comboBox_sparqlInferenceMaterialization.getSelectedItem() == SPARQLINFERENCEMATERIALIZATION.MATERIALIZEALL){
+				if(Demo_Applet.this.comboBox_sparqlInferenceMaterialization.getSelectedItem() == SPARQLINFERENCEMATERIALIZATION.MATERIALIZEALL){
 					Demo_Applet.this.errorsInOntology = birqe.inferTriplesAndStoreInDataset();					
 				} else {
 					this.rootInference = birqe.getRootNode();
@@ -1557,22 +1574,22 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 		
 		private void integrateInferenceOperatorgraph() throws Exception{
-			if(evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator){
+			if(this.evaluator instanceof JenaQueryEvaluator || this.evaluator instanceof SesameQueryEvaluator){
 				return;
 			}
-			if(comboBox_sparqlInference.getSelectedItem() != SPARQLINFERENCE.NONE &&
-					comboBox_sparqlInferenceMaterialization.getSelectedItem() == SPARQLINFERENCEMATERIALIZATION.COMBINEDQUERYOPTIMIZATION){
-				CommonCoreQueryEvaluator<Node> commonCoreQueryEvaluator = (CommonCoreQueryEvaluator<Node>)evaluator;
+			if(Demo_Applet.this.comboBox_sparqlInference.getSelectedItem() != SPARQLINFERENCE.NONE &&
+					Demo_Applet.this.comboBox_sparqlInferenceMaterialization.getSelectedItem() == SPARQLINFERENCEMATERIALIZATION.COMBINEDQUERYOPTIMIZATION){
+				CommonCoreQueryEvaluator<Node> commonCoreQueryEvaluator = (CommonCoreQueryEvaluator<Node>)this.evaluator;
 				BasicIndexRuleEvaluator.integrateInferenceOperatorgraphIntoQueryOperatorgraph(this.rootInference, this.resultInference, commonCoreQueryEvaluator.getRootNode(), commonCoreQueryEvaluator.getResultOperator());
 				commonCoreQueryEvaluator.setBindingsVariablesBasedOnOperatorgraph();
 			}			
 		}
 
 		@Override
-		public long prepareInputData(Collection<URILiteral> defaultGraphs, LinkedList<URILiteral> namedGraphs) throws Exception {
+		public long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception {
 			final long a = (new Date()).getTime();
 			this.setupInference();
-			evaluator.prepareInputData(defaultGraphs, namedGraphs);
+			this.evaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
 			this.inference();
 			return ((new Date()).getTime() - a);
 		}
@@ -1584,44 +1601,51 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public RIFEvaluation(final QueryEvaluator<Node> evaluator) {
 			super();
 			try {
-				ruleEvaluator = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)evaluator);
+				this.ruleEvaluator = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)evaluator);
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
 
+		@Override
 		public String getQuery() {
-			return tp_rifInput.getText();
+			return Demo_Applet.this.tp_rifInput.getText();
 		}
 
+		@Override
 		public long compileQuery(final String rule) throws Exception {
 			final long a = (new Date()).getTime();
-			ruleEvaluator.compileQuery(rule);
+			this.ruleEvaluator.compileQuery(rule);
 			return (new Date().getTime()) - a;
 		}
 
+		@Override
 		public DebugViewerCreator compileQueryDebugByteArray(final String rule)
 				throws Exception {
-			ruleEvaluator.compileQuery(rule);
+			this.ruleEvaluator.compileQuery(rule);
 			return new RIFDebugViewerCreator(
-					ruleEvaluator.getCompilationUnit(),
-					ruleEvaluator.getDocument());
+					this.ruleEvaluator.getCompilationUnit(),
+					this.ruleEvaluator.getDocument());
 		}
 
+		@Override
 		public JButton getButtonEvaluate() {
-			return bt_rifEvaluate;
+			return Demo_Applet.this.bt_rifEvaluate;
 		}
 
+		@Override
 		public JButton getButtonEvalDemo() {
-			return bt_rifEvalDemo;
+			return Demo_Applet.this.bt_rifEvalDemo;
 		}
 
+		@Override
 		public JButton getButtonMeasureExecutionTimes() {
-			return bt_rifMeasureExecutionTimes;
+			return Demo_Applet.this.bt_rifMeasureExecutionTimes;
 		}
 
+		@Override
 		public QueryEvaluator<Node> getEvaluator() {
-			return ruleEvaluator;
+			return this.ruleEvaluator;
 		}
 
 		@Override
@@ -1635,8 +1659,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		@Override
-		public long prepareInputData(Collection<URILiteral> defaultGraphs, LinkedList<URILiteral> namedGraphs) throws Exception {
-			return this.ruleEvaluator.prepareInputData(defaultGraphs, namedGraphs);
+		public long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception {
+			return this.ruleEvaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
 		}
 	}
 
@@ -1651,8 +1675,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		@Override
 		public GraphWrapper getASTGraphWrapper() {
-			return (debugContainerQuery == null) ? null : new GraphWrapperAST(
-					debugContainerQuery.getAst());
+			return (this.debugContainerQuery == null) ? null : new GraphWrapperAST(
+					this.debugContainerQuery.getAst());
 		}
 
 		@Override
@@ -1662,19 +1686,18 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		@Override
 		public GraphWrapper getASTCoreGraphWrapper() {
-			return (debugContainerQuery == null) ? null : new GraphWrapperAST(
-					debugContainerQuery.getAstCoreSPARQLQuery());
+			return (this.debugContainerQuery == null) ? null : new GraphWrapperAST(
+					this.debugContainerQuery.getAstCoreSPARQLQuery());
 		}
 
 		@Override
 		public String getCore() {
-			return (debugContainerQuery == null) ? null : debugContainerQuery
-					.getCoreSPARQLQuery();
+			return (this.debugContainerQuery == null) ? null : this.debugContainerQuery.getCoreSPARQLQuery();
 		}
 
 		@Override
 		public List<DebugContainer<BasicOperatorByteArray>> getCorrectOperatorGraphRules() {
-			return (debugContainerQuery == null) ? null : debugContainerQuery
+			return (this.debugContainerQuery == null) ? null : this.debugContainerQuery
 					.getCorrectOperatorGraphRules();
 		}
 	}
@@ -1692,12 +1715,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		@Override
 		public GraphWrapper getASTGraphWrapper() {
-			return new GraphWrapperASTRIF(compilationUnit);
+			return new GraphWrapperASTRIF(this.compilationUnit);
 		}
 
 		@Override
 		public GraphWrapper getASTCoreGraphWrapper() {
-			return new GraphWrapperRules(rifDoc);
+			return new GraphWrapperRules(this.rifDoc);
 		}
 
 		@Override
@@ -1735,10 +1758,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			if (graphWrapper != null) {
 				bt_AST.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(final ActionEvent arg0) {
 						new Viewer(graphWrapper, "Abstract syntax tree of the "
 								+ queryOrRule(), false,
-								webdemo != DEMO_ENUM.ECLIPSE);
+								Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE);
 					}
 				});
 			}
@@ -1755,10 +1779,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 			final JButton bt_coreSPARQLQuery = new JButton("Show Core "
 					+ queryOrRule());
-			bt_coreSPARQLQuery.setEnabled(core != null);
+			bt_coreSPARQLQuery.setEnabled(true);
 			bt_coreSPARQLQuery.setMargin(new Insets(0, 0, 0, 0));
 
 			bt_coreSPARQLQuery.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent arg0) {
 					final JPanel panel = new JPanel();
 					panel.setLayout(new BorderLayout());
@@ -1777,38 +1802,39 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 					panel.add(scroll);
 
-					final JFrame frame = new JFrame("Core " + queryOrRule());
+					final JFrame frame1 = new JFrame("Core " + queryOrRule());
 
-					if (webdemo != DEMO_ENUM.ECLIPSE) {
-						frame.setIconImage(new ImageIcon(
+					if (Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE) {
+						frame1.setIconImage(new ImageIcon(
 								Demo_Applet.class
 								.getResource("/demo.gif"))
 						.getImage());
 					} else {
-						frame.setIconImage(new ImageIcon("data"
+						frame1.setIconImage(new ImageIcon("data"
 								+ File.separator + "demo.gif").getImage());
 					}
 
-					frame.setSize(794, 200);
-					frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-					frame.getContentPane().add(panel);
-					frame.pack();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
+					frame1.setSize(794, 200);
+					frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+					frame1.getContentPane().add(panel);
+					frame1.pack();
+					frame1.setLocationRelativeTo(null);
+					frame1.setVisible(true);
 				}
 			});
 
 			return bt_coreSPARQLQuery;
 		}
 		
-		public JButton createInferenceRulesButton(final String inferenceRules) {
+		public JButton createInferenceRulesButton(final String inferenceRulesParameter) {
 			// create coreSPARQLQuery-button, add actionListener and add it to Applet...
 			final JButton bt_InferenceRules = new JButton("Show Rules");
-			bt_InferenceRules.setEnabled(inferenceRules != null);
+			bt_InferenceRules.setEnabled(inferenceRulesParameter != null);
 			bt_InferenceRules.setMargin(new Insets(0, 0, 0, 0));
 
-			if (inferenceRules != null) {
+			if (inferenceRulesParameter != null) {
 				bt_InferenceRules.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(final ActionEvent arg0) {
 						final JPanel panel = new JPanel();
 						panel.setLayout(new BorderLayout());
@@ -1818,31 +1844,31 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 						document.init(RIFParser.createILuposParser(new LuposDocumentReader(document)), false);
 
 						tp_coreSPARQLQuery.setFont(new Font("Courier New", Font.PLAIN, 12));
-						tp_coreSPARQLQuery.setText(inferenceRules);
+						tp_coreSPARQLQuery.setText(inferenceRulesParameter);
 						tp_coreSPARQLQuery.setEditable(false);
 
 						final JScrollPane scroll = new JScrollPane(tp_coreSPARQLQuery);
 
 						panel.add(scroll);
 
-						final JFrame frame = new JFrame("Inference Rules");
+						final JFrame frame1 = new JFrame("Inference Rules");
 
-						if (webdemo != DEMO_ENUM.ECLIPSE) {
-							frame.setIconImage(new ImageIcon(
+						if (Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE) {
+							frame1.setIconImage(new ImageIcon(
 									Demo_Applet.class
 											.getResource("/demo.gif"))
 									.getImage());
 						} else {
-							frame.setIconImage(new ImageIcon("data"
+							frame1.setIconImage(new ImageIcon("data"
 									+ File.separator + "demo.gif").getImage());
 						}
 
-						frame.setSize(794, 200);
-						frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-						frame.getContentPane().add(panel);
-						frame.pack();
-						frame.setLocationRelativeTo(null);
-						frame.setVisible(true);
+						frame1.setSize(794, 200);
+						frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+						frame1.getContentPane().add(panel);
+						frame1.pack();
+						frame1.setLocationRelativeTo(null);
+						frame1.setVisible(true);
 					}
 				});
 			}
@@ -1864,11 +1890,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			if (graphWrapper != null) {
 				bt_coreAST.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(final ActionEvent ae) {
 						new Viewer(graphWrapper,
 								"Abstract syntax tree of the Core "
 										+ queryOrRule(), false,
-								webdemo != DEMO_ENUM.ECLIPSE);
+								Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE);
 					}
 				});
 			}
@@ -1880,22 +1907,23 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		 * create the button to show the operator graph.
 		 */
 		public JButton createOperatorGraphButton() {
-			return this.createOperatorGraphButton(ruleApplications);
+			return this.createOperatorGraphButton(Demo_Applet.this.ruleApplications);
 		}
 
-		public JButton createOperatorGraphButton(final List<DebugContainer<BasicOperatorByteArray>> ruleApplications) {
+		public JButton createOperatorGraphButton(final List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsParameter) {
 			// create OperatorGraph-button, add actionListener and add it to
 			// Applet...
 			final JButton bt_opgraph = new JButton("Show Operator Graph");
 			bt_opgraph.setMargin(new Insets(0, 0, 0, 0));
-			bt_opgraph.setEnabled(ruleApplications != null);
-			if (ruleApplications != null) {
+			bt_opgraph.setEnabled(ruleApplicationsParameter != null);
+			if (ruleApplicationsParameter != null) {
 				bt_opgraph.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(final ActionEvent ae) {
-						if (prefixInstance == null)
-							prefixInstance = new ViewerPrefix(usePrefixes.isTrue(), null);
-						new Viewer(ruleApplications, "OperatorGraph", false,
-								webdemo != DEMO_ENUM.ECLIPSE, prefixInstance);
+						if (Demo_Applet.this.prefixInstance == null)
+							Demo_Applet.this.prefixInstance = new ViewerPrefix(Demo_Applet.this.usePrefixes.isTrue(), null);
+						new Viewer(ruleApplicationsParameter, "OperatorGraph", false,
+								Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance);
 					}
 				});
 			}
@@ -1935,12 +1963,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		evaluation.getButtonEvalDemo().setEnabled(false);
 		evaluation.getButtonMeasureExecutionTimes().setEnabled(false);
 
-//		StaticDataHolder.resetOperatorGraphRules();
-//		this.resultOrder = new LinkedList<String>();
+		//		StaticDataHolder.resetOperatorGraphRules();
+		//		this.resultOrder = new LinkedList<String>();
 		this.query = evaluation.getQuery(); // get query
-//		Indices.materializationDemo = (mode == EvaluationMode.DEMO);
+		//		Indices.materializationDemo = (mode == EvaluationMode.DEMO);
 
-		if (query.compareTo("") == 0) { // no query given...
+		if (this.query.compareTo("") == 0) { // no query given...
 			displayErrorMessage("Error: empty query", true);
 			evaluation.enableButtons();
 		} else { // evaluate query...
@@ -1948,260 +1976,241 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				try {
 					final QueryEvaluator<Node> evaluator = evaluation.getEvaluator();
 					final URILiteral rdfURL = LiteralFactory
-							.createStringURILiteral("<inlinedata:" + data + ">");
-					defaultGraphs = new LinkedList<URILiteral>();
-					defaultGraphs.add(rdfURL);
+					.createStringURILiteral("<inlinedata:" + this.data + ">");
+					this.defaultGraphs = new LinkedList<URILiteral>();
+					this.defaultGraphs.add(rdfURL);
 
 					if (mode == EvaluationMode.DEMO
 							|| mode == EvaluationMode.TIMES) {
 
 						final long prepareInputData = evaluation
-								.prepareInputData(defaultGraphs,
-										new LinkedList<URILiteral>());
+						.prepareInputData(this.defaultGraphs,
+								new LinkedList<URILiteral>());
 
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								final Thread thread = new Thread() {
-									@Override
-									public void run() {
-										try {
-//											Indices.waitForMaterializationDemoThread();
-											System.out.println("Compile query...");
-											try {
-												final long compileQuery = evaluation.compileQuery(query);
+						try {
+							//											Indices.waitForMaterializationDemoThread();
+							System.out.println("Compile query...");
+							try {
+								final long compileQuery = evaluation.compileQuery(this.query);
 
-												System.out.println("Logical optimization...");
-												final long logicalOptimization = evaluator.logicalOptimization();
+								System.out.println("Logical optimization...");
+								final long logicalOptimization = evaluator.logicalOptimization();
 
-												System.out.println("Physical optimization...");
-												final long physicalOptimization = evaluator.physicalOptimization();
+								System.out.println("Physical optimization...");
+								final long physicalOptimization = evaluator.physicalOptimization();
 
-												if (mode == EvaluationMode.DEMO) {
-													final EvaluationDemoToolBar bottomToolBar = new EvaluationDemoToolBar(
-															webdemo != DEMO_ENUM.ECLIPSE);
-													
-													Result result = (evaluator instanceof BasicIndexRuleEvaluator)?
-														((BasicIndexRuleEvaluator)evaluator).getResultOperator()
-														:((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator();
-													
-													final ShowResult sr = new ShowResult(bottomToolBar, result);
-													
-													evaluator.prepareForQueryDebugSteps(bottomToolBar);
+								if (mode == EvaluationMode.DEMO) {
+									final EvaluationDemoToolBar bottomToolBar = new EvaluationDemoToolBar(
+											this.webdemo != DEMO_ENUM.ECLIPSE);
 
-													System.out.println("Evaluate query ...");
-													final Thread thread = new Thread() {
-														@Override
-														public void run() {
-															try {
-																evaluator.evaluateQueryDebugSteps(bottomToolBar, sr);
-																bottomToolBar.endOfEvaluation();
-																enableOrDisableButtons(evaluation instanceof SPARQLEvaluation);
-															} catch (final Exception e) {
-																System.err
-																		.println(e);
-																e.printStackTrace();
-															}
-														}
-													};
-													bottomToolBar.setEvaluationThread(thread);
-													thread.start();
-													if (prefixInstance == null)
-														prefixInstance = new ViewerPrefix(
-																usePrefixes.isTrue(),
-																null);
-													BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
-														
-													operatorGraphViewer = new Viewer(
-															new GraphWrapperBasicOperator(
-																	root),
-															prefixInstance,
+									Result result = (evaluator instanceof BasicIndexRuleEvaluator)?
+											((BasicIndexRuleEvaluator)evaluator).getResultOperator()
+											:((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator();
+
+											final ShowResult sr = new ShowResult(bottomToolBar, result);
+
+											evaluator.prepareForQueryDebugSteps(bottomToolBar);
+
+											System.out.println("Evaluate query ...");
+											final Thread thread = new Thread() {
+												@Override
+												public void run() {
+													try {
+														evaluator.evaluateQueryDebugSteps(bottomToolBar, sr);
+														bottomToolBar.endOfEvaluation();
+														enableOrDisableButtons(evaluation instanceof SPARQLEvaluation);
+													} catch (final Exception e) {
+														System.err
+														.println(e);
+														e.printStackTrace();
+													}
+												}
+											};
+											bottomToolBar.setEvaluationThread(thread);
+											thread.start();
+											if (this.prefixInstance == null)
+												this.prefixInstance = new ViewerPrefix(
+														this.usePrefixes.isTrue(),
+														null);
+											BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
+
+											this.operatorGraphViewer = new Viewer(
+													new GraphWrapperBasicOperator(
+															root),
+															this.prefixInstance,
 															"Evaluation Demo",
 															false,
-															webdemo != DEMO_ENUM.ECLIPSE,
+															this.webdemo != DEMO_ENUM.ECLIPSE,
 															bottomToolBar);
-													bottomToolBar.setOperatorGraphViewer(operatorGraphViewer);
-												} else {
+											bottomToolBar.setOperatorGraphViewer(this.operatorGraphViewer);
+								} else {
 
-													final JTextArea ta_prefixes = new JTextArea();
-													ta_prefixes.setEditable(false);
-													ta_prefixes.setFont(new Font("Courier New", Font.PLAIN, 12));
+									final JTextArea ta_prefixes = new JTextArea();
+									ta_prefixes.setEditable(false);
+									ta_prefixes.setFont(new Font("Courier New", Font.PLAIN, 12));
 
-													System.out.println("Evaluate query ...");
-													if(evaluator instanceof CommonCoreQueryEvaluator){
-														((CommonCoreQueryEvaluator)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());
-													}
-
-													final long evaluateQuery = evaluator.evaluateQuery();
-													int times = xpref.datatypes.IntegerDatatype.getFirstValue("repetitionsOfExecution");
-													if(times >1){
-														long compileQueryTime = 0;
-														long logicalOptimizationTime = 0;
-														long physicalOptimizationTime = 0;
-														long evaluateQueryTime = 0;
-														long totalTime = 0;
-														final long[] compileQueryTimeArray = new long[times];
-														final long[] logicalOptimizationTimeArray = new long[times];
-														final long[] physicalOptimizationTimeArray = new long[times];
-														final long[] evaluateQueryTimeArray = new long[times];
-														final long[] totalTimeArray = new long[times];
-														for (int i = 0; i < times; i++) {
-															compileQueryTimeArray[i] = evaluator.compileQuery(query);
-															compileQueryTime += compileQueryTimeArray[i];
-															logicalOptimizationTimeArray[i] = evaluator.logicalOptimization();
-															logicalOptimizationTime += logicalOptimizationTimeArray[i];
-															physicalOptimizationTimeArray[i] = evaluator.physicalOptimization();
-															physicalOptimizationTime += physicalOptimizationTimeArray[i];
-															if(evaluator instanceof CommonCoreQueryEvaluator){
-																((CommonCoreQueryEvaluator)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());
-															}
-															evaluateQueryTimeArray[i] = evaluator.evaluateQuery();
-															evaluateQueryTime += evaluateQueryTimeArray[i];
-															totalTimeArray[i] = compileQueryTimeArray[i] + logicalOptimizationTimeArray[i] + physicalOptimizationTimeArray[i] + evaluateQueryTimeArray[i];
-															totalTime += totalTimeArray[i];
-														}
-														String result = "Evaluator " + cobo_evaluator.getSelectedItem().toString() + "\n\nBuild indices              : " + ((double) prepareInputData / 1000);
-														result += "\n\n(I) Time in seconds to compile query:\nAvg" + QueryEvaluator.toString(compileQueryTimeArray) + "/1000 = " + (((double) compileQueryTime) / times) / 1000;
-														result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(compileQueryTimeArray) / 1000;
-														result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(compileQueryTimeArray) / 1000;
-														result += "\n\n(II) Time in seconds used for logical optimization:\nAvg" + QueryEvaluator.toString(logicalOptimizationTimeArray) + "/1000 = " + (((double) logicalOptimizationTime) / times) / 1000;
-														result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(logicalOptimizationTimeArray) / 1000;
-														result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(logicalOptimizationTimeArray) / 1000;
-														result += "\n\n(III) Time in seconds used for physical optimization:\nAvg" + QueryEvaluator.toString(physicalOptimizationTimeArray) + "/1000 = " + (((double) physicalOptimizationTime) / times) / 1000;
-														result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(physicalOptimizationTimeArray) / 1000;
-														result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(physicalOptimizationTimeArray) / 1000;
-														result += "\n\n(IV) Time in seconds to evaluate query:\nAvg" + QueryEvaluator.toString(evaluateQueryTimeArray) + "/1000 = " + (((double) evaluateQueryTime) / times) / 1000;
-														result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(evaluateQueryTimeArray) / 1000;
-														result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(evaluateQueryTimeArray) / 1000;
-														result += "\n\nTotal time in seconds (I)+(II)+(III)+(IV):\nAvg" + QueryEvaluator.toString(totalTimeArray) + "/1000 = " + (((double) totalTime) / times) / 1000;
-														result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(totalTimeArray) / 1000;
-														result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(totalTimeArray) / 1000;
-														ta_prefixes.setText(result);
-													} else {
-														ta_prefixes.setText("Evaluator "
-																+ cobo_evaluator.getSelectedItem().toString()
-																+ "\n\nBuild indices              : " + ((double) prepareInputData / 1000)
-																+ "\n\nTotal time query processing: " + ((double) (compileQuery + logicalOptimization + physicalOptimization + evaluateQuery) / 1000)
-																+ ((evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator) ? ""
-																		: "\n    - Compile query        : "
-																			+ ((double) compileQuery / 1000)
-																			+ "\n    - Logical optimization : "
-																			+ ((double) logicalOptimization / 1000)
-																			+ "\n    - Physical optimization: "
-																			+ ((double) physicalOptimization / 1000)
-																			+ "\n    - Evaluation           : "
-																			+ ((double) evaluateQuery / 1000)));
-													}
-													final JFrame frame = new JFrame("Execution times in seconds");
-													frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-													frame.setLocationRelativeTo(Demo_Applet.this);
-
-													final JScrollPane scroll = new JScrollPane(ta_prefixes);
-
-													frame.add(scroll);
-													frame.pack();
-													frame.setVisible(true);
-												}
-											} catch (final Throwable t) {
-												dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
-											}
-										} catch (final Throwable t) {
-											dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
-										}
-										evaluation.enableButtons();
+									System.out.println("Evaluate query ...");
+									if(evaluator instanceof CommonCoreQueryEvaluator){
+										((CommonCoreQueryEvaluator)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());
 									}
-								};
-								thread.start();
+
+									final long evaluateQuery = evaluator.evaluateQuery();
+									int times = xpref.datatypes.IntegerDatatype.getFirstValue("repetitionsOfExecution");
+									if(times >1){
+										long compileQueryTime = 0;
+										long logicalOptimizationTime = 0;
+										long physicalOptimizationTime = 0;
+										long evaluateQueryTime = 0;
+										long totalTime = 0;
+										final long[] compileQueryTimeArray = new long[times];
+										final long[] logicalOptimizationTimeArray = new long[times];
+										final long[] physicalOptimizationTimeArray = new long[times];
+										final long[] evaluateQueryTimeArray = new long[times];
+										final long[] totalTimeArray = new long[times];
+										for (int i = 0; i < times; i++) {
+											compileQueryTimeArray[i] = evaluator.compileQuery(query);
+											compileQueryTime += compileQueryTimeArray[i];
+											logicalOptimizationTimeArray[i] = evaluator.logicalOptimization();
+											logicalOptimizationTime += logicalOptimizationTimeArray[i];
+											physicalOptimizationTimeArray[i] = evaluator.physicalOptimization();
+											physicalOptimizationTime += physicalOptimizationTimeArray[i];
+											if(evaluator instanceof CommonCoreQueryEvaluator){
+												((CommonCoreQueryEvaluator)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());
+											}
+											evaluateQueryTimeArray[i] = evaluator.evaluateQuery();
+											evaluateQueryTime += evaluateQueryTimeArray[i];
+											totalTimeArray[i] = compileQueryTimeArray[i] + logicalOptimizationTimeArray[i] + physicalOptimizationTimeArray[i] + evaluateQueryTimeArray[i];
+											totalTime += totalTimeArray[i];
+										}
+										String result = "Evaluator " + this.cobo_evaluator.getSelectedItem().toString() + "\n\nBuild indices              : " + ((double) prepareInputData / 1000);
+										result += "\n\n(I) Time in seconds to compile query:\nAvg" + QueryEvaluator.toString(compileQueryTimeArray) + "/1000 = " + (((double) compileQueryTime) / times) / 1000;
+										result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(compileQueryTimeArray) / 1000;
+										result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(compileQueryTimeArray) / 1000;
+										result += "\n\n(II) Time in seconds used for logical optimization:\nAvg" + QueryEvaluator.toString(logicalOptimizationTimeArray) + "/1000 = " + (((double) logicalOptimizationTime) / times) / 1000;
+										result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(logicalOptimizationTimeArray) / 1000;
+										result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(logicalOptimizationTimeArray) / 1000;
+										result += "\n\n(III) Time in seconds used for physical optimization:\nAvg" + QueryEvaluator.toString(physicalOptimizationTimeArray) + "/1000 = " + (((double) physicalOptimizationTime) / times) / 1000;
+										result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(physicalOptimizationTimeArray) / 1000;
+										result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(physicalOptimizationTimeArray) / 1000;
+										result += "\n\n(IV) Time in seconds to evaluate query:\nAvg" + QueryEvaluator.toString(evaluateQueryTimeArray) + "/1000 = " + (((double) evaluateQueryTime) / times) / 1000;
+										result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(evaluateQueryTimeArray) / 1000;
+										result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(evaluateQueryTimeArray) / 1000;
+										result += "\n\nTotal time in seconds (I)+(II)+(III)+(IV):\nAvg" + QueryEvaluator.toString(totalTimeArray) + "/1000 = " + (((double) totalTime) / times) / 1000;
+										result += "\nStandard deviation of the sample: " + QueryEvaluator.computeStandardDeviationOfTheSample(totalTimeArray) / 1000;
+										result += "\nSample standard deviation       : " + QueryEvaluator.computeSampleStandardDeviation(totalTimeArray) / 1000;
+										ta_prefixes.setText(result);
+									} else {
+										ta_prefixes.setText("Evaluator "
+												+ this.cobo_evaluator.getSelectedItem().toString()
+												+ "\n\nBuild indices              : " + ((double) prepareInputData / 1000)
+												+ "\n\nTotal time query processing: " + ((double) (compileQuery + logicalOptimization + physicalOptimization + evaluateQuery) / 1000)
+												+ ((evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator) ? ""
+														: "\n    - Compile query        : "
+															+ ((double) compileQuery / 1000)
+															+ "\n    - Logical optimization : "
+															+ ((double) logicalOptimization / 1000)
+															+ "\n    - Physical optimization: "
+															+ ((double) physicalOptimization / 1000)
+															+ "\n    - Evaluation           : "
+															+ ((double) evaluateQuery / 1000)));
+									}
+									final JFrame frame1 = new JFrame("Execution times in seconds");
+									frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+									frame1.setLocationRelativeTo(Demo_Applet.this);
+
+									final JScrollPane scroll = new JScrollPane(ta_prefixes);
+
+									frame1.add(scroll);
+									frame1.pack();
+									frame1.setVisible(true);
+								}
+							} catch (final Throwable t) {
+								dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 							}
-						});
+						} catch (final Throwable t) {
+							dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+						}
+						evaluation.enableButtons();
+
 					} else {
-						if (prefixInstance == null)
-							prefixInstance = new ViewerPrefix(usePrefixes.isTrue());
+						if (this.prefixInstance == null)
+							this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
 
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								final Thread thread = new Thread() {
-									@Override
-									public void run() {
-										try {		
-											evaluation.prepareInputData(defaultGraphs, new LinkedList<URILiteral>());
-											
-											System.out.println("Compile query...");
-											try {
-												try {
-													debugViewerCreator = evaluation.compileQueryDebugByteArray(query);
+						try {		
+							evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
 
-													if (debugViewerCreator != null) {
-														ruleApplications = debugViewerCreator.getCorrectOperatorGraphRules();
-													} else {
-														ruleApplications = null;
-													}
-													
-													System.out.println("Logical optimization...");
+							System.out.println("Compile query...");
+							try {
+								try {
+									this.debugViewerCreator = evaluation.compileQueryDebugByteArray(query);
 
-													if (ruleApplications != null) {
-														ruleApplications.addAll(evaluator.logicalOptimizationDebugByteArray(prefixInstance));
-													} else {
-														ruleApplications = evaluator.logicalOptimizationDebugByteArray(prefixInstance);
-													}
-													
-													System.out.println("Physical optimization...");
-
-													if (ruleApplications != null) {
-														ruleApplications.addAll(evaluator.physicalOptimizationDebugByteArray(prefixInstance));
-													} else {
-														ruleApplications = evaluator.physicalOptimizationDebugByteArray(prefixInstance);
-													}
-													
-													// new Viewer(ruleApplications, "OperatorGraph", false,webdemo != DEMO_ENUM.ECLIPSE, prefixInstance);
-
-													System.out.println("Evaluate query ...");
-
-													if (evaluator instanceof CommonCoreQueryEvaluator || evaluator instanceof BasicIndexRuleEvaluator) {
-														final CollectRIFResult crr = new CollectRIFResult(false);
-														Result resultOperator = (evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator(): ((BasicIndexRuleEvaluator)evaluator).getResultOperator();
-														resultOperator.addApplication(crr);
-														evaluator.evaluateQuery();
-														resultQueryEvaluator = crr.getQueryResults();
-													} else {
-														resultQueryEvaluator = new QueryResult[1];
-														resultQueryEvaluator[0] = evaluator.getResult();
-													}
-
-													System.out.println("\nQuery Result:");
-													for (final QueryResult qr : resultQueryEvaluator)
-														System.out.println(qr);
-													System.out.println("----------------Done.");
-
-													if (isApplet) {
-														setSize(800, 905);
-														repaint();
-													}
-
-													resultpanel = new JPanel(new BorderLayout());
-
-													outputResult();
-
-													// set resultpanel as component for the result tab and make the tab active
-													tabbedPane_globalMainpane.setComponentAt(
-															tabbedPane_globalMainpane.indexOfTab(TAB_TITLE_RESULT),
-															resultpanel);
-													tabbedPane_globalMainpane.setSelectedComponent(resultpanel);
-												} catch (final Throwable t) {
-													dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
-												}
-											} catch (final Throwable t) {
-												dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
-											}
-										} catch (final Throwable t) {
-											dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
-										}
-
-										evaluation.enableButtons();
+									if (this.debugViewerCreator != null) {
+										this.ruleApplications = this.debugViewerCreator.getCorrectOperatorGraphRules();
+									} else {
+										this.ruleApplications = null;
 									}
-								};
-								thread.start();
+
+									System.out.println("Logical optimization...");
+
+									if (this.ruleApplications != null) {
+										this.ruleApplications.addAll(evaluator.logicalOptimizationDebugByteArray(this.prefixInstance));
+									} else {
+										this.ruleApplications = evaluator.logicalOptimizationDebugByteArray(this.prefixInstance);
+									}
+
+									System.out.println("Physical optimization...");
+
+									if (this.ruleApplications != null) {
+										this.ruleApplications.addAll(evaluator.physicalOptimizationDebugByteArray(this.prefixInstance));
+									} else {
+										this.ruleApplications = evaluator.physicalOptimizationDebugByteArray(this.prefixInstance);
+									}
+
+									// new Viewer(ruleApplications, "OperatorGraph", false,webdemo != DEMO_ENUM.ECLIPSE, prefixInstance);
+
+									System.out.println("Evaluate query ...");
+
+									if (evaluator instanceof CommonCoreQueryEvaluator || evaluator instanceof BasicIndexRuleEvaluator) {
+										final CollectRIFResult crr = new CollectRIFResult(false);
+										Result resultOperator = (evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator(): ((BasicIndexRuleEvaluator)evaluator).getResultOperator();
+										resultOperator.addApplication(crr);
+										evaluator.evaluateQuery();
+										this.resultQueryEvaluator = crr.getQueryResults();
+									} else {
+										this.resultQueryEvaluator = new QueryResult[1];
+										this.resultQueryEvaluator[0] = evaluator.getResult();
+									}
+
+									System.out.println("\nQuery Result:");
+									for (final QueryResult qr : this.resultQueryEvaluator)
+										System.out.println(qr);
+									System.out.println("----------------Done.");
+
+									if (this.isApplet) {
+										setSize(800, 905);
+										repaint();
+									}
+
+									this.resultpanel = new JPanel(new BorderLayout());
+
+									outputResult();
+
+									// set resultpanel as component for the result tab and make the tab active
+									this.tabbedPane_globalMainpane.setComponentAt(
+											this.tabbedPane_globalMainpane.indexOfTab(this.TAB_TITLE_RESULT),
+											this.resultpanel);
+									this.tabbedPane_globalMainpane.setSelectedComponent(this.resultpanel);
+								} catch (final Throwable t) {
+									dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+								}
+							} catch (final Throwable t) {
+								dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 							}
-						});
+						} catch (final Throwable t) {
+							dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+						}
+
+						evaluation.enableButtons();
 					}
 				} catch (final Throwable t) {
 					// ignore forwarded Throwable!
@@ -2213,11 +2222,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 				evaluation.enableButtons();
 			}
-			// append an empty string to the error textarea to force
-			// the
-			// system
-			// to
-			// flush the System.err
+			// append an empty string to the error textarea to force the system to flush the System.err
 			displayErrorMessage("", true);
 		}
 	}
@@ -2360,9 +2365,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	
 	private void setErrorPosition(final int line, final int column, final boolean queryOrRif){
 		if(queryOrRif){
-			tp_queryInput.setErrorPosition(line, column);
+			this.tp_queryInput.setErrorPosition(line, column);
 		} else {
-			tp_rifInput.setErrorPosition(line, column);
+			this.tp_rifInput.setErrorPosition(line, column);
 		}
 	}
 
@@ -2396,7 +2401,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 
 			if (line != -1 && column != -1) {
-				tp_dataInput.setErrorPosition(line, column);
+				this.tp_dataInput.setErrorPosition(line, column);
 			}
 			if (mode == EvaluationMode.DEMO) {
 				enableOrDisableButtons(queryOrRif);
@@ -2413,7 +2418,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				column = 1;
 			}
 
-			tp_dataInput.setErrorPosition(line, column);
+			this.tp_dataInput.setErrorPosition(line, column);
 			if (mode == EvaluationMode.DEMO) {
 				enableOrDisableButtons(queryOrRif);
 			}
@@ -2434,7 +2439,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	
 	private void outputResult(){
 		try{
-			final Container contentPane = (this.isApplet) ? this.getContentPane() : frame.getContentPane();
+			final Container contentPane = (this.isApplet) ? this.getContentPane() : this.frame.getContentPane();
 
 			setupResultPanel(this.resultpanel, this.resultQueryEvaluator, this.debugViewerCreator, this.materializationInfo, this.inferenceRules, this.ruleApplicationsForMaterialization, this.errorsInOntology, this.usePrefixes, this.prefixInstance, contentPane );
 			
@@ -2560,10 +2565,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		resultpanel.addHierarchyBoundsListener(new HierarchyBoundsListener() {
 
+			@Override
 			public void ancestorMoved(final HierarchyEvent e) {
 				Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPaneSize);
 			}
 
+			@Override
 			public void ancestorResized(final HierarchyEvent e) {
 				Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPaneSize);
 			}
@@ -2686,6 +2693,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	@Override
 	public void preferencesChanged() {
 		final int lp_query_pos = this.tp_queryInput.getCaretPosition();
 		final int lp_data_pos = this.tp_dataInput.getCaretPosition();
@@ -2866,7 +2874,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private static void removeLinePainter(LinePainter lp, final JTextPane tp) {
 		if (lp != null) {
 			lp.removeLinePainter();
-			lp = null;
 			tp.revalidate();
 			tp.repaint();
 		}
@@ -2978,17 +2985,20 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	public LuposJTextPane getTp_dataInput() {
-		return tp_dataInput;
+		return this.tp_dataInput;
 	}
 
+	@Override
 	public void setSerializedData(final String n3daten) {
 		this.tp_dataInput.setText(n3daten);
 	}
 
+	@Override
 	public void setSerializedQuery(final String query) {
 		this.tp_queryInput.setText(query);
 	}
 
+	@Override
 	public String getData() {
 		return this.tp_dataInput.getText();
 	}
@@ -3078,7 +3088,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			this.value=value;
 		}
 		public boolean isTrue() {
-			return value;
+			return this.value;
 		}
 		public void setValue(boolean value) {
 			this.value = value;
