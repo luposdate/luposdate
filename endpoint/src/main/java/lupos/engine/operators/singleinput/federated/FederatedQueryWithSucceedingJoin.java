@@ -69,7 +69,7 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 		if (!endpoint.isVariable()) {
 			try {
 				return Client.submitQuery(((URILiteral)endpoint).getString(), fQuery);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
