@@ -47,10 +47,12 @@ import xpref.datatypes.IntegerDatatype;
  */
 public enum LANGUAGE {
 	SEMANTIC_WEB() {
+		@Override
 		public TYPE_ENUM[] getValues() {
 			return TYPE__SemanticWeb.values();
 		}
 
+		@Override
 		public void setStyles() {
 			initStylesArray(this);
 
@@ -75,6 +77,7 @@ public enum LANGUAGE {
 			}
 		}
 
+		@Override
 		public void setDefaultStyles(Font tfFont) {
 			initStylesArray(this);
 
@@ -107,14 +110,17 @@ public enum LANGUAGE {
 		}
 	},
 	HTML() {
+		@Override
 		public TYPE_ENUM[] getValues() {
 			return TYPE__HTML.values();
 		}
 
+		@Override
 		public void setStyles() {
 			initStylesArray(this);
 		}
 
+		@Override
 		public void setDefaultStyles(Font tfFont) {
 			initStylesArray(this);
 
@@ -139,14 +145,17 @@ public enum LANGUAGE {
 		}
 	},
 	JAVA() {
+		@Override
 		public TYPE_ENUM[] getValues() {
 			return TYPE__JAVA.values();
 		}
 
+		@Override
 		public void setStyles() {
 			initStylesArray(this);
 		}
 
+		@Override
 		public void setDefaultStyles(final Font tfFont) {
 			initStylesArray(this);
 
@@ -234,10 +243,12 @@ public enum LANGUAGE {
 	public static enum TYPE__SemanticWeb implements TYPE_ENUM {
 		ERROR, RESERVEDWORD, IDENTIFIER, LITERAL, NUMBER, SEPARATOR, OPERATOR, COMMENT, WHITESPACE,  VARIABLE, URI, QUALIFIEDURI, LANGTAG, BLANKNODE, BOOLEAN;
 
+		@Override
 		public LANGUAGE getLanguage() {
 			return LANGUAGE.SEMANTIC_WEB;
 		}
 		
+		@Override
 		public TYPE__SemanticWeb getErrorEnum(){
 			return ERROR;
 		}
@@ -305,10 +316,12 @@ public enum LANGUAGE {
 	public static enum TYPE__HTML implements TYPE_ENUM {
 		ERROR, SEPARATOR, TEXT, TAG, NAME, VALUE, REFERENCE, PREPROCESSOR, COMMENT, WHITESPACE, ENDTAG;
 
+		@Override
 		public LANGUAGE getLanguage() {
 			return LANGUAGE.HTML;
 		}
 		
+		@Override
 		public TYPE__HTML getErrorEnum(){
 			return ERROR;
 		}
@@ -341,10 +354,12 @@ public enum LANGUAGE {
 	public static enum TYPE__JAVA implements TYPE_ENUM {
 		ERROR, WHITESPACE, COMMENT, OPERATOR, SEPARATOR, LITERAL, IDENTIFIER, RESERVEDWORD;
 
+		@Override
 		public LANGUAGE getLanguage() {
 			return LANGUAGE.JAVA;
 		}
 		
+		@Override
 		public TYPE__JAVA getErrorEnum(){
 			return ERROR;
 		}

@@ -21,40 +21,56 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.util;
+package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
-import java.io.File;
+import lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class SaveDialog extends JFileChooser {
-	private static final long serialVersionUID = 1L;
+public class SaveLoader {
+	private RuleEditor editor = null;
 
-	public SaveDialog() {
-		super();
-	}
-	
-	public SaveDialog(String path) {
-		super(path);
+	public SaveLoader(RuleEditor editor) {
+		this.editor = editor;
 	}
 
-	@Override
-	public void approveSelection() {
-		// if chosen file name already exists...
-		if(new File(this.getSelectedFile().getAbsolutePath()).exists()) {
-			// create dialog to warn user and get return value...
-			int ret = JOptionPane.showOptionDialog(this,
-					"An element with the choosen name already exists!\nWould you like to overwrite it?",
-					"Overwrite?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-					new Object[] { "Overwrite", "Cancel" }, 0);
+	public void save(String saveFileName) {
+		System.out.println("Starting to save...");
 
-			if(ret == JOptionPane.OK_OPTION) { // if user choose to overwrite...
-				super.approveSelection(); // go on and save image
+		try {
+			JSONObject saveObject = new JSONObject();
+			saveObject.put("associations", this.editor.getAssociationsContainer().toJSON());
+			saveObject.put("rule packages", this.editor.getRulePackageContainer().toJSON());
+			saveObject.put("rules", this.editor.getRuleContainer().toJSON());
+
+			File.writeFile(saveFileName, saveObject.toString(2));
+		}
+		catch(JSONException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("DONE");
+	}
+
+	public void load(String loadFileName) {
+		System.out.println("Starting to load...");
+
+		try {
+			JSONObject loadObject = new JSONObject(File.readFile(loadFileName));
+
+			this.editor.getRulePackageContainer().fromJSON(loadObject.getJSONObject("rule packages"));
+			this.editor.getRuleContainer().fromJSON(loadObject.getJSONObject("rules"));
+			this.editor.getAssociationsContainer().fromJSON(loadObject.getJSONObject("associations"));
+			
+			for(lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePanel rulePanel: this.editor.getRuleContainer().getRules()){
+				rulePanel.getRuleEditorPane().updateSize();
 			}
 		}
-		else { // chosen file name does not exist...
-			super.approveSelection(); // go on and save image
+		catch(JSONException e) {
+			e.printStackTrace();
 		}
+
+		System.out.println("DONE");
 	}
 }

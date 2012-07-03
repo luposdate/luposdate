@@ -21,40 +21,53 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.util;
+package lupos.gui.operatorgraph.visualeditor.ruleeditor.runtime;
 
-import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import lupos.engine.operators.BasicOperator;
+import lupos.misc.debug.BasicOperatorByteArray;
+import lupos.gui.operatorgraph.prefix.Prefix;
+import lupos.optimizations.logical.rules.DebugContainer;
 
-public class SaveDialog extends JFileChooser {
-	private static final long serialVersionUID = 1L;
+public class RulePackage extends AbstractRulePackage {
+	public void applyRules(BasicOperator rootOp) {
+		while(true) {
+			boolean end = true;
 
-	public SaveDialog() {
-		super();
-	}
-	
-	public SaveDialog(String path) {
-		super(path);
-	}
+			for(Rule rule : this.rules) {
+				if(rule.apply(rootOp)) {
+					end = false;
 
-	@Override
-	public void approveSelection() {
-		// if chosen file name already exists...
-		if(new File(this.getSelectedFile().getAbsolutePath()).exists()) {
-			// create dialog to warn user and get return value...
-			int ret = JOptionPane.showOptionDialog(this,
-					"An element with the choosen name already exists!\nWould you like to overwrite it?",
-					"Overwrite?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-					new Object[] { "Overwrite", "Cancel" }, 0);
+					break;
+				}
+			}
 
-			if(ret == JOptionPane.OK_OPTION) { // if user choose to overwrite...
-				super.approveSelection(); // go on and save image
+			if(end) {
+				break;
 			}
 		}
-		else { // chosen file name does not exist...
-			super.approveSelection(); // go on and save image
+	}
+
+	public List<DebugContainer<BasicOperatorByteArray>> applyRulesDebugByteArray(BasicOperator rootOp, Prefix prefixInstance) {
+		List<DebugContainer<BasicOperatorByteArray>> debug = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
+
+		while(true) {
+			boolean end = true;
+			for(Rule rule : this.rules) {
+				if(rule.apply(rootOp)) {
+					debug.add(new DebugContainer<BasicOperatorByteArray>(rule.toString(), rule.getClass().getSimpleName().replace(" ", "").toLowerCase() + "Rule", BasicOperatorByteArray.getBasicOperatorByteArray(rootOp.deepClone(), prefixInstance)));
+
+					end = false;
+
+					break;
+				}
+			}
+			if(end) {
+				break;
+			}
 		}
+		return debug;
 	}
 }

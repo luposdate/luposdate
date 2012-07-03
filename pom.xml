@@ -16,12 +16,13 @@
 		<module>rif</module>
 		<module>endpoint</module>
 		<module>integrationthirdpartyevaluators</module>
-    	<module>syntaxhighlighting</module>
-	    <module>operatorgraph</module>
-	    <module>visualeditor</module>
-	    <module>queryeditor</module>
-	    <module>dataeditor</module>
-	    <module>gui</module>
+    		<module>syntaxhighlighting</module>
+	    	<module>operatorgraph</module>
+	    	<module>visualeditor</module>
+	    	<module>queryeditor</module>
+	    	<module>dataeditor</module>
+	    	<module>gui</module>
+	    	<module>ruleeditor</module>
 	</modules>
 
 	<dependencyManagement>
@@ -84,6 +85,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.gui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.ruleeditor</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

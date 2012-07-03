@@ -21,40 +21,51 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.util;
+package lupos.gui.operatorgraph.visualeditor.ruleeditor.operators;
 
-import java.io.File;
+import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
+import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
+import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
+import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RuleOperatorPanel;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class SaveDialog extends JFileChooser {
-	private static final long serialVersionUID = 1L;
+public class RuleOperator extends AbstractRuleOperator {
+	private boolean startNode;
 
-	public SaveDialog() {
+	public RuleOperator() {
 		super();
 	}
-	
-	public SaveDialog(String path) {
-		super(path);
+
+	public RuleOperator(String name, JSONObject loadObject) throws JSONException {
+		super(name, loadObject);
 	}
 
-	@Override
-	public void approveSelection() {
-		// if chosen file name already exists...
-		if(new File(this.getSelectedFile().getAbsolutePath()).exists()) {
-			// create dialog to warn user and get return value...
-			int ret = JOptionPane.showOptionDialog(this,
-					"An element with the choosen name already exists!\nWould you like to overwrite it?",
-					"Overwrite?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-					new Object[] { "Overwrite", "Cancel" }, 0);
+	protected void fromJSON(JSONObject loadObject) throws JSONException {
+		this.startNode = loadObject.has("start node");
+	}
 
-			if(ret == JOptionPane.OK_OPTION) { // if user choose to overwrite...
-				super.approveSelection(); // go on and save image
-			}
+	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
+		this.panel = new RuleOperatorPanel(parent, gw, this, this.classType, this.determineNameForDrawing(), this.startNode, this.alsoSubClasses);
+
+		return this.panel;
+	}
+
+	public void setAsStartNode(boolean state) {
+		this.startNode = state;
+
+		((RuleOperatorPanel) this.panel).setAsStartNode(state);
+	}
+
+	public JSONObject toJSON(JSONObject connectionsObject) throws JSONException {
+		JSONObject saveObject = this.internalToJSON(connectionsObject);
+
+		if(this.startNode) {
+			saveObject.put("start node", this.startNode);
 		}
-		else { // chosen file name does not exist...
-			super.approveSelection(); // go on and save image
-		}
+
+		return saveObject;
 	}
 }

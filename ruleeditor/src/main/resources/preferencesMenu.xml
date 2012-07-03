@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+    following conditions are met:
+
+    	- Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+    	  disclaimer.
+    	- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+    	  following disclaimer in the documentation and/or other materials provided with the distribution.
+    	- Neither the name of the University of Luebeck nor the names of its contributors may be used to endorse or promote
+    	  products derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+    GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<preferences>
+  <sequence name="enableColorSequence">
+    <option id="colorEnable" name="enable" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="colorTransparency" dependsOn="colorEnable=true" name="transparency" datatype="xpref.datatypes.IntegerDatatype" value="255" minimum="0" maximum="255"/>
+    <option id="color" dependsOn="colorEnable=true" name="color" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+  </sequence>
+
+  <sequence name="enableIntMin1Sequence">
+    <option id="integerEnable" name="enable" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="integer" dependsOn="integerEnable=true" name="value" datatype="xpref.datatypes.IntegerDatatype" value="60" minimum="1" />
+  </sequence>
+
+  <sequence name="syntaxStyleSequence">
+    <option id="bold" name="bold" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="italic" name="italic" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    <option id="foregroundColor" name="foreground" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="backgroundColor" name="background" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="backgroundTransparency" name="transparency" datatype="xpref.datatypes.IntegerDatatype" value="255" minimum="0" maximum="255" />
+  </sequence>
+  
+  <sequence name="fontSequence">
+    <option id="fontEnable" name="enable" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+    <option id="font" dependsOn="fontEnable=true" name="font" datatype="xpref.datatypes.FontDatatype" value="Courier New; 12" />
+  </sequence>
+
+  <sequence name="boxStyleSequence">
+    <option id="shape" name="Shape" datatype="xpref.datatypes.EnumDatatype" value="ROUNDBOX" source="lupos.gui.operatorgraph.DrawObject$Type" />
+    <option id="color1" name="Color 1" datatype="xpref.datatypes.ColorDatatype" value="#FF0000" />
+    <option id="color2" name="Color 2" datatype="xpref.datatypes.ColorDatatype" value="#00FF00" />
+  </sequence>
+
+  <page id="syntax_highlighting" name="Syntax Highlighting">
+    <options>
+      <text>This preferences page contains the options for the syntax highlighting for SPARQL queries, RDF data and query results.</text>
+      <option id="syntaxHighlighting" name="Enable syntax highlighting" datatype="xpref.datatypes.BooleanDatatype" value="true" />
+      <optionbox name="Colors for syntax highlighting" dependsOn="syntaxHighlighting=true">
+        <option id="syntaxHighlighting_reservedword" name="Reserved word" datatype="syntaxStyleSequence" value="true | false | #7C007C | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_identifier" name="Identifier" datatype="syntaxStyleSequence" value="false | false | #7C007C | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_literal" name="Literal" datatype="syntaxStyleSequence" value="false | false | #0000FF | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_number" name="Number" datatype="syntaxStyleSequence" value="false | false | #000080 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_separator" name="Separator" datatype="syntaxStyleSequence" value="false | false | #B03060 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_operator" name="Operator" datatype="syntaxStyleSequence" value="false | false | #000000 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_comment" name="Comment" datatype="syntaxStyleSequence" value="false | true | #4D4D4D | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_whitespace" name="Whitespace" datatype="syntaxStyleSequence" value="false | false | #000000 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_error" name="Error" datatype="syntaxStyleSequence" value="false | false | #FF0000 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_variable" name="Variable" datatype="syntaxStyleSequence" value="false | false | #7016A8 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_uri" name="URI" datatype="syntaxStyleSequence" value="false | false | #00B200 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_qualifieduri" name="QualifiedURI" datatype="syntaxStyleSequence" value="false | false | #007C00 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_langtag" name="Langtag" datatype="syntaxStyleSequence" value="false | false | #8080FF | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_blanknode" name="Blanknode" datatype="syntaxStyleSequence" value="false | false | #6F6F25 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_boolean" name="Boolean" datatype="syntaxStyleSequence" value="true | true | #B03060 | #FFFFFF | 0" />
+      </optionbox>
+    </options>
+  </page>
+  <page id="viewer" name="Viewer">
+    <page id="ruleEditorPane" name="RuleEditor">
+      <options>
+        <text>This preferences page contains the options for the visual rule editor.</text>
+        <option id="ruleEditorPane_useStyledBoxes" name="Use styled boxes" datatype="xpref.datatypes.BooleanDatatype" value="true" help="disable this checkbox for a black and white view..."/>
+        <optionbox name="Styles of boxes" dependsOn="ruleEditorPane_useStyledBoxes=true">
+          <option id="ruleEditorPane_style_operator" name="Operator" datatype="boxStyleSequence" value="ROUNDBOX | #D3D3D3 | #808080" />
+          <option id="ruleEditorPane_style_jumpoveroperator" name="JumpOverOperator" datatype="boxStyleSequence" value="ROUNDBOX | #FE8888 | #FF0000" />
+          <line />
+          <option id="ruleEditorPane_style_annotation" name="Annotation" datatype="boxStyleSequence" value="ROUNDBOX | #FFA500 | #FFA500" />
+        </optionbox>
+      </options>
+    </page>
+    
+    <options>
+      <text>This preferences page contains the general options for the viewers of operator graphs, abstract syntax trees and visual data and query editors.</text>
+      <option id="viewer_font" name="Font at 100% zoom" datatype="xpref.datatypes.FontDatatype" value="Serif; 16" maximum="3" />
+      <line />
+      <option id="viewer_zoom" name="Zoom factor on first run" datatype="xpref.datatypes.IntegerDatatype" value="100" minimum="1" />
+      <line />
+      <option id="viewer_spacing_X" name="Spacing between columns at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="60" />
+      <option id="viewer_spacing_Y" name="Spacing between rows at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="90" />
+      <line />
+      <option id="viewer_useColoredArrows" name="Use colored arrows" datatype="xpref.datatypes.BooleanDatatype" value="false" />
+    </options>
+  </page>
+</preferences>

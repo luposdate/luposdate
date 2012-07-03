@@ -21,40 +21,39 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.util;
+package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
-import java.io.File;
+import javax.swing.JLabel;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
+import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
+import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.RuleOperator;
+import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum;
 
-public class SaveDialog extends JFileChooser {
-	private static final long serialVersionUID = 1L;
+public class RuleOperatorPanel extends AbstractRuleOperatorPanel {
+	private static final long serialVersionUID = -7897238149968316491L;
+	private JLabel startNodeLabel;
 
-	public SaveDialog() {
-		super();
-	}
-	
-	public SaveDialog(String path) {
-		super(path);
-	}
+	public RuleOperatorPanel(final VisualGraph<Operator> parent, GraphWrapper gw, RuleOperator operator, RuleEnum classType, String name, boolean startNode, boolean alsoSubClasses) {
+		super(parent, gw, operator, classType, name, alsoSubClasses);
 
-	@Override
-	public void approveSelection() {
-		// if chosen file name already exists...
-		if(new File(this.getSelectedFile().getAbsolutePath()).exists()) {
-			// create dialog to warn user and get return value...
-			int ret = JOptionPane.showOptionDialog(this,
-					"An element with the choosen name already exists!\nWould you like to overwrite it?",
-					"Overwrite?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-					new Object[] { "Overwrite", "Cancel" }, 0);
+		if(this.getParentQG() == ((RuleEditorPane) this.getParentQG().visualEditor).getVisualGraphs().get(0)) {
+			this.startNodeLabel = new JLabel("start node");
+			this.startNodeLabel.setFont(this.parent.getFONT());
+			this.startNodeLabel.setVisible(startNode);
 
-			if(ret == JOptionPane.OK_OPTION) { // if user choose to overwrite...
-				super.approveSelection(); // go on and save image
+			this.gbc.gridx++;
+			this.gbc.gridwidth = 2;
+			this.add(this.startNodeLabel, this.gbc);
+
+			if(startNode) {
+				((RuleEditorPane) this.getParentQG().visualEditor).setStartNode(operator);
 			}
 		}
-		else { // chosen file name does not exist...
-			super.approveSelection(); // go on and save image
-		}
+	}
+
+	public void setAsStartNode(boolean state) {
+		this.startNodeLabel.setVisible(state);
 	}
 }
