@@ -26,12 +26,16 @@ package lupos.gui.operatorgraph.visualeditor.util;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 
@@ -41,11 +45,18 @@ public class JTextFieldResizing extends JTextField {
 	private static volatile boolean ignoreFocus = false;
 
 	private static ReentrantLock lock = new ReentrantLock();
+	
+	/**
+	 * maximal width of this text field
+	 */
+	public static int MAX_SIZE_TEXTFIELD = 20;
 
 	public JTextFieldResizing(final String text, final Font font,
 			final AbstractSuperGuiComponent holder) {
 		super(text);
 
+		this.setCaretPosition(0);
+		
 		this.setFont(font);
 
 		final Dimension d = this.calculateSize(font);
@@ -53,7 +64,19 @@ public class JTextFieldResizing extends JTextField {
 		this.setPreferredSize(d);
 		this.setMinimumSize(d);
 		this.setSize(d);
+		
+		this.setToolTipText(text);
+		
+		this.addCaretListener(
+				new CaretListener(){
 
+					@Override
+					public void caretUpdate(CaretEvent e) {
+						setToolTipText(getText());
+					}
+			
+		});
+		
 		this.addFocusListener(new FocusListener() {
 			public void focusGained(final FocusEvent fe) {
 			}
@@ -110,6 +133,10 @@ public class JTextFieldResizing extends JTextField {
 			placeholder += " ";
 		}
 
+		if(placeholder.length()>JTextFieldResizing.MAX_SIZE_TEXTFIELD){
+			placeholder = placeholder.substring(0, JTextFieldResizing.MAX_SIZE_TEXTFIELD);
+		}
+		
 		return placeholder + "  ";
 	}
 
@@ -122,8 +149,7 @@ public class JTextFieldResizing extends JTextField {
 
 		final String placeholder = getPlaceholderString();
 
-		return new Dimension(fm.stringWidth(placeholder), fm.getLeading()
-				+ fm.getMaxAscent() + fm.getMaxDescent());
+		return new Dimension(fm.stringWidth(placeholder), fm.getLeading() + fm.getMaxAscent() + fm.getMaxDescent());
 	}
 
 	public String toString() {

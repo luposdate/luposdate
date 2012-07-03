@@ -67,7 +67,7 @@ public class GraphRow {
 			// get last box in row...
 			final GraphBox last = this.boxes.get(this.boxes.size() - 1);
 
-			b.setX(last.getX() + last.width + (int) Math.ceil(this.parent.getSPACING()));
+			b.setX(last.getX() + last.width + (int) Math.ceil(this.parent.getSPACING_X()));
 		}
 
 		b.setY(this.y); // move box in y-direction into the row
@@ -90,7 +90,7 @@ public class GraphRow {
 				b.setXWithoutUpdatingParentsSize((int) Math.ceil(this.parent.PADDING));
 			}
 			else { // already boxes in the row...
-				b.setXWithoutUpdatingParentsSize(last.getX() + last.width + (int) Math.ceil(this.parent.getSPACING()));
+				b.setXWithoutUpdatingParentsSize(last.getX() + last.width + (int) Math.ceil(this.parent.getSPACING_X()));
 			}
 
 			b.setYWithoutUpdatingParentsSize(this.y); // move box in y-direction into the row
@@ -154,7 +154,7 @@ public class GraphRow {
 
 		final int mostRightPosition = mostRight.getX() + mostRight.width;
 
-		return mostRightPosition - mostLeft.getX() + 2 * (int) Math.ceil(this.parent.getSPACING());
+		return mostRightPosition - mostLeft.getX() + 2 * (int) Math.ceil(this.parent.getSPACING_X());
 	}
 
 	public void removeBox(final GraphBox box) {

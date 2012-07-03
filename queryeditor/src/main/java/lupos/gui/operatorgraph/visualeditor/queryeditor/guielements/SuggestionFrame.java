@@ -312,7 +312,7 @@ public class SuggestionFrame extends JFrame {
 				rowPanel);
 
 		final int predicateX = subjectX + subjectWidth
-				+ (int) this.queryGraph.getSPACING();
+				+ (int) this.queryGraph.getSPACING_X();
 		final int predicateY = (int) this.queryGraph.PADDING;
 		final int predicateWidth = predicatePanelS.getPreferredSize().width;
 		final int predicateHeight = predicatePanelS.getPreferredSize().height;
@@ -330,7 +330,7 @@ public class SuggestionFrame extends JFrame {
 		objectPanel.setMovable(false);
 
 		final int objectX = predicateX + predicateWidth
-				+ (int) this.queryGraph.getSPACING();
+				+ (int) this.queryGraph.getSPACING_X();
 		final int objectY = (int) this.queryGraph.PADDING;
 		final int objectWidth = objectPanel.getPreferredSize().width;
 		final int objectHeight = objectPanel.getPreferredSize().height;
@@ -414,7 +414,7 @@ public class SuggestionFrame extends JFrame {
 				variablesPred, rowPanel);
 
 		final int predicateX = subjectX + subjectWidth
-				+ (int) this.queryGraph.getSPACING();
+				+ (int) this.queryGraph.getSPACING_X();
 		final int predicateY = (int) this.queryGraph.PADDING;
 		final int predicateWidth = predicatePanelO.getPreferredSize().width;
 		final int predicateHeight = predicatePanelO.getPreferredSize().height;
@@ -447,7 +447,7 @@ public class SuggestionFrame extends JFrame {
 		objectPanel = new SuggestionPanel(this.queryGraph, queryRDFTerm, variablesObj, rowPanel);
 
 		final int objectX = predicateX + predicateWidth
-				+ (int) this.queryGraph.getSPACING();
+				+ (int) this.queryGraph.getSPACING_X();
 		final int objectY = (int) this.queryGraph.PADDING;
 		final int objectWidth = objectPanel.getPreferredSize().width;
 		final int objectHeight = objectPanel.getPreferredSize().height;

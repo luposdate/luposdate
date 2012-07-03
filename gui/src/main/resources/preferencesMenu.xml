@@ -217,7 +217,8 @@
       <line />
       <option id="viewer_zoom" name="Zoom factor on first run" datatype="xpref.datatypes.IntegerDatatype" value="100" minimum="1" />
       <line />
-      <option id="viewer_spacing" name="Spacing between rows and columns at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="60" />
+      <option id="viewer_spacing_X" name="Spacing between columns at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="60" />
+      <option id="viewer_spacing_Y" name="Spacing between rows at 100% zoom" datatype="xpref.datatypes.IntegerDatatype" value="90" />
       <line />
       <option id="viewer_useColoredArrows" name="Use colored arrows" datatype="xpref.datatypes.BooleanDatatype" value="false" />
     </options>

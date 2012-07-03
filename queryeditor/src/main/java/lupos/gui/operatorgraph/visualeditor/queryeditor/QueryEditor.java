@@ -1017,8 +1017,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 	@Override
 	protected void pasteElements(final String content) {
-		final int rowY = this.visualGraphs.getFirst().getMaxY()
-		+ (int) this.visualGraphs.get(0).SPACING;
+		final int rowY = this.visualGraphs.getFirst().getMaxY() + (int) this.visualGraphs.get(0).SPACING_Y;
 
 		try {
 			final Operator rootNode = this.parseQuery(content);

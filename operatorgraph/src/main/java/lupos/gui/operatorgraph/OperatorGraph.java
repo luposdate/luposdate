@@ -89,9 +89,14 @@ public class OperatorGraph extends JPanel implements IXPref {
 	protected Hashtable<GraphWrapper, LinkedList<GraphWrapper>> drawnLineAnnotations = new Hashtable<GraphWrapper, LinkedList<GraphWrapper>>();
 
 	/**
-	 * Space between boxes and rows.
+	 * Space between boxes.
 	 */
-	public double SPACING = 60;
+	public double SPACING_X = 60;
+
+	/**
+	 * Space between rows.
+	 */
+	public double SPACING_Y = 90;
 
 	/**
 	 * Padding of the main window.
@@ -529,15 +534,20 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *            the zoom factor
 	 */
 	protected void setZoomFactors(final double zoomFactor) {
-		this.SPACING = zoomFactor * this.SPACING;
+		this.SPACING_X = zoomFactor * this.SPACING_X;
+		this.SPACING_Y = zoomFactor * this.SPACING_Y;
 		this.PADDING = zoomFactor * this.PADDING;
 
 		this.FONTSIZE *= zoomFactor;
 		this.FONT = new Font(this.FONT.getFontName(), this.FONT.getStyle(), (int) Math.ceil(this.FONTSIZE));
 	}
 
-	public double getSPACING() {
-		return this.SPACING;
+	public double getSPACING_X() {
+		return this.SPACING_X;
+	}
+
+	public double getSPACING_Y() {
+		return this.SPACING_Y;
 	}
 
 	public Font getFONT() {
@@ -591,7 +601,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	public void preferencesChanged() {
 		try {
-			this.SPACING = IntegerDatatype.getFirstValue("viewer_spacing") * this.zoomFactor;
+			this.SPACING_X = IntegerDatatype.getFirstValue("viewer_spacing_X") * this.zoomFactor;
+			this.SPACING_Y = IntegerDatatype.getFirstValue("viewer_spacing_Y") * this.zoomFactor;
 			this.useLineColors = BooleanDatatype.getValues("viewer_useColoredArrows").get(0).booleanValue();
 
 			// --- resetting zoom - begin ---

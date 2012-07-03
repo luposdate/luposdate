@@ -259,7 +259,7 @@ public final class LayeredDrawing {
 			row.addAllWithoutUpdatingParentsSize(toSort, boxes);
 
 			// add row height and spacing height to y...
-			y += row.getHeight() + operatorgraph.SPACING;
+			y += row.getHeight() + operatorgraph.SPACING_Y;
 
 			level++; // increment level
 		}
@@ -374,14 +374,14 @@ public final class LayeredDrawing {
 
 				// if previous box and current box overlap...
 				if (preBox.getX() + preBox.width
-						+ (int) Math.ceil(operatorgraph.SPACING) > box.getX()) {
+						+ (int) Math.ceil(operatorgraph.SPACING_X) > box.getX()) {
 					// move current box...
 					updateXWithoutUpdatingParentsSize(operatorgraph,
 							box,
 							levels,
 							level,
 							preBox.getX() + preBox.width
-									+ (int) Math.ceil(operatorgraph.SPACING),
+									+ (int) Math.ceil(operatorgraph.SPACING_X),
 							new HashSet<GraphBox>());
 				}
 			}

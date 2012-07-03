@@ -81,7 +81,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 
 		final GraphBox prefixBox = this.graphBoxCreator.createGraphBox(this, prefixGW);
 		prefixBox.setX(2* (int) Math.ceil(this.PADDING));
-		prefixBox.setY(this.getMaxY() + (int) Math.ceil(this.SPACING));
+		prefixBox.setY(this.getMaxY() + (int) Math.ceil(this.SPACING_Y));
 		prefixBox.arrange(flipX, flipY, rotate, arrange);
 
 		this.boxes.put(prefixGW, prefixBox);

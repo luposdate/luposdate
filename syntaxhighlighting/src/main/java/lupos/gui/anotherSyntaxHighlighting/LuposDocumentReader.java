@@ -49,10 +49,10 @@ public class LuposDocumentReader extends InputStream {
      * should not be called at the same time as a read) allows
      * the reader to compensate.
      */
-    public void update(int position, int adjustment){
-        if (position < this.position){
-            if (this.position < position - adjustment){
-                this.position = position;
+    public void update(final int position_parameter, int adjustment){
+        if (position_parameter < this.position){
+            if (this.position < position_parameter - adjustment){
+                this.position = position_parameter;
             } else {
                 this.position += adjustment;
             }
@@ -89,7 +89,9 @@ public class LuposDocumentReader extends InputStream {
      * Has no effect.  This reader can be used even after
      * it has been closed.
      */
-    public void close() {
+    @Override
+	public void close() {
+    	// no effect
     }
 
     /**
@@ -97,8 +99,9 @@ public class LuposDocumentReader extends InputStream {
      *
      * @param readAheadLimit ignored.
      */
-    public void mark(int readAheadLimit){
-        mark = position;
+    @Override
+	public synchronized void mark(final int readAheadLimit){
+        this.mark = this.position;
     }
 
     /**
@@ -106,7 +109,8 @@ public class LuposDocumentReader extends InputStream {
      *
      * @return true
      */
-    public boolean markSupported(){
+    @Override
+	public boolean markSupported(){
         return true;
     }
 
@@ -117,10 +121,10 @@ public class LuposDocumentReader extends InputStream {
      */
     @Override
     public int read(){
-        if (position < document.getLength()){
+        if (this.position < this.document.getLength()){
             try {
-                char c = document.getText((int)position, 1).charAt(0);
-                position++;
+                char c = this.document.getText((int)this.position, 1).charAt(0);
+                this.position++;
                 return c;
             } catch (BadLocationException x){
                 return -1;
@@ -151,17 +155,17 @@ public class LuposDocumentReader extends InputStream {
      * @return the number of characters read or -1 if no more characters are available in the document.
      */
     public int read(char[] cbuf, int off, int len){
-        if (position < document.getLength()){
+        if (this.position < this.document.getLength()){
             int length = len;
-            if (position + length >= document.getLength()){
-                length = document.getLength() - (int)position;
+            if (this.position + length >= this.document.getLength()){
+                length = this.document.getLength() - (int)this.position;
             }
             if (off + length >= cbuf.length){
                 length = cbuf.length - off;
             }
             try {
-                String s = document.getText((int)position, length);
-                position += length;
+                String s = this.document.getText((int)this.position, length);
+                this.position += length;
                 for (int i=0; i<length; i++){
                     cbuf[off+i] = s.charAt(i);
                 }
@@ -186,13 +190,14 @@ public class LuposDocumentReader extends InputStream {
     /**
      * Reset this reader to the last mark, or the beginning of the document if a mark has not been set.
      */
-    public void reset(){
-        if (mark == -1){
-            position = 0;
+    @Override
+	public synchronized void reset(){
+        if (this.mark == -1){
+            this.position = 0;
         } else {
-            position = mark;
+            this.position = this.mark;
         }
-        mark = -1;
+        this.mark = -1;
     }
 
     /**
@@ -203,14 +208,15 @@ public class LuposDocumentReader extends InputStream {
      * @param n number of characters to skip.
      * @return the actual number of characters skipped.
      */
-    public long skip(long n){
-        if (position + n <= document.getLength()){
-            position += n;
+    @Override
+	public long skip(final long n){
+        if (this.position + n <= this.document.getLength()){
+            this.position += n;
             return n;
         } else {
-            long oldPos = position;
-            position = document.getLength();
-            return (document.getLength() - oldPos);
+            long oldPos = this.position;
+            this.position = this.document.getLength();
+            return (this.document.getLength() - oldPos);
         }
     }
 
@@ -220,10 +226,10 @@ public class LuposDocumentReader extends InputStream {
      * @param n the offset to which to seek.
      */
     public void seek(long n){
-        if (n <= document.getLength()){
-            position = n;
+        if (n <= this.document.getLength()){
+        	this.position = n;
         }else{
-            position = document.getLength();
+        	this.position = this.document.getLength();
         }
     }
     
@@ -235,7 +241,7 @@ public class LuposDocumentReader extends InputStream {
     public String getText(){
     	String text = null;
     	try {
-			text = document.getText(0, document.getLength());
+			text = this.document.getText(0, this.document.getLength());
 		} catch (BadLocationException e) {e.printStackTrace();}
 		
 		return text;
@@ -251,8 +257,10 @@ public class LuposDocumentReader extends InputStream {
      * @param endOffset The offset of the end of the demanded stream.
      * @return The bounded stream.
      */
-    public InputStream getStreamWithOffset(int beginOffset, int endOffset){
+    public InputStream getStreamWithOffset(final int beginOffsetParameter, final int endOffsetParameter){
     	
+    	int beginOffset = beginOffsetParameter;
+    	int endOffset = endOffsetParameter;
     	String str = this.getText();
     	
     	if (beginOffset > str.length() || beginOffset == -1) {
