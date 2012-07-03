@@ -2131,7 +2131,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.valueClass = valueClass;
 		this.currentID = currentID;
 		this.nodeDeSerializer = nodeDeSerializer;
-		pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree");
+		pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree", false);
 	}
 
 	public static DBBPTree readLuposObject(final LuposObjectInputStream lois)
@@ -2147,7 +2147,6 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		final Class valueClass = (Class) lois.readObject();
 		final NodeDeSerializer nodeDeSerializer = (NodeDeSerializer) lois.readObject();
 		final DBBPTree dbbptree = new DBBPTree(k, k_, size, comp, rootFilename, firstLeafFileName, keyClass, valueClass, currentID, nodeDeSerializer);
-		dbbptree.pageManager.initAfterLoading();
 		return dbbptree;
 	}
 

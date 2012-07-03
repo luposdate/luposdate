@@ -82,7 +82,7 @@ public class BufferManager {
 
 		@Override
 		public void accessNow(final int pagenumber) {
-			this.timestamps.put(pagenumber, currentTime++);
+			this.timestamps.put(pagenumber, this.currentTime++);
 		}
 
 		@Override

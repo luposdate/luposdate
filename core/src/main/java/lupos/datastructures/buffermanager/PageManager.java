@@ -23,9 +23,8 @@
  */
 package lupos.datastructures.buffermanager;
 
+import java.io.File;
 import java.io.IOException;
-
-import lupos.datastructures.paged_dbbptree.DBBPTree;
 
 /**
  * This class manages the free pages in a file. The first page is reserved for
@@ -46,23 +45,39 @@ public class PageManager {
 	protected final BufferManager bufferManager;
 	protected int maxNumberPages = 0;
 	protected boolean freePageBeforeEndOfFile = false;
+		
+	/**
+	* creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
+	*/
+	public static PageManager createPageManager(final String name) throws IOException{
+		File f = new File(name + "_0");
+		return new PageManager(name, !f.exists()); 
+	}
 
 	public PageManager(final String name) throws IOException {
-		bufferManager = new BufferManager(name);
-		// initialize page for storing released pages...
-		final byte[] page0 = getEmptyPage();
-		page0[0] = (byte) -128;
-		page0[1] = (byte) -128;
-		page0[2] = (byte) -128;
-		page0[3] = (byte) -128;
-		page0[4] = (byte) -128;
-		page0[5] = (byte) (11 - 128);
-		page0[6] = (byte) -128;
-		page0[7] = (byte) -128;
-		page0[8] = (byte) -128;
-		page0[9] = (byte) -128;
-		page0[10] = (byte) -128;
-		bufferManager.modifyPage(0, page0);
+		this(name, true);
+	}
+	
+	public PageManager(final String name, boolean overwriteExistingFile) throws IOException {
+		this.bufferManager = new BufferManager(name);
+		if(overwriteExistingFile){
+			// initialize page for storing released pages...
+			final byte[] page0 = getEmptyPage();
+			page0[0] = (byte) -128;
+			page0[1] = (byte) -128;
+			page0[2] = (byte) -128;
+			page0[3] = (byte) -128;
+			page0[4] = (byte) -128;
+			page0[5] = (byte) (11 - 128);
+			page0[6] = (byte) -128;
+			page0[7] = (byte) -128;
+			page0[8] = (byte) -128;
+			page0[9] = (byte) -128;
+			page0[10] = (byte) -128;
+			this.bufferManager.modifyPage(0, page0);
+		} else {
+			this.initAfterLoading();
+		}
 	}
 
 	/**
@@ -76,7 +91,7 @@ public class PageManager {
 	 * @throws IOException
 	 */
 	public byte[] getPage(final int pagenumber) throws IOException {
-		return bufferManager.getPage(pagenumber);
+		return this.bufferManager.getPage(pagenumber);
 	}
 
 	/**
@@ -92,7 +107,7 @@ public class PageManager {
 	 */
 	public void modifyPage(final int pagenumber, final byte[] pageContent)
 			throws IOException {
-		bufferManager.modifyPage(pagenumber, pageContent);
+		this.bufferManager.modifyPage(pagenumber, pageContent);
 	}
 
 	/**
@@ -101,7 +116,7 @@ public class PageManager {
 	 * @throws IOException
 	 */
 	public void writeAllModifiedPages() throws IOException {
-		bufferManager.writeAllModifiedPages();
+		this.bufferManager.writeAllModifiedPages();
 	}
 
 	/**
@@ -110,7 +125,7 @@ public class PageManager {
 	 * @return an empty page
 	 */
 	public byte[] getEmptyPage() {
-		return bufferManager.getEmptyPage();
+		return this.bufferManager.getEmptyPage();
 	}
 
 	/**
@@ -118,7 +133,7 @@ public class PageManager {
 	 * if the page manager is not used any more...
 	 */
 	public void close() throws IOException {
-		bufferManager.close();
+		this.bufferManager.close();
 	}
 
 	/**
@@ -128,16 +143,16 @@ public class PageManager {
 	 * @return the page number of a free page
 	 */
 	public int getNumberOfNewPage() {
-		if (!freePageBeforeEndOfFile) {
-			maxNumberPages++;
+		if (!this.freePageBeforeEndOfFile) {
+			this.maxNumberPages++;
 			storeMaxNumberPagesAndFreePageBeforeEndOfFile();
-			return maxNumberPages;
+			return this.maxNumberPages;
 		} else {
 			// look up first page where all free pages before the end of
 			// the file are stored!
 			int index = 0;
 			try {
-				byte[] currentPage = bufferManager.getPage(index);
+				byte[] currentPage = this.bufferManager.getPage(index);
 				do {
 					int max = (currentPage[4] + 128) * 256
 							+ (currentPage[5] + 128);
@@ -148,34 +163,34 @@ public class PageManager {
 						max -= 4;
 						currentPage[5] = (byte) ((max % 256) - 128);
 						currentPage[4] = (byte) (((max / 256) % 256) - 128);
-						bufferManager.modifyPage(index, currentPage);
+						this.bufferManager.modifyPage(index, currentPage);
 						return result;
 					}
 					index = (((currentPage[0] + 128) * 256 + (currentPage[1] + 128)) * 256 + (currentPage[2] + 128))
 							* 256 + (currentPage[3] + 128);
 					if (index == 0) {
 						// end of sequence reached but no released page found!
-						freePageBeforeEndOfFile = false;
-						maxNumberPages++;
+						this.freePageBeforeEndOfFile = false;
+						this.maxNumberPages++;
 						storeMaxNumberPagesAndFreePageBeforeEndOfFile();						
-						return maxNumberPages;
+						return this.maxNumberPages;
 					} else
-						currentPage = bufferManager.getPage(index);
+						currentPage = this.bufferManager.getPage(index);
 				} while (true);
 			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
-				maxNumberPages++;
+				this.maxNumberPages++;
 				storeMaxNumberPagesAndFreePageBeforeEndOfFile();
-				return maxNumberPages;
+				return this.maxNumberPages;
 			}
 		}
 	}
 	
 	private void storeMaxNumberPagesAndFreePageBeforeEndOfFile() {
 		try {
-			byte[] page0 = bufferManager.getPage(0);
-			int number = maxNumberPages;
+			byte[] page0 = this.bufferManager.getPage(0);
+			int number = this.maxNumberPages;
 			page0[9] = (byte) ((number % 256) - 128);
 			number /= 256;
 			page0[8] = (byte) ((number % 256) - 128);
@@ -183,12 +198,12 @@ public class PageManager {
 			page0[7] = (byte) ((number % 256) - 128);
 			number /= 256;
 			page0[6] = (byte) ((number % 256) - 128);
-			if(freePageBeforeEndOfFile){
+			if(this.freePageBeforeEndOfFile){
 				page0[10]=-127;
 			} else {
 				page0[10]=-128;
 			}
-			bufferManager.modifyPage(0, page0);
+			this.bufferManager.modifyPage(0, page0);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -202,16 +217,16 @@ public class PageManager {
 	 *            the number of the page to be released!
 	 */
 	public void releasePage(final int pagenumber) {
-		bufferManager.releasePage(pagenumber);
-		if (pagenumber == maxNumberPages) {
-			maxNumberPages--;
+		this.bufferManager.releasePage(pagenumber);
+		if (pagenumber == this.maxNumberPages) {
+			this.maxNumberPages--;
 			storeMaxNumberPagesAndFreePageBeforeEndOfFile();
 		} else {
 			// store the released page on the first page
 			// (or one of its succeeding pages)
 			int index = 0;
 			try {
-				byte[] currentPage = bufferManager.getPage(index);
+				byte[] currentPage = this.bufferManager.getPage(index);
 				do {
 					int max = (currentPage[4] + 128) * 256
 							+ (currentPage[5] + 128);
@@ -229,9 +244,9 @@ public class PageManager {
 						max += 4;
 						newPage[5] = (byte) ((max % 256) - 128);
 						newPage[4] = (byte) (((max / 256) % 256) - 128);
-						freePageBeforeEndOfFile = true;
+						this.freePageBeforeEndOfFile = true;
 						storeMaxNumberPagesAndFreePageBeforeEndOfFile();
-						bufferManager.modifyPage(index, newPage);
+						this.bufferManager.modifyPage(index, newPage);
 						return;
 					}
 					index = (((currentPage[0] + 128) * 256 + (currentPage[1] + 128)) * 256 + (currentPage[2] + 128))
@@ -249,7 +264,7 @@ public class PageManager {
 						currentPage[max + 1] = (byte) ((number % 256) - 128);
 						number /= 256;
 						currentPage[max] = (byte) ((number % 256) - 128);
-						bufferManager.modifyPage(pagenumber, currentPage);
+						this.bufferManager.modifyPage(pagenumber, currentPage);
 
 						currentPage = new byte[6];
 						currentPage[0] = (byte) -128;
@@ -258,12 +273,12 @@ public class PageManager {
 						currentPage[3] = (byte) -128;
 						currentPage[4] = (byte) -128;
 						currentPage[5] = (byte) (6 - 128);
-						freePageBeforeEndOfFile = true;
+						this.freePageBeforeEndOfFile = true;
 						storeMaxNumberPagesAndFreePageBeforeEndOfFile();
-						bufferManager.modifyPage(pagenumber, currentPage);
+						this.bufferManager.modifyPage(pagenumber, currentPage);
 						return;
 					} else
-						currentPage = bufferManager.getPage(index);
+						currentPage = this.bufferManager.getPage(index);
 				} while (true);
 			} catch (final IOException e) {
 				System.err.println(e);
@@ -282,12 +297,12 @@ public class PageManager {
 	 * 
 	 * @throws IOException
 	 */
-	public void releaseSequenceOfPages(int pagenumber) throws IOException {
-		while (pagenumber > 0) {
-			final byte[] page = bufferManager.getPage(pagenumber);
-			releasePage(pagenumber);
-			pagenumber = (((page[0] + 128) * 256 + (page[1] + 128)) * 256 + (page[2] + 128))
-					* 256 + (page[3] + 128);
+	public void releaseSequenceOfPages(final int pagenumber) throws IOException {
+		int pagenumber_tmp = pagenumber;
+		while (pagenumber_tmp > 0) {
+			final byte[] page = this.bufferManager.getPage(pagenumber_tmp);
+			releasePage(pagenumber_tmp);
+			pagenumber_tmp= (((page[0] + 128) * 256 + (page[1] + 128)) * 256 + (page[2] + 128)) * 256 + (page[3] + 128);
 		}
 	}
 
@@ -295,11 +310,11 @@ public class PageManager {
 	 * This method sets some internal states after loading the dbbptree... 
 	 */
 	public void initAfterLoading(){
-		bufferManager.releaseAllPages();
+		this.bufferManager.releaseAllPages();
 		try {
-			byte[] page0 = bufferManager.getPage(0);
-			maxNumberPages=(page0[9]+128) + 256*((page0[8]+128) + 256*((page0[7]+128)+256*(page0[6]+128)));
-			freePageBeforeEndOfFile=(page0[10]==-127);
+			byte[] page0 = this.bufferManager.getPage(0);
+			this.maxNumberPages=(page0[9]+128) + 256*((page0[8]+128) + 256*((page0[7]+128)+256*(page0[6]+128)));
+			this.freePageBeforeEndOfFile=(page0[10]==-127);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
