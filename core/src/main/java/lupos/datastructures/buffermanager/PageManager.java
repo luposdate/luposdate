@@ -298,7 +298,7 @@ public class PageManager {
 		bufferManager.releaseAllPages();
 		try {
 			byte[] page0 = bufferManager.getPage(0);
-			maxNumberPages=page0[9] + 256*(page0[8] + 256*(page0[7]+256*page0[6]));
+			maxNumberPages=(page0[9]+128) + 256*((page0[8]+128) + 256*((page0[7]+128)+256*(page0[6]+128)));
 			freePageBeforeEndOfFile=(page0[10]==-127);
 		} catch (final IOException e) {
 			System.err.println(e);

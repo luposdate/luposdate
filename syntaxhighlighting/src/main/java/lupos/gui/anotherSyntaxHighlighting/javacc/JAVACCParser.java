@@ -138,19 +138,33 @@ public class JAVACCParser implements ILuposParser {
 			}
 			
 		} catch (Error e) {
-			beginChar++;
-			token = testOfComment(content, beginChar, content.length());
-			if(token!=null){
-				setReader(this.stream, token.getBeginChar() + token.getContents().length(), this.endCharOffset);
-			} else {
-				token = this.parser.createErrorToken(content.substring(beginChar, beginChar+1), beginChar);			
-				setReader(this.stream, beginChar+1, this.endCharOffset);
-			}
+			token = errorHandling(beginChar, content);
 		}
 
 		// set the current token to the received one.
 		this.currentToken = token;
 
+		return token;
+	}
+	
+	private ILuposToken errorHandling(final int beginCharParameter, final String content){
+		int beginChar=beginCharParameter+1;
+		ILuposToken token = testOfComment(content, beginChar, content.length());
+		if(token!=null){
+			setReader(this.stream, token.getBeginChar() + token.getContents().length(), this.endCharOffset);
+		} else {
+			int index = 0;
+			boolean flag = false;
+			do{
+				try{
+					index++;
+					setReader(this.stream, beginChar+index, this.endCharOffset);
+				} catch(Error e){
+					flag = true;
+				}
+			} while(flag && beginChar+index<this.endCharOffset);				
+			token = this.parser.createErrorToken(content.substring(beginChar, beginChar+index), beginChar);							
+		}
 		return token;
 	}
 

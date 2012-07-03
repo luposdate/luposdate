@@ -33,16 +33,16 @@ import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__JAVA;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
-import lupos.gui.anotherSyntaxHighlighting.javacc.html.Token;
+import lupos.gui.anotherSyntaxHighlighting.javacc.java.Token;
 import lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5Constants;
 
 public class JavaScanner implements PARSER {
 
 	private static TYPE__JAVA[] TOKEN_MAP;
-	private final lupos.gui.anotherSyntaxHighlighting.javacc.html.HTMLScanner parser;
+	private final lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5 parser;
 	
 	private JavaScanner(final LuposDocumentReader reader){
-		this.parser = new lupos.gui.anotherSyntaxHighlighting.javacc.html.HTMLScanner(reader);
+		this.parser = new lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5(reader);
 	}
 	
 	public static ILuposParser createILuposParser(final LuposDocumentReader reader){
