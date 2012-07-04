@@ -296,6 +296,7 @@ public abstract class BasicIndex extends Operator {
 			return queryResult;
 		} catch (final Exception e) {
 			System.err.println("Error while joining triple patterns: "+ e);
+			e.printStackTrace();
 			return null;
 		}
 	}

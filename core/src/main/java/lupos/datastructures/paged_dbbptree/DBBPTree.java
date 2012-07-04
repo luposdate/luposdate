@@ -981,24 +981,16 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		keyClass = (Class<? super K>) arg0.getClass();
 		valueClass = (Class<? super V>) arg1.getClass();
 		if (rootPage < 0 || size == 0) {
+			// just create one new leaf node as root node of the B+-tree...
 			rootPage = newFilename();
-			firstLeafPage = newFilename();
+			firstLeafPage = rootPage;
 			try {
-				final OutputStream fosRoot = new PageOutputStream(rootPage,
-						pageManager, true);
-				final LuposObjectOutputStreamWithoutWritingHeader outRoot = new LuposObjectOutputStreamWithoutWritingHeader(
-						fosRoot);
-				outRoot.writeLuposBoolean(false);
-				outRoot.writeLuposInt(firstLeafPage);
-				final OutputStream fosLeaf = new PageOutputStream(
-						firstLeafPage, pageManager);
-				final LuposObjectOutputStream outLeaf = new LuposObjectOutputStreamWithoutWritingHeader(
-						fosLeaf);
-				outLeaf.writeLuposBoolean(true);
-				writeLeafEntry(arg0, arg1, outLeaf, null, null);
+				final OutputStream fosRoot = new PageOutputStream(rootPage, pageManager, true);
+				final LuposObjectOutputStreamWithoutWritingHeader outRoot = new LuposObjectOutputStreamWithoutWritingHeader(fosRoot);
+				outRoot.writeLuposBoolean(true);
+				writeLeafEntry(arg0, arg1, outRoot, null, null);
 				size = 1;
 				outRoot.close();
-				outLeaf.close();
 			} catch (final FileNotFoundException e) {
 				System.err.println(e);
 				e.printStackTrace();
