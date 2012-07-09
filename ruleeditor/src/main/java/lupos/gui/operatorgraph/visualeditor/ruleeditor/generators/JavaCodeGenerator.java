@@ -1410,7 +1410,7 @@ public class JavaCodeGenerator {
 
 	private String getTemplate(String templateName) {
 		if(!this.templates.containsKey(templateName)) {
-			this.templates.put(templateName, File.readFile("src/lupos/gui/operatorgraph/visualeditor/ruleeditor/templates/code_" + templateName + ".tpl"));
+			this.templates.put(templateName, File.readFile(RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/templates/code_" + templateName + ".tpl").getFile()));
 		}
 
 		return this.templates.get(templateName);

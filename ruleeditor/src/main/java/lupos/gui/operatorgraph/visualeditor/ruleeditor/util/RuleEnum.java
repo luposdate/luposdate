@@ -26,6 +26,8 @@ package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 public enum RuleEnum {
 	Operator(lupos.engine.operators.BasicOperator.class),
 	Join(lupos.engine.operators.multiinput.join.Join.class),
+	HashMapIndexJoin(lupos.engine.operators.multiinput.join.HashMapIndexJoin.class),
+	HashMapIndexOnLeftOperandJoin(lupos.engine.operators.multiinput.join.HashMapIndexOnLeftOperandJoin.class),
 	Filter(lupos.engine.operators.singleinput.Filter.class),
 	RuleFilter(lupos.rif.operator.RuleFilter.class),
 	Optional(lupos.engine.operators.multiinput.optional.Optional.class),

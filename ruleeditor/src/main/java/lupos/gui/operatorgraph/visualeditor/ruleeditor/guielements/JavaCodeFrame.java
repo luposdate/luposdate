@@ -81,7 +81,7 @@ public class JavaCodeFrame extends JFrame {
 			}
 		});
 
-		final JTextField jTF_package = new JTextField("", 30);
+		final JTextField jTF_package = new JTextField("lupos.optimizations.logical.rules.generated", 30);
 
 
 		JRadioButton jRB_startMap_no = new JRadioButton("no ", true);

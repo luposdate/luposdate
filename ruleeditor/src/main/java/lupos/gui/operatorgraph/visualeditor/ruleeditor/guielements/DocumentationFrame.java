@@ -144,7 +144,7 @@ public class DocumentationFrame extends JFrame {
 					imagePath = null;
 				}
 				else if(jRB_systemImage.isSelected()) {
-					imagePath = "src/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/logo.gif";
+					imagePath = RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/logo.gif").getFile();
 				}
 				else if(jRB_ownImage.isSelected()) {
 					imagePath = jTF_ownImage.getText();

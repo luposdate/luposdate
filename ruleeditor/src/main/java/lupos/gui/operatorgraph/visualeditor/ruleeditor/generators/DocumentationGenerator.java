@@ -67,7 +67,7 @@ public class DocumentationGenerator {
 
 		// --- copy images - begin ---
 		HashMap<String, String> images_map = new HashMap<String, String>();
-		images_map.put("ruleTransitionArrow", System.getProperty("user.dir") + "/src/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/ruleTransitionArrow.png");
+		images_map.put("ruleTransitionArrow", RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/ruleTransitionArrow.png").getFile());
 		images_map.put("logo", imagePath);
 
 		for(String img_name_bit : images_map.keySet()) {
@@ -231,8 +231,8 @@ public class DocumentationGenerator {
 	}
 
 	private String getTemplate(String templateName) {
-		if(!this.templates.containsKey(templateName)) {
-			this.templates.put(templateName, File.readFile("src/lupos/gui/operatorgraph/visualeditor/ruleeditor/templates/doc_" + templateName + ".tpl"));
+		if(!this.templates.containsKey(templateName)) {			
+			this.templates.put(templateName, File.readFile(RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/templates/doc_" + templateName + ".tpl").getFile()));
 		}
 
 		return this.templates.get(templateName);

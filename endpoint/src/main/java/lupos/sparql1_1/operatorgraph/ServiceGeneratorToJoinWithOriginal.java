@@ -58,8 +58,8 @@ public abstract class ServiceGeneratorToJoinWithOriginal extends ServiceGenerato
 			sso.addSucceedingOperator(federatedQuery);
 		}
 		Join join = new Join();
-		federatedQuery.addSucceedingOperator(join);
-		sso.addSucceedingOperator(join, 1);
+		federatedQuery.addSucceedingOperator(join, 1);
+		sso.addSucceedingOperator(join, 0);
 		connection.connect(join);
 		connection.setOperatorConnection(sso);
 	}

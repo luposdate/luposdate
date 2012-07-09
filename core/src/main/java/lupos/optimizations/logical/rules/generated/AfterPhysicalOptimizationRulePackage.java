@@ -30,6 +30,7 @@ import lupos.optimizations.logical.rules.generated.runtime.RulePackageWithStartN
 public class AfterPhysicalOptimizationRulePackage extends RulePackage {
     public AfterPhysicalOptimizationRulePackage() {
         this.rules = new Rule[] {
+		        new ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule(),
 		        new PushFilterRule()
         };
     }

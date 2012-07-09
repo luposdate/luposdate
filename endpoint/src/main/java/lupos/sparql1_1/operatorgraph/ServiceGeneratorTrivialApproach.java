@@ -58,7 +58,7 @@ public class ServiceGeneratorTrivialApproach extends ServiceGenerator {
 			Join join = new Join();
 			connection.connect(join);
 			SeveralSucceedingOperators sso = new SeveralSucceedingOperators();
-			sso.addSucceedingOperator(join);
+			sso.addSucceedingOperator(join, 0);
 			FederatedQueryTrivialApproach federatedQuery = new FederatedQueryTrivialApproach(node);
 			Projection projection = new Projection();
 			projection.addProjectionElement(new Variable(((ASTVar)child0).getName()));
