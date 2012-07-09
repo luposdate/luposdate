@@ -1,6 +1,7 @@
 {
   "associations": {
     "After Physical Optimization": [
+      "Replace UsingJoinOptional With BasicIndexOptional",
       "Replace HashMapIndexJoin with HashMapIndexJoinOnLeftOperand",
       "Push Filter"
     ],
@@ -3398,6 +3399,149 @@
             "position": [
               187,
               699
+            ]
+          }
+        },
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "Replace UsingJoinOptional With BasicIndexOptional": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private int operandID;",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "// for later repairing operandId\r\nthis.operandID = this.optional.getOperatorIDTuple(this.suc).getId();\r\n",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "optional_new.setBasicIndex(this.indexScan);\r\noptional_new.setUnionVariables(this.optional.getUnionVariables());\r\noptional_new.setIntersectionVariables(this.optional.getIntersectionVariables());\r\nif(this.operandID!=0){\r\n  // repairing the operand ID\r\n  optional_new.getOperatorIDTuple(this.suc).setId(this.operandID);\r\n}\r\nif(this.indexScan.getSucceedingOperators().size()==0){\r\n  this.deleteOperator(this.indexScan, _startNodes);\r\n}",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "connections": {
+            "indexScan": [{
+              "active": true,
+              "id": 1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "optional"
+            }],
+            "leftOperand": [{
+              "active": true,
+              "id": 0,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "optional"
+            }],
+            "optional": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "suc"
+            }]
+          },
+          "indexScan": {
+            "also subclasses": true,
+            "class type": "Index",
+            "op type": "RuleOperator",
+            "position": [
+              526,
+              11
+            ]
+          },
+          "leftOperand": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              11,
+              11
+            ]
+          },
+          "optional": {
+            "also subclasses": true,
+            "class type": "UsingJoinOptional",
+            "op type": "RuleOperator",
+            "position": [
+              67,
+              510
+            ],
+            "start node": true
+          },
+          "suc": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              73,
+              853
+            ]
+          }
+        },
+        "right side": {
+          "connections": {
+            "leftOperand": [{
+              "active": true,
+              "id": 0,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "optional_new"
+            }],
+            "optional_new": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "suc"
+            }]
+          },
+          "leftOperand": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              16,
+              21
+            ]
+          },
+          "optional_new": {
+            "also subclasses": false,
+            "class type": "BasicIndexOptional",
+            "op type": "RuleOperator",
+            "position": [
+              32,
+              535
+            ]
+          },
+          "suc": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              61,
+              879
             ]
           }
         },

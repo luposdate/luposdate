@@ -31,6 +31,8 @@ public enum RuleEnum {
 	Filter(lupos.engine.operators.singleinput.Filter.class),
 	RuleFilter(lupos.rif.operator.RuleFilter.class),
 	Optional(lupos.engine.operators.multiinput.optional.Optional.class),
+	UsingJoinOptional(lupos.engine.operators.multiinput.optional.UsingJoinOptional.class),
+	BasicIndexOptional(lupos.engine.operators.multiinput.optional.BasicIndexOptional.class),
 	Union(lupos.engine.operators.multiinput.Union.class),
 	Index(lupos.engine.operators.index.BasicIndex.class),
 	MemoryIndex(lupos.engine.operators.index.memoryindex.MemoryIndex.class),

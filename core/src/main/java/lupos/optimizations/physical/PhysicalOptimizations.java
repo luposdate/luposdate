@@ -271,11 +271,9 @@ public class PhysicalOptimizations {
 										i++;
 									}
 									if (minIndex > -1) {
-										final BasicOperator bo = basicOperator
-										.getPrecedingOperators().get(minIndex);
-										if (bo != null) {
-											if (!severalTimesQueryResults(bo,
-													new HashSet<BasicOperator>())) {
+										final BasicOperator bo = basicOperator.getPrecedingOperators().get(minIndex);
+										if (bo != null && bo.getSucceedingOperators().size()==1) {
+											if (!severalTimesQueryResults(bo, new HashSet<BasicOperator>())) {
 												List<TriplePattern> tpsOfOthers = null;
 												for (final BasicOperator others : basicOperator
 														.getPrecedingOperators()) {
@@ -293,8 +291,7 @@ public class PhysicalOptimizations {
 																	new HashSet<BasicOperator>()));
 													}
 												}
-												tpsOfSucceedingJoins(basicOperator,
-														tpsOfOthers);
+												tpsOfSucceedingJoins(basicOperator, tpsOfOthers);
 												if (tpsOfOthers != null) {
 													final SIPFilterOperator sip_op = (replacements
 															.get(Join.class) == HashMapIndexJoin.class) ? new SIPFilterOperatorIterator(
@@ -302,31 +299,19 @@ public class PhysicalOptimizations {
 																	basicOperator
 																	.getIntersectionVariables())
 
-													: new SIPFilterOperator(
-															tpsOfOthers,
-															basicOperator
-															.getIntersectionVariables());
-																	final List<Variable> intersectionVariables = new LinkedList<Variable>();
-																	final List<Variable> unionVariables = new LinkedList<Variable>();
-																	intersectionVariables
-																	.addAll(bo
-																			.getIntersectionVariables());
-																	unionVariables.addAll(bo
-																			.getUnionVariables());
-																	sip_op
-																	.setIntersectionVariables(intersectionVariables);
-																	sip_op
-																	.setUnionVariables(unionVariables);
-																	sip_op.addSucceedingOperators(bo
-																			.getSucceedingOperators());
-																	sip_op.setPrecedingOperator(bo);
-																	bo
-																	.setSucceedingOperator(new OperatorIDTuple(
-																			sip_op, 0));
-																	basicOperator
-																	.removePrecedingOperator(bo);
-																	basicOperator
-																	.addPrecedingOperator(sip_op);
+													: new SIPFilterOperator(tpsOfOthers, basicOperator.getIntersectionVariables());
+																	
+													final List<Variable> intersectionVariables = new LinkedList<Variable>();
+													final List<Variable> unionVariables = new LinkedList<Variable>();
+													intersectionVariables.addAll(bo.getIntersectionVariables());
+													unionVariables.addAll(bo.getUnionVariables());
+													sip_op.setIntersectionVariables(intersectionVariables);
+													sip_op.setUnionVariables(unionVariables);
+													sip_op.addSucceedingOperators(bo.getSucceedingOperators());
+													sip_op.setPrecedingOperator(bo);
+													bo.setSucceedingOperator(new OperatorIDTuple(sip_op, 0));
+													basicOperator.removePrecedingOperator(bo);
+													basicOperator.addPrecedingOperator(sip_op);
 												}
 											}
 										}
@@ -367,10 +352,8 @@ public class PhysicalOptimizations {
 							}
 						} else if (basicOperator instanceof FastSort) {
 							if (basicOperator.getPrecedingOperators().size() == 1
-									&& !(basicOperator.getPrecedingOperators().get(
-											0) instanceof SIPFilterOperator)
-											&& basicOperator.getSucceedingOperators()
-											.size() == 1) {
+									&& !(basicOperator.getPrecedingOperators().get(0) instanceof SIPFilterOperator)
+											&& basicOperator.getSucceedingOperators().size() == 1) {
 								if (basicOperator.getSucceedingOperators().get(0)
 										.getOperator() instanceof Join) {
 									final Join join = (Join) basicOperator
@@ -403,8 +386,7 @@ public class PhysicalOptimizations {
 										}
 										i++;
 									}
-									final BasicOperator bo = join
-									.getPrecedingOperators().get(minIndex);
+									final BasicOperator bo = join.getPrecedingOperators().get(minIndex);
 									if (bo != null
 											&& bo instanceof FastSort
 											&& bo.getPrecedingOperators().size() == 1
@@ -442,14 +424,10 @@ public class PhysicalOptimizations {
 											;
 											final List<Variable> intersectionVariables = new LinkedList<Variable>();
 											final List<Variable> unionVariables = new LinkedList<Variable>();
-											intersectionVariables.addAll(bo
-													.getIntersectionVariables());
-											unionVariables.addAll(bo
-													.getUnionVariables());
-											sip_op
-											.setIntersectionVariables(intersectionVariables);
-											sip_op
-											.setUnionVariables(unionVariables);
+											intersectionVariables.addAll(bo.getIntersectionVariables());
+											unionVariables.addAll(bo.getUnionVariables());
+											sip_op.setIntersectionVariables(intersectionVariables);
+											sip_op.setUnionVariables(unionVariables);
 											if (bo instanceof FastSort) {
 												final BasicOperator bo2 = bo
 												.getPrecedingOperators()
@@ -463,12 +441,9 @@ public class PhysicalOptimizations {
 												bo.removePrecedingOperator(bo2);
 												bo.addPrecedingOperator(sip_op);
 											} else {
-												sip_op.addSucceedingOperators(bo
-														.getSucceedingOperators());
+												sip_op.addSucceedingOperators(bo.getSucceedingOperators());
 												sip_op.setPrecedingOperator(bo);
-												bo
-												.setSucceedingOperator(new OperatorIDTuple(
-														sip_op, 0));
+												bo.setSucceedingOperator(new OperatorIDTuple(sip_op, 0));
 												join.removePrecedingOperator(bo);
 												join.addPrecedingOperator(sip_op);
 											}

@@ -33,6 +33,7 @@ public class Union extends MultiInputOperator {
 		super();
 	}
 
+	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		return bindings;
 	}
@@ -40,7 +41,7 @@ public class Union extends MultiInputOperator {
 	@Override
 	public Message preProcessMessage(BoundVariablesMessage msg) {
 		BoundVariablesMessage msg_result = new BoundVariablesMessage(msg); 
-		msg_result.setVariables(intersectionVariables);
+		msg_result.setVariables(this.intersectionVariables);
 		return msg_result;
 	}
 }

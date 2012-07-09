@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.optional.DBMergeSortedBagOptional;
 
@@ -44,14 +43,5 @@ public class DBMergeSortedBagParallelOptional extends MergeParallelOptional {
 			joiner.add(new DBMergeSortedBagOptional());
 		}
 		return joiner;
-	}
-
-	/**
-	 * the actual join
-	 */
-	@Override
-	protected QueryResult join() {
-		col.setIntersectionVariables(this.getIntersectionVariables());
-		return super.join();
 	}
 }

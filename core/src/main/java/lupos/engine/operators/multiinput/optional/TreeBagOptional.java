@@ -25,7 +25,7 @@ package lupos.engine.operators.multiinput.optional;
 
 import lupos.engine.operators.multiinput.join.TreeBagMergeJoin;
 
-public class TreeBagOptional extends Optional {
+public class TreeBagOptional extends UsingJoinOptional {
 
 	public TreeBagOptional() {
 		super(new TreeBagMergeJoin());

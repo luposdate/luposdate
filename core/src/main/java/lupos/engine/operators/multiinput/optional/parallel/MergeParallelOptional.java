@@ -25,6 +25,7 @@ package lupos.engine.operators.multiinput.optional.parallel;
 
 import java.util.Collection;
 
+import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.join.parallel.MergeParallelJoin;
 
@@ -36,4 +37,12 @@ public abstract class MergeParallelOptional extends MergeParallelJoin {
 		super(operators, optional);
 	}
 
+	/**
+	 * the actual join
+	 */
+	@Override
+	protected QueryResult join() {
+		this.col.setIntersectionVariables(this.getIntersectionVariables());
+		return super.join();
+	}
 }

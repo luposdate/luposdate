@@ -36,10 +36,11 @@ public class OptionalResult {
 	}
 
 	public OptionalResult() {
+		// no initializations
 	}
 
 	public QueryResult getJoinResult() {
-		return joinResult;
+		return this.joinResult;
 	}
 
 	public void setJoinResult(final QueryResult joinResult) {
@@ -47,7 +48,7 @@ public class OptionalResult {
 	}
 
 	public QueryResult getJoinPartnerFromLeftOperand() {
-		return joinPartnerFromLeftOperand;
+		return this.joinPartnerFromLeftOperand;
 	}
 
 	public void setJoinPartnerFromLeftOperand(
@@ -56,18 +57,18 @@ public class OptionalResult {
 	}
 
 	public void addAll(final OptionalResult or) {
-		joinResult.addAll(or.joinResult);
-		joinPartnerFromLeftOperand.addAll(or.joinPartnerFromLeftOperand);
+		this.joinResult.addAll(or.joinResult);
+		this.joinPartnerFromLeftOperand.addAll(or.joinPartnerFromLeftOperand);
 	}
 
 	public void release() {
-		joinResult.release();
-		joinPartnerFromLeftOperand.release();
+		this.joinResult.release();
+		this.joinPartnerFromLeftOperand.release();
 	}
 
 	@Override
 	public String toString() {
-		return "joinResult: " + joinResult + " joinPartnerFromLeftOperand: "
-				+ joinPartnerFromLeftOperand;
+		return "joinResult: " + this.joinResult + " joinPartnerFromLeftOperand: "
+				+ this.joinPartnerFromLeftOperand;
 	}
 }

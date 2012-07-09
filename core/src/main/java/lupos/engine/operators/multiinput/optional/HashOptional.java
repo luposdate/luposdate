@@ -25,7 +25,7 @@ package lupos.engine.operators.multiinput.optional;
 
 import lupos.engine.operators.multiinput.join.HashJoin;
 
-public class HashOptional extends Optional {
+public class HashOptional extends UsingJoinOptional {
 
 	public HashOptional() {
 		super(new HashJoin());

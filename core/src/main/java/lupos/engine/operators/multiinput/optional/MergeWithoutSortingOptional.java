@@ -45,8 +45,9 @@ public class MergeWithoutSortingOptional extends Optional {
 
 	protected Comparator<Bindings> comp = new Comparator<Bindings>() {
 
+		@Override
 		public int compare(final Bindings o1, final Bindings o2) {
-			for (final Variable var : intersectionVariables) {
+			for (final Variable var : MergeWithoutSortingOptional.this.intersectionVariables) {
 				final Literal l1 = o1.get(var);
 				final Literal l2 = o2.get(var);
 				if (l1 != null && l2 != null) {
@@ -69,21 +70,18 @@ public class MergeWithoutSortingOptional extends Optional {
 			return bindings;
 		} else {
 			if (operandID == 0) {
-				left = bindings;
+				this.left = bindings;
 			} else if (operandID == 1) {
-				right = bindings;
+				this.right = bindings;
 			} else
 				System.err.println("MergeWithoutSortingOptional is a binary operator, but received the operand number "
 								+ operandID);
-			if (left != null && right != null) {				
+			if (this.left != null && this.right != null) {				
 
-				final Iterator<Bindings> currentResult = MergeJoin
-						.mergeOptionalIterator(left.oneTimeIterator(), right
-								.oneTimeIterator(), comp);
+				final Iterator<Bindings> currentResult = MergeJoin.mergeOptionalIterator(this.left.oneTimeIterator(), this.right.oneTimeIterator(), this.comp);
 
 				if (currentResult != null && currentResult.hasNext()) {
-					final QueryResult result = QueryResult
-							.createInstance(currentResult);
+					final QueryResult result = QueryResult.createInstance(currentResult);
 					return result;					
 				} else
 					return null;
@@ -94,23 +92,24 @@ public class MergeWithoutSortingOptional extends Optional {
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		if (left != null && right == null) {
-			if (succeedingOperators.size() > 1)
-				left.materialize();
-			for (final OperatorIDTuple opId : succeedingOperators) {
-				opId.processAll(left);
+		if (this.left != null && this.right == null) {
+			if (this.succeedingOperators.size() > 1)
+				this.left.materialize();
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAll(this.left);
 			}
 		}
 		return msg;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		if (left != null && right == null) {
-			if (succeedingOperators.size() > 1)
-				left.materialize();
-			for (final OperatorIDTuple opId : succeedingOperators) {
-				final QueryResultDebug qrDebug = new QueryResultDebug(left,
+		if (this.left != null && this.right == null) {
+			if (this.succeedingOperators.size() > 1)
+				this.left.materialize();
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				final QueryResultDebug qrDebug = new QueryResultDebug(this.left,
 						debugstep, this, opId.getOperator(), true);
 				((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
 						.getId(), debugstep);

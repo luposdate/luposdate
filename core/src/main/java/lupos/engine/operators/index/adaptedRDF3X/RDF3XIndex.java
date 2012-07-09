@@ -429,7 +429,7 @@ public class RDF3XIndex extends BasicIndex {
 	}
 
 	public CollationOrder getCollationOrder() {
-		return collationOrder;
+		return this.collationOrder;
 	}
 
 	public void setCollationOrder(final CollationOrder collationOrder) {
@@ -437,8 +437,7 @@ public class RDF3XIndex extends BasicIndex {
 	}
 
 	public void setCollationOrder(final Collection<Variable> sortCriterium) {
-		this.collationOrder = getCollationOrder(triplePatterns.iterator()
-				.next(), sortCriterium);
+		this.collationOrder = getCollationOrder(this.triplePatterns.iterator().next(), sortCriterium);
 	}
 
 	public IndexCollection getBinaryJoin() {
