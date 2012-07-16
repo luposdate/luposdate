@@ -1,0 +1,667 @@
+<!--
+
+    Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+    following conditions are met:
+
+    	- Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+    	  disclaimer.
+    	- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+    	  following disclaimer in the documentation and/or other materials provided with the distribution.
+    	- Neither the name of the University of Luebeck nor the names of its contributors may be used to endorse or promote
+    	  products derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+    GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<templaterule-document>
+<base> http://www.example.de# </base>
+<prefix name="rdf">http://www.w3.org/1999/02/22-rdf-syntax-ns#</prefix>
+<prefix name="rdfs">http://www.w3.org/2000/01/rdf-schema#</prefix>
+<prefix name="owl">http://www.w3.org/2002/07/owl#</prefix>
+<prefix name="xsd">http://www.w3.org/2001/XMLSchema#</prefix>
+<prefix name="rif">http://www.w3.org/2007/rif#</prefix>
+<prefix name="func">http://www.w3.org/2007/rif-builtin-function#</prefix>
+<prefix name="pred">http://www.w3.org/2007/rif-builtin-predicate#</prefix>
+<prefix name="dc">http://purl.org/dc/terms/</prefix>
+<prefix name="eg">http://www.example.me/</prefix>
+<prefix name="xs">http://xs/</prefix>
+<prefix name="rulenames">local.rulenames#</prefix>
+
+<templaterule> 
+<name>#prp-dom</name>
+<rdfs-name>rdfs2</rdfs-name>
+  
+<rifquery type="withforall"><![CDATA[
+	
+Forall ?p ?c (
+    rulenames:prp-dom[?p->?c]:- And(
+       ?p[rdfs:domain->?c] 
+        External(pred:is-uri(?p))      
+       ))
+
+   
+       
+]]></rifquery>
+<template><![CDATA[
+Forall ?x ?y(?x[rdf:type->?c]:- And(
+  ?x[?p->?y]  
+   )
+)
+]]></template>	
+
+<variable>?p</variable><methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?c</variable>
+</templaterule>
+
+
+
+
+
+<templaterule> 
+<rdfs-name>rdfs9</rdfs-name>
+<name>rdfs9</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+
+Forall ?c3 ?c2 ?c1(
+
+			rulenames:subclass(?c1 ?c3):-	And(
+			
+				Or ( ?c1[rdfs:subClassOf->?c3]
+										And (
+											?c1[rdfs:subClassOf->?c2]
+											rulenames:subclass(?c2 ?c3)				
+											)
+					)
+					
+				
+				
+)
+)
+   
+   
+       
+]]></rifquery>
+<methodname>emitSubClassOfRule</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<template><![CDATA[
+ Forall ?x (?x[rdf:type->?c3]:- And(
+ 		?x[rdf:type->?c1]
+ 		))
+
+]]></template>	
+<variable>?c3</variable>
+<variable>?c1</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>rdfs11</rdfs-name>
+<name>rdfs11</name>
+  
+<rifquery type="withforall"><![CDATA[
+	
+
+Forall ?c3 ?c2 ?c1(
+
+			rulenames:subclass(?c1 ?c3):-	And(
+			
+				Or ( ?c1[rdfs:subClassOf->?c3]
+										And (
+											?c1[rdfs:subClassOf->?c2]
+											rulenames:subclass(?c2 ?c3)	
+											 Or(
+      	 		 								External(pred:is-uri(?c2))
+    	 										 External(pred:is-blanknode(?c2))
+    	 		 
+    			 								)			
+											)
+					)
+					
+    			
+				
+)
+)
+   
+   
+       
+]]></rifquery>
+<methodname>emitSubClassOfRule</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<template><![CDATA[
+  ?c1[rdfs:subClassOf->?c3]
+]]></template>	
+<variable>?c3</variable>
+<variable>?c1</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>rdfs3</rdfs-name>
+<name>#prp-rng</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+	
+Forall ?p ?c  (
+   rulenames:prp-rng[?p->?c] :- And(
+       ?p[rdfs:range->?c]
+        External(pred:is-uri(?p))
+        
+         ))
+   
+       
+]]></rifquery>
+<template><![CDATA[
+  Forall ?y ?x ( ?y[rdf:type->?c]:-And(
+	?x[?p->?y]
+  	Or(
+      	 External(pred:is-uri(?y))
+    	 External(pred:is-blanknode(?y))
+    )
+   
+))
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?c</variable>
+<variable>?p</variable>
+</templaterule>
+
+
+<templaterule> 
+<rdfs-name>rdfs5</rdfs-name>
+<name>#scm-spo</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?p3 ?p2 ?p1(
+
+			rulenames:subProperty(?p1 ?p3):-	And(
+			
+				Or ( ?p1[rdfs:subPropertyOf->?p3]
+										And (
+											?p1[rdfs:subPropertyOf->?p2]
+											rulenames:subProperty(?p2 ?p3)	
+											 Or(
+      	 										 External(pred:is-uri(?p2))
+    	 										 External(pred:is-blanknode(?p2))
+    											 )			
+											)
+					)
+					
+				
+    			
+    			 )
+)
+
+]]></rifquery>
+<template><![CDATA[
+  ?p1[rdfs:subPropertyOf->?p3]
+]]></template>	
+<methodname>emitSubPropertyOfRule</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?p1</variable>
+<variable>?p3</variable>
+</templaterule>
+
+
+
+
+
+
+<templaterule> 
+<rdfs-name>rdfs6</rdfs-name>
+<name>rdfs6</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+
+Forall ?u ?a ?x (
+?u[rdfs:subPropertyOf->?u]:- And(
+ External(pred:is-uri(?u))
+?u[rdf:type->rdf:Property]
+))
+
+
+]]></rifquery>
+<template><![CDATA[
+?u[rdfs:subPropertyOf->?u]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?u</variable>
+</templaterule>
+
+
+<templaterule> 
+<rdfs-name>rdfs7</rdfs-name>
+<name>rdfs7</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?a ?b(
+rulenames:rdfs7[?a->?b]:- And(
+	?a[rdfs:subPropertyOf->?b]
+	External(pred:is-uri(?a))
+	External(pred:is-uri(?b))
+	))
+
+
+
+]]></rifquery>
+<template><![CDATA[
+Forall ?u ?y (?u[?b->?y]:-And(
+		?u[?a->?y]
+		))
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?a</variable>
+<variable>?b</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>rdfs8/10</rdfs-name>
+<name>rdfs8/10</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+
+Forall ?u (
+rulenames:rdfs8[:prop->?u]:- And(
+?u[rdf:type->rdfs:Class]
+))
+
+
+
+]]></rifquery>
+<template><![CDATA[
+?u[rdfs:subClassOf->?u]
+?u[rdfs:subClassOf->rdfs:Resource]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?u</variable>
+</templaterule>
+
+
+<templaterule> 
+<rdfs-name>rdfs12</rdfs-name>
+<name>rdfs12</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+
+Forall ?u (
+rulenames:rdfs12[:prop->?u]:-And(
+	?u[rdf:type->rdfs:ContainerMembershipProperty]	
+	))
+
+]]></rifquery>
+<template><![CDATA[
+?u[rdfs:subPropertyOf->rdfs:member]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?u</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>rdfs13</rdfs-name>
+<name>rdfs13</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?u (
+?u[rdfs:subClassOf->rdfs:Literal]:- And(
+	?u[rdf:type->rdfs:Datatype]
+))
+
+]]></rifquery>
+<template><![CDATA[
+?u[rdfs:subClassOf->rdfs:Literal]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?u</variable>
+</templaterule>
+
+ <templaterule> 
+<rdfs-name>ext1</rdfs-name>
+<name>#scm-dom1</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?p ?c1 ?c2 (
+   ?p[rdfs:domain->?c2] :- And(
+       ?p[rdfs:domain->?c1]
+       ?c1[rdfs:subClassOf->?c2]
+         ))
+
+
+]]></rifquery>
+<template><![CDATA[
+?p[rdfs:domain->?c2]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?p</variable>
+<variable>?c2</variable>
+</templaterule>
+
+
+
+
+<templaterule> 
+<rdfs-name>ext3</rdfs-name>
+<name>#scm-dom2</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?c ?p2 ?p1 (
+   ?p1[rdfs:domain->?c] :- And(
+       ?p2[rdfs:domain->?c]
+       ?p1[rdfs:subPropertyOf->?p2]  
+       
+        Or(
+        External(pred:is-uri(?c))
+        External(pred:is-blanknode(?c))
+        )     
+        ))
+
+]]></rifquery>
+<template><![CDATA[
+?p1[rdfs:domain->?c]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?p1</variable>
+<variable>?c</variable>
+</templaterule>
+
+
+
+
+<templaterule> 
+<rdfs-name>ext2</rdfs-name>
+<name>#scm-rng1</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?p ?c1 ?c2 (
+   ?p[rdfs:range->?c2] :- And(
+       ?p[rdfs:range->?c1]
+       ?c1[rdfs:subClassOf->?c2] 
+        ))
+
+]]></rifquery>
+<template><![CDATA[
+?p[rdfs:range->?c2]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?p</variable>
+<variable>?c2</variable>
+</templaterule>
+
+
+
+<templaterule> 
+<rdfs-name>ext4</rdfs-name>
+<name>#scm-rng2</name>
+  
+<rifquery type="withforall"><![CDATA[
+Forall ?c ?p2 ?p1 (
+   ?p1[rdfs:range->?c] :- And(
+       ?p2[rdfs:range->?c]
+       ?p1[rdfs:subPropertyOf->?p2] 
+         ))
+
+]]></rifquery>
+<template><![CDATA[
+?p1[rdfs:range->?c]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?p1</variable>
+<variable>?c</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>ext5</rdfs-name>
+<name>ext5</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?v ?w  (
+   rdfs:Resource[rdfs:subClassOf->?v] :- And(
+	rdf:type[rdfs:subPropertyOf->?w]
+       ?w[rdfs:domain->?v]
+       
+         Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+         ))
+
+]]></rifquery>
+<template><![CDATA[
+rdfs:Resource[rdfs:subClassOf->?v]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?v</variable>
+</templaterule>
+
+
+
+<templaterule> 
+<rdfs-name>ext6</rdfs-name>
+<name>ext6</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?v ?w  (
+   rdfs:Class[rdfs:subClassOf->?v] :- And(
+	rdfs:subClassOf[rdfs:subPropertyOf->?w]
+       ?w[rdfs:domain->?v]
+         Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+         ))
+
+]]></rifquery>
+<template><![CDATA[
+rdfs:Class[rdfs:subClassOf->?v]
+
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?v</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>ext7</rdfs-name>
+<name>ext7</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?v ?w  (
+   rdf:Property[rdfs:subClassOf->?v] :- And(
+	rdfs:subPropertyOf[rdfs:subPropertyOf->?w]
+       ?w[rdfs:domain->?v]
+         Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+         ))
+
+]]></rifquery>
+<template><![CDATA[
+rdf:Property[rdfs:subClassOf->?v]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?v</variable>
+</templaterule>
+
+<templaterule> 
+<rdfs-name>ext8</rdfs-name>
+<name>ext8</name>
+  
+<rifquery type="withforall"><![CDATA[
+
+Forall ?v ?w  (
+   rdfs:Class[rdfs:subClassOf->?v] :- And(
+	rdfs:subClassOf[rdfs:subPropertyOf->?w]
+       ?w[rdfs:range->?v]
+         Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+         ))
+
+]]></rifquery>
+<template><![CDATA[
+rdfs:Class[rdfs:subClassOf->?v]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?v</variable>
+</templaterule>
+
+
+
+<templaterule> 
+<rdfs-name>ext9</rdfs-name>
+<name>ext9</name>
+<rifquery type="withforall"><![CDATA[
+
+Forall ?v ?w  (
+   rdf:Property[rdfs:subClassOf->?v] :- And(
+	rdfs:subPropertyOf[rdfs:subPropertyOf->?w]
+       ?w[rdfs:range->?v]
+         Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+         ))
+
+]]></rifquery>
+<template><![CDATA[
+rdf:Property[rdfs:subClassOf->?v]
+]]></template>	
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
+<variable>?v</variable>
+</templaterule>
+
+  <!-- fixed rules and rdfs:  axiomatic triples:-->
+  
+<fixedrules><![CDATA[
+    
+(* rdf1 *)
+Forall ?u ?a ?x (
+?a[rdf:type->rdf:Property]:- And(
+?u[?a->?x]    
+)
+)
+
+
+       
+
+(* rdfs4a *)
+Forall ?u ?a ?x (
+?u[rdf:type->rdfs:Resource]:- And(
+		?u[?a->?x]
+)
+)
+
+(* rdfs4b *)
+Forall ?u ?a ?x (
+?x[rdf:type->rdfs:Resource]:- And(
+		?u[?a->?x]
+          Or(
+        External(pred:is-uri(?x))
+        External(pred:is-blanknode(?x))
+        )
+
+))
+
+
+rdf:type[rdfs:domain->rdfs:Resource]
+rdfs:domain[rdfs:domain->rdf:Property]
+rdfs:range[rdfs:domain->rdf:Property]
+rdfs:subPropertyOf[rdfs:domain->rdf:Property]
+rdfs:subClassOf[rdfs:domain->rdfs:Class]
+rdf:subject[rdfs:domain->rdf:Statement]
+rdf:predicate[rdfs:domain->rdf:Statement]
+rdf:object[rdfs:domain->rdf:Statement]
+rdfs:member[rdfs:domain->rdfs:Resource]
+rdf:first[rdfs:domain->rdf:List]
+rdf:rest[rdfs:domain->rdf:List]
+rdfs:seeAlso[rdfs:domain->rdfs:Resource]
+rdfs:isDefinedBy[rdfs:domain->rdfs:Resource]
+rdfs:comment[rdfs:domain->rdfs:Resource]
+rdfs:label[rdfs:domain->rdfs:Resource]
+rdf:value[rdfs:domain->rdfs:Resource]
+rdf:type[rdfs:range->rdfs:Class]
+rdfs:domain[rdfs:range->rdfs:Class]
+rdfs:range[rdfs:range->rdfs:Class]
+rdfs:subPropertyOf[rdfs:range->rdf:Property]
+rdfs:subClassOf[rdfs:range->rdfs:Class]
+rdf:subject[rdfs:range->rdfs:Resource]
+rdf:predicate[rdfs:range->rdfs:Resource]
+rdf:object[rdfs:range->rdfs:Resource]
+rdfs:member[rdfs:range->rdfs:Resource]
+rdf:first[rdfs:range->rdfs:Resource]
+rdf:rest[rdfs:range->rdf:List]
+rdfs:seeAlso[rdfs:range->rdfs:Resource]
+rdfs:isDefinedBy[rdfs:range->rdfs:Resource]
+rdfs:comment[rdfs:range->rdfs:Literal]
+rdfs:label[rdfs:range->rdfs:Literal]
+rdf:value[rdfs:range->rdfs:Resource]
+rdf:Alt[rdfs:subClassOf->rdfs:Container]
+rdf:Bag[rdfs:subClassOf->rdfs:Container]
+rdf:Seq[rdfs:subClassOf->rdfs:Container]
+rdfs:ContainerMembershipProperty[rdfs:subClassOf->rdf:Property]
+rdfs:isDefinedBy[rdfs:subPropertyOf->rdfs:seeAlso]
+rdf:XMLLiteral[rdf:type->rdfs:Datatype]
+rdf:XMLLiteral[rdfs:subClassOf->rdfs:Literal]
+rdfs:Datatype[rdfs:subClassOf->rdfs:Class]
+
+rdfs:Resource[rdf:type->rdfs:Class]
+rdfs:Class[rdf:type->rdfs:Class]
+rdfs:Literal[rdf:type->rdfs:Class]
+rdf:XMLLiteral[rdf:type->rdfs:Class]
+rdfs:Datatype[rdf:type->rdfs:Class]
+rdf:Seq[rdf:type->rdfs:Class]
+rdf:Bag[rdf:type->rdfs:Class]
+rdf:Alt[rdf:type->rdfs:Class]
+rdfs:Container[rdf:type->rdfs:Class]
+rdf:List[rdf:type->rdfs:Class]
+rdfs:ContainerMembershipProperty[rdf:type->rdfs:Class]
+rdf:Property[rdf:type->rdfs:Class]
+rdf:Statement[rdf:type->rdfs:Class]
+rdfs:domain[rdf:type->rdf:Property]
+rdfs:range[rdf:type->rdf:Property]
+rdfs:subPropertyOf[rdf:type->rdf:Property]
+rdfs:subClassOf[rdf:type->rdf:Property]
+rdfs:member[rdf:type->rdf:Property]
+rdfs:seeAlso[rdf:type->rdf:Property]
+rdfs:isDefinedBy[rdf:type->rdf:Property]
+rdfs:comment[rdf:type->rdf:Property]
+rdfs:label[rdf:type->rdf:Property]
+
+rdf:type[rdf:type->rdf:Property]
+rdf:subject[rdf:type->rdf:Property]
+rdf:predicate[rdf:type->rdf:Property]
+rdf:object[rdf:type->rdf:Property]
+rdf:first[rdf:type->rdf:Property]
+rdf:rest[rdf:type->rdf:Property]
+rdf:value[rdf:type->rdf:Property]
+rdf:nil[rdf:type->rdf:List]
+]]>
+
+
+
+</fixedrules>
+
+
+
+
+</templaterule-document>

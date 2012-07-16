@@ -511,18 +511,18 @@
             }],
             "o2": [
               {
-                "active": false,
-                "id": -1,
-                "id label": "",
-                "mode": "EXISTS",
-                "to": "j"
-              },
-              {
                 "active": true,
                 "id": 0,
                 "id label": "",
                 "mode": "EXISTS",
                 "to": "opt"
+              },
+              {
+                "active": false,
+                "id": -1,
+                "id label": "",
+                "mode": "EXISTS",
+                "to": "j"
               }
             ]
           },
@@ -3296,10 +3296,10 @@
         "use generated visual representation": true
       },
       "implementation": {
-        "additional global java code": "public static boolean isInCycle(BasicOperator bo){\r\n  if(bo.getCycleOperands()!=null && bo.getCycleOperands().size()>0){\r\n    return true;\r\n  }\r\n  for(BasicOperator prec: bo.getPrecedingOperators()){\r\n    if(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycle(prec)){\r\n      return true;\r\n    }\r\n  }\r\n  return false;\r\n}",
+        "additional global java code": "public static boolean isInCycleOrSeveralOperandsWitSameID(BasicOperator bo){\r\n  if(bo.getCycleOperands()!=null && bo.getCycleOperands().size()>0){\r\n    return true;\r\n  }\r\n HashSet<Integer> operandsIDOccurs = new HashSet<Integer>();\r\n  for(BasicOperator prec: bo.getPrecedingOperators()){\r\n  int operandsID = prec.getOperatorIDTuple(bo).getId();\r\n  if(operandsIDOccurs.contains(operandsID)){\r\n   return true;\r\n  }\r\n  operandsIDOccurs.add(operandsID);\r\n    if(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycleOrSeveralOperandsWitSameID(prec)){\r\n      return true;\r\n    }\r\n  }\r\n  return false;\r\n}",
         "additional import declarations": "",
         "check method": {
-          "additional code": "return !(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycle(this.j));",
+          "additional code": "return !(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycleOrSeveralOperandsWitSameID(this.j));",
           "code": "",
           "start node": "Operator",
           "use generated code": true

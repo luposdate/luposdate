@@ -300,7 +300,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				this.preferences = XPref.getInstance(Demo_Applet.class.getResource("/preferencesMenu.xml"));
 			} else {
 				this.preferences = XPref.getInstance(new URL("file:"+GUI.class.getResource("/preferencesMenu.xml").getFile()));
-
 			}
 
 			this.preferences.registerComponent(this);
@@ -827,8 +826,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public String getRDFS(){
 			switch((GENERATION)Demo_Applet.this.checkBox_sparqlInferenceGenerated.getSelectedItem()){
 			case FIXED:
-				return (Demo_Applet.this.webdemo == DEMO_ENUM.ECLIPSE) ? FileHelper.fastReadFile(Demo_Applet.this.PATH_RULES + "rule_rdfs.rif")
-						: readFile(Demo_Applet.this.PATH_RULES + "rule_rdfs.rif");
+				return Demo_Applet.this.getResourceAsString(Demo_Applet.this.PATH_RULES + "rule_rdfs.rif");
 			case GENERATED:
 				return InferenceHelper.getRIFInferenceRulesForRDFSOntology(Demo_Applet.this.tp_dataInput.getText());
 			default:
@@ -839,8 +837,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public String getOWL2RL(){
 			switch((GENERATION)Demo_Applet.this.checkBox_sparqlInferenceGenerated.getSelectedItem()){
 			case FIXED:
-				return (Demo_Applet.this.webdemo == DEMO_ENUM.ECLIPSE) ? FileHelper.fastReadFile(Demo_Applet.this.PATH_RULES + "rule_owl2rl.rif")
-						: readFile(Demo_Applet.this.PATH_RULES + "rule_owl2rl.rif");
+				return Demo_Applet.this.getResourceAsString(Demo_Applet.this.PATH_RULES + "rule_owl2rl.rif");
 			case GENERATED:
 				return InferenceHelper.getRIFInferenceRulesForOWL2Ontology(Demo_Applet.this.tp_dataInput.getText());
 			default:
@@ -1957,8 +1954,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void evaluate(final Evaluation evaluation,
-			final EvaluationMode mode) {
+	private void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
 		evaluation.getButtonEvaluate().setEnabled(false);
 		evaluation.getButtonEvalDemo().setEnabled(false);
 		evaluation.getButtonMeasureExecutionTimes().setEnabled(false);
@@ -1975,17 +1971,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			try {
 				try {
 					final QueryEvaluator<Node> evaluator = evaluation.getEvaluator();
-					final URILiteral rdfURL = LiteralFactory
-					.createStringURILiteral("<inlinedata:" + this.data + ">");
+					final URILiteral rdfURL = LiteralFactory.createStringURILiteral("<inlinedata:" + this.data + ">");
 					this.defaultGraphs = new LinkedList<URILiteral>();
 					this.defaultGraphs.add(rdfURL);
 
 					if (mode == EvaluationMode.DEMO
 							|| mode == EvaluationMode.TIMES) {
 
-						final long prepareInputData = evaluation
-						.prepareInputData(this.defaultGraphs,
-								new LinkedList<URILiteral>());
+						final long prepareInputData = evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
 
 						try {
 							//											Indices.waitForMaterializationDemoThread();

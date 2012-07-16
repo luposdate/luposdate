@@ -35,12 +35,18 @@ import lupos.engine.operators.OperatorIDTuple;
 
 
 public class ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule extends Rule {
-    public static boolean isInCycle(BasicOperator bo){
+    public static boolean isInCycleOrSeveralOperandsWitSameID(BasicOperator bo){
       if(bo.getCycleOperands()!=null && bo.getCycleOperands().size()>0){
         return true;
       }
+     HashSet<Integer> operandsIDOccurs = new HashSet<Integer>();
       for(BasicOperator prec: bo.getPrecedingOperators()){
-        if(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycle(prec)){
+      int operandsID = prec.getOperatorIDTuple(bo).getId();
+      if(operandsIDOccurs.contains(operandsID)){
+       return true;
+      }
+      operandsIDOccurs.add(operandsID);
+        if(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycleOrSeveralOperandsWitSameID(prec)){
           return true;
         }
       }
@@ -120,7 +126,7 @@ public class ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule extend
 
         if(_result) {
             // additional check method code...
-            return !(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycle(this.j));
+            return !(ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule.isInCycleOrSeveralOperandsWitSameID(this.j));
         }
 
         return _result;

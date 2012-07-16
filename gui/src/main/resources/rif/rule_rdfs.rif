@@ -5,6 +5,7 @@ Document(
 	Prefix(bench   <http://localhost/vocabulary/bench/>)
 	Prefix(xsd     <http://www.w3.org/2001/XMLSchema#>)
 	Prefix(rdfs    <http://www.w3.org/2000/01/rdf-schema#>)
+	Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
 
 	(* http://www.w3.org/TR/rdf-mt/#RDFSRules *)
 	Group (
@@ -73,5 +74,108 @@ Document(
 		Forall ?u (
 		   ?u ## rdfs:Literal :- ?u # rdfs:Datatype
 		)
+		
+		
+		
+		
+	(* ext1 *)
+	Forall ?p ?c1 ?c2 (
+   		?p[rdfs:domain->?c2] :- And(
+       		?p[rdfs:domain->?c1]
+      		?c1[rdfs:subClassOf->?c2]     
+     ))
+
+	(* ext3 *)
+	Forall ?c ?p2 ?p1 (
+   		?p1[rdfs:domain->?c] :- And(
+       		?p2[rdfs:domain->?c]
+       		?p1[rdfs:subPropertyOf->?p2]         
+        ))
+
+
+
+
+	(* ext2 *)
+	Forall ?p ?c1 ?c2 (
+ 	  ?p[rdfs:range->?c2] :- And(
+  	     ?p[rdfs:range->?c1]
+  	     ?c1[rdfs:subClassOf->?c2]     
+        ))
+
+
+	(* ext4 *)
+	Forall ?c ?p2 ?p1 (
+   ?p1[rdfs:range->?c] :- And(
+       ?p2[rdfs:range->?c]
+       ?p1[rdfs:subPropertyOf->?p2]      
+	))
+
+
+	(* ext5 *)
+	Forall ?v ?w  (
+   rdfs:Resource[rdfs:subClassOf->?v] :- And(
+	rdf:type[rdfs:subPropertyOf->?w]
+       ?w[rdfs:domain->?v]
+       Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+  ))
+
+
+
+	(* ext6 *)
+	Forall ?v ?w  (
+   		rdfs:Class[rdfs:subClassOf->?v] :- And(
+			rdfs:subClassOf[rdfs:subPropertyOf->?w]
+     	    ?w[rdfs:domain->?v]
+       		Or(
+        		External(pred:is-uri(?v))
+        		External(pred:is-blanknode(?v))
+        	) 
+ ))
+
+	(* ext7 *)
+Forall ?v ?w  (
+   rdf:Property[rdfs:subClassOf->?v] :- And(
+	rdfs:subPropertyOf[rdfs:subPropertyOf->?w]
+       ?w[rdfs:domain->?v]
+       Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+ ))
+
+	(* ext8 *)
+Forall ?v ?w  (
+   rdfs:Class[rdfs:subClassOf->?v] :- And(
+	rdfs:subClassOf[rdfs:subPropertyOf->?w]
+       ?w[rdfs:range->?v]
+       Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+))
+
+
+
+	(* ext9 *)
+	Forall ?v ?w  (
+  		 rdf:Property[rdfs:subClassOf->?v] :- And(
+		 rdfs:subPropertyOf[rdfs:subPropertyOf->?w]
+      	 ?w[rdfs:range->?v]
+       Or(
+        External(pred:is-uri(?v))
+        External(pred:is-blanknode(?v))
+        ) 
+         ))
+			
+		(* rdf1 *)
+	Forall ?u ?a ?x (
+	?a[rdf:type->rdf:Property]:- And(
+		?u[?a->?x]  
+		)
+)
+		
  	)
 )

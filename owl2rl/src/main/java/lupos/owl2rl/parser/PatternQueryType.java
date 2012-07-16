@@ -21,36 +21,21 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui;
+package lupos.owl2rl.parser;
 
-import lupos.owl2rl.owlToRif.InferenceRulesGeneratorSetup;
-import lupos.owl2rl.owlToRif.MethodTypeEnum;
+/**
+ * Used for identifying recurring types of rules that can be completed by the program instead of being parsed and thus reduce parsing time.  
+ * 
+ */
 
-public class InferenceHelper {
+public enum PatternQueryType {
+	
+	RDFTYPE, // ?x  rdf:type :something 
+	
+	P1HASPROPERTYP2, //?x :someproperty ?y
+	
+	FROMXMLDATA, //?x the Rule is written out in the XML-File so there is no complementing by the code.
+		
+	WITHFORALL; // The Query does already contain the Forall brackets.
 
-	protected static InferenceRulesGeneratorSetup genSet;
-
-	public static String getRIFInferenceRulesForRDFSOntology(final String ontology){
-		return returnValue(ontology, MethodTypeEnum.RDFS, "/owl2rl/RDFSRules.xml");
-	}
-
-	public static String getRIFInferenceRulesForRDFSOntologyAlternative(final String ontology){
-			return returnValue(ontology, MethodTypeEnum.RDFSALT, "/owl2rl/RDFSRulesAlternative.xml");
-	}
-
-	public static String getRIFInferenceRulesForOWL2Ontology(final String ontology){
-			return returnValue(ontology, MethodTypeEnum.OWL2RL, "/owl2rl/OWL2RLRules.xml");
-	}
-
-	public static String getRIFInferenceRulesForOWL2OntologyAlternative(final String ontology){
-		return returnValue(ontology, MethodTypeEnum.OWL2RLALT, "/owl2rl/OWL2RLRulesAlternative.xml");
-	}
-
-	public static String returnValue(final String ontology, final MethodTypeEnum type, final String filepath){
-		if(genSet==null){
-			genSet=new InferenceRulesGeneratorSetup();
-		}
-		genSet.init(ontology,type, filepath);
-		return genSet.getGenerator().getOutputRules();		
-	}
 }

@@ -34,6 +34,11 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.owl2rl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>luposdate.operatorgraph</artifactId>
 		</dependency>
 

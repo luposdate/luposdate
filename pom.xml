@@ -14,6 +14,7 @@
 	<modules>
 		<module>core</module>
 		<module>rif</module>
+	    	<module>owl2rl</module>
 		<module>endpoint</module>
 		<module>integrationthirdpartyevaluators</module>
     		<module>syntaxhighlighting</module>
@@ -37,6 +38,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.rif</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.owl2rl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			
