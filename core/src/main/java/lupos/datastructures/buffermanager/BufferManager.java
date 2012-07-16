@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-
 public class BufferManager {
 
 	public interface REPLACEMENTSTRATEGY {
@@ -92,9 +90,14 @@ public class BufferManager {
 				if (min == null || entry.getValue() < min.getValue())
 					min = entry;
 			}
-			final int key = min.getKey();
-			this.timestamps.remove(key);
-			return key;
+			if(min!=null){
+				final int key = min.getKey();
+				this.timestamps.remove(key);
+				return key;
+			} else {
+				// return error code...
+				return -1;
+			}
 		}
 
 		@Override
@@ -339,5 +342,13 @@ public class BufferManager {
 	 */
 	public void close() throws IOException {
 		this.bufferedFile.close();
+	}
+
+	public static int getMAXPAGESINBUFFER() {
+		return BufferManager.MAXPAGESINBUFFER;
+	}
+
+	public static void setMAXPAGESINBUFFER(int mAXPAGESINBUFFER) {
+		BufferManager.MAXPAGESINBUFFER = mAXPAGESINBUFFER;
 	}
 }
