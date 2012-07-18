@@ -26,12 +26,17 @@
 package lupos.sparql1_1;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
 
 public class ASTLangTag extends SimpleNode {
+	
 	private String langTag;
+	private Literal literal = null;
+	
 	public ASTLangTag(int id) {
 		super(id);
 	}
@@ -68,6 +73,13 @@ public class ASTLangTag extends SimpleNode {
 	@Override
 	public String toString() {
 		return super.toString()+" "+this.langTag;
+	}
+	
+	public Literal getLiteral(){
+		if(this.literal==null){
+			this.literal = LazyLiteral.getLiteral(this, true);
+		}
+		return this.literal;
 	}
 }
 /* JavaCC - OriginalChecksum=697f576ef2521d37225f4efb1b07d7b4 (do not edit this line) */

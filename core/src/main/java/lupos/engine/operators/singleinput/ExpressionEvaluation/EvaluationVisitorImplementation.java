@@ -361,7 +361,8 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTStringLiteral node, Bindings b, Map<Node, Object> d) {
-		return "\""+ Helper.trim(node.getStringLiteral()) + "\"";	}
+		return node.getLiteral();
+	}
 
 	@Override
 	public Object evaluate(ASTBooleanLiteral node, Bindings b,
@@ -562,15 +563,17 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTQuotedURIRef node, Bindings b, Map<Node, Object> d) {
-		return LazyLiteral.getLiteral(node);
+		return node.getLiteral();
 	}
 
+	@Override
 	public Object evaluate(ASTDoubleCircumflex node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return LazyLiteral.getLiteral(node);
+		return node.getLiteral();
 	}
 
+	@Override
 	public Object evaluate(ASTFloatingPoint node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return LazyLiteral.getLiteral(node);
+		return node.getLiteral();
 	}
 	
 	@Override
@@ -607,12 +610,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTInteger node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return LazyLiteral.getLiteral(node);
+		return node.getLiteral();
 	}
 
 	@Override
 	public Object evaluate(ASTLangTag node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return LazyLiteral.getLiteral(node);
+		return node.getLiteral();
 	}
 
 	@Override

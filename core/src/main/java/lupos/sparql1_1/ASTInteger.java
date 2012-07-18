@@ -28,14 +28,16 @@ package lupos.sparql1_1;
 import java.math.BigInteger;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
 
-public
-class ASTInteger extends SimpleNode {
+public class ASTInteger extends SimpleNode {
   
   private String valueInteger;
+  private Literal literal;
 
   public ASTInteger(int id) {
     super(id);
@@ -63,6 +65,11 @@ class ASTInteger extends SimpleNode {
 
   public void setValue(final String value) {
 	this.valueInteger = value;
+	this.literal = LazyLiteral.getLiteral(this, true);
+  }
+  
+  public Literal getLiteral(){
+	  return this.literal;
   }
 
   @Override

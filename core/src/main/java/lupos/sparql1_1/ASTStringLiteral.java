@@ -26,6 +26,8 @@
 package lupos.sparql1_1;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
@@ -33,6 +35,7 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor
 public
 class ASTStringLiteral extends SimpleNode {
 	private String stringLiteral;
+	private Literal literal;
 	public ASTStringLiteral(int id) {
 		super(id);
 	}
@@ -43,31 +46,38 @@ class ASTStringLiteral extends SimpleNode {
 
 
 	/** Accept the visitor. **/
-	  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+	  @Override
+  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
+	  @Override
   public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
 		return visitor.visit(this, data);
 	}
 
+	  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
 	  return visitor.evaluate(this, b, data);
   }
 
   public String getStringLiteral() {
-	  return stringLiteral;
+	  return this.stringLiteral;	  
   }
 
   public void setStringLiteral(String stringLiteral) {
 	  this.stringLiteral = stringLiteral;
+	  this.literal = LazyLiteral.getLiteral(this, true);
+  }
+  
+  public Literal getLiteral(){
+	  return this.literal;
   }
 
   @Override
   public String toString() {
-	  // TODO Auto-generated method stub
-	  return super.toString()+" "+stringLiteral;
+	  return super.toString()+" "+this.stringLiteral;
   }
 }
 /* JavaCC - OriginalChecksum=496a5b63351f078fa5340ff60700826d (do not edit this line) */

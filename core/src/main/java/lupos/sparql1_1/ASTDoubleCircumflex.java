@@ -26,18 +26,30 @@
 package lupos.sparql1_1;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
 
-public
-class ASTDoubleCircumflex extends SimpleNode {
+public class ASTDoubleCircumflex extends SimpleNode {
+
+  private Literal literal = null;
+	
   public ASTDoubleCircumflex(int id) {
     super(id);
   }
 
   public ASTDoubleCircumflex(SPARQL1_1Parser p, int id) {
     super(p, id);
+  }
+  
+  public Literal getLiteral(){
+	  if(this.literal!=null){
+		  return this.literal;
+	  }
+	  this.literal = LazyLiteral.getLiteral(this, true);
+	  return this.literal;
   }
 
   /** Accept the visitor. **/

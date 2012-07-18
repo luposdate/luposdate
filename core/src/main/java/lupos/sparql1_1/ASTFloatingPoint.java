@@ -26,14 +26,16 @@
 package lupos.sparql1_1;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
 
-public
-class ASTFloatingPoint extends SimpleNode {
+public class ASTFloatingPoint extends SimpleNode {
 
   private String valueFloatingPoint;
+  private Literal literal;
 
   public ASTFloatingPoint(int id) {
     super(id);
@@ -50,6 +52,7 @@ class ASTFloatingPoint extends SimpleNode {
 
   public void setValue(String value) {
 	this.valueFloatingPoint = value;
+	this.literal = LazyLiteral.getLiteral(this, true);
   }
 
   public String getValueWithoutLeadingPlus(){
@@ -58,6 +61,10 @@ class ASTFloatingPoint extends SimpleNode {
 		  zValue = zValue.substring(1, zValue.length());
 	  }
 	  return zValue;
+  }
+  
+  public Literal getLiteral(){
+	  return this.literal;
   }
   
   @Override

@@ -28,6 +28,8 @@ package lupos.sparql1_1;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
@@ -39,6 +41,7 @@ import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
 public
 class ASTQuotedURIRef extends SimpleNode {
 	private String qRef;
+	private Literal literal;
   public ASTQuotedURIRef(int id) {
     super(id);
   }
@@ -49,33 +52,43 @@ class ASTQuotedURIRef extends SimpleNode {
 
 
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+  @Override
+  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
+    @Override
   public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
 
+  @Override
   public String accept(SPARQL1_1ParserPathVisitorStringGenerator visitor, String subject, String object){
 	    return visitor.visit(this, subject, object);
   }
   
+  @Override
   public BasicOperator accept(SPARQL1_1OperatorgraphGeneratorVisitor visitor, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode) {
 	    return visitor.visit(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+@SuppressWarnings({ "rawtypes", "unchecked" })
   public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
 	  return visitor.evaluate(this, b, data);
   }
 
   public String getQRef() {
-	  return qRef;
+	  return this.qRef;
   }
 
   public void setQRef(String qRef) {
 	  this.qRef = qRef;
+	  this.literal = LazyLiteral.getLiteral(this, true);
+  }
+  
+  public Literal getLiteral(){
+	  return this.literal;
   }
 
   public String toQueryString() {
@@ -84,8 +97,7 @@ class ASTQuotedURIRef extends SimpleNode {
 
   @Override
   public String toString() {
-	  // TODO Auto-generated method stub
-	  return qRef;
+	  return this.qRef;
   }
 }
 /* JavaCC - OriginalChecksum=e4e66b3497d767749720c42fa02ef0c0 (do not edit this line) */
