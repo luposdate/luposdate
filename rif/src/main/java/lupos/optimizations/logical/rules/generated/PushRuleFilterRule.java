@@ -177,14 +177,10 @@ public class PushRuleFilterRule extends Rule {
             
             if(this.op instanceof lupos.engine.operators.multiinput.optional.Optional || this.op instanceof lupos.engine.operators.multiinput.optional.parallel.ParallelOptional || this.op instanceof lupos.engine.operators.multiinput.optional.parallel.MergeParallelOptional) {
                 if(this.op.getPrecedingOperators().size() == 2) {
-                    BasicOperator o = this.op.getPrecedingOperators().get(0);
+                   BasicOperator o = this.op.getPrecedingOperatorWithID(0);
             
                     if(o.getUnionVariables().containsAll(this.f.getVariablesInExpression()) && !(o instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o))) {
-                        o = this.op.getPrecedingOperators().get(1);
-            
-                        if(o.getUnionVariables().containsAll(this.f.getVariablesInExpression()) && !(o instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o))) {
-                            return true;
-                        }
+                       return true;
                     }
                 }
             
@@ -236,6 +232,11 @@ public class PushRuleFilterRule extends Rule {
 
 
         // add new connections...
+        for(this._dim_0 = 0; this._dim_0 < this.o.length; this._dim_0 += 1) {
+            this.o[this._dim_0].addSucceedingOperator(f_new[this._dim_0]);
+            f_new[this._dim_0].addPrecedingOperator(this.o[this._dim_0]);
+        }
+
         _label_a_count = 0;
 
         for(lupos.rif.operator.RuleFilter _parent : f_new) {
@@ -245,11 +246,6 @@ public class PushRuleFilterRule extends Rule {
             _label_a_count += 1;
         }
 
-
-        for(this._dim_0 = 0; this._dim_0 < this.o.length; this._dim_0 += 1) {
-            this.o[this._dim_0].addSucceedingOperator(f_new[this._dim_0]);
-            f_new[this._dim_0].addPrecedingOperator(this.o[this._dim_0]);
-        }
 
 
         // additional replace method code...

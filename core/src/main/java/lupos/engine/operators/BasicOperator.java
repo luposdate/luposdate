@@ -309,6 +309,20 @@ public class BasicOperator implements Cloneable, Serializable {
 	public List<BasicOperator> getPrecedingOperators() {
 		return this.precedingOperators;
 	}
+	
+	/**
+	 * This method returns the first found preceding operator, which is connected to this operator with the given id 
+	 * @param id the id of the OperatorIDTuple
+	 * @return the first found preceding operator, which is connected to this operator with the given id, otherwise null
+	 */
+	public BasicOperator getPrecedingOperatorWithID(final int id){
+		for(BasicOperator prec: this.getPrecedingOperators()){
+			if(prec.getOperatorIDTuple(this).getId() == id){
+				return prec;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * This method returns the first OperatorIDTuple in the list of succeeding
