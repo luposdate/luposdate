@@ -15,19 +15,22 @@
       "Factor out OR in Filter",
       "ConstantPropagation of Filter in Index",
       "Constant Propagation of Filter in Index With Additional Operators Between",
+      "Bound In Filter under Index",
       "Combine Unions",
       "Variable Propagation",
       "Projection Over Sort",
       "SortLimit over Sort",
       "Binary Join",
-      "Optimizing Join Order"
+      "Optimizing Join Order",
+      "Bound in Filter Under Add"
     ],
     "Logical Optimization For Stream Engine": [
       "Factor out AND in Filter",
       "Push Filter",
       "Binary Join",
       "Constant Propagation of Filter in Triple Pattern",
-      "Constant Propagation of Filter in Triple Pattern with Operators Between"
+      "Constant Propagation of Filter in Triple Pattern with Operators Between",
+      "Bound in Filter Under Add"
     ],
     "Physical Optimization": ["Physical Optimization Rule"],
     "RIF Rules": [
@@ -364,6 +367,114 @@
           }
         },
         "right side": {},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "Bound In Filter under Index": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private boolean deleteAll;",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "lupos.sparql1_1.Node n = this.f.getNodePointer();\r\n\r\nboolean negated = false;\r\n\r\nif(n.jjtGetNumChildren() > 0) {\r\n    n = n.jjtGetChild(0);\r\n\r\n    while(n instanceof lupos.sparql1_1.ASTNotNode){\r\n        negated = !negated;\r\n    n = n.jjtGetChild(0);\r\n    }\r\n    if(n instanceof lupos.sparql1_1.ASTBoundFuncNode){\r\n        n = n.jjtGetChild(0);\r\n        if(n instanceof lupos.sparql1_1.ASTVar) {\r\n            lupos.datastructures.items.Variable var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) n).getName());\r\n            this.deleteAll = (this.i.getVarsInTriplePatterns().contains(var)) == negated;\r\n            return true;\r\n        }\r\n    }\r\n}\r\nreturn false;",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "if(this.deleteAll){\r\n    this.i.removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators();\r\n    this.deleteNodeFromStartNodeMapNullCheck(this.i, _startNodes);\r\n    for(lupos.engine.operators.BasicOperator child : this.o) {\r\n        this.deleteOperatorWithoutParentsRecursive(child, _startNodes);\r\n    }\r\n}",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "connections": {
+            "f": [{
+              "active": true,
+              "id": -1,
+              "id label": "a",
+              "mode": "ALL_SUCCEEDING",
+              "to": "o"
+            }],
+            "i": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "f"
+            }]
+          },
+          "f": {
+            "also subclasses": false,
+            "class type": "Filter",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              276
+            ]
+          },
+          "i": {
+            "also subclasses": true,
+            "class type": "Index",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              5
+            ]
+          },
+          "o": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              547
+            ]
+          }
+        },
+        "right side": {
+          "connections": {"i": [{
+            "active": true,
+            "id": -1,
+            "id label": "a",
+            "mode": "ALL_SUCCEEDING",
+            "to": "o"
+          }]},
+          "i": {
+            "also subclasses": false,
+            "class type": "Index",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              5
+            ]
+          },
+          "o": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              235
+            ]
+          }
+        },
         "top toolbar": {
           "use colored arrows": false,
           "zoom": 100
@@ -849,6 +960,114 @@
         }
       }
     },
+    "Bound in Filter Under Add": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "lupos.sparql1_1.Node n = this.f.getNodePointer();\r\n\r\nboolean negated = false;\r\n\r\nif(n.jjtGetNumChildren() > 0) {\r\n    n = n.jjtGetChild(0);\r\n\r\n    while(n instanceof lupos.sparql1_1.ASTNotNode){\r\n        negated = !negated;\r\n    n = n.jjtGetChild(0);\r\n    }\r\n    if(!negated && n instanceof lupos.sparql1_1.ASTBoundFuncNode){\r\n        n = n.jjtGetChild(0);\r\n        if(n instanceof lupos.sparql1_1.ASTVar) {\r\n            lupos.datastructures.items.Variable var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) n).getName());\r\n            return var.equals(this.a.getVar());\r\n        }\r\n    }\r\n}\r\nreturn false;",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "a": {
+            "also subclasses": false,
+            "class type": "AddBinding",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              5
+            ]
+          },
+          "connections": {
+            "a": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "f"
+            }],
+            "f": [{
+              "active": true,
+              "id": -1,
+              "id label": "o_id",
+              "mode": "ALL_SUCCEEDING",
+              "to": "o"
+            }]
+          },
+          "f": {
+            "also subclasses": false,
+            "class type": "Filter",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              276
+            ]
+          },
+          "o": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              547
+            ]
+          }
+        },
+        "right side": {
+          "a": {
+            "also subclasses": false,
+            "class type": "AddBinding",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              5
+            ]
+          },
+          "connections": {"a": [{
+            "active": true,
+            "id": -1,
+            "id label": "o_id",
+            "mode": "ALL_SUCCEEDING",
+            "to": "o"
+          }]},
+          "o": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              235
+            ]
+          }
+        },
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
     "Combine Unions": {
       "documentation": {
         "left image": "",
@@ -1134,7 +1353,7 @@
           "rule packages": [],
           "rules": []
         },
-        "short description": "",
+        "short description": "This rule implements constant propagation from Filter to Triple Pattern.",
         "show visual representation": true,
         "transition text": "",
         "use generated visual representation": true
@@ -1261,7 +1480,7 @@
           "rule packages": [],
           "rules": []
         },
-        "short description": "",
+        "short description": "This rule implements constant propagation from Filter to Triple Pattern.",
         "show visual representation": true,
         "transition text": "",
         "use generated visual representation": true
@@ -1418,13 +1637,13 @@
     "ConstantPropagation of Filter in Index": {
       "documentation": {
         "left image": "",
-        "long description": "",
+        "long description": "If there Filter expressions with a equal-comparision of a variable with a constant value, e.g. Filter(?X=&lt;http://myURL.de&gt;), then this constant value can be propagated to preceding (RDF3X/Hexastore) Index operators. Afterwards, the corresponding variable (here ?X) must be bound with the constant value (here &lt;http://myURL.de&gt;), e.g. ?X ?Y ?Z. Filter(?X=&lt;http://myURL.de&gt;) is transformed into &lt;http://myURL.de&gt; ?Y ?Z. AddBinding(?X=&lt;http://myURL.de&gt;). However, there are problems with this approach if the constant value can be value-equal with another constant value using a different representation, e.g. +01^^xsd:int is value-equal, but not identical to 1^^xsd:int. Thus, this transformation rule is not applied whenever the constant value is a numerical value or a language tagged literal.\r\n\r\nThe following figure contains the graphical representation of the transformation rule.",
         "right image": "",
         "see also": {
           "rule packages": [],
           "rules": ["Constant Propagation of Filter in Index With Additional Operators Between"]
         },
-        "short description": "",
+        "short description": "This rule implements constant propagation from Filter to Index.",
         "show visual representation": true,
         "transition text": "",
         "use generated visual representation": true
@@ -2510,7 +2729,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.engine.operators.singleinput.Filter && this.f.equalFilterExpression((lupos.engine.operators.singleinput.Filter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getUsedVariables())) {\n            HashSet<lupos.datastructures.items.Variable> hsv = new HashSet<lupos.datastructures.items.Variable>();\n            hsv.addAll(o2.getIntersectionVariables());\n\n            f_new[i].setIntersectionVariables(hsv);\n            f_new[i].setUnionVariables(hsv);\n            f_new[i].setNodePointer(this.f.getNodePointer());\n        }\n        else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getUsedVariables().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
+          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.engine.operators.singleinput.Filter && this.f.equalFilterExpression((lupos.engine.operators.singleinput.Filter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getUsedVariables())) {\n            f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setNodePointer(this.f.getNodePointer());\n        } else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getUsedVariables().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
           "code": "",
           "use generated code": true
         }
@@ -2721,7 +2940,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getVariablesInExpression())) {\n            HashSet<lupos.datastructures.items.Variable> hsv = new HashSet<lupos.datastructures.items.Variable>();\n            hsv.addAll(o2.getIntersectionVariables());\n\n            f_new[i].setIntersectionVariables(hsv);\n            f_new[i].setUnionVariables(hsv);\n            f_new[i].setExpression(this.f.getExpression());\n        }\n        else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getVariablesInExpression().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
+          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getVariablesInExpression())) {\n            f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setExpression(this.f.getExpression());\n        } else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getVariablesInExpression().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
           "code": "",
           "use generated code": true
         }

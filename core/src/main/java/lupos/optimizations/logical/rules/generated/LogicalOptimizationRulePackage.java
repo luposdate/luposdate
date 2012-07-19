@@ -35,12 +35,13 @@ public class LogicalOptimizationRulePackage extends RulePackage {
 		        new FactoroutORinFilterRule(),
 		        new ConstantPropagationofFilterinIndexRule(),
 		        new ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRule(),
+		        new BoundInFilterunderIndexRule(),
 		        new CombineUnionsRule(),
 		        new VariablePropagationRule(),
 		        new ProjectionOverSortRule(),
 		        new SortLimitoverSortRule(),
 		        new BinaryJoinRule(),
-
+		        new BoundinFilterUnderAddRule()
         };
     }
 }

@@ -74,9 +74,7 @@ import lupos.optimizations.logical.statistics.VarBucket;
 /**
  * Instances of this class are used to process queries by using a special index
  * structure for enhancement.<br>
- * The index structure has to be initialized previously. It is stored in a
- * static way so new instantiations of this class to not yield a change in the
- * original index structure.
+ * The index structure has to be initialized previously. 
  * 
  */
 public abstract class BasicIndex extends Operator {

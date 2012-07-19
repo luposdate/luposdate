@@ -236,11 +236,6 @@ public class PushFilterRule extends Rule {
 
 
         // add new connections...
-        for(this._dim_0 = 0; this._dim_0 < this.o.length; this._dim_0 += 1) {
-            this.o[this._dim_0].addSucceedingOperator(f_new[this._dim_0]);
-            f_new[this._dim_0].addPrecedingOperator(this.o[this._dim_0]);
-        }
-
         _label_a_count = 0;
 
         for(lupos.engine.operators.singleinput.Filter _parent : f_new) {
@@ -251,6 +246,11 @@ public class PushFilterRule extends Rule {
         }
 
 
+        for(this._dim_0 = 0; this._dim_0 < this.o.length; this._dim_0 += 1) {
+            this.o[this._dim_0].addSucceedingOperator(f_new[this._dim_0]);
+            f_new[this._dim_0].addPrecedingOperator(this.o[this._dim_0]);
+        }
+
 
         // additional replace method code...
         boolean deleteFilter = true;
@@ -260,14 +260,10 @@ public class PushFilterRule extends Rule {
         
             if(!(o2 instanceof lupos.engine.operators.singleinput.Filter && this.f.equalFilterExpression((lupos.engine.operators.singleinput.Filter) o2))) {
                 if(o2.getUnionVariables().containsAll(this.f.getUsedVariables())) {
-                    HashSet<lupos.datastructures.items.Variable> hsv = new HashSet<lupos.datastructures.items.Variable>();
-                    hsv.addAll(o2.getIntersectionVariables());
-        
-                    f_new[i].setIntersectionVariables(hsv);
-                    f_new[i].setUnionVariables(hsv);
+                    f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));
+                    f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));
                     f_new[i].setNodePointer(this.f.getNodePointer());
-                }
-                else {
+                } else {
                     if(deleteFilter) {
                         for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {
                             if(this.f.getUsedVariables().contains(v)) {

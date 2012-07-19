@@ -236,11 +236,6 @@ public class PushRuleFilterRule extends Rule {
 
 
         // add new connections...
-        for(this._dim_0 = 0; this._dim_0 < this.o.length; this._dim_0 += 1) {
-            this.o[this._dim_0].addSucceedingOperator(f_new[this._dim_0]);
-            f_new[this._dim_0].addPrecedingOperator(this.o[this._dim_0]);
-        }
-
         _label_a_count = 0;
 
         for(lupos.rif.operator.RuleFilter _parent : f_new) {
@@ -251,6 +246,11 @@ public class PushRuleFilterRule extends Rule {
         }
 
 
+        for(this._dim_0 = 0; this._dim_0 < this.o.length; this._dim_0 += 1) {
+            this.o[this._dim_0].addSucceedingOperator(f_new[this._dim_0]);
+            f_new[this._dim_0].addPrecedingOperator(this.o[this._dim_0]);
+        }
+
 
         // additional replace method code...
         boolean deleteFilter = true;
@@ -260,14 +260,10 @@ public class PushRuleFilterRule extends Rule {
         
             if(!(o2 instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o2))) {
                 if(o2.getUnionVariables().containsAll(this.f.getVariablesInExpression())) {
-                    HashSet<lupos.datastructures.items.Variable> hsv = new HashSet<lupos.datastructures.items.Variable>();
-                    hsv.addAll(o2.getIntersectionVariables());
-        
-                    f_new[i].setIntersectionVariables(hsv);
-                    f_new[i].setUnionVariables(hsv);
+                    f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));
+                    f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));
                     f_new[i].setExpression(this.f.getExpression());
-                }
-                else {
+                } else {
                     if(deleteFilter) {
                         for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {
                             if(this.f.getVariablesInExpression().contains(v)) {
