@@ -162,7 +162,8 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
                            || right instanceof lupos.sparql1_1.ASTFloatingPoint
                            || right instanceof lupos.sparql1_1.ASTInteger
                            || right instanceof lupos.sparql1_1.ASTStringLiteral
-                           || right instanceof lupos.sparql1_1.ASTDoubleCircumflex) {
+                           || right instanceof lupos.sparql1_1.ASTDoubleCircumflex
+                           || right instanceof lupos.sparql1_1.ASTRDFLiteral) {
                             this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);
             
                             // Is it possible to loose the information of the original string representation?

@@ -387,7 +387,7 @@ public class Helper {
 	 */
 	public static boolean equals(Object a, Object b) throws TypeErrorException {
 		try {
-			if (a.equals(b)){
+			if(a.equals(b)){
 				return true;
 			}
 		} catch (final Exception e) {
@@ -582,8 +582,13 @@ public class Helper {
 
 	public static boolean NOTequals(Object a, Object b)
 			throws TypeErrorException {
-		if (a instanceof LazyLiteral && b instanceof LazyLiteral)
-			return !((LazyLiteral) a).equals(b);
+		try {
+			if (a.equals(b)){
+				return false;
+			}
+		} catch(Exception e){
+			// in case of error try below...
+		}
 		if (a instanceof LazyLiteral)
 			a = ((LazyLiteral) a).getLiteral();
 		if (b instanceof LazyLiteral)
