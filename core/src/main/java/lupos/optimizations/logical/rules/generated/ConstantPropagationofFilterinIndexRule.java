@@ -37,12 +37,10 @@ import lupos.engine.operators.OperatorIDTuple;
 public class ConstantPropagationofFilterinIndexRule extends Rule {
     private lupos.datastructures.items.Variable var = null;
     private lupos.datastructures.items.literal.Literal constant = null;
-    private int operandIDOfFilter;
     private lupos.engine.operators.singleinput.Filter f = null;
-    private lupos.engine.operators.BasicOperator o = null;
-    private lupos.engine.operators.BasicOperator j_begin = null;
-    private lupos.engine.operators.BasicOperator j_end = null;
+    private lupos.engine.operators.BasicOperator[] o = null;
     private lupos.engine.operators.index.BasicIndex i = null;
+    private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
         if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
@@ -62,74 +60,46 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
                 break;
             }
 
-            // --- handle JumpOver - begin ---
-            this.j_end = (lupos.engine.operators.BasicOperator) _precOp_1_0;
-            BasicOperator _searchIndex_1_0 = _precOp_1_0;
-            boolean _continueFlag_1_0 = false;
-
-            while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndex))) {
-                if(!(_searchIndex_1_0 instanceof lupos.engine.operators.BasicOperator)) {
-                    _continueFlag_1_0 = true;
-                    break;
-                }
-
-                if(_searchIndex_1_0.getSucceedingOperators().size() != 1 || _searchIndex_1_0.getPrecedingOperators().size() != 1) {
-                    _continueFlag_1_0 = true;
-                    break;
-                }
-
-                _searchIndex_1_0 = _searchIndex_1_0.getPrecedingOperators().get(0);
-            }
-
-            if(_continueFlag_1_0) {
+            if(!(_precOp_1_0 instanceof lupos.engine.operators.index.BasicIndex)) {
                 continue;
             }
 
-            this.j_begin = (lupos.engine.operators.BasicOperator) _searchIndex_1_0.getSucceedingOperators().get(0).getOperator();
-            // --- handle JumpOver - end ---
+            this.i = (lupos.engine.operators.index.BasicIndex) _precOp_1_0;
+
+            List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
 
-            List<BasicOperator> _precedingOperators_2_0 = this.j_begin.getPrecedingOperators();
+            this._dim_0 = -1;
+            this.o = new lupos.engine.operators.BasicOperator[_succedingOperators_1_0.size()];
 
-            if(_searchIndex_1_0 != this.j_begin) {
-                if(_precedingOperators_2_0.size() != 1) {
-                    continue;
+            for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
+                this._dim_0 += 1;
+
+                if(!this._checkPrivate1(_sucOpIDTup_1_0.getOperator())) {
+                    return false;
                 }
             }
 
-            for(BasicOperator _precOp_2_0 : _precedingOperators_2_0) {
-                if(_precOp_2_0.getSucceedingOperators().size() != 1) {
-                    break;
-                }
-
-                if(!(_precOp_2_0 instanceof lupos.engine.operators.index.BasicIndex)) {
-                    continue;
-                }
-
-                this.i = (lupos.engine.operators.index.BasicIndex) _precOp_2_0;
-
-                List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
-
-
-                for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
-                    if(!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.BasicOperator)) {
-                        continue;
-                    }
-
-                    this.o = (lupos.engine.operators.BasicOperator) _sucOpIDTup_1_0.getOperator();
-
-                    return true;
-                }
-            }
+            return true;
         }
 
         return false;
     }
 
+    private boolean _checkPrivate1(BasicOperator _op) {
+        if(!(_op instanceof lupos.engine.operators.BasicOperator)) {
+            return false;
+        }
+
+        this.o[this._dim_0] = (lupos.engine.operators.BasicOperator) _op;
+
+        return true;
+    }
+
 
     public ConstantPropagationofFilterinIndexRule() {
         this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
-        this.ruleName = "Constant Propagation of Filter in Index";
+        this.ruleName = "ConstantPropagation of Filter in Index";
     }
 
     protected boolean check(BasicOperator _op) {
@@ -137,8 +107,6 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
 
         if(_result) {
             // additional check method code...
-            this.operandIDOfFilter = this.f.getOperatorIDTuple(o).getId();
-            
             lupos.sparql1_1.Node n = this.f.getNodePointer();
             
             if(n.jjtGetNumChildren() > 0) {
@@ -163,7 +131,7 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
                            || right instanceof lupos.sparql1_1.ASTInteger
                            || right instanceof lupos.sparql1_1.ASTStringLiteral
                            || right instanceof lupos.sparql1_1.ASTDoubleCircumflex
-                           || right instanceof lupos.sparql1_1.ASTRDFLiteral) {
+                   || right instanceof lupos.sparql1_1.ASTRDFLiteral) {
                             this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);
             
                             // Is it possible to loose the information of the original string representation?
@@ -202,10 +170,21 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        this.f.removeSucceedingOperator(this.o);
-        this.o.removePrecedingOperator(this.f);
-        this.j_end.removeSucceedingOperator(this.f);
-        this.f.removePrecedingOperator(this.j_end);
+        int[] _label_a = null;
+
+        int _label_a_count = 0;
+        _label_a = new int[this.o.length];
+
+        for(lupos.engine.operators.BasicOperator _child : this.o) {
+            _label_a[_label_a_count] = this.f.getOperatorIDTuple(_child).getId();
+            _label_a_count += 1;
+
+            this.f.removeSucceedingOperator(_child);
+            _child.removePrecedingOperator(this.f);
+        }
+
+        this.i.removeSucceedingOperator(this.f);
+        this.f.removePrecedingOperator(this.i);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -213,11 +192,18 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
 
 
         // add new connections...
-        b.addSucceedingOperator(this.o);
-        this.o.addPrecedingOperator(b);
+        this.i.addSucceedingOperator(b);
+        b.addPrecedingOperator(this.i);
 
-        this.j_end.addSucceedingOperator(b);
-        b.addPrecedingOperator(this.j_end);
+        _label_a_count = 0;
+
+        for(lupos.engine.operators.BasicOperator _child : this.o) {
+            b.addSucceedingOperator(new OperatorIDTuple(_child, _label_a[_label_a_count]));
+            _child.addPrecedingOperator(b);
+
+            _label_a_count += 1;
+        }
+
 
 
         // delete unreachable operators...
@@ -226,21 +212,17 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
 
         // additional replace method code...
         this.i.replace(this.var, this.constant);
+        this.i.getUnionVariables().remove(this.var);
+        this.i.getIntersectionVariables().remove(this.var);
         
         b.setVar(this.var);
         b.setLiteral(this.constant);
         
-        BasicOperator tmp = this.i;
+        java.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());
+        unionVars.add(this.var);
+        java.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);
         
-        while(!tmp.equals(b)) {
-            tmp.getUnionVariables().remove(this.var);
-            tmp.getIntersectionVariables().remove(this.var);
-        
-            tmp = tmp.getSucceedingOperators().get(0).getOperator();
-        }
-        
-        b.setUnionVariables(this.f.getUnionVariables());
-        b.setIntersectionVariables(this.f.getIntersectionVariables());
-        b.getOperatorIDTuple(o).setId(this.operandIDOfFilter);
+        b.setUnionVariables(unionVars);
+        b.setIntersectionVariables(intersectionVars);
     }
 }

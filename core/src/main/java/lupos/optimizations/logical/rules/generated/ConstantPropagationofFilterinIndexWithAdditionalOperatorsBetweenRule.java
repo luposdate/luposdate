@@ -34,13 +34,15 @@ import lupos.engine.operators.OperatorIDTuple;
 
 
 
-public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
+public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRule extends Rule {
     private lupos.datastructures.items.Variable var = null;
     private lupos.datastructures.items.literal.Literal constant = null;
+    private int operandIDOfFilter;
     private lupos.engine.operators.singleinput.Filter f = null;
-    private lupos.engine.operators.tripleoperator.TriplePattern tp = null;
-    private lupos.engine.operators.BasicOperator[] o = null;
-    private int _dim_0 = -1;
+    private lupos.engine.operators.BasicOperator o = null;
+    private lupos.engine.operators.BasicOperator j_begin = null;
+    private lupos.engine.operators.BasicOperator j_end = null;
+    private lupos.engine.operators.index.BasicIndex i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
         if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
@@ -60,46 +62,77 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
                 break;
             }
 
-            if(_precOp_1_0.getClass() != lupos.engine.operators.tripleoperator.TriplePattern.class) {
+            // --- handle JumpOver - begin ---
+            this.j_end = (lupos.engine.operators.BasicOperator) _precOp_1_0;
+            BasicOperator _searchIndex_1_0 = _precOp_1_0;
+            boolean _continueFlag_1_0 = false;
+
+            while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndex))) {
+                if(!(_searchIndex_1_0 instanceof lupos.engine.operators.BasicOperator)) {
+                    _continueFlag_1_0 = true;
+                    break;
+                }
+
+                if(_searchIndex_1_0.getSucceedingOperators().size() != 1 || _searchIndex_1_0.getPrecedingOperators().size() != 1) {
+                    _continueFlag_1_0 = true;
+                    break;
+                }
+
+                _searchIndex_1_0 = _searchIndex_1_0.getPrecedingOperators().get(0);
+            }
+
+            if(_continueFlag_1_0) {
                 continue;
             }
 
-            this.tp = (lupos.engine.operators.tripleoperator.TriplePattern) _precOp_1_0;
+            this.j_begin = (lupos.engine.operators.BasicOperator) _searchIndex_1_0.getSucceedingOperators().get(0).getOperator();
+            // --- handle JumpOver - end ---
 
-            List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
+            List<BasicOperator> _precedingOperators_2_0 = this.j_begin.getPrecedingOperators();
 
-            this._dim_0 = -1;
-            this.o = new lupos.engine.operators.BasicOperator[_succedingOperators_1_0.size()];
-
-            for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
-                this._dim_0 += 1;
-
-                if(!this._checkPrivate1(_sucOpIDTup_1_0.getOperator())) {
-                    return false;
+            if(_searchIndex_1_0 != this.j_begin) {
+                if(_precedingOperators_2_0.size() != 1) {
+                    continue;
                 }
             }
 
-            return true;
+            for(BasicOperator _precOp_2_0 : _precedingOperators_2_0) {
+                if(_precOp_2_0.getSucceedingOperators().size() != 1) {
+                    break;
+                }
+
+                if(!(_precOp_2_0 instanceof lupos.engine.operators.index.BasicIndex)) {
+                    continue;
+                }
+
+                this.i = (lupos.engine.operators.index.BasicIndex) _precOp_2_0;
+
+                List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
+
+                if(_succedingOperators_1_0.size() != 1) {
+                    return false;
+                }
+
+                for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
+                    if(!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.BasicOperator)) {
+                        continue;
+                    }
+
+                    this.o = (lupos.engine.operators.BasicOperator) _sucOpIDTup_1_0.getOperator();
+
+                    return true;
+                }
+            }
         }
 
         return false;
     }
 
-    private boolean _checkPrivate1(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.BasicOperator)) {
-            return false;
-        }
 
-        this.o[this._dim_0] = (lupos.engine.operators.BasicOperator) _op;
-
-        return true;
-    }
-
-
-    public ConstantPropagationofFilterinTriplePatternRule() {
+    public ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRule() {
         this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
-        this.ruleName = "Constant Propagation of Filter in Triple Pattern";
+        this.ruleName = "Constant Propagation of Filter in Index With Additional Operators Between";
     }
 
     protected boolean check(BasicOperator _op) {
@@ -107,6 +140,8 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
         if(_result) {
             // additional check method code...
+            this.operandIDOfFilter = this.f.getOperatorIDTuple(o).getId();
+            
             lupos.sparql1_1.Node n = this.f.getNodePointer();
             
             if(n.jjtGetNumChildren() > 0) {
@@ -123,38 +158,28 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
                     }
             
                     if(left instanceof lupos.sparql1_1.ASTVar) {
-                        String varname = ((lupos.sparql1_1.ASTVar) left).getName();
-                        this.var = new lupos.datastructures.items.Variable(varname);
-            
-                        if(!this.tp.getVariables().contains(this.var) && !this.tp.getVariables().contains(new lupos.datastructures.items.VariableInInferenceRule(varname))) {
-                            // TODO: delete triple pattern as it will never have a result!
-                            System.err.println("Can be optimized by extending RuleReplaceConstantOfFilterInTriplePattern: delete triple pattern with succeeding unsatisfiable filter expression!");
-            
-                            return false;
-                        }
+                        this.var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) left).getName());
             
                         if(right instanceof lupos.sparql1_1.ASTQName
-                           || right instanceof lupos.sparql1_1.ASTRDFLiteral
                            || right instanceof lupos.sparql1_1.ASTQuotedURIRef
                            || right instanceof lupos.sparql1_1.ASTFloatingPoint
                            || right instanceof lupos.sparql1_1.ASTInteger
                            || right instanceof lupos.sparql1_1.ASTStringLiteral
-                           || right instanceof lupos.sparql1_1.ASTDoubleCircumflex) {
+                           || right instanceof lupos.sparql1_1.ASTDoubleCircumflex
+                   || right instanceof lupos.sparql1_1.ASTRDFLiteral) {
                             this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);
             
                             // Is it possible to loose the information of the original string representation?
-                            if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteralOriginalContent || constant instanceof lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage) {
-                                	return false;
+                            if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteralOriginalContent || this.constant instanceof lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage) {
+                                return false;
                             }
                             else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {
-                                if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) constant).getType())) {
+                                if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) this.constant).getType())) {
                                     return false;
-                                }
-                                else {
+                                } else {
                                     return true;
                                 }
-                            }
-                            else {
+                            } else {
                                 return true;
                             }
                         }
@@ -180,21 +205,12 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        int[] _label_a = null;
-
-        int _label_a_count = 0;
-        _label_a = new int[this.o.length];
-
-        for(lupos.engine.operators.BasicOperator _child : this.o) {
-            _label_a[_label_a_count] = this.f.getOperatorIDTuple(_child).getId();
-            _label_a_count += 1;
-
-            this.f.removeSucceedingOperator(_child);
-            _child.removePrecedingOperator(this.f);
-        }
-
-        this.tp.removeSucceedingOperator(this.f);
-        this.f.removePrecedingOperator(this.tp);
+        this.i.removeSucceedingOperator(this.j_begin);
+        this.j_begin.removePrecedingOperator(this.i);
+        this.f.removeSucceedingOperator(this.o);
+        this.o.removePrecedingOperator(this.f);
+        this.j_end.removeSucceedingOperator(this.f);
+        this.f.removePrecedingOperator(this.j_end);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -202,18 +218,14 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
 
         // add new connections...
-        _label_a_count = 0;
+        this.j_end.addSucceedingOperator(this.o);
+        this.o.addPrecedingOperator(this.j_end);
 
-        for(lupos.engine.operators.BasicOperator _child : this.o) {
-            b.addSucceedingOperator(new OperatorIDTuple(_child, _label_a[_label_a_count]));
-            _child.addPrecedingOperator(b);
+        this.i.addSucceedingOperator(b);
+        b.addPrecedingOperator(this.i);
 
-            _label_a_count += 1;
-        }
-
-
-        this.tp.addSucceedingOperator(b);
-        b.addPrecedingOperator(this.tp);
+        b.addSucceedingOperator(this.j_begin);
+        this.j_begin.addPrecedingOperator(b);
 
 
         // delete unreachable operators...
@@ -221,18 +233,19 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
 
         // additional replace method code...
-        java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);
-        this.tp.getIntersectionVariables().removeAll(replacedVars);
-        this.tp.getUnionVariables().removeAll(replacedVars);
+        this.i.replace(this.var, this.constant);
+        this.i.getUnionVariables().remove(this.var);
+        this.i.getIntersectionVariables().remove(this.var);
         
         b.setVar(this.var);
         b.setLiteral(this.constant);
         
-        java.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());
+        java.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());
         unionVars.add(this.var);
         java.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);
         
         b.setUnionVariables(unionVars);
         b.setIntersectionVariables(intersectionVars);
+        this.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);
     }
 }

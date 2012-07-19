@@ -34,13 +34,15 @@ import lupos.engine.operators.OperatorIDTuple;
 
 
 
-public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
+public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule extends Rule {
     private lupos.datastructures.items.Variable var = null;
     private lupos.datastructures.items.literal.Literal constant = null;
+    private int operandIDOfFilter;
     private lupos.engine.operators.singleinput.Filter f = null;
     private lupos.engine.operators.tripleoperator.TriplePattern tp = null;
-    private lupos.engine.operators.BasicOperator[] o = null;
-    private int _dim_0 = -1;
+    private lupos.engine.operators.BasicOperator o = null;
+    private lupos.engine.operators.BasicOperator j_begin = null;
+    private lupos.engine.operators.BasicOperator j_end = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
         if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
@@ -60,46 +62,77 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
                 break;
             }
 
-            if(_precOp_1_0.getClass() != lupos.engine.operators.tripleoperator.TriplePattern.class) {
+            // --- handle JumpOver - begin ---
+            this.j_end = (lupos.engine.operators.BasicOperator) _precOp_1_0;
+            BasicOperator _searchIndex_1_0 = _precOp_1_0;
+            boolean _continueFlag_1_0 = false;
+
+            while(_searchIndex_1_0 != null && (_searchIndex_1_0.getClass() != lupos.engine.operators.tripleoperator.TriplePattern.class)) {
+                if(!(_searchIndex_1_0 instanceof lupos.engine.operators.BasicOperator)) {
+                    _continueFlag_1_0 = true;
+                    break;
+                }
+
+                if(_searchIndex_1_0.getSucceedingOperators().size() != 1 || _searchIndex_1_0.getPrecedingOperators().size() != 1) {
+                    _continueFlag_1_0 = true;
+                    break;
+                }
+
+                _searchIndex_1_0 = _searchIndex_1_0.getPrecedingOperators().get(0);
+            }
+
+            if(_continueFlag_1_0) {
                 continue;
             }
 
-            this.tp = (lupos.engine.operators.tripleoperator.TriplePattern) _precOp_1_0;
+            this.j_begin = (lupos.engine.operators.BasicOperator) _searchIndex_1_0.getSucceedingOperators().get(0).getOperator();
+            // --- handle JumpOver - end ---
 
-            List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
+            List<BasicOperator> _precedingOperators_2_0 = this.j_begin.getPrecedingOperators();
 
-            this._dim_0 = -1;
-            this.o = new lupos.engine.operators.BasicOperator[_succedingOperators_1_0.size()];
-
-            for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
-                this._dim_0 += 1;
-
-                if(!this._checkPrivate1(_sucOpIDTup_1_0.getOperator())) {
-                    return false;
+            if(_searchIndex_1_0 != this.j_begin) {
+                if(_precedingOperators_2_0.size() != 1) {
+                    continue;
                 }
             }
 
-            return true;
+            for(BasicOperator _precOp_2_0 : _precedingOperators_2_0) {
+                if(_precOp_2_0.getSucceedingOperators().size() != 1) {
+                    break;
+                }
+
+                if(_precOp_2_0.getClass() != lupos.engine.operators.tripleoperator.TriplePattern.class) {
+                    continue;
+                }
+
+                this.tp = (lupos.engine.operators.tripleoperator.TriplePattern) _precOp_2_0;
+
+                List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
+
+                if(_succedingOperators_1_0.size() != 1) {
+                    return false;
+                }
+
+                for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
+                    if(!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.BasicOperator)) {
+                        continue;
+                    }
+
+                    this.o = (lupos.engine.operators.BasicOperator) _sucOpIDTup_1_0.getOperator();
+
+                    return true;
+                }
+            }
         }
 
         return false;
     }
 
-    private boolean _checkPrivate1(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.BasicOperator)) {
-            return false;
-        }
 
-        this.o[this._dim_0] = (lupos.engine.operators.BasicOperator) _op;
-
-        return true;
-    }
-
-
-    public ConstantPropagationofFilterinTriplePatternRule() {
+    public ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule() {
         this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
-        this.ruleName = "Constant Propagation of Filter in Triple Pattern";
+        this.ruleName = "Constant Propagation of Filter in Triple Pattern with Operators Between";
     }
 
     protected boolean check(BasicOperator _op) {
@@ -107,6 +140,8 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
         if(_result) {
             // additional check method code...
+            this.operandIDOfFilter = this.f.getOperatorIDTuple(o).getId();
+            
             lupos.sparql1_1.Node n = this.f.getNodePointer();
             
             if(n.jjtGetNumChildren() > 0) {
@@ -180,21 +215,12 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        int[] _label_a = null;
-
-        int _label_a_count = 0;
-        _label_a = new int[this.o.length];
-
-        for(lupos.engine.operators.BasicOperator _child : this.o) {
-            _label_a[_label_a_count] = this.f.getOperatorIDTuple(_child).getId();
-            _label_a_count += 1;
-
-            this.f.removeSucceedingOperator(_child);
-            _child.removePrecedingOperator(this.f);
-        }
-
-        this.tp.removeSucceedingOperator(this.f);
-        this.f.removePrecedingOperator(this.tp);
+        this.j_end.removeSucceedingOperator(this.f);
+        this.f.removePrecedingOperator(this.j_end);
+        this.tp.removeSucceedingOperator(this.j_begin);
+        this.j_begin.removePrecedingOperator(this.tp);
+        this.f.removeSucceedingOperator(this.o);
+        this.o.removePrecedingOperator(this.f);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -202,18 +228,14 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
 
         // add new connections...
-        _label_a_count = 0;
-
-        for(lupos.engine.operators.BasicOperator _child : this.o) {
-            b.addSucceedingOperator(new OperatorIDTuple(_child, _label_a[_label_a_count]));
-            _child.addPrecedingOperator(b);
-
-            _label_a_count += 1;
-        }
-
-
         this.tp.addSucceedingOperator(b);
         b.addPrecedingOperator(this.tp);
+
+        b.addSucceedingOperator(this.j_begin);
+        this.j_begin.addPrecedingOperator(b);
+
+        this.j_end.addSucceedingOperator(this.o);
+        this.o.addPrecedingOperator(this.j_end);
 
 
         // delete unreachable operators...
@@ -234,5 +256,6 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
         
         b.setUnionVariables(unionVars);
         b.setIntersectionVariables(intersectionVars);
+        this.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);
     }
 }

@@ -11,9 +11,10 @@
     ],
     "Logical Optimization": [
       "Factor out AND in Filter",
-      "Factor out OR in Filter",
       "Push Filter",
-      "Constant Propagation of Filter in Index",
+      "Factor out OR in Filter",
+      "ConstantPropagation of Filter in Index",
+      "Constant Propagation of Filter in Index With Additional Operators Between",
       "Combine Unions",
       "Variable Propagation",
       "Projection Over Sort",
@@ -25,7 +26,8 @@
       "Factor out AND in Filter",
       "Push Filter",
       "Binary Join",
-      "Constant Propagation of Filter in Triple Pattern"
+      "Constant Propagation of Filter in Triple Pattern",
+      "Constant Propagation of Filter in Triple Pattern with Operators Between"
     ],
     "Physical Optimization": ["Physical Optimization Rule"],
     "RIF Rules": [
@@ -104,7 +106,7 @@
           "SortLimit over Sort",
           "Projection Over Sort",
           "Bound Variable in Union",
-          "Constant Propagation of Filter in Index"
+          "Constant Propagation of Filter in Index With Additional Operators Between"
         ]
       },
       "short description": "Logical optimization aims to reorganize the operator graph into an equivalent operator graph, which generates the same output for any input as the original operator graph, in order to optimize the execution time of query evaluation."
@@ -116,7 +118,6 @@
         "rules": [
           "Binary Join",
           "Push Filter",
-          "Constant Propagation of Filter in Triple Pattern",
           "Factor out AND in Filter"
         ]
       },
@@ -957,7 +958,7 @@
         }
       }
     },
-    "Constant Propagation of Filter in Index": {
+    "Constant Propagation of Filter in Index With Additional Operators Between": {
       "documentation": {
         "left image": "",
         "long description": "If there Filter expressions with a equal-comparision of a variable with a constant value, e.g. Filter(?X=&lt;http://myURL.de&gt;), then this constant value can be propagated to preceding (RDF3X/Hexastore) Index operators. Afterwards, the corresponding variable (here ?X) must be bound with the constant value (here &lt;http://myURL.de&gt;), e.g. ?X ?Y ?Z. Filter(?X=&lt;http://myURL.de&gt;) is transformed into &lt;http://myURL.de&gt; ?Y ?Z. AddBinding(?X=&lt;http://myURL.de&gt;). However, there are problems with this approach if the constant value can be value-equal with another constant value using a different representation, e.g. +01^^xsd:int is value-equal, but not identical to 1^^xsd:int. Thus, this transformation rule is not applied whenever the constant value is a numerical value or a language tagged literal.\n\nThe following figure contains the graphical representation of the transformation rule.",
@@ -967,7 +968,7 @@
           "rules": [
             "Variable Propagation",
             "Factor out OR in Filter",
-            "Constant Propagation of Filter in Triple Pattern"
+            "ConstantPropagation of Filter in Index"
           ]
         },
         "short description": "This rule implements constant propagation from Filter to Index.",
@@ -985,7 +986,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "this.i.replace(this.var, this.constant);\n\nb.setVar(this.var);\nb.setLiteral(this.constant);\n\nBasicOperator tmp = this.i;\n\nwhile(!tmp.equals(b)) {\n    tmp.getUnionVariables().remove(this.var);\n    tmp.getIntersectionVariables().remove(this.var);\n\n    tmp = tmp.getSucceedingOperators().get(0).getOperator();\n}\n\nb.setUnionVariables(this.f.getUnionVariables());\nb.setIntersectionVariables(this.f.getIntersectionVariables());\nb.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
+          "additional code": "this.i.replace(this.var, this.constant);\nthis.i.getUnionVariables().remove(this.var);\nthis.i.getIntersectionVariables().remove(this.var);\n\nb.setVar(this.var);\nb.setLiteral(this.constant);\n\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());\nunionVars.add(this.var);\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\n\nb.setUnionVariables(unionVars);\nb.setIntersectionVariables(intersectionVars);\nthis.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
           "code": "",
           "use generated code": true
         }
@@ -997,7 +998,7 @@
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "EXISTS",
+              "mode": "ONLY_SUCCEEDING",
               "to": "o"
             }],
             "i": [{
@@ -1020,8 +1021,8 @@
             "class type": "Filter",
             "op type": "RuleOperator",
             "position": [
-              52,
-              543
+              32,
+              557
             ],
             "start node": true
           },
@@ -1030,7 +1031,7 @@
             "class type": "Index",
             "op type": "RuleOperator",
             "position": [
-              135,
+              33,
               5
             ]
           },
@@ -1041,8 +1042,8 @@
             "conditions": "",
             "op type": "JumpOverOperator",
             "position": [
-              19,
-              269
+              5,
+              276
             ]
           },
           "o": {
@@ -1050,8 +1051,8 @@
             "class type": "Operator",
             "op type": "RuleOperator",
             "position": [
-              54,
-              807
+              30,
+              828
             ]
           }
         },
@@ -1061,8 +1062,8 @@
             "class type": "AddBinding",
             "op type": "RuleOperator",
             "position": [
-              40,
-              467
+              5,
+              235
             ]
           },
           "connections": {
@@ -1070,22 +1071,22 @@
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "EXISTS",
-              "to": "o"
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "j"
             }],
             "i": [{
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
-              "to": "j"
+              "mode": "EXISTS",
+              "to": "b"
             }],
             "j": [{
               "active": false,
               "id": -1,
               "id label": "",
               "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
-              "to": "b"
+              "to": "o"
             }]
           },
           "i": {
@@ -1093,7 +1094,7 @@
             "class type": "Index",
             "op type": "RuleOperator",
             "position": [
-              42,
+              8,
               5
             ]
           },
@@ -1104,8 +1105,8 @@
             "conditions": "",
             "op type": "JumpOverOperator",
             "position": [
-              33,
-              234
+              7,
+              465
             ]
           },
           "o": {
@@ -1113,8 +1114,8 @@
             "class type": "Operator",
             "op type": "RuleOperator",
             "position": [
-              63,
-              698
+              5,
+              695
             ]
           }
         },
@@ -1127,32 +1128,155 @@
     "Constant Propagation of Filter in Triple Pattern": {
       "documentation": {
         "left image": "",
-        "long description": "If there Filter expressions with a equal-comparision of a variable with a constant value, e.g. Filter(?X=&lt;http://myURL.de&gt;), then this constant value can be propagated to preceding Triple Pattern operators. Afterwards, the corresponding variable (here ?X) must be bound with the constant value (here &lt;http://myURL.de&gt;), e.g. ?X ?Y ?Z. Filter(?X=&lt;http://myURL.de&gt;) is transformed into &lt;http://myURL.de&gt; ?Y ?Z. AddBinding(?X=&lt;http://myURL.de&gt;). However, there are problems with this approach if the constant value can be value-equal with another constant value using a different representation, e.g. +01^^xsd:int is value-equal, but not identical to 1^^xsd:int. Thus, this transformation rule is not applied whenever the constant value is a numerical value or a language tagged literal.\r\n\r\nThe following figure contains the graphical representation of the transformation rule.",
+        "long description": "",
         "right image": "",
         "see also": {
           "rule packages": [],
-          "rules": [
-            "Variable Propagation",
-            "Factor out OR in Filter",
-            "Constant Propagation of Filter in Index"
-          ]
+          "rules": []
         },
-        "short description": "This rule implements constant propagation from Filter to Triple Pattern.",
+        "short description": "",
         "show visual representation": true,
         "transition text": "",
         "use generated visual representation": true
       },
       "implementation": {
-        "additional global java code": "private lupos.datastructures.items.Variable var = null;\nprivate lupos.datastructures.items.literal.Literal constant = null;",
+        "additional global java code": "private lupos.datastructures.items.Variable var = null;\r\nprivate lupos.datastructures.items.literal.Literal constant = null;",
         "additional import declarations": "",
         "check method": {
-          "additional code": "if(this.tp.getSucceedingOperators().size() != 1 || this.f.getPrecedingOperators().size() != 1) {\n    return false;\n}\n\nlupos.sparql1_1.Node n = this.f.getNodePointer();\n\nif(n.jjtGetNumChildren() > 0) {\n    n = n.jjtGetChild(0);\n\n    if(n instanceof lupos.sparql1_1.ASTEqualsNode) {\n        lupos.sparql1_1.Node left = n.jjtGetChild(0);\n        lupos.sparql1_1.Node right = n.jjtGetChild(1);\n\n        if(right instanceof lupos.sparql1_1.ASTVar) {\n            lupos.sparql1_1.Node tmp = left;\n            left = right;\n            right = tmp;\n        }\n\n        if(left instanceof lupos.sparql1_1.ASTVar) {\n            String varname = ((lupos.sparql1_1.ASTVar) left).getName();\n            this.var = new lupos.datastructures.items.Variable(varname);\n\n            if(!this.tp.getVariables().contains(this.var) && !this.tp.getVariables().contains(new lupos.datastructures.items.VariableInInferenceRule(varname))) {\n                // TODO: delete triple pattern as it will never have a result!\n                System.err.println(\"Can be optimized by extending RuleReplaceConstantOfFilterInTriplePattern: delete triple pattern with succeeding unsatisfiable filter expression!\");\n\n                return false;\n            }\n\n            if(right instanceof lupos.sparql1_1.ASTQName\n               || right instanceof lupos.sparql1_1.ASTRDFLiteral\n               || right instanceof lupos.sparql1_1.ASTQuotedURIRef\n               || right instanceof lupos.sparql1_1.ASTFloatingPoint\n               || right instanceof lupos.sparql1_1.ASTInteger\n               || right instanceof lupos.sparql1_1.ASTStringLiteral\n               || right instanceof lupos.sparql1_1.ASTDoubleCircumflex) {\n                this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);\n\n                // Is it possible to loose the information of the original string representation?\n                if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteralOriginalContent || constant instanceof lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage) {\n                    \treturn false;\n                }\n                else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {\n                    if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) constant).getType())) {\n                        return false;\n                    }\n                    else {\n                        return true;\n                    }\n                }\n                else {\n                    return true;\n                }\n            }\n            else {\n                return false;\n            }\n        }\n        else {\n            return false;\n        }\n    }\n    else {\n        return false;\n    }\n}\nelse {\n    return false;\n}",
+          "additional code": "lupos.sparql1_1.Node n = this.f.getNodePointer();\r\n\r\nif(n.jjtGetNumChildren() > 0) {\r\n    n = n.jjtGetChild(0);\r\n\r\n    if(n instanceof lupos.sparql1_1.ASTEqualsNode) {\r\n        lupos.sparql1_1.Node left = n.jjtGetChild(0);\r\n        lupos.sparql1_1.Node right = n.jjtGetChild(1);\r\n\r\n        if(right instanceof lupos.sparql1_1.ASTVar) {\r\n            lupos.sparql1_1.Node tmp = left;\r\n            left = right;\r\n            right = tmp;\r\n        }\r\n\r\n        if(left instanceof lupos.sparql1_1.ASTVar) {\r\n            String varname = ((lupos.sparql1_1.ASTVar) left).getName();\r\n            this.var = new lupos.datastructures.items.Variable(varname);\r\n\r\n            if(!this.tp.getVariables().contains(this.var) && !this.tp.getVariables().contains(new lupos.datastructures.items.VariableInInferenceRule(varname))) {\r\n                // TODO: delete triple pattern as it will never have a result!\r\n                System.err.println(\"Can be optimized by extending RuleReplaceConstantOfFilterInTriplePattern: delete triple pattern with succeeding unsatisfiable filter expression!\");\r\n\r\n                return false;\r\n            }\r\n\r\n            if(right instanceof lupos.sparql1_1.ASTQName\r\n               || right instanceof lupos.sparql1_1.ASTRDFLiteral\r\n               || right instanceof lupos.sparql1_1.ASTQuotedURIRef\r\n               || right instanceof lupos.sparql1_1.ASTFloatingPoint\r\n               || right instanceof lupos.sparql1_1.ASTInteger\r\n               || right instanceof lupos.sparql1_1.ASTStringLiteral\r\n               || right instanceof lupos.sparql1_1.ASTDoubleCircumflex) {\r\n                this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);\r\n\r\n                // Is it possible to loose the information of the original string representation?\r\n                if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteralOriginalContent || constant instanceof lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage) {\r\n                    \treturn false;\r\n                }\r\n                else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {\r\n                    if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) constant).getType())) {\r\n                        return false;\r\n                    }\r\n                    else {\r\n                        return true;\r\n                    }\r\n                }\r\n                else {\r\n                    return true;\r\n                }\r\n            }\r\n            else {\r\n                return false;\r\n            }\r\n        }\r\n        else {\r\n            return false;\r\n        }\r\n    }\r\n    else {\r\n        return false;\r\n    }\r\n}\r\nelse {\r\n    return false;\r\n}",
           "code": "",
           "start node": "Operator",
           "use generated code": true
         },
         "replace method": {
-          "additional code": "java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\n\nb.setVar(this.var);\nb.setLiteral(this.constant);\n\nBasicOperator tmp = this.tp;\n\nwhile(!tmp.equals(b)) {\n    tmp.getUnionVariables().removeAll(replacedVars);\n    tmp.getIntersectionVariables().removeAll(replacedVars);\n\n    tmp = tmp.getSucceedingOperators().get(0).getOperator();\n}\n\nb.setUnionVariables(this.f.getUnionVariables());\nb.setIntersectionVariables(this.f.getIntersectionVariables());",
+          "additional code": "java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\r\nthis.tp.getIntersectionVariables().removeAll(replacedVars);\r\nthis.tp.getUnionVariables().removeAll(replacedVars);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "connections": {
+            "f": [{
+              "active": true,
+              "id": -1,
+              "id label": "a",
+              "mode": "ALL_SUCCEEDING",
+              "to": "o"
+            }],
+            "tp": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "f"
+            }]
+          },
+          "f": {
+            "also subclasses": false,
+            "class type": "Filter",
+            "op type": "RuleOperator",
+            "position": [
+              0,
+              267
+            ],
+            "start node": true
+          },
+          "o": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              0,
+              566
+            ]
+          },
+          "tp": {
+            "also subclasses": false,
+            "class type": "TriplePattern",
+            "op type": "RuleOperator",
+            "position": [
+              1,
+              0
+            ]
+          }
+        },
+        "right side": {
+          "b": {
+            "also subclasses": false,
+            "class type": "AddBinding",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              282
+            ]
+          },
+          "connections": {
+            "b": [{
+              "active": true,
+              "id": -1,
+              "id label": "a",
+              "mode": "ALL_SUCCEEDING",
+              "to": "o"
+            }],
+            "tp": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "b"
+            }]
+          },
+          "o": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              611
+            ]
+          },
+          "tp": {
+            "also subclasses": false,
+            "class type": "TriplePattern",
+            "op type": "RuleOperator",
+            "position": [
+              2,
+              0
+            ]
+          }
+        },
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "Constant Propagation of Filter in Triple Pattern with Operators Between": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private lupos.datastructures.items.Variable var = null;\r\nprivate lupos.datastructures.items.literal.Literal constant = null;\r\nprivate int operandIDOfFilter;",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "this.operandIDOfFilter = this.f.getOperatorIDTuple(o).getId();\r\n\r\nlupos.sparql1_1.Node n = this.f.getNodePointer();\r\n\r\nif(n.jjtGetNumChildren() > 0) {\r\n    n = n.jjtGetChild(0);\r\n\r\n    if(n instanceof lupos.sparql1_1.ASTEqualsNode) {\r\n        lupos.sparql1_1.Node left = n.jjtGetChild(0);\r\n        lupos.sparql1_1.Node right = n.jjtGetChild(1);\r\n\r\n        if(right instanceof lupos.sparql1_1.ASTVar) {\r\n            lupos.sparql1_1.Node tmp = left;\r\n            left = right;\r\n            right = tmp;\r\n        }\r\n\r\n        if(left instanceof lupos.sparql1_1.ASTVar) {\r\n            String varname = ((lupos.sparql1_1.ASTVar) left).getName();\r\n            this.var = new lupos.datastructures.items.Variable(varname);\r\n\r\n            if(!this.tp.getVariables().contains(this.var) && !this.tp.getVariables().contains(new lupos.datastructures.items.VariableInInferenceRule(varname))) {\r\n                // TODO: delete triple pattern as it will never have a result!\r\n                System.err.println(\"Can be optimized by extending RuleReplaceConstantOfFilterInTriplePattern: delete triple pattern with succeeding unsatisfiable filter expression!\");\r\n\r\n                return false;\r\n            }\r\n\r\n            if(right instanceof lupos.sparql1_1.ASTQName\r\n               || right instanceof lupos.sparql1_1.ASTRDFLiteral\r\n               || right instanceof lupos.sparql1_1.ASTQuotedURIRef\r\n               || right instanceof lupos.sparql1_1.ASTFloatingPoint\r\n               || right instanceof lupos.sparql1_1.ASTInteger\r\n               || right instanceof lupos.sparql1_1.ASTStringLiteral\r\n               || right instanceof lupos.sparql1_1.ASTDoubleCircumflex) {\r\n                this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);\r\n\r\n                // Is it possible to loose the information of the original string representation?\r\n                if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteralOriginalContent || constant instanceof lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage) {\r\n                    \treturn false;\r\n                }\r\n                else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {\r\n                    if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) constant).getType())) {\r\n                        return false;\r\n                    }\r\n                    else {\r\n                        return true;\r\n                    }\r\n                }\r\n                else {\r\n                    return true;\r\n                }\r\n            }\r\n            else {\r\n                return false;\r\n            }\r\n        }\r\n        else {\r\n            return false;\r\n        }\r\n    }\r\n    else {\r\n        return false;\r\n    }\r\n}\r\nelse {\r\n    return false;\r\n}",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\r\nthis.tp.getIntersectionVariables().removeAll(replacedVars);\r\nthis.tp.getUnionVariables().removeAll(replacedVars);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);\r\nthis.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
           "code": "",
           "use generated code": true
         }
@@ -1164,7 +1288,7 @@
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "EXISTS",
+              "mode": "ONLY_SUCCEEDING",
               "to": "o"
             }],
             "j": [{
@@ -1187,8 +1311,8 @@
             "class type": "Filter",
             "op type": "RuleOperator",
             "position": [
-              57,
-              543
+              34,
+              557
             ],
             "start node": true
           },
@@ -1199,8 +1323,8 @@
             "conditions": "",
             "op type": "JumpOverOperator",
             "position": [
-              27,
-              269
+              5,
+              276
             ]
           },
           "o": {
@@ -1208,16 +1332,16 @@
             "class type": "Operator",
             "op type": "RuleOperator",
             "position": [
-              57,
-              807
+              34,
+              828
             ]
           },
           "tp": {
-            "also subclasses": true,
+            "also subclasses": false,
             "class type": "TriplePattern",
             "op type": "RuleOperator",
             "position": [
-              57,
+              34,
               5
             ]
           }
@@ -1228,8 +1352,8 @@
             "class type": "AddBinding",
             "op type": "RuleOperator",
             "position": [
-              57,
-              467
+              5,
+              235
             ]
           },
           "connections": {
@@ -1237,22 +1361,22 @@
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "EXISTS",
-              "to": "o"
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "j"
             }],
             "j": [{
               "active": false,
               "id": -1,
               "id label": "",
               "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
-              "to": "b"
+              "to": "o"
             }],
             "tp": [{
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
-              "to": "j"
+              "mode": "EXISTS",
+              "to": "b"
             }]
           },
           "j": {
@@ -1262,8 +1386,8 @@
             "conditions": "",
             "op type": "JumpOverOperator",
             "position": [
-              109,
-              236
+              5,
+              465
             ]
           },
           "o": {
@@ -1271,8 +1395,8 @@
             "class type": "Operator",
             "op type": "RuleOperator",
             "position": [
-              57,
-              698
+              5,
+              695
             ]
           },
           "tp": {
@@ -1280,8 +1404,135 @@
             "class type": "TriplePattern",
             "op type": "RuleOperator",
             "position": [
-              57,
+              5,
               5
+            ]
+          }
+        },
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "ConstantPropagation of Filter in Index": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": ["Constant Propagation of Filter in Index With Additional Operators Between"]
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private lupos.datastructures.items.Variable var = null;\r\nprivate lupos.datastructures.items.literal.Literal constant = null;",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "lupos.sparql1_1.Node n = this.f.getNodePointer();\r\n\r\nif(n.jjtGetNumChildren() > 0) {\r\n    n = n.jjtGetChild(0);\r\n\r\n    if(n instanceof lupos.sparql1_1.ASTEqualsNode) {\r\n        lupos.sparql1_1.Node left = n.jjtGetChild(0);\r\n        lupos.sparql1_1.Node right = n.jjtGetChild(1);\r\n\r\n        if(right instanceof lupos.sparql1_1.ASTVar) {\r\n            lupos.sparql1_1.Node tmp = left;\r\n            left = right;\r\n            right = tmp;\r\n        }\r\n\r\n        if(left instanceof lupos.sparql1_1.ASTVar) {\r\n            this.var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) left).getName());\r\n\r\n            if(right instanceof lupos.sparql1_1.ASTQName\r\n               || right instanceof lupos.sparql1_1.ASTQuotedURIRef\r\n               || right instanceof lupos.sparql1_1.ASTFloatingPoint\r\n               || right instanceof lupos.sparql1_1.ASTInteger\r\n               || right instanceof lupos.sparql1_1.ASTStringLiteral\r\n               || right instanceof lupos.sparql1_1.ASTDoubleCircumflex\r\n       || right instanceof lupos.sparql1_1.ASTRDFLiteral) {\r\n                this.constant = lupos.datastructures.items.literal.LazyLiteral.getLiteral(right);\r\n\r\n                // Is it possible to loose the information of the original string representation?\r\n                if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteralOriginalContent || this.constant instanceof lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage) {\r\n                    return false;\r\n                }\r\n                else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {\r\n                    if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) this.constant).getType())) {\r\n                        return false;\r\n                    } else {\r\n                        return true;\r\n                    }\r\n                } else {\r\n                    return true;\r\n                }\r\n            }\r\n            else {\r\n                return false;\r\n            }\r\n        }\r\n        else {\r\n            return false;\r\n        }\r\n    }\r\n    else {\r\n        return false;\r\n    }\r\n}\r\nelse {\r\n    return false;\r\n}",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "this.i.replace(this.var, this.constant);\r\nthis.i.getUnionVariables().remove(this.var);\r\nthis.i.getIntersectionVariables().remove(this.var);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "connections": {
+            "f": [{
+              "active": true,
+              "id": -1,
+              "id label": "a",
+              "mode": "ALL_SUCCEEDING",
+              "to": "o"
+            }],
+            "i": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "f"
+            }]
+          },
+          "f": {
+            "also subclasses": false,
+            "class type": "Filter",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              276
+            ],
+            "start node": true
+          },
+          "i": {
+            "also subclasses": true,
+            "class type": "Index",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              5
+            ]
+          },
+          "o": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              547
+            ]
+          }
+        },
+        "right side": {
+          "b": {
+            "also subclasses": false,
+            "class type": "AddBinding",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              235
+            ]
+          },
+          "connections": {
+            "b": [{
+              "active": true,
+              "id": -1,
+              "id label": "a",
+              "mode": "ALL_SUCCEEDING",
+              "to": "o"
+            }],
+            "i": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "b"
+            }]
+          },
+          "i": {
+            "also subclasses": false,
+            "class type": "Index",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              5
+            ]
+          },
+          "o": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              5,
+              465
             ]
           }
         },
@@ -1507,7 +1758,8 @@
           "rule packages": [],
           "rules": [
             "Variable Propagation",
-            "Constant Propagation of Filter in Index"
+            "Constant Propagation of Filter in Index With Additional Operators Between",
+            "ConstantPropagation of Filter in Index"
           ]
         },
         "short description": "This rule implements constant propagation for a set of constants.",
@@ -1525,7 +1777,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "// --- update index - begin ---\nlupos.engine.operators.index.BasicIndex i2 = (lupos.engine.operators.index.BasicIndex) this.i.clone();\nthis.addNodeToStartNodeMapNullCheck(i2, _startNodes);\n\njava.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern> lltp = new java.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern>();\n\nfor(lupos.engine.operators.tripleoperator.TriplePattern tp : this.i.getTriplePattern()) {\n    lltp.add(tp.clone());\n}\n\ni2.setTriplePatterns(lltp);\n\nthis.op.addSucceedingOperator(i2);\ni2.setPrecedingOperator(this.op);\n// --- update index - end ---\n\n\n// --- update filter - begin ---\nlupos.sparql1_1.Node n = this.f.getNodePointer();\n\nn = n.jjtGetChild(0);\nlupos.sparql1_1.ASTFilterConstraint node1 = new lupos.sparql1_1.ASTFilterConstraint(0);\nlupos.sparql1_1.ASTFilterConstraint node2 = new lupos.sparql1_1.ASTFilterConstraint(1);\nnode1.jjtAddChild(n.jjtGetChild(0), 0);\nnode2.jjtAddChild(n.jjtGetChild(1), 0);\nn.jjtGetChild(0).jjtSetParent(node1);\nn.jjtGetChild(1).jjtSetParent(node2);\n\nthis.f.setNodePointer(node1);\nf2.setNodePointer(node2);\n\nf2.setCollectionForExistNodes(this.f.getCollectionForExistNodes());\nf2.setEvaluator(this.f.getUsedEvaluationVisitor().getEvaluator());\nf2.getUsedEvaluationVisitor().setEvaluator(this.f.getUsedEvaluationVisitor().getEvaluator());\n\n\nf2.setIntersectionVariables(this.f.getIntersectionVariables());\nf2.setUnionVariables(this.f.getUnionVariables());\n// --- update filter - end ---\n\n\n// --- clone jump-over operators - begin ---\nBasicOperator tmpOp = this.i.getSucceedingOperators().get(0).getOperator();\nBasicOperator parentOp = i2;\n\nwhile(!tmpOp.equals(this.f)) {\n    BasicOperator newOp = tmpOp.clone();\n    this.addNodeToStartNodeMapNullCheck(newOp, _startNodes);\n\n    parentOp.setSucceedingOperator(new lupos.engine.operators.OperatorIDTuple(newOp, 0));\n    newOp.setPrecedingOperator(parentOp);\n\n    parentOp = tmpOp;\n    tmpOp = tmpOp.getSucceedingOperators().get(0).getOperator();\n}\n\nparentOp.setSucceedingOperator(new lupos.engine.operators.OperatorIDTuple(f2, 0));\nf2.addPrecedingOperator(parentOp);\n// --- clone jump-over operators - end ---\nu.getOperatorIDTuple(this.o).setId(this.operandID);\nu.setIntersectionVariables(new HashSet<Variable>(this.f.getIntersectionVariables()));\nu.setUnionVariables(new HashSet<Variable>(this.f.getUnionVariables()));\n",
+          "additional code": "// --- update index - begin ---\nlupos.engine.operators.index.BasicIndex i2 = (lupos.engine.operators.index.BasicIndex) this.i.clone();\nthis.addNodeToStartNodeMapNullCheck(i2, _startNodes);\n\njava.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern> lltp = new java.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern>();\n\nfor(lupos.engine.operators.tripleoperator.TriplePattern tp : this.i.getTriplePattern()) {\n    lltp.add(tp.clone());\n}\n\ni2.setTriplePatterns(lltp);\n\nthis.op.addSucceedingOperator(i2);\ni2.setPrecedingOperator(this.op);\n// --- update index - end ---\n\n\n// --- update filter - begin ---\nlupos.sparql1_1.Node n = this.f.getNodePointer();\n\nn = n.jjtGetChild(0);\nlupos.sparql1_1.ASTFilterConstraint node1 = new lupos.sparql1_1.ASTFilterConstraint(0);\nlupos.sparql1_1.ASTFilterConstraint node2 = new lupos.sparql1_1.ASTFilterConstraint(1);\nnode1.jjtAddChild(n.jjtGetChild(0), 0);\nnode2.jjtAddChild(n.jjtGetChild(1), 0);\nn.jjtGetChild(0).jjtSetParent(node1);\nn.jjtGetChild(1).jjtSetParent(node2);\n\nthis.f.setNodePointer(node1);\nf2.setNodePointer(node2);\n\nf2.setCollectionForExistNodes(this.f.getCollectionForExistNodes());\nf2.setEvaluator(this.f.getUsedEvaluationVisitor().getEvaluator());\nf2.getUsedEvaluationVisitor().setEvaluator(this.f.getUsedEvaluationVisitor().getEvaluator());\n\n\nf2.setIntersectionVariables(this.f.getIntersectionVariables());\nf2.setUnionVariables(this.f.getUnionVariables());\n// --- update filter - end ---\n\n\n// --- clone jump-over operators - begin ---\nBasicOperator tmpOp = this.i.getSucceedingOperators().get(0).getOperator();\nBasicOperator parentOp = i2;\n\nwhile(!tmpOp.equals(this.f)) {\n    BasicOperator newOp = tmpOp.clone();\n    this.addNodeToStartNodeMapNullCheck(newOp, _startNodes);\n\n    parentOp.setSucceedingOperator(new lupos.engine.operators.OperatorIDTuple(newOp, 0));\n    newOp.setPrecedingOperator(parentOp);\n\n    parentOp = tmpOp;\n    tmpOp = tmpOp.getSucceedingOperators().get(0).getOperator();\n}\n\nparentOp.setSucceedingOperator(new lupos.engine.operators.OperatorIDTuple(f2, 0));\nf2.addPrecedingOperator(parentOp);\n// --- clone jump-over operators - end ---\nu.getOperatorIDTuple(this.o).setId(this.operandID);\nu.setIntersectionVariables(new HashSet<Variable>(this.f.getIntersectionVariables()));\nu.setUnionVariables(new HashSet<Variable>(this.f.getUnionVariables()));",
           "code": "",
           "use generated code": true
         }
@@ -1537,7 +1789,7 @@
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "mode": "ONLY_SUCCEEDING",
               "to": "o"
             }],
             "i": [{
@@ -1652,7 +1904,7 @@
               "active": false,
               "id": -1,
               "id label": "",
-              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "mode": "ONLY_SUCCEEDING",
               "to": "o"
             }]
           },
@@ -4226,8 +4478,8 @@
         "see also": {
           "rule packages": [],
           "rules": [
-            "Constant Propagation of Filter in Index",
-            "Factor out OR in Filter"
+            "Factor out OR in Filter",
+            "Constant Propagation of Filter in Index With Additional Operators Between"
           ]
         },
         "short description": "This rule implements variable propagation.",

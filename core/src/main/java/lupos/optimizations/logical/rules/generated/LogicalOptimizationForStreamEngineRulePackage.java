@@ -33,7 +33,8 @@ public class LogicalOptimizationForStreamEngineRulePackage extends RulePackage {
 		        new FactoroutANDinFilterRule(),
 		        new PushFilterRule(),
 		        new BinaryJoinRule(),
-		        new ConstantPropagationofFilterinTriplePatternRule()
+		        new ConstantPropagationofFilterinTriplePatternRule(),
+		        new ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule()
         };
     }
 }

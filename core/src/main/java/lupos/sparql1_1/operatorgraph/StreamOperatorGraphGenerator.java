@@ -24,6 +24,7 @@
 package lupos.sparql1_1.operatorgraph;
 
 import lupos.datastructures.items.Item;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.application.CollectResult;
@@ -31,6 +32,8 @@ import lupos.engine.operators.stream.StreamDuration;
 import lupos.engine.operators.stream.StreamTriples;
 import lupos.engine.operators.stream.Window;
 import lupos.engine.operators.stream.WindowDuration;
+import lupos.engine.operators.stream.WindowInstancesDuration;
+import lupos.engine.operators.stream.WindowInstancesNumber;
 import lupos.engine.operators.stream.WindowTriples;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.sparql1_1.ASTClear;
@@ -42,6 +45,7 @@ import lupos.sparql1_1.ASTInsert;
 import lupos.sparql1_1.ASTLoad;
 import lupos.sparql1_1.ASTModify;
 import lupos.sparql1_1.ASTNamedGraph;
+import lupos.sparql1_1.ASTQuotedURIRef;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_Stream;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
@@ -86,14 +90,33 @@ public class StreamOperatorGraphGenerator extends
 	public void visit(final ASTWindow node, OperatorConnection connection, Item graphConstraint) {
 		ASTType.TYPE dot = ASTType.TYPE.TRIPLES;
 		int slidingNumber = 10;
+		Literal iri = null;
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			final Node n = node.jjtGetChild(i);
 			if (n instanceof ASTType) {
 				dot = ((ASTType) n).getType();
 				slidingNumber = ((ASTType) n).getValue();
+				if(dot == ASTType.TYPE.INSTANCESDURATION || dot == ASTType.TYPE.INSTANCESNUMBER){
+					iri = ((ASTQuotedURIRef)n.jjtGetChild(0)).getLiteral();
+				}
 			} 
 		}
-		final Window window = (dot == ASTType.TYPE.TRIPLES) ? new WindowTriples(slidingNumber) : new WindowDuration(slidingNumber);						
+		final Window window;
+		switch(dot){
+			default:
+			case TRIPLES:
+				window = new WindowTriples(slidingNumber);
+				break;
+			case DURATION:
+				window = new WindowDuration(slidingNumber);
+				break;
+			case INSTANCESNUMBER:
+				window = new WindowInstancesNumber(slidingNumber, iri);
+				break;
+			case INSTANCESDURATION:
+				window = new WindowInstancesDuration(slidingNumber, iri);
+				break;
+		}
 		if (indexScanCreator_Stream.getStream() == null) {
 			System.out.println("Query uses Window operations, but did not define a stream, asssuming STREAM INTERMEDIATERESULT TRIPLES 1");
 			final CollectResult cr = new CollectResult(false);

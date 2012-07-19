@@ -124,10 +124,6 @@ public class FactoroutORinFilterRule extends Rule {
                     }
 
                     for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
-                        if(_sucOpIDTup_1_0.getOperator().getPrecedingOperators().size() != 1) {
-                            break;
-                        }
-
                         if(!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.BasicOperator)) {
                             continue;
                         }
@@ -184,14 +180,14 @@ public class FactoroutORinFilterRule extends Rule {
 
 
         // add new connections...
-        u.addSucceedingOperator(this.o);
-        this.o.addPrecedingOperator(u);
-
         f2.addSucceedingOperator(u);
         u.addPrecedingOperator(f2);
 
         this.f.addSucceedingOperator(u);
         u.addPrecedingOperator(this.f);
+
+        u.addSucceedingOperator(this.o);
+        this.o.addPrecedingOperator(u);
 
 
         // additional replace method code...

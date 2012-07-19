@@ -502,12 +502,11 @@ public class SPARQLParserVisitorImplementationDumper implements
 			if ((node.jjtGetChild(i) instanceof ASTStart) || (node.jjtGetChild(i) instanceof ASTEnd) || (node.jjtGetChild(i) instanceof ASTType))
 				ret += visitChild(node, i);
 		}
-		ret += "{";
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			if (!((node.jjtGetChild(i) instanceof ASTStart) || (node.jjtGetChild(i) instanceof ASTEnd) || (node.jjtGetChild(i) instanceof ASTType)))
 				ret += visitChild(node, i);
 		}
-		return ret + "}";
+		return ret;
 	}
 
 	public String visit(final ASTStart node) {
@@ -520,10 +519,18 @@ public class SPARQLParserVisitorImplementationDumper implements
 
 	public String visit(final ASTType node) {
 		String ret = " TYPE ";
-		if (node.isDuration())
+		if (node.isDuration()){
 			ret += "SLIDINGDURATION ";
-		else
+		} else if (node.isTriples()){
 			ret += "SLIDINGTRIPLES ";
+		} else {
+			ret += "INSTANCE " + visitChild(node, 0) + " ";
+			if (node.isInstancesNumber()){
+				ret += "SLIDINGINSTANCES ";
+			} else {
+				ret += "SLIDINGDURATION ";
+			}
+		}
 		return ret + node.getValue();
 	}
 

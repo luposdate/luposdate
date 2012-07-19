@@ -97,10 +97,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case STRING_LITERAL_LONG2:
         case NIL:
         case ANON:
-        case 105:
-        case 118:
-        case 179:
-        case 180:
+        case 107:
+        case 120:
+        case 181:
+        case 182:
           ;
           break;
         default:
@@ -165,10 +165,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case STRING_LITERAL_LONG2:
         case NIL:
         case ANON:
-        case 105:
-        case 118:
-        case 179:
-        case 180:
+        case 107:
+        case 120:
+        case 181:
+        case 182:
           ;
           break;
         default:
@@ -222,10 +222,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case STRING_LITERAL_LONG2:
         case NIL:
         case ANON:
-        case 105:
-        case 118:
-        case 179:
-        case 180:
+        case 107:
+        case 120:
+        case 181:
+        case 182:
           ;
           break;
         default:
@@ -853,11 +853,11 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         TriplesTemplate();
         break;
       default:
@@ -1123,14 +1123,41 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 60:
         jj_consume_token(60);
-                            jjtn000.setDuration();
+        IRIref();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 61:
+          jj_consume_token(61);
+                               jjtn000.setInstancesDuration();
+          break;
+        case 62:
+          jj_consume_token(62);
+                                    jjtn000.setInstancesNumber();
+          break;
+        default:
+          jj_la1[33] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
         break;
       case 61:
-        jj_consume_token(61);
+      case 63:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 61:
+          jj_consume_token(61);
+                             jjtn000.setDuration();
+          break;
+        case 63:
+          jj_consume_token(63);
                            jjtn000.setTriples();
+          break;
+        default:
+          jj_la1[34] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[35] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1138,6 +1165,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
                        jjtree.closeNodeScope(jjtn000, true);
                        jjtc000 = false;
                       jjtn000.setValue(Integer.parseInt(t.image));
+    } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            {if (true) throw (RuntimeException)jjte000;}
+          }
+          if (jjte000 instanceof ParseException) {
+            {if (true) throw (ParseException)jjte000;}
+          }
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -1147,18 +1188,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 
 //13
   final public void DatasetClause() throws ParseException {
-    jj_consume_token(62);
+    jj_consume_token(64);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRI_REF:
     case PNAME_NS:
     case PNAME_LN:
       DefaultGraphClause();
       break;
-    case 63:
+    case 65:
       NamedGraphClause();
       break;
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[36] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1200,7 +1241,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(63);
+      jj_consume_token(65);
       SourceSelector();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -1235,7 +1276,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       jj_consume_token(49);
       break;
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[37] = jj_gen;
       ;
     }
     GroupGraphPattern();
@@ -1244,36 +1285,36 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //18
   final public void SolutionModifier() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 64:
-      GroupClause();
-      break;
-    default:
-      jj_la1[36] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 66:
-      HavingClause();
-      break;
-    default:
-      jj_la1[37] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 67:
-      OrderClause();
+      GroupClause();
       break;
     default:
       jj_la1[38] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 70:
-    case 71:
-      LimitOffsetClauses();
+    case 68:
+      HavingClause();
       break;
     default:
       jj_la1[39] = jj_gen;
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 69:
+      OrderClause();
+      break;
+    default:
+      jj_la1[40] = jj_gen;
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 72:
+    case 73:
+      LimitOffsetClauses();
+      break;
+    default:
+      jj_la1[41] = jj_gen;
       ;
     }
   }
@@ -1285,8 +1326,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(64);
-      jj_consume_token(65);
+      jj_consume_token(66);
+      jj_consume_token(67);
       label_9:
       while (true) {
         GroupCondition();
@@ -1296,9 +1337,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case PNAME_LN:
         case VAR:
         case 45:
-        case 117:
         case 119:
-        case 120:
         case 121:
         case 122:
         case 123:
@@ -1348,10 +1387,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case 167:
         case 168:
         case 169:
+        case 170:
+        case 171:
           ;
           break;
         default:
-          jj_la1[40] = jj_gen;
+          jj_la1[42] = jj_gen;
           break label_9;
         }
       }
@@ -1379,9 +1420,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //20
   final public void GroupCondition() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 117:
     case 119:
-    case 120:
     case 121:
     case 122:
     case 123:
@@ -1431,6 +1470,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 167:
     case 168:
     case 169:
+    case 170:
+    case 171:
       BuiltInCall();
       break;
     case IRI_REF:
@@ -1470,7 +1511,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[43] = jj_gen;
         ;
       }
       jj_consume_token(47);
@@ -1479,7 +1520,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       Var();
       break;
     default:
-      jj_la1[42] = jj_gen;
+      jj_la1[44] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1492,7 +1533,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(66);
+      jj_consume_token(68);
       label_10:
       while (true) {
         HavingCondition();
@@ -1501,9 +1542,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case PNAME_NS:
         case PNAME_LN:
         case 45:
-        case 117:
         case 119:
-        case 120:
         case 121:
         case 122:
         case 123:
@@ -1553,10 +1592,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case 167:
         case 168:
         case 169:
+        case 170:
+        case 171:
           ;
           break;
         default:
-          jj_la1[43] = jj_gen;
+          jj_la1[45] = jj_gen;
           break label_10;
         }
       }
@@ -1593,8 +1634,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
+      jj_consume_token(69);
       jj_consume_token(67);
-      jj_consume_token(65);
       label_11:
       while (true) {
         OrderCondition();
@@ -1604,11 +1645,9 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case PNAME_LN:
         case VAR:
         case 45:
-        case 68:
-        case 69:
-        case 117:
+        case 70:
+        case 71:
         case 119:
-        case 120:
         case 121:
         case 122:
         case 123:
@@ -1658,10 +1697,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case 167:
         case 168:
         case 169:
+        case 170:
+        case 171:
           ;
           break;
         default:
-          jj_la1[44] = jj_gen;
+          jj_la1[46] = jj_gen;
           break label_11;
         }
       }
@@ -1689,27 +1730,27 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //24
   final public void OrderCondition() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 68:
-    case 69:
+    case 70:
+    case 71:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 68:
+      case 70:
           ASTAscOrder jjtn001 = new ASTAscOrder(JJTASCORDER);
           boolean jjtc001 = true;
           jjtree.openNodeScope(jjtn001);
         try {
-          jj_consume_token(68);
+          jj_consume_token(70);
         } finally {
           if (jjtc001) {
             jjtree.closeNodeScope(jjtn001, true);
           }
         }
         break;
-      case 69:
+      case 71:
         ASTDescOrder jjtn002 = new ASTDescOrder(JJTDESCORDER);
         boolean jjtc002 = true;
         jjtree.openNodeScope(jjtn002);
         try {
-          jj_consume_token(69);
+          jj_consume_token(71);
         } finally {
         if (jjtc002) {
           jjtree.closeNodeScope(jjtn002, true);
@@ -1717,7 +1758,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[45] = jj_gen;
+        jj_la1[47] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1728,9 +1769,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case PNAME_LN:
     case VAR:
     case 45:
-    case 117:
     case 119:
-    case 120:
     case 121:
     case 122:
     case 123:
@@ -1780,14 +1819,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 167:
     case 168:
     case 169:
+    case 170:
+    case 171:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRI_REF:
       case PNAME_NS:
       case PNAME_LN:
       case 45:
-      case 117:
       case 119:
-      case 120:
       case 121:
       case 122:
       case 123:
@@ -1837,19 +1876,21 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case 167:
       case 168:
       case 169:
+      case 170:
+      case 171:
         Constraint();
         break;
       case VAR:
         Var();
         break;
       default:
-        jj_la1[46] = jj_gen;
+        jj_la1[48] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[47] = jj_gen;
+      jj_la1[49] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1858,30 +1899,30 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //25
   final public void LimitOffsetClauses() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 70:
+    case 72:
       LimitClause();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 71:
+      case 73:
         OffsetClause();
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[50] = jj_gen;
         ;
       }
       break;
-    case 71:
+    case 73:
       OffsetClause();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 70:
+      case 72:
         LimitClause();
         break;
       default:
-        jj_la1[49] = jj_gen;
+        jj_la1[51] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[50] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1894,7 +1935,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token limit;
     try {
-      jj_consume_token(70);
+      jj_consume_token(72);
       limit = jj_consume_token(INTEGER);
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
@@ -1913,7 +1954,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token offset;
     try {
-      jj_consume_token(71);
+      jj_consume_token(73);
       offset = jj_consume_token(INTEGER);
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
@@ -1928,11 +1969,11 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //28
   final public void BindingsClause() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 72:
+    case 74:
       InnerBindingsClause();
       break;
     default:
-      jj_la1[51] = jj_gen;
+      jj_la1[53] = jj_gen;
       ;
     }
   }
@@ -1943,7 +1984,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(72);
+      jj_consume_token(74);
       label_12:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1951,7 +1992,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           ;
           break;
         default:
-          jj_la1[52] = jj_gen;
+          jj_la1[54] = jj_gen;
           break label_12;
         }
         Var();
@@ -1965,7 +2006,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           ;
           break;
         default:
-          jj_la1[53] = jj_gen;
+          jj_la1[55] = jj_gen;
           break label_13;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1985,7 +2026,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           }
           break;
         default:
-          jj_la1[54] = jj_gen;
+          jj_la1[56] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2032,15 +2073,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case STRING_LITERAL2:
         case STRING_LITERAL_LONG1:
         case STRING_LITERAL_LONG2:
-        case 73:
-        case 105:
-        case 118:
-        case 179:
-        case 180:
+        case 75:
+        case 107:
+        case 120:
+        case 181:
+        case 182:
           ;
           break;
         default:
-          jj_la1[55] = jj_gen;
+          jj_la1[57] = jj_gen;
           break label_14;
         }
         BindingValue();
@@ -2084,20 +2125,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-    case 105:
-    case 118:
+    case 107:
+    case 120:
       NumericLiteral();
       break;
-    case 179:
-    case 180:
+    case 181:
+    case 182:
       BooleanLiteral();
       break;
-    case 73:
+    case 75:
     ASTUndef jjtn001 = new ASTUndef(JJTUNDEF);
     boolean jjtc001 = true;
     jjtree.openNodeScope(jjtn001);
       try {
-        jj_consume_token(73);
+        jj_consume_token(75);
       } finally {
     if (jjtc001) {
       jjtree.closeNodeScope(jjtn001, true);
@@ -2105,7 +2146,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[56] = jj_gen;
+      jj_la1[58] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2115,29 +2156,29 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   final public void Update() throws ParseException {
     Prologue();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 75:
     case 77:
-    case 78:
-    case 81:
-    case 82:
+    case 79:
+    case 80:
     case 83:
     case 84:
+    case 85:
     case 86:
-    case 87:
     case 88:
+    case 89:
+    case 90:
       Update1();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 74:
-        jj_consume_token(74);
+      case 76:
+        jj_consume_token(76);
         Update();
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[59] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[58] = jj_gen;
+      jj_la1[60] = jj_gen;
       ;
     }
   }
@@ -2145,29 +2186,29 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //31
   final public void Update1() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 78:
+    case 80:
       Load();
       break;
-    case 81:
+    case 83:
       Clear();
       break;
-    case 82:
+    case 84:
       Drop();
       break;
-    case 84:
+    case 86:
       Add();
       break;
-    case 86:
+    case 88:
       Move();
       break;
-    case 87:
+    case 89:
       Copy();
       break;
-    case 83:
+    case 85:
       Create();
       break;
     default:
-      jj_la1[59] = jj_gen;
+      jj_la1[61] = jj_gen;
       if (jj_2_2(2147483647)) {
         InsertData();
       } else if (jj_2_3(2147483647)) {
@@ -2176,13 +2217,13 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         DeleteWhere();
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 75:
         case 77:
-        case 88:
+        case 79:
+        case 90:
           Modify();
           break;
         default:
-          jj_la1[60] = jj_gen;
+          jj_la1[62] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2197,24 +2238,24 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(78);
+      jj_consume_token(80);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[63] = jj_gen;
         ;
       }
       IRIref();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 80:
-        jj_consume_token(80);
+      case 82:
+        jj_consume_token(82);
         GraphRef();
         break;
       default:
-        jj_la1[62] = jj_gen;
+        jj_la1[64] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -2245,14 +2286,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(81);
+      jj_consume_token(83);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                      jjtn000.setSilent();
         break;
       default:
-        jj_la1[63] = jj_gen;
+        jj_la1[65] = jj_gen;
         ;
       }
       GraphRefAll();
@@ -2284,14 +2325,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(82);
+      jj_consume_token(84);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[64] = jj_gen;
+        jj_la1[66] = jj_gen;
         ;
       }
       GraphRefAll();
@@ -2323,14 +2364,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(83);
+      jj_consume_token(85);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                       jjtn000.setSilent();
         break;
       default:
-        jj_la1[65] = jj_gen;
+        jj_la1[67] = jj_gen;
         ;
       }
       GraphRef();
@@ -2362,18 +2403,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(84);
+      jj_consume_token(86);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                    jjtn000.setSilent();
         break;
       default:
-        jj_la1[66] = jj_gen;
+        jj_la1[68] = jj_gen;
         ;
       }
       GraphOrDefault();
-      jj_consume_token(85);
+      jj_consume_token(87);
       GraphOrDefault();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2403,18 +2444,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(86);
+      jj_consume_token(88);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[67] = jj_gen;
+        jj_la1[69] = jj_gen;
         ;
       }
       GraphOrDefault();
-      jj_consume_token(85);
+      jj_consume_token(87);
       GraphOrDefault();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2444,18 +2485,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(87);
+      jj_consume_token(89);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[68] = jj_gen;
+        jj_la1[70] = jj_gen;
         ;
       }
       GraphOrDefault();
-      jj_consume_token(85);
+      jj_consume_token(87);
       GraphOrDefault();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2485,8 +2526,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(75);
-      jj_consume_token(76);
+      jj_consume_token(77);
+      jj_consume_token(78);
       QuadData();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2516,8 +2557,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(77);
-      jj_consume_token(76);
+      jj_consume_token(79);
+      jj_consume_token(78);
    jjtn000.setDeleteData();
       QuadData();
     } catch (Throwable jjte000) {
@@ -2548,7 +2589,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(77);
+      jj_consume_token(79);
       jj_consume_token(49);
       InterDeleteWhere();
     } catch (Throwable jjte000) {
@@ -2608,42 +2649,42 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   jjtree.openNodeScope(jjtn000);
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 88:
-        jj_consume_token(88);
+      case 90:
+        jj_consume_token(90);
         IRIref();
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[71] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 77:
+      case 79:
         DeleteClause();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 75:
+        case 77:
           InsertClause();
           break;
         default:
-          jj_la1[70] = jj_gen;
+          jj_la1[72] = jj_gen;
           ;
         }
         break;
-      case 75:
+      case 77:
         InsertClause();
         break;
       default:
-        jj_la1[71] = jj_gen;
+        jj_la1[73] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       label_15:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 89:
+        case 91:
           ;
           break;
         default:
-          jj_la1[72] = jj_gen;
+          jj_la1[74] = jj_gen;
           break label_15;
         }
         UsingClause();
@@ -2678,7 +2719,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(77);
+      jj_consume_token(79);
       QuadPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2708,7 +2749,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(75);
+      jj_consume_token(77);
       QuadPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2733,18 +2774,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 
 //45
   final public void UsingClause() throws ParseException {
-    jj_consume_token(89);
+    jj_consume_token(91);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRI_REF:
     case PNAME_NS:
     case PNAME_LN:
       UsingDefault();
       break;
-    case 63:
+    case 65:
       UsingNamed();
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[75] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2784,7 +2825,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(63);
+      jj_consume_token(65);
       IRIref();
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -2810,12 +2851,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //46
   final public void GraphOrDefault() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 90:
+    case 92:
     ASTDefault jjtn001 = new ASTDefault(JJTDEFAULT);
     boolean jjtc001 = true;
     jjtree.openNodeScope(jjtn001);
       try {
-        jj_consume_token(90);
+        jj_consume_token(92);
       } finally {
     if (jjtc001) {
       jjtree.closeNodeScope(jjtn001, true);
@@ -2825,19 +2866,19 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case IRI_REF:
     case PNAME_NS:
     case PNAME_LN:
-    case 91:
+    case 93:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 91:
-        jj_consume_token(91);
+      case 93:
+        jj_consume_token(93);
         break;
       default:
-        jj_la1[74] = jj_gen;
+        jj_la1[76] = jj_gen;
         ;
       }
       IRIref();
       break;
     default:
-      jj_la1[75] = jj_gen;
+      jj_la1[77] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2845,46 +2886,46 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 
 //47
   final public void GraphRef() throws ParseException {
-    jj_consume_token(91);
+    jj_consume_token(93);
     IRIref();
   }
 
 //48
   final public void GraphRefAll() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 91:
+    case 93:
       GraphRef();
       break;
-    case 90:
+    case 92:
     ASTDefault jjtn001 = new ASTDefault(JJTDEFAULT);
     boolean jjtc001 = true;
     jjtree.openNodeScope(jjtn001);
       try {
-        jj_consume_token(90);
+        jj_consume_token(92);
       } finally {
     if (jjtc001) {
       jjtree.closeNodeScope(jjtn001, true);
     }
       }
       break;
-    case 63:
+    case 65:
     ASTNamed jjtn002 = new ASTNamed(JJTNAMED);
     boolean jjtc002 = true;
     jjtree.openNodeScope(jjtn002);
       try {
-        jj_consume_token(63);
+        jj_consume_token(65);
       } finally {
     if (jjtc002) {
       jjtree.closeNodeScope(jjtn002, true);
     }
       }
       break;
-    case 92:
+    case 94:
     ASTAll jjtn003 = new ASTAll(JJTALL);
     boolean jjtc003 = true;
     jjtree.openNodeScope(jjtn003);
       try {
-        jj_consume_token(92);
+        jj_consume_token(94);
       } finally {
     if (jjtc003) {
       jjtree.closeNodeScope(jjtn003, true);
@@ -2892,7 +2933,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[76] = jj_gen;
+      jj_la1[78] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2978,25 +3019,25 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case NIL:
     case ANON:
     case 45:
-    case 100:
-    case 105:
-    case 118:
-    case 179:
-    case 180:
+    case 102:
+    case 107:
+    case 120:
+    case 181:
+    case 182:
       TriplesTemplate();
       break;
     default:
-      jj_la1[77] = jj_gen;
+      jj_la1[79] = jj_gen;
       ;
     }
     label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 91:
+      case 93:
         ;
         break;
       default:
-        jj_la1[78] = jj_gen;
+        jj_la1[80] = jj_gen;
         break label_16;
       }
       QuadsNotTriples();
@@ -3005,7 +3046,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         jj_consume_token(2);
         break;
       default:
-        jj_la1[79] = jj_gen;
+        jj_la1[81] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3024,15 +3065,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         TriplesTemplate();
         break;
       default:
-        jj_la1[80] = jj_gen;
+        jj_la1[82] = jj_gen;
         ;
       }
     }
@@ -3045,7 +3086,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(91);
+      jj_consume_token(93);
       VarOrIRIref();
       jj_consume_token(1);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3064,15 +3105,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         TriplesTemplate();
         break;
       default:
-        jj_la1[81] = jj_gen;
+        jj_la1[83] = jj_gen;
         ;
       }
       jj_consume_token(3);
@@ -3119,20 +3160,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         TriplesTemplate();
         break;
       default:
-        jj_la1[82] = jj_gen;
+        jj_la1[84] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[83] = jj_gen;
+      jj_la1[85] = jj_gen;
       ;
     }
   }
@@ -3153,7 +3194,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         WindowInGroup();
         break;
       default:
-        jj_la1[84] = jj_gen;
+        jj_la1[86] = jj_gen;
         GroupGraphPatternSub();
       }
       jj_consume_token(3);
@@ -3186,7 +3227,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       WindowInGroup();
       break;
     default:
-      jj_la1[85] = jj_gen;
+      jj_la1[87] = jj_gen;
       ;
     }
   }
@@ -3209,31 +3250,31 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case NIL:
     case ANON:
     case 45:
-    case 100:
-    case 105:
-    case 118:
-    case 179:
-    case 180:
+    case 102:
+    case 107:
+    case 120:
+    case 181:
+    case 182:
       TriplesBlock();
       break;
     default:
-      jj_la1[86] = jj_gen;
+      jj_la1[88] = jj_gen;
       ;
     }
     label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
-      case 91:
       case 93:
-      case 94:
       case 95:
       case 96:
+      case 97:
       case 98:
+      case 100:
         ;
         break;
       default:
-        jj_la1[87] = jj_gen;
+        jj_la1[89] = jj_gen;
         break label_17;
       }
       GraphPatternNotTriples();
@@ -3242,7 +3283,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         jj_consume_token(2);
         break;
       default:
-        jj_la1[88] = jj_gen;
+        jj_la1[90] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3261,15 +3302,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         TriplesBlock();
         break;
       default:
-        jj_la1[89] = jj_gen;
+        jj_la1[91] = jj_gen;
         ;
       }
     }
@@ -3297,20 +3338,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         TriplesBlock();
         break;
       default:
-        jj_la1[90] = jj_gen;
+        jj_la1[92] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[91] = jj_gen;
+      jj_la1[93] = jj_gen;
       ;
     }
   }
@@ -3321,26 +3362,26 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 1:
       GroupOrUnionGraphPattern();
       break;
-    case 93:
+    case 95:
       OptionalGraphPattern();
       break;
-    case 96:
+    case 98:
       MinusGraphPattern();
       break;
-    case 91:
+    case 93:
       GraphGraphPattern();
       break;
-    case 94:
+    case 96:
       ServiceGraphPattern();
       break;
-    case 98:
+    case 100:
       Filter();
       break;
-    case 95:
+    case 97:
       Bind();
       break;
     default:
-      jj_la1[92] = jj_gen;
+      jj_la1[94] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3353,7 +3394,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(93);
+      jj_consume_token(95);
       GroupGraphPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -3383,7 +3424,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(91);
+      jj_consume_token(93);
       VarOrIRIref();
       GroupGraphPattern();
     } catch (Throwable jjte000) {
@@ -3414,14 +3455,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(94);
+      jj_consume_token(96);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 79:
-        jj_consume_token(79);
+      case 81:
+        jj_consume_token(81);
                        jjtn000.setSilent();
         break;
       default:
-        jj_la1[93] = jj_gen;
+        jj_la1[95] = jj_gen;
         ;
       }
       VarOrIRIref();
@@ -3454,7 +3495,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(95);
+      jj_consume_token(97);
       jj_consume_token(45);
       Expression();
       jj_consume_token(46);
@@ -3488,7 +3529,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(96);
+      jj_consume_token(98);
       GroupGraphPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -3517,14 +3558,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     label_18:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 97:
+      case 99:
         ;
         break;
       default:
-        jj_la1[94] = jj_gen;
+        jj_la1[96] = jj_gen;
         break label_18;
       }
-      jj_consume_token(97);
+      jj_consume_token(99);
               ASTUnionConstraint jjtn001 = new ASTUnionConstraint(JJTUNIONCONSTRAINT);
               boolean jjtc001 = true;
               jjtree.openNodeScope(jjtn001);
@@ -3554,7 +3595,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 
 //64
   final public void Filter() throws ParseException {
-    jj_consume_token(98);
+    jj_consume_token(100);
     Constraint();
   }
 
@@ -3569,9 +3610,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case 45:
         BrackettedExpression();
         break;
-      case 117:
       case 119:
-      case 120:
       case 121:
       case 122:
       case 123:
@@ -3621,6 +3660,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case 167:
       case 168:
       case 169:
+      case 170:
+      case 171:
         BuiltInCall();
         break;
       case IRI_REF:
@@ -3629,7 +3670,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         FunctionCall();
         break;
       default:
-        jj_la1[95] = jj_gen;
+        jj_la1[97] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3702,27 +3743,27 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           jj_consume_token(42);
           break;
         default:
-          jj_la1[96] = jj_gen;
+          jj_la1[98] = jj_gen;
           ;
         }
         Expression();
         label_19:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 99:
+          case 101:
             ;
             break;
           default:
-            jj_la1[97] = jj_gen;
+            jj_la1[99] = jj_gen;
             break label_19;
           }
-          jj_consume_token(99);
+          jj_consume_token(101);
           Expression();
         }
         jj_consume_token(47);
         break;
       default:
-        jj_la1[98] = jj_gen;
+        jj_la1[100] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3764,20 +3805,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         label_20:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 99:
+          case 101:
             ;
             break;
           default:
-            jj_la1[99] = jj_gen;
+            jj_la1[101] = jj_gen;
             break label_20;
           }
-          jj_consume_token(99);
+          jj_consume_token(101);
           Expression();
         }
         jj_consume_token(47);
         break;
       default:
-        jj_la1[100] = jj_gen;
+        jj_la1[102] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3826,15 +3867,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         ConstructTriples();
         break;
       default:
-        jj_la1[101] = jj_gen;
+        jj_la1[103] = jj_gen;
         ;
       }
       jj_consume_token(3);
@@ -3881,20 +3922,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case NIL:
       case ANON:
       case 45:
-      case 100:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 102:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
         ConstructTriples();
         break;
       default:
-        jj_la1[102] = jj_gen;
+        jj_la1[104] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[103] = jj_gen;
+      jj_la1[105] = jj_gen;
       ;
     }
   }
@@ -3943,10 +3984,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case STRING_LITERAL_LONG2:
       case NIL:
       case ANON:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
       ASTTripleSet jjtn002 = new ASTTripleSet(JJTTRIPLESET);
       boolean jjtc002 = true;
       jjtree.openNodeScope(jjtn002);
@@ -3974,7 +4015,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[104] = jj_gen;
+        jj_la1[106] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3988,14 +4029,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     label_21:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 74:
+      case 76:
         ;
         break;
       default:
-        jj_la1[105] = jj_gen;
+        jj_la1[107] = jj_gen;
         break label_21;
       }
-      jj_consume_token(74);
+      jj_consume_token(76);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 4:
       case IRI_REF:
@@ -4006,7 +4047,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         ObjectList();
         break;
       default:
-        jj_la1[106] = jj_gen;
+        jj_la1[108] = jj_gen;
         ;
       }
     }
@@ -4023,7 +4064,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       PropertyListNotEmpty();
       break;
     default:
-      jj_la1[107] = jj_gen;
+      jj_la1[109] = jj_gen;
       ;
     }
   }
@@ -4039,14 +4080,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       label_22:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 99:
+        case 101:
           ;
           break;
         default:
-          jj_la1[108] = jj_gen;
+          jj_la1[110] = jj_gen;
           break label_22;
         }
-        jj_consume_token(99);
+        jj_consume_token(101);
         Object();
       }
     } catch (Throwable jjte000) {
@@ -4097,7 +4138,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[109] = jj_gen;
+      jj_la1[111] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4147,10 +4188,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case STRING_LITERAL_LONG2:
       case NIL:
       case ANON:
-      case 105:
-      case 118:
-      case 179:
-      case 180:
+      case 107:
+      case 120:
+      case 181:
+      case 182:
     ASTTripleSet jjtn002 = new ASTTripleSet(JJTTRIPLESET);
     boolean jjtc002 = true;
     jjtree.openNodeScope(jjtn002);
@@ -4178,7 +4219,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[110] = jj_gen;
+        jj_la1[112] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4193,15 +4234,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case PNAME_NS:
     case PNAME_LN:
     case 45:
-    case 103:
-    case 106:
+    case 105:
+    case 108:
       VerbPath();
       break;
     case VAR:
       VerbSimple();
       break;
     default:
-      jj_la1[111] = jj_gen;
+      jj_la1[113] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4209,14 +4250,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     label_23:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 74:
+      case 76:
         ;
         break;
       default:
-        jj_la1[112] = jj_gen;
+        jj_la1[114] = jj_gen;
         break label_23;
       }
-      jj_consume_token(74);
+      jj_consume_token(76);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 4:
       case IRI_REF:
@@ -4224,30 +4265,30 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case PNAME_LN:
       case VAR:
       case 45:
-      case 103:
-      case 106:
+      case 105:
+      case 108:
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 4:
         case IRI_REF:
         case PNAME_NS:
         case PNAME_LN:
         case 45:
-        case 103:
-        case 106:
+        case 105:
+        case 108:
           VerbPath();
           break;
         case VAR:
           VerbSimple();
           break;
         default:
-          jj_la1[113] = jj_gen;
+          jj_la1[115] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         ObjectList();
         break;
       default:
-        jj_la1[114] = jj_gen;
+        jj_la1[116] = jj_gen;
         ;
       }
     }
@@ -4264,7 +4305,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       PropertyListNotEmpty();
       break;
     default:
-      jj_la1[115] = jj_gen;
+      jj_la1[117] = jj_gen;
       ;
     }
   }
@@ -4288,8 +4329,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   final public void PathAlternative() throws ParseException {
     PathSequence();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 101:
-      jj_consume_token(101);
+    case 103:
+      jj_consume_token(103);
           ASTPathAlternative jjtn001 = new ASTPathAlternative(JJTPATHALTERNATIVE);
           boolean jjtc001 = true;
           jjtree.openNodeScope(jjtn001);
@@ -4316,7 +4357,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[116] = jj_gen;
+      jj_la1[118] = jj_gen;
       ;
     }
   }
@@ -4325,8 +4366,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   final public void PathSequence() throws ParseException {
     PathEltOrInverse();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 102:
-      jj_consume_token(102);
+    case 104:
+      jj_consume_token(104);
       ASTPathSequence jjtn001 = new ASTPathSequence(JJTPATHSEQUENCE);
       boolean jjtc001 = true;
       jjtree.openNodeScope(jjtn001);
@@ -4353,7 +4394,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[117] = jj_gen;
+      jj_la1[119] = jj_gen;
       ;
     }
   }
@@ -4376,11 +4417,11 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case PNAME_NS:
     case PNAME_LN:
     case 45:
-    case 106:
+    case 108:
       PathElt();
       break;
-    case 103:
-      jj_consume_token(103);
+    case 105:
+      jj_consume_token(105);
           ASTInvers jjtn001 = new ASTInvers(JJTINVERS);
           boolean jjtc001 = true;
           jjtree.openNodeScope(jjtn001);
@@ -4407,7 +4448,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[118] = jj_gen;
+      jj_la1[120] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4428,24 +4469,24 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     }
       }
       break;
-    case 104:
+    case 106:
     ASTOptionalOccurence jjtn002 = new ASTOptionalOccurence(JJTOPTIONALOCCURENCE);
     boolean jjtc002 = true;
     jjtree.openNodeScope(jjtn002);
       try {
-        jj_consume_token(104);
+        jj_consume_token(106);
       } finally {
     if (jjtc002) {
       jjtree.closeNodeScope(jjtn002,  1);
     }
       }
       break;
-    case 105:
+    case 107:
     ASTArbitraryOccurencesNotZero jjtn003 = new ASTArbitraryOccurencesNotZero(JJTARBITRARYOCCURENCESNOTZERO);
     boolean jjtc003 = true;
     jjtree.openNodeScope(jjtn003);
       try {
-        jj_consume_token(105);
+        jj_consume_token(107);
       } finally {
     if (jjtc003) {
       jjtree.closeNodeScope(jjtn003,  1);
@@ -4463,8 +4504,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           jj_consume_token(INTEGER);
       jjtn004.setLowerLimit(token.image);
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 99:
-            jj_consume_token(99);
+          case 101:
+            jj_consume_token(101);
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 3:
               jj_consume_token(3);
@@ -4475,7 +4516,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
               jj_consume_token(3);
               break;
             default:
-              jj_la1[119] = jj_gen;
+              jj_la1[121] = jj_gen;
               jj_consume_token(-1);
               throw new ParseException();
             }
@@ -4485,19 +4526,19 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
             jj_consume_token(3);
             break;
           default:
-            jj_la1[120] = jj_gen;
+            jj_la1[122] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           break;
-        case 99:
-          jj_consume_token(99);
+        case 101:
+          jj_consume_token(101);
           jj_consume_token(INTEGER);
                        jjtn004.setUpperLimit(token.image);
           jj_consume_token(3);
           break;
         default:
-          jj_la1[121] = jj_gen;
+          jj_la1[123] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -4508,7 +4549,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[122] = jj_gen;
+      jj_la1[124] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4535,8 +4576,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
      }
       }
       break;
-    case 106:
-      jj_consume_token(106);
+    case 108:
+      jj_consume_token(108);
       PathNegatedPropertySet();
       break;
     case 45:
@@ -4545,7 +4586,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       jj_consume_token(47);
       break;
     default:
-      jj_la1[123] = jj_gen;
+      jj_la1[125] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4563,7 +4604,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       case IRI_REF:
       case PNAME_NS:
       case PNAME_LN:
-      case 103:
+      case 105:
         PathOneInPropertySet();
         break;
       case 45:
@@ -4573,30 +4614,30 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case IRI_REF:
         case PNAME_NS:
         case PNAME_LN:
-        case 103:
+        case 105:
           PathOneInPropertySet();
           label_24:
           while (true) {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case 101:
+            case 103:
               ;
               break;
             default:
-              jj_la1[124] = jj_gen;
+              jj_la1[126] = jj_gen;
               break label_24;
             }
-            jj_consume_token(101);
+            jj_consume_token(103);
             PathOneInPropertySet();
           }
           break;
         default:
-          jj_la1[125] = jj_gen;
+          jj_la1[127] = jj_gen;
           ;
         }
         jj_consume_token(47);
         break;
       default:
-        jj_la1[126] = jj_gen;
+        jj_la1[128] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4641,8 +4682,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
      }
       }
       break;
-    case 103:
-      jj_consume_token(103);
+    case 105:
+      jj_consume_token(105);
          ASTInvers jjtn003 = new ASTInvers(JJTINVERS);
          boolean jjtc003 = true;
          jjtree.openNodeScope(jjtn003);
@@ -4666,7 +4707,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           }
           break;
         default:
-          jj_la1[127] = jj_gen;
+          jj_la1[129] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -4691,7 +4732,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[128] = jj_gen;
+      jj_la1[130] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4721,11 +4762,11 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 45:
       Collection();
       break;
-    case 100:
+    case 102:
       BlankNodePropertyList();
       break;
     default:
-      jj_la1[129] = jj_gen;
+      jj_la1[131] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4738,9 +4779,9 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(100);
+      jj_consume_token(102);
       PropertyListNotEmpty();
-      jj_consume_token(107);
+      jj_consume_token(109);
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -4789,15 +4830,15 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case NIL:
         case ANON:
         case 45:
-        case 100:
-        case 105:
-        case 118:
-        case 179:
-        case 180:
+        case 102:
+        case 107:
+        case 120:
+        case 181:
+        case 182:
           ;
           break;
         default:
-          jj_la1[130] = jj_gen;
+          jj_la1[132] = jj_gen;
           break label_25;
         }
       }
@@ -4830,11 +4871,11 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 45:
-      case 100:
+      case 102:
         TriplesNode();
         break;
       default:
-        jj_la1[131] = jj_gen;
+        jj_la1[133] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4860,14 +4901,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case 105:
-    case 118:
-    case 179:
-    case 180:
+    case 107:
+    case 120:
+    case 181:
+    case 182:
       GraphTerm();
       break;
     default:
-      jj_la1[132] = jj_gen;
+      jj_la1[134] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4885,7 +4926,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       IRIref();
       break;
     default:
-      jj_la1[133] = jj_gen;
+      jj_la1[135] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4926,12 +4967,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-    case 105:
-    case 118:
+    case 107:
+    case 120:
       NumericLiteral();
       break;
-    case 179:
-    case 180:
+    case 181:
+    case 182:
       BooleanLiteral();
       break;
     case BLANK_NODE_LABEL:
@@ -4951,7 +4992,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[134] = jj_gen;
+      jj_la1[136] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4968,14 +5009,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     label_26:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 108:
+      case 110:
         ;
         break;
       default:
-        jj_la1[135] = jj_gen;
+        jj_la1[137] = jj_gen;
         break label_26;
       }
-      jj_consume_token(108);
+      jj_consume_token(110);
            ASTOrNode jjtn001 = new ASTOrNode(JJTORNODE);
            boolean jjtc001 = true;
            jjtree.openNodeScope(jjtn001);
@@ -5009,14 +5050,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     label_27:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 109:
+      case 111:
         ;
         break;
       default:
-        jj_la1[136] = jj_gen;
+        jj_la1[138] = jj_gen;
         break label_27;
       }
-      jj_consume_token(109);
+      jj_consume_token(111);
            ASTAndNode jjtn001 = new ASTAndNode(JJTANDNODE);
            boolean jjtc001 = true;
            jjtree.openNodeScope(jjtn001);
@@ -5053,17 +5094,17 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   final public void RelationalExpression() throws ParseException {
     NumericExpression();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 110:
-    case 111:
     case 112:
     case 113:
     case 114:
     case 115:
     case 116:
     case 117:
+    case 118:
+    case 119:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 110:
-        jj_consume_token(110);
+      case 112:
+        jj_consume_token(112);
             ASTEqualsNode jjtn001 = new ASTEqualsNode(JJTEQUALSNODE);
             boolean jjtc001 = true;
             jjtree.openNodeScope(jjtn001);
@@ -5089,8 +5130,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
             }
         }
         break;
-      case 111:
-        jj_consume_token(111);
+      case 113:
+        jj_consume_token(113);
            ASTNotEqualsNode jjtn002 = new ASTNotEqualsNode(JJTNOTEQUALSNODE);
            boolean jjtc002 = true;
            jjtree.openNodeScope(jjtn002);
@@ -5116,8 +5157,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
            }
         }
         break;
-      case 112:
-        jj_consume_token(112);
+      case 114:
+        jj_consume_token(114);
         ASTLessThanNode jjtn003 = new ASTLessThanNode(JJTLESSTHANNODE);
         boolean jjtc003 = true;
         jjtree.openNodeScope(jjtn003);
@@ -5143,8 +5184,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         }
         break;
-      case 113:
-        jj_consume_token(113);
+      case 115:
+        jj_consume_token(115);
         ASTLessThanEqualsNode jjtn004 = new ASTLessThanEqualsNode(JJTLESSTHANEQUALSNODE);
         boolean jjtc004 = true;
         jjtree.openNodeScope(jjtn004);
@@ -5170,8 +5211,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         }
         break;
-      case 114:
-        jj_consume_token(114);
+      case 116:
+        jj_consume_token(116);
          ASTGreaterThanNode jjtn005 = new ASTGreaterThanNode(JJTGREATERTHANNODE);
          boolean jjtc005 = true;
          jjtree.openNodeScope(jjtn005);
@@ -5197,8 +5238,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
          }
         }
         break;
-      case 115:
-        jj_consume_token(115);
+      case 117:
+        jj_consume_token(117);
          ASTGreaterThanEqualsNode jjtn006 = new ASTGreaterThanEqualsNode(JJTGREATERTHANEQUALSNODE);
          boolean jjtc006 = true;
          jjtree.openNodeScope(jjtn006);
@@ -5224,8 +5265,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
          }
         }
         break;
-      case 116:
-        jj_consume_token(116);
+      case 118:
+        jj_consume_token(118);
          ASTInNode jjtn007 = new ASTInNode(JJTINNODE);
          boolean jjtc007 = true;
          jjtree.openNodeScope(jjtn007);
@@ -5251,9 +5292,9 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
          }
         }
         break;
-      case 117:
-        jj_consume_token(117);
-        jj_consume_token(116);
+      case 119:
+        jj_consume_token(119);
+        jj_consume_token(118);
                ASTNotInNode jjtn008 = new ASTNotInNode(JJTNOTINNODE);
                boolean jjtc008 = true;
                jjtree.openNodeScope(jjtn008);
@@ -5280,13 +5321,13 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[137] = jj_gen;
+        jj_la1[139] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[138] = jj_gen;
+      jj_la1[140] = jj_gen;
       ;
     }
   }
@@ -5302,17 +5343,17 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     label_28:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 105:
-      case 118:
+      case 107:
+      case 120:
         ;
         break;
       default:
-        jj_la1[139] = jj_gen;
+        jj_la1[141] = jj_gen;
         break label_28;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 105:
-        jj_consume_token(105);
+      case 107:
+        jj_consume_token(107);
            ASTAdditionNode jjtn001 = new ASTAdditionNode(JJTADDITIONNODE);
            boolean jjtc001 = true;
            jjtree.openNodeScope(jjtn001);
@@ -5338,8 +5379,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
            }
         }
         break;
-      case 118:
-        jj_consume_token(118);
+      case 120:
+        jj_consume_token(120);
                                                                ASTSubtractionNode jjtn002 = new ASTSubtractionNode(JJTSUBTRACTIONNODE);
                                                                boolean jjtc002 = true;
                                                                jjtree.openNodeScope(jjtn002);
@@ -5366,7 +5407,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[140] = jj_gen;
+        jj_la1[142] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -5380,11 +5421,11 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 44:
-      case 102:
+      case 104:
         ;
         break;
       default:
-        jj_la1[141] = jj_gen;
+        jj_la1[143] = jj_gen;
         break label_29;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -5415,8 +5456,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
             }
         }
         break;
-      case 102:
-        jj_consume_token(102);
+      case 104:
+        jj_consume_token(104);
           ASTDivisionNode jjtn002 = new ASTDivisionNode(JJTDIVISIONNODE);
           boolean jjtc002 = true;
           jjtree.openNodeScope(jjtn002);
@@ -5443,7 +5484,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
         break;
       default:
-        jj_la1[142] = jj_gen;
+        jj_la1[144] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -5453,12 +5494,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //108
   final public void UnaryExpression() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 106:
+    case 108:
   ASTNotNode jjtn001 = new ASTNotNode(JJTNOTNODE);
   boolean jjtc001 = true;
   jjtree.openNodeScope(jjtn001);
       try {
-        jj_consume_token(106);
+        jj_consume_token(108);
         PrimaryExpression();
       } catch (Throwable jjte001) {
   if (jjtc001) {
@@ -5481,13 +5522,13 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[143] = jj_gen;
+      jj_la1[145] = jj_gen;
       if (jj_2_9(2)) {
                  ASTPlusNode jjtn002 = new ASTPlusNode(JJTPLUSNODE);
                  boolean jjtc002 = true;
                  jjtree.openNodeScope(jjtn002);
         try {
-          jj_consume_token(105);
+          jj_consume_token(107);
           PrimaryExpressionWithoutNumericLiteral();
         } catch (Throwable jjte002) {
                  if (jjtc002) {
@@ -5513,7 +5554,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
                  boolean jjtc003 = true;
                  jjtree.openNodeScope(jjtn003);
         try {
-          jj_consume_token(118);
+          jj_consume_token(120);
           PrimaryExpressionWithoutNumericLiteral();
         } catch (Throwable jjte003) {
                  if (jjtc003) {
@@ -5548,9 +5589,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case STRING_LITERAL_LONG1:
         case STRING_LITERAL_LONG2:
         case 45:
-        case 105:
-        case 117:
-        case 118:
+        case 107:
         case 119:
         case 120:
         case 121:
@@ -5609,12 +5648,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case 174:
         case 175:
         case 176:
-        case 179:
-        case 180:
+        case 177:
+        case 178:
+        case 181:
+        case 182:
           PrimaryExpression();
           break;
         default:
-          jj_la1[144] = jj_gen;
+          jj_la1[146] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -5627,9 +5668,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 45:
       BrackettedExpression();
       break;
-    case 117:
     case 119:
-    case 120:
     case 121:
     case 122:
     case 123:
@@ -5679,6 +5718,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 167:
     case 168:
     case 169:
+    case 170:
+    case 171:
       BuiltInCall();
       break;
     case IRI_REF:
@@ -5692,24 +5733,24 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case STRING_LITERAL_LONG2:
       RDFLiteral();
       break;
-    case 179:
-    case 180:
+    case 181:
+    case 182:
       BooleanLiteral();
       break;
     case VAR:
       Var();
       break;
-    case 170:
-    case 171:
     case 172:
     case 173:
     case 174:
     case 175:
     case 176:
+    case 177:
+    case 178:
       Aggregate();
       break;
     default:
-      jj_la1[145] = jj_gen;
+      jj_la1[147] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -5721,9 +5762,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 45:
       BrackettedExpression();
       break;
-    case 117:
     case 119:
-    case 120:
     case 121:
     case 122:
     case 123:
@@ -5773,6 +5812,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case 167:
     case 168:
     case 169:
+    case 170:
+    case 171:
       BuiltInCall();
       break;
     case IRI_REF:
@@ -5789,28 +5830,28 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-    case 105:
-    case 118:
+    case 107:
+    case 120:
       NumericLiteral();
       break;
-    case 179:
-    case 180:
+    case 181:
+    case 182:
       BooleanLiteral();
       break;
     case VAR:
       Var();
       break;
-    case 170:
-    case 171:
     case 172:
     case 173:
     case 174:
     case 175:
     case 176:
+    case 177:
+    case 178:
       Aggregate();
       break;
     default:
-      jj_la1[146] = jj_gen;
+      jj_la1[148] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -5826,164 +5867,164 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 //111
   final public void BuiltInCall() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 119:
+    case 121:
       STR();
       break;
-    case 120:
+    case 122:
       LANG();
       break;
-    case 121:
+    case 123:
       LANGMATCHES();
       break;
-    case 122:
+    case 124:
       DATATYPE();
       break;
-    case 123:
+    case 125:
       BOUND();
       break;
-    case 124:
+    case 126:
       IRIFunc();
       break;
-    case 125:
+    case 127:
       URIFunc();
       break;
-    case 126:
+    case 128:
       BNODE();
       break;
-    case 127:
+    case 129:
       RAND();
       break;
-    case 128:
+    case 130:
       ABS();
       break;
-    case 129:
+    case 131:
       CEIL();
       break;
-    case 130:
+    case 132:
       FLOOR();
       break;
-    case 131:
+    case 133:
       ROUND();
       break;
-    case 132:
+    case 134:
       CONCAT();
       break;
-    case 167:
+    case 169:
       SubstringExpression();
       break;
-    case 133:
+    case 135:
       STRLEN();
       break;
-    case 168:
+    case 170:
       StrReplaceExpression();
       break;
-    case 134:
+    case 136:
       UCASE();
       break;
-    case 135:
+    case 137:
       LCASE();
       break;
-    case 136:
+    case 138:
       ENCODE_FOR_URI();
       break;
-    case 137:
+    case 139:
       CONTAINS();
       break;
-    case 138:
+    case 140:
       STRSTARTS();
       break;
-    case 139:
+    case 141:
       STRENDS();
       break;
-    case 140:
+    case 142:
       STRBEFORE();
       break;
-    case 141:
+    case 143:
       STRAFTER();
       break;
-    case 142:
+    case 144:
       YEAR();
       break;
-    case 143:
+    case 145:
       MONTH();
       break;
-    case 144:
+    case 146:
       DAY();
       break;
-    case 145:
+    case 147:
       HOURS();
       break;
-    case 146:
+    case 148:
       MINUTES();
       break;
-    case 147:
+    case 149:
       SECONDS();
       break;
-    case 148:
+    case 150:
       TIMEZONE();
       break;
-    case 149:
+    case 151:
       TZ();
       break;
-    case 150:
+    case 152:
       NOW();
       break;
-    case 151:
+    case 153:
       MD5();
       break;
-    case 152:
+    case 154:
       SHA1();
       break;
-    case 153:
+    case 155:
       SHA256();
       break;
-    case 154:
+    case 156:
       SHA384();
       break;
-    case 155:
+    case 157:
       SHA512();
       break;
-    case 156:
+    case 158:
       COALESCE();
       break;
-    case 157:
+    case 159:
       IF();
       break;
-    case 158:
+    case 160:
       STRLANG();
       break;
-    case 159:
+    case 161:
       STRDT();
       break;
-    case 160:
+    case 162:
       sameTerm();
       break;
-    case 161:
+    case 163:
       isIRI();
       break;
-    case 162:
+    case 164:
       isURI();
       break;
-    case 163:
+    case 165:
       isBLANK();
       break;
-    case 164:
+    case 166:
       isLITERAL();
       break;
-    case 165:
+    case 167:
       isNUMERIC();
       break;
-    case 166:
+    case 168:
       RegexExpression();
       break;
-    case 169:
+    case 171:
       ExistsFunc();
       break;
-    case 117:
+    case 119:
       NotExistsFunc();
       break;
     default:
-      jj_la1[147] = jj_gen;
+      jj_la1[149] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -5995,7 +6036,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(119);
+      jj_consume_token(121);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6026,7 +6067,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(120);
+      jj_consume_token(122);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6057,10 +6098,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(121);
+      jj_consume_token(123);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -6090,7 +6131,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(122);
+      jj_consume_token(124);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6121,7 +6162,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(123);
+      jj_consume_token(125);
       jj_consume_token(45);
       Var();
       jj_consume_token(47);
@@ -6152,7 +6193,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(124);
+      jj_consume_token(126);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6183,7 +6224,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(125);
+      jj_consume_token(127);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6214,7 +6255,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(126);
+      jj_consume_token(128);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 45:
         jj_consume_token(45);
@@ -6225,7 +6266,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         jj_consume_token(NIL);
         break;
       default:
-        jj_la1[148] = jj_gen;
+        jj_la1[150] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -6256,7 +6297,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(127);
+      jj_consume_token(129);
       jj_consume_token(NIL);
     } finally {
     if (jjtc000) {
@@ -6271,7 +6312,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(128);
+      jj_consume_token(130);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6302,7 +6343,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(129);
+      jj_consume_token(131);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6333,7 +6374,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(130);
+      jj_consume_token(132);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6364,7 +6405,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(131);
+      jj_consume_token(133);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6395,7 +6436,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(132);
+      jj_consume_token(134);
       ExpressionList();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6424,7 +6465,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(133);
+      jj_consume_token(135);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6455,7 +6496,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(134);
+      jj_consume_token(136);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6486,7 +6527,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(135);
+      jj_consume_token(137);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6517,7 +6558,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(136);
+      jj_consume_token(138);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6548,10 +6589,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(137);
+      jj_consume_token(139);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -6581,10 +6622,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(138);
+      jj_consume_token(140);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -6614,10 +6655,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(139);
+      jj_consume_token(141);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -6647,10 +6688,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(140);
+      jj_consume_token(142);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -6680,10 +6721,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(141);
+      jj_consume_token(143);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -6713,7 +6754,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(142);
+      jj_consume_token(144);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6744,7 +6785,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(143);
+      jj_consume_token(145);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6775,7 +6816,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(144);
+      jj_consume_token(146);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6806,7 +6847,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(145);
+      jj_consume_token(147);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6837,7 +6878,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(146);
+      jj_consume_token(148);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6868,7 +6909,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(147);
+      jj_consume_token(149);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6899,7 +6940,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(148);
+      jj_consume_token(150);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6930,7 +6971,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(149);
+      jj_consume_token(151);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -6961,7 +7002,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(150);
+      jj_consume_token(152);
       jj_consume_token(NIL);
     } finally {
     if (jjtc000) {
@@ -6976,7 +7017,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(151);
+      jj_consume_token(153);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7007,7 +7048,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(152);
+      jj_consume_token(154);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7038,7 +7079,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(153);
+      jj_consume_token(155);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7069,7 +7110,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(154);
+      jj_consume_token(156);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7100,7 +7141,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(155);
+      jj_consume_token(157);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7131,7 +7172,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(156);
+      jj_consume_token(158);
       ExpressionList();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -7160,12 +7201,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(157);
+      jj_consume_token(159);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -7195,10 +7236,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(158);
+      jj_consume_token(160);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -7228,10 +7269,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(159);
+      jj_consume_token(161);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -7261,10 +7302,10 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(160);
+      jj_consume_token(162);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       jj_consume_token(47);
     } catch (Throwable jjte000) {
@@ -7294,7 +7335,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(161);
+      jj_consume_token(163);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7325,7 +7366,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(162);
+      jj_consume_token(164);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7356,7 +7397,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(163);
+      jj_consume_token(165);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7387,7 +7428,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(164);
+      jj_consume_token(166);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7418,7 +7459,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(165);
+      jj_consume_token(167);
       jj_consume_token(45);
       Expression();
       jj_consume_token(47);
@@ -7450,18 +7491,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(166);
+      jj_consume_token(168);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 99:
-        jj_consume_token(99);
+      case 101:
+        jj_consume_token(101);
         Expression();
         break;
       default:
-        jj_la1[149] = jj_gen;
+        jj_la1[151] = jj_gen;
         ;
       }
       jj_consume_token(47);
@@ -7493,18 +7534,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(167);
+      jj_consume_token(169);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 99:
-        jj_consume_token(99);
+      case 101:
+        jj_consume_token(101);
         Expression();
         break;
       default:
-        jj_la1[150] = jj_gen;
+        jj_la1[152] = jj_gen;
         ;
       }
       jj_consume_token(47);
@@ -7536,20 +7577,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(168);
+      jj_consume_token(170);
       jj_consume_token(45);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
-      jj_consume_token(99);
+      jj_consume_token(101);
       Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 99:
-        jj_consume_token(99);
+      case 101:
+        jj_consume_token(101);
         Expression();
         break;
       default:
-        jj_la1[151] = jj_gen;
+        jj_la1[153] = jj_gen;
         ;
       }
       jj_consume_token(47);
@@ -7581,7 +7622,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(169);
+      jj_consume_token(171);
       GroupGraphPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -7611,8 +7652,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(117);
-      jj_consume_token(169);
+      jj_consume_token(119);
+      jj_consume_token(171);
       GroupGraphPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -7643,8 +7684,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   jjtree.openNodeScope(jjtn000);
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 170:
-        jj_consume_token(170);
+      case 172:
+        jj_consume_token(172);
       jjtn000.setTYPE(ASTAggregation.TYPE.COUNT);
         jj_consume_token(45);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7653,7 +7694,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       jjtn000.setDistinct();
           break;
         default:
-          jj_la1[152] = jj_gen;
+          jj_la1[154] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7672,10 +7713,8 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case STRING_LITERAL_LONG1:
         case STRING_LITERAL_LONG2:
         case 45:
-        case 105:
-        case 106:
-        case 117:
-        case 118:
+        case 107:
+        case 108:
         case 119:
         case 120:
         case 121:
@@ -7734,52 +7773,22 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         case 174:
         case 175:
         case 176:
-        case 179:
-        case 180:
+        case 177:
+        case 178:
+        case 181:
+        case 182:
           Expression();
           break;
         default:
-          jj_la1[153] = jj_gen;
+          jj_la1[155] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         jj_consume_token(47);
         break;
-      case 171:
-        jj_consume_token(171);
-      jjtn000.setTYPE(ASTAggregation.TYPE.SUM);
-        jj_consume_token(45);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 42:
-          jj_consume_token(42);
-      jjtn000.setDistinct();
-          break;
-        default:
-          jj_la1[154] = jj_gen;
-          ;
-        }
-        Expression();
-        jj_consume_token(47);
-        break;
-      case 172:
-        jj_consume_token(172);
-      jjtn000.setTYPE(ASTAggregation.TYPE.MIN);
-        jj_consume_token(45);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 42:
-          jj_consume_token(42);
-      jjtn000.setDistinct();
-          break;
-        default:
-          jj_la1[155] = jj_gen;
-          ;
-        }
-        Expression();
-        jj_consume_token(47);
-        break;
       case 173:
         jj_consume_token(173);
-      jjtn000.setTYPE(ASTAggregation.TYPE.MAX);
+      jjtn000.setTYPE(ASTAggregation.TYPE.SUM);
         jj_consume_token(45);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 42:
@@ -7795,7 +7804,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         break;
       case 174:
         jj_consume_token(174);
-      jjtn000.setTYPE(ASTAggregation.TYPE.AVG);
+      jjtn000.setTYPE(ASTAggregation.TYPE.MIN);
         jj_consume_token(45);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 42:
@@ -7811,7 +7820,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         break;
       case 175:
         jj_consume_token(175);
-      jjtn000.setTYPE(ASTAggregation.TYPE.SAMPLE);
+      jjtn000.setTYPE(ASTAggregation.TYPE.MAX);
         jj_consume_token(45);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 42:
@@ -7827,7 +7836,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         break;
       case 176:
         jj_consume_token(176);
-      jjtn000.setTYPE(ASTAggregation.TYPE.GROUP_CONCAT);
+      jjtn000.setTYPE(ASTAggregation.TYPE.AVG);
         jj_consume_token(45);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 42:
@@ -7839,21 +7848,53 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           ;
         }
         Expression();
+        jj_consume_token(47);
+        break;
+      case 177:
+        jj_consume_token(177);
+      jjtn000.setTYPE(ASTAggregation.TYPE.SAMPLE);
+        jj_consume_token(45);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 74:
-          jj_consume_token(74);
-          jj_consume_token(177);
-          jj_consume_token(110);
-          String();
+        case 42:
+          jj_consume_token(42);
+      jjtn000.setDistinct();
           break;
         default:
           jj_la1[160] = jj_gen;
           ;
         }
+        Expression();
+        jj_consume_token(47);
+        break;
+      case 178:
+        jj_consume_token(178);
+      jjtn000.setTYPE(ASTAggregation.TYPE.GROUP_CONCAT);
+        jj_consume_token(45);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 42:
+          jj_consume_token(42);
+      jjtn000.setDistinct();
+          break;
+        default:
+          jj_la1[161] = jj_gen;
+          ;
+        }
+        Expression();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 76:
+          jj_consume_token(76);
+          jj_consume_token(179);
+          jj_consume_token(112);
+          String();
+          break;
+        default:
+          jj_la1[162] = jj_gen;
+          ;
+        }
         jj_consume_token(47);
         break;
       default:
-        jj_la1[161] = jj_gen;
+        jj_la1[163] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -7890,7 +7931,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         IRIref();
         break;
       default:
-        jj_la1[162] = jj_gen;
+        jj_la1[164] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -7917,7 +7958,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
           String();
           break;
         default:
-          jj_la1[163] = jj_gen;
+          jj_la1[165] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -7950,7 +7991,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   jjtree.openNodeScope(jjtn000);
     try {
       String();
-      jj_consume_token(178);
+      jj_consume_token(180);
       IRIref();
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -8013,14 +8054,14 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     case DOUBLE:
       NumericLiteralUnsigned();
       break;
-    case 105:
+    case 107:
       NumericLiteralPositive();
       break;
-    case 118:
+    case 120:
       NumericLiteralNegative();
       break;
     default:
-      jj_la1[164] = jj_gen;
+      jj_la1[166] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8037,7 +8078,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       NumericLiteralUnsignedFloatingPoint();
       break;
     default:
-      jj_la1[165] = jj_gen;
+      jj_la1[167] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8080,7 +8121,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
                      jjtn000.setValue((token.image));
         break;
       default:
-        jj_la1[166] = jj_gen;
+        jj_la1[168] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -8093,7 +8134,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 
 //122
   final public void NumericLiteralPositive() throws ParseException {
-    jj_consume_token(105);
+    jj_consume_token(107);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       NumericLiteralPositiveInteger();
@@ -8103,7 +8144,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       NumericLiteralPositiveFloatingPoint();
       break;
     default:
-      jj_la1[167] = jj_gen;
+      jj_la1[169] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8146,7 +8187,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
                       jjtn000.setValue("+"+(token.image));
         break;
       default:
-        jj_la1[168] = jj_gen;
+        jj_la1[170] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -8159,7 +8200,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
 
 //123
   final public void NumericLiteralNegative() throws ParseException {
-    jj_consume_token(118);
+    jj_consume_token(120);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       NumericLiteralNegativeInteger();
@@ -8169,7 +8210,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       NumericLiteralNegativeFloatingPoint();
       break;
     default:
-      jj_la1[169] = jj_gen;
+      jj_la1[171] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8212,7 +8253,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
                       jjtn000.setValue("-"+(token.image));
         break;
       default:
-        jj_la1[170] = jj_gen;
+        jj_la1[172] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -8231,20 +8272,20 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   jjtree.openNodeScope(jjtn000);
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 179:
-        jj_consume_token(179);
+      case 181:
+        jj_consume_token(181);
              jjtree.closeNodeScope(jjtn000, true);
              jjtc000 = false;
              jjtn000.setState(true);
         break;
-      case 180:
-        jj_consume_token(180);
+      case 182:
+        jj_consume_token(182);
               jjtree.closeNodeScope(jjtn000, true);
               jjtc000 = false;
               jjtn000.setState(false);
         break;
       default:
-        jj_la1[171] = jj_gen;
+        jj_la1[173] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -8288,7 +8329,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     jjtn000.setStringLiteral(t.image);
         break;
       default:
-        jj_la1[172] = jj_gen;
+        jj_la1[174] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -8310,7 +8351,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       PrefixedName();
       break;
     default:
-      jj_la1[173] = jj_gen;
+      jj_la1[175] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8348,7 +8389,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         qName = jj_consume_token(PNAME_NS);
         break;
       default:
-        jj_la1[174] = jj_gen;
+        jj_la1[176] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -8401,7 +8442,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       }
       break;
     default:
-      jj_la1[175] = jj_gen;
+      jj_la1[177] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8422,7 +8463,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       URI();
       break;
     default:
-      jj_la1[176] = jj_gen;
+      jj_la1[178] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8443,7 +8484,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       URI();
       break;
     default:
-      jj_la1[177] = jj_gen;
+      jj_la1[179] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -8557,80 +8598,33 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     finally { jj_save(12, xla); }
   }
 
-  private boolean jj_3R_36() {
-    if (jj_scan_token(105)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_37() {
-    if (jj_scan_token(1)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_47()) {
-    jj_scanpos = xsp;
-    if (jj_3R_48()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_35() {
-    if (jj_scan_token(104)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_135() {
-    if (jj_scan_token(123)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_31() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_34()) {
-    jj_scanpos = xsp;
-    if (jj_3R_35()) {
-    jj_scanpos = xsp;
-    if (jj_3R_36()) {
-    jj_scanpos = xsp;
-    if (jj_3R_37()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_34() {
-    if (jj_scan_token(44)) return true;
-    return false;
-  }
-
   private boolean jj_3R_134() {
-    if (jj_scan_token(122)) return true;
+    if (jj_scan_token(124)) return true;
     return false;
   }
 
   private boolean jj_3R_127() {
-    if (jj_scan_token(176)) return true;
+    if (jj_scan_token(178)) return true;
     return false;
   }
 
   private boolean jj_3R_133() {
-    if (jj_scan_token(121)) return true;
+    if (jj_scan_token(123)) return true;
     return false;
   }
 
   private boolean jj_3R_131() {
-    if (jj_scan_token(119)) return true;
+    if (jj_scan_token(121)) return true;
     return false;
   }
 
   private boolean jj_3R_132() {
-    if (jj_scan_token(120)) return true;
+    if (jj_scan_token(122)) return true;
     return false;
   }
 
   private boolean jj_3R_126() {
-    if (jj_scan_token(175)) return true;
+    if (jj_scan_token(177)) return true;
     return false;
   }
 
@@ -8640,7 +8634,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_125() {
-    if (jj_scan_token(174)) return true;
+    if (jj_scan_token(176)) return true;
     return false;
   }
 
@@ -8675,7 +8669,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_124() {
-    if (jj_scan_token(173)) return true;
+    if (jj_scan_token(175)) return true;
     return false;
   }
 
@@ -8725,7 +8719,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_123() {
-    if (jj_scan_token(172)) return true;
+    if (jj_scan_token(174)) return true;
     return false;
   }
 
@@ -8775,7 +8769,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_122() {
-    if (jj_scan_token(171)) return true;
+    if (jj_scan_token(173)) return true;
     return false;
   }
 
@@ -8885,7 +8879,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_121() {
-    if (jj_scan_token(170)) return true;
+    if (jj_scan_token(172)) return true;
     return false;
   }
 
@@ -8920,7 +8914,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_182() {
-    if (jj_scan_token(117)) return true;
+    if (jj_scan_token(119)) return true;
     return false;
   }
 
@@ -9115,7 +9109,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_181() {
-    if (jj_scan_token(169)) return true;
+    if (jj_scan_token(171)) return true;
     return false;
   }
 
@@ -9125,7 +9119,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_147() {
-    if (jj_scan_token(168)) return true;
+    if (jj_scan_token(170)) return true;
     return false;
   }
 
@@ -9134,13 +9128,13 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     xsp = jj_scanpos;
     if (jj_scan_token(45)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(100)) return true;
+    if (jj_scan_token(102)) return true;
     }
     return false;
   }
 
   private boolean jj_3R_145() {
-    if (jj_scan_token(167)) return true;
+    if (jj_scan_token(169)) return true;
     return false;
   }
 
@@ -9205,49 +9199,49 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_180() {
-    if (jj_scan_token(166)) return true;
+    if (jj_scan_token(168)) return true;
     return false;
   }
 
   private boolean jj_3_10() {
-    if (jj_scan_token(118)) return true;
+    if (jj_scan_token(120)) return true;
     if (jj_3R_33()) return true;
     return false;
   }
 
   private boolean jj_3R_179() {
-    if (jj_scan_token(165)) return true;
+    if (jj_scan_token(167)) return true;
     return false;
   }
 
   private boolean jj_3_9() {
-    if (jj_scan_token(105)) return true;
+    if (jj_scan_token(107)) return true;
     if (jj_3R_33()) return true;
     return false;
   }
 
   private boolean jj_3R_178() {
-    if (jj_scan_token(164)) return true;
+    if (jj_scan_token(166)) return true;
     return false;
   }
 
   private boolean jj_3R_177() {
-    if (jj_scan_token(163)) return true;
+    if (jj_scan_token(165)) return true;
     return false;
   }
 
   private boolean jj_3R_176() {
-    if (jj_scan_token(162)) return true;
+    if (jj_scan_token(164)) return true;
     return false;
   }
 
   private boolean jj_3R_175() {
-    if (jj_scan_token(161)) return true;
+    if (jj_scan_token(163)) return true;
     return false;
   }
 
   private boolean jj_3R_174() {
-    if (jj_scan_token(160)) return true;
+    if (jj_scan_token(162)) return true;
     return false;
   }
 
@@ -9256,22 +9250,32 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     xsp = jj_scanpos;
     if (jj_scan_token(45)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(100)) return true;
+    if (jj_scan_token(102)) return true;
     }
     return false;
   }
 
   private boolean jj_3R_173() {
-    if (jj_scan_token(159)) return true;
+    if (jj_scan_token(161)) return true;
     return false;
   }
 
   private boolean jj_3R_172() {
-    if (jj_scan_token(158)) return true;
+    if (jj_scan_token(160)) return true;
     return false;
   }
 
   private boolean jj_3R_171() {
+    if (jj_scan_token(159)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_170() {
+    if (jj_scan_token(158)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_169() {
     if (jj_scan_token(157)) return true;
     return false;
   }
@@ -9281,23 +9285,13 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     return false;
   }
 
-  private boolean jj_3R_170() {
-    if (jj_scan_token(156)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_169() {
-    if (jj_scan_token(155)) return true;
-    return false;
-  }
-
   private boolean jj_3R_193() {
     if (jj_scan_token(ANON)) return true;
     return false;
   }
 
   private boolean jj_3R_168() {
-    if (jj_scan_token(154)) return true;
+    if (jj_scan_token(156)) return true;
     return false;
   }
 
@@ -9317,35 +9311,35 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3_4() {
-    if (jj_scan_token(77)) return true;
+    if (jj_scan_token(79)) return true;
     if (jj_scan_token(49)) return true;
     return false;
   }
 
   private boolean jj_3_3() {
-    if (jj_scan_token(77)) return true;
-    if (jj_scan_token(76)) return true;
+    if (jj_scan_token(79)) return true;
+    if (jj_scan_token(78)) return true;
     return false;
   }
 
   private boolean jj_3R_167() {
-    if (jj_scan_token(153)) return true;
+    if (jj_scan_token(155)) return true;
     return false;
   }
 
   private boolean jj_3_2() {
-    if (jj_scan_token(75)) return true;
-    if (jj_scan_token(76)) return true;
+    if (jj_scan_token(77)) return true;
+    if (jj_scan_token(78)) return true;
     return false;
   }
 
   private boolean jj_3R_166() {
-    if (jj_scan_token(152)) return true;
+    if (jj_scan_token(154)) return true;
     return false;
   }
 
   private boolean jj_3R_165() {
-    if (jj_scan_token(151)) return true;
+    if (jj_scan_token(153)) return true;
     return false;
   }
 
@@ -9360,12 +9354,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_164() {
-    if (jj_scan_token(150)) return true;
+    if (jj_scan_token(152)) return true;
     return false;
   }
 
   private boolean jj_3R_163() {
-    if (jj_scan_token(149)) return true;
+    if (jj_scan_token(151)) return true;
     return false;
   }
 
@@ -9375,7 +9369,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_162() {
-    if (jj_scan_token(148)) return true;
+    if (jj_scan_token(150)) return true;
     return false;
   }
 
@@ -9405,12 +9399,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_161() {
-    if (jj_scan_token(147)) return true;
+    if (jj_scan_token(149)) return true;
     return false;
   }
 
   private boolean jj_3R_160() {
-    if (jj_scan_token(146)) return true;
+    if (jj_scan_token(148)) return true;
     return false;
   }
 
@@ -9440,7 +9434,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_159() {
-    if (jj_scan_token(145)) return true;
+    if (jj_scan_token(147)) return true;
     return false;
   }
 
@@ -9492,7 +9486,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_158() {
-    if (jj_scan_token(144)) return true;
+    if (jj_scan_token(146)) return true;
     return false;
   }
 
@@ -9518,7 +9512,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_157() {
-    if (jj_scan_token(143)) return true;
+    if (jj_scan_token(145)) return true;
     return false;
   }
 
@@ -9528,7 +9522,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_120() {
-    if (jj_scan_token(180)) return true;
+    if (jj_scan_token(182)) return true;
     return false;
   }
 
@@ -9538,7 +9532,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_156() {
-    if (jj_scan_token(142)) return true;
+    if (jj_scan_token(144)) return true;
     return false;
   }
 
@@ -9553,7 +9547,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_119() {
-    if (jj_scan_token(179)) return true;
+    if (jj_scan_token(181)) return true;
     return false;
   }
 
@@ -9578,7 +9572,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_155() {
-    if (jj_scan_token(141)) return true;
+    if (jj_scan_token(143)) return true;
     return false;
   }
 
@@ -9593,7 +9587,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_154() {
-    if (jj_scan_token(140)) return true;
+    if (jj_scan_token(142)) return true;
     return false;
   }
 
@@ -9618,7 +9612,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_153() {
-    if (jj_scan_token(139)) return true;
+    if (jj_scan_token(141)) return true;
     return false;
   }
 
@@ -9628,7 +9622,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_202() {
-    if (jj_scan_token(118)) return true;
+    if (jj_scan_token(120)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_207()) {
@@ -9659,7 +9653,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_152() {
-    if (jj_scan_token(138)) return true;
+    if (jj_scan_token(140)) return true;
     return false;
   }
 
@@ -9669,12 +9663,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_151() {
-    if (jj_scan_token(137)) return true;
+    if (jj_scan_token(139)) return true;
     return false;
   }
 
   private boolean jj_3R_150() {
-    if (jj_scan_token(136)) return true;
+    if (jj_scan_token(138)) return true;
     return false;
   }
 
@@ -9689,7 +9683,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_201() {
-    if (jj_scan_token(105)) return true;
+    if (jj_scan_token(107)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_205()) {
@@ -9715,7 +9709,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_149() {
-    if (jj_scan_token(135)) return true;
+    if (jj_scan_token(137)) return true;
     return false;
   }
 
@@ -9725,12 +9719,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_148() {
-    if (jj_scan_token(134)) return true;
+    if (jj_scan_token(136)) return true;
     return false;
   }
 
   private boolean jj_3R_146() {
-    if (jj_scan_token(133)) return true;
+    if (jj_scan_token(135)) return true;
     return false;
   }
 
@@ -9755,12 +9749,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_144() {
-    if (jj_scan_token(132)) return true;
+    if (jj_scan_token(134)) return true;
     return false;
   }
 
   private boolean jj_3R_143() {
-    if (jj_scan_token(131)) return true;
+    if (jj_scan_token(133)) return true;
     return false;
   }
 
@@ -9799,7 +9793,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_142() {
-    if (jj_scan_token(130)) return true;
+    if (jj_scan_token(132)) return true;
     return false;
   }
 
@@ -9833,18 +9827,18 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     }
     }
     }
-    if (jj_scan_token(178)) return true;
+    if (jj_scan_token(180)) return true;
     return false;
   }
 
   private boolean jj_3R_184() {
     if (jj_3R_186()) return true;
-    if (jj_scan_token(178)) return true;
+    if (jj_scan_token(180)) return true;
     return false;
   }
 
   private boolean jj_3R_141() {
-    if (jj_scan_token(129)) return true;
+    if (jj_scan_token(131)) return true;
     return false;
   }
 
@@ -9877,17 +9871,17 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_140() {
-    if (jj_scan_token(128)) return true;
+    if (jj_scan_token(130)) return true;
     return false;
   }
 
   private boolean jj_3R_139() {
-    if (jj_scan_token(127)) return true;
+    if (jj_scan_token(129)) return true;
     return false;
   }
 
   private boolean jj_3R_138() {
-    if (jj_scan_token(126)) return true;
+    if (jj_scan_token(128)) return true;
     return false;
   }
 
@@ -9906,12 +9900,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_48() {
-    if (jj_scan_token(99)) return true;
+    if (jj_scan_token(101)) return true;
     return false;
   }
 
   private boolean jj_3R_137() {
-    if (jj_scan_token(125)) return true;
+    if (jj_scan_token(127)) return true;
     return false;
   }
 
@@ -9936,12 +9930,59 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   }
 
   private boolean jj_3R_136() {
-    if (jj_scan_token(124)) return true;
+    if (jj_scan_token(126)) return true;
     return false;
   }
 
   private boolean jj_3R_47() {
     if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_36() {
+    if (jj_scan_token(107)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_scan_token(1)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_47()) {
+    jj_scanpos = xsp;
+    if (jj_3R_48()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_scan_token(106)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_135() {
+    if (jj_scan_token(125)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_31() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_34()) {
+    jj_scanpos = xsp;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
+    if (jj_3R_36()) {
+    jj_scanpos = xsp;
+    if (jj_3R_37()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    if (jj_scan_token(44)) return true;
     return false;
   }
 
@@ -9956,7 +9997,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[178];
+  final private int[] jj_la1 = new int[180];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -9972,22 +10013,22 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
       jj_la1_init_5();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2,0x2fb8f400,0x2,0x2fb87400,0x2fb87400,0x4,0x20007400,0x3410,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x8000,0x0,0x0,0x2,0x2fb8f400,0xb400,0xb400,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3400,0x0,0x0,0x0,0x0,0x0,0xb400,0x0,0xb400,0x3400,0xb400,0x0,0xb400,0xb400,0x0,0x0,0x0,0x0,0x8000,0x8000000,0x8000000,0x7b83400,0x7b83400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3400,0x0,0x3400,0x0,0x2fb8f400,0x0,0x4,0x2fb8f400,0x2fb8f400,0x2fb8f400,0x4,0x0,0x0,0x2fb8f400,0x2,0x4,0x2fb8f400,0x2fb8f400,0x4,0x2,0x0,0x0,0x3400,0x0,0x0,0x8000000,0x0,0x8000000,0x2fb8f400,0x2fb8f400,0x4,0x2fb8f400,0x0,0xb410,0xb410,0x0,0xb410,0x2fb8f400,0xb410,0x0,0xb410,0xb410,0xb410,0x0,0x0,0x3410,0x80008,0x8,0x80000,0x2,0x3410,0x0,0x3410,0x3410,0x3410,0x3410,0x0,0x2fb8f400,0x0,0x2fb8f400,0xb400,0x2fb87400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7b8b400,0x780b400,0x7b8b400,0x0,0x8000000,0x0,0x0,0x0,0x0,0x7b8b400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3400,0x7800000,0x380000,0x380000,0x300000,0x380000,0x300000,0x380000,0x300000,0x0,0x7800000,0x3400,0x3000,0x20004000,0xb400,0x2000f400,};
+      jj_la1_0 = new int[] {0x2,0x2fb8f400,0x2,0x2fb87400,0x2fb87400,0x4,0x20007400,0x3410,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x8000,0x0,0x0,0x2,0x2fb8f400,0xb400,0xb400,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3400,0x0,0x0,0x0,0x0,0x0,0xb400,0x0,0xb400,0x3400,0xb400,0x0,0xb400,0xb400,0x0,0x0,0x0,0x0,0x8000,0x8000000,0x8000000,0x7b83400,0x7b83400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3400,0x0,0x3400,0x0,0x2fb8f400,0x0,0x4,0x2fb8f400,0x2fb8f400,0x2fb8f400,0x4,0x0,0x0,0x2fb8f400,0x2,0x4,0x2fb8f400,0x2fb8f400,0x4,0x2,0x0,0x0,0x3400,0x0,0x0,0x8000000,0x0,0x8000000,0x2fb8f400,0x2fb8f400,0x4,0x2fb8f400,0x0,0xb410,0xb410,0x0,0xb410,0x2fb8f400,0xb410,0x0,0xb410,0xb410,0xb410,0x0,0x0,0x3410,0x80008,0x8,0x80000,0x2,0x3410,0x0,0x3410,0x3410,0x3410,0x3410,0x0,0x2fb8f400,0x0,0x2fb8f400,0xb400,0x2fb87400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7b8b400,0x780b400,0x7b8b400,0x0,0x8000000,0x0,0x0,0x0,0x0,0x7b8b400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3400,0x7800000,0x380000,0x380000,0x300000,0x380000,0x300000,0x380000,0x300000,0x0,0x7800000,0x3400,0x3000,0x20004000,0xb400,0x2000f400,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xd0200,0xd0200,0xd0200,0x180,0x180,0x100000,0xc00,0xc00,0x2000,0x2000,0x3000,0x100000,0x100000,0x120000,0x2000,0x0,0x1000,0x100000,0x20000,0x100000,0xc00000,0x200000,0x8000000,0x2000000,0x4000000,0x30000000,0x80000000,0x20000,0x0,0x0,0x0,0x0,0x2000,0x4000,0x2000,0x2000,0x2000,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x80000000,0x2000,0x0,0x0,0x2000,0x2000,0x2000,0x0,0x1000200,0x1000000,0x2000,0x0,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x2000,0x400,0x0,0x2000,0x0,0x2000,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x2000,0x2000,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x1000,0x2000,0x0,0x0,0x2000,0x0,0x0,0x2000,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x2000,0x2000,0x2000,0x0,0x2000,0x0,0x0,0x0,0x400,0x3000,0x400,0x400,0x400,0x400,0x400,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xd0200,0xd0200,0xd0200,0x180,0x180,0x100000,0xc00,0xc00,0x2000,0x2000,0x3000,0x100000,0x100000,0x120000,0x2000,0x0,0x1000,0x100000,0x20000,0x100000,0xc00000,0x200000,0x8000000,0x2000000,0x4000000,0x60000000,0xa0000000,0xb0000000,0x0,0x20000,0x0,0x0,0x0,0x0,0x2000,0x4000,0x2000,0x2000,0x2000,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x2000,0x2000,0x2000,0x0,0x1000200,0x1000000,0x2000,0x0,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x2000,0x400,0x0,0x2000,0x0,0x2000,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x2000,0x2000,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x1000,0x2000,0x0,0x0,0x2000,0x0,0x0,0x2000,0x2000,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x2000,0x2000,0x2000,0x0,0x2000,0x0,0x0,0x0,0x400,0x3000,0x400,0x400,0x400,0x400,0x400,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x4,0x8,0xc0,0x0,0x0,0x0,0x0,0x30,0x30,0x0,0x30,0x80,0x40,0xc0,0x100,0x0,0x0,0x0,0x200,0x200,0x400,0x1de6800,0xde4000,0x1002800,0x8000,0x10000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x1000000,0x800,0x2800,0x2000000,0x0,0x8000000,0xc000000,0x1c000000,0x0,0x8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe8000000,0x0,0x0,0x0,0x0,0xe8000000,0x8000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x4,0x10,0x20,0x300,0x0,0x0,0x0,0x0,0xc0,0xc0,0x0,0xc0,0x200,0x100,0x300,0x400,0x0,0x0,0x0,0x800,0x800,0x1000,0x779a000,0x3790000,0x400a000,0x20000,0x40000,0x20000,0x20000,0x20000,0x20000,0x20000,0x20000,0x4000000,0x2000,0xa000,0x8000000,0x2,0x20000000,0x30000000,0x70000002,0x0,0x20000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xa0000000,0x0,0x0,0x0,0x0,0xa0000000,0x20000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x400200,0x0,0x400200,0x400200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400210,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffa00000,0x0,0xffa00000,0xffa00000,0xffa00000,0x0,0xffa00000,0xffa00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400200,0x400200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400210,0x0,0x0,0x400210,0x400210,0x400210,0x0,0x0,0x0,0x400210,0x5,0x0,0x400210,0x400210,0x0,0x5,0x0,0x2,0xffa00000,0x0,0x8,0x0,0x8,0x0,0x400210,0x400210,0x0,0x400200,0x0,0x0,0x0,0x8,0x0,0x400200,0x480,0x0,0x480,0x480,0x0,0x20,0x40,0x480,0x0,0x8,0x8,0x300,0x400,0x20,0x80,0x80,0x0,0x80,0x10,0x400210,0x10,0x400200,0x0,0x400200,0x1000,0x2000,0x3fc000,0x3fc000,0x400200,0x400200,0x40,0x40,0x400,0xffe00200,0xffa00000,0xffe00200,0xffa00000,0x0,0x8,0x8,0x8,0x0,0xffe00600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x1000800,0x0,0x1000800,0x1000800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000840,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfe800000,0x0,0xfe800000,0xfe800000,0xfe800000,0x0,0xfe800000,0xfe800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000800,0x1000800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000840,0x0,0x0,0x1000840,0x1000840,0x1000840,0x0,0x0,0x0,0x1000840,0x17,0x0,0x1000840,0x1000840,0x0,0x17,0x0,0x8,0xfe800000,0x0,0x20,0x0,0x20,0x0,0x1000840,0x1000840,0x0,0x1000800,0x0,0x0,0x0,0x20,0x0,0x1000800,0x1200,0x0,0x1200,0x1200,0x0,0x80,0x100,0x1200,0x0,0x20,0x20,0xc00,0x1000,0x80,0x200,0x200,0x0,0x200,0x40,0x1000840,0x40,0x1000800,0x0,0x1000800,0x4000,0x8000,0xff0000,0xff0000,0x1000800,0x1000800,0x100,0x100,0x1000,0xff800800,0xfe800000,0xff800800,0xfe800000,0x0,0x20,0x20,0x20,0x0,0xff801800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0xffffffff,0xffffffff,0xffffffff,0x0,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0xffffffff,0xffffffff,0xffffffff,0x0,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_5() {
-      jj_la1_5 = new int[] {0x0,0x180000,0x0,0x180000,0x180000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3ff,0x0,0x3ff,0x3ff,0x3ff,0x0,0x3ff,0x3ff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180000,0x180000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180000,0x0,0x0,0x180000,0x180000,0x180000,0x0,0x0,0x0,0x180000,0x0,0x0,0x180000,0x180000,0x0,0x0,0x0,0x0,0x3ff,0x0,0x0,0x0,0x0,0x0,0x180000,0x180000,0x0,0x180000,0x0,0x0,0x0,0x0,0x0,0x180000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180000,0x0,0x180000,0x0,0x180000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x19ffff,0x19ffff,0x19ffff,0x3ff,0x0,0x0,0x0,0x0,0x0,0x19ffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1fc00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180000,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_5 = new int[] {0x0,0x600000,0x0,0x600000,0x600000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfff,0x0,0xfff,0xfff,0xfff,0x0,0xfff,0xfff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600000,0x600000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600000,0x0,0x0,0x600000,0x600000,0x600000,0x0,0x0,0x0,0x600000,0x0,0x0,0x600000,0x600000,0x0,0x0,0x0,0x0,0xfff,0x0,0x0,0x0,0x0,0x0,0x600000,0x600000,0x0,0x600000,0x0,0x0,0x0,0x0,0x0,0x600000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600000,0x0,0x600000,0x0,0x600000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x67ffff,0x67ffff,0x67ffff,0xfff,0x0,0x0,0x0,0x0,0x0,0x67ffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7f000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600000,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[13];
   private boolean jj_rescan = false;
@@ -10004,7 +10045,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 178; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -10020,7 +10061,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 178; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -10031,7 +10072,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 178; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -10043,7 +10084,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 178; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -10053,7 +10094,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 178; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -10064,7 +10105,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 178; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -10176,12 +10217,12 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[181];
+    boolean[] la1tokens = new boolean[183];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 178; i++) {
+    for (int i = 0; i < 180; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -10205,7 +10246,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         }
       }
     }
-    for (int i = 0; i < 181; i++) {
+    for (int i = 0; i < 183; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
