@@ -68,6 +68,14 @@ class ASTAggregation extends SimpleNode {
   public String toString(){
 	  return type.toString() + (distinct?" DISTINCT":"");
   }
+  
+	public void init(final SimpleNode node){
+		ASTAggregation other = (ASTAggregation) node;
+		this.setTYPE(other.getTYPE());
+		if(other.isDistinct()){
+			this.setDistinct();
+		}
+	}
 
   /** Accept the visitor. **/
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

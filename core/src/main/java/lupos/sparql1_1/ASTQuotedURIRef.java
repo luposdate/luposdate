@@ -99,5 +99,10 @@ class ASTQuotedURIRef extends SimpleNode {
   public String toString() {
 	  return this.qRef;
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		this.setQRef(((ASTQuotedURIRef)node).getQRef());
+	}
 }
 /* JavaCC - OriginalChecksum=e4e66b3497d767749720c42fa02ef0c0 (do not edit this line) */

@@ -48,6 +48,13 @@ class ASTService extends SimpleNode {
 	public ASTService(SPARQL1_1Parser p, int id) {
 		super(p, id);
 	}
+	
+	@Override
+	public void init(final SimpleNode node){
+		if(((ASTService)node).isSilent()){
+			this.isSilent();
+		}
+	}
 
 	/** Accept the visitor. **/
 	  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

@@ -126,6 +126,10 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
                         String varname = ((lupos.sparql1_1.ASTVar) left).getName();
                         this.var = new lupos.datastructures.items.Variable(varname);
             
+                        if(!this.tp.getVariables().contains(this.var)){
+                          return false;
+                        }
+            
                         if(!this.tp.getVariables().contains(this.var) && !this.tp.getVariables().contains(new lupos.datastructures.items.VariableInInferenceRule(varname))) {
                             // TODO: delete triple pattern as it will never have a result!
                             System.err.println("Can be optimized by extending RuleReplaceConstantOfFilterInTriplePattern: delete triple pattern with succeeding unsatisfiable filter expression!");
@@ -202,6 +206,9 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
 
         // add new connections...
+        this.tp.addSucceedingOperator(b);
+        b.addPrecedingOperator(this.tp);
+
         _label_a_count = 0;
 
         for(lupos.engine.operators.BasicOperator _child : this.o) {
@@ -211,9 +218,6 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
             _label_a_count += 1;
         }
 
-
-        this.tp.addSucceedingOperator(b);
-        b.addPrecedingOperator(this.tp);
 
 
         // delete unreachable operators...

@@ -106,16 +106,16 @@ public abstract class BasicIndex extends Operator {
 		if (succeedingOperator != null) {
 			this.succeedingOperators.add(succeedingOperator);
 		}
-		setTriplePatterns(triplePattern);
 		this.rdfGraph = rdfGraph;
+		setTriplePatterns(triplePattern);
 		this.indexCollection = indexCollection;
 	}
 
 	public BasicIndex(final List<OperatorIDTuple> succeedingOperators,
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final IndexCollection indexCollection) {
 		this.succeedingOperators = succeedingOperators;
-		setTriplePatterns(triplePattern);
 		this.rdfGraph = rdfGraph;
+		setTriplePatterns(triplePattern);
 		this.indexCollection=indexCollection;
 	}
 	
@@ -361,9 +361,7 @@ public abstract class BasicIndex extends Operator {
 
 	public void setTriplePatterns(final Collection<TriplePattern> triplePatterns) {
 		this.triplePatterns = triplePatterns;
-		final HashSet<Variable> hsv = new HashSet<Variable>();
-		this.intersectionVariables = hsv;
-		this.unionVariables = hsv;
+		this.recomputeVariables();
 	}
 	
 	public Set<Variable> getVarsInTriplePatterns(){

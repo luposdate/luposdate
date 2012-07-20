@@ -64,6 +64,10 @@ public class ASTType extends SimpleNode {
 		return type;
 	}
 
+	public void setType(TYPE type){
+		this.type = type;
+	}
+
 	public boolean isTriples(){
 		return type==TYPE.TRIPLES;
 	}
@@ -86,6 +90,13 @@ public class ASTType extends SimpleNode {
 
 	public int getValue(){
 		return value;
+	}
+	
+	@Override
+	public void init(final SimpleNode node){
+		ASTType other = (ASTType) node;
+		this.setValue(other.getValue());
+		this.setType(other.getType());
 	}
 }
 /* JavaCC - OriginalChecksum=aaea40693cd0a3f6799c0019f254eba7 (do not edit this line) */

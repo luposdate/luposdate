@@ -60,6 +60,12 @@ public int getLimit() {
 public void setLimit(String limit) {
 	this.limit = Integer.parseInt(limit);
 }
+
+@Override
+public void init(final SimpleNode node){
+	this.setLimit(((ASTLimit)node).getLimit()+"");
+}
+
 @Override
 public String toString() {
 	// TODO Auto-generated method stub

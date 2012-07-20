@@ -160,6 +160,10 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
                     if(left instanceof lupos.sparql1_1.ASTVar) {
                         this.var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) left).getName());
             
+                        if(!this.i.getVarsInTriplePatterns().contains(this.var)){
+                          return false;
+                        }
+            
                         if(right instanceof lupos.sparql1_1.ASTQName
                            || right instanceof lupos.sparql1_1.ASTQuotedURIRef
                            || right instanceof lupos.sparql1_1.ASTFloatingPoint
@@ -205,10 +209,10 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        this.i.removeSucceedingOperator(this.j_begin);
-        this.j_begin.removePrecedingOperator(this.i);
         this.f.removeSucceedingOperator(this.o);
         this.o.removePrecedingOperator(this.f);
+        this.i.removeSucceedingOperator(this.j_begin);
+        this.j_begin.removePrecedingOperator(this.i);
         this.j_end.removeSucceedingOperator(this.f);
         this.f.removePrecedingOperator(this.j_end);
 
@@ -218,14 +222,14 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
 
 
         // add new connections...
+        b.addSucceedingOperator(this.j_begin);
+        this.j_begin.addPrecedingOperator(b);
+
         this.j_end.addSucceedingOperator(this.o);
         this.o.addPrecedingOperator(this.j_end);
 
         this.i.addSucceedingOperator(b);
         b.addPrecedingOperator(this.i);
-
-        b.addSucceedingOperator(this.j_begin);
-        this.j_begin.addPrecedingOperator(b);
 
 
         // delete unreachable operators...

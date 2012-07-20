@@ -79,5 +79,10 @@ class ASTStringLiteral extends SimpleNode {
   public String toString() {
 	  return super.toString()+" "+this.stringLiteral;
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		this.setStringLiteral(((ASTStringLiteral) node).getStringLiteral());
+	}
 }
 /* JavaCC - OriginalChecksum=496a5b63351f078fa5340ff60700826d (do not edit this line) */

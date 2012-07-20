@@ -75,17 +75,17 @@ public class Filter extends SingleInputOperator {
 	private final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor;
 
 	public Filter(final lupos.sparql1_1.Node node) {
-		evaluationVisitor = getEvaluationVisitor();
+		this.evaluationVisitor = getEvaluationVisitor();
 		this.setNodePointer(node);
 	}
 
 	public Filter() {
-		evaluationVisitor = getEvaluationVisitor();
-		np = null;
+		this.evaluationVisitor = getEvaluationVisitor();
+		this.np = null;
 	}
 
 	public Filter(final String filter) throws ParseException {
-		evaluationVisitor = getEvaluationVisitor();
+		this.evaluationVisitor = getEvaluationVisitor();
 		ASTFilterConstraint ASTfilter;
 		ASTfilter = (ASTFilterConstraint) SPARQL1_1Parser.parseFilter(filter);
 		this.setNodePointer(ASTfilter);
@@ -105,9 +105,10 @@ public class Filter extends SingleInputOperator {
 	}
 
 	public void setNodePointer(lupos.sparql1_1.Node node) {
-		np = node;
-		computeUsedVariables(np);
-		aggregationFunctions = computeAggegrationFunctions(this.np);
+		this.np = node;
+		this.usedVariables.clear();
+		computeUsedVariables(this.np);
+		this.aggregationFunctions = computeAggegrationFunctions(this.np);
 	}
 
 	private void computeUsedVariables(final lupos.sparql1_1.Node n) {
@@ -115,7 +116,7 @@ public class Filter extends SingleInputOperator {
 			return;
 		if (n instanceof lupos.sparql1_1.ASTVar) {
 			try {
-				usedVariables.add(new Variable(((lupos.sparql1_1.ASTVar) n)
+				this.usedVariables.add(new Variable(((lupos.sparql1_1.ASTVar) n)
 						.getName().toString()));
 			} catch (final Exception e) {
 				System.err.println(e);
@@ -168,7 +169,7 @@ public class Filter extends SingleInputOperator {
 	}
 
 	public Set<Variable> getUsedVariables() {
-		return usedVariables;
+		return this.usedVariables;
 	}
 
 	/**
@@ -176,7 +177,7 @@ public class Filter extends SingleInputOperator {
 	 * @return ASTFilterConstraint: the node this instance belongs to
 	 */
 	public lupos.sparql1_1.Node getNodePointer() {
-		return np;
+		return this.np;
 	}
 
 	/**
@@ -191,32 +192,34 @@ public class Filter extends SingleInputOperator {
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		if (aggregationFunctions == null) {
+		if (this.aggregationFunctions == null) {
 			final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
 				final Iterator<Bindings> bindIt = bindings.oneTimeIterator();
 				int number = 0;
 				Bindings next = computeNext();
 
+				@Override
 				public boolean hasNext() {
-					return (next != null);
+					return (this.next != null);
 				}
 
+				@Override
 				public Bindings next() {
-					final Bindings zNext = next;
-					next = computeNext();
+					final Bindings zNext = this.next;
+					this.next = computeNext();
 					return zNext;
 				}
 
 				private Bindings computeNext() {
-					while (bindIt.hasNext()) {
-						final Bindings bind = bindIt.next();
+					while (this.bindIt.hasNext()) {
+						final Bindings bind = this.bindIt.next();
 						try {
 							if (bind != null) {
-								final Object o = evalTree(bind, np
+								final Object o = evalTree(bind, Filter.this.np
 										.jjtGetChild(0),
 										null);
 								if (Helper.booleanEffectiveValue(o)) {
-									number++;
+									this.number++;
 									return bind;
 								}
 							}
@@ -228,10 +231,11 @@ public class Filter extends SingleInputOperator {
 							// return null;
 						}
 					}
-					cardinality = number;
+					Filter.this.cardinality = this.number;
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -243,11 +247,11 @@ public class Filter extends SingleInputOperator {
 				return null;
 			// forwarded bindings, return value
 		} else {
-			if (queryResult == null) {
+			if (this.queryResult == null) {
 				bindings.materialize();
-				queryResult = bindings;
+				this.queryResult = bindings;
 			} else
-				queryResult.add(bindings);
+				this.queryResult.add(bindings);
 			return null;
 		}
 	}
@@ -289,13 +293,13 @@ public class Filter extends SingleInputOperator {
 
 						@Override
 						public boolean hasNext() {
-							return next != null;
+							return this.next != null;
 						}
 
 						@Override
 						public Object next() {
-							Object znext = next;
-							next = null;
+							Object znext = this.next;
+							this.next = null;
 							return znext;
 						}
 
@@ -322,26 +326,27 @@ public class Filter extends SingleInputOperator {
 
 					@Override
 					public boolean hasNext() {
-						if (next != null)
+						if (this.next != null)
 							return true;
-						next = next();
-						return (next != null);
+						this.next = next();
+						return (this.next != null);
 					}
 
 					@Override
 					public Object next() {
-						if (next != null) {
-							Object znext = next;
-							next = null;
+						if (this.next != null) {
+							Object znext = this.next;
+							this.next = null;
 							return znext;
 						}
-						while (iterator.hasNext()) {
-							Bindings b = iterator.next();
+						while (this.iterator.hasNext()) {
+							Bindings b = this.iterator.next();
 							try {
-								return Filter.staticEvalTree(b, node,
+								return Filter.staticEvalTree(b, this.node,
 										resultsOfAggregationFunctions, evaluationVisitor);
 
 							} catch (Exception e) {
+								// just ignore bindings with error!
 							}
 						}
 						return null;
@@ -364,23 +369,23 @@ public class Filter extends SingleInputOperator {
 
 						@Override
 						public boolean hasNext() {
-							if (next != null)
+							if (this.next != null)
 								return true;
-							next = next();
-							return (next != null);
+							this.next = next();
+							return (this.next != null);
 						}
 
 						@Override
 						public Object next() {
-							if (next != null) {
-								Object znext = next;
-								next = null;
+							if (this.next != null) {
+								Object znext = this.next;
+								this.next = null;
 								return znext;
 							}
 							while (oldIterator.hasNext()) {
 								Object o = oldIterator.next();
-								if (!alreadyUsedObjects.contains(o)) {
-									alreadyUsedObjects.add(o);
+								if (!this.alreadyUsedObjects.contains(o)) {
+									this.alreadyUsedObjects.add(o);
 									return o;
 								}
 							}
@@ -422,19 +427,21 @@ public class Filter extends SingleInputOperator {
 							.oneTimeIterator();
 					Bindings next = computeNext();
 
+					@Override
 					public boolean hasNext() {
-						return (next != null);
+						return (this.next != null);
 					}
 
+					@Override
 					public Bindings next() {
-						final Bindings zNext = next;
-						next = computeNext();
+						final Bindings zNext = this.next;
+						this.next = computeNext();
 						return zNext;
 					}
 
 					private Bindings computeNext() {
-						while (bindIt.hasNext()) {
-							final Bindings bind = bindIt.next();
+						while (this.bindIt.hasNext()) {
+							final Bindings bind = this.bindIt.next();
 							try {
 								if (bind != null) {
 									final Object o = Filter.staticEvalTree(bind, np
@@ -456,6 +463,7 @@ public class Filter extends SingleInputOperator {
 						return null;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
@@ -468,17 +476,19 @@ public class Filter extends SingleInputOperator {
 		return null;
 	}
 
+	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
 		this.evaluationVisitor.init();
 		return super.preProcessMessage(msg);
 	}
 
+	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		final QueryResult qr = getQueryResultForAggregatedFilter(np, queryResult, aggregationFunctions, evaluationVisitor);
+		final QueryResult qr = getQueryResultForAggregatedFilter(this.np, this.queryResult, this.aggregationFunctions, this.evaluationVisitor);
 		if (qr != null) {
-			if (succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1)
 				qr.materialize();
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(qr);
 			}
 		}
@@ -486,10 +496,12 @@ public class Filter extends SingleInputOperator {
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		return preProcessMessage(new EndOfEvaluationMessage());
 	}
 
+	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete,
 			final int operandID) {
 		if (this.queryResult != null)
@@ -511,7 +523,7 @@ public class Filter extends SingleInputOperator {
 			final lupos.sparql1_1.Node n,
 			final Map<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions)
 			throws NotBoundException, TypeErrorException {
-		return n.accept(evaluationVisitor, b, resultsOfAggregationFunctions);
+		return n.accept(this.evaluationVisitor, b, resultsOfAggregationFunctions);
 	}
 	
 	/**
@@ -544,25 +556,27 @@ public class Filter extends SingleInputOperator {
 	public void cloneFrom(final BasicOperator op) {
 		final Filter filter = (Filter) op;
 		super.cloneFrom(op);
-		np = filter.np;
-		usedVariables = filter.usedVariables;
-		aggregationFunctions = filter.aggregationFunctions;
+		this.np = filter.np;
+		this.usedVariables = filter.usedVariables;
+		this.aggregationFunctions = filter.aggregationFunctions;
 	}
 
 	public boolean equalFilterExpression(final Filter f) {
-		return (np.equals(f.np));
+		return (this.np.equals(f.np));
 	}
 
+	@Override
 	public String toString() {
 		final SPARQLParserVisitorImplementationDumper filterDumper = new SPARQLParserVisitorImplementationDumper();
 
-		return np.accept(filterDumper);
+		return this.np.accept(filterDumper);
 	}
 
+	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final SPARQLParserVisitorImplementationDumper filterDumper = new SPARQLParserVisitorImplementationDumperShort(
 				prefixInstance);
-		String result = np.accept(filterDumper);
+		String result = this.np.accept(filterDumper);
 
 		if (this.cardinality >= 0) {
 			result += "\nCardinality: " + this.cardinality;
@@ -571,33 +585,37 @@ public class Filter extends SingleInputOperator {
 		return result;
 	}
 
+	@Override
 	protected boolean isPipelineBreaker() {
-		return aggregationFunctions != null;
+		return this.aggregationFunctions != null;
 	}
 
 	public void setQueryResult(final QueryResult queryResult) {
 		this.queryResult = queryResult;
 	}
 
+	@Override
 	public Message preProcessMessageDebug(
 			final StartOfEvaluationMessage msg,
 			final DebugStep debugstep) {
 		return this.preProcessMessage(msg);
 	}
 		
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
 		return preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
 	}
 
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		final QueryResult qr = getQueryResultForAggregatedFilter(np, queryResult, aggregationFunctions, evaluationVisitor);
+		final QueryResult qr = getQueryResultForAggregatedFilter(this.np, this.queryResult, this.aggregationFunctions, this.evaluationVisitor);
 		if (qr != null) {
-			if (succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1)
 				qr.materialize();
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 						debugstep, this, opId.getOperator(), true);
 				((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
@@ -607,6 +625,7 @@ public class Filter extends SingleInputOperator {
 		return msg;
 	}
 
+	@Override
 	public boolean remainsSortedData(Collection<Variable> sortCriterium) {
 		return true;
 	}

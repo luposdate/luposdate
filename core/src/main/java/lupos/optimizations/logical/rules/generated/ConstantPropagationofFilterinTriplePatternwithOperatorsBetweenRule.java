@@ -161,6 +161,10 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
                         String varname = ((lupos.sparql1_1.ASTVar) left).getName();
                         this.var = new lupos.datastructures.items.Variable(varname);
             
+                        if(!this.tp.getVariables().contains(this.var)){
+                          return false;
+                        }
+            
                         if(!this.tp.getVariables().contains(this.var) && !this.tp.getVariables().contains(new lupos.datastructures.items.VariableInInferenceRule(varname))) {
                             // TODO: delete triple pattern as it will never have a result!
                             System.err.println("Can be optimized by extending RuleReplaceConstantOfFilterInTriplePattern: delete triple pattern with succeeding unsatisfiable filter expression!");
@@ -215,12 +219,12 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        this.j_end.removeSucceedingOperator(this.f);
-        this.f.removePrecedingOperator(this.j_end);
-        this.tp.removeSucceedingOperator(this.j_begin);
-        this.j_begin.removePrecedingOperator(this.tp);
         this.f.removeSucceedingOperator(this.o);
         this.o.removePrecedingOperator(this.f);
+        this.tp.removeSucceedingOperator(this.j_begin);
+        this.j_begin.removePrecedingOperator(this.tp);
+        this.j_end.removeSucceedingOperator(this.f);
+        this.f.removePrecedingOperator(this.j_end);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -228,14 +232,14 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
 
         // add new connections...
-        this.tp.addSucceedingOperator(b);
-        b.addPrecedingOperator(this.tp);
-
         b.addSucceedingOperator(this.j_begin);
         this.j_begin.addPrecedingOperator(b);
 
         this.j_end.addSucceedingOperator(this.o);
         this.o.addPrecedingOperator(this.j_end);
+
+        this.tp.addSucceedingOperator(b);
+        b.addPrecedingOperator(this.tp);
 
 
         // delete unreachable operators...

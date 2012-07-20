@@ -76,6 +76,11 @@ public class ASTInteger extends SimpleNode {
   public String toString() {
 	return super.toString() + "  " + this.valueInteger;
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		this.setValue(((ASTInteger)node).getValue());
+	}
 	
   /** Accept the visitor. **/
   @Override

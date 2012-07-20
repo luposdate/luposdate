@@ -49,6 +49,12 @@ class ASTLoad extends SimpleNode {
     super(p, id);
   }
 
+	@Override
+	public void init(final SimpleNode node){
+		if(((ASTLoad)node).isSilent()){
+			this.setSilent();
+		}
+	}
 
   /** Accept the visitor. **/
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

@@ -71,6 +71,12 @@ public class ASTFloatingPoint extends SimpleNode {
   public String toString() {
 	return super.toString() + "  " + this.valueFloatingPoint;
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		this.setValue(((ASTFloatingPoint)node).getValue());
+	}
+
 
   /** Accept the visitor. **/
   @Override

@@ -55,6 +55,12 @@ public void setDescribeAll(boolean describeAll) {
 }
 
 @Override
+public void init(final SimpleNode node){
+	this.setDescribeAll(((ASTDescribeQuery)node).isDescribeAll());
+}
+
+
+@Override
 public String toString() {
 	// TODO Auto-generated method stub
 	return super.toString()+" "+describeAll;

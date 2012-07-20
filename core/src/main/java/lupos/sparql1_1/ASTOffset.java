@@ -60,6 +60,12 @@ public int getOffset() {
 public void setOffset(String offset) {
 	this.offset = Integer.parseInt(offset);
 }
+
+@Override
+public void init(final SimpleNode node){
+	this.setOffset(((ASTOffset)node).getOffset()+"");
+}
+
 @Override
 public String toString() {
 	// TODO Auto-generated method stub

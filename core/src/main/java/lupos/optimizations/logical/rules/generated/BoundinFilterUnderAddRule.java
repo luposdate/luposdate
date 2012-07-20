@@ -35,7 +35,7 @@ import lupos.engine.operators.OperatorIDTuple;
 
 
 public class BoundinFilterUnderAddRule extends Rule {
-
+    private boolean deleteAll = false;
     private lupos.engine.operators.singleinput.Filter f = null;
     private lupos.engine.operators.singleinput.AddBinding a = null;
     private lupos.engine.operators.BasicOperator[] o = null;
@@ -117,10 +117,11 @@ public class BoundinFilterUnderAddRule extends Rule {
                     negated = !negated;
                 n = n.jjtGetChild(0);
                 }
-                if(!negated && n instanceof lupos.sparql1_1.ASTBoundFuncNode){
+                if(n instanceof lupos.sparql1_1.ASTBoundFuncNode){
                     n = n.jjtGetChild(0);
                     if(n instanceof lupos.sparql1_1.ASTVar) {
                         lupos.datastructures.items.Variable var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) n).getName());
+                  this.deleteAll = negated;
                         return var.equals(this.a.getVar());
                     }
                 }
@@ -169,6 +170,8 @@ public class BoundinFilterUnderAddRule extends Rule {
 
 
         // additional replace method code...
-
+        if(this.deleteAll){
+          this.deleteOperatorWithParentsAndChildren(this.a ,_startNodes);
+        }
     }
 }

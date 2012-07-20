@@ -25,9 +25,7 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package lupos.sparql1_1;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Random;
 
 import lupos.datastructures.bindings.Bindings;
@@ -216,6 +214,12 @@ class SimpleNode implements Node {
 		n.jjtSetParent(this);
 	}
 
+	/**
+	 * This method must be overridden by all abstract syntax tree nodes, which store additional information...
+	 * @param node The node from which the initialization should be taken over!
+	 */
+	public void init(final SimpleNode node){		
+	}
 	
 	public SimpleNode clone(final boolean clean) {
 		SimpleNode ret = null;
@@ -227,32 +231,7 @@ class SimpleNode implements Node {
 					ret.addChild(children[i].clone(false), i);
 				}
 			}
-			final Field[] fields = this.getClass().getDeclaredFields();
-			final Method[] methods = this.getClass().getDeclaredMethods();
-			for (int i = 0; i < fields.length; i++) {
-				Method set = null;
-				Method get = null;
-				for (int j = 0; j < methods.length; j++) {
-					if (methods[j].getName().toLowerCase().contains(
-							fields[i].getName().toLowerCase())) {
-						if (methods[j].getName().contains("set")) {
-							set = methods[j];
-						} else if (methods[j].getName().contains("get")) {
-							get = methods[j];
-						}
-						if (set != null && get != null) {
-							break;
-						}
-					}
-				}
-				if (set != null && get != null) {
-					set.invoke(ret, get.invoke(this));
-				} else {
-					throw new ClassCastException(
-							"Not all required methods found to cast from "
-									+ this.toString());
-				}
-			}
+			ret.init(this);
 		} catch (final InstantiationException e) {
 			e.printStackTrace();
 		} catch (final IllegalAccessException e) {

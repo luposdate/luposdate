@@ -77,6 +77,12 @@ class ASTGivenOccurences extends SimpleNode {
   public String toString(){
 	  return "{"+((lowerLimit==0 && upperLimit!=0 && upperLimit!=INFINITY)?"":lowerLimit)+((lowerLimit==upperLimit)?"":","+(upperLimit==INFINITY?"":upperLimit))+"}";
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		this.setLowerLimit(((ASTGivenOccurences)node).getLowerLimit());
+		this.setUpperLimit(((ASTGivenOccurences)node).getUpperLimit());
+	}
 
 /** Accept the visitor. **/
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

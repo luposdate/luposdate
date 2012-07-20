@@ -115,6 +115,40 @@ public abstract class Rule {
 		}
 	}
 
+	/**
+	 * This method deletes the path in the operator graph in which the operator op is...
+	 * @param op
+	 * @param startNodes
+	 */
+	protected void deleteOperatorWithParentsAndChildren(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes){
+		this.deletePrecedingOperators(op, startNodes);
+		
+		op.getPrecedingOperators().clear();
+		deleteOperatorWithoutParentsRecursive(op, startNodes);
+	}
+	
+	/**
+	 * This method is used within deleteOperatorWithParentsAndChildren(...)
+	 */
+	private void deletePrecedingOperators(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes){
+		if(op.getPrecedingOperators().size()==0){
+			return;
+		}
+		
+		for(BasicOperator prec: new HashSet<BasicOperator>(op.getPrecedingOperators())){
+			if(prec.getSucceedingOperators().size()<=1){
+				deletePrecedingOperators(prec, startNodes);
+				
+				if(startNodes != null) {
+					// update start node map...
+					this.deleteNodeFromStartNodeMap(prec, startNodes);
+				}
+			}
+			op.removePrecedingOperator(prec);
+			prec.removeSucceedingOperator(op);
+		}		
+	}
+
 	protected void deleteNodeFromStartNodeMapNullCheck(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		if(startNodes != null) {
 			this.deleteNodeFromStartNodeMap(op, startNodes);

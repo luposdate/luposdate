@@ -55,6 +55,12 @@ public void setPrefix(String prefix) {
 }
 
 @Override
+public void init(final SimpleNode node){
+	this.setPrefix(((ASTPrefixDecl)node).getPrefix());
+}
+
+
+@Override
 public String toString() {
 	// TODO Auto-generated method stub
 	return super.toString()+" "+prefix;

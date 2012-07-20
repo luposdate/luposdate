@@ -49,6 +49,13 @@ class ASTDelete extends SimpleNode {
 	  return this.deleteData;
   }
 
+  @Override
+  public void init(final SimpleNode node){
+	  if(((ASTDelete)node).isDeleteData()){
+		  this.setDeleteData();
+	  }
+  }  
+  
   /** Accept the visitor. **/
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);

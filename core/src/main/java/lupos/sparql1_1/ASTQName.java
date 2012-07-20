@@ -72,5 +72,12 @@ class ASTQName extends SimpleNode {
 		// TODO Auto-generated method stub
 		return super.toString()+" "+nameSpace+" "+localName;
 	}
+	
+	@Override
+	public void init(final SimpleNode node){
+		ASTQName other = (ASTQName) node;
+		this.setLocalName(other.getLocalName());
+		this.setNameSpace(other.getNameSpace());
+	}
 }
 /* JavaCC - OriginalChecksum=6869e3a7b9f263bee83ee2c1d6094062 (do not edit this line) */

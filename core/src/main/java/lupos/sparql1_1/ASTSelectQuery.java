@@ -88,5 +88,13 @@ public String toString() {
 	// TODO Auto-generated method stub
 	return super.toString()+" disctinct :"+distinct+" reduced:"+reduced+" select all:"+selectAll;
 }
+
+@Override
+public void init(final SimpleNode node){
+	ASTSelectQuery other = (ASTSelectQuery) node;
+	this.setDistinct(other.isDistinct());
+	this.setSelectAll(other.isSelectAll());
+	this.setReduced(other.isReduced());
+}
 }
 /* JavaCC - OriginalChecksum=5cf67069fadfc22b59e7511780225655 (do not edit this line) */

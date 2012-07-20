@@ -70,6 +70,13 @@ public class ASTLangTag extends SimpleNode {
 	public void setLangTag(String langTag) {
 		this.langTag = langTag;
 	}
+	
+	@Override
+	public void init(final SimpleNode node){
+		this.setLangTag(((ASTLangTag)node).getLangTag());
+	}
+
+	
 	@Override
 	public String toString() {
 		return super.toString()+" "+this.langTag;

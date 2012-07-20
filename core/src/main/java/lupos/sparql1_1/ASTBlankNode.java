@@ -49,6 +49,11 @@ class ASTBlankNode extends SimpleNode {
   public String toString(){
 	return super.toString()+"  "+identifier;
   }
+  
+	public void init(final SimpleNode node){
+		this.setIdentifier(((ASTBlankNode)node).getIdentifier());
+	}
+
 	
   /** Accept the visitor. **/
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

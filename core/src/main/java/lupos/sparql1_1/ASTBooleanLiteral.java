@@ -55,6 +55,11 @@ class ASTBooleanLiteral extends SimpleNode {
   public String toString() {
 	return super.toString() + "  " + state;
   }
+  
+	public void init(final SimpleNode node){
+		this.setState(((ASTBooleanLiteral)node).getState());
+	}
+
 
   /** Accept the visitor. **/
     public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

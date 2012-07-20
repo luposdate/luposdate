@@ -58,6 +58,10 @@ class ASTStream extends SimpleNode {
 	  return type;
   }
 
+  public void setType(TYPE type){
+	  this.type=type;
+  }
+
   public boolean isTriples(){
 	  return type==TYPE.TRIPLES;
   }
@@ -73,5 +77,12 @@ class ASTStream extends SimpleNode {
   public int getValue(){
 	  return value;
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		ASTStream other = (ASTStream) node;
+		this.setValue(other.getValue());
+		this.setType(other.getType());
+	}
 }
 /* JavaCC - OriginalChecksum=106d4a996014dbee5582ea3c7911e58e (do not edit this line) */

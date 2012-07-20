@@ -125,6 +125,10 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
                     if(left instanceof lupos.sparql1_1.ASTVar) {
                         this.var = new lupos.datastructures.items.Variable(((lupos.sparql1_1.ASTVar) left).getName());
             
+                        if(!this.i.getVarsInTriplePatterns().contains(this.var)){
+                          return false;
+                        }
+            
                         if(right instanceof lupos.sparql1_1.ASTQName
                            || right instanceof lupos.sparql1_1.ASTQuotedURIRef
                            || right instanceof lupos.sparql1_1.ASTFloatingPoint

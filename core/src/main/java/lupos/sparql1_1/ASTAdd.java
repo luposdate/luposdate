@@ -46,6 +46,9 @@ class ASTAdd extends SimpleNode {
 		super(p, id);
 	}
 
+	public void init(final SimpleNode node){
+		this.silent=((ASTAdd)node).silent;
+	}
 
 	/** Accept the visitor. **/
 	  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

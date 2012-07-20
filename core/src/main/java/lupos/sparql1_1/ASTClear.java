@@ -49,6 +49,11 @@ class ASTClear extends SimpleNode {
 		super(p, id);
 	}
 
+	public void init(final SimpleNode node){
+		if(((ASTClear)node).isSilent()){
+			this.setSilent();
+		}
+	}
 
 	/** Accept the visitor. **/
 	  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {

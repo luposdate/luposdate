@@ -180,14 +180,14 @@ public class FactoroutORinFilterRule extends Rule {
 
 
         // add new connections...
-        f2.addSucceedingOperator(u);
-        u.addPrecedingOperator(f2);
+        u.addSucceedingOperator(this.o);
+        this.o.addPrecedingOperator(u);
 
         this.f.addSucceedingOperator(u);
         u.addPrecedingOperator(this.f);
 
-        u.addSucceedingOperator(this.o);
-        this.o.addPrecedingOperator(u);
+        f2.addSucceedingOperator(u);
+        u.addPrecedingOperator(f2);
 
 
         // additional replace method code...
@@ -201,7 +201,7 @@ public class FactoroutORinFilterRule extends Rule {
             lltp.add(tp.clone());
         }
         
-        i2.setTriplePatterns(lltp);
+        i2.setTriplePatterns(lltp);        
         
         this.op.addSucceedingOperator(i2);
         i2.setPrecedingOperator(this.op);
@@ -243,7 +243,7 @@ public class FactoroutORinFilterRule extends Rule {
             parentOp.setSucceedingOperator(new lupos.engine.operators.OperatorIDTuple(newOp, 0));
             newOp.setPrecedingOperator(parentOp);
         
-            parentOp = tmpOp;
+            parentOp = newOp;
             tmpOp = tmpOp.getSucceedingOperators().get(0).getOperator();
         }
         

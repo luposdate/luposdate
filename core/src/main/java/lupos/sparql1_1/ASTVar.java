@@ -77,5 +77,11 @@ class ASTVar extends SimpleNode {
   public String toString() {
 	  return super.toString()+" "+name;
   }
+  
+	@Override
+	public void init(final SimpleNode node){
+		this.setName(((ASTVar) node).getName());
+	}
+
 }
 /* JavaCC - OriginalChecksum=9659db53761e9cd7869a949eba52d317 (do not edit this line) */
