@@ -199,8 +199,7 @@ public class GraphBox {
 				final int endPoint2y = this.y + this.height;
 
 				drawConnection(g, startPoint2x, startPoint2y, endPoint2x, endPoint2y, true);
-			}
-			else if(directCircle) { // direct circle...
+			} else if(directCircle) { // direct circle...
 
 				final Point point1 = GraphBox.determineEdgePoint(
 						annotationPoint.x, annotationPoint.y,

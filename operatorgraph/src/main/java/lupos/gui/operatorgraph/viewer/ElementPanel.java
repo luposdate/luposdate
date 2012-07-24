@@ -23,12 +23,16 @@
  */
 package lupos.gui.operatorgraph.viewer;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.OperatorGraph;
@@ -57,11 +61,12 @@ public class ElementPanel extends AbstractSuperGuiComponent {
 
 		int width = 0;
 		int height = 0;
-
+		this.setOpaque(true);
+		this.setBackground(new Color(0,0,0,0));
 		for(String textPart : text.split("\n")) {
 			JLabel textLabel = new JLabel(textPart);
 			textLabel.setFont(this.parent.getFONT());
-			textLabel.setVerticalAlignment(JLabel.BOTTOM);
+			textLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 			textLabel.setPreferredSize(new Dimension(textLabel.getPreferredSize().width, textLabel.getPreferredSize().height));
 
 			this.add(textLabel, gbc);
@@ -73,5 +78,10 @@ public class ElementPanel extends AbstractSuperGuiComponent {
 		}
 
 		this.setPreferredSize(new Dimension(width + (int) (2 * parent.PADDING), height + (int) (2 * parent.PADDING)));
+	}
+	
+	@Override
+	public void paint(Graphics g){
+		super.paint(g);
 	}
 }

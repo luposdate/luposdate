@@ -33,6 +33,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -783,6 +784,32 @@ public class OperatorGraph extends JPanel implements IXPref {
 			this.paint(img.createGraphics()); // paint main panel with graph image
 
 			ImageIO.write(img, filename.substring(filename.length() - 3), new File(filename));
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Internal method to save the graph to an outputstream.
+	 * 
+	 * @param format
+	 *            the format of the picture (png, jpg or gif)
+	 * @param out
+	 *            the outputstream to save the file to
+	 */
+	public void saveGraph(String format, OutputStream out) {
+		// add file extension, if necessary...
+		if (!(format.compareTo("png")==0 || format.compareTo("jpeg")==0 || format.compareTo("gif")==0)) {
+			format = "png";
+		}
+
+		try {
+			// create image of graph to save it...
+			final BufferedImage img = new BufferedImage(this.getPreferredSize().width, this.getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
+
+			this.paint(img.createGraphics()); // paint main panel with graph image
+
+			ImageIO.write(img, format, out);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

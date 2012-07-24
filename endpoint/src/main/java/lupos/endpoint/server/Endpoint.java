@@ -56,11 +56,11 @@ import com.sun.net.httpserver.HttpServer;
 @SuppressWarnings("restriction")
 public class Endpoint {
 	
-	private static RDF3XQueryEvaluator evaluator;
-	private static String dir;
+	public static RDF3XQueryEvaluator evaluator;
+	public static String dir;
 	
 	// enable or disable logging into console
-	private static boolean log = false;
+	public static boolean log = false;
 	
 	private final static Map<String, Formatter> registeredFormatter = Collections.synchronizedMap(new HashMap<String, Formatter>());
 	
@@ -145,7 +145,7 @@ public class Endpoint {
 	}
 	
 	public static void registerStandardContexts(){
-		Endpoint.registerHandler("/sparql", new SPARQLHandler());
+		Endpoint.registerHandler("/sparql", new SPARQLHandler(new SPARQLExecutionImplementation()));
 		Endpoint.registerHandler("/", new HTMLFormHandler());
 	}
 	
@@ -190,11 +190,59 @@ public class Endpoint {
 		}
 		return response;
 	}
+	
+	public static interface SPARQLExecution {
+		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException;
+	}
+	
+	public static class SPARQLExecutionImplementation implements SPARQLExecution {
+		@Override
+		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException {
+			try {
+				synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
+					System.out.println("Evaluating query:\n"+queryParameter);
+					QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, true):Endpoint.evaluator.getResult(queryParameter);
+					final String mimeType = formatter.getMIMEType(queryResult);
+					System.out.println("Done, sending response using MIME type "+mimeType);
+					t.getResponseHeaders().add("Content-type", mimeType);
+					t.getResponseHeaders().add("Transfer-encoding", "chunked");
+					t.sendResponseHeaders(200, 0);
+					OutputStream os = t.getResponseBody();
+					if(Endpoint.log){
+						os = new OutputStreamLogger(os);
+					}
+					formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
+					os.close();
+					Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
+				}
+				return;
+			} catch (Error e) {
+				System.err.println(e);
+				e.printStackTrace();
+				t.getResponseHeaders().add("Content-type", "text/plain");
+				final String answer = "Error:\n"+e.getMessage();
+				System.out.println(answer);
+				Endpoint.sendString(t, answer);
+				return;
+			} catch (Exception e){
+				System.err.println(e);
+				e.printStackTrace();
+				t.getResponseHeaders().add("Content-type", "text/plain");
+				final String answer = "Error:\n"+e.getMessage();
+				System.out.println(answer);
+				Endpoint.sendString(t, answer);
+				return;
+			}			
+		}
+	}
 
 	public static class SPARQLHandler implements HttpHandler {
 		
-		public SPARQLHandler(){
+		private final SPARQLExecution sparqlExecution;
+		
+		public SPARQLHandler(final SPARQLExecution sparqlExecution){
 			super();
+			this.sparqlExecution = sparqlExecution;
 			BitVectorFilterFunction.register();
 		}
 		
@@ -219,42 +267,8 @@ public class Endpoint {
 				}
 				// now look for a query parameter
 				String queryParameter = getParameter(responseParts, query);
-				if(queryParameter!=null){					
-					try {
-						synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
-							System.out.println("Evaluating query:\n"+queryParameter);
-							QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, false):Endpoint.evaluator.getResult(queryParameter);
-							final String mimeType = formatter.getMIMEType(queryResult);
-							System.out.println("Done, sending response using MIME type "+mimeType);
-							t.getResponseHeaders().add("Content-type", mimeType);
-							t.getResponseHeaders().add("Transfer-encoding", "chunked");
-							t.sendResponseHeaders(200, 0);
-							OutputStream os = t.getResponseBody();
-							if(log){
-								os = new OutputStreamLogger(os);
-							}
-							formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
-							os.close();
-							Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
-						}
-						return;
-					} catch (Error e) {
-						System.err.println(e);
-						e.printStackTrace();
-						t.getResponseHeaders().add("Content-type", "text/plain");
-						final String answer = "Error:\n"+e.getMessage();
-						System.out.println(answer);
-						Endpoint.sendString(t, answer);
-						return;
-					} catch (Exception e){
-						System.err.println(e);
-						e.printStackTrace();
-						t.getResponseHeaders().add("Content-type", "text/plain");
-						final String answer = "Error:\n"+e.getMessage();
-						System.out.println(answer);
-						Endpoint.sendString(t, answer);
-						return;
-					}
+				if(queryParameter!=null){
+					this.sparqlExecution.execute(queryParameter, formatter, t);
 				} else {
 					t.getResponseHeaders().add("Content-type", "text/plain");
 					final String answer = "Bad Request: query parameter missing";
