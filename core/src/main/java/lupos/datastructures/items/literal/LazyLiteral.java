@@ -168,9 +168,14 @@ public class LazyLiteral extends Literal {
 	}
 
 	public static Literal getLiteral(final String content) {
+		return LazyLiteral.getLiteral(content, false);
+	}
+
+	
+	public static Literal getLiteral(final String content, final boolean allowLazyLiteral) {
 		try {
 			final SimpleNode node = SPARQL1_1Parser.parseGraphTerm(content, null);
-			return getLiteral(node);
+			return getLiteral(node, allowLazyLiteral);
 		} catch (final Throwable t) {
 			System.err.println("Trying to parse string "+content+" for transforming it to a literal...");
 			System.err.println(t);
