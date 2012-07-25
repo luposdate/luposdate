@@ -33,6 +33,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -201,11 +204,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	protected void createInternalNewGraph(final boolean flipX,
 			final boolean flipY, final boolean rotate, final Arrange arrange) {
-		this.createGraph(new LinkedList<GraphWrapper>(), flipX, flipY, rotate,
-				arrange); // create
-																					// the
-		// QueryGraph and
-		// return it
+		this.createGraph(new LinkedList<GraphWrapper>(), flipX, flipY, rotate, arrange); 
+		// create the QueryGraph and return it
 	}
 
 	public int getMax(final boolean X) {
@@ -770,23 +770,21 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * 
 	 * @param filename
 	 *            filename to save the file to
+	 * @throws IOException 
 	 */
-	public void saveGraph(String filename) {
+	public void saveGraph(String filename) throws IOException {
 		// add file extension, if necessary...
-		if (!(filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".gif"))) {
+		if (!(filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".gif"))) {
 			filename += ".png";
 		}
+		
+		String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
 
-		try {
-			// create image of graph to save it...
-			final BufferedImage img = new BufferedImage(this.getPreferredSize().width, this.getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
+		OutputStream out = new FileOutputStream(new File(filename));
+		
+		this.saveGraph(format, out);
 
-			this.paint(img.createGraphics()); // paint main panel with graph image
-
-			ImageIO.write(img, filename.substring(filename.length() - 3), new File(filename));
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		out.close();
 	}
 	
 	/**
@@ -799,14 +797,14 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 */
 	public void saveGraph(String format, OutputStream out) {
 		// add file extension, if necessary...
-		if (!(format.compareTo("png")==0 || format.compareTo("jpeg")==0 || format.compareTo("gif")==0)) {
+		if (!(format.compareTo("png")==0 || format.compareTo("jpeg")==0 || format.compareTo("jpg")==0 || format.compareTo("gif")==0)) {
 			format = "png";
 		}
 
 		try {
 			// create image of graph to save it...
 			final BufferedImage img = new BufferedImage(this.getPreferredSize().width, this.getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
-
+			this.printComponents(img.createGraphics());
 			this.paint(img.createGraphics()); // paint main panel with graph image
 
 			ImageIO.write(img, format, out);

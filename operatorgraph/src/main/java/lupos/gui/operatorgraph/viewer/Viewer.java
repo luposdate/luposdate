@@ -24,19 +24,15 @@
 package lupos.gui.operatorgraph.viewer;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -45,7 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -62,9 +57,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 import lupos.engine.operators.BasicOperator;
-import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.arrange.Arrange;
-import lupos.gui.operatorgraph.arrange.LayeredDrawing;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
@@ -290,6 +283,32 @@ public class Viewer extends JFrame implements IXPref {
 
 		out.close();
 	}
+	
+	/**
+	 * This constructor generates the graph for the given filename and saves it
+	 * as image to the given filename.
+	 * 
+	 * @param startGWs
+	 *            the root nodes of the graph
+	 * @param filename
+	 *            the filename to save the graph as image to
+	 * @throws IOException 
+	 */
+	public Viewer(final LinkedList<GraphWrapper> startGWs, String filename) throws IOException {
+		super();
+
+		if (!(filename.endsWith(".png") || filename.endsWith(".jpeg") || filename.endsWith(".gif"))) {
+			filename += ".png";
+		}
+		
+		String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
+
+		OutputStream out = new FileOutputStream(new File(filename));
+		
+		this.saveGraph(startGWs, format, out);
+
+		out.close();
+	}
 
 	/**
 	 * This constructor generates the graph for the given filename and saves it
@@ -308,12 +327,33 @@ public class Viewer extends JFrame implements IXPref {
 		this.saveGraph(startGW, format, out);
 	}
 	
+	/**
+	 * This constructor generates the graph for the given filename and saves it
+	 * as image to an outputstream.
+	 * 
+	 * @param startGW
+	 *            the first node of the graph
+	 * @param format
+	 *            the format of the picture (e.g. png, gif or jpg)
+	 * @param output
+	 *            the outputstream to save the graph as image to
+	 */
+	public Viewer(final LinkedList<GraphWrapper> startGWs, final String format, final OutputStream out) {
+		super();
+
+		this.saveGraph(startGWs, format, out);
+	}
+	
 	private void saveGraph(final GraphWrapper startGW, final String format, final OutputStream out) {		
 		this.startGWs = new LinkedList<GraphWrapper>();
 		this.startGWs.add(startGW);
+		this.saveGraph(this.startGWs, format, out);
+	}
 
+	private void saveGraph(final LinkedList<GraphWrapper> listOfStartGWs, final String format, final OutputStream out) {
+		this.startGWs = listOfStartGWs;
 		ViewerPrefix prefix = new ViewerPrefix(true);
-		this.operatorGraph = new OperatorGraphWithPrefix(prefix);
+		this.operatorGraph = new OperatorGraphWithPrefix(prefix);		
 		prefix.setStatus(true);
 		this.constructFrame("Intermediate frame for saving graph", true, false);
 
@@ -362,8 +402,7 @@ public class Viewer extends JFrame implements IXPref {
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		this.createGraphElement();
-		this
-		.setDefaultCloseOperation((standAlone) ? WindowConstants.EXIT_ON_CLOSE
+		this.setDefaultCloseOperation((standAlone) ? WindowConstants.EXIT_ON_CLOSE
 				: WindowConstants.HIDE_ON_CLOSE);
 		this.setTitle(title);
 	}
@@ -655,7 +694,12 @@ public class Viewer extends JFrame implements IXPref {
 					final String filename = chooser.getSelectedFile()
 					.getAbsolutePath();
 
-					that.operatorGraph.saveGraph(filename);
+					try {
+						that.operatorGraph.saveGraph(filename);
+					} catch (IOException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
 				}
 			}
 		});

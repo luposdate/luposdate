@@ -54,6 +54,7 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 			this.prefix.setStatus(BooleanDatatype.getValues(
 					"operatorGraph_usePrefixes").get(0).booleanValue());
 		} catch (final Exception e) {
+			this.prefix.setStatus(true);
 			System.err.println(e);
 			e.printStackTrace();
 		}

@@ -23,12 +23,16 @@
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
+import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 
 import lupos.datastructures.items.Item;
 import lupos.gui.operatorgraph.GraphBox;
@@ -36,6 +40,8 @@ import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
+import lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix;
+import lupos.gui.operatorgraph.viewer.ViewerPrefix;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.util.Connection;
 import lupos.gui.operatorgraph.visualeditor.util.DummyItem;
@@ -73,8 +79,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 
-		this.createInternalNewGraph(false, false, false,
-				lupos.gui.operatorgraph.arrange.Arrange.values()[0]);
+		this.createInternalNewGraph(false, false, false, lupos.gui.operatorgraph.arrange.Arrange.values()[0]);
 	}
 
 	/**

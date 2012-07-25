@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -49,6 +50,7 @@ import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.LuposJTextPane;
 import lupos.gui.anotherSyntaxHighlighting.javacc.HTMLScanner;
+import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.File;
@@ -458,8 +460,14 @@ public class DocumentationPanel extends JPanel {
 					showVisualRepresentation = false;
 				}
 				else {
-					visualGraphs.get(0).saveGraph(leftImageTargetPath);
-					visualGraphs.get(1).saveGraph(rightImageTargetPath);
+					
+					try {
+						visualGraphs.get(0).saveGraph(leftImageTargetPath);
+						visualGraphs.get(1).saveGraph(rightImageTargetPath);
+					} catch (IOException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
 				}
 			}
 			else {
