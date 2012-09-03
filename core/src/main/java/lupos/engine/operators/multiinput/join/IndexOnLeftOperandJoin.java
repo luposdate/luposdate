@@ -110,7 +110,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 				keyJoin = null;
 				break;
 			}
-			keyJoin += "|" + literal.toString();
+			keyJoin += "|" + literal.getKey();
 		}
 		return keyJoin;
 	}

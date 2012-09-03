@@ -97,6 +97,11 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 	public String[] getUsedStringRepresentations() {
 		return new String[] { toString(), originalString() };
 	}
+	
+	@Override
+	public String getOriginalKey(){
+		return ""+this.codeOriginalContent;
+	}
 
 	@Override
 	public String originalString() {

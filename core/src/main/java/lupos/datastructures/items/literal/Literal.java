@@ -109,6 +109,20 @@ public abstract class Literal implements Item, Comparable<Literal>, Externalizab
 	public boolean originalStringDiffers() {
 		return false;
 	}
+	
+	/**
+	 * @return A key for this literal. Typically it is the return value of toString(), but LazyLiterals return their code for efficiency reasons.
+	 */
+	public String getKey(){
+		return this.toString();
+	}
+
+	/**
+	 * @return A key for the original representation of this literal. Typically it is the return value of toString(), but LazyLiterals return their code for efficiency reasons.
+	 */
+	public String getOriginalKey(){
+		return this.originalString();
+	}
 
 	@Override
 	public int hashCode() {

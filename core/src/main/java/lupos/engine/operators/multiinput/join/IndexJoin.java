@@ -81,7 +81,7 @@ public abstract class IndexJoin extends Join {
 					keyJoin = null;
 					break;
 				}
-				keyJoin += "|" + literal.toString();
+				keyJoin += "|" + literal.getKey();
 			}
 
 			if (keyJoin == null)
@@ -165,7 +165,7 @@ public abstract class IndexJoin extends Join {
 					keyJoin = null;
 					break;
 				}
-				keyJoin += "|" + literal.toString();
+				keyJoin += "|" + literal.getKey();
 			}
 
 			if (keyJoin == null)
@@ -263,7 +263,7 @@ public abstract class IndexJoin extends Join {
 					keyJoin = null;
 					break;
 				}
-				keyJoin += "|" + literal.toString();
+				keyJoin += "|" + literal.getKey();
 			}
 
 			if (keyJoin == null)

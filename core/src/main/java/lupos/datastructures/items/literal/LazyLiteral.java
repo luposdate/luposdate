@@ -95,6 +95,16 @@ public class LazyLiteral extends Literal {
 	public String[] getUsedStringRepresentations() {
 		return new String[] { toString() };
 	}
+	
+	@Override
+	public String getKey(){
+		return ""+this.code;
+	}
+
+	@Override
+	public String getOriginalKey(){
+		return this.getKey();
+	}
 
 	public Literal getLiteral() {
 		if (this.materializedLiteral == null) {
