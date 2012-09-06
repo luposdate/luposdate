@@ -343,6 +343,28 @@ public class BufferManager {
 	public void close() throws IOException {
 		this.bufferedFile.close();
 	}
+	
+	/**
+	 * This method releases all pages, deletes the buffered file from disk and starts with a new file,
+	 * i.e. all content of the buffered file is deleted. 
+	 * @throws IOException
+	 */
+	public void reset() throws IOException {
+		this.releaseAllPages();
+		this.close();
+		int i=0;
+		boolean flag = true;
+		do {
+			File file = new File(this.fileName + "_" + i);
+			if(file.exists()){
+				file.delete();
+			} else {
+				flag = false;
+			}
+		} while(flag);
+		this.bufferedFile = new RandomAccessFile(new File(this.fileName + "_0"), "rw");
+		this.currentFile = 0;
+	}
 
 	public static int getMAXPAGESINBUFFER() {
 		return BufferManager.MAXPAGESINBUFFER;

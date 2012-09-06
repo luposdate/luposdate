@@ -30,7 +30,7 @@ import java.io.IOException;
  * This class manages the free pages in a file. The first page is reserved for
  * storing the free pages before the end of the file.
  * 
- * One page has the following format:
+ * Each page has the following format:
  * Bytes 0 - 3 for the next page of a sequence of pages
  * Bytes 4 and 5 for the maximum number of bytes within this page
  * 
@@ -62,19 +62,7 @@ public class PageManager {
 		this.bufferManager = new BufferManager(name);
 		if(overwriteExistingFile){
 			// initialize page for storing released pages...
-			final byte[] page0 = getEmptyPage();
-			page0[0] = (byte) -128;
-			page0[1] = (byte) -128;
-			page0[2] = (byte) -128;
-			page0[3] = (byte) -128;
-			page0[4] = (byte) -128;
-			page0[5] = (byte) (11 - 128);
-			page0[6] = (byte) -128;
-			page0[7] = (byte) -128;
-			page0[8] = (byte) -128;
-			page0[9] = (byte) -128;
-			page0[10] = (byte) -128;
-			this.bufferManager.modifyPage(0, page0);
+			this.bufferManager.modifyPage(0, this.getEmptyPage0());
 		} else {
 			this.initAfterLoading();
 		}
@@ -127,6 +115,28 @@ public class PageManager {
 	public byte[] getEmptyPage() {
 		return this.bufferManager.getEmptyPage();
 	}
+	
+	/**
+	 * Returns an empty page for page 0 in the size of the default page size.
+	 * 
+	 * @return an empty page
+	 */
+	public byte[] getEmptyPage0() {
+		// initialize page for storing released pages...
+		final byte[] page0 = this.getEmptyPage();
+		page0[0] = (byte) -128;
+		page0[1] = (byte) -128;
+		page0[2] = (byte) -128;
+		page0[3] = (byte) -128;
+		page0[4] = (byte) -128;
+		page0[5] = (byte) (11 - 128);
+		page0[6] = (byte) -128;
+		page0[7] = (byte) -128;
+		page0[8] = (byte) -128;
+		page0[9] = (byte) -128;
+		page0[10] = (byte) -128;
+		return page0;
+	}
 
 	/**
 	 * This method closes the underlying file. This method should only be called
@@ -134,6 +144,16 @@ public class PageManager {
 	 */
 	public void close() throws IOException {
 		this.bufferManager.close();
+	}
+	
+	/**
+	 * This method releases all pages, deletes the buffered file from disk and starts with a new file,
+	 * i.e. all content of the buffered file is deleted. 
+	 * @throws IOException
+	 */
+	public void reset() throws IOException{
+		this.bufferManager.reset();
+		this.bufferManager.modifyPage(0, this.getEmptyPage0());	
 	}
 
 	/**
@@ -307,7 +327,7 @@ public class PageManager {
 	}
 
 	/**
-	 * This method sets some internal states after loading the dbbptree... 
+	 * This method sets some internal states after loading... 
 	 */
 	public void initAfterLoading(){
 		this.bufferManager.releaseAllPages();
