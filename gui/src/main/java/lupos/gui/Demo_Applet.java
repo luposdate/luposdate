@@ -234,8 +234,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		applet.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		applet.frame.setContentPane(panel);
-		applet.frame.setSize(800, 640);
-		// applet.frame.setMinimumSize(new Dimension(800, 640));
+		applet.frame.setSize(800, 905);
 		applet.frame.setLocationRelativeTo(null);
 
 		applet.preferencesChanged();
@@ -245,8 +244,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	protected static Image getIcon(final DEMO_ENUM webdemo) {
 		if (webdemo != DEMO_ENUM.ECLIPSE) {
-			return new ImageIcon(Demo_Applet.class.getResource("/icons/demo.gif"))
-					.getImage();
+			return new ImageIcon(Demo_Applet.class.getResource("/icons/demo.gif")).getImage();
 		} else {
 			return new ImageIcon(Demo_Applet.class.getResource("/icons/demo.gif").getFile()).getImage();
 		}
@@ -261,7 +259,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		this.setType(this.getParameter("type"));
 
-		this.setSize(800, 640);
+		this.setSize(800, 905);
 
 		final JPanel panel = this.initialise();
 
@@ -299,7 +297,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			if (this.webdemo != DEMO_ENUM.ECLIPSE) {
 				this.preferences = XPref.getInstance(Demo_Applet.class.getResource("/preferencesMenu.xml"));
 			} else {
-				this.preferences = XPref.getInstance(new URL("file:"+GUI.class.getResource("/preferencesMenu.xml").getFile()));
+				this.preferences = XPref.getInstance(new URL("file:"+Demo_Applet.class.getResource("/preferencesMenu.xml").getFile()));
 			}
 
 			this.preferences.registerComponent(this);
@@ -731,7 +729,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 	
 	public String getResourceAsString(String resource){
-		final URL url = GUI.class.getResource(resource);
+		final URL url = Demo_Applet.class.getResource(resource);
 		
 		return FileHelper.readFile(resource, new FileHelper.GetReader() {
 
@@ -1285,8 +1283,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					"rule_comparsion.rif", "rule_comparsion.rif",
 					"rule_equality.rif", "rule_exists.rif",
 					"rule_fibonacci.rif", "rule_functional.rif", "rule_Or.rif",
-					"rule_owl2.rif", "rule_owl_simpletriplerules.rif",
-					"rule_parent_discount.rif", "rule_predicates.rif",
+					"rule_owl2rl.rif", "rule_parent_discount.rif", "rule_predicates.rif",
 					"rule_rdfs.rif" };
 		case TUTORIAL2:
 			return new String[] { "facts.rif" };
@@ -1799,15 +1796,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 					final JFrame frame1 = new JFrame("Core " + queryOrRule());
 
-					if (Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE) {
-						frame1.setIconImage(new ImageIcon(
-								Demo_Applet.class
-								.getResource("/demo.gif"))
-						.getImage());
-					} else {
-						frame1.setIconImage(new ImageIcon("data"
-								+ File.separator + "demo.gif").getImage());
-					}
+					frame1.setIconImage(Demo_Applet.getIcon(Demo_Applet.this.webdemo));
 
 					frame1.setSize(794, 200);
 					frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -1848,15 +1837,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 						final JFrame frame1 = new JFrame("Inference Rules");
 
-						if (Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE) {
-							frame1.setIconImage(new ImageIcon(
-									Demo_Applet.class
-											.getResource("/demo.gif"))
-									.getImage());
-						} else {
-							frame1.setIconImage(new ImageIcon("data"
-									+ File.separator + "demo.gif").getImage());
-						}
+						frame1.setIconImage(Demo_Applet.getIcon(Demo_Applet.this.webdemo));
 
 						frame1.setSize(794, 200);
 						frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -1887,10 +1868,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				bt_coreAST.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(final ActionEvent ae) {
-						new Viewer(graphWrapper,
-								"Abstract syntax tree of the Core "
-										+ queryOrRule(), false,
-								Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE);
+						new Viewer(graphWrapper, "Abstract syntax tree of the Core " + queryOrRule(), false, Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE);
 					}
 				});
 			}

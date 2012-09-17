@@ -204,6 +204,7 @@ public abstract class QueryEvaluator<A> {
 
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 	}
+	
 	public abstract QueryResult getResult() throws Exception;
 
 	public QueryResult getResult(final String query) throws Exception {

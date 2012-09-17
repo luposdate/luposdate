@@ -23,8 +23,6 @@
  */
 package lupos.engine.operators.singleinput.modifiers.distinct;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -112,6 +110,11 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 									NonBlockingDistinctWithIndexAccess.this.bindings.add(b);
 									return b;
 								}
+							}
+						} else {
+							if (!NonBlockingDistinctWithIndexAccess.this.bindings.contains(b)) {
+								NonBlockingDistinctWithIndexAccess.this.bindings.add(b);
+								return b;
 							}
 						}
 					}

@@ -410,6 +410,13 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 	
+	@Override
+	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
+		if(this.evaluator != null) {
+			this.evaluator.prepareForQueryDebugSteps(debugstep);
+		}
+	}
+	
 	private final static URILiteral rif_error = LiteralFactory.createStringURILiteralWithoutException("<http://www.w3.org/2007/rif#error>");
 	
 	/**

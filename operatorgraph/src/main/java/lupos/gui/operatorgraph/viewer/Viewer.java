@@ -387,11 +387,9 @@ public class Viewer extends JFrame implements IXPref {
 		}
 
 		if (fromJar) {
-			this.setIconImage(new ImageIcon(Viewer.class
-					.getResource("/demo.gif")).getImage());
+			this.setIconImage(new ImageIcon(Viewer.class.getResource("/icons/demo.gif")).getImage());
 		} else {
-			this.setIconImage(new ImageIcon("data" + File.separator
-					+ "demo.gif").getImage());
+			this.setIconImage(new ImageIcon(Viewer.class.getResource("/icons/demo.gif").getFile()).getImage());
 		}
 
 		final JPanel mainPanel = new JPanel(new BorderLayout());
