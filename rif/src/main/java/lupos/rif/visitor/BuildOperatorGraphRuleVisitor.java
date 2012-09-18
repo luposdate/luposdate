@@ -184,7 +184,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			while(thisIterator.hasNext()){
 				Item thisItem = thisIterator.next();					
 				Item otherItem = otherIterator.next();  
-				if(!(otherItem.isVariable() || thisItem.equals(otherItem))){
+				if(!(otherItem.isVariable() || thisItem.isVariable() || thisItem.equals(otherItem))){
 					return false;
 				}
 			}
