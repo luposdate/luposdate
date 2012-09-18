@@ -177,6 +177,20 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				return false;
 			}
 		}
+		
+		public boolean mayConsume(KeyTriplePattern other){
+			Iterator<Item> thisIterator = this.triplePattern.iterator();
+			Iterator<Item> otherIterator = other.triplePattern.iterator();
+			while(thisIterator.hasNext()){
+				Item thisItem = thisIterator.next();					
+				Item otherItem = otherIterator.next();  
+				if(!(otherItem.isVariable() || thisItem.equals(otherItem))){
+					return false;
+				}
+			}
+			return true;
+		}
+
 		@Override
 		protected int getNumberOfPossibleMatchingKeys() {
 			int number=0;
@@ -719,18 +733,15 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		// 3. Pr�fen ob Triple-Pr�dikat an anderer Stelle erzeugt wird
 		KeyTriplePattern keyPattern = new KeyTriplePattern(pattern);
 		boolean flag = false;
-		// try out all possible combinations of keys of the producers... (better strategies to avoid this high runtime?)
+		
+		HashSet<KeyTriplePattern> possibleMatchingKeysOfProducers = new HashSet<KeyTriplePattern>(); 
+		
 		for(KEY mainkey: this.tripleProducer.keySet()){
 			if(mainkey instanceof KeyTriplePattern){
-				// find out all possible keys for matching consumers...
-				for(KEY key: mainkey){
-					if(key.equals(keyPattern)){
-						flag = true;
-						break;
-					}
-				}
-				if(flag){
-					break;
+				KeyTriplePattern mainkeyTP = (KeyTriplePattern) mainkey;
+				if(keyPattern.mayConsume(mainkeyTP)){
+					possibleMatchingKeysOfProducers.add(mainkeyTP);
+					flag = true;
 				}
 			}
 		}
@@ -742,7 +753,9 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			index.setSucceedingOperator(new OperatorIDTuple(union, 0));
 			distinct.setSucceedingOperator((OperatorIDTuple) arg);
 			pattern.setSucceedingOperator(new OperatorIDTuple(union, 1));
-			add(this.tripleConsumer, keyPattern, pattern);
+			for(KeyTriplePattern keyTP: possibleMatchingKeysOfProducers){
+				add(this.tripleConsumer, keyTP, pattern);
+			}
 			return distinct;
 		} else {
 			index.setSucceedingOperator((OperatorIDTuple) arg);
