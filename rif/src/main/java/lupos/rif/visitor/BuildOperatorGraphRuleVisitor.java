@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,8 +84,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	/**
 	 * String -> Pr�dikatbezeichung bsp. cdp:example(...)
 	 */
-	protected final Map<KEY, Set<BasicOperator>> tripleProducer = new HashMap<KEY, Set<BasicOperator>>();
-	protected final Map<KEY, Set<BasicOperator>> tripleConsumer = new HashMap<KEY, Set<BasicOperator>>();
+	protected final Map<KEY, Set<BasicOperator>> tripleProducer = new LinkedHashMap<KEY, Set<BasicOperator>>();
+	protected final Map<KEY, Set<BasicOperator>> tripleConsumer = new LinkedHashMap<KEY, Set<BasicOperator>>();
 	protected Multimap<IExpression, IExpression> equalityMap;
 	protected boolean usesEqualities = false;
 	
@@ -332,9 +334,9 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 						KEY key = (pattern instanceof TriplePattern)?
 								new KeyTriplePattern((TriplePattern)pattern):
 								new KeyPredicatePattern((PredicatePattern)pattern);
-						this.tripleProducer.put(key, new HashSet<BasicOperator>());
+						this.tripleProducer.put(key, new LinkedHashSet<BasicOperator>());
 					} else if (expr instanceof Equality) {
-						this.tripleProducer.put(BuildOperatorGraphRuleVisitor.keyEquality, new HashSet<BasicOperator>());
+						this.tripleProducer.put(BuildOperatorGraphRuleVisitor.keyEquality, new LinkedHashSet<BasicOperator>());
 						this.usesEqualities = true;
 					}
 			}
@@ -552,7 +554,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	private void add(final Map<KEY, Set<BasicOperator>> map, final KEY key, final BasicOperator toAdd){
 		Set<BasicOperator> set = map.get(key);
 		if(set==null){
-			set = new HashSet<BasicOperator>();
+			set = new LinkedHashSet<BasicOperator>();
 			map.put(key, set);
 		}
 		set.add(toAdd);		
@@ -561,8 +563,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	@Override
 	public Object visit(Conjunction obj, Object arg) throws RIFException {
 		// Vorgehensweise: erstmal alle Sub-Operatoren sammeln -> Danach:
-		Set<BasicOperator> operands = new HashSet<BasicOperator>();
-		Set<BasicIndex> indexes = new HashSet<BasicIndex>();
+		Set<BasicOperator> operands = new LinkedHashSet<BasicOperator>();
+		Set<BasicIndex> indexes = new LinkedHashSet<BasicIndex>();
 		List<RuleFilter> predicates = new ArrayList<RuleFilter>();
 
 		for (IExpression expr : obj.exprs) {
@@ -621,7 +623,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			// 3.1 Predicates sortieren, alle m�glichen Assignments nach vorn
 			if (predicates.size() > 1) {
 				int i = 0;
-				Set<RuleFilter> visited = new HashSet<RuleFilter>();
+				Set<RuleFilter> visited = new LinkedHashSet<RuleFilter>();
 				while (i < predicates.size()) {
 					if (!predicates.get(i).getExpression()
 							.isPossibleAssignment()
@@ -732,7 +734,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		KeyTriplePattern keyPattern = new KeyTriplePattern(pattern);
 		boolean flag = false;
 		
-		HashSet<KeyTriplePattern> possibleMatchingKeysOfProducers = new HashSet<KeyTriplePattern>(); 
+		HashSet<KeyTriplePattern> possibleMatchingKeysOfProducers = new LinkedHashSet<KeyTriplePattern>(); 
 		
 		for(KEY mainkey: this.tripleProducer.keySet()){
 			if(mainkey instanceof KeyTriplePattern){
