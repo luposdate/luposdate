@@ -65,6 +65,8 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			Map<String, QueryResult> leftOperandsData = this.createDatastructure();
 			QueryResult cartesianProduct = QueryResult.createInstance();
 			
+			this.operands[0].materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
+			
 			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0], this.intersectionVariables, leftOperandsData, cartesianProduct);
 			
 			return QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1], leftOperandsData, cartesianProduct));
@@ -113,6 +115,36 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			keyJoin += "|" + literal.getKey();
 		}
 		return keyJoin;
+	}
+	
+	public static class DebugIterator implements Iterator<Bindings>{
+		
+		private final Iterator<Bindings> innerIterator;
+		private final String id;
+		
+		public DebugIterator(final String id, final Iterator<Bindings> innerIterator){
+			this.innerIterator = innerIterator;
+			this.id = id;
+		}
+
+		@Override
+		public boolean hasNext() {
+			boolean result = this.innerIterator.hasNext();
+			System.out.println(this.id+".hasNext():"+result);
+			return result;
+		}
+
+		@Override
+		public Bindings next() {
+			Bindings result = this.innerIterator.next();
+			System.out.println(this.id+".next():"+result);
+			return result;
+		}
+
+		@Override
+		public void remove() {
+			this.innerIterator.remove();
+		}		
 	}
 
 	public static class JoinIterator implements ParallelIterator<Bindings>{

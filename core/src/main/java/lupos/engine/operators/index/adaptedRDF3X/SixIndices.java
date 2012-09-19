@@ -375,9 +375,9 @@ public class SixIndices extends Indices {
         @Override
         public void run() {
             try {
-                while (bbt.hasNext()) {
-                    final Triple t = bbt.get();
-                    ps.put(new TripleKey(t, new TripleComparator(order)), t);
+                while (this.bbt.hasNext()) {
+                    final Triple t = this.bbt.get();
+                    this.ps.put(new TripleKey(t, new TripleComparator(this.order)), t);
                 }
             } catch (final InterruptedException e) {
                 System.err.println(e);
