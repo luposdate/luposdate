@@ -350,34 +350,32 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		// 4. Rekursive Verbindungen aufl�sen
 		for (Entry<KEY, Set<BasicOperator>> entry : this.tripleProducer.entrySet()) {
 			boolean consumerExists = false;
-			// find all matching consumers by trying out all combinations of the main key, where constants may be replaced with variables
-			for(KEY key: entry.getKey()){
-				Set<BasicOperator> consumers = this.tripleConsumer.get(key);
-				if(consumers!=null){
-					consumerExists = true;
-					// Kreuzverbindungen zwischen Produzenten und Konsumenten
-					// herstellen
-					for (BasicOperator producer : entry.getValue())
-						for (BasicOperator consumer : consumers) {
-							producer.addSucceedingOperator(new OperatorIDTuple(consumer, producer.getSucceedingOperators().size()));
-							// Sonderfall: Falls PredicatePattern ->
-							// Dann: PredicatePattern -> Distinct ->
-							if (consumer instanceof PredicatePattern) {
-								boolean distinctFound = false;
-								for (OperatorIDTuple opid : consumer
-										.getSucceedingOperators())
-									if (opid.getOperator() instanceof Distinct)
-										distinctFound = true;
-								if (!distinctFound) {
-									final Distinct distinct = new Distinct();
-									for(OperatorIDTuple opID: consumer.getSucceedingOperators()){										
-										distinct.getSucceedingOperators().add(new OperatorIDTuple(opID));
-									}
-									consumer.setSucceedingOperator(new OperatorIDTuple(distinct, 0));
+			// find all matching consumers by just getting the previous determined tripleConsumers...
+			Set<BasicOperator> consumers = this.tripleConsumer.get(entry.getKey());
+			if(consumers!=null){
+				consumerExists = true;
+				// Kreuzverbindungen zwischen Produzenten und Konsumenten
+				// herstellen
+				for (BasicOperator producer : entry.getValue())
+					for (BasicOperator consumer : consumers) {
+						producer.addSucceedingOperator(new OperatorIDTuple(consumer, producer.getSucceedingOperators().size()));
+						// Sonderfall: Falls PredicatePattern ->
+						// Dann: PredicatePattern -> Distinct ->
+						if (consumer instanceof PredicatePattern) {
+							boolean distinctFound = false;
+							for (OperatorIDTuple opid : consumer
+									.getSucceedingOperators())
+								if (opid.getOperator() instanceof Distinct)
+									distinctFound = true;
+							if (!distinctFound) {
+								final Distinct distinct = new Distinct();
+								for(OperatorIDTuple opID: consumer.getSucceedingOperators()){										
+									distinct.getSucceedingOperators().add(new OperatorIDTuple(opID));
 								}
+								consumer.setSucceedingOperator(new OperatorIDTuple(distinct, 0));
 							}
 						}
-				}
+					}
 			}
 			// Wenn keine Konsumenten, dann Produzenten entfernen
 			if (!consumerExists) {
