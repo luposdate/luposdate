@@ -216,11 +216,12 @@ public class SixIndices extends Indices {
 
     @Override
     public void build() {
-        waitForAdderThreads();
+        this.waitForAdderThreads();
     }
 
     @Override
     public boolean contains(final Triple t) {
+    	this.waitForAdderThreads();
         return (SPO.get(new TripleKey(t, new TripleComparator(CollationOrder.SPO))) != null);
     }
     

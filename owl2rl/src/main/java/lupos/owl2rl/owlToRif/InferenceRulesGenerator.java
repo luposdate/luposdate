@@ -163,7 +163,7 @@ public class InferenceRulesGenerator {
 			// the predicate local.rulenames is a filter to avoid unneccessary
 			// handling of the helperfunctions in the
 			// rif-queries
-			if (p.getName().getUsedStringRepresentations()[1].contains("local.rulenames")) {
+			if (p.getName().toString().startsWith("<local.rulenames#")) {
 
 				String listName = "";
 				List<Literal> Literals = p.getParameters();
