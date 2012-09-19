@@ -82,16 +82,16 @@ public class SixIndices extends Indices {
     protected static final int k_ = 500;
 
     public SixIndices() {
-        init(SixIndices.usedDatastructure);
+        init(Indices.usedDatastructure);
     }
 
     public lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics getDBBPTreeStatistics(final CollationOrder order) {
-        return statisticsIndicesForFastHistogramComputation[order.ordinal()];
+        return this.statisticsIndicesForFastHistogramComputation[order.ordinal()];
     }
 
     public PrefixSearchMinMax<TripleKey, Triple> getDatastructure(final CollationOrder order) {
         try {
-            if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
+            if (Indices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
 
                 NodeDeSerializer<TripleKey, Triple> nodeDeSerializer = (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) ? new LazyLiteralNodeDeSerializer(order) : new StandardNodeDeSerializer<TripleKey, Triple>(TripleKey.class, Triple.class);
 
@@ -99,7 +99,7 @@ public class SixIndices extends Indices {
 
                 dbbptree.setName(order.toString());
 
-                return new OptimizedDBBPTreeGeneration<TripleKey, Triple>(new DBMergeSortedMap<TripleKey, Triple>(HEAPHEIGHT, (Class<lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>>) (new lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>(null, null)).getClass()), dbbptree);
+                return new OptimizedDBBPTreeGeneration<TripleKey, Triple>(new DBMergeSortedMap<TripleKey, Triple>(Indices.HEAPHEIGHT, (Class<lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>>) (new lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>(null, null)).getClass()), dbbptree);
             } else
                 return new PrefixSearchFromSortedMap<TripleKey, Triple>(new TreeMap<TripleKey, Triple>(new TripleKeyComparator(new TripleComparator(order))));
 
@@ -129,14 +129,14 @@ public class SixIndices extends Indices {
     }
 
     public SixIndices(final URILiteral uriLiteral) {
-        rdfName = uriLiteral;
-        init(SixIndices.usedDatastructure);
+    	this.rdfName = uriLiteral;
+        init(Indices.usedDatastructure);
     }
 
     public SixIndices(final URILiteral uriLiteral, final boolean initialize) {
-        rdfName = uriLiteral;
+    	this.rdfName = uriLiteral;
         if (initialize)
-            init(SixIndices.usedDatastructure);
+            init(Indices.usedDatastructure);
     }
 
     @Override
@@ -160,57 +160,57 @@ public class SixIndices extends Indices {
     		}
     	}
         if (parallel) {
-            if (boundedBuffersForAdders == null) {
-                boundedBuffersForAdders = new BoundedBuffer[6];
-                boundedBuffersForAdders[0] = new BoundedBuffer<Triple>(MAXBUFFER);
-                boundedBuffersForAdders[1] = new BoundedBuffer<Triple>(MAXBUFFER);
-                boundedBuffersForAdders[2] = new BoundedBuffer<Triple>(MAXBUFFER);
-                boundedBuffersForAdders[3] = new BoundedBuffer<Triple>(MAXBUFFER);
-                boundedBuffersForAdders[4] = new BoundedBuffer<Triple>(MAXBUFFER);
-                boundedBuffersForAdders[5] = new BoundedBuffer<Triple>(MAXBUFFER);
-                adders = new Adder[6];
-                adders[0] = new Adder(boundedBuffersForAdders[0], CollationOrder.SPO, SPO);
-                adders[1] = new Adder(boundedBuffersForAdders[1], CollationOrder.SOP, SOP);
-                adders[2] = new Adder(boundedBuffersForAdders[2], CollationOrder.PSO, PSO);
-                adders[3] = new Adder(boundedBuffersForAdders[3], CollationOrder.POS, POS);
-                adders[4] = new Adder(boundedBuffersForAdders[4], CollationOrder.OSP, OSP);
-                adders[5] = new Adder(boundedBuffersForAdders[5], CollationOrder.OPS, OPS);
-                for (final Thread thread : adders) {
+            if (this.boundedBuffersForAdders == null) {
+            	this.boundedBuffersForAdders = new BoundedBuffer[6];
+            	this.boundedBuffersForAdders[0] = new BoundedBuffer<Triple>(MAXBUFFER);
+            	this.boundedBuffersForAdders[1] = new BoundedBuffer<Triple>(MAXBUFFER);
+            	this.boundedBuffersForAdders[2] = new BoundedBuffer<Triple>(MAXBUFFER);
+            	this.boundedBuffersForAdders[3] = new BoundedBuffer<Triple>(MAXBUFFER);
+            	this.boundedBuffersForAdders[4] = new BoundedBuffer<Triple>(MAXBUFFER);
+            	this.boundedBuffersForAdders[5] = new BoundedBuffer<Triple>(MAXBUFFER);
+            	this.adders = new Adder[6];
+            	this.adders[0] = new Adder(this.boundedBuffersForAdders[0], CollationOrder.SPO, this.SPO);
+            	this.adders[1] = new Adder(this.boundedBuffersForAdders[1], CollationOrder.SOP, this.SOP);
+            	this.adders[2] = new Adder(this.boundedBuffersForAdders[2], CollationOrder.PSO, this.PSO);
+            	this.adders[3] = new Adder(this.boundedBuffersForAdders[3], CollationOrder.POS, this.POS);
+            	this.adders[4] = new Adder(this.boundedBuffersForAdders[4], CollationOrder.OSP, this.OSP);
+            	this.adders[5] = new Adder(this.boundedBuffersForAdders[5], CollationOrder.OPS, this.OPS);
+                for (final Thread thread : this.adders) {
                     thread.start();
                 }
             }
-            for (int i = 0; i < boundedBuffersForAdders.length; i++) {
+            for (int i = 0; i < this.boundedBuffersForAdders.length; i++) {
                 try {
-                    boundedBuffersForAdders[i].put(t);
+                	this.boundedBuffersForAdders[i].put(t);
                 } catch (final InterruptedException e) {
                     System.err.println(e);
                     e.printStackTrace();
                 }
             }
         } else {
-            SPO.put(new TripleKey(t, new TripleComparator(CollationOrder.SPO)), t);
-            SOP.put(new TripleKey(t, new TripleComparator(CollationOrder.SOP)), t);
-            PSO.put(new TripleKey(t, new TripleComparator(CollationOrder.PSO)), t);
-            POS.put(new TripleKey(t, new TripleComparator(CollationOrder.POS)), t);
-            OSP.put(new TripleKey(t, new TripleComparator(CollationOrder.OSP)), t);
-            OPS.put(new TripleKey(t, new TripleComparator(CollationOrder.OPS)), t);
+        	this.SPO.put(new TripleKey(t, new TripleComparator(CollationOrder.SPO)), t);
+        	this.SOP.put(new TripleKey(t, new TripleComparator(CollationOrder.SOP)), t);
+        	this.PSO.put(new TripleKey(t, new TripleComparator(CollationOrder.PSO)), t);
+        	this.POS.put(new TripleKey(t, new TripleComparator(CollationOrder.POS)), t);
+        	this.OSP.put(new TripleKey(t, new TripleComparator(CollationOrder.OSP)), t);
+        	this.OPS.put(new TripleKey(t, new TripleComparator(CollationOrder.OPS)), t);
         }
     }
 
     private void waitForAdderThreads() {
-        if (adders != null) {
+        if (this.adders != null) {
             for (int i = 0; i < 6; i++)
-                adders[i].getBoundedBuffer().endOfData();
+            	this.adders[i].getBoundedBuffer().endOfData();
             for (int i = 0; i < 6; i++) {
                 try {
-                    adders[i].join();
+                	this.adders[i].join();
                 } catch (final InterruptedException e) {
                     System.err.println(e);
                     e.printStackTrace();
                 }
             }
-            adders = null;
-            boundedBuffersForAdders = null;
+            this.adders = null;
+            this.boundedBuffersForAdders = null;
         }
     }
 
@@ -222,35 +222,35 @@ public class SixIndices extends Indices {
     @Override
     public boolean contains(final Triple t) {
     	this.waitForAdderThreads();
-        return (SPO.get(new TripleKey(t, new TripleComparator(CollationOrder.SPO))) != null);
+        return (this.SPO.get(new TripleKey(t, new TripleComparator(CollationOrder.SPO))) != null);
     }
     
     public int size(){
-    	return SPO.size();
+    	return this.SPO.size();
     }
 
     @Override
     public void init(final DATA_STRUCT ds) {
-        SixIndices.usedDatastructure = ds;
+        Indices.usedDatastructure = ds;
         // the initialization for PREPHASE.INDEPENDANTBAGS must be done after
         // the prephase!
-        SPO = getDatastructure(CollationOrder.SPO);
-        SOP = getDatastructure(CollationOrder.SOP);
-        PSO = getDatastructure(CollationOrder.PSO);
-        POS = getDatastructure(CollationOrder.POS);
-        OSP = getDatastructure(CollationOrder.OSP);
-        OPS = getDatastructure(CollationOrder.OPS);
+        this.SPO = getDatastructure(CollationOrder.SPO);
+        this.SOP = getDatastructure(CollationOrder.SOP);
+        this.PSO = getDatastructure(CollationOrder.PSO);
+        this.POS = getDatastructure(CollationOrder.POS);
+        this.OSP = getDatastructure(CollationOrder.OSP);
+        this.OPS = getDatastructure(CollationOrder.OPS);
     }
 
     @Override
     public boolean remove(final Triple t) {
 
-        SPO.remove(new TripleKey(t, new TripleComparator(CollationOrder.SPO)));
-        SOP.remove(new TripleKey(t, new TripleComparator(CollationOrder.SOP)));
-        PSO.remove(new TripleKey(t, new TripleComparator(CollationOrder.PSO)));
-        POS.remove(new TripleKey(t, new TripleComparator(CollationOrder.POS)));
-        OSP.remove(new TripleKey(t, new TripleComparator(CollationOrder.OSP)));
-        OPS.remove(new TripleKey(t, new TripleComparator(CollationOrder.OPS)));
+    	this.SPO.remove(new TripleKey(t, new TripleComparator(CollationOrder.SPO)));
+    	this.SOP.remove(new TripleKey(t, new TripleComparator(CollationOrder.SOP)));
+    	this.PSO.remove(new TripleKey(t, new TripleComparator(CollationOrder.PSO)));
+    	this.POS.remove(new TripleKey(t, new TripleComparator(CollationOrder.POS)));
+    	this.OSP.remove(new TripleKey(t, new TripleComparator(CollationOrder.OSP)));
+    	this.OPS.remove(new TripleKey(t, new TripleComparator(CollationOrder.OPS)));
         return true;
     }
 
@@ -261,7 +261,7 @@ public class SixIndices extends Indices {
     @Override
     public void constructCompletely() {
         this.waitForAdderThreads();
-        if (SPO instanceof OptimizedDBBPTreeGeneration) {
+        if (this.SPO instanceof OptimizedDBBPTreeGeneration) {
             if (((OptimizedDBBPTreeGeneration) SPO).generatedCompletely() && ((OptimizedDBBPTreeGeneration) SOP).generatedCompletely() && ((OptimizedDBBPTreeGeneration) PSO).generatedCompletely() && ((OptimizedDBBPTreeGeneration) POS).generatedCompletely() && ((OptimizedDBBPTreeGeneration) OSP).generatedCompletely() && ((OptimizedDBBPTreeGeneration) OPS).generatedCompletely())
                 return;
             if (Indices.usedDatastructure == Indices.DATA_STRUCT.DBBPTREE && (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
@@ -269,7 +269,7 @@ public class SixIndices extends Indices {
                 // new
                 // LazyLiteralTripleKeyDBBPTreeStatistics[CollationOrder.values
                 // ().length];
-                for (int i = 0; i < statisticsIndicesForFastHistogramComputation.length; i++) {
+                for (int i = 0; i < this.statisticsIndicesForFastHistogramComputation.length; i++) {
                     try {
                         this.statisticsIndicesForFastHistogramComputation[i] = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics(null, 1500, 1500, CollationOrder.values()[i]);
                     } catch (final IOException e) {
@@ -434,8 +434,8 @@ public class SixIndices extends Indices {
     protected class GenerateIDTriplesUsingStringSearch {
 
         ReentrantLock lock = new ReentrantLock();
-        Condition waitForMapper = lock.newCondition();
-        Condition waitForDictionaryBuilder = lock.newCondition();
+        Condition waitForMapper = this.lock.newCondition();
+        Condition waitForDictionaryBuilder = this.lock.newCondition();
         boolean mapped = false;
         volatile boolean dictionaryBuilt = false;
         int[] map = null;
@@ -492,18 +492,18 @@ public class SixIndices extends Indices {
                 @Override
                 public void run() {
                     try {
-                        lock.lock();
+                    	GenerateIDTriplesUsingStringSearch.this.lock.lock();
                         try {
-                            while (!dictionaryBuilt)
+                            while (!GenerateIDTriplesUsingStringSearch.this.dictionaryBuilt)
                                 try {
-                                    waitForDictionaryBuilder.await();
+                                    GenerateIDTriplesUsingStringSearch.this.waitForDictionaryBuilder.await();
                                 } catch (final InterruptedException e) {
                                     System.err.println(e);
                                     e.printStackTrace();
                                 }
-                            dictionaryBuilt = false;
+                            GenerateIDTriplesUsingStringSearch.this.dictionaryBuilt = false;
                         } finally {
-                            lock.unlock();
+                            GenerateIDTriplesUsingStringSearch.this.lock.unlock();
                         }
                         CommonCoreQueryEvaluator.readTriples(dataFormat, graphURI.openStream(), new TripleConsumer() {
                             int tripleNumberMapper = 0;
@@ -518,9 +518,9 @@ public class SixIndices extends Indices {
                                             triple.setPos(pos, new LazyLiteral(map[searchtree.getIndex(triple.getPos(pos).toString())]));
                                     }
                                     tc.consume(triple);
-                                    tripleNumberMapper++;
-                                    if (tripleNumberMapper == tripleNumberDictionaryBuilder) {
-                                        mapped = true;
+                                    this.tripleNumberMapper++;
+                                    if (this.tripleNumberMapper == tripleNumberDictionaryBuilder) {
+                                    	mapped = true;
                                         lock.lock();
                                         try {
                                             waitForMapper.signalAll();
