@@ -59,6 +59,7 @@
     "RIF Rules 13": ["Merge Memory Indexes"],
     "RIF Rules 14": ["Push RuleFilter"],
     "RIF Rules 15": ["HashSetNonBlockingDistinctWithIndexAccess"],
+    "RIF Rules 16": ["Remove Union"],
     "RIF Rules 2": ["Remove Unnecessary ConstructPredicate"],
     "RIF Rules 3": ["Construct To Generate"],
     "RIF Rules 4": ["Split Generate"],
@@ -217,6 +218,14 @@
       "short description": ""
     }},
     "RIF Rules 15": {"documentation": {
+      "long description": "",
+      "see also": {
+        "rule packages": [],
+        "rules": []
+      },
+      "short description": ""
+    }},
+    "RIF Rules 16": {"documentation": {
       "long description": "",
       "see also": {
         "rule packages": [],
@@ -623,18 +632,18 @@
             }],
             "o2": [
               {
-                "active": true,
-                "id": 0,
-                "id label": "",
-                "mode": "EXISTS",
-                "to": "opt"
-              },
-              {
                 "active": false,
                 "id": -1,
                 "id label": "",
                 "mode": "EXISTS",
                 "to": "j"
+              },
+              {
+                "active": true,
+                "id": 0,
+                "id label": "",
+                "mode": "EXISTS",
+                "to": "opt"
               }
             ]
           },
@@ -4352,16 +4361,16 @@
           },
           "connections": {
             "c": [{
-              "active": true,
+              "active": false,
               "id": -1,
-              "id label": "a",
+              "id label": "",
               "mode": "ALL_SUCCEEDING",
               "to": "o2"
             }],
             "o1": [{
-              "active": false,
+              "active": true,
               "id": -1,
-              "id label": "",
+              "id label": "a",
               "mode": "ONLY_PRECEDING",
               "to": "c"
             }]
@@ -4397,16 +4406,16 @@
           },
           "connections": {
             "c_new": [{
-              "active": false,
+              "active": true,
               "id": -1,
-              "id label": "",
+              "id label": "a",
               "mode": "EXISTS",
               "to": "o2"
             }],
             "o1": [{
-              "active": true,
+              "active": false,
               "id": -1,
-              "id label": "a",
+              "id label": "",
               "mode": "ALL_SUCCEEDING",
               "to": "c_new"
             }]
@@ -4577,16 +4586,16 @@
         "use generated visual representation": true
       },
       "implementation": {
-        "additional global java code": "",
+        "additional global java code": "private int id;",
         "additional import declarations": "",
         "check method": {
-          "additional code": "return this.p.getPrecedingOperators().size() > 1;",
+          "additional code": "this.id = p.getSucceedingOperators().get(0).getId();\nreturn this.p.getPrecedingOperators().size() > 1;",
           "code": "",
           "start node": "Operator",
           "use generated code": true
         },
         "replace method": {
-          "additional code": "for(lupos.rif.operator.PredicatePattern tmp_p : p_new) {\n    tmp_p.setUnionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getUnionVariables()));\n    tmp_p.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getIntersectionVariables()));\n    tmp_p.setPredicateName(this.p.getPredicateName());\n    tmp_p.setPatternItems(this.p.getPatternItems());\n}",
+          "additional code": "for(lupos.rif.operator.PredicatePattern tmp_p : p_new) {\n tmp_p.getSucceedingOperators().get(0).setId(id);\n    tmp_p.setUnionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getUnionVariables()));\n    tmp_p.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getIntersectionVariables()));\n    tmp_p.setPredicateName(this.p.getPredicateName());\n    tmp_p.setPatternItems(this.p.getPatternItems());\n}",
           "code": "",
           "use generated code": true
         }

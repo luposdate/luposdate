@@ -120,6 +120,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return s;
 	}
 
+	@Override
 	public int compareTo(final Bindings b) {
 		final Set<Variable> sv = this.getVariableSet();
 		final Set<Variable> svb = b.getVariableSet();

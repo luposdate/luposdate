@@ -29,7 +29,7 @@ import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.queryresult.QueryResult;
 
-public class DBBPTreeIndexJoin extends IndexJoin {
+public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
 
 	@Override
 	public void init() {

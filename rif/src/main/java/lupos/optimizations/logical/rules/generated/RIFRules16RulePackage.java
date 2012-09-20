@@ -30,7 +30,7 @@ import lupos.optimizations.logical.rules.generated.runtime.RulePackageWithStartN
 public class RIFRules16RulePackage extends RulePackage {
     public RIFRules16RulePackage() {
         this.rules = new Rule[] {
-		        new HashSetNonBlockingDistinctWithIndexAccessRule()
+        		new RemoveUnionRule()
         };
     }
 }

@@ -83,6 +83,7 @@ import lupos.optimizations.logical.rules.generated.RIFRules11RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules12RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules13RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules14RulePackage;
+import lupos.optimizations.physical.PhysicalOptimizations;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
@@ -289,6 +290,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	@Override
 	public long physicalOptimization() {
 		long start = (new Date()).getTime();
+		PhysicalOptimizations.addReplacement("multiinput.join.", "IndexJoinWithDuplicateElimination", "HashMapIndexJoinWithDuplicateElimination");
 		this.evaluator.physicalOptimization();
 		final RIFRules15RulePackage rules15 = new RIFRules15RulePackage();
 		rules15.applyRules(this.evaluator.getRootNode());

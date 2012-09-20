@@ -1,26 +1,3 @@
-/**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
- *
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * 	- Redistributions of source code must retain the above copyright notice, this list of conditions and the following
- * 	  disclaimer.
- * 	- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
- * 	  following disclaimer in the documentation and/or other materials provided with the distribution.
- * 	- Neither the name of the University of Luebeck nor the names of its contributors may be used to endorse or promote
- * 	  products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
- * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package lupos.optimizations.logical.rules.generated;
 
 import java.util.HashMap;
@@ -35,7 +12,7 @@ import lupos.engine.operators.OperatorIDTuple;
 
 
 public class SplitPredicatePatternRule extends Rule {
-
+    private int id;
     private lupos.engine.operators.BasicOperator o2 = null;
     private lupos.engine.operators.BasicOperator[] o1 = null;
     private lupos.rif.operator.PredicatePattern p = null;
@@ -102,6 +79,7 @@ public class SplitPredicatePatternRule extends Rule {
 
         if(_result) {
             // additional check method code...
+            this.id = p.getSucceedingOperators().get(0).getId();
             return this.p.getPrecedingOperators().size() > 1;
         }
 
@@ -110,8 +88,6 @@ public class SplitPredicatePatternRule extends Rule {
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        this.p.removeSucceedingOperator(this.o2);
-        this.o2.removePrecedingOperator(this.p);
         int[] _label_a = null;
 
         int _label_a_count = 0;
@@ -125,6 +101,8 @@ public class SplitPredicatePatternRule extends Rule {
             this.p.removePrecedingOperator(_parent);
         }
 
+        this.p.removeSucceedingOperator(this.o2);
+        this.o2.removePrecedingOperator(this.p);
 
         // add new operators...
         lupos.rif.operator.PredicatePattern[] p_new = null;
@@ -136,6 +114,11 @@ public class SplitPredicatePatternRule extends Rule {
 
 
         // add new connections...
+        for(this._dim_0 = 0; this._dim_0 < this.o1.length; this._dim_0 += 1) {
+            this.o1[this._dim_0].addSucceedingOperator(p_new[this._dim_0]);
+            p_new[this._dim_0].addPrecedingOperator(this.o1[this._dim_0]);
+        }
+
         _label_a_count = 0;
 
         for(lupos.rif.operator.PredicatePattern _parent : p_new) {
@@ -146,11 +129,6 @@ public class SplitPredicatePatternRule extends Rule {
         }
 
 
-        for(this._dim_0 = 0; this._dim_0 < this.o1.length; this._dim_0 += 1) {
-            this.o1[this._dim_0].addSucceedingOperator(p_new[this._dim_0]);
-            p_new[this._dim_0].addPrecedingOperator(this.o1[this._dim_0]);
-        }
-
 
         // delete unreachable operators...
         this.deleteOperatorWithoutParentsRecursive(this.p, _startNodes);
@@ -158,6 +136,7 @@ public class SplitPredicatePatternRule extends Rule {
 
         // additional replace method code...
         for(lupos.rif.operator.PredicatePattern tmp_p : p_new) {
+         tmp_p.getSucceedingOperators().get(0).setId(id);
             tmp_p.setUnionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getUnionVariables()));
             tmp_p.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getIntersectionVariables()));
             tmp_p.setPredicateName(this.p.getPredicateName());

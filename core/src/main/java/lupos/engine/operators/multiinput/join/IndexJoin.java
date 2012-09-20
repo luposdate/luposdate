@@ -35,8 +35,7 @@ import lupos.engine.operators.multiinput.optional.OptionalResult;
 
 public abstract class IndexJoin extends Join {
 	protected Map<String, QueryResult>[] lba;
-	protected QueryResult[] cartesianProduct = { QueryResult.createInstance(),
-			QueryResult.createInstance() };
+	protected QueryResult[] cartesianProduct = { this.createQueryResult(), this.createQueryResult() };
 
 	public IndexJoin() {
 		super();
@@ -48,12 +47,26 @@ public abstract class IndexJoin extends Join {
 		super.cloneFrom(op);
 		init();
 	}
+	
+	/**
+	 * This method creates a QueryResult object.
+	 * This method must be overriden by succeeding classes:
+	 * For joins with internal duplicate elimination, this method returns a QueryResult object with unique bindings, otherwise a normal multi-set QueryResult object.
+	 * @return a new Queryresult object
+	 */
+	protected abstract QueryResult createQueryResult();
+	
+	/**
+	 * Must be overridden by succeeding classes for signaling whether or not duplicate elimination is part of this join. 
+	 * @return true if duplicate elimination is enabled for this join
+	 */
+	protected abstract boolean isDuplicateEliminationEnabled();
 
 	public abstract void init();
 
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
-		final QueryResult result = QueryResult.createInstance();
+		final QueryResult result = this.createQueryResult();
 
 		int otherOperand = 1-operandID;
 
@@ -66,15 +79,17 @@ public abstract class IndexJoin extends Join {
 			while (it.hasNext()) {
 				final Literal literal = binding.get(it.next());
 				if (literal == null) {
-					this.cartesianProduct[operandID].add(binding);
-					// build the cartesian product
-					for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
-						joinBindings(result, binding.clone(), b2);
-					}
-
-					for (final QueryResult qr : this.lba[otherOperand].values()) {
-						for (final Bindings b2 : qr) {
+					boolean added = this.cartesianProduct[operandID].add(binding);
+					if(added || !isDuplicateEliminationEnabled()){
+						// build the cartesian product
+						for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 							joinBindings(result, binding.clone(), b2);
+						}
+	
+						for (final QueryResult qr : this.lba[otherOperand].values()) {
+							for (final Bindings b2 : qr) {
+								joinBindings(result, binding.clone(), b2);
+							}
 						}
 					}
 
@@ -88,25 +103,26 @@ public abstract class IndexJoin extends Join {
 				continue;
 
 			QueryResult lb = this.lba[operandID].get(keyJoin);
-			if (lb == null)
-				lb = QueryResult.createInstance();
-			lb.add(binding);
+			if (lb == null){
+				lb = this.createQueryResult();
+			}
+			boolean added = lb.add(binding);
 			this.lba[operandID].put(keyJoin, lb);
 
-			final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
-			if (toJoin != null) {
+			if(added || !isDuplicateEliminationEnabled()){
+				final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
+				if (toJoin != null) {
+					final Iterator<Bindings> itb = toJoin.iterator();
+					while (itb.hasNext()) {
+						final Bindings b2 = itb.next();
 
-				final Iterator<Bindings> itb = toJoin.iterator();
-				while (itb.hasNext()) {
-					final Bindings b2 = itb.next();
-
+						joinBindings(result, binding.clone(), b2);
+					}
+				}
+				// build cartesian product
+				for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 					joinBindings(result, binding.clone(), b2);
 				}
-			}
-
-			// build cartesian product
-			for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
-				joinBindings(result, binding.clone(), b2);
 			}
 		}
 		if (result.size() == 0)
@@ -126,9 +142,8 @@ public abstract class IndexJoin extends Join {
 		// different from process:
 		final OptionalResult or = new OptionalResult();
 		// different from process:
-		final QueryResult joinPartnerFromLeftOperand = QueryResult
-				.createInstance();
-		final QueryResult result = QueryResult.createInstance();
+		final QueryResult joinPartnerFromLeftOperand = this.createQueryResult();
+		final QueryResult result = this.createQueryResult();
 		int otherOperand = 1-operandID;
 		final Iterator<Bindings> itbindings = bindings.oneTimeIterator();
 		while (itbindings.hasNext()) {
@@ -138,26 +153,28 @@ public abstract class IndexJoin extends Join {
 			while (it.hasNext()) {
 				final Literal literal = binding.get(it.next());
 				if (literal == null) {
-					this.cartesianProduct[operandID].add(binding);
-					// build the cartesian product
-					for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
-						if(joinBindings(result, binding.clone(), b2)){
-							if (operandID == 1) {
-								joinPartnerFromLeftOperand.add(b2);
-							} else {
-								joinPartnerFromLeftOperand.add(binding);
-							}							
-						}
-					}
-
-					for (final QueryResult qr : this.lba[otherOperand].values()) {
-						for (final Bindings b2 : qr) {
+					boolean added = this.cartesianProduct[operandID].add(binding);
+					if(added || !isDuplicateEliminationEnabled()){
+						// build the cartesian product
+						for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 							if(joinBindings(result, binding.clone(), b2)){
 								if (operandID == 1) {
 									joinPartnerFromLeftOperand.add(b2);
 								} else {
 									joinPartnerFromLeftOperand.add(binding);
-								}								
+								}							
+							}
+						}
+	
+						for (final QueryResult qr : this.lba[otherOperand].values()) {
+							for (final Bindings b2 : qr) {
+								if(joinBindings(result, binding.clone(), b2)){
+									if (operandID == 1) {
+										joinPartnerFromLeftOperand.add(b2);
+									} else {
+										joinPartnerFromLeftOperand.add(binding);
+									}								
+								}
 							}
 						}
 					}
@@ -172,35 +189,38 @@ public abstract class IndexJoin extends Join {
 				continue;
 			
 			QueryResult lb = this.lba[operandID].get(keyJoin);
-			if (lb == null)
-				lb = QueryResult.createInstance();
-			lb.add(binding);
-			this.lba[operandID].put(keyJoin, lb);
-
-			final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
-			if (toJoin != null) {
-
-				final Iterator<Bindings> itb = toJoin.iterator();
-				while (itb.hasNext()) {
-					final Bindings b2 = itb.next();
-
-					// different from process:
-					if (joinBindings(result, binding.clone(), b2)) {
+			if (lb == null){
+				lb = this.createQueryResult();
+			}
+			boolean added = lb.add(binding);
+			if(added || !isDuplicateEliminationEnabled()){
+				this.lba[operandID].put(keyJoin, lb);
+	
+				final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
+				if (toJoin != null) {
+	
+					final Iterator<Bindings> itb = toJoin.iterator();
+					while (itb.hasNext()) {
+						final Bindings b2 = itb.next();
+	
+						// different from process:
+						if (joinBindings(result, binding.clone(), b2)) {
+							if (operandID == 1) {
+								joinPartnerFromLeftOperand.add(b2);
+							} else {
+								joinPartnerFromLeftOperand.add(binding);
+							}
+						}
+					}
+				}
+				// build cartesian product
+				for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
+					if(joinBindings(result, binding.clone(), b2)){
 						if (operandID == 1) {
 							joinPartnerFromLeftOperand.add(b2);
 						} else {
 							joinPartnerFromLeftOperand.add(binding);
 						}
-					}
-				}
-			}
-			// build cartesian product
-			for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
-				if(joinBindings(result, binding.clone(), b2)){
-					if (operandID == 1) {
-						joinPartnerFromLeftOperand.add(b2);
-					} else {
-						joinPartnerFromLeftOperand.add(binding);
 					}
 				}
 			}
@@ -224,14 +244,13 @@ public abstract class IndexJoin extends Join {
 	@Override
 	public void deleteAll(final int operandID) {
 		this.cartesianProduct[operandID].release();
-		this.cartesianProduct[operandID] = QueryResult.createInstance();
+		this.cartesianProduct[operandID] = this.createQueryResult();
 		this.lba[operandID].clear();
 	}
 
 	@Override
-	public QueryResult deleteQueryResult(final QueryResult queryResult,
-			final int operandID) {
-		final QueryResult result = QueryResult.createInstance();
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
+		final QueryResult result = this.createQueryResult();
 
 		int otherOperand;
 		if (operandID == 0)
@@ -248,15 +267,17 @@ public abstract class IndexJoin extends Join {
 			while (it.hasNext()) {
 				final Literal literal = binding.get(it.next());
 				if (literal == null) {
-					this.cartesianProduct[operandID].remove(binding);
-					// build the cartesian product
-					for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
-						joinBindings(result, binding.clone(), b2);
-					}
-
-					for (final QueryResult qr : this.lba[otherOperand].values()) {
-						for (final Bindings b2 : qr) {
+					boolean removed = this.cartesianProduct[operandID].remove(binding);
+					if(removed || !isDuplicateEliminationEnabled()){
+						// build the cartesian product
+						for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 							joinBindings(result, binding.clone(), b2);
+						}
+	
+						for (final QueryResult qr : this.lba[otherOperand].values()) {
+							for (final Bindings b2 : qr) {
+								joinBindings(result, binding.clone(), b2);
+							}
 						}
 					}
 
@@ -270,24 +291,28 @@ public abstract class IndexJoin extends Join {
 				continue;
 
 			final QueryResult lb = this.lba[operandID].get(keyJoin);
-			if (lb != null)
-				lb.remove(binding);
+			boolean removed = false;
+			if (lb != null){
+				removed = lb.remove(binding);
+			}
 			this.lba[operandID].put(keyJoin, lb);
 
-			final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
-			if (toJoin != null) {
+			if(removed || !isDuplicateEliminationEnabled()){
+				final QueryResult toJoin = this.lba[otherOperand].get(keyJoin);
+				if (toJoin != null) {
+	
+					final Iterator<Bindings> itb = toJoin.iterator();
+					while (itb.hasNext()) {
+						final Bindings b2 = itb.next();
+	
+						joinBindings(result, binding.clone(), b2);
+					}
+				}
 
-				final Iterator<Bindings> itb = toJoin.iterator();
-				while (itb.hasNext()) {
-					final Bindings b2 = itb.next();
-
+				// build cartesian product
+				for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
 					joinBindings(result, binding.clone(), b2);
 				}
-			}
-
-			// build cartesian product
-			for (final Bindings b2 : this.cartesianProduct[otherOperand]) {
-				joinBindings(result, binding.clone(), b2);
 			}
 		}
 		if (result.size() == 0)

@@ -26,7 +26,7 @@ package lupos.engine.operators.multiinput.join;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
 
-public class HybridIndexJoin extends IndexJoin {
+public class HybridIndexJoin extends IndexJoinWithoutDuplicateElimination {
 
 	@SuppressWarnings("unchecked")
 	@Override

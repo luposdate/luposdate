@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 import lupos.datastructures.queryresult.QueryResult;
 
-public class HashMapIndexJoin extends IndexJoin {
+public class HashMapIndexJoin extends IndexJoinWithoutDuplicateElimination {
 
 	@SuppressWarnings("unchecked")
 	@Override
