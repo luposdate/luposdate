@@ -168,10 +168,7 @@ public class GraphBox {
 			g.setColor(GraphBox.lineColors[colorIndex]);
 
 			if(!directCircle) {
-				// drawConnection(g, startX, startY, endPoint.x, endPoint.y,
-				// true);
-				drawConnection(g, startPoint.x, startPoint.y, endPoint.x,
-						endPoint.y, true);
+				drawConnection(g, startPoint.x, startPoint.y, endPoint.x, endPoint.y, true);
 			}
 
 			final JPanel annotationPanel = this.drawLineAnnotation(childGW, false);
@@ -201,32 +198,34 @@ public class GraphBox {
 				drawConnection(g, startPoint2x, startPoint2y, endPoint2x, endPoint2y, true);
 			} else if(directCircle) { // direct circle...
 
-				final Point point1 = GraphBox.determineEdgePoint(
-						annotationPoint.x, annotationPoint.y,
-						annotationDimension.width, annotationDimension.height,
-						this.x, this.y, this.width);
-
-				final Point endPoint1 = GraphBox.determineEdgePoint(this.x,
-						this.y,
-						this.width, this.height, annotationPoint.x,
-						annotationPoint.y, annotationDimension.width);
-
-				drawConnection(g, point1.x, point1.y, endPoint1.x, endPoint1.y,
-						false);
-
-				final Point point2 = GraphBox.determineEdgePoint(childBox.x,
-						childBox.y, childBox.width, childBox.height,
-						annotationPoint.x, annotationPoint.y,
-						annotationDimension.width);
-
-				final Point endPoint2 = GraphBox
-						.determineEdgePoint(annotationPoint.x,
-								annotationPoint.y, annotationDimension.width,
-								annotationDimension.height, childBox.x,
-								childBox.y, childBox.width);
-
-				drawConnection(g, point2.x, point2.y, endPoint2.x, endPoint2.y,
-						true);
+				drawConnection(g, startPoint.x, startPoint.y, annotationPoint.x+(annotationDimension.width/2), annotationPoint.y+(annotationDimension.height/2), endPoint.x, endPoint.y, true);
+				
+				
+//				final Point point1 = GraphBox.determineEdgePoint(
+//						annotationPoint.x, annotationPoint.y,
+//						annotationDimension.width, annotationDimension.height,
+//						this.x, this.y, this.width);
+//
+//				final Point endPoint1 = GraphBox.determineEdgePoint(this.x,
+//						this.y,
+//						this.width, this.height, annotationPoint.x,
+//						annotationPoint.y, annotationDimension.width);
+//
+//				drawConnection(g, point1.x, point1.y, endPoint1.x, endPoint1.y,
+//						false);
+//
+//				final Point endPoint2 = GraphBox.determineEdgePoint(childBox.x,
+//						childBox.y, childBox.width, childBox.height,
+//						annotationPoint.x, annotationPoint.y,
+//						annotationDimension.width);
+//
+//				final Point point2 = GraphBox
+//						.determineEdgePoint(annotationPoint.x,
+//								annotationPoint.y, annotationDimension.width,
+//								annotationDimension.height, childBox.x,
+//								childBox.y, childBox.width);
+//
+//				drawConnection(g, point2.x, point2.y, endPoint2.x, endPoint2.y, true);
 			}
 		}
 	}
@@ -387,29 +386,92 @@ public class GraphBox {
 		g.drawLine(x, y, xChild, yChild); // draw normal line
 
 		if(arrowHead) {
-			g.setStroke(new BasicStroke(1f)); // solid arrow head
-
-			final int sideLength = (int) (8 * 1.0);
-			final int sideStrength = (int) (5 * 1.0);
-			final double aDir = Math.atan2(x - xChild, y - yChild);
-
-			// create new polygon for arrow head...
-			final Polygon tmpPoly = new Polygon();
-			// add arrow tip as point...
-			tmpPoly.addPoint(xChild, yChild);
-			// add one edge as point...
-			tmpPoly.addPoint(xChild + xCor(sideLength, aDir + 0.5), yChild + yCor(sideLength, aDir + 0.5));
-			// add between the edges as point...
-			tmpPoly.addPoint(xChild + xCor(sideStrength, aDir), yChild + yCor(sideStrength, aDir));
-			// add other edge as point...
-			tmpPoly.addPoint(xChild + xCor(sideLength, aDir - 0.5), yChild + yCor(sideLength, aDir - 0.5));
-			// add arrow tip as point...
-			tmpPoly.addPoint(xChild, yChild);
-
-			g.drawPolygon(tmpPoly); // draw the arrow head
-			g.fillPolygon(tmpPoly); // fill the arrow head
+			drawArrowHead( g, x, y, xChild, yChild);
 		}
 	}
+	
+	public static void drawArrowHead(final Graphics2D g, final int x, final int y, final int xChild, final int yChild) {
+		g.setStroke(new BasicStroke(1f)); // solid arrow head
+
+		final int sideLength = (int) (8 * 1.0);
+		final int sideStrength = (int) (5 * 1.0);
+		final double aDir = Math.atan2(x - xChild, y - yChild);
+
+		// create new polygon for arrow head...
+		final Polygon tmpPoly = new Polygon();
+		// add arrow tip as point...
+		tmpPoly.addPoint(xChild, yChild);
+		// add one edge as point...
+		tmpPoly.addPoint(xChild + xCor(sideLength, aDir + 0.5), yChild + yCor(sideLength, aDir + 0.5));
+		// add between the edges as point...
+		tmpPoly.addPoint(xChild + xCor(sideStrength, aDir), yChild + yCor(sideStrength, aDir));
+		// add other edge as point...
+		tmpPoly.addPoint(xChild + xCor(sideLength, aDir - 0.5), yChild + yCor(sideLength, aDir - 0.5));
+		// add arrow tip as point...
+		tmpPoly.addPoint(xChild, yChild);
+
+		g.drawPolygon(tmpPoly); // draw the arrow head
+		g.fillPolygon(tmpPoly); // fill the arrow head
+	}
+	
+	
+	public static void drawConnection(final Graphics2D g, final int x, final int y, final int middle_x, final int middle_y, final int xChild, final int yChild, final boolean arrowHead) {
+		final int[] xa = { x, x, middle_x, xChild};
+		final int[] ya = { y, y, middle_y, yChild};
+		drawBSpline( g, xa, ya);
+		if(arrowHead) {
+			drawArrowHead( g, middle_x, middle_y, xChild, yChild);
+		}
+	}
+	
+	public static void drawBSpline(final Graphics2D g, final int[] xa, final int[] ya){
+        if(xa.length!=ya.length){
+        	throw new RuntimeException("Given arrays of coordinates have different sizes!");
+        }
+        // determine length of bspline line as approximation by summation of edges between the given points
+		double length = 0;
+		for(int i=0; i<xa.length-1; i++){
+			final int xlength= xa[i]-xa[i+1];
+			final int ylength= ya[i]-ya[i+1];
+			length += Math.sqrt(xlength*xlength + ylength*ylength);
+		}
+		// determine the distance between points on line of bspline dependant on the length of the edge
+        double dt = (length<100)? 1.0/100.0 : 1.0/length; // distance between points on the line
+        // now draw bspline line...
+        if(xa.length >= 1) {
+            for(double t = -1.0; t < xa.length; t += dt) {
+                double x = 0;
+                double y = 0;
+                for(int j = -2; j <= xa.length+2; j++) {
+                    int k = j;
+                    if(k < 0){
+                        k = 1;
+                    }
+                    if(k >= xa.length){
+                        k = xa.length-1;
+                    }
+                    double c = coefficent(t - j);
+                    x += xa[k] * c;
+                    y += ya[k] * c;
+                }                
+                g.drawLine((int)x, (int)y, (int)x, (int)y);
+            }
+        }
+	}
+	
+    private static double coefficent(final double tt) {
+        final double r;        
+        final double t = (tt < 0.0)? (-tt) : tt;         
+        if(t < 1.0){
+            r = (3.0 * t * t * t -6.0 * t * t + 4.0) / 6.0;        
+        } else if(t < 2.0){
+            r = -1.0 * (t - 2.0) * (t - 2.0) * (t - 2.0) / 6.0;
+        } else {
+            r = 0.0;
+        }        
+        return r; 
+    }
+	
 
 	protected static int yCor(final int len, final double dir) {
 		return (int) (len * Math.cos(dir));
