@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -198,34 +199,8 @@ public class GraphBox {
 				drawConnection(g, startPoint2x, startPoint2y, endPoint2x, endPoint2y, true);
 			} else if(directCircle) { // direct circle...
 
-				drawConnection(g, startPoint.x, startPoint.y, annotationPoint.x+(annotationDimension.width/2), annotationPoint.y+(annotationDimension.height/2), endPoint.x, endPoint.y, true);
-				
-				
-//				final Point point1 = GraphBox.determineEdgePoint(
-//						annotationPoint.x, annotationPoint.y,
-//						annotationDimension.width, annotationDimension.height,
-//						this.x, this.y, this.width);
-//
-//				final Point endPoint1 = GraphBox.determineEdgePoint(this.x,
-//						this.y,
-//						this.width, this.height, annotationPoint.x,
-//						annotationPoint.y, annotationDimension.width);
-//
-//				drawConnection(g, point1.x, point1.y, endPoint1.x, endPoint1.y,
-//						false);
-//
-//				final Point endPoint2 = GraphBox.determineEdgePoint(childBox.x,
-//						childBox.y, childBox.width, childBox.height,
-//						annotationPoint.x, annotationPoint.y,
-//						annotationDimension.width);
-//
-//				final Point point2 = GraphBox
-//						.determineEdgePoint(annotationPoint.x,
-//								annotationPoint.y, annotationDimension.width,
-//								annotationDimension.height, childBox.x,
-//								childBox.y, childBox.width);
-//
-//				drawConnection(g, point2.x, point2.y, endPoint2.x, endPoint2.y, true);
+				drawConnection(g, startPoint.x, startPoint.y, annotationPoint.x+annotationDimension.width, annotationPoint.y+(annotationDimension.height/2), endPoint.x, endPoint.y, true);
+								
 			}
 		}
 	}
@@ -416,46 +391,79 @@ public class GraphBox {
 	
 	
 	public static void drawConnection(final Graphics2D g, final int x, final int y, final int middle_x, final int middle_y, final int xChild, final int yChild, final boolean arrowHead) {
-		final int[] xa = { x, x, middle_x, xChild};
-		final int[] ya = { y, y, middle_y, yChild};
-		drawBSpline( g, xa, ya);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		final Point[] p = {
+				new Point(x,y), 
+				new Point(x,y), 
+				new Point(middle_x, middle_y), 
+				new Point(xChild, yChild)};
+		drawBSpline( g, p);
 		if(arrowHead) {
 			drawArrowHead( g, middle_x, middle_y, xChild, yChild);
 		}
 	}
 	
-	public static void drawBSpline(final Graphics2D g, final int[] xa, final int[] ya){
-        if(xa.length!=ya.length){
-        	throw new RuntimeException("Given arrays of coordinates have different sizes!");
-        }
-        // determine length of bspline line as approximation by summation of edges between the given points
+	public static void drawBSpline(final Graphics2D g, Point[] p){
+		// determine length of bspline line as approximation by summation of edges between the given points
 		double length = 0;
-		for(int i=0; i<xa.length-1; i++){
-			final int xlength= xa[i]-xa[i+1];
-			final int ylength= ya[i]-ya[i+1];
+		for(int i=0; i<p.length-1; i++){
+			final int xlength= p[i].x-p[i+1].x;
+			final int ylength= p[i].y-p[i+1].y;
 			length += Math.sqrt(xlength*xlength + ylength*ylength);
 		}
 		// determine the distance between points on line of bspline dependant on the length of the edge
-        double dt = (length<100)? 1.0/100.0 : 1.0/length; // distance between points on the line
-        // now draw bspline line...
-        if(xa.length >= 1) {
-            for(double t = -1.0; t < xa.length; t += dt) {
-                double x = 0;
-                double y = 0;
-                for(int j = -2; j <= xa.length+2; j++) {
-                    int k = j;
-                    if(k < 0){
-                        k = 1;
-                    }
-                    if(k >= xa.length){
-                        k = xa.length-1;
-                    }
-                    double c = coefficent(t - j);
-                    x += xa[k] * c;
-                    y += ya[k] * c;
-                }                
-                g.drawLine((int)x, (int)y, (int)x, (int)y);
-            }
+		double dt = (length<100)? 1.0/100.0 : 1.0/length; // distance between points on the line
+		// for remembering previously computed colors for the same point ("the darker color wins") -> could be more efficiently solved with forgetting colors of points which will surely not be asked for any more, as they are too far away from current regarded points...   
+		final HashMap<Point, Integer> forAntiAliasing = new HashMap<Point, Integer>();
+		// now draw bspline line...
+		if(p.length >= 1) {
+			for(double t = -1.0; t < p.length; t += dt) {
+				double x = 0;
+				double y = 0;
+				for(int j = -2; j <= p.length+2; j++) {
+					int k = j;
+					if(k < 0){
+						k = 1;
+					}
+					if(k >= p.length){
+						k = p.length-1;
+					}
+					double c = coefficent(t - j);
+					x += p[k].x * c;
+					y += p[k].y * c;                    
+				}
+				final int xpos =(int) Math.round(x); 
+				final int ypos =(int) Math.round(y);
+				// draw a thicker line around (x, y) with antialiasing...
+				for(int ix=-1; ix<2; ix++){
+					for(int iy=-1; iy<2; iy++){
+						final int currentpointx = xpos+ix;
+						final int currentpointy = ypos+iy;
+						if(currentpointx>=0 && currentpointy>=0){
+							checkPointAndDraw(g, currentpointx, currentpointy, x, y, forAntiAliasing);
+						}
+					}
+				}
+			}
+		}
+		g.setColor(Color.BLACK);
+	}
+	
+	private static int CONSTANTFORANTIALIASING = 255;
+	
+	private static void checkPointAndDraw(final Graphics2D g, final int xpos, final int ypos, final double x, final double y, final HashMap<Point, Integer> forAntiAliasing){
+        // Antialiasing:
+        double xdist = x-xpos;
+        double ydist = y-ypos;
+        final double distance = Math.sqrt(xdist*xdist+ydist*ydist);
+        final int value = (int) Math.round(GraphBox.CONSTANTFORANTIALIASING*distance);
+        int grey = ((value>255)? 255 : value);
+        final Point point = new Point(xpos, ypos);
+        final Integer greyOld = forAntiAliasing.get(point);
+        if(greyOld==null || greyOld>grey){
+        	forAntiAliasing.put(point,grey);
+            g.setColor(new Color(grey,grey,grey));
+            g.drawLine(xpos, ypos, xpos, ypos);
         }
 	}
 	
