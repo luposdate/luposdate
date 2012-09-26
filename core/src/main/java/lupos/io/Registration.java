@@ -483,12 +483,8 @@ public class Registration {
 				out.previousBindings = ba;
 				if (t instanceof BindingsArrayReadTriples) {
 					out.writeLuposInt(ba.getTriples().size());
-					if (ba.getTriples().size() != 0) {
-						final Triple tt = ba.getTriples().iterator().next();
-						out.os.write(1);
-					}
 					for (final Triple tt : ba.getTriples()) {
-						serializeWithoutId(t, out);
+						serializeWithoutId(tt, out);
 					}
 				}
 				if (t instanceof BindingsArrayVarMinMax) {

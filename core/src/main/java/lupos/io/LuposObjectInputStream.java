@@ -322,19 +322,15 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 					return b;
 				if (number < 0)
 					return null;
-				final int tripleType = this.is.read();
 				for (int j = 0; j < number; j++) {
-					Triple t;
-					if (tripleType == 1) {
-						try {
-							t = readTriple();
-						} catch (final URISyntaxException e) {
-							System.out.println(e);
-							e.printStackTrace();
-							return b;
-						}
+					try {
+						Triple t = readTriple();
 						b.addTriple(t);
-					} 
+					} catch (final URISyntaxException e) {
+						System.out.println(e);
+						e.printStackTrace();
+						return b;
+					}
 				}
 			}
 			if (b instanceof BindingsArrayVarMinMax) {
