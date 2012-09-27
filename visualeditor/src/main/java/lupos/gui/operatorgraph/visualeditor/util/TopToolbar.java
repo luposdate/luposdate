@@ -30,6 +30,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -39,12 +43,20 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
+import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
+import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
+import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
+import lupos.gui.anotherSyntaxHighlighting.LuposJTextPane;
 import lupos.gui.operatorgraph.arrange.Arrange;
+import lupos.gui.operatorgraph.arrange.LayoutTest;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
@@ -187,9 +199,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 
 					visualGraph.clear();
 					visualGraph.updateMainPanel(visualGraph.createGraph(
-							rootList, checkBoxX.isSelected(),
-							checkBoxY.isSelected(),
- checkBoxRot.isSelected(),
+							rootList, checkBoxX.isSelected(), checkBoxY.isSelected(), checkBoxRot.isSelected(),
 							(Arrange) comboBox.getSelectedItem()));
 				}
 			}
@@ -254,13 +264,13 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 
 		panel.add(new JLabel("flip"));
 
-		panel.add(checkBoxX);
+		panel.add(this.checkBoxX);
 
-		panel.add(checkBoxY);
+		panel.add(this.checkBoxY);
 
-		panel.add(checkBoxRot);
+		panel.add(this.checkBoxRot);
 
-		panel.add(comboBox);
+		panel.add(this.comboBox);
 
 		final JButton arrangeButton = new JButton("arrange");
 		arrangeButton.setToolTipText("arrange the shown graph");
@@ -271,13 +281,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 				setTextStatusBar("Arranging graph ...");
 
 				for(final VisualGraph<T> visualGraph : visualGraphs) {
-					visualGraph.arrange(checkBoxX.isSelected(),
-							checkBoxY.isSelected(),
- checkBoxRot.isSelected(),
-							(Arrange) comboBox.getSelectedItem());
-					visualGraph.arrange(checkBoxX.isSelected(),
-							checkBoxY.isSelected(),
- checkBoxRot.isSelected(),
+					visualGraph.arrange(checkBoxX.isSelected(), checkBoxY.isSelected(), checkBoxRot.isSelected(),
 							(Arrange) comboBox.getSelectedItem());
 				}
 
@@ -286,9 +290,53 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 		});
 
 		panel.add(arrangeButton);
+		
+		final JButton qButton = new JButton("Q");
+		qButton.setToolTipText("determines quality of current graph...");
+		qButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent ae) {
+				editor.cancelModi();
 
+				setTextStatusBar("Determining quality of current graph ...");
+
+				for(final VisualGraph<T> visualGraph : visualGraphs) {
+					showString(LayoutTest.test(visualGraph), "Result of Graph Test");
+				}
+
+				clearStatusBar();
+			}
+		});
+
+		panel.add(qButton);
+		
 		panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		return panel;
+	}
+	
+	/**
+	 * Displays a window with the given String.
+	 * @param content the string to be displayed
+	 * @param title the title of the window
+	 */
+	public static void showString(String content, String title){
+		
+		final JTextPane tp_dataInput = new JTextPane();
+		
+		tp_dataInput.setEditable(false);
+		tp_dataInput.setText(content);
+
+		JScrollPane dataInputSP = new JScrollPane(tp_dataInput);	
+		
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(dataInputSP);
+		
+		final JFrame frame = new JFrame(title);
+		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		frame.getContentPane().add(panel);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 
 	/**

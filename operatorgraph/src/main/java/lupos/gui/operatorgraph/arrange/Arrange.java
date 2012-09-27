@@ -29,9 +29,9 @@ public enum Arrange {
 	LAYERED() {
 
 		@Override
-		public void arrange(final OperatorGraph operatorgraph,
-				final boolean flipX, final boolean flipY, final boolean rotate) {
-			LayeredDrawing.arrange(operatorgraph, flipX, flipY, rotate);
+		public void arrange(final OperatorGraph operatorgraph) {
+			GraphHelper.restoreOriginalPositions(operatorgraph);
+			LayeredDrawing.arrange(operatorgraph);
 		}
 
 		@Override
@@ -39,8 +39,83 @@ public enum Arrange {
 			return "Layered Drawing";
 		}
 
+	},
+	
+	SUGIYAMA() {
+
+		@Override
+		public void arrange(final OperatorGraph operatorgraph) {
+			GraphHelper.restoreOriginalPositions(operatorgraph);
+			Sugiyama.arrange(operatorgraph);
+		}
+
+		@Override
+		public String toString() {
+			return "Sugiyama";
+		}
+
+	},
+	
+	SPRING_EMBEDDER_AFTER_RANDOM() {
+
+		@Override
+		public void arrange(final OperatorGraph operatorgraph) {
+			// to get some initial-values for spring embedder
+			RndmLayout.arrange(operatorgraph);
+			SpringEmbedder.arrange(operatorgraph);
+		}
+
+		@Override
+		public String toString() {
+			return "Spring-Embedder after Random";
+		}
+
+	},
+	
+	SPRING_EMBEDDER() {
+
+		@Override
+		public void arrange(final OperatorGraph operatorgraph) {
+			// use current graph as initial-values for spring embedder
+			SpringEmbedder.arrange(operatorgraph);
+		}
+
+		@Override
+		public String toString() {
+			return "Spring-Embedder on current graph";
+		}
+
+	},
+	
+	EDGEBASED() {
+
+		@Override
+		public void arrange(final OperatorGraph operatorgraph) {
+			GraphHelper.restoreOriginalPositions(operatorgraph);
+			EdgeBased.arrange(operatorgraph);
+		}
+
+		@Override
+		public String toString() {
+			return "Edge-based";
+		}
+
+	},
+	
+	RANDOM() {
+
+		@Override
+		public void arrange(final OperatorGraph operatorgraph) {
+			GraphHelper.restoreOriginalPositions(operatorgraph);
+			RndmLayout.arrange(operatorgraph);	
+		}
+
+		@Override
+		public String toString() {
+			return "Random";
+		}
+
 	};
 
-	public abstract void arrange(final OperatorGraph operatorgraph,
-			final boolean flipX, final boolean flipY, final boolean rotate);
+	public abstract void arrange(final OperatorGraph operatorgraph);
 }

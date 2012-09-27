@@ -55,6 +55,7 @@ import lupos.gui.debug.AbstractCommentPanel;
 import lupos.gui.operatorgraph.GraphBox.GraphBoxCreator;
 import lupos.gui.operatorgraph.GraphBox.StandardGraphBoxCreator;
 import lupos.gui.operatorgraph.arrange.Arrange;
+import lupos.gui.operatorgraph.arrange.GraphHelper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.guielements.ContainerArrange;
 import lupos.misc.Tuple;
@@ -193,7 +194,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 		this.removeAll();
 		this.arrange(flipX, flipY, rotate, arrange);
-		this.arrange(flipX, flipY, rotate, arrange);
 
 		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5,
 				this.getPreferredSize().height + 5));
@@ -268,8 +268,14 @@ public class OperatorGraph extends JPanel implements IXPref {
 		if (rotate) {
 			exchangeHeightWidth(false);
 		}
+		
+		for (final GraphBox box : this.boxes.values()) {
+			if (box.getElement() instanceof ContainerArrange) {
+				((ContainerArrange) box.getElement()).arrange(flipX, flipY, rotate, arrange);
+			}
+		}
 
-		arrange.arrange(this, flipX, flipY, rotate);
+		arrange.arrange(this);
 
 		if (rotate) {
 			exchangeHeightWidth(true);
@@ -284,6 +290,12 @@ public class OperatorGraph extends JPanel implements IXPref {
 			mirror(true);
 		if (flipY)
 			mirror(false);
+		
+		GraphHelper.fitToWindow(this);
+		
+		for (final GraphBox box : this.boxes.values()) {
+			box.arrangeWithoutUpdatingParentsSize();
+		}
 
 		this.updateSize();
 
@@ -457,7 +469,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 			}
 		}
 
-		commentsLock.lock();
+		this.commentsLock.lock();
 		try {
 			for (final AbstractCommentPanel acp : this.comments) {
 				final Point location = acp.getLocation();
@@ -469,7 +481,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 						* (int) this.PADDING);
 			}
 		} finally {
-			commentsLock.unlock();
+			this.commentsLock.unlock();
 		}
 
 		// if (width < this.getMinimumSize().width) {

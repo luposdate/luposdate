@@ -368,10 +368,7 @@ public class DataEditor extends VisualEditor<Operator> {
 			public void actionPerformed(final ActionEvent ae) {
 				statusBar.setText("Arranging N3 data ...");
 
-				visualGraphs.get(0).arrange(false, false, false,
-						Arrange.values()[0]);
-				visualGraphs.get(0).arrange(false, false, false,
-						Arrange.values()[0]);
+				visualGraphs.get(0).arrange(false, false, false, Arrange.values()[0]);
 
 				statusBar.clear();
 			}

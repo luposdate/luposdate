@@ -37,7 +37,6 @@ import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.guielements.ContainerArrange;;
 
 public final class LayeredDrawing {
 
@@ -147,8 +146,7 @@ public final class LayeredDrawing {
 		}
 	}
 
-	public static void arrange(final OperatorGraph operatorgraph,
-			final boolean flipX, final boolean flipY, final boolean rotate) {
+	public static void arrange(final OperatorGraph operatorgraph) {
 
 		final HashMap<GraphWrapper, Integer> levels = generateGraph(operatorgraph);
 
@@ -194,6 +192,7 @@ public final class LayeredDrawing {
 			// define order!
 			final TreeSet<GraphWrapper> toSort = new TreeSet<GraphWrapper>(
 					new Comparator<GraphWrapper>() {
+						@Override
 						public int compare(final GraphWrapper arg0,
 								final GraphWrapper arg1) {
 							if (arg0.getPrecedingElements() == null
@@ -399,15 +398,6 @@ public final class LayeredDrawing {
 			for (int r = 0; r < maxRowId; ++r) {
 				// center the current row...
 				rows.get(r).centerWithoutUpdatingParentsSize(maxWidth / 2);
-			}
-
-			for (final GraphBox box : boxes.values()) {
-				box.arrangeWithoutUpdatingParentsSize();
-
-				if (box.getOp().isContainer()) {
-					((ContainerArrange) 
-							box.getElement()).arrange(flipX, flipY, rotate, Arrange.LAYERED);
-				}
 			}
 
 			// --- resolve annotation overlapping - begin ---

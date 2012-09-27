@@ -95,10 +95,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 				that.statusBar.setText("Arranging query ...");
 
 				for(final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
-					visualGraph.arrange(false, false, false,
-							Arrange.values()[0]);
-					visualGraph.arrange(false, false, false,
-							Arrange.values()[0]);
+					visualGraph.arrange(false, false, false, Arrange.values()[0]);
 				}
 
 				that.statusBar.clear();

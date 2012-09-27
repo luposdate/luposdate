@@ -494,8 +494,6 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 				visualGraphs.get(0).arrange(false, false, false,
 						Arrange.values()[0]);
-				visualGraphs.get(0).arrange(false, false, false,
-						Arrange.values()[0]);
 
 				statusBar.clear();
 			}
