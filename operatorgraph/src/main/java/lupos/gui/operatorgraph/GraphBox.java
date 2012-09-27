@@ -456,14 +456,15 @@ public class GraphBox {
         double xdist = x-xpos;
         double ydist = y-ypos;
         final double distance = Math.sqrt(xdist*xdist+ydist*ydist);
-        final int value = (int) Math.round(GraphBox.CONSTANTFORANTIALIASING*distance);
-        int grey = ((value>255)? 255 : value);
-        final Point point = new Point(xpos, ypos);
-        final Integer greyOld = forAntiAliasing.get(point);
-        if(greyOld==null || greyOld>grey){
-        	forAntiAliasing.put(point,grey);
-            g.setColor(new Color(grey,grey,grey));
-            g.drawLine(xpos, ypos, xpos, ypos);
+        final int grey = (int) Math.round(GraphBox.CONSTANTFORANTIALIASING*distance);
+        if(grey<255){ // only paint if it is not completely white!
+	        final Point point = new Point(xpos, ypos);
+	        final Integer greyOld = forAntiAliasing.get(point);
+	        if(greyOld==null || greyOld>grey){
+	        	forAntiAliasing.put(point,grey);
+	            g.setColor(new Color(grey,grey,grey));
+	            g.drawLine(xpos, ypos, xpos, ypos);
+	        }
         }
 	}
 	
