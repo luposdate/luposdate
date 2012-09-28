@@ -39,6 +39,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -57,6 +58,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 import lupos.engine.operators.BasicOperator;
+import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -85,6 +87,15 @@ public class Viewer extends JFrame implements IXPref {
 	private final Viewer that = this;
 
 	private JCheckBox lcCheckBox = null;
+		
+	// from toolbar: 
+	private JCheckBox checkBoxX;
+
+	private JCheckBox checkBoxY;
+
+	private JCheckBox checkBoxRot;
+
+	private JComboBox comboBox;
 
 	/**
 	 * Constructor to show a tree with the viewer. The tree is given by the
@@ -534,20 +545,28 @@ public class Viewer extends JFrame implements IXPref {
 
 					// try to get the zoom value, if it is an integer...
 					try {
-						zoom = (Integer) ((JComboBox) ae.getSource())
-						.getSelectedItem();
+						zoom = (Integer) ((JComboBox) ae.getSource()).getSelectedItem();
 					} catch (final Exception exception) {
 						return;
 					}
 
-					final double zFactor = ((double) zoom) / 100; // calculate
-					// zoom
-					// factor
+					final double zFactor = ((double) zoom) / 100; // calculate zoom factor
 
-					if (operatorGraph.updateZoomFactor(zFactor)) {
+					double factor = zFactor / operatorGraph.getZoomFactor();
+					if(operatorGraph.updateZoomFactor(zFactor)) {
+						final LinkedList<GraphWrapper> rootList = operatorGraph.getRootList(true);
+						
+						Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) operatorGraph.getBoxes().clone();
+
 						operatorGraph.clearAll();
-
-						createGraphElement();
+						operatorGraph.updateMainPanel(operatorGraph
+								.createGraph(rootList, 
+										(checkBoxX!=null)?checkBoxX.isSelected():false, 
+										(checkBoxY!=null)?checkBoxY.isSelected():false, 
+										(checkBoxRot!=null)?checkBoxRot.isSelected():false, 
+										(comboBox!=null)?(Arrange) comboBox.getSelectedItem():Arrange.LAYERED, 
+										factor, 
+										oldBoxes));
 					}
 				}
 			});
@@ -609,6 +628,7 @@ public class Viewer extends JFrame implements IXPref {
 
 		return this.lcCheckBox;
 	}
+	
 
 	/**
 	 * Internal method to create the button to arrange the current graph.
@@ -620,16 +640,16 @@ public class Viewer extends JFrame implements IXPref {
 
 		panel.add(new JLabel("flip"));
 
-		final JCheckBox checkBoxX = new JCheckBox("X");
+		checkBoxX = new JCheckBox("X");
 		panel.add(checkBoxX);
 
-		final JCheckBox checkBoxY = new JCheckBox("Y");
+		checkBoxY = new JCheckBox("Y");
 		panel.add(checkBoxY);
 
-		final JCheckBox checkBoxRot = new JCheckBox("rot.");
+		checkBoxRot = new JCheckBox("rot.");
 		panel.add(checkBoxRot);
 
-		final JComboBox comboBox = new JComboBox(Arrange.values());
+		comboBox = new JComboBox(Arrange.values());
 		panel.add(comboBox);
 
 		final JButton arrangeButton = new JButton("arrange");
@@ -637,12 +657,7 @@ public class Viewer extends JFrame implements IXPref {
 		arrangeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
 				operatorGraph.arrange(checkBoxX.isSelected(),
-						checkBoxY.isSelected(),
- checkBoxRot.isSelected(),
-						(Arrange) comboBox.getSelectedItem());
-				operatorGraph.arrange(checkBoxX.isSelected(),
-						checkBoxY.isSelected(),
- checkBoxRot.isSelected(),
+						checkBoxY.isSelected(), checkBoxRot.isSelected(),
 						(Arrange) comboBox.getSelectedItem());
 			}
 		});
@@ -680,15 +695,9 @@ public class Viewer extends JFrame implements IXPref {
 		saveButton.setMnemonic(KeyEvent.VK_S);
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
-				final int returnValue = chooser.showDialog(that, "Save"); // show
-				// the
-				// file
-				// chooser
-				// ...
+				final int returnValue = chooser.showDialog(that, "Save"); // show the file chooser...
 
-				if (returnValue == JFileChooser.APPROVE_OPTION) { // get
-					// filename
-					// ...
+				if (returnValue == JFileChooser.APPROVE_OPTION) { // get filename...
 					final String filename = chooser.getSelectedFile()
 					.getAbsolutePath();
 
@@ -731,35 +740,6 @@ public class Viewer extends JFrame implements IXPref {
 
 		return preferencesButton;
 	}
-
-	//	/**
-	//	 * Internal method to save the graph to the given filename.
-	//	 *
-	//	 * @param filename
-	//	 *            filename to save the file to
-	//	 */
-	//	private void saveGraph(String filename) {
-	//		// add file extension, if necessary...
-	//		if (!(filename.endsWith(".png") || filename.endsWith(".jpg") || filename
-	//				.endsWith(".gif"))) {
-	//			filename += ".png";
-	//		}
-	//
-	//		try {
-	//			// create image of graph to save it...
-	//			final BufferedImage img = new BufferedImage(this.operatorGraph
-	//					.getPreferredSize().width, this.operatorGraph
-	//					.getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
-	//
-	//			this.operatorGraph.paint(img.createGraphics()); // paint main panel
-	//			// with graph image
-	//
-	//			ImageIO.write(img, filename.substring(filename.length() - 3),
-	//					new File(filename));
-	//		} catch (final Exception e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
 
 	public void preferencesChanged() {
 		try {

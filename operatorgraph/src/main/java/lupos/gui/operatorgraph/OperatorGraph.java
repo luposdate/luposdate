@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -185,19 +186,61 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * 
 	 * @return the JPanel with the QueryGraph on it
 	 */
-	public JPanel createGraph(final LinkedList<GraphWrapper> rootList,
+	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
 			final boolean flipX, final boolean flipY, final boolean rotate,
 			final Arrange arrange) {
-		this.rootList = rootList;
-
-		this.boxes.clear();
-
+		return this.createGraph(newRootList, flipX, flipY, rotate, arrange, -1.0, null);
+	}
+	
+	
+	/**
+	 * This is one way to get a OperatorGraph. This method should be used if you
+	 * have a List of root elements.
+	 * 
+	 * @param rootList
+	 *            the List of root elements
+	 * 
+	 * @return the JPanel with the QueryGraph on it
+	 */
+	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
+			final boolean flipX, final boolean flipY, final boolean rotate,
+			final Arrange arrange, final double factor, final Map<GraphWrapper, GraphBox> oldBoxes) {
+		
+		this.rootList = newRootList;
+		
 		this.removeAll();
-		this.arrange(flipX, flipY, rotate, arrange);
+		
+		if(arrange.arrangeAfterZooming() || factor<=0){
+			
+			this.boxes.clear();
+			
+			this.arrange(flipX, flipY, rotate, arrange);
+			
+		} else {
+			
+			LinkedHashMap<GraphWrapper, GraphBox> newBoxes = new LinkedHashMap<GraphWrapper, GraphBox>();
+			
+			for(GraphBox box: oldBoxes.values()){
+				GraphBox newBox = this.graphBoxCreator.createGraphBox(this, box.op);
+				newBoxes.put(box.op, newBox);
+				newBox.x = (int) (box.x*factor);
+				newBox.y = (int) (box.y*factor);
+			}
+			
+			this.boxes = newBoxes;
+			
+			GraphHelper.fitToWindow(this);
+			
+			for (final GraphBox box : this.boxes.values()) {
+				box.arrangeWithoutUpdatingParentsSize();
+			}
 
-		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5,
-				this.getPreferredSize().height + 5));
+			this.updateSize();
 
+			this.repaint(); // repaint the panel to trigger G2D redraw
+		}
+		
+		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5, this.getPreferredSize().height + 5));
 		return this;
 	}
 
@@ -639,8 +682,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 			GraphBox.resetLineColorIndex();
 			GraphWrapper.clearColorCache();
 
-			// TODO arrange with values from toolbar
-			// this.arrange();
 			// --- updating zoom - end ---
 		} catch (final Exception e) {
 			System.err.println(e);

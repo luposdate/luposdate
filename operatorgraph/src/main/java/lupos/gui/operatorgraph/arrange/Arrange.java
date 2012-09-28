@@ -70,6 +70,10 @@ public enum Arrange {
 			return "Spring-Embedder after Random";
 		}
 
+		@Override
+		public boolean arrangeAfterZooming(){
+			return false;
+		}
 	},
 	
 	SPRING_EMBEDDER() {
@@ -85,6 +89,10 @@ public enum Arrange {
 			return "Spring-Embedder on current graph";
 		}
 
+		@Override
+		public boolean arrangeAfterZooming(){
+			return false;
+		}
 	},
 	
 	EDGEBASED() {
@@ -115,7 +123,19 @@ public enum Arrange {
 			return "Random";
 		}
 
+		@Override
+		public boolean arrangeAfterZooming(){
+			return false;
+		}
 	};
 
 	public abstract void arrange(final OperatorGraph operatorgraph);
+	
+	/**
+	 * With this method it is decided whether just arranged is called after zooming (for stable layout algorithms) or the new positions of the graph boxes are determined by calculations with a factor.
+	 * @return true if just arrange is called after zooming
+	 */
+	public boolean arrangeAfterZooming(){
+		return true;
+	}
 }

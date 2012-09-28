@@ -35,7 +35,9 @@ import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -55,6 +57,7 @@ import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.LuposJTextPane;
+import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.arrange.LayoutTest;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -176,8 +179,11 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 					final double zFactor = ((double) zoom) / 100; // calculate zoom factor
 
 					for(final VisualGraph<T> visualGraph : visualGraphs) {
+						double factor = zFactor / visualGraph.getZoomFactor();
 						if(visualGraph.updateZoomFactor(zFactor)) {
 							final LinkedList<GraphWrapper> rootList = visualGraph.getRootList(true);
+							
+							Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) visualGraph.getBoxes().clone();
 
 							visualGraph.clear();
 							visualGraph.updateMainPanel(visualGraph
@@ -185,7 +191,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 											.isSelected(), checkBoxY
 											.isSelected(), checkBoxRot
 											.isSelected(), (Arrange) comboBox
-											.getSelectedItem()));
+											.getSelectedItem(), factor, oldBoxes));
 						}
 					}
 
