@@ -169,12 +169,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 		final LinkedList<GraphWrapper> rootList = new LinkedList<GraphWrapper>();
 		rootList.add(root);
 
-		return this.createGraph(rootList, flipX, flipY, rotate, arrange); // create
-																			// the
-																	// QueryGraph
-																	// and
-																	// return
-		// it
+		return this.createGraph(rootList, flipX, flipY, rotate, arrange); // create the QueryGraph and return it
 	}
 
 	/**
@@ -210,7 +205,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 		
 		this.removeAll();
 		
-		if(arrange.arrangeAfterZooming() || factor<=0){
+		if(factor<=0){
 			
 			this.boxes.clear();
 			
