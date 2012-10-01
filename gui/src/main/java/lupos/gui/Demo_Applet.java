@@ -210,7 +210,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private Viewer operatorGraphViewer = null;
 	private JComboBox comboBox_sparqlInference;
 	private JComboBox comboBox_sparqlInferenceMaterialization;
-	private JComboBox checkBox_sparqlInferenceGenerated;
+	private JComboBox comboBox_sparqlInferenceGenerated;
+	private JCheckBox checkBox_sparqlInferenceCheckInconsistency;
 	private QueryResult[] resultQueryEvaluator;
 
 	public static void main(final String args[]) {
@@ -820,7 +821,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			return Demo_Applet.this.tp_rifInput.getText();
 		}
 		public String getRDFS(){
-			switch((GENERATION)Demo_Applet.this.checkBox_sparqlInferenceGenerated.getSelectedItem()){
+			switch((GENERATION)Demo_Applet.this.comboBox_sparqlInferenceGenerated.getSelectedItem()){
 			case FIXED:
 				return Demo_Applet.this.getResourceAsString(Demo_Applet.this.PATH_RULES + "rule_rdfs.rif");
 			case GENERATED:
@@ -831,14 +832,26 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		}
 		public String getOWL2RL(){
-			switch((GENERATION)Demo_Applet.this.checkBox_sparqlInferenceGenerated.getSelectedItem()){
+			switch((GENERATION)Demo_Applet.this.comboBox_sparqlInferenceGenerated.getSelectedItem()){
 			case FIXED:
-				return Demo_Applet.this.getResourceAsString(Demo_Applet.this.PATH_RULES + "rule_owl2rl.rif");
+				if(Demo_Applet.this.checkBox_sparqlInferenceCheckInconsistency.isSelected()){
+					return Demo_Applet.this.getResourceAsString(Demo_Applet.this.PATH_RULES + "rule_owl2rl.rif");
+				} else {
+					return Demo_Applet.this.getResourceAsString(Demo_Applet.this.PATH_RULES + "rule_owl2rlNoInconsistencyRules.rif");
+				}
 			case GENERATED:
-				return InferenceHelper.getRIFInferenceRulesForOWL2Ontology(Demo_Applet.this.tp_dataInput.getText());
+				if(Demo_Applet.this.checkBox_sparqlInferenceCheckInconsistency.isSelected()){
+					return InferenceHelper.getRIFInferenceRulesForOWL2Ontology(Demo_Applet.this.tp_dataInput.getText());
+				} else {
+					return InferenceHelper.getRIFInferenceRulesForOWL2OntologyWithoutCheckingInconsistencies(Demo_Applet.this.tp_dataInput.getText());
+				}
 			default:
 			case GENERATEDOPT:
-				return InferenceHelper.getRIFInferenceRulesForOWL2OntologyAlternative(Demo_Applet.this.tp_dataInput.getText());
+				if(Demo_Applet.this.checkBox_sparqlInferenceCheckInconsistency.isSelected()){
+					return InferenceHelper.getRIFInferenceRulesForOWL2OntologyAlternative(Demo_Applet.this.tp_dataInput.getText());
+				} else {
+					return InferenceHelper.getRIFInferenceRulesForOWL2OntologyAlternativeWithoutCheckingInconsistencies(Demo_Applet.this.tp_dataInput.getText());
+				}
 			}
 		}
 	}
@@ -909,6 +922,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			public String getRuleSet(RuleSets rulesets) {
 				return rulesets.getOWL2RL();
 			}
+			
+			@Override
+			public boolean isCheckInconsistenciesChoice() {
+				return true;
+			}
 		};
 
 		public abstract boolean isMaterializationChoice();
@@ -916,6 +934,10 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public abstract boolean isGeneratedChoice();
 		
 		public abstract String getRuleSet(RuleSets rulesets);
+
+		public boolean isCheckInconsistenciesChoice() {
+			return false;
+		}
 	}
 
 	protected static enum SPARQLINFERENCEMATERIALIZATION {
@@ -964,9 +986,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		this.comboBox_sparqlInferenceMaterialization.setSelectedIndex(0);
 		
-		this.checkBox_sparqlInferenceGenerated = new JComboBox();
+		this.comboBox_sparqlInferenceGenerated = new JComboBox();
 		for(GENERATION generation: GENERATION.values()){
-			this.checkBox_sparqlInferenceGenerated.addItem(generation);
+			this.comboBox_sparqlInferenceGenerated.addItem(generation);
 		}
 		
 		this.comboBox_sparqlInference  = new JComboBox();
@@ -974,13 +996,16 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		for (int i = 0; i < SPARQLINFERENCE.values().length; i++) {
 			this.comboBox_sparqlInference.addItem(SPARQLINFERENCE.values()[i]);
 		}
+		
+		this.checkBox_sparqlInferenceCheckInconsistency = new JCheckBox("Check Inconsistencies");
 
 		this.comboBox_sparqlInference.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				SPARQLINFERENCE sparqlinference = (SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem();
 				Demo_Applet.this.comboBox_sparqlInferenceMaterialization.setEnabled(sparqlinference.isMaterializationChoice());
-				Demo_Applet.this.checkBox_sparqlInferenceGenerated.setEnabled(sparqlinference.isGeneratedChoice());
+				Demo_Applet.this.comboBox_sparqlInferenceGenerated.setEnabled(sparqlinference.isGeneratedChoice());
+				Demo_Applet.this.checkBox_sparqlInferenceCheckInconsistency.setEnabled(sparqlinference.isCheckInconsistenciesChoice());
 			}
 		});
 		
@@ -1026,8 +1051,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		});
 
-		return generateEvalpanel(new JLabel("Inference:"), this.comboBox_sparqlInference, this.comboBox_sparqlInferenceMaterialization, this.checkBox_sparqlInferenceGenerated, new JLabel(" Evaluation:"), this.bt_evaluate, this.bt_evalDemo,
-				this.bt_MeasureExecutionTimes);
+		JPanel panel1 = generateEvalpanel(new JLabel("Inference:"), this.comboBox_sparqlInference, this.comboBox_sparqlInferenceMaterialization, this.comboBox_sparqlInferenceGenerated, this.checkBox_sparqlInferenceCheckInconsistency); 
+		JPanel panel2 = generateEvalpanel(new JLabel("Evaluation:"), this.bt_evaluate, this.bt_evalDemo, this.bt_MeasureExecutionTimes);
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(panel1, BorderLayout.NORTH);
+		panel.add(panel2, BorderLayout.SOUTH);
+		return panel;
 	}
 
 	private JPanel generateRifEvalPanel() {
@@ -1283,7 +1313,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					"rule_comparsion.rif", "rule_comparsion.rif",
 					"rule_equality.rif", "rule_exists.rif",
 					"rule_fibonacci.rif", "rule_functional.rif", "rule_Or.rif",
-					"rule_owl2rl.rif", "rule_parent_discount.rif", "rule_predicates.rif",
+					"rule_owl2rl.rif", "rule_owl2rlNoInconsistencyRules.rif", 
+					"rule_parent_discount.rif", "rule_predicates.rif",
 					"rule_rdfs.rif" };
 		case TUTORIAL2:
 			return new String[] { "facts.rif" };
@@ -2440,7 +2471,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	public static void setupResultPanel(final JPanel resultpanel, final QueryResult[] resultQueryEvaluator, final DebugViewerCreator debugViewerCreator, final DebugViewerCreator materializationInfo, final String inferenceRules,  final List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsForMaterialization, final RuleResult errorsInOntology, final BooleanReference usePrefixes,  final ViewerPrefix prefixInstance, final Container contentPane) throws Exception {
-		final Dimension contentPaneSize = contentPane.getSize();
 		resultpanel.removeAll();
 		final FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
 		final JPanel buttonpanel = new JPanel(layout);
@@ -2519,33 +2549,37 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			buttonpanel.add(bt_opgraph);
 		}
 
-		//			if ((debugViewerCreator instanceof SPARQLDebugViewerCreator && ((SPARQLDebugViewerCreator) debugViewerCreator).debugContainerQuery != null)
-		//					&& (this.checkBox_useOntology.isSelected())) {
-		//				final JButton bt_RDFSMaterialization = createRDFSMaterializationButton();
-		//				this.buttonpanel.add(bt_RDFSMaterialization);
-		//			}
-		if(materializationInfo!=null){
-			buttonpanel.add(new JLabel("Inference:"));
-			buttonpanel.add(materializationInfo.createInferenceRulesButton(inferenceRules));	
-			buttonpanel.add(materializationInfo.createASTButton());
-			buttonpanel.add(materializationInfo.createASTCoreSPARQLButton());
-			buttonpanel.add(materializationInfo.createOperatorGraphButton(ruleApplicationsForMaterialization));
+		final JPanel buttonPanelInference = (materializationInfo!=null)? new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)) : null;
+		
+		if(materializationInfo!=null){			
+			buttonPanelInference.add(new JLabel(" Inference:"));
+			buttonPanelInference.add(materializationInfo.createInferenceRulesButton(inferenceRules));	
+			buttonPanelInference.add(materializationInfo.createASTButton());
+			buttonPanelInference.add(materializationInfo.createASTCoreSPARQLButton());
+			buttonPanelInference.add(materializationInfo.createOperatorGraphButton(ruleApplicationsForMaterialization));
 		}
 
 		resultpanel.addHierarchyBoundsListener(new HierarchyBoundsListener() {
 
 			@Override
 			public void ancestorMoved(final HierarchyEvent e) {
-				Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPaneSize);
+				Demo_Applet.updateButtonPanelSize(layout, (buttonPanelInference!=null)? buttonPanelInference : buttonpanel, resultpanel, contentPane.getSize());
 			}
 
 			@Override
 			public void ancestorResized(final HierarchyEvent e) {
-				Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPaneSize);
+				Demo_Applet.updateButtonPanelSize(layout, (buttonPanelInference!=null)? buttonPanelInference : buttonpanel, resultpanel, contentPane.getSize());
 			}
 		});
-
-		resultpanel.add(buttonpanel, BorderLayout.NORTH);
+		
+		if(buttonPanelInference!=null){
+			JPanel buttonSuperPanel = new JPanel(new BorderLayout());
+			buttonSuperPanel.add(buttonpanel, BorderLayout.NORTH);
+			buttonSuperPanel.add(buttonPanelInference, BorderLayout.SOUTH);
+			resultpanel.add(buttonSuperPanel, BorderLayout.NORTH);
+		} else {
+			resultpanel.add(buttonpanel, BorderLayout.NORTH);
+		}
 
 		boolean tablesOccur = false;
 		for (final QueryResult qr : resultQueryEvaluator) {
@@ -2635,15 +2669,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			resultpanel.add(scrollpane, BorderLayout.CENTER);
 		}
 
-		Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPaneSize);
-
+		Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPane.getSize());
 	}
 
 
 	private static void updateButtonPanelSize(final FlowLayout layout, final JPanel buttonpanel, final JPanel resultpanel, final Dimension contentPaneSize) {
 		if (buttonpanel != null && resultpanel != null) {
 			final Dimension d = layout.minimumLayoutSize(buttonpanel);
-			final int rows = 1 + (int) Math.ceil(d.width / contentPaneSize.width);
+			final int rows = 2 + (int) Math.ceil(d.width / contentPaneSize.width);
 			final Dimension n = new Dimension(contentPaneSize.width, rows * d.height);
 			buttonpanel.setPreferredSize(n);
 		}

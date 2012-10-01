@@ -456,15 +456,26 @@ Forall ?y2 ?u ?y1 (?y1[owl:sameAs->?y2] :- And(?u[rdf:type->?x]?u[?p->?y1]?u[?p-
 <pattern><![CDATA[(?l rdf:type owl:AllDisjointProperties)]]></pattern>
 <rifquery type="withforall"><![CDATA[
 	
+	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:prp-adp(?listname ?x) :-
+And(?listname[rdf:type->owl:AllDisjointProperties] ?listname[owl:members->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
 
- Forall ?listname ?listelement ?headOfList (
-          rulenames:prp-adp(?headOfList ?listelement) :- And(?listname[rdf:type->owl:AllDisjointProperties] ?listname[owl:members->?headOfList]
- eg:membersOfList3(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList3(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList3(?rest ?listelement)))
-       )
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
+
+
 ]]></rifquery>
 <methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <template><![CDATA[
@@ -484,14 +495,29 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList3(?rest ?listelement)))
 <rifquery type="withforall"><![CDATA[
 	
 
- Forall ?listname ?listelement ?headOfList (
-          rulenames:cax-adc(?headOfList ?listelement) :- And(?listname[rdf:type->owl:AllDisjointClasses] ?listname[owl:members->?headOfList]
- eg:membersOfList4(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList4(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList4(?rest ?listelement)))
-       )
+ 	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:cax-adc(?listname ?x) :-
+And(?listname[rdf:type->owl:AllDisjointClasses] ?listname[owl:members->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
+
+
+
+
+
 ]]></rifquery>
 <methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <template><![CDATA[
@@ -551,15 +577,25 @@ eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
 	
 	
 	
+	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:prp-adp(?listname ?x) :-
+And(?listname[owl:hasKey->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
 
- Forall ?listname ?listelement ?headOfList (
-          rulenames:prp-key(?listname ?listelement) :- And(?listname[owl:hasKey->?headOfList]
- eg:membersOfList5(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList5(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList5(?rest ?listelement)))
-       )
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
+
 	
 ]]></rifquery>
 <methodname>emitHasKeyRule</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
@@ -581,14 +617,24 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList5(?rest ?listelement)))
 	
 	
 
- Forall ?c ?listelement ?headOfList (
-          rulenames:cls-int1(?c ?listelement) :- And(?c[owl:intersectionOf->?headOfList]
- eg:membersOfList6(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList6(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList6(?rest ?listelement)))
-       )
+	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:cls-int1(?listname ?x) :-
+And(?listname[owl:intersectionOf->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
 	
 ]]></rifquery>
 <methodname>emitIntersectionOfRule1</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
@@ -605,14 +651,25 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList6(?rest ?listelement)))
 	
 	
 
- Forall ?c ?listelement ?headOfList (
-          rulenames:cls-int1(?c ?listelement) :- And(?c[owl:intersectionOf->?headOfList]
- eg:membersOfList6(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList6(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList6(?rest ?listelement)))
-       )
+ 
+
+ 	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:scm-int(?listname ?x) :-
+And(?listname[owl:intersectionOf->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
 	
 ]]></rifquery>
 <methodname>emitIntersectionOfRule2</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
@@ -629,14 +686,24 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList6(?rest ?listelement)))
 	
 	
 
- Forall ?c ?listelement ?headOfList (
-          rulenames:cls-uni(?c ?listelement) :- And(?c[owl:unionOf->?headOfList]
- eg:membersOfList7(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList7(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList7(?rest ?listelement)))
-       )
+	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:cls-uni(?listname ?x) :-
+And(?listname[owl:unionOf->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
 	
 ]]></rifquery>
 <methodname>emitUnionOfRule1</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
@@ -654,15 +721,24 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList7(?rest ?listelement)))
 	
 	
 
- Forall ?c ?listelement ?headOfList (
-          rulenames:cls-uni(?c ?listelement) :- And(?c[owl:unionOf->?headOfList]
- eg:membersOfList7(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList7(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList7(?rest ?listelement)))
-       )
-	
+ 	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:scm-uni(?listname ?x) :-
+And(?listname[owl:unionOf->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
 ]]></rifquery>
 <methodname>emitUnionOfRule2</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <template><![CDATA[
@@ -678,15 +754,24 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList7(?rest ?listelement)))
 	
 	
 
- Forall ?c ?listelement ?headOfList (
-          rulenames:cls-oo(?c ?listelement) :- And(?c[owl:oneOf->?headOfList]
- eg:membersOfList(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList(?rest ?listelement)))
-       )
-	
+ 	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:cls-oo(?listname ?x) :-
+And(?listname[owl:oneOf->?headOfList]
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
 ]]></rifquery>
 <methodname>emitOneOfRule</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <template><![CDATA[
@@ -778,14 +863,25 @@ TEMPLATE IN PROGRAMMCODE
 
 
 
- Forall ?listname ?listelement ?headOfList (
-          rulenames:eq-diff2(?listname ?listelement) :- And(?listname[rdf:type->owl:AllDifferent]
-?listname[owl:members->?headOfList] eg:membersOfList1(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList1(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList1(?rest ?listelement)))
-       )
+	 Forall ?x ?listname ?headOfList ?y(
+                       rulenames:eq-diff2(?listname ?x) :-
+And(?listname[rdf:type->owl:AllDifferent]
+?listname[owl:members->?headOfList] 
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
+
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
+
 ]]></rifquery>
 <methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <template><![CDATA[ rif:error("Reason: ?x[owl:sameAs->?y]" ?x) :- And ( ?x[owl:sameAs->?y] )
@@ -797,15 +893,24 @@ And(?headOfList[rdf:rest->?rest] eg:membersOfList1(?rest ?listelement)))
 <pattern><![CDATA[(?a rdf:type owl:AllDifferent)(?a owl:distinctMembers ?l)]]></pattern>
 <rifquery type="withforall"><![CDATA[
 	
+ Forall ?x ?listname ?headOfList ?y(
+                       rulenames:eq-diff3(?listname ?x) :-
+And(?listname[rdf:type->owl:AllDifferent]
+?listname[owl:distinctMembers->?headOfList] 
+eg:membersOfList-spo(?headOfList ?x ?y))
+               )
+	  
+               Forall ?member ?headOfList ?rest ?y ?y1(
+                       eg:membersOfList-spo(?headOfList ?x ?y) :-
+Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
+And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
+               )
 
- Forall ?listname ?listelement ?headOfList (
-          rulenames:eq-diff3(?listname ?listelement) :- And(?listname[rdf:type->owl:AllDifferent]
-?listname[owl:distinctMembers->?headOfList] eg:membersOfList2(?headOfList  ?listelement))
-       )
-       Forall ?member ?headOfList ?rest(
-          eg:membersOfList2(?headOfList ?listelement) :- Or(?headOfList[rdf:first->?listelement]
-And(?headOfList[rdf:rest->?rest] eg:membersOfList2(?rest ?listelement)))
-       )
+               Forall ?headOfList ?y ?y1 ?rest (
+                       eg:count-spo(?headOfList ?y) :-
+Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
+eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
+               )
 ]]></rifquery>
 <methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <template><![CDATA[

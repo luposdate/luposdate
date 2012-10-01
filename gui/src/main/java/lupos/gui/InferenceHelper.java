@@ -24,33 +24,40 @@
 package lupos.gui;
 
 import lupos.owl2rl.owlToRif.InferenceRulesGeneratorSetup;
-import lupos.owl2rl.owlToRif.MethodTypeEnum;
 
 public class InferenceHelper {
 
 	protected static InferenceRulesGeneratorSetup genSet;
 
 	public static String getRIFInferenceRulesForRDFSOntology(final String ontology){
-		return returnValue(ontology, MethodTypeEnum.RDFS, "/owl2rl/RDFSRules.xml");
+		return returnValue(ontology, "/owl2rl/RDFSRules.xml");
 	}
 
 	public static String getRIFInferenceRulesForRDFSOntologyAlternative(final String ontology){
-			return returnValue(ontology, MethodTypeEnum.RDFSALT, "/owl2rl/RDFSRulesAlternative.xml");
+		return returnValue(ontology, "/owl2rl/RDFSRulesAlternative.xml");
 	}
 
 	public static String getRIFInferenceRulesForOWL2Ontology(final String ontology){
-			return returnValue(ontology, MethodTypeEnum.OWL2RL, "/owl2rl/OWL2RLRules.xml");
+		return returnValue(ontology, "/owl2rl/OWL2RLRules.xml");
 	}
 
 	public static String getRIFInferenceRulesForOWL2OntologyAlternative(final String ontology){
-		return returnValue(ontology, MethodTypeEnum.OWL2RLALT, "/owl2rl/OWL2RLRulesAlternative.xml");
+		return returnValue(ontology, "/owl2rl/OWL2RLRulesAlternative.xml");
 	}
 
-	public static String returnValue(final String ontology, final MethodTypeEnum type, final String filepath){
+	public static String getRIFInferenceRulesForOWL2OntologyWithoutCheckingInconsistencies(final String ontology){
+		return returnValue(ontology, "/owl2rl/OWL2RLRulesNoInconsistencyRules.xml");
+	}
+
+	public static String getRIFInferenceRulesForOWL2OntologyAlternativeWithoutCheckingInconsistencies(final String ontology){
+		return returnValue(ontology, "/owl2rl/OWL2RLRulesAlternativeNoInconsistencyRules.xml");
+	}
+
+	public static String returnValue(final String ontology, final String filepath){
 		if(genSet==null){
 			genSet=new InferenceRulesGeneratorSetup();
 		}
-		genSet.init(ontology,type, filepath);
+		genSet.init(ontology, filepath);
 		return genSet.getGenerator().getOutputRules();		
 	}
 }

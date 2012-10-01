@@ -110,7 +110,10 @@ public class BufferManager {
 			this.timestamps.clear();
 		}		
 	}
-
+	
+	/**
+	 * This class contains the content of a single page plus a flag for storing whether or not the page has been modified... 
+	 */
 	public class Page {
 		public byte[] page;
 		public boolean modified;
@@ -141,18 +144,45 @@ public class BufferManager {
 		}
 	}
 
+	/**
+	 * The size of one page in bytes
+	 */
 	protected static int PAGESIZE = 8 * 1024;
+	/**
+	 * The number of pages in the buffer
+	 */
 	protected static int MAXPAGESINBUFFER = 10;
 
-	protected final static int JAVALIMITFILESIZE = 1024 * 1024 * 1024 / PAGESIZE;
+	/**
+	 * the max. number of bytes stored in a file, which can be handled by java without problems
+	 */
+	protected static int JAVALIMITFILESIZE = 1024 * 1024 * 1024 / PAGESIZE;
 
+	/**
+	 * The current buffered file
+	 */
 	protected RandomAccessFile bufferedFile;
+	
+	/**
+	 * The id of the current opened file
+	 */
 	protected int currentFile = 0;
+	/**
+	 * the filename of the current opened file
+	 */
 	protected String fileName;
-	protected final REPLACEMENTSTRATEGY replacementStrategy;
+	/**
+	 * the used replacement strategy for pages in the buffer, if new pages must be loaded which do not fit any more into the buffer
+	 */
+	protected REPLACEMENTSTRATEGY replacementStrategy;
 
+	/**
+	 * The buffered pages
+	 */
 	protected Map<Integer, Page> bufferedPages = new HashMap<Integer, Page>();
-
+	/**
+	 * The lock used for any operation on a page
+	 */
 	protected ReentrantLock lock = new ReentrantLock();
 	
 	public BufferManager(final String name) throws FileNotFoundException {
@@ -366,11 +396,47 @@ public class BufferManager {
 		this.currentFile = 0;
 	}
 
+	/**
+	 * @return the max number of pages in the buffer
+	 */
 	public static int getMAXPAGESINBUFFER() {
 		return BufferManager.MAXPAGESINBUFFER;
 	}
 
+	/**
+	 * @param mAXPAGESINBUFFER the max number of pages in the buffer
+	 */
 	public static void setMAXPAGESINBUFFER(int mAXPAGESINBUFFER) {
 		BufferManager.MAXPAGESINBUFFER = mAXPAGESINBUFFER;
+	}
+
+	/**
+	 * @return the size of one page in bytes
+	 */
+	public static int getPAGESIZE() {
+		return PAGESIZE;
+	}
+
+	/**
+	 * If the page size must be set different from the default of 8KB, this method must be called before any BufferManager is used.
+	 * @param pAGESIZE The size of one page in bytes
+	 */
+	public static void setPAGESIZE(int pAGESIZE) {
+		PAGESIZE = pAGESIZE;
+	}
+
+	/**
+	 * @return The used replacement strategy
+	 */
+	public REPLACEMENTSTRATEGY getReplacementStrategy() {
+		return this.replacementStrategy;
+	}
+
+	/**
+	 * This method should be called only if the default replacement strategy is not used and it should be called before the BufferManager is used the first time.
+	 * @param replacementStrategy the replacement strategy to be used
+	 */
+	public void setReplacementStrategy(REPLACEMENTSTRATEGY replacementStrategy) {
+		this.replacementStrategy = replacementStrategy;
 	}
 }

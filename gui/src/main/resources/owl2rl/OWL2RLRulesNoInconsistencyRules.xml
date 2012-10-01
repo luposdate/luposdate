@@ -54,39 +54,6 @@
 <![CDATA[ Forall ?x1 ?x2 ?y (?x1[owl:sameAs->?x2]:-And(?x1[?p->?y]?x2[?p->?y]))
 ]]></template>	
 <methodname>emitPropertyRules</methodname>
-<classname>lupos.owl2rl.emitter.</classname>
-<variable>?p</variable>
-</templaterule>
-
-
-
-
-
-
-<templaterule>
-<name>#prp-fp</name>
-<pattern>(?p rdf:type owl:FunctionalProperty)
-</pattern>	
-<rifquery type="rdftype"><![CDATA[owl:FunctionalProperty
- ]]></rifquery>
-<template>
-<![CDATA[ Forall ?y2 ?x ?y1 (?y1[owl:sameAs->?y2]:-And(?x[?p->?y1]?x[?p->?y2]))
-]]></template>	
-<methodname>emitPropertyRules</methodname>
-<classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p</variable>
-</templaterule>
-
-<templaterule>
-<name>#prp-irp</name>
-<pattern>(?p rdf:type owl:IrreflexiveProperty)
-</pattern>	
-<rifquery type="rdftype"><![CDATA[owl:IrreflexiveProperty
- ]]></rifquery>
-<template>
-<![CDATA[ Forall ?x(rif:error() :- And(?x[?p->?x] ))
-]]></template>	
-<methodname>emitPropertyRules</methodname>
 <classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <variable>?p</variable>
 </templaterule>
@@ -94,33 +61,11 @@
 
 
 
-<templaterule>
-<name>#prp-symp</name>
-<pattern>(?p rdf:type owl:SymmetricProperty)
-</pattern>	
-<rifquery type="rdftype"><![CDATA[owl:SymmetricProperty
- ]]></rifquery> 
-<template><![CDATA[
- Forall ?x ?y (?y[?p->?x] :- And(?x[?p->?y]))
- ]]></template>	
- <methodname>emitPropertyRules</methodname>
- <classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p</variable>
-</templaterule>
 
-<templaterule> 
-<name>#prp-asyp</name>
-<pattern>(?p rdf:type owl:AsymmetricProperty)
-</pattern>	
-<rifquery type="rdftype"><![CDATA[owl:AsymmetricProperty
- ]]></rifquery>
-<template><![CDATA[
- Forall ?x ?y (rif:error("Reason: ?Arg.2[?p->?Arg.3]?Arg.2[?p->?Arg.3] " ?x ?y) :- And(?x[?p->?y]?y[?p->?x]))
- ]]></template>	
- <methodname>emitPropertyRules</methodname>
- <classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p</variable>
-</templaterule>
+
+
+
+
 
 
 
@@ -183,22 +128,6 @@
 </templaterule>
 
 
-
-
-<templaterule> 
-<name>#prp-pdw</name>
-<pattern>(?p1 owl:propertyDisjointWith ?p2)
-</pattern>	
-<rifquery type="p1-prp-p2"><![CDATA[owl:propertyDisjointWith 
- ]]></rifquery>
-<template><![CDATA[
- Forall ?x ?y(rif:error("Reason: Arg.2[?p1->Arg.3]?Arg.2[?p2->Arg.3] " ?x ?y):-And(?x[?p1->?y]?x[?p2->?y]))
- ]]></template>	
- <methodname>emitPropertyRules</methodname>
- <classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p1</variable>
-<variable>?p2</variable>
-</templaterule>
 
 
 <templaterule> 
@@ -303,18 +232,7 @@ Forall ?u ( ?u[rdf:type->?x] :- And(?u[?p->?y]  ))
 <variable>?p</variable>
 </templaterule>
 
-<templaterule> 
-<name>#cls-maxc1</name>
-<pattern>(?x owl:maxCardinality 0) (?x owl:onProperty ?p)
-</pattern>	
-<rifquery type="xml"><![CDATA[:property[:prop->?x]:-And(?x[owl:maxCardinality->0]?x[owl:onProperty->?p])]]></rifquery>
-<template><![CDATA[
-Forall ?u ?y ( rif:error("Reason: Arg.2[?p->Arg.3]?Arg.2[rdf:type->?x] " ?u ?y) :- And(?u[?p->?y] ?u[rdf:type->?x]  ))
-]]></template>	
-<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?x</variable>
-<variable>?p</variable>
-</templaterule>
+
 
 <templaterule> 
 <name>#cls-maxc2</name>
@@ -330,32 +248,9 @@ Forall ?y2 ?u ?y1 (?y1[owl:sameAs->?y2] :- And( ?u[?p->?y1]?u[?p->?y2]?u[rdf:typ
 </templaterule>
 
 
-<templaterule> 
-<name>#cls-maxqc1</name>
-<pattern>(?x owl:maxQualifiedCardinality 0) (?x owl:onProperty ?p) (?x owl:onClass ?c)
-</pattern>	
-<rifquery type="xml"><![CDATA[:property[:prop->?x]:-And(?x[owl:maxQualifiedCardinality->0]?x[owl:onProperty->?p]?x[owl:onClass->?c])]]></rifquery>
-<template><![CDATA[
-Forall ?u ?y (rif:error("Reason: Arg.2[rdf:type->?x]Arg.2[?p->Arg.3]Arg.3[rdf:type->?c] " ?u ?y) :- And(?u[rdf:type->?x]?u[?p->?y]?y[rdf:type->?c]  ))
-]]></template>	
-<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?x</variable>
-<variable>?p</variable>
-<variable>?c</variable>
-</templaterule>
 
-<templaterule> 
-<name>#cls-maxqc2</name>
-<pattern>(?x owl:maxQualifiedCardinality 0) (?x owl:onProperty ?p) (?x owl:onClass owl:Thing)
-</pattern>	
-<rifquery type="xml"><![CDATA[:property[:prop->?x]:-And(?x[owl:maxQualifiedCardinality->0]?x[owl:onProperty->?p]?x[owl:onClass->owl:Thing])]]></rifquery>
-<template><![CDATA[
-Forall ?y ?u(rif:error("Reason: Arg.2[rdf:type->?x]Arg.2[?p->Arg.3] " ?u ?y) :- And(?u[rdf:type->?x]?u[?p->?y]  ))
-       ]]></template>	
-<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?x</variable>
-<variable>?p</variable>
-</templaterule>
+
+
 
 <templaterule> 
 <name>#cls-maxqc3</name>
@@ -465,101 +360,6 @@ Forall ?y2 ?u ?y1 (?y1[owl:sameAs->?y2] :- And(?u[rdf:type->?x]?u[?p->?y1]?u[?p-
 
 
 
-
-<templaterule> 
-<name>#prp-adp</name>
-<pattern><![CDATA[(?l rdf:type owl:AllDisjointProperties)]]></pattern>
-<rifquery type="withforall"><![CDATA[
-	
-
-
-
-
-	 Forall ?x ?listname ?headOfList ?y(
-                       rulenames:prp-adp(?listname ?x) :-
-And(?listname[rdf:type->owl:AllDisjointProperties] ?listname[owl:members->?headOfList]
-eg:membersOfList-spo(?headOfList ?x ?y))
-               )
-	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
-                       eg:membersOfList-spo(?headOfList ?x ?y) :-
-Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
-And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
-               )
-
-               Forall ?headOfList ?y ?y1 ?rest (
-                       eg:count-spo(?headOfList ?y) :-
-Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
-eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
-               )
-
-
-
-
-
-
-
-
-
-
-
-
-]]></rifquery>
-<methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<template><![CDATA[
-  Forall ?o ?v ( rif:error("Reason: Arg.2[?x->Arg.3]Arg.2[?y->Arg.3]) " ?v ?o ) :- And (?o[?x->?v]?o[?y->?v]) )
-]]></template>	
-<variable>?member</variable>
-<variable>?headOfList</variable>
-<variable>?rest</variable>
-<variable>?list</variable>
-<variable>?x</variable>
-</templaterule>
-
-
-<templaterule> 
-<name>#cax-adc</name>
-<pattern><![CDATA[(?l rdf:type owl:AllDisjointClasses)]]></pattern>
-<rifquery type="withforall"><![CDATA[
-	
-
-
-	 Forall ?x ?listname ?headOfList ?y(
-                       rulenames:cax-adc(?listname ?x) :-
-And(?listname[rdf:type->owl:AllDisjointClasses] ?listname[owl:members->?headOfList]
-eg:membersOfList-spo(?headOfList ?x ?y))
-               )
-	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
-                       eg:membersOfList-spo(?headOfList ?x ?y) :-
-Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
-And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
-               )
-
-               Forall ?headOfList ?y ?y1 ?rest (
-                       eg:count-spo(?headOfList ?y) :-
-Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
-eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
-               )
-
-
-
-
-
-
-
-
-]]></rifquery>
-<methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<template><![CDATA[
- Forall ?something (  rif:error("Reason: Arg.2[rdf:type->?x] Arg.2[rdf:type->?y] " ?something) :- And ( ?something[rdf:type->?x] ?something[rdf:type->?y]) )
-]]></template>	
-<variable>?member</variable>
-<variable>?headOfList</variable>
-<variable>?rest</variable>
-<variable>?list</variable>
-<variable>?x</variable>
-</templaterule>
 
 <templaterule> 
 <name>#prp-spo2</name>
@@ -824,147 +624,11 @@ TEMPLATE IN PROGRAMMCODE
 
 
 
-<templaterule> 
-<name>#prp-npa1</name>
-<pattern>(?x owl:sourceIndividual ?i1)
-(?x owl:assertionProperty ?p)
-(?x owl:targetIndividual ?i2) 
-</pattern>	
-<rifquery type="xml"><![CDATA[:property[:prop->?x]:-And(
-?x[owl:sourceIndividual->?i1]
-?x[owl:assertionProperty->?p]
-?x[owl:targetIndividual->?i2]
-)]]>
-</rifquery>
-<template><![CDATA[
- rif:error("Reason: ?i1[?p->?i2]") :- And(?i1[?p->?i2]  )
- ]]></template>	
- <methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p</variable>
-<variable>?x</variable>
-<variable>?i1</variable>
-<variable>?i2</variable>
-</templaterule>
-
-<templaterule> 
-<name>#prp-npa2</name>
-<pattern>(?x owl:sourceIndividual ?i1)
-(?x owl:assertionProperty ?p)
-(?x owl:targetValue ?i2) 
-</pattern>	
-<rifquery type="xml"><![CDATA[:property[:prop->?x]:-And(
-?x[owl:sourceIndividual->?i1]
-?x[owl:assertionProperty->?p]
-?x[owl:targetValue->?i2]
-)]]>
-</rifquery>
-<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<template><![CDATA[
- rif:error("Reason: ?i1[?p->?i2]") :- And(?i1[?p->?i2]  )
- ]]></template>	
-<variable>?p</variable>
-<variable>?x</variable>
-<variable>?i1</variable>
-<variable>?i2</variable>
-</templaterule>
-
-<templaterule> 
-<name>#cax-dw</name>
-<pattern>(?c1 owl:disjointWith ?c2) 
-</pattern>	
-<rifquery type="p1-prp-p2"><![CDATA[owl:disjointWith
- ]]></rifquery>
-<template><![CDATA[
- Forall ?x (rif:error("Reason: Arg.2[rdf:type->?p1] Arg.2[rdf:type->?p2]" ?x) :- And(?x[rdf:type->?p1] ?x[rdf:type->?p2] ))
- ]]></template>	
- <methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p1</variable>
-<variable>?p2</variable>
-</templaterule>
-
-<templaterule> 
-<name>#cls-com</name>
-<pattern>(?c1 owl:complementOf ?c2) 
-</pattern>	
-<rifquery type="p1-prp-p2"><![CDATA[owl:complementOf
- ]]></rifquery>
-<template><![CDATA[
- Forall ?x (rif:error("Reason: Arg.2[rdf:type->?p1] Arg.2[rdf:type->?p2]" ?x) :- And(?x[rdf:type->?p1] ?x[rdf:type->?p2] ))
- ]]></template>	
- <methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<variable>?p1</variable>
-<variable>?p2</variable>
-</templaterule>
 
 
 
-<templaterule> 
-<name>#eq-diff2</name>
-<pattern><![CDATA[(?a rdf:type owl:AllDifferent)(?a owl:members ?l)]]></pattern>
-<rifquery type="withforall"><![CDATA[
-	
 
 
-
-	 Forall ?x ?listname ?headOfList ?y(
-                       rulenames:eq-diff2(?listname ?x) :-
-And(?listname[rdf:type->owl:AllDifferent]
-?listname[owl:members->?headOfList] 
-eg:membersOfList-spo(?headOfList ?x ?y))
-               )
-	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
-                       eg:membersOfList-spo(?headOfList ?x ?y) :-
-Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
-And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
-               )
-
-               Forall ?headOfList ?y ?y1 ?rest (
-                       eg:count-spo(?headOfList ?y) :-
-Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
-eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
-               )
-
-
-]]></rifquery>
-<methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<template><![CDATA[ rif:error("Reason: ?x[owl:sameAs->?y]" ?x) :- And ( ?x[owl:sameAs->?y] )
-]]></template>	
-</templaterule>
-
-<templaterule> 
-<name>#eq-diff3</name>
-<pattern><![CDATA[(?a rdf:type owl:AllDifferent)(?a owl:distinctMembers ?l)]]></pattern>
-<rifquery type="withforall"><![CDATA[
-	
-
-
-
- Forall ?x ?listname ?headOfList ?y(
-                       rulenames:eq-diff3(?listname ?x) :-
-And(?listname[rdf:type->owl:AllDifferent]
-?listname[owl:distinctMembers->?headOfList] 
-eg:membersOfList-spo(?headOfList ?x ?y))
-               )
-	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
-                       eg:membersOfList-spo(?headOfList ?x ?y) :-
-Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
-And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
-               )
-
-               Forall ?headOfList ?y ?y1 ?rest (
-                       eg:count-spo(?headOfList ?y) :-
-Or(And(?headOfList[rdf:rest->rdf:nil] ?y=0) And(?headOfList[rdf:rest->?rest]
-eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
-               )
-
-]]></rifquery>
-<methodname>emitForEachRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
-<template><![CDATA[
-  rif:error("Reason: ?x[owl:sameAs->?y]" ?x) :- And ( ?x[owl:sameAs->?y] )
-]]></template>	
-</templaterule>
 
 
 
@@ -1043,11 +707,7 @@ Forall ?p ?o ?s ?o2 (
        ?o[owl:sameAs->?o2]
        ?s[?p->?o]  ))
 
-(* <#eq-diff1> *)
-Forall ?x ?y (
-   rif:error("Reason: And(Arg.2 [owl:sameAs->Arg.3]Arg.2[owl:differentFrom->Arg.3] " ?x ?y) :- And(
-       ?x[owl:sameAs->?y]
-       ?x[owl:differentFrom->?y]  ))
+
 
 (* <#prp-ap-label> *)
    rdfs:label[rdf:type->owl:AnnotationProperty]
@@ -1091,9 +751,7 @@ Forall ?p ?c ?x ?y (
 (* <#cls-nothing1> *)
    owl:Nothing[rdf:type->owl:Class]
 
-(* <#cls-nothing2> *)
-Forall ?x (
-   rif:error("Reason: Arg.2[rdf:type->owl:Nothing]" ?x) :- ?x[rdf:type->owl:Nothing])
+
 
 (* <#cax-sco> *)
 Forall ?x ?c1 ?c2 (
@@ -1111,13 +769,6 @@ Forall ?x ?c1 ?c2 (
 Forall ?x ?c1 ?c2 (
    ?x[rdf:type->?c1] :- And(
        ?c1[owl:equivalentClass->?c2]
-       ?x[rdf:type->?c2]  ))
-
-(* <#cax-dw> *)
-Forall ?x ?c1 ?c2 (
-   rif:error("Reason Arg.2[owl:disjointWith->Arg.3] Arg.4[rdf:type->Arg.2] Arg.4[rdf:type->Arg.3]" ?c1 ?c2 ?x) :- And(
-       ?c1[owl:disjointWith->?c2]
-       ?x[rdf:type->?c1]
        ?x[rdf:type->?c2]  ))
 
 (* <#scm-cls> *)
@@ -1220,117 +871,7 @@ Forall ?c ?p2 ?p1 (
  
  
 
-(* <#dt-not-type> *)
-Group (
 
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->rdf:PlainLiteral] External(pred:is-literal-not-PlainLiteral( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->rdf:XMLLiteral] External(pred:is-literal-not-XMLLiteral( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:decimal] External(pred:is-literal-not-decimal( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:integer] External(pred:is-literal-not-integer( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:nonNegativeInteger] External(pred:is-literal-not-nonNegativeInteger( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:nonPositiveInteger] External(pred:is-literal-not-nonPositiveInteger( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:positiveInteger] External(pred:is-literal-not-positiveInteger( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:negativeInteger] External(pred:is-literal-not-negativeInteger( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:long] External(pred:is-literal-not-long( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:int] External(pred:is-literal-not-int( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:short] External(pred:is-literal-not-short( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:byte] External(pred:is-literal-not-byte( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:unsignedLong] External(pred:is-literal-not-unsignedLong( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:unsignedInt] External(pred:is-literal-not-unsignedInt( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:unsignedShort] External(pred:is-literal-not-unsignedShort( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:unsignedByte] External(pred:is-literal-not-unsignedByte( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:float] External(pred:is-literal-not-float( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:double] External(pred:is-literal-not-double( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:string] External(pred:is-literal-not-string( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:normalizedString] External(pred:is-literal-not-normalizedString( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:token] External(pred:is-literal-not-token( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:language] External(pred:is-literal-not-language( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:Name] External(pred:is-literal-not-Name( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:NCName] External(pred:is-literal-not-NCName( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:NMTOKEN] External(pred:is-literal-not-NMTOKEN( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:boolean] External(pred:is-literal-not-boolean( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:hexBinary] External(pred:is-literal-not-hexBinary( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:base64Binary] External(pred:is-literal-not-base64Binary( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:anyURI] External(pred:is-literal-not-anyURI( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:dateTime] External(pred:is-literal-not-dateTime( ?lt )) ))
-  Forall ?lt (
-   rif:error() :- And (
-     ?lt[rdf:type->xsd:dateTimeStamp ] External(pred:is-literal-not-dateTimeStamp ( ?lt )) ))
-)
-
-(* <#eq-diff1-literal1> *)
-Forall ?x ?y ?s1 ?s2 ?p1 ?p2 (
-   rif:error("Reason: And( Arg.2[Arg.3->Arg.4]  Arg.5[Arg.6->Arg.7] Arg.4[owl:sameAs->Arg.7]External(pred:literalNotIdentical(Arg.4 Arg.7))  )" ?s1 ?p1 ?x ?s2 ?p2 ?y ) :- And(
-       ?s1[?p1->?x]  ?s2[?p2->?y]
-       ?x[owl:sameAs->?y]
-       External(pred:literalNotIdentical(?x ?y))  ))
-
-(* <#eq-diff1-literal2> *)
-Forall ?x ?y ?s1 ?s2 ?p1 ?p2 (
-   rif:error("Reason: And(Arg.4[Arg.6->Arg.2]  Arg.5[Arg.7->Arg.3] Arg.2 = Arg.3 Arg.2[owl:differentFrom->Arg.3]  ) " ?x ?y ?s1 ?s2 ?p1 ?p2) :- And(
-       ?s1[?p1->?x]  ?s2[?p2->?y]
-       ?x = ?y
-       ?x[owl:differentFrom->?y]  ))
                   
 (* <#dt-type1-PlainLiteral> *) rdf:PlainLiteral[rdf:type -> rdfs:Datatype]
 (* <#dt-type1-decimal> *) xsd:decimal[rdf:type -> rdfs:Datatype]

@@ -1,0 +1,508 @@
+Document (
+ Prefix(rdf  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+ Prefix(rdfs <http://www.w3.org/2000/01/rdf-schema#>)
+ Prefix(owl  <http://www.w3.org/2002/07/owl#>)
+ Prefix(xsd  <http://www.w3.org/2001/XMLSchema#>)
+ Prefix(rif  <http://www.w3.org/2007/rif#>)
+ Prefix(func <http://www.w3.org/2007/rif-builtin-function#>)
+ Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)
+ Prefix(dc   <http://purl.org/dc/terms/>)
+ Group (
+(* <#eq-ref> *)
+Forall ?p ?o ?s (
+   ?s[owl:sameAs->?s] :- ?s[?p->?o])
+(* <#eq-ref1> *)
+Forall ?p ?o ?s (
+   ?p[owl:sameAs->?p] :- ?s[?p->?o])
+(* <#eq-ref2> *)
+Forall ?p ?o ?s (
+   ?o[owl:sameAs->?o] :- ?s[?p->?o])
+(* <#eq-sym> *)
+Forall ?x ?y (
+   ?y[owl:sameAs->?x] :- ?x[owl:sameAs->?y])
+(* <#eq-trans> *)
+Forall ?x ?z ?y (
+   ?x[owl:sameAs->?z] :- And(
+       ?x[owl:sameAs->?y]
+       ?y[owl:sameAs->?z]  ))
+(* <#eq-rep-s> *)
+Forall ?p ?o ?s ?s2 (
+   ?s2[?p->?o] :- And(
+       ?s[owl:sameAs->?s2]
+       ?s[?p->?o]  ))
+(* <#eq-rep-p> *)
+Forall ?p ?o ?s ?p2 (
+   ?s[?p2->?o] :- And(
+       ?p[owl:sameAs->?p2]
+       ?s[?p->?o]  ))
+(* <#eq-rep-o> *)
+Forall ?p ?o ?s ?o2 (
+   ?s[?p->?o2] :- And(
+       ?o[owl:sameAs->?o2]
+       ?s[?p->?o]  ))
+(* <#prp-ap-label> *)
+    rdfs:label[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-comment> *)
+   rdfs:comment[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-seeAlso> *)
+   rdfs:seeAlso[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-isDefinedBy> *)
+   rdfs:isDefinedBy[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-deprecated> *)
+   owl:deprecated[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-priorVersion> *)
+   owl:priorVersion[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-backwardCompatibleWith> *)
+   owl:backwardCompatibleWith[rdf:type->owl:AnnotationProperty]
+(* <#prp-ap-incompatibleWith> *)
+   owl:incompatibleWith[rdf:type->owl:AnnotationProperty]
+(* <#prp-dom> *)
+Forall ?p ?c ?x ?y (
+   ?x[rdf:type->?c] :- And(
+       ?p[rdfs:domain->?c]
+       ?x[?p->?y]  ))
+(* <#prp-rng> *)
+Forall ?p ?c ?x ?y (
+   ?y[rdf:type->?c] :- And(
+       ?p[rdfs:range->?c]
+       ?x[?p->?y]  ))
+(* <#prp-fp> *)
+Forall ?p ?y2 ?x ?y1 (
+   ?y1[owl:sameAs->?y2] :- And(
+       ?p[rdf:type->owl:FunctionalProperty]
+       ?x[?p->?y1]
+       ?x[?p->?y2]  ))
+(* <#prp-ifp> *)
+Forall ?p ?x1 ?x2 ?y (
+   ?x1[owl:sameAs->?x2] :- And(
+       ?p[rdf:type->owl:InverseFunctionalProperty]
+       ?x1[?p->?y]
+       ?x2[?p->?y]  ))
+(* <#prp-symp> *)
+Forall ?p ?x ?y (
+   ?y[?p->?x] :- And(
+       ?p[rdf:type->owl:SymmetricProperty]
+       ?x[?p->?y]  ))
+(* <#prp-trp> *)
+Forall ?p ?x ?z ?y (
+   ?x[?p->?z] :- And(
+       ?p[rdf:type->owl:TransitiveProperty]
+       ?x[?p->?y]
+       ?y[?p->?z]  ))
+(* <#prp-spo1> *)
+Forall ?x ?y ?p2 ?p1 (
+   ?x[?p2->?y] :- And(
+       ?p1[rdfs:subPropertyOf->?p2]
+       ?x[?p1->?y]  ))
+(* <#prp-eqp1> *)
+Forall ?x ?y ?p2 ?p1 (
+   ?x[?p2->?y] :- And(
+       ?p1[owl:equivalentProperty->?p2]
+       ?x[?p1->?y]  ))
+(* <#prp-eqp2> *)
+Forall ?x ?y ?p2 ?p1 (
+   ?x[?p1->?y] :- And(
+       ?p1[owl:equivalentProperty->?p2]
+       ?x[?p2->?y]  ))
+(* <#prp-inv1> *)
+Forall ?x ?y ?p2 ?p1 (
+   ?y[?p2->?x] :- And(
+       ?p1[owl:inverseOf->?p2]
+       ?x[?p1->?y]  ))
+(* <#prp-inv2> *)
+Forall ?x ?y ?p2 ?p1 (
+   ?y[?p1->?x] :- And(
+       ?p1[owl:inverseOf->?p2]
+       ?x[?p2->?y]  ))
+(* <#cls-thing> *)
+   owl:Thing[rdf:type->owl:Class]
+(* <#cls-nothing1> *)
+    owl:Nothing[rdf:type->owl:Class]
+(* <#cls-svf1> *)
+Forall ?p ?v ?u ?x ?y (
+   ?u[rdf:type->?x] :- And(
+       ?x[owl:someValuesFrom->?y]
+       ?x[owl:onProperty->?p]
+       ?u[?p->?v]
+       ?v[rdf:type->?y]  ))
+(* <#cls-svf2> *)
+Forall ?p ?v ?u ?x (
+   ?u[rdf:type->?x] :- And(
+       ?x[owl:someValuesFrom->owl:Thing]
+       ?x[owl:onProperty->?p]
+       ?u[?p->?v]  ))
+(* <#cls-avf> *)
+Forall ?p ?v ?u ?x ?y (
+   ?v[rdf:type->?y] :- And(
+       ?x[owl:allValuesFrom->?y]
+       ?x[owl:onProperty->?p]
+       ?u[rdf:type->?x]
+       ?u[?p->?v]  ))
+(* <#cls-hv1> *)
+Forall ?p ?u ?x ?y (
+   ?u[?p->?y] :- And(
+       ?x[owl:hasValue->?y]
+       ?x[owl:onProperty->?p]
+       ?u[rdf:type->?x]  ))
+(* <#cls-hv2> *)
+Forall ?p ?u ?x ?y (
+   ?u[rdf:type->?x] :- And(
+       ?x[owl:hasValue->?y]
+       ?x[owl:onProperty->?p]
+       ?u[?p->?y]  ))
+(* <#cls-maxc2> *)
+Forall ?p ?y2 ?u ?x ?y1 (
+   ?y1[owl:sameAs->?y2] :- And(
+       ?x[owl:maxCardinality->1]
+       ?x[owl:onProperty->?p]
+       ?u[rdf:type->?x]
+       ?u[?p->?y1]
+       ?u[?p->?y2]  ))
+(* <#cls-maxqc3> *)
+Forall ?p ?y2 ?c ?u ?x ?y1 (
+   ?y1[owl:sameAs->?y2] :- And(
+       ?x[owl:maxQualifiedCardinality->1]
+       ?x[owl:onProperty->?p]
+       ?x[owl:onClass->?c]
+       ?u[rdf:type->?x]
+       ?u[?p->?y1]
+       ?y1[rdf:type->?c]
+       ?u[?p->?y2]
+       ?y2[rdf:type->?c]  ))
+(* <#cls-maxqc4> *)
+Forall ?p ?y2 ?u ?x ?y1 (
+   ?y1[owl:sameAs->?y2] :- And(
+       ?x[owl:maxQualifiedCardinality->1]
+       ?x[owl:onProperty->?p]
+       ?x[owl:onClass->owl:Thing]
+       ?u[rdf:type->?x]
+       ?u[?p->?y1]
+       ?u[?p->?y2]  ))
+(* <#cax-sco> *)
+Forall ?x ?c1 ?c2 (
+   ?x[rdf:type->?c2] :- And(
+       ?c1[rdfs:subClassOf->?c2]
+       ?x[rdf:type->?c1]  ))
+(* <#cax-eqc1> *)
+Forall ?x ?c1 ?c2 (
+   ?x[rdf:type->?c2] :- And(
+       ?c1[owl:equivalentClass->?c2]
+       ?x[rdf:type->?c1]  ))
+(* <#cax-eqc2> *)
+Forall ?x ?c1 ?c2 (
+   ?x[rdf:type->?c1] :- And(
+       ?c1[owl:equivalentClass->?c2]
+       ?x[rdf:type->?c2]  ))
+(* <#scm-cls> *)
+Forall ?c (
+   ?c[rdfs:subClassOf->?c] :- ?c[rdf:type->owl:Class])
+(* <#scm-cls1> *)
+Forall ?c (
+   ?c[owl:equivalentClass->?c] :- ?c[rdf:type->owl:Class])
+(* <#scm-cls2> *)
+Forall ?c (
+   ?c[rdfs:subClassOf->owl:Thing] :- ?c[rdf:type->owl:Class])
+(* <#scm-cls3> *)
+Forall ?c (
+   owl:Nothing[rdfs:subClassOf->?c] :- ?c[rdf:type->owl:Class])
+(* <#scm-sco> *)
+Forall ?c1 ?c2 ?c3 (
+   ?c1[rdfs:subClassOf->?c3] :- And(
+       ?c1[rdfs:subClassOf->?c2]
+       ?c2[rdfs:subClassOf->?c3]  ))
+(* <#scm-eqc1> *)
+Forall ?c1 ?c2 (
+   ?c1[rdfs:subClassOf->?c2] :- ?c1[owl:equivalentClass->?c2])
+(* <#scm-eqc11> *)
+Forall ?c1 ?c2 (
+   ?c2[rdfs:subClassOf->?c1] :- ?c1[owl:equivalentClass->?c2])
+(* <#scm-eqc2> *)
+Forall ?c1 ?c2 (
+   ?c1[owl:equivalentClass->?c2] :- And(
+       ?c1[rdfs:subClassOf->?c2]
+       ?c2[rdfs:subClassOf->?c1]  ))
+(* <#scm-op> *)
+Forall ?p (
+   ?p[rdfs:subPropertyOf->?p] :- ?p[rdf:type->owl:ObjectProperty])
+(* <#scm-op1> *)
+Forall ?p (
+   ?p[owl:equivalentProperty->?p] :- ?p[rdf:type->owl:ObjectProperty])
+(* <#scm-dp> *)
+Forall ?p (
+   ?p[rdfs:subPropertyOf->?p] :- ?p[rdf:type->owl:DatatypeProperty])
+(* <#scm-dp1> *)
+Forall ?p (
+   ?p[owl:equivalentProperty->?p] :- ?p[rdf:type->owl:DatatypeProperty])
+(* <#scm-spo> *)
+Forall ?p3 ?p2 ?p1 (
+   ?p1[rdfs:subPropertyOf->?p3] :- And(
+       ?p1[rdfs:subPropertyOf->?p2]
+       ?p2[rdfs:subPropertyOf->?p3]  ))
+(* <#scm-eqp1> *)
+Forall ?p2 ?p1 (
+   ?p1[rdfs:subPropertyOf->?p2] :- ?p1[owl:equivalentProperty->?p2])
+(* <#scm-eqp11> *)
+Forall ?p2 ?p1 (
+   ?p2[rdfs:subPropertyOf->?p1] :- ?p1[owl:equivalentProperty->?p2])
+(* <#scm-eqp2> *)
+Forall ?p2 ?p1 (
+   ?p1[owl:equivalentProperty->?p2] :- And(
+       ?p1[rdfs:subPropertyOf->?p2]
+       ?p2[rdfs:subPropertyOf->?p1]  ))
+(* <#scm-dom1> *)
+Forall ?p ?c1 ?c2 (
+   ?p[rdfs:domain->?c2] :- And(
+       ?p[rdfs:domain->?c1]
+       ?c1[rdfs:subClassOf->?c2]  ))
+(* <#scm-dom2> *)
+Forall ?c ?p2 ?p1 (
+   ?p1[rdfs:domain->?c] :- And(
+       ?p2[rdfs:domain->?c]
+       ?p1[rdfs:subPropertyOf->?p2]  ))
+(* <#scm-rng1> *)
+Forall ?p ?c1 ?c2 (
+   ?p[rdfs:range->?c2] :- And(
+       ?p[rdfs:range->?c1]
+       ?c1[rdfs:subClassOf->?c2]  ))
+(* <#scm-rng2> *)
+Forall ?c ?p2 ?p1 (
+   ?p1[rdfs:range->?c] :- And(
+       ?p2[rdfs:range->?c]
+       ?p1[rdfs:subPropertyOf->?p2]  ))
+(* <#scm-hv> *)
+Forall ?c1 ?c2 ?i ?p2 ?p1 (
+   ?c1[rdfs:subClassOf->?c2] :- And(
+       ?c1[owl:hasValue->?i]
+       ?c1[owl:onProperty->?p1]
+       ?c2[owl:hasValue->?i]
+       ?c2[owl:onProperty->?p2]
+       ?p1[rdfs:subPropertyOf->?p2]  ))
+(* <#scm-svf1> *)
+Forall ?p ?y2 ?c1 ?c2 ?y1 (
+   ?c1[rdfs:subClassOf->?c2] :- And(
+       ?c1[owl:someValuesFrom->?y1]
+       ?c1[owl:onProperty->?p]
+       ?c2[owl:someValuesFrom->?y2]
+       ?c2[owl:onProperty->?p]
+       ?y1[rdfs:subClassOf->?y2]  ))
+(* <#scm-svf2> *)
+Forall ?c1 ?c2 ?y ?p2 ?p1 (
+   ?c1[rdfs:subClassOf->?c2] :- And(
+       ?c1[owl:someValuesFrom->?y]
+       ?c1[owl:onProperty->?p1]
+       ?c2[owl:someValuesFrom->?y]
+       ?c2[owl:onProperty->?p2]
+       ?p1[rdfs:subPropertyOf->?p2]  ))
+(* <#scm-avf1> *)
+Forall ?p ?y2 ?c1 ?c2 ?y1 (
+   ?c1[rdfs:subClassOf->?c2] :- And(
+       ?c1[owl:allValuesFrom->?y1]
+       ?c1[owl:onProperty->?p]
+       ?c2[owl:allValuesFrom->?y2]
+       ?c2[owl:onProperty->?p]
+       ?y1[rdfs:subClassOf->?y2]  ))
+(* <#scm-avf2> *)
+Forall ?c1 ?c2 ?y ?p2 ?p1 (
+   ?c2[rdfs:subClassOf->?c1] :- And(
+       ?c1[owl:allValuesFrom->?y]
+       ?c1[owl:onProperty->?p1]
+       ?c2[owl:allValuesFrom->?y]
+       ?c2[owl:onProperty->?p2]
+       ?p1[rdfs:subPropertyOf->?p2]  ))
+
+ Group ( 
+ (* <#prp-spo2> *)
+ Forall ?p ?last ?pc ?start (
+   ?start[?p->?last] :- And (
+       ?p[owl:propertyChainAxiom->?pc]
+       dc:_checkChain(?start ?pc ?last) ))
+ Forall ?start ?pc ?last ?p ?tl ?next (
+   dc:_checkChain(?start ?pc  ?last) :- And (
+       ?pc[rdf:first->?p rdf:rest->?tl]
+       ?start[?p->?next]
+       dc:_checkChain(?next ?tl ?last) ))
+ Forall ?start ?pc ?last ?p (
+   dc:_checkChain(?start ?pc  ?last) :- And (
+       ?pc[rdf:first->?p rdf:rest->rdf:nil]
+       ?start[?p->?last] ))
+ 
+   Forall ?x ?y ?c ?u ?c (
+   ?x[owl:sameAs->?y] :- And (
+     ?c[owl:hasKey->?u]  ?x[rdf:type->?c]  ?y[rdf:type->?c]
+     dc:_sameKey(?u ?x ?y) ))
+ Forall ?u ?x ?y ?v ?tl ?key (
+   dc:_sameKey(?u ?x ?y) :- And (
+     ?u[rdf:first->?key rdf:rest->?tl]
+     ?x[?key->?v] ?y[?key->?v]
+     dc:_sameKey(?tl ?x ?y) ))
+ Forall ?u ?x ?y ?v ?key (
+   dc:_sameKey(?u ?x ?y) :- And (
+     ?u[rdf:first->?key rdf:rest->rdf:nil]
+     ?x[?key->?v] ?y[?key->?v] ))
+ 
+ (* <#cls-int1> *)
+ Forall ?y ?c ?l (
+   ?y[rdf:type->?c] :- And (
+     ?c[owl:intersectionOf->?l]
+     dc:_allTypes(?l ?y) ))
+ Forall ?l ?y ?ty ?tl (
+   dc:_allTypes(?l ?y) :- And (
+     ?l[rdf:first->?ty rdf:rest->?tl]
+     ?y[rdf:type->?ty]
+     dc:_allTypes(?tl ?y) ))
+ Forall ?l ?y ?ty (
+   dc:_allTypes(?l ?y) :- And (
+     ?l[rdf:first->?ty rdf:rest->rdf:nil]
+     ?y[rdf:type->?ty] ))
+ 
+ (* <#prp-key> *)
+ Forall ?x ?y ?c ?u (
+   ?x[owl:sameAs->?y] :- And (
+     ?c[owl:hasKey->?u]  ?x[rdf:type->?c]  ?y[rdf:type->?c]
+     dc:_sameKey(?u ?x ?y) ))
+ Forall ?u ?x ?y ?v ?tl ?key (
+   dc:_sameKey(?u ?x ?y) :- And (
+     ?u[rdf:first->?key rdf:rest->?tl]
+     ?x[?key->?v] ?y[?key->?v]
+     dc:_sameKey(?tl ?x ?y) ))
+ Forall ?u ?x ?y ?v ?key (
+   dc:_sameKey(?u ?x ?y) :- And (
+     ?u[rdf:first->?key rdf:rest->rdf:nil]
+     ?x[?key->?v] ?y[?key->?v] ))
+ 
+ (* just because pred:list-contains is currently not iterable! *)
+ 	Forall ?member ?headOfList ?rest(
+	   pred:membersOfList(?headOfList ?x) :- Or(?headOfList[rdf:first->?x] And(?headOfList[rdf:rest->?rest] pred:membersOfList(?rest ?x)))
+	)
+ 
+ 
+ (* <#cls-uni> *)
+ Forall ?y ?c ?l ?ci (
+   ?y[rdf:type->?c] :- And (
+     ?c[owl:unionOf->?l]
+     External(pred:list-contains(?l ?ci))
+     ?y[rdf:type->?ci] ))
+ (* <#cls-oo> *)
+ Forall ?yi ?c ?l (
+   ?yi[rdf:type->?c] :- And (
+     ?c[owl:oneOf->?l]
+     pred:membersOfList(?l ?yi) ))
+ (* <#cls-int2> *)
+ Forall ?y ?c ?ci ?l (
+   ?y[rdf:type->?ci] :- And (
+     ?c[owl:intersectionOf->?l]
+     pred:membersOfList(?l ?ci)
+     ?y[rdf:type->?c] ))
+ (* <#scm-int> *)
+ Forall ?c ?ci ?l (
+   ?c[rdfs:subClassOf->?ci] :- And (
+     ?c[owl:intersectionOf->?l]
+     pred:membersOfList(?l ?ci) ))
+ (* <#scm-uni> *)
+ Forall ?c ?ci ?l (
+   ?ci[rdfs:subClassOf->?c] :- And (
+     ?c[owl:unionOf->?l]
+     pred:membersOfList(?l ?ci) 
+)))
+ 
+ Group (
+ (* <#dt-type2> *)
+ Group (
+    Forall ?s ?p ?lt ( ?lt[rdf:type->rdf:PlainLiteral rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-PlainLiteral( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->rdf:XMLLiteral rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-XMLLiteral( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:decimal rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-decimal( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:integer rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-integer( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:nonNegativeInteger rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-nonNegativeInteger( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:nonPositiveInteger rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-nonPositiveInteger( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:positiveInteger rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-positiveInteger( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:negativeInteger rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-negativeInteger( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:long rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-long( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:int rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-int( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:short rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-short( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:byte rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-byte( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:unsignedLong rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-unsignedLong( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:unsignedInt rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-unsignedInt( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:unsignedShort rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-unsignedShort( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:unsignedByte rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-unsignedByte( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:float rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-float( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:double rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-double( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:string rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-string( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:normalizedString rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-normalizedString( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:token rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-token( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:language rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-language( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:Name rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-Name( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:NCName rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-NCName( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:NMTOKEN rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-NMTOKEN( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:boolean rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-boolean( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:hexBinary rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-hexBinary( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:base64Binary rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-base64Binary( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:anyURI rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-anyURI( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:dateTime rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-dateTime( ?lt )) ))
+    Forall ?s ?p ?lt ( ?lt[rdf:type->xsd:dateTimeStamp  rdf:type->rdfs:Literal]
+                     :- And( ?s[?p->?lt] External( pred:is-literal-dateTimeStamp ( ?lt )) ))
+ )
+                     
+(* <#dt-type1-PlainLiteral> *) rdf:PlainLiteral[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-decimal> *) xsd:decimal[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-integer> *) xsd:integer[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-double> *) xsd:double[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-string> *) xsd:string[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-dateTime> *) xsd:dateTime[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-XMLLiteral> *) rdf:XMLLiteral[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-Literal> *) rdfs:Literal[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-nonNegativeInteger> *) xsd:nonNegativeInteger[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-nonPositiveInteger> *) xsd:nonPositiveInteger[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-positiveInteger> *) xsd:positiveInteger[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-negativeInteger> *) xsd:negativeInteger[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-long> *) xsd:long[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-int> *) xsd:int[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-short> *) xsd:short[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-byte> *) xsd:byte[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-unsignedLong> *) xsd:unsignedLong[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-unsignedInt> *) xsd:unsignedInt[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-unsignedShort> *) xsd:unsignedShort[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-unsignedByte> *) xsd:unsignedByte[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-normalizedString> *) xsd:normalizedString[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-token> *) xsd:token[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-language> *) xsd:language[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-Name> *) xsd:Name[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-NCName> *) xsd:NCName[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-NMTOKEN> *) xsd:NMTOKEN[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-float> *) xsd:float[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-boolean> *) xsd:boolean[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-hexBinary> *) xsd:hexBinary[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-base64Binary> *) xsd:base64Binary[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-anyURI> *) xsd:anyURI[rdf:type -> rdfs:Datatype]
+(* <#dt-type1-dateTimeStamp> *) xsd:dateTimeStamp [rdf:type -> rdfs:Datatype]
+))
+)
