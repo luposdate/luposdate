@@ -2552,7 +2552,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		final JPanel buttonPanelInference = (materializationInfo!=null)? new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)) : null;
 		
 		if(materializationInfo!=null){			
-			buttonPanelInference.add(new JLabel(" Inference:"));
+			buttonPanelInference.add(new JLabel("Inference:"));
 			buttonPanelInference.add(materializationInfo.createInferenceRulesButton(inferenceRules));	
 			buttonPanelInference.add(materializationInfo.createASTButton());
 			buttonPanelInference.add(materializationInfo.createASTCoreSPARQLButton());
@@ -2563,23 +2563,22 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			@Override
 			public void ancestorMoved(final HierarchyEvent e) {
-				Demo_Applet.updateButtonPanelSize(layout, (buttonPanelInference!=null)? buttonPanelInference : buttonpanel, resultpanel, contentPane.getSize());
+				Demo_Applet.updateButtonPanelSize(layout, resultpanel, contentPane.getSize(), buttonpanel, buttonPanelInference);
 			}
 
 			@Override
 			public void ancestorResized(final HierarchyEvent e) {
-				Demo_Applet.updateButtonPanelSize(layout, (buttonPanelInference!=null)? buttonPanelInference : buttonpanel, resultpanel, contentPane.getSize());
+				this.ancestorMoved(e);
 			}
 		});
 		
+		JPanel buttonSuperPanel = new JPanel(new BorderLayout());
+		buttonSuperPanel.add(buttonpanel, BorderLayout.NORTH);
+		
 		if(buttonPanelInference!=null){
-			JPanel buttonSuperPanel = new JPanel(new BorderLayout());
-			buttonSuperPanel.add(buttonpanel, BorderLayout.NORTH);
-			buttonSuperPanel.add(buttonPanelInference, BorderLayout.SOUTH);
-			resultpanel.add(buttonSuperPanel, BorderLayout.NORTH);
-		} else {
-			resultpanel.add(buttonpanel, BorderLayout.NORTH);
+			buttonSuperPanel.add(buttonPanelInference, BorderLayout.CENTER);
 		}
+		resultpanel.add(buttonSuperPanel, BorderLayout.NORTH);
 
 		boolean tablesOccur = false;
 		for (final QueryResult qr : resultQueryEvaluator) {
@@ -2617,8 +2616,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			final JPanel prefixesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0));
 			prefixesPanel.add(cb_prefixes);
-
-			buttonpanel.add(prefixesPanel);
+			
+			if(buttonSuperPanel!=null){
+				buttonSuperPanel.add(prefixesPanel, BorderLayout.SOUTH);
+			} else {
+				buttonpanel.add(prefixesPanel);
+			}
 
 			if (usePrefixes.isTrue()) {
 				final JPanel pPanel = new JPanel(new BorderLayout());
@@ -2669,19 +2672,31 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			resultpanel.add(scrollpane, BorderLayout.CENTER);
 		}
 
-		Demo_Applet.updateButtonPanelSize(layout, buttonpanel, resultpanel, contentPane.getSize());
+		Demo_Applet.updateButtonPanelSize(layout, resultpanel, contentPane.getSize(), buttonpanel, buttonPanelInference);
 	}
-
-
-	private static void updateButtonPanelSize(final FlowLayout layout, final JPanel buttonpanel, final JPanel resultpanel, final Dimension contentPaneSize) {
-		if (buttonpanel != null && resultpanel != null) {
-			final Dimension d = layout.minimumLayoutSize(buttonpanel);
-			final int rows = 2 + (int) Math.ceil(d.width / contentPaneSize.width);
-			final Dimension n = new Dimension(contentPaneSize.width, rows * d.height);
-			buttonpanel.setPreferredSize(n);
+	
+	private final static int DELTA = 5;
+	
+	private static void updateButtonPanelSize(final FlowLayout layout, final JPanel resultpanel, final Dimension contentPaneSize, final JPanel ... buttonpanels) {
+		for(JPanel buttonpanel: buttonpanels){
+			if (buttonpanel != null && resultpanel != null) {
+				final Dimension d = layout.minimumLayoutSize(buttonpanel); // for retrieving the height...
+				// calculating number of rows
+				int rows = 1;
+				int x = 0;
+				for(Component component: buttonpanel.getComponents()){
+					x += component.getWidth();
+					if(x>contentPaneSize.width-Demo_Applet.DELTA){
+						rows++;
+						x=component.getWidth();
+					}
+				}
+				final Dimension n = new Dimension(contentPaneSize.width, rows * d.height);
+				// set the size of the button panel...
+				buttonpanel.setPreferredSize(n);
+			}
 		}
 	}
-
 
 	private void setGlobalFont(final Font font) {
 		final Enumeration<Object> keys = UIManager.getDefaults().keys();
