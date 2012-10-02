@@ -2686,7 +2686,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				int x = 0;
 				for(Component component: buttonpanel.getComponents()){
 					x += component.getWidth();
-					if(x>contentPaneSize.width-Demo_Applet.DELTA){
+					if(x>contentPaneSize.width-Demo_Applet.DELTA){ // component will be already displayed in next row?
 						rows++;
 						x=component.getWidth();
 					}
