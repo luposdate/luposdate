@@ -1683,6 +1683,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		@Override
 		public long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception {
+			Demo_Applet.this.materializationInfo = null;
 			return this.ruleEvaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
 		}
 	}
