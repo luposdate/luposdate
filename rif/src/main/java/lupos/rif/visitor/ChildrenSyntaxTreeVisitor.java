@@ -141,7 +141,7 @@ public class ChildrenSyntaxTreeVisitor implements IRetArguVisitor<List<INode>, O
 	}
 
 	public List<INode> visit(RIFAtomic n, Object argu) {
-		return list(n.f1.node);
+		return list(n.f0, n.f1.node);
 	}
 
 	public List<INode> visit(RIFUniterm n, Object argu) {
