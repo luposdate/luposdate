@@ -269,6 +269,7 @@ public class PageManager {
 						this.bufferManager.modifyPage(index, newPage);
 						return;
 					}
+					final int oldindex = index;
 					index = (((currentPage[0] + 128) * 256 + (currentPage[1] + 128)) * 256 + (currentPage[2] + 128))
 							* 256 + (currentPage[3] + 128);
 					if (index == 0) {
@@ -277,14 +278,14 @@ public class PageManager {
 						// to store more released pages.
 
 						int number = pagenumber;
-						currentPage[max + 3] = (byte) ((number % 256) - 128);
+						currentPage[3] = (byte) ((number % 256) - 128);
 						number /= 256;
-						currentPage[max + 2] = (byte) ((number % 256) - 128);
+						currentPage[2] = (byte) ((number % 256) - 128);
 						number /= 256;
-						currentPage[max + 1] = (byte) ((number % 256) - 128);
+						currentPage[1] = (byte) ((number % 256) - 128);
 						number /= 256;
-						currentPage[max] = (byte) ((number % 256) - 128);
-						this.bufferManager.modifyPage(pagenumber, currentPage);
+						currentPage[0] = (byte) ((number % 256) - 128);
+						this.bufferManager.modifyPage(oldindex, currentPage);
 
 						currentPage = new byte[6];
 						currentPage[0] = (byte) -128;
@@ -322,7 +323,7 @@ public class PageManager {
 		while (pagenumber_tmp > 0) {
 			final byte[] page = this.bufferManager.getPage(pagenumber_tmp);
 			releasePage(pagenumber_tmp);
-			pagenumber_tmp= (((page[0] + 128) * 256 + (page[1] + 128)) * 256 + (page[2] + 128)) * 256 + (page[3] + 128);
+			pagenumber_tmp = (((page[0] + 128) * 256 + (page[1] + 128)) * 256 + (page[2] + 128)) * 256 + (page[3] + 128);
 		}
 	}
 
