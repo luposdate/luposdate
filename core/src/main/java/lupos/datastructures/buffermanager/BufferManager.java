@@ -148,6 +148,7 @@ public class BufferManager {
 	 * The size of one page in bytes
 	 */
 	protected static int PAGESIZE = 8 * 1024;
+	
 	/**
 	 * The number of pages in the buffer
 	 */
@@ -156,7 +157,12 @@ public class BufferManager {
 	/**
 	 * the max. number of bytes stored in a file, which can be handled by java without problems
 	 */
-	protected static int JAVALIMITFILESIZE = 1024 * 1024 * 1024 / PAGESIZE;
+	protected static int JAVALIMITFILESIZE_IN_BYTES = 1024 * 1024 * 1024;
+	
+	/**
+	 * the max. number of pages stored in a file, which can be handled by java without problems
+	 */
+	protected static int JAVALIMITFILESIZE = BufferManager.JAVALIMITFILESIZE_IN_BYTES / BufferManager.PAGESIZE;
 
 	/**
 	 * The current buffered file
@@ -167,10 +173,12 @@ public class BufferManager {
 	 * The id of the current opened file
 	 */
 	protected int currentFile = 0;
+	
 	/**
 	 * the filename of the current opened file
 	 */
 	protected String fileName;
+	
 	/**
 	 * the used replacement strategy for pages in the buffer, if new pages must be loaded which do not fit any more into the buffer
 	 */
@@ -180,6 +188,7 @@ public class BufferManager {
 	 * The buffered pages
 	 */
 	protected Map<Integer, Page> bufferedPages = new HashMap<Integer, Page>();
+	
 	/**
 	 * The lock used for any operation on a page
 	 */
@@ -414,15 +423,17 @@ public class BufferManager {
 	 * @return the size of one page in bytes
 	 */
 	public static int getPAGESIZE() {
-		return PAGESIZE;
+		return BufferManager.PAGESIZE;
 	}
 
 	/**
 	 * If the page size must be set different from the default of 8KB, this method must be called before any BufferManager is used.
+	 * This method also sets BufferManager.JAVALIMITFILESIZE storing the maximum number of pages in a single file (after exceeding this limit new files are used due to problems with java handling larger files).  
 	 * @param pAGESIZE The size of one page in bytes
 	 */
 	public static void setPAGESIZE(int pAGESIZE) {
-		PAGESIZE = pAGESIZE;
+		BufferManager.PAGESIZE = pAGESIZE;
+		BufferManager.JAVALIMITFILESIZE = BufferManager.JAVALIMITFILESIZE_IN_BYTES / BufferManager.PAGESIZE;
 	}
 
 	/**
