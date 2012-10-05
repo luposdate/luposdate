@@ -21,6 +21,7 @@
 	    	<module>operatorgraph</module>
 	    	<module>visualeditor</module>
 	    	<module>queryeditor</module>
+	    	<module>rifeditor</module>
 	    	<module>dataeditor</module>
 	    	<module>gui</module>
 	    	<module>ruleeditor</module>
@@ -80,6 +81,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.queryeditor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.rifeditor</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

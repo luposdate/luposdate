@@ -51,16 +51,16 @@ public class EdgeBased {
 	 * @param op	the graph	
 	 * @return		edge-type-amount
 	 */
-	private static int getTypeAmount(OperatorGraph op) {
-		int amount = 0;		
+	private static int getTypeCount(OperatorGraph op) {
+		int count = 0;		
 		HashMap<GraphWrapper, GraphBox> boxes = op.getBoxes();
 		
 		for(GraphWrapper gw : boxes.keySet()) {
-			if (gw.getSucceedingElements().size() > amount)
-				amount = gw.getSucceedingElements().size();
+			if (gw.getSucceedingElements().size() > count)
+				count = gw.getSucceedingElements().size();
 		}
 		
-		return amount;
+		return count;
 	}
 	
 	/**
@@ -70,12 +70,14 @@ public class EdgeBased {
 	 * @param directions	already set directions
 	 */
 	private static void setDirections(final OperatorGraph op, final HashMap<Integer, Double> directions) {
-		int amount = getTypeAmount(op);
-		double directionDistance = 180/amount;		
-		double direction = 0.0;
-		for (int type = 0; type < amount; type++) {
-			direction = ((type * directionDistance)*(Math.PI/180));
-			directions.put(type, direction);
+		int count = getTypeCount(op);
+		if(count>0){
+			double directionDistance = 180/count;		
+			double direction = 0.0;
+			for (int type = 0; type < count; type++) {
+				direction = ((type * directionDistance)*(Math.PI/180));
+				directions.put(type, direction);
+			}
 		}
 	}
 
