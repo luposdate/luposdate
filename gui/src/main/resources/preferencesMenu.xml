@@ -168,6 +168,39 @@
         </optionbox>
       </options>
     </page>
+	<page id="visualRIFEditor" name="VisualRifEditor">
+		<options>
+			<text>This preferences page contains the options for the visual RIF
+				editor.</text>
+			<option id="documentEditorPane_useStyledBoxes" name="Use styled boxes"
+				datatype="xpref.datatypes.BooleanDatatype" value="true"
+				help="disable this checkbox for a black and white view..." />
+			<optionbox name="Styles of boxes" dependsOn="documentEditorPane_useStyledBoxes=true">
+				<option id="documentEditorPane_style_prefixoperator" name="PrefixOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #0099FF | #FFFFFF" />
+				<option id="documentEditorPane_style_importoperator" name="ImportOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #FF6666 | #FFFFFF" />
+				<option id="documentEditorPane_style_ruleoperator" name="RuleOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #1dbddc | #FFFFFF" />
+				<option id="documentEditorPane_style_annotationoperator"
+					name="AnnotationOperator" datatype="boxStyleSequence" value="ROUNDBOX | #FFFFCC | #FFFFFF" />
+
+				<option id="documentEditorPane_style_groupoperator" name="GroupOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #FFFFCC | #FFFFFF" />
+				<line />
+				<option id="ruleEditorPane_style_variableoperator" name="VariableOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #65e5ec | #FFFFFF" />
+				<option id="ruleEditorPane_style_constantoperator" name="ConstantOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #7bfd9f | #FFFFFF" />
+				<option id="ruleEditorPane_style_unitermoperator" name="UnitermOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #FFFFCC | #FFFFFF" />
+				<option id="ruleEditorPane_style_listoperator" name="ListOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #ffe625 | #FFFFFF" />
+				<option id="ruleEditorPane_style_frameoperator" name="FrameOperator"
+					datatype="boxStyleSequence" value="ROUNDBOX | #01c2de | #FFFFFF" />
+			</optionbox>
+		</options>
+	</page>
     <page id="dataEditor" name="DataEditor">
       <options>
         <text>This preferences page contains the options for the visual data editor.</text>
@@ -212,7 +245,7 @@
     </page>
     
     <options>
-      <text>This preferences page contains the general options for the viewers of operator graphs, abstract syntax trees and visual data and query editors.</text>
+      <text>This preferences page contains the general options for the viewers of operator graphs, abstract syntax trees and visual data, rule and query editors.</text>
       <option id="viewer_font" name="Font at 100% zoom" datatype="xpref.datatypes.FontDatatype" value="Serif; 16" maximum="3" />
       <line />
       <option id="viewer_zoom" name="Zoom factor on first run" datatype="xpref.datatypes.IntegerDatatype" value="100" minimum="1" />

@@ -37,6 +37,7 @@ import javax.swing.border.Border;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;

@@ -23,10 +23,6 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
-
-
-
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -43,8 +39,6 @@ import lupos.misc.util.OperatorIDTuple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 
 public class UnitermOperator  extends AbstractTermOperator {
 

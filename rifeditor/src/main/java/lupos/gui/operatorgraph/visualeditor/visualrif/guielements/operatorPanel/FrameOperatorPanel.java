@@ -56,6 +56,7 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.HintTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.JIconButton;

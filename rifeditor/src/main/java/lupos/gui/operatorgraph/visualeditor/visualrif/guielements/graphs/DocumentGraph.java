@@ -31,7 +31,6 @@ import java.util.Map.Entry;
 import lupos.datastructures.items.Item;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
-import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel;
@@ -277,15 +276,8 @@ public class DocumentGraph  extends VisualGraphOperator{
 				annotationOperator.fromJSON(annotation);
 				JSONArray positionArrayAnnotation = annotation.getJSONArray("POSITION");
 				this.addOperator(positionArrayAnnotation.getInt(0), positionArrayAnnotation.getInt(1), annotationOperator);
-				AnnotationConnection annotationConnection = new AnnotationConnection(visualEditor,annotationOperator,op);
+				AnnotationConnection annotationConnection = new AnnotationConnection(visualEditor, annotationOperator,op);
 			}
-
-		
-
-
-		
-
-
 	}
 	
 	public JSONObject ruleToJSON(String ruleName) throws JSONException {
@@ -326,7 +318,7 @@ public class DocumentGraph  extends VisualGraphOperator{
 	
 	
 	public HashMap<String, String> getPrefixList() {
-		return prefixList;
+		return this.prefixList;
 	}
 
 	public void setPrefixList(HashMap<String, String> prefixList) {
@@ -334,7 +326,7 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 	public HashMap<String, String> getImportList() {
-		return importList;
+		return this.importList;
 	}
 
 	public void setImportList(HashMap<String, String> importList) {
@@ -342,7 +334,7 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 	public RulePanel getRulePanel() {
-		return rulePanel;
+		return this.rulePanel;
 	}
 
 	public void setRulePanel(RulePanel rulePanel) {
@@ -350,50 +342,41 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
 	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
-	public VisualGraph getVisualGraph(){
+	@Override
+	public VisualRIFGraph getVisualGraph(){
 		return super.getVisualGraph();
 	}
 
 
 	@Override
 	protected void createNewOperatorContainer(AbstractContainer oc) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	protected void createNewListOperator(ListOperator lo) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	protected void createNewFrameOperator(FrameOperator fo) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	protected void createNewConstantOperator(ConstantOperator co) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	protected void createNewVariableOperator(VariableOperator vo) {
-		// TODO Auto-generated method stub
-		
 	}
 
 

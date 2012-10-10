@@ -51,6 +51,7 @@ import lupos.gui.operatorgraph.visualeditor.util.StatusBar;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.DocumentGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.GroupGraph;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.AnnotationOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.GroupOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel;
@@ -267,10 +268,7 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 			public void actionPerformed(final ActionEvent ae) {
 				that.statusBar.setText("Arranging query ...");
 
-				for (final VisualGraph<Operator> visualGraph : that
-						.getVisualGraphs()) {
-					visualGraph.arrange(false, false, false,
-							Arrange.values()[0]);
+				for (final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
 					visualGraph.arrange(false, false, false,
 							Arrange.values()[0]);
 				}

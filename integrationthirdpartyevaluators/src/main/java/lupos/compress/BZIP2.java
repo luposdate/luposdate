@@ -21,52 +21,14 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.visualrif.util;
+package lupos.compress;
 
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
-import lupos.gui.operatorgraph.visualeditor.VisualEditor;
-import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
+import java.io.InputStream;
 
-public class AnnotationConnection extends ConnectionRIF<Operator>{
+import org.apache.commons.compress.bzip2.CBZip2InputStream;
 
-	public AnnotationConnection(VisualEditor<Operator> visualEditor) {
-		super(visualEditor);
-		
+public class BZIP2 {
+	public static InputStream createInputStream(final InputStream inferior){
+		return new CBZip2InputStream(inferior);
 	}
-
-	public AnnotationConnection(VisualEditor<Operator> visualEditor, Operator firstOperator, Operator secondOperator) {
-		super(visualEditor);
-		this.addOperator(firstOperator);
-		this.addOperator(secondOperator);
-		
-	}
-	
-	@Override
-	protected String validateConnection() {
-		String errorString = "";
-		
-		if (!(this.firstOp.getElement() instanceof AnnotationOperator)){
-			errorString = "Please click on the Annotation first!";
-		}
-		
-		else
-		
-		if (this.secondOp.getElement() instanceof AnnotationOperator){
-			errorString = "An Annotation need not to be annotated!";
-		}
-		
-		if (this.secondOp.getElement() instanceof PrefixOperator){
-			errorString = "A Prefix Operator must not be annotated!";
-		}
-		
-	    if(this.secondOp.getPrecedingElements().size()>=1){
-	    	errorString = "This Operator is already annotated!";
-	    }
-		
-		
-		return errorString;
-	}
-
 }

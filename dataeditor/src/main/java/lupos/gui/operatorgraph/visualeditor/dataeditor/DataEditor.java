@@ -104,8 +104,7 @@ public class DataEditor extends VisualEditor<Operator> {
 
 		this.frame = this.create(n3daten, image);
 
-		this.frame
-		.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		this.frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -145,8 +144,7 @@ public class DataEditor extends VisualEditor<Operator> {
 				this.setVisible(false);
 
 				System.exit(0);
-			}
-			else {
+			} else {
 				this.statusBar.setText("Validating N3 data ...");
 
 				final boolean valid = this.visualGraphs.get(0).validateGraph(true, null);

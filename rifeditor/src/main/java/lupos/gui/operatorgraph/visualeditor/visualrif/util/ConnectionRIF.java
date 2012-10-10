@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.util;
+package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
 import javax.swing.JOptionPane;
 
@@ -32,10 +32,11 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
+import lupos.gui.operatorgraph.visualeditor.util.Connection;
+import lupos.gui.operatorgraph.visualeditor.util.DummyItem;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AndContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.OrContainer;
-
-
 
 /**
  * This class handles the request to create a new connection between two
@@ -48,44 +49,7 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.OrContainer;
  * 
  * @author schleife
  */
-public abstract class Connection<T> {
-	/**
-	 * The operator to create a connection from.
-	 */
-	protected GraphWrapperEditable firstOp;
-
-	/**
-	 * The operator to create a connection to.
-	 */
-	protected GraphWrapperEditable secondOp;
-
-	/**
-	 * The dummy operator. This is needed to be able to draw an arrow to the
-	 * mouse after the first click.
-	 */
-	protected T dummyOperator = null;
-
-	/**
-	 * The dummy GraphWrapper. This is needed to be able to draw an arrow to the
-	 * mouse after the first click.
-	 */
-	private GraphWrapperEditable dummyGW = null;
-
-	/**
-	 * The main VisualEditor.
-	 */
-	protected VisualEditor<T> visualEditor;
-
-	/**
-	 * The QueryGraph, where the connection is created on.
-	 */
-	protected VisualGraph<T> queryGraph;
-
-	/**
-	 * The item to use as content if the connection has content.
-	 */
-	protected Item item = new DummyItem();
-
+public abstract class ConnectionRIF<T> extends Connection<T>{
 
 	/**
 	 * Creates a Connection object to connect two operators.
@@ -93,23 +57,10 @@ public abstract class Connection<T> {
 	 * @param visualEditor
 	 *            reference to the main visual editor
 	 */
-	protected Connection(final VisualEditor<T> visualEditor) {
-		this.visualEditor = visualEditor;
-
-		this.visualEditor.getStatusBar().setText("ConnectionMode: Click on the first operator you want to connect.");
+	protected ConnectionRIF(final VisualEditor<T> visualEditor) {
+		super(visualEditor);
 	}
 
-	/**
-	 * Returns the dummy GraphBox on the given QueryGraphCanvas.
-	 * 
-	 * @param qgc
-	 *            the QueryGraphCanvas to get the dummy GraphBox from
-	 * 
-	 * @return the dummy GraphBox
-	 */
-	public GraphBox getDummyBox(final VisualGraph<T> qgc) {
-		return qgc.getBoxes().get(this.dummyGW);
-	}
 
 	/**
 	 * This methods adds an operator to the Connection class and determines the
@@ -120,6 +71,7 @@ public abstract class Connection<T> {
 	 * @param op
 	 *            The operator to add to the connection.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void addOperator(final T op) {
 		if(this.firstOp == null) { // first call... add the first operator and
@@ -151,10 +103,6 @@ public abstract class Connection<T> {
 
 			this.visualEditor.getStatusBar().clear();
 		}
-	}
-
-	public void setConnectionContent(final Item item) {
-		this.item = item;
 	}
 
 	/**
@@ -236,17 +184,4 @@ public abstract class Connection<T> {
 		this.visualEditor.repaint();
 		return true;
 	}
-
-	public void cancel() {
-		this.visualEditor.connectionMode = null; // end connectionMode of the editor
-
-		// remove the dummy elements...
-		if(this.firstOp != null) {
-			this.firstOp.removeSucceedingElement(this.dummyGW);
-		}
-
-		this.queryGraph.getBoxes().remove(this.dummyGW);
-	}
-
-	protected abstract String validateConnection();
 }

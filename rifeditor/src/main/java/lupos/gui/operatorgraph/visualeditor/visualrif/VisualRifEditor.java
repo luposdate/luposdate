@@ -23,9 +23,8 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif;
 
-
-
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -54,10 +53,8 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.TreePane;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.SaveLoader;
+import lupos.misc.FileHelper;
 import xpref.XPref;
-
-
-
 
 public class VisualRifEditor extends JFrame {
 
@@ -77,14 +74,13 @@ public class VisualRifEditor extends JFrame {
 	
 	private SaveLoader saveLoader = new SaveLoader(this);
 
+	public VisualRifEditor(){
+		this(null, null);
+	}
 	
 	
 	/* Constructor */
-
-
-
-
-	VisualRifEditor(){
+	public VisualRifEditor(final String rules, final Image icon){
 		super();
 		
 		try {
@@ -93,7 +89,7 @@ public class VisualRifEditor extends JFrame {
 		}
 		catch(Exception e) {
 			try {
-				XPref.getInstance(VisualRifEditor.class.getResource("/preferencesMenu.xml").getFile());
+				XPref.getInstance(new URL("file:"+VisualRifEditor.class.getResource("/preferencesMenu.xml").getFile()));
 			} catch(Exception e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
@@ -140,7 +136,13 @@ public class VisualRifEditor extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
+		if(rules != null){
+			this.importNewDocument(rules);
+		}
 		
+		if(icon!=null){
+			this.setIconImage(icon);
+		}
 	}
 
 
@@ -158,10 +160,7 @@ public class VisualRifEditor extends JFrame {
 				
 			}
 		});
-
-		menuBar.add(this.buildFileMenu());
-
-		
+		menuBar.add(this.buildFileMenu());		
 		return menuBar;
 	}//End Constructor
 		
@@ -265,10 +264,6 @@ public class VisualRifEditor extends JFrame {
 		JMenuItem importMI = new JMenuItem("Import Document");
 		importMI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				DocumentPanel newDocument = that.documentContainer
-						.createNewDocument();
-				that.treePane.addNewDocument(newDocument);
-				that.setRightComponent(newDocument);
 				JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("rif document", "txt","rif"));
@@ -276,11 +271,8 @@ public class VisualRifEditor extends JFrame {
 				if(chooser.showDialog(that, "Import") == JFileChooser.APPROVE_OPTION) {
 					String fileName = chooser.getSelectedFile().getAbsolutePath();
 
-					that.saveLoader.importFile(fileName);
-					that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
-
-				}
-				
+					that.importNewDocument(FileHelper.fastReadFile(fileName));
+				}				
 			}
 		});
 
@@ -346,7 +338,19 @@ public class VisualRifEditor extends JFrame {
 
 		return fileMenu;
 	}
+	
+	public void importNewDocument(final String rules){
+		DocumentPanel newDocument = this.documentContainer.createNewDocument();
+		this.treePane.addNewDocument(newDocument);
+		this.setRightComponent(newDocument);
+		this.importDocument(rules);
+	}
 
+	
+	public void importDocument(final String rules){
+		this.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getRifCodeEditor().getTp_rifInput().setText(rules);
+		this.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
+	}
 
 	/**
 	 * Loads the component on the right side
@@ -405,22 +409,12 @@ public class VisualRifEditor extends JFrame {
 		return saveLoader;
 	}
 
-
 	public void setSaveLoader(SaveLoader saveLoader) {
 		this.saveLoader = saveLoader;
 	}
-	
-	
 	
 	// Start 
 	public static void main(String[] args){
 		new VisualRifEditor();
 	}
-
-
-
-
-
-	
-	
 }

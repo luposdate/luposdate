@@ -32,8 +32,6 @@ import java.util.LinkedList;
 
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.DrawObject;
-import lupos.gui.operatorgraph.DrawObject.OuterAttribute;
-import lupos.gui.operatorgraph.DrawObject.Type;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -42,6 +40,7 @@ import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator;
@@ -150,13 +149,13 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	@Override
 	@SuppressWarnings("unchecked")
 	public AbstractGuiComponent<Operator> createObject(final OperatorGraph parent) {
-		return ((Operator) this.element).draw(this, (VisualGraph<Operator>) parent);
+		return ((Operator) this.element).draw(this, (VisualRIFGraph<Operator>) parent);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(final OperatorGraph parent) {
-		return ((Operator) this.element).drawAnnotations((VisualGraph<Operator>) parent);
+		return ((Operator) this.element).drawAnnotations((VisualRIFGraph<Operator>) parent);
 	}
 
 	@Override
@@ -173,7 +172,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	public boolean variableInUse(final String variable) {
 		return ((Operator) this.element).variableInUse(variable, new HashSet<Operator>());
 	}
-
+	
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -397,5 +396,10 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	@SuppressWarnings("rawtypes")
 	public AbstractGuiComponent getAnnotationLabel(final GraphWrapper gw) {
 		return ((Operator) this.element).getAnnotationLabel((Operator) gw.getElement());
+	}
+	
+	@Override
+	public String getWantedPreferencesID() {
+		return "documentEditorPane_style_prefixoperator";
 	}
 }

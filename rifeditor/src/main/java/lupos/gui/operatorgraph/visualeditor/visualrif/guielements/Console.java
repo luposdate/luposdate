@@ -23,17 +23,8 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
-
-
-import java.awt.Point;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.RuleOperatorPanel;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Console   {
 
@@ -50,12 +41,10 @@ public class Console   {
 		
 		this.scrollPane  = new JScrollPane(this.textArea);
 	}
-	
-	
+
 	public void setText(String text){
 		this.textArea.setText(text);
 	} 
-
 
 	public JScrollPane getScrollPane() {
 		return scrollPane;
@@ -72,8 +61,4 @@ public class Console   {
 	public void setTextArea(JTextArea textArea) {
 		this.textArea = textArea;
 	}
-
-
-	
-	
 }

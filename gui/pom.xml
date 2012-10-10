@@ -64,6 +64,11 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.rifeditor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>luposdate.dataeditor</artifactId>
 		</dependency>
 

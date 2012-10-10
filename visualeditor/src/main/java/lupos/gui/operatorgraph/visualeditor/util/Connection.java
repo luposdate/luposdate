@@ -59,13 +59,13 @@ public abstract class Connection<T> {
 	 * The dummy operator. This is needed to be able to draw an arrow to the
 	 * mouse after the first click.
 	 */
-	private T dummyOperator = null;
+	protected T dummyOperator = null;
 
 	/**
 	 * The dummy GraphWrapper. This is needed to be able to draw an arrow to the
 	 * mouse after the first click.
 	 */
-	private GraphWrapperEditable dummyGW = null;
+	protected GraphWrapperEditable dummyGW = null;
 
 	/**
 	 * The main VisualEditor.

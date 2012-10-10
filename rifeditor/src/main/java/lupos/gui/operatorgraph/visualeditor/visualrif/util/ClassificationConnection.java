@@ -25,9 +25,8 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
 
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
-import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.util.Connection;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AndContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 
@@ -35,14 +34,14 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 
 
 
-public class ClassificationConnection  extends Connection<Operator>{
+public class ClassificationConnection  extends ConnectionRIF<Operator>{
 
 	public ClassificationConnection(VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
 		
 	}
 	
-	public ClassificationConnection(VisualEditor<Operator> visualEditor, VisualGraph<Operator> ruleGraph) {
+	public ClassificationConnection(VisualEditor<Operator> visualEditor, VisualRIFGraph<Operator> ruleGraph) {
 		super(visualEditor);
 		this.queryGraph = ruleGraph;
 	}

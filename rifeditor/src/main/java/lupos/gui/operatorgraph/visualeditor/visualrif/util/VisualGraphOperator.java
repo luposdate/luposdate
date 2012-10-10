@@ -33,9 +33,10 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.AnnotationPanel;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.GraphWrapperOperator;
 
-public abstract class VisualGraphOperator extends VisualGraph<Operator> {
+public abstract class VisualGraphOperator extends VisualRIFGraph<Operator> {
 	private static final long serialVersionUID = 7449846681888858372L;
 
 	public VisualGraphOperator(VisualEditor<Operator> visualEditor) {

@@ -21,52 +21,17 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.visualrif.util;
+package lupos.gui;
 
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
-import lupos.gui.operatorgraph.visualeditor.VisualEditor;
-import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
-
-public class AnnotationConnection extends ConnectionRIF<Operator>{
-
-	public AnnotationConnection(VisualEditor<Operator> visualEditor) {
-		super(visualEditor);
-		
+public final class BooleanReference {
+	private boolean value;
+	public BooleanReference(boolean value){
+		this.value=value;
 	}
-
-	public AnnotationConnection(VisualEditor<Operator> visualEditor, Operator firstOperator, Operator secondOperator) {
-		super(visualEditor);
-		this.addOperator(firstOperator);
-		this.addOperator(secondOperator);
-		
+	public boolean isTrue() {
+		return this.value;
 	}
-	
-	@Override
-	protected String validateConnection() {
-		String errorString = "";
-		
-		if (!(this.firstOp.getElement() instanceof AnnotationOperator)){
-			errorString = "Please click on the Annotation first!";
-		}
-		
-		else
-		
-		if (this.secondOp.getElement() instanceof AnnotationOperator){
-			errorString = "An Annotation need not to be annotated!";
-		}
-		
-		if (this.secondOp.getElement() instanceof PrefixOperator){
-			errorString = "A Prefix Operator must not be annotated!";
-		}
-		
-	    if(this.secondOp.getPrecedingElements().size()>=1){
-	    	errorString = "This Operator is already annotated!";
-	    }
-		
-		
-		return errorString;
+	public void setValue(boolean value) {
+		this.value = value;
 	}
-
 }

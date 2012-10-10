@@ -40,6 +40,7 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleIdentifier;

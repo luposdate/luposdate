@@ -170,6 +170,24 @@
 				<version>20090211</version>
 			</dependency>
 			
+			<dependency>
+        		<groupId>commons-compress</groupId>
+        		<artifactId>commons-compress</artifactId>
+        		<version>20040530</version>
+      		</dependency>
+      		
+      		<dependency>
+  				<groupId>org.semanticweb.yars</groupId>
+  				<artifactId>nxparser</artifactId>
+  				<version>1.2.2</version>
+  				<exclusions>
+        			<exclusion>
+            			<artifactId>tools</artifactId>
+            			<groupId>com.sun</groupId>
+        			</exclusion>
+    			</exclusions>
+			</dependency>
+	
 		</dependencies>
 	</dependencyManagement>
 
@@ -200,6 +218,15 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository>
+		
+		<repository>
+			<id>nxparser-repo</id>
+			<url>http://nxparser.googlecode.com/svn/repository</url>
+        </repository>
+		<repository>
+			<id>nxparser-snapshots</id>
+			<url>http://nxparser.googlecode.com/svn/snapshots</url>
 		</repository>
 
 	</repositories>

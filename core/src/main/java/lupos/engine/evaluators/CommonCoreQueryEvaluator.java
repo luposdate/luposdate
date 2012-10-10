@@ -673,9 +673,11 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			final InputStream input, final TripleConsumer tc)
 			throws Exception {
 		if (type.startsWith("BZIP2")) {
-			readTriplesWithoutMultipleFilesUncompressed(type.substring(5),
-					input,tc);
-					//Compressors.BZIP2.createInputStream(input), tc);
+			// this is only available if the module luposdate.integrationthirdpartyevaluators is considered => using reflection api for "late binding"
+			Class<?> c = Class.forName("lupos.compress.BZIP2");
+			Method m = c.getMethod("parseRDFData",InputStream.class);
+			InputStream uncompressed = (InputStream) m.invoke(c, input, tc, encoding);			
+			readTriplesWithoutMultipleFilesUncompressed(type.substring(5), uncompressed, tc);
 		} else
 			readTriplesWithoutMultipleFilesUncompressed(type, input, tc);
 	}

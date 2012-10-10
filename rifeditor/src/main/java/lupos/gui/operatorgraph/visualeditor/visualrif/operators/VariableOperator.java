@@ -44,19 +44,12 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ClassificationOperatorPanel;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ContainerPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.VariablePanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.GraphWrapperOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 import lupos.misc.util.OperatorIDTuple;
-
-
-
-
-
-
-
 
 public class VariableOperator extends Operator  {
 	
@@ -110,7 +103,7 @@ public class VariableOperator extends Operator  {
 		return this.panel;
 	}
 
-	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualGraph<Operator> parent) {
+	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualRIFGraph<Operator> parent) {
 		Hashtable<GraphWrapper, AbstractSuperGuiComponent> predicates = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 
 
@@ -324,7 +317,7 @@ public class VariableOperator extends Operator  {
 
 
 
-	public void fromJSON(JSONObject operatorObject, VariableOperator variableOperator,VisualGraph<Operator> parent) throws JSONException {
+	public void fromJSON(JSONObject operatorObject, VariableOperator variableOperator,VisualRIFGraph<Operator> parent) throws JSONException {
 		
 
 		variableOperator.setVariable(operatorObject.get("VALUE").toString());

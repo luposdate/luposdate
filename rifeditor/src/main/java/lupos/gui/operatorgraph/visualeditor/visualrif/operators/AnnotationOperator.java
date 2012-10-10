@@ -36,6 +36,7 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.AnnotationOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.RuleOperatorPanel;
 import lupos.misc.util.OperatorIDTuple;
@@ -73,8 +74,7 @@ public class AnnotationOperator extends Operator {
 	}
 
 	@Override
-	public AbstractGuiComponent<Operator> draw(GraphWrapper gw,
-			VisualGraph<Operator> parent) {
+	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
 		
 		this.panel = new AnnotationOperatorPanel(parent, gw, this,annotation,"Annotation",true);
 		

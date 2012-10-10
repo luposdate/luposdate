@@ -27,12 +27,11 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
 import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.util.Connection;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 
-public class TermConnection extends Connection<Operator> {
+public class TermConnection extends ConnectionRIF<Operator> {
 	
 	Term term;
 

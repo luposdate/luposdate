@@ -21,52 +21,50 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.visualrif.util;
+package lupos.gui;
 
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
-import lupos.gui.operatorgraph.visualeditor.VisualEditor;
-import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
+import java.awt.Image;
+import java.util.List;
 
-public class AnnotationConnection extends ConnectionRIF<Operator>{
+import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
+import lupos.gui.operatorgraph.graphwrapper.GraphWrapperASTRIF;
+import lupos.gui.operatorgraph.graphwrapper.GraphWrapperRules;
+import lupos.gui.operatorgraph.viewer.ViewerPrefix;
+import lupos.misc.debug.BasicOperatorByteArray;
+import lupos.optimizations.logical.rules.DebugContainer;
+import lupos.rif.generated.syntaxtree.CompilationUnit;
+import lupos.rif.model.Document;
 
-	public AnnotationConnection(VisualEditor<Operator> visualEditor) {
-		super(visualEditor);
-		
+public class RIFDebugViewerCreator extends DebugViewerCreator {
+
+	final private CompilationUnit compilationUnit;
+	final private Document rifDoc;
+
+	public RIFDebugViewerCreator(final boolean fromJar, final ViewerPrefix viewerPrefix, final BooleanReference usePrefixes, final RulesGetter rulesGetter, final Image icon, final CompilationUnit compilationUnit,
+			final Document rifDoc) {
+		super(fromJar, viewerPrefix, usePrefixes, rulesGetter, icon);
+		this.compilationUnit = compilationUnit;
+		this.rifDoc = rifDoc;
 	}
 
-	public AnnotationConnection(VisualEditor<Operator> visualEditor, Operator firstOperator, Operator secondOperator) {
-		super(visualEditor);
-		this.addOperator(firstOperator);
-		this.addOperator(secondOperator);
-		
-	}
-	
 	@Override
-	protected String validateConnection() {
-		String errorString = "";
-		
-		if (!(this.firstOp.getElement() instanceof AnnotationOperator)){
-			errorString = "Please click on the Annotation first!";
-		}
-		
-		else
-		
-		if (this.secondOp.getElement() instanceof AnnotationOperator){
-			errorString = "An Annotation need not to be annotated!";
-		}
-		
-		if (this.secondOp.getElement() instanceof PrefixOperator){
-			errorString = "A Prefix Operator must not be annotated!";
-		}
-		
-	    if(this.secondOp.getPrecedingElements().size()>=1){
-	    	errorString = "This Operator is already annotated!";
-	    }
-		
-		
-		return errorString;
+	public GraphWrapper getASTGraphWrapper() {
+		return new GraphWrapperASTRIF(this.compilationUnit);
+	}
+
+	@Override
+	public GraphWrapper getASTCoreGraphWrapper() {
+		return new GraphWrapperRules(this.rifDoc);
+	}
+
+	@Override
+	public String getCore() {
+		return null;
+	}
+
+	@Override
+	public String queryOrRule() {
+		return "RIF rule";
 	}
 
 }

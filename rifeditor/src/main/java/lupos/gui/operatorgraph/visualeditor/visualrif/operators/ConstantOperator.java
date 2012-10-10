@@ -43,6 +43,7 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ClassificationOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ConstantPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.GraphWrapperOperator;
@@ -113,7 +114,7 @@ import lupos.misc.util.OperatorIDTuple;
 		return this.panel;
 	}
 
-	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualGraph<Operator> parent) {
+	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualRIFGraph<Operator> parent) {
 		Hashtable<GraphWrapper, AbstractSuperGuiComponent> predicates = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 
 
@@ -297,7 +298,7 @@ import lupos.misc.util.OperatorIDTuple;
 	
 	
 
-	public void fromJSON(JSONObject operatorObject, ConstantOperator constantOperator,VisualGraph<Operator> parent) throws JSONException {
+	public void fromJSON(JSONObject operatorObject, ConstantOperator constantOperator,VisualRIFGraph<Operator> parent) throws JSONException {
 	
 
 		constantOperator.setConstant(operatorObject.get("VALUE").toString());

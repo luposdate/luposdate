@@ -49,11 +49,6 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.gui</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>xpref</artifactId>
 		</dependency>
 

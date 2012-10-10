@@ -33,13 +33,13 @@ import org.json.JSONObject;
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
-import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 
 
 
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.misc.util.OperatorIDTuple;
 
 

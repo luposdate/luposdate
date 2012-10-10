@@ -44,6 +44,7 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AnnotationPanel;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
+import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ClassificationOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.FrameOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ListOperatorPanel;
@@ -88,8 +89,7 @@ public abstract class AbstractTermOperator extends Operator {
 		
 		// abstract methods
 		@Override
-		public abstract AbstractGuiComponent<Operator> draw(GraphWrapper gw,
-				VisualGraph<Operator> parent);
+		public abstract AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent);
 		public abstract StringBuffer serializeOperator();
 		public abstract StringBuffer serializeOperatorAndTree(HashSet<Operator> visited);
 		
@@ -207,7 +207,7 @@ public abstract class AbstractTermOperator extends Operator {
 			return list;
 		}
 		
-		public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualGraph<Operator> parent) {
+		public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualRIFGraph<Operator> parent) {
 			Hashtable<GraphWrapper, AbstractSuperGuiComponent> predicates = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 				
 			// walk through children 

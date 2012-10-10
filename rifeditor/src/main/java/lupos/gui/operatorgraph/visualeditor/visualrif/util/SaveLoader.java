@@ -103,29 +103,9 @@ public class SaveLoader{
 		System.out.println("DONE");
 	}
 
-	public void importFile(String loadFileName) {
-		String rif = "";
-		try
-	    {
-	      Reader f = new FileReader( loadFileName );
-	      for ( int c; ( c = f.read() ) != -1; )
-	    	  rif += (char) c ;
-	    }
-	    catch ( IOException e ) {
-	      System.out.println( "Fehler beim Lesen der Datei" );
-	    }
-		
-		this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getRifCodeEditor().getTp_rifInput().setText(rif);
-	
-
-		
-	}
-
 	public void export(String fileName) {
 		if (!(this.visualRifEditor.getDocumentContainer().getActiveDocument() == null)) {
-			String rif = this.visualRifEditor.getDocumentContainer()
-					.getActiveDocument().getDocumentEditorPane()
-					.getRifCodeEditor().getTp_rifInput().getText();
+			String rif = this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getRifCodeEditor().getTp_rifInput().getText();
 			PrintWriter pw = null;
 			try {
 				Writer fw = new FileWriter(fileName);
@@ -139,17 +119,14 @@ public class SaveLoader{
 					pw.close();
 			}
 		} else {
-			DocumentPanel newDocument = visualRifEditor.getDocumentContainer()
-					.createNewDocument();
+			DocumentPanel newDocument = visualRifEditor.getDocumentContainer().createNewDocument();
 			visualRifEditor.getTreePane().addNewDocument(newDocument);
 			visualRifEditor.setRightComponent(newDocument);
 			visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
 			visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
 			visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
-			this.visualRifEditor.getDocumentContainer()
-			.getActiveDocument().getDocumentEditorPane().getConsole().getTextArea().setText("You can not export an empty document. Please create a valid rif document");
-			this.visualRifEditor.getDocumentContainer()
-			.getActiveDocument().getDocumentEditorPane().getBottomPane().setSelectedIndex(1);
+			this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getConsole().getTextArea().setText("You can not export an empty document. Please create a valid rif document");
+			this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getBottomPane().setSelectedIndex(1);
 		}
 	}
 	

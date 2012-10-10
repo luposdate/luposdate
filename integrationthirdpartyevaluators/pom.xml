@@ -40,6 +40,16 @@
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-runtime</artifactId>
 		</dependency>
+		
+		<dependency>
+        	<groupId>commons-compress</groupId>
+        	<artifactId>commons-compress</artifactId>
+      	</dependency>
+			
+      	<dependency>
+  			<groupId>org.semanticweb.yars</groupId>
+  			<artifactId>nxparser</artifactId>
+		</dependency>
 			
 		<dependency>
 			<groupId>junit</groupId>

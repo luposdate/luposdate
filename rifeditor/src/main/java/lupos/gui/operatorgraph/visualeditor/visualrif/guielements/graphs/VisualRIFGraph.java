@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.gui.operatorgraph.visualeditor.guielements;
+package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -37,7 +37,7 @@ import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
-import lupos.gui.operatorgraph.visualeditor.util.Connection;
+import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.util.DummyItem;
 import lupos.gui.operatorgraph.util.VEImageIcon;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
@@ -51,55 +51,20 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.util.ConnectionRIF;
 
-public abstract class VisualGraph<T> extends OperatorGraph implements MouseListener, MouseMotionListener {
+public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	/**
 	 * The serial version UID.
 	 */
-	private static final long serialVersionUID = 8524683982131639117L;
+	private static final long serialVersionUID = 8524683982131639118L;
 	protected VisualRifEditor visualRifEditor;
 
-	/**
-	 * A reference to the VisualEditor class.
-	 */
-	public VisualEditor<T> visualEditor;
-
-	public AbstractGuiComponent<T> outerReference = null;
-
-	public ImageIcon addIcon;
-	public ImageIcon delIcon;
-	public ImageIcon resizeIcon;
-
-	protected VisualGraph(final VisualEditor<T> visualEditor) {
-		super();
-
+	protected VisualRIFGraph(final VisualEditor<T> visualEditor) {
+		super(visualEditor);
 		this.visualEditor = visualEditor;
 	}
 
-	
-	protected void construct() {
-		this.addIcon = VEImageIcon.getPlusIcon((int) (this.FONTSIZE));
-		this.delIcon = VEImageIcon.getMinusIcon((int) (this.FONTSIZE));
-		this.resizeIcon = VEImageIcon.getResizeIcon((int) (this.FONTSIZE));
-
-		// register listeners...
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
-
-		this.createInternalNewGraph(false, false, false,
-				lupos.gui.operatorgraph.arrange.Arrange.values()[0]);
-	}
-
-	
-	/**
-	 * Adds the chosen operator with an empty string as content in it to the
-	 * QueryGraphCanvas. Returns the new added Operator.
-	 */
-	public T addOperator(final int x, final int y) {
-		return this.addOperator(x, y, new DummyItem());
-	}
-
-	
 	/**
 	 * Adds the chosen operator with the given content in it to the
 	 * QueryGraphCanvas. Returns the new added Operator.
@@ -126,8 +91,6 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 			this.handleAddOperator(newOp);
 			
 			final GraphWrapper gw = this.createGraphWrapper(newOp);
-
-			
 			
 			// create the GraphBox at the right position...
 			final GraphBox box = this.graphBoxCreator.createGraphBox(this, gw);
@@ -173,7 +136,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 
 		//		final GraphWrapper gw = new GraphWrapperOperator(newOp, this.prefix);
 		final GraphWrapper gw = this.createGraphWrapper(newOp);
-		System.out.println("VisualGraph.addOperator() "+ newOp.getClass().getSimpleName() );
+		
 		// find out whether the operator is a subclass of RetrieveData...
 		if(newClassSuperName.startsWith("RetrieveData")) {
 			this.rootList.add(gw);
@@ -262,14 +225,6 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	/* ******************** **
 	 * Canvas input methods **
 	 * ******************** */
-	
-	
-
-
-
-
-
-
 
 	protected abstract void createNewRule(RuleOperator ro);
 	protected abstract void createNewPrefix(PrefixOperator po);
@@ -280,19 +235,9 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	protected abstract void createNewFrameOperator(FrameOperator fo);
 	protected abstract void createNewConstantOperator(ConstantOperator co);
 	protected abstract void createNewVariableOperator(VariableOperator vo);
-	
-	
-	public boolean validateGraph(final boolean showErrors, final Object data) {
-		for(final GraphWrapper gw : this.rootList) {
-			if(((GraphWrapperEditable) gw).validateObject(showErrors, data) == false) {
-				return false;
-			}
-		}
-
-		return true;
-	}
 
 	
+	@Override
 	public String serializeSuperGraph() {
 		final StringBuffer ret = new StringBuffer();
 
@@ -309,96 +254,8 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		return ret.toString();
 	}
 
-	
-	public String getFreeVariable(final String variableName) {
-		final StringBuffer variable = new StringBuffer(variableName);
 
-		boolean inUse = true;
-
-		while(inUse) {
-			for(final GraphWrapper op : this.rootList) {
-				inUse = ((GraphWrapperEditable) op).variableInUse(variable.toString());
-
-				if(inUse) {
-					variable.append("0");
-
-					break;
-				}
-			}
-		}
-
-		return variable.toString();
-	}
-
-	
-	/**
-	 * This internal method resets some displacement variables according to the
-	 * given zoomFactor.
-	 * 
-	 * @param zoomFactor the zoom factor
-	 */
-	@Override
-	protected void setZoomFactors(final double zoomFactor) {
-		this.addIcon = VEImageIcon.getPlusIcon((int) (this.FONTSIZE * zoomFactor));
-		this.delIcon = VEImageIcon.getMinusIcon((int) (this.FONTSIZE * zoomFactor));
-		this.resizeIcon = VEImageIcon.getResizeIcon((int) (this.FONTSIZE * zoomFactor));
-
-		super.setZoomFactors(zoomFactor);
-	}
-
-	
-	public void clear() {}
-
-
-	public void mouseMoved(final MouseEvent me) {
-		// get connection mode...
-		final Connection<T> connectionMode = this.visualEditor.connectionMode;
-
-		if(connectionMode != null) {
-			final GraphBox dummyBox = connectionMode.getDummyBox(this); // get dummy operator
-
-			if(dummyBox != null) { // update position of dummy box...
-				dummyBox.setX(me.getX());
-				dummyBox.setY(me.getY());
-
-				this.visualEditor.repaint();
-			}
-		}
-	}
-
-	
-	public void mouseClicked(final MouseEvent me) {
-		if(this.visualEditor.isInInsertMode) { // deal with insert mode...
-			this.addOperator(me.getX(), me.getY());
-	
-			this.visualEditor.getStatusBar().clear();
-
-			return;
-		}
-	}
-
-	
-	public void mouseDragged(final MouseEvent me) {}
-	public void mouseEntered(final MouseEvent me) {}
-	public void mouseExited(final MouseEvent me) {}
-	public void mousePressed(final MouseEvent me) {}
-	public void mouseReleased(final MouseEvent me) {}
-
-
-	protected abstract boolean validateAddOperator(int x, int y, String newClassName);
-	
-	protected abstract void handleAddOperator(T newOp);
-	
-	@Override
-	public abstract String serializeGraph();
-
-	public abstract GraphWrapperEditable createGraphWrapper(T op);
-	
-	public abstract T createDummyOperator();
-	
-	protected abstract T createOperator(Class<? extends T> clazz, Item content) throws Exception;
-	
-	public VisualGraph getVisualGraph(){
+	public VisualRIFGraph getVisualGraph(){
 		return this;
 	}
 }

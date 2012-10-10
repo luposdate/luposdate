@@ -23,8 +23,7 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
-
-
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,8 +43,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import lupos.gui.Demo_Applet;
-import lupos.gui.Demo_Applet.BooleanReference;
+import lupos.gui.BooleanReference;
+import lupos.gui.ResultPanelHelper;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -68,10 +67,10 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.parsing.VisualRifGenerator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.AnnotationConnection;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.GraphWrapperOperator;
+import lupos.misc.FileHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 public class DocumentEditorPane extends VisualEditor<Operator> {
 
@@ -85,15 +84,10 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	private String documentName;
 	private Operator startNode = null;
 	
-
 	private RifCodeEditor rifCodeEditor;  
-
-
 
 	private Console console;
 
-	
-	
 	private RulePanel rulePanel;
 
 	private PrefixOperatorPanel prefixOperatorPanel;
@@ -102,7 +96,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	private VisualRifGenerator vrg;
 
 	private JPanel rifEvaluator;
-
 
 	// Constructor
  	protected DocumentEditorPane(final VisualRifEditor visualRifEditor) {
@@ -117,17 +110,9 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		this.documentGraph = new DocumentGraph(this, this.visualRifEditor); 
 
 		this.visualGraphs.add(this.documentGraph);
-		LANGUAGE.SEMANTIC_WEB.setStyles();
-
-
-		
-		
+		LANGUAGE.SEMANTIC_WEB.setStyles();		
 	}//End Constructor
 
-	
-
-
-	
 	/* ************* **
 	 * Menu + Layout **
 	 * ************* */
@@ -166,7 +151,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 					if(!fileName.endsWith(".rif")) {
 						fileName += ".rif";
 					}
-
 					visualRifEditor.getSaveLoader().export(fileName);
 				}
 			}
@@ -175,22 +159,14 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		JMenuItem importMI = new JMenuItem("Import Document");
 		importMI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				DocumentPanel newDocument = visualRifEditor.getDocumentContainer()
-						.createNewDocument();
-				visualRifEditor.getTreePane().addNewDocument(newDocument);
-				visualRifEditor.setRightComponent(newDocument);
 				JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("rif document", "rif","txt"));
 
 				if(chooser.showDialog(that, "Import") == JFileChooser.APPROVE_OPTION) {
 					String fileName = chooser.getSelectedFile().getAbsolutePath();
-
-					visualRifEditor.getSaveLoader().importFile(fileName);
-					visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
-
+					visualRifEditor.importNewDocument(FileHelper.fastReadFile(fileName));
 				}
-				
 			}
 		});
 		
@@ -205,13 +181,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		
 		documentMenu.add(importMI);
 		documentMenu.add(exportMI);
-
 		return documentMenu;
 	}
-
-
-
-
 
 	private JMenu buildGraphMenu() {
 		// create JMenuItem to rearrange the QueryGraph...
@@ -220,12 +191,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 			public void actionPerformed(final ActionEvent ae) {
 				that.statusBar.setText("Arranging query ...");
 
-				for (final VisualGraph<Operator> visualGraph : that
-						.getVisualGraphs()) {
-					visualGraph.arrange(false, false, false,
-							Arrange.values()[0]);
-					visualGraph.arrange(false, false, false,
-							Arrange.values()[0]);
+				for (final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
+					visualGraph.arrange(false, false, false, Arrange.values()[0]);
 				}
 
 				that.statusBar.clear();
@@ -265,15 +232,9 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		visualMI.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
 				evaluate();
-
 			}
-
-
 		});
 
-		
-		
-		
 		final JMenu generateMenu = new JMenu("Generate");
 		
 		generateMenu.setMnemonic('g');
@@ -284,8 +245,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 
 		return generateMenu;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return JMenu with following MenuItems :
@@ -297,26 +257,19 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	 */
 	private JMenu buildOperatorMenu() {
 
-
-
 		// create JMenuItem to add Operator...
 		final JMenuItem ruleMI = new JMenuItem("Rule");
 		ruleMI.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
 				documentGraph.setVisualRifEditor(visualRifEditor);
 				that.prepareOperatorForAdd(RuleOperator.class);
-				
-
 			}
 		});
-		
-	
 
 		// create JMenuItem to add Operator...
 		final JMenuItem prefixMI = new JMenuItem("Prefix");
 		prefixMI.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
-		
 				that.prepareOperatorForAdd(PrefixOperator.class);
 				prefixMI.setEnabled(false);
 			}
@@ -326,25 +279,19 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		final JMenuItem importMI = new JMenuItem("Import");
 		importMI.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
-				
 						that.prepareOperatorForAdd(ImportOperator.class);
 						importMI.setEnabled(false);
 					}
 		});
-						
-				
+		
 		// create JMenuItem 
 		final JMenuItem annoMI = new JMenuItem("Annotation");
 		annoMI.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
-			
-				that.prepareOperatorForAdd(AnnotationOperator.class);
-			
-				
+				that.prepareOperatorForAdd(AnnotationOperator.class);				
 			}
 		});
-		
-		
+
 		// create JMenuItem to add JumpOver-Operator...
 		final JMenuItem conMI = new JMenuItem("Connection");
 		conMI.addActionListener(new ActionListener() {
@@ -363,8 +310,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				
 			}
 		});
-		
-		
 
 		// create Operator menu and add components to it...
 		final JMenu operatorMenu = new JMenu("Add");
@@ -383,7 +328,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		operatorMenu.add(annoMI);
 		operatorMenu.add(conMI);
 		
-
 		return operatorMenu;
 	}
 	
@@ -396,15 +340,10 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		for(final VisualGraph<Operator> visualGraph : this.visualGraphs) {
 			if(visualGraph.getBoxes().size() != 0) {
 				empty = false;
-
 				break;
 			}
 		}
-
 		this.graphMenu.setEnabled(!empty);
-		
-
-
 	}
 
 	
@@ -421,7 +360,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		bottomPane = new JTabbedPane();
 	
 		this.rifCodeEditor = new RifCodeEditor();
-		this.rifEvaluator = new JPanel();
+		this.rifEvaluator = new JPanel(new BorderLayout());
 
 		JButton buttonRifCode = new JButton("Rif Code");
 		
@@ -431,7 +370,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	      }
 	    };
 	    buttonRifCode.addActionListener(alRifCodeEditor);
-	    
 
 		JPanel panelRifCodeEditor = new JPanel();
 		panelRifCodeEditor.setOpaque(false);
@@ -452,14 +390,13 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		panelVisualRif.setOpaque(false);
 		panelVisualRif.add(buttonVisualRif);
 		
-		
 		JButton buttonEvaluate = new JButton("Evaluate");
 		
 		ActionListener alEvaluate = new ActionListener() {
 	      public void actionPerformed(ActionEvent ae) {
 	    	  bottomPane.setSelectedIndex(2);
 				try {
-					Demo_Applet.appyRIFRules(rifCodeEditor.getTp_rifInput().getText(), rifEvaluator, new BooleanReference(false), new ViewerPrefix(false));
+					ResultPanelHelper.appyRIFRules(rifCodeEditor.getTp_rifInput().getText(), rifEvaluator, new BooleanReference(false), new ViewerPrefix(false));
 				} catch (Exception e) {
 					console.getTextArea().setText(e.getMessage());
 					bottomPane.setSelectedIndex(1);
@@ -469,47 +406,18 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	    };
 	    buttonEvaluate.addActionListener(alEvaluate);
 	    
-
 		JPanel panelEvaluate = new JPanel();
 		panelEvaluate.setOpaque(false);
 		panelEvaluate.add(buttonEvaluate);
-		
-		
-		
+
 		bottomPane.add("RIF Code",rifCodeEditor.getRifInputSP());
 		bottomPane.setTabComponentAt(0, panelRifCodeEditor);
 		
 		bottomPane.add("Visual Rif",this.console.getScrollPane());
 		bottomPane.setTabComponentAt(1, panelVisualRif);
-		
-//		SwingUtilities.invokeLater(new Runnable(){
-//		public void run(){				
-//		try{
-//			Thread.sleep(1000);
-//			Demo_Applet.appyRIFRules("Document(Base(<http://sample.de#>)" +
-//					"Prefix(cpt <http://example.com/concepts#>)" +
-//					"Prefix(ppl <http://example.com/people#>)" +
-//					"Prefix(bks <http://example.com/books#>)" +
-//					"Prefix(func <http://www.w3.org/2007/rif-builtin-function#>)" +
-//					"Prefix(pred <http://www.w3.org/2007/rif-builtin-predicate#>)" +
-//					" Group" +
-//					"(:fib(0 0):fib(1 1) Forall ?x ?rn ?r(" +
-//					":fib(External(func:numeric-add(?x 2)) External(func:numeric-add(?r ?rn))) :- " +
-//					" And(:fib(External(func:numeric-add(?x 1)) ?rn) " +
-//					":fib(?x ?r)" +
-//					"External(pred:numeric-less-than(?x 20))))))", rifEvaluator, new BooleanReference(false), new ViewerPrefix(false));	
-//		
-//		}catch (Exception e){
-//			System.err.println("ein Fehler" +e);
-//		}
-//		}
-//		}
-//		);
-		
-		
-		
-		bottomPane.add("Rif Evaluator", this.rifEvaluator);
-		bottomPane.setTabComponentAt(2, new JScrollPane(panelEvaluate));
+						
+		bottomPane.add("Rif Evaluator", new JScrollPane(this.rifEvaluator));
+		bottomPane.setTabComponentAt(2, panelEvaluate);
 		return bottomPane;
 	}
 	
@@ -567,15 +475,10 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 						if (op instanceof RuleOperator){
 							visualRifEditor.getRuleContainer().deleteRule(((RuleOperator)op).getRuleName());
 						}
-					}
-					
+					}					
 					deleteOperators(false);
-					deleteAnnotations();
-				
-				}
-				
-			
-				
+					deleteAnnotations();				
+				}	
 			}
 		});
 
@@ -627,11 +530,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		String rifCode = rifCodeEditor.getTp_rifInput().getText();
 
 		try {
-
 	
-		
 		final LinkedList<GraphWrapper> rootList = new LinkedList<GraphWrapper>();
-		
 		
 		visualRifEditor.getRuleContainer().deleteAllRules(this.getDocumentName());
 		this.visualGraphs.get(0).removeAll();
@@ -650,8 +550,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 			
 					rootList.add(gwo);
 				}
-				
-				
+
 				// Rule 
 				if ( rootNodes[i] instanceof RuleOperator ){
 					RuleOperator ro = (RuleOperator) rootNodes[i];
@@ -665,15 +564,12 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				}
 			}
 
-			
 			// generate QueryGraph...
 			final JPanel graphPanel = this.visualGraphs.get(0).createGraph(
 					rootList, false, false, false,
 					Arrange.values()[0]);
 
 			this.visualGraphs.get(0).updateMainPanel(graphPanel);
-			
-
 			
 		} catch (final Throwable e) {
 			
@@ -718,9 +614,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				rootArray[cnt] = root;
 				cnt++;
 			}
-			
 		}
-			
 		this.statusBar.clear();
 		
 		return rootArray;
@@ -778,21 +672,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 			String rif = serializedDocument;
 			
 			this.bottomPane.setSelectedIndex(0);
-			this.rifCodeEditor.getTp_rifInput().setText(rif);
-
-
-			
+			this.rifCodeEditor.getTp_rifInput().setText(rif);			
 		}
-				
-	
-
-		
-	
 	}
 
 	private void serializeRules() {
-
-		
 		for (int i = 0; i < visualRifEditor.getRuleContainer().getRulePanelList().size(); i++) {
 			
 			StringBuffer sb = visualRifEditor.getRuleContainer().getRulePanelList().get(i).getRulePanel().getRuleEditorPane().serializeRule();
@@ -800,9 +684,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 			RuleOperatorPanel rop = (RuleOperatorPanel)visualRifEditor.getRuleContainer().getRulePanelList().get(i).getComponent();
 			
 			rop.setSerializedOperator(sb);
-			
 		}
-		
 	}
 
 	
@@ -817,7 +699,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		saveObject.put("DOCUMENTGRAPH", ((DocumentGraph) this.visualGraphs.get(0)).toJSON());
 		saveObject.put("CODEEDITOR", this.rifCodeEditor.toJSON());
 
-
 		return saveObject;
 	}
 	
@@ -827,8 +708,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 			try {
 				((DocumentGraph) this.visualGraphs.get(0)).fromJSON(loadObject.getJSONObject("DOCUMENTGRAPH"));
 				((DocumentGraph) this.visualGraphs.get(0)).updateSize();
-				
-
 			}
 			catch(final JSONException e) {
 				e.printStackTrace();
@@ -847,7 +726,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	/*
 	 * util
 	 */
-
 	private void setPrefixOperatorPanel() {
 		Component[] comp = this.visualGraphs.get(0).getComponents();
 		
@@ -857,8 +735,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				break;
 			}
 		}
-
-		
 	}
 	
 	
@@ -870,9 +746,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				setImportOperatorPanel((ImportOperatorPanel) comp[i]);
 				break;
 			}
-		}
-
-		
+		}		
 	}
 
 
@@ -880,42 +754,33 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		JOptionPane
 		.showMessageDialog(this,
 		"Please insert an annotation first!");
-	
 	} 
 
 	
 	public void deleteRule(String ruleName) {
-		
 		Component[] c = this.visualGraphs.get(0).getComponents();
 		
 		int pos = getArrayPosition(ruleName);
-		
 
-				this.visualGraphs.get(0).remove(pos);
+		this.visualGraphs.get(0).remove(pos);
 				
-			RuleOperatorPanel rop = (RuleOperatorPanel)c[pos];
-					rop.delete();
-
-		
+		RuleOperatorPanel rop = (RuleOperatorPanel)c[pos];
+		rop.delete();
 	}
-	
-	
+		
 	public void deleteGroup(String groupName){
 		Component[] c = this.visualGraphs.get(0).getComponents();
 		
 		int pos = getArrayPosition(groupName);
-		
-
-				this.visualGraphs.get(0).remove(pos);
+		this.visualGraphs.get(0).remove(pos);
 				
-				GroupOperatorPanel gop = (GroupOperatorPanel)c[pos];
-					gop.delete();
+		GroupOperatorPanel gop = (GroupOperatorPanel)c[pos];
+		gop.delete();
 	}
 	
 	
 	public void updateRuleNameInVisualGraphsComponentArray(String oldName, String newName){
 		Component[] c = this.visualGraphs.get(0).getComponents();
-		
 		for(int i = 0 ; i < c.length ; i++){
 			if(c[i] instanceof RuleOperatorPanel){
 				RuleOperatorPanel rop = (RuleOperatorPanel)c[i];
@@ -925,11 +790,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				}
 			}
 		}
-		
-		
 	}
-	
-	
+
 	public void updateGroupNameInVisualGraphsComponentArray(String oldName, String newName){
 		Component[] c = this.visualGraphs.get(0).getComponents();
 		
@@ -942,8 +804,6 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				}
 			}
 		}
-		
-		
 	}
 	
 	
@@ -970,9 +830,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				return true;
 			}
 		}
-
 		return false;
-		}
+	}
 	
 	
 	private boolean importIsOnCanvas(){
@@ -983,9 +842,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				return true;
 			}
 		}
-
 		return false;
-		}
+	}
 	
 	
 	public String[] getPrefixList() {
@@ -1023,22 +881,14 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 					ret[i+3] = "integer";
 					i+=3;
 				}
-				
 				i++;
 			}
-			
 			ret[this.getPrefixOperatorPanel().getPrefix()
 				.getPrefixList().size()+3] = "";
-
-
 		}
 		return ret;
 	}
-	
-	
-	
-	
-	
+
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
@@ -1124,6 +974,4 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	public void setRifCodeEditor(RifCodeEditor rifCodeEditor) {
 		this.rifCodeEditor = rifCodeEditor;
 	}
-	
-
 }

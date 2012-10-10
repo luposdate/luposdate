@@ -33,13 +33,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyBoundsListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,6 +82,7 @@ import lupos.engine.evaluators.DebugContainerQuery;
 import lupos.engine.evaluators.JenaQueryEvaluator;
 import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.evaluators.QueryEvaluator;
+import lupos.gui.DebugViewerCreator.RulesGetter;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE;
 import lupos.gui.anotherSyntaxHighlighting.LinePainter;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
@@ -122,6 +118,7 @@ import lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.Condensed
 import lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.CondensedViewViewer;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.AdvancedQueryEditor;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.IQueryEditor;
+import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.misc.FileHelper;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.rif.BasicIndexRuleEvaluator;
@@ -456,6 +453,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				final String[] ids = new String[] { "lookAndFeel",
 						"syntaxHighlighting", "operatorGraph_useStyledBoxes",
 						"ast_useStyledBoxes", "queryEditor_useStyledBoxes",
+						"documentEditorPane_useStyledBoxes",
 						"dataEditor_useStyledBoxes",
 						"condensedViewViewer_useStyledBoxes",
 						"serviceCallApproach"};
@@ -604,13 +602,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 */
 	private JPanel generateRifTab() {
 
-		// final JButton bt_visualEdit = new JButton("Visual Edit");
-		// bt_visualEdit.addActionListener(new ActionListener() {
-		// public void actionPerformed(final ActionEvent arg0) {
-		// new AdvancedQueryEditor(tp_queryInput.getText(), tp_dataInput
-		// .getText(), myself, getIcon(webdemo));
-		// }
-		// });
+		final JButton bt_visualEdit = new JButton("Visual Edit");
+		bt_visualEdit.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
+			@Override
+			public void actionPerformed(final ActionEvent arg0) {
+				new VisualRifEditor(Demo_Applet.this.tp_rifInput.getText(), Demo_Applet.getIcon(Demo_Applet.this.webdemo));
+			}
+		});
 
 		final LuposDocument document = new LuposDocument();
 		this.tp_rifInput = new LuposJTextPane(document);
@@ -618,7 +617,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		this.rifInputSP = new JScrollPane(this.tp_rifInput);
 
-		return generateInputTab(null, null, "Choose a RIF query:\t",
+		return generateInputTab(bt_visualEdit, null, "Choose a RIF query:\t",
 				this.getRuleFiles(), this.PATH_RULES, "Clear rule field",
 				this.tp_rifInput, this.rifInputSP);
 	}
@@ -1495,8 +1494,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		@Override
 		public DebugViewerCreator compileQueryDebugByteArray(final String queryParameter)
-				throws Exception {
-			DebugViewerCreator result = new SPARQLDebugViewerCreator(this.evaluator.compileQueryDebugByteArray(queryParameter, Demo_Applet.this.prefixInstance));
+		throws Exception {
+			DebugViewerCreator result = new SPARQLDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes, 
+					new RulesGetter(){
+						@Override
+						public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
+							return Demo_Applet.this.ruleApplications;
+						}
+					}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), this.evaluator.compileQueryDebugByteArray(queryParameter, Demo_Applet.this.prefixInstance));
 			integrateInferenceOperatorgraph();
 			return result;
 		}
@@ -1568,7 +1573,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			if(Demo_Applet.this.inferenceRules != null){
 				BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)this.evaluator);
 				birqe.compileQuery(Demo_Applet.this.inferenceRules);
-				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(birqe.getCompilationUnit(), birqe.getDocument());				
+				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes, 
+						new RulesGetter(){
+							@Override
+							public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
+								return Demo_Applet.this.ruleApplications;
+							}
+						}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), birqe.getCompilationUnit(), birqe.getDocument());				
 
 				// TODO improve RIF logical optimization such that it is fast enough for large operatorgraphs!
 				// as workaround here only use the logical optimization of the underlying evaluator!
@@ -1646,7 +1657,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public DebugViewerCreator compileQueryDebugByteArray(final String rule)
 				throws Exception {
 			this.ruleEvaluator.compileQuery(rule);
-			return new RIFDebugViewerCreator(
+			return new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes, 
+					new RulesGetter(){
+						@Override
+						public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
+							return Demo_Applet.this.ruleApplications;
+						}
+					}, Demo_Applet.getIcon(Demo_Applet.this.webdemo),
 					this.ruleEvaluator.getCompilationUnit(),
 					this.ruleEvaluator.getDocument());
 		}
@@ -1685,259 +1702,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception {
 			Demo_Applet.this.materializationInfo = null;
 			return this.ruleEvaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
-		}
-	}
-
-	public class SPARQLDebugViewerCreator extends DebugViewerCreator {
-
-		private final DebugContainerQuery<BasicOperatorByteArray, Node> debugContainerQuery;
-
-		public SPARQLDebugViewerCreator(
-				final DebugContainerQuery<BasicOperatorByteArray, Node> debugContainerQuery) {
-			this.debugContainerQuery = debugContainerQuery;
-		}
-
-		@Override
-		public GraphWrapper getASTGraphWrapper() {
-			return (this.debugContainerQuery == null) ? null : new GraphWrapperAST(
-					this.debugContainerQuery.getAst());
-		}
-
-		@Override
-		public String queryOrRule() {
-			return "SPARQL query";
-		}
-
-		@Override
-		public GraphWrapper getASTCoreGraphWrapper() {
-			return (this.debugContainerQuery == null) ? null : new GraphWrapperAST(
-					this.debugContainerQuery.getAstCoreSPARQLQuery());
-		}
-
-		@Override
-		public String getCore() {
-			return (this.debugContainerQuery == null) ? null : this.debugContainerQuery.getCoreSPARQLQuery();
-		}
-
-		@Override
-		public List<DebugContainer<BasicOperatorByteArray>> getCorrectOperatorGraphRules() {
-			return (this.debugContainerQuery == null) ? null : this.debugContainerQuery
-					.getCorrectOperatorGraphRules();
-		}
-	}
-
-	public class RIFDebugViewerCreator extends DebugViewerCreator {
-
-		final private CompilationUnit compilationUnit;
-		final private Document rifDoc;
-
-		public RIFDebugViewerCreator(final CompilationUnit compilationUnit,
-				final Document rifDoc) {
-			this.compilationUnit = compilationUnit;
-			this.rifDoc = rifDoc;
-		}
-
-		@Override
-		public GraphWrapper getASTGraphWrapper() {
-			return new GraphWrapperASTRIF(this.compilationUnit);
-		}
-
-		@Override
-		public GraphWrapper getASTCoreGraphWrapper() {
-			return new GraphWrapperRules(this.rifDoc);
-		}
-
-		@Override
-		public String getCore() {
-			return null;
-		}
-
-		@Override
-		public String queryOrRule() {
-			return "RIF rule";
-		}
-
-	}
-
-	public abstract class DebugViewerCreator {
-
-		public abstract GraphWrapper getASTGraphWrapper();
-
-		public abstract GraphWrapper getASTCoreGraphWrapper();
-
-		public abstract String getCore();
-
-		public abstract String queryOrRule();
-
-		/**
-		 * create the button to show the operator graph.
-		 */
-		public JButton createASTButton() {
-			// create operatorgraph-button, add actionListener and add it to
-			// Applet...
-			final GraphWrapper graphWrapper = getASTGraphWrapper();
-			final JButton bt_AST = new JButton("Show AST of " + queryOrRule());
-			bt_AST.setMargin(new Insets(0, 0, 0, 0));
-			bt_AST.setEnabled(graphWrapper != null);
-
-			if (graphWrapper != null) {
-				bt_AST.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(final ActionEvent arg0) {
-						new Viewer(graphWrapper, "Abstract syntax tree of the "
-								+ queryOrRule(), false,
-								Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE);
-					}
-				});
-			}
-
-			return bt_AST;
-		}
-
-		public JButton createCoreSPARQLQueryButton() {
-			// create coreSPARQLQuery-button, add actionListener and add it to
-			// Applet...
-			final String core = getCore();
-			if(core==null){
-				return null;
-			}
-			final JButton bt_coreSPARQLQuery = new JButton("Show Core "
-					+ queryOrRule());
-			bt_coreSPARQLQuery.setEnabled(true);
-			bt_coreSPARQLQuery.setMargin(new Insets(0, 0, 0, 0));
-
-			bt_coreSPARQLQuery.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent arg0) {
-					final JPanel panel = new JPanel();
-					panel.setLayout(new BorderLayout());
-
-					final LuposDocument document = new LuposDocument();
-					final JTextPane tp_coreSPARQLQuery = new LuposJTextPane(document);
-					document.init(SPARQLParser.createILuposParser(new LuposDocumentReader(document)), false);
-
-					tp_coreSPARQLQuery.setFont(new Font("Courier New",
-							Font.PLAIN, 12));
-					tp_coreSPARQLQuery.setText(core);
-					tp_coreSPARQLQuery.setEditable(false);
-
-					final JScrollPane scroll = new JScrollPane(
-							tp_coreSPARQLQuery);
-
-					panel.add(scroll);
-
-					final JFrame frame1 = new JFrame("Core " + queryOrRule());
-
-					frame1.setIconImage(Demo_Applet.getIcon(Demo_Applet.this.webdemo));
-
-					frame1.setSize(794, 200);
-					frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-					frame1.getContentPane().add(panel);
-					frame1.pack();
-					frame1.setLocationRelativeTo(null);
-					frame1.setVisible(true);
-				}
-			});
-
-			return bt_coreSPARQLQuery;
-		}
-		
-		public JButton createInferenceRulesButton(final String inferenceRulesParameter) {
-			// create coreSPARQLQuery-button, add actionListener and add it to Applet...
-			final JButton bt_InferenceRules = new JButton("Show Rules");
-			bt_InferenceRules.setEnabled(inferenceRulesParameter != null);
-			bt_InferenceRules.setMargin(new Insets(0, 0, 0, 0));
-
-			if (inferenceRulesParameter != null) {
-				bt_InferenceRules.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(final ActionEvent arg0) {
-						final JPanel panel = new JPanel();
-						panel.setLayout(new BorderLayout());
-
-						final LuposDocument document = new LuposDocument();
-						final JTextPane tp_coreSPARQLQuery = new LuposJTextPane(document);
-						document.init(RIFParser.createILuposParser(new LuposDocumentReader(document)), false);
-
-						tp_coreSPARQLQuery.setFont(new Font("Courier New", Font.PLAIN, 12));
-						tp_coreSPARQLQuery.setText(inferenceRulesParameter);
-						tp_coreSPARQLQuery.setEditable(false);
-
-						final JScrollPane scroll = new JScrollPane(tp_coreSPARQLQuery);
-
-						panel.add(scroll);
-
-						final JFrame frame1 = new JFrame("Inference Rules");
-
-						frame1.setIconImage(Demo_Applet.getIcon(Demo_Applet.this.webdemo));
-
-						frame1.setSize(794, 200);
-						frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-						frame1.getContentPane().add(panel);
-						frame1.pack();
-						frame1.setLocationRelativeTo(null);
-						frame1.setVisible(true);
-					}
-				});
-			}
-
-			return bt_InferenceRules;
-		}
-
-		/**
-		 * create the button to show the operator graph.
-		 */
-		public JButton createASTCoreSPARQLButton() {
-			// create operatorgraph-button, add actionListener and add it to
-			// Applet...
-			final GraphWrapper graphWrapper = getASTCoreGraphWrapper();
-			final JButton bt_coreAST = new JButton("Show AST Core "
-					+ queryOrRule());
-			bt_coreAST.setMargin(new Insets(0, 0, 0, 0));
-			bt_coreAST.setEnabled(graphWrapper != null);
-
-			if (graphWrapper != null) {
-				bt_coreAST.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(final ActionEvent ae) {
-						new Viewer(graphWrapper, "Abstract syntax tree of the Core " + queryOrRule(), false, Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE);
-					}
-				});
-			}
-
-			return bt_coreAST;
-		}
-
-		/**
-		 * create the button to show the operator graph.
-		 */
-		public JButton createOperatorGraphButton() {
-			return this.createOperatorGraphButton(Demo_Applet.this.ruleApplications);
-		}
-
-		public JButton createOperatorGraphButton(final List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsParameter) {
-			// create OperatorGraph-button, add actionListener and add it to
-			// Applet...
-			final JButton bt_opgraph = new JButton("Show Operator Graph");
-			bt_opgraph.setMargin(new Insets(0, 0, 0, 0));
-			bt_opgraph.setEnabled(ruleApplicationsParameter != null);
-			if (ruleApplicationsParameter != null) {
-				bt_opgraph.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(final ActionEvent ae) {
-						if (Demo_Applet.this.prefixInstance == null)
-							Demo_Applet.this.prefixInstance = new ViewerPrefix(Demo_Applet.this.usePrefixes.isTrue(), null);
-						new Viewer(ruleApplicationsParameter, "OperatorGraph", false,
-								Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance);
-					}
-				});
-			}
-
-			return bt_opgraph;
-		}
-
-		public List<DebugContainer<BasicOperatorByteArray>> getCorrectOperatorGraphRules() {
-			return null;
 		}
 	}
 
@@ -2442,7 +2206,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		try{
 			final Container contentPane = (this.isApplet) ? this.getContentPane() : this.frame.getContentPane();
 
-			setupResultPanel(this.resultpanel, this.resultQueryEvaluator, this.debugViewerCreator, this.materializationInfo, this.inferenceRules, this.ruleApplicationsForMaterialization, this.errorsInOntology, this.usePrefixes, this.prefixInstance, contentPane );
+			ResultPanelHelper.setupResultPanel(this.resultpanel, this.resultQueryEvaluator, this.debugViewerCreator, this.materializationInfo, this.inferenceRules, this.ruleApplicationsForMaterialization, this.errorsInOntology, this.usePrefixes, this.prefixInstance, contentPane );
 			
 		} catch (final Exception ex) {
 			// this.ta_errors.setText(ex.toString());
@@ -2457,247 +2221,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		displayErrorMessage("", true);
 	}
 	
-	/**
-	 * This is just for external use an easy way to display the result of a RIF rules application... 
-	 */
-	public static void appyRIFRules(final String ruleset, final JPanel resultpanel, final BooleanReference usePrefixes,  final ViewerPrefix prefixInstance) throws Exception {		
-		final BasicIndexRuleEvaluator ruleEvaluator = new BasicIndexRuleEvaluator();
-		ruleEvaluator.prepareInputData(new LinkedList<URILiteral>(), new LinkedList<URILiteral>());
-		ruleEvaluator.compileQuery(ruleset);
-		ruleEvaluator.logicalOptimization();
-		ruleEvaluator.physicalOptimization();
-		QueryResult[] resultQueryEvaluator = ruleEvaluator.getResults();
-		
-		Demo_Applet.setupResultPanel(resultpanel, resultQueryEvaluator, null, null, null, null, null, usePrefixes, prefixInstance, resultpanel);
-	}
 
-	public static void setupResultPanel(final JPanel resultpanel, final QueryResult[] resultQueryEvaluator, final DebugViewerCreator debugViewerCreator, final DebugViewerCreator materializationInfo, final String inferenceRules,  final List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsForMaterialization, final RuleResult errorsInOntology, final BooleanReference usePrefixes,  final ViewerPrefix prefixInstance, final Container contentPane) throws Exception {
-		resultpanel.removeAll();
-		final FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
-		final JPanel buttonpanel = new JPanel(layout);
-
-		final JButton bt_AST = (debugViewerCreator!=null)? debugViewerCreator.createASTButton(): null;
-
-		final JButton bt_coreQuery = (debugViewerCreator!=null)? debugViewerCreator.createCoreSPARQLQueryButton(): null;
-
-		final JButton bt_coreAST = (debugViewerCreator!=null)? debugViewerCreator.createASTCoreSPARQLButton(): null;
-
-		final List<String> resultOrder = new LinkedList<String>();
-
-		// if AST exists...
-		if (debugViewerCreator!=null && debugViewerCreator instanceof SPARQLDebugViewerCreator
-				&& ((SPARQLDebugViewerCreator) debugViewerCreator).debugContainerQuery != null
-				&& ((SPARQLDebugViewerCreator) debugViewerCreator).debugContainerQuery.getAst() != null) {
-
-			final Node ast = ((SPARQLDebugViewerCreator) debugViewerCreator).debugContainerQuery.getAst(); // get AST
-
-			// walk through first level children of AST...
-			for (int i = 0; i < ast.jjtGetNumChildren(); ++i) {
-				final Node child = ast.jjtGetChild(i); // get current child
-
-				if (child instanceof ASTSelectQuery) {
-					final ASTSelectQuery selectChild = (ASTSelectQuery) child;
-
-					// SELECT is not the wildcard *...
-					if (!selectChild.isSelectAll()) {
-						// walk through select children...
-						for (int j = 0; j < selectChild.jjtGetNumChildren(); ++j) {
-							final Node selectChildChild = selectChild
-							.jjtGetChild(j);
-
-							// child of select is variable...
-							if (selectChildChild instanceof ASTVar) {
-								final ASTVar var = (ASTVar) selectChildChild;
-
-								// add name of variable to order...
-								if (!resultOrder.contains(var.getName())) {
-									resultOrder.add(var.getName());
-								}
-							} else if (selectChildChild instanceof ASTAs) {
-								for (int j1 = 0; j1 < selectChildChild
-								.jjtGetNumChildren(); ++j1) {
-									final Node selectChildChildChild = selectChildChild
-									.jjtGetChild(j1);
-									if (selectChildChildChild instanceof ASTVar) {
-										final ASTVar var = (ASTVar) selectChildChildChild;
-
-										// add name of variable to order...
-										if (!resultOrder.contains(var
-												.getName())) {
-											resultOrder.add(var
-													.getName());
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		final JButton bt_opgraph = (debugViewerCreator!=null)? debugViewerCreator.createOperatorGraphButton(): null;
-		if(bt_AST!=null){
-			buttonpanel.add(bt_AST);
-		}
-		if(bt_coreQuery!=null){
-			buttonpanel.add(bt_coreQuery);
-		}
-		if(bt_coreAST!=null){
-			buttonpanel.add(bt_coreAST);
-		}
-		if(bt_opgraph!=null){
-			buttonpanel.add(bt_opgraph);
-		}
-
-		final JPanel buttonPanelInference = (materializationInfo!=null)? new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)) : null;
-		
-		if(materializationInfo!=null){			
-			buttonPanelInference.add(new JLabel("Inference:"));
-			buttonPanelInference.add(materializationInfo.createInferenceRulesButton(inferenceRules));	
-			buttonPanelInference.add(materializationInfo.createASTButton());
-			buttonPanelInference.add(materializationInfo.createASTCoreSPARQLButton());
-			buttonPanelInference.add(materializationInfo.createOperatorGraphButton(ruleApplicationsForMaterialization));
-		}
-
-		resultpanel.addHierarchyBoundsListener(new HierarchyBoundsListener() {
-
-			@Override
-			public void ancestorMoved(final HierarchyEvent e) {
-				Demo_Applet.updateButtonPanelSize(layout, resultpanel, contentPane.getSize(), buttonpanel, buttonPanelInference);
-			}
-
-			@Override
-			public void ancestorResized(final HierarchyEvent e) {
-				this.ancestorMoved(e);
-			}
-		});
-		
-		JPanel buttonSuperPanel = new JPanel(new BorderLayout());
-		buttonSuperPanel.add(buttonpanel, BorderLayout.NORTH);
-		
-		if(buttonPanelInference!=null){
-			buttonSuperPanel.add(buttonPanelInference, BorderLayout.CENTER);
-		}
-		resultpanel.add(buttonSuperPanel, BorderLayout.NORTH);
-
-		boolean tablesOccur = false;
-		for (final QueryResult qr : resultQueryEvaluator) {
-			if (!(qr instanceof BooleanResult) && (qr.size() > 0))
-				tablesOccur = true;
-		}
-
-		JSplitPane splitPane_result = null;
-
-		if (tablesOccur) {
-
-			final JCheckBox cb_prefixes = new JCheckBox("Use prefixes", true);
-			cb_prefixes.setSelected(usePrefixes.isTrue());
-			cb_prefixes.addItemListener(new ItemListener() {
-				@Override
-				public void itemStateChanged(final ItemEvent e) {
-					// set boolean flag...
-					if (e.getStateChange() == ItemEvent.SELECTED) {
-						usePrefixes.setValue(true);
-					} else if (e.getStateChange() == ItemEvent.DESELECTED) {
-						usePrefixes.setValue(false);
-					}
-					if (prefixInstance != null)
-						prefixInstance.setStatus(usePrefixes.isTrue());
-					resultpanel.removeAll();
-					try {
-						Demo_Applet.setupResultPanel(resultpanel, resultQueryEvaluator, debugViewerCreator, materializationInfo, inferenceRules,  ruleApplicationsForMaterialization, errorsInOntology, usePrefixes,  prefixInstance, contentPane );
-					} catch(Exception exception){
-						System.err.println("Should only occurr if it already occurred before:\n"+exception);
-						exception.printStackTrace();
-					}
-					contentPane.validate();
-				}
-			});
-
-			final JPanel prefixesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0));
-			prefixesPanel.add(cb_prefixes);
-			
-			if(buttonSuperPanel!=null){
-				buttonSuperPanel.add(prefixesPanel, BorderLayout.SOUTH);
-			} else {
-				buttonpanel.add(prefixesPanel);
-			}
-
-			if (usePrefixes.isTrue()) {
-				final JPanel pPanel = new JPanel(new BorderLayout());
-
-				final JLabel info = new JLabel();
-				info.setText("Prefixes:");
-
-				final JPanel infoPanel = new JPanel(new FlowLayout(
-						FlowLayout.LEFT));
-				infoPanel.add(info);
-				pPanel.add(infoPanel, BorderLayout.NORTH);
-
-				final LuposDocument document = new LuposDocument();
-				final LuposJTextPane ta_prefixes = new LuposJTextPane(document);
-				document.init(TurtleParser.createILuposParser(new LuposDocumentReader(document)), false);
-
-				ta_prefixes.setText(prefixInstance.getPrefixString("", "").toString());
-				ta_prefixes.setEditable(false);
-				final JScrollPane scroll = new JScrollPane(ta_prefixes);
-				pPanel.add(scroll, BorderLayout.CENTER);
-
-				splitPane_result = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-				splitPane_result.setOneTouchExpandable(true);
-				splitPane_result.setContinuousLayout(true);
-				splitPane_result.setTopComponent(pPanel);
-				splitPane_result.setResizeWeight(0.15);
-
-				resultpanel.add(splitPane_result, BorderLayout.CENTER);
-			}
-		}
-
-		// --- output result table - end ---
-		// final JScrollPane sp_result = new JScrollPane(resultTable);
-		final QueryResult[] toDisplay;
-		if(errorsInOntology!=null){
-			toDisplay = new QueryResult[1+resultQueryEvaluator.length];
-			toDisplay[0] = errorsInOntology;
-			System.arraycopy(resultQueryEvaluator, 0, toDisplay, 1, resultQueryEvaluator.length);
-		} else {
-			toDisplay = resultQueryEvaluator;
-		}
-
-		final JScrollPane scrollpane = new JScrollPane(ShowResult.getResultPanel(errorsInOntology!=null, toDisplay, prefixInstance, resultOrder, null));
-
-		if (usePrefixes.isTrue() && tablesOccur) {
-			splitPane_result.setBottomComponent(scrollpane);
-		} else {
-			resultpanel.add(scrollpane, BorderLayout.CENTER);
-		}
-
-		Demo_Applet.updateButtonPanelSize(layout, resultpanel, contentPane.getSize(), buttonpanel, buttonPanelInference);
-	}
-	
-	private final static int DELTA = 5;
-	
-	private static void updateButtonPanelSize(final FlowLayout layout, final JPanel resultpanel, final Dimension contentPaneSize, final JPanel ... buttonpanels) {
-		for(JPanel buttonpanel: buttonpanels){
-			if (buttonpanel != null && resultpanel != null) {
-				final Dimension d = layout.minimumLayoutSize(buttonpanel); // for retrieving the height...
-				// calculating number of rows
-				int rows = 1;
-				int x = 0;
-				for(Component component: buttonpanel.getComponents()){
-					x += component.getWidth();
-					if(x>contentPaneSize.width-Demo_Applet.DELTA){ // component will be already displayed in next row?
-						rows++;
-						x=component.getWidth();
-					}
-				}
-				final Dimension n = new Dimension(contentPaneSize.width, rows * d.height);
-				// set the size of the button panel...
-				buttonpanel.setPreferredSize(n);
-			}
-		}
-	}
 
 	private void setGlobalFont(final Font font) {
 		final Enumeration<Object> keys = UIManager.getDefaults().keys();
@@ -3100,16 +2624,4 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		displayErrorMessage(rifError, append, this.ta_rifInputErrors, 1);
 	}
 	
-	public static class BooleanReference {
-		private boolean value;
-		public BooleanReference(boolean value){
-			this.value=value;
-		}
-		public boolean isTrue() {
-			return this.value;
-		}
-		public void setValue(boolean value) {
-			this.value = value;
-		}
-	}
 }
