@@ -675,7 +675,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		if (type.startsWith("BZIP2")) {
 			// this is only available if the module luposdate.integrationthirdpartyevaluators is considered => using reflection api for "late binding"
 			Class<?> c = Class.forName("lupos.compress.BZIP2");
-			Method m = c.getMethod("parseRDFData",InputStream.class);
+			Method m = c.getMethod("createInputStream", InputStream.class);
 			InputStream uncompressed = (InputStream) m.invoke(c, input, tc, encoding);			
 			readTriplesWithoutMultipleFilesUncompressed(type.substring(5), uncompressed, tc);
 		} else
@@ -693,7 +693,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			className+="Parser";
 			try {
 				Class<?> c = Class.forName("lupos.rdf.parser."+className);
-				Method m = c.getMethod("parseRDFData",InputStream.class,TripleConsumer.class, String.class);
+				Method m = c.getMethod("parseRDFData", InputStream.class, TripleConsumer.class, String.class);
 				int number= (Integer) m.invoke(c, input, tc, encoding);
 				System.out.println("Number of read triples:"+ number);				
 			} catch (ClassNotFoundException e) {
