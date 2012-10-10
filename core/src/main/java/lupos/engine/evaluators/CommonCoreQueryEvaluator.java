@@ -676,7 +676,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			// this is only available if the module luposdate.integrationthirdpartyevaluators is considered => using reflection api for "late binding"
 			Class<?> c = Class.forName("lupos.compress.BZIP2");
 			Method m = c.getMethod("createInputStream", InputStream.class);
-			InputStream uncompressed = (InputStream) m.invoke(c, input, tc, encoding);			
+			InputStream uncompressed = (InputStream) m.invoke(c, input);			
 			readTriplesWithoutMultipleFilesUncompressed(type.substring(5), uncompressed, tc);
 		} else
 			readTriplesWithoutMultipleFilesUncompressed(type, input, tc);
