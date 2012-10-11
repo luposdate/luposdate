@@ -12,8 +12,8 @@
 		<relativePath>../</relativePath>
 	</parent>
 
-	<artifactId>luposdate.integrationthirdpartyevaluators</artifactId>
-	<name>Luposdate :: IntegrationThirdPartyEvaluators</name>
+	<artifactId>luposdate.integrationSesame</artifactId>
+	<name>Luposdate :: IntegrationSesame</name>
 
 	<packaging>jar</packaging>
 
@@ -27,36 +27,10 @@
 
 
 		<dependency>
-			<groupId>com.hp.hpl.jena</groupId>
-			<artifactId>jena</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.hp.hpl.jena</groupId>
-			<artifactId>arq</artifactId>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-runtime</artifactId>
 		</dependency>
 		
-		<dependency>
-        	<groupId>commons-compress</groupId>
-        	<artifactId>commons-compress</artifactId>
-      	</dependency>
-			
-      	<dependency>
-  			<groupId>org.semanticweb.yars</groupId>
-  			<artifactId>nxparser</artifactId>
-		</dependency>
-			
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 </project>

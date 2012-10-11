@@ -14,17 +14,21 @@
 	<modules>
 		<module>core</module>
 		<module>rif</module>
-	    	<module>owl2rl</module>
+	    <module>owl2rl</module>
 		<module>endpoint</module>
-		<module>integrationthirdpartyevaluators</module>
-    		<module>syntaxhighlighting</module>
-	    	<module>operatorgraph</module>
-	    	<module>visualeditor</module>
-	    	<module>queryeditor</module>
-	    	<module>rifeditor</module>
-	    	<module>dataeditor</module>
-	    	<module>gui</module>
-	    	<module>ruleeditor</module>
+		<module>integrationJena</module>
+		<module>integrationSesame</module>
+		<module>integrationNxParser</module>
+		<module>integrationBZIP2</module>
+		<module>compression</module>
+    	<module>syntaxhighlighting</module>
+	    <module>operatorgraph</module>
+	    <module>visualeditor</module>
+	    <module>queryeditor</module>
+	    <module>rifeditor</module>
+	    <module>dataeditor</module>
+	    <module>gui</module>
+	    <module>ruleeditor</module>
 	</modules>
 
 	<dependencyManagement>
@@ -56,7 +60,31 @@
 			
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
-				<artifactId>luposdate.integrationthirdpartyevaluators</artifactId>
+				<artifactId>luposdate.integrationJena</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.integrationSesame</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.integrationNxParser</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.integrationBZIP2</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.compress</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			
@@ -224,6 +252,7 @@
 			<id>nxparser-repo</id>
 			<url>http://nxparser.googlecode.com/svn/repository</url>
         </repository>
+        
 		<repository>
 			<id>nxparser-snapshots</id>
 			<url>http://nxparser.googlecode.com/svn/snapshots</url>

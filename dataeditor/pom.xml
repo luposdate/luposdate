@@ -34,7 +34,7 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.integrationthirdpartyevaluators</artifactId>
+			<artifactId>luposdate.integrationJena</artifactId>
 		</dependency>
 
 		<dependency>
