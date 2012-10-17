@@ -63,7 +63,7 @@ public abstract class MultiInputOperator extends Operator {
 		final GraphBox box = parent.getBoxes().get(oldGW);
 
 		box.initBox(gw);
-		box.arrange(false, false, false, Arrange.values()[0]);
+		box.arrange(Arrange.values()[0]);
 
 		parent.getBoxes().remove(oldGW);
 		parent.getBoxes().put(gw, box);

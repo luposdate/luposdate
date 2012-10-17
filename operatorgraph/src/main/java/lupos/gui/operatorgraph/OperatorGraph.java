@@ -163,13 +163,12 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * 
 	 * @return the JPanel with the QueryGraph on it
 	 */
-	public JPanel createGraph(final GraphWrapper root, final boolean flipX,
-			final boolean flipY, final boolean rotate, final Arrange arrange) {
+	public JPanel createGraph(final GraphWrapper root, final Arrange arrange) {
 		// create rootList for the one root operator...
 		final LinkedList<GraphWrapper> rootList = new LinkedList<GraphWrapper>();
 		rootList.add(root);
 
-		return this.createGraph(rootList, flipX, flipY, rotate, arrange); // create the QueryGraph and return it
+		return this.createGraph(rootList, arrange); // create the QueryGraph and return it
 	}
 
 	/**
@@ -182,9 +181,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * @return the JPanel with the QueryGraph on it
 	 */
 	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
-			final boolean flipX, final boolean flipY, final boolean rotate,
 			final Arrange arrange) {
-		return this.createGraph(newRootList, flipX, flipY, rotate, arrange, -1.0, null);
+		return this.createGraph(newRootList, arrange, -1.0, null);
 	}
 	
 	
@@ -198,7 +196,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * @return the JPanel with the QueryGraph on it
 	 */
 	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
-			final boolean flipX, final boolean flipY, final boolean rotate,
 			final Arrange arrange, final double factor, final Map<GraphWrapper, GraphBox> oldBoxes) {
 		
 		this.rootList = newRootList;
@@ -209,7 +206,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 			
 			this.boxes.clear();
 			
-			this.arrange(flipX, flipY, rotate, arrange);
+			this.arrange(arrange);
 			
 		} else {
 			
@@ -238,10 +235,49 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5, this.getPreferredSize().height + 5));
 		return this;
 	}
+	
+	public JPanel rotate(final int degree, final LinkedList<GraphWrapper> newRootList, final Map<GraphWrapper, GraphBox> oldBoxes){
+		if(degree==0){
+			return this;
+		}
+		final double radians = (degree/360.0)*2*Math.PI;
+		final double sin = Math.sin(radians);
+		final double cos = Math.cos(radians);
 
-	protected void createInternalNewGraph(final boolean flipX,
-			final boolean flipY, final boolean rotate, final Arrange arrange) {
-		this.createGraph(new LinkedList<GraphWrapper>(), flipX, flipY, rotate, arrange); 
+		this.rootList = newRootList;
+		
+		this.removeAll();
+
+		LinkedHashMap<GraphWrapper, GraphBox> newBoxes = new LinkedHashMap<GraphWrapper, GraphBox>();
+		
+		for(GraphBox box: oldBoxes.values()){
+			GraphBox newBox = this.graphBoxCreator.createGraphBox(this, box.op);
+			newBoxes.put(box.op, newBox);
+			final int x = box.x;
+			final int y = box.y;
+			newBox.x = (int) (x*cos+y*sin);
+			newBox.y = (int) (-x*sin+y*cos);
+		}
+		
+		this.boxes = newBoxes;
+		
+		GraphHelper.fitToWindow(this);
+		
+		for (final GraphBox box : this.boxes.values()) {
+			box.arrangeWithoutUpdatingParentsSize();
+		}
+
+		this.updateSize();
+
+		this.repaint(); // repaint the panel to trigger G2D redraw
+		
+		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5, this.getPreferredSize().height + 5));
+		
+		return this;
+	}
+
+	protected void createInternalNewGraph(final Arrange arrange) {
+		this.createGraph(new LinkedList<GraphWrapper>(), arrange); 
 		// create the QueryGraph and return it
 	}
 
@@ -256,21 +292,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 				max = compare;
 		}
 		return max;
-	}
-
-	public void mirror(final boolean X) {
-		final int max = getMax(X);
-		for (final Map.Entry<GraphWrapper, GraphBox> entry : this.boxes
-				.entrySet()) {
-			final GraphBox graphBox = entry.getValue();
-			if (X) {
-				final int oldValue = graphBox.getX() + graphBox.width;
-				graphBox.setX(max - oldValue);
-			} else {
-				final int oldValue = graphBox.getY() + graphBox.height;
-				graphBox.setY(max - oldValue);
-			}
-		}
 	}
 
 	public void addNewBoxes(final HashSet<GraphWrapper> visited,
@@ -297,38 +318,18 @@ public class OperatorGraph extends JPanel implements IXPref {
 			addNewBoxes(visited, op);
 	}
 
-	public synchronized void arrange(final boolean flipX, final boolean flipY,
-			final boolean rotate,
-			final Arrange arrange) {
+	public synchronized void arrange(final Arrange arrange) {
 
 		addNewBoxes();
-
-		if (rotate) {
-			exchangeHeightWidth(false);
-		}
 		
 		for (final GraphBox box : this.boxes.values()) {
 			if (box.getElement() instanceof ContainerArrange) {
-				((ContainerArrange) box.getElement()).arrange(flipX, flipY, rotate, arrange);
+				((ContainerArrange) box.getElement()).arrange(arrange);
 			}
 		}
 
 		arrange.arrange(this);
 
-		if (rotate) {
-			exchangeHeightWidth(true);
-			for (final GraphBox b : this.boxes.values()) {
-					final int tmp = b.getX();
-					b.setXWithoutUpdatingParentsSize(b.getY());
-					b.setYWithoutUpdatingParentsSize(tmp);
-			}
-		}
-
-		if (flipX)
-			mirror(true);
-		if (flipY)
-			mirror(false);
-		
 		GraphHelper.fitToWindow(this);
 		
 		for (final GraphBox box : this.boxes.values()) {
@@ -340,16 +341,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.repaint(); // repaint the panel to trigger G2D redraw
 	}
 
-	public void exchangeHeightWidth(final boolean exchangeContainerPanel) {
-		for (final GraphBox b : this.boxes.values()) {
-			if (!(b.element instanceof ContainerArrange)
-					|| !exchangeContainerPanel) {
-				final int tmp = b.height;
-				b.height = b.width;
-				b.width = tmp;
-			}
-		}
-	}
 
 	public String serializeGraph() {
 		final StringBuffer ret = new StringBuffer();
@@ -374,7 +365,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.drawnLineAnnotations.clear();
 		GraphBox.resetLineColorIndex();
 
-		this.createInternalNewGraph(false, false, false, Arrange.values()[0]);
+		this.createInternalNewGraph(Arrange.values()[0]);
 	}
 
 	public boolean hasElements() {

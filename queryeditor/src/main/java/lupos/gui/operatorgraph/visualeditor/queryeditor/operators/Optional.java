@@ -134,7 +134,7 @@ public class Optional extends MultiInputOperator {
 		final GraphBox box = parent.getBoxes().get(new GraphWrapperOperator(this));
 		box.setLineAnnotations(this.drawAnnotations(parent));
 
-		parent.arrange(false, false, false, Arrange.values()[0]);
+		parent.arrange(Arrange.values()[0]);
 	}
 
 	@Override

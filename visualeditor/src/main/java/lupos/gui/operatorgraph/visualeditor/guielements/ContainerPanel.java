@@ -107,14 +107,12 @@ public class ContainerPanel extends AbstractGuiComponent<Operator> implements Co
 		}
 	}
 
-	public void arrange(final boolean flipX, final boolean flipY,
-			final boolean rotate,
-			final Arrange arrange) {
+	public void arrange(final Arrange arrange) {
 		final int centerX = this.getLocation().x + (this.getPreferredSize().width / 2);
 
 		this.qg.setSize(new Dimension(0, 0));
 		this.qg.setPreferredSize(new Dimension(0, 0));
-		this.qg.arrange(flipX, flipY, rotate, arrange);
+		this.qg.arrange(arrange);
 
 		final Dimension newSize = new Dimension(this.qg.getPreferredSize().width + this.resizeLabel.getPreferredSize().width + 5, this.qg.getPreferredSize().height + 5);
 

@@ -95,7 +95,7 @@ public abstract class AbstractContainer extends OperatorContainer {
 		}
 		
 		final JPanel panel = recursiveOperatorGraph.createGraph(
-				gw.getContainerElements(), false, false, false,
+				gw.getContainerElements(),
 				Arrange.values()[0]);
 
 		this.panel = new ContainerPanel(this, gw, panel, recursiveOperatorGraph, parent, visualRifEditor);

@@ -106,7 +106,7 @@ public abstract class OperatorContainer extends Operator {
 		parent.addChildComponent(recursiveQueryGraph);
 
 		final JPanel panel = recursiveQueryGraph.createGraph(
-				gw.getContainerElements(), false, false, false,
+				gw.getContainerElements(), 
 				Arrange.values()[0]);
 
 		this.panel = new ContainerPanel(this, gw, panel, recursiveQueryGraph, parent);

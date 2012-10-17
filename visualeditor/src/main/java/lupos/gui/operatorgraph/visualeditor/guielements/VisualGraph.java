@@ -73,7 +73,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 
-		this.createInternalNewGraph(false, false, false, lupos.gui.operatorgraph.arrange.Arrange.values()[0]);
+		this.createInternalNewGraph(lupos.gui.operatorgraph.arrange.Arrange.values()[0]);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 			final GraphBox box = this.graphBoxCreator.createGraphBox(this, gw);
 			box.setY(y);
 			box.updateX(x, y, new HashSet<GraphBox>());
-			box.arrange(false, false, false, Arrange.values()[0]);
+			box.arrange(Arrange.values()[0]);
 			box.getElement().revalidate();
 
 			this.boxes.put(gw, box);
@@ -156,7 +156,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		final GraphBox box = this.graphBoxCreator.createGraphBox(this, gw);
 		box.setX(x);
 		box.setY(y);
-		box.arrange(false, false, false, Arrange.values()[0]);
+		box.arrange(Arrange.values()[0]);
 		box.getElement().revalidate();
 
 		this.boxes.put(gw, box);

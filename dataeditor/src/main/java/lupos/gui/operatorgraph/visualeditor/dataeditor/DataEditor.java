@@ -131,8 +131,7 @@ public class DataEditor extends VisualEditor<Operator> {
 			rootList.add(new GraphWrapperPrefix(this.prefix));
 
 			this.visualGraphs.get(0).updateMainPanel(
-					this.visualGraphs.get(0).createGraph(rootList, false,
-							false, false, Arrange.values()[0]));
+					this.visualGraphs.get(0).createGraph(rootList,Arrange.values()[0]));
 		}
 
 		return frame;
@@ -290,8 +289,7 @@ public class DataEditor extends VisualEditor<Operator> {
 			this.statusBar.setText("Displaying N3 data ...");
 
 			this.visualGraphs.get(0).updateMainPanel(
-					this.visualGraphs.get(0).createGraph(rootList, false,
-							false, false, Arrange.values()[0]));
+					this.visualGraphs.get(0).createGraph(rootList, Arrange.values()[0]));
 
 			this.activateGraphMenus();
 		} catch (final Exception e) {
@@ -366,7 +364,7 @@ public class DataEditor extends VisualEditor<Operator> {
 			public void actionPerformed(final ActionEvent ae) {
 				statusBar.setText("Arranging N3 data ...");
 
-				visualGraphs.get(0).arrange(false, false, false, Arrange.values()[0]);
+				visualGraphs.get(0).arrange(Arrange.values()[0]);
 
 				statusBar.clear();
 			}
@@ -547,9 +545,7 @@ public class DataEditor extends VisualEditor<Operator> {
 		System.out.println("Displaying data...");
 
 		this.visualGraphs.get(0).updateMainPanel(
-				this.visualGraphs.get(0).createGraph(rootList, false, false,
-						false,
-						Arrange.values()[0]));
+				this.visualGraphs.get(0).createGraph(rootList, Arrange.values()[0]));
 	}
 
 	/**

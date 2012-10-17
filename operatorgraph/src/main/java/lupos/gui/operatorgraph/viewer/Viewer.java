@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -53,13 +52,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.border.EtchedBorder;
 
 import lupos.engine.operators.BasicOperator;
 import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.arrange.Arrange;
+import lupos.gui.operatorgraph.arrange.LayoutTest;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
@@ -89,12 +89,6 @@ public class Viewer extends JFrame implements IXPref {
 	private JCheckBox lcCheckBox = null;
 		
 	// from toolbar: 
-	private JCheckBox checkBoxX;
-
-	private JCheckBox checkBoxY;
-
-	private JCheckBox checkBoxRot;
-
 	private JComboBox comboBox;
 
 	/**
@@ -472,6 +466,8 @@ public class Viewer extends JFrame implements IXPref {
 			toolBar.add(Box.createRigidArea(new Dimension(20, 0))); // add
 			// separator
 		}
+		
+		toolBar.add(this.createRotateButton());
 
 		toolBar.add(this.createColorCheckBox()); // add CheckBox for line colors
 		// to toolBar
@@ -500,8 +496,7 @@ public class Viewer extends JFrame implements IXPref {
 	@SuppressWarnings("unchecked")
 	private void createGraphElement() {
 		final JPanel opGraph = this.operatorGraph.createGraph(
-				(LinkedList<GraphWrapper>) this.startGWs.clone(), false, false,
-				false,
+				(LinkedList<GraphWrapper>) this.startGWs.clone(),
 				Arrange.values()[0]);
 
 		this.operatorGraph.updateMainPanel(opGraph);
@@ -527,8 +522,7 @@ public class Viewer extends JFrame implements IXPref {
 		zoomFactors.add(new Integer(200));
 
 		try {
-			final Integer zoomFactor = IntegerDatatype.getValues("viewer_zoom")
-			.get(0);
+			final Integer zoomFactor = IntegerDatatype.getValues("viewer_zoom").get(0);
 
 			if (!zoomFactors.contains(zoomFactor)) {
 				zoomFactors.add(zoomFactor);
@@ -561,9 +555,6 @@ public class Viewer extends JFrame implements IXPref {
 						operatorGraph.clearAll();
 						operatorGraph.updateMainPanel(operatorGraph
 								.createGraph(rootList, 
-										(checkBoxX!=null)?checkBoxX.isSelected():false, 
-										(checkBoxY!=null)?checkBoxY.isSelected():false, 
-										(checkBoxRot!=null)?checkBoxRot.isSelected():false, 
 										(comboBox!=null)?(Arrange) comboBox.getSelectedItem():Arrange.LAYERED, 
 										factor, 
 										oldBoxes));
@@ -584,6 +575,46 @@ public class Viewer extends JFrame implements IXPref {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private JPanel createRotateButton(){
+		final Vector<Integer> rotateFactors = new Vector<Integer>();
+		rotateFactors.add(new Integer(0));
+		rotateFactors.add(new Integer(45));
+		rotateFactors.add(new Integer(90));
+		rotateFactors.add(new Integer(135));
+		rotateFactors.add(new Integer(180));
+		rotateFactors.add(new Integer(225));
+		rotateFactors.add(new Integer(270));
+		rotateFactors.add(new Integer(215));
+		final JComboBox rotateDropDown = new JComboBox(rotateFactors);
+		rotateDropDown.setEditable(true);
+		
+		final JButton button = new JButton("rotate"); 
+		button.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int rotate = 0;
+				try {
+					rotate = (Integer) rotateDropDown.getSelectedItem();
+				} catch (final Exception exception) {
+					return;
+				}
+				rotate %= 360;
+				
+				final LinkedList<GraphWrapper> rootList = operatorGraph.getRootList(true);
+				
+				Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) operatorGraph.getBoxes().clone();
+
+				operatorGraph.clearAll();
+				
+				operatorGraph.updateMainPanel(operatorGraph.rotate(rotate, rootList, oldBoxes));
+			}			
+		});
+		JPanel result = new JPanel(new FlowLayout());
+		result.add(rotateDropDown);
+		result.add(button);
+		return result;
 	}
 
 	/**
@@ -638,17 +669,6 @@ public class Viewer extends JFrame implements IXPref {
 	private JPanel createArrangeButton() {
 		final JPanel panel = new JPanel();
 
-		panel.add(new JLabel("flip"));
-
-		checkBoxX = new JCheckBox("X");
-		panel.add(checkBoxX);
-
-		checkBoxY = new JCheckBox("Y");
-		panel.add(checkBoxY);
-
-		checkBoxRot = new JCheckBox("rot.");
-		panel.add(checkBoxRot);
-
 		comboBox = new JComboBox(Arrange.values());
 		panel.add(comboBox);
 
@@ -656,16 +676,49 @@ public class Viewer extends JFrame implements IXPref {
 		arrangeButton.setToolTipText("arrange the shown graph");
 		arrangeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
-				operatorGraph.arrange(checkBoxX.isSelected(),
-						checkBoxY.isSelected(), checkBoxRot.isSelected(),
-						(Arrange) comboBox.getSelectedItem());
+				operatorGraph.arrange((Arrange) comboBox.getSelectedItem());
 			}
 		});
 
 		panel.add(arrangeButton);
 
-		panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		final JButton qButton = new JButton("Graph quality");
+		qButton.setToolTipText("determines quality of current graph...");
+		qButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent ae) {
+				showString(LayoutTest.test(operatorGraph), "Result of Graph Test");
+			}
+		});
+
+		panel.add(qButton);
+		
 		return panel;
+	}
+	
+	/**
+	 * Displays a window with the given String.
+	 * @param content the string to be displayed
+	 * @param title the title of the window
+	 */
+	public static void showString(String content, String title){
+		
+		final JTextPane tp_dataInput = new JTextPane();
+		
+		tp_dataInput.setEditable(false);
+		tp_dataInput.setText(content);
+
+		JScrollPane dataInputSP = new JScrollPane(tp_dataInput);	
+		
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(dataInputSP);
+		
+		final JFrame frame = new JFrame(title);
+		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		frame.getContentPane().add(panel);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 
 	/**

@@ -712,14 +712,14 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 			
 			// generate Left QueryGraph...
 			final JPanel graphPanelLeft = this.visualGraphs.get(0).createGraph(
-					rootListLeft, false, false, false,
+					rootListLeft,
 					Arrange.values()[0]);
 
 			this.visualGraphs.get(0).updateMainPanel(graphPanelLeft);
 			
 			// generate Right QueryGraph...
 			final JPanel graphPanelRight = this.visualGraphs.get(1).createGraph(
-					rootListRight, false, false, false,
+					rootListRight,
 					Arrange.values()[0]);
 
 			this.visualGraphs.get(0).updateMainPanel(graphPanelLeft);

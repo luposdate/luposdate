@@ -63,9 +63,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 	}
 
 	@Override
-	public synchronized void arrange(final boolean flipX, final boolean flipY,
-			final boolean rotate,
-			final Arrange arrange) {
+	public synchronized void arrange(final Arrange arrange) {
 		final GraphWrapper prefixGW = new GraphWrapperPrefix(this.prefix);
 
 		if(this.boxes.containsKey(prefixGW)) {
@@ -73,7 +71,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 			this.remove(oldBox.getElement());
 		}
 
-		super.arrange(flipX, flipY, rotate, arrange);
+		super.arrange(arrange);
 
 		if(this.prefix == null || !this.prefix.isActive() || (this.rootList.size() == 1 && this.rootList.get(0) instanceof GraphWrapperPrefixNonEditable)) {
 			return;
@@ -82,7 +80,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 		final GraphBox prefixBox = this.graphBoxCreator.createGraphBox(this, prefixGW);
 		prefixBox.setX(2* (int) Math.ceil(this.PADDING));
 		prefixBox.setY(this.getMaxY() + (int) Math.ceil(this.SPACING_Y));
-		prefixBox.arrange(flipX, flipY, rotate, arrange);
+		prefixBox.arrange(arrange);
 
 		this.boxes.put(prefixGW, prefixBox);
 

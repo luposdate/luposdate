@@ -269,8 +269,7 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 				that.statusBar.setText("Arranging query ...");
 
 				for (final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
-					visualGraph.arrange(false, false, false,
-							Arrange.values()[0]);
+					visualGraph.arrange(Arrange.values()[0]);
 				}
 
 				that.statusBar.clear();

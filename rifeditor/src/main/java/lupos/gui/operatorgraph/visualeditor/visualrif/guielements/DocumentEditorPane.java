@@ -192,7 +192,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 				that.statusBar.setText("Arranging query ...");
 
 				for (final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
-					visualGraph.arrange(false, false, false, Arrange.values()[0]);
+					visualGraph.arrange(Arrange.values()[0]);
 				}
 
 				that.statusBar.clear();
@@ -566,7 +566,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 
 			// generate QueryGraph...
 			final JPanel graphPanel = this.visualGraphs.get(0).createGraph(
-					rootList, false, false, false,
+					rootList, 
 					Arrange.values()[0]);
 
 			this.visualGraphs.get(0).updateMainPanel(graphPanel);

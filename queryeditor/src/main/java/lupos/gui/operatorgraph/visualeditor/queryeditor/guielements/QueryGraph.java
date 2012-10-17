@@ -63,23 +63,21 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 	 * @return the JPanel with the QueryGraph on it
 	 */
 	@Override
-	public JPanel createGraph(final GraphWrapper root, final boolean flipX,
-			final boolean flipY, final boolean rotate, final Arrange arrange) {
+	public JPanel createGraph(final GraphWrapper root, final Arrange arrange) {
 		// create rootList for the one root operator...
 		final LinkedList<GraphWrapper> rootList = new LinkedList<GraphWrapper>();
 		rootList.add(root);
 		rootList.add(new GraphWrapperPrefix(this.prefix));
 
-		return this.createGraph(rootList, flipX, flipY, rotate, arrange);
+		return this.createGraph(rootList, arrange);
 	}
 
 	@Override
-	protected void createInternalNewGraph(final boolean flipX,
-			final boolean flipY, final boolean rotate, final Arrange arrange) {
+	protected void createInternalNewGraph(final Arrange arrange) {
 		final LinkedList<GraphWrapper> rootList = new LinkedList<GraphWrapper>();
 		rootList.add(new GraphWrapperPrefix(this.prefix));
 
-		this.createGraph(rootList, flipX, flipY, rotate, arrange);
+		this.createGraph(rootList, arrange);
 	}
 
 	@Override

@@ -533,10 +533,7 @@ public class CondensedViewToolBar extends JPanel {
 		if (condensedViewViewer != null) {
 			condensedViewViewer.getVisualGraphs().get(0).updateMainPanel(
 					condensedViewViewer.getVisualGraphs().get(0).createGraph(
-											gws,
-											false,
-											false,
-											false,
+											gws,											
 											lupos.gui.operatorgraph.arrange.Arrange
 													.values()[0]));
 		}

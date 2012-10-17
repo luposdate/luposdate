@@ -492,8 +492,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 			public void actionPerformed(final ActionEvent ae) {
 				statusBar.setText("Arranging query ...");
 
-				visualGraphs.get(0).arrange(false, false, false,
-						Arrange.values()[0]);
+				visualGraphs.get(0).arrange(Arrange.values()[0]);
 
 				statusBar.clear();
 			}
@@ -674,7 +673,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 			// generate QueryGraph...
 			final JPanel graphPanel = this.visualGraphs.get(0).createGraph(
-					new GraphWrapperOperator(rootNode), false, false, false,
+					new GraphWrapperOperator(rootNode),
 					Arrange.values()[0]);
 
 			this.visualGraphs.get(0).updateMainPanel(graphPanel);
@@ -1022,8 +1021,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 			this.visualGraphs.get(0).addToRootList(
 					new GraphWrapperOperator(rootNode));
-			this.visualGraphs.get(0).arrange(false, false, false,
-					Arrange.values()[0]);
+			this.visualGraphs.get(0).arrange(Arrange.values()[0]);
 		} catch (final Throwable e) {
 			this.statusBar.clear();
 
@@ -1058,8 +1056,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 								this.visualGraphs.get(0),
 								new GraphWrapperOperator(newOp));
 						graphBox.setY(rowY);
-						graphBox.arrange(false, false, false,
-								Arrange.values()[0]);
+						graphBox.arrange(Arrange.values()[0]);
 
 						this.visualGraphs.get(0).addOperator(graphBox.getX(),
 								rowY, newOp);
@@ -1068,8 +1065,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 						if (data instanceof OperatorContainer) {
 							final OperatorContainer tc = (OperatorContainer) data;
 
-							((ContainerPanel) tc.getGUIComponent()).arrange(
-									false, false, false, Arrange.values()[0]);
+							((ContainerPanel) tc.getGUIComponent()).arrange(Arrange.values()[0]);
 
 							if (tc.getGUIComponent().getLocation().x < 0) {
 								this.visualGraphs
@@ -1120,8 +1116,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 						}
 					}
 
-					((ContainerPanel) tc.getGUIComponent()).arrange(false,
-							false, false, Arrange.values()[0]);
+					((ContainerPanel) tc.getGUIComponent()).arrange(Arrange.values()[0]);
 
 					if (tc.getGUIComponent().getLocation().x < 0) {
 						this.visualGraphs.get(0).getBoxes()
@@ -1141,13 +1136,12 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 							this.visualGraphs.get(0), new GraphWrapperOperator(
 									tc));
 					graphBox.setY(rowY);
-					graphBox.arrange(false, false, false, Arrange.values()[0]);
+					graphBox.arrange(Arrange.values()[0]);
 
 					this.visualGraphs.get(0).addOperator(graphBox.getX(), rowY,
 							tc);
 
-					((ContainerPanel) tc.getGUIComponent()).arrange(false,
-							false, false, Arrange.values()[0]);
+					((ContainerPanel) tc.getGUIComponent()).arrange(Arrange.values()[0]);
 
 					if (tc.getGUIComponent().getLocation().x < 0) {
 						this.visualGraphs.get(0).getBoxes()

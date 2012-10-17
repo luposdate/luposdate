@@ -112,11 +112,9 @@ public class GraphBox {
 		this.height = this.element.getPreferredSize().height;
 	}
 
-	public void arrange(final boolean flipX, final boolean flipY,
-			final boolean rotate,
-			final Arrange arrange) {
+	public void arrange(final Arrange arrange) {
 		if (this.element instanceof ContainerArrange) {
-			((ContainerArrange) this.element).arrange(flipX, flipY, rotate, arrange);
+			((ContainerArrange) this.element).arrange(arrange);
 		}
 
 		this.arrangeWithoutUpdatingParentsSize();

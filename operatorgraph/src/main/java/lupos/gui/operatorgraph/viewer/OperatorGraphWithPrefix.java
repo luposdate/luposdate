@@ -69,9 +69,7 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 	}
 
 	@Override
-	public synchronized void arrange(final boolean flipX, final boolean flipY,
-			final boolean rotate,
-			final Arrange arrange) {
+	public synchronized void arrange(final Arrange arrange) {
 		final GraphWrapper prefixGW = new GraphWrapperPrefixNonEditable(this.prefix);
 
 		if (this.boxes.containsKey(prefixGW)) {
@@ -79,7 +77,7 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 			this.remove(oldBox.getElement());
 		}
 
-		super.arrange(flipX, flipY, rotate, arrange);
+		super.arrange(arrange);
 
 		if (this.prefix == null
 				|| !this.prefix.isActive()
@@ -91,7 +89,7 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 		prefixBox.setX(2 * (int) Math.ceil(this.PADDING));
 		prefixBox.setY(this.getMaxY()
 				+ (int) Math.ceil(this.SPACING_Y));
-		prefixBox.arrange(flipX, flipY, rotate, arrange);
+		prefixBox.arrange(arrange);
 
 		this.boxes.put(prefixGW, prefixBox);
 

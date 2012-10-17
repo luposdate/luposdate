@@ -504,7 +504,7 @@ public class SuggestionFrame extends JFrame {
 
 		opContainer.addOperator(subjectOp);
 
-		this.queryGraph.arrange(false, false, false, Arrange.values()[0]);
+		this.queryGraph.arrange(Arrange.values()[0]);
 	}
 
 	protected void addSucceedingSuggestion(
@@ -526,6 +526,6 @@ public class SuggestionFrame extends JFrame {
 		connectionMode.addOperator(this.op);
 		connectionMode.addOperator(objectOp);
 
-		this.queryGraph.arrange(false, false, false, Arrange.values()[0]);
+		this.queryGraph.arrange(Arrange.values()[0]);
 	}
 }

@@ -61,6 +61,7 @@ import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.arrange.LayoutTest;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
+import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 
@@ -82,9 +83,6 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 	private XPref preferences;
 	private JSONObject loadObject = null;
 
-	final JCheckBox checkBoxX = new JCheckBox("X");
-	final JCheckBox checkBoxY = new JCheckBox("Y");
-	final JCheckBox checkBoxRot = new JCheckBox("rot.");
 	final JComboBox comboBox = new JComboBox(Arrange.values());
 
 	public TopToolbar(final VisualEditor<T> editor, final boolean standAlone, final JSONObject loadObject) {
@@ -108,8 +106,10 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 		interPanel.add(this.createZoomComboBox()); // add zoomDropDown to
 													// toolBar
 		interPanel.add(new JLabel(" %")); // add " %" to toolBar
-		interPanel.add(Box.createRigidArea(new Dimension(20, 0))); // add
-																	// separator
+		interPanel.add(Box.createRigidArea(new Dimension(20, 0))); // add separator
+		
+		interPanel.add(this.createRotateButton());
+		
 		interPanel.add(this.createColorCheckBox()); // add CheckBox for line
 													// colors to toolBar
 		interPanel.add(Box.createRigidArea(new Dimension(20, 0))); // add
@@ -187,11 +187,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 
 							visualGraph.clear();
 							visualGraph.updateMainPanel(visualGraph
-									.createGraph(rootList, checkBoxX
-											.isSelected(), checkBoxY
-											.isSelected(), checkBoxRot
-											.isSelected(), (Arrange) comboBox
-											.getSelectedItem(), factor, oldBoxes));
+									.createGraph(rootList, (Arrange) comboBox.getSelectedItem(), factor, oldBoxes));
 						}
 					}
 
@@ -204,9 +200,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 					final LinkedList<GraphWrapper> rootList = visualGraph.getRootList(true);
 
 					visualGraph.clear();
-					visualGraph.updateMainPanel(visualGraph.createGraph(
-							rootList, checkBoxX.isSelected(), checkBoxY.isSelected(), checkBoxRot.isSelected(),
-							(Arrange) comboBox.getSelectedItem()));
+					visualGraph.updateMainPanel(visualGraph.createGraph(rootList, (Arrange) comboBox.getSelectedItem()));
 				}
 			}
 
@@ -217,6 +211,48 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 		}
 
 		return null;
+	}
+	
+	private JPanel createRotateButton(){
+		final Vector<Integer> rotateFactors = new Vector<Integer>();
+		rotateFactors.add(new Integer(0));
+		rotateFactors.add(new Integer(45));
+		rotateFactors.add(new Integer(90));
+		rotateFactors.add(new Integer(135));
+		rotateFactors.add(new Integer(180));
+		rotateFactors.add(new Integer(225));
+		rotateFactors.add(new Integer(270));
+		rotateFactors.add(new Integer(215));
+		final JComboBox rotateDropDown = new JComboBox(rotateFactors);
+		rotateDropDown.setEditable(true);
+		
+		final JButton button = new JButton("rotate"); 
+		button.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int rotate = 0;
+				try {
+					rotate = (Integer) rotateDropDown.getSelectedItem();
+				} catch (final Exception exception) {
+					return;
+				}
+				rotate %= 360;
+
+				for(final VisualGraph<T> visualGraph : visualGraphs) {
+					final LinkedList<GraphWrapper> rootList = visualGraph.getRootList(true);
+					
+					Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) visualGraph.getBoxes().clone();
+	
+					visualGraph.clear();
+					
+					visualGraph.updateMainPanel(visualGraph.rotate(rotate, rootList, oldBoxes));
+				}
+			}			
+		});
+		JPanel result = new JPanel(new FlowLayout());
+		result.add(rotateDropDown);
+		result.add(button);
+		return result;
 	}
 
 	/**
@@ -268,14 +304,6 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 	private JPanel createArrangeButton() {
 		final JPanel panel = new JPanel();
 
-		panel.add(new JLabel("flip"));
-
-		panel.add(this.checkBoxX);
-
-		panel.add(this.checkBoxY);
-
-		panel.add(this.checkBoxRot);
-
 		panel.add(this.comboBox);
 
 		final JButton arrangeButton = new JButton("arrange");
@@ -287,8 +315,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 				setTextStatusBar("Arranging graph ...");
 
 				for(final VisualGraph<T> visualGraph : visualGraphs) {
-					visualGraph.arrange(checkBoxX.isSelected(), checkBoxY.isSelected(), checkBoxRot.isSelected(),
-							(Arrange) comboBox.getSelectedItem());
+					visualGraph.arrange((Arrange) comboBox.getSelectedItem());
 				}
 
 				clearStatusBar();
@@ -297,7 +324,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 
 		panel.add(arrangeButton);
 		
-		final JButton qButton = new JButton("Q");
+		final JButton qButton = new JButton("Graph quality");
 		qButton.setToolTipText("determines quality of current graph...");
 		qButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent ae) {
@@ -306,7 +333,7 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 				setTextStatusBar("Determining quality of current graph ...");
 
 				for(final VisualGraph<T> visualGraph : visualGraphs) {
-					showString(LayoutTest.test(visualGraph), "Result of Graph Test");
+					Viewer.showString(LayoutTest.test(visualGraph), "Result of Graph Test");
 				}
 
 				clearStatusBar();
@@ -315,35 +342,9 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 
 		panel.add(qButton);
 		
-		panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		return panel;
 	}
 	
-	/**
-	 * Displays a window with the given String.
-	 * @param content the string to be displayed
-	 * @param title the title of the window
-	 */
-	public static void showString(String content, String title){
-		
-		final JTextPane tp_dataInput = new JTextPane();
-		
-		tp_dataInput.setEditable(false);
-		tp_dataInput.setText(content);
-
-		JScrollPane dataInputSP = new JScrollPane(tp_dataInput);	
-		
-		final JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(dataInputSP);
-		
-		final JFrame frame = new JFrame(title);
-		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		frame.getContentPane().add(panel);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-	}
 
 	/**
 	 * Internal method to create the button to show the preferences dialog.
