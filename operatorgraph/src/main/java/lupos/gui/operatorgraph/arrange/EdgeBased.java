@@ -42,42 +42,42 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 
 public class EdgeBased {
 	
-	private static final int EDGE_LENGTH =  250;
+	private static final int EDGE_LENGTH =  350;
 	private static final double AGAINST_OVERLAPPING = 10.0;
-		
+	
+	private static HashMap<Integer, Double> directions = new HashMap<Integer, Double>();
+	private static HashMap<GraphWrapper, Integer> idHierarchy = new HashMap <GraphWrapper, Integer>();
+	
 	/**
 	 * Method gets the amount of different edge-types in 
 	 * the graph.
 	 * @param op	the graph	
 	 * @return		edge-type-amount
 	 */
-	private static int getTypeCount(OperatorGraph op) {
-		int count = 0;		
+	private static int getTypeAmount(OperatorGraph op) {
+		int amount = 0;		
 		HashMap<GraphWrapper, GraphBox> boxes = op.getBoxes();
 		
 		for(GraphWrapper gw : boxes.keySet()) {
-			if (gw.getSucceedingElements().size() > count)
-				count = gw.getSucceedingElements().size();
+			if (gw.getSucceedingElements().size() > amount)
+				amount = gw.getSucceedingElements().size();
 		}
 		
-		return count;
+		return amount;
 	}
 	
 	/**
 	 * Method sets the edge-directions for the different
 	 * edge-types in the graph.
 	 * @param op	the graph
-	 * @param directions	already set directions
 	 */
-	private static void setDirections(final OperatorGraph op, final HashMap<Integer, Double> directions) {
-		int count = getTypeCount(op);
-		if(count>0){
-			double directionDistance = 180/count;		
-			double direction = 0.0;
-			for (int type = 0; type < count; type++) {
-				direction = ((type * directionDistance)*(Math.PI/180));
-				directions.put(type, direction);
-			}
+	private static void setDirections(OperatorGraph op) {
+		int amount = getTypeAmount(op);
+		double directionDistance = 180/amount;		
+		double direction = 0.0;
+		for (int type = 0; type < amount; type++) {
+			direction = ((type * directionDistance)*(Math.PI/180));
+			directions.put(type, direction);
 		}
 	}
 
@@ -109,35 +109,51 @@ public class EdgeBased {
 	 */
 	private static boolean isHidingANode(GraphWrapper node, OperatorGraph op) {
 		HashMap<GraphWrapper, GraphBox> boxes = op.getBoxes();
+		boolean hide = true;
 		GraphBox nodeBox = boxes.get(node);
+		
 		int nodeX = nodeBox.getX();
 		int nodeY = nodeBox.getY();
+		if ((nodeX == -1) && (nodeY == -1)) {
+			return false;
+		}
 		int nodeXArea = nodeX+nodeBox.width;
 		int nodeYArea = nodeY+nodeBox.height;
-		for (GraphBox hideBox : boxes.values()) {
+		int i = 0;
+		for (GraphWrapper gw : boxes.keySet()) {
+			i++;
+			
+			GraphBox hideBox = boxes.get(gw);
 			int hideX = hideBox.getX();
 			int hideY = hideBox.getY();
+			if ((hideX == -1) && (hideY == -1)) {
+				continue;
+			}
 			int hideXArea = hideX+hideBox.width;
 			int hideYArea = hideY+hideBox.height;
 			
-			if((nodeX > hideXArea) || (nodeY > hideYArea)) {
-				return false;
-			}
-			
-			if ((hideX > nodeXArea) || (hideY > nodeYArea)) {
-				return false;
+			if(!node.equals(gw)) {
+				
+				if((nodeX > hideXArea) || (nodeY > hideYArea) ) {
+					hide = false; 
+				}			
+				else if ((hideX > nodeXArea) || (hideY > nodeYArea)) {
+					hide = false;
+				} else {
+					
+					return true;
+				}
 			}
 		}
-		return true;
+		return hide;
 	}
 	
 	/**
 	 * Method give nodes an ID to identify to which hierarchy
 	 * they belong
 	 * @param op 	the graph
-	 * @param idHierarchy 	hierarchies
 	 */
-	private static void fillIDs(final OperatorGraph op, final HashMap<GraphWrapper, Integer> idHierarchy){
+	private static void fillIDs(OperatorGraph op){
 		HashMap <GraphWrapper, GraphBox> boxes = op.getBoxes();
 		LinkedList <GraphWrapper> roots = op.getRootList(false);
 		
@@ -163,54 +179,64 @@ public class EdgeBased {
 	 * @param node		the node
 	 * @param op		the graph
 	 * @param isSet		HashMap with already visited nodes
-	 * @param directions		HashMap with already set directions
-	 * @param idHierarchies		hierarchies
 	 */
-	public static void setCoordinates(final GraphWrapper node, final OperatorGraph op, final HashSet<GraphWrapper> isSet, final HashMap<Integer, Double> directions, final HashMap<GraphWrapper, Integer> idHierarchy) {
+	public static void setCoordinates(GraphWrapper node, final OperatorGraph op, HashSet<GraphWrapper> isSet, HashSet<Edge> isVisited) {
 		HashMap <GraphWrapper, GraphBox> boxes = op.getBoxes();
-		
+
 		GraphBox box = boxes.get(node);
 		
 		LinkedList<Edge>suc = getEdges(node);		
+		/**if (suc.size() == 0) {
+			return;
+		}**/
 		
 		for (Edge e : suc) {
-			if (isSet.contains(e.getTarget())) {
-				return;
+			if(isVisited.contains(e)) return;
+			isVisited.add(e);
+
+			if (isSet.contains(e.getTarget())) {				
+				continue; 
 			}
+			
+			//isSet.add(e);
 			int type = e.getEdgeType();
 			double direction = directions.get(type);
 			GraphBox sucBox = boxes.get(e.getTarget());
 			
-			int x = (int)Math.ceil(box.getX()+((op.getZoomFactor()*EDGE_LENGTH)*Math.cos(direction)));
-			int y = (int)Math.ceil(box.getY()+((op.getZoomFactor()*EDGE_LENGTH)*Math.sin(direction)));
+			int x = (int)Math.ceil(box.getX()+(EDGE_LENGTH*Math.cos(direction)));
+			int y = (int)Math.ceil(box.getY()+(EDGE_LENGTH*Math.sin(direction)));
 			
 			if (!isSet.contains(e.getTarget()) && (idHierarchy.get(e.getTarget()) > idHierarchy.get(node))) {
 				sucBox.setXWithoutUpdatingParentsSize(x);
 				sucBox.setYWithoutUpdatingParentsSize(y);
 				isSet.add(e.getTarget());
 			}
+			else{
+				continue;
+			}
 			
-			while (isHidingANode(e.getTarget(), op)){
+			
+			
+			if (isHidingANode(e.getTarget(), op)){
+
 				direction += ((Math.PI/180)*AGAINST_OVERLAPPING);
-				x = (int)Math.ceil(box.getX()+((op.getZoomFactor()*EDGE_LENGTH)*Math.cos(direction)));
-				y = (int)Math.ceil(box.getY()+((op.getZoomFactor()*EDGE_LENGTH)*Math.sin(direction)));
+				x = (int)Math.ceil(box.getX()+(EDGE_LENGTH*Math.cos(direction)));
+				y = (int)Math.ceil(box.getY()+(EDGE_LENGTH*Math.sin(direction)));
 				sucBox.setXWithoutUpdatingParentsSize(x);
 				sucBox.setYWithoutUpdatingParentsSize(y);
 			}
-			setCoordinates(e.getTarget(),op, isSet, directions, idHierarchy);
+			setCoordinates(e.getTarget(),op, isSet, isVisited);
 		}
 		
 	}
 	
 	public static void arrange(final OperatorGraph operatorgraph) {
-		//long time1 = System.currentTimeMillis();
-		final HashMap <GraphWrapper, GraphBox> boxes = operatorgraph.getBoxes();
-		final HashSet<GraphWrapper> isSet = new HashSet<GraphWrapper>();
-		final LinkedList <GraphWrapper> roots = operatorgraph.getRootList(false);
-		final HashMap<Integer, Double> directions = new HashMap<Integer, Double>();
-		final HashMap<GraphWrapper, Integer> idHierarchy = new HashMap <GraphWrapper, Integer>();
-		setDirections(operatorgraph, directions);
-		fillIDs(operatorgraph, idHierarchy);
+		HashMap <GraphWrapper, GraphBox> boxes = operatorgraph.getBoxes();
+		HashSet<GraphWrapper> isSet = new HashSet<GraphWrapper>();
+		HashSet<Edge> isVisited = new HashSet<Edge>();
+		LinkedList <GraphWrapper> roots = operatorgraph.getRootList(false);
+		setDirections(operatorgraph);
+		fillIDs(operatorgraph);
 		
 		GraphWrapper root1 = roots.getFirst();
 		
@@ -218,8 +244,8 @@ public class EdgeBased {
 		box1.setXWithoutUpdatingParentsSize((int)Math.ceil(operatorgraph.getWidth()/roots.size()+1));
 		box1.setYWithoutUpdatingParentsSize((int)Math.ceil(operatorgraph.PADDING));
 
-		isSet.add(root1);
-		setCoordinates(root1, operatorgraph, isSet, directions, idHierarchy);
+		setCoordinates(root1, operatorgraph, isSet, isVisited);
+
 		int x = 0; int width = 0;
 		for (int i = 1; i < roots.size(); i++) {
 			for (GraphBox box : boxes.values()) {
@@ -234,9 +260,9 @@ public class EdgeBased {
 			int x_Coord = (int)Math.ceil(x + width + operatorgraph.SPACING_X);
 			rootBox.setXWithoutUpdatingParentsSize(x_Coord);
 			rootBox.setYWithoutUpdatingParentsSize(box1.getY());
-			setCoordinates(root, operatorgraph, isSet, directions, idHierarchy);
-		}		
-		//time1 = System.currentTimeMillis() - time1;
-		//System.out.println("Laufzeit = " + time1 + " ms");
+
+			setCoordinates(root, operatorgraph, isSet,isVisited);
+			
+		}
 	}
 }

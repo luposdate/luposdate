@@ -100,8 +100,8 @@ public class LayoutTest {
 		for (Edge edge2 : edges) {
 			GraphBox source2 = boxes.get(edge2.getSource());
 			GraphBox target2 = boxes.get(edge2.getTarget());
-			if ((target2.getX() - source2.getX()) != 0) {
-				double m = (target2.getY() - source2.getY())/(target2.getX() - source2.getX()); // slope of line 2
+			if (target2.getX() == source2.getX()) {
+				double m = ((double)target2.getY() - (double)source2.getY())/((double)target2.getX() - (double)source2.getX()); // slope of line 2
 				double b = target2.getY() - (m * target2.getX()); // crossing with y-axis off line 2
 				
 				double y = m * source1.getX() + b;
@@ -132,8 +132,8 @@ public class LayoutTest {
 		GraphBox target1 = boxes.get(edge1.getTarget());
 		GraphBox source2 = boxes.get(edge2.getSource());
 		GraphBox target2 = boxes.get(edge2.getTarget());
-		if ((target2.getX() - source2.getX()) != 0) {
-			double m = (target2.getY() - source2.getY())/(target2.getX() - source2.getX()); // slope of line 2
+		if (target2.getX() == source2.getX())  {
+			double m = ((double)target2.getY() - (double)source2.getY())/((double)target2.getX() - (double)source2.getX()); // slope of line 2
 			double b = target2.getY() - (m * target2.getX()); // crossing with y-axis off line 2
 			
 			double y = m * source1.getX() + b;
@@ -166,31 +166,32 @@ public class LayoutTest {
 		}
 		int edgecount = 0;
 		LinkedList <Edge> visited = new LinkedList <Edge>();
-		for (Edge edge1 : edges) {
+		for (int i = 0; i < edges.size(); i++/**Edge edge1 : edges**/) {
+			Edge edge1 = edges.get(i);
 			edgecount ++;
 			GraphBox sourceE1 = boxes.get(edge1.getSource());
 			GraphBox targetE1 = boxes.get(edge1.getTarget());
 			// edge 1 is vertical
-			if((targetE1.getX()-sourceE1.getX())== 0.0) {
+			if((targetE1.getX() == sourceE1.getX())) {
 				crossCounter = infinitSlope(edge1, edges, graph); 
 			}
 			else {	
-				double m1 = ((targetE1.getY())-(sourceE1.getY()))/(targetE1.getX()-sourceE1.getX()); // slope of line 1
+				double m1 = ((double)targetE1.getY() - (double)sourceE1.getY())/((double)targetE1.getX() - (double)sourceE1.getX()); // slope of line 1
 				double b1 = (targetE1.getY()) - (m1 * targetE1.getX()); // slope of line 1
-
-				for (Edge edge2 : edges) {
+				for (int j = 0; j < edges.size(); j++/**Edge edge2 : edges**/) {
+					Edge edge2 = edges.get(j);
+					
 					if ((!edge2.equals(edge1)) && (!visited.contains(edge2)) && (m1 != 0.0)){
 						GraphBox sourceE2 = boxes.get(edge2.getSource());
-						GraphBox targetE2 = boxes.get(edge2.getTarget());
+						GraphBox targetE2 = boxes.get(edge2.getTarget());					
 						// edge 2 is vertical
-						if((targetE2.getX() - sourceE2.getX()) == 0.0) {
+						if(targetE2.getX() == sourceE2.getX() ) {
 							crossCounter += infinitSlope(edge2, edge1, graph); 
 							
 						} else {
-							double m2 = ((targetE2.getY())-(sourceE2.getY()))/(targetE2.getX()-sourceE2.getX()); // slope of line 2
+							double m2 = ((double)targetE2.getY() - (double)sourceE2.getY())/((double)targetE2.getX() - (double)sourceE2.getX()); // slope of line 2
 							double b2 = (targetE2.getY()) - (m2 * targetE2.getX()); // crossing with y-axis of line 2 
 							double x = ((b2-b1)/(m1-m2)); double y = ((m1*x) + b1); // cross-point-coordinates of the 2 lines
-							
 							double maxXe1 = Math.max(sourceE1.getX(), targetE1.getX()); double maxXe2 = Math.max(sourceE2.getX(), targetE2.getX());
 							double minXe1 = Math.min(sourceE1.getX(), targetE1.getX()); double minXe2 = Math.min(sourceE2.getX(), targetE2.getX());
 							double maxYe1 = Math.max(sourceE1.getY(), targetE1.getY()); double maxYe2 = Math.max(sourceE2.getY(), targetE2.getY());
@@ -204,7 +205,7 @@ public class LayoutTest {
 								}
 							}
 						}
-						visited.add(edge2);
+						//visited.add(edge2);
 					}
 				}
 			}
@@ -375,7 +376,7 @@ public class LayoutTest {
 		double p = Math.abs(100-((ariMiddle*100)/shortest));
 		
 		String result = "Test: Closeness:\n";
-		result+="The differenz between the average edge length and the shortest edge length is " + diff+".\n";
+		result+="The difference between the average edge length and the shortest edge length is " + diff+".\n";
 		result+="This is a difference of "+p+"%.\n";
 		
 		return result;
@@ -473,7 +474,7 @@ public class LayoutTest {
 		
 		// test if node-amount on left and right side of symmetry-line is equal
 		if (left.size() != right.size()) {
-			result+="Diffenrent number of nodes on both sides of the symmetry axe:\n";
+			result+="Different number of nodes on both sides of the symmetry axe:\n";
 			result+="Left: " + left.size() + "    Right: " + right.size()+"\n";
 		}
 		
@@ -500,7 +501,7 @@ public class LayoutTest {
 		
 		// compute number of symmetric nodes
 		final int sumSizes = left.size() + right.size();
-		double p = (sumSizes==0)? 100 : (2*symCounter*100) / sumSizes;
+		double p = (sumSizes==0)? 100 : (2*symCounter*100) / ((double)sumSizes);
 		
 		if (sym == false) {
 			result+="The graph is "+p+"% axially symmetric!\n";
@@ -512,14 +513,14 @@ public class LayoutTest {
 	
 	public static String test(final OperatorGraph operatorgraph){
 		String result = "Number of nodes: "+getNodeNumber(operatorgraph)+"\n"
-						+ "Anzahl Kanten: "+getEdgeNumber(operatorgraph)+"\n\n";
+						+ "Number of edges: "+getEdgeNumber(operatorgraph)+"\n\n";
 		
 		result+=uniformDistribution_Test(operatorgraph)+"\n";
 		result+=fixedEdgeLength_Test (operatorgraph)+"\n";
 		result+=closeness_Test (operatorgraph)+"\n";
 		result+=smallestSeparation_Test (operatorgraph)+"\n";
 		result+=symmetry_Test(operatorgraph)+"\n";
-		// result+=minEdgeCrossing_Test(operatorgraph)+"\n";
+		result+=minEdgeCrossing_Test(operatorgraph)+"\n";
 		
 		return result;
 	}
