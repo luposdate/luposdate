@@ -80,11 +80,11 @@ public interface SPARQL1_1ParserVisitorStringGenerator
   public String visit(ASTObjectList node);
   public String visit(ASTPathAlternative node);
   public String visit(ASTPathSequence node);
+  public String visit(ASTDistinctPath node);
   public String visit(ASTInvers node);
   public String visit(ASTArbitraryOccurences node);
   public String visit(ASTOptionalOccurence node);
   public String visit(ASTArbitraryOccurencesNotZero node);
-  public String visit(ASTGivenOccurences node);
   public String visit(ASTNegatedPath node);
   public String visit(ASTInteger node);
   public String visit(ASTBlankNodePropertyList node);
@@ -138,6 +138,8 @@ public interface SPARQL1_1ParserVisitorStringGenerator
   public String visit(ASTTimeZoneFuncNode node);
   public String visit(ASTTzFuncNode node);
   public String visit(ASTNowFuncNode node);
+  public String visit(ASTUUIDFuncNode node);  
+  public String visit(ASTSTRUUIDFuncNode node);  
   public String visit(ASTMD5FuncNode node);
   public String visit(ASTSHA1FuncNode node);
   public String visit(ASTSHA256FuncNode node);

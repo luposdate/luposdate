@@ -722,6 +722,16 @@ public class SPARQLParserVisitorImplementationDumper implements
 	}
 
 	@Override
+	public String visit(ASTUUIDFuncNode node) {
+		return "UUID("+visitChildrenCommaSeparated(node)+")";
+	}
+
+	@Override
+	public String visit(ASTSTRUUIDFuncNode node) {
+		return "STRUUID("+visitChildrenCommaSeparated(node)+")";
+	}
+
+	@Override
 	public String visit(ASTMD5FuncNode node) {
 		return "MD5("+visitChildrenCommaSeparated(node)+")";
 	}
@@ -783,13 +793,13 @@ public class SPARQLParserVisitorImplementationDumper implements
 		
 	@Override
 	public String visit(ASTBindings node) {
-		String result= tab+"BINDINGS ";
+		String result= tab+"VALUES ( ";
 		int i=0;
 		while(i<node.jjtGetNumChildren() && node.jjtGetChild(i) instanceof ASTVar){
 			result+=(String) visit((ASTVar)node.jjtGetChild(i)) + " ";
 			i++;
 		}
-		result+="\n"+tab+" {";
+		result+=")\n"+tab+" {";
 		while(i<node.jjtGetNumChildren()){
 			Node child=node.jjtGetChild(i);
 			if(child instanceof ASTNIL){
@@ -985,6 +995,11 @@ public class SPARQLParserVisitorImplementationDumper implements
 	}
 	
 	@Override
+	public String visit(ASTDistinctPath node) {
+		return " DISTINCT("+visitChild(node, 0) +")";
+	}
+	
+	@Override
 	public String visit(ASTArbitraryOccurences node) {
 		return "("+visitChild(node, 0)+")*";
 	}
@@ -997,10 +1012,5 @@ public class SPARQLParserVisitorImplementationDumper implements
 	@Override
 	public String visit(ASTArbitraryOccurencesNotZero node) {
 		return "("+visitChild(node, 0)+")+";
-	}
-
-	@Override
-	public String visit(ASTGivenOccurences node) {
-		return "("+visitChild(node, 0)+")"+node.toString();
 	}
 }

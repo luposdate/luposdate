@@ -302,7 +302,8 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				|| n instanceof ASTService
 				|| n instanceof ASTGroupConstraint
 				|| n instanceof ASTWindow
-				|| n instanceof ASTSelectQuery);
+				|| n instanceof ASTSelectQuery
+				|| n instanceof ASTBindings);
 	}
 	
 	protected boolean handleHigherConstructToJoin(final Node n, final OperatorConnection connection, final Item graphConstraint){
@@ -317,6 +318,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				}
 			} else if(n instanceof ASTGraphConstraint){
 				n.accept(this, connection);
+			} else if(n instanceof ASTBindings){
+				ComputeBindings computeBindings = new ComputeBindings(getQueryResultFromValuesClause((ASTBindings)n));
+				
+				this.indexScanCreator.createEmptyIndexScanAndConnectWithRoot(new OperatorIDTuple(computeBindings, 0));
+				
+				connection.connect(computeBindings);
 			} else {
 				n.accept(this, connection, graphConstraint);
 			}
@@ -477,99 +484,10 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 	
 	@Override
-	public BasicOperator visit(ASTGivenOccurences node,
-			OperatorConnection connection, Item graphConstraint,
-			Variable subject, Variable object, Node subjectNode, Node objectNode) {
-		ReplaceVar replaceVar = new ReplaceVar();
-		ReplaceVar replaceVari = new ReplaceVar();
-		BasicOperator startingOperator;
-		
-		int unionPartner = 0;
-		Union union = new Union();
-		
-		int minimalDepth = node.getLowerLimit();
-		int maximalDepth = node.getUpperLimit();
-		
-		if(minimalDepth == 0){
-			BasicOperator leftSide = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
-			leftSide.addSucceedingOperator(new OperatorIDTuple(union,unionPartner));
-			unionPartner++;
-			minimalDepth++;
-		}
-		
-		if(maximalDepth == ASTGivenOccurences.INFINITY){ //Handle as plus
-			int joinPartner = 0;
-			Join joinOperator = new Join();
-			Variable currentObject = subject;
-			for (int i = 1; i < minimalDepth; i++){
-				Variable currentSubject = currentObject;
-				currentObject = getVariable(subject.toString(), object.toString(), "interimObject");
-				startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, currentSubject, currentObject, subjectNode, objectNode);				
-				startingOperator.addSucceedingOperator(new OperatorIDTuple(joinOperator,joinPartner));
-				joinPartner++;
-			}
-			
-			startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, currentObject, object, subjectNode, objectNode);
-			startingOperator.addSucceedingOperator(new OperatorIDTuple(joinOperator,joinPartner));
-			
-			InMemoryDistinct memoryDistinct = new InMemoryDistinct();
-			try {
-				Filter filter = new Filter("(" + subject + " != " + object + ")");
-			
-				replaceVar.addSubstitution(object, subject);
-				Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
-				replaceVar.addSubstitution(variable, object);
-				replaceVari.addSubstitution(subject, subject);
-				replaceVari.addSubstitution(object, variable);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
-				
-				joinOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
-				joinOperator.addSucceedingOperator(new OperatorIDTuple(union,1));
-				final Join intermediateJoinOperator = new Join();
-				replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
-				memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
-				filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
-				filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-				intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
-				replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-				replaceVari.addSucceedingOperator(new OperatorIDTuple(union,unionPartner));
-				unionPartner++;
-			} catch (ParseException e) {
-				System.out.println(e);
-				e.printStackTrace();
-			}
-			
-		} else { //Looping Loui-Part
-			for(int i = minimalDepth; i <= maximalDepth; i++){
-				Join join = new Join();
-				Variable currentObject = subject;
-				int j;
-				for (j = 0; j < i-1; j++){
-					Variable currentSubject = currentObject;
-					currentObject = getVariable(subject.toString(),object.toString(), "interimObject");
-					startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, currentSubject, currentObject, subjectNode, objectNode); 
-					startingOperator.addSucceedingOperator(new OperatorIDTuple(join,j));
-				}
-				
-				startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, currentObject, object, subjectNode, objectNode);
-				startingOperator.addSucceedingOperator(new OperatorIDTuple(join,j));
-				
-				join.addSucceedingOperator(new OperatorIDTuple(union,unionPartner));
-				unionPartner++;
-			}
-		}
-		
-		Projection projection = new Projection();
-		projection.addProjectionElement(subject);
-		projection.addProjectionElement(object);
-		if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-			projection.addProjectionElement((Variable)graphConstraint);
-		union.addSucceedingOperator(new OperatorIDTuple(projection,0));
-		
-		return projection;
+	public BasicOperator visit(ASTDistinctPath node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode){
+		return node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
 	}
-
+	
 	@Override
 	public BasicOperator visit(ASTOptionalOccurence node,
 			OperatorConnection connection, Item graphConstraint,
@@ -1348,6 +1266,48 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			}
 		}
 	}
+	/**
+	 * computes a queryresult from a VALUES clause. 
+	 * For example, the queryresult {(?s="s1", ?o="o1"), (?o="o2")} is computed from the clause VALUES (?s ?o) { ("s1" "o1") (UNDEF "o2")}
+	 * 
+	 * @param node the ASTBindings node in the abstract syntax tree
+	 * @return the computed queryresult
+	 */
+	private QueryResult getQueryResultFromValuesClause(ASTBindings node){
+		QueryResult bindingsQR = QueryResult.createInstance();
+		Bindings binding = new BindingsMap();
+
+		// Getting the variables which are used in the BINDINGS clause
+		LinkedList<Variable> varList = new LinkedList<Variable>();
+
+		for (int k = 0; k < node.jjtGetNumChildren(); k++) {
+			if (node.jjtGetChild(k) instanceof ASTVar) {
+				ASTVar var2 = (ASTVar) node.jjtGetChild(k);
+				Variable variable = new Variable(var2.getName());
+				varList.add(variable);
+			}
+		}
+
+		// Creating the bindings with the variables and the literals
+		for (int j = 0; j < node.jjtGetNumChildren(); j++) {
+			if (node.jjtGetChild(j) instanceof ASTPlusNode) {
+				binding = new BindingsMap();
+				for (int m = 0; m < node.jjtGetChild(j)
+						.jjtGetNumChildren(); m++) {
+					Node litNode = node.jjtGetChild(j)
+							.jjtGetChild(m);
+					if (!(litNode instanceof ASTUndef)) {
+						Literal lit = LazyLiteral.getLiteral(litNode,
+								true);
+						binding.add(varList.get(m), lit);
+					}
+				}
+				bindingsQR.add(binding);
+			}
+		}
+		
+		return bindingsQR;
+	}
 
 
 	/**
@@ -1363,43 +1323,9 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		final int numberChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numberChildren; i++) {
 			if (node.jjtGetChild(i) instanceof ASTBindings) {
-				QueryResult bindingsQR = QueryResult.createInstance();
-				Bindings binding = new BindingsMap();
-
-				// Getting the variables which are used in the BINDINGS clause
-				LinkedList<Variable> varList = new LinkedList<Variable>();
-
-				for (int k = 0; k < node.jjtGetChild(i).jjtGetNumChildren(); k++) {
-					if (node.jjtGetChild(i).jjtGetChild(k) instanceof ASTVar) {
-
-						ASTVar var2 = (ASTVar) node.jjtGetChild(i).jjtGetChild(k);
-						Variable variable = new Variable(var2.getName());
-						varList.add(variable);
-
-					}
-				}
-
-				// Creating the bindings with the variables and the literals
-				for (int j = 0; j < node.jjtGetChild(i).jjtGetNumChildren(); j++) {
-					if (node.jjtGetChild(i).jjtGetChild(j) instanceof ASTPlusNode) {
-						binding = new BindingsMap();
-						for (int m = 0; m < node.jjtGetChild(i).jjtGetChild(j)
-								.jjtGetNumChildren(); m++) {
-							Node litNode = node.jjtGetChild(i).jjtGetChild(j)
-									.jjtGetChild(m);
-							if (!(litNode instanceof ASTUndef)) {
-								Literal lit = LazyLiteral.getLiteral(litNode,
-										true);
-								binding.add(varList.get(m), lit);
-							}
-						}
-						bindingsQR.add(binding);
-					}
-
-				}
 
 				// Inserting the join operation
-				ComputeBindings computeBindings = new ComputeBindings(bindingsQR);
+				ComputeBindings computeBindings = new ComputeBindings(getQueryResultFromValuesClause((ASTBindings)node.jjtGetChild(i)));
 				Join join = new Join();
 				join.addSucceedingOperator(this.result);
 				

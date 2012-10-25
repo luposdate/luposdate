@@ -53,47 +53,47 @@ public interface StreamSPARQL1_1ParserTreeConstants
   public int JJTLIMIT = 24;
   public int JJTOFFSET = 25;
   public int JJTBINDINGS = 26;
-  public int JJTNIL = 27;
-  public int JJTPLUSNODE = 28;
-  public int JJTUNDEF = 29;
-  public int JJTLOAD = 30;
-  public int JJTCLEAR = 31;
-  public int JJTDROP = 32;
-  public int JJTCREATE = 33;
-  public int JJTADD = 34;
-  public int JJTMOVE = 35;
-  public int JJTCOPY = 36;
-  public int JJTINSERT = 37;
-  public int JJTDELETE = 38;
-  public int JJTMODIFY = 39;
-  public int JJTDEFAULT = 40;
-  public int JJTNAMED = 41;
-  public int JJTALL = 42;
-  public int JJTCONSTRUCTTEMPLATE = 43;
-  public int JJTGRAPHCONSTRAINT = 44;
-  public int JJTOPTIONALCONSTRAINT = 45;
-  public int JJTSERVICE = 46;
-  public int JJTBIND = 47;
-  public int JJTMINUS = 48;
-  public int JJTUNIONCONSTRAINT = 49;
-  public int JJTFILTERCONSTRAINT = 50;
-  public int JJTFUNCTIONCALL = 51;
-  public int JJTARGUMENTS = 52;
-  public int JJTEXPRESSIONLIST = 53;
-  public int JJTNODESET = 54;
-  public int JJTOBJECTLIST = 55;
-  public int JJTPATHALTERNATIVE = 56;
-  public int JJTPATHSEQUENCE = 57;
-  public int JJTINVERS = 58;
-  public int JJTARBITRARYOCCURENCES = 59;
-  public int JJTOPTIONALOCCURENCE = 60;
-  public int JJTARBITRARYOCCURENCESNOTZERO = 61;
-  public int JJTGIVENOCCURENCES = 62;
-  public int JJTNEGATEDPATH = 63;
-  public int JJTINTEGER = 64;
-  public int JJTBLANKNODEPROPERTYLIST = 65;
-  public int JJTCOLLECTION = 66;
-  public int JJTVAR = 67;
+  public int JJTPLUSNODE = 27;
+  public int JJTUNDEF = 28;
+  public int JJTLOAD = 29;
+  public int JJTCLEAR = 30;
+  public int JJTDROP = 31;
+  public int JJTCREATE = 32;
+  public int JJTADD = 33;
+  public int JJTMOVE = 34;
+  public int JJTCOPY = 35;
+  public int JJTINSERT = 36;
+  public int JJTDELETE = 37;
+  public int JJTMODIFY = 38;
+  public int JJTDEFAULT = 39;
+  public int JJTNAMED = 40;
+  public int JJTALL = 41;
+  public int JJTCONSTRUCTTEMPLATE = 42;
+  public int JJTGRAPHCONSTRAINT = 43;
+  public int JJTOPTIONALCONSTRAINT = 44;
+  public int JJTSERVICE = 45;
+  public int JJTBIND = 46;
+  public int JJTMINUS = 47;
+  public int JJTUNIONCONSTRAINT = 48;
+  public int JJTFILTERCONSTRAINT = 49;
+  public int JJTFUNCTIONCALL = 50;
+  public int JJTARGUMENTS = 51;
+  public int JJTEXPRESSIONLIST = 52;
+  public int JJTNODESET = 53;
+  public int JJTOBJECTLIST = 54;
+  public int JJTPATHALTERNATIVE = 55;
+  public int JJTPATHSEQUENCE = 56;
+  public int JJTINVERS = 57;
+  public int JJTARBITRARYOCCURENCES = 58;
+  public int JJTOPTIONALOCCURENCE = 59;
+  public int JJTARBITRARYOCCURENCESNOTZERO = 60;
+  public int JJTDISTINCTPATH = 61;
+  public int JJTNEGATEDPATH = 62;
+  public int JJTINTEGER = 63;
+  public int JJTBLANKNODEPROPERTYLIST = 64;
+  public int JJTCOLLECTION = 65;
+  public int JJTVAR = 66;
+  public int JJTNIL = 67;
   public int JJTORNODE = 68;
   public int JJTANDNODE = 69;
   public int JJTEQUALSNODE = 70;
@@ -142,37 +142,39 @@ public interface StreamSPARQL1_1ParserTreeConstants
   public int JJTTIMEZONEFUNCNODE = 113;
   public int JJTTZFUNCNODE = 114;
   public int JJTNOWFUNCNODE = 115;
-  public int JJTMD5FUNCNODE = 116;
-  public int JJTSHA1FUNCNODE = 117;
-  public int JJTSHA256FUNCNODE = 118;
-  public int JJTSHA384FUNCNODE = 119;
-  public int JJTSHA512FUNCNODE = 120;
-  public int JJTCOALESCEFUNCNODE = 121;
-  public int JJTIFFUNCNODE = 122;
-  public int JJTSTRLANGFUNCNODE = 123;
-  public int JJTSTRDTFUNCNODE = 124;
-  public int JJTSAMETERMFUNCNODE = 125;
-  public int JJTISIRIFUNCNODE = 126;
-  public int JJTISURIFUNCNODE = 127;
-  public int JJTISBLANKFUNCNODE = 128;
-  public int JJTISLITERALFUNCNODE = 129;
-  public int JJTISNUMERICFUNCNODE = 130;
-  public int JJTREGEXFUNCNODE = 131;
-  public int JJTSUBSTRINGFUNCNODE = 132;
-  public int JJTSTRREPLACEFUNCNODE = 133;
-  public int JJTEXISTS = 134;
-  public int JJTNOTEXISTS = 135;
-  public int JJTAGGREGATION = 136;
-  public int JJTRDFLITERAL = 137;
-  public int JJTDOUBLECIRCUMFLEX = 138;
-  public int JJTLANGTAG = 139;
-  public int JJTFLOATINGPOINT = 140;
-  public int JJTBOOLEANLITERAL = 141;
-  public int JJTSTRINGLITERAL = 142;
-  public int JJTQUOTEDURIREF = 143;
-  public int JJTQNAME = 144;
-  public int JJTBLANKNODE = 145;
-  public int JJTEMPTYNODE = 146;
+  public int JJTUUIDFUNCNODE = 116;
+  public int JJTSTRUUIDFUNCNODE = 117;
+  public int JJTMD5FUNCNODE = 118;
+  public int JJTSHA1FUNCNODE = 119;
+  public int JJTSHA256FUNCNODE = 120;
+  public int JJTSHA384FUNCNODE = 121;
+  public int JJTSHA512FUNCNODE = 122;
+  public int JJTCOALESCEFUNCNODE = 123;
+  public int JJTIFFUNCNODE = 124;
+  public int JJTSTRLANGFUNCNODE = 125;
+  public int JJTSTRDTFUNCNODE = 126;
+  public int JJTSAMETERMFUNCNODE = 127;
+  public int JJTISIRIFUNCNODE = 128;
+  public int JJTISURIFUNCNODE = 129;
+  public int JJTISBLANKFUNCNODE = 130;
+  public int JJTISLITERALFUNCNODE = 131;
+  public int JJTISNUMERICFUNCNODE = 132;
+  public int JJTREGEXFUNCNODE = 133;
+  public int JJTSUBSTRINGFUNCNODE = 134;
+  public int JJTSTRREPLACEFUNCNODE = 135;
+  public int JJTEXISTS = 136;
+  public int JJTNOTEXISTS = 137;
+  public int JJTAGGREGATION = 138;
+  public int JJTRDFLITERAL = 139;
+  public int JJTDOUBLECIRCUMFLEX = 140;
+  public int JJTLANGTAG = 141;
+  public int JJTFLOATINGPOINT = 142;
+  public int JJTBOOLEANLITERAL = 143;
+  public int JJTSTRINGLITERAL = 144;
+  public int JJTQUOTEDURIREF = 145;
+  public int JJTQNAME = 146;
+  public int JJTBLANKNODE = 147;
+  public int JJTEMPTYNODE = 148;
 
 
   public String[] jjtNodeName = {
@@ -203,7 +205,6 @@ public interface StreamSPARQL1_1ParserTreeConstants
     "Limit",
     "Offset",
     "Bindings",
-    "NIL",
     "PlusNode",
     "Undef",
     "Load",
@@ -238,12 +239,13 @@ public interface StreamSPARQL1_1ParserTreeConstants
     "ArbitraryOccurences",
     "OptionalOccurence",
     "ArbitraryOccurencesNotZero",
-    "GivenOccurences",
+    "DistinctPath",
     "NegatedPath",
     "Integer",
     "BlankNodePropertyList",
     "Collection",
     "Var",
+    "NIL",
     "OrNode",
     "AndNode",
     "EqualsNode",
@@ -292,6 +294,8 @@ public interface StreamSPARQL1_1ParserTreeConstants
     "TimeZoneFuncNode",
     "TzFuncNode",
     "NowFuncNode",
+    "UUIDFuncNode",
+    "STRUUIDFuncNode",
     "MD5FuncNode",
     "SHA1FuncNode",
     "SHA256FuncNode",
@@ -325,4 +329,4 @@ public interface StreamSPARQL1_1ParserTreeConstants
     "EmptyNode",
   };
 }
-/* JavaCC - OriginalChecksum=70d5fbd1d8fcd349e7e435827855fa13 (do not edit this line) */
+/* JavaCC - OriginalChecksum=9f2118b70454b9623d6f8b64712f29e7 (do not edit this line) */

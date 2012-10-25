@@ -87,6 +87,7 @@ import lupos.sparql1_1.ASTSHA1FuncNode;
 import lupos.sparql1_1.ASTSHA256FuncNode;
 import lupos.sparql1_1.ASTSHA384FuncNode;
 import lupos.sparql1_1.ASTSHA512FuncNode;
+import lupos.sparql1_1.ASTSTRUUIDFuncNode;
 import lupos.sparql1_1.ASTSameTermFuncNode;
 import lupos.sparql1_1.ASTSecondsFuncNode;
 import lupos.sparql1_1.ASTStrAfterFuncNode;
@@ -103,6 +104,7 @@ import lupos.sparql1_1.ASTSubstringFuncNode;
 import lupos.sparql1_1.ASTSubtractionNode;
 import lupos.sparql1_1.ASTTimeZoneFuncNode;
 import lupos.sparql1_1.ASTTzFuncNode;
+import lupos.sparql1_1.ASTUUIDFuncNode;
 import lupos.sparql1_1.ASTUcaseFuncNode;
 import lupos.sparql1_1.ASTUriFuncNode;
 import lupos.sparql1_1.ASTVar;
@@ -248,6 +250,10 @@ public interface EvaluationVisitor<D, R> {
 	public R evaluate(ASTTzFuncNode node, Bindings b, D d) throws NotBoundException, TypeErrorException;
 	
 	public R evaluate(ASTNowFuncNode node, Bindings b, D d) throws NotBoundException, TypeErrorException;
+	
+	public R evaluate(ASTUUIDFuncNode node, Bindings b, D d) throws NotBoundException, TypeErrorException;
+	
+	public R evaluate(ASTSTRUUIDFuncNode node, Bindings b, D d) throws NotBoundException, TypeErrorException;
 	
 	public R evaluate(ASTMD5FuncNode node, Bindings b, D d) throws NotBoundException, TypeErrorException;
 	

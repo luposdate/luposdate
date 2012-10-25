@@ -60,13 +60,13 @@ import lupos.sparql1_1.ASTDayFuncNode;
 import lupos.sparql1_1.ASTDefault;
 import lupos.sparql1_1.ASTDefaultGraph;
 import lupos.sparql1_1.ASTDelete;
+import lupos.sparql1_1.ASTDistinctPath;
 import lupos.sparql1_1.ASTDrop;
 import lupos.sparql1_1.ASTEncodeForUriFuncNode;
 import lupos.sparql1_1.ASTExists;
 import lupos.sparql1_1.ASTExpressionList;
 import lupos.sparql1_1.ASTFilterConstraint;
 import lupos.sparql1_1.ASTFloorFuncNode;
-import lupos.sparql1_1.ASTGivenOccurences;
 import lupos.sparql1_1.ASTGraphConstraint;
 import lupos.sparql1_1.ASTGroup;
 import lupos.sparql1_1.ASTGroupConstraint;
@@ -106,6 +106,7 @@ import lupos.sparql1_1.ASTSHA1FuncNode;
 import lupos.sparql1_1.ASTSHA256FuncNode;
 import lupos.sparql1_1.ASTSHA384FuncNode;
 import lupos.sparql1_1.ASTSHA512FuncNode;
+import lupos.sparql1_1.ASTSTRUUIDFuncNode;
 import lupos.sparql1_1.ASTSecondsFuncNode;
 import lupos.sparql1_1.ASTService;
 import lupos.sparql1_1.ASTStrAfterFuncNode;
@@ -120,6 +121,7 @@ import lupos.sparql1_1.ASTSubstringFuncNode;
 import lupos.sparql1_1.ASTTimeZoneFuncNode;
 import lupos.sparql1_1.ASTTripleSet;
 import lupos.sparql1_1.ASTTzFuncNode;
+import lupos.sparql1_1.ASTUUIDFuncNode;
 import lupos.sparql1_1.ASTUcaseFuncNode;
 import lupos.sparql1_1.ASTUndef;
 import lupos.sparql1_1.ASTUnionConstraint;
@@ -723,7 +725,7 @@ implements SPARQL1_1ParserVisitor {
 	}
 
 	@Override
-	public Object visit(ASTGivenOccurences node, Object data) {
+	public Object visit(ASTDistinctPath node, Object data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -898,6 +900,18 @@ implements SPARQL1_1ParserVisitor {
 
 	@Override
 	public Object visit(ASTNowFuncNode node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTUUIDFuncNode node, Object data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTSTRUUIDFuncNode node, Object data) {
 		// TODO Auto-generated method stub
 		return null;
 	}

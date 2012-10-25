@@ -25,6 +25,7 @@ package lupos.gui.anotherSyntaxHighlighting.javacc;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Arrays;
 
 import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
@@ -287,7 +288,7 @@ public class JAVACCParser implements ILuposParser {
 				}
 			}
 			if(!flag){
-				System.err.println("WARNING: cannot find image "+currentImage+" in "+images);
+				System.err.println("WARNING: cannot find image "+currentImage+" in "+Arrays.toString(images));
 			}
 		}
 	}

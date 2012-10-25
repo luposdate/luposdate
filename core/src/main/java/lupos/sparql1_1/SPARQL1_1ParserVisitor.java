@@ -48,7 +48,6 @@ public interface SPARQL1_1ParserVisitor
   public Object visit(ASTLimit node, Object data);
   public Object visit(ASTOffset node, Object data);
   public Object visit(ASTBindings node, Object data);
-  public Object visit(ASTNIL node, Object data);
   public Object visit(ASTPlusNode node, Object data);
   public Object visit(ASTUndef node, Object data);
   public Object visit(ASTLoad node, Object data);
@@ -83,12 +82,13 @@ public interface SPARQL1_1ParserVisitor
   public Object visit(ASTArbitraryOccurences node, Object data);
   public Object visit(ASTOptionalOccurence node, Object data);
   public Object visit(ASTArbitraryOccurencesNotZero node, Object data);
-  public Object visit(ASTGivenOccurences node, Object data);
+  public Object visit(ASTDistinctPath node, Object data);
   public Object visit(ASTNegatedPath node, Object data);
   public Object visit(ASTInteger node, Object data);
   public Object visit(ASTBlankNodePropertyList node, Object data);
   public Object visit(ASTCollection node, Object data);
   public Object visit(ASTVar node, Object data);
+  public Object visit(ASTNIL node, Object data);
   public Object visit(ASTOrNode node, Object data);
   public Object visit(ASTAndNode node, Object data);
   public Object visit(ASTEqualsNode node, Object data);
@@ -137,6 +137,8 @@ public interface SPARQL1_1ParserVisitor
   public Object visit(ASTTimeZoneFuncNode node, Object data);
   public Object visit(ASTTzFuncNode node, Object data);
   public Object visit(ASTNowFuncNode node, Object data);
+  public Object visit(ASTUUIDFuncNode node, Object data);
+  public Object visit(ASTSTRUUIDFuncNode node, Object data);
   public Object visit(ASTMD5FuncNode node, Object data);
   public Object visit(ASTSHA1FuncNode node, Object data);
   public Object visit(ASTSHA256FuncNode node, Object data);
@@ -169,4 +171,4 @@ public interface SPARQL1_1ParserVisitor
   public Object visit(ASTBlankNode node, Object data);
   public Object visit(ASTEmptyNode node, Object data);
 }
-/* JavaCC - OriginalChecksum=4e670f4d5f9675cd4ccdd3c084ad89f8 (do not edit this line) */
+/* JavaCC - OriginalChecksum=a0edba4e156ff2b801a9c85891b0bd9a (do not edit this line) */

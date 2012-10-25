@@ -882,6 +882,12 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return node.jjtGetChild(0).accept(this, subject, blank) + "\n" + node.jjtGetChild(1).accept(this, blank, object);
 	}
 
+	@Override
+	public String visit(ASTDistinctPath node, String subject, String object) {
+		return node.jjtGetChild(0).accept(this, subject, object);
+	}
+	
+	
 	/**
 	 * @param node
 	 * @param subject
@@ -958,68 +964,6 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	public String visit(ASTArbitraryOccurencesNotZero node, String subject,
 			String object) {
 		return  subject + " (" +node.jjtGetChild(0).accept(this) + ")+ " +object +".\n"; 
-	}
-
-	@Override
-	public String visit(ASTGivenOccurences node, String subject, String object) {
-		// Temporarely save the subject because it get later altered
-		String savedSubject = subject;
-		// Minimal given occurence, predefined as zero
-		int minimalDepth = node.getLowerLimit();
-		// Maximal given occurence
-		int maximalDepth = node.getUpperLimit();
-		String ret = "";
-		/* If the minimalDepth is zero a special semantic rule applies
-		 * A path of the length zero is recognized as every object by itself. 
-		 */
-		if(minimalDepth == 0){
-			if(minimalDepth<maximalDepth || maximalDepth == ASTGivenOccurences.INFINITY){ 
-				ret +="{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n";
-				minimalDepth++; // we already dealt with zero path!
-			} else return getZeroPathSubquery(subject, object, node)+"\n"; 
-		}
-		/* If the maximalDepth is Integer.MAX_Value then the upper bound is equivalent to the * operator
-		 * Therefore we calculate the + Factor, because a path of length {0} was allready calculated if necessary
-		 */
-		if(maximalDepth == ASTGivenOccurences.INFINITY){
-			String blank;
-			// The differences between minimal depth and maximal depth is  the number of needed paths 
-			ret += "{";
-			for(int i = 1; i < minimalDepth; i++){
-				// If this is a path of the form {n,} we need to UNION the next path to it
-			
-				// We create now a path of length i-1 with blank nodes connecting from subject to object
-				blank = getIntermediateVariable();
-				ret += node.jjtGetChild(0).accept(this, subject, blank) + "\n";
-				subject = blank;
-			}
-			// To avoid ugly linebreaks we use the next step without a linebreak 
-			ret += subject + " (" + node.jjtGetChild(0).accept(this)  + ")+ " + object ;
-			ret += "}";
-			// If there's another longer path left it needs to be UNIONed to this one
-		}
-		else{
-			String blank;
-			// The differences between minimal depth and maximal depth is  the number of needed paths 
-			for(int i = minimalDepth; i <= maximalDepth; i++){
-				// A path always begins with the subject
-				subject = savedSubject;
-				// If this is not a path of the form {n} we need to UNION the next path to it
-				ret += "{";
-				// We create now a path of length i-1 with blank nodes connecting from subject to object
-				for(int j = 1; j < i; j++){
-					blank = getIntermediateVariable();
-					ret += node.jjtGetChild(0).accept(this, subject, blank) + "\n";
-					subject = blank;
-				}
-				// To avoid ugly linebreaks we use the next step without a linebreak 
-				ret += node.jjtGetChild(0).accept(this, subject, object);
-				ret += "}";
-				// If there's another longer path left it needs to be UNIONed to this one
-				if(i < maximalDepth) ret +="\nUNION\n";
-			}
-		}
-		return ret;
 	}
 	
 	/**

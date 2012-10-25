@@ -209,8 +209,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case ANON:
         case 95:
         case 108:
-        case 169:
-        case 170:
+        case 171:
+        case 172:
           ;
           break;
         default:
@@ -277,8 +277,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case ANON:
         case 95:
         case 108:
-        case 169:
-        case 170:
+        case 171:
+        case 172:
           ;
           break;
         default:
@@ -334,8 +334,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case ANON:
         case 95:
         case 108:
-        case 169:
-        case 170:
+        case 171:
+        case 172:
           ;
           break;
         default:
@@ -555,7 +555,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
             jj_consume_token(-1);
             throw new ParseException();
           }
-          BindingsClause();
+          ValuesClause();
           break;
         case 66:
         case 68:
@@ -660,7 +660,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         jj_consume_token(-1);
         throw new ParseException();
       }
-      BindingsClause();
+      ValuesClause();
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -1048,8 +1048,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         TriplesTemplate();
         break;
       default:
@@ -1405,6 +1405,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 157:
         case 158:
         case 159:
+        case 160:
+        case 161:
           ;
           break;
         default:
@@ -1488,6 +1490,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 157:
     case 158:
     case 159:
+    case 160:
+    case 161:
       BuiltInCall();
       break;
     case IRI_REF:
@@ -1610,6 +1614,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 157:
         case 158:
         case 159:
+        case 160:
+        case 161:
           ;
           break;
         default:
@@ -1715,6 +1721,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 157:
         case 158:
         case 159:
+        case 160:
+        case 161:
           ;
           break;
         default:
@@ -1837,6 +1845,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 157:
     case 158:
     case 159:
+    case 160:
+    case 161:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRI_REF:
       case PNAME_NS:
@@ -1894,6 +1904,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 157:
       case 158:
       case 159:
+      case 160:
+      case 161:
         Constraint();
         break;
       case VAR:
@@ -1983,10 +1995,10 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
 //28
-  final public void BindingsClause() throws ParseException {
+  final public void ValuesClause() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 64:
-      InnerBindingsClause();
+      InlineData();
       break;
     default:
       jj_la1[49] = jj_gen;
@@ -1994,60 +2006,14 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     }
   }
 
-  final public void InnerBindingsClause() throws ParseException {
+  final public void InlineData() throws ParseException {
  /*@bgen(jjtree) Bindings */
   ASTBindings jjtn000 = new ASTBindings(JJTBINDINGS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(64);
-      label_18:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case VAR:
-          ;
-          break;
-        default:
-          jj_la1[50] = jj_gen;
-          break label_18;
-        }
-        Var();
-      }
-      jj_consume_token(1);
-      label_19:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case NIL:
-        case 47:
-          ;
-          break;
-        default:
-          jj_la1[51] = jj_gen;
-          break label_19;
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 47:
-          sequenceOfBindingValues();
-          break;
-        case NIL:
-                                    ASTNIL jjtn001 = new ASTNIL(JJTNIL);
-                                    boolean jjtc001 = true;
-                                    jjtree.openNodeScope(jjtn001);
-          try {
-            jj_consume_token(NIL);
-          } finally {
-                                    if (jjtc001) {
-                                      jjtree.closeNodeScope(jjtn001, true);
-                                    }
-          }
-          break;
-        default:
-          jj_la1[52] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      jj_consume_token(3);
+      DataBlock();
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -2069,14 +2035,144 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     }
   }
 
-  final public void sequenceOfBindingValues() throws ParseException {
+  final public void DataBlock() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VAR:
+      InlineDataOneVar();
+      break;
+    case NIL:
+    case 47:
+      InlineDataFull();
+      break;
+    default:
+      jj_la1[50] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  final public void InlineDataOneVar() throws ParseException {
+    Var();
+    jj_consume_token(1);
+    label_18:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IRI_REF:
+      case PNAME_NS:
+      case PNAME_LN:
+      case INTEGER:
+      case DECIMAL:
+      case DOUBLE:
+      case STRING_LITERAL1:
+      case STRING_LITERAL2:
+      case STRING_LITERAL_LONG1:
+      case STRING_LITERAL_LONG2:
+      case 65:
+      case 95:
+      case 108:
+      case 171:
+      case 172:
+        ;
+        break;
+      default:
+        jj_la1[51] = jj_gen;
+        break label_18;
+      }
+      DataBlockValueOneVar();
+    }
+    jj_consume_token(3);
+  }
+
+  final public void DataBlockValueOneVar() throws ParseException {
+ /*@bgen(jjtree) PlusNode */
+  ASTPlusNode jjtn000 = new ASTPlusNode(JJTPLUSNODE);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      DataBlockValue();
+    } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            {if (true) throw (RuntimeException)jjte000;}
+          }
+          if (jjte000 instanceof ParseException) {
+            {if (true) throw (ParseException)jjte000;}
+          }
+          {if (true) throw (Error)jjte000;}
+    } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+    }
+  }
+
+  final public void InlineDataFull() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NIL:
+      jj_consume_token(NIL);
+      break;
+    case 47:
+      jj_consume_token(47);
+      label_19:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case VAR:
+          ;
+          break;
+        default:
+          jj_la1[52] = jj_gen;
+          break label_19;
+        }
+        Var();
+      }
+      jj_consume_token(49);
+      break;
+    default:
+      jj_la1[53] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    jj_consume_token(1);
+    label_20:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NIL:
+      case 47:
+        ;
+        break;
+      default:
+        jj_la1[54] = jj_gen;
+        break label_20;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 47:
+        sequenceOfDataBlockValues();
+        break;
+      case NIL:
+        jj_consume_token(NIL);
+        break;
+      default:
+        jj_la1[55] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+    jj_consume_token(3);
+  }
+
+  final public void sequenceOfDataBlockValues() throws ParseException {
  /*@bgen(jjtree) PlusNode */
   ASTPlusNode jjtn000 = new ASTPlusNode(JJTPLUSNODE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(47);
-      label_20:
+      label_21:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IRI_REF:
@@ -2092,15 +2188,15 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 65:
         case 95:
         case 108:
-        case 169:
-        case 170:
+        case 171:
+        case 172:
           ;
           break;
         default:
-          jj_la1[53] = jj_gen;
-          break label_20;
+          jj_la1[56] = jj_gen;
+          break label_21;
         }
-        BindingValue();
+        DataBlockValue();
       }
       jj_consume_token(49);
     } catch (Throwable jjte000) {
@@ -2125,7 +2221,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
 //29
-  final public void BindingValue() throws ParseException {
+  final public void DataBlockValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRI_REF:
     case PNAME_NS:
@@ -2145,8 +2241,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 108:
       NumericLiteral();
       break;
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       BooleanLiteral();
       break;
     case 65:
@@ -2162,7 +2258,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       }
       break;
     default:
-      jj_la1[54] = jj_gen;
+      jj_la1[57] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2189,12 +2285,12 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         Update();
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[58] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[56] = jj_gen;
+      jj_la1[59] = jj_gen;
       ;
     }
   }
@@ -2224,7 +2320,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       Create();
       break;
     default:
-      jj_la1[57] = jj_gen;
+      jj_la1[60] = jj_gen;
       if (jj_2_2(2147483647)) {
         InsertData();
       } else if (jj_2_3(2147483647)) {
@@ -2239,7 +2335,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
           Modify();
           break;
         default:
-          jj_la1[58] = jj_gen;
+          jj_la1[61] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2261,7 +2357,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[59] = jj_gen;
+        jj_la1[62] = jj_gen;
         ;
       }
       IRIref();
@@ -2271,7 +2367,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         GraphRef();
         break;
       default:
-        jj_la1[60] = jj_gen;
+        jj_la1[63] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -2309,7 +2405,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                      jjtn000.setSilent();
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[64] = jj_gen;
         ;
       }
       GraphRefAll();
@@ -2348,7 +2444,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[62] = jj_gen;
+        jj_la1[65] = jj_gen;
         ;
       }
       GraphRefAll();
@@ -2387,7 +2483,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                       jjtn000.setSilent();
         break;
       default:
-        jj_la1[63] = jj_gen;
+        jj_la1[66] = jj_gen;
         ;
       }
       GraphRef();
@@ -2426,7 +2522,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                    jjtn000.setSilent();
         break;
       default:
-        jj_la1[64] = jj_gen;
+        jj_la1[67] = jj_gen;
         ;
       }
       GraphOrDefault();
@@ -2467,7 +2563,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[65] = jj_gen;
+        jj_la1[68] = jj_gen;
         ;
       }
       GraphOrDefault();
@@ -2508,7 +2604,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                     jjtn000.setSilent();
         break;
       default:
-        jj_la1[66] = jj_gen;
+        jj_la1[69] = jj_gen;
         ;
       }
       GraphOrDefault();
@@ -2670,7 +2766,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         IRIref();
         break;
       default:
-        jj_la1[67] = jj_gen;
+        jj_la1[70] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2681,7 +2777,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
           InsertClause();
           break;
         default:
-          jj_la1[68] = jj_gen;
+          jj_la1[71] = jj_gen;
           ;
         }
         break;
@@ -2689,19 +2785,19 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         InsertClause();
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[72] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      label_21:
+      label_22:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 80:
           ;
           break;
         default:
-          jj_la1[70] = jj_gen;
-          break label_21;
+          jj_la1[73] = jj_gen;
+          break label_22;
         }
         UsingClause();
       }
@@ -2801,7 +2897,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       UsingNamed();
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2888,13 +2984,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         jj_consume_token(82);
         break;
       default:
-        jj_la1[72] = jj_gen;
+        jj_la1[75] = jj_gen;
         ;
       }
       IRIref();
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[76] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2949,7 +3045,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       }
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[77] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3038,23 +3134,23 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 90:
     case 95:
     case 108:
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       TriplesTemplate();
       break;
     default:
-      jj_la1[75] = jj_gen;
+      jj_la1[78] = jj_gen;
       ;
     }
-    label_22:
+    label_23:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 82:
         ;
         break;
       default:
-        jj_la1[76] = jj_gen;
-        break label_22;
+        jj_la1[79] = jj_gen;
+        break label_23;
       }
       QuadsNotTriples();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3062,7 +3158,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         jj_consume_token(2);
         break;
       default:
-        jj_la1[77] = jj_gen;
+        jj_la1[80] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3084,12 +3180,12 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         TriplesTemplate();
         break;
       default:
-        jj_la1[78] = jj_gen;
+        jj_la1[81] = jj_gen;
         ;
       }
     }
@@ -3124,12 +3220,12 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         TriplesTemplate();
         break;
       default:
-        jj_la1[79] = jj_gen;
+        jj_la1[82] = jj_gen;
         ;
       }
       jj_consume_token(3);
@@ -3179,17 +3275,17 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         TriplesTemplate();
         break;
       default:
-        jj_la1[80] = jj_gen;
+        jj_la1[83] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[81] = jj_gen;
+      jj_la1[84] = jj_gen;
       ;
     }
   }
@@ -3207,7 +3303,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         SubSelect();
         break;
       default:
-        jj_la1[82] = jj_gen;
+        jj_la1[85] = jj_gen;
         GroupGraphPatternSub();
       }
       jj_consume_token(3);
@@ -3253,19 +3349,20 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 90:
     case 95:
     case 108:
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       TriplesBlock();
       break;
     default:
-      jj_la1[83] = jj_gen;
+      jj_la1[86] = jj_gen;
       ;
     }
-    label_23:
+    label_24:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
       case 4:
+      case 64:
       case 82:
       case 84:
       case 85:
@@ -3274,8 +3371,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         ;
         break;
       default:
-        jj_la1[84] = jj_gen;
-        break label_23;
+        jj_la1[87] = jj_gen;
+        break label_24;
       }
       GraphPatternNotTriples();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3283,7 +3380,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         jj_consume_token(2);
         break;
       default:
-        jj_la1[85] = jj_gen;
+        jj_la1[88] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3305,12 +3402,12 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         TriplesBlock();
         break;
       default:
-        jj_la1[86] = jj_gen;
+        jj_la1[89] = jj_gen;
         ;
       }
     }
@@ -3341,17 +3438,17 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         TriplesBlock();
         break;
       default:
-        jj_la1[87] = jj_gen;
+        jj_la1[90] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[88] = jj_gen;
+      jj_la1[91] = jj_gen;
       ;
     }
   }
@@ -3380,8 +3477,11 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 86:
       Bind();
       break;
+    case 64:
+      InlineData();
+      break;
     default:
-      jj_la1[89] = jj_gen;
+      jj_la1[92] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3462,7 +3562,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
                        jjtn000.setSilent();
         break;
       default:
-        jj_la1[90] = jj_gen;
+        jj_la1[93] = jj_gen;
         ;
       }
       VarOrIRIref();
@@ -3555,15 +3655,15 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 //63
   final public void GroupOrUnionGraphPattern() throws ParseException {
     GroupGraphPattern();
-    label_24:
+    label_25:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 88:
         ;
         break;
       default:
-        jj_la1[91] = jj_gen;
-        break label_24;
+        jj_la1[94] = jj_gen;
+        break label_25;
       }
       jj_consume_token(88);
               ASTUnionConstraint jjtn001 = new ASTUnionConstraint(JJTUNIONCONSTRAINT);
@@ -3662,6 +3762,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 157:
       case 158:
       case 159:
+      case 160:
+      case 161:
         BuiltInCall();
         break;
       case IRI_REF:
@@ -3670,7 +3772,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         FunctionCall();
         break;
       default:
-        jj_la1[92] = jj_gen;
+        jj_la1[95] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3743,19 +3845,19 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
           jj_consume_token(44);
           break;
         default:
-          jj_la1[93] = jj_gen;
+          jj_la1[96] = jj_gen;
           ;
         }
         Expression();
-        label_25:
+        label_26:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 89:
             ;
             break;
           default:
-            jj_la1[94] = jj_gen;
-            break label_25;
+            jj_la1[97] = jj_gen;
+            break label_26;
           }
           jj_consume_token(89);
           Expression();
@@ -3763,7 +3865,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         jj_consume_token(49);
         break;
       default:
-        jj_la1[95] = jj_gen;
+        jj_la1[98] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3802,15 +3904,15 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 47:
         jj_consume_token(47);
         Expression();
-        label_26:
+        label_27:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case 89:
             ;
             break;
           default:
-            jj_la1[96] = jj_gen;
-            break label_26;
+            jj_la1[99] = jj_gen;
+            break label_27;
           }
           jj_consume_token(89);
           Expression();
@@ -3818,7 +3920,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         jj_consume_token(49);
         break;
       default:
-        jj_la1[97] = jj_gen;
+        jj_la1[100] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3870,12 +3972,12 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         ConstructTriples();
         break;
       default:
-        jj_la1[98] = jj_gen;
+        jj_la1[101] = jj_gen;
         ;
       }
       jj_consume_token(3);
@@ -3925,17 +4027,17 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case 90:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
         ConstructTriples();
         break;
       default:
-        jj_la1[99] = jj_gen;
+        jj_la1[102] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[100] = jj_gen;
+      jj_la1[103] = jj_gen;
       ;
     }
   }
@@ -3986,8 +4088,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case ANON:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
       ASTTripleSet jjtn002 = new ASTTripleSet(JJTTRIPLESET);
       boolean jjtc002 = true;
       jjtree.openNodeScope(jjtn002);
@@ -4015,7 +4117,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         }
         break;
       default:
-        jj_la1[101] = jj_gen;
+        jj_la1[104] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4026,15 +4128,15 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   final public void PropertyListNotEmpty() throws ParseException {
     Verb();
     ObjectList();
-    label_27:
+    label_28:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 40:
         ;
         break;
       default:
-        jj_la1[102] = jj_gen;
-        break label_27;
+        jj_la1[105] = jj_gen;
+        break label_28;
       }
       jj_consume_token(40);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4047,7 +4149,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         ObjectList();
         break;
       default:
-        jj_la1[103] = jj_gen;
+        jj_la1[106] = jj_gen;
         ;
       }
     }
@@ -4064,7 +4166,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       PropertyListNotEmpty();
       break;
     default:
-      jj_la1[104] = jj_gen;
+      jj_la1[107] = jj_gen;
       ;
     }
   }
@@ -4077,15 +4179,15 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   jjtree.openNodeScope(jjtn000);
     try {
       Object();
-      label_28:
+      label_29:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 89:
           ;
           break;
         default:
-          jj_la1[105] = jj_gen;
-          break label_28;
+          jj_la1[108] = jj_gen;
+          break label_29;
         }
         jj_consume_token(89);
         Object();
@@ -4138,7 +4240,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       }
       break;
     default:
-      jj_la1[106] = jj_gen;
+      jj_la1[109] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4190,8 +4292,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case ANON:
       case 95:
       case 108:
-      case 169:
-      case 170:
+      case 171:
+      case 172:
     ASTTripleSet jjtn002 = new ASTTripleSet(JJTTRIPLESET);
     boolean jjtc002 = true;
     jjtree.openNodeScope(jjtn002);
@@ -4219,7 +4321,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         }
         break;
       default:
-        jj_la1[107] = jj_gen;
+        jj_la1[110] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4233,6 +4335,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case IRI_REF:
     case PNAME_NS:
     case PNAME_LN:
+    case 44:
     case 47:
     case 93:
     case 96:
@@ -4242,20 +4345,20 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       VerbSimple();
       break;
     default:
-      jj_la1[108] = jj_gen;
+      jj_la1[111] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     ObjectList();
-    label_29:
+    label_30:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 40:
         ;
         break;
       default:
-        jj_la1[109] = jj_gen;
-        break label_29;
+        jj_la1[112] = jj_gen;
+        break label_30;
       }
       jj_consume_token(40);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4264,6 +4367,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       case PNAME_NS:
       case PNAME_LN:
       case VAR:
+      case 44:
       case 47:
       case 93:
       case 96:
@@ -4272,6 +4376,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case IRI_REF:
         case PNAME_NS:
         case PNAME_LN:
+        case 44:
         case 47:
         case 93:
         case 96:
@@ -4281,14 +4386,14 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
           VerbSimple();
           break;
         default:
-          jj_la1[110] = jj_gen;
+          jj_la1[113] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         ObjectList();
         break;
       default:
-        jj_la1[111] = jj_gen;
+        jj_la1[114] = jj_gen;
         ;
       }
     }
@@ -4305,7 +4410,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       PropertyListNotEmpty();
       break;
     default:
-      jj_la1[112] = jj_gen;
+      jj_la1[115] = jj_gen;
       ;
     }
   }
@@ -4357,7 +4462,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       }
       break;
     default:
-      jj_la1[113] = jj_gen;
+      jj_la1[116] = jj_gen;
       ;
     }
   }
@@ -4394,7 +4499,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       }
       break;
     default:
-      jj_la1[114] = jj_gen;
+      jj_la1[117] = jj_gen;
       ;
     }
   }
@@ -4416,6 +4521,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case IRI_REF:
     case PNAME_NS:
     case PNAME_LN:
+    case 44:
     case 47:
     case 96:
       PathElt();
@@ -4448,7 +4554,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       }
       break;
     default:
-      jj_la1[115] = jj_gen;
+      jj_la1[118] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -4493,61 +4599,6 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     }
       }
       break;
-    case 1:
-      jj_consume_token(1);
-     ASTGivenOccurences jjtn004 = new ASTGivenOccurences(JJTGIVENOCCURENCES);
-     boolean jjtc004 = true;
-     jjtree.openNodeScope(jjtn004);
-      try {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case INTEGER:
-          jj_consume_token(INTEGER);
-      jjtn004.setLowerLimit(token.image);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 89:
-            jj_consume_token(89);
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case 3:
-              jj_consume_token(3);
-              break;
-            case INTEGER:
-              jj_consume_token(INTEGER);
-                      jjtn004.setUpperLimit(token.image);
-              jj_consume_token(3);
-              break;
-            default:
-              jj_la1[116] = jj_gen;
-              jj_consume_token(-1);
-              throw new ParseException();
-            }
-            break;
-          case 3:
-          jjtn004.setUpperLimit(jjtn004.getLowerLimit());
-            jj_consume_token(3);
-            break;
-          default:
-            jj_la1[117] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
-          }
-          break;
-        case 89:
-          jj_consume_token(89);
-          jj_consume_token(INTEGER);
-                       jjtn004.setUpperLimit(token.image);
-          jj_consume_token(3);
-          break;
-        default:
-          jj_la1[118] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      } finally {
-     if (jjtc004) {
-       jjtree.closeNodeScope(jjtn004,  1);
-     }
-      }
-      break;
     default:
       jj_la1[119] = jj_gen;
       jj_consume_token(-1);
@@ -4585,10 +4636,44 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       Path();
       jj_consume_token(49);
       break;
+    case 44:
+      DistinctPath();
+      break;
     default:
       jj_la1[120] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
+    }
+  }
+
+  final public void DistinctPath() throws ParseException {
+ /*@bgen(jjtree) DistinctPath */
+  ASTDistinctPath jjtn000 = new ASTDistinctPath(JJTDISTINCTPATH);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      jj_consume_token(44);
+      jj_consume_token(47);
+      Path();
+      jj_consume_token(49);
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
     }
   }
 
@@ -4616,7 +4701,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case PNAME_LN:
         case 93:
           PathOneInPropertySet();
-          label_30:
+          label_31:
           while (true) {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case 91:
@@ -4624,7 +4709,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
               break;
             default:
               jj_la1[121] = jj_gen;
-              break label_30;
+              break label_31;
             }
             jj_consume_token(91);
             PathOneInPropertySet();
@@ -4811,7 +4896,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(47);
-      label_31:
+      label_32:
       while (true) {
         GraphNode();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4833,13 +4918,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 90:
         case 95:
         case 108:
-        case 169:
-        case 170:
+        case 171:
+        case 172:
           ;
           break;
         default:
           jj_la1[127] = jj_gen;
-          break label_31;
+          break label_32;
         }
       }
       jj_consume_token(49);
@@ -4903,8 +4988,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case ANON:
     case 95:
     case 108:
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       GraphTerm();
       break;
     default:
@@ -4971,8 +5056,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 108:
       NumericLiteral();
       break;
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       BooleanLiteral();
       break;
     case BLANK_NODE_LABEL:
@@ -5006,7 +5091,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 //101
   final public void ConditionalOrExpression() throws ParseException {
     ConditionalAndExpression();
-    label_32:
+    label_33:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 98:
@@ -5014,7 +5099,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         break;
       default:
         jj_la1[132] = jj_gen;
-        break label_32;
+        break label_33;
       }
       jj_consume_token(98);
            ASTOrNode jjtn001 = new ASTOrNode(JJTORNODE);
@@ -5047,7 +5132,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 //102
   final public void ConditionalAndExpression() throws ParseException {
     ValueLogical();
-    label_33:
+    label_34:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 99:
@@ -5055,7 +5140,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         break;
       default:
         jj_la1[133] = jj_gen;
-        break label_33;
+        break label_34;
       }
       jj_consume_token(99);
            ASTAndNode jjtn001 = new ASTAndNode(JJTANDNODE);
@@ -5340,7 +5425,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 //106
   final public void AdditiveExpression() throws ParseException {
     MultiplicativeExpression();
-    label_34:
+    label_35:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 95:
@@ -5349,7 +5434,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         break;
       default:
         jj_la1[136] = jj_gen;
-        break label_34;
+        break label_35;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 95:
@@ -5417,7 +5502,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 //107
   final public void MultiplicativeExpression() throws ParseException {
     UnaryExpression();
-    label_35:
+    label_36:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 46:
@@ -5426,7 +5511,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         break;
       default:
         jj_la1[138] = jj_gen;
-        break label_35;
+        break label_36;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 46:
@@ -5650,8 +5735,10 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 164:
         case 165:
         case 166:
-        case 169:
-        case 170:
+        case 167:
+        case 168:
+        case 171:
+        case 172:
           PrimaryExpression();
           break;
         default:
@@ -5720,6 +5807,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 157:
     case 158:
     case 159:
+    case 160:
+    case 161:
       BuiltInCall();
       break;
     case IRI_REF:
@@ -5733,20 +5822,20 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case STRING_LITERAL_LONG2:
       RDFLiteral();
       break;
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       BooleanLiteral();
       break;
     case VAR:
       Var();
       break;
-    case 160:
-    case 161:
     case 162:
     case 163:
     case 164:
     case 165:
     case 166:
+    case 167:
+    case 168:
       Aggregate();
       break;
     default:
@@ -5814,6 +5903,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 157:
     case 158:
     case 159:
+    case 160:
+    case 161:
       BuiltInCall();
       break;
     case IRI_REF:
@@ -5834,20 +5925,20 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 108:
       NumericLiteral();
       break;
-    case 169:
-    case 170:
+    case 171:
+    case 172:
       BooleanLiteral();
       break;
     case VAR:
       Var();
       break;
-    case 160:
-    case 161:
     case 162:
     case 163:
     case 164:
     case 165:
     case 166:
+    case 167:
+    case 168:
       Aggregate();
       break;
     default:
@@ -5909,13 +6000,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     case 122:
       CONCAT();
       break;
-    case 157:
+    case 159:
       SubstringExpression();
       break;
     case 123:
       STRLEN();
       break;
-    case 158:
+    case 160:
       StrReplaceExpression();
       break;
     case 124:
@@ -5970,54 +6061,60 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       NOW();
       break;
     case 141:
-      MD5();
+      UUID();
       break;
     case 142:
-      SHA1();
+      STRUUID();
       break;
     case 143:
-      SHA256();
+      MD5();
       break;
     case 144:
-      SHA384();
+      SHA1();
       break;
     case 145:
-      SHA512();
+      SHA256();
       break;
     case 146:
-      COALESCE();
+      SHA384();
       break;
     case 147:
-      IF();
+      SHA512();
       break;
     case 148:
-      STRLANG();
+      COALESCE();
       break;
     case 149:
-      STRDT();
+      IF();
       break;
     case 150:
-      sameTerm();
+      STRLANG();
       break;
     case 151:
-      isIRI();
+      STRDT();
       break;
     case 152:
-      isURI();
+      sameTerm();
       break;
     case 153:
-      isBLANK();
+      isIRI();
       break;
     case 154:
-      isLITERAL();
+      isURI();
       break;
     case 155:
-      isNUMERIC();
+      isBLANK();
       break;
     case 156:
+      isLITERAL();
+      break;
+    case 157:
+      isNUMERIC();
+      break;
+    case 158:
       RegexExpression();
       break;
-    case 159:
+    case 161:
       ExistsFunc();
       break;
     case 107:
@@ -7011,13 +7108,43 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     }
   }
 
+  final public void UUID() throws ParseException {
+ /*@bgen(jjtree) UUIDFuncNode */
+  ASTUUIDFuncNode jjtn000 = new ASTUUIDFuncNode(JJTUUIDFUNCNODE);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      jj_consume_token(141);
+      jj_consume_token(NIL);
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
+  final public void STRUUID() throws ParseException {
+ /*@bgen(jjtree) STRUUIDFuncNode */
+  ASTSTRUUIDFuncNode jjtn000 = new ASTSTRUUIDFuncNode(JJTSTRUUIDFUNCNODE);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      jj_consume_token(142);
+      jj_consume_token(NIL);
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
   final public void MD5() throws ParseException {
  /*@bgen(jjtree) MD5FuncNode */
   ASTMD5FuncNode jjtn000 = new ASTMD5FuncNode(JJTMD5FUNCNODE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(141);
+      jj_consume_token(143);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7048,7 +7175,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(142);
+      jj_consume_token(144);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7079,7 +7206,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(143);
+      jj_consume_token(145);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7110,7 +7237,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(144);
+      jj_consume_token(146);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7141,7 +7268,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(145);
+      jj_consume_token(147);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7172,7 +7299,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(146);
+      jj_consume_token(148);
       ExpressionList();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -7201,7 +7328,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(147);
+      jj_consume_token(149);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7236,7 +7363,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(148);
+      jj_consume_token(150);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7269,7 +7396,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(149);
+      jj_consume_token(151);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7302,7 +7429,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(150);
+      jj_consume_token(152);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7335,7 +7462,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(151);
+      jj_consume_token(153);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7366,7 +7493,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(152);
+      jj_consume_token(154);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7397,7 +7524,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(153);
+      jj_consume_token(155);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7428,7 +7555,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(154);
+      jj_consume_token(156);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7459,7 +7586,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(155);
+      jj_consume_token(157);
       jj_consume_token(47);
       Expression();
       jj_consume_token(49);
@@ -7491,7 +7618,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(156);
+      jj_consume_token(158);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7534,7 +7661,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(157);
+      jj_consume_token(159);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7577,7 +7704,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(158);
+      jj_consume_token(160);
       jj_consume_token(47);
       Expression();
       jj_consume_token(89);
@@ -7622,7 +7749,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(159);
+      jj_consume_token(161);
       GroupGraphPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -7653,7 +7780,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(107);
-      jj_consume_token(159);
+      jj_consume_token(161);
       GroupGraphPattern();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -7684,8 +7811,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   jjtree.openNodeScope(jjtn000);
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 160:
-        jj_consume_token(160);
+      case 162:
+        jj_consume_token(162);
       jjtn000.setTYPE(ASTAggregation.TYPE.COUNT);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7775,8 +7902,10 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         case 164:
         case 165:
         case 166:
-        case 169:
-        case 170:
+        case 167:
+        case 168:
+        case 171:
+        case 172:
           Expression();
           break;
         default:
@@ -7786,8 +7915,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         }
         jj_consume_token(49);
         break;
-      case 161:
-        jj_consume_token(161);
+      case 163:
+        jj_consume_token(163);
       jjtn000.setTYPE(ASTAggregation.TYPE.SUM);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7802,8 +7931,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         Expression();
         jj_consume_token(49);
         break;
-      case 162:
-        jj_consume_token(162);
+      case 164:
+        jj_consume_token(164);
       jjtn000.setTYPE(ASTAggregation.TYPE.MIN);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7818,8 +7947,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         Expression();
         jj_consume_token(49);
         break;
-      case 163:
-        jj_consume_token(163);
+      case 165:
+        jj_consume_token(165);
       jjtn000.setTYPE(ASTAggregation.TYPE.MAX);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7834,8 +7963,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         Expression();
         jj_consume_token(49);
         break;
-      case 164:
-        jj_consume_token(164);
+      case 166:
+        jj_consume_token(166);
       jjtn000.setTYPE(ASTAggregation.TYPE.AVG);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7850,8 +7979,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         Expression();
         jj_consume_token(49);
         break;
-      case 165:
-        jj_consume_token(165);
+      case 167:
+        jj_consume_token(167);
       jjtn000.setTYPE(ASTAggregation.TYPE.SAMPLE);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7866,8 +7995,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         Expression();
         jj_consume_token(49);
         break;
-      case 166:
-        jj_consume_token(166);
+      case 168:
+        jj_consume_token(168);
       jjtn000.setTYPE(ASTAggregation.TYPE.GROUP_CONCAT);
         jj_consume_token(47);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -7883,7 +8012,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 40:
           jj_consume_token(40);
-          jj_consume_token(167);
+          jj_consume_token(169);
           jj_consume_token(100);
           String();
           break;
@@ -7991,7 +8120,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   jjtree.openNodeScope(jjtn000);
     try {
       String();
-      jj_consume_token(168);
+      jj_consume_token(170);
       IRIref();
     } catch (Throwable jjte000) {
           if (jjtc000) {
@@ -8272,14 +8401,14 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   jjtree.openNodeScope(jjtn000);
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 169:
-        jj_consume_token(169);
+      case 171:
+        jj_consume_token(171);
              jjtree.closeNodeScope(jjtn000, true);
              jjtc000 = false;
              jjtn000.setState(true);
         break;
-      case 170:
-        jj_consume_token(170);
+      case 172:
+        jj_consume_token(172);
               jjtree.closeNodeScope(jjtn000, true);
               jjtc000 = false;
               jjtn000.setState(false);
@@ -8598,154 +8727,93 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     finally { jj_save(12, xla); }
   }
 
-  private boolean jj_3R_89() {
-    if (jj_3R_158()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_88() {
-    if (jj_3R_157()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_87() {
-    if (jj_3R_156()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_86() {
-    if (jj_3R_155()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_85() {
-    if (jj_3R_154()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_84() {
-    if (jj_3R_153()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_83() {
-    if (jj_3R_152()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_82() {
-    if (jj_3R_151()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_81() {
+  private boolean jj_3R_79() {
     if (jj_3R_150()) return true;
     return false;
   }
 
-  private boolean jj_3R_80() {
-    if (jj_3R_149()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_61() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_127()) {
-    jj_scanpos = xsp;
-    if (jj_3R_128()) {
-    jj_scanpos = xsp;
-    if (jj_3R_129()) {
-    jj_scanpos = xsp;
-    if (jj_3R_130()) {
-    jj_scanpos = xsp;
-    if (jj_3R_131()) {
-    jj_scanpos = xsp;
-    if (jj_3R_132()) {
-    jj_scanpos = xsp;
-    if (jj_3R_133()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_127() {
-    if (jj_scan_token(160)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_79() {
-    if (jj_3R_148()) return true;
+  private boolean jj_3R_189() {
+    if (jj_scan_token(161)) return true;
     return false;
   }
 
   private boolean jj_3R_78() {
-    if (jj_3R_147()) return true;
+    if (jj_3R_149()) return true;
     return false;
   }
 
   private boolean jj_3R_77() {
-    if (jj_3R_146()) return true;
+    if (jj_3R_148()) return true;
     return false;
   }
 
   private boolean jj_3R_76() {
-    if (jj_3R_145()) return true;
+    if (jj_3R_147()) return true;
     return false;
   }
 
   private boolean jj_3R_75() {
-    if (jj_3R_144()) return true;
+    if (jj_3R_146()) return true;
     return false;
   }
 
   private boolean jj_3R_74() {
-    if (jj_3R_143()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_188() {
-    if (jj_scan_token(107)) return true;
+    if (jj_3R_145()) return true;
     return false;
   }
 
   private boolean jj_3R_73() {
-    if (jj_3R_142()) return true;
+    if (jj_3R_144()) return true;
     return false;
   }
 
   private boolean jj_3R_72() {
-    if (jj_3R_141()) return true;
+    if (jj_3R_143()) return true;
     return false;
   }
 
   private boolean jj_3R_71() {
-    if (jj_3R_140()) return true;
+    if (jj_3R_142()) return true;
     return false;
   }
 
   private boolean jj_3R_70() {
-    if (jj_3R_139()) return true;
+    if (jj_3R_141()) return true;
     return false;
   }
 
   private boolean jj_3R_69() {
-    if (jj_3R_138()) return true;
+    if (jj_3R_140()) return true;
     return false;
   }
 
   private boolean jj_3R_68() {
+    if (jj_3R_139()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_67() {
+    if (jj_3R_138()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_153() {
+    if (jj_scan_token(160)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_66() {
     if (jj_3R_137()) return true;
     return false;
   }
 
-  private boolean jj_3R_57() {
+  private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
+    if (jj_3R_66()) {
+    jj_scanpos = xsp;
+    if (jj_3R_67()) {
+    jj_scanpos = xsp;
     if (jj_3R_68()) {
     jj_scanpos = xsp;
     if (jj_3R_69()) {
@@ -8900,21 +8968,18 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     }
     }
     }
+    }
+    }
     return false;
   }
 
-  private boolean jj_3R_187() {
-    if (jj_scan_token(159)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_56() {
+  private boolean jj_3R_54() {
     if (jj_scan_token(47)) return true;
     return false;
   }
 
-  private boolean jj_3R_153() {
-    if (jj_scan_token(158)) return true;
+  private boolean jj_3R_151() {
+    if (jj_scan_token(159)) return true;
     return false;
   }
 
@@ -8928,42 +8993,52 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_151() {
+  private boolean jj_3R_188() {
+    if (jj_scan_token(158)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_187() {
     if (jj_scan_token(157)) return true;
     return false;
   }
 
   private boolean jj_3R_52() {
-    if (jj_3R_61()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_51() {
-    if (jj_3R_36()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_50() {
-    if (jj_3R_60()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_49() {
     if (jj_3R_59()) return true;
     return false;
   }
 
-  private boolean jj_3R_48() {
+  private boolean jj_3R_51() {
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_50() {
     if (jj_3R_58()) return true;
     return false;
   }
 
-  private boolean jj_3R_47() {
+  private boolean jj_3R_49() {
     if (jj_3R_57()) return true;
     return false;
   }
 
-  private boolean jj_3R_39() {
+  private boolean jj_3R_48() {
+    if (jj_3R_56()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_47() {
+    if (jj_3R_55()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_186() {
+    if (jj_scan_token(156)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_46()) {
@@ -8989,18 +9064,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
   private boolean jj_3R_46() {
-    if (jj_3R_56()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_186() {
-    if (jj_scan_token(156)) return true;
-    return false;
-  }
-
-  private boolean jj_3_10() {
-    if (jj_scan_token(108)) return true;
-    if (jj_3R_39()) return true;
+    if (jj_3R_54()) return true;
     return false;
   }
 
@@ -9009,19 +9073,20 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
+  private boolean jj_3_10() {
+    if (jj_scan_token(108)) return true;
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
   private boolean jj_3_9() {
     if (jj_scan_token(95)) return true;
-    if (jj_3R_39()) return true;
+    if (jj_3R_40()) return true;
     return false;
   }
 
   private boolean jj_3R_184() {
     if (jj_scan_token(154)) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_36()) return true;
     return false;
   }
 
@@ -9035,13 +9100,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_181() {
-    if (jj_scan_token(151)) return true;
+  private boolean jj_3_1() {
+    if (jj_3R_37()) return true;
     return false;
   }
 
-  private boolean jj_3R_180() {
-    if (jj_scan_token(150)) return true;
+  private boolean jj_3R_181() {
+    if (jj_scan_token(151)) return true;
     return false;
   }
 
@@ -9052,6 +9117,11 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     jj_scanpos = xsp;
     if (jj_scan_token(90)) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_180() {
+    if (jj_scan_token(150)) return true;
     return false;
   }
 
@@ -9067,11 +9137,6 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 
   private boolean jj_3R_177() {
     if (jj_scan_token(147)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_176() {
-    if (jj_scan_token(146)) return true;
     return false;
   }
 
@@ -9093,13 +9158,33 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_175() {
-    if (jj_scan_token(145)) return true;
+  private boolean jj_3R_201() {
+    if (jj_scan_token(ANON)) return true;
     return false;
   }
 
-  private boolean jj_3R_199() {
-    if (jj_scan_token(ANON)) return true;
+  private boolean jj_3R_176() {
+    if (jj_scan_token(146)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_200() {
+    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_136() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_200()) {
+    jj_scanpos = xsp;
+    if (jj_3R_201()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_175() {
+    if (jj_scan_token(145)) return true;
     return false;
   }
 
@@ -9108,23 +9193,18 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_198() {
-    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_136() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_198()) {
-    jj_scanpos = xsp;
-    if (jj_3R_199()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_173() {
     if (jj_scan_token(143)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_207() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(14)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(13)) return true;
+    }
     return false;
   }
 
@@ -9138,13 +9218,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_205() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(14)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(13)) return true;
-    }
+  private boolean jj_3R_206() {
+    if (jj_scan_token(IRI_REF)) return true;
     return false;
   }
 
@@ -9153,13 +9228,33 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
+  private boolean jj_3R_196() {
+    if (jj_3R_207()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_195() {
+    if (jj_3R_206()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_134() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_195()) {
+    jj_scanpos = xsp;
+    if (jj_3R_196()) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_169() {
     if (jj_scan_token(139)) return true;
     return false;
   }
 
-  private boolean jj_3R_204() {
-    if (jj_scan_token(IRI_REF)) return true;
+  private boolean jj_3R_191() {
+    if (jj_3R_134()) return true;
     return false;
   }
 
@@ -9168,28 +9263,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_194() {
-    if (jj_3R_205()) return true;
+  private boolean jj_3R_205() {
+    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
     return false;
   }
 
-  private boolean jj_3R_193() {
-    if (jj_3R_204()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_189() {
-    if (jj_3R_134()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_134() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_193()) {
-    jj_scanpos = xsp;
-    if (jj_3R_194()) return true;
-    }
+  private boolean jj_3R_204() {
+    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
     return false;
   }
 
@@ -9198,33 +9278,44 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
+  private boolean jj_3R_216() {
+    if (jj_3R_222()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_203() {
+    if (jj_scan_token(STRING_LITERAL2)) return true;
+    return false;
+  }
+
   private boolean jj_3R_166() {
     if (jj_scan_token(136)) return true;
     return false;
   }
 
-  private boolean jj_3R_203() {
-    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_67() {
-    if (jj_scan_token(NIL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_66() {
-    if (jj_3R_136()) return true;
-    return false;
-  }
-
   private boolean jj_3R_202() {
-    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+    if (jj_scan_token(STRING_LITERAL1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_194() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_202()) {
+    jj_scanpos = xsp;
+    if (jj_3R_203()) {
+    jj_scanpos = xsp;
+    if (jj_3R_204()) {
+    jj_scanpos = xsp;
+    if (jj_3R_205()) return true;
+    }
+    }
+    }
     return false;
   }
 
   private boolean jj_3R_65() {
-    if (jj_3R_60()) return true;
+    if (jj_scan_token(NIL)) return true;
     return false;
   }
 
@@ -9234,39 +9325,44 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
   private boolean jj_3R_64() {
-    if (jj_3R_135()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_214() {
-    if (jj_3R_220()) return true;
+    if (jj_3R_136()) return true;
     return false;
   }
 
   private boolean jj_3R_63() {
-    if (jj_3R_59()) return true;
+    if (jj_3R_58()) return true;
     return false;
   }
 
   private boolean jj_3R_62() {
+    if (jj_3R_135()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_61() {
+    if (jj_3R_57()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_60() {
     if (jj_3R_134()) return true;
     return false;
   }
 
-  private boolean jj_3R_55() {
+  private boolean jj_3R_53() {
     Token xsp;
     xsp = jj_scanpos;
+    if (jj_3R_60()) {
+    jj_scanpos = xsp;
+    if (jj_3R_61()) {
+    jj_scanpos = xsp;
     if (jj_3R_62()) {
     jj_scanpos = xsp;
     if (jj_3R_63()) {
     jj_scanpos = xsp;
     if (jj_3R_64()) {
     jj_scanpos = xsp;
-    if (jj_3R_65()) {
-    jj_scanpos = xsp;
-    if (jj_3R_66()) {
-    jj_scanpos = xsp;
-    if (jj_3R_67()) return true;
+    if (jj_3R_65()) return true;
     }
     }
     }
@@ -9275,8 +9371,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_201() {
-    if (jj_scan_token(STRING_LITERAL2)) return true;
+  private boolean jj_3R_126() {
+    if (jj_scan_token(172)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_228() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
@@ -9285,53 +9386,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_200() {
-    if (jj_scan_token(STRING_LITERAL1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_192() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_200()) {
-    jj_scanpos = xsp;
-    if (jj_3R_201()) {
-    jj_scanpos = xsp;
-    if (jj_3R_202()) {
-    jj_scanpos = xsp;
-    if (jj_3R_203()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_163() {
-    if (jj_scan_token(133)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_36() {
-    if (jj_scan_token(VAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_126() {
-    if (jj_scan_token(170)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_226() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_162() {
-    if (jj_scan_token(132)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_60() {
+  private boolean jj_3R_58() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_125()) {
@@ -9342,7 +9397,73 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
   private boolean jj_3R_125() {
-    if (jj_scan_token(169)) return true;
+    if (jj_scan_token(171)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_227() {
+    if (jj_scan_token(DECIMAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_222() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_227()) {
+    jj_scanpos = xsp;
+    if (jj_3R_228()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_214() {
+    if (jj_3R_220()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_163() {
+    if (jj_scan_token(133)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_221() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_scan_token(VAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_162() {
+    if (jj_scan_token(132)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_215() {
+    if (jj_3R_221()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_161() {
+    if (jj_scan_token(131)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_226() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_210() {
+    if (jj_scan_token(108)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_215()) {
+    jj_scanpos = xsp;
+    if (jj_3R_216()) return true;
+    }
     return false;
   }
 
@@ -9361,13 +9482,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_212() {
-    if (jj_3R_218()) return true;
+  private boolean jj_3R_160() {
+    if (jj_scan_token(130)) return true;
     return false;
   }
 
-  private boolean jj_3R_161() {
-    if (jj_scan_token(131)) return true;
+  private boolean jj_3R_45() {
+    if (jj_3R_53()) return true;
     return false;
   }
 
@@ -9376,17 +9497,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_45() {
-    if (jj_3R_55()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_160() {
-    if (jj_scan_token(130)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38() {
+  private boolean jj_3R_39() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_44()) {
@@ -9397,12 +9508,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
   private boolean jj_3R_44() {
-    if (jj_3R_36()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_213() {
-    if (jj_3R_219()) return true;
+    if (jj_3R_37()) return true;
     return false;
   }
 
@@ -9411,13 +9517,28 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
+  private boolean jj_3_8() {
+    if (jj_3R_39()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_158() {
+    if (jj_scan_token(128)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_213() {
+    if (jj_3R_219()) return true;
+    return false;
+  }
+
   private boolean jj_3R_224() {
     if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
-  private boolean jj_3R_208() {
-    if (jj_scan_token(108)) return true;
+  private boolean jj_3R_209() {
+    if (jj_scan_token(95)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_213()) {
@@ -9442,13 +9563,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3_8() {
-    if (jj_3R_38()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_158() {
-    if (jj_scan_token(128)) return true;
+  private boolean jj_3R_157() {
+    if (jj_scan_token(127)) return true;
     return false;
   }
 
@@ -9457,49 +9573,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_157() {
-    if (jj_scan_token(127)) return true;
-    return false;
-  }
-
   private boolean jj_3R_156() {
     if (jj_scan_token(126)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_211() {
-    if (jj_3R_217()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_222() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_207() {
-    if (jj_scan_token(95)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_211()) {
-    jj_scanpos = xsp;
-    if (jj_3R_212()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_221() {
-    if (jj_scan_token(DECIMAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_216() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_221()) {
-    jj_scanpos = xsp;
-    if (jj_3R_222()) return true;
-    }
     return false;
   }
 
@@ -9508,8 +9583,23 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_215() {
-    if (jj_scan_token(INTEGER)) return true;
+  private boolean jj_3R_212() {
+    if (jj_3R_218()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_211() {
+    if (jj_3R_217()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_208() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_211()) {
+    jj_scanpos = xsp;
+    if (jj_3R_212()) return true;
+    }
     return false;
   }
 
@@ -9523,33 +9613,13 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_210() {
-    if (jj_3R_216()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_209() {
-    if (jj_3R_215()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_206() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_209()) {
-    jj_scanpos = xsp;
+  private boolean jj_3R_199() {
     if (jj_3R_210()) return true;
-    }
     return false;
   }
 
-  private boolean jj_3R_150() {
-    if (jj_scan_token(122)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_149() {
-    if (jj_scan_token(121)) return true;
+  private boolean jj_3R_198() {
+    if (jj_3R_209()) return true;
     return false;
   }
 
@@ -9558,18 +9628,8 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_196() {
-    if (jj_3R_207()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_195() {
-    if (jj_3R_206()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_191() {
-    if (jj_3R_192()) return true;
+  private boolean jj_3R_193() {
+    if (jj_3R_194()) return true;
     if (jj_scan_token(LANGTAG)) return true;
     return false;
   }
@@ -9577,18 +9637,18 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   private boolean jj_3R_135() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_195()) {
+    if (jj_3R_197()) {
     jj_scanpos = xsp;
-    if (jj_3R_196()) {
+    if (jj_3R_198()) {
     jj_scanpos = xsp;
-    if (jj_3R_197()) return true;
+    if (jj_3R_199()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_148() {
-    if (jj_scan_token(120)) return true;
+  private boolean jj_3R_150() {
+    if (jj_scan_token(122)) return true;
     return false;
   }
 
@@ -9622,32 +9682,32 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     }
     }
     }
-    if (jj_scan_token(168)) return true;
+    if (jj_scan_token(170)) return true;
     return false;
   }
 
-  private boolean jj_3R_190() {
-    if (jj_3R_192()) return true;
-    if (jj_scan_token(168)) return true;
+  private boolean jj_3R_192() {
+    if (jj_3R_194()) return true;
+    if (jj_scan_token(170)) return true;
     return false;
   }
 
-  private boolean jj_3R_147() {
-    if (jj_scan_token(119)) return true;
+  private boolean jj_3R_149() {
+    if (jj_scan_token(121)) return true;
     return false;
   }
 
   private boolean jj_3R_124() {
-    if (jj_3R_192()) return true;
+    if (jj_3R_194()) return true;
     return false;
   }
 
   private boolean jj_3R_123() {
-    if (jj_3R_191()) return true;
+    if (jj_3R_193()) return true;
     return false;
   }
 
-  private boolean jj_3R_59() {
+  private boolean jj_3R_57() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_122()) {
@@ -9661,7 +9721,17 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
   private boolean jj_3R_122() {
-    if (jj_3R_190()) return true;
+    if (jj_3R_192()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_148() {
+    if (jj_scan_token(120)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_147() {
+    if (jj_scan_token(119)) return true;
     return false;
   }
 
@@ -9672,11 +9742,6 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
 
   private boolean jj_3R_145() {
     if (jj_scan_token(117)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_144() {
-    if (jj_scan_token(116)) return true;
     return false;
   }
 
@@ -9694,22 +9759,12 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_54() {
-    if (jj_scan_token(89)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_143() {
-    if (jj_scan_token(115)) return true;
-    return false;
-  }
-
   private boolean jj_3R_121() {
     if (jj_3R_134()) return true;
     return false;
   }
 
-  private boolean jj_3R_58() {
+  private boolean jj_3R_56() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_120()) {
@@ -9720,7 +9775,27 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   }
 
   private boolean jj_3R_120() {
-    if (jj_3R_189()) return true;
+    if (jj_3R_191()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_144() {
+    if (jj_scan_token(116)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_143() {
+    if (jj_scan_token(115)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_43() {
+    if (jj_scan_token(95)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_42() {
+    if (jj_scan_token(94)) return true;
     return false;
   }
 
@@ -9729,29 +9804,26 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_53() {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_42() {
-    if (jj_scan_token(95)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_43() {
-    if (jj_scan_token(1)) return true;
+  private boolean jj_3R_38() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_53()) {
+    if (jj_3R_41()) {
     jj_scanpos = xsp;
-    if (jj_3R_54()) return true;
+    if (jj_3R_42()) {
+    jj_scanpos = xsp;
+    if (jj_3R_43()) return true;
+    }
     }
     return false;
   }
 
   private boolean jj_3R_41() {
-    if (jj_scan_token(94)) return true;
+    if (jj_scan_token(46)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_133() {
+    if (jj_scan_token(168)) return true;
     return false;
   }
 
@@ -9760,39 +9832,28 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_37() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_40()) {
-    jj_scanpos = xsp;
-    if (jj_3R_41()) {
-    jj_scanpos = xsp;
-    if (jj_3R_42()) {
-    jj_scanpos = xsp;
-    if (jj_3R_43()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_40() {
-    if (jj_scan_token(46)) return true;
-    return false;
-  }
-
   private boolean jj_3R_140() {
     if (jj_scan_token(112)) return true;
     return false;
   }
 
-  private boolean jj_3R_133() {
-    if (jj_scan_token(166)) return true;
+  private boolean jj_3R_132() {
+    if (jj_scan_token(167)) return true;
+    return false;
+  }
+
+  private boolean jj_3_7() {
+    if (jj_3R_38()) return true;
     return false;
   }
 
   private boolean jj_3R_139() {
     if (jj_scan_token(111)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_131() {
+    if (jj_scan_token(166)) return true;
     return false;
   }
 
@@ -9806,183 +9867,253 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
     return false;
   }
 
-  private boolean jj_3R_132() {
+  private boolean jj_3R_130() {
     if (jj_scan_token(165)) return true;
     return false;
   }
 
-  private boolean jj_3_7() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_131() {
-    if (jj_scan_token(164)) return true;
-    return false;
-  }
-
   private boolean jj_3R_119() {
-    if (jj_3R_188()) return true;
+    if (jj_3R_190()) return true;
     return false;
   }
 
   private boolean jj_3R_118() {
-    if (jj_3R_187()) return true;
+    if (jj_3R_189()) return true;
     return false;
   }
 
   private boolean jj_3R_117() {
-    if (jj_3R_186()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_116() {
-    if (jj_3R_185()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_115() {
-    if (jj_3R_184()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_114() {
-    if (jj_3R_183()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_130() {
-    if (jj_scan_token(163)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_113() {
-    if (jj_3R_182()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_112() {
-    if (jj_3R_181()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_111() {
-    if (jj_3R_180()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_110() {
-    if (jj_3R_179()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_109() {
-    if (jj_3R_178()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_108() {
-    if (jj_3R_177()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_107() {
-    if (jj_3R_176()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_106() {
-    if (jj_3R_175()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_105() {
-    if (jj_3R_174()) return true;
+    if (jj_3R_188()) return true;
     return false;
   }
 
   private boolean jj_3R_129() {
-    if (jj_scan_token(162)) return true;
+    if (jj_scan_token(164)) return true;
     return false;
   }
 
-  private boolean jj_3R_104() {
-    if (jj_3R_173()) return true;
+  private boolean jj_3R_116() {
+    if (jj_3R_187()) return true;
     return false;
   }
 
-  private boolean jj_3R_103() {
-    if (jj_3R_172()) return true;
+  private boolean jj_3R_115() {
+    if (jj_3R_186()) return true;
     return false;
   }
 
-  private boolean jj_3R_102() {
-    if (jj_3R_171()) return true;
+  private boolean jj_3R_114() {
+    if (jj_3R_185()) return true;
     return false;
   }
 
-  private boolean jj_3R_101() {
-    if (jj_3R_170()) return true;
+  private boolean jj_3R_113() {
+    if (jj_3R_184()) return true;
     return false;
   }
 
-  private boolean jj_3R_100() {
-    if (jj_3R_169()) return true;
+  private boolean jj_3R_112() {
+    if (jj_3R_183()) return true;
     return false;
   }
 
-  private boolean jj_3R_99() {
-    if (jj_3R_168()) return true;
+  private boolean jj_3R_111() {
+    if (jj_3R_182()) return true;
     return false;
   }
 
-  private boolean jj_3R_98() {
-    if (jj_3R_167()) return true;
+  private boolean jj_3R_110() {
+    if (jj_3R_181()) return true;
     return false;
   }
 
-  private boolean jj_3R_97() {
-    if (jj_3R_166()) return true;
+  private boolean jj_3R_109() {
+    if (jj_3R_180()) return true;
     return false;
   }
 
-  private boolean jj_3R_96() {
-    if (jj_3R_165()) return true;
+  private boolean jj_3R_108() {
+    if (jj_3R_179()) return true;
     return false;
   }
 
   private boolean jj_3R_128() {
-    if (jj_scan_token(161)) return true;
+    if (jj_scan_token(163)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_107() {
+    if (jj_3R_178()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_106() {
+    if (jj_3R_177()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_105() {
+    if (jj_3R_176()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_104() {
+    if (jj_3R_175()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_103() {
+    if (jj_3R_174()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_102() {
+    if (jj_3R_173()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_101() {
+    if (jj_3R_172()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_100() {
+    if (jj_3R_171()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_99() {
+    if (jj_3R_170()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_98() {
+    if (jj_3R_169()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_97() {
+    if (jj_3R_168()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_96() {
+    if (jj_3R_167()) return true;
     return false;
   }
 
   private boolean jj_3R_95() {
-    if (jj_3R_164()) return true;
+    if (jj_3R_166()) return true;
     return false;
   }
 
   private boolean jj_3R_94() {
-    if (jj_3R_163()) return true;
+    if (jj_3R_165()) return true;
     return false;
   }
 
   private boolean jj_3R_93() {
-    if (jj_3R_162()) return true;
+    if (jj_3R_164()) return true;
     return false;
   }
 
   private boolean jj_3R_92() {
-    if (jj_3R_161()) return true;
+    if (jj_3R_163()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_59() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_127()) {
+    jj_scanpos = xsp;
+    if (jj_3R_128()) {
+    jj_scanpos = xsp;
+    if (jj_3R_129()) {
+    jj_scanpos = xsp;
+    if (jj_3R_130()) {
+    jj_scanpos = xsp;
+    if (jj_3R_131()) {
+    jj_scanpos = xsp;
+    if (jj_3R_132()) {
+    jj_scanpos = xsp;
+    if (jj_3R_133()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_127() {
+    if (jj_scan_token(162)) return true;
     return false;
   }
 
   private boolean jj_3R_91() {
-    if (jj_3R_160()) return true;
+    if (jj_3R_162()) return true;
     return false;
   }
 
   private boolean jj_3R_90() {
+    if (jj_3R_161()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_89() {
+    if (jj_3R_160()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_88() {
     if (jj_3R_159()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_87() {
+    if (jj_3R_158()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_86() {
+    if (jj_3R_157()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_190() {
+    if (jj_scan_token(107)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_85() {
+    if (jj_3R_156()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_84() {
+    if (jj_3R_155()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_83() {
+    if (jj_3R_154()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82() {
+    if (jj_3R_153()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_81() {
+    if (jj_3R_152()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_80() {
+    if (jj_3R_151()) return true;
     return false;
   }
 
@@ -10013,22 +10144,22 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
       jj_la1_init_5();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2,0x5f71e800,0x2,0x5f70e800,0x5f70e800,0x4,0x4000e800,0x10,0x6820,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x2,0x5f71e800,0x16800,0x16800,0x0,0x2,0x0,0x6800,0x0,0x0,0x0,0x0,0x0,0x16800,0x0,0x16800,0x6800,0x16800,0x0,0x16800,0x16800,0x0,0x0,0x0,0x0,0x10000,0x10000000,0x10000000,0xf706800,0xf706800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6800,0x0,0x6800,0x0,0x5f71e800,0x0,0x4,0x5f71e800,0x5f71e800,0x5f71e800,0x4,0x0,0x5f71e800,0x12,0x4,0x5f71e800,0x5f71e800,0x4,0x12,0x0,0x0,0x6800,0x0,0x0,0x10000000,0x0,0x10000000,0x5f71e800,0x5f71e800,0x4,0x5f71e800,0x0,0x16820,0x16820,0x0,0x16820,0x5f71e800,0x16820,0x0,0x16820,0x16820,0x16820,0x0,0x0,0x6820,0x100008,0x8,0x100000,0x2,0x6820,0x0,0x6820,0x6820,0x6820,0x6820,0x0,0x5f71e800,0x0,0x5f71e800,0x16800,0x5f70e800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf716800,0xf016800,0xf716800,0x0,0x10000000,0x0,0x0,0x0,0x0,0xf716800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6800,0xf000000,0x700000,0x700000,0x600000,0x700000,0x600000,0x700000,0x600000,0x0,0xf000000,0x6800,0x6000,0x40008000,0x16800,0x4001e800,};
+      jj_la1_0 = new int[] {0x2,0x5f71e800,0x2,0x5f70e800,0x5f70e800,0x4,0x4000e800,0x10,0x6820,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x2,0x5f71e800,0x16800,0x16800,0x0,0x2,0x0,0x6800,0x0,0x0,0x0,0x0,0x0,0x16800,0x0,0x16800,0x6800,0x16800,0x0,0x16800,0x16800,0x0,0x0,0x0,0x0,0x10010000,0xf706800,0x10000,0x10000000,0x10000000,0x10000000,0xf706800,0xf706800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6800,0x0,0x6800,0x0,0x5f71e800,0x0,0x4,0x5f71e800,0x5f71e800,0x5f71e800,0x4,0x0,0x5f71e800,0x12,0x4,0x5f71e800,0x5f71e800,0x4,0x12,0x0,0x0,0x6800,0x0,0x0,0x10000000,0x0,0x10000000,0x5f71e800,0x5f71e800,0x4,0x5f71e800,0x0,0x16820,0x16820,0x0,0x16820,0x5f71e800,0x16820,0x0,0x16820,0x16820,0x16820,0x0,0x0,0x6820,0x0,0x6820,0x0,0x6820,0x6820,0x6820,0x6820,0x0,0x5f71e800,0x0,0x5f71e800,0x16800,0x5f70e800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf716800,0xf016800,0xf716800,0x0,0x10000000,0x0,0x0,0x0,0x0,0xf716800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6800,0xf000000,0x700000,0x700000,0x600000,0x700000,0x600000,0x700000,0x600000,0x0,0xf000000,0x6800,0x6000,0x40008000,0x16800,0x4001e800,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x340800,0x100,0x0,0x340800,0x340800,0x340800,0x600,0x600,0x400000,0x3000,0x3000,0x8000,0x8000,0xc000,0x400000,0x400000,0x480000,0x8000,0x0,0x4000,0x400000,0x80000,0x400000,0x800000,0x80000,0x1000000,0x4000000,0x8000000,0xc0000000,0x8000,0x10000,0x8000,0x8000,0x30008000,0x30000000,0x8000,0x30008000,0x80000000,0x40000000,0xc0000000,0x0,0x0,0x8000,0x8000,0x0,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x800000,0x8000,0x0,0x0,0x8000,0x8000,0x8000,0x0,0x800,0x8000,0x0,0x0,0x8000,0x8000,0x0,0x0,0x0,0x0,0x8000,0x1000,0x0,0x8000,0x0,0x8000,0x8000,0x8000,0x0,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x8000,0x100,0x8000,0x8000,0x0,0x0,0x0,0x8000,0x0,0x0,0x0,0x4000,0x8000,0x0,0x0,0x8000,0x0,0x0,0x8000,0x8000,0x8000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x4000,0x0,0x8000,0x8000,0x8000,0x0,0x8000,0x0,0x0,0x0,0x1000,0xc000,0x1000,0x1000,0x1000,0x1000,0x1000,0x1000,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x340800,0x100,0x0,0x340800,0x340800,0x340800,0x600,0x600,0x400000,0x3000,0x3000,0x8000,0x8000,0xc000,0x400000,0x400000,0x480000,0x8000,0x0,0x4000,0x400000,0x80000,0x400000,0x800000,0x80000,0x1000000,0x4000000,0x8000000,0xc0000000,0x8000,0x10000,0x8000,0x8000,0x30008000,0x30000000,0x8000,0x30008000,0x80000000,0x40000000,0xc0000000,0x0,0x8000,0x0,0x0,0x8000,0x8000,0x8000,0x0,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x800000,0x8000,0x0,0x0,0x8000,0x8000,0x8000,0x0,0x800,0x8000,0x0,0x0,0x8000,0x8000,0x0,0x0,0x0,0x0,0x8000,0x1000,0x0,0x8000,0x0,0x8000,0x8000,0x8000,0x0,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x9000,0x100,0x9000,0x9000,0x0,0x0,0x0,0x9000,0x4000,0x9000,0x0,0x0,0x8000,0x0,0x0,0x8000,0x8000,0x8000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x4000,0x0,0x8000,0x8000,0x8000,0x0,0x8000,0x0,0x0,0x0,0x1000,0xc000,0x1000,0x1000,0x1000,0x1000,0x1000,0x1000,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x80000000,0x0,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0xef34,0xef34,0xef34,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x84000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x80000002,0x80000002,0x0,0xef34,0x6f20,0x8014,0x40,0x80,0x40,0x40,0x40,0x40,0x40,0x40,0x8000,0x4,0x14,0x10000,0x0,0x40000,0x60000,0xe0000,0x84000000,0x40000,0x0,0x84000000,0x84000000,0x84000000,0x0,0x0,0x84000000,0xf40000,0x0,0x84000000,0x84000000,0x0,0xf40000,0x40,0x1000000,0x0,0x0,0x2000000,0x0,0x2000000,0x0,0x84000000,0x84000000,0x0,0x80000000,0x0,0x0,0x0,0x2000000,0x0,0x80000000,0x20000000,0x0,0x20000000,0x20000000,0x0,0x8000000,0x10000000,0x20000000,0x0,0x2000000,0x2000000,0xc0000000,0x0,0x8000000,0x20000000,0x20000000,0x0,0x20000000,0x4000000,0x84000000,0x4000000,0x80000000,0x0,0x80000000,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0x10000000,0x10000000,0x0,0x80000000,0x0,0x80000000,0x0,0x0,0x2000000,0x2000000,0x2000000,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x80000000,0x0,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0xef34,0xef34,0xef34,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x84000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x80000002,0x0,0x0,0x0,0x0,0x80000002,0x80000002,0x0,0xef34,0x6f20,0x8014,0x40,0x80,0x40,0x40,0x40,0x40,0x40,0x40,0x8000,0x4,0x14,0x10000,0x0,0x40000,0x60000,0xe0000,0x84000000,0x40000,0x0,0x84000000,0x84000000,0x84000000,0x0,0x0,0x84000000,0xf40001,0x0,0x84000000,0x84000000,0x0,0xf40001,0x40,0x1000000,0x0,0x0,0x2000000,0x0,0x2000000,0x0,0x84000000,0x84000000,0x0,0x80000000,0x0,0x0,0x0,0x2000000,0x0,0x80000000,0x20000000,0x0,0x20000000,0x20000000,0x0,0x8000000,0x10000000,0x20000000,0xc0000000,0x0,0x8000000,0x20000000,0x20000000,0x0,0x20000000,0x4000000,0x84000000,0x4000000,0x80000000,0x0,0x80000000,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0x10000000,0x10000000,0x0,0x80000000,0x0,0x80000000,0x0,0x0,0x2000000,0x2000000,0x2000000,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x1000,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffe800,0x0,0xffffe800,0xffffe800,0xffffe800,0x0,0xffffe800,0xffffe800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x1000,0x1000,0x1000,0x0,0x0,0x1000,0x0,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0xffffe800,0x0,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x1000,0x1,0x0,0x1,0x1,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x1000,0x0,0x1000,0x4,0x8,0xff0,0xff0,0x1000,0x1000,0x0,0x0,0x1,0xfffff800,0xffffe800,0xfffff800,0xffffe800,0x0,0x0,0x0,0x0,0x0,0xfffff801,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x1000,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffe800,0x0,0xffffe800,0xffffe800,0xffffe800,0x0,0xffffe800,0xffffe800,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x1000,0x1000,0x1000,0x0,0x0,0x1000,0x0,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0xffffe800,0x0,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x1000,0x1,0x0,0x1,0x1,0x0,0x0,0x0,0x1,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x1000,0x0,0x1000,0x4,0x8,0xff0,0xff0,0x1000,0x1000,0x0,0x0,0x1,0xfffff800,0xffffe800,0xfffff800,0xffffe800,0x0,0x0,0x0,0x0,0x0,0xfffff801,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0xffffffff,0xffffffff,0xffffffff,0x0,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0xffffffff,0xffffffff,0xffffffff,0x0,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_5() {
-      jj_la1_5 = new int[] {0x0,0x600,0x0,0x600,0x600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x0,0x0,0x600,0x600,0x600,0x0,0x0,0x600,0x0,0x0,0x600,0x600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x600,0x0,0x600,0x0,0x0,0x0,0x0,0x0,0x600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x0,0x600,0x0,0x600,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x67f,0x67f,0x67f,0x0,0x0,0x0,0x0,0x0,0x0,0x67f,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7f,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x600,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_5 = new int[] {0x0,0x1800,0x0,0x1800,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x3,0x3,0x3,0x0,0x3,0x3,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x1800,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x1800,0x1800,0x1800,0x0,0x0,0x1800,0x0,0x0,0x1800,0x1800,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x1800,0x1800,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x1800,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x19ff,0x19ff,0x19ff,0x3,0x0,0x0,0x0,0x0,0x0,0x19ff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1fc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[13];
   private boolean jj_rescan = false;
@@ -10217,7 +10348,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[171];
+    boolean[] la1tokens = new boolean[173];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -10246,7 +10377,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         }
       }
     }
-    for (int i = 0; i < 171; i++) {
+    for (int i = 0; i < 173; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

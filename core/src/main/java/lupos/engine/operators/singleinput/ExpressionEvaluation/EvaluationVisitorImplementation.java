@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
@@ -123,6 +124,7 @@ import lupos.sparql1_1.ASTSHA1FuncNode;
 import lupos.sparql1_1.ASTSHA256FuncNode;
 import lupos.sparql1_1.ASTSHA384FuncNode;
 import lupos.sparql1_1.ASTSHA512FuncNode;
+import lupos.sparql1_1.ASTSTRUUIDFuncNode;
 import lupos.sparql1_1.ASTSameTermFuncNode;
 import lupos.sparql1_1.ASTSecondsFuncNode;
 import lupos.sparql1_1.ASTStrAfterFuncNode;
@@ -139,6 +141,7 @@ import lupos.sparql1_1.ASTSubstringFuncNode;
 import lupos.sparql1_1.ASTSubtractionNode;
 import lupos.sparql1_1.ASTTimeZoneFuncNode;
 import lupos.sparql1_1.ASTTzFuncNode;
+import lupos.sparql1_1.ASTUUIDFuncNode;
 import lupos.sparql1_1.ASTUcaseFuncNode;
 import lupos.sparql1_1.ASTUriFuncNode;
 import lupos.sparql1_1.ASTVar;
@@ -1484,6 +1487,22 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	public Object evaluate(ASTNowFuncNode node, Bindings b, Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return now;
+	}
+	
+	@Override
+	public Object evaluate(ASTUUIDFuncNode node, Bindings b, Map<Node, Object> d)
+			throws NotBoundException, TypeErrorException {		
+		try {
+			return LiteralFactory.createURILiteral("<urn:uuid:"+ UUID.randomUUID().toString() + ">");
+		} catch (URISyntaxException e) {
+			throw new TypeErrorException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public Object evaluate(ASTSTRUUIDFuncNode node, Bindings b, Map<Node, Object> d)
+			throws NotBoundException, TypeErrorException {
+		return "\"" + UUID.randomUUID().toString() + "\"";
 	}
 	
 	@Override
