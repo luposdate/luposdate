@@ -242,6 +242,14 @@ public final class ResultPanelHelper {
 				final LuposJTextPane ta_prefixes = new LuposJTextPane(document);
 				document.init(TurtleParser.createILuposParser(new LuposDocumentReader(document)), false);
 
+				// just to get all prefixes before displaying them...
+				for(QueryResult qr: resultQueryEvaluator){
+					qr.toString(prefixInstance);
+				}
+				if(errorsInOntology!=null){
+					errorsInOntology.toString(prefixInstance);
+				}
+				
 				ta_prefixes.setText(prefixInstance.getPrefixString("", "").toString());
 				ta_prefixes.setEditable(false);
 				final JScrollPane scroll = new JScrollPane(ta_prefixes);
