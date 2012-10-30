@@ -191,7 +191,7 @@ public class VariableOperator extends Operator  {
 		if(!this.isChild){
 		sb.append("?"+this.variable+" "+this.selectedClassification+" ");
 		for(OperatorIDTuple<Operator> opIDT : this.getSucceedingOperators()) {
-			sb.append(opIDT.getOperator().serializeOperator());
+			sb.append(opIDT.getOperator().serializeOperatorAndTree(visited));
 //			System.out.println(opIDT.serializeOperator());
 		}
 		}

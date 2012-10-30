@@ -125,7 +125,9 @@ public class VisualRifEditor extends JFrame {
 			e.printStackTrace();
 		}
 
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		if(rules==null && icon==null){
+			this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		}
 		
 		
 		this.setJMenuBar(this.buildMenuBar());

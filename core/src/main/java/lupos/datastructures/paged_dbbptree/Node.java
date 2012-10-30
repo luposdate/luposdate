@@ -72,7 +72,9 @@ public abstract class Node<K extends Comparable<K> & Serializable, V extends Ser
 	@Override
 	public void finalize() {
 		try {
-			in.close();
+			if(in!=null){
+				in.close();
+			}
 		} catch (final IOException e1) {
 		}
 	}

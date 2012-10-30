@@ -62,7 +62,7 @@ public class UnitermOperator  extends AbstractTermOperator {
 	public StringBuffer serializeOperator() {
 	
 		StringBuffer sb = new StringBuffer("");
-		if (this.isChild) {
+		if (!this.isChild) {
 			if (this.external)
 				sb.append("External(");
 
