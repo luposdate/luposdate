@@ -56,25 +56,27 @@ public class AddComputedBinding extends SingleInputOperator {
 
 	public void addProjectionElement(final Variable var, final Node constraint) {
 		final Filter filter = new Filter(constraint);
-		projections.put(var, filter);
+		this.projections.put(var, filter);
 		if (filter.isPipelineBreaker())
-			pipelineBreaker = true;
+			this.pipelineBreaker = true;
 	}
 
+	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		for (final Map.Entry<Variable, Filter> entry : projections.entrySet()) {
+		for (final Map.Entry<Variable, Filter> entry : this.projections.entrySet()) {
 			msg.getVariables().add(entry.getKey());
 		}
-		intersectionVariables = new LinkedList<Variable>();
-		intersectionVariables.addAll(msg.getVariables());
-		unionVariables = new LinkedList<Variable>();
-		unionVariables.addAll(intersectionVariables);
+		this.intersectionVariables = new LinkedList<Variable>();
+		this.intersectionVariables.addAll(msg.getVariables());
+		this.unionVariables = new LinkedList<Variable>();
+		this.unionVariables.addAll(this.intersectionVariables);
 		return msg;
 	}
 
+	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		boolean aggregationFunctions = false;
-		for (final Filter filter : projections.values()) {
+		for (final Filter filter : this.projections.values()) {
 			if (filter.isPipelineBreaker()) {
 				aggregationFunctions = true;
 				break;
@@ -85,23 +87,24 @@ public class AddComputedBinding extends SingleInputOperator {
 				final Iterator<Bindings> bindIt = bindings.oneTimeIterator();
 				Bindings next = computeNext();
 
+				@Override
 				public boolean hasNext() {
-					return (next != null);
+					return (this.next != null);
 				}
 
+				@Override
 				public Bindings next() {
-					final Bindings zNext = next;
-					next = computeNext();
+					final Bindings zNext = this.next;
+					this.next = computeNext();
 					return zNext;
 				}
 
 				private Bindings computeNext() {
-					while (bindIt.hasNext()) {
-						final Bindings bind = bindIt.next();
+					while (this.bindIt.hasNext()) {
+						final Bindings bind = this.bindIt.next();
 						try {
 							if (bind != null) {
-								for (final Map.Entry<Variable, Filter> entry : projections
-										.entrySet()) {
+								for (final Map.Entry<Variable, Filter> entry: AddComputedBinding.this.projections.entrySet()) {
 									bind.add(entry.getKey(), Helper
 											.getLiteral(Filter.staticEvalTree(
 													bind, entry.getValue()
@@ -119,6 +122,7 @@ public class AddComputedBinding extends SingleInputOperator {
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -129,47 +133,49 @@ public class AddComputedBinding extends SingleInputOperator {
 			else
 				return null;
 		} else {
-			if (queryResult == null) {
+			if (this.queryResult == null) {
 				bindings.materialize();
-				queryResult = bindings;
+				this.queryResult = bindings;
 			} else
-				queryResult.addAll(bindings);
+				this.queryResult.addAll(bindings);
 			return null;
 		}
 	}
 
-	protected QueryResult getQueryResultForAggregatedFilter(final QueryResult queryResult) {
-		if (queryResult != null) {
+	protected QueryResult getQueryResultForAggregatedFilter(final QueryResult queryResultParameter) {
+		if (queryResultParameter != null) {
 			final List<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsList = new LinkedList<HashMap<lupos.sparql1_1.Node, Object>>(); 
-			for (final Map.Entry<Variable, Filter> entry : projections
+			for (final Map.Entry<Variable, Filter> entry: this.projections
 					.entrySet()) {
 				final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>();
-				Filter.computeAggregationFunctions(queryResult, entry.getValue().aggregationFunctions, resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor());
+				Filter.computeAggregationFunctions(queryResultParameter, entry.getValue().aggregationFunctions, resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor());
 				resultsOfAggregationFunctionsList.add(resultsOfAggregationFunctions);
 			}
 			final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
-				final Iterator<Bindings> bindIt = queryResult.oneTimeIterator();
+				final Iterator<Bindings> bindIt = queryResultParameter.oneTimeIterator();
 
 				Bindings next = computeNext();
 
+				@Override
 				public boolean hasNext() {
-					return (next != null);
+					return (this.next != null);
 				}
 
+				@Override
 				public Bindings next() {
-					final Bindings zNext = next;
-					next = computeNext();
+					final Bindings zNext = this.next;
+					this.next = computeNext();
 					return zNext;
 				}
 
 				private Bindings computeNext() {
-					while (bindIt.hasNext()) {
-						final Bindings bind = bindIt.next();
+					while (this.bindIt.hasNext()) {
+						final Bindings bind = this.bindIt.next();
 						try {
 							if (bind != null) {
 								final Bindings bindNew = bind.clone();
 								Iterator<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsIterator = resultsOfAggregationFunctionsList.iterator();
-								for (final Map.Entry<Variable, Filter> entry : projections
+								for (final Map.Entry<Variable, Filter> entry: AddComputedBinding.this.projections
 										.entrySet()) {
 									HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = resultsOfAggregationFunctionsIterator.next();
 									bindNew.add(entry.getKey(),
@@ -189,6 +195,7 @@ public class AddComputedBinding extends SingleInputOperator {
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -200,41 +207,45 @@ public class AddComputedBinding extends SingleInputOperator {
 		return null;
 	}
 
+	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		final QueryResult qr = getQueryResultForAggregatedFilter(queryResult);
+		final QueryResult qr = getQueryResultForAggregatedFilter(this.queryResult);
 		if (qr != null) {
-			if (succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1)
 				qr.materialize();
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId: this.succeedingOperators) {
 				opId.processAll(qr);
 			}
 		}
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.deleteAllAtSucceedingOperators();
 		preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
 	}
 
-	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete,
-			final int operandID) {
+	@Override
+	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete, final int operandID) {
 		if (this.queryResult != null)
 			this.queryResult.removeAll(queryResultToDelete);
 		return queryResultToDelete;
 	}
 
+	@Override
 	public void deleteQueryResult(final int operandID) {
 		if (this.queryResult != null)
 			this.queryResult.release();
 		this.queryResult = null;
 	}
 
+	@Override
 	public String toString() {
 		String s = super.toString();
 		boolean comma = false;
-		for (final Map.Entry<Variable, Filter> entry : projections.entrySet()) {
+		for (final Map.Entry<Variable, Filter> entry: this.projections.entrySet()) {
 			if (comma)
 				s += ",";
 			comma = true;
@@ -243,10 +254,11 @@ public class AddComputedBinding extends SingleInputOperator {
 		return s;
 	}
 
+	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		String s = super.toString();
 		boolean comma = false;
-		for (final Map.Entry<Variable, Filter> entry : projections.entrySet()) {
+		for (final Map.Entry<Variable, Filter> entry: this.projections.entrySet()) {
 			if (comma)
 				s += ",";
 			comma = true;
@@ -257,13 +269,15 @@ public class AddComputedBinding extends SingleInputOperator {
 	}
 
 	public Map<Variable, Filter> getProjections() {
-		return projections;
+		return this.projections;
 	}
 
+	@Override
 	public boolean isPipelineBreaker() {
-		return pipelineBreaker;
+		return this.pipelineBreaker;
 	}
 
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
@@ -272,13 +286,14 @@ public class AddComputedBinding extends SingleInputOperator {
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		final QueryResult qr = getQueryResultForAggregatedFilter(queryResult);
+		final QueryResult qr = getQueryResultForAggregatedFilter(this.queryResult);
 		if (qr != null) {
-			if (succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1)
 				qr.materialize();
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 						debugstep, this, opId.getOperator(), true);
 				((Operator) opId.getOperator()).processAllDebug(qrDebug, opId

@@ -93,10 +93,10 @@ public class UnionParallelOperands extends Operator {
 
 		final Thread thread = new ParallelOperandThread(queryResult);
 
-		if (threadsList == null) {
-			threadsList = new LinkedList<Thread>();
+		if (this.threadsList == null) {
+			this.threadsList = new LinkedList<Thread>();
 		}
-		threadsList.add(thread);
+		this.threadsList.add(thread);
 		thread.start();
 
 		return null;
@@ -104,14 +104,14 @@ public class UnionParallelOperands extends Operator {
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		final QueryResult qr = QueryResult.createInstance(queue);
+		final QueryResult qr = QueryResult.createInstance(this.queue);
 		final Thread endOfDataThread = new Thread(toJoinBeforeNewQuery,
 				"joinThread") {
 			@Override
 			public void run() {
 				// wait until all threads are finished!
-				if (threadsList != null)
-					for (final Thread t : threadsList) {
+				if (UnionParallelOperands.this.threadsList != null)
+					for (final Thread t : UnionParallelOperands.this.threadsList) {
 						try {
 							t.join();
 						} catch (final InterruptedException e) {
@@ -120,14 +120,14 @@ public class UnionParallelOperands extends Operator {
 							// e.printStackTrace();
 						}
 					}
-				queue.endOfData();
+				UnionParallelOperands.this.queue.endOfData();
 			}
 		};
 		endOfDataThread.start();
-		if (succeedingOperators.size() > 1) {
+		if (this.succeedingOperators.size() > 1) {
 			qr.materialize();
 		}
-		for (final OperatorIDTuple oid : succeedingOperators) {
+		for (final OperatorIDTuple oid: this.succeedingOperators) {
 			oid.processAll(qr);
 		}
 		return super.preProcessMessage(msg);
@@ -171,11 +171,10 @@ public class UnionParallelOperands extends Operator {
 			while (it.hasNext()) {
 				bindings = it.next();
 				try {
-					queue.put(bindings);
+					UnionParallelOperands.this.queue.put(bindings);
 				} catch (final InterruptedException e) {
-					System.err
-							.println("ParallelOperandThread.run: interrupted");
-					queue.endOfData();
+					System.err.println("ParallelOperandThread.run: interrupted");
+					UnionParallelOperands.this.queue.endOfData();
 					return;
 				}
 			}

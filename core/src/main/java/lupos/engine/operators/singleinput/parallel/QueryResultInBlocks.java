@@ -39,8 +39,7 @@ public class QueryResultInBlocks extends Operator {
 	protected static int BLOCKSIZE;
 
 	protected Runner runner = null;
-	protected BoundedBuffer<QueryResult> queryresultbuffer = new BoundedBuffer<QueryResult>(
-			MAXBUFFER);
+	protected BoundedBuffer<QueryResult> queryresultbuffer = new BoundedBuffer<QueryResult>(MAXBUFFER);
 
 	public QueryResultInBlocks() {
 		BLOCKSIZE = ParallelOperand.getQueueLimit();
@@ -50,25 +49,25 @@ public class QueryResultInBlocks extends Operator {
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
 		try {
-			queryresultbuffer.put(queryResult);
+			this.queryresultbuffer.put(queryResult);
 		} catch (final InterruptedException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		if (runner == null) {
-			runner = new Runner();
-			runner.start();
+		if (this.runner == null) {
+			this.runner = new Runner();
+			this.runner.start();
 		}
 		return null;
 	}
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		queryresultbuffer.endOfData();
+		this.queryresultbuffer.endOfData();
 		// wait until thread finished!
-		if (runner != null)
+		if (this.runner != null)
 			try {
-				runner.join();
+				this.runner.join();
 			} catch (final InterruptedException e) {
 				System.err.println();
 				e.printStackTrace();
@@ -81,8 +80,8 @@ public class QueryResultInBlocks extends Operator {
 		@Override
 		public void run() {
 			try {
-				while (queryresultbuffer.hasNext()) {
-					final QueryResult queryResult = queryresultbuffer.get();
+				while (QueryResultInBlocks.this.queryresultbuffer.hasNext()) {
+					final QueryResult queryResult = QueryResultInBlocks.this.queryresultbuffer.get();
 					final Iterator<Bindings> ib = queryResult.oneTimeIterator();
 					while (ib.hasNext()) {
 						final QueryResult queryresult_new = QueryResult
@@ -90,7 +89,7 @@ public class QueryResultInBlocks extends Operator {
 						for (int i = 0; i < BLOCKSIZE && ib.hasNext(); i++) {
 							queryresult_new.add(ib.next());
 						}
-						for (final OperatorIDTuple opId : succeedingOperators) {
+						for (final OperatorIDTuple opId : QueryResultInBlocks.this.succeedingOperators) {
 							opId.processAll(queryresult_new);
 						}
 					}

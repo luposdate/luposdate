@@ -26,6 +26,7 @@ package lupos.engine.operators.singleinput;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
@@ -58,7 +59,7 @@ public class Group extends SingleInputOperator {
 		this.comp = comp;
 	}
 
-	protected QueryResult queryResult;
+	protected ParallelIteratorMultipleQueryResults queryResults = new ParallelIteratorMultipleQueryResults();
 
 	/**
 	 * saving the QueryResult
@@ -67,13 +68,9 @@ public class Group extends SingleInputOperator {
 	 * @param int
 	 * @return QueryResult
 	 */
-	public synchronized QueryResult process(final QueryResult bindings,
-			final int operandID) {
-
-		if (queryResult == null)
-			queryResult = bindings;
-		else
-			queryResult.addAll(bindings);
+	@Override
+	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
+		this.queryResults.addQueryResult(queryResult);
 		return null;
 	}
 	
@@ -82,20 +79,20 @@ public class Group extends SingleInputOperator {
 	 *
 	 */
 	private void computeResult(){
-		if (queryResult != null) {
+		if (!this.queryResults.isEmpty()) {
 			QueryResult newQueryResult = QueryResult.createInstance();
-			Iterator<Bindings> it = queryResult.oneTimeIterator();
+			Iterator<Bindings> it = this.queryResults.getQueryResult().oneTimeIterator();
 			Bindings oldBinding = null;
 			boolean firstRun = true;
 			while (it.hasNext()) {
 				Bindings b = it.next();
 				if (!firstRun) {
-					int compareValue = comp.compare(oldBinding, b);
+					int compareValue = this.comp.compare(oldBinding, b);
 					if (compareValue == 0) {
 						newQueryResult.add(b);
 					} else {
 						// Send queryResult
-						for (final OperatorIDTuple opId : succeedingOperators) {
+						for (final OperatorIDTuple opId: this.succeedingOperators) {
 							opId.processAll(newQueryResult);
 						}
 						newQueryResult = QueryResult.createInstance();
@@ -108,7 +105,7 @@ public class Group extends SingleInputOperator {
 				oldBinding = b;
 			}
 			// Send queryResult
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId: this.succeedingOperators) {
 				opId.processAll(newQueryResult);
 			}
 		}
@@ -139,20 +136,20 @@ public class Group extends SingleInputOperator {
 	}
 	
 	private void computeResultDebug(final DebugStep debugstep){
-		if (queryResult != null) {
+		if (!this.queryResults.isEmpty()) {
 			QueryResult newQueryResult = QueryResult.createInstance();
-			Iterator<Bindings> it = queryResult.oneTimeIterator();
+			Iterator<Bindings> it = this.queryResults.getQueryResult().oneTimeIterator();
 			Bindings oldBinding = null;
 			boolean firstRun = true;
 			while (it.hasNext()) {
 				Bindings b = it.next();
 				if (!firstRun) {
-					int compareValue = comp.compare(oldBinding, b);
+					int compareValue = this.comp.compare(oldBinding, b);
 					if (compareValue == 0) {
 						newQueryResult.add(b);
 					} else {
 						// Send queryResult
-						for (final OperatorIDTuple opId : succeedingOperators) {
+						for (final OperatorIDTuple opId: this.succeedingOperators) {
 							final QueryResultDebug qrDebug = new QueryResultDebug(newQueryResult, debugstep, this, opId.getOperator(), true);
 							((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 						}
@@ -166,7 +163,7 @@ public class Group extends SingleInputOperator {
 				oldBinding = b;
 			}
 			// Send queryResult
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId: this.succeedingOperators) {
 				final QueryResultDebug qrDebug = new QueryResultDebug(newQueryResult, debugstep, this, opId.getOperator(), true);
 				((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 			}
@@ -174,15 +171,14 @@ public class Group extends SingleInputOperator {
 	}
 
 	
-	public Message preProcessMessageDebug(
-			final ComputeIntermediateResultMessage msg,
-			final DebugStep debugstep) {
+	@Override
+	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		computeResultDebug(debugstep);
 		return msg;
 	}
 	
-	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
-			final DebugStep debugstep) {
+	@Override
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		computeResultDebug(debugstep);
 		return msg;
 	}

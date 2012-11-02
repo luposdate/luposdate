@@ -53,7 +53,7 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 			final BindingsArrayReadTriples bart = (BindingsArrayReadTriples) itb
 					.next();
 			bart.sortReadTriples();
-			bindings.add(bart);
+			this.bindings.add(bart);
 		}
 		return null;
 	}
@@ -62,19 +62,23 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 		final Iterator<BindingsArrayReadTriples> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
 
+			@Override
 			public void close() {
 				// derived classes may override the above method in order to
 				// release some resources here!
 			}
 
+			@Override
 			public boolean hasNext() {
 				return itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
 				return itb.next();
 			}
 
+			@Override
 			public void remove() {
 				itb.remove();
 			}
@@ -84,28 +88,29 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		final QueryResult qr = QueryResult.createInstance(bindings.iterator());
-		if (succeedingOperators.size() > 1)
+		final QueryResult qr = QueryResult.createInstance(this.bindings.iterator());
+		if (this.succeedingOperators.size() > 1)
 			qr.materialize();
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId: this.succeedingOperators) {
 			opId.processAll(qr);
 		}
-		bindings.clear();
+		this.bindings.clear();
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		final QueryResult qr = QueryResult.createInstance(bindings.iterator());
-		if (succeedingOperators.size() > 1)
+		final QueryResult qr = QueryResult.createInstance(this.bindings.iterator());
+		if (this.succeedingOperators.size() > 1)
 			qr.materialize();
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId: this.succeedingOperators) {
 			final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 					debugstep, this, opId.getOperator(), true);
 			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
 					.getId(), debugstep);
 		}
-		bindings.clear();
+		this.bindings.clear();
 		return msg;
 	}
 

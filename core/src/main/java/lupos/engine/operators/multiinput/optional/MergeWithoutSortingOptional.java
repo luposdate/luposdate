@@ -74,8 +74,7 @@ public class MergeWithoutSortingOptional extends Optional {
 			} else if (operandID == 1) {
 				this.right = bindings;
 			} else
-				System.err.println("MergeWithoutSortingOptional is a binary operator, but received the operand number "
-								+ operandID);
+				System.err.println("MergeWithoutSortingOptional is a binary operator, but received the operand number " + operandID);
 			if (this.left != null && this.right != null) {				
 
 				final Iterator<Bindings> currentResult = MergeJoin.mergeOptionalIterator(this.left.oneTimeIterator(), this.right.oneTimeIterator(), this.comp);

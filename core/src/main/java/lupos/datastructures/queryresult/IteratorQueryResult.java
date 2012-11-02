@@ -77,9 +77,7 @@ public class IteratorQueryResult extends QueryResult {
 
 				private Bindings computeNext() {
 					while (itt.hasNext()) {
-						// also consider inner joins in triple patterns like ?a
-						// ?a
-						// ?b.
+						// also consider inner joins in triple patterns like ?a ?a ?b.
 						Triple t;
 						if (tp.getBloomFilters() != null
 								&& (tp.getBloomFilters()[0] != null
@@ -119,11 +117,7 @@ public class IteratorQueryResult extends QueryResult {
 													% tp.getBloomFilters()[i]
 															.size() == startIndex)
 												return null;
-											// calculate distancepreserving
-											// jump
-											// over
-											// the
-											// gap!
+											// calculate distancepreserving jump over the gap!
 											final int code = ((LazyLiteral) lastTriple
 													.getPos(i)).getCode()
 													+ (index - startIndex);

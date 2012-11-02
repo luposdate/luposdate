@@ -29,6 +29,7 @@ import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
@@ -36,43 +37,30 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.MultiInputOperator;
-import lupos.rdf.Prefix;
 
 public class Minus extends MultiInputOperator {
 
-	protected QueryResult lChild;
-	protected QueryResult rChild;
+	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
+																	new ParallelIteratorMultipleQueryResults()};
 
 	@Override
-	public synchronized QueryResult process(final QueryResult bindings,
+	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
-
 		// wait for all query results and process them when
 		// EndOfEvaluationMessage arrives
-		if (operandID == 0) {
-			if (lChild == null)
-				lChild = bindings;
-			else
-				lChild.addAll(bindings);
-		} else if (operandID == 1) {
-			if (rChild == null)
-				rChild = bindings;
-			else
-				rChild.addAll(bindings);
-		}
-
+		this.operands[operandID].addQueryResult(queryResult);
 		return null;
 	}
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		if (rChild != null && lChild != null) {
+		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
 			QueryResult result = QueryResult.createInstance();
-			Iterator<Bindings> iteratorLeftChild = lChild.oneTimeIterator();
+			Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
 			while (iteratorLeftChild.hasNext()) {
 				Bindings leftItem = iteratorLeftChild.next();
 				boolean found = false;
-				for (Bindings rightItem : rChild) {
+				for (Bindings rightItem : this.operands[1].getQueryResult()) {
 					// compute intersection of the variable sets
 					Set<Variable> vars = rightItem.getVariableSet();
 					vars.retainAll(leftItem.getVariableSet());
@@ -96,14 +84,12 @@ public class Minus extends MultiInputOperator {
 					result.add(leftItem);
 			}
 
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(result);
 			}
-		} else if (lChild != null) { // happens when the group constraint which
-										// follows the
-			// minus is empty
-			for (final OperatorIDTuple opId : succeedingOperators) {
-				opId.processAll(lChild);
+		} else if (!this.operands[0].isEmpty()) { // happens when the group constraint which follows the minus is empty
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAll(this.operands[0].getQueryResult());
 			}
 		}
 		return msg;
@@ -127,9 +113,9 @@ public class Minus extends MultiInputOperator {
 			}
 		}
 
-		intersectionVariables = variableSet;
+		this.intersectionVariables = variableSet;
 
-		msg_result.setVariables(intersectionVariables);
+		msg_result.setVariables(this.intersectionVariables);
 		return msg_result;
 	}
 	

@@ -30,6 +30,7 @@ import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
@@ -41,57 +42,34 @@ import lupos.misc.debug.DebugStep;
 
 public class HashJoin extends Join {
 
-	protected QueryResult left = null;
-	protected QueryResult right = null;
+	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
+																	new ParallelIteratorMultipleQueryResults()};
 
-	public void init() {
+	public void init() { // add init code here
 	}
 
 	@Override
-	public synchronized QueryResult process(final QueryResult bindings,
+	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
-		if (operandID == 0) {
-			if (left != null)
-				left.add(bindings);
-			else
-				left = bindings;
-		} else if (operandID == 1) {
-			if (right != null)
-				right.add(bindings);
-			else
-				right = bindings;
-		} else
-			System.err.println("HashJoin is a binary operator, but received the operand number "
-							+ operandID);
+		this.operands[operandID].addQueryResult(queryResult);
 		return null;
 	}
 
 	@Override
-	public synchronized OptionalResult processJoin(final QueryResult bindings,
+	public synchronized OptionalResult processJoin(final QueryResult queryResult,
 			final int operandID) {
-		if (operandID == 0) {
-			if (left != null)
-				left.add(bindings);
-			else
-				left = bindings;
-		} else if (operandID == 1) {
-			if (right != null)
-				right.add(bindings);
-			else
-				right = bindings;
-		} else
-			System.err.println("Embedded HashJoin operator in Optional is a binary operator, but received the operand number "
-							+ operandID);
+		this.operands[operandID].addQueryResult(queryResult);
 		return null;
 	}
 
 	@Override
 	public OptionalResult joinBeforeEndOfStream() {
-		if (left != null) {
-			if (right != null)
-				return joinOptionalResult(left, right);
+		if (!this.operands[0].isEmpty()) {
+			if (!this.operands[1].isEmpty())
+				return joinOptionalResult(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
 			else {
 				final OptionalResult or = new OptionalResult();
+				QueryResult left = this.operands[0].getQueryResult();
 				left.materialize();
 				or.setJoinPartnerFromLeftOperand(left);
 				or.setJoinResult(left);
@@ -102,21 +80,19 @@ public class HashJoin extends Join {
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		if (left != null && right != null) {
-			final QueryResult qr = join(left, right);
+		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
+			final QueryResult qr = join(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
 			if (qr != null) {
 				this.realCardinality = qr.size();
-				for (final OperatorIDTuple opId : succeedingOperators) {
+				for (final OperatorIDTuple opId : this.succeedingOperators) {
 					opId.processAll(qr);
 				}
 			}
 		}
-		if (left != null)
-			left.release();
-		if (right != null)
-			right.release();
-		left = QueryResult.createInstance();
-		right = QueryResult.createInstance();
+		this.operands[0].release();
+		this.operands[1].release();
+		this.operands[0] = new ParallelIteratorMultipleQueryResults();
+		this.operands[1] = new ParallelIteratorMultipleQueryResults();
 		return msg;
 	}
 
@@ -169,7 +145,7 @@ public class HashJoin extends Join {
 		final HashFunction h = hashFunctions.get(position);
 		for (final Bindings b : smaller) {
 			final Collection<Literal> key = HashFunction.getKey(b,
-					intersectionVariables);
+					this.intersectionVariables);
 			if (key != null) {
 				partitions[(int) h.hash(key)
 						% InnerNodeInPartitionTree.numberChildren].add(b);
@@ -215,7 +191,7 @@ public class HashJoin extends Join {
 		final HashFunction h = hashFunctions.get(position);
 		for (final Bindings b : larger) {
 			final Collection<Literal> key = HashFunction.getKey(b,
-					intersectionVariables);
+					this.intersectionVariables);
 			if (key != null) {
 				partitions[(int) h.hash(key)
 						% InnerNodeInPartitionTree.numberChildren].add(b);
@@ -354,49 +330,40 @@ public class HashJoin extends Join {
 		return or;
 	}
 
-	public QueryResult deleteQueryResult(final QueryResult queryResult,
-			final int operandID) {
-		if (operandID == 0)
-			left.removeAll(queryResult);
-		else
-			right.removeAll(queryResult);
+	@Override
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
+		this.operands[operandID].removeAll(queryResult);
 		return null;
 	}
 
+	@Override
 	public void deleteAll(final int operandID) {
-		if (operandID == 0) {
-			left.release();
-			left = null;
-		} else {
-			right.release();
-			right = null;
-		}
+		this.operands[operandID].release();
+		this.operands[operandID]= new ParallelIteratorMultipleQueryResults();		
 	}
 
+	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		if (left != null && right != null) {
-			final QueryResult qr = join(left, right);
+		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
+			final QueryResult qr = join(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
 			if (qr != null) {
 				this.realCardinality = qr.size();
-				for (final OperatorIDTuple opId : succeedingOperators) {
-					final QueryResultDebug qrDebug = new QueryResultDebug(qr,
-							debugstep, this, opId.getOperator(), true);
-					((Operator) opId.getOperator()).processAllDebug(qrDebug,
-							opId.getId(), debugstep);
+				for (final OperatorIDTuple opId : this.succeedingOperators) {
+					final QueryResultDebug qrDebug = new QueryResultDebug(qr, debugstep, this, opId.getOperator(), true);
+					((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 				}
 			}
 		}
-		if (left != null)
-			left.release();
-		if (right != null)
-			right.release();
-		left = QueryResult.createInstance();
-		right = QueryResult.createInstance();
+		this.operands[0].release();
+		this.operands[1].release();
+		this.operands[0]= new ParallelIteratorMultipleQueryResults();
+		this.operands[1]= new ParallelIteratorMultipleQueryResults();
 		return msg;
 	}
 }

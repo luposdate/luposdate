@@ -29,6 +29,7 @@ import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.ParallelIterator;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
@@ -47,7 +48,7 @@ import lupos.misc.debug.DebugStep;
 public class LazyBlockingDistinct extends Distinct {
 
 	protected final Set<Bindings> bindings;
-	protected QueryResult operandsData;
+	protected ParallelIteratorMultipleQueryResults operandsData;
 
 	public LazyBlockingDistinct() {
 		this.bindings = new HashSet<Bindings>();
@@ -60,10 +61,7 @@ public class LazyBlockingDistinct extends Distinct {
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
-		if (this.operandsData == null) {
-			this.operandsData = queryResult;
-		} else
-			this.operandsData.addAll(queryResult);
+		this.operandsData.addQueryResult(queryResult);
 		return null;
 	}
 
@@ -99,7 +97,7 @@ public class LazyBlockingDistinct extends Distinct {
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		this.bindings.clear();
 		if (this.operandsData != null) {
-			final Iterator<Bindings> itb2 = this.operandsData.oneTimeIterator();
+			final Iterator<Bindings> itb2 = this.operandsData.getQueryResult().oneTimeIterator();
 			while (itb2.hasNext())
 				this.bindings.add(itb2.next());
 		}
@@ -153,7 +151,7 @@ public class LazyBlockingDistinct extends Distinct {
 			final DebugStep debugstep) {
 		this.bindings.clear();
 		if (this.operandsData != null) {
-			final Iterator<Bindings> itb2 = this.operandsData.oneTimeIterator();
+			final Iterator<Bindings> itb2 = this.operandsData.getQueryResult().oneTimeIterator();
 			while (itb2.hasNext())
 				this.bindings.add(itb2.next());
 		}

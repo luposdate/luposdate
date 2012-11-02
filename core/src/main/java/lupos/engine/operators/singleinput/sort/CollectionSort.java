@@ -37,6 +37,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public abstract class CollectionSort extends Sort {
 
 	public CollectionSort() {
+		// nothing to init...
 	}
 
 	/**

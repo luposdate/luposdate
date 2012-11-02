@@ -55,40 +55,29 @@ public class SortedMinus extends Minus {
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
 
-		if (!isSortable)
+		if (!this.isSortable){
 			return super.process(bindings, operandID);
+		}
 
 		// wait for all query results and process them when
 		// EndOfEvaluationMessage arrives
-		if (operandID == 0) {
-			if (lChild == null)
-				lChild = bindings;
-			else {
-				throw new UnsupportedOperationException(
-						"More than one query result, but result should be sorted.");
-			}
-		} else if (operandID == 1) {
-			if (rChild == null)
-				rChild = bindings;
-			else {
-				throw new UnsupportedOperationException(
-						"More than one query result, but result should be sorted.");
-			}
+		if(this.operands[operandID].isEmpty()){
+			return super.process(bindings, operandID);
+		} else {
+			throw new UnsupportedOperationException("More than one query result, but result should be sorted.");
 		}
-
-		return null;
 	}
 
 	@Override
 	public Message preProcessMessage(EndOfEvaluationMessage msg) {
 
-		if (!isSortable || rChild == null) {
+		if (!this.isSortable || this.operands[1].isEmpty()) {
 			return super.preProcessMessage(msg);
-		} else if (lChild != null && rChild != null) {
+		} else if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
 			QueryResult result = QueryResult.createInstance();
 
-			Iterator<Bindings> leftIt = lChild.iterator();
-			Iterator<Bindings> rightIt = rChild.iterator();
+			Iterator<Bindings> leftIt = this.operands[0].getQueryResult().iterator();
+			Iterator<Bindings> rightIt = this.operands[1].getQueryResult().iterator();
 			Bindings leftBindings = null, rightBindings = null;
 			if (leftIt.hasNext()) {
 				leftBindings = leftIt.next();
@@ -98,7 +87,7 @@ public class SortedMinus extends Minus {
 			}
 
 			while (rightBindings != null && leftBindings != null) {
-				int difference = comp.compare(leftBindings, rightBindings);
+				int difference = this.comp.compare(leftBindings, rightBindings);
 				if (difference > 0) {
 					rightBindings = rightIt.hasNext() ? rightIt.next() : null;
 				} else if (difference == 0) {
@@ -115,7 +104,7 @@ public class SortedMinus extends Minus {
 				leftBindings = leftIt.hasNext() ? leftIt.next() : null;
 			}
 
-			for (final OperatorIDTuple opId : succeedingOperators) {
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(result);
 			}
 		}
@@ -154,12 +143,11 @@ public class SortedMinus extends Minus {
 		Set<Variable> intersection = leftUnion;
 		intersection.retainAll(rightUnion);
 
-		isSortable = !intersectionVariables.isEmpty()
-				&& intersection.equals(intersectionVariables);
+		this.isSortable = !this.intersectionVariables.isEmpty() && intersection.equals(this.intersectionVariables);
 
-		comp = new ComparatorVariables(intersectionVariables);
-		predecessorLeft.setComparator(comp);
-		predecessorRight.setComparator(comp);
+		this.comp = new ComparatorVariables(this.intersectionVariables);
+		this.predecessorLeft.setComparator(this.comp);
+		this.predecessorRight.setComparator(this.comp);
 
 		return msgResult;
 	}

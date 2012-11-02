@@ -93,10 +93,10 @@ public class ParallelOperand extends Operator {
 				queueLimit);
 		final Thread starterThread = new ParallelOperandStarter(queue);
 		starterThread.start();
-		if (threadsList == null) {
-			threadsList = new LinkedList<Thread>();
+		if (this.threadsList == null) {
+			this.threadsList = new LinkedList<Thread>();
 		}
-		threadsList.add(starterThread);
+		this.threadsList.add(starterThread);
 
 		final Thread thread = new ParallelOperandThread(queue, queryResult);
 
@@ -110,8 +110,8 @@ public class ParallelOperand extends Operator {
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		// wait until all threads are finished!
-		if (threadsList != null)
-			for (final Thread t : threadsList) {
+		if (this.threadsList != null)
+			for (final Thread t : this.threadsList) {
 				try {
 					t.join();
 				} catch (final InterruptedException e) {
@@ -121,21 +121,6 @@ public class ParallelOperand extends Operator {
 			}
 		return super.preProcessMessage(msg);
 	}
-
-	// @Override
-	// public Message preProcessMessage(final EndOfStreamMessage msg) {
-	// final Message msg2 = super.preProcessMessage(msg);
-	// // wait until all threads are finished!
-	// for (final Thread t : threadsList) {
-	// try {
-	// t.join();
-	// } catch (final InterruptedException e) {
-	// System.err.println(e);
-	// e.printStackTrace();
-	// }
-	// }
-	// return msg2;
-	// }
 
 	/**
 	 * The helper thread for {@link ParallelOperand}. Uses a
@@ -189,18 +174,18 @@ public class ParallelOperand extends Operator {
 			while (it.hasNext()) {
 				bindings = it.next();
 				try {
-					queue.put(bindings);
+					this.queue.put(bindings);
 				} catch (final InterruptedException e) {
 					System.err
 							.println("ParallelOperandThread.run: interrupted");
-					queue.endOfData();
+					this.queue.endOfData();
 					return;
 				}
 			}
 
 			System.out.println("thread  stopped!");
 
-			queue.endOfData();
+			this.queue.endOfData();
 		}
 	}
 
@@ -218,21 +203,20 @@ public class ParallelOperand extends Operator {
 		ParallelOperandStarter(final BoundedBuffer<Bindings> queue) {
 			super("ParallelOperandStarter");
 			this.queue = queue;
-			sem.release();
+			ParallelOperand.this.sem.release();
 		}
 
 		@Override
 		public void run() {
-			final QueryResult qr = QueryResult.createInstance(queue);
-			if (succeedingOperators.size() > 1) {
-				System.err
-						.println("Error ParallelOperandStarter: More than one succeeding operator!");
+			final QueryResult qr = QueryResult.createInstance(this.queue);
+			if (ParallelOperand.this.succeedingOperators.size() > 1) {
+				System.err.println("Error ParallelOperandStarter: More than one succeeding operator!");
 			}
-			for (final OperatorIDTuple oid : succeedingOperators) {
+			for (final OperatorIDTuple oid : ParallelOperand.this.succeedingOperators) {
 				oid.processAll(qr);
 			}
 			try {
-				sem.acquire();
+				ParallelOperand.this.sem.acquire();
 			} catch (final InterruptedException e1) {
 				System.err.println(e1);
 				e1.printStackTrace();

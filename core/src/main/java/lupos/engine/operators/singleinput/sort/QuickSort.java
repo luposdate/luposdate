@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
@@ -43,13 +44,14 @@ import lupos.misc.debug.DebugStep;
 public class QuickSort extends CollectionSort {
 
 	// Here all incoming bindings are stored
-	protected QueryResult _bindings = QueryResult.createInstance();
+	protected ParallelIteratorMultipleQueryResults _bindings = new ParallelIteratorMultipleQueryResults();
 
 	public QuickSort(final lupos.sparql1_1.Node node) {
 		super(node);
 	}
 
 	public QuickSort() {
+		// nothing to init...
 	}
 
 	/**
@@ -57,8 +59,9 @@ public class QuickSort extends CollectionSort {
 	 * 
 	 * @return always null
 	 */
-	protected QueryResult postProcess(final QueryResult bindings, final int id) {
-		_bindings.addAll(bindings);
+	@Override
+	protected QueryResult postProcess(final QueryResult queryResult, final int id) {
+		this._bindings.addQueryResult(queryResult);
 		return null;
 	}
 
@@ -75,7 +78,7 @@ public class QuickSort extends CollectionSort {
 		// check if already sorted
 		boolean b = true;
 		for (int i = 0; i < bindings.size() - 1; i++) {
-			if (comparator.compare(bindings.get(i), bindings.get(i + 1)) > 0) {
+			if (this.comparator.compare(bindings.get(i), bindings.get(i + 1)) > 0) {
 				b = false;
 				break;
 			}
@@ -83,7 +86,7 @@ public class QuickSort extends CollectionSort {
 		if (b) {
 			return bindings;
 		} else {
-			return out_postProcess(bindings);
+			return out_postProcess(bindings, bindings.size());
 		}
 	}
 
@@ -93,7 +96,7 @@ public class QuickSort extends CollectionSort {
 	 * @param bindings
 	 * @return the given QueryResult in correct order
 	 */
-	protected QueryResult out_postProcess(final QueryResult bindings) {
+	protected QueryResult out_postProcess(final QueryResult bindings, int size) {
 
 		if (bindings.size() == 1) {
 			return bindings;
@@ -102,7 +105,7 @@ public class QuickSort extends CollectionSort {
 			final Iterator<Bindings> iter = bindings.iterator();
 			final Bindings b1 = iter.next();
 			final Bindings b2 = iter.next();
-			if (comparator.compare(b1, b2) <= 0) {
+			if (this.comparator.compare(b1, b2) <= 0) {
 				ret.add(b1);
 				ret.add(b2);
 				return ret;
@@ -123,7 +126,7 @@ public class QuickSort extends CollectionSort {
 
 			final Bindings nextB = it.next();
 
-			if (comparator.compare(pivot, nextB) <= 0) {
+			if (this.comparator.compare(pivot, nextB) <= 0) {
 				_HighEnd.add(nextB);
 			} else {
 				_LowEnd.add(nextB);
@@ -136,20 +139,20 @@ public class QuickSort extends CollectionSort {
 		}
 
 		if (_LowEnd.size() != 0) {
-			if (_LowEnd.size() == _bindings.size()) {
+			if (_LowEnd.size() == size) {
 				if (checkIfSorted(_LowEnd)) {
 					return _LowEnd;
 				}
 			}
-			_LowEnd = out_postProcess(_LowEnd);
+			_LowEnd = out_postProcess(_LowEnd, size);
 		}
 		if (_HighEnd.size() != 0) {
-			if (_HighEnd.size() == _bindings.size()) {
+			if (_HighEnd.size() == size) {
 				if (checkIfSorted(_HighEnd)) {
 					return _HighEnd;
 				}
 			}
-			_HighEnd = out_postProcess(_HighEnd);
+			_HighEnd = out_postProcess(_HighEnd, size);
 		}
 
 		_LowEnd.addAll(_HighEnd);
@@ -161,7 +164,7 @@ public class QuickSort extends CollectionSort {
 	protected boolean checkIfSorted(final QueryResult bindings) {
 		boolean b = true;
 		for (int i = 0; i < bindings.size() - 1; i++) {
-			if (comparator.compare(bindings.get(i), bindings.get(i + 1)) > 0) {
+			if (this.comparator.compare(bindings.get(i), bindings.get(i + 1)) > 0) {
 				b = false;
 				break;
 			}
@@ -169,17 +172,17 @@ public class QuickSort extends CollectionSort {
 		return b;
 	}
 
+	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		_bindings = checkIfAlreadySorted(_bindings);
-		for (final Bindings b : _bindings) {
-			for (final OperatorIDTuple opId : succeedingOperators) {
-				opId.processAll(b);
-			}
+		QueryResult result = checkIfAlreadySorted(this._bindings.getQueryResult());
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
+			opId.processAll(result);
 		}
-		_bindings = QueryResult.createInstance();
+		this._bindings = new ParallelIteratorMultipleQueryResults();
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
@@ -195,26 +198,24 @@ public class QuickSort extends CollectionSort {
 		return false;
 	}
 
-	public QueryResult deleteQueryResult(final QueryResult queryResult,
-			final int operandID) {
-		// problem: it does not count the number of occurences of a binding
-		// i.e. { ?a=<a> }, { ?a=<a> } and delete { ?a=<a> } will result in
-		// {} instead of { ?a=<a> }!!!!!!
-		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
-		while (itb.hasNext())
-			_bindings.remove(itb.next());
+	@Override
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
+		this._bindings.removeAll(queryResult);
 		return null;
 	}
 
+	@Override
 	public void deleteAll(final int operandID) {
-		_bindings.release();
-		_bindings = QueryResult.createInstance();
+		this._bindings.release();
+		this._bindings = new ParallelIteratorMultipleQueryResults();	
 	}
 
+	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
@@ -222,16 +223,15 @@ public class QuickSort extends CollectionSort {
 		return msg;
 	}
 	
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		_bindings = checkIfAlreadySorted(_bindings);
-		for (final OperatorIDTuple opId : succeedingOperators) {
-			final QueryResultDebug qrDebug = new QueryResultDebug(_bindings,
-					debugstep, this, opId.getOperator(), true);
-			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
-					.getId(), debugstep);
+		QueryResult result = checkIfAlreadySorted(this._bindings.getQueryResult());
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
+			final QueryResultDebug qrDebug = new QueryResultDebug(result,debugstep, this, opId.getOperator(), true);
+			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 		}
-		_bindings = QueryResult.createInstance();
+		this._bindings = new ParallelIteratorMultipleQueryResults();
 		return msg;
 	}
 }

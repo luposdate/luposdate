@@ -31,8 +31,12 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
+import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.messages.EndOfEvaluationMessage;
+import lupos.engine.operators.messages.Message;
 
 /**
  * This join operator creates an index on the left operand and
@@ -44,7 +48,8 @@ import lupos.engine.operators.BasicOperator;
  * This operator is not suitable for recursive queries and rule processing, where cycles in the operatorgraph can occur.  
  */
 public abstract class IndexOnLeftOperandJoin extends Join {
-	protected QueryResult[] operands = new QueryResult[2];
+	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
+																	new ParallelIteratorMultipleQueryResults()};
 	
 	public IndexOnLeftOperandJoin() {
 		super();
@@ -59,24 +64,32 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 	
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
-		this.operands[operandID] = bindings;
-		
-		if(this.operands[0]!=null && this.operands[1]!=null){
+		this.operands[operandID].addQueryResult(bindings); // just store the queryresult!
+		return null; // wait for EndOfStreamMessage...		
+	}
+	
+	@Override
+	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
+		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
 			Map<String, QueryResult> leftOperandsData = this.createDatastructure();
 			QueryResult cartesianProduct = QueryResult.createInstance();
-			
-			this.operands[0].materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
-			
-			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0], this.intersectionVariables, leftOperandsData, cartesianProduct);
-			
-			return QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1], leftOperandsData, cartesianProduct));
-			
-		} else {
-			// wait for the other operand
-			return null;
+	
+			// this.operands[0].materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
+	
+			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0].getQueryResult(), this.intersectionVariables, leftOperandsData, cartesianProduct);
+	
+			QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
+	
+			if(this.succeedingOperators.size()>1){
+				result.materialize();
+			}
+	
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAll(result);
+			}
 		}
-		
-	}
+		return msg;
+	}	
 	
 	public static void indexQueryResult(final QueryResult toIndex, final Collection<Variable> joinVariables, final Map<String, QueryResult> index, final QueryResult cartesianProduct){
 		final Iterator<Bindings> itbindings = toIndex.oneTimeIterator();

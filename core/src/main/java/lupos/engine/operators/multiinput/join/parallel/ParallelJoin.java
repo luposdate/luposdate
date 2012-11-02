@@ -33,6 +33,7 @@ import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.parallel.BoundedBuffer;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
@@ -62,9 +63,8 @@ public class ParallelJoin extends Join {
 
 	private static final int RIGHT = 1;
 
-	private QueryResult left = null;
-
-	private QueryResult right = null;
+	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
+																	new ParallelIteratorMultipleQueryResults()};
 
 	protected final Collection<? extends MultiInputOperator> operators;
 
@@ -92,8 +92,8 @@ public class ParallelJoin extends Join {
 		for (final MultiInputOperator join : operators) {
 			join.setSucceedingOperator(new OperatorIDTuple(col, 0));
 		}
-		hashFun = new HashFunction();
-		threadList = new ArrayList<ParallelJoiner>(operators.size());
+		this.hashFun = new HashFunction();
+		this.threadList = new ArrayList<ParallelJoiner>(operators.size());
 		this.optional = optional;
 	}
 
@@ -113,60 +113,41 @@ public class ParallelJoin extends Join {
 	}
 
 	@Override
-	public synchronized QueryResult process(final QueryResult input,
+	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operatorID) {
-		switch (operatorID) {
-		case LEFT:
-			if (left != null)
-				left.add(input);
-			else
-				left = input;
-			break;
-		case RIGHT:
-			if (right != null)
-				right.add(input);
-			else
-				right = input;
-			break;
-
-		default:
-			throw new UnsupportedOperationException(
-					"Only two operators are supported!");
-		}
+		this.operands[operatorID].addQueryResult(queryResult);
 		return null;
 	}
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		endOfStreamMsg = msg;
-		if (left != null && right != null) {
+		this.endOfStreamMsg = msg;
+		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
 			final QueryResult qr = join();
 			if (qr != null) {
-				if (succeedingOperators.size() > 1)
+				if (this.succeedingOperators.size() > 1)
 					qr.materialize();
-				for (final OperatorIDTuple opId : succeedingOperators) {
+				for (final OperatorIDTuple opId : this.succeedingOperators) {
 					opId.processAll(qr);
 				}
 			}
 		}
-		if (left != null)
-			left.release();
-		if (right != null)
-			right.release();
-		left = null;
-		right = null;
+		this.operands[0].release();
+		this.operands[1].release();
+		this.operands[0] = new ParallelIteratorMultipleQueryResults();
+		this.operands[1] = new ParallelIteratorMultipleQueryResults();
 		return msg;
 	}
 
-	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
-			final DebugStep debugstep) {
-		endOfStreamMsg = msg;
-		if (left != null && right != null) {
+	@Override
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
+		this.endOfStreamMsg = msg;
+		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
 			final QueryResult qr = join();
 			if (qr != null) {
-				if (succeedingOperators.size() > 1)
+				if (this.succeedingOperators.size() > 1)
 					qr.materialize();
-				for (final OperatorIDTuple opId : succeedingOperators) {
+				for (final OperatorIDTuple opId : this.succeedingOperators) {
 					final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 							debugstep, this, opId.getOperator(), true);
 					((Operator) opId.getOperator()).processAllDebug(qrDebug,
@@ -174,12 +155,10 @@ public class ParallelJoin extends Join {
 				}
 			}
 		}
-		if (left != null)
-			left.release();
-		if (right != null)
-			right.release();
-		left = null;
-		right = null;
+		this.operands[0].release();
+		this.operands[1].release();
+		this.operands[0] = new ParallelIteratorMultipleQueryResults();
+		this.operands[1] = new ParallelIteratorMultipleQueryResults();
 		return msg;
 	}
 
@@ -192,12 +171,12 @@ public class ParallelJoin extends Join {
 		// right size
 
 		final int numberOfThreads = /* Math.min( */
-		operators.size()
+		this.operators.size()
 		/*
 		 * , Math.min(left // this forces the query results to materialize => do
 		 * not do this! .size(), right.size()))
 		 */;
-		threadList.clear();
+		this.threadList.clear();
 
 		// if nothing to join
 		if (numberOfThreads == 0) {
@@ -209,15 +188,12 @@ public class ParallelJoin extends Join {
 		// the key of the hashfunktion should be in the bound of the
 		// Threadsnumber
 		// every arraycell has a list of bindings
-		final QueryResult[] leftResults = prepareResultArray(numberOfThreads,
-				left);
-		final QueryResult[] rightResults = prepareResultArray(numberOfThreads,
-				right);
+		final QueryResult[] leftResults = prepareResultArray(numberOfThreads, this.operands[0].getQueryResult());
+		final QueryResult[] rightResults = prepareResultArray(numberOfThreads, this.operands[1].getQueryResult());
 
 		int countThreads = 0;
-		final Iterator<? extends MultiInputOperator> iterator = operators
-				.iterator();
-		if (optional) {
+		final Iterator<? extends MultiInputOperator> iterator = this.operators.iterator();
+		if (this.optional) {
 			// optional anyway materializes its queryresults
 			// so do this before, because we want to know the number of results!
 			final QueryResultMaterializer[] qrm_right = new QueryResultMaterializer[rightResults.length];
@@ -240,10 +216,10 @@ public class ParallelJoin extends Join {
 		}
 		for (int i = 0; i < rightResults.length; i++) {
 			final MultiInputOperator nextOperator = iterator.next();
-			if (optional) {
+			if (this.optional) {
 				if (rightResults[i].size() == 0) {
 					if (leftResults[i].size() > 0)
-						col.process(leftResults[i], LEFT);
+						this.col.process(leftResults[i], LEFT);
 					continue;
 				}
 			}
@@ -253,40 +229,24 @@ public class ParallelJoin extends Join {
 			final ParallelJoiner parallelJoin = new ParallelJoiner(
 					leftResults[i], rightResults[i], nextOperator);
 			// add the Therads to the list
-			threadList.add(parallelJoin);
+			this.threadList.add(parallelJoin);
 		}
 		// before the Threads start, deliver the number of threads to the
 		// resultCollector
-		col.setNumberOfThreads(countThreads);
+		this.col.setNumberOfThreads(countThreads);
 		// start all Threads
 		// System.out.println("Paralleljoin().preprocessMs countThreads: "
 		// + countThreads);
 		for (int i = 0; i < countThreads; i++) {
-			threadList.get(i).start();
+			this.threadList.get(i).start();
 		}
-		return col.getResult();
+		return this.col.getResult();
 	}
-
-	// private QueryResult[] prepareResultArray(final int numberOfThreads,
-	// final QueryResult source) {
-	// final QueryResult[] res = new QueryResult[numberOfThreads];
-	//
-	// final Iterator<Bindings> itb = source.oneTimeIterator();
-	// while (itb.hasNext()) {
-	// final Bindings b = itb.next();
-	// final long key = hashFun.hash(hashFun.getKey(b,
-	// intersectionVariables));
-	// final int resultNumber = (int) (key % numberOfThreads);
-	// if (res[resultNumber] == null)
-	// res[resultNumber] = QueryResult.createInstance();
-	// res[resultNumber].add(b);
-	// }
-	// return res;
-	// }
 
 	private QueryResult[] prepareResultArray(final int numberOfThreads,
 			final QueryResult source) {
 
+		@SuppressWarnings("unchecked")
 		final BoundedBuffer<Bindings>[] buffer = new BoundedBuffer[numberOfThreads];
 
 		final QueryResult[] res = new QueryResult[numberOfThreads];
@@ -333,22 +293,21 @@ public class ParallelJoin extends Join {
 		}
 
 		public MultiInputOperator getJoiner() {
-			return joiner;
+			return this.joiner;
 		}
 
 		@Override
 		public void run() {
-			joiner.setIntersectionVariables(intersectionVariables);
-			joiner.process(left, LEFT);
+			this.joiner.setIntersectionVariables(ParallelJoin.this.intersectionVariables);
+			this.joiner.process(this.left, LEFT);
 			// System.out.println("ParallelJoiner.run()leftsize: " + left.size()
 			// + " rightsize: " + right.size());
-			final QueryResult res = joiner.process(right, RIGHT);
+			final QueryResult res = this.joiner.process(this.right, RIGHT);
 			if (res != null) {
-				col.process(res, LEFT);
+				ParallelJoin.this.col.process(res, LEFT);
 			}
-			endOfStreamMsg = (EndOfEvaluationMessage) joiner
-					.preProcessMessage(endOfStreamMsg);
-			col.incNumberOfThreads();
+			ParallelJoin.this.endOfStreamMsg = (EndOfEvaluationMessage) this.joiner.preProcessMessage(ParallelJoin.this.endOfStreamMsg);
+			ParallelJoin.this.col.incNumberOfThreads();
 			// System.out.println("ParallelJoiner.run() end");
 
 		}
@@ -394,17 +353,16 @@ public class ParallelJoin extends Join {
 		 * 
 		 */
 		private void shareOut() throws InterruptedException {
-			final long numberOfThreads = b.length;
-			final BoundedBuffer<Bindings>[] leftBuff = b;
-			final Iterator<Bindings> leftIter = qres.oneTimeIterator();
+			final long numberOfThreads = this.b.length;
+			final BoundedBuffer<Bindings>[] leftBuff = this.b;
+			final Iterator<Bindings> leftIter = this.qres.oneTimeIterator();
 			// share the rest of the bindings
 			while (leftIter.hasNext()) {// share left
-				final Bindings b = leftIter.next();
-				if (b != null) {
-					final long key = hashFun.hash(hashFun.getKey(b,
-							intersectionVariables));
+				final Bindings bindings = leftIter.next();
+				if (bindings != null) {
+					final long key = ParallelJoin.this.hashFun.hash(HashFunction.getKey(bindings, ParallelJoin.this.intersectionVariables));
 					final int resultNumber = (int) (key % numberOfThreads);
-					leftBuff[resultNumber].put(b);
+					leftBuff[resultNumber].put(bindings);
 				}
 			}
 			// now all bindings are shared out!
@@ -433,7 +391,7 @@ public class ParallelJoin extends Join {
 		 */
 		@Override
 		public void run() {
-			qres.materialize();
+			this.qres.materialize();
 		}
 	}
 }
