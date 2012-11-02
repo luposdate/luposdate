@@ -42,7 +42,7 @@ public class ResultCollector extends Operator implements
 
 	protected final Lock lock = new ReentrantLock();
 
-	protected final Condition insertCondition = lock.newCondition();
+	protected final Condition insertCondition = this.lock.newCondition();
 
 	protected int numberOfThreads;
 
@@ -60,12 +60,12 @@ public class ResultCollector extends Operator implements
 
 	@Override
 	public QueryResult process(final QueryResult res, final int arg1) {
-		lock.lock();
+		this.lock.lock();
 		try {
-			resultList.add(res);
-			insertCondition.signalAll();
+			this.resultList.add(res);
+			this.insertCondition.signalAll();
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 		return null;
 	}
@@ -75,28 +75,29 @@ public class ResultCollector extends Operator implements
 	}
 
 	public void incNumberOfThreads() {
-		lock.lock();
+		this.lock.lock();
 		try {
-			countThreads++;
-			insertCondition.signalAll();
+			this.countThreads++;
+			this.insertCondition.signalAll();
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
 	public void setNumberOfThreads(final int numberOfThreads) {
 		this.numberOfThreads = numberOfThreads;
 		// does not work for optional: resultList.clear();
-		currentIter = null;
-		countThreads = 0;
+		this.currentIter = null;
+		this.countThreads = 0;
 	}
 
 	/**
 	 * If the list is empty and not all threads are ready, wait. If all threads
 	 * are done, move to the last element.
 	 */
+	@Override
 	public boolean hasNext() {
-		if (currentIter != null && currentIter.hasNext()) {
+		if (this.currentIter != null && this.currentIter.hasNext()) {
 			// if the iterator from the current QS is not empty
 			return true;
 		}
@@ -104,64 +105,67 @@ public class ResultCollector extends Operator implements
 		// if the iterator from the current QS is empty and jet QS are
 		// available renew the currentIter
 
-		lock.lock();
+		this.lock.lock();
 		try {
 			// list is empty look for new threads
-			while (countThreads < numberOfThreads || !resultList.isEmpty()) {
+			while (this.countThreads < this.numberOfThreads || !this.resultList.isEmpty()) {
 				// list is empty => wait and let the Threads proceed
-				while (resultList.isEmpty() && countThreads < numberOfThreads) {
+				while (this.resultList.isEmpty() && this.countThreads < this.numberOfThreads) {
 					try {
-						insertCondition.await();
-					} catch (final InterruptedException ignore) {
+						this.insertCondition.await();
+					} catch (final InterruptedException ignore) { // ignore exception
 					}
 				}
 
 				// now another result is available
-				while (!resultList.isEmpty()) {
+				while (!this.resultList.isEmpty()) {
 					// take the first element
-					final QueryResult res = resultList.remove(0);
+					final QueryResult res = this.resultList.remove(0);
 					if (res != null) {
-						currentIter = res.oneTimeIterator();
-						if (currentIter.hasNext()) {
+						this.currentIter = res.oneTimeIterator();
+						if (this.currentIter.hasNext()) {
 							return true;
 						}
 					}
 				}
 			}
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 		return false;
 	}
 
+	@Override
 	public Bindings next() {
 		if (hasNext()) {
-			return currentIter.next();
+			return this.currentIter.next();
 		} else {
 			return null;
 		}
 	}
 
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException(
 				"can not remove from QueryResults");
 	}
 
 	protected void waitForAllThreads() {
-		lock.lock();
+		this.lock.lock();
 		try {
-			while (countThreads < numberOfThreads) {
+			while (this.countThreads < this.numberOfThreads) {
 				try {
-					insertCondition.await();
-				} catch (final InterruptedException e1) {
+					this.insertCondition.await();
+				} catch (final InterruptedException e1) { // ignore exception
 				}
 
 			}
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
+	@Override
 	public void close() {
 		waitForAllThreads();
 	}

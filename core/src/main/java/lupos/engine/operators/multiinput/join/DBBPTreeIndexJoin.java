@@ -31,12 +31,13 @@ import lupos.datastructures.queryresult.QueryResult;
 
 public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init() {
-		lba = new DBBPTree[2];
+		this.lba = new DBBPTree[2];
 		try {
-			lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
+			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
+			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
 		} catch (IOException e) {
 			System.err.println(e);
 			e.printStackTrace();

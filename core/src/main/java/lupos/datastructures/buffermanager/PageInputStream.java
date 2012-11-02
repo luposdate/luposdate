@@ -37,26 +37,26 @@ public class PageInputStream extends InputStream {
 	public PageInputStream(final int pagenumber, final PageManager pageManager)
 			throws IOException {
 		this.pageManager = pageManager;
-		currentPage = pageManager.getPage(pagenumber);
+		this.currentPage = pageManager.getPage(pagenumber);
 		setMaxOnThisPage();
 	}
 
 	private void setMaxOnThisPage() {
-		maxOnThisPage = (currentPage[4] + 128) * 256 + (currentPage[5] + 128);
+		this.maxOnThisPage = (this.currentPage[4] + 128) * 256 + (this.currentPage[5] + 128);
 	}
 
 	@Override
 	public int read() throws IOException {
-		if (index >= maxOnThisPage) {
-			final int nextPage = (((currentPage[0] + 128) * 256 + (currentPage[1] + 128)) * 256 + (currentPage[2] + 128))
-					* 256 + (currentPage[3] + 128);
+		if (this.index >= this.maxOnThisPage) {
+			final int nextPage = (((this.currentPage[0] + 128) * 256 + (this.currentPage[1] + 128)) * 256 + (this.currentPage[2] + 128))
+					* 256 + (this.currentPage[3] + 128);
 			if (nextPage == 0)
 				return -1;
-			currentPage = pageManager.getPage(nextPage);
-			index = 6;
+			this.currentPage = this.pageManager.getPage(nextPage);
+			this.index = 6;
 			setMaxOnThisPage();
 		}
-		return currentPage[index++] + 128;
+		return this.currentPage[this.index++] + 128;
 	}
 
 }

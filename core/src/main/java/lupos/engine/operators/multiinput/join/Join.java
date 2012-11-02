@@ -279,8 +279,8 @@ public class Join extends MultiInputOperator {
 	 * This method must be overridden by the specific join algorithms. It
 	 * supports the reuse of code for the Optional operator.
 	 */
-	public OptionalResult processJoin(final QueryResult bindings,
-			final int operandID) {
+	@SuppressWarnings("unused")
+	public OptionalResult processJoin(final QueryResult bindings, final int operandID) {
 		throw (new UnsupportedOperationException("This Operator(" + this
 				+ ") should have been replaced before being used."));
 	}
@@ -307,8 +307,7 @@ public class Join extends MultiInputOperator {
 
 	@Override
 	public String toString() {
-		String result = super.toString() + " on "
-				+ intersectionVariables;
+		String result = super.toString() + " on " + this.intersectionVariables;
 		if (this.realCardinality >= 0) {
 			result += "\nCardinality: " + this.realCardinality;
 			if (this.estimatedCardinality >= 0)

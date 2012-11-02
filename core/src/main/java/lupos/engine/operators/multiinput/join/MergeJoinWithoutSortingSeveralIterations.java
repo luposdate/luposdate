@@ -23,13 +23,11 @@
  */
 package lupos.engine.operators.multiinput.join;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.Message;
@@ -46,26 +44,7 @@ public class MergeJoinWithoutSortingSeveralIterations extends Join {
 	protected QueryResult left = null;
 	protected QueryResult right = null;
 
-	protected Comparator<Bindings> comp = new Comparator<Bindings>() {
-
-		public int compare(final Bindings o1, final Bindings o2) {
-			for (final Variable var : intersectionVariables) {
-				final Literal l1 = o1.get(var);
-				final Literal l2 = o2.get(var);
-				if (l1 != null && l2 != null) {
-					final int compare = l1
-							.compareToNotNecessarilySPARQLSpecificationConform(l2);
-					if (compare != 0)
-						return compare;
-				} else if (l1 != null)
-					return -1;
-				else if (l2 != null)
-					return 1;
-			}
-			return 0;
-		}
-
-	};
+	protected BindingsComparator comp = new BindingsComparator();
 
 	/**
 	 * This method pre-processes the StartOfStreamMessage
@@ -76,148 +55,100 @@ public class MergeJoinWithoutSortingSeveralIterations extends Join {
 	 */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
-		if (left != null)
-			left.release();
-		if (right != null)
-			right.release();
-		left = null;
-		right = null;
+		if (this.left != null)
+			this.left.release();
+		if (this.right != null)
+			this.right.release();
+		this.left = null;
+		this.right = null;
 		return super.preProcessMessage(msg);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		bindings.materialize();
-		final QueryResult oldLeft = left;
-		final QueryResult oldRight = right;
+		this.comp.setVariables(this.intersectionVariables);
+		final QueryResult oldLeft = this.left;
+		final QueryResult oldRight = this.right;
 		if (operandID == 0) {
-			if (left == null)
-				left = bindings;
+			if (this.left == null)
+				this.left = bindings;
 			else
-				left = QueryResult.createInstance(new MergeIterator<Bindings>(
-						comp, left.iterator(), bindings.iterator()));
+				this.left = QueryResult.createInstance(new MergeIterator<Bindings>(this.comp, this.left.iterator(), bindings.iterator()));
 		} else if (operandID == 1) {
-			if (right == null)
-				right = bindings;
+			if (this.right == null)
+				this.right = bindings;
 			else
-				right = QueryResult.createInstance(new MergeIterator<Bindings>(
-						comp, right.iterator(), bindings.iterator()));
+				this.right = QueryResult.createInstance(new MergeIterator<Bindings>(this.comp, this.right.iterator(), bindings.iterator()));
 		} else
 			System.err.println("MergeJoin is a binary operator, but received the operand number "
 							+ operandID);
-		if (left != null && right != null) {
-			left.materialize();
-			right.materialize();
-			// System.out.println(">>>>>>>>>>left " + intersectionVariables
-			// + " size:" + left.size());
-			// Bindings last = null;
-			// int i = 0;
-			// for (final Bindings b : left) {
-			// i++;
-			// if (last != null) {
-			// if (comp.compare(last, b) > 0) {
-			// System.out.println("Not correctly sorted:" + last
-			// + "<---------->" + b);
-			// }
-			// }
-			// last = b;
-			// }
-			// System.out.println(">>>>>>>>>>right " + intersectionVariables
-			// + " size:" + right.size());
-			// last = null;
-			// for (final Bindings b : right) {
-			// if (last != null) {
-			// if (comp.compare(last, b) > 0) {
-			// System.out.println("Not correctly sorted:" + last
-			// + "<---------->" + b);
-			// }
-			// }
-			// last = b;
-			// }
+		if (this.left != null && this.right != null) {
+			this.left.materialize();
+			this.right.materialize();
 
 			final Iterator<Bindings> leftIterator = (operandID == 0 && oldLeft != null) ? new MinusIterator(
 					bindings.iterator(), oldLeft.iterator())
-					: left.iterator();
+					: this.left.iterator();
 			final QueryResult rightLocal = (operandID == 1 && oldRight != null) ? QueryResult
 					.createInstance(new MinusIterator(bindings.iterator(),
 							oldRight.iterator()))
-					: right;
+					: this.right;
 
-			// System.out.println("--right:" + rightLocal);
-			// if (operandID == 0 && oldLeft != null) {
-			// final Iterator<Bindings> leftIterator2 = new MinusIterator(
-			// bindings.iterator(), oldLeft.iterator());
-			// System.out.print("--left:");
-			// while (leftIterator2.hasNext()) {
-			// System.out.print(leftIterator2.next() + ",");
-			// }
-			// System.out.println();
-			// } else
-			// System.out.println("--left:" + left);
 
-			final ParallelIterator<Bindings> currentResult = (intersectionVariables
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
 					.size() == 0) ? MergeJoin.cartesianProductIterator(
 					leftIterator, rightLocal) : MergeJoin.mergeJoinIterator(
-					leftIterator, rightLocal.iterator(), comp,
-					intersectionVariables);
+					leftIterator, rightLocal.iterator(), this.comp,
+					this.intersectionVariables);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult
 						.createInstance(new ParallelIterator<Bindings>() {
 
 							int number = 0;
 
+							@Override
 							public void close() {
 								currentResult.close();
 							}
 
+							@Override
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									MergeJoinWithoutSortingSeveralIterations.this.realCardinality = this.number;
 									close();
 								}
 								return currentResult.hasNext();
 							}
 
+							@Override
 							public Bindings next() {
 								final Bindings b = currentResult.next();
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									MergeJoinWithoutSortingSeveralIterations.this.realCardinality = this.number;
 									close();
 								}
 								if (b != null)
-									number++;
+									this.number++;
 								return b;
 							}
 
+							@Override
 							public void remove() {
 								currentResult.remove();
 							}
 
+							@Override
 							public void finalize() {
 								close();
 							}
 						});
-				// System.out.println(this.toString());
-				// System.out.println("!!!!!!!!!!Preceding operators:"
-				// + this.getPrecedingOperators());
-				// System.out.println("!!!!!!!!!!Results: Left:"+left.size()+
-				// "\n!!!!!!!!!! Right:"
-				// +right.size()+"\n!!!!!!!!!! Result:"+((result
-				// ==null)?"null":result.size()));*/
-				// System.out.println("!!!!!!!!!!Results: Left:" + left
-				// + "\n!!!!!!!!!! Right:" + right
-				// + "\n!!!!!!!!!! Result:"
-				// + ((result == null) ? "null" : result));
-				// System.out.println("Result:" + result);
-				// System.out.println("Result size:" + result.size());
 				return result;
 			} else {
-				// left.release();
-				// right.release();
 				return null;
 			}
 		} else {
-
 			return null;
 		}
 	}
@@ -238,19 +169,22 @@ public class MergeJoinWithoutSortingSeveralIterations extends Join {
 			nextMap();
 		}
 
-		public void close() {
+		@Override
+		public void close() { // nothing to close...
 		}
 
+		@Override
 		public boolean hasNext() {
-			if (next == null)
-				next = computeNext();
-			return (next != null);
+			if (this.next == null)
+				this.next = computeNext();
+			return (this.next != null);
 		}
 
+		@Override
 		public Bindings next() {
-			if (next != null) {
-				final Bindings znext = next;
-				next = null;
+			if (this.next != null) {
+				final Bindings znext = this.next;
+				this.next = null;
 				return znext;
 			} else
 				return computeNext();
@@ -258,48 +192,49 @@ public class MergeJoinWithoutSortingSeveralIterations extends Join {
 
 		private Bindings computeNext() {
 			while (true) {
-				if (!it.hasNext())
+				if (!this.it.hasNext())
 					return null;
-				final Bindings next = it.next();
-				if (next == null)
+				final Bindings next_local = this.it.next();
+				if (next_local == null)
 					return null;
 				while (true) {
-					if (currentMinus == null)
-						return next;
-					final int compare = comp.compare(next, currentMinus);
+					if (this.currentMinus == null)
+						return next_local;
+					final int compare = MergeJoinWithoutSortingSeveralIterations.this.comp.compare(next_local, this.currentMinus);
 					if (compare == 0) {
-						if (currentMinusMap.contains(next)) {
+						if (this.currentMinusMap.contains(next_local)) {
 							break;
 						} else
-							return next;
+							return next_local;
 					}
 					if (compare < 0)
-						return next;
+						return next_local;
 					nextMap();
 				}
 			}
 		}
 
 		private void nextMap() {
-			currentMinusMap.clear();
-			if (nextMinus == null && minus.hasNext())
-				nextMinus = minus.next();
-			if (nextMinus != null) {
-				currentMinus = nextMinus;
-				currentMinusMap.add(nextMinus);
-				nextMinus = null;
-				while (minus.hasNext()) {
-					nextMinus = minus.next();
-					if (comp.compare(nextMinus, currentMinus) == 0)
-						currentMinusMap.add(nextMinus);
+			this.currentMinusMap.clear();
+			if (this.nextMinus == null && this.minus.hasNext())
+				this.nextMinus = this.minus.next();
+			if (this.nextMinus != null) {
+				this.currentMinus = this.nextMinus;
+				this.currentMinusMap.add(this.nextMinus);
+				this.nextMinus = null;
+				while (this.minus.hasNext()) {
+					this.nextMinus = this.minus.next();
+					if (MergeJoinWithoutSortingSeveralIterations.this.comp.compare(this.nextMinus, this.currentMinus) == 0)
+						this.currentMinusMap.add(this.nextMinus);
 					else
 						break;
-					nextMinus = null;
+					this.nextMinus = null;
 				}
 			} else
-				currentMinus = null;
+				this.currentMinus = null;
 		}
 
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}

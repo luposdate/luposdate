@@ -34,11 +34,11 @@ public class MergeResultCollector extends ResultCollector {
 
 	@Override
 	public QueryResult process(final QueryResult res, final int arg1) {
-		lock.lock();
+		this.lock.lock();
 		try {
-			resultList.add(res);
+			this.resultList.add(res);
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 		return null;
 	}
@@ -46,20 +46,19 @@ public class MergeResultCollector extends ResultCollector {
 	@Override
 	public QueryResult getResult() {
 		waitForAllThreads();
-		return QueryResult.createInstance(new MergeUnionIterator(resultList,
-				false, intersectionVariables));
+		return QueryResult.createInstance(new MergeUnionIterator(this.resultList, false, this.intersectionVariables));
 	}
 
 	@Override
 	public void incNumberOfThreads() {
-		lock.lock();
+		this.lock.lock();
 		try {
-			countThreads++;
-			if (countThreads == numberOfThreads) {
-				insertCondition.signalAll();
+			this.countThreads++;
+			if (this.countThreads == this.numberOfThreads) {
+				this.insertCondition.signalAll();
 			}
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 
 	}

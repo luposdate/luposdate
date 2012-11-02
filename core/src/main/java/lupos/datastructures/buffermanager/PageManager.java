@@ -26,6 +26,8 @@ package lupos.datastructures.buffermanager;
 import java.io.File;
 import java.io.IOException;
 
+import lupos.datastructures.buffermanager.BufferManager.PageAddress;
+
 /**
  * This class manages the free pages in a file. The first page is reserved for
  * storing the free pages before the end of the file.
@@ -45,24 +47,49 @@ public class PageManager {
 	protected final BufferManager bufferManager;
 	protected int maxNumberPages = 0;
 	protected boolean freePageBeforeEndOfFile = false;
+	protected final String filename;
+	
+	/**
+	 * The size of one page in bytes for this page manager
+	 */
+	protected final int pagesize;
+	
+	/**
+	 * The default size of one page in bytes
+	 */
+	protected static int DEFAULTPAGESIZE = 8 * 1024;
 		
 	/**
 	* creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
 	*/
 	public static PageManager createPageManager(final String name) throws IOException{
+		return PageManager.createPageManager(name, PageManager.DEFAULTPAGESIZE);
+	}
+	
+	public static PageManager createPageManager(final String name, int pagesize) throws IOException{
 		File f = new File(name + "_0");
-		return new PageManager(name, !f.exists()); 
+		return new PageManager(name, !f.exists(), pagesize); 
 	}
 
 	public PageManager(final String name) throws IOException {
-		this(name, true);
+		this(name, PageManager.DEFAULTPAGESIZE);
 	}
-	
+
+	public PageManager(final String name, final int pagesize) throws IOException {
+		this(name, true, pagesize);
+	}
+
 	public PageManager(final String name, boolean overwriteExistingFile) throws IOException {
-		this.bufferManager = new BufferManager(name);
+		this(name, overwriteExistingFile, PageManager.DEFAULTPAGESIZE);
+	}
+		
+	public PageManager(final String name, boolean overwriteExistingFile, final int pagesize) throws IOException {
+		this.bufferManager = BufferManager.getBufferManager();
+		this.filename = name;
+		this.pagesize = pagesize;
 		if(overwriteExistingFile){
 			// initialize page for storing released pages...
-			this.bufferManager.modifyPage(0, this.getEmptyPage0());
+			this.bufferManager.modifyPage(this.pagesize, new PageAddress(0, this.filename), this.getEmptyPage0());
 		} else {
 			this.initAfterLoading();
 		}
@@ -79,7 +106,7 @@ public class PageManager {
 	 * @throws IOException
 	 */
 	public byte[] getPage(final int pagenumber) throws IOException {
-		return this.bufferManager.getPage(pagenumber);
+		return this.bufferManager.getPage(this.pagesize, new PageAddress(pagenumber, this.filename));
 	}
 
 	/**
@@ -95,7 +122,7 @@ public class PageManager {
 	 */
 	public void modifyPage(final int pagenumber, final byte[] pageContent)
 			throws IOException {
-		this.bufferManager.modifyPage(pagenumber, pageContent);
+		this.bufferManager.modifyPage(this.pagesize, new PageAddress(pagenumber, this.filename), pageContent);
 	}
 
 	/**
@@ -104,16 +131,16 @@ public class PageManager {
 	 * @throws IOException
 	 */
 	public void writeAllModifiedPages() throws IOException {
-		this.bufferManager.writeAllModifiedPages();
+		this.bufferManager.writeAllModifiedPages(this.filename);
 	}
 
 	/**
-	 * Returns an empty page in the size of the default page size.
+	 * Returns an empty page in the size of the given page size.
 	 * 
 	 * @return an empty page
 	 */
 	public byte[] getEmptyPage() {
-		return this.bufferManager.getEmptyPage();
+		return this.bufferManager.getEmptyPage(this.pagesize);
 	}
 	
 	/**
@@ -152,8 +179,8 @@ public class PageManager {
 	 * @throws IOException
 	 */
 	public void reset() throws IOException{
-		this.bufferManager.reset();
-		this.bufferManager.modifyPage(0, this.getEmptyPage0());	
+		this.bufferManager.reset(this.filename);
+		this.bufferManager.modifyPage(this.pagesize, new PageAddress(0, this.filename), this.getEmptyPage0());	
 	}
 
 	/**
@@ -172,7 +199,7 @@ public class PageManager {
 			// the file are stored!
 			int index = 0;
 			try {
-				byte[] currentPage = this.bufferManager.getPage(index);
+				byte[] currentPage = this.bufferManager.getPage(this.pagesize, new PageAddress(index, this.filename));
 				do {
 					int max = (currentPage[4] + 128) * 256
 							+ (currentPage[5] + 128);
@@ -183,7 +210,7 @@ public class PageManager {
 						max -= 4;
 						currentPage[5] = (byte) ((max % 256) - 128);
 						currentPage[4] = (byte) (((max / 256) % 256) - 128);
-						this.bufferManager.modifyPage(index, currentPage);
+						this.bufferManager.modifyPage(this.pagesize, new PageAddress(index, this.filename), currentPage);
 						return result;
 					}
 					index = (((currentPage[0] + 128) * 256 + (currentPage[1] + 128)) * 256 + (currentPage[2] + 128))
@@ -195,7 +222,7 @@ public class PageManager {
 						storeMaxNumberPagesAndFreePageBeforeEndOfFile();						
 						return this.maxNumberPages;
 					} else
-						currentPage = this.bufferManager.getPage(index);
+						currentPage = this.bufferManager.getPage(this.pagesize, new PageAddress(index, this.filename));
 				} while (true);
 			} catch (final IOException e) {
 				System.err.println(e);
@@ -209,7 +236,8 @@ public class PageManager {
 	
 	private void storeMaxNumberPagesAndFreePageBeforeEndOfFile() {
 		try {
-			byte[] page0 = this.bufferManager.getPage(0);
+			PageAddress pageaddress0 = new PageAddress(0, this.filename);
+			byte[] page0 = this.bufferManager.getPage(this.pagesize, pageaddress0);
 			int number = this.maxNumberPages;
 			page0[9] = (byte) ((number % 256) - 128);
 			number /= 256;
@@ -223,7 +251,7 @@ public class PageManager {
 			} else {
 				page0[10]=-128;
 			}
-			this.bufferManager.modifyPage(0, page0);
+			this.bufferManager.modifyPage(this.pagesize, pageaddress0, page0);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -237,7 +265,7 @@ public class PageManager {
 	 *            the number of the page to be released!
 	 */
 	public void releasePage(final int pagenumber) {
-		this.bufferManager.releasePage(pagenumber);
+		this.bufferManager.releasePage(new PageAddress(pagenumber, this.filename));
 		if (pagenumber == this.maxNumberPages) {
 			this.maxNumberPages--;
 			storeMaxNumberPagesAndFreePageBeforeEndOfFile();
@@ -246,11 +274,11 @@ public class PageManager {
 			// (or one of its succeeding pages)
 			int index = 0;
 			try {
-				byte[] currentPage = this.bufferManager.getPage(index);
+				byte[] currentPage = this.bufferManager.getPage(this.pagesize, new PageAddress(index, this.filename));
 				do {
 					int max = (currentPage[4] + 128) * 256
 							+ (currentPage[5] + 128);
-					if (max + 4 < BufferManager.PAGESIZE) {
+					if (max + 4 < this.pagesize) {
 						final byte[] newPage = new byte[max + 4];
 						System.arraycopy(currentPage, 0, newPage, 0, max);
 						int number = pagenumber;
@@ -266,7 +294,7 @@ public class PageManager {
 						newPage[4] = (byte) (((max / 256) % 256) - 128);
 						this.freePageBeforeEndOfFile = true;
 						storeMaxNumberPagesAndFreePageBeforeEndOfFile();
-						this.bufferManager.modifyPage(index, newPage);
+						this.bufferManager.modifyPage(this.pagesize, new PageAddress(index, this.filename), newPage);
 						return;
 					}
 					final int oldindex = index;
@@ -285,7 +313,7 @@ public class PageManager {
 						currentPage[1] = (byte) ((number % 256) - 128);
 						number /= 256;
 						currentPage[0] = (byte) ((number % 256) - 128);
-						this.bufferManager.modifyPage(oldindex, currentPage);
+						this.bufferManager.modifyPage(this.pagesize, new PageAddress(oldindex, this.filename), currentPage);
 
 						currentPage = new byte[6];
 						currentPage[0] = (byte) -128;
@@ -296,10 +324,10 @@ public class PageManager {
 						currentPage[5] = (byte) (6 - 128);
 						this.freePageBeforeEndOfFile = true;
 						storeMaxNumberPagesAndFreePageBeforeEndOfFile();
-						this.bufferManager.modifyPage(pagenumber, currentPage);
+						this.bufferManager.modifyPage(this.pagesize, new PageAddress(pagenumber, this.filename), currentPage);
 						return;
 					} else
-						currentPage = this.bufferManager.getPage(index);
+						currentPage = this.bufferManager.getPage(this.pagesize, new PageAddress(index, this.filename));
 				} while (true);
 			} catch (final IOException e) {
 				System.err.println(e);
@@ -321,7 +349,7 @@ public class PageManager {
 	public void releaseSequenceOfPages(final int pagenumber) throws IOException {
 		int pagenumber_tmp = pagenumber;
 		while (pagenumber_tmp > 0) {
-			final byte[] page = this.bufferManager.getPage(pagenumber_tmp);
+			final byte[] page = this.bufferManager.getPage(this.pagesize, new PageAddress(pagenumber_tmp, this.filename));
 			releasePage(pagenumber_tmp);
 			pagenumber_tmp = (((page[0] + 128) * 256 + (page[1] + 128)) * 256 + (page[2] + 128)) * 256 + (page[3] + 128);
 		}
@@ -333,12 +361,20 @@ public class PageManager {
 	public void initAfterLoading(){
 		this.bufferManager.releaseAllPages();
 		try {
-			byte[] page0 = this.bufferManager.getPage(0);
+			byte[] page0 = this.bufferManager.getPage(this.pagesize, new PageAddress(0, this.filename));
 			this.maxNumberPages=(page0[9]+128) + 256*((page0[8]+128) + 256*((page0[7]+128)+256*(page0[6]+128)));
 			this.freePageBeforeEndOfFile=(page0[10]==-127);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}		
+	}
+
+	public static int getDefaultPageSize() {
+		return PageManager.DEFAULTPAGESIZE;
+	}
+
+	public static void setDefaultPageSize(int defaultpagesize) {
+		PageManager.DEFAULTPAGESIZE = defaultpagesize;
 	}
 }

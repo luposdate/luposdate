@@ -21,25 +21,37 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.datastructures.items;
 
-import lupos.datastructures.dbmergesortedds.DiskCollection;
+import java.util.Collection;
+import java.util.Comparator;
 
-public class InnerNodeInPartitionTree extends NodeInPartitionTree {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4123052907267333958L;
-	protected static final int numberChildren = 100;
-	public DiskCollection<NodeInPartitionTree> nodes;
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.literal.Literal;
 
-	public InnerNodeInPartitionTree() {
-		this.nodes = new DiskCollection<NodeInPartitionTree>(
-				NodeInPartitionTree.class);
+public class BindingsComparator implements Comparator<Bindings>{
+	
+	private Collection<Variable> variables;
+	
+	public void setVariables(final Collection<Variable> variables_par){
+		this.variables = variables_par;
 	}
 
-	public InnerNodeInPartitionTree(
-			final DiskCollection<NodeInPartitionTree> nodes) {
-		this.nodes = nodes;
+	@Override
+	public int compare(Bindings o1, Bindings o2) {
+		for (final Variable var : this.variables) {
+			final Literal l1 = o1.get(var);
+			final Literal l2 = o2.get(var);
+			if (l1 != null && l2 != null) {
+				final int compare = l1.compareToNotNecessarilySPARQLSpecificationConform(l2);
+				if (compare != 0)
+					return compare;
+			} else if (l1 != null)
+				return -1;
+			else if (l2 != null)
+				return 1;
+		}
+		return 0;
 	}
+
 }

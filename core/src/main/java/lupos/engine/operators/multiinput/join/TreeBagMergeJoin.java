@@ -32,7 +32,7 @@ import lupos.datastructures.sorteddata.SortedBagImplementation;
 public class TreeBagMergeJoin extends MergeJoin {
 
 	public TreeBagMergeJoin() {
-		init(new SortedBagImplementation<Bindings>(new TreeMap<Bindings, ElementCounter<Bindings>>(comp)), new SortedBagImplementation(new TreeMap<Bindings, ElementCounter<Bindings>>(comp)));
+		init(new SortedBagImplementation<Bindings>(new TreeMap<Bindings, ElementCounter<Bindings>>(this.comp)), new SortedBagImplementation<Bindings>(new TreeMap<Bindings, ElementCounter<Bindings>>(this.comp)));
 	}
 
 }

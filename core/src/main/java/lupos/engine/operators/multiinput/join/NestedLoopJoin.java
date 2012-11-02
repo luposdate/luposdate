@@ -33,18 +33,18 @@ import lupos.engine.operators.multiinput.optional.OptionalResult;
 public class NestedLoopJoin extends Join {
 	private QueryResult[] lba;
 
-	public NestedLoopJoin() {
+	public NestedLoopJoin() { // noting to init
 	}
 
-	public NestedLoopJoin(final int numberOfOperands) {
+	public NestedLoopJoin(@SuppressWarnings("unused") final int numberOfOperands) {
 		super();
 		init();
 	}
 
 	public void init() {
-		lba = new QueryResult[this.getNumberOfOperands()];
+		this.lba = new QueryResult[this.getNumberOfOperands()];
 		for (int i = 0; i < this.getNumberOfOperands(); i++) {
-			lba[i] = QueryResult.createInstance();
+			this.lba[i] = QueryResult.createInstance();
 		}
 	}
 
@@ -59,12 +59,12 @@ public class NestedLoopJoin extends Join {
 		final QueryResult qr = QueryResult.createInstance();
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
 		while (itb.hasNext())
-			lba[operandID].add(itb.next());
+			this.lba[operandID].add(itb.next());
 
 		for (final Bindings binding : bindings) {
 
 			for (int i = 0; i < this.getNumberOfOperands(); i++) {
-				if (lba[i].isEmpty()) {
+				if (this.lba[i].isEmpty()) {
 					return null;
 				}
 			}
@@ -84,12 +84,12 @@ public class NestedLoopJoin extends Join {
 		final QueryResult qr = QueryResult.createInstance();
 		final QueryResult joinPartnerFromLeftOperand = QueryResult
 				.createInstance();
-		lba[operandID].addAll(bindings);
+		this.lba[operandID].addAll(bindings);
 
 		for (final Bindings binding : bindings) {
 
 			for (int i = 0; i < this.getNumberOfOperands(); i++) {
-				if (lba[i].isEmpty()) {
+				if (this.lba[i].isEmpty()) {
 					return or;
 				}
 			}
@@ -105,7 +105,7 @@ public class NestedLoopJoin extends Join {
 				if (qr2 != null && qr2.size() > 0)
 					joinPartnerFromLeftOperand.add(binding);
 			} else {
-				final Iterator<Bindings> it = lba[0].iterator();
+				final Iterator<Bindings> it = this.lba[0].iterator();
 				while (it.hasNext()) {
 					final Bindings b = it.next();
 					final QueryResult bl = QueryResult.createInstance();
@@ -134,7 +134,7 @@ public class NestedLoopJoin extends Join {
 					.addAll(combineAndProcess(pos, binding, currentPos + 1,
 							bindings));
 		} else if (currentPos < this.getNumberOfOperands()) {
-			final Iterator<Bindings> it = lba[currentPos].iterator();
+			final Iterator<Bindings> it = this.lba[currentPos].iterator();
 			while (it.hasNext()) {
 				final Bindings b = it.next();
 				final QueryResult bl = bindings.clone();

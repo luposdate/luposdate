@@ -23,12 +23,10 @@
  */
 package lupos.engine.operators.multiinput.join;
 
-import java.util.Comparator;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.SIPParallelIterator;
@@ -46,34 +44,14 @@ public class NAryMergeJoinWithoutSorting extends Join {
 	protected final Bindings minimum;
 	protected final Bindings maximum;
 
-	public NAryMergeJoinWithoutSorting(final int numberOfOperands,
-			final Bindings minimum, final Bindings maximum) {
+	public NAryMergeJoinWithoutSorting(@SuppressWarnings("unused") final int numberOfOperands, final Bindings minimum, final Bindings maximum) {
 		super();
-		operandResults = new QueryResult[this.getNumberOfOperands()];
+		this.operandResults = new QueryResult[this.getNumberOfOperands()];
 		this.minimum = minimum;
 		this.maximum = maximum;
 	}
 
-	protected Comparator<Bindings> comp = new Comparator<Bindings>() {
-
-		public int compare(final Bindings o1, final Bindings o2) {
-			for (final Variable var : intersectionVariables) {
-				final Literal l1 = o1.get(var);
-				final Literal l2 = o2.get(var);
-				if (l1 != null && l2 != null) {
-					final int compare = l1
-							.compareToNotNecessarilySPARQLSpecificationConform(l2);
-					if (compare != 0)
-						return compare;
-				} else if (l1 != null)
-					return -1;
-				else if (l2 != null)
-					return 1;
-			}
-			return 0;
-		}
-
-	};
+	protected BindingsComparator comp = new BindingsComparator();
 
 	/**
 	 * This method pre-processes the StartOfStreamMessage
@@ -84,10 +62,10 @@ public class NAryMergeJoinWithoutSorting extends Join {
 	 */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
-		for (int i = 0; i < operandResults.length; i++) {
-			if (operandResults[i] != null) {
-				operandResults[i].release();
-				operandResults[i] = null;
+		for (int i = 0; i < this.operandResults.length; i++) {
+			if (this.operandResults[i] != null) {
+				this.operandResults[i].release();
+				this.operandResults[i] = null;
 			}
 		}
 		return super.preProcessMessage(msg);
@@ -95,75 +73,83 @@ public class NAryMergeJoinWithoutSorting extends Join {
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		if (operandID < operandResults.length) {
-			operandResults[operandID] = bindings;
+		if (operandID < this.operandResults.length) {
+			this.operandResults[operandID] = bindings;
 		} else
-			System.err.println("NAryMergeJoin is a " + operandResults.length
+			System.err.println("NAryMergeJoin is a " + this.operandResults.length
 					+ "-ary operator, but received the operand number "
 					+ operandID);
 		boolean go = true;
-		for (int i = 0; i < operandResults.length; i++) {
-			if (operandResults[i] == null) {
+		for (int i = 0; i < this.operandResults.length; i++) {
+			if (this.operandResults[i] == null) {
 				go = false;
 				break;
 			}
 		}
 		if (go) {
 
-			if (minimum == null)
+			this.comp.setVariables(this.intersectionVariables);
+			
+			if (this.minimum == null)
 				return null;
 
-			final Iterator<Bindings>[] itb = new Iterator[operandResults.length];
-			for (int i = 0; i < operandResults.length; i++) {
-				itb[i] = operandResults[i].oneTimeIterator();
+			@SuppressWarnings("unchecked")
+			final Iterator<Bindings>[] itb = new Iterator[this.operandResults.length];
+			for (int i = 0; i < this.operandResults.length; i++) {
+				itb[i] = this.operandResults[i].oneTimeIterator();
 			}
 
-			final ParallelIterator<Bindings> currentResult = (intersectionVariables
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
 					.size() == 0) ? MergeJoin
-					.cartesianProductIterator(operandResults) : MergeJoin
-					.mergeJoinIterator(itb, comp, intersectionVariables,
-							minimum, maximum);
+					.cartesianProductIterator(this.operandResults) : MergeJoin
+					.mergeJoinIterator(itb, this.comp, this.intersectionVariables,
+							this.minimum, this.maximum);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult
 						.createInstance(new SIPParallelIterator<Bindings, Bindings>() {
 
 							int number = 0;
 
+							@Override
 							public void close() {
 								currentResult.close();
 							}
 
+							@Override
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									NAryMergeJoinWithoutSorting.this.realCardinality = this.number;
 									close();
 								}
 								return currentResult.hasNext();
 							}
 
+							@Override
 							public Bindings next() {
 								final Bindings b = currentResult.next();
 								if (b != null)
-									number++;
+									this.number++;
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									NAryMergeJoinWithoutSorting.this.realCardinality = this.number;
 									close();
 								}
 								return b;
 							}
 
 							public Bindings getNext(final Bindings k) {
+								@SuppressWarnings("unchecked")
 								final Bindings b = ((SIPParallelIterator<Bindings, Bindings>) currentResult)
 										.next(k);
 								if (b != null)
-									number++;
+									this.number++;
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									NAryMergeJoinWithoutSorting.this.realCardinality = this.number;
 									close();
 								}
 								return b;
 							}
 
+							@Override
 							public void remove() {
 								currentResult.remove();
 							}
@@ -173,6 +159,7 @@ public class NAryMergeJoinWithoutSorting extends Join {
 								close();
 							}
 
+							@Override
 							public Bindings next(final Bindings k) {
 								if (currentResult instanceof SIPParallelIterator)
 									return getNext(k);
@@ -180,25 +167,13 @@ public class NAryMergeJoinWithoutSorting extends Join {
 									return next();
 							}
 						});
-				// System.out.println(this.toString());
-				// System.out.println("!!!!!!!!!!Preceding operators:"
-				// + this.getPrecedingOperators());
-				// System.out.println("!!!!!!!!!!Results: Left:"+left.size()+
-				// "\n!!!!!!!!!! Right:"
-				// +right.size()+"\n!!!!!!!!!! Result:"+((result
-				// ==null)?"null":result.size()));*/
-				// System.out.println("!!!!!!!!!!Results: Left:" + left
-				// + "\n!!!!!!!!!! Right:" + right
-				// + "\n!!!!!!!!!! Result:"
-				// + ((result == null) ? "null" : result));
-				// System.out.println("Result:" + result);
-				// System.out.println("Result size:" + result.size());
+
 				return result;
 			} else {
-				for (int i = 0; i < operandResults.length; i++) {
-					if (operandResults[i] != null) {
-						operandResults[i].release();
-						operandResults[i] = null;
+				for (int i = 0; i < this.operandResults.length; i++) {
+					if (this.operandResults[i] != null) {
+						this.operandResults[i].release();
+						this.operandResults[i] = null;
 					}
 				}
 				return null;

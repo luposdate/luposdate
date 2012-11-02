@@ -30,6 +30,7 @@ import java.util.LinkedList;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
@@ -49,25 +50,7 @@ public class MergeJoin extends Join {
 	protected SortedBag<Bindings> left = null;
 	protected SortedBag<Bindings> right = null;
 	
-	protected Comparator<Bindings> comp = new Comparator<Bindings>() {
-		@Override
-		public int compare(final Bindings o1, final Bindings o2) {
-			for (final Variable var : MergeJoin.this.intersectionVariables) {
-				final Literal l1 = o1.get(var);
-				final Literal l2 = o2.get(var);
-				if (l1 != null && l2 != null) {
-					final int compare = l1
-							.compareToNotNecessarilySPARQLSpecificationConform(l2);
-					if (compare != 0)
-						return compare;
-				} else if (l1 != null)
-					return -1;
-				else if (l2 != null)
-					return 1;
-			}
-			return 0;
-		}
-	};
+	protected BindingsComparator comp = new BindingsComparator();
 
 	public void init(final SortedBag<Bindings> left, final SortedBag<Bindings> right) {
 		this.left = left;
@@ -76,6 +59,7 @@ public class MergeJoin extends Join {
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
+		this.comp.setVariables(this.intersectionVariables);
 		if (operandID == 0) {
 			final Iterator<Bindings> itb = bindings.oneTimeIterator();
 			while (itb.hasNext())
@@ -93,6 +77,7 @@ public class MergeJoin extends Join {
 	@Override
 	public OptionalResult processJoin(final QueryResult bindings,
 			final int operandID) {
+		this.comp.setVariables(this.intersectionVariables);
 		if (operandID == 0) {
 			this.left.addAll(bindings.getCollection());
 		} else if (operandID == 1) {
@@ -106,6 +91,7 @@ public class MergeJoin extends Join {
 	@Override
 	public OptionalResult joinBeforeEndOfStream() {
 		if (this.left != null && this.right != null) {
+			this.comp.setVariables(this.intersectionVariables);
 			final OptionalResult or = mergeJoinOptionalResult(this.left, this.right, this.comp);
 			this.left.clear();
 			this.right.clear();
@@ -118,6 +104,7 @@ public class MergeJoin extends Join {
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (this.left != null && this.right != null && this.left.size() > 0
 				&& this.right.size() > 0) {
+			this.comp.setVariables(this.intersectionVariables);
 			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
 					.size() == 0) ? MergeJoin.cartesianProductIterator(
 					QueryResult.createInstance(this.left.iterator()), QueryResult
@@ -1396,6 +1383,7 @@ public class MergeJoin extends Join {
 			final DebugStep debugstep) {
 		if (this.left != null && this.right != null && this.left.size() > 0
 				&& this.right.size() > 0) {
+			this.comp.setVariables(this.intersectionVariables);
 			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.size() == 0) ? MergeJoin.cartesianProductIterator(
 					QueryResult.createInstance(this.left.iterator()), QueryResult
 							.createInstance(this.right.iterator())) : MergeJoin

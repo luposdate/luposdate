@@ -52,7 +52,7 @@ public class TreeBagMergeParallelJoin extends MergeParallelJoin {
 	 */
 	@Override
 	protected QueryResult join() {
-		col.setIntersectionVariables(this.getIntersectionVariables());
+		this.col.setIntersectionVariables(this.getIntersectionVariables());
 		return super.join();
 	}
 }

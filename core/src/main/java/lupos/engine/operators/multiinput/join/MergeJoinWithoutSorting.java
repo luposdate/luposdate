@@ -23,11 +23,8 @@
  */
 package lupos.engine.operators.multiinput.join;
 
-import java.util.Comparator;
-
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.SIPParallelIterator;
@@ -36,34 +33,12 @@ import lupos.engine.operators.messages.StartOfEvaluationMessage;
 
 public class MergeJoinWithoutSorting extends Join {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5051512203278340771L;
 
 	protected QueryResult left = null;
 	protected QueryResult right = null;
 
-	protected Comparator<Bindings> comp = new Comparator<Bindings>() {
-
-		public int compare(final Bindings o1, final Bindings o2) {
-			for (final Variable var : intersectionVariables) {
-				final Literal l1 = o1.get(var);
-				final Literal l2 = o2.get(var);
-				if (l1 != null && l2 != null) {
-					final int compare = l1
-							.compareToNotNecessarilySPARQLSpecificationConform(l2);
-					if (compare != 0)
-						return compare;
-				} else if (l1 != null)
-					return -1;
-				else if (l2 != null)
-					return 1;
-			}
-			return 0;
-		}
-
-	};
+	protected BindingsComparator comp = new BindingsComparator();
 
 	/**
 	 * This method pre-processes the StartOfStreamMessage
@@ -74,99 +49,76 @@ public class MergeJoinWithoutSorting extends Join {
 	 */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
-		if (left != null)
-			left.release();
-		if (right != null)
-			right.release();
-		left = null;
-		right = null;
+		if (this.left != null)
+			this.left.release();
+		if (this.right != null)
+			this.right.release();
+		this.left = null;
+		this.right = null;
 		return super.preProcessMessage(msg);
 	}
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (operandID == 0) {
-			left = bindings;
+			this.left = bindings;
 		} else if (operandID == 1) {
-			right = bindings;
+			this.right = bindings;
 		} else
 			System.err.println("MergeJoin is a binary operator, but received the operand number "
 							+ operandID);
-		if (left != null && right != null) {
+		if (this.left != null && this.right != null) {
 
-			// System.out.println(">>>>>>>>>>left " + intersectionVariables
-			// + " size:" + left.size());
-			// Bindings last = null;
-			// int i = 0;
-			// for (final Bindings b : left) {
-			// i++;
-			// if (last != null) {
-			// if (comp.compare(last, b) > 0) {
-			// System.out.println("Not correctly sorted:" + last
-			// + "<---------->" + b);
-			// }
-			// }
-			// last = b;
-			// }
-			// System.out.println(">>>>>>>>>>right " + intersectionVariables
-			// + " size:" + right.size());
-			// last = null;
-			// for (final Bindings b : right) {
-			// if (last != null) {
-			// if (comp.compare(last, b) > 0) {
-			// System.out.println("Not correctly sorted:" + last
-			// + "<---------->" + b);
-			// }
-			// }
-			// last = b;
-			// }
-
-			final ParallelIterator<Bindings> currentResult = (intersectionVariables
-					.size() == 0) ? MergeJoin.cartesianProductIterator(left,
-					right) : MergeJoin.mergeJoinIterator(
-					left.oneTimeIterator(), right.oneTimeIterator(), comp,
-					intersectionVariables);
+			this.comp.setVariables(this.intersectionVariables);
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
+					.size() == 0) ? MergeJoin.cartesianProductIterator(this.left, this.right) : 
+						MergeJoin.mergeJoinIterator(this.left.oneTimeIterator(), this.right.oneTimeIterator(), this.comp, this.intersectionVariables);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult
 						.createInstance(new SIPParallelIterator<Bindings, Bindings>() {
 
 							int number = 0;
 
+							@Override
 							public void close() {
 								currentResult.close();
 							}
 
+							@Override
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									MergeJoinWithoutSorting.this.realCardinality = this.number;
 									close();
 								}
 								return currentResult.hasNext();
 							}
 
+							@Override
 							public Bindings next() {
 								final Bindings b = currentResult.next();
 								if (b != null)
-									number++;
+									this.number++;
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									MergeJoinWithoutSorting.this.realCardinality = this.number;
 									close();
 								}
 								return b;
 							}
 
 							public Bindings getNext(final Bindings k) {
+								@SuppressWarnings("unchecked")
 								final Bindings b = ((SIPParallelIterator<Bindings, Bindings>) currentResult)
 										.next(k);
 								if (b != null)
-									number++;
+									this.number++;
 								if (!currentResult.hasNext()) {
-									realCardinality = number;
+									MergeJoinWithoutSorting.this.realCardinality = this.number;
 									close();
 								}
 								return b;
 							}
 
+							@Override
 							public void remove() {
 								currentResult.remove();
 							}
@@ -176,6 +128,7 @@ public class MergeJoinWithoutSorting extends Join {
 								close();
 							}
 
+							@Override
 							public Bindings next(final Bindings k) {
 								if (currentResult instanceof SIPParallelIterator)
 									return getNext(k);
@@ -183,23 +136,10 @@ public class MergeJoinWithoutSorting extends Join {
 									return next();
 							}
 						});
-				// System.out.println(this.toString());
-				// System.out.println("!!!!!!!!!!Preceding operators:"
-				// + this.getPrecedingOperators());
-				// System.out.println("!!!!!!!!!!Results: Left:"+left.size()+
-				// "\n!!!!!!!!!! Right:"
-				// +right.size()+"\n!!!!!!!!!! Result:"+((result
-				// ==null)?"null":result.size()));*/
-				// System.out.println("!!!!!!!!!!Results: Left:" + left
-				// + "\n!!!!!!!!!! Right:" + right
-				// + "\n!!!!!!!!!! Result:"
-				// + ((result == null) ? "null" : result));
-				// System.out.println("Result:" + result);
-				// System.out.println("Result size:" + result.size());
 				return result;
 			} else {
-				left.release();
-				right.release();
+				this.left.release();
+				this.right.release();
 				return null;
 			}
 		} else {
