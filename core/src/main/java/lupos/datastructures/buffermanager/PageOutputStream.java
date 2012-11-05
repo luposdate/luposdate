@@ -83,8 +83,7 @@ public class PageOutputStream extends OutputStream {
 			// write this page and open new page...
 			setMaxOnThisPage();
 			int nextPageNumber = getNextPageNumber();
-			if (nextPageNumber <= 0) { // old sequence of pages cannot be
-				// reused!
+			if (nextPageNumber <= 0) { // old sequence of pages cannot be reused!
 				nextPageNumber = this.pageManager.getNumberOfNewPage();
 				int intermediate = nextPageNumber;
 				this.currentPage[3] = (byte) ((intermediate % 256) - 128);

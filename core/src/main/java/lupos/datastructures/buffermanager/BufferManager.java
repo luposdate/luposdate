@@ -169,6 +169,8 @@ public class BufferManager {
 			StringBuilder sb=new StringBuilder();
 			sb.append('(');
 			sb.append(this.pageaddress.toString());
+			sb.append(", Size: ");
+			sb.append(this.pagesize);
 			sb.append(')');
 			if(this.modified){
 				sb.append('m');
@@ -204,6 +206,10 @@ public class BufferManager {
 	 */
 	private static BufferManager bufferManager = null;
 	
+	/**
+	 * the only way to get the singleton buffer manager
+	 * @return the singleton buffer manager
+	 */
 	public static BufferManager getBufferManager(){
 		lock.lock();
 		try {
@@ -246,14 +252,18 @@ public class BufferManager {
 	 */
 	protected int currentNumberOfBytesInPuffer = 0;	
 	
+	/**
+	 * the private constructor
+	 * @see getBufferManager()
+	 */
 	private BufferManager() {
 		this.replacementStrategy = new LeastRecentlyUsed<PageAddress>();
 		this.replacementStrategyOpenedFiles = new LeastRecentlyUsed<String>();
 	}
 
 	/**
-	 * This method sets the offset of the file to the beginning of a page
-	 * 
+	 * This method sets the offset of the file returned to the beginning of a page
+	 * @param pagesize the size of a page
 	 * @param pageaddress
 	 *            The page address to be accessed afterwards...
 	 * 
@@ -383,6 +393,7 @@ public class BufferManager {
 	/**
 	 * This method releases a page, i.e., its content does not need to be stored
 	 * on disk.
+	 * @param pageaddress the address of the page
 	 */
 	public void releasePage(final PageAddress pageaddress) {
 		BufferManager.lock.lock();
@@ -447,8 +458,9 @@ public class BufferManager {
 	}
 
 	/**
-	 * Returns an empty page in the size of the default page size.
+	 * Returns an empty page in the size of the given page size.
 	 * 
+	 * @param pagesize the size of a page
 	 * @return an empty page
 	 */
 	public byte[] getEmptyPage(final int pagesize) {

@@ -44,9 +44,25 @@ import lupos.datastructures.buffermanager.BufferManager.PageAddress;
  */
 public class PageManager {
 
+	/**
+	 * the buffer manager (is a singleton)
+	 */
 	protected final BufferManager bufferManager;
+	
+	/**
+	 * the maximum page number used so far
+	 */
 	protected int maxNumberPages = 0;
+	
+	/**
+	 * are there any free pages between used pages?
+	 */
 	protected boolean freePageBeforeEndOfFile = false;
+	
+	/**
+	 * the basis filename for the file in which the pages are stored.
+	 * Due to java problems with large file sizes, several physical files (filename+"_0", filename+"_1", filename+"_2", ...) are used to store the pages.  
+	 */
 	protected final String filename;
 	
 	/**
@@ -61,11 +77,16 @@ public class PageManager {
 		
 	/**
 	* creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
+	* The default page size (8 KBytes) is used.
 	*/
 	public static PageManager createPageManager(final String name) throws IOException{
 		return PageManager.createPageManager(name, PageManager.DEFAULTPAGESIZE);
 	}
 	
+	/**
+	* creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
+	* The page size used can be specified.
+	*/
 	public static PageManager createPageManager(final String name, int pagesize) throws IOException{
 		File f = new File(name + "_0");
 		return new PageManager(name, !f.exists(), pagesize); 
@@ -170,7 +191,7 @@ public class PageManager {
 	 * if the page manager is not used any more...
 	 */
 	public void close() throws IOException {
-		this.bufferManager.close();
+		this.bufferManager.close(this.filename);
 	}
 	
 	/**
@@ -234,6 +255,9 @@ public class PageManager {
 		}
 	}
 	
+	/**
+	 * this method is used to store additional information in the first page like the max. page number and if there are free pages before the end of the file (which are stored in the first page...)
+	 */
 	private void storeMaxNumberPagesAndFreePageBeforeEndOfFile() {
 		try {
 			PageAddress pageaddress0 = new PageAddress(0, this.filename);
@@ -370,10 +394,17 @@ public class PageManager {
 		}		
 	}
 
+	/**
+	 * @return the default page size in bytes
+	 */
 	public static int getDefaultPageSize() {
 		return PageManager.DEFAULTPAGESIZE;
 	}
 
+	/**
+	 * sets the default page size 
+	 * @param defaultpagesize the default page size in bytes
+	 */
 	public static void setDefaultPageSize(int defaultpagesize) {
 		PageManager.DEFAULTPAGESIZE = defaultpagesize;
 	}
