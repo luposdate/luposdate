@@ -39,6 +39,8 @@ import lupos.gui.operatorgraph.DrawObject.Type;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.prefix.Prefix;
+import lupos.misc.Helper;
+
 import xpref.datatypes.ColorDatatype;
 import xpref.datatypes.EnumDatatype;
 
@@ -70,18 +72,18 @@ public abstract class GraphWrapper {
 	}
 
 	@Override
-	public boolean equals(final Object element) {
-		if(element instanceof GraphWrapper) {
-			return this.element == ((GraphWrapper) element).element;
+	public boolean equals(final Object element_param) {
+		if(element_param instanceof GraphWrapper) {
+			return this.element == ((GraphWrapper) element_param).element;
 		}
 
 		return false;
 	}
-
+	
 	protected DrawObject getOperatorStyle(final String styleName) {
 		try {
 			if(!GraphWrapper.styles.containsKey(styleName)) {
-				final Type shapeType = (DrawObject.Type) EnumDatatype.getValues(styleName + ".shape").get(0);
+				final Type shapeType = Helper.castEnum(EnumDatatype.getValues(styleName + ".shape").get(0));
 				final Color color1 = ColorDatatype.getValues(styleName + ".color1").get(0);
 				final Color color2 = ColorDatatype.getValues(styleName + ".color2").get(0);
 

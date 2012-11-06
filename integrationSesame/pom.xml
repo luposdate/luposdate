@@ -31,6 +31,16 @@
 			<artifactId>sesame-runtime</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-rio-rdfxml</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-rio-turtle</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 </project>

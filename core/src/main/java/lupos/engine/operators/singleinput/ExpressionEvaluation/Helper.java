@@ -40,8 +40,8 @@ import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.engine.operators.singleinput.TypeErrorException;
  
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
+import org.apache.xerces.impl.xpath.regex.Match;
+import org.apache.xerces.impl.xpath.regex.RegularExpression;
 
 public class Helper {
 
@@ -219,8 +219,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static Date getDate(final String a) throws TypeErrorException,
-			java.text.ParseException {
+	public static Date getDate(final String a) throws java.text.ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		try {
 			sdf.applyPattern("yyyy-MM-dd'Z'");
@@ -246,8 +245,7 @@ public class Helper {
 		}
 	}
 
-	public static String getTz(final String a) throws TypeErrorException,
-			java.text.ParseException {
+	public static String getTz(final String a) throws java.text.ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		try {
 			sdf.applyPattern("yyyy-MM-dd'Z'");
@@ -286,6 +284,7 @@ public class Helper {
 		try {
 			return getTz(getDateString(a));
 		} catch (Exception e) {
+			// ignore...
 		}
 		throw new TypeErrorException();
 	}
@@ -327,6 +326,7 @@ public class Helper {
 			}
 
 		} catch (Exception e) {
+			// ignore...
 		}
 		throw new TypeErrorException();
 	}
@@ -344,6 +344,7 @@ public class Helper {
 				}
 			}
 		} catch (Exception e) {
+			// ignore...
 		}
 		throw new TypeErrorException();
 	}
@@ -385,7 +386,9 @@ public class Helper {
 	 * @return boolean: true if a=b, else false
 	 * @throws TypeErrorException
 	 */
-	public static boolean equals(Object a, Object b) throws TypeErrorException {
+	public static boolean equals(final Object aa, final Object bb) throws TypeErrorException {
+		Object a = aa;
+		Object b = bb;
 		try {
 			if(a.equals(b)){
 				return true;
@@ -580,8 +583,9 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static boolean NOTequals(Object a, Object b)
-			throws TypeErrorException {
+	public static boolean NOTequals(final Object aa, final Object bb) throws TypeErrorException {
+		Object a = aa;
+		Object b = bb;
 		try {
 			if (a.equals(b)){
 				return false;
@@ -612,6 +616,7 @@ public class Helper {
 					return !getBigDecimal(a).equals(getBigDecimal(b));
 				}
 			} catch (final TypeErrorException tee) {
+				// ignore...
 			} catch (final NumberFormatException nfe) {
 				return false;
 			}
@@ -653,7 +658,9 @@ public class Helper {
 		return greater(b, a);
 	}
 
-	public static boolean greater(Object a, Object b) throws TypeErrorException {
+	public static boolean greater(final Object aa, final Object bb) throws TypeErrorException {
+		Object a = aa;
+		Object b = bb;
 		if (a instanceof LazyLiteral)
 			a = ((LazyLiteral) a).getLiteral();
 		if (b instanceof LazyLiteral)
@@ -696,6 +703,7 @@ public class Helper {
 							return getBigDecimal(a).compareTo(getBigDecimal(b)) > 0;
 						}
 					} catch (final TypeErrorException tee) {
+						// ignore...
 					}
 				}
 				if (a instanceof Literal) {
@@ -742,9 +750,9 @@ public class Helper {
 					|| a instanceof CodeMapLiteral || a instanceof StringLiteral)
 					&& (b instanceof String || b instanceof Character
 							|| b instanceof CodeMapLiteral || b instanceof StringLiteral)) {
-				final String aa = getString(a);
-				final String bb = getString(b);
-				return String.valueOf(aa).compareTo(String.valueOf(bb)) > 0;
+				final String aaa = getString(a);
+				final String bbb = getString(b);
+				return String.valueOf(aaa).compareTo(String.valueOf(bbb)) > 0;
 			}
 			if ((a instanceof StringLiteral && b instanceof TypedLiteral)
 					|| (b instanceof StringLiteral && a instanceof TypedLiteral)) {
@@ -829,8 +837,9 @@ public class Helper {
 			return regexPattern.matches(s);
 	}
 	
-	public static String replaceXerces(String s, final String pattern,
+	public static String replaceXerces(final String content, final String pattern,
 			final String flags, final String replacement) {
+		String s = content;
 		final RegularExpression regexPattern = makePatternXerces(pattern, flags);
 		if (regexPattern == null)
 			return s;
@@ -875,6 +884,7 @@ public class Helper {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static Object cast(final String type, final Object content)
 			throws TypeErrorException {
 		// get the real content as string...
@@ -1146,8 +1156,9 @@ public class Helper {
 				Double right = Helper.getDouble(rightObject);
 				return left / right;
 			}
-		} catch(Exception e)
-		{}
+		} catch(Exception e){
+			// ignore...
+		}
 		throw new TypeErrorException();
 	}
 

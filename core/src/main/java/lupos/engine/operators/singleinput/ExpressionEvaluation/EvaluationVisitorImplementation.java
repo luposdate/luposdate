@@ -23,11 +23,13 @@
  */
 package lupos.engine.operators.singleinput.ExpressionEvaluation;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,19 +178,23 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	protected Map<SimpleNode, QueryResult> queryResultsForExistNodes = new HashMap<SimpleNode, QueryResult>();
 	private CommonCoreQueryEvaluator<Node> evaluator;
 
+	@Override
 	public void setCollectionForExistNodes(
 			Map<SimpleNode, IndexCollection> collectionForExistNodes) {
 		this.collectionForExistNodes = collectionForExistNodes;
 	}
 
+	@Override
 	public Map<SimpleNode, IndexCollection> getCollectionForExistNodes() {
-		return collectionForExistNodes;
+		return this.collectionForExistNodes;
 	}
 
+	@Override
 	public CommonCoreQueryEvaluator<Node> getEvaluator() {
-		return evaluator;
+		return this.evaluator;
 	}
 
+	@Override
 	public void setEvaluator(CommonCoreQueryEvaluator<Node> evaluator) {
 		this.evaluator = evaluator;
 	}
@@ -201,6 +207,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	
 	@Override
 	public void release() {
+		// nothing to release...
 	}
 	
 	@Override
@@ -524,12 +531,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		Integer id_for_o;
 		if(node.jjtGetNumChildren()>0){
 			Object o = resultOfChildZero(node, b, d);
-			id_for_o = mapForBlankNodeGeneration.get(o);
+			id_for_o = this.mapForBlankNodeGeneration.get(o);
 			if(id_for_o == null){
-				id_for_o = id++;
-				mapForBlankNodeGeneration.put(o, id_for_o);
+				id_for_o = this.id++;
+				this.mapForBlankNodeGeneration.put(o, id_for_o);
 			}
-		} else id_for_o = id++;
+		} else id_for_o = this.id++;
 		return LiteralFactory.createAnonymousLiteral(prefixInternalBlankNodes+(id_for_o));
 	}
 
@@ -663,6 +670,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 			try {
 				result = Helper.addNumericValues(result, next);
 			} catch (TypeErrorException e) {
+				// ignore...
 			}
 		}
 		return result;
@@ -677,6 +685,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				if(result == null || Helper.less(next, result))
 					result = next;
 			} catch (TypeErrorException e) {
+				// ignore...
 			}
 		}
 		return result;
@@ -691,6 +700,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				if(result == null || Helper.greater(next, result))
 					result = next;
 			} catch (TypeErrorException e) {
+				// ignore...
 			}
 		}
 		return result;
@@ -700,16 +710,14 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	@Override
 	public Object evaluate(ASTExists node, final Bindings bindings,
 			Map<Node, Object> d) {
-		return processSubquery(node, bindings, d, collectionForExistNodes
-				.get(node), evaluator);
+		return processSubquery(node, bindings, d, this.collectionForExistNodes.get(node), this.evaluator);
 
 	}
 
 	@Override
 	public Object evaluate(ASTNotExists node, final Bindings bindings,
 			Map<Node, Object> d) {
-		return !processSubquery(node, bindings, d, collectionForExistNodes
-				.get(node), evaluator);
+		return !processSubquery(node, bindings, d, this.collectionForExistNodes.get(node), this.evaluator);
 
 	}
 
@@ -728,7 +736,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param d
 	 * @param collection
 	 *            the {@link IndexCollection} for the subquery
-	 * @param evaluator
+	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
 	 * @param result
@@ -736,8 +744,8 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 */
 	public boolean processSubquery(final SimpleNode node, final Bindings bindings,
 			Map<Node, Object> d, IndexCollection collection,
-			CommonCoreQueryEvaluator<Node> evaluator) {
-		Boolean simple = simpleExistNodes.get(node);
+			CommonCoreQueryEvaluator<Node> evaluator_param) {
+		Boolean simple = this.simpleExistNodes.get(node);
 		if(simple==null){
 			collection.visit(new SimpleOperatorGraphVisitor() {
 
@@ -748,21 +756,21 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 					if (!(basicOperator instanceof BasicIndex || 
 							basicOperator instanceof Join || 
 							basicOperator instanceof Result)){
-						simpleExistNodes.put(node, false);
+						EvaluationVisitorImplementation.this.simpleExistNodes.put(node, false);
 					}						
 					return null;
 				}
 			});
-			simple = simpleExistNodes.get(node);
+			simple = this.simpleExistNodes.get(node);
 			if(simple==null){
-				simpleExistNodes.put(node, true);
+				this.simpleExistNodes.put(node, true);
 				simple = true;
 			}
 		}
 		if(simple) {
-			return processSimpleSubquery(node, bindings, d, collection, evaluator);			
+			return processSimpleSubquery(node, bindings, d, collection, evaluator_param);			
 		} else {
-			return processSubqueryAndGetWholeResult(node, bindings, d, collection, evaluator);
+			return processSubqueryAndGetWholeResult(node, bindings, d, collection, evaluator_param);
 		}
 	}
 	
@@ -784,7 +792,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param d
 	 * @param collection
 	 *            the {@link IndexCollection} for the subquery
-	 * @param evaluator
+	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
 	 * @param result
@@ -792,13 +800,13 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 */
 	public boolean processSubqueryAndGetWholeResult(SimpleNode node, Bindings bindings,
 			Map<Node, Object> d, IndexCollection collection,
-			CommonCoreQueryEvaluator<Node> evaluator) {
+			CommonCoreQueryEvaluator<Node> evaluator_param) {
 
-		if (!queryResultsForExistNodes.containsKey(node)) {
-			performSubQueryAndGetWholeResult(node, collection, evaluator);
+		if (!this.queryResultsForExistNodes.containsKey(node)) {
+			performSubQueryAndGetWholeResult(node, collection, evaluator_param);
 		}
 
-		Iterator<Bindings> bindingsSet = queryResultsForExistNodes.get(node)
+		Iterator<Bindings> bindingsSet = this.queryResultsForExistNodes.get(node)
 				.iterator();
 
 		while (bindingsSet.hasNext()) {
@@ -828,7 +836,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		protected Result result = null;
 		
 		public Result getResult() {
-			return result;
+			return this.result;
 		}
 
 		@Override
@@ -839,10 +847,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void setMaxVariables(BasicOperator root){
 		// save all variables of the subquery in the bindingsarray
 		final Set<Variable> maxVariables = new TreeSet<Variable>();
 		root.visit(new SimpleOperatorGraphVisitor() {
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				if (basicOperator.getUnionVariables() != null)
 					maxVariables.addAll(basicOperator.getUnionVariables());
@@ -883,38 +893,39 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            {@link ASTExists} or {@link ASTNotExists}
 	 * @param collection
 	 *            the {@link IndexCollection} for the subquery
-	 * @param evaluator
+	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
 	 * @param result
 	 *            the {@link Result} for the subquery
 	 */
+	@SuppressWarnings("deprecation")
 	protected void performSubQueryAndGetWholeResult(final SimpleNode node,
 			IndexCollection collection,
-			CommonCoreQueryEvaluator<Node> evaluator) {
-		BasicOperator oldRoot = evaluator.getRootNode();
-		Result oldResult = evaluator.getResultOperator();
+			CommonCoreQueryEvaluator<Node> evaluator_param) {
+		BasicOperator oldRoot = evaluator_param.getRootNode();
+		Result oldResult = evaluator_param.getResultOperator();
 
 		// the static bindingsarray is saved and restored after the subquery
 		Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
 
-		Result result = setupEvaluator(evaluator, (IndexCollection) collection.deepClone());
+		Result result = setupEvaluator(evaluator_param, (IndexCollection) collection.deepClone());
 		
 		CollectResult cr = new CollectResult(false);
 		result.addApplication(cr);
 
-		evaluator.logicalOptimization();
-		evaluator.physicalOptimization();
+		evaluator_param.logicalOptimization();
+		evaluator_param.physicalOptimization();
 		try {
-			evaluator.evaluateQuery();
+			evaluator_param.evaluateQuery();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		QueryResult queryResult = cr.getResult();
-		queryResultsForExistNodes.put(node, transformQueryResult(queryResult));
+		this.queryResultsForExistNodes.put(node, transformQueryResult(queryResult));
 		BindingsArray.forceVariables(oldVarsTmp);
-		evaluator.setRootNode(oldRoot);
-		evaluator.setResult(oldResult);
+		evaluator_param.setRootNode(oldRoot);
+		evaluator_param.setResult(oldResult);
 	}
 
 	protected QueryResult transformQueryResult(QueryResult queryResult) {
@@ -934,6 +945,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 	
+	@SuppressWarnings({ "unused", "deprecation" })
 	public static boolean processSimpleSubquery(SimpleNode node, final Bindings bindings,
 			Map<Node, Object> d, IndexCollection collection,
 			CommonCoreQueryEvaluator<Node> evaluator) {
@@ -1010,16 +1022,24 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 
 		@Override
-		public void deleteResult() {}
+		public void deleteResult() {
+			// not used...
+		}
 
 		@Override
-		public void deleteResult(QueryResult res) {}
+		public void deleteResult(QueryResult res) {
+			// not used...
+		}
 
 		@Override
-		public void start(Type type) {}
+		public void start(Type type) {
+			// not used...
+		}
 
 		@Override
-		public void stop() {}
+		public void stop() {
+			// not used...
+		}
 	}
 
 	/**
@@ -1292,13 +1312,18 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.toLowerCase(), wholeString);
 	}
 
+	// @SuppressWarnings("deprecation")
 	@Override
 	public Object evaluate(ASTEncodeForUriFuncNode node, Bindings b,
 			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
 		if (Helper.isNumeric(wholeString))
 			return null;
-		return Helper.quote(URLEncoder.encode(Helper.unquote(Helper.getContent(wholeString))));
+		try {
+			return Helper.quote(URLEncoder.encode(Helper.unquote(Helper.getContent(wholeString)), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {			
+			throw new TypeErrorException(e.getMessage());
+		}
 	}
 
 	@Override
@@ -1548,7 +1573,9 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 			try {
 				return Helper.unlazy(child0.jjtGetChild(i).accept(this, b, d));
 			} catch(Error e){
-			} catch(Exception e){				
+				// ignore...
+			} catch(Exception e){
+				// ignore...
 			}
 		}
 		return null;

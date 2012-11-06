@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -201,11 +202,11 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		final Class typeKey = Registration.deserializeId(this)[0];
 		final Class typeValue = Registration.deserializeId(this)[0];
 		for (int i = 0; i < size; i++) {
-			Object value;
-			Object key;
+			Serializable value;
+			Serializable key;
 			try {
-				value = Registration.deserializeWithoutId(typeValue, this);
-				key = Registration.deserializeWithoutId(typeKey, this);
+				value = (Serializable) Registration.deserializeWithoutId(typeValue, this);
+				key = (Serializable) Registration.deserializeWithoutId(typeKey, this);
 				ms.put(key, value);
 			} catch (final URISyntaxException e) {
 				System.out.println(e);

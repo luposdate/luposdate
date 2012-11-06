@@ -34,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -103,6 +102,7 @@ public class GUI implements IXPref {
 
 		final JButton buttonPref = new JButton("Preferences");
 		buttonPref.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				try {
 					pref.showDialog(accessToFileSystem);
@@ -114,6 +114,7 @@ public class GUI implements IXPref {
 		});
 		final JButton buttonGenerateDoc = new JButton("Generate Doc");
 		buttonGenerateDoc.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				try {
 					lock.lock();
@@ -176,13 +177,14 @@ public class GUI implements IXPref {
 				new ActionListener() {
 					volatile boolean processingQuery = false;
 
+					@Override
 					public void actionPerformed(final ActionEvent e) {
-						if (!processingQuery) {
+						if (!this.processingQuery) {
 							try {
 								content.delete(0, content.length());
 								content.append("<html><code>");
-								final QueryEvaluator evaluator =((EvaluatorCreator.EVALUATORS) comboBoxEvaluator.getSelectedItem()).create(pref);
-								processingQuery = true;
+								final QueryEvaluator evaluator =((EvaluatorCreator.EVALUATORS) comboBoxEvaluator.getSelectedItem()).create();
+								this.processingQuery = true;
 								// do some initialization for federated queries...
 								ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
 								FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallBitVectorApproach");
@@ -193,6 +195,7 @@ public class GUI implements IXPref {
 								LiteralFactory.semanticInterpretationOfLiterals = xpref.datatypes.BooleanDatatype.getFirstValue("semanticInterpretationOfDatatypes");
 								System.out.println("Configuration:" + pref.toString() + "\n\n");
 								SwingUtilities.invokeLater(new Runnable() {
+									@Override
 									public void run() {
 										final Thread thread = new Thread() {
 											@Override
@@ -222,15 +225,17 @@ public class GUI implements IXPref {
 
 				}, outerPanel, BorderLayout.NORTH, textarea, content,
 				new IXPref() {
+					@Override
 					public void preferencesChanged() {
+						// nothing to update...
 					}
 
 				});
 	}
 
-	public static Image getIcon(final boolean accessToFileSystem) {
+	public static Image getIcon(final boolean accessToFileSystem_param) {
 		URL url = GUI.class.getResource("/icons/demo.gif");
-		if (accessToFileSystem)
+		if (accessToFileSystem_param)
 			return new ImageIcon(url.getFile()).getImage();
 		else
 			return new ImageIcon(url).getImage();
@@ -248,6 +253,7 @@ public class GUI implements IXPref {
 		final JPanel panelCenter = new JPanel();
 		final JButton buttonStart = new JButton("Start");
 		buttonStart.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				buttonStart.setEnabled(false);
 				startButtonAction.actionPerformed(e);
@@ -277,6 +283,7 @@ public class GUI implements IXPref {
 		"Update output only after computation");
 		checkbox.setSelected(true);
 		checkbox.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(final ItemEvent e) {
 				try {
 					lock.lock();
@@ -373,10 +380,11 @@ public class GUI implements IXPref {
 		buttonSaveOutput.addActionListener(new ActionListener() {
 			final JFileChooser fileChooser = new JFileChooser();
 
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				final int result = fileChooser.showSaveDialog(null);
+				final int result = this.fileChooser.showSaveDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
-					final String filename = fileChooser.getSelectedFile()
+					final String filename = this.fileChooser.getSelectedFile()
 					.getAbsolutePath();
 					FileHelper.writeFile(filename, content.toString());
 				}
@@ -447,6 +455,7 @@ public class GUI implements IXPref {
 				return null;
 			}
 		} catch (final Exception e) {
+			// ignore...
 		}
 
 		pref.registerComponent(ixpref);
@@ -491,6 +500,7 @@ public class GUI implements IXPref {
 
 		final JButton button = new JButton("...");
 		button.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final JFileChooser fileChooser = new JFileChooser(textfield
 						.getText());
@@ -515,7 +525,9 @@ public class GUI implements IXPref {
 		return textfield;
 	}
 
+	@Override
 	public void preferencesChanged() {
+		// nothing to update...
 	}
 
 	public static class BrowserForCommandLineOptions extends Browser {
@@ -535,17 +547,16 @@ public class GUI implements IXPref {
 			buttonSaveHTMLPage.addActionListener(new ActionListener() {
 				final JFileChooser fileChooser = new JFileChooser();
 
+				@Override
 				public void actionPerformed(final ActionEvent e) {
 					final JButton button = (JButton) e.getSource();
 					final Browser browser = (Browser) button.getParent()
 					.getParent().getParent().getParent().getParent()
 					.getParent();
-					final int result = fileChooser.showSaveDialog(null);
+					final int result = this.fileChooser.showSaveDialog(null);
 					if (result == JFileChooser.APPROVE_OPTION) {
-						final String filename = fileChooser.getSelectedFile()
-						.getAbsolutePath();
-						FileHelper.writeFile(filename, browser.htmlPane
-								.getText());
+						final String filename = this.fileChooser.getSelectedFile().getAbsolutePath();
+						FileHelper.writeFile(filename, browser.htmlPane.getText());
 					}
 				}
 

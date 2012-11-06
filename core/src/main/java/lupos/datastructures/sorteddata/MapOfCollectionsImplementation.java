@@ -33,9 +33,10 @@ public class MapOfCollectionsImplementation<K, V, CV extends Collection<V>> impl
 	protected Map<K, CV> map;
 	protected Class<? extends CV> klass;
 	
-	public MapOfCollectionsImplementation(final Map<K, CV> map, final Class<? extends CV> klass){
+	@SuppressWarnings("unchecked")
+	public MapOfCollectionsImplementation(final Map<K, CV> map, final Class<?> klass){
 		this.map=map;
-		this.klass=klass;
+		this.klass=(Class<? extends CV>)klass;
 	}
 	
 	protected CV getNewCollection() throws InstantiationException, IllegalAccessException{

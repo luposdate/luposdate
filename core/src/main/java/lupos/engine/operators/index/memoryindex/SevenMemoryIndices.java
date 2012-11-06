@@ -26,6 +26,7 @@ package lupos.engine.operators.index.memoryindex;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.URILiteral;
@@ -127,36 +128,27 @@ public class SevenMemoryIndices extends Indices {
 	 * 
 	 * @see DiskBasedHashMap
 	 */
-	@SuppressWarnings("unchecked")
 	private void initMapsInMainMemory() {
-		subjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+		this.subjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+				new HashMap<String, Collection<Triple>>(), LinkedList.class);
+		this.predicateMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
 				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
-		predicateMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+				LinkedList.class);
+		this.objectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
 				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
-		objectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+				LinkedList.class);
+		this.subjectPredicateMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
 				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
-		subjectPredicateMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+				LinkedList.class);
+		this.subjectObjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
 				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
-		subjectObjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+				LinkedList.class);
+		this.predicateObjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
 				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
-		predicateObjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
+				LinkedList.class);
+		this.subjectPredicateObjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
 				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
-		subjectPredicateObjectMap = new MapOfCollectionsImplementation<String, Triple, Collection<Triple>>(
-				new HashMap<String, Collection<Triple>>(),
-				(Class<Collection<Triple>>) (new java.util.LinkedList<Triple>()
-						.getClass()));
+				LinkedList.class);
 	}
 
 	/**

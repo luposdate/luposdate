@@ -43,6 +43,9 @@ import org.openrdf.model.Value;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.ntriples.NTriplesParser;
+import org.openrdf.rio.rdfxml.RDFXMLParser;
+import org.openrdf.rio.turtle.TurtleParser;
 
 public class SesameturtleParser {
 	
@@ -53,7 +56,7 @@ public class SesameturtleParser {
 	
 	public enum SesameParserType {
 		NTRIPLES, TURTLE, RDFXML
-	};
+	}
 	
 	public static class CounterRDFHandler implements RDFHandler {
 		
@@ -97,7 +100,7 @@ public class SesameturtleParser {
 		try {
 			final InputStreamReader isr = new InputStreamReader(in, encoding);
 			if (parserType == SesameParserType.NTRIPLES) {
-				final org.openrdf.rio.ntriples.NTriplesParser parser = new org.openrdf.rio.ntriples.NTriplesParser();
+				final NTriplesParser parser = new NTriplesParser();
 				parser.setRDFHandler(handler);
 				try {
 					parser.parse(isr, "");
@@ -112,7 +115,7 @@ public class SesameturtleParser {
 					e.printStackTrace();
 				}
 			} else if (parserType == SesameParserType.RDFXML) {
-				final org.openrdf.rio.rdfxml.RDFXMLParser parser = new org.openrdf.rio.rdfxml.RDFXMLParser();
+				final RDFXMLParser parser = new RDFXMLParser();
 				parser.setRDFHandler(handler);
 				try {
 					parser.parse(isr, "");
@@ -127,7 +130,7 @@ public class SesameturtleParser {
 					e.printStackTrace();
 				}
 			} else if (parserType == SesameParserType.TURTLE) {
-				final org.openrdf.rio.turtle.TurtleParser parser = new org.openrdf.rio.turtle.TurtleParser();
+				final TurtleParser parser = new TurtleParser();
 				parser.setRDFHandler(handler);
 				try {
 					parser.parse(isr, "");
