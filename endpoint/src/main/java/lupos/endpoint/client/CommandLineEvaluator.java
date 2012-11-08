@@ -23,8 +23,6 @@
  */
 package lupos.endpoint.client;
 
-import org.json.XML;
-
 import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.evaluators.StreamQueryEvaluator;

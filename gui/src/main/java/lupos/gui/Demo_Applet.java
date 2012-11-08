@@ -1401,8 +1401,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			evaluator.getArgs().set("type", "N3");
 		} else {
 			evaluator.getArgs().set("type", "Turtle");
-			// evaluator.getArgs()
-			// .set("codemap", LiteralFactory.MapType.NOCODEMAP);
+			// evaluator.getArgs().set("codemap", LiteralFactory.MapType.NOCODEMAP);
 			evaluator.getArgs().set("core", true);
 		}
 
