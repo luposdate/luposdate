@@ -31,7 +31,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 import lupos.misc.BitVector;
@@ -44,7 +44,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 	private final static String UnsupportedOperationExceptionMessage = "Currently no updates allowed on DBBPTree for fast histogram computation!";
 
 	public LazyLiteralDBBPTreeStatisticsNodeDeSerializer(
-			final RDF3XIndex.CollationOrder order) {
+			final RDF3XIndexScan.CollationOrder order) {
 		super(order);
 	}
 

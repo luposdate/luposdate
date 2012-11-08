@@ -39,7 +39,7 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
     private lupos.datastructures.items.literal.Literal constant = null;
     private lupos.engine.operators.singleinput.Filter f = null;
     private lupos.engine.operators.BasicOperator[] o = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
@@ -60,11 +60,11 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
                 break;
             }
 
-            if(!(_precOp_1_0 instanceof lupos.engine.operators.index.BasicIndex)) {
+            if(!(_precOp_1_0 instanceof lupos.engine.operators.index.BasicIndexScan)) {
                 continue;
             }
 
-            this.i = (lupos.engine.operators.index.BasicIndex) _precOp_1_0;
+            this.i = (lupos.engine.operators.index.BasicIndexScan) _precOp_1_0;
 
             List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 

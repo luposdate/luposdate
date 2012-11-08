@@ -33,7 +33,7 @@ import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.items.literal.Literal;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 import lupos.misc.BitVector;
@@ -42,7 +42,7 @@ import lupos.misc.Tuple;
 public class LazyLiteralNodeDeSerializer implements
 		NodeDeSerializer<TripleKey, Triple> {
 
-	protected final RDF3XIndex.CollationOrder order;
+	protected final RDF3XIndexScan.CollationOrder order;
 
 	protected final static int[][] map = { { 0, 1, 2 }, // SPO
 			{ 0, 2, 1 }, // SOP
@@ -53,7 +53,7 @@ public class LazyLiteralNodeDeSerializer implements
 	};
 
 	public LazyLiteralNodeDeSerializer(
-			final RDF3XIndex.CollationOrder order) {
+			final RDF3XIndexScan.CollationOrder order) {
 		this.order = order;
 	}
 

@@ -37,6 +37,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 
 public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIndex {
+	
+	protected final Root indexCollection;
+	protected final Item rdfGraph;
 
 	/**
 	 * 
@@ -45,8 +48,9 @@ public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIn
 
 	public EmptyIndexSubmittingQueryResultWithOneEmptyBindings(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, Item graphConstraint,
-			final lupos.engine.operators.index.IndexCollection indexCollection) {
+			final lupos.engine.operators.index.Root indexCollection) {
 		super(succeedingOperator, triplePattern, indexCollection);
+		this.indexCollection = indexCollection;
 		this.rdfGraph = graphConstraint;
 	}
 
@@ -54,18 +58,17 @@ public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIn
 	 * Creating a new query result with an empty binding to handle an empty BIND
 	 * statement
 	 * 
-	 * @param int
 	 * @param Dataset
 	 */
 	@Override
-	public QueryResult process(final int opt, final Dataset dataset) {
+	public QueryResult process(final Dataset dataset) {
 		final QueryResult queryResult = QueryResult.createInstance();
 		if(this.rdfGraph!=null && this.rdfGraph.isVariable()){
 			Variable graphConstraint = (Variable) this.rdfGraph;
-			if (indexCollection.namedGraphs != null && indexCollection.namedGraphs.size() > 0) {
+			if (this.indexCollection.namedGraphs != null && this.indexCollection.namedGraphs.size() > 0) {
 				// Convert the named graphs' names into URILiterals
 				// to be applicable later on
-				for (final String name : indexCollection.namedGraphs) {
+				for (final String name : this.indexCollection.namedGraphs) {
 					final Bindings graphConstraintBindings = Bindings.createNewInstance();
 					try {
 						graphConstraintBindings.add(graphConstraint, LiteralFactory.createURILiteralWithoutLazyLiteral(name));
@@ -89,7 +92,7 @@ public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIn
 			queryResult.add(Bindings.createNewInstance());
 		}
 
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
+		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
 
 			((Operator) succOperator.getOperator()).processAll(queryResult,
 					succOperator.getId());

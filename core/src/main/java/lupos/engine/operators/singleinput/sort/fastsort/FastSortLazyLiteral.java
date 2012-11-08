@@ -36,7 +36,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class FastSortLazyLiteral extends FastSort {
@@ -49,14 +49,14 @@ public class FastSortLazyLiteral extends FastSort {
 		super(triplePatterns, sortCriterium);
 	}
 
-	private BasicIndex findIndex(final BasicOperator root,
+	private BasicIndexScan findIndex(final BasicOperator root,
 			final TriplePattern triplePattern) {
 		for (final OperatorIDTuple opID : root.getSucceedingOperators()) {
 			final BasicOperator bo = opID.getOperator();
-			if (bo instanceof BasicIndex) {
-				if (((BasicIndex) bo).getTriplePattern()
+			if (bo instanceof BasicIndexScan) {
+				if (((BasicIndexScan) bo).getTriplePattern()
 						.contains(triplePattern))
-					return (BasicIndex) bo;
+					return (BasicIndexScan) bo;
 			}
 		}
 		return null;

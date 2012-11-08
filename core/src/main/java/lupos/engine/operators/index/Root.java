@@ -27,27 +27,26 @@ import java.util.Collection;
 import java.util.List;
 
 import lupos.datastructures.items.Item;
-import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
+import lupos.engine.operators.RootChild;
 
-public abstract class IndexCollection extends Operator {
+public abstract class Root extends Operator {
 	public List<String> defaultGraphs;
 	public List<String> namedGraphs;
 	public Dataset dataset;
 
-	public abstract BasicIndex newIndex(OperatorIDTuple succeedingOperator,
+	public abstract BasicIndexScan newIndex(OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, Item data);
 
-	public QueryResult process(final int opt, final Dataset dataset) {
-		if (succeedingOperators.size() == 0)
-			return null;
-		for (final OperatorIDTuple oit : succeedingOperators) {
-			((BasicIndex) oit.getOperator()).process(opt, dataset);
+	public void startProcessing() {
+		if (this.succeedingOperators.size() == 0)
+			return;
+		for (final OperatorIDTuple oit : this.succeedingOperators) {
+			((RootChild) oit.getOperator()).startProcessing(this.dataset);
 		}
-		return null;
 	}
 
 
@@ -56,54 +55,51 @@ public abstract class IndexCollection extends Operator {
 				this, this);
 	}
 
-	public void optimizeJoinOrder(final int opt, final Dataset dataset) {
+	public void optimizeJoinOrder(final int opt) {
 		switch (opt) {
-		case BasicIndex.MOSTRESTRICTIONS:
+		case BasicIndexScan.MOSTRESTRICTIONS:
 			optimizeJoinOrderAccordingToMostRestrictions();
 			break;
 		}
 	}
 
 	public void optimizeJoinOrderAccordingToMostRestrictions() {
-		for (final OperatorIDTuple oit : succeedingOperators) {
-			final BasicIndex index = (BasicIndex) oit.getOperator();
+		for (final OperatorIDTuple oit : this.succeedingOperators) {
+			final BasicIndexScan index = (BasicIndexScan) oit.getOperator();
 			index.optimizeJoinOrderAccordingToMostRestrictions();
 		}
 	}
 
-	public void remove(final BasicIndex i) {
+	public void remove(final BasicIndexScan i) {
 		removeSucceedingOperator(i);
 	}
 
-	public abstract IndexCollection newInstance(Dataset dataset);
+	public abstract Root newInstance(Dataset dataset_param);
 
 	public void printGraphURLs() {
 		String graph;
 		System.out.println();
 		System.out.println("default graphs: ");
-		if (defaultGraphs != null)
-			for (int i = 0; i < defaultGraphs.size(); i++) {
-				graph = defaultGraphs.get(i);
+		if (this.defaultGraphs != null)
+			for (int i = 0; i < this.defaultGraphs.size(); i++) {
+				graph = this.defaultGraphs.get(i);
 				System.out.println(i + ": " + graph);
 			}
 		System.out.println();
 		System.out.println("named graphs: ");
-		if (namedGraphs != null)
-			for (int i = 0; i < namedGraphs.size(); i++) {
-				graph = namedGraphs.get(i);
+		if (this.namedGraphs != null)
+			for (int i = 0; i < this.namedGraphs.size(); i++) {
+				graph = this.namedGraphs.get(i);
 				System.out.println(i + ": " + graph);
 			}
 		System.out.println();
 	}
 	
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		if (succeedingOperators.size() == 0)
-			return null;
-		for (final OperatorIDTuple oit : succeedingOperators) {
-			((BasicIndex) oit.getOperator()).processDebug(opt, dataset,
-					debugstep);
+	public void startProcessingDebug(final DebugStep debugstep) {
+		if (this.succeedingOperators.size() == 0)
+			return;
+		for (final OperatorIDTuple oit : this.succeedingOperators) {
+			((RootChild) oit.getOperator()).startProcessingDebug(this.dataset, debugstep);
 		}
-		return null;
 	}
 }

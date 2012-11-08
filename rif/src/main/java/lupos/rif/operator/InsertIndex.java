@@ -26,17 +26,17 @@ package lupos.rif.operator;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.stream.TripleDeleter;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
 
-public abstract class InsertIndex extends BasicIndex implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+public abstract class InsertIndex extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
-	public InsertIndex(IndexCollection indexCollection) {
+	public InsertIndex(Root indexCollection) {
 		super(indexCollection);
 	}
 

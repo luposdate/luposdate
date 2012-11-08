@@ -61,8 +61,8 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.CollectResult;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.NotBoundException;
@@ -173,19 +173,19 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	// stored by the Filter
 	// Additionally we hand over the evaluator in the filter
 	// this is needed to process the actual subquery for each node
-	private Map<SimpleNode, IndexCollection> collectionForExistNodes = new HashMap<SimpleNode, IndexCollection>();
+	private Map<SimpleNode, Root> collectionForExistNodes = new HashMap<SimpleNode, Root>();
 	private Map<SimpleNode, Boolean> simpleExistNodes = new HashMap<SimpleNode, Boolean>();
 	protected Map<SimpleNode, QueryResult> queryResultsForExistNodes = new HashMap<SimpleNode, QueryResult>();
 	private CommonCoreQueryEvaluator<Node> evaluator;
 
 	@Override
 	public void setCollectionForExistNodes(
-			Map<SimpleNode, IndexCollection> collectionForExistNodes) {
+			Map<SimpleNode, Root> collectionForExistNodes) {
 		this.collectionForExistNodes = collectionForExistNodes;
 	}
 
 	@Override
-	public Map<SimpleNode, IndexCollection> getCollectionForExistNodes() {
+	public Map<SimpleNode, Root> getCollectionForExistNodes() {
 		return this.collectionForExistNodes;
 	}
 
@@ -722,7 +722,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	/**
-	 * Checks whether the subquery represented by the {@link IndexCollection}
+	 * Checks whether the subquery represented by the {@link Root}
 	 * and {@link Result} has a non-empty result. Used for processing Exists and
 	 * Not Exists.
 	 * 
@@ -735,7 +735,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            the subquery.
 	 * @param d
 	 * @param collection
-	 *            the {@link IndexCollection} for the subquery
+	 *            the {@link Root} for the subquery
 	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
@@ -743,7 +743,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            the {@link Result} for the subquery
 	 */
 	public boolean processSubquery(final SimpleNode node, final Bindings bindings,
-			Map<Node, Object> d, IndexCollection collection,
+			Map<Node, Object> d, Root collection,
 			CommonCoreQueryEvaluator<Node> evaluator_param) {
 		Boolean simple = this.simpleExistNodes.get(node);
 		if(simple==null){
@@ -753,7 +753,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				public Object visit(BasicOperator basicOperator) {
 					// exclude more complicated cases, which might lead to errors...
 					// maybe too strict, must be checked again to allow more...
-					if (!(basicOperator instanceof BasicIndex || 
+					if (!(basicOperator instanceof BasicIndexScan || 
 							basicOperator instanceof Join || 
 							basicOperator instanceof Result)){
 						EvaluationVisitorImplementation.this.simpleExistNodes.put(node, false);
@@ -775,7 +775,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 	
 	/**
-	 * Checks whether the subquery represented by the {@link IndexCollection}
+	 * Checks whether the subquery represented by the {@link Root}
 	 * and {@link Result} has a non-empty result. Used for processing Exists and
 	 * Not Exists.<br>
 	 * Implementation note: Contrary to {@link EvaluationVisitorImplementation}
@@ -791,7 +791,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            the subquery.
 	 * @param d
 	 * @param collection
-	 *            the {@link IndexCollection} for the subquery
+	 *            the {@link Root} for the subquery
 	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
@@ -799,7 +799,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            the {@link Result} for the subquery
 	 */
 	public boolean processSubqueryAndGetWholeResult(SimpleNode node, Bindings bindings,
-			Map<Node, Object> d, IndexCollection collection,
+			Map<Node, Object> d, Root collection,
 			CommonCoreQueryEvaluator<Node> evaluator_param) {
 
 		if (!this.queryResultsForExistNodes.containsKey(node)) {
@@ -864,7 +864,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		BindingsArray.forceVariables(maxVariables);
 	}
 	
-	public static Result setupEvaluator(CommonCoreQueryEvaluator<Node> evaluator, IndexCollection collection){
+	public static Result setupEvaluator(CommonCoreQueryEvaluator<Node> evaluator, Root collection){
 		evaluator.setRootNode(collection);
 		collection.deleteParents();
 		collection.setParents();
@@ -892,7 +892,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            the node associated with this query, usually an instance of
 	 *            {@link ASTExists} or {@link ASTNotExists}
 	 * @param collection
-	 *            the {@link IndexCollection} for the subquery
+	 *            the {@link Root} for the subquery
 	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
@@ -901,7 +901,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 */
 	@SuppressWarnings("deprecation")
 	protected void performSubQueryAndGetWholeResult(final SimpleNode node,
-			IndexCollection collection,
+			Root collection,
 			CommonCoreQueryEvaluator<Node> evaluator_param) {
 		BasicOperator oldRoot = evaluator_param.getRootNode();
 		Result oldResult = evaluator_param.getResultOperator();
@@ -909,7 +909,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		// the static bindingsarray is saved and restored after the subquery
 		Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
 
-		Result result = setupEvaluator(evaluator_param, (IndexCollection) collection.deepClone());
+		Result result = setupEvaluator(evaluator_param, (Root) collection.deepClone());
 		
 		CollectResult cr = new CollectResult(false);
 		result.addApplication(cr);
@@ -947,7 +947,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	
 	@SuppressWarnings({ "unused", "deprecation" })
 	public static boolean processSimpleSubquery(SimpleNode node, final Bindings bindings,
-			Map<Node, Object> d, IndexCollection collection,
+			Map<Node, Object> d, Root collection,
 			CommonCoreQueryEvaluator<Node> evaluator) {
 
 		BasicOperator oldRoot = evaluator.getRootNode();
@@ -955,14 +955,14 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		// the static bindingsarray is saved and restored after the subquery
 		Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
 
-		IndexCollection collectionClone = (IndexCollection) collection.deepClone();
+		Root collectionClone = (Root) collection.deepClone();
 		collectionClone.visit(new SimpleOperatorGraphVisitor() {
 
 			@Override
 			public Object visit(BasicOperator basicOperator) {
 
-				if (basicOperator instanceof BasicIndex) {
-					BasicIndex basicIndex = (BasicIndex) basicOperator;
+				if (basicOperator instanceof BasicIndexScan) {
+					BasicIndexScan basicIndex = (BasicIndexScan) basicOperator;
 					Collection<TriplePattern> triplePatterns = basicIndex
 							.getTriplePattern();
 					Collection<TriplePattern> newTriplePatterns = new LinkedList<TriplePattern>();

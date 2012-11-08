@@ -27,7 +27,7 @@ import java.io.Serializable;
 
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 
 public class TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral
 		extends TripleComparator implements Serializable {
@@ -57,7 +57,7 @@ public class TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral
 	}
 
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(
-			final RDF3XIndex.CollationOrder orderPattern) {
+			final RDF3XIndexScan.CollationOrder orderPattern) {
 		super(orderPattern);
 	}
 

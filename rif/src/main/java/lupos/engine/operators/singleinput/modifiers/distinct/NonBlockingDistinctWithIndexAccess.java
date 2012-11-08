@@ -32,7 +32,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
@@ -47,9 +47,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  */
 public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDistinct {
 	
-	protected BasicIndex basicIndex;
+	protected BasicIndexScan basicIndex;
 
-	public NonBlockingDistinctWithIndexAccess(final Set<Bindings> setOfBindings, final BasicIndex basicIndex) {
+	public NonBlockingDistinctWithIndexAccess(final Set<Bindings> setOfBindings, final BasicIndexScan basicIndex) {
 		super(setOfBindings);
 		this.basicIndex = basicIndex;
 	}
@@ -58,11 +58,11 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 		super(setOfBindings);
 	}
 
-	public BasicIndex getBasicIndex() {
+	public BasicIndexScan getBasicIndex() {
 		return this.basicIndex;
 	}
 
-	public void setBasicIndex(BasicIndex basicIndex) {
+	public void setBasicIndex(BasicIndexScan basicIndex) {
 		this.basicIndex = basicIndex;
 	}
 

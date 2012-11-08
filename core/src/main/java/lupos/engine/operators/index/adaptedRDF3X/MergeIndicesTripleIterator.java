@@ -39,7 +39,7 @@ public class MergeIndicesTripleIterator implements Iterator<Triple> {
 	private int idOfLastElement;
 
 	public MergeIndicesTripleIterator(final IndicesTripleIterator[] itia,
-			final RDF3XIndex.CollationOrder collationOrder) {
+			final RDF3XIndexScan.CollationOrder collationOrder) {
 		comparator = new TripleComparator(collationOrder);
 		heap = new SequentialHeap<HeapEntry>(itia.length, true);
 		for (int i = 0; i < itia.length; i++) {

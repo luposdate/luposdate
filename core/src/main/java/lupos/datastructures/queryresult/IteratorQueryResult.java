@@ -31,7 +31,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.singleinput.SIPFilterOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
@@ -54,7 +54,7 @@ public class IteratorQueryResult extends QueryResult {
 	public IteratorQueryResult(
 			final SIPParallelIterator<Triple, TripleKey> itt,
 			final TriplePattern tp,
-			final RDF3XIndex.CollationOrder order,
+			final RDF3XIndexScan.CollationOrder order,
 			final boolean considerBloomFilters) {
 		if (!considerBloomFilters)
 			createIterator(itt, tp, order);
@@ -246,13 +246,13 @@ public class IteratorQueryResult extends QueryResult {
 
 	public IteratorQueryResult(final Iterator<Triple> itt,
 			final TriplePattern tp,
-			final RDF3XIndex.CollationOrder order) {
+			final RDF3XIndexScan.CollationOrder order) {
 		createIterator(itt, tp, order);
 	}
 
 	private void createIterator(final Iterator<Triple> itt,
 			final TriplePattern tp,
-			final RDF3XIndex.CollationOrder order) {
+			final RDF3XIndexScan.CollationOrder order) {
 		this.itb = new SIPParallelIterator<Bindings, Bindings>() {
 			Bindings next = computeNext();
 

@@ -55,7 +55,7 @@ import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Indices.DATA_STRUCT;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.LuposObjectOutputStream;

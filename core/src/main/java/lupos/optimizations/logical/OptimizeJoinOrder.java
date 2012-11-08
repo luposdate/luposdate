@@ -45,12 +45,12 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.IndexCollection;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
-import lupos.engine.operators.index.memoryindex.MemoryIndex;
+import lupos.engine.operators.index.Root;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
+import lupos.engine.operators.index.memoryindex.MemoryIndexScan;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.multiinput.join.MergeJoinWithoutSorting;
 import lupos.engine.operators.multiinput.join.NAryMergeJoinWithoutSorting;
@@ -286,7 +286,7 @@ public class OptimizeJoinOrder {
 			this.cost = cost;
 		}
 
-		LeafNodePlan(final TriplePattern tp, final BasicIndex index,
+		LeafNodePlan(final TriplePattern tp, final BasicIndexScan index,
 				final Dataset dataset,
 				final Class<? extends Bindings> classBindings,
 				final HashSet<Variable> joinPartners) {
@@ -600,7 +600,7 @@ public class OptimizeJoinOrder {
 	protected HashMap<Variable, Literal> maxima = new HashMap<Variable, Literal>();
 
 	public Plan getBestPlan(final List<TriplePattern> ctp,
-			final BasicIndex index, final Dataset dataset,
+			final BasicIndexScan index, final Dataset dataset,
 			final PlanType planType) {
 		// final HashMap<Long,SortedSet<Plan>>[] bestPlans = new
 		// HashMap[ctp.size()];
@@ -697,7 +697,7 @@ public class OptimizeJoinOrder {
 			// else {
 			final Thread thread = new Thread() {
 				final TriplePattern tp2 = tp;
-				final BasicIndex index2 = (BasicIndex) index.clone();
+				final BasicIndexScan index2 = (BasicIndexScan) index.clone();
 
 				@Override
 				public void run() {
@@ -746,7 +746,7 @@ public class OptimizeJoinOrder {
 	// }
 
 	private Plan getBestPlanBeforeSplittingHugeStarShapedJoins(
-			final BasicIndex index, final Dataset dataset,
+			final BasicIndexScan index, final Dataset dataset,
 			final PlanType planType, final List<LeafNodePlan> initialPlans) {
 		final List<TriplePattern> ctp = new LinkedList<TriplePattern>();
 		for (final LeafNodePlan leafNodePlan : initialPlans) {
@@ -757,7 +757,7 @@ public class OptimizeJoinOrder {
 	}
 
 	private Plan getBestPlanBeforeSplittingHugeStarShapedJoins(
-			final List<TriplePattern> ctp, final BasicIndex index,
+			final List<TriplePattern> ctp, final BasicIndexScan index,
 			final Dataset dataset, final PlanType planType,
 			final List<LeafNodePlan> initialPlans) {
 
@@ -1200,7 +1200,7 @@ public class OptimizeJoinOrder {
 	}
 
 	private Plan getBestPlanBeforeSplittingHugeStarShapedJoins(
-			final List<TriplePattern> ctp, final BasicIndex index,
+			final List<TriplePattern> ctp, final BasicIndexScan index,
 			final Dataset dataset, final PlanType planType,
 			final List<LeafNodePlan> initialPlans,
 			final List<TriplePattern> splittedPart) {
@@ -1281,7 +1281,7 @@ public class OptimizeJoinOrder {
 	}
 
 	private Plan getBestPlanBeforeSplittingHugeStarShapedJoinsWithoutConsideringCartesianProducts(
-			final List<TriplePattern> ctp, final BasicIndex index,
+			final List<TriplePattern> ctp, final BasicIndexScan index,
 			final Dataset dataset, final PlanType planType,
 			final List<LeafNodePlan> initialPlans,
 			final List<TriplePattern> splittedPart) {
@@ -1310,7 +1310,7 @@ public class OptimizeJoinOrder {
 	}
 
 	private Plan getBestPlanTryOutCombinations(final List<TriplePattern> ctp,
-			final BasicIndex index, final Dataset dataset,
+			final BasicIndexScan index, final Dataset dataset,
 			final PlanType planType, final List<LeafNodePlan> initialPlans,
 			final List<TriplePattern> splittedPart,
 			final List<List<TriplePattern>> cartesianProducts) {
@@ -1346,7 +1346,7 @@ public class OptimizeJoinOrder {
 	}
 
 	private Plan getBestPlanAfterSplittingHugeStarShapedJoins(
-			final List<TriplePattern> ctp, final BasicIndex index,
+			final List<TriplePattern> ctp, final BasicIndexScan index,
 			final Dataset dataset, final PlanType planType,
 			final List<LeafNodePlan> initialPlans) {
 		final HashMap<Long, Plan>[] bestPlans = new HashMap[ctp.size()];
@@ -1558,15 +1558,15 @@ public class OptimizeJoinOrder {
 		}
 	}
 
-	public static IndexCollection getBinaryJoinWithManyMergeJoins(
-			final IndexCollection ic, final BasicIndex index,
+	public static Root getBinaryJoinWithManyMergeJoins(
+			final Root ic, final BasicIndexScan index,
 			final PlanType planType, final Dataset dataset) {
 		final OptimizeJoinOrder optimizer = new OptimizeJoinOrder();
 		final OptimizeJoinOrder.Plan plan = optimizer.getBestPlan(
 				(List<TriplePattern>) index.getTriplePattern(), index, dataset,
 				planType);
 		// System.out.println(plan.toString());
-		final Operator op = generateOperatorGraph(plan, ic, index, planType,
+		final BasicOperator op = generateOperatorGraph(plan, ic, index, planType,
 				new LinkedList<Variable>(), optimizer.minima,
 				optimizer.maxima, false,
 				new HashMap<TriplePattern, Map<Variable, VarBucket>>());
@@ -1574,15 +1574,15 @@ public class OptimizeJoinOrder {
 		return ic;
 	}
 
-	public static IndexCollection getPlanWithNAryMergeJoins(
-			final IndexCollection ic, final BasicIndex index,
+	public static Root getPlanWithNAryMergeJoins(
+			final Root ic, final BasicIndexScan index,
 			final PlanType planType, final Dataset dataset) {
 		final OptimizeJoinOrder optimizer = new OptimizeJoinOrder();
 		final OptimizeJoinOrder.Plan plan = optimizer.getBestPlan(
 				(List<TriplePattern>) index.getTriplePattern(), index, dataset,
 				planType);
 		// System.out.println(plan.toString());
-		final Operator op = generateOperatorGraph(plan, ic, index, planType,
+		final BasicOperator op = generateOperatorGraph(plan, ic, index, planType,
 				new LinkedList<Variable>(), optimizer.minima,
 				optimizer.maxima, true,
 				new HashMap<TriplePattern, Map<Variable, VarBucket>>());
@@ -1590,42 +1590,42 @@ public class OptimizeJoinOrder {
 		return ic;
 	}
 
-	protected static Operator generateOperatorGraph(
-			final OptimizeJoinOrder.Plan plan, final IndexCollection ic,
-			final BasicIndex index, final PlanType planType,
+	protected static BasicOperator generateOperatorGraph(
+			final OptimizeJoinOrder.Plan plan, final Root ic,
+			final BasicIndexScan index, final PlanType planType,
 			final Collection<Variable> sortCriterium,
 			final Map<Variable, Literal> minima,
 			final Map<Variable, Literal> maxima, final boolean NARYMERGEJOIN,
 			final Map<TriplePattern, Map<Variable, VarBucket>> sel) {
 		if (plan instanceof OptimizeJoinOrder.LeafNodePlan) {
-			final BasicIndex index1 = getIndex((LeafNodePlan) plan, planType,
+			final BasicIndexScan index1 = getIndex((LeafNodePlan) plan, planType,
 					index, sortCriterium, minima, maxima);
 			sel.put(plan.triplePatterns.get(0), plan.selectivity);
 			ic.addSucceedingOperator(new OperatorIDTuple(index1, 0));
 			return index1;
 		} else {
 			final OptimizeJoinOrder.InnerNodePlan inp = (OptimizeJoinOrder.InnerNodePlan) plan;
-			final Operator left = generateOperatorGraph(inp.getLeft(), ic,
+			final BasicOperator left = generateOperatorGraph(inp.getLeft(), ic,
 					index, planType, inp.joinPartner, minima,
 					maxima, NARYMERGEJOIN, sel);
-			final Operator right = generateOperatorGraph(inp.getRight(), ic,
+			final BasicOperator right = generateOperatorGraph(inp.getRight(), ic,
 					index, planType, inp.joinPartner, minima,
 					maxima, NARYMERGEJOIN, sel);
 			if (planType == PlanType.RELATIONALINDEX) {
 				// left-deep-tree or right-deep-tree?
-				if (left instanceof BasicIndex && right instanceof BasicIndex) {
-					if (((BasicIndex) right).getTriplePattern().size() == 1
-							|| ((BasicIndex) left).getTriplePattern().size() == 1) {
+				if (left instanceof BasicIndexScan && right instanceof BasicIndexScan) {
+					if (((BasicIndexScan) right).getTriplePattern().size() == 1
+							|| ((BasicIndexScan) left).getTriplePattern().size() == 1) {
 						final Collection<TriplePattern> ctp;
 						if (inp.getLeft().cost < inp.getRight().cost) {
-							ctp = ((BasicIndex) left).getTriplePattern();
-							ctp.addAll(((BasicIndex) right).getTriplePattern());
+							ctp = ((BasicIndexScan) left).getTriplePattern();
+							ctp.addAll(((BasicIndexScan) right).getTriplePattern());
 						} else {
-							ctp = ((BasicIndex) right).getTriplePattern();
-							ctp.addAll(((BasicIndex) left).getTriplePattern());
+							ctp = ((BasicIndexScan) right).getTriplePattern();
+							ctp.addAll(((BasicIndexScan) left).getTriplePattern());
 						}
-						((BasicIndex) left).setTriplePatterns(ctp);
-						ic.remove((BasicIndex) right);
+						((BasicIndexScan) left).setTriplePatterns(ctp);
+						ic.remove((BasicIndexScan) right);
 						return left;
 					}
 				}
@@ -1655,11 +1655,11 @@ public class OptimizeJoinOrder {
 					} else
 						last = join;
 				}
-				if (left instanceof RDF3XIndex) {
-					((RDF3XIndex) left).setCollationOrder(inp.joinPartner);
+				if (left instanceof RDF3XIndexScan) {
+					((RDF3XIndexScan) left).setCollationOrder(inp.joinPartner);
 				}
-				if (right instanceof RDF3XIndex) {
-					((RDF3XIndex) right).setCollationOrder(inp.joinPartner);
+				if (right instanceof RDF3XIndexScan) {
+					((RDF3XIndexScan) right).setCollationOrder(inp.joinPartner);
 				}
 			} else {
 				if (inp.getJoinType() == OptimizeJoinOrder.JoinType.MERGEJOIN
@@ -1731,13 +1731,13 @@ public class OptimizeJoinOrder {
 								public int compare(final Object o1,
 										final Object o2) {
 									final double sel1 = sel.get(
-											((BasicIndex) o1)
+											((BasicIndexScan) o1)
 													.getTriplePattern()
 													.iterator().next())
 											.values().iterator().next()
 											.getSumDistinctLiterals();
 									final double sel2 = sel.get(
-											((BasicIndex) o2)
+											((BasicIndexScan) o2)
 													.getTriplePattern()
 													.iterator().next())
 											.values().iterator().next()
@@ -1758,11 +1758,11 @@ public class OptimizeJoinOrder {
 					}
 					join.setEstimatedCardinality(inp.card);
 					last = join;
-					if (left instanceof RDF3XIndex) {
-						((RDF3XIndex) left).setCollationOrder(inp.joinPartner);
+					if (left instanceof RDF3XIndexScan) {
+						((RDF3XIndexScan) left).setCollationOrder(inp.joinPartner);
 					}
-					if (right instanceof RDF3XIndex) {
-						((RDF3XIndex) right).setCollationOrder(inp.joinPartner);
+					if (right instanceof RDF3XIndexScan) {
+						((RDF3XIndexScan) right).setCollationOrder(inp.joinPartner);
 					}
 				} else {
 					join = new Join();
@@ -1849,7 +1849,7 @@ public class OptimizeJoinOrder {
 
 	private static void moveToLeft(
 			final Collection<TriplePattern> triplePatterns,
-			final IndexCollection ic) {
+			final Root ic) {
 		final List<OperatorIDTuple> succeedingOperators = ic
 				.getSucceedingOperators();
 		int insertPosition = 0;
@@ -1860,8 +1860,8 @@ public class OptimizeJoinOrder {
 			int index = max;
 			for (; index < succeedingOperators.size(); index++) {
 				final OperatorIDTuple oid = succeedingOperators.get(index);
-				if (oid.getOperator() instanceof BasicIndex) {
-					final Collection<TriplePattern> ctp = ((BasicIndex) oid
+				if (oid.getOperator() instanceof BasicIndexScan) {
+					final Collection<TriplePattern> ctp = ((BasicIndexScan) oid
 							.getOperator()).getTriplePattern();
 					for (final TriplePattern tp : triplePatterns)
 						if (ctp.contains(tp)) {
@@ -1902,22 +1902,22 @@ public class OptimizeJoinOrder {
 			return true;
 	}
 
-	protected static BasicIndex getIndex(final LeafNodePlan plan,
-			final PlanType planType, final BasicIndex index,
+	protected static BasicIndexScan getIndex(final LeafNodePlan plan,
+			final PlanType planType, final BasicIndexScan index,
 			final Collection<Variable> sortCriterium,
 			final Map<Variable, Literal> minima,
 			final Map<Variable, Literal> maxima) {
-		BasicIndex index1;
+		BasicIndexScan index1;
 		switch (planType) {
 		default:
 		case RDF3XSORT:
 		case RDF3X:
-			index1 = new RDF3XIndex((OperatorIDTuple) null, plan
+			index1 = new RDF3XIndexScan((OperatorIDTuple) null, plan
 					.getTriplePatterns(), index.getGraphConstraint(), minima,
 					maxima, index.getIndexCollection());
 			break;
 		case RELATIONALINDEX:
-			index1 = new MemoryIndex((OperatorIDTuple) null, plan
+			index1 = new MemoryIndexScan((OperatorIDTuple) null, plan
 					.getTriplePatterns(), index.getGraphConstraint(), index.getIndexCollection());
 			break;
 		}
@@ -1941,7 +1941,7 @@ public class OptimizeJoinOrder {
 			collationOrder1 = fill(collationOrder1, i1);
 			final CollationOrder co1 = getCollationOrder(collationOrder1);
 			if (planType == PlanType.RDF3X || planType == PlanType.RDF3XSORT) {
-				((RDF3XIndex) index1).setCollationOrder(co1);
+				((RDF3XIndexScan) index1).setCollationOrder(co1);
 			} 
 		}
 		return index1;

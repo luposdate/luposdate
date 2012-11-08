@@ -30,11 +30,11 @@ import java.util.List;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class ToStreamIndex extends BasicIndex {
+public class ToStreamIndex extends BasicIndexScan {
 
 	public ToStreamIndex (final IndexCollection indexCollection){
 		super(indexCollection);

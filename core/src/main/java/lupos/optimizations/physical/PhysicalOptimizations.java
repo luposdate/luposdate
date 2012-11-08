@@ -36,8 +36,8 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.multiinput.MergeUnion;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.HashMapIndexJoin;
@@ -255,8 +255,8 @@ public class PhysicalOptimizations {
 											int current = 0;
 											for (final OperatorIDTuple oid : root
 													.getSucceedingOperators()) {
-												if (oid.getOperator() instanceof BasicIndex) {
-													if (((BasicIndex) oid.getOperator())
+												if (oid.getOperator() instanceof BasicIndexScan) {
+													if (((BasicIndexScan) oid.getOperator())
 															.getTriplePattern()
 															.contains(tp)) {
 														if (min == -1 || min > current) {
@@ -372,8 +372,8 @@ public class PhysicalOptimizations {
 										int current = 0;
 										for (final OperatorIDTuple oid : root
 												.getSucceedingOperators()) {
-											if (oid.getOperator() instanceof BasicIndex) {
-												if (((BasicIndex) oid.getOperator())
+											if (oid.getOperator() instanceof BasicIndexScan) {
+												if (((BasicIndexScan) oid.getOperator())
 														.getTriplePattern()
 														.contains(tp)) {
 													if (min == -1 || min > current) {
@@ -592,7 +592,7 @@ public class PhysicalOptimizations {
 					if (!(basicOperator instanceof MergeUnion)) {
 						return true;
 					}
-				} else if (basicOperator instanceof BasicIndex) {
+				} else if (basicOperator instanceof BasicIndexScan) {
 					return false;
 				} else {
 					if (basicOperator.getPrecedingOperators() != null)
@@ -657,7 +657,7 @@ public class PhysicalOptimizations {
 												sortCriterium)))
 			return false;
 
-		if (basicOperator instanceof RDF3XIndex) {
+		if (basicOperator instanceof RDF3XIndexScan) {
 			return true;
 		} else if (basicOperator.getClass() == Union.class) {
 			for (final BasicOperator before : basicOperator
@@ -736,8 +736,8 @@ public class PhysicalOptimizations {
 			basicOperator = basicOperator.getPrecedingOperators().get(0);
 		}
 
-		if (basicOperator instanceof RDF3XIndex) {
-			((RDF3XIndex) basicOperator).setCollationOrder(sortCriterium);
+		if (basicOperator instanceof RDF3XIndexScan) {
+			((RDF3XIndexScan) basicOperator).setCollationOrder(sortCriterium);
 			return true;
 		} else if (basicOperator.getClass() == Union.class) {
 			final LinkedList<BasicOperator> llbo = new LinkedList<BasicOperator>();
@@ -812,8 +812,8 @@ public class PhysicalOptimizations {
 			return list;
 		if(basicOperator.getSucceedingOperators().size()>1)
 			return list;
-		if (basicOperator instanceof BasicIndex) {
-			list.addAll(((BasicIndex) basicOperator).getTriplePattern());
+		if (basicOperator instanceof BasicIndexScan) {
+			list.addAll(((BasicIndexScan) basicOperator).getTriplePattern());
 		} else if (basicOperator instanceof TriplePattern) {
 			for(BasicOperator prec: basicOperator.getPrecedingOperators()){
 				if(prec instanceof Generate) {
@@ -839,8 +839,8 @@ public class PhysicalOptimizations {
 		alreadyVisited.add(basicOperator);
 		if(basicOperator.getSucceedingOperators().size()>1)
 			return list;
-		if (basicOperator instanceof BasicIndex) {
-			list.addAll(((BasicIndex) basicOperator).getTriplePattern());
+		if (basicOperator instanceof BasicIndexScan) {
+			list.addAll(((BasicIndexScan) basicOperator).getTriplePattern());
 		} else if (basicOperator instanceof Union
 				|| basicOperator instanceof Optional || basicOperator instanceof Minus || basicOperator instanceof Projection || basicOperator instanceof ReplaceVar || basicOperator instanceof EmptyEnv || basicOperator instanceof AddComputedBinding) {
 			// do not consider triple patterns of unions!

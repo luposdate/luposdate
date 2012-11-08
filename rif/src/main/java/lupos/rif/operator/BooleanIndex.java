@@ -34,7 +34,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
@@ -45,7 +45,7 @@ import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 
-public class BooleanIndex extends BasicIndex implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+public class BooleanIndex extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
 	public BooleanIndex() {
 		super(null);
@@ -70,7 +70,7 @@ public class BooleanIndex extends BasicIndex implements TripleConsumer, TripleCo
 	}
 
 	@Override
-	public QueryResult process(final int opt, final Dataset dataset) {
+	public QueryResult process(final Dataset dataset) {
 		// leitet ein QueryResult mit einem Binding weiter
 		final QueryResult result = this.createQueryResult();
 		for (final OperatorIDTuple succOperator : succeedingOperators) {
@@ -124,7 +124,7 @@ public class BooleanIndex extends BasicIndex implements TripleConsumer, TripleCo
 	@Override
 	public void consume(Triple triple) {
 		if(firstTime){
-			process(0, null);
+			process(null);
 			firstTime = false;
 		}
 	}

@@ -51,28 +51,12 @@ public class PredicateIndex extends InsertIndex {
 	}
 
 	@Override
-	public QueryResult process(final int opt, final Dataset dataset) {
+	public QueryResult process(final Dataset dataset) {
 		final RuleResult gr = new RuleResult();
 		gr.getPredicateResults().addAll(this.predFacts);
 		for (final OperatorIDTuple succOperator : this.succeedingOperators)
 			((Operator) succOperator.getOperator()).processAll(gr,
 					succOperator.getId());
-		return gr;
-	}
-
-	@Override
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		final RuleResult gr = new RuleResult();
-		gr.getPredicateResults().addAll(this.predFacts);
-		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
-			if (!gr.isEmpty())
-				((DebugStepRIF)debugstep).step(this, succOperator.getOperator(), gr);
-			final QueryResultDebug debug = new QueryResultDebug(gr, debugstep,
-					this, succOperator.getOperator(), true);
-			((Operator) succOperator.getOperator()).processAllDebug(debug,
-					succOperator.getId(), debugstep);
-		}
 		return gr;
 	}
 
@@ -96,11 +80,11 @@ public class PredicateIndex extends InsertIndex {
 
 	@Override
 	public void consumeOnce() {
-		process(0, null);
+		process(null);
 	}
 
 	@Override
 	public void consumeDebugOnce(final DebugStep debugstep) {
-		processDebug(0, null, debugstep);
+		startProcessingDebug(null, debugstep);
 	}
 }

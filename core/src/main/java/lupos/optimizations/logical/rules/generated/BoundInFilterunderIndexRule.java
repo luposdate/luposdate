@@ -38,15 +38,15 @@ public class BoundInFilterunderIndexRule extends Rule {
     private boolean deleteAll;
     private lupos.engine.operators.singleinput.Filter f = null;
     private lupos.engine.operators.BasicOperator[] o = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.index.BasicIndex)) {
+        if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
 
-        this.i = (lupos.engine.operators.index.BasicIndex) _op;
+        this.i = (lupos.engine.operators.index.BasicIndexScan) _op;
 
         List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
@@ -97,7 +97,7 @@ public class BoundInFilterunderIndexRule extends Rule {
 
 
     public BoundInFilterunderIndexRule() {
-        this.startOpClass = lupos.engine.operators.index.BasicIndex.class;
+        this.startOpClass = lupos.engine.operators.index.BasicIndexScan.class;
         this.ruleName = "Bound In Filter under Index";
     }
 

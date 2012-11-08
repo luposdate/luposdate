@@ -161,7 +161,7 @@ public class PushRuleFilterRule extends Rule {
 
         if(_result) {
             // additional check method code...
-            if(this.op instanceof lupos.engine.operators.tripleoperator.TriplePattern || this.op instanceof lupos.engine.operators.index.BasicIndex || this.op instanceof lupos.engine.operators.index.IndexCollection) {
+            if(this.op instanceof lupos.engine.operators.tripleoperator.TriplePattern || this.op instanceof lupos.engine.operators.index.BasicIndexScan || this.op instanceof lupos.engine.operators.index.Root) {
                 return false;
             }
             

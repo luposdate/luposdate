@@ -29,8 +29,8 @@ import java.util.List;
 
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.multiinput.optional.Optional;
@@ -287,9 +287,9 @@ public class BasicOperatorByteArray {
 			return (byte) OPERATORTYPE.OPTIONAL.ordinal();
 		} else if (bo instanceof Union) {
 			return (byte) OPERATORTYPE.UNION.ordinal();
-		} else if (bo instanceof BasicIndex) {
+		} else if (bo instanceof BasicIndexScan) {
 			return (byte) OPERATORTYPE.BASICINDEX.ordinal();
-		} else if (bo instanceof IndexCollection) {
+		} else if (bo instanceof Root) {
 			return (byte) OPERATORTYPE.INDEXCOLLECTION.ordinal();
 		} else if (bo instanceof Sort) {
 			return (byte) OPERATORTYPE.SORT.ordinal();

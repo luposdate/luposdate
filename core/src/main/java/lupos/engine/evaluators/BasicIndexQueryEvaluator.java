@@ -52,10 +52,10 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.Application;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
@@ -87,7 +87,7 @@ import lupos.sparql1_1.SimpleNode;
 
 public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
-	protected IndexCollection indexCollection;
+	protected Root indexCollection;
 	protected int opt;
 	protected Dataset dataset;
 	protected lupos.engine.operators.index.Indices.DATA_STRUCT datastructure;
@@ -209,11 +209,11 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return "Error";
 	}
 
-	private static BasicIndex createBasicIndex(final IndexCollection ic,
+	private static BasicIndexScan createBasicIndex(final Root ic,
 			final List<OperatorIDTuple> oids, final TriplePattern tp) {
 		final List<TriplePattern> tps = new LinkedList<TriplePattern>();
 		tps.add(tp);
-		final BasicIndex bi = ic.newIndex(null, tps, null);
+		final BasicIndexScan bi = ic.newIndex(null, tps, null);
 		bi.setSucceedingOperators(oids);
 		bi.setIntersectionVariables(tp.getIntersectionVariables());
 		bi.setUnionVariables(tp.getUnionVariables());
@@ -243,7 +243,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 	private void rdfsStreamQueryToIndexQuery(final String query,
-			final IndexCollection ic) throws Exception {
+			final Root ic) throws Exception {
 		final StreamQueryEvaluator sqe = new StreamQueryEvaluator(
 				getArguments());
 
@@ -254,7 +254,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 	
 	private DebugContainerQuery<BasicOperatorByteArray, Node> rdfsStreamQueryToIndexQueryDebugByteArray(
-			final String query, final IndexCollection ic,
+			final String query, final Root ic,
 			final Prefix prefixInstance)
 			throws Exception {
 		final StreamQueryEvaluator sqe = new StreamQueryEvaluator(
@@ -281,20 +281,20 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 
 	private void transformStreamToIndexOperatorGraph(
-			final StreamQueryEvaluator sqe, final IndexCollection ic) {
+			final StreamQueryEvaluator sqe, final Root ic) {
 		Bindings.instanceClass = BindingsArrayReadTriples.class;
 		result = sqe.getResultOperator();
 		transformStreamToIndexOperatorGraph((PatternMatcher) sqe.getRootNode(),
 				ic);
 	}
 
-	public static IndexCollection transformStreamToIndexOperatorGraph(
-			final PatternMatcher pm, final IndexCollection ic) {
+	public static Root transformStreamToIndexOperatorGraph(
+			final PatternMatcher pm, final Root ic) {
 		final Set<TriplePattern> visited = new HashSet<TriplePattern>();
 		for (final TriplePattern tp : pm.getTriplePatterns()) {
 			final List<OperatorIDTuple> succ = tp.getSucceedingOperators();
 			if (!visited.contains(tp)) {
-				BasicIndex idx;
+				BasicIndexScan idx;
 				if (succ.size() == 1) {
 					if (succ.size() == 1
 							&& succ.get(0).getOperator() instanceof Join) {
@@ -488,7 +488,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	// }
 
 	public long compileQuery(final String query,
-			final IndexCollection indexCollection) throws Exception {
+			final Root indexCollection) throws Exception {
 		final Date a = new Date();
 		this.indexCollection = indexCollection;
 		this.rootNode = indexCollection;
@@ -532,7 +532,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 	
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
-			final String query, final IndexCollection indexCollection,
+			final String query, final Root indexCollection,
 			final Prefix prefixInstance)
 			throws Exception {
 
@@ -645,7 +645,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 		final Date a = new Date();
 		indexCollection.sendMessage(new StartOfEvaluationMessage());
-		indexCollection.process(opt, dataset);
+		indexCollection.startProcessing();
 		indexCollection.sendMessage(new EndOfEvaluationMessage());
 		final long time = ((new Date()).getTime() - a.getTime());
 
@@ -698,7 +698,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		final Date a = new Date();
 		indexCollection.sendMessageDebug(new StartOfEvaluationMessage(),
 				debugstep);
-		indexCollection.processDebug(opt, dataset, debugstep);
+		indexCollection.startProcessingDebug(debugstep);
 		indexCollection.sendMessageDebug(new EndOfEvaluationMessage(),
 				debugstep);
 		final long time = ((new Date()).getTime() - a.getTime());
@@ -716,7 +716,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		final Date a = new Date();
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
 		refie.applyRules(indexCollection);
-		indexCollection.optimizeJoinOrder(opt, dataset);
+		indexCollection.optimizeJoinOrder(opt);
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
 		refie2.applyRules(indexCollection);
 		parallelOperator(indexCollection);
@@ -736,7 +736,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		result.addAll(refie.applyRulesDebugByteArray(indexCollection,
 				prefixInstance));
 
-		indexCollection.optimizeJoinOrder(opt, dataset);
+		indexCollection.optimizeJoinOrder(opt);
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"After optimizing the join order...",
 				"optimizingjoinorderRule", BasicOperatorByteArray
@@ -959,27 +959,28 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			throws Exception {
 		Date a=new Date();
 		// there should be at least one default graphs (especially for update operations...)
-		if(defaultGraphs.size()==0)
+		if(defaultGraphs.size()==0){
 			defaultGraphs.add(new StringURILiteral("<inlinedata:>"));
+		}
 		return (new Date().getTime())-a.getTime();
 	}
 
 
-	public abstract IndexCollection createIndexCollection();
+	public abstract Root createIndexCollection();
 
 	@Override
 	public long compileQuery(final String query) throws Exception {
 		return compileQuery(query, createIndexCollection());
 	}
 
-	public void setIndexCollection(final IndexCollection indexCollection) {
+	public void setIndexCollection(final Root indexCollection) {
 		this.indexCollection = indexCollection;
 		this.rootNode = indexCollection;
 	}
 	
 	@Override
 	public void setRootNode(BasicOperator rootNode) {
-		this.setIndexCollection((IndexCollection)rootNode);
+		this.setIndexCollection((Root)rootNode);
 	}
 
 	public Dataset getDataset() {

@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
@@ -37,38 +37,32 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 
-public abstract class BindableIndex extends BasicIndex {
-	protected final BasicIndex index;
+public abstract class BindableIndex extends BasicIndexScan {
+	protected final BasicIndexScan index;
 	protected Dataset dataSet;
 
-	public BindableIndex(final BasicIndex index) {
+	public BindableIndex(final BasicIndexScan index) {
 		super(index.getIndexCollection());
 		this.index = index;
 	}
 
 	@Override
-	public QueryResult process(int opt, Dataset dataset) {
-		dataSet = dataset;
+	public QueryResult process(final Dataset dataset) {
+		this.dataSet = dataset;
 		return null;
 	}
 
-	@Override
-	public QueryResult process(QueryResult queryResult, int operandID) {
-		final QueryResult result = QueryResult.createInstance();
-		final Iterator<Bindings> bit = queryResult.oneTimeIterator();
-		while (bit.hasNext()) {
-			processIndexScan(result, bit.next());
-		}
-		return result;
-	}
-	
-	@Override
-	public QueryResult processDebug(int opt, Dataset dataset, DebugStep debugstep) {
-		return process(opt, dataset);
-	}
+//	@Override
+//	public QueryResult process(QueryResult queryResult, int operandID) {
+//		final QueryResult result = QueryResult.createInstance();
+//		final Iterator<Bindings> bit = queryResult.oneTimeIterator();
+//		while (bit.hasNext()) {
+//			processIndexScan(result, bit.next());
+//		}
+//		return result;
+//	}
 
-	protected abstract void processIndexScan(final QueryResult result,
-			final Bindings bind);
+	protected abstract void processIndexScan(final QueryResult result, final Bindings bind);
 
 	@Override
 	public abstract Collection<TriplePattern> getTriplePattern();

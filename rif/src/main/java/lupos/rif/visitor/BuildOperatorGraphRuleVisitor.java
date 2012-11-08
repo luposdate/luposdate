@@ -40,7 +40,7 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.EmptyIndex;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.IndexJoinWithDuplicateElimination;
@@ -607,7 +607,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	public Object visit(Conjunction obj, Object arg) throws RIFException {
 		// Vorgehensweise: erstmal alle Sub-Operatoren sammeln -> Danach:
 		Set<BasicOperator> operands = new LinkedHashSet<BasicOperator>();
-		Set<BasicIndex> indexes = new LinkedHashSet<BasicIndex>();
+		Set<BasicIndexScan> indexes = new LinkedHashSet<BasicIndexScan>();
 		List<RuleFilter> predicates = new ArrayList<RuleFilter>();
 
 		for (IExpression expr : obj.exprs) {
@@ -617,17 +617,17 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				continue;
 			}
 			operands.add(op);
-			if (op instanceof BasicIndex && !(op instanceof IteratorIndex))
-				indexes.add((BasicIndex) op);
+			if (op instanceof BasicIndexScan && !(op instanceof IteratorIndex))
+				indexes.add((BasicIndexScan) op);
 		}
 		// 1. Mergen von Indexen
-		BasicIndex mainIndex = null;
+		BasicIndexScan mainIndex = null;
 
 		if (indexes.size() > 1) {
-			Iterator<BasicIndex> it = indexes.iterator();
+			Iterator<BasicIndexScan> it = indexes.iterator();
 			mainIndex = it.next();
 			while (it.hasNext()) {
-				BasicIndex mergeIndex = it.next();
+				BasicIndexScan mergeIndex = it.next();
 				mainIndex.getTriplePattern().addAll(mergeIndex.getTriplePattern());
 				for(OperatorIDTuple opID: mergeIndex.getSucceedingOperators()){
 					opID.getOperator().removePrecedingOperator(mergeIndex);

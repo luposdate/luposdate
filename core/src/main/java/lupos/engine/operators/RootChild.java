@@ -21,62 +21,47 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.items;
+package lupos.engine.operators;
 
-import java.io.Serializable;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.queryresult.QueryResultDebug;
+import lupos.engine.operators.index.Dataset;
+import lupos.misc.debug.DebugStep;
 
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-
-public class TripleKey implements Comparable<TripleKey>, Serializable {
-
+public abstract class RootChild extends BasicOperator {
+	
+	public void startProcessing(final Dataset dataset){
+		QueryResult queryresult = this.process(dataset);
+		if (queryresult == null){
+			return;
+		}
+		if(this.succeedingOperators.size()>1){
+			queryresult.materialize();
+		}
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
+			((Operator) opId.getOperator()).processAll(queryresult, opId.getId());
+		}		
+	}
+	
+	public void startProcessingDebug(final Dataset dataset, final DebugStep debugstep) {
+		final QueryResult queryresult = this.process(dataset);
+		if (queryresult == null){
+			return;
+		}
+		if (this.succeedingOperators.size() > 1) {
+			queryresult.materialize();
+		}
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
+			final QueryResultDebug qrDebug = new QueryResultDebug(queryresult, debugstep, this, opId.getOperator(), true);
+			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
+		}
+	}
+	
 	/**
-	 * 
+	 * start the evaluation under the root operator with a given dataset
+	 * @param dataset the dataset as input for this operator
+	 * @return the queryresult to be processed by the children of this operator
 	 */
-	private static final long serialVersionUID = -6205248978579168911L;
-
-	protected Triple triple;
-	protected TripleComparator comp;
-
-	public TripleKey() {
-	}
-
-	public TripleKey(final Triple triple, final TripleComparator comp) {
-		this.triple = triple;
-		this.comp = comp;
-	}
-
-	public TripleKey(final Triple triple, final RDF3XIndexScan.CollationOrder order) {
-		this.triple = triple;
-		this.comp = new TripleComparator(order);
-		this.comp.makeNoneForNull(triple);
-	}
-
-	public int compareTo(final TripleKey arg0) {
-		return comp.compare(triple, arg0.triple);
-	}
-
-	public int compareTo(final Triple arg0) {
-		return comp.compare(triple, arg0);
-	}
-
-	public Triple getTriple() {
-		return triple;
-	}
-
-	public void setTriple(final Triple triple) {
-		this.triple = triple;
-	}
-
-	public TripleComparator getTripleComparator() {
-		return comp;
-	}
-
-	public void setTripleComparator(final TripleComparator comp) {
-		this.comp = comp;
-	}
-
-	@Override
-	public String toString() {
-		return "TripleKey of " + triple.toString() + ", " + comp.toString();
-	}
+	protected abstract QueryResult process(final Dataset dataset);
+	
 }

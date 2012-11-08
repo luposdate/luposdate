@@ -31,7 +31,7 @@ import java.util.TreeSet;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.rdf.Prefix;
 
 public class BindingsArrayReadTriples extends BindingsArray {
@@ -120,7 +120,7 @@ public class BindingsArrayReadTriples extends BindingsArray {
 
 	public void sortReadTriples() {
 		final SortedSet<Triple> sst = new TreeSet<Triple>(new TripleComparator(
-				RDF3XIndex.CollationOrder.SPO));
+				RDF3XIndexScan.CollationOrder.SPO));
 		sst.addAll(readTriples);
 		readTriples.clear();
 		readTriples.addAll(sst);

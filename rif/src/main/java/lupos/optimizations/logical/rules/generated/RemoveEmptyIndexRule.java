@@ -37,14 +37,14 @@ import lupos.engine.operators.OperatorIDTuple;
 public class RemoveEmptyIndexRule extends Rule {
 
     private lupos.engine.operators.BasicOperator o = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.index.BasicIndex)) {
+        if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
 
-        this.i = (lupos.engine.operators.index.BasicIndex) _op;
+        this.i = (lupos.engine.operators.index.BasicIndexScan) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -67,7 +67,7 @@ public class RemoveEmptyIndexRule extends Rule {
 
 
     public RemoveEmptyIndexRule() {
-        this.startOpClass = lupos.engine.operators.index.BasicIndex.class;
+        this.startOpClass = lupos.engine.operators.index.BasicIndexScan.class;
         this.ruleName = "Remove Empty Index";
     }
 
@@ -78,7 +78,6 @@ public class RemoveEmptyIndexRule extends Rule {
             // additional check method code...
             if(this.i instanceof lupos.rif.operator.PredicateIndex
                 || this.i instanceof lupos.rif.operator.BooleanIndex
-                || this.i instanceof lupos.engine.operators.index.EmptyIndex
                 || this.i instanceof lupos.rif.operator.IteratorIndex
                 || (!this.i.getPrecedingOperators().isEmpty()
                     && !this.i.getPrecedingOperators().get(0).getSucceedingOperators().isEmpty()
@@ -87,10 +86,10 @@ public class RemoveEmptyIndexRule extends Rule {
             }
             
             lupos.datastructures.queryresult.QueryResult qr = null;
-            				if (this.i instanceof lupos.engine.operators.index.memoryindex.MemoryIndex) {
-            					final lupos.engine.operators.index.memoryindex.MemoryIndex temp = new lupos.engine.operators.index.memoryindex.MemoryIndex(this.i.getIndexCollection());
+            				if (this.i instanceof lupos.engine.operators.index.memoryindex.MemoryIndexScan) {
+            					final lupos.engine.operators.index.memoryindex.MemoryIndexScan temp = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i.getIndexCollection());
             					boolean found = false;
-            					for (lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndex) this.i).getTriplePattern()) {
+            					for (lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndexScan) this.i).getTriplePattern()) {
             						temp.setTriplePatterns(java.util.Arrays.asList(pat));
             						lupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getIndexCollection().dataset);
             						if (qrtemp != null && qrtemp.oneTimeIterator().hasNext()) {

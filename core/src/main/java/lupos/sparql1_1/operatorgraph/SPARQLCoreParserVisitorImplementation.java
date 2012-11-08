@@ -41,7 +41,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
@@ -1121,7 +1121,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 
 	/**
 	 * Checks recursively for ASTExists and ASTNotExists nodes under node and
-	 * sets up a new {@link IndexCollection} and {@link Result} for each
+	 * sets up a new {@link Root} and {@link Result} for each
 	 * occurrence. This is needed, because we perform new queries for these
 	 * types of nodes. Used by
 	 * {@link #visit(ASTFilterConstraint, OperatorConnection, Item))}.
@@ -1131,7 +1131,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	 * @param graphConstraint
 	 *            a graphConstraint to hand over
 	 * @param filter
-	 *            the {@link IndexCollection}s and {@link Result}s are passed to
+	 *            the {@link Root}s and {@link Result}s are passed to
 	 *            this {@link Filter}
 	 */
 	private void processExistChildren(final Node node, Item graphConstraint,
@@ -1143,7 +1143,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				if(this.indexScanCreator instanceof IndexScanCreator_BasicIndex){
 					IndexScanCreator_BasicIndex isc = (IndexScanCreator_BasicIndex) this.indexScanCreator;
 					
-					IndexCollection collectionClone = (IndexCollection) isc.getIndexCollection().clone();
+					Root collectionClone = (Root) isc.getIndexCollection().clone();
 					collectionClone.setSucceedingOperators(new LinkedList<OperatorIDTuple>());
 					
 					this.indexScanCreator = new IndexScanCreator_BasicIndex(collectionClone);

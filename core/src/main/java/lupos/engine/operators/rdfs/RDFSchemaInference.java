@@ -25,7 +25,7 @@ package lupos.engine.operators.rdfs;
 
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
@@ -34,23 +34,23 @@ public class RDFSchemaInference extends RudimentaryRDFSchemaInference {
 	public RDFSchemaInference() {
 	}
 
-	public static void addInferenceRules(final IndexCollection ic,
+	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp) {
 		addInferenceRules(ic, tp, null);
 	}
 
 	public static void addInferenceRulesForInstanceData(
-			final IndexCollection ic, final TripleOperator tp) {
+			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForInstanceData(ic, tp, null);
 	}
 
 	public static void addInferenceRulesForExternalOntology(
-			final IndexCollection ic, final TripleOperator tp) {
+			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForExternalOntology(ic, tp, null);
 	}
 
 	public static void addInferenceRulesForExternalOntology(
-			final IndexCollection ic, final TripleOperator tp, final Item data) {
+			final Root ic, final TripleOperator tp, final Item data) {
 		RudimentaryRDFSchemaInference.addInferenceRulesForExternalOntology(ic,
 				tp, data);
 		try {
@@ -195,7 +195,7 @@ public class RDFSchemaInference extends RudimentaryRDFSchemaInference {
 	}
 
 	public static void addInferenceRulesForInstanceData(
-			final IndexCollection ic, final TripleOperator tp, final Item data) {
+			final Root ic, final TripleOperator tp, final Item data) {
 		RudimentaryRDFSchemaInference.addInferenceRulesForInstanceData(ic, tp,
 				data);
 		try {
@@ -241,7 +241,7 @@ public class RDFSchemaInference extends RudimentaryRDFSchemaInference {
 		}
 	}
 
-	public static void addInferenceRules(final IndexCollection ic,
+	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp, final Item data) {
 		addInferenceRulesForExternalOntology(ic, tp, data);
 		addInferenceRulesForInstanceData(ic, tp, data);

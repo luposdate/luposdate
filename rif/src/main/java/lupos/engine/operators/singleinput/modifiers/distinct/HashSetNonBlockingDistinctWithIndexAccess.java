@@ -26,11 +26,11 @@ package lupos.engine.operators.singleinput.modifiers.distinct;
 import java.util.HashSet;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 
 public class HashSetNonBlockingDistinctWithIndexAccess extends NonBlockingDistinctWithIndexAccess {
 
-	public HashSetNonBlockingDistinctWithIndexAccess(BasicIndex basicIndex) {
+	public HashSetNonBlockingDistinctWithIndexAccess(BasicIndexScan basicIndex) {
 		super(new HashSet<Bindings>(), basicIndex);
 	}
 

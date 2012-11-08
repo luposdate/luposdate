@@ -42,10 +42,10 @@ import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.trie.SuperTrie;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
-import lupos.engine.operators.index.adaptedRDF3X.IndexCollection;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
@@ -109,13 +109,13 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		this.writeindexinfo = writeindexinfo;
 		this.optimization = optimization;
 		if (optimization == Optimizations.MERGEJOIN)
-			this.opt = BasicIndex.MERGEJOIN;
+			this.opt = BasicIndexScan.MERGEJOIN;
 		else if (optimization == Optimizations.BINARY)
-			this.opt = BasicIndex.Binary;
+			this.opt = BasicIndexScan.Binary;
 		else if (optimization == Optimizations.NARYMERGEJOIN)
-			this.opt = BasicIndex.NARYMERGEJOIN;
+			this.opt = BasicIndexScan.NARYMERGEJOIN;
 		else if (optimization == Optimizations.NONE)
-			this.opt = BasicIndex.NONE;
+			this.opt = BasicIndexScan.NONE;
 	}
 
 	@Override
@@ -186,8 +186,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral, false);
 								}
 
-								public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-									IndexCollection ic = new IndexCollection();
+								public lupos.engine.operators.index.Root createIndexCollection() {
+									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
 								}
@@ -207,8 +207,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral);
 								}
 
-								public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-									IndexCollection ic = new IndexCollection();
+								public lupos.engine.operators.index.Root createIndexCollection() {
+									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
 								}
@@ -257,8 +257,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral, false);
 								}
 
-								public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-									IndexCollection ic = new IndexCollection();
+								public lupos.engine.operators.index.Root createIndexCollection() {
+									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
 								}
@@ -278,8 +278,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral);
 								}
 
-								public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-									IndexCollection ic = new IndexCollection();
+								public lupos.engine.operators.index.Root createIndexCollection() {
+									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
 								}
@@ -297,8 +297,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 
-	public IndexCollection getIndexCollection() {
-		return (IndexCollection) indexCollection;
+	public RDF3XRoot getIndexCollection() {
+		return (RDF3XRoot) indexCollection;
 	}
 
 	public static void main(final String[] args) {
@@ -306,8 +306,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 	@Override
-	public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-		IndexCollection ic = new IndexCollection();
+	public lupos.engine.operators.index.Root createIndexCollection() {
+		RDF3XRoot ic = new RDF3XRoot();
 		ic.dataset = dataset;
 		return ic;
 	}

@@ -32,10 +32,10 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.trie.SuperTrie;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
-import lupos.engine.operators.index.memoryindex.IndexCollection;
+import lupos.engine.operators.index.memoryindex.MemoryIndexRoot;
 import lupos.engine.operators.index.memoryindex.SevenMemoryIndices;
 import lupos.misc.Tuple;
 
@@ -88,19 +88,19 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		Indices.setUsedDatastructure(datastructure);
 		switch (optimization) {
 		case MOSTRESTRICTIONS:
-			opt = BasicIndex.MOSTRESTRICTIONS;
+			opt = BasicIndexScan.MOSTRESTRICTIONS;
 			break;
 		case MOSTRESTRICTIONSLEASTENTRIES:
-			opt = BasicIndex.MOSTRESTRICTIONSLEASTENTRIES;
+			opt = BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES;
 			break;
 		case LEASTENTRIES:
-			opt = BasicIndex.LEASTENTRIES;
+			opt = BasicIndexScan.LEASTENTRIES;
 			break;
 		case BINARY:
-			opt = BasicIndex.Binary;
+			opt = BasicIndexScan.Binary;
 			break;
 		default:
-			opt = BasicIndex.NONE;
+			opt = BasicIndexScan.NONE;
 			break;
 		}
 	}
@@ -132,8 +132,8 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 				return new SevenMemoryIndices(uriLiteral);
 			}
 
-			public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-				IndexCollection ic=new IndexCollection();
+			public lupos.engine.operators.index.Root createIndexCollection() {
+				MemoryIndexRoot ic=new MemoryIndexRoot();
 				ic.dataset=dataset;
 				return ic;
 			}
@@ -143,8 +143,8 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		return prepareTime;
 	}
 
-	public IndexCollection getIndexCollection() {
-		return (IndexCollection) indexCollection;
+	public MemoryIndexRoot getIndexCollection() {
+		return (MemoryIndexRoot) indexCollection;
 	}
 
 	public static void main(final String[] args) {
@@ -152,8 +152,8 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 	@Override
-	public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-		IndexCollection ic=new IndexCollection();
+	public lupos.engine.operators.index.Root createIndexCollection() {
+		MemoryIndexRoot ic=new MemoryIndexRoot();
 		ic.dataset=dataset;
 		return ic;
 	}
@@ -171,8 +171,8 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 				return new SevenMemoryIndices(uriLiteral);
 			}
 
-			public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-				IndexCollection ic=new IndexCollection();
+			public lupos.engine.operators.index.Root createIndexCollection() {
+				MemoryIndexRoot ic=new MemoryIndexRoot();
 				ic.dataset=dataset;
 				return ic;
 			}

@@ -31,8 +31,8 @@ import java.util.LinkedList;
 
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
@@ -100,10 +100,10 @@ public class GraphWrapperBasicOperator extends GraphWrapper {
 				} else if (this.element instanceof Union) {
 					drawObject = this
 							.getOperatorStyle("operatorGraph_style_union");
-				} else if (this.element instanceof BasicIndex) {
+				} else if (this.element instanceof BasicIndexScan) {
 					drawObject = this
 							.getOperatorStyle("operatorGraph_style_basicindex");
-				} else if (this.element instanceof IndexCollection) {
+				} else if (this.element instanceof Root) {
 					drawObject = this
 							.getOperatorStyle("operatorGraph_style_indexcollection");
 				} else if (this.element instanceof Sort) {

@@ -70,8 +70,8 @@ public class BindablePredicateIndex extends BindableIndex {
 		}
 		final PredicatePattern newPattern = new PredicatePattern(
 				predicatePattern.getPredicateName(), newItems);
-		// Scan durchfŸhren
-		RuleResult ruleResult = (RuleResult) index.process(0, dataSet);
+		// Scan durchfï¿½hren
+		RuleResult ruleResult = (RuleResult) index.process(dataSet);
 		QueryResult tempResult = newPattern.process(ruleResult, 0);
 		result.add(tempResult);
 	}

@@ -72,8 +72,8 @@ public class RulePushFilter extends RuleFilter {
 		if (operator.getSucceedingOperators().size() > 1)
 			return false;
 		if (operator instanceof TriplePattern
-				|| operator instanceof lupos.engine.operators.index.BasicIndex
-				|| operator instanceof lupos.engine.operators.index.IndexCollection)
+				|| operator instanceof lupos.engine.operators.index.BasicIndexScan
+				|| operator instanceof lupos.engine.operators.index.Root)
 			return false;
 		if (operator instanceof Union) {
 			for (final BasicOperator o : operator.getPrecedingOperators())

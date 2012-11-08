@@ -34,9 +34,9 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
@@ -50,7 +50,7 @@ import lupos.rif.model.Constant;
 import lupos.rif.model.External;
 import lupos.rif.model.RuleVariable;
 
-public class IteratorIndex extends BasicIndex implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+public class IteratorIndex extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 	private static final long serialVersionUID = -2452758087959813203L;
 	private final External external;
 
@@ -99,7 +99,7 @@ public class IteratorIndex extends BasicIndex implements TripleConsumer, TripleC
 	}
 
 	@Override
-	public QueryResult process(int opt, Dataset dataset) {
+	public QueryResult process(Dataset dataset) {
 		final Iterator<Bindings> bindIt = newBindingIterator();
 		while (bindIt.hasNext()) {
 			final Bindings bind = bindIt.next();
@@ -109,20 +109,6 @@ public class IteratorIndex extends BasicIndex implements TripleConsumer, TripleC
 						.getId());
 		}
 		return null;
-	}
-	
-	@Override
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		final Iterator<Bindings> bindIt = newBindingIterator();
-		while (bindIt.hasNext()) {
-			final Bindings bind = bindIt.next();
-			for (final OperatorIDTuple oid : getSucceedingOperators())
-				((Operator) oid.getOperator()).processAllDebug(QueryResult
-						.createInstance(Arrays.asList(bind).iterator()), oid
-						.getId(), debugstep);
-		}
-		return null;		
 	}
 
 	@Override
@@ -159,7 +145,7 @@ public class IteratorIndex extends BasicIndex implements TripleConsumer, TripleC
 	@Override
 	public void consume(Triple triple) {
 		if(firstTime){
-			process(0, null);
+			process(null);
 			firstTime = false;
 		}
 	}
@@ -167,7 +153,7 @@ public class IteratorIndex extends BasicIndex implements TripleConsumer, TripleC
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		if(firstTime){
-			processDebug(0, null, debugstep);
+			startProcessingDebug(null, debugstep);
 			firstTime = false;
 		}
 	}

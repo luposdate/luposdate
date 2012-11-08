@@ -39,7 +39,7 @@ import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
@@ -635,11 +635,11 @@ public class Filter extends SingleInputOperator {
 		this.evaluationVisitor.setEvaluator(evaluator);
 	}
 
-	public void setCollectionForExistNodes(Map<SimpleNode, IndexCollection> indexCollections) {
+	public void setCollectionForExistNodes(Map<SimpleNode, Root> indexCollections) {
 		this.evaluationVisitor.setCollectionForExistNodes(indexCollections);
 	}
 
-	public Map<SimpleNode, IndexCollection> getCollectionForExistNodes() {
+	public Map<SimpleNode, Root> getCollectionForExistNodes() {
 		return this.evaluationVisitor.getCollectionForExistNodes();
 	}
 

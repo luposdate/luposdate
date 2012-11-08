@@ -30,7 +30,7 @@ import java.io.ObjectOutput;
 import java.util.Comparator;
 
 import lupos.datastructures.items.literal.Literal;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 
 public class TripleComparator implements Comparator<Triple>, Externalizable {
 
@@ -66,7 +66,7 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		this.tertiary = tertiary;
 	}
 
-	public TripleComparator(final RDF3XIndex.CollationOrder orderPattern) {
+	public TripleComparator(final RDF3XIndexScan.CollationOrder orderPattern) {
 		switch (orderPattern) {
 		default:
 		case SPO:

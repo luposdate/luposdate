@@ -36,7 +36,7 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Indices.MAP_PATTERN;
@@ -49,30 +49,30 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * static way so new instantiations of this class to not yield a change in the
  * original index structure.
  */
-public class MemoryIndex extends BasicIndex {
+public class MemoryIndexScan extends BasicIndexScan {
 
 	private static final long serialVersionUID = 4275399525492937163L;
 
 	/**
 	 * Constructor
 	 */
-	public MemoryIndex(final lupos.engine.operators.index.IndexCollection indexCollection) {
+	public MemoryIndexScan(final lupos.engine.operators.index.Root indexCollection) {
 		super(indexCollection);
 	}
 
-	public MemoryIndex(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.IndexCollection indexCollection) {
+	public MemoryIndexScan(final OperatorIDTuple succeedingOperator,
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root indexCollection) {
 		super(succeedingOperator, triplePattern, rdfGraph, indexCollection);
 	}
 
-	public MemoryIndex(final List<OperatorIDTuple> succeedingOperators,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.IndexCollection indexCollection) {
+	public MemoryIndexScan(final List<OperatorIDTuple> succeedingOperators,
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root indexCollection) {
 		super(succeedingOperators, triplePattern, rdfGraph, indexCollection);
 	}
 
 	@Override
-	public BasicIndex clone() {
-		return new MemoryIndex(this.succeedingOperators,
+	public BasicIndexScan clone() {
+		return new MemoryIndexScan(this.succeedingOperators,
 				this.triplePatterns, this.rdfGraph, this.indexCollection);
 	}
 

@@ -48,7 +48,7 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.CountResult;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
@@ -190,15 +190,15 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 						new LinkedList<URILiteral>(),
 						inp[0],
 						getONTOLOGYRDFS(rdfs),
-						BasicIndex.MERGEJOIN,
+						BasicIndexScan.MERGEJOIN,
 						new Dataset.IndicesFactory() {
 							public Indices createIndices(
 									final URILiteral uriLiteral) {
 								return new SixIndices(uriLiteral);
 							}
 
-							public lupos.engine.operators.index.IndexCollection createIndexCollection() {
-								return new lupos.engine.operators.index.adaptedRDF3X.IndexCollection();
+							public lupos.engine.operators.index.Root createIndexCollection() {
+								return new lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot();
 							}
 						}, debug == DEBUG.ALL || debug == DEBUG.WITHOUTRESULT,
 						inmemoryexternalontologyinference);

@@ -39,7 +39,7 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
     private lupos.engine.operators.BasicOperator suc = null;
     private lupos.engine.operators.BasicOperator leftOperand = null;
     private lupos.engine.operators.multiinput.optional.UsingJoinOptional optional = null;
-    private lupos.engine.operators.index.BasicIndex indexScan = null;
+    private lupos.engine.operators.index.BasicIndexScan indexScan = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
         if(!(_op instanceof lupos.engine.operators.multiinput.optional.UsingJoinOptional)) {
@@ -75,11 +75,11 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
                     break;
                 }
 
-                if(!(_precOp_1_1 instanceof lupos.engine.operators.index.BasicIndex)) {
+                if(!(_precOp_1_1 instanceof lupos.engine.operators.index.BasicIndexScan)) {
                     continue;
                 }
 
-                this.indexScan = (lupos.engine.operators.index.BasicIndex) _precOp_1_1;
+                this.indexScan = (lupos.engine.operators.index.BasicIndexScan) _precOp_1_1;
 
                 List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 

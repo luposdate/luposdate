@@ -83,7 +83,7 @@ public class Dataset {
 	public interface IndicesFactory {
 		Indices createIndices(URILiteral uriLiteral);
 
-		public lupos.engine.operators.index.IndexCollection createIndexCollection();
+		public lupos.engine.operators.index.Root createIndexCollection();
 	}
 
 	private static final int k = 500; // 5; // 200;
@@ -475,7 +475,7 @@ public class Dataset {
 
 	public Collection<Indices> indexingRDFGraphs(final Item graphConstraint,
 			final boolean debug,
-			final boolean inMemoryExternalOntologyComputation, IndexCollection indexCollection) {
+			final boolean inMemoryExternalOntologyComputation, Root indexCollection) {
 
 		final LinkedList<Indices> indicesC = new LinkedList<Indices>();
 		Indices indices;
@@ -588,7 +588,7 @@ public class Dataset {
 	// maybe this method should is in other class
 	public static QueryResult Binding(final Collection<Triple> tec,
 			final TriplePattern tp, final QueryResult queryResult,
-			final Indices indices, final BasicIndex index) {
+			final Indices indices, final BasicIndexScan index) {
 
 		final QueryResult qResult = QueryResult.createInstance();
 		QueryResult qr;
@@ -602,7 +602,7 @@ public class Dataset {
 
 	public static QueryResult variableBinding(final Collection<Triple> tec,
 			final TriplePattern tp, final Bindings currentBindings,
-			final Indices indices, final BasicIndex index) {
+			final Indices indices, final BasicIndexScan index) {
 
 		final QueryResult qresult = QueryResult.createInstance();
 

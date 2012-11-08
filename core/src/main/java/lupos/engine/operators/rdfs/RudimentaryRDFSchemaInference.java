@@ -33,7 +33,7 @@ import lupos.datastructures.items.VariableInInferenceRule;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.singleinput.generate.Generate;
@@ -589,7 +589,7 @@ public class RudimentaryRDFSchemaInference {
 	public RudimentaryRDFSchemaInference() {
 	}
 
-	protected static void addTps(final Item data, final IndexCollection ic,
+	protected static void addTps(final Item data, final Root ic,
 			final TripleOperator tp, final Item a, final Item b, final Item c,
 			final TriplePattern... tps) {
 		final Generate g = new Generate(tp, a, b, c);
@@ -613,7 +613,7 @@ public class RudimentaryRDFSchemaInference {
 	}
 
 	protected static void addTpsFilter(final Item data,
-			final IndexCollection ic, final TripleOperator tp, final Item a,
+			final Root ic, final TripleOperator tp, final Item a,
 			final Item b, final Item c, final String filter,
 			final TriplePattern tp2) {
 		try {
@@ -632,7 +632,7 @@ public class RudimentaryRDFSchemaInference {
 	}
 
 	protected static void addTpsFilter(final Item data,
-			final IndexCollection ic, final TripleOperator tp, final Item a,
+			final Root ic, final TripleOperator tp, final Item a,
 			final Item b, final Item c, final String filter1,
 			final String filter2, final TriplePattern tp1,
 			final TriplePattern tp2) {
@@ -661,7 +661,7 @@ public class RudimentaryRDFSchemaInference {
 	}
 
 	protected static void addTpsFilter(final Item data,
-			final IndexCollection ic, final TripleOperator tp, final Item a,
+			final Root ic, final TripleOperator tp, final Item a,
 			final Item b, final Item c, final String filter1,
 			final TriplePattern tp1, final TriplePattern tp2) {
 		try {
@@ -695,23 +695,23 @@ public class RudimentaryRDFSchemaInference {
 	protected static final URILiteral CLASS = u("2000/01/rdf-schema#Class");
 	protected static final URILiteral SUBCLASS = u("2000/01/rdf-schema#subClassOf");
 
-	public static void addInferenceRules(final IndexCollection ic,
+	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp) {
 		addInferenceRules(ic, tp, null);
 	}
 
 	public static void addInferenceRulesForInstanceData(
-			final IndexCollection ic, final TripleOperator tp) {
+			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForInstanceData(ic, tp, null);
 	}
 
 	public static void addInferenceRulesForExternalOntology(
-			final IndexCollection ic, final TripleOperator tp) {
+			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForExternalOntology(ic, tp, null);
 	}
 
 	public static void addInferenceRulesForExternalOntology(
-			final IndexCollection ic, final TripleOperator tp, final Item data) {
+			final Root ic, final TripleOperator tp, final Item data) {
 		try {
 			/*
 			 * RDFS entailment rules. Rule Name If E contains: then add: rdfs5
@@ -745,7 +745,7 @@ public class RudimentaryRDFSchemaInference {
 	}
 
 	public static void addInferenceRulesForInstanceData(
-			final IndexCollection ic, final TripleOperator tp, final Item data) {
+			final Root ic, final TripleOperator tp, final Item data) {
 		try {
 			/*
 			 * RDFS entailment rules. Rule Name If E contains: then add: rdfs9
@@ -773,7 +773,7 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
-	public static void addInferenceRules(final IndexCollection ic,
+	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp, final Item data) {
 		addInferenceRulesForExternalOntology(ic, tp, data);
 		addInferenceRulesForInstanceData(ic, tp, data);

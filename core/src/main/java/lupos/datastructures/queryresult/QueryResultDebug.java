@@ -37,12 +37,12 @@ public class QueryResultDebug extends QueryResult {
 
 	protected final QueryResult opp;
 	protected final DebugStep debugstep;
-	protected final Operator from;
+	protected final BasicOperator from;
 	protected final BasicOperator to;
 	protected final boolean process;
 
 	public QueryResultDebug(final QueryResult opp, final DebugStep debugstep,
-			final Operator from, final BasicOperator to, final boolean process) {
+			final BasicOperator from, final BasicOperator to, final boolean process) {
 		this.opp = opp;
 		this.debugstep = debugstep;
 		this.from = from;

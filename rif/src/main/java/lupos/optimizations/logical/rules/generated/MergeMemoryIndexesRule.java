@@ -39,7 +39,7 @@ public class MergeMemoryIndexesRule extends Rule {
     private lupos.engine.operators.BasicOperator o2 = null;
     private lupos.engine.operators.BasicOperator[] o1 = null;
     private lupos.engine.operators.multiinput.join.Join j = null;
-    private lupos.engine.operators.index.memoryindex.MemoryIndex[] i = null;
+    private lupos.engine.operators.index.memoryindex.MemoryIndexScan[] i = null;
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
@@ -54,7 +54,7 @@ public class MergeMemoryIndexesRule extends Rule {
 
         this._dim_0 = -1;
         this.o1 = new lupos.engine.operators.BasicOperator[_precedingOperators_1_0.size()];
-        this.i = new lupos.engine.operators.index.memoryindex.MemoryIndex[_precedingOperators_1_0.size()];
+        this.i = new lupos.engine.operators.index.memoryindex.MemoryIndexScan[_precedingOperators_1_0.size()];
 
         for(BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
             this._dim_0 += 1;
@@ -84,11 +84,11 @@ public class MergeMemoryIndexesRule extends Rule {
     }
 
     private boolean _checkPrivate1(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.index.memoryindex.MemoryIndex)) {
+        if(!(_op instanceof lupos.engine.operators.index.memoryindex.MemoryIndexScan)) {
             return false;
         }
 
-        this.i[this._dim_0] = (lupos.engine.operators.index.memoryindex.MemoryIndex) _op;
+        this.i[this._dim_0] = (lupos.engine.operators.index.memoryindex.MemoryIndexScan) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -129,7 +129,7 @@ public class MergeMemoryIndexesRule extends Rule {
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
                 // remove obsolete connections...
-                for(lupos.engine.operators.index.memoryindex.MemoryIndex _parent : this.i) {
+                for(lupos.engine.operators.index.memoryindex.MemoryIndexScan _parent : this.i) {
                     _parent.removeSucceedingOperator(this.j);
                     this.j.removePrecedingOperator(_parent);
                 }
@@ -142,8 +142,8 @@ public class MergeMemoryIndexesRule extends Rule {
                 this.o2.removePrecedingOperator(this.j);
         
                 // add new operators...
-                lupos.engine.operators.index.memoryindex.MemoryIndex i_new = null;
-                i_new = new lupos.engine.operators.index.memoryindex.MemoryIndex(this.i[0].getIndexCollection());
+                lupos.engine.operators.index.memoryindex.MemoryIndexScan i_new = null;
+                i_new = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i[0].getIndexCollection());
         
         
                 // add new connections...
@@ -164,7 +164,7 @@ public class MergeMemoryIndexesRule extends Rule {
         
                 // additional replace method code...
                 i_new.setTriplePatterns(new java.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern>());
-                for(lupos.engine.operators.index.memoryindex.MemoryIndex index : this.i) {
+                for(lupos.engine.operators.index.memoryindex.MemoryIndexScan index : this.i) {
                     i_new.getTriplePattern().addAll(index.getTriplePattern());
                 
                     i_new.getIntersectionVariables().addAll(index.getIntersectionVariables());

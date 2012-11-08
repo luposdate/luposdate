@@ -232,7 +232,7 @@ public class DocumentationGenerator {
 
 	private String getTemplate(String templateName) {
 		if(!this.templates.containsKey(templateName)) {			
-			this.templates.put(templateName, File.readFile(RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/templates/doc_" + templateName + ".tpl").getFile()));
+			this.templates.put(templateName, File.readFile(RuleEditor.class.getResource("/doc/doc_" + templateName + ".tpl").getFile()));
 		}
 
 		return this.templates.get(templateName);

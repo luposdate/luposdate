@@ -42,7 +42,7 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.BasicOperator j_begin = null;
     private lupos.engine.operators.BasicOperator j_end = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
         if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
@@ -67,7 +67,7 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
             BasicOperator _searchIndex_1_0 = _precOp_1_0;
             boolean _continueFlag_1_0 = false;
 
-            while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndex))) {
+            while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndexScan))) {
                 if(!(_searchIndex_1_0 instanceof lupos.engine.operators.BasicOperator)) {
                     _continueFlag_1_0 = true;
                     break;
@@ -102,11 +102,11 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
                     break;
                 }
 
-                if(!(_precOp_2_0 instanceof lupos.engine.operators.index.BasicIndex)) {
+                if(!(_precOp_2_0 instanceof lupos.engine.operators.index.BasicIndexScan)) {
                     continue;
                 }
 
-                this.i = (lupos.engine.operators.index.BasicIndex) _precOp_2_0;
+                this.i = (lupos.engine.operators.index.BasicIndexScan) _precOp_2_0;
 
                 List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 

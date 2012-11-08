@@ -29,16 +29,16 @@ import java.util.Collection;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.misc.debug.DebugStep;
 
-public class InitializeDatasetIndex extends BasicIndex {
+public class InitializeDatasetIndex extends BasicIndexScan {
 	private final Collection<BindableIndex> listenerIndexes = new ArrayList<BindableIndex>();
 
-	public InitializeDatasetIndex(IndexCollection indexCollection) {
+	public InitializeDatasetIndex(Root indexCollection) {
 		super(indexCollection);
 		triplePatterns = Arrays.asList();
 	}
@@ -52,16 +52,16 @@ public class InitializeDatasetIndex extends BasicIndex {
 	}
 
 	@Override
-	public QueryResult process(int opt, Dataset dataset) {
-		for (final BindableIndex index : listenerIndexes)
-			index.process(0, dataset);
+	public QueryResult process(Dataset dataset) {
+		for (final BindableIndex index : this.listenerIndexes)
+			index.process(dataset);
 		return null;
 	}
 	
 	public QueryResult processDebug(final int opt, final Dataset dataset,
 			final DebugStep debugstep) {
 		for (final BindableIndex index : listenerIndexes)
-			index.processDebug(0, dataset, debugstep);
+			index.startProcessingDebug(dataset, debugstep);
 		return null;		
 	}
 

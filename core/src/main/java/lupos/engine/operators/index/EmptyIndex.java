@@ -30,35 +30,26 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.RootChild;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class EmptyIndex extends BasicIndex {
+public class EmptyIndex extends RootChild {
 
-	public EmptyIndex(final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePattern, final lupos.engine.operators.index.IndexCollection indexCollection) {
-		super(indexCollection);
+	public EmptyIndex(final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePattern, final lupos.engine.operators.index.Root indexCollection) {
+		super();
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
 		if (succeedingOperator != null) {
 			this.succeedingOperators.add(succeedingOperator);
 		}
-		if(triplePattern!=null)
-			this.triplePatterns = triplePattern;
-		else this.triplePatterns = new LinkedList<TriplePattern>();
 	}
 
 	@Override
-	public QueryResult process(final int opt, final Dataset dataset) {
+	protected QueryResult process(final Dataset dataset) {
 		final QueryResult queryResult = QueryResult.createInstance();
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
+		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
 
 			((Operator) succOperator.getOperator()).processAll(queryResult, succOperator.getId());
 		}
 		return queryResult;
 	}
-
-	@Override
-	public QueryResult join(final Indices indices, final Bindings bindings) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

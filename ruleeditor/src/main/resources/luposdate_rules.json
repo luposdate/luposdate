@@ -632,18 +632,18 @@
             }],
             "o2": [
               {
-                "active": false,
-                "id": -1,
-                "id label": "",
-                "mode": "EXISTS",
-                "to": "j"
-              },
-              {
                 "active": true,
                 "id": 0,
                 "id label": "",
                 "mode": "EXISTS",
                 "to": "opt"
+              },
+              {
+                "active": false,
+                "id": -1,
+                "id label": "",
+                "mode": "EXISTS",
+                "to": "j"
               }
             ]
           },
@@ -3262,7 +3262,7 @@
         "additional global java code": "",
         "additional import declarations": "",
         "check method": {
-          "additional code": "if(this.i instanceof lupos.rif.operator.PredicateIndex\n    || this.i instanceof lupos.rif.operator.BooleanIndex\n    || this.i instanceof lupos.engine.operators.index.EmptyIndex\n    || this.i instanceof lupos.rif.operator.IteratorIndex\n    || (!this.i.getPrecedingOperators().isEmpty()\n        && !this.i.getPrecedingOperators().get(0).getSucceedingOperators().isEmpty()\n        && this.i.getPrecedingOperators().get(0).getSucceedingOperators().get(0).getOperator() instanceof lupos.rif.operator.InsertTripleIndex)) {\n\t\t\t\t\treturn false;\n}\n\nlupos.datastructures.queryresult.QueryResult qr = null;\n\t\t\t\tif (this.i instanceof lupos.engine.operators.index.memoryindex.MemoryIndex) {\n\t\t\t\t\tfinal lupos.engine.operators.index.memoryindex.MemoryIndex temp = new lupos.engine.operators.index.memoryindex.MemoryIndex(this.i.getIndexCollection());\n\t\t\t\t\tboolean found = false;\n\t\t\t\t\tfor (lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndex) this.i).getTriplePattern()) {\n\t\t\t\t\t\ttemp.setTriplePatterns(java.util.Arrays.asList(pat));\n\t\t\t\t\t\tlupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getIndexCollection().dataset);\n\t\t\t\t\t\tif (qrtemp != null && qrtemp.oneTimeIterator().hasNext()) {\n\t\t\t\t\t\t\tfound = true;\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tif (!found) {\n\t\t\t\t\t\treturn true;\n\t\t\t\t\t}\n                    return false;\n\t\t\t\t} else {\n\t\t\t\t\tqr = this.i.join(this.i.getIndexCollection().dataset);\n                }\n\t\t\t\tif (qr != null) {\n\t\t\t\t\tfinal java.util.Iterator<lupos.datastructures.bindings.Bindings> pib = qr.oneTimeIterator();\n\t\t\t\t\tif (pib.hasNext()) {\n\t\t\t\t\t\tif (pib instanceof lupos.datastructures.queryresult.ParallelIterator) {\n\t\t\t\t\t\t\t((lupos.datastructures.queryresult.ParallelIterator) pib).close();\n                        }\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t\t\t\t\tif (pib instanceof lupos.datastructures.queryresult.ParallelIterator) {\n\t\t\t\t\t\t((lupos.datastructures.queryresult.ParallelIterator) pib).close();\n                    }\n\t\t\t\t\treturn true;\n\t\t\t\t} else {\n\t\t\t\t\treturn true;\n\t\t\t\t}",
+          "additional code": "if(this.i instanceof lupos.rif.operator.PredicateIndex\n    || this.i instanceof lupos.rif.operator.BooleanIndex\n    || this.i instanceof lupos.rif.operator.IteratorIndex\n    || (!this.i.getPrecedingOperators().isEmpty()\n        && !this.i.getPrecedingOperators().get(0).getSucceedingOperators().isEmpty()\n        && this.i.getPrecedingOperators().get(0).getSucceedingOperators().get(0).getOperator() instanceof lupos.rif.operator.InsertTripleIndex)) {\n\t\t\t\t\treturn false;\n}\n\nlupos.datastructures.queryresult.QueryResult qr = null;\n\t\t\t\tif (this.i instanceof lupos.engine.operators.index.memoryindex.MemoryIndex) {\n\t\t\t\t\tfinal lupos.engine.operators.index.memoryindex.MemoryIndex temp = new lupos.engine.operators.index.memoryindex.MemoryIndex(this.i.getIndexCollection());\n\t\t\t\t\tboolean found = false;\n\t\t\t\t\tfor (lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndex) this.i).getTriplePattern()) {\n\t\t\t\t\t\ttemp.setTriplePatterns(java.util.Arrays.asList(pat));\n\t\t\t\t\t\tlupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getIndexCollection().dataset);\n\t\t\t\t\t\tif (qrtemp != null && qrtemp.oneTimeIterator().hasNext()) {\n\t\t\t\t\t\t\tfound = true;\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tif (!found) {\n\t\t\t\t\t\treturn true;\n\t\t\t\t\t}\n                    return false;\n\t\t\t\t} else {\n\t\t\t\t\tqr = this.i.join(this.i.getIndexCollection().dataset);\n                }\n\t\t\t\tif (qr != null) {\n\t\t\t\t\tfinal java.util.Iterator<lupos.datastructures.bindings.Bindings> pib = qr.oneTimeIterator();\n\t\t\t\t\tif (pib.hasNext()) {\n\t\t\t\t\t\tif (pib instanceof lupos.datastructures.queryresult.ParallelIterator) {\n\t\t\t\t\t\t\t((lupos.datastructures.queryresult.ParallelIterator) pib).close();\n                        }\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t\t\t\t\tif (pib instanceof lupos.datastructures.queryresult.ParallelIterator) {\n\t\t\t\t\t\t((lupos.datastructures.queryresult.ParallelIterator) pib).close();\n                    }\n\t\t\t\t\treturn true;\n\t\t\t\t} else {\n\t\t\t\t\treturn true;\n\t\t\t\t}",
           "code": "",
           "start node": "Operator",
           "use generated code": true

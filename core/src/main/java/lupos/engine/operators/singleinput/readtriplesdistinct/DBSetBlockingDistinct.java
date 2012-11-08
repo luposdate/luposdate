@@ -33,7 +33,7 @@ import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 
 public class DBSetBlockingDistinct extends BlockingDistinct {
 
@@ -44,7 +44,7 @@ public class DBSetBlockingDistinct extends BlockingDistinct {
 					public int compare(final BindingsArrayReadTriples arg0,
 							final BindingsArrayReadTriples arg1) {
 						final TripleComparator tc = new TripleComparator(
-								RDF3XIndex.CollationOrder.SPO);
+								RDF3XIndexScan.CollationOrder.SPO);
 						final Iterator<Triple> it0 = arg0.getTriples()
 								.iterator();
 						final Iterator<Triple> it1 = arg1.getTriples()

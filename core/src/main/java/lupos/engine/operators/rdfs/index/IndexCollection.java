@@ -30,23 +30,23 @@ import java.util.LinkedList;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 
 public class IndexCollection extends
-		lupos.engine.operators.index.IndexCollection {
+		lupos.engine.operators.index.Root {
 
 	@Override
-	public BasicIndex newIndex(final OperatorIDTuple succeedingOperator,
+	public BasicIndexScan newIndex(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
 		return new ToStreamIndex(succeedingOperator, triplePattern, this);
 	}
 
 	@Override
-	public lupos.engine.operators.index.IndexCollection newInstance(Dataset dataset) {
+	public lupos.engine.operators.index.Root newInstance(Dataset dataset) {
 		this.dataset = dataset;
 		return new IndexCollection();
 	}

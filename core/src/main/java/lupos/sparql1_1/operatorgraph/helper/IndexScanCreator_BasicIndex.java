@@ -32,18 +32,18 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.EmptyIndex;
 import lupos.engine.operators.index.EmptyIndexSubmittingQueryResultWithOneEmptyBindings;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 	
-	protected final IndexCollection indexCollection;
+	protected final Root indexCollection;
 	
-	public IndexScanCreator_BasicIndex(final IndexCollection indexCollection){
+	public IndexScanCreator_BasicIndex(final Root indexCollection){
 		this.indexCollection = indexCollection;
 	}
 
-	public IndexCollection getIndexCollection(){
+	public Root getIndexCollection(){
 		return this.indexCollection;
 	}
 	
@@ -56,7 +56,7 @@ public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 	public BasicOperator createIndexScanAndConnectWithRoot(
 			OperatorIDTuple opID, Collection<TriplePattern> triplePatterns,
 			Item graphConstraint) {
-		final lupos.engine.operators.index.BasicIndex index = indexCollection.newIndex(opID, triplePatterns, graphConstraint);
+		final lupos.engine.operators.index.BasicIndexScan index = indexCollection.newIndex(opID, triplePatterns, graphConstraint);
 		indexCollection.getSucceedingOperators().add(new OperatorIDTuple(index, 0));
 		return index;
 	}

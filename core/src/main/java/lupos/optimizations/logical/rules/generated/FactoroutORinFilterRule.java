@@ -41,7 +41,7 @@ public class FactoroutORinFilterRule extends Rule {
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.BasicOperator j_begin = null;
     private lupos.engine.operators.BasicOperator j_end = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
         if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
@@ -66,7 +66,7 @@ public class FactoroutORinFilterRule extends Rule {
             BasicOperator _searchIndex_1_0 = _precOp_1_0;
             boolean _continueFlag_1_0 = false;
 
-            while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndex))) {
+            while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndexScan))) {
                 if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
                     _continueFlag_1_0 = true;
                     break;
@@ -101,11 +101,11 @@ public class FactoroutORinFilterRule extends Rule {
                     break;
                 }
 
-                if(!(_precOp_2_0 instanceof lupos.engine.operators.index.BasicIndex)) {
+                if(!(_precOp_2_0 instanceof lupos.engine.operators.index.BasicIndexScan)) {
                     continue;
                 }
 
-                this.i = (lupos.engine.operators.index.BasicIndex) _precOp_2_0;
+                this.i = (lupos.engine.operators.index.BasicIndexScan) _precOp_2_0;
 
                 List<BasicOperator> _precedingOperators_3_0 = _precOp_2_0.getPrecedingOperators();
 
@@ -192,7 +192,7 @@ public class FactoroutORinFilterRule extends Rule {
 
         // additional replace method code...
         // --- update index - begin ---
-        lupos.engine.operators.index.BasicIndex i2 = (lupos.engine.operators.index.BasicIndex) this.i.clone();
+        lupos.engine.operators.index.BasicIndexScan i2 = (lupos.engine.operators.index.BasicIndexScan) this.i.clone();
         this.addNodeToStartNodeMapNullCheck(i2, _startNodes);
         
         java.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern> lltp = new java.util.LinkedList<lupos.engine.operators.tripleoperator.TriplePattern>();

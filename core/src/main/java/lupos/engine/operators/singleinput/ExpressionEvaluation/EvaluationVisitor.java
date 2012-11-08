@@ -28,7 +28,7 @@ import java.util.Map;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.sparql1_1.ASTABSFuncNode;
@@ -307,7 +307,7 @@ public interface EvaluationVisitor<D, R> {
 
 	public CommonCoreQueryEvaluator<Node> getEvaluator();
 
-	public void setCollectionForExistNodes(Map<SimpleNode, IndexCollection> collectionForExistNodes);
+	public void setCollectionForExistNodes(Map<SimpleNode, Root> collectionForExistNodes);
 
-	public Map<SimpleNode, IndexCollection> getCollectionForExistNodes();
+	public Map<SimpleNode, Root> getCollectionForExistNodes();
 }

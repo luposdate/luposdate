@@ -42,14 +42,14 @@ public class VariablePropagationRule extends Rule {
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.BasicOperator j_begin = null;
     private lupos.engine.operators.BasicOperator j_end = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.index.BasicIndex)) {
+        if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
 
-        this.i = (lupos.engine.operators.index.BasicIndex) _op;
+        this.i = (lupos.engine.operators.index.BasicIndexScan) _op;
 
         List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
@@ -126,7 +126,7 @@ public class VariablePropagationRule extends Rule {
 
 
     public VariablePropagationRule() {
-        this.startOpClass = lupos.engine.operators.index.BasicIndex.class;
+        this.startOpClass = lupos.engine.operators.index.BasicIndexScan.class;
         this.ruleName = "Variable Propagation";
     }
 

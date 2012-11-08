@@ -38,7 +38,7 @@ public class ReplaceVarUnderIndexRule extends Rule {
     private int varCounter = 0;
     private lupos.engine.operators.singleinput.ReplaceVar r = null;
     private lupos.engine.operators.BasicOperator o = null;
-    private lupos.engine.operators.index.BasicIndex[] i = null;
+    private lupos.engine.operators.index.BasicIndexScan[] i = null;
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
@@ -52,7 +52,7 @@ public class ReplaceVarUnderIndexRule extends Rule {
 
 
         this._dim_0 = -1;
-        this.i = new lupos.engine.operators.index.BasicIndex[_precedingOperators_1_0.size()];
+        this.i = new lupos.engine.operators.index.BasicIndexScan[_precedingOperators_1_0.size()];
 
         for(BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
             this._dim_0 += 1;
@@ -86,11 +86,11 @@ public class ReplaceVarUnderIndexRule extends Rule {
     }
 
     private boolean _checkPrivate1(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.index.BasicIndex)) {
+        if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
 
-        this.i[this._dim_0] = (lupos.engine.operators.index.BasicIndex) _op;
+        this.i[this._dim_0] = (lupos.engine.operators.index.BasicIndexScan) _op;
 
         return true;
     }
@@ -116,7 +116,7 @@ public class ReplaceVarUnderIndexRule extends Rule {
                 return false;
             }
             
-            for(lupos.engine.operators.index.BasicIndex tmp_i : this.i) {
+            for(lupos.engine.operators.index.BasicIndexScan tmp_i : this.i) {
                 if(tmp_i.getSucceedingOperators().size() > 1) {
                     return false;
                 }
@@ -133,7 +133,7 @@ public class ReplaceVarUnderIndexRule extends Rule {
         int _label_a_count = 0;
         _label_a = new int[this.i.length];
 
-        for(lupos.engine.operators.index.BasicIndex _parent : this.i) {
+        for(lupos.engine.operators.index.BasicIndexScan _parent : this.i) {
             _label_a[_label_a_count] = _parent.getOperatorIDTuple(this.r).getId();
             _label_a_count += 1;
 
@@ -150,7 +150,7 @@ public class ReplaceVarUnderIndexRule extends Rule {
         // add new connections...
         _label_a_count = 0;
 
-        for(lupos.engine.operators.index.BasicIndex _parent : this.i) {
+        for(lupos.engine.operators.index.BasicIndexScan _parent : this.i) {
             _parent.addSucceedingOperator(new OperatorIDTuple(this.o, _label_a[_label_a_count]));
             this.o.addPrecedingOperator(_parent);
 
@@ -164,7 +164,7 @@ public class ReplaceVarUnderIndexRule extends Rule {
 
 
         // additional replace method code...
-        for(lupos.engine.operators.index.BasicIndex index : this.i) {
+        for(lupos.engine.operators.index.BasicIndexScan index : this.i) {
             java.util.Map<String, lupos.datastructures.items.Variable> varMap = new java.util.HashMap<String, lupos.datastructures.items.Variable>();
             java.util.Map<lupos.datastructures.items.Variable, String> aliasMap = new java.util.HashMap<lupos.datastructures.items.Variable, String>();
         

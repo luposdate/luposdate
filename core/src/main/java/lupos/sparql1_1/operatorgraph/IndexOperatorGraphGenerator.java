@@ -38,7 +38,7 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.singleinput.Construct;
 import lupos.engine.operators.singleinput.SeveralSucceedingOperators;
 import lupos.engine.operators.singleinput.sparul.Clear;
@@ -64,7 +64,7 @@ public class IndexOperatorGraphGenerator extends
 		super();
 	}
 			
-	public static IndexOperatorGraphGenerator createOperatorGraphGenerator(IndexCollection indexCollection, CommonCoreQueryEvaluator<Node> evaluator) throws InstantiationException, IllegalAccessException{
+	public static IndexOperatorGraphGenerator createOperatorGraphGenerator(Root indexCollection, CommonCoreQueryEvaluator<Node> evaluator) throws InstantiationException, IllegalAccessException{
 		IndexOperatorGraphGenerator iogg = operatorGraphGeneratorClass.newInstance();
 		iogg.setIndexScanGenerator(new IndexScanCreator_BasicIndex(indexCollection));
 		iogg.evaluator = evaluator;

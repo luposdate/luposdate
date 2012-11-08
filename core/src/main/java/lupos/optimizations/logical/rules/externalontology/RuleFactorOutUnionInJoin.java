@@ -32,7 +32,7 @@ import java.util.Map;
 import lupos.datastructures.items.Variable;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.tripleoperator.TriggerOneTime;
@@ -167,11 +167,11 @@ public class RuleFactorOutUnionInJoin extends Rule {
 			// System.out.println();
 			while (toClone.getPrecedingOperators().size() == 1
 					&& !(toClone instanceof PatternMatcher
-							|| toClone instanceof IndexCollection || toClone
+							|| toClone instanceof Root || toClone
 							.getPrecedingOperators().get(0) instanceof TriggerOneTime)) {
 				final BasicOperator toCloneNew = toClone
 						.getPrecedingOperators().get(0);
-				final BasicOperator cloneNew = (toCloneNew instanceof PatternMatcher || toCloneNew instanceof IndexCollection) ? toCloneNew
+				final BasicOperator cloneNew = (toCloneNew instanceof PatternMatcher || toCloneNew instanceof Root) ? toCloneNew
 						: toCloneNew.clone();
 
 				final OperatorIDTuple oidOld = toClone.getPrecedingOperators()
@@ -182,10 +182,10 @@ public class RuleFactorOutUnionInJoin extends Rule {
 				clone.setPrecedingOperator(cloneNew);
 				clone = cloneNew;
 				toClone = toCloneNew;
-				if (!(toCloneNew instanceof PatternMatcher || toCloneNew instanceof IndexCollection))
+				if (!(toCloneNew instanceof PatternMatcher || toCloneNew instanceof Root))
 					added.add(cloneNew);
 			}
-			if (!(clone instanceof PatternMatcher || clone instanceof IndexCollection))
+			if (!(clone instanceof PatternMatcher || clone instanceof Root))
 				for (final BasicOperator bo : toClone.getPrecedingOperators()) {
 					final int id2 = bo.getOperatorIDTuple(toClone).getId();
 					bo.addSucceedingOperator(new OperatorIDTuple(clone, id2));

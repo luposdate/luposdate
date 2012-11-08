@@ -58,8 +58,9 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
-import lupos.engine.operators.index.memoryindex.MemoryIndex;
+import lupos.engine.operators.RootChild;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.index.memoryindex.MemoryIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
@@ -77,7 +78,7 @@ import lupos.optimizations.logical.statistics.VarBucket;
  * The index structure has to be initialized previously. 
  * 
  */
-public abstract class BasicIndex extends Operator {
+public abstract class BasicIndexScan extends RootChild {
 
 	public final static int NONE = 0;
 	public final static int MOSTRESTRICTIONS = 1;
@@ -88,20 +89,20 @@ public abstract class BasicIndex extends Operator {
 	public final static int MERGEJOINSORT = 6;
 	public final static int NARYMERGEJOIN = 7;
 	
-	protected final IndexCollection indexCollection;
+	protected final Root indexCollection;
 
 	// Item is Var or Literal (URILiteral)
 	protected Item rdfGraph;
 
 	protected Collection<TriplePattern> triplePatterns;
 
-	public BasicIndex(final IndexCollection indexCollection) {
+	public BasicIndexScan(final Root indexCollection) {
 		super();
 		this.indexCollection = indexCollection;
 	}
 
-	public BasicIndex(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final IndexCollection indexCollection) {
+	public BasicIndexScan(final OperatorIDTuple succeedingOperator,
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root indexCollection) {
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
 		if (succeedingOperator != null) {
 			this.succeedingOperators.add(succeedingOperator);
@@ -111,15 +112,15 @@ public abstract class BasicIndex extends Operator {
 		this.indexCollection = indexCollection;
 	}
 
-	public BasicIndex(final List<OperatorIDTuple> succeedingOperators,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final IndexCollection indexCollection) {
+	public BasicIndexScan(final List<OperatorIDTuple> succeedingOperators,
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root indexCollection) {
 		this.succeedingOperators = succeedingOperators;
 		this.rdfGraph = rdfGraph;
 		setTriplePatterns(triplePattern);
 		this.indexCollection=indexCollection;
 	}
 	
-	public IndexCollection getIndexCollection(){
+	public Root getIndexCollection(){
 		return this.indexCollection;
 	}
 	
@@ -156,7 +157,8 @@ public abstract class BasicIndex extends Operator {
 	 *            unused parameter
 	 * @return the result of the performed join
 	 */
-	public QueryResult process(final int opt, final Dataset dataset) {
+	@Override
+	public QueryResult process(final Dataset dataset) {
 		final QueryResult queryResult = join(dataset);
 		if (queryResult == null) {
 			return null;
@@ -433,8 +435,8 @@ public abstract class BasicIndex extends Operator {
 					try {
 						ctp.add(tp);
 						this.setTriplePatterns(ctp);
-						if (this instanceof RDF3XIndex) {
-							((RDF3XIndex) this)
+						if (this instanceof RDF3XIndexScan) {
+							((RDF3XIndexScan) this)
 							.setCollationOrder(OptimizeJoinOrder
 									.getCollationOrder(tp,
 											new LinkedList<Variable>()));
@@ -506,7 +508,7 @@ public abstract class BasicIndex extends Operator {
 
 	public Tuple<Literal, Literal> getMinMax(final Variable v,
 			final TriplePattern tp, final Dataset dataset) {
-		if (!(this instanceof RDF3XIndex))
+		if (!(this instanceof RDF3XIndexScan))
 			return null;
 		final Collection<TriplePattern> ztp = this.getTriplePattern();
 		final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
@@ -514,8 +516,8 @@ public abstract class BasicIndex extends Operator {
 		this.setTriplePatterns(ctp);
 		final Collection<Variable> cv = new LinkedList<Variable>();
 		cv.add(v);
-		if (this instanceof RDF3XIndex) {
-			((RDF3XIndex) this).setCollationOrder(OptimizeJoinOrder
+		if (this instanceof RDF3XIndexScan) {
+			((RDF3XIndexScan) this).setCollationOrder(OptimizeJoinOrder
 					.getCollationOrder(tp, cv));
 
 		}
@@ -689,10 +691,10 @@ public abstract class BasicIndex extends Operator {
 		final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
 		ctp.add(tp);
 		this.setTriplePatterns(ctp);
-		if (this instanceof RDF3XIndex) {
-			((RDF3XIndex) this).setCollationOrder(OptimizeJoinOrder
+		if (this instanceof RDF3XIndexScan) {
+			((RDF3XIndexScan) this).setCollationOrder(OptimizeJoinOrder
 					.getCollationOrder(tp, joinPartners));
-			((RDF3XIndex) this).setMinimaMaxima(minima, maxima);
+			((RDF3XIndexScan) this).setMinimaMaxima(minima, maxima);
 
 		} 
 		final QueryResult qrSize = this.join(dataset);
@@ -787,14 +789,14 @@ public abstract class BasicIndex extends Operator {
 			// get result of triple pattern in the correct sorted way!
 			final Collection<Variable> cv = new LinkedList<Variable>();
 			cv.add(v);
-			if (this instanceof RDF3XIndex) {
-				((RDF3XIndex) this).setCollationOrder(OptimizeJoinOrder
+			if (this instanceof RDF3XIndexScan) {
+				((RDF3XIndexScan) this).setCollationOrder(OptimizeJoinOrder
 						.getCollationOrder(tp, cv));
 			}
 
 			QueryResult qr = this.join(dataset);
 
-			if (this instanceof MemoryIndex) {
+			if (this instanceof MemoryIndexScan) {
 				// additional sorting phase according to variable v needed
 				// for
 				// relational index approach!
@@ -900,42 +902,6 @@ public abstract class BasicIndex extends Operator {
 				minima, maxima);
 	}
 	
-	/**
-	 * Joins the triple pattern using the index maps and returns the result.<br>
-	 * The succeeding operators are passed to the operator pipe to be processed.
-	 * 
-	 * @param opt
-	 *            unused parameter
-	 * @return the result of the performed join
-	 */
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		final QueryResult queryResult = join(dataset);
-		if (queryResult == null) {
-			return null;
-		}
-
-		/*
-		 * pass the succeeding operators which were externally provided to the
-		 * operator pipe along with the new bindings which have been determined
-		 * by the join
-		 */
-		if (this.succeedingOperators.size() > 1)
-			queryResult.materialize();
-		// for every binding found in the result of the previously performed
-		// join of the triple elements ...
-		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
-			// and pass the new QueryResult object along with the current
-			// succeeding operator's
-			// identifier to the OperatorPipe's process method
-			final QueryResultDebug qrDebug = new QueryResultDebug(queryResult,
-					debugstep, this, succOperator.getOperator(), true);
-			((Operator) succOperator.getOperator()).processAllDebug(qrDebug,
-					succOperator.getId(), debugstep);
-		}
-		return queryResult;
-	}
-	
 	public static class AddConstantBindingIterator implements Iterator<Bindings>{
 		
 		protected final Variable var;
@@ -991,7 +957,6 @@ public abstract class BasicIndex extends Operator {
 		@Override
 		public void remove() {
 			this.originalIterator.remove();
-		}
-		
+		}		
 	}
 }

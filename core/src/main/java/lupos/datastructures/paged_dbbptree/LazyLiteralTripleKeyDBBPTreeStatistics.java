@@ -45,8 +45,8 @@ import lupos.datastructures.items.TripleComparator.COMPARE;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.queryresult.ParallelIterator;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectInputStreamWithoutReadingHeader;
 import lupos.io.LuposObjectOutputStream;
@@ -58,11 +58,11 @@ import lupos.optimizations.logical.statistics.VarBucket;
 public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		DBBPTree<TripleKey, Triple> {
 
-	protected final RDF3XIndex.CollationOrder order;
+	protected final RDF3XIndexScan.CollationOrder order;
 
 	public LazyLiteralTripleKeyDBBPTreeStatistics(
 			final Comparator<? super TripleKey> comparator, final int k,
-			final int k_, final RDF3XIndex.CollationOrder order)
+			final int k_, final RDF3XIndexScan.CollationOrder order)
 			throws IOException {
 		super(comparator, k, k_,
 				new LazyLiteralDBBPTreeStatisticsNodeDeSerializer(order));
@@ -481,7 +481,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			result.selectivityOfInterval.add(entry);
 			return result;
 		}
-		final int MAXNUMBERBUCKETS = BasicIndex.getMaxNumberBuckets();
+		final int MAXNUMBERBUCKETS = BasicIndexScan.getMaxNumberBuckets();
 		double step = (double) distance / MAXNUMBERBUCKETS;
 		if (step < 1.0)
 			step = 1.0;
@@ -1904,7 +1904,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			final int size, final Comparator comp, final int rootFilename,
 			final int firstLeafFileName, final Class keyClass,
 			final Class valueClass,
-			final RDF3XIndex.CollationOrder order, final int currentID)
+			final RDF3XIndexScan.CollationOrder order, final int currentID)
 			throws IOException {
 		super(k, k_, size, comp, rootFilename, firstLeafFileName, keyClass,
 				valueClass, currentID,
@@ -1925,7 +1925,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		final Class keyClass = (Class) lois.readObject();
 		final Class valueClass = (Class) lois.readObject();
 		final byte b = lois.readLuposByte();
-		final RDF3XIndex.CollationOrder order = RDF3XIndex.CollationOrder.values()[b];
+		final RDF3XIndexScan.CollationOrder order = RDF3XIndexScan.CollationOrder.values()[b];
 		final LazyLiteralTripleKeyDBBPTreeStatistics dbbptree = new LazyLiteralTripleKeyDBBPTreeStatistics(
 				k, k_, size, comp, rootFilename, firstLeafFileName, keyClass,
 				valueClass, order, currentID);

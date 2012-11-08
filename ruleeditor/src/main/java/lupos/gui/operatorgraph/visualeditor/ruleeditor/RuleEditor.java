@@ -127,7 +127,7 @@ public class RuleEditor extends JFrame {
 
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-		this.setIconImage(new ImageIcon(RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/logo.gif")).getImage());
+		this.setIconImage(new ImageIcon(RuleEditor.class.getResource("/logo.gif")).getImage());
 		this.setJMenuBar(this.buildMenuBar());
 		this.getContentPane().add(this.splitPane, BorderLayout.CENTER);
 		this.getContentPane().add(this.statusBar, BorderLayout.SOUTH);

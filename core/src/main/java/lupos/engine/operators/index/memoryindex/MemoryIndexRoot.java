@@ -21,74 +21,84 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.index.adaptedRDF3X;
+package lupos.engine.operators.index.memoryindex;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import lupos.datastructures.items.Item;
+import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.logical.OptimizeJoinOrder;
 
-public class IndexCollection extends
-		lupos.engine.operators.index.IndexCollection {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1624295267286626002L;
-
+public class MemoryIndexRoot extends
+		lupos.engine.operators.index.Root {
 	@Override
-	public BasicIndex newIndex(final OperatorIDTuple succeedingOperator,
+	public BasicIndexScan newIndex(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new RDF3XIndex(succeedingOperator, triplePattern, data, this);
+		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
 	}
 
 	@Override
-	public lupos.engine.operators.index.IndexCollection newInstance(Dataset dataset) {
-		this.dataset=dataset;
-		return new IndexCollection();
+	public MemoryIndexRoot newInstance(Dataset dataset_param) {
+		this.dataset = dataset_param;
+		return new MemoryIndexRoot();
+	}
+
+	public void optimizeJoinOrderAccordingToMostRestrictionsAndLeastEntries() {
+		for (final OperatorIDTuple oit : this.succeedingOperators) {
+			final BasicOperator basicOperator = oit.getOperator();
+			if (basicOperator instanceof MemoryIndexScan) {
+				final MemoryIndexScan index = (MemoryIndexScan) basicOperator;
+				index.optimizeJoinOrderAccordingToMostRestrictionsAndLeastEntries(this.dataset);
+			}
+		}
+	}
+
+	public void optimizeJoinOrderAccordingToLeastEntries() {
+		for (final OperatorIDTuple oit : this.succeedingOperators) {
+			if (oit.getOperator() instanceof MemoryIndexScan) {
+				final MemoryIndexScan index = (MemoryIndexScan) oit
+						.getOperator();
+				index.optimizeJoinOrderAccordingToLeastEntries(this.dataset);
+			}
+		}
 	}
 
 	@Override
-	public void optimizeJoinOrder(final int opt, final Dataset dataset) {
-		if (opt == BasicIndex.Binary || opt == BasicIndex.MERGEJOIN
-				|| opt == BasicIndex.MERGEJOINSORT
-				|| opt == BasicIndex.NARYMERGEJOIN)
-			makeBinaryJoin(opt, dataset);
+	public void optimizeJoinOrder(final int opt) {
+		switch (opt) {
+		case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
+			optimizeJoinOrderAccordingToMostRestrictionsAndLeastEntries();
+			break;
+		case BasicIndexScan.LEASTENTRIES:
+			optimizeJoinOrderAccordingToLeastEntries();
+			break;
+		case BasicIndexScan.Binary:
+			makeBinaryJoin();
+			break;
+		default:
+			super.optimizeJoinOrder(opt);
+		}
 	}
 
-	public void makeBinaryJoin(final int opt, final Dataset dataset) {
+	public void makeBinaryJoin() {
 		final List<OperatorIDTuple> c = new LinkedList<OperatorIDTuple>();
 
-		for (final OperatorIDTuple oit : succeedingOperators) {
-			if (oit.getOperator() instanceof RDF3XIndex) {
-				final RDF3XIndex index = (RDF3XIndex) oit.getOperator();
-				if (opt == BasicIndex.NARYMERGEJOIN) {
-					final lupos.engine.operators.index.IndexCollection indexCollection = OptimizeJoinOrder
-							.getPlanWithNAryMergeJoins(
-									new IndexCollection(),
-									index,
-									(opt == BasicIndex.MERGEJOINSORT) ? OptimizeJoinOrder.PlanType.RDF3XSORT
-											: OptimizeJoinOrder.PlanType.RDF3X,
-									dataset);
-					c.addAll(indexCollection.getSucceedingOperators());
-				} else {
-					final lupos.engine.operators.index.IndexCollection indexCollection = (opt == BasicIndex.Binary) ? index
-							.getBinaryJoin()
-							: OptimizeJoinOrder
-									.getBinaryJoinWithManyMergeJoins(
-											new IndexCollection(),
-											index,
-											(opt == BasicIndex.MERGEJOINSORT) ? OptimizeJoinOrder.PlanType.RDF3XSORT
-													: OptimizeJoinOrder.PlanType.RDF3X,
-											dataset);
-					c.addAll(indexCollection.getSucceedingOperators());
-				}
+		for (final OperatorIDTuple oit : this.succeedingOperators) {
+			if (oit.getOperator() instanceof MemoryIndexScan) {
+				final MemoryIndexScan index = (MemoryIndexScan) oit
+						.getOperator();
+				final lupos.engine.operators.index.Root indexCollection = OptimizeJoinOrder
+						.getBinaryJoinWithManyMergeJoins(new MemoryIndexRoot(),
+								index,
+								OptimizeJoinOrder.PlanType.RELATIONALINDEX,
+								this.dataset);
+				c.addAll(indexCollection.getSucceedingOperators());
 			} else
 				c.add(oit);
 		}

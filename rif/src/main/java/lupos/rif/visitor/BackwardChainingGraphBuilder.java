@@ -35,8 +35,8 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.MakeBooleanResult;
@@ -66,9 +66,9 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 	private InitializeDatasetIndex datasetIndex;
 	
-	private final IndexCollection indexCollection;
+	private final Root indexCollection;
 
-	public BackwardChainingGraphBuilder(final IndexScanCreatorInterface indexScanCreator, IndexCollection indexCollection) {
+	public BackwardChainingGraphBuilder(final IndexScanCreatorInterface indexScanCreator, Root indexCollection) {
 		super(indexScanCreator);
 		predicateIndex = new PredicateIndex();
 		this.indexCollection = indexCollection;
@@ -287,7 +287,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		if (obj.isTriple() && arg instanceof BasicOperator) {
 
 			final TriplePattern pattern = unitermToTriplePattern(obj);
-			final BasicIndex index = indexCollection.newIndex(null,
+			final BasicIndexScan index = indexCollection.newIndex(null,
 					new ArrayList<TriplePattern>(Arrays.asList(pattern)), null);
 			final BindableIndex bindIndex = new BindableTripleIndex(index);
 			datasetIndex.addBindableIndex(bindIndex);

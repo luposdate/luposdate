@@ -43,7 +43,7 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
@@ -231,7 +231,7 @@ public abstract class Indices extends TripleOperator {
 		this.loadDataWithoutConsideringOntoloy(graphURI, dataFormat, dataset);
 		if (materialize != ONTOLOGY.NONE) {
 			final Map<Variable, Integer> vars = BindingsArray.getPosVariables();
-			final IndexCollection ic = indicesFactory.createIndexCollection();
+			final Root ic = indicesFactory.createIndexCollection();
 			final HashSet<Triple> newTriples = new HashSet<Triple>();
 			final TripleOperator rpiim = inMemoryExternalOntologyComputation ? new RDFSPutIntoIndicesCyclicComputation(
 					newTriples, this)
@@ -276,10 +276,7 @@ public abstract class Indices extends TripleOperator {
 			}
 			if (inMemoryExternalOntologyComputation) {
 				BindingsArray.forceVariables(maxVariables);
-				ic
-						.optimizeJoinOrder(
-								opt,
-								dataset);
+				ic.optimizeJoinOrder(opt);
 				PhysicalOptimizations.memoryReplacements();
 				ic.physicalOptimization();
 									do {
@@ -294,7 +291,7 @@ public abstract class Indices extends TripleOperator {
 						((RDFSPutIntoIndicesCyclicComputation) rpiim)
 								.newTripleProcessing();
 						ic.sendMessage(new StartOfEvaluationMessage());
-						ic.process(opt, dataset);
+						ic.startProcessing();
 						ic.sendMessage(new EndOfEvaluationMessage());
 					} while (((RDFSPutIntoIndicesCyclicComputation) rpiim)
 							.getNewTriples());
@@ -307,15 +304,15 @@ public abstract class Indices extends TripleOperator {
 				int size = 0;
 				for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
 					final BasicOperator op = oit.getOperator();
-					size += ((BasicIndex) op).triplePatterns.size();
+					size += ((BasicIndexScan) op).triplePatterns.size();
 				}
 				// first transform into StreamQueryEvaluator graph!
 				final TripleOperator[] to = new TripleOperator[size];
 				int i = 0;
 				for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
 					final BasicOperator op = oit.getOperator();
-					if (((BasicIndex) op).triplePatterns.size() == 1) {
-						to[i] = ((BasicIndex) op).triplePatterns.iterator()
+					if (((BasicIndexScan) op).triplePatterns.size() == 1) {
+						to[i] = ((BasicIndexScan) op).triplePatterns.iterator()
 								.next();
 						to[i].setSucceedingOperators(op
 								.getSucceedingOperators());
@@ -337,7 +334,7 @@ public abstract class Indices extends TripleOperator {
 							oit2.getOperator().addPrecedingOperator(join);
 						}
 						int j = 0;
-						for (final TriplePattern tp : ((BasicIndex) op).triplePatterns) {
+						for (final TriplePattern tp : ((BasicIndexScan) op).triplePatterns) {
 							to[i] = tp;
 							tp.setSucceedingOperator(new OperatorIDTuple(join,
 									j));
@@ -415,15 +412,15 @@ public abstract class Indices extends TripleOperator {
 							.transformStreamToIndexOperatorGraph(pm, ic);
 					for (final OperatorIDTuple oit : ic
 							.getSucceedingOperators()) {
-						if (oit.getOperator() instanceof RDF3XIndex)
-							((RDF3XIndex) oit.getOperator())
+						if (oit.getOperator() instanceof RDF3XIndexScan)
+							((RDF3XIndexScan) oit.getOperator())
 									.setCollationOrder(new LinkedList<Variable>());
 					}
 					PhysicalOptimizations.addReplacement("multiinput.join.",
 							"Join", "MergeJoinWithoutSortingSeveralIterations");
 					ic.physicalOptimization();
 				this.build();
-					ic.process(opt, dataset);
+					ic.startProcessing();
 					ic.sendMessage(new EndOfEvaluationMessage());
 					this.build();
 			}

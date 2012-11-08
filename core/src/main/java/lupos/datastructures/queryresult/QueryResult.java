@@ -40,8 +40,8 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.smallerinmemorylargerondisk.CollectionImplementation;
 import lupos.engine.operators.index.adaptedRDF3X.MergeIndicesTripleIterator;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 
@@ -88,7 +88,7 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 
 	public static QueryResult createInstance(final Iterator<Triple> itt,
 			final TriplePattern tp,
-			final RDF3XIndex.CollationOrder order) {
+			final RDF3XIndexScan.CollationOrder order) {
 		return new IteratorQueryResult(itt, tp, order);
 	}
 

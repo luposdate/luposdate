@@ -60,7 +60,7 @@ public class MoveRulePanel extends JPanel {
 		this.tree = tree;
 		this.treeModel = (DefaultTreeModel) this.tree.getModel();
 
-		this.upButton = new JButton(new ImageIcon(RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/arrow_up.png")));
+		this.upButton = new JButton(new ImageIcon(RuleEditor.class.getResource("/arrow_up.png")));
 		this.upButton.setEnabled(false);
 		this.upButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -68,7 +68,7 @@ public class MoveRulePanel extends JPanel {
 			}
 		});
 
-		this.downButton = new JButton(new ImageIcon(RuleEditor.class.getResource("/lupos/gui/operatorgraph/visualeditor/ruleeditor/images/arrow_down.png")));
+		this.downButton = new JButton(new ImageIcon(RuleEditor.class.getResource("/arrow_down.png")));
 		this.downButton.setEnabled(false);
 		this.downButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {

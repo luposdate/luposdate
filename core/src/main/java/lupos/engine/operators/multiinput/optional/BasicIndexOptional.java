@@ -33,8 +33,8 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
@@ -42,10 +42,10 @@ import lupos.rdf.Prefix;
 
 public class BasicIndexOptional extends Optional {
 
-	protected BasicIndex indexScanOperator;
+	protected BasicIndexScan indexScanOperator;
 	protected Item rdfGraph;
 
-	public void setBasicIndex(final BasicIndex indexScanOperator){
+	public void setBasicIndex(final BasicIndexScan indexScanOperator){
 		this.indexScanOperator = indexScanOperator;
 		this.rdfGraph = BasicIndexOptional.this.indexScanOperator.getGraphConstraint();
 	}
@@ -116,8 +116,8 @@ public class BasicIndexOptional extends Optional {
 					tps_new.add(new TriplePattern(items));					
 				}
 				BasicIndexOptional.this.indexScanOperator.setTriplePatterns(tps_new);
-				if(BasicIndexOptional.this.indexScanOperator instanceof RDF3XIndex){
-					((RDF3XIndex)BasicIndexOptional.this.indexScanOperator).setCollationOrder((Collection<Variable>)null);
+				if(BasicIndexOptional.this.indexScanOperator instanceof RDF3XIndexScan){
+					((RDF3XIndexScan)BasicIndexOptional.this.indexScanOperator).setCollationOrder((Collection<Variable>)null);
 				}
 				final QueryResult queryResult = BasicIndexOptional.this.indexScanOperator.join(BasicIndexOptional.this.indexScanOperator.getIndexCollection().dataset);
 				BasicIndexOptional.this.indexScanOperator.setTriplePatterns(tps);

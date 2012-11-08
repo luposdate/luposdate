@@ -38,14 +38,14 @@ public class HashSetNonBlockingDistinctWithIndexAccessAndFilterRule extends Rule
 
     private lupos.engine.operators.BasicOperator f = null;
     private lupos.engine.operators.singleinput.modifiers.distinct.Distinct d = null;
-    private lupos.engine.operators.index.BasicIndex i = null;
+    private lupos.engine.operators.index.BasicIndexScan i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(!(_op instanceof lupos.engine.operators.index.BasicIndex)) {
+        if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
 
-        this.i = (lupos.engine.operators.index.BasicIndex) _op;
+        this.i = (lupos.engine.operators.index.BasicIndexScan) _op;
 
         List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
@@ -83,7 +83,7 @@ public class HashSetNonBlockingDistinctWithIndexAccessAndFilterRule extends Rule
 
 
     public HashSetNonBlockingDistinctWithIndexAccessAndFilterRule() {
-        this.startOpClass = lupos.engine.operators.index.BasicIndex.class;
+        this.startOpClass = lupos.engine.operators.index.BasicIndexScan.class;
         this.ruleName = "HashSetNonBlockingDistinctWithIndexAccessAndFilter";
     }
 
@@ -101,10 +101,10 @@ public class HashSetNonBlockingDistinctWithIndexAccessAndFilterRule extends Rule
             }
             for(BasicOperator prec: this.d.getPrecedingOperators()){
             	BasicOperator prec_tmp=prec;
-            	while(!(prec_tmp instanceof lupos.engine.operators.index.BasicIndex) && prec_tmp.getPrecedingOperators().size()==1){
+            	while(!(prec_tmp instanceof lupos.engine.operators.index.BasicIndexScan) && prec_tmp.getPrecedingOperators().size()==1){
             		prec_tmp = prec_tmp.getPrecedingOperators().get(0);
             	}            	
-            	if(prec_tmp instanceof lupos.engine.operators.index.BasicIndex){
+            	if(prec_tmp instanceof lupos.engine.operators.index.BasicIndexScan){
             		if(!prec_tmp.equals(this.i)){
             			return false;
             		}
@@ -125,10 +125,10 @@ public class HashSetNonBlockingDistinctWithIndexAccessAndFilterRule extends Rule
         // now correct operandID of BasicIndex operand to 0 and the other to 1 (requirement of the HashSetNonBlockingDistinctWithIndexAccess-operator!)
         for(BasicOperator bo: distinct_new.getPrecedingOperators()){
         	BasicOperator prec_tmp=bo;
-        	while(!(prec_tmp instanceof lupos.engine.operators.index.BasicIndex) && prec_tmp.getPrecedingOperators().size()==1){
+        	while(!(prec_tmp instanceof lupos.engine.operators.index.BasicIndexScan) && prec_tmp.getPrecedingOperators().size()==1){
         		prec_tmp = prec_tmp.getPrecedingOperators().get(0);
         	}            	        	        	
-        	int operandID = (prec_tmp instanceof lupos.engine.operators.index.BasicIndex)? 0: 1;
+        	int operandID = (prec_tmp instanceof lupos.engine.operators.index.BasicIndexScan)? 0: 1;
         	bo.getOperatorIDTuple(distinct_new).setId(operandID);
         }
     }

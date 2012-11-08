@@ -64,29 +64,13 @@ public class InsertTripleIndex extends InsertIndex {
 	}
 
 	@Override
-	public QueryResult process(final int opt, final Dataset dataset) {
+	public QueryResult process(final Dataset dataset) {
 		// Leitet ein GraphResult mit den Triple-Fakten weiter
 		final GraphResult result = new GraphResult();
 		for (final Triple triple : this.facts)
 			result.addGraphResultTriple(triple);
 		for (final OperatorIDTuple oid : this.succeedingOperators)
 			((Operator) oid.getOperator()).processAll(result, oid.getId());
-		return result;
-	}
-
-	@Override
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		// Leitet ein GraphResult mit den Triple-Fakten weiter
-		final GraphResult result = new GraphResult();
-		for (final Triple triple : this.facts)
-			result.addGraphResultTriple(triple);
-		for (final OperatorIDTuple oid : this.succeedingOperators) {
-			final QueryResultDebug debug = new QueryResultDebug(result,
-					debugstep, this, oid.getOperator(), true);
-			((Operator) oid.getOperator()).processAllDebug(debug, oid.getId(),
-					debugstep);
-		}
 		return result;
 	}
 

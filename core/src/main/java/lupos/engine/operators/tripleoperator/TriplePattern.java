@@ -42,7 +42,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SIPFilterOperator;
@@ -581,7 +581,7 @@ TripleDeleter, Iterable<Item> {
 		this.cardinality = cardinality;
 	}
 
-	public TripleKey getKey(final Bindings k, final RDF3XIndex.CollationOrder order) {
+	public TripleKey getKey(final Bindings k, final RDF3XIndexScan.CollationOrder order) {
 		final Literal[] literals = new Literal[3];
 		for (int i = 0; i < 3; i++) {
 			if (!items[i].isVariable()) {
@@ -595,7 +595,7 @@ TripleDeleter, Iterable<Item> {
 		return tk;
 	}
 
-	public TripleKey getKey(final Literal[] t, final RDF3XIndex.CollationOrder order) {
+	public TripleKey getKey(final Literal[] t, final RDF3XIndexScan.CollationOrder order) {
 		final Literal[] literals = new Literal[3];
 		for (int i = 0; i < 3; i++) {
 			if (!items[i].isVariable()) {

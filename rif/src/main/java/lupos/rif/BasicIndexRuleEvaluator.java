@@ -49,8 +49,8 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.CollectRIFResult;
-import lupos.engine.operators.index.BasicIndex;
-import lupos.engine.operators.index.IndexCollection;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.multiinput.join.Join;
@@ -394,8 +394,8 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return this.rifDocument;
 	}
 	
-	public IndexCollection getIndexCollection() {
-		return (IndexCollection) this.evaluator.getRootNode();
+	public Root getIndexCollection() {
+		return (Root) this.evaluator.getRootNode();
 	}
 
 	@Override
@@ -553,7 +553,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 						generate.addSucceedingOperator(tpOrIndexScan);
 					}
 				} else {
-					BasicIndex bi = (BasicIndex) tpOrIndexScan;
+					BasicIndexScan bi = (BasicIndexScan) tpOrIndexScan;
 					if(bi.getTriplePattern()!=null && bi.getTriplePattern().size()>0){
 						LinkedList<TriplePattern> matchingTPs = new LinkedList<TriplePattern>();
 						for(TriplePattern inIndexScan: bi.getTriplePattern()){
@@ -595,7 +595,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 									LinkedList<TriplePattern> tpList = new LinkedList<TriplePattern>();
 									tpList.add(tp);
-									BasicIndex newIndex = ((IndexCollection)rootQuery).newIndex(new OperatorIDTuple(join, 1), tpList, bi.getGraphConstraint());
+									BasicIndexScan newIndex = ((Root)rootQuery).newIndex(new OperatorIDTuple(join, 1), tpList, bi.getGraphConstraint());
 									newIndex.recomputeVariables();
 									join.addPrecedingOperator(newIndex);
 									rootQuery.addSucceedingOperator(newIndex);
@@ -718,7 +718,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	private static void determine1stLevelTriplePatternOrIndexScans(BasicOperator rootQuery, LinkedList<BasicOperator> resultlist) {
 		for(OperatorIDTuple child: rootQuery.getSucceedingOperators()){
 			BasicOperator childOperator = child.getOperator();
-			if(childOperator instanceof TriplePattern || childOperator instanceof BasicIndex){
+			if(childOperator instanceof TriplePattern || childOperator instanceof BasicIndexScan){
 				resultlist.add(childOperator);
 			} else if(childOperator instanceof PatternMatcher || childOperator instanceof Window){
 				determine1stLevelTriplePatternOrIndexScans(childOperator, resultlist);

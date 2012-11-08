@@ -61,7 +61,7 @@ import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndex.CollationOrder;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.io.LuposObjectInputStream;
@@ -255,7 +255,7 @@ public class SixIndices extends Indices {
     }
 
     public Iterator<Triple> evaluateTriplePattern(final TriplePattern tp) {
-        return RDF3XIndex.getIterator(this, RDF3XIndex.getKey(tp, null), RDF3XIndex.getCollationOrder(tp, null), null, null);
+        return RDF3XIndexScan.getIterator(this, RDF3XIndexScan.getKey(tp, null), RDF3XIndexScan.getCollationOrder(tp, null), null, null);
     }
 
     @Override

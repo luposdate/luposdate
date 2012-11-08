@@ -32,14 +32,14 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class BindableTripleIndex extends BindableIndex {
 
-	public BindableTripleIndex(final BasicIndex index) {
+	public BindableTripleIndex(final BasicIndexScan index) {
 		super(index);
 	}
 
@@ -73,10 +73,10 @@ public class BindableTripleIndex extends BindableIndex {
 		}
 		index.getTriplePattern().clear();
 		index.getTriplePattern().addAll(bindPattern);
-		// Scan durchfŸhren
-		QueryResult tempResult = index.process(0, dataSet);
+		// Scan durchfï¿½hren
+		QueryResult tempResult = index.process(dataSet);
 		result.add(tempResult);
-		// TriplePattern zurŸcksetzen
+		// TriplePattern zurï¿½cksetzen
 		index.getTriplePattern().clear();
 		index.getTriplePattern().addAll(pattern);
 	}

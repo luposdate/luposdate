@@ -46,7 +46,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndex;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.multiinput.join.Join;
@@ -56,7 +56,7 @@ import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.Entry;
 import lupos.optimizations.logical.statistics.VarBucket;
 
-public class RDF3XIndex extends BasicIndex {
+public class RDF3XIndexScan extends BasicIndexScan {
 
 	public enum CollationOrder {
 		SPO, SOP, PSO, POS, OSP, OPS
@@ -88,26 +88,26 @@ public class RDF3XIndex extends BasicIndex {
 
 	@Override
 	public BasicOperator clone() {
-		final RDF3XIndex clone = new RDF3XIndex(this.succeedingOperators,
+		final RDF3XIndexScan clone = new RDF3XIndexScan(this.succeedingOperators,
 				this.triplePatterns, this.rdfGraph, this.indexCollection);
 		clone.collationOrder = collationOrder;
 		return clone;
 	}
 
-	public RDF3XIndex(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final lupos.engine.operators.index.IndexCollection indexCollection) {
+	public RDF3XIndexScan(final OperatorIDTuple succeedingOperator,
+			final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final lupos.engine.operators.index.Root indexCollection) {
 		super(succeedingOperator, triplePatterns, rdfGraph, indexCollection);
 	}
 
-	public RDF3XIndex(final List<OperatorIDTuple> succeedingOperators,
-			final Collection<TriplePattern> triplePatterns, final Item rdfGraph,final lupos.engine.operators.index.IndexCollection indexCollection) {
+	public RDF3XIndexScan(final List<OperatorIDTuple> succeedingOperators,
+			final Collection<TriplePattern> triplePatterns, final Item rdfGraph,final lupos.engine.operators.index.Root indexCollection) {
 		super(succeedingOperators, triplePatterns, rdfGraph, indexCollection);
 	}
 
-	public RDF3XIndex(final OperatorIDTuple operatorIDTuple,
+	public RDF3XIndexScan(final OperatorIDTuple operatorIDTuple,
 			final Collection<TriplePattern> triplePatterns,
 			final Item graphConstraint, final Map<Variable, Literal> minima,
-			final Map<Variable, Literal> maxima, final lupos.engine.operators.index.IndexCollection indexCollection) {
+			final Map<Variable, Literal> maxima, final lupos.engine.operators.index.Root indexCollection) {
 		this(operatorIDTuple, triplePatterns, graphConstraint, indexCollection);
 		this.minima = minima;
 		this.maxima = maxima;
@@ -440,8 +440,8 @@ public class RDF3XIndex extends BasicIndex {
 		this.collationOrder = getCollationOrder(this.triplePatterns.iterator().next(), sortCriterium);
 	}
 
-	public IndexCollection getBinaryJoin() {
-		final IndexCollection ic = new IndexCollection();
+	public RDF3XRoot getBinaryJoin() {
+		final RDF3XRoot ic = new RDF3XRoot();
 		if (triplePatterns.size() <= 1) {
 			int[] collationOrder1 = { -1, -1, -1 };
 			int i1 = 0;
@@ -464,12 +464,12 @@ public class RDF3XIndex extends BasicIndex {
 			return ic;
 		}
 		optimizeJoinOrderAccordingToMostRestrictionsForMergeJoin();
-		final Collection<Operator> remainingJoins = new LinkedList<Operator>();
+		final Collection<BasicOperator> remainingJoins = new LinkedList<BasicOperator>();
 		final Iterator<TriplePattern> itp = triplePatterns.iterator();
 		while (itp.hasNext()) {
 			final Collection<TriplePattern> c1 = new LinkedList<TriplePattern>();
 			c1.add(itp.next());
-			final RDF3XIndex index1 = new RDF3XIndex((OperatorIDTuple) null,
+			final RDF3XIndexScan index1 = new RDF3XIndexScan((OperatorIDTuple) null,
 					c1, this.getGraphConstraint(), this.indexCollection);
 			index1.intersectionVariables = new HashSet<Variable>();
 			index1.unionVariables = new HashSet<Variable>();
@@ -484,7 +484,7 @@ public class RDF3XIndex extends BasicIndex {
 			if (itp.hasNext()) {
 				final Collection<TriplePattern> c2 = new LinkedList<TriplePattern>();
 				c2.add(itp.next());
-				final RDF3XIndex index2 = new RDF3XIndex(
+				final RDF3XIndexScan index2 = new RDF3XIndexScan(
 						(OperatorIDTuple) null, c2, this.getGraphConstraint(), this.indexCollection);
 				index2.intersectionVariables = new HashSet<Variable>();
 				index2.unionVariables = new HashSet<Variable>();
@@ -565,10 +565,10 @@ public class RDF3XIndex extends BasicIndex {
 		}
 		while (remainingJoins.size() > 1) {
 			// choose best combination
-			final Collection<Operator> co = getNextJoin(remainingJoins);
-			final Iterator<Operator> io = co.iterator();
-			final Operator first = io.next();
-			final Operator second = io.next();
+			final Collection<BasicOperator> co = getNextJoin(remainingJoins);
+			final Iterator<BasicOperator> io = co.iterator();
+			final BasicOperator first = io.next();
+			final BasicOperator second = io.next();
 			final Join join = new Join();
 			join.setIntersectionVariables(new HashSet<Variable>());
 			join.setUnionVariables(new HashSet<Variable>());
@@ -625,14 +625,14 @@ public class RDF3XIndex extends BasicIndex {
 		}
 	}
 
-	private Collection<Operator> getNextJoin(
-			final Collection<Operator> remainingJoins) {
-		final Collection<Operator> co = new LinkedList<Operator>();
-		Operator best1 = null;
-		Operator best2 = null;
+	private Collection<BasicOperator> getNextJoin(
+			final Collection<BasicOperator> remainingJoins) {
+		final Collection<BasicOperator> co = new LinkedList<BasicOperator>();
+		BasicOperator best1 = null;
+		BasicOperator best2 = null;
 		int minCommonVariables = -1;
-		for (final Operator o1 : remainingJoins) {
-			for (final Operator o2 : remainingJoins) {
+		for (final BasicOperator o1 : remainingJoins) {
+			for (final BasicOperator o2 : remainingJoins) {
 				if (!o1.equals(o2)) {
 					final Collection<Variable> v = o1.getUnionVariables();
 					v.retainAll(o2.getUnionVariables());
