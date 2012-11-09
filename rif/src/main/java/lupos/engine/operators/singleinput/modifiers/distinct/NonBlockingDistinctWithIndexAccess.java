@@ -146,7 +146,7 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 			}
 			Triple t = new Triple(literals);
 			boolean flag = false;
-			for(Indices indices: this.basicIndex.getIndexCollection().dataset.getDefaultGraphIndices()){
+			for(Indices indices: this.basicIndex.getRoot().dataset.getDefaultGraphIndices()){
 				flag = indices.contains(t);
 				if(flag){
 					break;

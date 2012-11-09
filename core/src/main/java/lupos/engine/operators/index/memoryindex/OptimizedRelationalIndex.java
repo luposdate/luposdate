@@ -49,8 +49,8 @@ public class OptimizedRelationalIndex extends MemoryIndexScan {
 	}
 
 	public OptimizedRelationalIndex(final BasicIndexScan index1,
-			final BasicIndexScan index2, final lupos.engine.operators.index.Root indexCollection) {
-		super(indexCollection);
+			final BasicIndexScan index2, final lupos.engine.operators.index.Root root) {
+		super(root);
 		this.index1 = index1;
 		this.index2 = index2;
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();

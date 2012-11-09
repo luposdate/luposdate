@@ -231,7 +231,7 @@ public abstract class Indices extends TripleOperator {
 		this.loadDataWithoutConsideringOntoloy(graphURI, dataFormat, dataset);
 		if (materialize != ONTOLOGY.NONE) {
 			final Map<Variable, Integer> vars = BindingsArray.getPosVariables();
-			final Root ic = indicesFactory.createIndexCollection();
+			final Root ic = indicesFactory.createRoot();
 			final HashSet<Triple> newTriples = new HashSet<Triple>();
 			final TripleOperator rpiim = inMemoryExternalOntologyComputation ? new RDFSPutIntoIndicesCyclicComputation(
 					newTriples, this)

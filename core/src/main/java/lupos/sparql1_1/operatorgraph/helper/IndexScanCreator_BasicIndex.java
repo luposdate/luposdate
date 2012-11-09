@@ -30,63 +30,59 @@ import lupos.datastructures.items.Item;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.EmptyIndex;
-import lupos.engine.operators.index.EmptyIndexSubmittingQueryResultWithOneEmptyBindings;
+import lupos.engine.operators.index.EmptyIndexScan;
+import lupos.engine.operators.index.EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 	
-	protected final Root indexCollection;
+	protected final Root root;
 	
-	public IndexScanCreator_BasicIndex(final Root indexCollection){
-		this.indexCollection = indexCollection;
-	}
-
-	public Root getIndexCollection(){
-		return this.indexCollection;
+	public IndexScanCreator_BasicIndex(final Root root_param){
+		this.root = root_param;
 	}
 	
 	@Override
 	public BasicOperator getRoot() {
-		return this.indexCollection;
+		return this.root;
 	}
 
 	@Override
 	public BasicOperator createIndexScanAndConnectWithRoot(
 			OperatorIDTuple opID, Collection<TriplePattern> triplePatterns,
 			Item graphConstraint) {
-		final lupos.engine.operators.index.BasicIndexScan index = indexCollection.newIndex(opID, triplePatterns, graphConstraint);
-		indexCollection.getSucceedingOperators().add(new OperatorIDTuple(index, 0));
+		final lupos.engine.operators.index.BasicIndexScan index = this.root.newIndexScan(opID, triplePatterns, graphConstraint);
+		this.root.getSucceedingOperators().add(new OperatorIDTuple(index, 0));
 		return index;
 	}
 
 	@Override
 	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(OperatorIDTuple opID, Item graphConstraint) {
-		indexCollection.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexSubmittingQueryResultWithOneEmptyBindings(opID, null, graphConstraint, indexCollection), 0));
+		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(opID, null, graphConstraint, this.root), 0));
 	}
 
 	@Override
 	public void createEmptyIndexScanAndConnectWithRoot(OperatorIDTuple opID) {
-		indexCollection.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndex(opID, null, indexCollection), 0));
+		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScan(opID, null, this.root), 0));
 	}
 
 	@Override
 	public Dataset getDataset() {
-		return indexCollection.dataset;
+		return this.root.dataset;
 	}
 
 	@Override
 	public void addDefaultGraph(String defaultgraph) {
-		if (indexCollection.defaultGraphs == null)
-			indexCollection.defaultGraphs = new LinkedList<String>();
-		indexCollection.defaultGraphs.add(defaultgraph);					
+		if (this.root.defaultGraphs == null)
+			this.root.defaultGraphs = new LinkedList<String>();
+		this.root.defaultGraphs.add(defaultgraph);					
 	}
 
 	@Override
 	public void addNamedGraph(String namedgraph) {
-		if (indexCollection.namedGraphs == null)
-			indexCollection.namedGraphs = new LinkedList<String>();
-		indexCollection.namedGraphs.add(namedgraph);					
+		if (this.root.namedGraphs == null)
+			this.root.namedGraphs = new LinkedList<String>();
+		this.root.namedGraphs.add(namedgraph);					
 	}
 }

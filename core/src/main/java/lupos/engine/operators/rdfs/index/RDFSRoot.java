@@ -36,24 +36,24 @@ import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 
-public class IndexCollection extends
+public class RDFSRoot extends
 		lupos.engine.operators.index.Root {
 
 	@Override
-	public BasicIndexScan newIndex(final OperatorIDTuple succeedingOperator,
+	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new ToStreamIndex(succeedingOperator, triplePattern, this);
+		return new ToStreamIndexScan(succeedingOperator, triplePattern, this);
 	}
 
 	@Override
 	public lupos.engine.operators.index.Root newInstance(Dataset dataset) {
 		this.dataset = dataset;
-		return new IndexCollection();
+		return new RDFSRoot();
 	}
 
 	public void addToPatternMatcher(final PatternMatcher pm) {
 		for (final OperatorIDTuple oit : succeedingOperators) {
-			final ToStreamIndex tsi = (ToStreamIndex) oit.getOperator();
+			final ToStreamIndexScan tsi = (ToStreamIndexScan) oit.getOperator();
 			if (tsi.getTriplePattern().size() == 1)
 				for (final TriplePattern tp : tsi.getTriplePattern()) {
 					pm.add(tp);

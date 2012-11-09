@@ -45,7 +45,7 @@ public class BasicIndexOptional extends Optional {
 	protected BasicIndexScan indexScanOperator;
 	protected Item rdfGraph;
 
-	public void setBasicIndex(final BasicIndexScan indexScanOperator){
+	public void setBasicIndexScan(final BasicIndexScan indexScanOperator){
 		this.indexScanOperator = indexScanOperator;
 		this.rdfGraph = BasicIndexOptional.this.indexScanOperator.getGraphConstraint();
 	}
@@ -119,7 +119,7 @@ public class BasicIndexOptional extends Optional {
 				if(BasicIndexOptional.this.indexScanOperator instanceof RDF3XIndexScan){
 					((RDF3XIndexScan)BasicIndexOptional.this.indexScanOperator).setCollationOrder((Collection<Variable>)null);
 				}
-				final QueryResult queryResult = BasicIndexOptional.this.indexScanOperator.join(BasicIndexOptional.this.indexScanOperator.getIndexCollection().dataset);
+				final QueryResult queryResult = BasicIndexOptional.this.indexScanOperator.join(BasicIndexOptional.this.indexScanOperator.getRoot().dataset);
 				BasicIndexOptional.this.indexScanOperator.setTriplePatterns(tps);
 				if(queryResult==null || queryResult.size()==0){
 					return new ParallelIterator<Bindings>(){

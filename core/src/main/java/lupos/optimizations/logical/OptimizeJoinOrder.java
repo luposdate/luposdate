@@ -1914,11 +1914,11 @@ public class OptimizeJoinOrder {
 		case RDF3X:
 			index1 = new RDF3XIndexScan((OperatorIDTuple) null, plan
 					.getTriplePatterns(), index.getGraphConstraint(), minima,
-					maxima, index.getIndexCollection());
+					maxima, index.getRoot());
 			break;
 		case RELATIONALINDEX:
 			index1 = new MemoryIndexScan((OperatorIDTuple) null, plan
-					.getTriplePatterns(), index.getGraphConstraint(), index.getIndexCollection());
+					.getTriplePatterns(), index.getGraphConstraint(), index.getRoot());
 			break;
 		}
 		index1.setIntersectionVariables(plan.getVariables());

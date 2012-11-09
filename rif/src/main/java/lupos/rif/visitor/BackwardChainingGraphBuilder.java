@@ -53,36 +53,36 @@ import lupos.rif.model.ExistExpression;
 import lupos.rif.model.External;
 import lupos.rif.model.Rule;
 import lupos.rif.model.RulePredicate;
-import lupos.rif.operator.BindableIndex;
-import lupos.rif.operator.BindablePredicateIndex;
-import lupos.rif.operator.BindableTripleIndex;
-import lupos.rif.operator.InitializeDatasetIndex;
-import lupos.rif.operator.InsertTripleIndex;
-import lupos.rif.operator.PredicateIndex;
+import lupos.rif.operator.BindableIndexScan;
+import lupos.rif.operator.BindablePredicateIndexScan;
+import lupos.rif.operator.BindableTripleIndexScan;
+import lupos.rif.operator.InitializeDatasetIndexScan;
+import lupos.rif.operator.InsertTripleIndexScan;
+import lupos.rif.operator.PredicateIndexScan;
 import lupos.rif.operator.PredicatePattern;
 import lupos.rif.operator.RuleFilter;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 
 public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
-	private InitializeDatasetIndex datasetIndex;
+	private InitializeDatasetIndexScan datasetIndex;
 	
-	private final Root indexCollection;
+	private final Root root;
 
-	public BackwardChainingGraphBuilder(final IndexScanCreatorInterface indexScanCreator, Root indexCollection) {
+	public BackwardChainingGraphBuilder(final IndexScanCreatorInterface indexScanCreator, Root root) {
 		super(indexScanCreator);
-		predicateIndex = new PredicateIndex();
-		this.indexCollection = indexCollection;
+		predicateIndex = new PredicateIndexScan();
+		this.root = root;
 	}
 
 	public Object visit(Document obj, Object arg) throws RIFException {
 		// Initialisierungen
-		InsertTripleIndex insertTripleIndex = null;
+		InsertTripleIndexScan insertTripleIndex = null;
 		for (Rule fact : obj.getRules())
 			if (!fact.isImplication() && fact.getDeclaredVariables().isEmpty()) {
 				final Object item = ((RulePredicate) fact.getHead())
 				.toDataStructure();
 				if (item instanceof Triple) {
-					insertTripleIndex = insertTripleIndex == null ? new InsertTripleIndex(indexScanCreator)
+					insertTripleIndex = insertTripleIndex == null ? new InsertTripleIndexScan(indexScanCreator)
 					: insertTripleIndex;
 					insertTripleIndex.addTripleFact((Triple) item);
 				} else if (item instanceof Predicate) {
@@ -90,18 +90,18 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 				}
 			}
 		if (insertTripleIndex != null)
-			indexCollection.addSucceedingOperator(new OperatorIDTuple(
+			root.addSucceedingOperator(new OperatorIDTuple(
 					insertTripleIndex, 0));
-		datasetIndex = new InitializeDatasetIndex(indexCollection);
-		indexCollection.addSucceedingOperator(datasetIndex);
+		datasetIndex = new InitializeDatasetIndexScan(root);
+		root.addSucceedingOperator(datasetIndex);
 
 		// Conclusion auswerten
 		// TODO: erstmal nur ohne Equality, conjunction, disjunction und exists
-		PredicateIndex conclusionIndex = null;
+		PredicateIndexScan conclusionIndex = null;
 		if (obj.getConclusion() instanceof RulePredicate) {
 			final RulePredicate predicate = (RulePredicate) obj.getConclusion();
-			conclusionIndex = new PredicateIndex();
-			indexCollection.addSucceedingOperator(conclusionIndex);
+			conclusionIndex = new PredicateIndexScan();
+			root.addSucceedingOperator(conclusionIndex);
 			Predicate toAdd = null;
 			if (predicate.isTriple()) {
 				final Triple triple = (Triple) predicate.toDataStructure();
@@ -136,7 +136,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		subOperator.addSucceedingOperator(result);
 
 		if (datasetIndex.isEmpty())
-			indexCollection.removeSucceedingOperator(datasetIndex);
+			root.removeSucceedingOperator(datasetIndex);
 
 		return result;
 	}
@@ -287,9 +287,9 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		if (obj.isTriple() && arg instanceof BasicOperator) {
 
 			final TriplePattern pattern = unitermToTriplePattern(obj);
-			final BasicIndexScan index = indexCollection.newIndex(null,
+			final BasicIndexScan index = root.newIndexScan(null,
 					new ArrayList<TriplePattern>(Arrays.asList(pattern)), null);
-			final BindableIndex bindIndex = new BindableTripleIndex(index);
+			final BindableIndexScan bindIndex = new BindableTripleIndexScan(index);
 			datasetIndex.addBindableIndex(bindIndex);
 			((BasicOperator) arg).addSucceedingOperator(bindIndex);
 			return bindIndex;
@@ -304,7 +304,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 				items.toArray(new Item[] {}));
 		if (arg instanceof BasicOperator) {
 			// Regelk�rper, IndexScan erstellen
-			final BindableIndex bindIndex = new BindablePredicateIndex(
+			final BindableIndexScan bindIndex = new BindablePredicateIndexScan(
 					predicateIndex, pattern);
 			((BasicOperator) arg).addSucceedingOperator(bindIndex);
 			return bindIndex;

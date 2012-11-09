@@ -21,70 +21,53 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.rif.operator;
+package lupos.engine.operators.rdfs.index;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
+import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.queryresult.QueryResultDebug;
-import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.Dataset;
-import lupos.misc.debug.DebugStep;
-import lupos.misc.debug.DebugStepRIF;
-import lupos.rdf.Prefix;
-import lupos.rif.datatypes.Predicate;
-import lupos.rif.datatypes.RuleResult;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class PredicateIndex extends InsertIndex {
-	final public Set<Predicate> predFacts = new HashSet<Predicate>();
+public class ToStreamIndexScan extends BasicIndexScan {
 
-	public PredicateIndex() {
-		super(null);
-		this.triplePatterns = Arrays.asList();
+	public ToStreamIndexScan (final RDFSRoot root){
+		super(root);
 	}
 
-	public void addPredicateFact(final Predicate fact) {
-		this.predFacts.add(fact);
+	public ToStreamIndexScan (final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePattern, final RDFSRoot root)
+	{
+		super(root);
+		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
+
+		if (succeedingOperator != null)
+		{
+			this.succeedingOperators.add(succeedingOperator);
+		}
+		this.triplePatterns = triplePattern;
 	}
 
-	@Override
-	public QueryResult process(final Dataset dataset) {
-		final RuleResult gr = new RuleResult();
-		gr.getPredicateResults().addAll(this.predFacts);
-		for (final OperatorIDTuple succOperator : this.succeedingOperators)
-			((Operator) succOperator.getOperator()).processAll(gr,
-					succOperator.getId());
-		return gr;
-	}
 
-	@Override
-	public String toString() {
-		final StringBuffer str = new StringBuffer("PredicateFacts")
-				.append("\n");
-		for (final Predicate pr : this.predFacts)
-			str.append(pr.toString()).append("\n");
-		return str.toString();
+	/**
+	 * Joins the triple pattern using the index maps and returns the result.<br>
+	 * The succeeding operators are passed to the operator pipe to be processed.
+	 * @param triplePattern - the triple pattern to be joined
+	 * @param succeedingOperators - the succeeding operators to be passed
+	 * @return the result of the performed join
+	 */
+	protected QueryResult process (	final Collection<TriplePattern> triplePattern,
+									final List<OperatorIDTuple> succeedingOperators){
+		throw new UnsupportedOperationException("join(	final Collection<TriplePattern> triplePattern, final List<OperatorIDTuple> succeedingOperators) is not supported by ToStreamIndexScan");
 	}
 
 	@Override
-	public String toString(final Prefix prefixInstance) {
-		final StringBuffer str = new StringBuffer("PredicateFacts")
-				.append("\n");
-		for (final Predicate pr : this.predFacts)
-			str.append(pr.toString(prefixInstance)).append("\n");
-		return str.toString();
-	}
-
-	@Override
-	public void consumeOnce() {
-		process(null);
-	}
-
-	@Override
-	public void consumeDebugOnce(final DebugStep debugstep) {
-		startProcessingDebug(null, debugstep);
+	public QueryResult join(final Indices indices, final Bindings bindings) {
+		throw new UnsupportedOperationException(
+				"join(Indices indices, Bindings bindings) is not supported by ToStreamIndexScan");
 	}
 }

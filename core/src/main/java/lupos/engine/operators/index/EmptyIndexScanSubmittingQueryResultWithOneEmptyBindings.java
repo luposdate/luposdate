@@ -36,9 +36,9 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 
-public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIndex {
+public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends EmptyIndexScan {
 	
-	protected final Root indexCollection;
+	protected final Root root;
 	protected final Item rdfGraph;
 
 	/**
@@ -46,11 +46,11 @@ public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIn
 	 */
 	private static final long serialVersionUID = -6813056199050211285L;
 
-	public EmptyIndexSubmittingQueryResultWithOneEmptyBindings(final OperatorIDTuple succeedingOperator,
+	public EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, Item graphConstraint,
-			final lupos.engine.operators.index.Root indexCollection) {
-		super(succeedingOperator, triplePattern, indexCollection);
-		this.indexCollection = indexCollection;
+			final lupos.engine.operators.index.Root root_param) {
+		super(succeedingOperator, triplePattern, root_param);
+		this.root = root_param;
 		this.rdfGraph = graphConstraint;
 	}
 
@@ -65,10 +65,10 @@ public class EmptyIndexSubmittingQueryResultWithOneEmptyBindings extends EmptyIn
 		final QueryResult queryResult = QueryResult.createInstance();
 		if(this.rdfGraph!=null && this.rdfGraph.isVariable()){
 			Variable graphConstraint = (Variable) this.rdfGraph;
-			if (this.indexCollection.namedGraphs != null && this.indexCollection.namedGraphs.size() > 0) {
+			if (this.root.namedGraphs != null && this.root.namedGraphs.size() > 0) {
 				// Convert the named graphs' names into URILiterals
 				// to be applicable later on
-				for (final String name : this.indexCollection.namedGraphs) {
+				for (final String name : this.root.namedGraphs) {
 					final Bindings graphConstraintBindings = Bindings.createNewInstance();
 					try {
 						graphConstraintBindings.add(graphConstraint, LiteralFactory.createURILiteralWithoutLazyLiteral(name));

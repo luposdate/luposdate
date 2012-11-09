@@ -132,7 +132,7 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 				return new SevenMemoryIndices(uriLiteral);
 			}
 
-			public lupos.engine.operators.index.Root createIndexCollection() {
+			public lupos.engine.operators.index.Root createRoot() {
 				MemoryIndexRoot ic=new MemoryIndexRoot();
 				ic.dataset=dataset;
 				return ic;
@@ -143,8 +143,8 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		return prepareTime;
 	}
 
-	public MemoryIndexRoot getIndexCollection() {
-		return (MemoryIndexRoot) indexCollection;
+	public MemoryIndexRoot getRoot() {
+		return (MemoryIndexRoot) root;
 	}
 
 	public static void main(final String[] args) {
@@ -152,7 +152,7 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 	@Override
-	public lupos.engine.operators.index.Root createIndexCollection() {
+	public lupos.engine.operators.index.Root createRoot() {
 		MemoryIndexRoot ic=new MemoryIndexRoot();
 		ic.dataset=dataset;
 		return ic;
@@ -171,7 +171,7 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 				return new SevenMemoryIndices(uriLiteral);
 			}
 
-			public lupos.engine.operators.index.Root createIndexCollection() {
+			public lupos.engine.operators.index.Root createRoot() {
 				MemoryIndexRoot ic=new MemoryIndexRoot();
 				ic.dataset=dataset;
 				return ic;

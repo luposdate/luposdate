@@ -37,9 +37,9 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class BindableTripleIndex extends BindableIndex {
+public class BindableTripleIndexScan extends BindableIndexScan {
 
-	public BindableTripleIndex(final BasicIndexScan index) {
+	public BindableTripleIndexScan(final BasicIndexScan index) {
 		super(index);
 	}
 

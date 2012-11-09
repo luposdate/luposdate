@@ -102,10 +102,10 @@ public class GraphWrapperBasicOperator extends GraphWrapper {
 							.getOperatorStyle("operatorGraph_style_union");
 				} else if (this.element instanceof BasicIndexScan) {
 					drawObject = this
-							.getOperatorStyle("operatorGraph_style_basicindex");
+							.getOperatorStyle("operatorGraph_style_basicindexscan");
 				} else if (this.element instanceof Root) {
 					drawObject = this
-							.getOperatorStyle("operatorGraph_style_indexcollection");
+							.getOperatorStyle("operatorGraph_style_root");
 				} else if (this.element instanceof Sort) {
 					drawObject = this
 							.getOperatorStyle("operatorGraph_style_sort");

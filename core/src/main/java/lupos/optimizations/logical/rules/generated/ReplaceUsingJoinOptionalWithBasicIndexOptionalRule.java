@@ -149,7 +149,7 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
 
 
         // additional replace method code...
-        optional_new.setBasicIndex(this.indexScan);
+        optional_new.setBasicIndexScan(this.indexScan);
         optional_new.setUnionVariables(this.optional.getUnionVariables());
         optional_new.setIntersectionVariables(this.optional.getIntersectionVariables());
         if(this.operandID!=0){

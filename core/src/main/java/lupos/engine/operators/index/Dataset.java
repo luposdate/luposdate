@@ -83,7 +83,7 @@ public class Dataset {
 	public interface IndicesFactory {
 		Indices createIndices(URILiteral uriLiteral);
 
-		public lupos.engine.operators.index.Root createIndexCollection();
+		public lupos.engine.operators.index.Root createRoot();
 	}
 
 	private static final int k = 500; // 5; // 200;
@@ -475,7 +475,7 @@ public class Dataset {
 
 	public Collection<Indices> indexingRDFGraphs(final Item graphConstraint,
 			final boolean debug,
-			final boolean inMemoryExternalOntologyComputation, Root indexCollection) {
+			final boolean inMemoryExternalOntologyComputation, Root root) {
 
 		final LinkedList<Indices> indicesC = new LinkedList<Indices>();
 		Indices indices;
@@ -484,7 +484,7 @@ public class Dataset {
 			// default graph
 			if (graphConstraint == null) {
 				// default RDF graph is given by SPARQL query
-				final List<String> graphs = indexCollection.defaultGraphs;
+				final List<String> graphs = root.defaultGraphs;
 				if (graphs != null && graphs.size() != 0) {
 					for (final String graph : graphs) {
 						indices = indexingRDFGraph(LiteralFactory
@@ -515,7 +515,7 @@ public class Dataset {
 				// ...
 
 				// named RDF graphs are given in SPARQL query
-				final List<String> graphs = indexCollection.namedGraphs;
+				final List<String> graphs = root.namedGraphs;
 				if (graphs != null && graphs.size() != 0) {
 					for (final String graph : graphs) {
 						Tuple<Boolean, Indices> tuple = indexingRDFGraph(LiteralFactory.createURILiteralWithoutLazyLiteral("<"+graph+">"), indicesC, debug, inMemoryExternalOntologyComputation);

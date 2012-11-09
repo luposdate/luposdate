@@ -169,7 +169,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		externalFunctions.put(name, externalFunction);
 	}
 	
-	// for each ASTExists and ASTNotExists an IndexCollection and Result is
+	// for each ASTExists and ASTNotExists an Root and Result is
 	// stored by the Filter
 	// Additionally we hand over the evaluator in the filter
 	// this is needed to process the actual subquery for each node

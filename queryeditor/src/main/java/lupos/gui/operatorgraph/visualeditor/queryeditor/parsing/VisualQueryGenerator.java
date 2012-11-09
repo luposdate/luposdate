@@ -416,7 +416,7 @@ implements SPARQL1_1ParserVisitor {
 	// break;
 	//
 	// // if(i >= parent.jjtGetNumChildren() - 1)
-	// // indexCollection.addSucceedingOperator(new OperatorIDTuple(new
+	// // root.addSucceedingOperator(new OperatorIDTuple(new
 	// EmptyIndex(new OperatorIDTuple(endOperator, endOperandID), null), 0));
 	// }
 

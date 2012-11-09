@@ -64,9 +64,9 @@ public class IndexOperatorGraphGenerator extends
 		super();
 	}
 			
-	public static IndexOperatorGraphGenerator createOperatorGraphGenerator(Root indexCollection, CommonCoreQueryEvaluator<Node> evaluator) throws InstantiationException, IllegalAccessException{
+	public static IndexOperatorGraphGenerator createOperatorGraphGenerator(Root root, CommonCoreQueryEvaluator<Node> evaluator) throws InstantiationException, IllegalAccessException{
 		IndexOperatorGraphGenerator iogg = operatorGraphGeneratorClass.newInstance();
-		iogg.setIndexScanGenerator(new IndexScanCreator_BasicIndex(indexCollection));
+		iogg.setIndexScanGenerator(new IndexScanCreator_BasicIndex(root));
 		iogg.evaluator = evaluator;
 		return iogg;
 	}

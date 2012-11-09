@@ -34,10 +34,10 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
 
-public abstract class InsertIndex extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+public abstract class InsertIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
-	public InsertIndex(Root indexCollection) {
-		super(indexCollection);
+	public InsertIndexScan(Root root) {
+		super(root);
 	}
 
 	@Override

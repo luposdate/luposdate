@@ -76,22 +76,22 @@ public class RemoveEmptyIndexRule extends Rule {
 
         if(_result) {
             // additional check method code...
-            if(this.i instanceof lupos.rif.operator.PredicateIndex
-                || this.i instanceof lupos.rif.operator.BooleanIndex
-                || this.i instanceof lupos.rif.operator.IteratorIndex
+            if(this.i instanceof lupos.rif.operator.PredicateIndexScan
+                || this.i instanceof lupos.rif.operator.BooleanIndexScan
+                || this.i instanceof lupos.rif.operator.IteratorIndexScan
                 || (!this.i.getPrecedingOperators().isEmpty()
                     && !this.i.getPrecedingOperators().get(0).getSucceedingOperators().isEmpty()
-                    && this.i.getPrecedingOperators().get(0).getSucceedingOperators().get(0).getOperator() instanceof lupos.rif.operator.InsertTripleIndex)) {
+                    && this.i.getPrecedingOperators().get(0).getSucceedingOperators().get(0).getOperator() instanceof lupos.rif.operator.InsertTripleIndexScan)) {
             					return false;
             }
             
             lupos.datastructures.queryresult.QueryResult qr = null;
             				if (this.i instanceof lupos.engine.operators.index.memoryindex.MemoryIndexScan) {
-            					final lupos.engine.operators.index.memoryindex.MemoryIndexScan temp = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i.getIndexCollection());
+            					final lupos.engine.operators.index.memoryindex.MemoryIndexScan temp = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i.getRoot());
             					boolean found = false;
             					for (lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndexScan) this.i).getTriplePattern()) {
             						temp.setTriplePatterns(java.util.Arrays.asList(pat));
-            						lupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getIndexCollection().dataset);
+            						lupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getRoot().dataset);
             						if (qrtemp != null && qrtemp.oneTimeIterator().hasNext()) {
             							found = true;
             						}
@@ -101,7 +101,7 @@ public class RemoveEmptyIndexRule extends Rule {
             					}
                                 return false;
             				} else {
-            					qr = this.i.join(this.i.getIndexCollection().dataset);
+            					qr = this.i.join(this.i.getRoot().dataset);
                             }
             				if (qr != null) {
             					final java.util.Iterator<lupos.datastructures.bindings.Bindings> pib = qr.oneTimeIterator();

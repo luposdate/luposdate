@@ -23,48 +23,52 @@
  */
 package lupos.rif.operator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.messages.BoundVariablesMessage;
+import lupos.engine.operators.messages.Message;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
+import lupos.rdf.Prefix;
 
-public class InitializeDatasetIndex extends BasicIndexScan {
-	private final Collection<BindableIndex> listenerIndexes = new ArrayList<BindableIndex>();
+public abstract class BindableIndexScan extends BasicIndexScan {
+	protected final BasicIndexScan index;
+	protected Dataset dataSet;
 
-	public InitializeDatasetIndex(Root indexCollection) {
-		super(indexCollection);
-		triplePatterns = Arrays.asList();
-	}
-
-	public void addBindableIndex(final BindableIndex index) {
-		listenerIndexes.add(index);
-	}
-
-	public boolean isEmpty() {
-		return listenerIndexes.isEmpty();
+	public BindableIndexScan(final BasicIndexScan index) {
+		super(index.getRoot());
+		this.index = index;
 	}
 
 	@Override
-	public QueryResult process(Dataset dataset) {
-		for (final BindableIndex index : this.listenerIndexes)
-			index.process(dataset);
+	public QueryResult process(final Dataset dataset) {
+		this.dataSet = dataset;
 		return null;
 	}
-	
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		for (final BindableIndex index : listenerIndexes)
-			index.startProcessingDebug(dataset, debugstep);
-		return null;		
-	}
 
+//	@Override
+//	public QueryResult process(QueryResult queryResult, int operandID) {
+//		final QueryResult result = QueryResult.createInstance();
+//		final Iterator<Bindings> bit = queryResult.oneTimeIterator();
+//		while (bit.hasNext()) {
+//			processIndexScan(result, bit.next());
+//		}
+//		return result;
+//	}
+
+	protected abstract void processIndexScan(final QueryResult result, final Bindings bind);
+
+	@Override
+	public abstract Collection<TriplePattern> getTriplePattern();
+
+	@Override
+	public abstract Message preProcessMessage(BoundVariablesMessage msg);
 
 	@Override
 	public QueryResult join(Indices indices, Bindings bindings) {
@@ -73,7 +77,11 @@ public class InitializeDatasetIndex extends BasicIndexScan {
 
 	@Override
 	public String toString() {
-		return "DataSetIndex";
+		return "Bindable - " + index.toString();
 	}
 
+	@Override
+	public String toString(final Prefix prefixInstance) {
+		return "Bindable - " + index.toString(prefixInstance);
+	}
 }

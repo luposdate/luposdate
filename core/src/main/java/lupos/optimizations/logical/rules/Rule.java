@@ -204,7 +204,7 @@ public abstract class Rule {
 	// lupos.engine.operators.BasicOperator.class,
 	// lupos.engine.operators.Operator.class, RelationalIndex.class,
 	// lupos.engine.operators.index.BasicIndex.class,
-	// // lupos.engine.operators.index.IndexCollection.class,
+	// // lupos.engine.operators.index.Root.class,
 	// MultiInputOperator.class, Join.class, Optional.class, Union.class);
 
 	protected BasicOperator startNode;
@@ -497,7 +497,7 @@ public abstract class Rule {
 	 * Operator setBitsOfClassAndSubClasses(
 	 * lupos.engine.operators.index.BasicIndex.class, subClassBitMask); //
 	 * setBitsOfClassAndSubClasses( //
-	 * lupos.engine.operators.index.IndexCollection.class, // subClassBitMask);
+	 * lupos.engine.operators.index.Root.class, // subClassBitMask);
 	 * setBitsOfClassAndSubClasses(
 	 * lupos.engine.operators.multiinput.MultiInputOperator.class,
 	 * subClassBitMask); // setBitsOfClassAndSubClasses( //

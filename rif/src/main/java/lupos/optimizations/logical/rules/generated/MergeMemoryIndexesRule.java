@@ -143,7 +143,7 @@ public class MergeMemoryIndexesRule extends Rule {
         
                 // add new operators...
                 lupos.engine.operators.index.memoryindex.MemoryIndexScan i_new = null;
-                i_new = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i[0].getIndexCollection());
+                i_new = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i[0].getRoot());
         
         
                 // add new connections...

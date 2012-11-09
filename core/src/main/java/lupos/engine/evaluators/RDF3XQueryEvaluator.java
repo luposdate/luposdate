@@ -186,7 +186,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral, false);
 								}
 
-								public lupos.engine.operators.index.Root createIndexCollection() {
+								public lupos.engine.operators.index.Root createRoot() {
 									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
@@ -207,7 +207,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral);
 								}
 
-								public lupos.engine.operators.index.Root createIndexCollection() {
+								public lupos.engine.operators.index.Root createRoot() {
 									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
@@ -257,7 +257,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral, false);
 								}
 
-								public lupos.engine.operators.index.Root createIndexCollection() {
+								public lupos.engine.operators.index.Root createRoot() {
 									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
@@ -278,7 +278,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 									return new SixIndices(uriLiteral);
 								}
 
-								public lupos.engine.operators.index.Root createIndexCollection() {
+								public lupos.engine.operators.index.Root createRoot() {
 									RDF3XRoot ic = new RDF3XRoot();
 									ic.dataset = dataset;
 									return ic;
@@ -297,8 +297,8 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 
-	public RDF3XRoot getIndexCollection() {
-		return (RDF3XRoot) indexCollection;
+	public RDF3XRoot getRoot() {
+		return (RDF3XRoot) root;
 	}
 
 	public static void main(final String[] args) {
@@ -306,7 +306,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 	@Override
-	public lupos.engine.operators.index.Root createIndexCollection() {
+	public lupos.engine.operators.index.Root createRoot() {
 		RDF3XRoot ic = new RDF3XRoot();
 		ic.dataset = dataset;
 		return ic;

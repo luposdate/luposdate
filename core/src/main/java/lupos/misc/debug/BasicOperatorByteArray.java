@@ -46,7 +46,7 @@ import lupos.misc.util.OperatorIDTuple;
 public class BasicOperatorByteArray {
 
 	public enum OPERATORTYPE {
-		JOIN, OPTIONAL, UNION, BASICINDEX, INDEXCOLLECTION, SORT, RESULT, FILTER, PROJECTION, LIMIT, OFFSET, DEFAULT
+		JOIN, OPTIONAL, UNION, BASICINDEXSCAN, ROOT, SORT, RESULT, FILTER, PROJECTION, LIMIT, OFFSET, DEFAULT
 	};
 
 	/**
@@ -288,9 +288,9 @@ public class BasicOperatorByteArray {
 		} else if (bo instanceof Union) {
 			return (byte) OPERATORTYPE.UNION.ordinal();
 		} else if (bo instanceof BasicIndexScan) {
-			return (byte) OPERATORTYPE.BASICINDEX.ordinal();
+			return (byte) OPERATORTYPE.BASICINDEXSCAN.ordinal();
 		} else if (bo instanceof Root) {
-			return (byte) OPERATORTYPE.INDEXCOLLECTION.ordinal();
+			return (byte) OPERATORTYPE.ROOT.ordinal();
 		} else if (bo instanceof Sort) {
 			return (byte) OPERATORTYPE.SORT.ordinal();
 		} else if (bo instanceof Result) {

@@ -21,64 +21,35 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.rif.operator;
+package lupos.engine.operators.index;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.items.Item;
-import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.messages.BoundVariablesMessage;
-import lupos.engine.operators.messages.Message;
+import lupos.engine.operators.Operator;
+import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.RootChild;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.rif.datatypes.RuleResult;
 
-public class BindablePredicateIndex extends BindableIndex {
-	private final PredicatePattern predicatePattern;
+public class EmptyIndexScan extends RootChild {
 
-	public BindablePredicateIndex(final PredicateIndex index,
-			final PredicatePattern pattern) {
-		super(index);
-		this.predicatePattern = pattern;
-	}
-
-	@Override
-	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		final BoundVariablesMessage result = (BoundVariablesMessage) predicatePattern
-				.preProcessMessage(msg);
-		result.getVariables().removeAll(msg.getVariables());
-		unionVariables = new HashSet<Variable>(result.getVariables());
-		intersectionVariables = new HashSet<Variable>(unionVariables);
-		return result;
-	}
-
-	@Override
-	protected void processIndexScan(QueryResult result, Bindings bind) {
-		final Item[] newItems = new Item[predicatePattern.getPatternItems()
-				.size()];
-		int i = 0;
-		for (final Item item : predicatePattern.getPatternItems()) {
-			Item toSet = null;
-			if (item.isVariable() && bind.getVariableSet().contains(item))
-				toSet = item.getLiteral(bind);
-			else
-				toSet = item;
-			newItems[i++] = toSet;
+	public EmptyIndexScan(final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePattern, final lupos.engine.operators.index.Root root) {
+		super();
+		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
+		if (succeedingOperator != null) {
+			this.succeedingOperators.add(succeedingOperator);
 		}
-		final PredicatePattern newPattern = new PredicatePattern(
-				predicatePattern.getPredicateName(), newItems);
-		// Scan durchf�hren
-		RuleResult ruleResult = (RuleResult) index.process(dataSet);
-		QueryResult tempResult = newPattern.process(ruleResult, 0);
-		result.add(tempResult);
 	}
 
 	@Override
-	public Collection<TriplePattern> getTriplePattern() {
-		return new ArrayList<TriplePattern>();
-	}
+	protected QueryResult process(final Dataset dataset) {
+		final QueryResult queryResult = QueryResult.createInstance();
+		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
 
+			((Operator) succOperator.getOperator()).processAll(queryResult, succOperator.getId());
+		}
+		return queryResult;
+	}
 }

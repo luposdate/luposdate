@@ -598,7 +598,7 @@ public class RudimentaryRDFSchemaInference {
 			tpo.setSucceedingOperator(new OperatorIDTuple(g, 0));
 			final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
 			ctp.add(tpo);
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(g, 0), ctp, null), 0));
 		} else {
 
@@ -607,7 +607,7 @@ public class RudimentaryRDFSchemaInference {
 				final TriplePattern tpo = tps[i];
 				ctp.add(tpo);
 			}
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(g, 0), ctp, null), 0));
 		}
 	}
@@ -623,7 +623,7 @@ public class RudimentaryRDFSchemaInference {
 			tp2.setSucceedingOperator(new OperatorIDTuple(f, 0));
 			final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
 			ctp.add(tp2);
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(f, 0), ctp, null), 0));
 		} catch (final ParseException e) {
 			System.err.println(e);
@@ -648,11 +648,11 @@ public class RudimentaryRDFSchemaInference {
 			tp2.setSucceedingOperator(new OperatorIDTuple(f2, 0));
 			final Collection<TriplePattern> ctp1 = new LinkedList<TriplePattern>();
 			ctp1.add(tp1);
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(f1, 0), ctp1, null), 0));
 			final Collection<TriplePattern> ctp2 = new LinkedList<TriplePattern>();
 			ctp2.add(tp2);
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(f2, 0), ctp2, null), 0));
 		} catch (final ParseException e) {
 			System.err.println(e);
@@ -674,11 +674,11 @@ public class RudimentaryRDFSchemaInference {
 			tp2.setSucceedingOperator(new OperatorIDTuple(join, 1));
 			final Collection<TriplePattern> ctp1 = new LinkedList<TriplePattern>();
 			ctp1.add(tp1);
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(f1, 0), ctp1, null), 0));
 			final Collection<TriplePattern> ctp2 = new LinkedList<TriplePattern>();
 			ctp2.add(tp2);
-			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndex(
+			ic.addSucceedingOperator(new OperatorIDTuple(ic.newIndexScan(
 					new OperatorIDTuple(join, 1), ctp2, null), 0));
 		} catch (final ParseException e) {
 			System.err.println(e);

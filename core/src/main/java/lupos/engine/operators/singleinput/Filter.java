@@ -635,8 +635,8 @@ public class Filter extends SingleInputOperator {
 		this.evaluationVisitor.setEvaluator(evaluator);
 	}
 
-	public void setCollectionForExistNodes(Map<SimpleNode, Root> indexCollections) {
-		this.evaluationVisitor.setCollectionForExistNodes(indexCollections);
+	public void setCollectionForExistNodes(Map<SimpleNode, Root> root) {
+		this.evaluationVisitor.setCollectionForExistNodes(root);
 	}
 
 	public Map<SimpleNode, Root> getCollectionForExistNodes() {

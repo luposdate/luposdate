@@ -87,7 +87,7 @@ import lupos.sparql1_1.SimpleNode;
 
 public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
-	protected Root indexCollection;
+	protected Root root;
 	protected int opt;
 	protected Dataset dataset;
 	protected lupos.engine.operators.index.Indices.DATA_STRUCT datastructure;
@@ -213,7 +213,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			final List<OperatorIDTuple> oids, final TriplePattern tp) {
 		final List<TriplePattern> tps = new LinkedList<TriplePattern>();
 		tps.add(tp);
-		final BasicIndexScan bi = ic.newIndex(null, tps, null);
+		final BasicIndexScan bi = ic.newIndexScan(null, tps, null);
 		bi.setSucceedingOperators(oids);
 		bi.setIntersectionVariables(tp.getIntersectionVariables());
 		bi.setUnionVariables(tp.getUnionVariables());
@@ -316,7 +316,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 							visited.addAll(tps);
 
-							idx = ic.newIndex(null, tps, null);
+							idx = ic.newIndexScan(null, tps, null);
 
 							final HashSet<Variable> hsv = new HashSet<Variable>();
 							for (final TriplePattern stp : tps) {
@@ -488,13 +488,13 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	// }
 
 	public long compileQuery(final String query,
-			final Root indexCollection) throws Exception {
+			final Root root_param) throws Exception {
 		final Date a = new Date();
-		this.indexCollection = indexCollection;
-		this.rootNode = indexCollection;
+		this.root = root_param;
+		this.rootNode = root_param;
 		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
 				|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
-			rdfsStreamQueryToIndexQuery(query, indexCollection);
+			rdfsStreamQueryToIndexQuery(query, root_param);
 		} else {
 			SimpleNode root = SPARQL1_1Parser.parse(query);
 
@@ -505,20 +505,20 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 			if(root==null){			
 				this.result = new Result();
-				indexCollection.setSucceedingOperator(new OperatorIDTuple(result,0));
+				root_param.setSucceedingOperator(new OperatorIDTuple(result,0));
 			} else {
-				final IndexOperatorGraphGenerator spvi = IndexOperatorGraphGenerator.createOperatorGraphGenerator(indexCollection, this);
+				final IndexOperatorGraphGenerator spvi = IndexOperatorGraphGenerator.createOperatorGraphGenerator(root_param, this);
 				spvi.visit((ASTQuery)root);
 	
 				this.result = spvi.getResult();
 			}
 
-			indexCollection.deleteParents();
-			indexCollection.setParents();
+			root_param.deleteParents();
+			root_param.setParents();
 			final CorrectOperatorgraphRulePackage recog = new CorrectOperatorgraphRulePackage();
-			indexCollection.detectCycles();
-			indexCollection.sendMessage(new BoundVariablesMessage());
-			recog.applyRules(indexCollection);
+			root_param.detectCycles();
+			root_param.sendMessage(new BoundVariablesMessage());
+			recog.applyRules(root_param);
 		}
 		this.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());
@@ -527,21 +527,21 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
 			final String query, final Prefix prefixInstance) throws Exception {
-		return compileQueryDebugByteArray(query, createIndexCollection(),
+		return compileQueryDebugByteArray(query, createRoot(),
 				prefixInstance);
 	}
 	
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
-			final String query, final Root indexCollection,
+			final String query, final Root root_param,
 			final Prefix prefixInstance)
 			throws Exception {
 
-		this.indexCollection = indexCollection;
-		this.rootNode = indexCollection;
+		this.root = root_param;
+		this.rootNode = root_param;
 
 		final DebugContainerQuery<BasicOperatorByteArray, Node> dcq;
 		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS || this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
-			dcq = rdfsStreamQueryToIndexQueryDebugByteArray(query, indexCollection, prefixInstance);
+			dcq = rdfsStreamQueryToIndexQueryDebugByteArray(query, root_param, prefixInstance);
 		} else {
 			final SimpleNode root = SPARQL1_1Parser.parse(query);
 
@@ -577,27 +577,27 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 			if(root_CoreSPARQL==null){			
 				this.result = new Result();
-				indexCollection.setSucceedingOperator(new OperatorIDTuple(this.result,0));
+				root_param.setSucceedingOperator(new OperatorIDTuple(this.result,0));
 			} else {
-				final IndexOperatorGraphGenerator spvi = IndexOperatorGraphGenerator.createOperatorGraphGenerator(indexCollection, this);
+				final IndexOperatorGraphGenerator spvi = IndexOperatorGraphGenerator.createOperatorGraphGenerator(root_param, this);
 				spvi.visit((ASTQuery)root_CoreSPARQL);
 	
 				this.result = spvi.getResult();
 			}
 
-			indexCollection.deleteParents();
-			indexCollection.setParents();
+			root_param.deleteParents();
+			root_param.setParents();
 			final CorrectOperatorgraphRulePackage recog = new CorrectOperatorgraphRulePackage();
-			indexCollection.detectCycles();
-			indexCollection.sendMessage(new BoundVariablesMessage());
+			root_param.detectCycles();
+			root_param.sendMessage(new BoundVariablesMessage());
 
 			final List<DebugContainer<BasicOperatorByteArray>> ldc = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 
 			ldc.add(new DebugContainer<BasicOperatorByteArray>(
 					"Before a possible correction of the operator graph...",
 					"correctoperatorgraphPackageDescription",
-					BasicOperatorByteArray.getBasicOperatorByteArray(indexCollection.deepClone(), prefixInstance)));
-			ldc.addAll(recog.applyRulesDebugByteArray(indexCollection,
+					BasicOperatorByteArray.getBasicOperatorByteArray(root_param.deepClone(), prefixInstance)));
+			ldc.addAll(recog.applyRulesDebugByteArray(root_param,
 					prefixInstance));
 			dcq = new DebugContainerQuery<BasicOperatorByteArray, Node>(
 					SPARQL1_1Parser.parse(query), corequery, root_CoreSPARQL,
@@ -610,7 +610,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public long evaluateQuery() throws Exception {
 		this.buildCompletelyAllIndices();
-		// new OperatorGraphNew(indexCollection.deepClone(), -1, false)
+		// new OperatorGraphNew(root.deepClone(), -1, false)
 		// .displayOperatorGraph("lala", null);
 
 		Class<? extends Bindings> instanceClass = null;
@@ -636,7 +636,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 						return super.equals(o);
 				}
 			};
-			indexCollection.visit(sogv);
+			root.visit(sogv);
 			if (sogv.equals(false)) {
 				instanceClass = Bindings.instanceClass;
 				Bindings.instanceClass = BindingsArray.class;
@@ -644,9 +644,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		}
 
 		final Date a = new Date();
-		indexCollection.sendMessage(new StartOfEvaluationMessage());
-		indexCollection.startProcessing();
-		indexCollection.sendMessage(new EndOfEvaluationMessage());
+		root.sendMessage(new StartOfEvaluationMessage());
+		root.startProcessing();
+		root.sendMessage(new EndOfEvaluationMessage());
 		final long time = ((new Date()).getTime() - a.getTime());
 
 //		System.out.println("Number of results:" + cr.getNumberResults());
@@ -661,7 +661,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application)
 	throws Exception {
 		this.buildCompletelyAllIndices();
-		// new OperatorGraphNew(indexCollection.deepClone(), -1, false)
+		// new OperatorGraphNew(root.deepClone(), -1, false)
 		// .displayOperatorGraph("lala", null);
 
 		result.addApplication(application);
@@ -688,7 +688,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 						return super.equals(o);
 				}
 			};
-			indexCollection.visit(sogv);
+			root.visit(sogv);
 			if (sogv.equals(false)) {
 				instanceClass = Bindings.instanceClass;
 				Bindings.instanceClass = BindingsArray.class;
@@ -696,10 +696,10 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		}
 
 		final Date a = new Date();
-		indexCollection.sendMessageDebug(new StartOfEvaluationMessage(),
+		root.sendMessageDebug(new StartOfEvaluationMessage(),
 				debugstep);
-		indexCollection.startProcessingDebug(debugstep);
-		indexCollection.sendMessageDebug(new EndOfEvaluationMessage(),
+		root.startProcessingDebug(debugstep);
+		root.sendMessageDebug(new EndOfEvaluationMessage(),
 				debugstep);
 		final long time = ((new Date()).getTime() - a.getTime());
 
@@ -715,11 +715,11 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	public long logicalOptimization() {
 		final Date a = new Date();
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
-		refie.applyRules(indexCollection);
-		indexCollection.optimizeJoinOrder(opt);
+		refie.applyRules(root);
+		root.optimizeJoinOrder(opt);
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
-		refie2.applyRules(indexCollection);
-		parallelOperator(indexCollection);
+		refie2.applyRules(root);
+		parallelOperator(root);
 		return ((new Date()).getTime() - a.getTime());
 	}
 	
@@ -730,23 +730,23 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"Before logical optimization...",
 				"logicaloptimizationPackageDescription", BasicOperatorByteArray
-				.getBasicOperatorByteArray(indexCollection.deepClone(),
+				.getBasicOperatorByteArray(root.deepClone(),
 						prefixInstance)));
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
-		result.addAll(refie.applyRulesDebugByteArray(indexCollection,
+		result.addAll(refie.applyRulesDebugByteArray(root,
 				prefixInstance));
 
-		indexCollection.optimizeJoinOrder(opt);
+		root.optimizeJoinOrder(opt);
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"After optimizing the join order...",
 				"optimizingjoinorderRule", BasicOperatorByteArray
-				.getBasicOperatorByteArray(indexCollection.deepClone(),
+				.getBasicOperatorByteArray(root.deepClone(),
 						prefixInstance)));
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
-		result.addAll(refie2.applyRulesDebugByteArray(indexCollection,
+		result.addAll(refie2.applyRulesDebugByteArray(root,
 				prefixInstance));
 		final List<DebugContainer<BasicOperatorByteArray>> ldc = parallelOperatorDebugByteArray(
-				indexCollection, prefixInstance);
+				root, prefixInstance);
 		if (ldc != null)
 			result.addAll(ldc);
 		return result;
@@ -932,12 +932,12 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			}
 		}
 
-		indexCollection.physicalOptimization();
-		indexCollection.deleteParents();
-		indexCollection.setParents();
-		indexCollection.detectCycles();
+		root.physicalOptimization();
+		root.deleteParents();
+		root.setParents();
+		root.detectCycles();
 		final AfterPhysicalOptimizationRulePackage refie = new AfterPhysicalOptimizationRulePackage();
-		refie.applyRules(indexCollection);
+		refie.applyRules(root);
 
 		return ((new Date()).getTime() - a.getTime());
 	}
@@ -966,21 +966,21 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 
-	public abstract Root createIndexCollection();
+	public abstract Root createRoot();
 
 	@Override
 	public long compileQuery(final String query) throws Exception {
-		return compileQuery(query, createIndexCollection());
+		return compileQuery(query, createRoot());
 	}
 
-	public void setIndexCollection(final Root indexCollection) {
-		this.indexCollection = indexCollection;
-		this.rootNode = indexCollection;
+	public void setRoot(final Root root_param) {
+		this.root = root_param;
+		this.rootNode = root_param;
 	}
 	
 	@Override
 	public void setRootNode(BasicOperator rootNode) {
-		this.setIndexCollection((Root)rootNode);
+		this.setRoot((Root)rootNode);
 	}
 
 	public Dataset getDataset() {
@@ -1047,6 +1047,6 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	
 	@Override
 	public IndexScanCreatorInterface createIndexScanCreator() {		
-		return new IndexScanCreator_BasicIndex(this.createIndexCollection());
+		return new IndexScanCreator_BasicIndex(this.createRoot());
 	}
 }

@@ -24,18 +24,19 @@
 package lupos.rif.operator;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
@@ -44,71 +45,91 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
+import lupos.rif.builtin.RIFBuiltinFactory;
+import lupos.rif.model.Constant;
+import lupos.rif.model.External;
+import lupos.rif.model.RuleVariable;
 
-public class BooleanIndex extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+	private static final long serialVersionUID = -2452758087959813203L;
+	private final External external;
 
-	public BooleanIndex() {
+	public IteratorIndexScan(final External iteratorPredicate) {
 		super(null);
-		triplePatterns = Arrays.asList();
+		external = iteratorPredicate;
 	}
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
-		result.getVariables().add(new Variable("@boolean"));
-		intersectionVariables = new HashSet<Variable>(result.getVariables());
-		unionVariables = intersectionVariables;
+		result.getVariables().add(
+				((RuleVariable) external.termParams.get(0)).getVariable());
 		return result;
 	}
-	
-	private QueryResult createQueryResult(){
-		final QueryResult result = QueryResult.createInstance();
-		final Bindings bind = Bindings.createNewInstance();
-		bind.add(new Variable("@boolean"), LiteralFactory.createLiteral("true"));
-		result.add(bind);
-		return result;
+
+	private Iterator<Bindings> newBindingIterator() {
+		final Iterator<Literal> litIt = getLiteralIterator();
+		// Variable steht an erster Stelle des Pr�dikats
+		final Variable varToBind = (Variable) external.termParams.get(0)
+		.evaluate(Bindings.createNewInstance());
+		return new Iterator<Bindings>() {
+			public boolean hasNext() {
+				return litIt.hasNext();
+			}
+
+			public Bindings next() {
+				final Bindings bind = Bindings.createNewInstance();
+				bind.add(varToBind, litIt.next());
+				return bind;
+			}
+
+			public void remove() {}
+		};
+	}
+
+	private Iterator<Literal> getLiteralIterator() {
+		// External in IteratorPredicates suchen und dann Parameter 1-x
+		// (evaluiert) �bergeben
+		Literal[] args = new Literal[external.termParams.size() - 1];
+		for (int i = 1; i < external.termParams.size(); i++)
+			args[i - 1] = (Literal) external.termParams.get(i).evaluate(
+					Bindings.createNewInstance());
+		return RIFBuiltinFactory.getIterator(
+				(URILiteral) ((Constant) external.termName).getLiteral(), args);
 	}
 
 	@Override
-	public QueryResult process(final Dataset dataset) {
-		// leitet ein QueryResult mit einem Binding weiter
-		final QueryResult result = this.createQueryResult();
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
-			((Operator) succOperator.getOperator()).processAll(result,
-					succOperator.getId());
+	public QueryResult process(Dataset dataset) {
+		final Iterator<Bindings> bindIt = newBindingIterator();
+		while (bindIt.hasNext()) {
+			final Bindings bind = bindIt.next();
+			for (final OperatorIDTuple oid : getSucceedingOperators())
+				((Operator) oid.getOperator()).processAll(QueryResult
+						.createInstance(Arrays.asList(bind).iterator()), oid
+						.getId());
 		}
-		return result;
-	}
-
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		// leitet ein QueryResult mit einem Binding weiter
-		final QueryResult result = this.createQueryResult();
-		Bindings bind = result.getFirst();
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
-			if (result.size() > 0)
-				debugstep.step(this, succOperator.getOperator(), bind);
-			final QueryResultDebug debug = new QueryResultDebug(result,
-					debugstep, this, succOperator.getOperator(), true);
-			((Operator) succOperator.getOperator()).processAll(debug,
-					succOperator.getId());
-		}
-		return result;
-	}
-
-	@Override
-	public QueryResult join(Indices indices, Bindings bindings) {
 		return null;
 	}
 
 	@Override
 	public String toString() {
-		return "BooleanIndex";
+		final StringBuffer str = new StringBuffer("IteratorIndex On")
+		.append("\n");
+		str.append(external.toString());
+		return str.toString();
 	}
 
 	@Override
 	public String toString(final Prefix prefixInstance) {
-		return toString();
+		final StringBuffer str = new StringBuffer("IteratorIndex On")
+		.append("\n");
+		str.append(external.toString(prefixInstance));
+		return str.toString();
+	}
+
+	@Override
+	public QueryResult join(Indices indices, Bindings bindings) {
+		return null;
 	}
 	
 	private boolean firstTime = true;
@@ -132,7 +153,7 @@ public class BooleanIndex extends BasicIndexScan implements TripleConsumer, Trip
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		if(firstTime){
-			processDebug(0, null, debugstep);
+			startProcessingDebug(null, debugstep);
 			firstTime = false;
 		}
 	}

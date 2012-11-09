@@ -34,15 +34,15 @@ import lupos.rif.model.External;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RuleVariable;
 import lupos.rif.model.Uniterm;
-import lupos.rif.operator.BooleanIndex;
-import lupos.rif.operator.PredicateIndex;
+import lupos.rif.operator.BooleanIndexScan;
+import lupos.rif.operator.PredicateIndexScan;
 import lupos.rif.operator.RuleFilter;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 
 public abstract class BaseGraphBuilder implements IRuleVisitor<Object, Object> {
 	protected final IndexScanCreatorInterface indexScanCreator;
-	protected PredicateIndex predicateIndex;
-	protected BooleanIndex booleanIndex;
+	protected PredicateIndexScan predicateIndex;
+	protected BooleanIndexScan booleanIndex;
 
 	public BaseGraphBuilder(final IndexScanCreatorInterface indexScanCreator) {
 		super();

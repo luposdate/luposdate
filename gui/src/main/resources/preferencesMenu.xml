@@ -118,8 +118,8 @@
           <option id="operatorGraph_style_join" name="Join" datatype="boxStyleSequence" value="ROUNDBOX | #00FF00 | #FFFFFF" />
           <option id="operatorGraph_style_optional" name="Optional" datatype="boxStyleSequence" value="ROUNDBOX | #FFFFFF | #00FF00" />
           <option id="operatorGraph_style_union" name="Union" datatype="boxStyleSequence" value="ROUNDBOX | #FF00FF | #FFFFFF" />
-          <option id="operatorGraph_style_basicindex" name="BasicIndex" datatype="boxStyleSequence" value="SIMPLEBOX | #FF7F00 | #FFFFFF" />
-          <option id="operatorGraph_style_indexcollection" name="IndexCollection" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
+          <option id="operatorGraph_style_basicindexscan" name="Index Scan" datatype="boxStyleSequence" value="SIMPLEBOX | #FF7F00 | #FFFFFF" />
+          <option id="operatorGraph_style_root" name="Root" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
           <option id="operatorGraph_style_result" name="Result" datatype="boxStyleSequence" value="SIMPLEBOX | #FF1493 | #FFFFFF" />
           <option id="operatorGraph_style_basicoperator" name="BasicOperator" datatype="boxStyleSequence" value="SIMPLEBOX | #FF0000 | #FFFFFF" />
           <option id="operatorGraph_style_filter" name="Filter" datatype="boxStyleSequence" value="SIMPLEBOX | #8085FF | #FFFFFF" />

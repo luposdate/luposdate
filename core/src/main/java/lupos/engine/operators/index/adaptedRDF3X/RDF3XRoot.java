@@ -43,7 +43,7 @@ public class RDF3XRoot extends
 	private static final long serialVersionUID = -1624295267286626002L;
 
 	@Override
-	public BasicIndexScan newIndex(final OperatorIDTuple succeedingOperator,
+	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
 		return new RDF3XIndexScan(succeedingOperator, triplePattern, data, this);
 	}
@@ -69,16 +69,16 @@ public class RDF3XRoot extends
 			if (oit.getOperator() instanceof RDF3XIndexScan) {
 				final RDF3XIndexScan index = (RDF3XIndexScan) oit.getOperator();
 				if (opt == BasicIndexScan.NARYMERGEJOIN) {
-					final lupos.engine.operators.index.Root indexCollection = OptimizeJoinOrder
+					final lupos.engine.operators.index.Root root = OptimizeJoinOrder
 							.getPlanWithNAryMergeJoins(
 									new RDF3XRoot(),
 									index,
 									(opt == BasicIndexScan.MERGEJOINSORT) ? OptimizeJoinOrder.PlanType.RDF3XSORT
 											: OptimizeJoinOrder.PlanType.RDF3X,
 									this.dataset);
-					c.addAll(indexCollection.getSucceedingOperators());
+					c.addAll(root.getSucceedingOperators());
 				} else {
-					final lupos.engine.operators.index.Root indexCollection = (opt == BasicIndexScan.Binary) ? index
+					final lupos.engine.operators.index.Root root = (opt == BasicIndexScan.Binary) ? index
 							.getBinaryJoin()
 							: OptimizeJoinOrder
 									.getBinaryJoinWithManyMergeJoins(
@@ -87,7 +87,7 @@ public class RDF3XRoot extends
 											(opt == BasicIndexScan.MERGEJOINSORT) ? OptimizeJoinOrder.PlanType.RDF3XSORT
 													: OptimizeJoinOrder.PlanType.RDF3X,
 											this.dataset);
-					c.addAll(indexCollection.getSucceedingOperators());
+					c.addAll(root.getSucceedingOperators());
 				}
 			} else
 				c.add(oit);

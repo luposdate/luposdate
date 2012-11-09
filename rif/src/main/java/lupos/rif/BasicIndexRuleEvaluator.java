@@ -91,7 +91,7 @@ import lupos.rif.generated.parser.RIFParser;
 import lupos.rif.generated.syntaxtree.CompilationUnit;
 import lupos.rif.model.Document;
 import lupos.rif.operator.ConstructPredicate;
-import lupos.rif.operator.InsertIndex;
+import lupos.rif.operator.InsertIndexScan;
 import lupos.rif.visitor.BuildOperatorGraphRuleVisitor;
 import lupos.rif.visitor.NormalizeRuleVisitor;
 import lupos.rif.visitor.ParseSyntaxTreeVisitor;
@@ -394,7 +394,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return this.rifDocument;
 	}
 	
-	public Root getIndexCollection() {
+	public Root getRoot() {
 		return (Root) this.evaluator.getRootNode();
 	}
 
@@ -595,7 +595,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 									LinkedList<TriplePattern> tpList = new LinkedList<TriplePattern>();
 									tpList.add(tp);
-									BasicIndexScan newIndex = ((Root)rootQuery).newIndex(new OperatorIDTuple(join, 1), tpList, bi.getGraphConstraint());
+									BasicIndexScan newIndex = ((Root)rootQuery).newIndexScan(new OperatorIDTuple(join, 1), tpList, bi.getGraphConstraint());
 									newIndex.recomputeVariables();
 									join.addPrecedingOperator(newIndex);
 									rootQuery.addSucceedingOperator(newIndex);
@@ -638,7 +638,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			BasicOperator rootChildOperator = rootChild.getOperator();
 			rootChildOperator.removePrecedingOperator(rootInference);
 			rootChildOperator.addPrecedingOperator(rootQuery);
-			if(rootChildOperator instanceof InsertIndex) {
+			if(rootChildOperator instanceof InsertIndexScan) {
 				// these operators are used to insert facts/triples => should occur as leftmost operators after the root such that they are evaluated first!
 				LinkedList<OperatorIDTuple> list = new LinkedList<OperatorIDTuple>(rootQuery.getSucceedingOperators());
 				list.addFirst(rootChild);

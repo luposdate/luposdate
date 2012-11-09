@@ -38,7 +38,7 @@ public abstract class Root extends Operator {
 	public List<String> namedGraphs;
 	public Dataset dataset;
 
-	public abstract BasicIndexScan newIndex(OperatorIDTuple succeedingOperator,
+	public abstract BasicIndexScan newIndexScan(OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, Item data);
 
 	public void startProcessing() {

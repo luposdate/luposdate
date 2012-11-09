@@ -38,7 +38,7 @@ import lupos.optimizations.logical.OptimizeJoinOrder;
 public class MemoryIndexRoot extends
 		lupos.engine.operators.index.Root {
 	@Override
-	public BasicIndexScan newIndex(final OperatorIDTuple succeedingOperator,
+	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
 		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
 	}
@@ -93,12 +93,12 @@ public class MemoryIndexRoot extends
 			if (oit.getOperator() instanceof MemoryIndexScan) {
 				final MemoryIndexScan index = (MemoryIndexScan) oit
 						.getOperator();
-				final lupos.engine.operators.index.Root indexCollection = OptimizeJoinOrder
+				final lupos.engine.operators.index.Root root = OptimizeJoinOrder
 						.getBinaryJoinWithManyMergeJoins(new MemoryIndexRoot(),
 								index,
 								OptimizeJoinOrder.PlanType.RELATIONALINDEX,
 								this.dataset);
-				c.addAll(indexCollection.getSucceedingOperators());
+				c.addAll(root.getSucceedingOperators());
 			} else
 				c.add(oit);
 		}

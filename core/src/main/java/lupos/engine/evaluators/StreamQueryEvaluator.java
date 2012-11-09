@@ -60,7 +60,7 @@ import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.rdfs.AlternativeRDFSchemaInference;
 import lupos.engine.operators.rdfs.RDFSchemaInference;
 import lupos.engine.operators.rdfs.RudimentaryRDFSchemaInference;
-import lupos.engine.operators.rdfs.index.IndexCollection;
+import lupos.engine.operators.rdfs.index.RDFSRoot;
 import lupos.engine.operators.singleinput.AddBinding;
 import lupos.engine.operators.stream.Stream;
 import lupos.engine.operators.tripleoperator.TriggerOneTime;
@@ -197,7 +197,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 								return new SixIndices(uriLiteral);
 							}
 
-							public lupos.engine.operators.index.Root createIndexCollection() {
+							public lupos.engine.operators.index.Root createRoot() {
 								return new lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot();
 							}
 						}, debug == DEBUG.ALL || debug == DEBUG.WITHOUTRESULT,
@@ -270,7 +270,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			recog.applyRules(this.rootNode);
 			if (this.rdfs != RDFS.NONE) {
 				for (final PatternMatcher zpm : this.patternMatchers) {
-					final IndexCollection ic = new IndexCollection();
+					final RDFSRoot ic = new RDFSRoot();
 					if (this.rdfs == RDFS.RDFS || this.rdfs == RDFS.OPTIMIZEDRDFS) {
 						if (this.externalOntology != null)
 							RDFSchemaInference.addInferenceRulesForInstanceData(ic,
@@ -378,7 +378,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			correctOperatorGraphRules.add(0, dc);
 			if (this.rdfs != RDFS.NONE) {
 				for (final PatternMatcher zpm : this.patternMatchers) {
-					final IndexCollection ic = new IndexCollection();
+					final RDFSRoot ic = new RDFSRoot();
 					if (this.rdfs == RDFS.RDFS || this.rdfs == RDFS.OPTIMIZEDRDFS) {
 						if (this.externalOntology != null)
 							RDFSchemaInference.addInferenceRulesForInstanceData(ic,

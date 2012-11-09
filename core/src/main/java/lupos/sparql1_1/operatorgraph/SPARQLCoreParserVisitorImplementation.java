@@ -1143,7 +1143,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				if(this.indexScanCreator instanceof IndexScanCreator_BasicIndex){
 					IndexScanCreator_BasicIndex isc = (IndexScanCreator_BasicIndex) this.indexScanCreator;
 					
-					Root collectionClone = (Root) isc.getIndexCollection().clone();
+					Root collectionClone = (Root) isc.getRoot().clone();
 					collectionClone.setSucceedingOperators(new LinkedList<OperatorIDTuple>());
 					
 					this.indexScanCreator = new IndexScanCreator_BasicIndex(collectionClone);

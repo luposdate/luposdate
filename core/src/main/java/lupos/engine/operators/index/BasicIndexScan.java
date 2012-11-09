@@ -89,39 +89,39 @@ public abstract class BasicIndexScan extends RootChild {
 	public final static int MERGEJOINSORT = 6;
 	public final static int NARYMERGEJOIN = 7;
 	
-	protected final Root indexCollection;
+	protected final Root root;
 
 	// Item is Var or Literal (URILiteral)
 	protected Item rdfGraph;
 
 	protected Collection<TriplePattern> triplePatterns;
 
-	public BasicIndexScan(final Root indexCollection) {
+	public BasicIndexScan(final Root root) {
 		super();
-		this.indexCollection = indexCollection;
+		this.root = root;
 	}
 
 	public BasicIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root indexCollection) {
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root root) {
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
 		if (succeedingOperator != null) {
 			this.succeedingOperators.add(succeedingOperator);
 		}
 		this.rdfGraph = rdfGraph;
 		setTriplePatterns(triplePattern);
-		this.indexCollection = indexCollection;
+		this.root = root;
 	}
 
 	public BasicIndexScan(final List<OperatorIDTuple> succeedingOperators,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root indexCollection) {
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root root) {
 		this.succeedingOperators = succeedingOperators;
 		this.rdfGraph = rdfGraph;
 		setTriplePatterns(triplePattern);
-		this.indexCollection=indexCollection;
+		this.root=root;
 	}
 	
-	public Root getIndexCollection(){
-		return this.indexCollection;
+	public Root getRoot(){
+		return this.root;
 	}
 	
 	public void recomputeVariables(){
@@ -197,7 +197,7 @@ public abstract class BasicIndexScan extends RootChild {
 
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
-					graphConstraintItem, false, false, this.indexCollection);
+					graphConstraintItem, false, false, this.root);
 			if ((indicesC != null) && !(indicesC.size() == 0)) {
 
 				// if the graph constraint is not null (which means that a named
@@ -209,13 +209,13 @@ public abstract class BasicIndexScan extends RootChild {
 						final Variable graphConstraint = (Variable) graphConstraintItem;
 
 						// check if named graphs were provided at query time
-						if (this.indexCollection.namedGraphs != null
-								&& this.indexCollection.namedGraphs.size() > 0) {
+						if (this.root.namedGraphs != null
+								&& this.root.namedGraphs.size() > 0) {
 
 							// Convert the named graphs' names into URILiterals
 							// to be applicable
 							// later on
-							for (final String name : this.indexCollection.namedGraphs) {
+							for (final String name : this.root.namedGraphs) {
 
 								final Indices indices = dataset
 								.getNamedGraphIndices(LiteralFactory
@@ -442,7 +442,7 @@ public abstract class BasicIndexScan extends RootChild {
 											new LinkedList<Variable>()));
 
 						} 
-						final QueryResult qr = this.join(this.indexCollection.dataset);
+						final QueryResult qr = this.join(this.root.dataset);
 						if (qr == null) {
 							this.setTriplePatterns(ztp);
 							return true;

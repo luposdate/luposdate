@@ -56,24 +56,24 @@ public class MemoryIndexScan extends BasicIndexScan {
 	/**
 	 * Constructor
 	 */
-	public MemoryIndexScan(final lupos.engine.operators.index.Root indexCollection) {
-		super(indexCollection);
+	public MemoryIndexScan(final lupos.engine.operators.index.Root root) {
+		super(root);
 	}
 
 	public MemoryIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root indexCollection) {
-		super(succeedingOperator, triplePattern, rdfGraph, indexCollection);
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root root) {
+		super(succeedingOperator, triplePattern, rdfGraph, root);
 	}
 
 	public MemoryIndexScan(final List<OperatorIDTuple> succeedingOperators,
-			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root indexCollection) {
-		super(succeedingOperators, triplePattern, rdfGraph, indexCollection);
+			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root root) {
+		super(succeedingOperators, triplePattern, rdfGraph, root);
 	}
 
 	@Override
 	public BasicIndexScan clone() {
 		return new MemoryIndexScan(this.succeedingOperators,
-				this.triplePatterns, this.rdfGraph, this.indexCollection);
+				this.triplePatterns, this.rdfGraph, this.root);
 	}
 
 	@Override

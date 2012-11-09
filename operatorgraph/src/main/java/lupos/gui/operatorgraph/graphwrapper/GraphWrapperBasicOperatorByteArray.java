@@ -43,7 +43,7 @@ import xpref.datatypes.BooleanDatatype;
 public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 
 	private final static String[] MAPPING_OPERATORTYPE_TO_PREFERENCES = {
-			"join", "optional", "union", "basicindex", "indexcollection",
+			"join", "optional", "union", "basicindexscan", "root",
 			"sort", "result", "filter", "projection", "limit", "offset",
 			"basicoperator" };
 
