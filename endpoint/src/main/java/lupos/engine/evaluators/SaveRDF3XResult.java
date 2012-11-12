@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.test;
+package lupos.engine.evaluators;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -30,15 +30,13 @@ import java.io.OutputStream;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.XMLFormatter;
-import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.misc.FileHelper;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
-public class SaveResult {
-
+public class SaveRDF3XResult {
 	public static void main(final String[] args) throws Exception{
-		System.out.println("lupos.test.SaveResult processes a SPARQL query and saves its result");
-		System.out.println("Usage: java lupos.test.SaveResult <Directory of indices> <Query-File> <Output-File> [<Query-File 2> <Output-File 2> ...]");
+		System.out.println("lupos.engine.evaluators.SaveRDF3XResult processes a SPARQL query and saves its result");
+		System.out.println("Usage: java lupos.engine.evaluators.SaveRDF3XResult <Directory of indices> <Query-File> <Output-File> [<Query-File 2> <Output-File 2> ...]");
 		if(args.length<3 || args.length%2 == 0){
 			System.err.println("Wrong number of arguments!");
 		}
