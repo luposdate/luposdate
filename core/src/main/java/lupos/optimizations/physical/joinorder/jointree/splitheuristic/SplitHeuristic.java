@@ -21,36 +21,21 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder.jointree.splitheuristic;
 
-import java.io.Serializable;
+import java.util.List;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
+import lupos.optimizations.physical.joinorder.jointree.plan.LeafNodePlan;
 
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
-
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
-	}
-
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
-	}
-
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
-	}
+/**
+ * This interface must be implemented by all classes, which split a long list of leaf nodes according to some certain heuristics 
+ */
+public interface SplitHeuristic {
+	
+	/**
+	 * This method splits a long list of leaf nodes according to some heuristics 
+	 * @param initialPlans the long list of leaf nodes to split
+	 * @return the groups of leaf nodes, which should be independently optimized
+	 */
+	public List<List<LeafNodePlan>> split(final List<LeafNodePlan> initialPlans);
 }

@@ -57,9 +57,6 @@ import lupos.misc.Tuple;
 public class DBBPTree<K extends Comparable<K> & Serializable, V extends Serializable>
 implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3345017876896171725L;
 
 	protected int currentID = 0;

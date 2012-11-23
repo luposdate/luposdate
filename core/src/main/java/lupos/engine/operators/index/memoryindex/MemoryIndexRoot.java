@@ -24,16 +24,12 @@
 package lupos.engine.operators.index.memoryindex;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import lupos.datastructures.items.Item;
-import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.optimizations.logical.OptimizeJoinOrder;
 
 public class MemoryIndexRoot extends
 		lupos.engine.operators.index.Root {
@@ -44,69 +40,9 @@ public class MemoryIndexRoot extends
 	}
 
 	@Override
-	public MemoryIndexRoot newInstance(Dataset dataset_param) {
-		this.dataset = dataset_param;
-		return new MemoryIndexRoot();
-	}
-
-	public void optimizeJoinOrderAccordingToMostRestrictionsAndLeastEntries() {
-		for (final OperatorIDTuple oit : this.succeedingOperators) {
-			final BasicOperator basicOperator = oit.getOperator();
-			if (basicOperator instanceof MemoryIndexScan) {
-				final MemoryIndexScan index = (MemoryIndexScan) basicOperator;
-				index.optimizeJoinOrderAccordingToMostRestrictionsAndLeastEntries(this.dataset);
-			}
-		}
-	}
-
-	public void optimizeJoinOrderAccordingToLeastEntries() {
-		for (final OperatorIDTuple oit : this.succeedingOperators) {
-			if (oit.getOperator() instanceof MemoryIndexScan) {
-				final MemoryIndexScan index = (MemoryIndexScan) oit
-						.getOperator();
-				index.optimizeJoinOrderAccordingToLeastEntries(this.dataset);
-			}
-		}
-	}
-
-	@Override
-	public void optimizeJoinOrder(final int opt) {
-		switch (opt) {
-		case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
-			optimizeJoinOrderAccordingToMostRestrictionsAndLeastEntries();
-			break;
-		case BasicIndexScan.LEASTENTRIES:
-			optimizeJoinOrderAccordingToLeastEntries();
-			break;
-		case BasicIndexScan.Binary:
-			makeBinaryJoin();
-			break;
-		default:
-			super.optimizeJoinOrder(opt);
-		}
-	}
-
-	public void makeBinaryJoin() {
-		final List<OperatorIDTuple> c = new LinkedList<OperatorIDTuple>();
-
-		for (final OperatorIDTuple oit : this.succeedingOperators) {
-			if (oit.getOperator() instanceof MemoryIndexScan) {
-				final MemoryIndexScan index = (MemoryIndexScan) oit
-						.getOperator();
-				final lupos.engine.operators.index.Root root = OptimizeJoinOrder
-						.getBinaryJoinWithManyMergeJoins(new MemoryIndexRoot(),
-								index,
-								OptimizeJoinOrder.PlanType.RELATIONALINDEX,
-								this.dataset);
-				c.addAll(root.getSucceedingOperators());
-			} else
-				c.add(oit);
-		}
-		setSucceedingOperators(c);
-		this.deleteParents();
-		this.setParents();
-		this.detectCycles();
-		// has already been done before: this.sendMessage(new
-		// BoundVariablesMessage());
+	public MemoryIndexRoot newInstance(Dataset dataset_param) {		
+		MemoryIndexRoot root = new MemoryIndexRoot();
+		root.dataset = dataset_param;
+		return root;
 	}
 }

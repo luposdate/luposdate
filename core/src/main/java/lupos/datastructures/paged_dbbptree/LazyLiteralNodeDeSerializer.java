@@ -39,9 +39,10 @@ import lupos.io.LuposObjectOutputStream;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 
-public class LazyLiteralNodeDeSerializer implements
-		NodeDeSerializer<TripleKey, Triple> {
+public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, Triple> {
 
+	private static final long serialVersionUID = -8131702796960262942L;
+	
 	protected final RDF3XIndexScan.CollationOrder order;
 
 	protected final static int[][] map = { { 0, 1, 2 }, // SPO
@@ -57,6 +58,7 @@ public class LazyLiteralNodeDeSerializer implements
 		this.order = order;
 	}
 
+	@Override
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
 			final LuposObjectOutputStream out, final TripleKey lastKey)
 			throws IOException {
@@ -152,6 +154,7 @@ public class LazyLiteralNodeDeSerializer implements
 		}
 	}
 
+	@Override
 	public void writeInnerNodeEntry(final int fileName,
 			final LuposObjectOutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
@@ -161,6 +164,7 @@ public class LazyLiteralNodeDeSerializer implements
 		writeIntWithoutLeadingZeros(fileName, out);
 	}
 
+	@Override
 	public void writeLeafEntry(final TripleKey k, final Triple v,
 			final LuposObjectOutputStream out, final TripleKey lastKey,
 			final Triple lastValue) throws IOException {
@@ -249,6 +253,7 @@ public class LazyLiteralNodeDeSerializer implements
 		}
 	}
 
+	@Override
 	public void writeLeafEntryNextFileName(final int filename,
 			final LuposObjectOutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
@@ -360,6 +365,7 @@ public class LazyLiteralNodeDeSerializer implements
 		}
 	}
 
+	@Override
 	public DBBPTreeEntry<TripleKey, Triple> getNextLeafEntry(
 			final LuposObjectInputStream<Triple> in, final TripleKey lastKey,
 			final Triple lastValue) {
@@ -442,6 +448,7 @@ public class LazyLiteralNodeDeSerializer implements
 		return null;
 	}
 
+	@Override
 	public synchronized Tuple<TripleKey, Integer> getNextInnerNodeEntry(
 			final TripleKey lastKey, final LuposObjectInputStream<Triple> in) {
 		try {
@@ -513,6 +520,7 @@ public class LazyLiteralNodeDeSerializer implements
 			e.printStackTrace();
 			System.err.println(e);
 		} catch (final IOException e) {
+			// just ignore...
 		}
 		return null;
 	}

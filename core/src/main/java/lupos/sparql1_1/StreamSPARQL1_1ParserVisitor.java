@@ -99,8 +99,8 @@ public interface StreamSPARQL1_1ParserVisitor
   public Object visit(ASTEqualsNode node, Object data);
   public Object visit(ASTNotEqualsNode node, Object data);
   public Object visit(ASTLessThanNode node, Object data);
-  public Object visit(ASTLessThanEqualsNode node, Object data);
   public Object visit(ASTGreaterThanNode node, Object data);
+  public Object visit(ASTLessThanEqualsNode node, Object data);
   public Object visit(ASTGreaterThanEqualsNode node, Object data);
   public Object visit(ASTInNode node, Object data);
   public Object visit(ASTNotInNode node, Object data);
@@ -176,4 +176,4 @@ public interface StreamSPARQL1_1ParserVisitor
   public Object visit(ASTBlankNode node, Object data);
   public Object visit(ASTEmptyNode node, Object data);
 }
-/* JavaCC - OriginalChecksum=a3635b7a6921d993e82c1f203da2b51e (do not edit this line) */
+/* JavaCC - OriginalChecksum=681a0b512d1c80bc22090fc5d8247ec7 (do not edit this line) */

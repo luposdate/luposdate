@@ -55,8 +55,6 @@ import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.queryresult.IdIteratorQueryResult;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.queryresult.QueryResultDebug;
-import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.RootChild;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
@@ -67,10 +65,10 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.TriplePattern.BooleanAndUnknown;
 import lupos.misc.Tuple;
-import lupos.misc.debug.DebugStep;
 import lupos.optimizations.logical.OptimizeJoinOrder;
 import lupos.optimizations.logical.statistics.Entry;
 import lupos.optimizations.logical.statistics.VarBucket;
+import lupos.optimizations.physical.joinorder.jointree.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
 
 /**
  * Instances of this class are used to process queries by using a special index
@@ -162,23 +160,6 @@ public abstract class BasicIndexScan extends RootChild {
 		final QueryResult queryResult = join(dataset);
 		if (queryResult == null) {
 			return null;
-		}
-
-		/*
-		 * pass the succeeding operators which were externally provided to the
-		 * operator pipe along with the new bindings which have been determined
-		 * by the join
-		 */
-		if (this.succeedingOperators.size() > 1)
-			queryResult.materialize();
-		// for every binding found in the result of the previously performed
-		// join of the triple elements ...
-		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
-			// and pass the new QueryResult object along with the current
-			// succeeding operator's
-			// identifier to the OperatorPipe's process method
-			((Operator) succOperator.getOperator()).processAll(queryResult,
-					succOperator.getId());
 		}
 		return queryResult;
 	}
@@ -315,46 +296,9 @@ public abstract class BasicIndexScan extends RootChild {
 	public abstract QueryResult join(Indices indices, Bindings bindings);
 
 	public void replace(final Variable var, final Item item) {
-		for (final TriplePattern tp : this.triplePatterns)
+		for (final TriplePattern tp : this.triplePatterns){
 			tp.replace(var, item);
-
-	}
-
-	@SuppressWarnings("unused")
-	public void optimizeJoinOrder(final int opt, final Dataset datasetParameter) {
-		switch (opt) {
-		case MOSTRESTRICTIONS:
-			optimizeJoinOrderAccordingToMostRestrictions();
-			break;
 		}
-	}
-
-	@SuppressWarnings("null")
-	public void optimizeJoinOrderAccordingToMostRestrictions() {
-		if (this.triplePatterns == null)
-			return;
-		final HashSet<String> usedVariables = new HashSet<String>();
-		final Collection<TriplePattern> remainingTP = new LinkedList<TriplePattern>();
-		remainingTP.addAll(this.triplePatterns);
-		final Collection<TriplePattern> newTriplePattern = new LinkedList<TriplePattern>();
-		while (remainingTP.size() > 0) {
-			int minOpenPositions = 4;
-			TriplePattern best = null;
-			for (final TriplePattern tp : remainingTP) {
-				final HashSet<String> v = tp.getVariableNames();
-				v.retainAll(usedVariables);
-				final int openPositions = tp.getVariableNames().size()
-						- v.size();
-				if (openPositions < minOpenPositions) {
-					minOpenPositions = openPositions;
-					best = tp;
-				}
-			}
-			usedVariables.addAll(best.getVariableNames());
-			newTriplePattern.add(best);
-			remainingTP.remove(best);
-		}
-		setTriplePatterns(newTriplePattern);
 	}
 
 	public Collection<TriplePattern> getTriplePattern() {
@@ -437,9 +381,7 @@ public abstract class BasicIndexScan extends RootChild {
 						this.setTriplePatterns(ctp);
 						if (this instanceof RDF3XIndexScan) {
 							((RDF3XIndexScan) this)
-							.setCollationOrder(OptimizeJoinOrder
-									.getCollationOrder(tp,
-											new LinkedList<Variable>()));
+							.setCollationOrder(RDF3XOperatorGraphGenerator.getCollationOrder(tp, new LinkedList<Variable>()));
 
 						} 
 						final QueryResult qr = this.join(this.root.dataset);
@@ -506,39 +448,14 @@ public abstract class BasicIndexScan extends RootChild {
 		return true;
 	}
 
-	public Tuple<Literal, Literal> getMinMax(final Variable v,
-			final TriplePattern tp, final Dataset dataset) {
-		if (!(this instanceof RDF3XIndexScan))
-			return null;
-		final Collection<TriplePattern> ztp = this.getTriplePattern();
-		final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
-		ctp.add(tp);
-		this.setTriplePatterns(ctp);
-		final Collection<Variable> cv = new LinkedList<Variable>();
-		cv.add(v);
-		if (this instanceof RDF3XIndexScan) {
-			((RDF3XIndexScan) this).setCollationOrder(OptimizeJoinOrder
-					.getCollationOrder(tp, cv));
-
-		}
-		final QueryResult qr = this.join(dataset);
-		if (qr == null) {
-			this.setTriplePatterns(ztp);
-			return null;
-		}
-		final Iterator<Bindings> itb = qr.oneTimeIterator();
-		if (!itb.hasNext()) {
-			this.setTriplePatterns(ztp);
-			return null;
-		}
-		final Literal min = itb.next().get(v);
-		if (itb instanceof ParallelIterator)
-			((ParallelIterator<Bindings>) itb).close();
-
-		final Tuple<Literal, Literal> result = new Tuple<Literal, Literal>(min,
-				null);
-		this.setTriplePatterns(ztp);
-		return result;
+	/**
+	 * This method is overridden by subclasses, e.g. RDF3XIndexScan
+	 * @param v the variable the minimum and maximum value of which is determined
+	 * @param tp the triple pattern to be considered
+	 * @return the minimum and maximum value of a variable, null if the variable does not appear in the triple patterns
+	 */
+	public Tuple<Literal, Literal> getMinMax(final Variable v, final TriplePattern tp) {
+		return null;
 	}
 
 	protected static final int MaxNumberBuckets = 500;
@@ -630,7 +547,7 @@ public abstract class BasicIndexScan extends RootChild {
 	}
 
 	public final Map<Variable, VarBucket> getVarBucketsOriginal(
-			final TriplePattern tp, final Dataset dataset,
+			final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
 			final HashMap<Variable, Literal> minima,
@@ -692,12 +609,11 @@ public abstract class BasicIndexScan extends RootChild {
 		ctp.add(tp);
 		this.setTriplePatterns(ctp);
 		if (this instanceof RDF3XIndexScan) {
-			((RDF3XIndexScan) this).setCollationOrder(OptimizeJoinOrder
-					.getCollationOrder(tp, joinPartners));
+			((RDF3XIndexScan) this).setCollationOrder(RDF3XOperatorGraphGenerator.getCollationOrder(tp, joinPartners));
 			((RDF3XIndexScan) this).setMinimaMaxima(minima, maxima);
 
 		} 
-		final QueryResult qrSize = this.join(dataset);
+		final QueryResult qrSize = this.join(this.root.dataset);
 		if (qrSize == null) {
 			// System.out.println("No result for " + tp);
 			return null;
@@ -794,12 +710,11 @@ public abstract class BasicIndexScan extends RootChild {
 						.getCollationOrder(tp, cv));
 			}
 
-			QueryResult qr = this.join(dataset);
+			QueryResult qr = this.join(this.root.dataset);
 
 			if (this instanceof MemoryIndexScan) {
 				// additional sorting phase according to variable v needed
-				// for
-				// relational index approach!
+				// for memory index approach!
 				final DBMergeSortedBag<Bindings> sort = new DBMergeSortedBag<Bindings>(
 						HEAPHEIGHT, new Comparator<Bindings>() {
 							@Override
@@ -893,13 +808,11 @@ public abstract class BasicIndexScan extends RootChild {
 	}
 
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern tp,
-			final Dataset dataset,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
 			final HashMap<Variable, Literal> minima,
 			final HashMap<Variable, Literal> maxima) {
-		return getVarBucketsOriginal(tp, dataset, classBindings, joinPartners,
-				minima, maxima);
+		return getVarBucketsOriginal(tp, classBindings, joinPartners, minima, maxima);
 	}
 	
 	public static class AddConstantBindingIterator implements Iterator<Bindings>{

@@ -35,19 +35,17 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-import lupos.engine.operators.messages.BoundVariablesMessage;
-import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 
-public class BasicIndexOptional extends Optional {
+public class BasicIndexScanOptional extends Optional {
 
 	protected BasicIndexScan indexScanOperator;
 	protected Item rdfGraph;
 
 	public void setBasicIndexScan(final BasicIndexScan indexScanOperator){
 		this.indexScanOperator = indexScanOperator;
-		this.rdfGraph = BasicIndexOptional.this.indexScanOperator.getGraphConstraint();
+		this.rdfGraph = BasicIndexScanOptional.this.indexScanOperator.getGraphConstraint();
 	}
 	
 	@Override
@@ -87,16 +85,16 @@ public class BasicIndexOptional extends Optional {
 				if(currentBindings==null){
 					return null;
 				}
-				if(BasicIndexOptional.this.rdfGraph!=null && BasicIndexOptional.this.rdfGraph.isVariable()){
-					Literal result = currentBindings.get((Variable)BasicIndexOptional.this.rdfGraph);
+				if(BasicIndexScanOptional.this.rdfGraph!=null && BasicIndexScanOptional.this.rdfGraph.isVariable()){
+					Literal result = currentBindings.get((Variable)BasicIndexScanOptional.this.rdfGraph);
 					if(result!=null){
-						BasicIndexOptional.this.indexScanOperator.setGraphConstraint(result);
+						BasicIndexScanOptional.this.indexScanOperator.setGraphConstraint(result);
 					} else {
-						BasicIndexOptional.this.indexScanOperator.setGraphConstraint(BasicIndexOptional.this.rdfGraph);
+						BasicIndexScanOptional.this.indexScanOperator.setGraphConstraint(BasicIndexScanOptional.this.rdfGraph);
 					}
 				}
 				
-				Collection<TriplePattern> tps = BasicIndexOptional.this.indexScanOperator.getTriplePattern();
+				Collection<TriplePattern> tps = BasicIndexScanOptional.this.indexScanOperator.getTriplePattern();
 				LinkedList<TriplePattern> tps_new = new LinkedList<TriplePattern>();
 				for(TriplePattern tp: tps){
 					Item[] items = new Item[3];
@@ -115,12 +113,12 @@ public class BasicIndexOptional extends Optional {
 					}
 					tps_new.add(new TriplePattern(items));					
 				}
-				BasicIndexOptional.this.indexScanOperator.setTriplePatterns(tps_new);
-				if(BasicIndexOptional.this.indexScanOperator instanceof RDF3XIndexScan){
-					((RDF3XIndexScan)BasicIndexOptional.this.indexScanOperator).setCollationOrder((Collection<Variable>)null);
+				BasicIndexScanOptional.this.indexScanOperator.setTriplePatterns(tps_new);
+				if(BasicIndexScanOptional.this.indexScanOperator instanceof RDF3XIndexScan){
+					((RDF3XIndexScan)BasicIndexScanOptional.this.indexScanOperator).setCollationOrder((Collection<Variable>)null);
 				}
-				final QueryResult queryResult = BasicIndexOptional.this.indexScanOperator.join(BasicIndexOptional.this.indexScanOperator.getRoot().dataset);
-				BasicIndexOptional.this.indexScanOperator.setTriplePatterns(tps);
+				final QueryResult queryResult = BasicIndexScanOptional.this.indexScanOperator.join(BasicIndexScanOptional.this.indexScanOperator.getRoot().dataset);
+				BasicIndexScanOptional.this.indexScanOperator.setTriplePatterns(tps);
 				if(queryResult==null || queryResult.size()==0){
 					return new ParallelIterator<Bindings>(){
 						boolean sent=false;
@@ -205,9 +203,11 @@ public class BasicIndexOptional extends Optional {
 			boolean flag;
 			do {
 				flag = false;
-				inter = this.originalIterator.next();
-				if(inter==null)
+				if(this.originalIterator.hasNext()){
+					inter = this.originalIterator.next();
+				} else {
 					return null;
+				}
 				for(Variable v: this.bindingsToAdd.getVariableSet()){
 					Literal literal = inter.get(v);
 					if(literal!=null){

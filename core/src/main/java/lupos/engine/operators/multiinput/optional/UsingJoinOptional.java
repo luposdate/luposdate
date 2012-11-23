@@ -51,9 +51,7 @@ public class UsingJoinOptional extends Optional {
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
 		if (this.join == null) {
-			System.out
-					.println("The embedded join operator has not been initialized in the optional operator:"
-							+ this);
+			System.out.println("The embedded join operator has not been initialized in the optional operator:"+ this);
 			return null;
 		}
 		if (this.precedingOperators.size() == 1) {

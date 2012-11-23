@@ -131,8 +131,8 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
         this.suc.removePrecedingOperator(this.optional);
 
         // add new operators...
-        lupos.engine.operators.multiinput.optional.BasicIndexOptional optional_new = null;
-        optional_new = new lupos.engine.operators.multiinput.optional.BasicIndexOptional();
+        lupos.engine.operators.multiinput.optional.BasicIndexScanOptional optional_new = null;
+        optional_new = new lupos.engine.operators.multiinput.optional.BasicIndexScanOptional();
 
 
         // add new connections...

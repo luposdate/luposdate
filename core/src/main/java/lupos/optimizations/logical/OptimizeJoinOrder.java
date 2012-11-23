@@ -286,8 +286,7 @@ public class OptimizeJoinOrder {
 			this.cost = cost;
 		}
 
-		LeafNodePlan(final TriplePattern tp, final BasicIndexScan index,
-				final Dataset dataset,
+		LeafNodePlan(final TriplePattern tp, final BasicIndexScan index,				
 				final Class<? extends Bindings> classBindings,
 				final HashSet<Variable> joinPartners) {
 			triplePatterns = new LinkedList<TriplePattern>();
@@ -298,7 +297,7 @@ public class OptimizeJoinOrder {
 			numberJoins = 0;
 			order = new LinkedList<Variable>();
 			// TODO compute cardinality (==cost) of triple pattern
-			selectivity = index.getVarBuckets(tp, dataset, classBindings,
+			selectivity = index.getVarBuckets(tp, classBindings,
 					joinPartners, minima, maxima);
 			if (selectivity == null) {
 				cost = 0.0;
@@ -643,8 +642,7 @@ public class OptimizeJoinOrder {
 			Literal max = null;
 			for (final TriplePattern tp : ctp) {
 				if (tp.getVariables().contains(v)) {
-					final Tuple<Literal, Literal> minMax = index.getMinMax(v,
-							tp, dataset);
+					final Tuple<Literal, Literal> minMax = index.getMinMax(v, tp);
 					if (minMax != null) {
 						if (minMax.getFirst() != null) {
 							if (min == null
@@ -703,7 +701,7 @@ public class OptimizeJoinOrder {
 				public void run() {
 					index2.setTriplePatterns(new LinkedList<TriplePattern>());
 					final LeafNodePlan leafNodePlan = new LeafNodePlan(tp2,
-							index2, dataset, classBindings, joinPartners);
+							index2, classBindings, joinPartners);
 					// if (leafNodePlan.card.compareTo(ZERO) == 0) {
 					// // this triple pattern returns the empty result =>
 					// // we need to compute only an empty result!

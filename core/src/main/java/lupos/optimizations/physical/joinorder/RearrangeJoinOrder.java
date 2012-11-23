@@ -21,36 +21,19 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder;
 
-import java.io.Serializable;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
-
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
-
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
-	}
-
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
-	}
-
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
-	}
+/**
+ * All classes optimizing the join order must implement this interface. 
+ */
+public interface RearrangeJoinOrder {
+	/**
+	 * In this method, the joins are reordered by hanging in the suboperatorgraph, where the joins are reordered, under newRoot. 
+	 * @param newRoot the root operator under which the subgraph with the reordered joins are inserted
+	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
+	 */
+	public void rearrangeJoinOrder(final Root newRoot, final BasicIndexScan indexScan);
 }

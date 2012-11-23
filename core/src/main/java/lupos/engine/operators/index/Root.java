@@ -24,6 +24,7 @@
 package lupos.engine.operators.index;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import lupos.datastructures.items.Item;
@@ -31,6 +32,10 @@ import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
+import lupos.optimizations.physical.joinorder.jointree.MemoryIndexCostBasedOptimizer;
+import lupos.optimizations.physical.joinorder.withinindexscan.RearrangeTriplePatternsInIndexScanLeastEntries;
+import lupos.optimizations.physical.joinorder.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariables;
+import lupos.optimizations.physical.joinorder.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries;
 import lupos.engine.operators.RootChild;
 
 public abstract class Root extends Operator {
@@ -56,18 +61,36 @@ public abstract class Root extends Operator {
 	}
 
 	public void optimizeJoinOrder(final int opt) {
-		switch (opt) {
-		case BasicIndexScan.MOSTRESTRICTIONS:
-			optimizeJoinOrderAccordingToMostRestrictions();
-			break;
-		}
-	}
-
-	public void optimizeJoinOrderAccordingToMostRestrictions() {
+		final List<OperatorIDTuple> c = new LinkedList<OperatorIDTuple>();
+		
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
-			final BasicIndexScan index = (BasicIndexScan) oit.getOperator();
-			index.optimizeJoinOrderAccordingToMostRestrictions();
+			if (oit.getOperator() instanceof BasicIndexScan) {
+				final BasicIndexScan indexScan = (BasicIndexScan) oit.getOperator();
+				final lupos.engine.operators.index.Root root;
+
+				switch (opt) {
+				case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
+					root = RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries.rearrangeJoinOrder(indexScan);
+					break;
+				case BasicIndexScan.LEASTENTRIES:
+					root = RearrangeTriplePatternsInIndexScanLeastNewVariables.rearrangeJoinOrder(indexScan);
+					break;
+				case BasicIndexScan.Binary:
+					root = MemoryIndexCostBasedOptimizer.rearrangeJoinOrder(indexScan);
+					break;
+				default:
+					root = RearrangeTriplePatternsInIndexScanLeastEntries.rearrangeJoinOrder(indexScan);
+				}
+				
+				c.addAll(root.getSucceedingOperators());
+			} else
+				c.add(oit);
 		}
+		setSucceedingOperators(c);
+		this.deleteParents();
+		this.setParents();
+		this.detectCycles();
+		// has already been done before: this.sendMessage(new BoundVariablesMessage());
 	}
 
 	public void remove(final BasicIndexScan i) {

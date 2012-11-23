@@ -5269,7 +5269,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         break;
       case 115:
         jj_consume_token(115);
-        ASTLessThanEqualsNode jjtn004 = new ASTLessThanEqualsNode(JJTLESSTHANEQUALSNODE);
+        ASTGreaterThanNode jjtn004 = new ASTGreaterThanNode(JJTGREATERTHANNODE);
         boolean jjtc004 = true;
         jjtree.openNodeScope(jjtn004);
         try {
@@ -5296,7 +5296,7 @@ public class StreamSPARQL1_1Parser/*@bgen(jjtree)*/implements StreamSPARQL1_1Par
         break;
       case 116:
         jj_consume_token(116);
-         ASTGreaterThanNode jjtn005 = new ASTGreaterThanNode(JJTGREATERTHANNODE);
+         ASTLessThanEqualsNode jjtn005 = new ASTLessThanEqualsNode(JJTLESSTHANEQUALSNODE);
          boolean jjtc005 = true;
          jjtree.openNodeScope(jjtn005);
         try {

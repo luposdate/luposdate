@@ -21,36 +21,35 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder.withinindexscan;
 
-import java.io.Serializable;
+import java.util.HashSet;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
+import lupos.datastructures.items.Variable;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
+/**
+ * This class implements the scoring for least new variables by determining the number of new variables in a triple pattern 
+ */
+public class ScoringTriplePatternLeastNewVariables implements ScoringTriplePattern<HashSet<Variable>>{
+	
+	/**
+	 * the additional punishment score for cartesian products
+	 */
+	public static final int PUNISHMENT_FOR_CARTESIAN_PRODUCT = 100;
 
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
+	@Override
+	public int determineScore(BasicIndexScan indexScan,
+			TriplePattern triplePattern, HashSet<Variable> additionalInformation) {
+		final HashSet<Variable> v = triplePattern.getVariables();
+		boolean flag = v.removeAll(additionalInformation);
+		// flag == false means that no variables are in common, i.e., it is a cartesian product => make the score worser for cartesian products! 
+		return v.size() + ((flag)? 0 : ScoringTriplePatternLeastNewVariables.PUNISHMENT_FOR_CARTESIAN_PRODUCT);
 	}
 
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
-	}
-
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
+	@Override
+	public boolean scoreIsAscending() {
+		return true;
 	}
 }

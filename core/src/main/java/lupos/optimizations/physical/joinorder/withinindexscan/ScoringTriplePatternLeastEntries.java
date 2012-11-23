@@ -21,36 +21,39 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder.withinindexscan;
 
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 
-import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
+/**
+ * This class implements the scoring for least entries by determining the number of results of a triple pattern 
+ */
+public class ScoringTriplePatternLeastEntries implements ScoringTriplePattern<HashSet<Variable>> {
 
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
+	@Override
+	public int determineScore(BasicIndexScan indexScan,
+			TriplePattern triplePattern, HashSet<Variable> additonalInformation) {
+		// just do dirty trick to determine the number of results of a triple pattern...
+		final LinkedList<TriplePattern> tpc = new LinkedList<TriplePattern>();
+		tpc.add(triplePattern);
+		final Collection<TriplePattern> zTP = indexScan.getTriplePattern();
+		indexScan.setTriplePatterns(tpc);
+		final QueryResult queryResult = indexScan.join(indexScan.getRoot().dataset);
+		indexScan.setTriplePatterns(zTP);
+		final int entries = queryResult.oneTimeSize();
+		return entries;
 	}
 
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
+	@Override
+	public boolean scoreIsAscending() {
+		return true;
 	}
 
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
-	}
 }

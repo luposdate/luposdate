@@ -42,9 +42,9 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration;
+import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
-import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
@@ -55,12 +55,13 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.Entry;
 import lupos.optimizations.logical.statistics.VarBucket;
+import lupos.optimizations.physical.joinorder.jointree.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
 
 public class RDF3XIndexScan extends BasicIndexScan {
 
 	public enum CollationOrder {
 		SPO, SOP, PSO, POS, OSP, OPS
-	};
+	}
 
 	protected CollationOrder collationOrder = CollationOrder.SPO;
 
@@ -683,22 +684,49 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 	@Override
 	public Tuple<Literal, Literal> getMinMax(final Variable v,
-			final TriplePattern tp, final Dataset dataset) {
+			final TriplePattern tp) {
 		int pos = 0;
 		for (final Item item : tp.getItems()) {
 			if (v.equals(item))
 				break;
 			pos++;
 		}
-		final Tuple<Literal, Literal> result = super.getMinMax(v, tp, dataset);
-		if (result != null)
-			// collation order is already set by super method!
-			result.setSecond(getMax(tp, dataset, pos));
-		return result;
+		final Literal min = this.getMin(v, tp);
+		if (min != null){
+			// collation order is already set by getMin(...) method!
+			return new Tuple<Literal, Literal>(min, this.getMax(tp, pos));
+		}
+		return null;
+	}
+	
+	public Literal getMin(final Variable v,
+			final TriplePattern tp) {
+		final Collection<TriplePattern> ztp = this.getTriplePattern();
+		final Collection<TriplePattern> ctp = new LinkedList<TriplePattern>();
+		ctp.add(tp);
+		this.setTriplePatterns(ctp);
+		final Collection<Variable> cv = new LinkedList<Variable>();
+		cv.add(v);
+		this.setCollationOrder(RDF3XOperatorGraphGenerator.getCollationOrder(tp, cv));
+		final QueryResult qr = this.join(this.root.dataset);
+		if (qr == null) {
+			this.setTriplePatterns(ztp);
+			return null;
+		}
+		final Iterator<Bindings> itb = qr.oneTimeIterator();
+		if (!itb.hasNext()) {
+			this.setTriplePatterns(ztp);
+			return null;
+		}
+		final Literal min = itb.next().get(v);
+		if (itb instanceof ParallelIterator)
+			((ParallelIterator<Bindings>) itb).close();
+
+		this.setTriplePatterns(ztp);
+		return min;
 	}
 
-	public Literal getMax(final TriplePattern tp, final Dataset dataset,
-			final int pos) {
+	public Literal getMax(final TriplePattern tp, final int pos) {
 		Literal max = null;
 		try {
 
@@ -708,7 +736,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			final Item graphConstraintItem = getGraphConstraint();
 
 			// get a collection of indices using the determined graph constraint
-			final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
+			final Collection<Indices> indicesC = this.root.dataset.indexingRDFGraphs(
 					graphConstraintItem, false, false, this.root);
 			if ((indicesC != null) && !(indicesC.size() == 0)) {
 				final Triple key = getKey(tp, null);
@@ -723,15 +751,15 @@ public class RDF3XIndexScan extends BasicIndexScan {
 						final Variable graphConstraint = (Variable) graphConstraintItem;
 
 						// check if named graphs were provided at query time
-						if (root.namedGraphs != null
-								&& root.namedGraphs.size() > 0) {
+						if (this.root.namedGraphs != null
+								&& this.root.namedGraphs.size() > 0) {
 
 							// Convert the named graphs' names into URILiterals
 							// to be applicable
 							// later on
-							for (final String name : root.namedGraphs) {
+							for (final String name : this.root.namedGraphs) {
 
-								final Indices indices = dataset
+								final Indices indices = this.root.dataset
 										.getNamedGraphIndices(LiteralFactory
 												.createURILiteralWithoutLazyLiteral(name));
 
@@ -766,7 +794,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 							// get all indices of named graphs and bind them to
 							// the graph constraint
-							final Collection<Indices> dataSetIndices = dataset
+							final Collection<Indices> dataSetIndices = this.root.dataset
 									.getNamedGraphIndices();
 							if (dataSetIndices != null) {
 
@@ -883,7 +911,6 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 	@Override
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern tp,
-			final Dataset dataset,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
 			final HashMap<Variable, Literal> minima,
@@ -891,7 +918,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		if (Indices.usedDatastructure != Indices.DATA_STRUCT.DBBPTREE
 				|| (LiteralFactory.getMapType() != LiteralFactory.MapType.LAZYLITERAL && LiteralFactory
 						.getMapType() != LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP))
-			return super.getVarBuckets(tp, dataset, classBindings,
+			return super.getVarBuckets(tp, classBindings,
 					joinPartners, minima, maxima);
 		// use B+-tree with statistics about number of triples in subtree
 		// and distinct literals at the subject, predicate or object position!
@@ -983,7 +1010,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 				// get a collection of indices using the determined graph
 				// constraint
-				final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
+				final Collection<Indices> indicesC = this.root.dataset.indexingRDFGraphs(
 						graphConstraintItem, false, false, this.root);
 				if ((indicesC != null) && !(indicesC.size() == 0)) {
 					final Triple key = getKey(tp, null);
@@ -1008,7 +1035,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 								// later on
 								for (final String name : root.namedGraphs) {
 
-									final Indices indices = dataset
+									final Indices indices = this.root.dataset
 											.getNamedGraphIndices(LiteralFactory
 													.createURILiteralWithoutLazyLiteral(name));
 
@@ -1060,7 +1087,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 								// get all indices of named graphs and bind them
 								// to
 								// the graph constraint
-								final Collection<Indices> dataSetIndices = dataset
+								final Collection<Indices> dataSetIndices = this.root.dataset
 										.getNamedGraphIndices();
 								if (dataSetIndices != null) {
 

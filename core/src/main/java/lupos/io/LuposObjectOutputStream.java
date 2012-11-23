@@ -182,41 +182,21 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	}
 
 	public void writeLuposString(final String s) throws IOException {
-		if (s == null)
+		if (s == null){
 			return;
-		final boolean flag = s.compareTo(new String(s.getBytes())) == 0;
-		final int length = s.length();
-		final int offset = flag ? 0 : 32;
-		if (length < 256) {
-			this.writeLuposInt1Byte(offset + 0);
-			this.writeLuposInt1Byte(length);
-		} else if (length < 256 * 256) {
-			this.writeLuposInt1Byte(offset + 1);
-			this.writeLuposInt2Bytes(length);
-		} else if (length < 256 * 256 * 256) {
-			this.writeLuposInt1Byte(offset + 2);
-			this.writeLuposInt3Bytes(length);
-		} else {
-			this.writeLuposInt1Byte(offset + 3);
-			this.writeLuposInt(length);
 		}
-		if (flag) {
-			os.write(s.getBytes());
-		} else {
-			final char[] chararray = s.toCharArray();
-			final ByteBuffer buf = ByteBuffer.allocate(chararray.length * 2);
-			for (final char c : chararray) {
-				buf.putChar(c);
-			}
-			os.write(buf.array());
-		}
+		byte[] bytesOfS = s.getBytes(LuposObjectInputStream.UTF8);
+		final int length = bytesOfS.length;
+		this.writeLuposIntVariableBytes(length);
+		this.os.write(bytesOfS);
 	}
 
 	public void writeLuposBoolean(final boolean flag) throws IOException {
-		if (flag)
-			os.write(0);
-		else
-			os.write(1);
+		if (flag){
+			this.os.write(0);
+		} else {
+			this.os.write(1);
+		}
 	}
 
 	public void writeLuposInt(final int i) throws IOException {
@@ -224,10 +204,10 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		final int i2 = (i / 256) % 256;
 		final int i3 = (i / (256 * 256)) % 256;
 		final int i4 = (i / (256 * 256 * 256)) % 256;
-		os.write(i1);
-		os.write(i2);
-		os.write(i3);
-		os.write(i4);
+		this.os.write(i1);
+		this.os.write(i2);
+		this.os.write(i3);
+		this.os.write(i4);
 	}
 	
 	public void writeLuposBigInteger(final BigInteger value, final int numberOfBits) throws IOException {
@@ -241,7 +221,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 			remainingBits-=8;
 		}
 	}
-
+	
 	public void writeLuposInt1Byte(final int i) throws IOException {
 		os.write(i % 256);
 	}
@@ -270,23 +250,52 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	public void writeLuposByte(final byte b) throws IOException {
 		os.write(b);
 	}
+	
+	public void writeLuposIntVariableBytes(int i_par) throws IOException {
+		int i = i_par; 
+		if (i <= 251) {
+			this.writeLuposInt1Byte(i);
+		} else {
+			i -= 251;
+			if (i >= 256) {
+				if (i / 256 >= 256) {
+					if (i / (256 * 256) >= 256) {
+						this.writeLuposInt1Byte(255);
+					} else {
+						this.writeLuposInt1Byte(254);
+					}
+				} else {
+					this.writeLuposInt1Byte(253);
+				}
+			} else {
+				this.writeLuposInt1Byte(252);
+			}
+			while (i > 0) {
+				this.writeLuposInt1Byte(i % 256);
+				i /= 256;
+			}
+		}
+	}
 
-	public static void writeLuposInt(int i, final ObjectOutput out)
-			throws IOException {
-		if (i <= 251)
-			out.write(i);
-		else {
+	public static void writeLuposInt(int i_par, final ObjectOutput out) throws IOException {
+		int i = i_par;
+		if (i <= 251) {
+			out.writeByte(i);
+		} else {
 			i -= 251;
 			if (i >= 256) {
 				if (i / 256 >= 256) {
 					if (i / (256 * 256) >= 256) {
 						out.writeByte(255);
-					} else
+					} else {
 						out.writeByte(254);
-				} else
+					}
+				} else {
 					out.writeByte(253);
-			} else
+				}
+			} else {
 				out.writeByte(252);
+			}
 			while (i > 0) {
 				out.writeByte(i % 256);
 				i /= 256;
@@ -299,8 +308,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		if (literal instanceof StringLiteral)
 			out.writeObject(((StringLiteral) literal).originalString());
 		else
-			LuposObjectOutputStream.writeLuposInt(((CodeMapLiteral) literal)
-					.getCode(), out);
+			LuposObjectOutputStream.writeLuposInt(((CodeMapLiteral) literal).getCode(), out);
 	}
 
 	private static Collection<String> splitStringInto64KBUTFBlocks(

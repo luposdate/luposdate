@@ -263,7 +263,7 @@ public class ComparatorAST implements ComparatorBindings {
 		}
 		
 		// third typed literals:
-		// Numeric comparision?
+		// Numeric comparison?
 		if (l0 instanceof TypedLiteral && l1 instanceof TypedLiteral) {
 			final TypedLiteral tl0 = (TypedLiteral) l0;
 			final TypedLiteral tl1 = (TypedLiteral) l1;
@@ -271,11 +271,12 @@ public class ComparatorAST implements ComparatorBindings {
 					&& Helper.isNumeric(tl1.getType())) {
 				if (Helper.isInteger(tl0.getType())
 						&& Helper.isInteger(tl1.getType())) {
-					try {
 						BigInteger a;
 						try {
 							a = Helper.getInteger(tl0);
 						} catch (final NumberFormatException e) {
+							a = null;
+						} catch (final TypeErrorException e) {
 							a = null;
 						}
 						BigInteger b;
@@ -283,28 +284,28 @@ public class ComparatorAST implements ComparatorBindings {
 							b = Helper.getInteger(tl1);
 						} catch (final NumberFormatException e) {
 							b = null;
+						} catch (final TypeErrorException e) {
+							b = null;
 						}
 						if (a == null) {
-							if (b == null)
+							if (b == null){
 								return l0.toString().compareTo(l1.toString());
-							else
+							} else {
 								return 1;
-						} else if (b == null)
+							}
+						} else if (b == null) {
 							return -1;
-						else {
+						} else {
 							final int comp = a.compareTo(b);
 							return comp;
 						}
-					} catch (final TypeErrorException e) {
-						System.err.println(e);
-						e.printStackTrace();
-					}
 				} else { // decimal comparison...
-					try {
 						BigDecimal a;
 						try {
 							a = Helper.getBigDecimal(tl0);
 						} catch (final NumberFormatException e) {
+							a = null;
+						} catch (final TypeErrorException e) {
 							a = null;
 						}
 						BigDecimal b;
@@ -312,24 +313,21 @@ public class ComparatorAST implements ComparatorBindings {
 							b = Helper.getBigDecimal(tl1);
 						} catch (final NumberFormatException e) {
 							b = null;
+						} catch (final TypeErrorException e) {
+							b = null;
 						}
 						if (a == null) {
-							if (b == null)
+							if (b == null){
 								return l0.toString().compareTo(l1.toString());
-							else
+							} else {
 								return 1;
-						} else if (b == null)
+							}
+						} else if (b == null){
 							return -1;
-						else {
+						} else {
 							final int comp = a.compareTo(b);
-							// mCache.put(new Tuple<Literal, Literal>(l0, l1),
-							// comp);
 							return comp;
 						}
-					} catch (final TypeErrorException e) {
-						System.err.println(e);
-						e.printStackTrace();
-					}
 				}
 			}
 		}

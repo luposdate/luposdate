@@ -47,7 +47,7 @@ public abstract class FastSort extends SingleInputOperator {
 	protected List<TriplePattern> triplePatterns;
 	protected Collection<Variable> sortCriterium;
 
-	public FastSort(final List<TriplePattern> triplePatterns,
+	public FastSort(final Collection<TriplePattern> triplePatterns,
 			final Collection<Variable> sortCriterium) {
 		super();
 		this.triplePatterns = new LinkedList<TriplePattern>();
@@ -72,7 +72,7 @@ public abstract class FastSort extends SingleInputOperator {
 	}
 
 	public static FastSort createInstance(final BasicOperator root,
-			final List<TriplePattern> triplePatterns,
+			final Collection<TriplePattern> triplePatterns,
 			final Collection<Variable> sortCriterium) {
 		if (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {

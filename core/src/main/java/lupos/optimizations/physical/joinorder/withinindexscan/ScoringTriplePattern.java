@@ -21,36 +21,28 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder.withinindexscan;
 
-import java.io.Serializable;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
-
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
-
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
-	}
-
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
-	}
-
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
-	}
+/**
+ * This interface is used in classes to score a triple pattern to be the next best triple pattern to join 
+ */
+public interface ScoringTriplePattern<T> {
+	
+	/**
+	 * This method is used in classes to score a triple pattern to be the next best triple pattern to join
+	 * @param indexScan the IndexScan operator the join order to optimize
+	 * @param triplePattern the triple pattern to score
+	 * @param additionalInformation additional information (e.g. the variables of already joined triple patterns)
+	 * @return the determined score
+	 */
+	public int determineScore(final BasicIndexScan indexScan, final TriplePattern triplePattern, T additionalInformation);
+	
+	/**
+	 * Whether or not the score ordering is ascending or descending
+	 * @return a boolean value (true = minimum score is best, false maximum score is best)
+	 */
+	public boolean scoreIsAscending();
 }

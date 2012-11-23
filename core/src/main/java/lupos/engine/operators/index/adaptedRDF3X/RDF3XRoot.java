@@ -33,6 +33,7 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.logical.OptimizeJoinOrder;
+import lupos.optimizations.physical.joinorder.jointree.RDF3XCostBasedOptimizer;
 
 public class RDF3XRoot extends
 		lupos.engine.operators.index.Root {
@@ -50,8 +51,9 @@ public class RDF3XRoot extends
 
 	@Override
 	public lupos.engine.operators.index.Root newInstance(Dataset dataset_param) {
-		this.dataset=dataset_param;
-		return new RDF3XRoot();
+		RDF3XRoot root = new RDF3XRoot();
+		root.dataset = dataset_param;
+		return root;
 	}
 
 	@Override
@@ -67,28 +69,10 @@ public class RDF3XRoot extends
 
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
 			if (oit.getOperator() instanceof RDF3XIndexScan) {
-				final RDF3XIndexScan index = (RDF3XIndexScan) oit.getOperator();
-				if (opt == BasicIndexScan.NARYMERGEJOIN) {
-					final lupos.engine.operators.index.Root root = OptimizeJoinOrder
-							.getPlanWithNAryMergeJoins(
-									new RDF3XRoot(),
-									index,
-									(opt == BasicIndexScan.MERGEJOINSORT) ? OptimizeJoinOrder.PlanType.RDF3XSORT
-											: OptimizeJoinOrder.PlanType.RDF3X,
-									this.dataset);
-					c.addAll(root.getSucceedingOperators());
-				} else {
-					final lupos.engine.operators.index.Root root = (opt == BasicIndexScan.Binary) ? index
-							.getBinaryJoin()
-							: OptimizeJoinOrder
-									.getBinaryJoinWithManyMergeJoins(
-											new RDF3XRoot(),
-											index,
-											(opt == BasicIndexScan.MERGEJOINSORT) ? OptimizeJoinOrder.PlanType.RDF3XSORT
-													: OptimizeJoinOrder.PlanType.RDF3X,
-											this.dataset);
-					c.addAll(root.getSucceedingOperators());
-				}
+				final RDF3XIndexScan indexScan = (RDF3XIndexScan) oit.getOperator();
+				
+				final lupos.engine.operators.index.Root root = RDF3XCostBasedOptimizer.rearrangeJoinOrder(indexScan, opt == BasicIndexScan.MERGEJOINSORT, opt==BasicIndexScan.NARYMERGEJOIN);
+				c.addAll(root.getSucceedingOperators());								
 			} else
 				c.add(oit);
 		}

@@ -26,7 +26,6 @@ package lupos.rif.operator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Item;
@@ -85,5 +84,4 @@ public class BindableTripleIndexScan extends BindableIndexScan {
 	public Collection<TriplePattern> getTriplePattern() {
 		return index.getTriplePattern();
 	}
-
 }

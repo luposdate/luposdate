@@ -75,10 +75,8 @@ import javax.swing.plaf.FontUIResource;
 
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
-import lupos.engine.evaluators.DebugContainerQuery;
 import lupos.engine.evaluators.JenaQueryEvaluator;
 import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.evaluators.QueryEvaluator;
@@ -105,11 +103,7 @@ import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinNonStandardSPARQL;
 import lupos.gui.debug.EvaluationDemoToolBar;
 import lupos.misc.debug.BasicOperatorByteArray;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperAST;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperASTRIF;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperRules;
 import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.gui.operatorgraph.viewer.ViewerPrefix;
 import lupos.gui.operatorgraph.visualeditor.dataeditor.DataEditor;
@@ -123,11 +117,6 @@ import lupos.misc.FileHelper;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.rif.BasicIndexRuleEvaluator;
 import lupos.rif.datatypes.RuleResult;
-import lupos.rif.generated.syntaxtree.CompilationUnit;
-import lupos.rif.model.Document;
-import lupos.sparql1_1.ASTAs;
-import lupos.sparql1_1.ASTSelectQuery;
-import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.ParseException;
 import lupos.sparql1_1.TokenMgrError;
@@ -694,6 +683,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				new DataEditor(Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
@@ -733,6 +723,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		
 		return FileHelper.readFile(resource, new FileHelper.GetReader() {
 
+				@Override
 				public Reader getReader(final String filename) throws FileNotFoundException {
 					try {
 						InputStream stream = null;
@@ -1352,19 +1343,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	/**
-	 * Opens a file.
-	 * 
-	 * @param filename
-	 *            filename of file to open
-	 * 
-	 * @return file as string
-	 */
-	private String readFile(final String filename) {
-		return FileHelper.readFile(filename,
-				(this.webdemo != DEMO_ENUM.ECLIPSE));
-	}
-
 	public QueryEvaluator<Node> setupEvaluator(final EvaluationMode mode)
 			throws Throwable {
 		ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
@@ -1374,6 +1352,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
 		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
 		LiteralFactory.semanticInterpretationOfLiterals = xpref.datatypes.BooleanDatatype.getFirstValue("semanticInterpretationOfDatatypes");
+		@SuppressWarnings("unchecked")
 		final QueryEvaluator<Node> evaluator = (QueryEvaluator<Node>) this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex()).newInstance();
 		evaluator.setupArguments();
 		evaluator.getArgs().set("debug", DEBUG.ALL);
@@ -1580,7 +1559,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 							}
 						}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), birqe.getCompilationUnit(), birqe.getDocument());				
 
-				// TODO improve RIF logical optimization such that it is fast enough for large operatorgraphs!
+				// TODO improve RIF logical optimization such that it is fast enough for large operator graphs!
 				// as workaround here only use the logical optimization of the underlying evaluator!
 				System.out.println("Logical optimization...");
 				if (Demo_Applet.this.ruleApplicationsForMaterialization != null) {
@@ -1725,15 +1704,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
 		evaluation.getButtonEvaluate().setEnabled(false);
 		evaluation.getButtonEvalDemo().setEnabled(false);
 		evaluation.getButtonMeasureExecutionTimes().setEnabled(false);
 
-		//		StaticDataHolder.resetOperatorGraphRules();
-		//		this.resultOrder = new LinkedList<String>();
 		this.query = evaluation.getQuery(); // get query
-		//		Indices.materializationDemo = (mode == EvaluationMode.DEMO);
 
 		if (this.query.compareTo("") == 0) { // no query given...
 			displayErrorMessage("Error: empty query", true);
@@ -1752,7 +1729,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 						final long prepareInputData = evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
 
 						try {
-							//											Indices.waitForMaterializationDemoThread();
 							System.out.println("Compile query...");
 							try {
 								final long compileQuery = evaluation.compileQuery(this.query);
@@ -1792,10 +1768,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 											};
 											bottomToolBar.setEvaluationThread(thread);
 											thread.start();
-											if (this.prefixInstance == null)
-												this.prefixInstance = new ViewerPrefix(
-														this.usePrefixes.isTrue(),
-														null);
+											this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue(), null);
 											BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
 
 											this.operatorGraphViewer = new Viewer(
@@ -1832,7 +1805,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 										final long[] evaluateQueryTimeArray = new long[times];
 										final long[] totalTimeArray = new long[times];
 										for (int i = 0; i < times; i++) {
-											compileQueryTimeArray[i] = evaluator.compileQuery(query);
+											compileQueryTimeArray[i] = evaluator.compileQuery(this.query);
 											compileQueryTime += compileQueryTimeArray[i];
 											logicalOptimizationTimeArray[i] = evaluator.logicalOptimization();
 											logicalOptimizationTime += logicalOptimizationTimeArray[i];
@@ -1897,8 +1870,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 						evaluation.enableButtons();
 
 					} else {
-						if (this.prefixInstance == null)
-							this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
 
 						try {		
 							evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
@@ -1906,7 +1877,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 							System.out.println("Compile query...");
 							try {
 								try {
-									this.debugViewerCreator = evaluation.compileQueryDebugByteArray(query);
+									this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
+									
+									this.debugViewerCreator = evaluation.compileQueryDebugByteArray(this.query);
 
 									if (this.debugViewerCreator != null) {
 										this.ruleApplications = this.debugViewerCreator.getCorrectOperatorGraphRules();
@@ -1929,8 +1902,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 									} else {
 										this.ruleApplications = evaluator.physicalOptimizationDebugByteArray(this.prefixInstance);
 									}
-
-									// new Viewer(ruleApplications, "OperatorGraph", false,webdemo != DEMO_ENUM.ECLIPSE, prefixInstance);
 
 									System.out.println("Evaluate query ...");
 
@@ -2204,7 +2175,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private void outputResult(){
 		try{
 			final Container contentPane = (this.isApplet) ? this.getContentPane() : this.frame.getContentPane();
-
+			
 			ResultPanelHelper.setupResultPanel(this.resultpanel, this.resultQueryEvaluator, this.debugViewerCreator, this.materializationInfo, this.inferenceRules, this.ruleApplicationsForMaterialization, this.errorsInOntology, this.usePrefixes, this.prefixInstance, contentPane );
 			
 		} catch (final Exception ex) {

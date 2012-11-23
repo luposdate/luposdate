@@ -187,8 +187,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static BigDecimal getBigDecimal(final Object a)
-			throws TypeErrorException {
+	public static BigDecimal getBigDecimal(final Object a) throws TypeErrorException {
 		if (a instanceof BigDecimal)
 			return (BigDecimal) a;
 		if (a instanceof Double)

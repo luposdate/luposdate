@@ -33,10 +33,12 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
+import lupos.misc.debug.DebugStep;
 
 /**
  * This join operator creates an index on the left operand and
@@ -64,6 +66,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 	
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
+		//bindings.materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
 		this.operands[operandID].addQueryResult(bindings); // just store the queryresult!
 		return null; // wait for EndOfStreamMessage...		
 	}
@@ -73,9 +76,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
 			Map<String, QueryResult> leftOperandsData = this.createDatastructure();
 			QueryResult cartesianProduct = QueryResult.createInstance();
-	
-			// this.operands[0].materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
-	
+		
 			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0].getQueryResult(), this.intersectionVariables, leftOperandsData, cartesianProduct);
 	
 			QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
@@ -89,7 +90,29 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			}
 		}
 		return msg;
+	}
+	
+	@Override
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
+		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
+			Map<String, QueryResult> leftOperandsData = this.createDatastructure();
+			QueryResult cartesianProduct = QueryResult.createInstance();
+	
+			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0].getQueryResult(), this.intersectionVariables, leftOperandsData, cartesianProduct);
+	
+			QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
+	
+			if(this.succeedingOperators.size()>1){
+				result.materialize();
+			}
+	
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAllDebug(new QueryResultDebug(result, debugstep, this, opId.getOperator(), true), debugstep);
+			}
+		}
+		return msg;
 	}	
+
 	
 	public static void indexQueryResult(final QueryResult toIndex, final Collection<Variable> joinVariables, final Map<String, QueryResult> index, final QueryResult cartesianProduct){
 		final Iterator<Bindings> itbindings = toIndex.oneTimeIterator();
@@ -105,11 +128,11 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			}
 			
 			QueryResult lb = index.get(keyJoin);
-			if (lb == null)
+			if (lb == null){
 				lb = QueryResult.createInstance();
+			}
 			lb.add(bindings);
 			index.put(keyJoin, lb);
-
 		}
 		if(itbindings instanceof ParallelIterator){
 			((ParallelIterator<Bindings>)itbindings).close();

@@ -21,36 +21,11 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder.jointree.plan;
 
-import java.io.Serializable;
-
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
-
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
-
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
-	}
-
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
-	}
-
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
-	}
+/**
+ * the type of join of an inner node in the plan 
+ */
+public enum JoinType {
+	DEFAULT, MERGEJOIN
 }

@@ -94,8 +94,8 @@ public interface SPARQL1_1ParserTreeConstants
   public int JJTEQUALSNODE = 65;
   public int JJTNOTEQUALSNODE = 66;
   public int JJTLESSTHANNODE = 67;
-  public int JJTLESSTHANEQUALSNODE = 68;
-  public int JJTGREATERTHANNODE = 69;
+  public int JJTGREATERTHANNODE = 68;
+  public int JJTLESSTHANEQUALSNODE = 69;
   public int JJTGREATERTHANEQUALSNODE = 70;
   public int JJTINNODE = 71;
   public int JJTNOTINNODE = 72;
@@ -241,8 +241,8 @@ public interface SPARQL1_1ParserTreeConstants
     "EqualsNode",
     "NotEqualsNode",
     "LessThanNode",
-    "LessThanEqualsNode",
     "GreaterThanNode",
+    "LessThanEqualsNode",
     "GreaterThanEqualsNode",
     "InNode",
     "NotInNode",
@@ -319,4 +319,4 @@ public interface SPARQL1_1ParserTreeConstants
     "EmptyNode",
   };
 }
-/* JavaCC - OriginalChecksum=893646eab938bca981f66eabbc5d1e4f (do not edit this line) */
+/* JavaCC - OriginalChecksum=98116a70e653b0164f0d437c88ea1819 (do not edit this line) */

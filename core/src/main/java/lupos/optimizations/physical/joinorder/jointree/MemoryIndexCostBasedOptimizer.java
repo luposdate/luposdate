@@ -21,36 +21,33 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators;
+package lupos.optimizations.physical.joinorder.jointree;
 
-import java.io.Serializable;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Root;
+import lupos.optimizations.physical.joinorder.jointree.operatorgraphgenerator.MemoryIndexOperatorGraphGenerator;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.misc.debug.DebugStep;
+/**
+ * This class is the cost-based optimizer for the memory index query evaluator. 
+ */
+public class MemoryIndexCostBasedOptimizer extends CostBasedOptimizer {
 
-public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
-	private static final long serialVersionUID = 1416179591924778885L;
-
-	public OperatorIDTuple(BasicOperator op, int id) {
-		super(op, id);
+	/**
+	 * The constructor initializing the cost-based optimizer with the default strategies
+	 */
+	public MemoryIndexCostBasedOptimizer() {
+		super(new MemoryIndexOperatorGraphGenerator());
 	}
 
-	public OperatorIDTuple(final OperatorIDTuple opID) {
-		super(opID.op, opID.id);
-	}
-
-	public void processAll(final Bindings b) {
-		final QueryResult bindings = QueryResult.createInstance();
-		bindings.add(b);
-		((Operator) this.op).processAll(bindings, this.id);
-	}
-
-	public void processAll(final QueryResult qr) {
-		((Operator) this.op).processAll(qr, this.id);
-	}
-
-	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
-		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
+	/**
+	 * Static method to call the cost-based optimizer for the memory index query evaluator 
+	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
+	 * @return the root operator under which the subgraph with the reordered joins are inserted
+	 */
+	public static Root rearrangeJoinOrder(BasicIndexScan indexScan){
+		Root newRoot = indexScan.getRoot().newInstance(indexScan.getRoot().dataset);
+		MemoryIndexCostBasedOptimizer optimizer = new MemoryIndexCostBasedOptimizer();
+		optimizer.rearrangeJoinOrder(newRoot, indexScan);
+		return newRoot;
 	}
 }

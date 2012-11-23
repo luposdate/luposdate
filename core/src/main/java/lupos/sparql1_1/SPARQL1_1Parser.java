@@ -5271,7 +5271,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         break;
       case 103:
         jj_consume_token(103);
-        ASTLessThanEqualsNode jjtn004 = new ASTLessThanEqualsNode(JJTLESSTHANEQUALSNODE);
+        ASTGreaterThanNode jjtn004 = new ASTGreaterThanNode(JJTGREATERTHANNODE);
         boolean jjtc004 = true;
         jjtree.openNodeScope(jjtn004);
         try {
@@ -5298,7 +5298,7 @@ public class SPARQL1_1Parser/*@bgen(jjtree)*/implements SPARQL1_1ParserTreeConst
         break;
       case 104:
         jj_consume_token(104);
-         ASTGreaterThanNode jjtn005 = new ASTGreaterThanNode(JJTGREATERTHANNODE);
+         ASTLessThanEqualsNode jjtn005 = new ASTLessThanEqualsNode(JJTLESSTHANEQUALSNODE);
          boolean jjtc005 = true;
          jjtree.openNodeScope(jjtn005);
         try {

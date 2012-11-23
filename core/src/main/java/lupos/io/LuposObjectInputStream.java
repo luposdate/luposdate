@@ -59,6 +59,8 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.logical.statistics.VarBucket;
 
 public class LuposObjectInputStream<E> extends ObjectInputStream {
+	
+	public static final String UTF8 = "UTF-8";
 
 	public static final int LITERAL = 0;
 	public static final int URILITERAL = 1;
@@ -77,17 +79,14 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 	public LuposObjectInputStream() throws IOException {
 	}
 
-	public LuposObjectInputStream(final InputStream arg0,
-			final Class<? extends E> classOfElements) throws IOException,
-			EOFException {
+	public LuposObjectInputStream(final InputStream arg0, final Class<? extends E> classOfElements) throws IOException, EOFException {
 		super(arg0);
-		is = arg0;
+		this.is = arg0;
 		this.classOfElements = classOfElements;
 	}
 
-	public E readLuposObject() throws IOException, ClassNotFoundException,
-			URISyntaxException {
-		return Registration.deserializeWithoutId(classOfElements, this);
+	public E readLuposObject() throws IOException, ClassNotFoundException, URISyntaxException {
+		return Registration.deserializeWithoutId(this.classOfElements, this);
 	}
 
 	public <TT> TT readLuposObject(final Class classOfElements)
@@ -377,46 +376,13 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 	}
 
 	public String readLuposString() throws IOException {
-		int firstByte = is.read();
-		if (firstByte < 0)
+		final int length = this.readLuposIntVariableBytes();
+		if(length<0){
 			return null;
-		boolean flag;
-		if (firstByte < 32) {
-			flag = true;
-		} else {
-			flag = false;
-			firstByte -= 32;
 		}
-		Integer length;
-		switch (firstByte) {
-		case 0:
-			length = readLuposInteger1Byte();
-			break;
-		case 1:
-			length = readLuposInteger2Bytes();
-			break;
-		case 2:
-			length = readLuposInteger3Bytes();
-			break;
-		default:
-		case 3:
-			length = readLuposInt();
-			break;
-		}
-		if (length == null || length < 0)
-			return null;
-		final byte[] ba = new byte[flag ? length : length * 2];
-		is.read(ba);
-		if (flag) {
-			return new String(ba);
-		} else {
-			final ByteBuffer buf = ByteBuffer.wrap(ba);
-			final StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < length; i++) {
-				sb.append(buf.getChar());
-			}
-			return sb.toString();
-		}
+		final byte[] bytesOfResult = new byte[length];
+		this.is.read(bytesOfResult);
+		return new String(bytesOfResult, LuposObjectInputStream.UTF8);
 	}
 
 	public Entry<E> readLuposEntry() throws IOException, ClassNotFoundException {
@@ -530,10 +496,25 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return new TripleKey(t, new TripleComparator((byte) order));
 	}
 
+	public int readLuposIntVariableBytes() throws IOException {
+		final int i0 = this.readLuposInteger1Byte();
+		if (i0 <= 251){
+			return i0;
+		}
+		int result = 251;
+		int offset = 1;
+		for (int i = 0; i < i0 - 251; i++) {
+			result += this.readLuposInteger1Byte() * offset;
+			offset *= 256;
+		}
+		return result;
+	}
+	
 	public static int readLuposInt(final ObjectInput in) throws IOException {
 		final int i0 = in.read();
-		if (i0 <= 251)
+		if (i0 <= 251){
 			return i0;
+		}
 		int result = 251;
 		int offset = 1;
 		for (int i = 0; i < i0 - 251; i++) {

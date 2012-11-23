@@ -44,7 +44,7 @@ public class FastSortLazyLiteral extends FastSort {
 	public static final int HEAPHEIGHT = 16;
 
 	public FastSortLazyLiteral(final BasicOperator root,
-			final List<TriplePattern> triplePatterns,
+			final Collection<TriplePattern> triplePatterns,
 			final Collection<Variable> sortCriterium) {
 		super(triplePatterns, sortCriterium);
 	}

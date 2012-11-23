@@ -120,4 +120,10 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 			qr.removeAll(queryResult);
 		}
 	}
+	
+	public void materialize(){
+		for(QueryResult qr: this.queryResults){
+			qr.materialize();
+		}
+	}
 }
