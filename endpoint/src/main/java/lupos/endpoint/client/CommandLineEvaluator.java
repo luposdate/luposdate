@@ -55,9 +55,9 @@ public class CommandLineEvaluator {
 		String evaluator = args[3].toLowerCase();
 		if(evaluator.compareTo("memory")==0){
 			MemoryIndexQueryEvaluator.main(args2);
-		} else if(evaluator.compareTo("memory")==0){
+		} else if(evaluator.compareTo("rdf3x")==0){
 			RDF3XQueryEvaluator.main(args2);
-		} else if(evaluator.compareTo("memory")==0){
+		} else if(evaluator.compareTo("stream")==0){
 			StreamQueryEvaluator.main(args2);
 		} else System.err.println("No support of evaluator: "+evaluator); 
 	}
