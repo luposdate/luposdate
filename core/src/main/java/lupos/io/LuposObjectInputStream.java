@@ -376,8 +376,8 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 	}
 
 	public String readLuposString() throws IOException {
-		final int length = this.readLuposIntVariableBytes();
-		if(length<0){
+		final Integer length = this.readLuposIntVariableBytes();
+		if(length==null || length<0){
 			return null;
 		}
 		final byte[] bytesOfResult = new byte[length];
@@ -496,8 +496,11 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return new TripleKey(t, new TripleComparator((byte) order));
 	}
 
-	public int readLuposIntVariableBytes() throws IOException {
-		final int i0 = this.readLuposInteger1Byte();
+	public Integer readLuposIntVariableBytes() throws IOException {
+		final Integer i0 = this.readLuposInteger1Byte();
+		if(i0==null){
+			return null;
+		}
 		if (i0 <= 251){
 			return i0;
 		}
