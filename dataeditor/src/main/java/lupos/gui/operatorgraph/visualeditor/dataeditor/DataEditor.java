@@ -57,7 +57,6 @@ import lupos.gui.anotherSyntaxHighlighting.javacc.TurtleParser;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperPrefix;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperPrefixNonEditable;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.dataeditor.guielements.DataGraph;
@@ -234,7 +233,7 @@ public class DataEditor extends VisualEditor<Operator> {
 			final LinkedHashSet<Operator> rdfTermToJoin = new LinkedHashSet<Operator>();
 
 			try {
-				CommonCoreQueryEvaluator.readTriples("N3", rdfURL.openStream(),
+				CommonCoreQueryEvaluator.readTriples("Turtle", rdfURL.openStream(),
 						new TripleConsumer() {
 					public void consume(final Triple triple) {
 						DataRDFTerm rdfTermSubject = rdfHash.get(triple

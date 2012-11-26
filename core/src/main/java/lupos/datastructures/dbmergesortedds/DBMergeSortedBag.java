@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.datastructures.dbmergesortedds.heap.SortAndMergeHeap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.queryresult.ParallelIterator;
@@ -474,9 +475,11 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		while (!tosort.isEmpty())
 			popHeap();
 
-		final Heap<Entry<E>> sequentialSortHeap = (this.mergeHeapType == Heap.HEAPTYPE.DEFAULT) ? Heap
-				.createInstance(mergeHeapHeight)
+		final Heap<Entry<E>> sequentialMergeHeap = (this.mergeHeapType == Heap.HEAPTYPE.DEFAULT) ? Heap.createInstance(mergeHeapHeight)
 				: Heap.createInstance(mergeHeapHeight, this.mergeHeapType);
+		if(sequentialMergeHeap instanceof SortAndMergeHeap){
+			System.err.println("The k-chunks merge heap is not ideal for merging, please set e.g. the SEQUENTIAL heap as type for the merge heap via DBMergeSortedBag.setMegeHeypType(...)");
+		}
 		if (!sorted()) {
 
 			// loop until all is sorted!
@@ -484,7 +487,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				this.closeAndNewCurrentRun();
 				n = 0;
 				final Iterator<Entry<E>>[] iters = new Iterator[Math.min(
-						sequentialSortHeap.maxLength(),
+						sequentialMergeHeap.maxLength(),
 						(currentRun.runID - unsortedID))];
 				for (int i = 0; i < iters.length; i++) {
 					iters[i] = iteratorFromRun(unsortedID + i);
@@ -495,13 +498,13 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 					if (e != null) {
 						e.runMatters = false;
-						sequentialSortHeap.add(e);
+						sequentialMergeHeap.add(e);
 					}
 				}
 
-				while (!sequentialSortHeap.isEmpty()) {
+				while (!sequentialMergeHeap.isEmpty()) {
 					final Entry e = getNext(iters, unsortedID,
-							sequentialSortHeap);
+							sequentialMergeHeap);
 					e.run = currentRun.runID;
 					e.n = n++;
 					currentRun.add(e);
@@ -517,7 +520,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				unsortedID += iters.length;
 			}
 		}
-		sequentialSortHeap.release();
+		sequentialMergeHeap.release();
 		try {
 			currentRun.flush();
 		} catch (final IOException e) {
@@ -526,7 +529,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 		size = currentRun.size;
 		if (heap == null)
-			sequentialSortHeap.release();
+			sequentialMergeHeap.release();
 	}
 
 	private Iterator<Entry<E>> iteratorFromRun(final int runID) {
@@ -923,11 +926,13 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 							return;
 						}
 
-						mergeheap = (mergeHeapType == Heap.HEAPTYPE.DEFAULT) ? Heap
-								.createInstance(o.length, true)
-								: Heap.createInstance(o.length, true,
-										mergeHeapType);
+						mergeheap = (mergeHeapType == Heap.HEAPTYPE.DEFAULT) ? Heap.createInstance(o.length, true)
+								: Heap.createInstance(o.length, true, mergeHeapType);
 
+						if(mergeheap instanceof SortAndMergeHeap){
+							System.err.println("The k-chunks merge heap is not ideal for merging, please set e.g. the SEQUENTIAL heap as type for the merge heap via DBMergeSortedBag.setMegeHeypType(...)");
+						}
+						
 						mergeRun = Run.createInstance(DBMergeSortedBag.this);
 
 						// check if last merge iteration...
