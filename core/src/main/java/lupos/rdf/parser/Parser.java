@@ -221,7 +221,7 @@ public abstract class Parser {
 				}
 			} if(next =='@') { // language-tagged literal
 				String lang = "";
-				while (next != ' ' && next != '.' && next != ',' && next != ';' && next != '"' && next != '<') {
+				while (!Parser.isSeparator(next)) {
 					lang += next;
 					next = nextCharacter();
 				}
@@ -253,8 +253,7 @@ public abstract class Parser {
 			String s = "" + next;
 			next = nextCharacter();
 			if (next == ':') {
-				while (next != ' ' && next != '.' && next != ',' && next != ';'
-						&& next != '"' && next != '<') {
+				while (!Parser.isSeparator(next)) {
 					s += next;
 					next = nextCharacter();
 				}
@@ -288,8 +287,7 @@ public abstract class Parser {
 			if(next=='a'){
 				namespace += next;
 				next = nextCharacter();
-				if(next == ' ' || next == '.' || next == ',' || next == ';'
-					|| next == '"' || next == '<' || next == '\n'){
+				if(Parser.isSeparator(next)){
 					// rdf:type recognized!
 					try {
 						return LiteralFactory.createURILiteralWithoutLazyLiteral("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>");
@@ -306,8 +304,7 @@ public abstract class Parser {
 				next = nextCharacter();
 			}
 			next = nextCharacter();
-			while (next != ' ' && next != '.' && next != ',' && next != ';'
-				&& next != '"' && next != '<' && next != '\n') {
+			while (!Parser.isSeparator(next)) {
 				postfix += next;
 				next = nextCharacter();
 			}
@@ -345,10 +342,14 @@ public abstract class Parser {
 			predicate = null;
 		}		
 	}
+	
+	protected final static boolean isSeparator(char next){
+		return (next == ' ' || next == '.' || next == ',' || next == ';' || next == '"' || next == '<' || next == '\n' || next == '\t');
+	}
 
 	protected char jumpOverBlanks() throws EOFException {
 		char next = nextCharacter();
-		while (next == ' ' || next == '\n'){
+		while (next == ' ' || next == '\n' || next == '\t'){
 			next = nextCharacter();
 		}
 		if(next == '#'){ // jump over comments

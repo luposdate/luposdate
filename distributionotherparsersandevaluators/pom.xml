@@ -45,6 +45,11 @@
 			<artifactId>luposdate.integrationBZIP2</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.compression</artifactId>
+		</dependency>
+
 	</dependencies>
 	
 	<build>
