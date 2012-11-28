@@ -50,14 +50,18 @@ public abstract class ToSort<E extends Comparable<E>> {
 	public void release() {
 	}
 
-	public static ToSort createInstance(final int height) {
+	public static<T extends Comparable<T>> ToSort<T> createInstance(final int height_param) {
+		return ToSort.createInstance(ToSort.tosort, height_param);
+	}
+
+	public static<T extends Comparable<T>> ToSort<T> createInstance(final TOSORT tosort, final int height) {
 		switch (tosort) {
 		case MERGESORT:
-			return new JavaMergeSort(1 << height);
+			return new JavaMergeSort(1 << (height + 1));
 		case PARALLELMERGESORT:
-			return new ParallelMergeSort(1 << height);
+			return new ParallelMergeSort(1 << (height + 1));
 		case QUICKSORT:
-			return new QuickSort(1 << height);
+			return new QuickSort(1 << (height + 1));
 		case HEAPSORT:
 			return new HeapSort(height);
 		default:
@@ -65,37 +69,11 @@ public abstract class ToSort<E extends Comparable<E>> {
 		}
 	}
 
-	public static ToSort createInstance(final TOSORT tosort, final int height) {
-		switch (tosort) {
-		case MERGESORT:
-			return new JavaMergeSort(1 << height);
-		case PARALLELMERGESORT:
-			return new ParallelMergeSort(1 << height);
-		case QUICKSORT:
-			return new QuickSort(1 << height);
-		case HEAPSORT:
-			return new HeapSort(height);
-		default:
-			return null;
-		}
+	public static<T extends Comparable<T>> ToSort<T> createInstance() {
+		return ToSort.createInstance(ToSort.tosort, ToSort.height);
 	}
 
-	public static ToSort createInstance() {
-		switch (tosort) {
-		case MERGESORT:
-			return new JavaMergeSort(1 << height);
-		case PARALLELMERGESORT:
-			return new ParallelMergeSort(1 << height);
-		case QUICKSORT:
-			return new QuickSort(1 << height);
-		case HEAPSORT:
-			return new HeapSort(height);
-		default:
-			return null;
-		}
-	}
-
-	public static ToSort cloneInstance(final ToSort tosort) {
+	public static<T extends Comparable<T>> ToSort<T> cloneInstance(final ToSort tosort) {
 		if (tosort instanceof Heap) {
 			return Heap.cloneInstance((Heap) tosort);
 		} else

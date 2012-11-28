@@ -31,7 +31,7 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 
 	public enum HEAPTYPE {
 		DEFAULT, SEQUENTIAL, OPTIMIZEDSEQUENTIAL, PARALLEL, PARALLEL8, PARALLEL16, PARALLEL32, LAZYOPTIMIZEDSEQUENTIAL, LAZYPARALLEL, LAZYPARALLEL8, LAZYPARALLEL16, LAZYPARALLEL32, SORTANDMERGEHEAP, SORTANDMERGEHEAPUSINGMERGESORT
-	};
+	}
 
 	protected static HEAPTYPE heapType = HEAPTYPE.SEQUENTIAL;
 
@@ -47,14 +47,17 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 	public Iterator<E> emptyDatastructure() {
 		return new Iterator<E>() {
 
+			@Override
 			public boolean hasNext() {
 				return !isEmpty();
 			}
 
+			@Override
 			public E next() {
 				return pop();
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
@@ -67,120 +70,111 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 	@Override
 	public abstract String toString();
 
-	public static Heap createInstance(final int height) {
+	public static<T extends Comparable<T>> Heap<T> createInstance(final int height) {
 		return createInstance(height, Heap.heapType);
 	}
 
-	public static Heap createInstance(final int height, final HEAPTYPE heapType) {
-		switch (heapType) {
+	public static<T extends Comparable<T>> Heap<T> createInstance(final int height, final HEAPTYPE heapType_param) {
+		switch (heapType_param) {
 		default:
 		case SEQUENTIAL:
-			return new SequentialHeap(height);
+			return new SequentialHeap<T>(height);
 		case OPTIMIZEDSEQUENTIAL:
-			return new OptimizedSequentialHeap(height);
+			return new OptimizedSequentialHeap<T>(height);
 		case PARALLEL:
-			return new ParallelHeap(height);
+			return new ParallelHeap<T>(height);
 		case PARALLEL8:
-			return new ParallelHeap(height, 3);
+			return new ParallelHeap<T>(height, 3);
 		case PARALLEL16:
-			return new ParallelHeap(height, 4);
+			return new ParallelHeap<T>(height, 4);
 		case PARALLEL32:
-			return new ParallelHeap(height, 5);
+			return new ParallelHeap<T>(height, 5);
 		case LAZYOPTIMIZEDSEQUENTIAL:
-			return new LazyBuildingSequentialHeap(height);
+			return new LazyBuildingSequentialHeap<T>(height);
 		case LAZYPARALLEL:
-			return new LazyBuildingParallelHeap(height);
+			return new LazyBuildingParallelHeap<T>(height);
 		case LAZYPARALLEL8:
-			return new LazyBuildingParallelHeap(height, 3);
+			return new LazyBuildingParallelHeap<T>(height, 3);
 		case LAZYPARALLEL16:
-			return new LazyBuildingParallelHeap(height, 4);
+			return new LazyBuildingParallelHeap<T>(height, 4);
 		case LAZYPARALLEL32:
-			return new LazyBuildingParallelHeap(height, 5);
+			return new LazyBuildingParallelHeap<T>(height, 5);
 		case SORTANDMERGEHEAP:
-			return new SortAndMergeHeap(1 << height);
+			return new SortAndMergeHeap<T>(1 << (height + 1));
 		case SORTANDMERGEHEAPUSINGMERGESORT:
-			return new SortAndMergeHeap(1 << height, false);
+			return new SortAndMergeHeap<T>(1 << (height + 1), false);
 		}
 	}
 
-	public static Heap createInstance(final int length_or_height,
-			final boolean length) {
+	public static<T extends Comparable<T>> Heap<T> createInstance(final int length_or_height, final boolean length) {
 		return createInstance(length_or_height, length, Heap.heapType);
 	}
 
-	public static Heap createInstance(final int length_or_height,
-			final boolean length, final HEAPTYPE heapType) {
-		switch (heapType) {
+	public static<T extends Comparable<T>> Heap<T> createInstance(final int length_or_height, final boolean length, final HEAPTYPE heapType_param) {
+		switch (heapType_param) {
 		default:
 		case SEQUENTIAL:
-			return new SequentialHeap(length_or_height, length);
+			return new SequentialHeap<T>(length_or_height, length);
 		case OPTIMIZEDSEQUENTIAL:
-			return new OptimizedSequentialHeap(length_or_height, length);
+			return new OptimizedSequentialHeap<T>(length_or_height, length);
 		case PARALLEL:
-			return new ParallelHeap(length_or_height, length);
+			return new ParallelHeap<T>(length_or_height, length);
 		case PARALLEL8:
-			return new ParallelHeap(length_or_height, length, 3);
+			return new ParallelHeap<T>(length_or_height, length, 3);
 		case PARALLEL16:
-			return new ParallelHeap(length_or_height, length, 4);
+			return new ParallelHeap<T>(length_or_height, length, 4);
 		case PARALLEL32:
-			return new ParallelHeap(length_or_height, length, 5);
+			return new ParallelHeap<T>(length_or_height, length, 5);
 		case LAZYOPTIMIZEDSEQUENTIAL:
-			return new LazyBuildingSequentialHeap(length_or_height, length);
+			return new LazyBuildingSequentialHeap<T>(length_or_height, length);
 		case LAZYPARALLEL:
-			return new LazyBuildingParallelHeap(length_or_height, length);
+			return new LazyBuildingParallelHeap<T>(length_or_height, length);
 		case LAZYPARALLEL8:
-			return new LazyBuildingParallelHeap(length_or_height, length, 3);
+			return new LazyBuildingParallelHeap<T>(length_or_height, length, 3);
 		case LAZYPARALLEL16:
-			return new LazyBuildingParallelHeap(length_or_height, length, 4);
+			return new LazyBuildingParallelHeap<T>(length_or_height, length, 4);
 		case LAZYPARALLEL32:
-			return new LazyBuildingParallelHeap(length_or_height, length, 5);
+			return new LazyBuildingParallelHeap<T>(length_or_height, length, 5);
 		case SORTANDMERGEHEAP:
-			return new SortAndMergeHeap(length ? length_or_height
-					: 1 << length_or_height);
+			return new SortAndMergeHeap<T>(length ? length_or_height : 1 << (length_or_height + 1));
 		case SORTANDMERGEHEAPUSINGMERGESORT:
-			return new SortAndMergeHeap(length ? length_or_height
-					: 1 << length_or_height, false);
+			return new SortAndMergeHeap<T>(length ? length_or_height : 1 << (length_or_height + 1), false);
 		}
 	}
 
-	public static Heap cloneInstance(final Heap heap) {
-		return cloneInstance(heap, Heap.heapType);
+	public static<T extends Comparable<T>> Heap<T> cloneInstance(final Heap<T> heap) {
+		return Heap.cloneInstance(heap, Heap.heapType);
 	}
 
-	public static Heap cloneInstance(final Heap heap, final HEAPTYPE heapType) {
-		switch (heapType) {
+	public static<T extends Comparable<T>> Heap<T> cloneInstance(final Heap<T> heap_param, final HEAPTYPE heapType_param) {
+		switch (heapType_param) {
 		default:
 		case SEQUENTIAL:
-			return new SequentialHeap(heap.getContent(), heap.size());
+			return new SequentialHeap<T>(heap_param.getContent(), heap_param.size());
 		case OPTIMIZEDSEQUENTIAL:
-			return new OptimizedSequentialHeap(heap.getContent(), heap.size());
+			return new OptimizedSequentialHeap<T>(heap_param.getContent(), heap_param.size());
 		case PARALLEL:
-			return new ParallelHeap(heap.getContent(), heap.size());
+			return new ParallelHeap<T>(heap_param.getContent(), heap_param.size());
 		case PARALLEL8:
-			return new ParallelHeap(heap.getContent(), heap.size(), 3);
+			return new ParallelHeap<T>(heap_param.getContent(), heap_param.size(), 3);
 		case PARALLEL16:
-			return new ParallelHeap(heap.getContent(), heap.size(), 4);
+			return new ParallelHeap<T>(heap_param.getContent(), heap_param.size(), 4);
 		case PARALLEL32:
-			return new ParallelHeap(heap.getContent(), heap.size(), 5);
+			return new ParallelHeap<T>(heap_param.getContent(), heap_param.size(), 5);
 		case LAZYOPTIMIZEDSEQUENTIAL:
-			return new LazyBuildingSequentialHeap(heap.getContent(), heap
-					.size());
+			return new LazyBuildingSequentialHeap<T>(heap_param.getContent(), heap_param.size());
 		case LAZYPARALLEL:
-			return new LazyBuildingParallelHeap(heap.getContent(), heap.size());
+			return new LazyBuildingParallelHeap<T>(heap_param.getContent(), heap_param.size());
 		case LAZYPARALLEL8:
-			return new LazyBuildingParallelHeap(heap.getContent(), heap.size(),
-					3);
+			return new LazyBuildingParallelHeap<T>(heap_param.getContent(), heap_param.size(), 3);
 		case LAZYPARALLEL16:
-			return new LazyBuildingParallelHeap(heap.getContent(), heap.size(),
-					4);
+			return new LazyBuildingParallelHeap<T>(heap_param.getContent(), heap_param.size(), 4);
 		case LAZYPARALLEL32:
-			return new LazyBuildingParallelHeap(heap.getContent(), heap.size(),
-					5);
+			return new LazyBuildingParallelHeap<T>(heap_param.getContent(), heap_param.size(), 5);
 		case SORTANDMERGEHEAP:
-			return new SortAndMergeHeap(heap.getContent(), heap.maxLength());
+			return new SortAndMergeHeap<T>(heap_param.getContent(), heap_param.maxLength());
 		case SORTANDMERGEHEAPUSINGMERGESORT:
-			return new SortAndMergeHeap(heap.getContent(), heap.maxLength(),
-					false);
+			return new SortAndMergeHeap<T>(heap_param.getContent(), heap_param.maxLength(), false);
 		}
 	}
 

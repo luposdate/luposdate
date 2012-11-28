@@ -27,15 +27,16 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extends Serializable> extends DBMergeSortedMapOfCollections<K,V, DBMergeSortedBag<V>> {
-	private final int heapHeightForBag;
+	
+	protected final SortConfiguration sortConfiguration;
 	
 	/**
 	 * Create a new DBMergeSortedMapOfDBMergeSortedBags that sorts according to the elements' natural order. Both the map's and each bag's heap will have the same height. 
 	 * @param heapHeight The height of the heap used to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
 	 */
-	public DBMergeSortedMapOfDBMergeSortedBags(final int heapHeight, final Class<? extends MapEntry<K,V>> classOfElements) {
-		super(null, heapHeight,classOfElements);
-		heapHeightForBag = heapHeight;
+	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfiguration, final Class<? extends MapEntry<K,V>> classOfElements) {
+		super(null, sortConfiguration,classOfElements);
+		this.sortConfiguration = sortConfiguration;
 	}
 	
 	/**
@@ -43,9 +44,9 @@ public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extend
 	 * @param heapHeight The height of the heap used to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
 	 * @param comp The Comparator to use for sorting.
 	 */
-	public DBMergeSortedMapOfDBMergeSortedBags(final int heapHeight, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
-		super(null, heapHeight, comp, classOfElements);
-		heapHeightForBag = heapHeight;
+	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfiguration, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
+		super(null, sortConfiguration, comp, classOfElements);
+		this.sortConfiguration = sortConfiguration;
 	}
 	
 	/**
@@ -53,9 +54,9 @@ public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extend
 	 * @param heapHeightForMap The height of the heap used by the map to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
 	 * @param heapHeightForBag The height of the heap used by each bag.
 	 */
-	public DBMergeSortedMapOfDBMergeSortedBags(final int heapHeightForMap, final int heapHeightForBag, final Class<? extends MapEntry<K,V>> classOfElements) {
-		super(null, heapHeightForMap,classOfElements);
-		this.heapHeightForBag = heapHeightForBag;
+	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfigurationForMap, final SortConfiguration sortConfigurationForBag, final Class<? extends MapEntry<K,V>> classOfElements) {
+		super(null, sortConfigurationForMap,classOfElements);
+		this.sortConfiguration = sortConfigurationForBag;
 	}
 	
 	/**
@@ -64,12 +65,12 @@ public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extend
 	 * @param heap The height of the heap used by each bag.
 	 * @param comp The Comparator to use for sorting.
 	 */
-	public DBMergeSortedMapOfDBMergeSortedBags(final int heapHeightForMap, final int heapHeightForBag, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
-		super(null, heapHeightForMap, comp,classOfElements);
-		this.heapHeightForBag = heapHeightForBag;
+	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfigurationForMap, final SortConfiguration sortConfigurationForBag, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
+		super(null, sortConfigurationForMap, comp,classOfElements);
+		this.sortConfiguration = sortConfigurationForBag;
 	}
 	
 	protected DBMergeSortedBag<V> createCollection(final Class<? extends V> classOfElements) {
-		return new DBMergeSortedBag<V>(heapHeightForBag,classOfElements);
+		return new DBMergeSortedBag<V>(this.sortConfiguration, classOfElements);
 	}
 }

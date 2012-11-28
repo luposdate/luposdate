@@ -25,13 +25,12 @@ package lupos.engine.operators.multiinput.join;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 
 public class DBMergeSortedBagMergeJoin extends MergeJoin {
 	
-	private static int HEAPHEIGHT=5;
-
 	public DBMergeSortedBagMergeJoin() {
-		init(new DBMergeSortedBag<Bindings>(HEAPHEIGHT, this.comp, Bindings.class), new DBMergeSortedBag<Bindings>(HEAPHEIGHT, this.comp, Bindings.class));
+		init(new DBMergeSortedBag<Bindings>(new SortConfiguration(), this.comp, Bindings.class), new DBMergeSortedBag<Bindings>(new SortConfiguration(), this.comp, Bindings.class));
 	}
 
 }

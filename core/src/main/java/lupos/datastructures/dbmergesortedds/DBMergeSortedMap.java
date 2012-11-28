@@ -51,9 +51,8 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 	 *            (The maximum number of elements that are held in memory at any
 	 *            given time will be 2**heapHeight-1)
 	 */
-	public DBMergeSortedMap(final int heapHeight,
-			final Class<? extends MapEntry<K, V>> classOfElements) {
-		this(heapHeight, null, classOfElements);
+	public DBMergeSortedMap(final SortConfiguration sortConfiguration, final Class<? extends MapEntry<K, V>> classOfElements) {
+		this(sortConfiguration, null, classOfElements);
 	}
 
 	private class MapComparator implements Comparator<Entry<K, V>>,
@@ -88,19 +87,17 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 	 * @param comp
 	 *            The Comparator to use for sorting.
 	 */
-	public DBMergeSortedMap(final int heapHeight,
+	public DBMergeSortedMap(final SortConfiguration sortConfiguration,
 			final Comparator<? super K> comp2,
 			final Class<? extends MapEntry<K, V>> classOfElements) {
 		if (comp2 != null) {
 			this.comp = comp2;
 			final Comparator<Entry<K, V>> compa = new MapComparator(
 					(Comparator<K>) this.comp);
-			set = new DBMergeSortedSet<MapEntry<K, V>>(heapHeight, compa,
-						classOfElements);
+			set = new DBMergeSortedSet<MapEntry<K, V>>(sortConfiguration, compa, classOfElements);
 		} else {
 			this.comp = new StandardComparator();
-			set = new DBMergeSortedSet<MapEntry<K, V>>(heapHeight, null,
-						classOfElements);
+			set = new DBMergeSortedSet<MapEntry<K, V>>(sortConfiguration, null, classOfElements);
 		}
 	}
 

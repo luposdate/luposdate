@@ -27,26 +27,26 @@ import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 
 public class DBMergeSortedBagSort extends SortedBagSort {
-	final static int HEAPHEIGHT = 5;
 
 	public DBMergeSortedBagSort() {
 		super();
 	}
 
 	public DBMergeSortedBagSort(final lupos.sparql1_1.Node node) {
-		super(new DBMergeSortedBag<Bindings>(HEAPHEIGHT, new ComparatorAST(node),
+		super(new DBMergeSortedBag<Bindings>(new SortConfiguration(), new ComparatorAST(node),
 				Bindings.class), node);
 	}
 
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
-		this.sswd = new DBMergeSortedBag<Bindings>(HEAPHEIGHT, ((Sort) op)
+		this.sswd = new DBMergeSortedBag<Bindings>(new SortConfiguration(), ((Sort) op)
 				.getComparator(), Bindings.class);
 	}
 

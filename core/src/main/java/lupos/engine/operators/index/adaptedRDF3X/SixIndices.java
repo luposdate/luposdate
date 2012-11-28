@@ -34,6 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.items.TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral;
@@ -99,7 +100,7 @@ public class SixIndices extends Indices {
 
                 dbbptree.setName(order.toString());
 
-                return new OptimizedDBBPTreeGeneration<TripleKey, Triple>(new DBMergeSortedMap<TripleKey, Triple>(Indices.HEAPHEIGHT, (Class<lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>>) (new lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>(null, null)).getClass()), dbbptree);
+                return new OptimizedDBBPTreeGeneration<TripleKey, Triple>(new DBMergeSortedMap<TripleKey, Triple>(new SortConfiguration(), (Class<lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>>) (new lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>(null, null)).getClass()), dbbptree);
             } else
                 return new PrefixSearchFromSortedMap<TripleKey, Triple>(new TreeMap<TripleKey, Triple>(new TripleKeyComparator(new TripleComparator(order))));
 
@@ -718,7 +719,7 @@ public class SixIndices extends Indices {
                     new GenerateIDTriplesUsingStringSearch2(graphURI, dataFormat, dataset, this);
                 } else {
                     final SortedSet<Triple> dsst_s;
-                    dsst_s = new DBMergeSortedSet<Triple>(HEAPHEIGHT, new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.SPO), Triple.class);
+                    dsst_s = new DBMergeSortedSet<Triple>(new SortConfiguration(), new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.SPO), Triple.class);
                     try {
                         CommonCoreQueryEvaluator.readTriples(dataFormat, graphURI.openStream(), new TripleConsumer() {
 
@@ -733,14 +734,14 @@ public class SixIndices extends Indices {
                         e.printStackTrace();
                     }
                     final SortedSet<Triple> dsst_p;
-                    dsst_p = new DBMergeSortedSet<Triple>(HEAPHEIGHT, new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.PSO), Triple.class);
+                    dsst_p = new DBMergeSortedSet<Triple>(new SortConfiguration(), new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.PSO), Triple.class);
                     ((DBMergeSortedSet<Triple>) dsst_s).sort();
                     dataset.waitForCodeMapConstruction();
                     makeLazyLiteral(0, dsst_s, dsst_p);
                     if (dsst_s instanceof DBMergeSortedSet)
                         ((DBMergeSortedSet) dsst_s).release();
                     final SortedSet<Triple> dsst_o;
-                    dsst_o = new DBMergeSortedSet<Triple>(HEAPHEIGHT, new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.OPS), Triple.class);
+                    dsst_o = new DBMergeSortedSet<Triple>(new SortConfiguration(), new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.OPS), Triple.class);
                     makeLazyLiteral(1, dsst_p, dsst_o);
                     if (dsst_p instanceof DBMergeSortedSet)
                         ((DBMergeSortedSet) dsst_p).release();

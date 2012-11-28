@@ -27,22 +27,13 @@ import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.queryresult.ParallelIterator;
 
 public class DBSetBlockingDistinct extends BlockingDistinct {
 
-	private static int HEAPHEIGHT = 5;
-
-	public static int getHEAPHEIGHT() {
-		return HEAPHEIGHT;
-	}
-
-	public static void setHEAPHEIGHT(final int heapheight) {
-		HEAPHEIGHT = heapheight;
-	}
-
 	public DBSetBlockingDistinct() {
-		super(new DBMergeSortedSet<Bindings>(HEAPHEIGHT, Bindings.class));
+		super(new DBMergeSortedSet<Bindings>(new SortConfiguration(), Bindings.class));
 	}
 
 	@Override

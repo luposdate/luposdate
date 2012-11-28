@@ -46,6 +46,7 @@ import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.Entry;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.items.TripleKey;
@@ -195,7 +196,11 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		final int size = readLuposInt();
 		if (size < 0)
 			return null;
-		final DBMergeSortedMap ms = new DBMergeSortedMap(2, comparator, null);
+		
+		SortConfiguration sortConfiguration = new SortConfiguration();
+		sortConfiguration.useReplacementSelection(2, 2);
+		
+		final DBMergeSortedMap ms = new DBMergeSortedMap(sortConfiguration, comparator, null);
 		if (size == 0)
 			return (E) ms;
 		final Class typeKey = Registration.deserializeId(this)[0];
@@ -220,8 +225,11 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		final int size = readLuposInt();
 		if (size < 0)
 			return null;
-		if (size == 0)
-			return (E) new DBMergeSortedSet(2, comparator, null);
+		if (size == 0){
+			SortConfiguration sortConfiguration = new SortConfiguration();
+			sortConfiguration.useReplacementSelection(2, 2);
+			return (E) new DBMergeSortedSet(sortConfiguration, comparator, null);
+		}
 		final Class type = Registration.deserializeId(this)[0];
 		final SortedSet ms;
 		if (size < memoryLimit) {
@@ -230,10 +238,13 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 			else
 				ms = new TreeSet(comparator);
 		} else {
+			SortConfiguration sortConfiguration = new SortConfiguration();
+			sortConfiguration.useReplacementSelection(2, 2);
+
 			if (type == Triple.class)
-				ms = new DBMergeSortedSet(2, comparator, Triple.class);
+				ms = new DBMergeSortedSet(sortConfiguration, comparator, Triple.class);
 			else
-				ms = new DBMergeSortedSet(2, comparator, null);
+				ms = new DBMergeSortedSet(sortConfiguration, comparator, null);
 		}
 		for (int i = 0; i < size; i++) {
 			try {

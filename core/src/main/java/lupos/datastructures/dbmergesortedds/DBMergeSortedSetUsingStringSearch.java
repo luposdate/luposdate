@@ -33,9 +33,8 @@ public class DBMergeSortedSetUsingStringSearch extends DBMergeSortedSet<String> 
 
 	protected SuperTrie searchtree = SuperTrie.createInstance();
 
-	public DBMergeSortedSetUsingStringSearch(final int heapHeight,
-			final Class<? extends String> classOfElements){
-		super(heapHeight, classOfElements);
+	public DBMergeSortedSetUsingStringSearch(final SortConfiguration sortConfiguration, final Class<? extends String> classOfElements){
+		super(sortConfiguration, classOfElements);
 	}
 
 	public DBMergeSortedSetUsingStringSearch(){
@@ -47,10 +46,10 @@ public class DBMergeSortedSetUsingStringSearch extends DBMergeSortedSet<String> 
 		super(classOfElements);
 	}
 
-	public DBMergeSortedSetUsingStringSearch(final int heapHeight,
+	public DBMergeSortedSetUsingStringSearch(final SortConfiguration sortConfiguration,
 			final Comparator<? super String> comp,
 			final Class<? extends String> classOfElements){
-		super(heapHeight, comp, classOfElements);
+		super(sortConfiguration, comp, classOfElements);
 	}
 
 	public DBMergeSortedSetUsingStringSearch(

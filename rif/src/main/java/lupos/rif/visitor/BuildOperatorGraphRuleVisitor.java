@@ -846,6 +846,10 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				add(this.tripleConsumer, keyTP, pattern);
 			}
 //			return distinct;
+			if(arg!=null){
+				union.setSucceedingOperator((OperatorIDTuple) arg);
+				((OperatorIDTuple) arg).getOperator().addPrecedingOperator(union);
+			}
 			return union;
 		} else {
 			if(arg!=null){

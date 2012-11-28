@@ -30,6 +30,7 @@ import java.util.Iterator;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
@@ -38,7 +39,7 @@ import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 public class DBSetBlockingDistinct extends BlockingDistinct {
 
 	public DBSetBlockingDistinct() throws RemoteException {
-		super(new DBMergeSortedSet<BindingsArrayReadTriples>(5,
+		super(new DBMergeSortedSet<BindingsArrayReadTriples>(new SortConfiguration(),
 				new Comparator<BindingsArrayReadTriples>() {
 
 					public int compare(final BindingsArrayReadTriples arg0,

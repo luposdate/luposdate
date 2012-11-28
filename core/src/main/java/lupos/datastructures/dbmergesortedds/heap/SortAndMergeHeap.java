@@ -34,9 +34,6 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 
 	protected final int maxLength;
 
-	protected static int K = 32;
-	protected final int CHUNK;
-
 	protected int start = 0;
 	protected int lengthAlreadySorted = 0;
 	protected volatile int merged = 0;
@@ -48,8 +45,6 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		this.useQuickSort = useQuickSort;
 		newSort(length);
 		maxLength = length;
-		CHUNK = length / K;
-		DBMergeSortedBag.setNumberElementsToPopWhenFull(CHUNK);
 	}
 
 	public SortAndMergeHeap(final Object[] content, final int capacity,
@@ -66,15 +61,11 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		merged = lengthAlreadySorted + 1;
 		toSort = null;
 		maxLength = capacity;
-		CHUNK = capacity / K;
-		DBMergeSortedBag.setNumberElementsToPopWhenFull(CHUNK);
 	}
 
 	public SortAndMergeHeap(final int length) {
 		newSort(length);
 		maxLength = length;
-		CHUNK = length / K;
-		DBMergeSortedBag.setNumberElementsToPopWhenFull(CHUNK);
 	}
 
 	public SortAndMergeHeap(final Object[] content, final int capacity) {
@@ -89,8 +80,6 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		merged = lengthAlreadySorted + 1;
 		toSort = null;
 		maxLength = capacity;
-		CHUNK = capacity / K;
-		DBMergeSortedBag.setNumberElementsToPopWhenFull(CHUNK);
 	}
 
 	public void newSort(final int length) {
@@ -295,13 +284,5 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 				return false;
 		}
 		return toSort.isFull();
-	}
-
-	public static int getK() {
-		return K;
-	}
-
-	public static void setK(final int k) {
-		K = k;
 	}
 }

@@ -41,6 +41,7 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsArrayVarMinMax;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
@@ -716,7 +717,7 @@ public abstract class BasicIndexScan extends RootChild {
 				// additional sorting phase according to variable v needed
 				// for memory index approach!
 				final DBMergeSortedBag<Bindings> sort = new DBMergeSortedBag<Bindings>(
-						HEAPHEIGHT, new Comparator<Bindings>() {
+						new SortConfiguration(), new Comparator<Bindings>() {
 							@Override
 							public int compare(final Bindings arg0, final Bindings arg1) {
 								return arg0.get(v).compareToNotNecessarilySPARQLSpecificationConform(arg1.get(v));

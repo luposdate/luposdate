@@ -40,6 +40,7 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingStringSearch;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingStringSearchReplacementSelection;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
@@ -143,11 +144,11 @@ public class Dataset {
 				@Override
 				public void run() {					
 					final SortedSet<String> rdftermsRepresentations = (SortingApproach == SORT.NORMAL) ? new DBMergeSortedSet<String>(
-							Indices.getHEAPHEIGHT(), String.class)
+							new SortConfiguration(), String.class)
 							: (SortingApproach == SORT.STRINGSEARCHTREE) ? new DBMergeSortedSetUsingStringSearch(
-									Indices.getHEAPHEIGHT(), String.class)
+									new SortConfiguration(), String.class)
 							: new DBMergeSortedSetUsingStringSearchReplacementSelection(
-									Indices.getHEAPHEIGHT(),
+									new SortConfiguration(),
 									String.class);
 									if(toAddToRdftermsRepresentations!=null){
 										for(String s: toAddToRdftermsRepresentations){

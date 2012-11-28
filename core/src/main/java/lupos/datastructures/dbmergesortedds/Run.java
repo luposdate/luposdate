@@ -65,16 +65,12 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		this.dbmergesortedbag = dbmergesortedbag;
 		try {
 			runID = this.dbmergesortedbag.getNewId();
-			final File dir = new File(dbmergesortedbag.folder[runID
-			                                                  % dbmergesortedbag.folder.length]);
+			final File dir = new File(dbmergesortedbag.folder[runID % dbmergesortedbag.folder.length]);
 			dir.mkdirs();
-			file = new File(dbmergesortedbag.folder[runID
-			                                        % dbmergesortedbag.folder.length]
-			                                        + runID);
+			file = new File(dbmergesortedbag.folder[runID % dbmergesortedbag.folder.length] + runID);
 			if (file.exists())
 				file.delete();
-			os = new LuposObjectOutputStream(new BufferedOutputStream(
-					new FileOutputStream(file)));
+			os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(new BufferedOutputStream(new FileOutputStream(file))));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -88,8 +84,8 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 			file = new File(dbmergesortedbag.folder[0] + tmp);
 			if (file.exists())
 				file.delete();
-			os = new LuposObjectOutputStream(new BufferedOutputStream(
-					new FileOutputStream(file)));
+			os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(new BufferedOutputStream(
+					new FileOutputStream(file))));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -238,8 +234,7 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		file = new File(dbmergesortedbag.folder[runID
 		                                        % dbmergesortedbag.folder.length]
 		                                        + runID);
-		os = new LuposObjectOutputStream(new BufferedOutputStream(
-				new FileOutputStream(file)));
+		os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(new BufferedOutputStream(new FileOutputStream(file))));
 	}
 
 	boolean contains(final E e) {
@@ -256,13 +251,17 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 
 	public ParallelIterator<Entry<E>> iterator() {
 		try {
+			this.os.close();
+		} catch (IOException e2) {
+		}
+		try {
 			return new ParallelIterator<Entry<E>>() {
 				File fileLocal = new File(dbmergesortedbag.folder[runID
 				                                                  % dbmergesortedbag.folder.length]
 				                                                  + runID);
 				int currentFile = 0;
 				LuposObjectInputStream<E> is = new LuposObjectInputStream<E>(
-						new BufferedInputStream(new FileInputStream(fileLocal)),
+						Run.this.dbmergesortedbag.sortConfiguration.createInputStream(new BufferedInputStream(new FileInputStream(fileLocal))),
 						dbmergesortedbag.classOfElements);
 				boolean isClosed = false;
 				Entry<E> next = null;
@@ -287,6 +286,7 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 						try {
 							e = is.readLuposEntry();
 						} catch (final EOFException e1) {
+							close();
 						}
 						if (e == null) {
 							if (fileLocal.length() > STORAGELIMIT) {
@@ -298,12 +298,12 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 								if (fileLocal.exists()) {
 									try {
 										is.close();
-									} catch (final IOException ee) {
+									} catch (final IOException ee) {										
 									}
 									is = new LuposObjectInputStream<E>(
-											new BufferedInputStream(
+											Run.this.dbmergesortedbag.sortConfiguration.createInputStream(new BufferedInputStream(
 													new FileInputStream(
-															fileLocal)),
+															fileLocal))),
 															dbmergesortedbag.classOfElements);
 									e = is.readLuposEntry();
 								}

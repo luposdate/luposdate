@@ -53,9 +53,9 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	 *            given time will be 2**heapHeight-1)
 	 * @throws RemoteException
 	 */
-	public DBMergeSortedSet(final int heapHeight,
+	public DBMergeSortedSet(final SortConfiguration sortConfiguration,
 			final Class<? extends E> classOfElements) {
-		super(heapHeight, classOfElements);
+		super(sortConfiguration, classOfElements);
 	}
 
 	/**
@@ -65,16 +65,16 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	 * @throws RemoteException
 	 */
 	public DBMergeSortedSet() {
-		super(0, null);
+		super(new SortConfiguration(), null);
 	}
 
 	/**
-	 * Standard constructor: The HeapHeight is set to 11.
+	 * Standard constructor
 	 * 
 	 * @throws RemoteException
 	 */
 	public DBMergeSortedSet(final Class<? extends E> classOfElements){
-		this(16, classOfElements);
+		this(new SortConfiguration(), classOfElements);
 	}
 
 	/**
@@ -88,20 +88,20 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	 *            The Comparator to use for sorting.
 	 * @throws RemoteException
 	 */
-	public DBMergeSortedSet(final int heapHeight,
+	public DBMergeSortedSet(final SortConfiguration sortConfiguration,
 			final Comparator<? super E> comp,
 			final Class<? extends E> classOfElements) {
-		super(heapHeight, comp, classOfElements);
+		super(sortConfiguration, comp, classOfElements);
 	}
 
 	public DBMergeSortedSet(final Comparator<? super E> comp,
 			final Class<? extends E> classOfElements) {
-		this(11, comp, classOfElements);
+		this(new SortConfiguration(), comp, classOfElements);
 	}
 
 	private DBMergeSortedSet(final DBMergeSortedBag<E> bag,
 			final Class<? extends E> classOfElements) {
-		super(bag.heapHeight, bag.comp, classOfElements);
+		super(bag.sortConfiguration, bag.comp, classOfElements);
 	}
 
 	public E get(final E e) {
@@ -264,37 +264,6 @@ public class DBMergeSortedSet<E extends Serializable> extends
 				}
 			};
 		}
-		// if (currentRun == null) {
-		// final Heap<Entry<E>> zheap = Heap.cloneInstance(tosort);
-		// return new ParallelIterator<E>() {
-		// public boolean hasNext() {
-		// return !zheap.isEmpty();
-		// }
-		//
-		// public E next() {
-		// if (!hasNext())
-		// return null;
-		// Entry<E> e = zheap.pop();
-		// while (!zheap.isEmpty() && e.equals(zheap.peek()))
-		// e = zheap.pop();
-		// return e.e;
-		// }
-		//
-		// public void remove() {
-		// throw new UnsupportedOperationException(
-		// "This operation is unsupported!");
-		// }
-		//
-		// @Override
-		// public void finalize() {
-		// close();
-		// }
-		//
-		// public void close() {
-		// zheap.release();
-		// }
-		// };
-		// }
 		// disk based
 		sort();
 		if (currentRun == null || currentRun.size == 0)

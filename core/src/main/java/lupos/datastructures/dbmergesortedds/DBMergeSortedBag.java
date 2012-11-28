@@ -61,10 +61,6 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	protected int unsortedID = 1;
 	protected static boolean parallelMerging = false;
 	protected static int numberOfThreads = 1;
-	protected static int mergeHeapHeight = 10;
-	protected static Heap.HEAPTYPE mergeHeapType = Heap.HEAPTYPE.DEFAULT;
-
-	protected static int NumberElementsToPopWhenFull = 1;
 
 	static {
 		for (final String mf : mainFolder) {
@@ -99,14 +95,6 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		DBMergeSortedBag.parallelMerging = parallelMerging;
 	}
 
-	public static Heap.HEAPTYPE getMergeHeapType() {
-		return mergeHeapType;
-	}
-
-	public static void setMergeHeapType(final Heap.HEAPTYPE mergeHeapType) {
-		DBMergeSortedBag.mergeHeapType = mergeHeapType;
-	}
-
 	public static int getNumberOfThreads() {
 		return numberOfThreads;
 	}
@@ -115,22 +103,15 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		DBMergeSortedBag.numberOfThreads = numberOfThreads;
 	}
 
-	public static int getMergeHeapHeight() {
-		return mergeHeapHeight;
-	}
-
-	public static void setMergeHeapHeight(final int mergeHeapHeight) {
-		DBMergeSortedBag.mergeHeapHeight = mergeHeapHeight;
-	}
-
 	protected Run<E> currentRun = null;
 	protected Comparator<? super E> comp;
 	protected ToSort<Entry<E>> tosort;
 	protected Heap<Entry<E>> heap;
 	protected int size = 0;
-	protected int heapHeight;
 	protected int n = 0;
 	protected Class<? extends E> classOfElements;
+	
+	protected final SortConfiguration<Entry<E>> sortConfiguration;
 
 	protected static ReentrantLock lock = new ReentrantLock();
 
@@ -141,15 +122,10 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	/**
 	 * Create a new DBMergeSortedBag that sorts according to the elements'
 	 * natural order.
-	 * 
-	 * @param heapHeight
-	 *            The height of the heap used to presort the elements in memory.
-	 *            (The maximum number of elements that are held in memory at any
-	 *            given time will be 2**heapHeight-1)
 	 */
-	public DBMergeSortedBag(final int heapHeight,
+	public DBMergeSortedBag(final SortConfiguration<Entry<E>> sortConfiguration,
 			final Class<? extends E> classOfElements) {
-		this(heapHeight, null, classOfElements);
+		this(sortConfiguration, null, classOfElements);
 	}
 
 	/**
@@ -162,57 +138,21 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	 * @param comp
 	 *            The Comparator to use for sorting.
 	 */
-	public DBMergeSortedBag(final int heapHeight,
+	public DBMergeSortedBag(
+			final SortConfiguration<Entry<E>> sortConfiguration,
 			final Comparator<? super E> comp,
 			final Class<? extends E> classOfElements) {
+		this.sortConfiguration = sortConfiguration;
 		lock.lock();
 		try {
 			if (comp != null)
 				this.comp = comp;
 			else
 				this.comp = new StandardComparator();
-			this.heapHeight = heapHeight;
-			tosort = ToSort.createInstance();
+			
+			tosort = this.sortConfiguration.createToSort();
 			if (tosort == null) {
-				heap = Heap.createInstance(heapHeight);
-				tosort = heap;
-			}
-			this.classOfElements = classOfElements;
-
-			folder = new String[mainFolder.length];
-
-			final int currentFolderId = folderId++;
-			final LinkedList<String> lls = new LinkedList<String>();
-			for (int i = 0; i < mainFolder.length; i++) {
-				lls.add(mainFolder[i]);
-			}
-
-			for (int i = 0; i < mainFolder.length; i++) {
-				// choose randomly the directories, such that the runs are well
-				// distributed
-				// over the different directories...
-				final int index = (int) (Math.floor(Math.random() * lls.size()));
-				folder[i] = lls.remove(index) + (currentFolderId) + "//";
-			}
-		} finally {
-			lock.unlock();
-		}
-	}
-
-	public DBMergeSortedBag(final int heapHeight,
-			final Comparator<? super E> comp,
-			final Class<? extends E> classOfElements,
-			final ToSort.TOSORT tosortType) {
-		lock.lock();
-		try {
-			if (comp != null)
-				this.comp = comp;
-			else
-				this.comp = new StandardComparator();
-			this.heapHeight = heapHeight;
-			tosort = ToSort.createInstance(tosortType, heapHeight);
-			if (tosort == null) {
-				heap = Heap.createInstance(heapHeight);
+				heap = this.sortConfiguration.createHeap();
 				tosort = heap;
 			}
 			this.classOfElements = classOfElements;
@@ -249,8 +189,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	}
 
 	public DBMergeSortedBag<E> headBag(final E arg0) {
-		final DBMergeSortedBag<E> headBag = new DBMergeSortedBag<E>(heapHeight,
-				comp, classOfElements);
+		final DBMergeSortedBag<E> headBag = new DBMergeSortedBag<E>(this.sortConfiguration, comp, classOfElements);
 		for (final E e : this) {
 			if (comp.compare(e, arg0) >= 0)
 				break;
@@ -270,8 +209,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	}
 
 	public DBMergeSortedBag<E> subBag(final E arg0, final E arg1) {
-		final DBMergeSortedBag<E> subBag = new DBMergeSortedBag<E>(heapHeight,
-				comp, classOfElements);
+		final DBMergeSortedBag<E> subBag = new DBMergeSortedBag<E>(this.sortConfiguration, comp, classOfElements);
 		for (final E e : this) {
 			if (comp.compare(e, arg1) >= 0)
 				break;
@@ -282,8 +220,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	}
 
 	public DBMergeSortedBag<E> tailBag(final E arg0) {
-		final DBMergeSortedBag<E> tailBag = new DBMergeSortedBag<E>(heapHeight,
-				comp, classOfElements);
+		final DBMergeSortedBag<E> tailBag = new DBMergeSortedBag<E>(this.sortConfiguration, comp, classOfElements);
 		for (final E e : this) {
 			if (comp.compare(e, arg0) >= 0)
 				tailBag.add(e);
@@ -324,8 +261,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		if (heap != null) {
 			int numberPopped = 0;
 			while (!heap.isEmpty()
-					&& (numberPopped == 0 || (numberPopped < NumberElementsToPopWhenFull && (currentRun == null || heap
-							.peek().run <= currentRun.runID)))) {
+					&& (numberPopped == 0 || (numberPopped < this.sortConfiguration.getElementsToPopWhenHeapIsFull() && (currentRun == null || heap.peek().run <= currentRun.runID)))) {
 				final Entry<E> e = heap.pop();
 				e.runMatters = false;
 				if (currentRun == null)
@@ -475,8 +411,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		while (!tosort.isEmpty())
 			popHeap();
 
-		final Heap<Entry<E>> sequentialMergeHeap = (this.mergeHeapType == Heap.HEAPTYPE.DEFAULT) ? Heap.createInstance(mergeHeapHeight)
-				: Heap.createInstance(mergeHeapHeight, this.mergeHeapType);
+		final Heap<Entry<E>> sequentialMergeHeap = this.sortConfiguration.createMergeHeap();
 		if(sequentialMergeHeap instanceof SortAndMergeHeap){
 			System.err.println("The k-chunks merge heap is not ideal for merging, please set e.g. the SEQUENTIAL heap as type for the merge heap via DBMergeSortedBag.setMegeHeypType(...)");
 		}
@@ -503,8 +438,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				}
 
 				while (!sequentialMergeHeap.isEmpty()) {
-					final Entry e = getNext(iters, unsortedID,
-							sequentialMergeHeap);
+					final Entry e = getNext(iters, unsortedID, sequentialMergeHeap);
 					e.run = currentRun.runID;
 					e.n = n++;
 					currentRun.add(e);
@@ -555,7 +489,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				int currentFile = 0;
 				File fileLocal = file;
 				LuposObjectInputStream is = new LuposObjectInputStream<E>(
-						new BufferedInputStream(new FileInputStream(file)),
+						DBMergeSortedBag.this.sortConfiguration.createInputStream(new BufferedInputStream(new FileInputStream(file))),
 						classOfElements);
 				int n = 0;
 
@@ -591,9 +525,10 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 									} catch (final IOException ee) {
 									}
 									is = new LuposObjectInputStream<E>(
+										DBMergeSortedBag.this.sortConfiguration.createInputStream(
 											new BufferedInputStream(
 													new FileInputStream(
-															fileLocal)),
+															fileLocal))),
 											classOfElements);
 									e = is.readLuposEntry();
 								}
@@ -757,9 +692,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	public boolean remove(final Object arg0) {
 		sort();
 		if (currentRun == null) {
-			ToSort<Entry<E>> zheap = ToSort.createInstance();
+			ToSort<Entry<E>> zheap = this.sortConfiguration.createToSort();
 			if (zheap == null) {
-				zheap = Heap.createInstance(heapHeight);
+				zheap = this.sortConfiguration.createHeap();
 			}
 			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
 			boolean flag = false;
@@ -786,9 +721,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	public E removeAndReturn(final E e) {
 		sort();
 		if (currentRun == null) {
-			ToSort<Entry<E>> zheap = ToSort.createInstance();
+			ToSort<Entry<E>> zheap = this.sortConfiguration.createToSort();
 			if (zheap == null) {
-				zheap = Heap.createInstance(heapHeight);
+				zheap = this.sortConfiguration.createHeap();
 			}
 			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
 			E removedEntry = null;
@@ -814,9 +749,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	public boolean removeAll(final Collection<?> arg0) {
 		sort();
 		if (currentRun == null) {
-			ToSort<Entry<E>> zheap = ToSort.createInstance();
+			ToSort<Entry<E>> zheap = this.sortConfiguration.createToSort();
 			if (zheap == null) {
-				zheap = Heap.createInstance(heapHeight);
+				zheap = this.sortConfiguration.createHeap();
 			}
 			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
 			boolean flag = false;
@@ -919,15 +854,14 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					mergeLock.lock();
 					try {
 						// other values than 1 as minimum can cause deadlocks!
-						o = bbi.get(1, 1 << mergeHeapHeight);
+						o = bbi.get(1, 1 << DBMergeSortedBag.this.sortConfiguration.getMergeHeapHeight());
 
 						if (o == null) {
 							mergeRun = null;
 							return;
 						}
 
-						mergeheap = (mergeHeapType == Heap.HEAPTYPE.DEFAULT) ? Heap.createInstance(o.length, true)
-								: Heap.createInstance(o.length, true, mergeHeapType);
+						mergeheap = DBMergeSortedBag.this.sortConfiguration.createMergeHeap();
 
 						if(mergeheap instanceof SortAndMergeHeap){
 							System.err.println("The k-chunks merge heap is not ideal for merging, please set e.g. the SEQUENTIAL heap as type for the merge heap via DBMergeSortedBag.setMegeHeypType(...)");
@@ -1020,14 +954,5 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 			}
 			return true;
 		}
-	}
-
-	public static int getNumberElementsToPopWhenFull() {
-		return NumberElementsToPopWhenFull;
-	}
-
-	public static void setNumberElementsToPopWhenFull(
-			final int numberElementsToPopWhenFull) {
-		NumberElementsToPopWhenFull = numberElementsToPopWhenFull;
 	}
 }

@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.sorteddata.SortedBag;
 
 public class SortedBagImplementation<E extends Serializable> implements SortedBag<E>{
@@ -36,8 +37,6 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 	private final SortedBag<E> memoryBag;
 	private SortedBag<E> diskBag;
 	
-	private final static int HEAPHEIGHT=5;
-
 	protected final static int MAXMEMORYMAPENTRIES=30000;
 	
 	public SortedBagImplementation(final SortedBag<E> memoryBag){
@@ -83,7 +82,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 	public boolean add(final E arg0) {
 		if(memoryBag.size()<MAXMEMORYMAPENTRIES) return memoryBag.add(arg0);
 		if(memoryBag.contains(arg0)) return false;
-		if(diskBag==null) diskBag=new DBMergeSortedBag<E>(HEAPHEIGHT, memoryBag.comparator(),(Class<E>)arg0.getClass());
+		if(diskBag==null) diskBag=new DBMergeSortedBag<E>(new SortConfiguration(), memoryBag.comparator(),(Class<E>)arg0.getClass());
 		return diskBag.add(arg0);
 	}
 

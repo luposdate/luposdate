@@ -55,10 +55,10 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	 *            given time will be 2**heapHeight-1)
 	 */
 	public DBMergeSortedMapOfCollections(final Class<?> collectionClass,
-			final int heapHeight,
+			final SortConfiguration sortConfiguration,
 			final Class<? extends MapEntry<K, V>> classOfElements) {
 		this.collectionClass = collectionClass;
-		bag = new DBMergeSortedBag<MapEntry<K, V>>(heapHeight, classOfElements);
+		bag = new DBMergeSortedBag<MapEntry<K, V>>(sortConfiguration, classOfElements);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	 *            The Comparator to use for sorting.
 	 */
 	public DBMergeSortedMapOfCollections(final Class<?> collectionClass,
-			final int heapHeight, final Comparator<? super K> comp,
+			final SortConfiguration sortConfiguration, final Comparator<? super K> comp,
 			final Class<? extends MapEntry<K, V>> classOfElements) {
 		if (comp != null)
 			this.comp = comp;
@@ -94,7 +94,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 				return comp.compare(e1.getKey(), e2.getKey());
 			}
 		};
-		bag = new DBMergeSortedBag<MapEntry<K, V>>(heapHeight, compa,
+		bag = new DBMergeSortedBag<MapEntry<K, V>>(sortConfiguration, compa,
 				classOfElements);
 	}
 

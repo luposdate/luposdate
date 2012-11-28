@@ -36,9 +36,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.SortedSet;
 
+import lupos.compression.Compression;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingStringSearch;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
@@ -101,8 +103,8 @@ public class RDF3XIndexConstruction {
 			System.out.println("_______________________________________________________________");
 			
 			if (args.length < 4) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <directory for indices> [<datafile2> [<datafile3> ...]]");
-				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 /luposdateindex");
+				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|GZIP> <directory for indices> [<datafile2> [<datafile3> ...]]");
+				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex");
 				return;
 			}
 			
@@ -115,17 +117,27 @@ public class RDF3XIndexConstruction {
 			final String datafile = args[0];
 			final String dataFormat = args[1];
 			CommonCoreQueryEvaluator.encoding = args[2];
-			final String[] dir = new String[] { args[3] };
+			
+			final String compressor = args[3];
+			if(compressor.compareTo("BZIP2")==0){
+				SortConfiguration.setDEFAULT_COMPRESSION(Compression.BZIP2);
+			} if(compressor.compareTo("GZIP")==0){
+				SortConfiguration.setDEFAULT_COMPRESSION(Compression.GZIP);
+			} else {
+				SortConfiguration.setDEFAULT_COMPRESSION(Compression.NONE);
+			}
+			
+			final String[] dir = new String[] { args[4] };
 			final String writeindexinfo = dir[0]+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE;
 			DBMergeSortedBag.setTmpDir(dir);
 			DiskCollection.setTmpDir(dir);
-			lupos.datastructures.paged_dbbptree.DBBPTree.setTmpDir(args[3],true);
+			lupos.datastructures.paged_dbbptree.DBBPTree.setTmpDir(args[4],true);
 
 			final Collection<URILiteral> defaultGraphs = new LinkedList<URILiteral>();
 			final Collection<URILiteral> namedGraphs = new LinkedList<URILiteral>();
 			defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + datafile+ ">"));
 			
-			for(int i=4; i<args.length; i++){
+			for(int i=5; i<args.length; i++){
 				defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + args[i]+ ">"));				
 			}
 
@@ -135,7 +147,7 @@ public class RDF3XIndexConstruction {
 				@Override
 				public void run() {
 						final DBMergeSortedSetUsingStringSearch rdftermsRepresentations = new DBMergeSortedSetUsingStringSearch(
-								Indices.getHEAPHEIGHT(), String.class);
+								new SortConfiguration(), String.class);
 
 						final TripleConsumer tc = new TripleConsumer() {
 

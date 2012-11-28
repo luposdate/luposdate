@@ -31,13 +31,12 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 
 public class SetImplementation<E extends Serializable> implements Set<E> {
 
 	private final Set<E> memorySet;
 	private SortedSet<E> diskSet;
-
-	private final static int HEAPHEIGHT = 5;
 
 	protected final static int MAXMEMORYMAPENTRIES = 30000;
 
@@ -55,8 +54,7 @@ public class SetImplementation<E extends Serializable> implements Set<E> {
 		if (memorySet.contains(arg0))
 			return false;
 		if (diskSet == null)
-				diskSet = new DBMergeSortedSet<E>(HEAPHEIGHT, (Class<E>) arg0
-						.getClass());
+				diskSet = new DBMergeSortedSet<E>(new SortConfiguration(), (Class<E>) arg0.getClass());
 		return diskSet.add(arg0);
 	}
 

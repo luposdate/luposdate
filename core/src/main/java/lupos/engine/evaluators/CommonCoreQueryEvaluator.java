@@ -38,6 +38,7 @@ import java.util.TreeSet;
 import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.heap.SortAndMergeHeap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
@@ -61,6 +62,7 @@ import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.optimizations.logical.rules.parallel.RuleEngineForParallelOperator;
 import lupos.optimizations.logical.rules.parallel.RuleJoinWithParallelOperands;
 import lupos.rdf.Prefix;
+import lupos.rdf.parser.Parser;
 import lupos.rdf.parser.YagoParser;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 
@@ -224,22 +226,24 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		ParallelJoin.setDEFAULT_NUMBER_THREADS(jointhreads);
 		ParallelJoin.setMAXBUFFER(joinbuffer);
 		
-		Heap.setHeapType(heap);
-		ToSort.setTosort(tosort);
+		SortConfiguration.setDEFAULT_HEAP_TYPE(heap);
+		SortConfiguration.setDEFAULT_TOSORT(tosort);
 
-		ToSort.setHeight(indexheap);
-		Indices.setHEAPHEIGHT(indexheap);
-		DBMergeSortedBag.setMergeHeapHeight(mergeheapheight);
-
-		DBMergeSortedBag.setMergeHeapType(mergeheaptype);
-		SortAndMergeHeap.setK(chunk);
+		SortConfiguration.setDEFAULT_TOSORT_SIZE(indexheap);
+		SortConfiguration.setDEFAULT_HEIGHT(indexheap);
+		
+		SortConfiguration.setDEFAULT_MERGE_HEAP_HEIGHT(mergeheapheight);
+		SortConfiguration.setDEFAULT_MERGEHEAP_TYPE(mergeheaptype);
+		
+		SortConfiguration.setDEFAULT_K(chunk);
+		
 		if (mergethreads <= 1) {
 			DBMergeSortedBag.setParallelMerging(false);
 		} else {
 			DBMergeSortedBag.setParallelMerging(true);
 			DBMergeSortedBag.setNumberOfThreads(mergethreads);
 		}
-		YagoParser.setMaxTriples(yagomax);
+		Parser.setMaxTriples(yagomax);
 
 		SuperTrie.TYPE = stringsearch;
 
@@ -320,22 +324,22 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				"specifies the maximum size for the buffer for the parallel join operators...",
 				ParallelJoin.getMAXBUFFER());		
 		args.addEnumOption("heap", "specifies the heap type to be used",
-				Heap.getHeapType());
+				SortConfiguration.getDEFAULT_HEAP_TYPE());
 		args.addIntegerOption("indexheap",
 				"specifies the heap height used for index construction",
-				Indices.getHEAPHEIGHT());
+				SortConfiguration.getDEFAULT_HEIGHT());
 		args.addEnumOption(
 				"tosort",
 				"specifies the tosort type to be used in heaps for the initial runs (if no heaps are used, i.e. tosort!=NONE)",
-				ToSort.getTosort());
+				SortConfiguration.getDEFAULT_TOSORT());
 		args.addEnumOption(
 				"mergeheaptype",
 				"The heap type to be used for merging the initial runs for external merge sort.",
-				DBMergeSortedBag.getMergeHeapType());
+				SortConfiguration.getDEFAULT_MERGEHEAP_TYPE());
 		args.addIntegerOption(
 				"mergeheapheight",
 				"The heap size to be used for merging the initial runs for external merge sort.",
-				DBMergeSortedBag.getMergeHeapHeight());
+				SortConfiguration.getDEFAULT_MERGE_HEAP_HEIGHT());
 
 		args.addIntegerOption(
 				"mergethreads",
@@ -348,7 +352,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		args.addIntegerOption(
 				"chunk",
 				"defines the chunk fraction of the data for SortedChunksHeap...",
-				SortAndMergeHeap.getK());
+				SortConfiguration.getDEFAULT_K());
 		args.addIntegerOption(
 				"yagomax",
 				"specifies the maximum triples read by the YAGO parser (<=0 for all triples)...",

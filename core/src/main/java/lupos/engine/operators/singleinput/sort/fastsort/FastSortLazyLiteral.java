@@ -30,6 +30,7 @@ import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
@@ -40,8 +41,6 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class FastSortLazyLiteral extends FastSort {
-
-	public static final int HEAPHEIGHT = 16;
 
 	public FastSortLazyLiteral(final BasicOperator root,
 			final Collection<TriplePattern> triplePatterns,
@@ -64,9 +63,12 @@ public class FastSortLazyLiteral extends FastSort {
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
+		
+		SortConfiguration sortConfiguration = new SortConfiguration();
+		sortConfiguration.useExternalMergeSort();
 
 		final DBMergeSortedBag<Bindings> bag = new DBMergeSortedBag<Bindings>(
-				HEAPHEIGHT, new Comparator<Bindings>() {
+				sortConfiguration, new Comparator<Bindings>() {
 					public int compare(final Bindings arg0, final Bindings arg1) {
 						for (final Variable var : sortCriterium) {
 							final Literal l1 = arg0.get(var);
@@ -83,7 +85,7 @@ public class FastSortLazyLiteral extends FastSort {
 						}
 						return 0;
 					}
-				}, Bindings.class, TOSORT.PARALLELMERGESORT);
+				}, Bindings.class);
 
 		final Iterator<Bindings> it = bindings.oneTimeIterator();
 

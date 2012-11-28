@@ -30,6 +30,7 @@ import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
@@ -42,7 +43,6 @@ public class ImmediateSort extends Sort {
 	 * 
 	 */
 	private static final long serialVersionUID = -6875180850101362304L;
-	final static int HEAPHEIGHT = 5;
 	protected Comparator<Bindings> compLocal = comparator;
 	protected List<Variable> sortCriterium;
 
@@ -95,7 +95,7 @@ public class ImmediateSort extends Sort {
 	}
 
 	protected SortedBag<Bindings> createBag() {
-		return new DBMergeSortedBag<Bindings>(HEAPHEIGHT, compLocal,
+		return new DBMergeSortedBag<Bindings>(new SortConfiguration(), compLocal,
 				Bindings.class);
 	}
 

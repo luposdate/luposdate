@@ -213,14 +213,6 @@ public abstract class Indices extends TripleOperator {
 	public void build() {
 		// may be overridden...
 	}
-
-	public static int getHEAPHEIGHT() {
-		return HEAPHEIGHT;
-	}
-
-	public static void setHEAPHEIGHT(final int heapheight) {
-		HEAPHEIGHT = heapheight;
-	}
 	
 	public void loadData(
 			final URILiteral graphURI, final String dataFormat,

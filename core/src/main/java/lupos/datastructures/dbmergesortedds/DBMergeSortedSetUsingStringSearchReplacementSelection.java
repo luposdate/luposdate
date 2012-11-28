@@ -32,8 +32,8 @@ public class DBMergeSortedSetUsingStringSearchReplacementSelection extends
 	private String nextToRemove = null;
 
 	public DBMergeSortedSetUsingStringSearchReplacementSelection(
-			final int heapHeight, final Class<? extends String> classOfElements){
-		super(heapHeight, classOfElements);
+			final SortConfiguration sortConfiguration, final Class<? extends String> classOfElements){
+		super(sortConfiguration, classOfElements);
 	}
 
 	public DBMergeSortedSetUsingStringSearchReplacementSelection(){
@@ -46,9 +46,9 @@ public class DBMergeSortedSetUsingStringSearchReplacementSelection extends
 	}
 
 	public DBMergeSortedSetUsingStringSearchReplacementSelection(
-			final int heapHeight, final Comparator<? super String> comp,
+			final SortConfiguration sortConfiguration, final Comparator<? super String> comp,
 			final Class<? extends String> classOfElements){
-		super(heapHeight, comp, classOfElements);
+		super(sortConfiguration, comp, classOfElements);
 	}
 
 	public DBMergeSortedSetUsingStringSearchReplacementSelection(
