@@ -125,7 +125,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 
 	@Override
 	public void writeURI(OutputStream os, URILiteral uri) throws IOException {
-		os.write("type\": \"uri\", \"value\": \"".getBytes());
+		os.write("\"type\": \"uri\", \"value\": \"".getBytes());
 		os.write(uri.getString().getBytes());
 		os.write("\"".getBytes());
 	}
@@ -133,14 +133,14 @@ public class JSONFormatter extends HeadBodyFormatter {
 	@Override
 	public void writeSimpleLiteral(OutputStream os, Literal literal)
 			throws IOException {
-		os.write("type\": \"literal\", \"value\": ".getBytes());
+		os.write("\"type\": \"literal\", \"value\": ".getBytes());
 		os.write(literal.originalString().getBytes());
 	}
 
 	@Override
 	public void writeTypedLiteral(OutputStream os, TypedLiteral literal)
 			throws IOException {
-		os.write("type\": \"typed-literal\", \"datatype\": \"".getBytes());
+		os.write("\"type\": \"typed-literal\", \"datatype\": \"".getBytes());
 		os.write(literal.getTypeLiteral().getString().getBytes());
 		os.write("\", \"value\": ".getBytes());
 		os.write(literal.getOriginalContent().getBytes());
@@ -149,7 +149,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 	@Override
 	public void writeLanguageTaggedLiteral(OutputStream os,
 			LanguageTaggedLiteral literal) throws IOException {
-		os.write("type\": \"literal\", \"xml:lang\": \"".getBytes());
+		os.write("\"type\": \"literal\", \"xml:lang\": \"".getBytes());
 		os.write(literal.getOriginalLanguage().getBytes());
 		os.write("\",\"value\": ".getBytes());
 		os.write(literal.getContent().getBytes());

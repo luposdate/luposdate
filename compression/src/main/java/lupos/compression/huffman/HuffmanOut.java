@@ -23,34 +23,6 @@
  */
 package lupos.compression.huffman;
 
-public class Huffman {
-
-	public static class Node {
-		
-	}
-	
-	public static class LeafNode extends Node {		
-	}
-	
-	public static class InnerNode extends Node {		
-	}
-	
-	public static class NotYetTransmitted extends Node {
-		
-	}
-	
-	protected Node[] nodes = new Node[513];
-	
-	protected int[] number = new int[513];
-	
-	public Huffman(){
-		this.nodes[0] = new NotYetTransmitted();
-		
-		int currentNumber = 512;
-		for(int i=0; i< this.number.length; i++){
-			this.number[i] = currentNumber;
-			currentNumber--;
-		}
-	}
+public class HuffmanOut {
 
 }
