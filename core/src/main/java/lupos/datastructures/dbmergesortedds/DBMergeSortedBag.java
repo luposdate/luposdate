@@ -256,6 +256,15 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 		currentRun = Run.createInstance(this);
 	}
+	
+	/**
+	 * This method adds an entry to the current run.
+	 * This method is overridden by DBMergeSortedSet to eliminate duplicates already in the initial runs...
+	 * @param e the entry to write into the current run!
+	 */
+	protected void addToRun(final Entry<E> e){
+		this.currentRun.add(e);
+	}
 
 	private void popHeap() {
 		if (heap != null) {
@@ -270,7 +279,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					closeAndNewCurrentRun();
 				}
 				e.run = currentRun.runID;
-				currentRun.add(e);
+				this.addToRun(e);
 				numberPopped++;
 			}
 		} else {
@@ -291,7 +300,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					closeAndNewCurrentRun();
 				}
 				e.run = currentRun.runID;
-				currentRun.add(e);
+				this.addToRun(e);
 			}
 			tosort.clear();
 			// System.out.println("Sorting for " + currentRun.file.toString()
@@ -953,6 +962,21 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					return false;
 			}
 			return true;
+		}
+	}
+	
+	public static void main(String[] arg){
+		DBMergeSortedBag<String> set = new DBMergeSortedBag<String>(new SortConfiguration(), String.class);
+		String[] elems = { "aaab", "ab", "aaaaaab", "aaaaaaaaaaaaaaaaz", "aaaaaaajll" };
+		// add to set
+		for(int i=0; i<100000; i++){
+			for(int j=0; j<elems.length; j++){
+				set.add(elems[j]+(i % 100));
+			}
+		}
+		// print out sorted set
+		for(String s: set){
+			System.out.println(s);
 		}
 	}
 }

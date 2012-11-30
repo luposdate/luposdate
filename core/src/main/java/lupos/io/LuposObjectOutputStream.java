@@ -53,9 +53,12 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		super(arg0);
 		os = arg0;
 	}
-
-	protected Literal lastSubject = null;
-	protected Literal lastPredicate = null, lastObject = null;
+	
+	protected Literal 	lastSubject = null,
+						lastPredicate = null, 
+						lastObject = null;
+	
+	protected byte[] lastString = null;
 
 	public void writeLuposObject(final Object arg0) throws IOException {
 		Registration.serializeWithoutId(arg0, this);
@@ -180,6 +183,30 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		os.write(0);
 		writeLuposString(s);
 	}
+	
+	public void writeLuposDifferenceString(final String s) throws IOException {
+		if (s == null){
+			return;
+		}
+		if(this.lastString==null){
+			this.lastString = s.getBytes(LuposObjectInputStream.UTF8);
+			this.writeLuposString(s);
+			return;
+		}
+		byte[] bytesOfS = s.getBytes(LuposObjectInputStream.UTF8);
+		// determine common prefix of new string and last stored string
+		int common = 0;
+		while(common<bytesOfS.length && common < this.lastString.length && bytesOfS[common]==this.lastString[common]){
+			common++;
+		}
+		this.writeLuposIntVariableBytes(common);
+		
+		// now write only difference string
+		final int length = bytesOfS.length;
+		this.writeLuposIntVariableBytes(length-common);
+		this.os.write(bytesOfS, common, length-common);
+		this.lastString = bytesOfS;
+	}	
 
 	public void writeLuposString(final String s) throws IOException {
 		if (s == null){

@@ -149,6 +149,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 					break;
 				}
 			}
+		// remove duplicates during merging...
 		while (mergeheap.peek() != null && res.equals(mergeheap.peek())) {
 			res = mergeheap.pop();
 			res.run = (res.run == 0) ? 1 : res.run;
@@ -180,6 +181,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 					break;
 				}
 			}
+		// remove duplicates during merging...
 		while (mergeheap.peek() != null && res.equals(mergeheap.peek())) {
 			res = mergeheap.pop();
 			res.run = (res.run == 0) ? 1 : res.run;
@@ -191,6 +193,14 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		}
 		return res;
 	}
+	
+	@Override
+	protected void addToRun(final Entry<E> e){
+		// already eliminate duplicates when adding the entry to the run
+		if(this.currentRun.max==null || !this.currentRun.max.equals(e.e)){
+			this.currentRun.add(e);
+		}
+	}	
 
 	public DBMergeSortedSet<E> subSet(final E arg0, final E arg1) {
 			return new DBMergeSortedSet<E>(super.subBag(arg0, arg1),
@@ -309,5 +319,20 @@ public class DBMergeSortedSet<E extends Serializable> extends
 				iter.close();
 			}
 		};
+	}
+	
+	public static void main(String[] arg){
+		SortConfiguration sortConfig = new SortConfiguration();
+		sortConfig.useChunksMergeSort();
+		DBMergeSortedSet<String> set = new DBMergeSortedSet<String>(sortConfig, String.class);
+		String[] elems = { "aaab", "ab", "aaaaaab", "aaaaaaaaaaaaaaaaz", "aaaaaaajll", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" };
+		// add to set
+		for(int i=0; i<100000; i++){
+			set.add(elems[i % elems.length]+(i % 100));
+		}
+		// print out sorted set
+		for(String s: set){
+			System.out.println(s);
+		}
 	}
 }

@@ -362,8 +362,12 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 
 	private Bindings previousBindings = null;
 
-	private Literal lastSubject = null, lastPredicate = null,
-			lastObject = null;
+	private Literal 	lastSubject = null, 
+						lastPredicate = null,
+						lastObject = null;
+	
+	// the last stored string as byte array...
+	protected byte[] lastString = null;
 
 	public Triple readTriple() throws IOException, URISyntaxException {
 		final int diff = is.read();
@@ -386,6 +390,30 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return LiteralFactory.readLuposLiteral(this);
 	}
 
+	public String readLuposDifferenceString() throws IOException {
+		if(this.lastString==null){
+			String result = this.readLuposString();
+			this.lastString = result.getBytes(LuposObjectInputStream.UTF8);
+			return result;
+		}
+		final Integer common = this.readLuposIntVariableBytes();
+		if(common==null){
+			return null;
+		}
+		final Integer length = this.readLuposIntVariableBytes();
+		if(length==null || length<0){
+			return null;
+		}
+		// copy the common prefix with the last stored string!
+		final byte[] bytesOfResult = new byte[common + length];
+		System.arraycopy(this.lastString, 0, bytesOfResult, 0, common);
+		
+		// now read only difference string
+		this.is.read(bytesOfResult, common, length);
+		this.lastString = bytesOfResult;
+		return new String(bytesOfResult, LuposObjectInputStream.UTF8);
+	}	
+	
 	public String readLuposString() throws IOException {
 		final Integer length = this.readLuposIntVariableBytes();
 		if(length==null || length<0){

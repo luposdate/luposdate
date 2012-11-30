@@ -363,7 +363,7 @@ public class Registration {
 		}
 
 		public String deserialize(final LuposObjectInputStream<String> in) throws IOException {
-			return in.readLuposString();
+			return in.readLuposDifferenceString();
 		}
 
 		public Class<String>[] getRegisteredClasses() {
@@ -371,7 +371,7 @@ public class Registration {
 		}
 
 		public void serialize(final String t, final LuposObjectOutputStream out) throws IOException {
-			out.writeLuposString(t);
+			out.writeLuposDifferenceString(t);
 		}
 	}
 
