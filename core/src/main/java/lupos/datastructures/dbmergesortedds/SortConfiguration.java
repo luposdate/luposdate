@@ -26,9 +26,6 @@ package lupos.datastructures.dbmergesortedds;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import lupos.compression.Compression;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
@@ -72,6 +69,10 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	public void setGZIPCompression(){
 		this.compression = Compression.GZIP;
+	}
+	
+	public void setHuffmanCompression(){
+		this.compression = Compression.HUFFMAN;
 	}
 	
 	public InputStream createInputStream(final InputStream inferior) throws IOException{

@@ -21,39 +21,50 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.compression.bitstream;
+package lupos.compression.huffman.tree;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.LinkedList;
 
-public class BitOutputStream {
-	
-	protected final OutputStream out;
-	
-	protected int currentByte = 0;
-	protected int currentBitValue = 1;
+import lupos.compression.bitstream.BitInputStream;
+import lupos.compression.bitstream.BitOutputStream;
 
-	public BitOutputStream(final OutputStream out){
-		this.out = out;
+public class EndOfFile extends Node {
+
+	@Override
+	public void encode(final BitOutputStream out) throws IOException {
+		out.write(false); // bit cleared for leaf node!
+		out.write(false); // bit cleared for EOF!
 	}
 	
-	public void write(boolean b) throws IOException{
-		if(b){
-			this.currentByte += this.currentBitValue;
-		}
-		this.currentBitValue <<= 1;
-		if(this.currentBitValue == 256){
-			this.out.write(this.currentByte);
-			this.currentByte = 0;
-			this.currentBitValue = 1;
-		}
+	@Override
+	public int getDepth() {
+		return 0;
+	}
+
+	@Override
+	public int getMin() {
+		return Integer.MAX_VALUE;
+	}
+
+	@Override
+	public int getMax() {
+		return Integer.MIN_VALUE;
+	}
+
+	@Override
+	protected void fillCodeArray(LinkedList<Boolean> currentCode, Boolean[][] codeArray, int min) {
+		this.fill(currentCode, codeArray, codeArray.length - 1);
+	}
+
+	@Override
+	public int getSymbol(BitInputStream in) throws IOException {
+		// end of stream reached!
+		return -1;
 	}
 	
-	public void close() throws IOException {
-		if(this.currentBitValue>1){
-			// write remaining bits (current byte must be written as complete bytes must be always written!)
-			this.out.write(this.currentByte);
-		}		
-		this.out.close();
+	@Override
+	public String toString(){
+		return "EndOfFile";
 	}
 }

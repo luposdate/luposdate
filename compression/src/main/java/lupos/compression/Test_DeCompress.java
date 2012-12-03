@@ -33,6 +33,9 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import lupos.compression.huffman.HuffmanInputStream;
+import lupos.compression.huffman.HuffmanOutputStream;
+
 import org.apache.commons.compress.bzip2.CBZip2InputStream;
 import org.apache.commons.compress.bzip2.CBZip2OutputStream;
 
@@ -70,6 +73,25 @@ public class Test_DeCompress {
 
 		},
 
+		/**
+		 * blockwise huffman encoding 
+		 */
+		HUFFMAN {
+
+			@Override
+			public InputStream createInputStream(final InputStream inferior)
+					throws IOException {
+				return new HuffmanInputStream(inferior);
+			}
+
+			@Override
+			public OutputStream createOutputStream(final OutputStream inferior)
+					throws IOException {
+				return new HuffmanOutputStream(inferior);
+			}
+
+		},
+		
 		/**
 		 * Build-in Java compression strategy.
 		 */

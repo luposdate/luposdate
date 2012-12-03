@@ -47,6 +47,54 @@ public enum Compression {
 		}
 
 	},
+	
+	/**
+	 * Compression strategy used by the Apache web server. Available from
+	 * http://www.kohsuke.org/bzip2//
+	 */
+	HUFFMAN {
+
+		@SuppressWarnings("rawtypes")
+		@Override
+		public InputStream createInputStream(final InputStream inferior)
+				throws IOException {
+			// use reflection api allowing a later binding of the jar with the compression algorithms and letting the core module free of third-party jars!				
+			try {
+				Class clas = Class.forName("lupos.compression.huffman.HuffmanInputStream");
+				Class[] types = new Class[] { InputStream.class };
+				@SuppressWarnings("unchecked")
+				Constructor<? extends InputStream> cons = clas.getConstructor(types);
+				Object[] args = new Object[] { inferior };
+				return cons.newInstance(args);
+			} catch (Exception ex) {
+				System.err.println("WARNING: Tried to use Huffman compression, but the corresponding jar is not included in the class path => do not use any compression!");
+				System.err.println(ex);
+				ex.printStackTrace();
+				return inferior;
+			}
+		}
+
+		@SuppressWarnings("rawtypes")
+		@Override
+		public OutputStream createOutputStream(final OutputStream inferior)
+				throws IOException {
+			// use reflection api allowing a later binding of the jar with the compression algorithms and letting the core module free of third-party jars!				
+			try {
+				Class clas = Class.forName("lupos.compression.huffman.HuffmanOutputStream");
+				Class[] types = new Class[] { OutputStream.class };
+				@SuppressWarnings("unchecked")
+				Constructor<? extends OutputStream> cons = clas.getConstructor(types);
+				Object[] args = new Object[] { inferior };
+				return cons.newInstance(args);
+			} catch (Exception ex) {
+				System.err.println("WARNING: Tried to use Huffman compression, but the corresponding jar is not included in the class path => do not use any compression!");
+				System.err.println(ex);
+				ex.printStackTrace();
+				return inferior;
+			}
+		}		
+	},
+	
 	/**
 	 * Build-in Java compression strategy.
 	 */

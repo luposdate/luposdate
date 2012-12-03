@@ -21,36 +21,35 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.compression.huffman;
+package lupos.misc;
 
-public class Huffman {
+import java.io.IOException;
+import java.io.InputStream;
 
-	public static class Node {
-		
+public class InputStreamLogger extends InputStream {
+	
+	protected final InputStream inputstream;
+
+	public InputStreamLogger(final InputStream inputstream){
+		this.inputstream = inputstream;
+		System.out.println("Stream opened!");
 	}
-	
-	public static class LeafNode extends Node {		
+
+	@Override
+	public int read() throws IOException {
+		int result = this.inputstream.read();
+		System.out.print(result + ", ");
+		return result;
 	}
-	
-	public static class InnerNode extends Node {		
-	}
-	
-	public static class NotYetTransmitted extends Node {
-		
-	}
-	
-	protected Node[] nodes = new Node[513];
-	
-	protected int[] number = new int[513];
-	
-	public Huffman(){
-		this.nodes[0] = new NotYetTransmitted();
-		
-		int currentNumber = 512;
-		for(int i=0; i< this.number.length; i++){
-			this.number[i] = currentNumber;
-			currentNumber--;
+
+	@Override
+	public void close(){
+		System.out.println("\nStream closed!");
+		try {
+			this.inputstream.close();
+		} catch (IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
 		}
 	}
-
 }

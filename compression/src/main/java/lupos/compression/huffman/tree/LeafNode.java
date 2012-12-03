@@ -21,84 +21,65 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.compression.huffman;
+package lupos.compression.huffman.tree;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
+import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
-public class HuffmanOut extends Huffman {
+public class LeafNode extends Node {
+	final int symbol;
 	
-	protected final BitOutputStream out;
-	
-	protected int[] leafPointers = new int[256];
-	
-	protected int NYT_Pos = 0;
-	
-	public HuffmanOut(final BitOutputStream out){
-		this.out = out;
-		for(int i=0; i<this.leafPointers.length; i++){
-			this.leafPointers[i] = -1;
-		}
+	public LeafNode(final int symbol){
+		this.symbol = symbol;
 	}
 
-	protected void write(final int b) throws IOException{
-		final int pos_of_b = this.leafPointers[b];
-		if(pos_of_b == -1){
-			// b is currently not in the adaptive huffman tree!
-			this.writeCode(this.NYT_Pos);
-			final int new_NYT_Pos = getLeftChild(this.NYT_Pos);
-			final int new_Leaf_pos = new_NYT_Pos + 1;
-			this.nodes[new_NYT_Pos] = this.nodes[this.NYT_Pos];
-			this.nodes[this.NYT_Pos] = new InnerNode();
-			this.NYT_Pos = new_NYT_Pos;
-			this.nodes[new_Leaf_pos] = new LeafNode();
-			this.leafPointers[b] = new_Leaf_pos;
-			this.incrementWeight(new_Leaf_pos);			
-		} else {
-			// b is in the adaptive huffman tree!
-			this.writeCode(pos_of_b);
-			this.incrementWeight(pos_of_b);
-		}
+	@Override
+	public void encode(final BitOutputStream out) throws IOException {
+		out.write(false); // bit cleared for leaf node!
+		out.write(true); // bit set for non-EOF!
+		this.writeSymbol(out);
 	}
 	
-	protected int getParent(int pos){
-		return (pos-1)/2;
-	}
-	
-	protected int getLeftChild(int pos){
-		return (pos*2)+1;
-	}	
-	
-	protected int getRightChild(int pos){
-		return this.getLeftChild(pos)+1;
-	}
-	
-	/**
-	 * writes the code of a byte by first navigating to the root and on the way back write the bits of the code...
-	 * @param pos
-	 * @throws IOException
-	 */
-	protected void writeCode(final int pos) throws IOException{
-		if(pos==0){
-			return;
-		}
-		final int parent = this.getParent(pos);
-		this.writeCode(parent);
-		this.out.write(pos==this.getRightChild(parent));		
-	}
-	
-	protected void writeByte(final int b) throws IOException{
-		int toWrite = b;
+	protected void writeSymbol(final BitOutputStream out) throws IOException{
+		int toWrite = this.symbol;
 		// write 8 bits...
 		for(int i=0; i<8; i++){
-			this.out.write((toWrite%2) == 1);
+			out.write((toWrite%2) != 0);
 			// divide by 2 in a fast way!
 			toWrite >>= 1;
 		}
 	}
+
+	@Override
+	public int getDepth() {
+		return 0;
+	}
+
+	@Override
+	public int getMin() {
+		return this.symbol;
+	}
+
+	@Override
+	public int getMax() {
+		return this.symbol;
+	}
+
+	@Override
+	protected void fillCodeArray(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int min) {
+		this.fill(currentCode, codeArray, this.symbol - min);
+	}
+
+	@Override
+	public int getSymbol(BitInputStream in) throws IOException {
+		return this.symbol;
+	}
 	
-	protected void incrementWeight(final int pos){
-		
+	@Override
+	public String toString(){
+		return ""+this.symbol;
 	}
 }

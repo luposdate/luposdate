@@ -966,7 +966,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	}
 	
 	public static void main(String[] arg){
-		DBMergeSortedBag<String> set = new DBMergeSortedBag<String>(new SortConfiguration(), String.class);
+		SortConfiguration sortConfig = new SortConfiguration();
+		sortConfig.setHuffmanCompression();
+		DBMergeSortedBag<String> set = new DBMergeSortedBag<String>(sortConfig, String.class);
 		String[] elems = { "aaab", "ab", "aaaaaab", "aaaaaaaaaaaaaaaaz", "aaaaaaajll" };
 		// add to set
 		for(int i=0; i<100000; i++){

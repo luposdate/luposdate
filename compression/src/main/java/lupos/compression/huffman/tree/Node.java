@@ -21,39 +21,61 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.compression.bitstream;
+package lupos.compression.huffman.tree;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.LinkedList;
 
-public class BitOutputStream {
-	
-	protected final OutputStream out;
-	
-	protected int currentByte = 0;
-	protected int currentBitValue = 1;
+import lupos.compression.bitstream.BitInputStream;
+import lupos.compression.bitstream.BitOutputStream;
 
-	public BitOutputStream(final OutputStream out){
-		this.out = out;
+public abstract class Node {
+	public abstract void encode(final BitOutputStream out) throws IOException;
+
+	public abstract int getDepth();
+	public abstract int getMin();
+	public abstract int getMax();
+	
+	public abstract int getSymbol(final BitInputStream in) throws IOException ;
+
+	public void fillCodeArray(final Boolean[][] codeArray, final int min){
+		this.fillCodeArray(new LinkedList<Boolean>(), codeArray, min);
+	}
+
+	protected abstract void fillCodeArray(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int min);
+
+	protected void fill(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int pos){
+		int i = 0;
+		for(final Boolean codeBit: currentCode){
+			codeArray[pos][i] = codeBit;
+			i++;
+		}
 	}
 	
-	public void write(boolean b) throws IOException{
-		if(b){
-			this.currentByte += this.currentBitValue;
-		}
-		this.currentBitValue <<= 1;
-		if(this.currentBitValue == 256){
-			this.out.write(this.currentByte);
-			this.currentByte = 0;
-			this.currentBitValue = 1;
+	public static Node readInHuffmanTree(final BitInputStream in) throws IOException {
+		if(in.readBit()){
+			// inner node ! -> read left and right operand!
+			final Node left = Node.readInHuffmanTree(in);
+			final Node right = Node.readInHuffmanTree(in);
+			return new InnerNode(left, right);
+		} else {
+			if(in.readBit()){
+				return new LeafNode(Node.readSymbol(in));
+			} else {
+				return new EndOfFile();
+			}
 		}
 	}
 	
-	public void close() throws IOException {
-		if(this.currentBitValue>1){
-			// write remaining bits (current byte must be written as complete bytes must be always written!)
-			this.out.write(this.currentByte);
-		}		
-		this.out.close();
+	protected static int readSymbol(final BitInputStream in) throws IOException {
+		int value = 0;
+		int bitValue = 1;
+		for(int i=0; i<8; i++){
+			if(in.readBit()){
+				value += bitValue;
+			}
+			bitValue *= 2;
+		}
+		return value;
 	}
 }

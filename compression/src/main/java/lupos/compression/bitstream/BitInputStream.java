@@ -39,7 +39,7 @@ public class BitInputStream {
 		this.in = in;
 	}
 	
-	public boolean readBit() throws IOException{
+	public boolean readBit() throws IOException {
 		if(this.currentPosInByte>7){
 			this.currentByte = this.in.read();
 			this.currentPosInByte=0;

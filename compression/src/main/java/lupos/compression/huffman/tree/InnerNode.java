@@ -21,39 +21,66 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.compression.bitstream;
+package lupos.compression.huffman.tree;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.LinkedList;
 
-public class BitOutputStream {
-	
-	protected final OutputStream out;
-	
-	protected int currentByte = 0;
-	protected int currentBitValue = 1;
+import lupos.compression.bitstream.BitInputStream;
+import lupos.compression.bitstream.BitOutputStream;
 
-	public BitOutputStream(final OutputStream out){
-		this.out = out;
+public class InnerNode extends Node {
+	public final Node left;
+	public final Node right;
+	
+	public InnerNode(final Node left, final Node right){
+		this.left = left;
+		this.right = right;
 	}
 	
-	public void write(boolean b) throws IOException{
-		if(b){
-			this.currentByte += this.currentBitValue;
-		}
-		this.currentBitValue <<= 1;
-		if(this.currentBitValue == 256){
-			this.out.write(this.currentByte);
-			this.currentByte = 0;
-			this.currentBitValue = 1;
+	@Override
+	public void encode(final BitOutputStream out) throws IOException{
+		out.write(true); // bit set for inner node!
+		this.left.encode(out);
+		this.right.encode(out);
+	}
+
+	@Override
+	public int getDepth() {
+		return Math.max(this.left.getDepth() + 1, this.right.getDepth() + 1);
+	}
+
+	@Override
+	public int getMin() {
+		return Math.min(this.left.getMin(), this.right.getMin());
+	}
+
+	@Override
+	public int getMax() {
+		return Math.max(this.left.getMax(), this.right.getMax());
+	}
+
+	@Override
+	protected void fillCodeArray(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int min) {
+		currentCode.add(false);
+		this.left.fillCodeArray(currentCode, codeArray, min);
+		currentCode.removeLast();
+		currentCode.add(true);
+		this.right.fillCodeArray(currentCode, codeArray, min);
+		currentCode.removeLast();
+	}
+
+	@Override
+	public int getSymbol(BitInputStream in) throws IOException {
+		if(in.readBit()){
+			return this.right.getSymbol(in);
+		} else {
+			return this.left.getSymbol(in);
 		}
 	}
 	
-	public void close() throws IOException {
-		if(this.currentBitValue>1){
-			// write remaining bits (current byte must be written as complete bytes must be always written!)
-			this.out.write(this.currentByte);
-		}		
-		this.out.close();
+	@Override
+	public String toString(){
+		return "(" + this.left.toString() + ", " + this.right.toString() + ")";
 	}
 }

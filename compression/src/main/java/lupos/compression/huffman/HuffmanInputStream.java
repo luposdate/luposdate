@@ -21,39 +21,46 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.compression.bitstream;
+package lupos.compression.huffman;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-public class BitOutputStream {
-	
-	protected final OutputStream out;
-	
-	protected int currentByte = 0;
-	protected int currentBitValue = 1;
+import lupos.compression.bitstream.BitInputStream;
+import lupos.compression.huffman.tree.Node;
 
-	public BitOutputStream(final OutputStream out){
-		this.out = out;
+public class HuffmanInputStream extends InputStream {
+
+	protected final BitInputStream in;
+	
+	protected int current = 0;
+	protected Node rootOfHuffmanTree;
+	
+	public HuffmanInputStream(final BitInputStream in){
+		this.in = in;
 	}
 	
-	public void write(boolean b) throws IOException{
-		if(b){
-			this.currentByte += this.currentBitValue;
-		}
-		this.currentBitValue <<= 1;
-		if(this.currentBitValue == 256){
-			this.out.write(this.currentByte);
-			this.currentByte = 0;
-			this.currentBitValue = 1;
-		}
+	public HuffmanInputStream(final InputStream in){
+		this.in = new BitInputStream(in);
 	}
 	
+	@Override
+	public int read() throws IOException {
+		if(this.current == 0){
+			// read in huffman tree
+			this.rootOfHuffmanTree = Node.readInHuffmanTree(this.in);
+		}
+		// get next symbol
+		final int result = this.rootOfHuffmanTree.getSymbol(this.in);
+		this.current++;
+		if(this.current==HuffmanOutputStream.blocksize){
+			this.current = 0;
+		}
+		return result;
+	}
+
+	@Override
 	public void close() throws IOException {
-		if(this.currentBitValue>1){
-			// write remaining bits (current byte must be written as complete bytes must be always written!)
-			this.out.write(this.currentByte);
-		}		
-		this.out.close();
+		this.in.close();
 	}
 }
