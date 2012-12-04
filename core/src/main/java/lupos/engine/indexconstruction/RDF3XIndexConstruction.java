@@ -66,7 +66,6 @@ import lupos.misc.TimeInterval;
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
  * also constructed on disk...
- * 
  */
 public class RDF3XIndexConstruction {
 	private static final int k = 1000;
@@ -89,7 +88,7 @@ public class RDF3XIndexConstruction {
 	/**
 	 * Constructs the large-scale indices for RDF3X. 
 	 * The command line arguments are
-	 * <datafile> <dataformat> <encoding> <directory for indices> [<datafile2> [<datafile3> ...]]
+	 * <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [<datafile2> [<datafile3> ...]]
 	 * If you want to import more than one file you can use the additional parameters <datafilei>!
 	 * 
 	 * @param args
@@ -99,11 +98,11 @@ public class RDF3XIndexConstruction {
 		try {
 
 			System.out.println("Program to construct an RDF3X Index for LUPOSDATE...");
-			System.out.println("[help is printed when using less than 4 command line arguments]");
+			System.out.println("[help is printed when using less than 5 command line arguments]");
 			System.out.println("_______________________________________________________________");
 			
-			if (args.length < 4) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|GZIP> <directory for indices> [<datafile2> [<datafile3> ...]]");
+			if (args.length < 5) {
+				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [<datafile2> [<datafile3> ...]]");
 				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex");
 				return;
 			}
@@ -121,12 +120,14 @@ public class RDF3XIndexConstruction {
 			final String compressor = args[3];
 			if(compressor.compareTo("BZIP2")==0){
 				SortConfiguration.setDEFAULT_COMPRESSION(Compression.BZIP2);
-			} if(compressor.compareTo("GZIP")==0){
+			} else if(compressor.compareTo("HUFFMAN")==0){
+				SortConfiguration.setDEFAULT_COMPRESSION(Compression.HUFFMAN);
+			} else if(compressor.compareTo("GZIP")==0){
 				SortConfiguration.setDEFAULT_COMPRESSION(Compression.GZIP);
 			} else {
 				SortConfiguration.setDEFAULT_COMPRESSION(Compression.NONE);
 			}
-			
+		
 			final String[] dir = new String[] { args[4] };
 			final String writeindexinfo = dir[0]+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE;
 			DBMergeSortedBag.setTmpDir(dir);
