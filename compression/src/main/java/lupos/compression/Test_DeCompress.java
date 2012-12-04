@@ -30,22 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import lupos.compression.huffman.HuffmanInputStream;
-import lupos.compression.huffman.HuffmanOutputStream;
-
-import org.apache.commons.compress.bzip2.CBZip2InputStream;
-import org.apache.commons.compress.bzip2.CBZip2OutputStream;
-
-// the following classes are contained in jars (lzma-4.63-jio-0.95.jar, colloquial_arithcode-1_1.jar), which are not yet available in maven repositories... 
-//import net.contrapunctus.lzma.LzmaInputStream;
-//import net.contrapunctus.lzma.LzmaOutputStream;
-
-//import com.colloquial.arithcode.ArithCodeInputStream;
-//import com.colloquial.arithcode.ArithCodeOutputStream;
-//import com.colloquial.arithcode.PPMModel;
 
 /**
  * This class is for testing some standard compressors...
@@ -53,185 +37,12 @@ import org.apache.commons.compress.bzip2.CBZip2OutputStream;
 public class Test_DeCompress {
 
 	/**
-	 * For enumerating some standard compressors...
-	 */
-	public static enum Compressors {
-		/**
-		 * Dummy strategy, not changing the inferior streams.
-		 */
-		NONE {
-
-			@Override
-			public InputStream createInputStream(final InputStream inferior) {
-				return inferior;
-			}
-
-			@Override
-			public OutputStream createOutputStream(final OutputStream inferior) {
-				return inferior;
-			}
-
-		},
-
-		/**
-		 * blockwise huffman encoding 
-		 */
-		HUFFMAN {
-
-			@Override
-			public InputStream createInputStream(final InputStream inferior)
-					throws IOException {
-				return new HuffmanInputStream(inferior);
-			}
-
-			@Override
-			public OutputStream createOutputStream(final OutputStream inferior)
-					throws IOException {
-				return new HuffmanOutputStream(inferior);
-			}
-
-		},
-		
-		/**
-		 * Build-in Java compression strategy.
-		 */
-		GZIP {
-
-			@Override
-			public InputStream createInputStream(final InputStream inferior)
-					throws IOException {
-				return new GZIPInputStream(inferior);
-			}
-
-			@Override
-			public OutputStream createOutputStream(final OutputStream inferior)
-					throws IOException {
-				return new GZIPOutputStream(inferior);
-			}
-
-		},
-
-		/**
-		 * Compression strategy used by the Apache web server. Available from
-		 * http://www.kohsuke.org/bzip2//
-		 */
-		BZIP2 {
-
-			@Override
-			public InputStream createInputStream(final InputStream inferior)
-					throws IOException {
-				return new CBZip2InputStream(inferior);
-			}
-
-			@Override
-			public OutputStream createOutputStream(final OutputStream inferior)
-					throws IOException {
-				return new CBZip2OutputStream(inferior);
-			}
-
-//		},
-//		
-//		/**
-//		 * Compression strategy used by 7zip. Available from
-//		 * http://contrapunctus.net/league/haques/lzmajio/.
-//		 * or https://github.com/league/lzmajio
-//		 */
-//		LZMA {
-//
-//			@Override
-//			public InputStream createInputStream(final InputStream inferior)
-//					throws IOException {
-//				return new LzmaInputStream(inferior);
-//			}
-//
-//			@Override
-//			public OutputStream createOutputStream(final OutputStream inferior)
-//					throws IOException {
-//				return new LzmaOutputStream(inferior);
-//			}
-//		},
-//		/**
-//		 * High-level compression strategy implementing prediction by partial
-//		 * matching. Available from http://www.colloquial.com/ArithmeticCoding/
-//		 */
-//		PPM {
-//
-//			/**
-//			 * The size of considered context for the next byte to be
-//			 * un-/compressed
-//			 */
-//			private static final int maxContentLength = 6;
-//
-//			@Override
-//			public InputStream createInputStream(final InputStream inferior)
-//					throws IOException {
-//				return new ArithCodeInputStream(inferior, new PPMModel(
-//						maxContentLength));
-//			}
-//
-//			@Override
-//			public OutputStream createOutputStream(final OutputStream inferior)
-//					throws IOException {
-//				return new ArithCodeOutputStream(inferior, new PPMModel(
-//						maxContentLength)) {
-//
-//					@Override
-//					public void write(final int i) throws IOException {
-//						super.write(i & 255);
-//					}
-//
-//					@Override
-//					public void write(final byte[] bs, final int off,
-//							final int len) throws IOException {
-//						for (int i = off, l = off + len; i < l; i++) {
-//							write(bs[i]);
-//						}
-//					}
-//
-//					@Override
-//					public void write(final byte[] bs) throws IOException {
-//						write(bs, 0, bs.length);
-//					}
-//
-//				};
-//			}
-
-		};
-
-		/**
-		 * Wraps the
-		 * <code>inferior</stream> stream in an input stream uncompressing its content.
-		 *
-		 * @param inferior
-		 *            Compressed input stream
-		 * @return The wrapping input stream
-		 * @throws IOException
-		 *             if an I/O error occurs
-		 */
-		public abstract InputStream createInputStream(final InputStream inferior)
-				throws IOException;
-
-		/**
-		 * Wraps the <code>inferior</stream> stream in an output stream
-		 * compressing the written data before passing it.
-		 *
-		 * @param inferior
-		 *            Output stream to contain the compressed data
-		 * @return The wrapping output stream
-		 * @throws IOException
-		 *             if an I/O error occurs
-		 */
-		public abstract OutputStream createOutputStream(
-				final OutputStream inferior) throws IOException;
-	}
-
-	/**
 	 * called if wrong command line options are given...
 	 */
 	private static void error() {
 		System.out.println("Error in command line options, use:");
 		System.out
-				.println("java misc.Test_DeCompress <COMPRESS|UNCOMPRESS> <NONE|GZIP|BZIP2|LZMA|PPM> <Inputfile> <Outputfile>");
+				.println("java lupos.compression.Test_DeCompress <COMPRESS|UNCOMPRESS> <NONE|GZIP|HUFFMAN|BZIP2|LZMA|PPM> <Inputfile> <Outputfile>");
 		System.exit(0);
 	}
 
@@ -242,10 +53,10 @@ public class Test_DeCompress {
 	 *            the compressor type as string
 	 * @return the compressor as enum
 	 */
-	private static Compressors getCompressor(final String type) {
+	private static Compression getCompressor(final String type) {
 		final String upperCaseType = type.toUpperCase();
 		try {
-			return Compressors.valueOf(upperCaseType);
+			return Compression.valueOf(upperCaseType);
 		} catch (final Exception e) {
 			error();
 			return null;
@@ -262,7 +73,7 @@ public class Test_DeCompress {
 	 * @param outputFile
 	 *            the file into which the output will be written
 	 */
-	private static void compress(final Compressors compressor,
+	private static void compress(final Compression compressor,
 			final String inputFile, final String outputFile) {
 		try {
 			final InputStream input = new BufferedInputStream(
@@ -288,7 +99,7 @@ public class Test_DeCompress {
 	 * @param outputFile
 	 *            the file into which the output will be written
 	 */
-	private static void uncompress(final Compressors compressor,
+	private static void uncompress(final Compression compressor,
 			final String inputFile, final String outputFile) {
 		try {
 			final InputStream input = compressor
@@ -329,7 +140,7 @@ public class Test_DeCompress {
 	/**
 	 * @param args
 	 *            command line options: java misc.Test_DeCompress
-	 *            <COMPRESS|UNCOMPRESS> <NONE|GZIP|BZIP2|LZMA|PPM> <Inputfile> <Outputfile>
+	 *            <COMPRESS|UNCOMPRESS> <NONE|GZIP|HUFFMAN|BZIP2|LZMA|PPM> <Inputfile> <Outputfile>
 	 */
 	public static void main(final String[] args) {
 		System.out.println("De-/Compressor");
@@ -343,9 +154,9 @@ public class Test_DeCompress {
 			} else if (firstArg.compareTo("UNCOMPRESS") == 0
 					|| firstArg.compareTo("U") == 0) {
 				uncompress(getCompressor(args[1]), args[2], args[3]);
-			} else
+			} else {
 				error();
-
+			}
 		}
 	}
 

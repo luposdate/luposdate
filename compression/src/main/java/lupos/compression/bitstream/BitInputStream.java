@@ -26,24 +26,40 @@ package lupos.compression.bitstream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This class converts a byte-oriented input stream into a bit-oriented input stream. 
+ */
 public class BitInputStream {
 
+	// the underlying input stream from which bytes are read and converted into a stream of bits
 	protected final InputStream in;
 
 	// the current position in the byte is initially set to 8 such that right the first time a new byte is read from the underlying input stream
 	protected int currentPosInByte = 8;
 	
+	// the current byte to be transformed into a stream of bits
 	protected int currentByte;
 	
+	/**
+	 * Constructor
+	 * @param in the underlying input stream
+	 */
 	public BitInputStream(final InputStream in){
 		this.in = in;
 	}
 	
+	/**
+	 * Returns the next bit of the stream
+	 * @return the next bit
+	 * @throws IOException if something fails when reading from the underlying input stream
+	 */
 	public boolean readBit() throws IOException {
 		if(this.currentPosInByte>7){
+			// read in next byte from underlying input stream
 			this.currentByte = this.in.read();
 			this.currentPosInByte=0;
 		}
+		// test next bit...
 		boolean result = (this.currentByte % 2) == 1; 
 		this.currentPosInByte++;
 		// prepare to read next bit by division through 2 (implemented by fast shifting bit positions)
@@ -51,8 +67,12 @@ public class BitInputStream {
 		return result;
 	}
 	
+	/**
+	 * Closes this bit input stream (and its underlying input stream)
+	 * @throws IOException if closing the underlying input stream fails...
+	 */
 	public void close() throws IOException{
+		// closes underlying input stream
 		this.in.close();
-	}
-	
+	}	
 }

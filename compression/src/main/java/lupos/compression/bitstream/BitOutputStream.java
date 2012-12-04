@@ -26,29 +26,59 @@ package lupos.compression.bitstream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * This class converts a bit output stream into a byte-oriented output stream. 
+ */
 public class BitOutputStream {
 	
+	/**
+	 * the underlying output stream
+	 */
 	protected final OutputStream out;
 	
+	/**
+	 * the current (incomplete) byte (written later to the underlying output stream)
+	 */
 	protected int currentByte = 0;
+	
+	/**
+	 * The current bit value (can be 1, 2, 4, 8, 16, 32, 64, 128).
+	 * The bit value is added to the current byte if the next bit is set.
+	 */
 	protected int currentBitValue = 1;
 
+	/**
+	 * Constructor
+	 * @param out the underlying output stream
+	 */
 	public BitOutputStream(final OutputStream out){
 		this.out = out;
 	}
 	
+	/**
+	 * Writes a bit to the bit output stream...
+	 * @param b the bit to be written
+	 * @throws IOException if something fails when writing to the underlying output stream
+	 */
 	public void write(boolean b) throws IOException{
 		if(b){
+			// set the next bit
 			this.currentByte += this.currentBitValue;
 		}
+		// multiply the current bit value with 2 by shifting the bits (which is more fast)
 		this.currentBitValue <<= 1;
 		if(this.currentBitValue == 256){
+			// write the current byte and reset the current byte and bit value afterwards
 			this.out.write(this.currentByte);
 			this.currentByte = 0;
 			this.currentBitValue = 1;
 		}
 	}
-	
+
+	/**
+	 * This method closes the bit input stream by writing the last byte (event when it is incomplete) and closing the underlying output stream.
+	 * @throws IOException if something fails when writing into or closing the underlying output stream
+	 */
 	public void close() throws IOException {
 		if(this.currentBitValue>1){
 			// write remaining bits (current byte must be written as complete bytes must be always written!)

@@ -29,10 +29,26 @@ import java.util.LinkedList;
 import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
+/**
+ * An inner node of the huffman tree 
+ */
 public class InnerNode extends Node {
+	
+	/**
+	 * the left child
+	 */
 	public final Node left;
+	
+	/**
+	 * the right child
+	 */
 	public final Node right;
 	
+	/**
+	 * Constructor
+	 * @param left the left child
+	 * @param right the right child
+	 */
 	public InnerNode(final Node left, final Node right){
 		this.left = left;
 		this.right = right;
@@ -41,6 +57,7 @@ public class InnerNode extends Node {
 	@Override
 	public void encode(final BitOutputStream out) throws IOException{
 		out.write(true); // bit set for inner node!
+		// write out left and right children!
 		this.left.encode(out);
 		this.right.encode(out);
 	}
@@ -62,9 +79,11 @@ public class InnerNode extends Node {
 
 	@Override
 	protected void fillCodeArray(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int min) {
+		// the codes of the symbols in the left child start with a cleared bit!
 		currentCode.add(false);
 		this.left.fillCodeArray(currentCode, codeArray, min);
 		currentCode.removeLast();
+		// the codes of the symbols in the right child start with a set bit!
 		currentCode.add(true);
 		this.right.fillCodeArray(currentCode, codeArray, min);
 		currentCode.removeLast();
@@ -73,8 +92,10 @@ public class InnerNode extends Node {
 	@Override
 	public int getSymbol(BitInputStream in) throws IOException {
 		if(in.readBit()){
+			// bit is set => symbol is in the right child
 			return this.right.getSymbol(in);
 		} else {
+			// bit is cleared => symbol is in the left child
 			return this.left.getSymbol(in);
 		}
 	}

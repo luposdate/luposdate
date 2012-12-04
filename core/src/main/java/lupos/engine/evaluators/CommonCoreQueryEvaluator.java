@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import lupos.compression.Compression;
 import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
@@ -676,14 +677,18 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	public static void readTriplesWithoutMultipleFiles(final String type,
 			final InputStream input, final TripleConsumer tc)
 			throws Exception {
-		if (type.startsWith("BZIP2")) {
-			// this is only available if the module luposdate.integrationthirdpartyevaluators is considered => using reflection api for "late binding"
-			Class<?> c = Class.forName("lupos.compress.BZIP2");
-			Method m = c.getMethod("createInputStream", InputStream.class);
-			InputStream uncompressed = (InputStream) m.invoke(c, input);			
+		if (type.startsWith("BZIP2")) {			
+			InputStream uncompressed = Compression.BZIP2.createInputStream(input);			
 			readTriplesWithoutMultipleFilesUncompressed(type.substring(5), uncompressed, tc);
-		} else
+		} else if (type.startsWith("GZIP")) {			
+			InputStream uncompressed = Compression.GZIP.createInputStream(input);			
+			readTriplesWithoutMultipleFilesUncompressed(type.substring(4), uncompressed, tc);
+		} else if (type.startsWith("HUFFMAN")) {			
+			InputStream uncompressed = Compression.HUFFMAN.createInputStream(input);			
+			readTriplesWithoutMultipleFilesUncompressed(type.substring(7), uncompressed, tc);
+		} else {
 			readTriplesWithoutMultipleFilesUncompressed(type, input, tc);
+		}
 	}
 
 	public static void readTriplesWithoutMultipleFilesUncompressed(

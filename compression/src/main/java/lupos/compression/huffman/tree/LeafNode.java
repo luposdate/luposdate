@@ -29,9 +29,20 @@ import java.util.LinkedList;
 import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
+/**
+ * Class for representing a leaf node in the huffman tree, which stores a symbol. 
+ */
 public class LeafNode extends Node {
+	
+	/**
+	 * the symbol of the leaf node
+	 */
 	final int symbol;
 	
+	/**
+	 * Constructor
+	 * @param symbol the symbol of the leaf node
+	 */
 	public LeafNode(final int symbol){
 		this.symbol = symbol;
 	}
@@ -40,9 +51,14 @@ public class LeafNode extends Node {
 	public void encode(final BitOutputStream out) throws IOException {
 		out.write(false); // bit cleared for leaf node!
 		out.write(true); // bit set for non-EOF!
-		this.writeSymbol(out);
+		this.writeSymbol(out); // write out symbol
 	}
 	
+	/**
+	 * Writes out the symbol (one byte = eight bits) in the given bit output stream
+	 * @param out the bit output stream into which the symbol is written
+	 * @throws IOException if something fails in the underlying bit output stream
+	 */
 	protected void writeSymbol(final BitOutputStream out) throws IOException{
 		int toWrite = this.symbol;
 		// write 8 bits...
@@ -70,6 +86,7 @@ public class LeafNode extends Node {
 
 	@Override
 	protected void fillCodeArray(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int min) {
+		// currentCode is code for the symbol stored in this leaf node!
 		this.fill(currentCode, codeArray, this.symbol - min);
 	}
 

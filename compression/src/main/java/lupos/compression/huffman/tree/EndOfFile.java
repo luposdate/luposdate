@@ -29,6 +29,9 @@ import java.util.LinkedList;
 import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
+/**
+ * Class to represent the symbol End Of File in the huffman tree! 
+ */
 public class EndOfFile extends Node {
 
 	@Override
@@ -54,6 +57,7 @@ public class EndOfFile extends Node {
 
 	@Override
 	protected void fillCodeArray(LinkedList<Boolean> currentCode, Boolean[][] codeArray, int min) {
+		// the code of EOF is stored in the last element of the array!
 		this.fill(currentCode, codeArray, codeArray.length - 1);
 	}
 

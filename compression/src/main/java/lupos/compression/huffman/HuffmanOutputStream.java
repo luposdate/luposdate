@@ -34,33 +34,68 @@ import lupos.compression.huffman.tree.Node;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.heap.SequentialHeap;
 
+/**
+ * The block-wise huffman output stream for writing out a huffman encoded stream.
+ * In comparison to the adaptive huffman tree, we choose a block-wise encoding scheme due to performance reasons.
+ * In the block-wise encoding scheme, each block contains a huffman tree and a huffman tree is valid (and is not changed) for a complete block.  
+ */
 public class HuffmanOutputStream extends OutputStream {
-	
+
+	/**
+	 * the underlying output stream
+	 */
 	protected final BitOutputStream out;
 	
+	/**
+	 * the size of a block (default is 10 KBytes)
+	 */
 	protected final static int blocksize = 10*1024;
+	
+	/**
+	 * the content of the block
+	 */
 	protected byte[] block = new byte[blocksize];
+	
+	/**
+	 * the current position in the block
+	 */
 	protected int current = 0;
 		
+	/**
+	 * Constructor
+	 * @param out the underlying bit output stream
+	 */
 	public HuffmanOutputStream(final BitOutputStream out){
 		this.out = out;
 	}
 
+	/**
+	 * Constructor
+	 * @param out the underlying output stream, which is converted into a bit output stream
+	 */
 	public HuffmanOutputStream(final OutputStream out){
 		this.out = new BitOutputStream(out);
 	}
 
 	@Override
 	public void write(final int b) throws IOException{
+		// store in current block
 		this.block[this.current]=(byte)b;
 		this.current++;
 		if(this.current==HuffmanOutputStream.blocksize){
+			// one block is complete!
 			Node root = this.buildHuffmanTree();
+			// encode huffeman tree and the block by using the built huffman tree
 			encode(root);
 			this.current=0;
 		}		
 	}
 	
+	/**
+	 * This method builds the huffman tree from the block.
+	 * If the block is incomplete, the huffman tree contains the EndOfFile symbol such that the end of the file can be encoded!
+	 * @return the built huffman tree
+	 */
 	protected Node buildHuffmanTree(){
 		// determine minimum and maximum byte
 		int min = Integer.MAX_VALUE;
@@ -110,6 +145,7 @@ public class HuffmanOutputStream extends OutputStream {
 			heap.add(new HeapEntry(1, new EndOfFile()));
 		}
 		
+		// combine in each iteration those entries with the lowest weights
 		while(heap.size()>1){
 			HeapEntry a = heap.pop();
 			HeapEntry b = heap.pop();
@@ -121,20 +157,30 @@ public class HuffmanOutputStream extends OutputStream {
 		return root.node;
 	}
 	
+	/**
+	 * This method writes out the given huffman tree plus the current block.
+	 * @param root the huffman tree to be used
+	 * @throws IOException if something fails in the underlying (bit) output stream
+	 */
 	public void encode(final Node root) throws IOException{
+		// write out the current huffman tree
 		root.encode(this.out);
+		// if only EOF occurs in the huffman tree, we are ready!
 		if(!(root instanceof EndOfFile)){
 			final int depth = root.getDepth();
 			final int min = root.getMin();
 			final int max = root.getMax();
 			
+			// initialize the mapping from symbol to codes...
+			// The mapping for EOF is stored in the last entry if necessary 
 			Boolean[][] codeArray = new Boolean[max - min + 1 + ((this.current<HuffmanOutputStream.blocksize)? 1 : 0)][depth];
 			root.fillCodeArray(codeArray, min);
 			
-			for(int i=0; i<this.current; i++){
-				this.writeCode(codeArray[this.block[i] - min]);
-				
+			// write out all bytes of the block
+			for(int i=0; i<this.current; i++){				
+				this.writeCode(codeArray[this.block[i] - min]);				
 			}
+			// write out EOF if necessary
 			if(this.current < HuffmanOutputStream.blocksize){
 				// write end of file!
 				this.writeCode(codeArray[codeArray.length-1]);
@@ -142,9 +188,15 @@ public class HuffmanOutputStream extends OutputStream {
 		}
 	}
 	
+	/**
+	 * writes out the code of an element
+	 * @param code the code as boolean array to be written out
+	 * @throws IOException if something fails in the underlying (bit) output stream
+	 */
 	protected void writeCode(final Boolean[] code) throws IOException {
 		for(Boolean codeBit: code){
 			if(codeBit==null){
+				// code is shorter => already stop here
 				break;
 			} else {
 				this.out.write(codeBit);
@@ -154,24 +206,42 @@ public class HuffmanOutputStream extends OutputStream {
 	
 	@Override
 	public void close() throws IOException{
+		// Write out the current incomplete block.
+		// Even an empty block must be written out by writing out a huffman tree with only the EOF symbol!
 		Node root = this.buildHuffmanTree();
 		encode(root);
 		this.current=0;
 		this.out.close();
 	}
 	
+	/**
+	 * Class used when building the huffman tree, which associates a weight to a node of the huffman tree. 
+	 */
 	public static class HeapEntry implements Comparable<HeapEntry>{
 		
+		/**
+		 * the weight of the node
+		 */
 		protected final int weight;
+		
+		/**
+		 * the node of the huffman tree
+		 */
 		protected final Node node;
 		
+		/**
+		 * Constructor
+		 * @param weight the weight of the huffman tree node
+		 * @param node the node of the huffman tree to be weighted
+		 */
 		public HeapEntry(final int weight, final Node node){
 			this.weight = weight;
 			this.node = node;
 		}
 
 		@Override
-		public int compareTo(HeapEntry o) {			
+		public int compareTo(HeapEntry o) {
+			// Comparing the weights!
 			return this.weight - o.weight;
 		}		
 	}

@@ -29,7 +29,23 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+//the following classes are contained in jars (lzma-4.63-jio-0.95.jar, colloquial_arithcode-1_1.jar), which are not yet available in maven repositories... 
+//import net.contrapunctus.lzma.LzmaInputStream;
+//import net.contrapunctus.lzma.LzmaOutputStream;
 
+//import com.colloquial.arithcode.ArithCodeInputStream;
+//import com.colloquial.arithcode.ArithCodeOutputStream;
+//import com.colloquial.arithcode.PPMModel;
+
+
+/**
+ * This enumeration contains some standard compression algorithms.
+ * 
+ * This enum can especially be used to create input and output streams for (un-) compressing content.
+ * 
+ * Note that some compression algorithms are lazily bound. They only work if other modules are also loaded.
+ * (Background: the goal of the core-module is to support a light-weight evaluator, which is not dependent on third-party jars. The lazy binding of some extended functionality is a compromise.)
+ */
 public enum Compression {
 	/**
 	 * Dummy strategy, not changing the inferior streams.
@@ -49,8 +65,10 @@ public enum Compression {
 	},
 	
 	/**
-	 * Compression strategy used by the Apache web server. Available from
-	 * http://www.kohsuke.org/bzip2//
+	 * Compression strategy to apply blockwise huffman encoding.
+	 * Background: Many of the used data structures and streams already avoid repetitions (at least common prefixes), such that zipping with the additional phase for detecting repetitions does not compress so much any more, but has high overhead.
+	 * 
+	 * Note that this strategy is lazy bound by using the reflection api: The module luposdate.compression should be loaded otherwise using this strategy leads to errors... 
 	 */
 	HUFFMAN {
 
@@ -116,6 +134,8 @@ public enum Compression {
 	/**
 	 * Compression strategy used by the Apache web server. Available from
 	 * http://www.kohsuke.org/bzip2//
+	 * 
+	 * Note that this strategy is lazy bound by using the reflection api: The module luposdate.integrationBZIP2 should be loaded otherwise using this strategy leads to errors... 
 	 */
 	BZIP2 {
 
@@ -160,6 +180,8 @@ public enum Compression {
 		}		
 	};
 
+	// the following strategies are commented out due to non-availability in maven repositories!
+	
 	//	/**
 //	 * Compression strategy used by 7zip. Available from
 //	 * http://contrapunctus.net/league/haques/lzmajio/.

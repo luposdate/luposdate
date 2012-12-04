@@ -29,31 +29,56 @@ import java.io.InputStream;
 import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.huffman.tree.Node;
 
+/**
+ * The block-wise huffman input stream for reading in a huffman encoded stream.
+ * In comparison to the adaptive huffman tree, we choose a block-wise encoding scheme due to performance reasons.
+ * In the block-wise encoding scheme, each block contains a huffman tree and a huffman tree is valid (and is not changed) for a complete block.  
+ */
 public class HuffmanInputStream extends InputStream {
 
+	/**
+	 * the underlying bit input stream
+	 */
 	protected final BitInputStream in;
 	
+	/**
+	 * the current position in the block (necessary to detect when to read in a new huffman tree)
+	 */
 	protected int current = 0;
+	
+	/**
+	 * the root of the current huffman tree
+	 */
 	protected Node rootOfHuffmanTree;
 	
+	/**
+	 * Constructor
+	 * @param in the underlying bit input stream from which for each block the huffman tree is read and the huffman encoded block
+	 */
 	public HuffmanInputStream(final BitInputStream in){
 		this.in = in;
 	}
 	
+	/**
+	 * Constructor
+	 * @param in the underlying input stream, from which a bit input stream is created and from which for each block the huffman tree is read and the huffman encoded block
+	 */
 	public HuffmanInputStream(final InputStream in){
 		this.in = new BitInputStream(in);
 	}
-	
+		
 	@Override
 	public int read() throws IOException {
 		if(this.current == 0){
-			// read in huffman tree
+			// initialization or next block
+			// => read in huffman tree
 			this.rootOfHuffmanTree = Node.readInHuffmanTree(this.in);
 		}
 		// get next symbol
 		final int result = this.rootOfHuffmanTree.getSymbol(this.in);
 		this.current++;
 		if(this.current==HuffmanOutputStream.blocksize){
+			// is one block finished?
 			this.current = 0;
 		}
 		return result;
@@ -61,6 +86,7 @@ public class HuffmanInputStream extends InputStream {
 
 	@Override
 	public void close() throws IOException {
+		// close underlying bit input stream...
 		this.in.close();
 	}
 }
