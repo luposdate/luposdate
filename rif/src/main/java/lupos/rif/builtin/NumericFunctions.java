@@ -202,7 +202,7 @@ public class NumericFunctions {
 					% (int) rVal.doubleValue();
 			return BuiltinHelper.getNumericLiteral(result);
 		} else if (lVal == null) {
-			//keine Umkehrfunktion mšglich
+			// no inverse function possible...
 			return null;
 		} else {
 			Integer result = (int) lVal.doubleValue()

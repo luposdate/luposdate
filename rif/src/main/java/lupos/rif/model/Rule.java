@@ -44,7 +44,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	private IExpression body;
 
 	@Deprecated
-	// nur ein prädikat im kopf
+	// only predicate in the head
 	public Set<IExpression> getHeadExpressions() {
 		final Set<IExpression> result = new HashSet<IExpression>();
 		if (head instanceof Conjunction)
@@ -121,8 +121,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 			}
 		} else if (conclusion instanceof Equality
 				&& getHead() instanceof Equality)
-			// Alle Regeln welche zur erzeugung einer Equality führen drinn
-			// lassen
+			// Do not remove any rule, which could create an equality
 			return true;
 		visited.add(this);
 		for (final Rule rule : recursiveConnections)

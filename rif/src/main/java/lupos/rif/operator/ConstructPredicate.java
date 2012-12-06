@@ -33,7 +33,6 @@ import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
@@ -65,13 +64,13 @@ public class ConstructPredicate extends Operator {
 	}
 
 	public List<Tuple<URILiteral, List<Item>>> getPredicatePattern() {
-		return patternList;
+		return this.patternList;
 	}
 
 	public void addPattern(final URILiteral name, final Item... params) {
 		final Tuple<URILiteral, List<Item>> item = new Tuple<URILiteral, List<Item>>(
 				name, Arrays.asList(params));
-		patternList.add(item);
+		this.patternList.add(item);
 	}
 
 	@Override
@@ -79,11 +78,11 @@ public class ConstructPredicate extends Operator {
 			final int operandID) {
 		final RuleResult result = new RuleResult();
 		final Iterator<Bindings> pib = queryResult.oneTimeIterator();
-		// Prädikate erzeugen
+		// Create predicate
 		while (pib.hasNext()) {
 			final Bindings bind = pib.next();
 			result.add(bind);
-			for (final Tuple<URILiteral, List<Item>> item : patternList) {
+			for (final Tuple<URILiteral, List<Item>> item : this.patternList) {
 				final Predicate pred = new Predicate();
 				pred.setName(item.getFirst());
 				for (int idx = 0; idx < item.getSecond().size(); idx++)
@@ -97,20 +96,21 @@ public class ConstructPredicate extends Operator {
 			}
 		}
 		if (pib instanceof ParallelIterator)
-			((ParallelIterator) pib).close();
+			((ParallelIterator<Bindings>) pib).close();
 		return result;
 	}
 
+	@Override
 	public void processAllDebug(final QueryResult queryResult,
 			final int operandID, final DebugStep debugstep) {
 		final QueryResult opp = process(queryResult, operandID);
 		final RuleResult rr = (RuleResult) opp;
 		if (opp == null)
 			return;
-		if (succeedingOperators.size() > 1) {
+		if (this.succeedingOperators.size() > 1) {
 			opp.materialize();
 		}
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			((DebugStepRIF)debugstep).step(this, opId.getOperator(), rr);
 			final QueryResultDebug qrDebug = new QueryResultDebug(opp,
 					debugstep, this, opId.getOperator(), true);
@@ -123,7 +123,7 @@ public class ConstructPredicate extends Operator {
 	public String toString() {
 		final StringBuffer str = new StringBuffer();
 		str.append("ConstructPredicate: ").append("\n");
-		for (final Tuple<URILiteral, List<Item>> item : patternList) {
+		for (final Tuple<URILiteral, List<Item>> item : this.patternList) {
 			str.append(item.getFirst().toString()).append("(");
 			for (int idx = 0; idx < item.getSecond().size(); idx++) {
 				str.append(item.getSecond().get(idx).toString());
@@ -143,7 +143,7 @@ public class ConstructPredicate extends Operator {
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();
 		str.append("ConstructPredicate: ").append("\n");
-		for (final Tuple<URILiteral, List<Item>> item : patternList) {
+		for (final Tuple<URILiteral, List<Item>> item : this.patternList) {
 			str.append(item.getFirst().toString(prefixInstance)).append("(");
 			for (int idx = 0; idx < item.getSecond().size(); idx++) {
 				if (item.getSecond().get(idx).isVariable())

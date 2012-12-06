@@ -320,7 +320,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 		
 		OrContainer orContainer = new OrContainer();
-		orContainer.setVisualRifEditor(visualRifEditor);
+		orContainer.setVisualRifEditor(this.visualRifEditor);
 		
 		orContainer.draw(new GraphWrapperOperator(orContainer),
 				(RuleGraph) arg);
@@ -346,17 +346,17 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		if(obj.getLabel().contains("[") && obj.getLabel().contains("]")){
 			
 			FrameOperator frameOperator = new FrameOperator();
-			frameOperator.setVisualRifEditor(visualRifEditor);
-			frameOperator.setConstantComboBoxEntries(comboBoxEntries);
+			frameOperator.setVisualRifEditor(this.visualRifEditor);
+			frameOperator.setConstantComboBoxEntries(this.comboBoxEntries);
 			
 
 			// create Terms
 				
-				switch((Integer) obj.termParams.get(0).accept(scout, arg)){
+				switch((Integer) obj.termParams.get(0).accept(this.scout, arg)){
 
 				
 				case Scout.RULEVARIABLE :   if(((String)obj.termParams.get(0).accept(this, arg)).startsWith("ALIASVAR")){
-												
+												// TODO: check!
 											}
 											Term termVar1 = frameOperator.prepareToCreateVariableTerm((String)obj.termParams.get(0).accept(this, arg)); 
 											terms.add(termVar1);
@@ -517,8 +517,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 			
 		// Uniterm
 		UnitermOperator uniTerm = new UnitermOperator();
-		uniTerm.setVisualRifEditor(visualRifEditor);
-		uniTerm.setConstantComboBoxEntries(comboBoxEntries);
+		uniTerm.setVisualRifEditor(this.visualRifEditor);
+		uniTerm.setConstantComboBoxEntries(this.comboBoxEntries);
 		
 		// Prefix + Name
 		String[] termPref = (String[]) obj.termName.accept(this, arg);
@@ -535,7 +535,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		
 		for (int i = 0; i < obj.termParams.size(); i++) {
 			
-			tmp =  (Integer) obj.termParams.get(i).accept(scout, arg);
+			tmp =  (Integer) obj.termParams.get(i).accept(this.scout, arg);
 			
 			switch(tmp){
 			
@@ -550,14 +550,14 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 				
 										String[] constArray = new String[2];
 										constArray = (String[]) obj.termParams.get(i).accept(this, arg);
-										Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],comboBoxEntries);
+										Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
 										terms.add(termConst);
 										break;
 										
 				case Scout.RULELIST:   
 										
 												ListOperator listOperator = (ListOperator) obj.termParams.get(i).accept(this, arg);
-												Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, comboBoxEntries);
+												Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
 												terms.add(listTerm);
 												break;
 										
@@ -566,7 +566,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 										
 												UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
 									
-												Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, comboBoxEntries);
+												Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
 												terms.add(unitermTerm);
 	
 											break;
@@ -575,7 +575,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 					
 												UnitermOperator external = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
 												
-												Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, comboBoxEntries);
+												Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
 												terms.add(externalTerm);
 
 											
@@ -612,12 +612,12 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 			String[] constArray = (String[])left;
 			ConstantOperator constOpL = new ConstantOperator();
 			constOpL.setConstant(constArray[1]);
-			constOpL.setComboBoxEntries(comboBoxEntries);
-			constOpL.setVisualRifEditor(visualRifEditor);
+			constOpL.setComboBoxEntries(this.comboBoxEntries);
+			constOpL.setVisualRifEditor(this.visualRifEditor);
 			constOpL.getConstantComboBox().setSelectedItem((String)constArray[0]);
 			constOpL.setSelectedPrefix((String)constArray[0]);
 			
-			switch((Integer) obj.rightExpr.accept(scout, arg)){
+			switch((Integer) obj.rightExpr.accept(this.scout, arg)){
 			
 			
 			case Scout.RULEVARIABLE: 			
@@ -629,8 +629,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 										
 										
 			case Scout.CONSTANT: 		ConstantOperator constOpR = new ConstantOperator();
-										constOpR.setVisualRifEditor(visualRifEditor);
-										constOpR.setComboBoxEntries(comboBoxEntries);
+										constOpR.setVisualRifEditor(this.visualRifEditor);
+										constOpR.setComboBoxEntries(this.comboBoxEntries);
 										String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
 										constOpR.setConstant(prefConst[1]);
 										constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
@@ -705,8 +705,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 										
 										
 			case Scout.CONSTANT: 		ConstantOperator constOpR = new ConstantOperator();
-										constOpR.setVisualRifEditor(visualRifEditor);
-										constOpR.setComboBoxEntries(comboBoxEntries);
+										constOpR.setVisualRifEditor(this.visualRifEditor);
+										constOpR.setComboBoxEntries(this.comboBoxEntries);
 										String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
 										constOpR.setConstant(prefConst[1]);
 										constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
@@ -781,8 +781,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 					case Scout.CONSTANT: 	
 												
 												ConstantOperator constOpR = new ConstantOperator();
-												constOpR.setVisualRifEditor(visualRifEditor);
-												constOpR.setComboBoxEntries(comboBoxEntries);
+												constOpR.setVisualRifEditor(this.visualRifEditor);
+												constOpR.setComboBoxEntries(this.comboBoxEntries);
 												String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
 												constOpR.setConstant(prefConst[1]);
 												constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
@@ -860,8 +860,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 												
 												
 												ConstantOperator constOpR = new ConstantOperator();
-												constOpR.setVisualRifEditor(visualRifEditor);
-												constOpR.setComboBoxEntries(comboBoxEntries);
+												constOpR.setVisualRifEditor(this.visualRifEditor);
+												constOpR.setComboBoxEntries(this.comboBoxEntries);
 												String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
 												constOpR.setConstant(prefConst[1]);
 												constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
@@ -925,7 +925,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 					FrameOperator frameOperator = (FrameOperator) left;
 					
-					switch((Integer) obj.rightExpr.accept(scout, arg)){
+					switch((Integer) obj.rightExpr.accept(this.scout, arg)){
 					
 					
 					case Scout.RULEVARIABLE: 			
@@ -940,8 +940,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 												
 												
 												ConstantOperator constOpR = new ConstantOperator();
-												constOpR.setVisualRifEditor(visualRifEditor);
-												constOpR.setComboBoxEntries(comboBoxEntries);
+												constOpR.setVisualRifEditor(this.visualRifEditor);
+												constOpR.setComboBoxEntries(this.comboBoxEntries);
 												String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
 												constOpR.setConstant(prefConst[1]);
 												constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
@@ -1007,8 +1007,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 		LinkedList<Term> terms = new LinkedList<Term>();
 		UnitermOperator uniTerm = new UnitermOperator();
-		uniTerm.setVisualRifEditor(visualRifEditor);
-		uniTerm.setConstantComboBoxEntries(comboBoxEntries);
+		uniTerm.setVisualRifEditor(this.visualRifEditor);
+		uniTerm.setConstantComboBoxEntries(this.comboBoxEntries);
 		uniTerm.setExternal(true);
 		
 		// Prefix + Name
@@ -1026,7 +1026,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		
 		for (int i = 0; i < obj.termParams.size(); i++) {
 			
-			tmp =  (Integer) obj.termParams.get(i).accept(scout, arg);
+			tmp =  (Integer) obj.termParams.get(i).accept(this.scout, arg);
 			
 			switch(tmp){
 			
@@ -1041,14 +1041,14 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 				
 										String[] constArray = new String[2];
 										constArray = (String[]) obj.termParams.get(i).accept(this, arg);
-										Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],comboBoxEntries);
+										Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
 										terms.add(termConst);
 										break;
 										
 				case Scout.RULELIST:   
 										
 										ListOperator listOperator = (ListOperator) obj.termParams.get(i).accept(this, arg);
-										Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, comboBoxEntries);
+										Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
 										terms.add(listTerm);
 										break;
 			
@@ -1057,7 +1057,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 			
 										UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
 							
-										Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, comboBoxEntries);
+										Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
 										terms.add(unitermTerm);
 					
 									break;
@@ -1066,7 +1066,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 											UnitermOperator external = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
 											
-											Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, comboBoxEntries);
+											Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
 											terms.add(externalTerm);
 						
 										
@@ -1092,8 +1092,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		
 		LinkedList<Term> terms = new LinkedList<Term>();
 		ListOperator listOperator = new ListOperator();
-		listOperator.setVisualRifEditor(visualRifEditor);
-		listOperator.setConstantComboBoxEntries(comboBoxEntries);
+		listOperator.setVisualRifEditor(this.visualRifEditor);
+		listOperator.setConstantComboBoxEntries(this.comboBoxEntries);
 		listOperator.setOpen(obj.isOpen);
 
 
@@ -1103,7 +1103,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 				
 				for (int i = 0; i < obj.getItems().size(); i++) {
 					
-					tmp =  (Integer) obj.getItems().get(i).accept(scout, arg);
+					tmp =  (Integer) obj.getItems().get(i).accept(this.scout, arg);
 					
 					switch(tmp){
 					
@@ -1118,14 +1118,14 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 						
 												String[] constArray = new String[2];
 												constArray = (String[]) obj.getItems().get(i).accept(this, arg);
-												Term termConst = listOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],comboBoxEntries);
+												Term termConst = listOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
 												terms.add(termConst);
 												break;
 												
 						case Scout.RULELIST:   
 												
 														ListOperator listOperatorTerm = (ListOperator) obj.getItems().get(i).accept(this, arg);
-														Term listTerm = listOperator.prepareToCreateListTerm(listOperatorTerm, comboBoxEntries);
+														Term listTerm = listOperator.prepareToCreateListTerm(listOperatorTerm, this.comboBoxEntries);
 														terms.add(listTerm);
 														break;
 												
@@ -1134,7 +1134,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 												
 														UnitermOperator unitermOperator = (UnitermOperator) obj.getItems().get(i).accept(this, arg);
 											
-														Term unitermTerm = listOperator.prepareToCreateUnitermTerm(unitermOperator, comboBoxEntries);
+														Term unitermTerm = listOperator.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
 														terms.add(unitermTerm);
 			
 													break;
@@ -1143,7 +1143,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 							
 														UnitermOperator external = (UnitermOperator) obj.getItems().get(i).accept(this, arg);
 														
-														Term externalTerm = listOperator.prepareToCreateUnitermTerm(external, comboBoxEntries);
+														Term externalTerm = listOperator.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
 														terms.add(externalTerm);
 
 													
@@ -1194,7 +1194,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 				if ( Pattern.matches( "<http://.+>", obj.getLabel() ) ){
 
 					String iri = obj.getLabel().substring(1, obj.getLabel().length()-1);
-					for (Entry<String, String> entry : po.getPrefixList().entrySet()) {
+					for (Entry<String, String> entry : this.po.getPrefixList().entrySet()) {
 						if(iri.startsWith(entry.getKey())){
 							prefValueArray[0] = entry.getValue();
 							prefValueArray[1] = iri.substring(entry.getKey().length(), iri.length());
@@ -1240,7 +1240,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 						 type = r.group().substring(1, r.group().length()-1);
 					
 		
-					for (Entry<String, String> entry : po.getPrefixList().entrySet()) {
+					for (Entry<String, String> entry : this.po.getPrefixList().entrySet()) {
 		
 						if((prefix).equals(entry.getKey())){
 							prefValueArray[0] = entry.getValue()+"#"+type;
@@ -1272,7 +1272,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 				// integerLiteralXSPattern
 //				Pattern integerLiteralXSPattern = Pattern.compile( "\\d+" ); 
 				if ( Pattern.matches( "\\d*", obj.getLabel()) ){
-					
+					// TODO check!
 				}
 		
 				// languagetaggedLiteralXSPattern
@@ -1287,8 +1287,8 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		
 		
 		
-		// TODO Für einzelne Konstanten die ConstantCombo anhägenen
-		// prefValueArray sichern
+		// TODO Append ConstantCombo for single constants
+		// save prefValueArray
 		String[] tmp = prefValueArray;
 		int cnt = prefValueArray.length + this.comboBoxEntries.length;
 		prefValueArray = new String[cnt];
@@ -1369,7 +1369,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	}
 
 	public CompilationUnit getCompilationUnit() {
-		return compilationUnit;
+		return this.compilationUnit;
 	}
 
 	public void setCompilationUnit(CompilationUnit compilationUnit) {
@@ -1377,7 +1377,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	}
 
 	public Document getRifDocument() {
-		return rifDocument;
+		return this.rifDocument;
 	}
 
 	public void setRifDocument(Document rifDocument) {
@@ -1385,11 +1385,11 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	}
 
 	public CommonCoreQueryEvaluator<Node> getEvaluator() {
-		return evaluator;
+		return this.evaluator;
 	}
 
 	public DocumentEditorPane getDocumentEditorPane() {
-		return documentEditorPane;
+		return this.documentEditorPane;
 	}
 	
 	public void setDocumentEditorPane(DocumentEditorPane documentEditorPane) {
@@ -1399,7 +1399,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
 

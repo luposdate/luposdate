@@ -26,8 +26,6 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
@@ -37,19 +35,10 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel;
-
-
-
 
 public class Tree extends JTree{
-
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2077633661764490052L;
 	private Tree that = this;
 	private DefaultMutableTreeNode rootNode = null;
@@ -268,7 +257,7 @@ public class Tree extends JTree{
 	public boolean remove(String ruleName, String rulePackageName) {
 		DefaultMutableTreeNode rootNode = this.getNodeByName(rulePackageName, this.rootNode);
 		DefaultMutableTreeNode node = this.getNodeByName(ruleName, rootNode);
-		System.out.println("Tree.remove(): Name der gelöschten Regel: "+rulePackageName+"." +ruleName+"");
+		System.out.println("Tree.remove(): Name of deleted rule: "+rulePackageName+"." +ruleName+"");
 		if(node != null) {
 			this.model.removeNodeFromParent(node);
 		}
@@ -284,27 +273,15 @@ public class Tree extends JTree{
 		this.rootNode.removeAllChildren();
 		this.model.reload();
 	}
-	
-	
-	
+
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
-	
-
 	public Tree getThat() {
 		return that;
 	}
-
-
-
+	
 	public void setThat(Tree that) {
 		this.that = that;
-	}
-
-
-
-
-	
-	
+	}	
 }

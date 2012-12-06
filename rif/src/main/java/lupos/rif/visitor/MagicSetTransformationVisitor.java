@@ -23,9 +23,7 @@
  */
 package lupos.rif.visitor;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,8 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import lupos.datastructures.items.literal.Literal;
-import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.rif.IExpression;
 import lupos.rif.IRuleVisitor;
 import lupos.rif.RIFException;
@@ -71,25 +67,25 @@ public class MagicSetTransformationVisitor implements
 
 	public MagicSetTransformationVisitor(final boolean debug) {
 		this();
-		doDebug = debug;
+		this.doDebug = debug;
 	}
 
 	private void debug(final String str) {
-		if (doDebug)
+		if (this.doDebug)
 			System.out.println("MS-Transformation: " + str);
 	}
 
 	@Override
 	public Object visit(Document obj, Object arg) throws RIFException {
-		rifDoc = obj;
-		// 1. Regeln anhand Predicatename indizieren
+		this.rifDoc = obj;
+		// 1. Index rules based on predicate names
 		for (final Rule rule : obj.getRules()) {
 			final RulePredicate pred = (RulePredicate) rule.getHead();
-			ruleMap.put(pred.termName.toString(), rule);
+			this.ruleMap.put(pred.termName.toString(), rule);
 		}
 
-		// 2. Erstes Goal ist die Conclusion, rekursive Bearbeitung anfangen
-		// Adornment bestimmen
+		// 2. First goal is the conclusion, start recursive processing
+		// Determine adornment
 
 		StringBuilder adornment = new StringBuilder();
 		for (final IExpression expr : ((RulePredicate) obj.getConclusion()).termParams)
@@ -108,10 +104,10 @@ public class MagicSetTransformationVisitor implements
 		final Map<RuleVariable, Boolean> boundVariables = new HashMap<RuleVariable, Boolean>();
 		for (final RuleVariable var : obj.getDeclaredVariables())
 			boundVariables.put(var, false);
-		// 1. bestimmen der gebundenen Variablen
+		// 1. Determine bound variables
 		final RulePredicate head = (RulePredicate) obj.getHead();
 		for (int i = 0; i < head.termParams.size(); i++)
-			// TODO: †berprŸfen ob im Head konstanten vorkommen usw.
+			// TODO: Check whether or not constant values appear in the head
 			if (arg.toString().charAt(i) == 'b')
 				boundVariables.put((RuleVariable) head.termParams.get(i), true);
 		final List<IExpression> hornClause = new ArrayList<IExpression>();
@@ -125,8 +121,8 @@ public class MagicSetTransformationVisitor implements
 		debug("RULE -> " + obj.toString());
 
 		for (final IExpression expr : predicates) {
-			// Body besteht aus nur einem RulePredicate
-			// Adornment bestimmen
+			// Body contains only a RulePredicate
+			// Determine adornment
 			final RulePredicate body = (RulePredicate) expr;
 			final StringBuilder adornment = new StringBuilder();
 			for (final IExpression ex : body.termParams)
@@ -140,8 +136,8 @@ public class MagicSetTransformationVisitor implements
 				}
 			String nextGoal = body.termName.toString() + "_"
 					+ adornment.toString();
-			if(goals.contains(nextGoal) && body.isRecursive()){
-				//Rekursiver Aufruf -> Magic-Regel erstellen
+			if(this.goals.contains(nextGoal) && body.isRecursive()){
+				// Recursive call -> create magic rule
 			}
 			body.accept(this, adornment.toString());
 		}
@@ -154,11 +150,11 @@ public class MagicSetTransformationVisitor implements
 		String goal = obj.termName.toString() + "_" + arg.toString();
 		debug("GOAL -> " + goal);
 
-		// Alle passenden Regeln suchen und abarbeiten
-		goalStack.push(goal);
-		for (final Rule rule : ruleMap.get(obj.termName.toString()))
+		// Determine all matching rules and process them
+		this.goalStack.push(goal);
+		for (final Rule rule : this.ruleMap.get(obj.termName.toString()))
 			rule.accept(this, arg);
-		goalStack.pop();
+		this.goalStack.pop();
 
 		return null;
 	}
@@ -209,20 +205,18 @@ public class MagicSetTransformationVisitor implements
 		for (final IExpression expr : accept)
 			result.add((RulePredicate) expr);
 
-		// Ziel: mšglichst bei rekursiven Aufrufen immer mindestens eins
-		// gebunden, aber nicht alle gebunden
-		// Ansatz: Alle mšglichen Stellungen ausprobieren und erste sinnvolle
-		// Stellung zurŸckgeben
+		// Goal: for recursive calls should be at least one bound, but not all bound
+		// Approach: Try out all possible positions and return first reasonable
 		int counter = result.size();
 		while (counter > 0) {
-			// 1. Neue Liste erstellen, durch linksverschiebung
+			// 1. Create new list by shifting to the left
 			final Map<RuleVariable, Boolean> cpVarMap = Maps.newHashMap();
 			cpVarMap.putAll(boundVars);
 			final RulePredicate[] temp = new RulePredicate[result.size()];
 			for (int i = 0; i < result.size(); i++)
 				temp[i == 0 ? result.size() - 1 : i - 1] = result.get(i);
 
-			// Simulation durchfŸhren bis zum rekursiven PrŠdikat
+			// Process simulation until recursive predicate
 			for (final RulePredicate pred : temp) {
 
 				final StringBuilder adornment = new StringBuilder();
@@ -234,9 +228,7 @@ public class MagicSetTransformationVisitor implements
 						adornment.append("f");
 						cpVarMap.put((RuleVariable) ex, true);
 					}
-
-				// Wenn rekursives PrŠdikat und ein bound ohne alle bound, dann
-				// ist es das ergebniss
+				// If recursive predicate and one is bound without all are bound, then it is the result!
 				if (pred.isRecursive())
 					if (adornment.toString().contains("b")
 							&& adornment.toString().contains("f"))
@@ -246,11 +238,8 @@ public class MagicSetTransformationVisitor implements
 						break;
 					}
 			}
-
 			counter--;
 		}
-
 		return result;
 	}
-
 }
