@@ -816,6 +816,15 @@ public abstract class BasicIndexScan extends RootChild {
 		return getVarBucketsOriginal(tp, classBindings, joinPartners, minima, maxima);
 	}
 	
+	/**
+	 * Returns whether or not the join order of the triple patterns inside this index scan operator should be optimized.
+	 * This is for almost all index scan operator types true (but not for PredicateIndexScan)
+	 * @return whether or not the join order of the triple patterns inside this index scan operator should be optimized
+	 */
+	public boolean joinOrderToBeOptimized(){
+		return true;
+	}
+	
 	public static class AddConstantBindingIterator implements Iterator<Bindings>{
 		
 		protected final Variable var;

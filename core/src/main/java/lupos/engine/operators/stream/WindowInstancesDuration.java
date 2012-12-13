@@ -23,6 +23,7 @@
  */
 package lupos.engine.operators.stream;
 
+import java.util.Date;
 import java.util.LinkedList;
 
 import lupos.datastructures.items.TimestampedTriple;
@@ -36,7 +37,6 @@ import lupos.rdf.Prefix;
 public class WindowInstancesDuration extends WindowInstances {
 
 	private final int duration;
-	private LinkedList<TimestampedTriple> tripleList;
 
 	public WindowInstancesDuration(final int duration, Literal instanceClass) {
 		super(instanceClass);
@@ -45,48 +45,126 @@ public class WindowInstancesDuration extends WindowInstances {
 
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
-		tripleList = new LinkedList<TimestampedTriple>();
+		this.tripleBuffer = new LinkedList<TimestampedTriple>();
+		this.typeTripleBuffer = new LinkedList<TimestampedTriple>();
 		return message;
 	}
 
 	@Override
 	public void consume(final Triple triple) {
-		final TimestampedTriple timestampedTriple = (TimestampedTriple) triple;
-		final long now = timestampedTriple.getTimestamp();
+		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
+		
+		if(isMatchingTypeTriple(t)) {
+			super.consume(t);
+			
+			// search for triples with same subject to consume
+			for(Triple tmp : this.tripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					super.consume(tmp);
+				}
+			}
+			
+			// add type triple to extra buffer			
+			this.typeTripleBuffer.addLast(t);
+		} else {
+			// consume triple if a type-triple with same subject exists
+			for(Triple tmp : this.typeTripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					super.consume(t);
+					break;
+				}
+			}
+		}
+		
+		this.tripleBuffer.addLast(t);
+		
+		// remove all instances where the type-triple is too old
+		long now = t.getTimestamp();
 		int index = 0;
-		for (final TimestampedTriple t : tripleList) {
-			if (now - t.getTimestamp() >= duration) {
-				this.deleteTriple(t);
+		for(TimestampedTriple tmp : this.typeTripleBuffer) {
+			if (now - tmp.getTimestamp() >= this.duration) {
+				deleteInstance(tmp);
+				index++;
+			}
+		}
+		while (index > 0) {
+			this.typeTripleBuffer.removeFirst();
+			index--;
+		}
+		
+		// remove all triples from tripleBuffer that are too old		
+		index = 0;
+		for (final TimestampedTriple tmp : this.tripleBuffer) {
+			if (now - tmp.getTimestamp() >= this.duration) {
 				index++;
 			} else
 				break;
 		}
 		while (index > 0) {
-			this.tripleList.remove(0);
+			this.tripleBuffer.removeFirst();
 			index--;
 		}
-		tripleList.add(timestampedTriple);
-		super.consume(timestampedTriple);
+
+		this.tripleBuffer.addLast(t);
 	}
 	
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
-		final TimestampedTriple timestampedTriple = (TimestampedTriple) triple;
-		final long now = timestampedTriple.getTimestamp();
+		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
+		
+		if(isMatchingTypeTriple(t)) {
+			super.consumeDebug(t, debugstep);
+			
+			// search for triples with same subject to consume
+			for(Triple tmp : this.tripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					super.consumeDebug(tmp, debugstep);
+				}
+			}
+			
+			// add type triple to extra buffer			
+			this.typeTripleBuffer.addLast(t);
+		} else {
+			// consume triple if a type-triple with same subject exists
+			for(Triple tmp : this.typeTripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					super.consumeDebug(t, debugstep);
+					break;
+				}
+			}
+		}
+		
+		this.tripleBuffer.addLast(t);
+		
+		// remove all instances where the type-triple is too old
+		long now = t.getTimestamp();
 		int index = 0;
-		for (final TimestampedTriple t : tripleList) {
-			if (now - t.getTimestamp() >= duration) {
-				this.deleteTripleDebug(t, debugstep);
+		for(TimestampedTriple tmp : this.typeTripleBuffer) {
+			if (now - tmp.getTimestamp() >= this.duration) {
+				deleteInstanceDebug(tmp, debugstep);
 				index++;
-			} else
-				break;
+			}
 		}
 		while (index > 0) {
-			this.tripleList.remove(0);
+			this.typeTripleBuffer.removeFirst();
 			index--;
 		}
-		tripleList.add(timestampedTriple);
-		super.consumeDebug(timestampedTriple, debugstep);
+		
+		// remove all triples from tripleBuffer that are too old		
+		index = 0;
+		for (final TimestampedTriple tmp : this.tripleBuffer) {
+			if (now - tmp.getTimestamp() >= this.duration) {
+				index++;
+			} else {
+				break;
+			}
+		}
+		while (index > 0) {
+			this.tripleBuffer.removeFirst();
+			index--;
+		}
+
+		this.tripleBuffer.addLast(t);
 	}
 
 	@Override

@@ -31,8 +31,7 @@ import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.misc.debug.DebugStep;
 
-public abstract class Window extends TripleOperator implements TripleConsumer,
-		TripleDeleter {
+public abstract class Window extends TripleOperator implements TripleDeleter {
 
 	public PatternMatcher getPatternMatcher() {
 		if (this.getSucceedingOperators().size() == 1) {
@@ -45,18 +44,21 @@ public abstract class Window extends TripleOperator implements TripleConsumer,
 		return null;
 	}
 
+	@Override
 	public void consume(final Triple triple) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
 			((TripleConsumer) oid.getOperator()).consume(triple);
 		}
 	}
 
+	@Override
 	public void deleteTriple(final Triple triple) {
-		for (final OperatorIDTuple oid : succeedingOperators) {
+		for (final OperatorIDTuple oid : this.succeedingOperators) {
 			((TripleDeleter) oid.getOperator()).deleteTriple(triple);
 		}
 	}
 	
+	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
 			debugstep.step(this, oid.getOperator(), triple);
@@ -64,8 +66,9 @@ public abstract class Window extends TripleOperator implements TripleConsumer,
 		}
 	}
 	
+	@Override
 	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
-		for (final OperatorIDTuple oid : succeedingOperators) {
+		for (final OperatorIDTuple oid : this.succeedingOperators) {
 			debugstep.stepDelete(this, oid.getOperator(), triple);
 			((TripleDeleter) oid.getOperator()).deleteTripleDebug(triple,
 					debugstep);

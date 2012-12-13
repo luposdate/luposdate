@@ -41,7 +41,7 @@ public class StreamDuration extends Stream {
 	}
 
 	public Message preprocessMessage(final StartOfEvaluationMessage msg) {
-		lastTime = (new Date()).getTime();
+		this.lastTime = (new Date()).getTime();
 		return msg;
 	}
 
@@ -49,14 +49,14 @@ public class StreamDuration extends Stream {
 	public void consume(final Triple triple) {
 		super.consume(triple);
 		final long now = (new Date()).getTime();
-		if (now - lastTime >= duration) {
-			lastTime = now;
+		if (now - this.lastTime >= this.duration) {
+			this.lastTime = now;
 			this.notifyStreamResults();
 		}
 	}
 
 	@Override
 	public String toString() {
-		return super.toString()+" " + duration;
+		return super.toString()+" " + this.duration;
 	}
 }

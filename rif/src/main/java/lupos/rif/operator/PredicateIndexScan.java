@@ -28,12 +28,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Dataset;
 import lupos.misc.debug.DebugStep;
-import lupos.misc.debug.DebugStepRIF;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
@@ -86,5 +84,10 @@ public class PredicateIndexScan extends InsertIndexScan {
 	@Override
 	public void consumeDebugOnce(final DebugStep debugstep) {
 		startProcessingDebug(null, debugstep);
+	}
+	
+	@Override
+	public boolean joinOrderToBeOptimized(){
+		return false;
 	}
 }

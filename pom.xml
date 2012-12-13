@@ -29,6 +29,7 @@
 	    <module>dataeditor</module>
 	    <module>gui</module>
 	    <module>ruleeditor</module>
+	    <module>internetofevents</module>
 	    <module>distributioncore</module>
 	    <module>distributiongui</module>
 	    <module>distributionendpoint</module>
@@ -141,6 +142,12 @@
 			</dependency>
 			
 			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.internetofevents</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
     				<groupId>de.uniluebeck.ifis</groupId>
     				<artifactId>xpref</artifactId>
     				<version>0.1-SNAPSHOT</version>
@@ -237,7 +244,25 @@
         			</exclusion>
     			</exclusions>
 			</dependency>
-	
+			
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>1.4.5</version>
+			</dependency>
+
+    		<dependency>
+      			<groupId>net.sf.bluecove</groupId>
+      			<artifactId>bluecove</artifactId>
+      			<version>2.1.0</version>
+    		</dependency>
+    		
+    		<dependency>
+    			<groupId>com.jezhumble</groupId>
+    			<artifactId>javasysmon</artifactId>
+    			<version>0.3.3</version>
+			</dependency>    		
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -279,6 +304,12 @@
 			<id>nxparser-snapshots</id>
 			<url>http://nxparser.googlecode.com/svn/snapshots</url>
 		</repository>
+		
+		<repository>
+    		<id>repository.cloudera.com</id>
+    		<name>repository.cloudera.com-releases</name>
+    		<url>https://repository.cloudera.com/artifactory/gradle-libs</url>
+		</repository>		
 
 	</repositories>
 	

@@ -51,48 +51,49 @@ public class WindowTriples extends Window {
 
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
-		triplesInWindow = new TimestampedTriple[numberOfTriples];
-		start = -1;
-		end = 0;
+		this.triplesInWindow = new TimestampedTriple[this.numberOfTriples];
+		this.start = -1;
+		this.end = 0;
 		return message;
 	}
 
 	@Override
 	public void consume(final Triple triple) {
-		if (end == start) {
+		if (this.end == this.start) {
 			// ring buffer is full
-			this.deleteTriple(triplesInWindow[start]);
-			start = (start + 1) % numberOfTriples;
+			this.deleteTriple(this.triplesInWindow[this.start]);
+			this.start = (this.start + 1) % this.numberOfTriples;
 		} else {
-			if (start == -1)
-				start = 0;
+			if (this.start == -1){
+				this.start = 0;
+			}
 		}
-		final TimestampedTriple t = new TimestampedTriple(triple, (new Date())
-				.getTime());
-		triplesInWindow[end] = t;
-		end = (end + 1) % numberOfTriples;
+		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
+		this.triplesInWindow[this.end] = t;
+		this.end = (this.end + 1) % this.numberOfTriples;
 		super.consume(t);
 	}
 	
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
-		if (end == start) {
+		if (this.end == this.start) {
 			// ring buffer is full
-			this.deleteTripleDebug(triplesInWindow[start], debugstep);
-			start = (start + 1) % numberOfTriples;
+			this.deleteTripleDebug(this.triplesInWindow[this.start], debugstep);
+			this.start = (this.start + 1) % this.numberOfTriples;
 		} else {
-			if (start == -1)
-				start = 0;
+			if (this.start == -1){
+				this.start = 0;
+			}
 		}
 		final TimestampedTriple t = new TimestampedTriple(triple, (new Date())
 				.getTime());
-		triplesInWindow[end] = t;
-		end = (end + 1) % numberOfTriples;
+		this.triplesInWindow[this.end] = t;
+		this.end = (this.end + 1) % this.numberOfTriples;
 		super.consumeDebug(t, debugstep);
 	}
 
 	@Override
 	public String toString() {
-		return super.toString()+" " + numberOfTriples;
+		return super.toString()+" " + this.numberOfTriples;
 	}
 }

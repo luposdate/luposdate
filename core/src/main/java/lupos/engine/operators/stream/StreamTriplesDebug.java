@@ -41,11 +41,11 @@ public class StreamTriplesDebug extends StreamTriples {
 
 	@Override
 	public void consume(final Triple triple) {
-		super.consumeDebug(triple, debugstep);
-		count++;
-		if (count >= numberOfTriples) {
-			count = 0;
-			this.notifyStreamResultsDebug(debugstep);
+		super.consumeDebug(triple, this.debugstep);
+		this.count++;
+		if (this.count >= this.numberOfTriples) {
+			this.count = 0;
+			this.notifyStreamResultsDebug(this.debugstep);
 		}
 	}
 }

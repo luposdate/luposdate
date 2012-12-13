@@ -39,22 +39,22 @@ public class StreamTriples extends Stream {
 	}
 
 	public Message preprocessMessage(final StartOfEvaluationMessage msg) {
-		count = 0;
+		this.count = 0;
 		return msg;
 	}
 
 	@Override
 	public void consume(final Triple triple) {
 		super.consume(triple);
-		count++;
-		if (count >= numberOfTriples) {
-			count = 0;
+		this.count++;
+		if (this.count >= this.numberOfTriples) {
+			this.count = 0;
 			this.notifyStreamResults();
 		}
 	}
 
 	@Override
 	public String toString() {
-		return super.toString()+" " + numberOfTriples;
+		return super.toString()+" " + this.numberOfTriples;
 	}
 }

@@ -66,25 +66,28 @@ public abstract class Root extends Operator {
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
 			if (oit.getOperator() instanceof BasicIndexScan) {
 				final BasicIndexScan indexScan = (BasicIndexScan) oit.getOperator();
-				final lupos.engine.operators.index.Root root;
 
-				switch (opt) {
-				case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
-					root = RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries.rearrangeJoinOrder(indexScan);
-					break;
-				case BasicIndexScan.LEASTENTRIES:
-					root = RearrangeTriplePatternsInIndexScanLeastNewVariables.rearrangeJoinOrder(indexScan);
-					break;
-				case BasicIndexScan.Binary:
-					root = MemoryIndexCostBasedOptimizer.rearrangeJoinOrder(indexScan);
-					break;
-				default:
-					root = RearrangeTriplePatternsInIndexScanLeastEntries.rearrangeJoinOrder(indexScan);
+				if(indexScan.joinOrderToBeOptimized()){				
+					final lupos.engine.operators.index.Root root;	
+					switch (opt) {
+					case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
+						root = RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries.rearrangeJoinOrder(indexScan);
+						break;
+					case BasicIndexScan.LEASTENTRIES:
+						root = RearrangeTriplePatternsInIndexScanLeastNewVariables.rearrangeJoinOrder(indexScan);
+						break;
+					case BasicIndexScan.Binary:
+						root = MemoryIndexCostBasedOptimizer.rearrangeJoinOrder(indexScan);
+						break;
+					default:
+						root = RearrangeTriplePatternsInIndexScanLeastEntries.rearrangeJoinOrder(indexScan);
+					}
+					
+					c.addAll(root.getSucceedingOperators());
+				} else {
+					c.add(oit);
 				}
-				
-				c.addAll(root.getSucceedingOperators());
-			} else
-				c.add(oit);
+			}
 		}
 		setSucceedingOperators(c);
 		this.deleteParents();

@@ -42,7 +42,7 @@ public class WindowDuration extends Window {
 
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
-		tripleList = new LinkedList<TimestampedTriple>();
+		this.tripleList = new LinkedList<TimestampedTriple>();
 		return message;
 	}
 
@@ -51,8 +51,8 @@ public class WindowDuration extends Window {
 		final TimestampedTriple timestampedTriple = (TimestampedTriple) triple;
 		final long now = timestampedTriple.getTimestamp();
 		int index = 0;
-		for (final TimestampedTriple t : tripleList) {
-			if (now - t.getTimestamp() >= duration) {
+		for (final TimestampedTriple t : this.tripleList) {
+			if (now - t.getTimestamp() >= this.duration) {
 				this.deleteTriple(t);
 				index++;
 			} else
@@ -62,7 +62,7 @@ public class WindowDuration extends Window {
 			this.tripleList.remove(0);
 			index--;
 		}
-		tripleList.add(timestampedTriple);
+		this.tripleList.add(timestampedTriple);
 		super.consume(timestampedTriple);
 	}
 	
@@ -71,8 +71,8 @@ public class WindowDuration extends Window {
 		final TimestampedTriple timestampedTriple = (TimestampedTriple) triple;
 		final long now = timestampedTriple.getTimestamp();
 		int index = 0;
-		for (final TimestampedTriple t : tripleList) {
-			if (now - t.getTimestamp() >= duration) {
+		for (final TimestampedTriple t : this.tripleList) {
+			if (now - t.getTimestamp() >= this.duration) {
 				this.deleteTripleDebug(t, debugstep);
 				index++;
 			} else
@@ -82,12 +82,12 @@ public class WindowDuration extends Window {
 			this.tripleList.remove(0);
 			index--;
 		}
-		tripleList.add(timestampedTriple);
+		this.tripleList.add(timestampedTriple);
 		super.consumeDebug(timestampedTriple, debugstep);
 	}
 
 	@Override
 	public String toString() {
-		return super.toString()+" " + duration;
+		return super.toString()+" " + this.duration;
 	}
 }

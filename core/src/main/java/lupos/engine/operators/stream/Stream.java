@@ -37,13 +37,13 @@ import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.misc.debug.DebugStep;
 
-public abstract class Stream extends TripleOperator implements TripleConsumer {
+public abstract class Stream extends TripleOperator {
 
 	protected LinkedList<NotifyStreamResult> notifyStreamResults = new LinkedList<NotifyStreamResult>();
 	protected CollectResult collectResult;
 
 	public Stream(final CollectResult cr) {
-		collectResult = cr;
+		this.collectResult = cr;
 	}
 
 	public List<PatternMatcher> getPatternMatchers() {
@@ -58,6 +58,7 @@ public abstract class Stream extends TripleOperator implements TripleConsumer {
 		return llpm;
 	}
 
+	@Override
 	public void consume(final Triple triple) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
 			((TripleConsumer) oid.getOperator()).consume(new TimestampedTriple(
@@ -67,19 +68,20 @@ public abstract class Stream extends TripleOperator implements TripleConsumer {
 
 	public void addNotifyStreamResult(
 			final NotifyStreamResult notifyStreamResult) {
-		notifyStreamResults.add(notifyStreamResult);
+		this.notifyStreamResults.add(notifyStreamResult);
 	}
 
 	protected void notifyStreamResults() {
 		this.sendMessage(new ComputeIntermediateResultMessage());
-		for (final NotifyStreamResult nsr : notifyStreamResults)
-			nsr.notifyStreamResult(collectResult.getResult());
+		for (final NotifyStreamResult nsr : this.notifyStreamResults)
+			nsr.notifyStreamResult(this.collectResult.getResult());
 	}
 	
 	protected void notifyStreamResultsDebug(DebugStep debugstep) {
 		this.sendMessageDebug(new ComputeIntermediateResultMessage(),debugstep);
-		for (final NotifyStreamResult nsr : notifyStreamResults)
-			nsr.notifyStreamResult(collectResult.getResult());
+		for (final NotifyStreamResult nsr : this.notifyStreamResults){
+			nsr.notifyStreamResult(this.collectResult.getResult());
+		}
 	}
 	
 	@Override

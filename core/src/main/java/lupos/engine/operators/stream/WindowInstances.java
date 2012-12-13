@@ -23,14 +23,81 @@
  */
 package lupos.engine.operators.stream;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import lupos.datastructures.items.TimestampedTriple;
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 
 public abstract class WindowInstances extends Window {
+	
+	private final Literal RDF_TYPE = LiteralFactory.createURILiteralWithoutException("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"); 
+	
 	protected final Literal instanceClass;
+	
+	/**
+	 * Buffer for all incoming triples, used like a queue (new triples get appended to end of list)
+	 */
+	protected LinkedList<TimestampedTriple> tripleBuffer;
+	protected LinkedList<TimestampedTriple> typeTripleBuffer;
+	
 	
 	public WindowInstances(final Literal instanceClass){
 		this.instanceClass = instanceClass;
+	}
+	
+	/**
+	 * Checks if given triple has predicate==rdf:type and object==instanceClass
+	 */
+	protected boolean isMatchingTypeTriple(Triple t) {
+		return t.getPredicate().compareToNotNecessarilySPARQLSpecificationConform(this.RDF_TYPE) == 0
+				&& t.getObject().compareToNotNecessarilySPARQLSpecificationConform(this.instanceClass)==0;
+	}
+	
+	protected boolean haveSameSubject(Triple t1, Triple t2) {
+		if(t1==null || t2==null){
+			return false;
+		}
+		return 0==t1.getSubject().compareToNotNecessarilySPARQLSpecificationConform(t2.getSubject());
+	}
+	
+	/**
+	 * Deletes all triples which have the same subject as a given triple t.
+	 * @param t
+	 */
+	protected void deleteInstance(Triple t) {
+		// 1. search for triples with same subject
+		List<TimestampedTriple> instanceTriples = new ArrayList<TimestampedTriple>();
+		for(TimestampedTriple tmp : this.tripleBuffer) {
+			if(haveSameSubject(tmp,t)){
+				instanceTriples.add(tmp);
+			}
+		}
+		// 2. delete them
+		for(TimestampedTriple tmp : instanceTriples) {
+			this.tripleBuffer.remove(tmp);
+			super.deleteTriple(tmp);
+		}
+	}
+	
+	protected void deleteInstanceDebug(Triple t, DebugStep debugstep) {
+		// 1. search for triples with same subject
+		List<TimestampedTriple> instanceTriples = new ArrayList<TimestampedTriple>();
+		for(TimestampedTriple tmp : this.tripleBuffer) {
+			if(haveSameSubject(tmp,t)){
+				instanceTriples.add(tmp);
+			}
+		}
+		// 2. delete them
+		for(TimestampedTriple tmp : instanceTriples) {
+			this.tripleBuffer.remove(tmp);
+			super.deleteTripleDebug(tmp, debugstep);
+		}
 	}
 	
 	@Override

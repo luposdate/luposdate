@@ -43,11 +43,11 @@ public class StreamDurationDebug extends StreamDuration {
 
 	@Override
 	public void consume(final Triple triple) {
-		super.consumeDebug(triple, debugstep);
+		super.consumeDebug(triple, this.debugstep);
 		final long now = (new Date()).getTime();
-		if (now - lastTime >= duration) {
-			lastTime = now;
-			this.notifyStreamResultsDebug(debugstep);
+		if (now - this.lastTime >= this.duration) {
+			this.lastTime = now;
+			this.notifyStreamResultsDebug(this.debugstep);
 		}
 	}
 }

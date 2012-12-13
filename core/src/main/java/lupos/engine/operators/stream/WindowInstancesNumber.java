@@ -24,6 +24,7 @@
 package lupos.engine.operators.stream;
 
 import java.util.Date;
+import java.util.LinkedList;
 
 import lupos.datastructures.items.TimestampedTriple;
 import lupos.datastructures.items.Triple;
@@ -35,73 +36,127 @@ import lupos.rdf.Prefix;
 
 public class WindowInstancesNumber extends WindowInstances {
 
-	private int numberOfTriples = 0;
-	// ring buffer for storing the triples of the window:
-	private TimestampedTriple[] triplesInWindow;
-	private int start = -1;
-	private int end = 0;
+	private int numberOfInstances = 0;
 
-	public WindowInstancesNumber(final int numberOfTriples, Literal instanceClass) {
+
+	public WindowInstancesNumber(final int numberOfInstances, Literal instanceClass) {
 		super(instanceClass);
-		if (numberOfTriples < 1) {
-			System.err
-					.println("X must be >=1 for WINDOW TYPE SLIDINGTRIPLES X");
+		if (numberOfInstances < 1) {
+			System.err.println("X must be >=1 for WINDOW TYPE SLIDINGTRIPLES X");
 			System.err.println("Assuming WINDOW TYPE SLIDINGTRIPLES 1...");
-			this.numberOfTriples = 1;
+			this.numberOfInstances = 1;
 		} else
-			this.numberOfTriples = numberOfTriples;		
-		// equal comparison between literals: this.instanceClass.compareToNotNecessarilySPARQLSpecificationConform(otherLiteral)==0
+			this.numberOfInstances = numberOfInstances;		
 	}
 
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
-		triplesInWindow = new TimestampedTriple[numberOfTriples];
-		start = -1;
-		end = 0;
+		this.tripleBuffer = new LinkedList<TimestampedTriple>();
+		this.typeTripleBuffer = new LinkedList<TimestampedTriple>();
 		return message;
 	}
 
 	@Override
 	public void consume(final Triple triple) {
-		if (end == start) {
-			// ring buffer is full
-			this.deleteTriple(triplesInWindow[start]);
-			start = (start + 1) % numberOfTriples;
+		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
+		
+		if(isMatchingTypeTriple(t)) {
+			// consume type-triple
+			super.consume(t);
+			
+			// search for triples with same subject to consume
+			for(Triple tmp : this.tripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					super.consume(tmp);
+				}
+			}
+			
+			// add type triple to extra buffer			
+			this.typeTripleBuffer.addLast(t);
+			
+			// keep only the last n type-triples
+			if(this.typeTripleBuffer.size() > this.numberOfInstances) {
+				TimestampedTriple removedTypeTriple = this.typeTripleBuffer.removeFirst();
+				
+				// delete old triples
+				// 1. delete instance of the removed type-triple
+				this.deleteInstance(removedTypeTriple);
+				// 2. delete all triples that are at least as old as the removed type-triple
+				while(!this.tripleBuffer.isEmpty() && this.tripleBuffer.peekFirst().getTimestamp() <= removedTypeTriple.getTimestamp()) {
+					TimestampedTriple tmp = this.tripleBuffer.removeFirst();
+					//System.out.println("delete: " + tmp.toString());
+					super.deleteTriple(tmp);
+				}
+			}		
 		} else {
-			if (start == -1)
-				start = 0;
+			// consume triple if a type-triple with same subject exists
+			for(Triple tmp : this.typeTripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					//System.out.println("consume: " + t.toString());
+					super.consume(t);
+					break;
+				}
+			}
 		}
-		final TimestampedTriple t = new TimestampedTriple(triple, (new Date())
-				.getTime());
-		triplesInWindow[end] = t;
-		end = (end + 1) % numberOfTriples;
-		super.consume(t);
+
+		this.tripleBuffer.addLast(t);	
 	}
+	
 	
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
-		if (end == start) {
-			// ring buffer is full
-			this.deleteTripleDebug(triplesInWindow[start], debugstep);
-			start = (start + 1) % numberOfTriples;
+		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
+		
+		if(isMatchingTypeTriple(t)) {
+			// consume type-triple
+			super.consumeDebug(t, debugstep);
+			
+			// search for triples with same subject to consume
+			for(Triple tmp : this.tripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					super.consumeDebug(tmp, debugstep);
+				}
+			}
+			
+			// add type triple to extra buffer			
+			this.typeTripleBuffer.addLast(t);
+			
+			// keep only the last n type-triples
+			if(this.typeTripleBuffer.size() > this.numberOfInstances) {
+				TimestampedTriple removedTypeTriple = this.typeTripleBuffer.removeFirst();
+				
+				// delete old triples
+				// 1. delete instance of the removed type-triple
+				this.deleteInstanceDebug(removedTypeTriple, debugstep);
+				// 2. delete all triples that are at least as old as the removed type-triple
+				while(!this.tripleBuffer.isEmpty() && this.tripleBuffer.peekFirst().getTimestamp() <= removedTypeTriple.getTimestamp()) {
+					TimestampedTriple tmp = this.tripleBuffer.removeFirst();
+					//System.out.println("delete: " + tmp.toString());
+					super.deleteTripleDebug(tmp, debugstep);
+				}
+			}		
 		} else {
-			if (start == -1)
-				start = 0;
+			// consume triple if a type-triple with same subject exists
+			for(Triple tmp : this.typeTripleBuffer) {
+				if(haveSameSubject(tmp,t)) {
+					//System.out.println("consume: " + t.toString());
+					super.consumeDebug(t, debugstep);
+					break;
+				}
+			}
 		}
-		final TimestampedTriple t = new TimestampedTriple(triple, (new Date())
-				.getTime());
-		triplesInWindow[end] = t;
-		end = (end + 1) % numberOfTriples;
-		super.consumeDebug(t, debugstep);
-	}
 
+		this.tripleBuffer.addLast(t);	
+	}
+			
+	
 	@Override
 	public String toString() {
-		return super.toString() + numberOfTriples;
+		return super.toString() + this.numberOfInstances;
 	}
 	
 	@Override
 	public String toString(Prefix prefixInstance) {
-		return super.toString(prefixInstance) + " " + numberOfTriples;
+		return super.toString(prefixInstance) + " " + this.numberOfInstances;
 	}
 }
