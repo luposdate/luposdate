@@ -78,14 +78,12 @@ public class Result extends SingleInputOperator {
 		for (final Application app : apps) {
 			app.call(res);
 		}
-		res.release();
 	}
 
 	public synchronized QueryResult process(final QueryResult res,
 			final int operandID) {
 		if (res != null) {
 			callAll(res);
-			res.release();
 		}
 		return null;
 	}
