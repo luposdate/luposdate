@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+ * Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
  *
  * All rights reserved.
  *
@@ -26,6 +26,8 @@ package lupos.event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
+
+import javax.swing.JOptionPane;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
@@ -146,4 +148,8 @@ public abstract class ProducerBase {
 	}
 
 	public abstract List<List<Triple>> produce();
+	
+	protected static String askForHostOfBroker(){
+		return JOptionPane.showInputDialog("Enter the host of the broker:", "localhost");
+	}
 }

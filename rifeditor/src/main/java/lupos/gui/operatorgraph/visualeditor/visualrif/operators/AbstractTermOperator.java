@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+ * Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
  *
  * All rights reserved.
  *
@@ -21,7 +21,6 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
 import java.awt.Point;

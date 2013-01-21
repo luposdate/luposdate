@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+    Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
 
     All rights reserved.
 
@@ -23,7 +23,6 @@
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -->
-
 <templaterule-document>
 <base> http://www.example.de# </base>
 <prefix name="rdf">http://www.w3.org/1999/02/22-rdf-syntax-ns#</prefix>

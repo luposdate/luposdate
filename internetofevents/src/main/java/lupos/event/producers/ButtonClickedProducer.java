@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+ * Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
  *
  * All rights reserved.
  *
@@ -76,7 +76,7 @@ public class ButtonClickedProducer extends ProducerBase {
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = new SerializingMessageService(TcpMessageTransport.class);
-		msgService.connect(new TcpConnectInfo("localhost", 4444));
+		msgService.connect(new TcpConnectInfo(ProducerBase.askForHostOfBroker(), 4444));
 		
 		// create producer
 		final ButtonClickedProducer producer = new ButtonClickedProducer(msgService);

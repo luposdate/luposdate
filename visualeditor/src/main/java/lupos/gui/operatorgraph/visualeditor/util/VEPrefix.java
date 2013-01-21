@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+ * Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
  *
  * All rights reserved.
  *
