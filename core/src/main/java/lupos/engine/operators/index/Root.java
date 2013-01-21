@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+ * Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
  *
  * All rights reserved.
  *
@@ -87,8 +87,11 @@ public abstract class Root extends Operator {
 				} else {
 					c.add(oit);
 				}
+			} else {
+				// Operators not being index scan operators should remain!
+				c.add(oit);
 			}
-		}
+		} 
 		setSucceedingOperators(c);
 		this.deleteParents();
 		this.setParents();

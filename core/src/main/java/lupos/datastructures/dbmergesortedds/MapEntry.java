@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Institute of Information Systems (Sven Groppe), University of Luebeck
+ * Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
  *
  * All rights reserved.
  *
@@ -43,31 +43,40 @@ public class MapEntry<K, V> implements Entry<K, V>, Serializable,
 	private final K k;
 	private V v;
 
+	@Override
 	public K getKey() {
-		return k;
+		return this.k;
 	}
 
+	@Override
 	public V getValue() {
-		return v;
+		return this.v;
 	}
 
+	@Override
 	public V setValue(final V value) {
-		final V res = v;
-		v = value;
+		final V res = this.v;
+		this.v = value;
 		return res;
 	}
 
 	@Override
 	public boolean equals(final Object other) {
-		return k.equals(((MapEntry<K, V>) other).k);
+		return this.k.equals(((MapEntry<K, V>) other).k);
 	}
 
+	@Override
 	public int compareTo(final Entry<K, V> other) {
-		return ((Comparable<K>) k).compareTo(other.getKey());
+		return ((Comparable<K>) this.k).compareTo(other.getKey());
 	}
 
 	@Override
 	public String toString() {
-		return k + " => " + v;
+		return this.k + " => " + this.v;
+	}
+
+	@Override
+	public int hashCode() {
+		return (int)(((long)this.k.hashCode() + this.v.hashCode())%Integer.MAX_VALUE);
 	}
 }
