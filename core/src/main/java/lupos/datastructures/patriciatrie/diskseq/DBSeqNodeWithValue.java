@@ -176,17 +176,17 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	}
 
 	@Override
-	public NodeWithValue<T> createNode() {
+	public final NodeWithValue<T> createNode() {
 		return new DBSeqNodeWithValue<T>(this.getNodeManager());
 	}
 
 	@Override
-	public boolean hasChild(final int i) {
+	public final boolean hasChild(final int i) {
 		return this.getChildren() != null && this.getChildren().length > i && this.getChildren()[i];
 	}
 
 	@Override
-	public NodeWithValue<T> getChild(final int i) {
+	public final NodeWithValue<T> getChild(final int i) {
 		if (this.hasChild(i))
 			return (NodeWithValue<T>) this.getNodeManager().readNextNode(DBSeqNodeWithValue.deSerializer);
 		else
@@ -194,56 +194,55 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	}
 
 	@Override
-	protected void setChild(final int i, final NodeWithValue<T> node) {
+	protected final void setChild(final int i, final NodeWithValue<T> node) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected boolean isFromSameTrie(final Node node) {		
+	protected final boolean isFromSameTrie(final Node node) {		
 		return false;
 	}
 
 	@Override
-	protected void increaseChildrenArraySize(int idx, int amount) {
+	protected final void increaseChildrenArraySize(int idx, int amount) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected void removeChildrenArrayElement(int idx) {
+	protected final void removeChildrenArrayElement(int idx) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int getChildrenLength() {
+	public final int getChildrenLength() {
 		return this.getChildren() == null ? 0 : this.getChildren().length;
 	}
 
 	/**
 	 * @param children the children to set
 	 */
-	public void setChildren(boolean[] children) {
+	public final void setChildren(boolean[] children) {
 		this.children = children;
 	}
 
 	/**
 	 * @return the children
 	 */
-	public boolean[] getChildren() {
+	public final boolean[] getChildren() {
 		return this.children;
 	}
 
 	/**
 	 * @param nodeManager the nodeManager to set
 	 */
-	public void setNodeManager(SeqNodeManager nodeManager) {
+	public final void setNodeManager(SeqNodeManager nodeManager) {
 		this.nodeManager = nodeManager;
 	}
 
 	/**
 	 * @return the nodeManager
 	 */
-	public SeqNodeManager getNodeManager() {
+	public final SeqNodeManager getNodeManager() {
 		return this.nodeManager;
 	}
-
 }

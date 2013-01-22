@@ -33,7 +33,7 @@ public interface IDBNode {
 
 	public void serialize(NodeOutputStream nodeOutputStream) throws IOException ;
 
-	public boolean hasChanged();
+	public boolean isChanged();
 
 	public boolean isOnRecursionStack();
 	

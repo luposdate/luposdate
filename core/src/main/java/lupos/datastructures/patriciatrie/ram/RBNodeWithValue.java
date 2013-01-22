@@ -43,17 +43,17 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	}
 	
 	@Override
-	protected RBNodeWithValue<T> createNode() {
+	protected final RBNodeWithValue<T> createNode() {
 		return new RBNodeWithValue<T>();
 	}
 	
 	@Override
-	public boolean hasChild(final int i) {
+	public final boolean hasChild(final int i) {
 		return this.children != null && i < this.children.length && this.children[i] != null;
 	}
 	
 	@Override
-	public NodeWithValue<T> getChild(final int i) {
+	public final NodeWithValue<T> getChild(final int i) {
 		if (this.children != null)
 			return this.children[i];
 		else
@@ -62,7 +62,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void setChild(final int i, final NodeWithValue<T> node) {
+	protected final void setChild(final int i, final NodeWithValue<T> node) {
 		if (this.children == null && node != null) {
 			this.children = new NodeWithValue[this.getContentLength()];
 			
@@ -76,7 +76,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	}
 	
 	@Override
-	protected boolean isFromSameTrie(final Node node) {
+	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof RBNodeWithValue) {
 			System.out.println("fixme: RBNode.isFromSameTrie");
 			return false;
@@ -86,7 +86,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	}
 		
 	@Override
-	protected void increaseChildrenArraySize(final int idx, final int amount) {
+	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		if (this.children != null) {
 			@SuppressWarnings("unchecked")
 			final NodeWithValue<T>[] newChildren = new NodeWithValue[this.getChildrenLength() + amount];
@@ -105,7 +105,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	}
 	
 	@Override
-	protected void removeChildrenArrayElement(final int idx) {
+	protected final void removeChildrenArrayElement(final int idx) {
 		if (this.children != null) {
 			if (this.getChildrenLength() > 1) {
 				@SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	}
 	
 	@Override
-	public int getChildrenLength() {
+	public final int getChildrenLength() {
 		return (this.children == null ? 0 : this.children.length);
 	}
 }

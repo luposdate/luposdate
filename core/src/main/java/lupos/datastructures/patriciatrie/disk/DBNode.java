@@ -136,7 +136,7 @@ public class DBNode extends Node implements IDBNode {
 	 * @throws IOException
 	 */
 	@Override
-	public void serialize(final NodeOutputStream nodeOutputStream) throws IOException {
+	public final void serialize(final NodeOutputStream nodeOutputStream) throws IOException {
 		final int contentLength = this.getContentLength();
 		final int childrenLength = this.getChildrenLength();
 		
@@ -162,20 +162,10 @@ public class DBNode extends Node implements IDBNode {
 	}
 	
 	/**
-	 * @return <strong>true</strong> if this node has changed since it has been
-	 *         loaded,<br />
-	 *         <strong>false</strong> otherwise
-	 */
-	@Override
-	public boolean hasChanged() {
-		return this.isChanged();
-	}
-	
-	/**
 	 * @return Index for NodeManager
 	 */
 	@Override
-	public int getNodeIndex() {
+	public final int getNodeIndex() {
 		return this.nodeIndex;
 	}
 	
@@ -185,17 +175,17 @@ public class DBNode extends Node implements IDBNode {
 	 * @param idx
 	 *            New index for NodeManager
 	 */
-	protected void setNodeIndex(final int idx) {
+	protected final void setNodeIndex(final int idx) {
 		this.nodeIndex = idx;
 	}
 	
 	@Override
-	protected Node createNode() {
+	protected final Node createNode() {
 		return new DBNode(this.nodeManager, -1);
 	}
 	
 	@Override
-	public void destroyNode(final boolean recursive) {
+	public final void destroyNode(final boolean recursive) {
 //		logger.debug("Destroying node with index " + this.getNodeIndex());
 		if (recursive) {
 			final int childrenLength = this.getChildrenLength();
@@ -210,12 +200,12 @@ public class DBNode extends Node implements IDBNode {
 	}
 
 	@Override
-	public boolean hasChild(final int i) {
+	public final boolean hasChild(final int i) {
 		return this.children != null && i < this.children.length && this.children[i] != -1;
 	}
 	
 	@Override
-	public Node getChild(final int i) {
+	public final Node getChild(final int i) {
 		if (this.children != null && this.children[i] != -1){
 			return (Node) this.nodeManager.loadDBNode(this.children[i], DBNode.deserializer);
 		} else {
@@ -231,7 +221,7 @@ public class DBNode extends Node implements IDBNode {
 	 * @param idx
 	 *            Node index
 	 */
-	protected void setChildId(final int i, final int idx) {
+	protected final void setChildId(final int i, final int idx) {
 		if (idx == 1) {
 			System.err.println("RootNode kann kein Kind sein!");
 			System.exit(0);
@@ -255,7 +245,7 @@ public class DBNode extends Node implements IDBNode {
 	 *            Array index
 	 * @return Node index of the child if it is set, -1 otherwise
 	 */
-	protected int getChildId(final int i) {
+	protected final int getChildId(final int i) {
 		if (this.children != null)
 			return this.children[i];
 		else
@@ -263,7 +253,7 @@ public class DBNode extends Node implements IDBNode {
 	}
 
 	@Override
-	protected void setChild(final int i, final Node node) {
+	protected final void setChild(final int i, final Node node) {
 		if (node != null){
 			this.setChildId(i, ((DBNode) node).getNodeIndex());
 		} else {
@@ -274,7 +264,7 @@ public class DBNode extends Node implements IDBNode {
 	}
 	
 	@Override
-	protected boolean isFromSameTrie(final Node node) {
+	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof DBNode) {
 			
 			// If both nodes share the same node manager, they must be inside the same trie.
@@ -285,7 +275,7 @@ public class DBNode extends Node implements IDBNode {
 	}
 	
 	@Override
-	protected void increaseChildrenArraySize(final int idx, final int amount) {
+	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		if (this.children != null) {
 			final int[] newChildren = new int[this.getChildrenLength() + 1];
 			
@@ -303,7 +293,7 @@ public class DBNode extends Node implements IDBNode {
 	}
 	
 	@Override
-	protected void removeChildrenArrayElement(final int idx) {
+	protected final void removeChildrenArrayElement(final int idx) {
 		if (this.children != null) {
 			if (this.getChildrenLength() > 1) {
 				final int[] newContent = new int[this.getChildrenLength() - 1];
@@ -321,7 +311,7 @@ public class DBNode extends Node implements IDBNode {
 	}
 	
 	@Override
-	public int getChildrenLength() {
+	public final int getChildrenLength() {
 		return (this.children == null ? 0 : this.children.length);
 	}
 }

@@ -42,17 +42,17 @@ public class RBNode extends Node {
 	}
 	
 	@Override
-	protected Node createNode() {
+	protected final Node createNode() {
 		return new RBNode();
 	}
 	
 	@Override
-	public boolean hasChild(final int i) {
+	public final boolean hasChild(final int i) {
 		return this.children != null && i < this.children.length && this.children[i] != null;
 	}
 	
 	@Override
-	public Node getChild(final int i) {
+	public final Node getChild(final int i) {
 		if (this.children != null)
 			return this.children[i];
 		else
@@ -60,7 +60,7 @@ public class RBNode extends Node {
 	}
 
 	@Override
-	public void setChild(final int i, final Node node) {
+	public final void setChild(final int i, final Node node) {
 		if (this.children == null && node != null) {
 			this.children = new Node[this.getContentLength()];
 			
@@ -73,7 +73,7 @@ public class RBNode extends Node {
 	}
 	
 	@Override
-	protected boolean isFromSameTrie(final Node node) {
+	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof RBNode) {
 			System.out.println("fixme: RBNode.isFromSameTrie");
 			return false;
@@ -83,7 +83,7 @@ public class RBNode extends Node {
 	}
 		
 	@Override
-	protected void increaseChildrenArraySize(final int idx, final int amount) {
+	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		if (this.children != null) {
 			final Node[] newChildren = new Node[this.getChildrenLength() + amount];
 			
@@ -101,7 +101,7 @@ public class RBNode extends Node {
 	}
 	
 	@Override
-	protected void removeChildrenArrayElement(final int idx) {
+	protected final void removeChildrenArrayElement(final int idx) {
 		if (this.children != null) {
 			if (this.getChildrenLength() > 1) {
 				final Node[] newContent = new Node[this.getChildrenLength() - 1];
@@ -117,7 +117,7 @@ public class RBNode extends Node {
 	}
 	
 	@Override
-	public int getChildrenLength() {
+	public final int getChildrenLength() {
 		return (this.children == null ? 0 : this.children.length);
 	}
 }

@@ -249,7 +249,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	 */
 	public void writeBufferToDisk() {
 		for (final IDBNode node : this.nodeBuffer.values()) {
-			if (node.hasChanged())
+			if (node.isChanged())
 				this.storeDBNode(node);
 		}
 		
@@ -272,7 +272,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	
 	@Override
 	public void onOverflow(final IDBNode obj) {
-		if (obj.hasChanged() && !obj.isOnRecursionStack()) {
+		if (obj.isChanged() && !obj.isOnRecursionStack()) {
 			this.storeDBNode(obj);
 		}
 	}

@@ -30,6 +30,7 @@ public abstract class NodeWithValue<T> extends Node {
 
 
 	public NodeWithValue() {
+		super();
 		this.setValues(null);
 	}
 	
@@ -60,7 +61,7 @@ public abstract class NodeWithValue<T> extends Node {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void setChild(int i, Node node){
+	protected final void setChild(int i, Node node){
 		this.setChild(i, (NodeWithValue<T>) node);
 	}
 
@@ -69,7 +70,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 *            Array index of the value
 	 * @return The value if available, <strong>null</strong> otherwise
 	 */
-	public T getValue(final int i) {
+	public final T getValue(final int i) {
 		if (this.getValues() != null){
 			return this.getValues()[i];
 		} else {
@@ -87,7 +88,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 *            Value to be stored
 	 */
 	@SuppressWarnings("unchecked")
-	public void setValue(final int i, final T value) {
+	public final void setValue(final int i, final T value) {
 		if (this.getValues() == null){
 			this.setValues((T[]) new Object[1]);
 		}
@@ -105,7 +106,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 * @param amount
 	 *            Amount of entries to add
 	 */
-	protected void increaseValuesArraySize(final int idx, final int amount) {
+	protected final void increaseValuesArraySize(final int idx, final int amount) {
 		@SuppressWarnings("unchecked")
 		final T[] newValues = (T[]) new Object[this.getValuesLength() + amount];
 
@@ -127,7 +128,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 * @param idx
 	 *            Index of the element to remove
 	 */
-	protected void removeValuesArrayElement(final int idx) {
+	protected final void removeValuesArrayElement(final int idx) {
 		if (this.getValuesLength() > 1) {
 			@SuppressWarnings("unchecked")
 			final T[] newValues = (T[]) new Object[this.getValuesLength() - 1];
@@ -150,7 +151,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 *            Amount of entries to add
 	 */
 	@Override
-	protected void increaseArraySizes(final int idx, final int amount) {
+	protected final void increaseArraySizes(final int idx, final int amount) {
 		super.increaseArraySizes(idx, amount);
 		this.increaseValuesArraySize(idx, amount);
 	}
@@ -162,7 +163,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 *            Index of the element to remove
 	 */
 	@Override
-	protected void decreaseArraySizes(final int idx) {
+	protected final void decreaseArraySizes(final int idx) {
 		super.decreaseArraySizes(idx);
 		this.removeValuesArrayElement(idx);
 	}
@@ -170,17 +171,17 @@ public abstract class NodeWithValue<T> extends Node {
 	/**
 	 * @return The length of the values array if it is initialized, 0 otherwise
 	 */
-	public int getValuesLength() {
+	public final int getValuesLength() {
 		return (this.getValues() == null ? 0 : this.getValues().length);
 	}
 	
 	@Override
-	public String toString() {
+	public final String toString() {
 		return NodeHelper.toString(this, "");
 	}
 	
 	@Override
-	public boolean equals(final Object obj) {
+	public final boolean equals(final Object obj) {
 		if (!(obj instanceof NodeWithValue)){
 			return false;
 		}
@@ -209,7 +210,7 @@ public abstract class NodeWithValue<T> extends Node {
 	/**
 	 * @param values the values to set
 	 */
-	public void setValues(T[] values) {
+	public final void setValues(T[] values) {
 		this.values = values;
 	}
 
@@ -217,7 +218,7 @@ public abstract class NodeWithValue<T> extends Node {
 	/**
 	 * @return the values
 	 */
-	public T[] getValues() {
+	public final T[] getValues() {
 		return this.values;
 	}
 }

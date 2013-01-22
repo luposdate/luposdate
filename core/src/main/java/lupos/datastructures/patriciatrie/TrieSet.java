@@ -257,5 +257,4 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 			};
 		}
 	}
-
 }

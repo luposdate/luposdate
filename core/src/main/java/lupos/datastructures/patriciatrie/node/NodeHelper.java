@@ -1370,7 +1370,6 @@ public final class NodeHelper {
 				NodeHelper.setChildCopy(nodeCopy, j, node.getChild(j));
 			}
 			
-			// TODO: Number of entries kopieren, size neu berechnen (eventuell einfach aus Kindern klauen?)
 			parentNode.setChild(i, nodeCopy);
 			parentNode.setIsOnRecursionStack(wasOnRecursionStack);
 		}
