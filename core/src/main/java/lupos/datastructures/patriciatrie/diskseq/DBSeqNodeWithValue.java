@@ -62,6 +62,9 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 		public Node deserialize(final SeqNodeManager nodeManager, final NodeInputStream inputStream) throws IOException {
 			final DBSeqNodeWithValue<Integer> node = new DBSeqNodeWithValue<Integer>(nodeManager);
 			final int contentLength = inputStream.readInt();
+			if(contentLength<0){
+				return null;
+			}
 			
 			node.setContent(new String[contentLength]);
 			

@@ -139,8 +139,9 @@ public class DBSeqTrieBag extends TrieBag {
 		 * was not empty, there would be unpredictable side effects because the
 		 * Input- and OutputStreams will be continuously reset.
 		 */
-		if (this.size() > 0)
+		if (this.size() > 0){
 			System.err.println("Warning: Calling DBSeqTrie.merge() on a non-empty DBSeqTrie does not work. All entries from this DBSeqTrie will be removed before merging.");
+		}
 		this.setRootNode(null);
 		
 		this.nodeManager.setCompleteMetadata(false);

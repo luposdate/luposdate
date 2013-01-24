@@ -53,10 +53,11 @@ public class RBNode extends Node {
 	
 	@Override
 	public final Node getChild(final int i) {
-		if (this.children != null)
+		if (this.children != null){
 			return this.children[i];
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
@@ -68,18 +69,20 @@ public class RBNode extends Node {
 				this.children[j] = null;
 		}
 		
-		if (this.children != null)
+		if (this.children != null){
 			this.children[i] = node;
+		}
 	}
 	
 	@Override
 	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof RBNode) {
-			System.out.println("fixme: RBNode.isFromSameTrie");
+			// System.out.println("fixme: RBNode.isFromSameTrie");
+			// node can be reused
+			return true;
+		} else {
 			return false;
 		}
-		else
-			return false;
 	}
 		
 	@Override

@@ -54,10 +54,11 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	
 	@Override
 	public final NodeWithValue<T> getChild(final int i) {
-		if (this.children != null)
+		if (this.children != null){
 			return this.children[i];
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -78,11 +79,12 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 	@Override
 	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof RBNodeWithValue) {
-			System.out.println("fixme: RBNode.isFromSameTrie");
+			// System.out.println("fixme: RBNodeWithValue.isFromSameTrie");
+			// node can be reused
+			return true;
+		} else {
 			return false;
 		}
-		else
-			return false;
 	}
 		
 	@Override

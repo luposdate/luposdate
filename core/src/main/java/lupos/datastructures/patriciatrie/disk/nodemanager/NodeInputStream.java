@@ -56,11 +56,30 @@ public class NodeInputStream extends InputStream {
 	 */
 	public int readInt() throws IOException {
 		byte[] intVal = new byte[4];
-		intVal[0] = (byte) this.stream.read();
-		intVal[1] = (byte) this.stream.read();
-		intVal[2] = (byte) this.stream.read();
-		intVal[3] = (byte) this.stream.read();
+		int value = this.stream.read();
+		if(value<0){
+			return -1;
+		}
+		intVal[0] = (byte) value;
 		
+		value = this.stream.read();
+		if(value<0){
+			return -1;
+		}
+		intVal[1] = (byte) value;
+		
+		value = this.stream.read();
+		if(value<0){
+			return -1;
+		}
+		intVal[2] = (byte) value;
+		
+		value = this.stream.read();
+		if(value<0){
+			return -1;
+		}
+		intVal[3] = (byte) value;
+
 		return ByteHelper.byteToInt(intVal);		
 	}
 	
