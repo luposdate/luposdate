@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -41,6 +42,7 @@ import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.ram.RBTrieBag;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
+import lupos.misc.TimeInterval;
 
 /**
  * Class for sorting the RDF terms of RDF data using trie bags.
@@ -64,17 +66,22 @@ public class ExternalParallelTrieSort {
 	public static void main(String[] args) throws Exception {
 		System.out.println("Sorting RDF terms of large RDF data in computers with large main memory...");
 		System.out.println("Call:");
-		System.out.println("java lupos.test.ExternalParallelMergeSort DATAFILE FORMAT [NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN FREE_MEMORY_LIMIT]");
+		System.out.println("java lupos.datastructures.patriciatrie.ExternalParallelTrieSort DATAFILE FORMAT [NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN FREE_MEMORY_LIMIT]");
 		System.out.println("Example:");
 		System.out.println("java -server -XX:+UseParallelGC -XX:+AggressiveOpts -Xms60G -Xmx60G lupos.test.ExternalParallelMergeSort SomeFiles.txt MULTIPLEN3 8 1000 2 100000");
 		if(!(args.length==2 || args.length==6)){
 			System.err.println("Wrong number of arguments!");
 			return;
 		}
+		Date start = new Date();
+		System.out.println("\nStart processing:"+start+"\n");		
 		ExternalParallelTrieSort sorter = (args.length==2)?
 				new ExternalParallelTrieSort():
 				new ExternalParallelTrieSort(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]));
 		sorter.sort(new BufferedInputStream(new FileInputStream(args[0])), args[1]);
+		Date end = new Date();
+		System.out.println("\nEnd processing:"+end);		
+		System.out.println("\nDuration:   " + (end.getTime() - start.getTime())/1000.0 + " seconds\n          = "+new TimeInterval(start, end));
 	}
 	
 	/**
