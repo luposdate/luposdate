@@ -23,4 +23,5 @@ target
 **/**/*.iml
 **/**/*.ipr
 **/**/*.iws
+integrationNxParser/src/main/java/org
 
