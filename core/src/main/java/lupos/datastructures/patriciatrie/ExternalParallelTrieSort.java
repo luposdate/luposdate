@@ -330,6 +330,9 @@ public class ExternalParallelTrieSort {
 						ExternalParallelTrieSort.this.numberOfWaitsOfMerger++;
 					}
 					Object[] bagsToMerge = this.initialRunsLevel0.get(ExternalParallelTrieSort.this.NUMBER_OF_RUNS_TO_JOIN, ExternalParallelTrieSort.this.NUMBER_OF_RUNS_TO_JOIN);
+					
+					this.checkMemory();
+					
 					if(bagsToMerge!=null && bagsToMerge.length>0){
 						TrieBag trie = null;
 						if(bagsToMerge.length>1){
@@ -368,7 +371,10 @@ public class ExternalParallelTrieSort {
 		 * @throws TrieNotMergeableException
 		 * @throws TrieNotCopyableException
 		 */
-		public void addToLevel(final int addLevel, final TrieBag toBeAdded) throws TrieNotMergeableException, TrieNotCopyableException{			
+		public void addToLevel(final int addLevel, final TrieBag toBeAdded) throws TrieNotMergeableException, TrieNotCopyableException{
+			
+			this.checkMemory();
+			
 			while(this.levels.size()<=addLevel){
 				this.levels.add(new LinkedList<TrieBag>());
 			}
@@ -389,6 +395,15 @@ public class ExternalParallelTrieSort {
 				// put the merged trie to one level higher (and recursively merge there the tries if enough are there)
 				this.addToLevel(addLevel + 1, resultOfMerge);				
 			}
+			
+			this.checkMemory();
+		}
+		
+		/**
+		 * check free memory and intermediately store one of the biggest tries on disk if there is not enough memory any more 
+		 * @throws TrieNotCopyableException
+		 */
+		public void checkMemory() throws TrieNotCopyableException{
 			// is there still enough memory available?
 			if(Runtime.getRuntime().freeMemory()<ExternalParallelTrieSort.this.FREE_MEMORY_LIMIT){
 				// get one of the biggest tries for storing it on disk and free it in memory...
