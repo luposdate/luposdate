@@ -78,10 +78,15 @@ public class ExternalParallelTrieSort {
 		ExternalParallelTrieSort sorter = (args.length==2)?
 				new ExternalParallelTrieSort():
 				new ExternalParallelTrieSort(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]));
+				
+		System.out.println("\nParameters:\n" + sorter.parametersToString() + "\n");
 		sorter.sort(new BufferedInputStream(new FileInputStream(args[0])), args[1]);
 		Date end = new Date();
 		System.out.println("\nEnd processing:"+end);		
 		System.out.println("\nDuration:   " + (end.getTime() - start.getTime())/1000.0 + " seconds\n          = "+new TimeInterval(start, end));
+		
+		System.out.println("\nNumber of waits of initial run generators:" + sorter.getNumberOfWaitsOfInitialRunGenerator());
+		System.out.println("Number of waits of merger thread:" + sorter.getNumberOfWaitsOfMerger());
 	}
 	
 	/**
@@ -114,6 +119,10 @@ public class ExternalParallelTrieSort {
 	private final int FREE_MEMORY_LIMIT;
 
 	private final LinkedList<TrieBag> triesOnDisk = new LinkedList<TrieBag>();
+	
+	private int numberOfWaitsOfInitialRunGenerator = 0;
+	
+	private int numberOfWaitsOfMerger = 0;
 	
 	/**
 	 * an id for generating unique file names for the tries stored on disk...
@@ -223,6 +232,25 @@ public class ExternalParallelTrieSort {
 	}
 	
 	/**
+	 * @return a string describing the current parameters of this object
+	 */
+	public String parametersToString(){
+		return 
+			"NUMBER_INITIAL_RUN_GENERATION_THREADS:" + this.NUMBER_INITIAL_RUN_GENERATION_THREADS +			
+			"\nNUMBER_ELEMENTS_IN_INITIAL_RUNS      :" + this.NUMBER_ELEMENTS_IN_INITIAL_RUNS +			
+			"\nNUMBER_OF_RUNS_TO_JOIN               :" + this.NUMBER_OF_RUNS_TO_JOIN +			
+			"\nFREE_MEMORY_LIMIT                    :" + this.FREE_MEMORY_LIMIT;
+	}
+	
+	public int getNumberOfWaitsOfInitialRunGenerator() {
+		return numberOfWaitsOfInitialRunGenerator;
+	}
+
+	public int getNumberOfWaitsOfMerger() {
+		return numberOfWaitsOfMerger;
+	}
+
+	/**
 	 * Just to make it exchangeable
 	 * @return a new trie bag
 	 */
@@ -273,6 +301,9 @@ public class ExternalParallelTrieSort {
 		
 		public void finishInitialRun() throws InterruptedException{
 			if(this.trie.size()>0){
+				if(this.initialRunsLevel0.isCurrentlyFull()){
+					ExternalParallelTrieSort.this.numberOfWaitsOfInitialRunGenerator++;
+				}
 				this.initialRunsLevel0.put(this.trie);
 				this.trie = generateTrie();
 			}
@@ -295,6 +326,9 @@ public class ExternalParallelTrieSort {
 			try {
 				while(true){
 					// get as many tries to merge as specified
+					if(this.initialRunsLevel0.size()<ExternalParallelTrieSort.this.NUMBER_OF_RUNS_TO_JOIN){
+						ExternalParallelTrieSort.this.numberOfWaitsOfMerger++;
+					}
 					Object[] bagsToMerge = this.initialRunsLevel0.get(ExternalParallelTrieSort.this.NUMBER_OF_RUNS_TO_JOIN, ExternalParallelTrieSort.this.NUMBER_OF_RUNS_TO_JOIN);
 					if(bagsToMerge!=null && bagsToMerge.length>0){
 						TrieBag trie = null;
