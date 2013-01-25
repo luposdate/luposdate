@@ -77,7 +77,7 @@ public class ExternalParallelTrieSort {
 		System.out.println("\nStart processing:"+start+"\n");		
 		ExternalParallelTrieSort sorter = (args.length==2)?
 				new ExternalParallelTrieSort():
-				new ExternalParallelTrieSort(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]));
+				new ExternalParallelTrieSort(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Long.parseLong(args[5]));
 				
 		System.out.println("\nParameters:\n" + sorter.parametersToString() + "\n");
 		sorter.sort(new BufferedInputStream(new FileInputStream(args[0])), args[1]);
@@ -96,7 +96,7 @@ public class ExternalParallelTrieSort {
 	 * @param NUMBER_OF_RUNS_TO_JOIN
 	 * @param FREE_MEMORY_LIMIT
 	 */
-	public ExternalParallelTrieSort(final int NUMBER_INITIAL_RUN_GENERATION_THREADS, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS, final int NUMBER_OF_RUNS_TO_JOIN, final int FREE_MEMORY_LIMIT){
+	public ExternalParallelTrieSort(final int NUMBER_INITIAL_RUN_GENERATION_THREADS, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS, final int NUMBER_OF_RUNS_TO_JOIN, final long FREE_MEMORY_LIMIT){
 		this.NUMBER_INITIAL_RUN_GENERATION_THREADS = NUMBER_INITIAL_RUN_GENERATION_THREADS;
 		this.NUMBER_ELEMENTS_IN_INITIAL_RUNS = NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 		this.NUMBER_OF_RUNS_TO_JOIN = NUMBER_OF_RUNS_TO_JOIN;
@@ -116,7 +116,7 @@ public class ExternalParallelTrieSort {
 	
 	private final int NUMBER_OF_RUNS_TO_JOIN;
 	
-	private final int FREE_MEMORY_LIMIT;
+	private final long FREE_MEMORY_LIMIT;
 
 	private final LinkedList<TrieBag> triesOnDisk = new LinkedList<TrieBag>();
 	
@@ -243,11 +243,11 @@ public class ExternalParallelTrieSort {
 	}
 	
 	public int getNumberOfWaitsOfInitialRunGenerator() {
-		return numberOfWaitsOfInitialRunGenerator;
+		return this.numberOfWaitsOfInitialRunGenerator;
 	}
 
 	public int getNumberOfWaitsOfMerger() {
-		return numberOfWaitsOfMerger;
+		return this.numberOfWaitsOfMerger;
 	}
 
 	/**
