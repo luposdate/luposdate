@@ -124,8 +124,9 @@ public class LazyLiteral extends Literal {
 
 	@Override
 	public String toString() {
-		if (this.materializedContent == null)
+		if (this.materializedContent == null){
 			this.materializedContent = v.get(this.code);
+		}
 		return this.materializedContent;
 	}
 

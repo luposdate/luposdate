@@ -352,7 +352,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTRegexFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = resultOfChildZero(node, b, d);
+		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
 		if (o instanceof URILiteral || o instanceof AnonymousLiteral)
 			return false;
 		final String cmp = Helper.getString(o);
@@ -410,7 +410,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	@Override
 	public Object evaluate(ASTLangFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = resultOfChildZero(node, b, d);
+		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
 		if (o instanceof LanguageTaggedLiteral) {
 			return "\"" + ((LanguageTaggedLiteral) o).getOriginalLanguage() + "\"";
 		} else if (o instanceof TypedLiteral || o instanceof CodeMapLiteral || o instanceof StringLiteral) {
@@ -439,13 +439,13 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				return s1.substring(1, s1.length() - 1).startsWith(
 						s2.substring(1, s2.length() - 1));
 		}
-		return (s1.compareTo(s2) == 0);
+		return (Helper.unquote(s1).compareTo(Helper.unquote(s2)) == 0);
 	}
 
 	@Override
 	public Object evaluate(ASTDataTypeFuncNode node, Bindings b,
 			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = resultOfChildZero(node, b, d);
+		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
 		if (o instanceof TypedLiteral) {
 			return ((TypedLiteral) o).getTypeLiteral();
 		} else {
@@ -488,11 +488,10 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 	
 	public Object createURI_IRI(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object o = resultOfChildZero(node, b, d);
-		if(o instanceof LazyLiteral)
-			o=((LazyLiteral)o).getLiteral();
-		if(o instanceof URILiteral)
+		Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+		if(o instanceof URILiteral){
 			return o;
+		}
 		if(o instanceof TypedLiteral){
 			TypedLiteral tl = (TypedLiteral) o;
 			if(tl.getType().compareTo("<http://www.w3.org/2001/XMLSchema#string>")==0)
@@ -543,10 +542,11 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	@Override
 	public Object evaluate(ASTisLiteralFuncNode node, Bindings b,
 			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = resultOfChildZero(node, b, d);
+		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
 		if (!(o instanceof AnonymousLiteral || o instanceof URILiteral)) {
-			if (o instanceof Literal)
+			if (o instanceof Literal){
 				return true;
+			}
 		}
 		return false;
 	}
@@ -588,16 +588,15 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	
 	@Override
 	public Object evaluate(ASTisBlankFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object parameter = resultOfChildZero(node, b, d);
-		if(parameter instanceof LazyLiteral){
-			parameter=((LazyLiteral)parameter).getLiteral();
+		final Object parameter = Helper.unlazy(resultOfChildZero(node, b, d));
+		if(parameter instanceof AnonymousLiteral) {
+			return true;
 		}
-		if(parameter instanceof AnonymousLiteral) return true;
 		else return false;
 	}
 
 	protected boolean isURI_IRI(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = resultOfChildZero(node, b, d);
+		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
 		if (o instanceof URILiteral) {
 			return true;
 		}
@@ -637,7 +636,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	@Override
 	public Object evaluate(ASTisNumericFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		// TODO check the domain!!!
-		Object o = resultOfChildZero(node, b, d);
+		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
 		if(o instanceof BigInteger || o instanceof Float || o instanceof Double || o instanceof BigDecimal)
 			return true;
 		if(o instanceof TypedLiteral){

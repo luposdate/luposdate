@@ -45,8 +45,11 @@ import org.apache.xerces.impl.xpath.regex.RegularExpression;
 
 public class Helper {
 
-	public static boolean booleanEffectiveValue(final Object o)
+	public static boolean booleanEffectiveValue(Object o)
 			throws TypeErrorException {
+		if(o instanceof LazyLiteral){
+			o = ((LazyLiteral)o).getLiteral();
+		}
 		if (o instanceof Boolean)
 			return (Boolean) o;
 		else if (o instanceof TypedLiteral) {
@@ -111,10 +114,13 @@ public class Helper {
 				.compareTo("<http://www.w3.org/2001/XMLSchema#positiveInteger>") == 0);
 	}
 
-	public static BigInteger getInteger(final Object a)
+	public static BigInteger getInteger(Object a)
 			throws TypeErrorException {
 		if (a instanceof BigInteger)
 			return (BigInteger) a;
+		if(a instanceof LazyLiteral){
+			a = ((LazyLiteral)a).getLiteral();
+		}
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
 			String content = tl.getContent().substring(1,
@@ -128,7 +134,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static Float getFloat(final Object a) throws TypeErrorException {
+	public static Float getFloat(Object a) throws TypeErrorException {
 		if (a instanceof Float)
 			return (Float) a;
 		if (a instanceof BigInteger)
@@ -137,6 +143,9 @@ public class Helper {
 			return ((Double) a).floatValue();
 		if (a instanceof BigDecimal)
 			return ((BigDecimal) a).floatValue();
+		if(a instanceof LazyLiteral){
+			a = ((LazyLiteral)a).getLiteral();
+		}
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
 			String content = tl.getContent().substring(1,
@@ -157,7 +166,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static Double getDouble(final Object a) throws TypeErrorException {
+	public static Double getDouble(Object a) throws TypeErrorException {
 		if (a instanceof Double)
 			return (Double) a;
 		if (a instanceof Float)
@@ -166,6 +175,9 @@ public class Helper {
 			return ((BigInteger) a).doubleValue();
 		if (a instanceof BigDecimal)
 			return ((BigDecimal) a).doubleValue();
+		if(a instanceof LazyLiteral){
+			a = ((LazyLiteral)a).getLiteral();
+		}
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
 			String content = tl.getContent().substring(1,
@@ -187,7 +199,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static BigDecimal getBigDecimal(final Object a) throws TypeErrorException {
+	public static BigDecimal getBigDecimal(Object a) throws TypeErrorException {
 		if (a instanceof BigDecimal)
 			return (BigDecimal) a;
 		if (a instanceof Double)
@@ -196,6 +208,9 @@ public class Helper {
 			return new BigDecimal((Float) a);
 		if (a instanceof BigInteger)
 			return new BigDecimal((BigInteger) a);
+		if(a instanceof LazyLiteral){
+			a = ((LazyLiteral)a).getLiteral();
+		}
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
 			String content = tl.getContent().substring(1,
@@ -556,7 +571,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static Object getType(final Object a) throws TypeErrorException {
+	public static Object getType(Object a) throws TypeErrorException {
 		if (a instanceof BigInteger)
 			return BigInteger.class;
 		if (a instanceof Double)
@@ -565,6 +580,9 @@ public class Helper {
 			return Float.class;
 		if (a instanceof BigDecimal)
 			return BigDecimal.class;
+		if(a instanceof LazyLiteral){
+			a = ((LazyLiteral)a).getLiteral();
+		}
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
 			if (isInteger(tl.getType()))
@@ -884,10 +902,13 @@ public class Helper {
 	}
 
 	@SuppressWarnings("unused")
-	public static Object cast(final String type, final Object content)
+	public static Object cast(final String type, Object content)
 			throws TypeErrorException {
 		// get the real content as string...
 		String realContent;
+		if(content instanceof LazyLiteral){
+			content = ((LazyLiteral)content).getLiteral();
+		}
 		if (content instanceof TypedLiteral)
 			realContent = ((TypedLiteral) content).getContent();
 		else if (content instanceof CodeMapLiteral
@@ -1161,7 +1182,7 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static Object unlazy(final Object o) {
+	public final static Object unlazy(final Object o) {
 		if (o instanceof LazyLiteral)
 			return ((LazyLiteral) o).getLiteral();
 		else
@@ -1193,6 +1214,10 @@ public class Helper {
 	}
 
 	public static String unquote(String quotedString) {
+		if((quotedString.startsWith("\"\"\"") || quotedString.startsWith("\'\'\'")) &&
+				(quotedString.endsWith("\"\"\"") || quotedString.endsWith("\'\'\'"))){
+			return quotedString.substring(3, quotedString.length() - 3);
+		}
 		return quotedString.substring(1, quotedString.length() - 1);
 	}
 
