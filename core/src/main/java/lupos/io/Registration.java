@@ -49,12 +49,24 @@ import lupos.datastructures.dbmergesortedds.MapEntry;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.AnonymousLiteral;
+import lupos.datastructures.items.literal.LanguageTaggedLiteral;
+import lupos.datastructures.items.literal.LanguageTaggedLiteralOriginalLanguage;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.TypedLiteral;
+import lupos.datastructures.items.literal.TypedLiteralOriginalContent;
+import lupos.datastructures.items.literal.URILiteral;
+import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
+import lupos.datastructures.items.literal.codemap.CodeMapURILiteral;
+import lupos.datastructures.items.literal.string.PlainStringLiteral;
+import lupos.datastructures.items.literal.string.StringLiteral;
+import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.smallerinmemorylargerondisk.CollectionImplementation;
+import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
 import lupos.engine.operators.multiinput.join.InnerNodeInPartitionTree;
 import lupos.engine.operators.multiinput.join.LeafNodeInPartitionTree;
 import lupos.engine.operators.multiinput.join.NodeInPartitionTree;
@@ -143,29 +155,28 @@ public class Registration {
 	public static void addDeSerializer(final DeSerializer... deserializer) {
 		int subclasses = 0;
 		for (final DeSerializer d : deserializer) {
-			if (!d.exactClass())
+			if (!d.exactClass()){
 				subclasses++;
+			}
 		}
 		final DeSerializer[] zdeSerializerForId = new DeSerializer[deSerializerForId.length
 		                                                           + deserializer.length];
-		if (zdeSerializerForId.length > 255)
-			System.err
-			.println("Too many registered (De-)Serializer! Only up to 255 are allowed! De-/Serialization will probably not work correctly!");
-		System.arraycopy(deSerializerForId, 0, zdeSerializerForId, 0,
-				deSerializerForId.length);
-		System.arraycopy(deserializer, 0, zdeSerializerForId,
-				deSerializerForId.length, deserializer.length);
+		if (zdeSerializerForId.length > 255){
+			System.err.println("Too many registered (De-)Serializer! Only up to 255 are allowed! De-/Serialization will probably not work correctly!");
+		}
+		System.arraycopy(deSerializerForId, 0, zdeSerializerForId, 0, deSerializerForId.length);
+		System.arraycopy(deserializer, 0, zdeSerializerForId, deSerializerForId.length, deserializer.length);
 
 		final int[] zconsiderSubClasses = new int[considerSubClasses.length
 		                                          + subclasses];
-		System.arraycopy(considerSubClasses, 0, zconsiderSubClasses,
-				subclasses, considerSubClasses.length);
+		System.arraycopy(considerSubClasses, 0, zconsiderSubClasses, subclasses, considerSubClasses.length);
 		int id = deSerializerForId.length;
 		int subclassindex = 0;
 		for (final DeSerializer d : deserializer) {
 			final Container container = new Container(id, d);
-			for (final Class c : d.getRegisteredClasses())
+			for (final Class c : d.getRegisteredClasses()){
 				deSerializerForClass.put(c, container);
+			}
 			if (!d.exactClass()) {
 				zconsiderSubClasses[subclassindex] = id;
 				subclassindex++;
@@ -325,12 +336,28 @@ public class Registration {
 			return o instanceof Literal;
 		}
 
+		@Override
 		public Literal deserialize(final LuposObjectInputStream<Literal> in) throws IOException {
 			return LiteralFactory.readLuposLiteral(in);
 		}
 
+		@SuppressWarnings("unchecked")
+		@Override
 		public Class<Literal>[] getRegisteredClasses() {
-			return new Class[] { Literal.class };
+			return new Class[] { Literal.class, 
+					AnonymousLiteral.class, 
+					LanguageTaggedLiteral.class, 
+					LanguageTaggedLiteralOriginalLanguage.class, 
+					LazyLiteral.class, 
+					LazyLiteralOriginalContent.class,
+					TypedLiteral.class,
+					TypedLiteralOriginalContent.class,
+					URILiteral.class,
+					CodeMapLiteral.class,
+					CodeMapURILiteral.class,
+					PlainStringLiteral.class,
+					StringLiteral.class,
+					StringURILiteral.class};
 		}
 
 		public void serialize(final Literal t, final LuposObjectOutputStream out) throws IOException {
@@ -708,6 +735,47 @@ public class Registration {
 		}
 
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public static class SETIMPLEMENTATION extends DeSerializerConsideringSubClasses<SetImplementation> {
+		public boolean instanceofTest(final Object o) {
+			return o instanceof DBMergeSortedSet;
+		}
+
+		public SetImplementation deserialize(final LuposObjectInputStream<SetImplementation> in) throws IOException, ClassNotFoundException, URISyntaxException {
+			final int size = in.readLuposInt();
+			if (size < 0){
+				return null;
+			}			
+			SetImplementation set = new SetImplementation();
+			if(size==0){
+				return set;
+			}			
+			final Class type = Registration.deserializeId(in)[0];
+			for (int i = 0; i < size; i++) {
+				try {
+					set.add(Registration.deserializeWithoutId(type, in));
+				} catch (final URISyntaxException e) {
+					throw new IOException(e.getMessage());
+				}
+			}
+			return set;
+		}
+
+		public Class<SetImplementation>[] getRegisteredClasses() {
+			return new Class[] { SetImplementation.class };
+		}
+
+		public void serialize(final SetImplementation t, final LuposObjectOutputStream out) throws IOException {
+			out.writeLuposInt(t.size());
+			if (t.size() > 0){
+				serializeId(t.iterator().next(), out);
+			}
+			for (final Object o : t) {
+				serializeWithoutId(o, out);
+			}
+		}
+	}
 
 	public static class SORTEDMAP extends DeSerializerConsideringSubClasses<SortedMap> {
 		public boolean instanceofTest(final Object o) {
@@ -854,7 +922,8 @@ public class Registration {
 				new SUPERLITERAL(), new ENTRY(), new STRING(), new MAPENTRY(),
 				new BINDINGS(), new TRIPLEKEY(), new DISKCOLLECTION(),
 				new COLLECTION(), new INT(), new LONG(), new BOOLEAN(),
-				new MEMORYSORTEDSET(), new DBSORTEDSET(), new SORTEDMAP(),
+				new MEMORYSORTEDSET(), new DBSORTEDSET(), new SETIMPLEMENTATION(), 
+				new SORTEDMAP(),
 				new NODEINPARTITIONTREE(), new VARBUCKET(),
 				new VARBUCKETARRAY());
 	}

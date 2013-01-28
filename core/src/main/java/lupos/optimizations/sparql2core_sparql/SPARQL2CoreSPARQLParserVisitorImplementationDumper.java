@@ -35,6 +35,7 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.sparql1_1.*;
+import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
 
 public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		SPARQL2CoreSPARQL_rules implements SPARQL1_1ParserVisitorStringGenerator, SPARQL1_1ParserPathVisitorStringGenerator {
@@ -945,7 +946,11 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	
 	@Override
 	public String visit(ASTArbitraryOccurences node, String subject, String object) {
-		return "{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + subject + " (" + visitChild(node,0) + ")+ " + object +"}";
+		if(SPARQLCoreParserVisitorImplementation.USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
+			return subject + " (" +node.jjtGetChild(0).accept(this) + ")* " +object +".\n"; 			
+		} else {
+			return "{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + subject + " (" + visitChild(node,0) + ")+ " + object +"}";
+		}
 	}
 
 	/**
@@ -957,7 +962,11 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 */
 	@Override
 	public String visit(ASTOptionalOccurence node, String subject, String object) {
-		return "{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + node.jjtGetChild(0).accept(this, subject, object) + "}";
+		if(SPARQLCoreParserVisitorImplementation.USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
+			return subject + " (" +node.jjtGetChild(0).accept(this) + ")? " +object +".\n"; 			
+		} else {
+			return "{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + node.jjtGetChild(0).accept(this, subject, object) + "}";
+		}		
 	}
 
 	@Override

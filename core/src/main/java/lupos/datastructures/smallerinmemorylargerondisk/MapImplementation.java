@@ -36,33 +36,57 @@ import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 
 public class MapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> implements Map<K, V>{
 	
-	private final Map<K,V> memoryMap=new HashMap<K,V>();
-	private Map<K,V> diskMap=null;
+	protected final Map<K,V> memoryMap;
+	protected Map<K,V> diskMap=null;
 	
 	protected final static int MAXMEMORYMAPENTRIES = 3000000;
+	
+	public MapImplementation(){
+		this(new HashMap<K,V>());
+	}
+	
+	public MapImplementation(Map<K,V> memoryMap){
+		this.memoryMap = memoryMap;
+	}
 
+	@Override
 	public void clear() {
-		memoryMap.clear();
-		if(diskMap!=null) diskMap.clear();
+		this.memoryMap.clear();
+		if(this.diskMap!=null){
+			this.diskMap.clear();
+		}
 	}
 
+	@Override
 	public boolean containsKey(final Object arg0) {
-		if(memoryMap.containsKey(arg0)) return true;
-		if(diskMap!=null) return diskMap.containsKey(arg0);
+		if(this.memoryMap.containsKey(arg0)) {
+			return true;
+		}
+		if(this.diskMap!=null) {
+			return this.diskMap.containsKey(arg0);
+		}
 		return false;
 	}
 
+	@Override
 	public boolean containsValue(final Object arg0) {
-		if(memoryMap.containsValue(arg0)) return true;
-		if(diskMap!=null) return diskMap.containsValue(arg0);
+		if(this.memoryMap.containsValue(arg0)) {
+			return true;
+		}
+		if(this.diskMap!=null) {
+			return this.diskMap.containsValue(arg0);
+		}
 		return false;
 	}
 
+	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new Set<java.util.Map.Entry<K, V>>(){
+			@Override
 			public boolean add(final java.util.Map.Entry<K, V> o) {
 				return (MapImplementation.this.put(o.getKey(),o.getValue())!=o.getValue());
 			}
+			@Override
 			public boolean addAll(final Collection<? extends java.util.Map.Entry<K, V>> c) {
 				boolean flag=false;
 				for(final java.util.Map.Entry<K, V> me:c){
@@ -70,12 +94,15 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return flag;
 			}
+			@Override
 			public void clear() {
 				MapImplementation.this.clear();	
 			}
+			@Override
 			public boolean contains(final Object o) {
 				if(o instanceof java.util.Map.Entry){
 					try{
+						@SuppressWarnings("unchecked")
 						final java.util.Map.Entry<K, V> me=(java.util.Map.Entry<K, V>) o;
 						final V v=MapImplementation.this.get(me.getKey());
 						if(v.equals(me.getValue())) return true;
@@ -86,37 +113,53 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return false;
 			}
+			@Override
 			public boolean containsAll(final Collection<?> c) {
 				for(final Object o:c){
 					if(!contains(o)) return false;
 				}
 				return true;
 			}
+			@Override
 			public boolean isEmpty() {
 				return MapImplementation.this.isEmpty();	
 			}
+			@Override
 			public Iterator<java.util.Map.Entry<K, V>> iterator() {
 				return new Iterator<java.util.Map.Entry<K, V>>(){			
-					Iterator<java.util.Map.Entry<K, V>> memoryIterator=memoryMap.entrySet().iterator();
-					Iterator<java.util.Map.Entry<K, V>> diskIterator= (diskMap==null)? null:diskMap.entrySet().iterator();
+					Iterator<java.util.Map.Entry<K, V>> memoryIterator=MapImplementation.this.memoryMap.entrySet().iterator();
+					Iterator<java.util.Map.Entry<K, V>> diskIterator= (MapImplementation.this.diskMap==null)? null:MapImplementation.this.diskMap.entrySet().iterator();
+					@Override
 					public boolean hasNext() {
-						if(memoryIterator.hasNext()) return true;
-						if(diskIterator!=null) return diskIterator.hasNext();
+						if(this.memoryIterator.hasNext()) {
+							return true;
+						}
+						if(this.diskIterator!=null) {
+							return this.diskIterator.hasNext();
+						}
 						return false;
 					}
+					@Override
 					public java.util.Map.Entry<K, V> next() {
-						if(memoryIterator.hasNext()) return memoryIterator.next();
-						if(diskIterator!=null) return diskIterator.next();
+						if(this.memoryIterator.hasNext()) {
+							return this.memoryIterator.next();
+						}
+						if(this.diskIterator!=null) {
+							return this.diskIterator.next();
+						}
 						return null;
 					}
+					@Override
 					public void remove() {
 						throw(new UnsupportedOperationException("This iterator does not support remove."));
 					}			
 				};			
 			}
+			@Override
 			public boolean remove(final Object o) {
 				if(o instanceof java.util.Map.Entry){
 					try{
+						@SuppressWarnings("unchecked")
 						final java.util.Map.Entry<K, V> me=(java.util.Map.Entry<K, V>) o;
 						final V v=MapImplementation.this.get(me.getKey());
 						if(v.equals(me.getValue())) {
@@ -130,6 +173,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return false;
 			}
+			@Override
 			public boolean removeAll(final Collection<?> c) {
 				boolean flag=false;
 				for(final Object o:c){
@@ -137,6 +181,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return flag;
 			}
+			@Override
 			public boolean retainAll(final Collection<?> c) {
 				boolean flag=false;
 				for(final java.util.Map.Entry<K, V> me:this){
@@ -147,71 +192,97 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return flag;
 			}
+			@Override
 			public int size() {
 				return MapImplementation.this.size();
 			}
+			@Override
 			public Object[] toArray() {
 				throw(new UnsupportedOperationException("This set does not support toArray."));
 			}
+			@Override
 			public <T> T[] toArray(final T[] a) {
 				throw(new UnsupportedOperationException("This set does not support toArray."));
 			}
 		};
 	}
 
+	@Override
 	public V get(final Object arg0) {
-		final V v=memoryMap.get(arg0);
+		final V v=this.memoryMap.get(arg0);
 		if(v!=null) return v;
-		if(diskMap!=null) return diskMap.get(arg0); 
+		if(this.diskMap!=null) {
+			return this.diskMap.get(arg0); 
+		}
 		return null;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		if(memoryMap.size()>0) return false;
-		if(diskMap!=null && !diskMap.isEmpty()) return false;
+		if(this.memoryMap.size()>0) {
+			return false;
+		}
+		if(this.diskMap!=null && !this.diskMap.isEmpty()) {
+			return false;
+		}
 		return true;
 	}
 
+	@Override
 	public Set<K> keySet() {
 		return new Set<K>(){
+			@Override
 			public boolean add(final K arg0) {
 				throw(new UnsupportedOperationException("This set does not support add."));
 			}
+			@Override
 			public boolean addAll(final Collection<? extends K> arg0) {
 				throw(new UnsupportedOperationException("This set does not support addAll."));
 			}
+			@Override
 			public void clear() {
 				MapImplementation.this.clear();	
 			}
+			@Override
 			public boolean contains(final Object arg0) {
 				return MapImplementation.this.containsKey(arg0);	
 			}
+			@Override
 			public boolean containsAll(final Collection<?> arg0) {
 				for(final Object o:arg0){
-					if(!contains(o)) return false;
+					if(!contains(o)) {
+						return false;
+					}
 				}
 				return true;
 			}
+			@Override
 			public boolean isEmpty() {
 				return MapImplementation.this.isEmpty();	
 			}
+			@Override
 			public Iterator<K> iterator() {
 				return new Iterator<K>(){
 					final Iterator<java.util.Map.Entry<K, V>> entryIt=MapImplementation.this.entrySet().iterator();
+					@Override
 					public boolean hasNext() {
-						return entryIt.hasNext();
+						return this.entryIt.hasNext();
 					}
+					@Override
 					public K next() {
-						return entryIt.next().getKey();
+						return this.entryIt.next().getKey();
 					}
+					@Override
 					public void remove() {
-						entryIt.remove();
+						this.entryIt.remove();
 					}					
 				};
 			}
+			@Override
 			public boolean remove(final Object arg0) {
 				return (MapImplementation.this.remove(arg0)!=null);	
 			}
+			@Override
 			public boolean removeAll(final Collection<?> arg0) {
 				boolean flag=false;
 				for(final Object o:arg0){
@@ -219,6 +290,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return flag;
 			}
+			@Override
 			public boolean retainAll(final Collection<?> arg0) {
 				boolean flag=false;
 				for(final K k:this){
@@ -229,108 +301,152 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				}
 				return flag;
 			}
+			@Override
 			public int size() {
 				return MapImplementation.this.size();
 			}
+			@Override
 			public Object[] toArray() {
 				throw(new UnsupportedOperationException("This set does not support toArray."));
 			}
+			@Override
 			public <T> T[] toArray(final T[] arg0) {
 				throw(new UnsupportedOperationException("This set does not support toArray."));
 			}			
 		};
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
 	public V put(final K arg0, final V arg1) {
-		if(memoryMap.size()<MAXMEMORYMAPENTRIES) return memoryMap.put(arg0,arg1);
-		if(memoryMap.containsKey(arg0)) return memoryMap.put(arg0,arg1);
-		if (diskMap == null){
-			Entry<K, V> entry=memoryMap.entrySet().iterator().next();
+		if(this.memoryMap.size()<MAXMEMORYMAPENTRIES) {
+			return this.memoryMap.put(arg0,arg1);
+		}
+		if(this.memoryMap.containsKey(arg0)) {
+			return this.memoryMap.put(arg0,arg1);
+		}
+		if (this.diskMap == null){
+			Entry<K, V> entry=this.memoryMap.entrySet().iterator().next();
 			try {
-				diskMap = new DBBPTree<K, V>(100000, 100000, new StandardNodeDeSerializer<K, V>((Class<? super K>)entry.getKey().getClass(),(Class<? super V>) entry.getValue().getClass()));
+				this.diskMap = new DBBPTree<K, V>(100000, 100000, new StandardNodeDeSerializer<K, V>((Class<? super K>)entry.getKey().getClass(),(Class<? super V>) entry.getValue().getClass()));
 			} catch (IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
 		}
-		return diskMap.put(arg0, arg1);
+		return this.diskMap.put(arg0, arg1);
 	}
 
+	@Override
 	public void putAll(final java.util.Map<? extends K, ? extends V> arg0) {
 		for(final java.util.Map.Entry<? extends K, ? extends V> me:arg0.entrySet()){
 			put(me.getKey(),me.getValue());
 		}
 	}
 
+	@Override
 	public V remove(final Object arg0) {
-		V v=memoryMap.remove(arg0);
+		V v=this.memoryMap.remove(arg0);
 		if(v==null){
-			if(diskMap!=null) v=diskMap.remove(arg0);
+			if(this.diskMap!=null) {
+				v=this.diskMap.remove(arg0);
+			}
 		}
 		return v;
 	}
 
+	@Override
 	public int size() {
-		int size=memoryMap.size();
-		if(diskMap!=null) size+=diskMap.size();
+		int size=this.memoryMap.size();
+		if(this.diskMap!=null) {
+			size+=this.diskMap.size();
+		}
 		return size;
 	}
 
+	@Override
 	public Collection<V> values() {
 		return new Collection<V>(){
+			@Override
 			public boolean add(final V o) {
 				throw(new UnsupportedOperationException("This collection does not support add."));
 			}
+			@Override
 			public boolean addAll(final Collection<? extends V> c) {
 				throw(new UnsupportedOperationException("This collection does not support add."));
 			}
+			@Override
 			public void clear() {
 				throw(new UnsupportedOperationException("This collection does not support clear."));
 			}
+			@Override
 			public boolean contains(final Object o) {
 				return MapImplementation.this.containsValue(o);
 			}
+			@Override
 			public boolean containsAll(final Collection<?> c) {
 				for(final Object o:c){
-					if(!contains(o)) return false;
+					if(!contains(o)) {
+						return false;
+					}
 				}
 				return true;
 			}
+			@Override
 			public boolean isEmpty() {
 				return MapImplementation.this.isEmpty();
 			}
+			@Override
 			public Iterator<V> iterator() {
 				return new Iterator<V>(){
 					final Iterator<java.util.Map.Entry<K, V>> entryIt=MapImplementation.this.entrySet().iterator();
+					@Override
 					public boolean hasNext() {
-						return entryIt.hasNext();
+						return this.entryIt.hasNext();
 					}
+					@Override
 					public V next() {
-						return entryIt.next().getValue();
+						return this.entryIt.next().getValue();
 					}
+					@Override
 					public void remove() {
-						entryIt.remove();
+						this.entryIt.remove();
 					}					
 				};
 			}
+			@Override
 			public boolean remove(final Object o) {
 				throw(new UnsupportedOperationException("This collection does not support remove."));
 			}
+			@Override
 			public boolean removeAll(final Collection<?> c) {
 				throw(new UnsupportedOperationException("This collection does not support removeAll."));
 			}
+			@Override
 			public boolean retainAll(final Collection<?> c) {
 				throw(new UnsupportedOperationException("This collection does not support retainAll."));
 			}
+			@Override
 			public int size() {
 				return MapImplementation.this.size();
 			}
+			@Override
 			public Object[] toArray() {
 				throw(new UnsupportedOperationException("This collection does not support toArray."));
 			}
+			@Override
 			public <T> T[] toArray(final T[] a) {
 				throw(new UnsupportedOperationException("This collection does not support toArray."));
 			}
 		};
+	}
+	
+	@Override
+	public String toString(){
+		String result = "Map in memory: " + this.memoryMap.toString();
+		if(this.diskMap!=null){
+			result += "Map on disk: " + this.diskMap.toString();
+		}
+		return result;
 	}
 }

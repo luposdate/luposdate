@@ -25,9 +25,12 @@ package lupos.datastructures.patriciatrie.diskseq;
 
 import java.util.List;
 
+import lupos.datastructures.patriciatrie.Trie;
 import lupos.datastructures.patriciatrie.TrieBag;
+import lupos.datastructures.patriciatrie.TrieWithValue;
 import lupos.datastructures.patriciatrie.diskseq.DBSeqNode;
 import lupos.datastructures.patriciatrie.diskseq.nodemanager.SeqNodeManager;
+import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.node.Node;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
@@ -71,7 +74,18 @@ public class DBSeqTrieBag extends TrieBag {
 		this.fileName = fileName;
 		this.nodeManager = new SeqNodeManager(fileName);
 	}
-
+	
+	@Override
+	public void copy(final TrieWithValue<Integer> trie) throws TrieNotCopyableException {
+		if (!trie.hasCompleteMetadata()){
+			throw new TrieNotCopyableException();
+		}
+		
+		this.nodeManager.clear();
+		this.nodeManager.writeNextNodeRecursive(DBSeqNodeWithValue.deSerializer, trie.getRootNode());
+		
+		this.prepareForReading();
+	}
 	
 	/**
 	 * Resets the InputStream, that is responsible for the retrieval of the nodes from the underlying filesystem.

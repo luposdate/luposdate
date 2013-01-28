@@ -24,6 +24,7 @@
 package lupos.sparql1_1.operatorgraph;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -64,6 +65,8 @@ import lupos.engine.operators.singleinput.modifiers.Limit;
 import lupos.engine.operators.singleinput.modifiers.Offset;
 import lupos.engine.operators.singleinput.modifiers.distinct.Distinct;
 import lupos.engine.operators.singleinput.modifiers.distinct.InMemoryDistinct;
+import lupos.engine.operators.singleinput.path.Closure;
+import lupos.engine.operators.singleinput.path.PathLengthZero;
 import lupos.engine.operators.singleinput.sort.Sort;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
@@ -85,6 +88,10 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	public static Class<? extends ServiceGenerator> serviceGeneratorClass = ServiceGenerator.class;
 	protected ServiceGenerator serviceGenerator; 
 	
+	/**
+	 * specifies whether or not property paths (...)* and (...)+ are expressed by using the Closure operator, (...)? and (...)* by using the PathLengthZero operator! 
+	 */
+	public static boolean USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS = true;
 		
 	protected Variable getVariable(String subject, String object, String variable){
 		while(subject.startsWith("?") || subject.startsWith("$"))
@@ -333,153 +340,241 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 	
-	protected void createMultipleOccurence(int i, LinkedList<ASTTripleSet> multipleOccurencesToJoin, OperatorConnection connection, Item graphConstraint) {
-		try{
-			Variable subject;
-			Variable object;
-			Item realSubject = null;
-			Item realObject = null;
-			boolean subjectIsALiteral = false;
-			boolean objectIsALiteral = false;
-			Item itm = getItem(multipleOccurencesToJoin.get(i).jjtGetChild(0));
-			if (!itm.isVariable()){
-				subject = getVariable(getItem(multipleOccurencesToJoin.get(i).jjtGetChild(0)).toString(), getItem(multipleOccurencesToJoin.get(i).jjtGetChild(2)).toString(), "interimSubject");
-				realSubject = itm;
-				subjectIsALiteral = true;
-			} else {
-				subject = (Variable) itm;
+	protected void createMultipleOccurence(ASTTripleSet tripleSet, OperatorConnection connection, Item graphConstraint) {
+		if(USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
+			try{
+				Variable subject;
+				Variable object;
+				Item realSubject = null;
+				Item realObject = null;
+				boolean subjectIsALiteral = false;
+				boolean objectIsALiteral = false;
+				Item itm = getItem(tripleSet.jjtGetChild(0));
+				if (!itm.isVariable()){
+					subject = getVariable(getItem(tripleSet.jjtGetChild(0)).toString(), getItem(tripleSet.jjtGetChild(2)).toString(), "interimSubject");
+					realSubject = itm;
+					subjectIsALiteral = true;
+				} else {
+					subject = (Variable) itm;
+				}
+				Node subjectNode = tripleSet.jjtGetChild(0);
+				
+				itm = getItem(tripleSet.jjtGetChild(2));
+				if (!itm.isVariable()){
+					object = getVariable(getItem(tripleSet.jjtGetChild(0)).toString(), getItem(tripleSet.jjtGetChild(2)).toString(), "interimObject"); 
+					realObject = itm;
+					objectIsALiteral = true;
+				} else {
+					object = (Variable) itm;
+				}
+				Node objectNode = tripleSet.jjtGetChild(2);
+				
+				
+				Node predicateNode = tripleSet.jjtGetChild(1);
+				BasicOperator startingOperator = predicateNode.accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+
+				if(!subjectIsALiteral && !objectIsALiteral){
+					startingOperator.addSucceedingOperator(connection.getOperatorIDTuple());
+				}
+				else 
+					if(subjectIsALiteral && !objectIsALiteral){
+						Filter filter = new Filter("(" + subject + " = " + realSubject +")");
+						Projection projection = new Projection();
+						projection.addProjectionElement(object);
+						if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+							projection.addProjectionElement((Variable)graphConstraint);
+		
+						filter.addSucceedingOperator(new OperatorIDTuple(projection,0));
+						projection.addSucceedingOperator(connection.getOperatorIDTuple());
+						startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
+						
+					}
+					else
+						if(!subjectIsALiteral && objectIsALiteral){
+							Filter filter = new Filter("(" + object + " = " + realObject + ")");
+							Projection projection = new Projection();
+							projection.addProjectionElement(subject);
+							if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+								projection.addProjectionElement((Variable)graphConstraint);
+			
+							filter.addSucceedingOperator(new OperatorIDTuple(projection,0));
+							projection.addSucceedingOperator(connection.getOperatorIDTuple());
+							startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
+			
+						}
+						else
+							if(subjectIsALiteral && objectIsALiteral){
+								Filter firstFilter = new Filter("(" + object + " = " + realObject + ")");
+								Filter secondFilter = new Filter("(" + subject + " = " + realSubject + ")");
+								Projection firstProjection = new Projection();
+								firstProjection.addProjectionElement(subject);
+								if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+									firstProjection.addProjectionElement((Variable)graphConstraint);
+								Projection secondProjection = new Projection();
+								secondProjection.addProjectionElement(object);
+								if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+									secondProjection.addProjectionElement((Variable)graphConstraint);
+								
+								firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
+								firstProjection.addSucceedingOperator(new OperatorIDTuple(secondFilter, 0));
+								secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
+								secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+								startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
+							}
 			}
-			Node subjectNode = multipleOccurencesToJoin.get(i).jjtGetChild(0);
-			itm = getItem(multipleOccurencesToJoin.get(i).jjtGetChild(2));
-			if (!itm.isVariable()){
-				object = getVariable(getItem(multipleOccurencesToJoin.get(i).jjtGetChild(0)).toString(), getItem(multipleOccurencesToJoin.get(i).jjtGetChild(2)).toString(), "interimObject"); 
-				realObject = itm;
-				objectIsALiteral = true;
-			} else {
-				object = (Variable) itm;
+			catch( Exception e){
+				e.printStackTrace();
+				System.out.println(e);
 			}
-			Node objectNode = multipleOccurencesToJoin.get(i).jjtGetChild(2);
-			ReplaceVar replaceVar = new ReplaceVar();
-			replaceVar.addSubstitution(object, subject);
-			Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
-			replaceVar.addSubstitution(variable, object);
-			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-				replaceVar.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
-			ReplaceVar replaceVari = new ReplaceVar();
-			replaceVari.addSubstitution(subject, subject);
-			replaceVari.addSubstitution(object, variable);
-			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-				replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
-
-			BasicOperator startingOperator = multipleOccurencesToJoin.get(i).jjtGetChild(1).jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
-
-			InMemoryDistinct memoryDistinct = new InMemoryDistinct();
-			Filter filter = new Filter("(" + subject + " != " + object + ")");
-
-			startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
-			startingOperator.addSucceedingOperator(connection.getOperatorIDTuple());
-			final Join intermediateJoinOperator = new Join();
-			replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
-			memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
-			filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
-			filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-			intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
-			replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-			replaceVari.addSucceedingOperator(connection.getOperatorIDTuple());
-
-			if(subjectIsALiteral && !objectIsALiteral){
-				Filter firstFilter = new Filter("(" + subject + " = " + realSubject +")");
-				Filter secondFilter = new Filter("(" + subject + " = " + realSubject +")");
-				Projection firstProjection = new Projection();
-				firstProjection.addProjectionElement(object);
+		} else {
+			// alternative way to evaluate (...)?, (...)* and (...)+ without using the Closure and PathLengthZero operators! 
+			try{
+				Variable subject;
+				Variable object;
+				Item realSubject = null;
+				Item realObject = null;
+				boolean subjectIsALiteral = false;
+				boolean objectIsALiteral = false;
+				Item itm = getItem(tripleSet.jjtGetChild(0));
+				if (!itm.isVariable()){
+					subject = getVariable(getItem(tripleSet.jjtGetChild(0)).toString(), getItem(tripleSet.jjtGetChild(2)).toString(), "interimSubject");
+					realSubject = itm;
+					subjectIsALiteral = true;
+				} else {
+					subject = (Variable) itm;
+				}
+				Node subjectNode = tripleSet.jjtGetChild(0);
+				itm = getItem(tripleSet.jjtGetChild(2));
+				if (!itm.isVariable()){
+					object = getVariable(getItem(tripleSet.jjtGetChild(0)).toString(), getItem(tripleSet.jjtGetChild(2)).toString(), "interimObject"); 
+					realObject = itm;
+					objectIsALiteral = true;
+				} else {
+					object = (Variable) itm;
+				}
+				Node objectNode = tripleSet.jjtGetChild(2);
+				ReplaceVar replaceVar = new ReplaceVar();
+				replaceVar.addSubstitution(object, subject);
+				Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
+				replaceVar.addSubstitution(variable, object);
 				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					firstProjection.addProjectionElement((Variable)graphConstraint);
-				Projection secondProjection = new Projection();
-				secondProjection.addProjectionElement(object);
+					replaceVar.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+				ReplaceVar replaceVari = new ReplaceVar();
+				replaceVari.addSubstitution(subject, subject);
+				replaceVari.addSubstitution(object, variable);
 				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					secondProjection.addProjectionElement((Variable)graphConstraint);
-
-				firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
-				secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
-
-				firstProjection.addSucceedingOperator(connection.getOperatorIDTuple());
-				secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
-
-				replaceVari.addSucceedingOperator(new OperatorIDTuple(secondFilter,0));
-				replaceVari.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
-
-				startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
-				startingOperator.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
-
+					replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+	
+				BasicOperator startingOperator =tripleSet.jjtGetChild(1).jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+	
+				InMemoryDistinct memoryDistinct = new InMemoryDistinct();
+				Filter filter = new Filter("(" + subject + " != " + object + ")");
+	
+				startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
+				startingOperator.addSucceedingOperator(connection.getOperatorIDTuple());
+				final Join intermediateJoinOperator = new Join();
+				replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
+				memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
+				filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
+				filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
+				intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
+				replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
+				replaceVari.addSucceedingOperator(connection.getOperatorIDTuple());
+	
+				if(subjectIsALiteral && !objectIsALiteral){
+					Filter firstFilter = new Filter("(" + subject + " = " + realSubject +")");
+					Filter secondFilter = new Filter("(" + subject + " = " + realSubject +")");
+					Projection firstProjection = new Projection();
+					firstProjection.addProjectionElement(object);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						firstProjection.addProjectionElement((Variable)graphConstraint);
+					Projection secondProjection = new Projection();
+					secondProjection.addProjectionElement(object);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						secondProjection.addProjectionElement((Variable)graphConstraint);
+	
+					firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
+					secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
+	
+					firstProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+					secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+	
+					replaceVari.addSucceedingOperator(new OperatorIDTuple(secondFilter,0));
+					replaceVari.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
+	
+					startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
+					startingOperator.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
+	
+				}
+	
+				if(!subjectIsALiteral && objectIsALiteral){
+					Filter firstFilter = new Filter("(" + object + " = " + realObject + ")");
+					Filter secondFilter = new Filter("(" + object + " = " + realObject + ")");
+					Projection firstProjection = new Projection();
+					firstProjection.addProjectionElement(subject);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						firstProjection.addProjectionElement((Variable)graphConstraint);
+					Projection secondProjection = new Projection();
+					secondProjection.addProjectionElement(subject);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						secondProjection.addProjectionElement((Variable)graphConstraint);
+	
+					firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
+					secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
+	
+					firstProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+					secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+	
+					replaceVari.addSucceedingOperator(new OperatorIDTuple(secondFilter,0));
+					replaceVari.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
+	
+					startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
+					startingOperator.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
+	
+				}
+				if(subjectIsALiteral && objectIsALiteral){
+					Filter firstFilter = new Filter("(" + object + " = " + realObject + ")");
+					Filter secondFilter = new Filter("(" + subject + " = " + realSubject + ")");
+					Filter thirdFilter = new Filter("(" + object + " = " + realObject + ")");
+					Filter fourthFilter = new Filter("(" + subject + " = " + realSubject + ")");
+					Projection firstProjection = new Projection();
+					firstProjection.addProjectionElement(subject);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						firstProjection.addProjectionElement((Variable)graphConstraint);
+					Projection secondProjection = new Projection();
+					secondProjection.addProjectionElement(object);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						secondProjection.addProjectionElement((Variable)graphConstraint);
+					Projection thirdProjection = new Projection();
+					thirdProjection.addProjectionElement(subject);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						thirdProjection.addProjectionElement((Variable)graphConstraint);
+					Projection fourthProjection = new Projection();
+					fourthProjection.addProjectionElement(object);
+					if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+						fourthProjection.addProjectionElement((Variable)graphConstraint);
+	
+					firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
+					secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
+					thirdFilter.addSucceedingOperator(new OperatorIDTuple(thirdProjection,0));
+					fourthFilter.addSucceedingOperator(new OperatorIDTuple(fourthProjection,0));
+	
+					firstProjection.addSucceedingOperator(new OperatorIDTuple(secondFilter, 0));
+					secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+					thirdProjection.addSucceedingOperator(new OperatorIDTuple(fourthFilter, 0));
+					fourthProjection.addSucceedingOperator(connection.getOperatorIDTuple());
+	
+					replaceVari.addSucceedingOperator(new OperatorIDTuple(thirdFilter,0));
+					replaceVari.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
+	
+					startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
+					startingOperator.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());			
+				}
 			}
-
-			if(!subjectIsALiteral && objectIsALiteral){
-				Filter firstFilter = new Filter("(" + object + " = " + realObject + ")");
-				Filter secondFilter = new Filter("(" + object + " = " + realObject + ")");
-				Projection firstProjection = new Projection();
-				firstProjection.addProjectionElement(subject);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					firstProjection.addProjectionElement((Variable)graphConstraint);
-				Projection secondProjection = new Projection();
-				secondProjection.addProjectionElement(subject);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					secondProjection.addProjectionElement((Variable)graphConstraint);
-
-				firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
-				secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
-
-				firstProjection.addSucceedingOperator(connection.getOperatorIDTuple());
-				secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
-
-				replaceVari.addSucceedingOperator(new OperatorIDTuple(secondFilter,0));
-				replaceVari.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
-
-				startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
-				startingOperator.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
-
+			catch( Exception e){
+				e.printStackTrace();
+				System.out.println(e);
 			}
-			if(subjectIsALiteral && objectIsALiteral){
-				Filter firstFilter = new Filter("(" + object + " = " + realObject + ")");
-				Filter secondFilter = new Filter("(" + subject + " = " + realSubject + ")");
-				Filter thirdFilter = new Filter("(" + object + " = " + realObject + ")");
-				Filter fourthFilter = new Filter("(" + subject + " = " + realSubject + ")");
-				Projection firstProjection = new Projection();
-				firstProjection.addProjectionElement(subject);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					firstProjection.addProjectionElement((Variable)graphConstraint);
-				Projection secondProjection = new Projection();
-				secondProjection.addProjectionElement(object);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					secondProjection.addProjectionElement((Variable)graphConstraint);
-				Projection thirdProjection = new Projection();
-				thirdProjection.addProjectionElement(subject);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					thirdProjection.addProjectionElement((Variable)graphConstraint);
-				Projection fourthProjection = new Projection();
-				fourthProjection.addProjectionElement(object);
-				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-					fourthProjection.addProjectionElement((Variable)graphConstraint);
-
-				firstFilter.addSucceedingOperator(new OperatorIDTuple(firstProjection,0));
-				secondFilter.addSucceedingOperator(new OperatorIDTuple(secondProjection,0));
-				thirdFilter.addSucceedingOperator(new OperatorIDTuple(thirdProjection,0));
-				fourthFilter.addSucceedingOperator(new OperatorIDTuple(fourthProjection,0));
-
-				firstProjection.addSucceedingOperator(new OperatorIDTuple(secondFilter, 0));
-				secondProjection.addSucceedingOperator(connection.getOperatorIDTuple());
-				thirdProjection.addSucceedingOperator(new OperatorIDTuple(fourthFilter, 0));
-				fourthProjection.addSucceedingOperator(connection.getOperatorIDTuple());
-
-				replaceVari.addSucceedingOperator(new OperatorIDTuple(thirdFilter,0));
-				replaceVari.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());
-
-				startingOperator.addSucceedingOperator(new OperatorIDTuple(firstFilter,0));
-				startingOperator.removeSucceedingOperator(connection.getOperatorIDTuple().getOperator());			
-			}
-		}
-		catch( Exception e){
-			e.printStackTrace();
-			System.out.println(e);
 		}
 	}
 	
@@ -492,76 +587,154 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	public BasicOperator visit(ASTOptionalOccurence node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
-		BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
-		Union union = new Union();
+		if(USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
+			Node predicateNode = node.jjtGetChild(0);
+			while (predicateNode instanceof ASTOptionalOccurence){
+				predicateNode = predicateNode.jjtGetChild(0);
+			}
+			BasicOperator startingOperator = predicateNode.accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+
+			Item[] items = {subject,getVariable(subject.toString(),object.toString(),"predicate"),object};
+			TriplePattern tp = new TriplePattern(items);
+			LinkedList<TriplePattern> temp = new LinkedList<TriplePattern>();
+			temp.add(tp);
+			BasicOperator memoryScan = this.indexScanCreator.createIndexScanAndConnectWithRoot(null, temp, graphConstraint);
+				
+			Set<Literal> allowedObjects = null;
+			Set<Literal> allowedSubjects = null;
+			
+			if(node.jjtGetParent() instanceof ASTTripleSet){
+				// If there is a fixed subject or object, then we should consider it during evaluation!
+				allowedSubjects = getSetOfLiterals(subjectNode);
+				allowedObjects = getSetOfLiterals(objectNode);
+			}			
+
+			PathLengthZero zeroOperator = new PathLengthZero(subject, object, allowedSubjects, allowedObjects);
+			memoryScan.addSucceedingOperator(new OperatorIDTuple(zeroOperator,0));
+			
+			Union union = new Union();
+			zeroOperator.addSucceedingOperator(new OperatorIDTuple(union,0));
+			startingOperator.addSucceedingOperator(new OperatorIDTuple(union,1));
+
+			InMemoryDistinct distinct = new InMemoryDistinct();
+			union.addSucceedingOperator(new OperatorIDTuple(distinct,0));
+			
+			return distinct;			
+		} else {
+			// alternative way to evaluate (...)? without using the PathLengthZero operator! 
 		
-		BasicOperator leftSide = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
-		leftSide.addSucceedingOperator(new OperatorIDTuple(union,0));
-		
-		Projection projection = new Projection();
-		projection.addProjectionElement(subject);
-		projection.addProjectionElement(object);
-		if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-			projection.addProjectionElement((Variable)graphConstraint);
-		
-		startingOperator.addSucceedingOperator(new OperatorIDTuple(union,1));
-		
-		union.addSucceedingOperator(new OperatorIDTuple(projection,0));
-		return projection;
+			BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+			Union union = new Union();
+			
+			BasicOperator leftSide = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
+			leftSide.addSucceedingOperator(new OperatorIDTuple(union,0));
+			
+			Projection projection = new Projection();
+			projection.addProjectionElement(subject);
+			projection.addProjectionElement(object);
+			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+				projection.addProjectionElement((Variable)graphConstraint);
+			
+			startingOperator.addSucceedingOperator(new OperatorIDTuple(union,1));
+			
+			union.addSucceedingOperator(new OperatorIDTuple(projection,0));
+			return projection;
+		}
 	}
 
 	@Override
 	public BasicOperator visit(ASTArbitraryOccurences node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
-		// Plus Operator
-		BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
-		 
-		Projection projection = new Projection();
-		projection.addProjectionElement(subject);
-		projection.addProjectionElement(object);
-		if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-			projection.addProjectionElement((Variable)graphConstraint);
-		
-		Union union = new Union();
-		InMemoryDistinct memoryDistinct = new InMemoryDistinct();
-		try {
-			Filter filter = new Filter("(" + subject + " != " + object + ")");
-		
-			ReplaceVar replaceVar = new ReplaceVar();
-			replaceVar.addSubstitution(object, subject);
-			Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
-			replaceVar.addSubstitution(variable, object);
-			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-				replaceVar.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
-			ReplaceVar replaceVari = new ReplaceVar();
-			replaceVari.addSubstitution(subject, subject);
-			replaceVari.addSubstitution(object, variable);
-			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-				replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+		if(USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
+			Node predicateNode = node.jjtGetChild(0);
+			while (predicateNode instanceof ASTArbitraryOccurences ||
+					predicateNode instanceof ASTArbitraryOccurencesNotZero){
+				predicateNode = predicateNode.jjtGetChild(0);
+			}
+			BasicOperator startingOperator = predicateNode.accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+			System.out.println(startingOperator);
 			
-			startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
+			Set<Literal> allowedObjects = null;
+			Set<Literal> allowedSubjects = null;
+			
+			if(node.jjtGetParent() instanceof ASTTripleSet){
+				// If there is a fixed subject or object, then we should consider it during evaluation!
+				allowedSubjects = getSetOfLiterals(subjectNode);
+				allowedObjects = getSetOfLiterals(objectNode);
+			}			
+			
+			Closure closure = new Closure(subject, object, allowedSubjects, allowedObjects);
+			startingOperator.addSucceedingOperator(new OperatorIDTuple(closure,0));
+				
+			Item[] items = {subject,getVariable(subject.toString(),object.toString(),"predicate"),object};
+			TriplePattern tp = new TriplePattern(items);
+			LinkedList<TriplePattern> temp = new LinkedList<TriplePattern>();
+			temp.add(tp);
+			BasicOperator memoryScan = this.indexScanCreator.createIndexScanAndConnectWithRoot(null, temp, graphConstraint);
+				
+			PathLengthZero zeroOperator = new PathLengthZero(subject, object, allowedSubjects, allowedObjects);
+			memoryScan.addSucceedingOperator(new OperatorIDTuple(zeroOperator,0));
+
+			Union union = new Union();
+			zeroOperator.addSucceedingOperator(new OperatorIDTuple(union,0));
+			startingOperator.removeSucceedingOperator(closure);
 			startingOperator.addSucceedingOperator(new OperatorIDTuple(union,1));
-			final Join intermediateJoinOperator = new Join();
-			replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
-			memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
-			filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
-			filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-			intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
-			replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-			replaceVari.addSucceedingOperator(new OperatorIDTuple(union,1));
-			union.addSucceedingOperator(new OperatorIDTuple(projection,0));
+			union.addSucceedingOperator(new OperatorIDTuple(closure,0));
 			
-			//Zero Operator
-			BasicOperator startingPoint = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
+			return closure;			
+		} else {
+			// alternative way to evaluate (...)* without using the Closure and PathLengthZero operators! 
+		
+			// Plus Operator
+			BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+			 
+			Projection projection = new Projection();
+			projection.addProjectionElement(subject);
+			projection.addProjectionElement(object);
+			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+				projection.addProjectionElement((Variable)graphConstraint);
 			
-			startingPoint.addSucceedingOperator(new OperatorIDTuple(union,0));
+			Union union = new Union();
+			InMemoryDistinct memoryDistinct = new InMemoryDistinct();
+			try {
+				Filter filter = new Filter("(" + subject + " != " + object + ")");
 			
-		} catch (ParseException e) {
-			System.out.println(e);
-			e.printStackTrace();
+				ReplaceVar replaceVar = new ReplaceVar();
+				replaceVar.addSubstitution(object, subject);
+				Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
+				replaceVar.addSubstitution(variable, object);
+				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+					replaceVar.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+				ReplaceVar replaceVari = new ReplaceVar();
+				replaceVari.addSubstitution(subject, subject);
+				replaceVari.addSubstitution(object, variable);
+				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+					replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+				
+				startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
+				startingOperator.addSucceedingOperator(new OperatorIDTuple(union,1));
+				final Join intermediateJoinOperator = new Join();
+				replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
+				memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
+				filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
+				filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
+				intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
+				replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
+				replaceVari.addSucceedingOperator(new OperatorIDTuple(union,1));
+				union.addSucceedingOperator(new OperatorIDTuple(projection,0));
+				
+				//Zero Operator
+				BasicOperator startingPoint = zeroPath(node, graphConstraint, subject, object, subjectNode, objectNode);
+				
+				startingPoint.addSucceedingOperator(new OperatorIDTuple(union,0));
+				
+			} catch (ParseException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+			return projection;
 		}
-		return projection;
 	}
 
 	private BasicOperator zeroPath(Node node, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode) {		
@@ -623,52 +796,88 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			return memoryDistinct;
 		}
 	}
-
+	
+	private Set<Literal> getSetOfLiterals(Node node){
+		Set<Literal> allowedLiterals = null;
+		Item item = getItem(node);
+		if(!item.isVariable()){
+			allowedLiterals = new HashSet<Literal>();
+			allowedLiterals.add((Literal) item);
+		}
+		return allowedLiterals;
+	}
+	
 	@Override
 	public BasicOperator visit(ASTArbitraryOccurencesNotZero node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {
-		ReplaceVar replaceVar = new ReplaceVar();
-		ReplaceVar replaceVari = new ReplaceVar();
-		BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
-		
-		Projection projection = new Projection();
-		projection.addProjectionElement(subject);
-		projection.addProjectionElement(object);
-		if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-			projection.addProjectionElement((Variable)graphConstraint);
-		
-		InMemoryDistinct memoryDistinct = new InMemoryDistinct();
-		try {
-			Filter filter = new Filter("(" + subject + " != " + object + ")");
-		
-			replaceVar.addSubstitution(object, subject);
-			Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
-			replaceVar.addSubstitution(variable, object);
-			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-				replaceVar.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
-			replaceVari.addSubstitution(subject, subject);
-			replaceVari.addSubstitution(object, variable);
-			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
-				replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+		if(USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
+			Node predicateNode = node.jjtGetChild(0);
+			while (predicateNode instanceof ASTArbitraryOccurences ||
+					predicateNode instanceof ASTArbitraryOccurencesNotZero){
+				if(predicateNode instanceof ASTArbitraryOccurences){
+					return predicateNode.accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+				}
+				predicateNode = predicateNode.jjtGetChild(0);
+			}
+			BasicOperator startingOperator = predicateNode.accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+
+			Set<Literal> allowedObjects = null;
+			Set<Literal> allowedSubjects = null;
 			
-			startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
-			startingOperator.addSucceedingOperator(new OperatorIDTuple(projection,0));
-			final Join intermediateJoinOperator = new Join();
-			replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
-			memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
-			filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
-			filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-			intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
-			replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
-			replaceVari.addSucceedingOperator(new OperatorIDTuple(projection,0));
-		
-		} catch (ParseException e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return projection;
-		
+			if(node.jjtGetParent() instanceof ASTTripleSet){
+				// If there is a fixed subject or object, then we should consider it during evaluation!
+				allowedSubjects = getSetOfLiterals(subjectNode);
+				allowedObjects = getSetOfLiterals(objectNode);
+			}			
+			
+			Closure closure = new Closure(subject, object, allowedObjects, allowedSubjects);
+			startingOperator.addSucceedingOperator(new OperatorIDTuple(closure,0));
+			
+			return closure;	
+		} else {
+			// alternative way to evaluate (...)+ without using the Closure operator! 
+			ReplaceVar replaceVar = new ReplaceVar();
+			ReplaceVar replaceVari = new ReplaceVar();
+			BasicOperator startingOperator = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
+			
+			Projection projection = new Projection();
+			projection.addProjectionElement(subject);
+			projection.addProjectionElement(object);
+			if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+				projection.addProjectionElement((Variable)graphConstraint);
+			
+			InMemoryDistinct memoryDistinct = new InMemoryDistinct();
+			try {
+				Filter filter = new Filter("(" + subject + " != " + object + ")");
+			
+				replaceVar.addSubstitution(object, subject);
+				Variable variable = getVariable(subject.toString(), object.toString(), "interimVariable");
+				replaceVar.addSubstitution(variable, object);
+				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+					replaceVar.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+				replaceVari.addSubstitution(subject, subject);
+				replaceVari.addSubstitution(object, variable);
+				if(graphConstraint!=null && graphConstraint.isVariable() && !graphConstraint.equals(getItem(subjectNode)) && !graphConstraint.equals(getItem(objectNode)))
+					replaceVari.addSubstitution((Variable)graphConstraint, (Variable)graphConstraint);
+				
+				startingOperator.addSucceedingOperator(new OperatorIDTuple(filter,0));
+				startingOperator.addSucceedingOperator(new OperatorIDTuple(projection,0));
+				final Join intermediateJoinOperator = new Join();
+				replaceVar.addSucceedingOperator(new OperatorIDTuple(memoryDistinct,0));
+				memoryDistinct.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,1));
+				filter.addSucceedingOperator(new OperatorIDTuple(intermediateJoinOperator,0));
+				filter.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
+				intermediateJoinOperator.addSucceedingOperator(new OperatorIDTuple(replaceVari,0));
+				replaceVari.addSucceedingOperator(new OperatorIDTuple(replaceVar,0));
+				replaceVari.addSucceedingOperator(new OperatorIDTuple(projection,0));
+			
+			} catch (ParseException e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+			return projection;
+		}		
 	}
 
 	@Override
@@ -1425,8 +1634,8 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 				final Node n = node.jjtGetChild(i);
 				if (n instanceof ASTTripleSet) {
-
-					if (n.jjtGetChild(1) instanceof ASTArbitraryOccurencesNotZero) {
+					Node predicate = n.jjtGetChild(1);
+					if (predicate instanceof ASTArbitraryOccurencesNotZero || predicate instanceof ASTArbitraryOccurences || predicate instanceof ASTOptionalOccurence) {
 						multipleOccurencesToJoin.add((ASTTripleSet) n);
 					} else {
 						final TriplePattern tp = this.getTriplePattern((ASTTripleSet) n);
@@ -1462,7 +1671,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				}
 				for(int i = 0; i < multipleOccurencesToJoin.size(); i++){
 					connection.setOperatorConnection(joinOperator, j);
-					createMultipleOccurence(i, multipleOccurencesToJoin, connection, graphConstraint);
+					createMultipleOccurence(multipleOccurencesToJoin.get(i), connection, graphConstraint);
 					j++; 
 				}
 			} else if (numberJoinPartner == 0) {
@@ -1473,7 +1682,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 					final Node n = node.jjtGetChild(i);
 					if (n instanceof ASTTripleSet) {
 						if (multipleOccurencesToJoin.size() == 1){
-							createMultipleOccurence(i, multipleOccurencesToJoin, connection, graphConstraint);
+							createMultipleOccurence(multipleOccurencesToJoin.get(i), connection, graphConstraint);
 							break;
 						}
 						else{

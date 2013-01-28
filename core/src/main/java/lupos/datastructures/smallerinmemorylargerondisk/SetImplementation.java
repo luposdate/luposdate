@@ -33,7 +33,7 @@ import java.util.SortedSet;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 
-public class SetImplementation<E extends Serializable> implements Set<E> {
+public class SetImplementation<E extends Serializable> implements Set<E>, Serializable {
 
 	private final Set<E> memorySet;
 	private SortedSet<E> diskSet;
@@ -48,74 +48,96 @@ public class SetImplementation<E extends Serializable> implements Set<E> {
 		this.memorySet = memorySet;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
 	public boolean add(final E arg0) {
-		if (memorySet.size() < MAXMEMORYMAPENTRIES)
-			return memorySet.add(arg0);
-		if (memorySet.contains(arg0))
+		if (this.memorySet.size() < MAXMEMORYMAPENTRIES)
+			return this.memorySet.add(arg0);
+		if (this.memorySet.contains(arg0))
 			return false;
-		if (diskSet == null)
-				diskSet = new DBMergeSortedSet<E>(new SortConfiguration(), (Class<E>) arg0.getClass());
-		return diskSet.add(arg0);
+		if (this.diskSet == null){
+			this.diskSet = new DBMergeSortedSet<E>(new SortConfiguration(), (Class<E>) arg0.getClass());
+		}
+		return this.diskSet.add(arg0);
 	}
 
+	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag = false;
 		for (final E e : arg0)
-			flag = flag || add(e);
+			flag = add(e) || flag;
 		return flag;
 	}
 
+	@Override
 	public void clear() {
-		memorySet.clear();
-		if (diskSet != null)
-			diskSet.clear();
+		this.memorySet.clear();
+		if (this.diskSet != null){
+			this.diskSet.clear();
+		}
 	}
 
+	@Override
 	public boolean contains(final Object arg0) {
-		if (memorySet.contains(arg0))
+		if (this.memorySet.contains(arg0)){
 			return true;
-		if (diskSet != null && diskSet.contains(arg0))
+		}
+		if (this.diskSet != null && this.diskSet.contains(arg0)){
 			return true;
+		}
 		return false;
 	}
 
+	@Override
 	public boolean containsAll(final Collection<?> arg0) {
-		for (final Object o : arg0)
-			if (!contains(o))
+		for (final Object o : arg0){
+			if (!contains(o)){
 				return false;
+			}
+		}
 		return true;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		if (!memorySet.isEmpty())
+		if (!this.memorySet.isEmpty()){
 			return false;
-		if (memorySet == null || memorySet.isEmpty())
+		}
+		if (this.memorySet == null || this.memorySet.isEmpty()){
 			return true;
+		}
 		return false;
 	}
 
+	@Override
 	public Iterator<E> iterator() {
 		return new Iterator<E>() {
-			Iterator<E> memoryIterator = memorySet.iterator();
-			Iterator<E> diskIterator = (diskSet == null) ? null : diskSet
-					.iterator();
+			Iterator<E> memoryIterator = SetImplementation.this.memorySet.iterator();
+			Iterator<E> diskIterator = (SetImplementation.this.diskSet == null) ? null : SetImplementation.this.diskSet.iterator();
 
+			@Override
 			public boolean hasNext() {
-				if (memoryIterator.hasNext())
+				if (this.memoryIterator.hasNext()){
 					return true;
-				if (diskIterator != null)
-					return diskIterator.hasNext();
+				}
+				if (this.diskIterator != null){
+					return this.diskIterator.hasNext();
+				}
 				return false;
 			}
 
+			@Override
 			public E next() {
-				if (memoryIterator.hasNext())
-					return memoryIterator.next();
-				if (diskIterator != null && diskIterator.hasNext())
-					return diskIterator.next();
+				if (this.memoryIterator.hasNext()){
+					return this.memoryIterator.next();
+				}
+				if (this.diskIterator != null && this.diskIterator.hasNext()){
+					return this.diskIterator.next();
+				}
 				return null;
 			}
 
+			@Override
 			public void remove() {
 				throw (new UnsupportedOperationException(
 						"This iterator does not support remove."));
@@ -123,22 +145,28 @@ public class SetImplementation<E extends Serializable> implements Set<E> {
 		};
 	}
 
+	@Override
 	public boolean remove(final Object arg0) {
-		final boolean flag = memorySet.remove(arg0);
-		if (flag)
+		final boolean flag = this.memorySet.remove(arg0);
+		if (flag){
 			return true;
-		if (diskSet != null)
-			return diskSet.remove(arg0);
+		}
+		if (this.diskSet != null){
+			return this.diskSet.remove(arg0);
+		}
 		return false;
 	}
 
+	@Override
 	public boolean removeAll(final Collection<?> arg0) {
 		boolean flag = false;
-		for (final Object o : arg0)
-			flag = flag || remove(o);
+		for (final Object o : arg0){
+			flag = remove(o) || flag;
+		}
 		return flag;
 	}
 
+	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		boolean flag = false;
 		for (final E e : this) {
@@ -150,20 +178,33 @@ public class SetImplementation<E extends Serializable> implements Set<E> {
 		return flag;
 	}
 
+	@Override
 	public int size() {
-		int size = memorySet.size();
-		if (diskSet != null)
-			size += diskSet.size();
+		int size = this.memorySet.size();
+		if (this.diskSet != null){
+			size += this.diskSet.size();
+		}
 		return size;
 	}
 
+	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"This set does not support toArray."));
 	}
 
+	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"This set does not support toArray."));
+	}
+	
+	@Override
+	public String toString(){
+		String result = "Set in memory: " + this.memorySet;
+		if(this.diskSet!=null){
+			result += "Set on disk: " + this.diskSet;
+		}
+		return result;
 	}
 }

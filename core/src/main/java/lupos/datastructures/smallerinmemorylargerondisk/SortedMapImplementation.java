@@ -37,15 +37,12 @@ import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 
 public class SortedMapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> extends MapImplementation<K,V> implements SortedMap<K, V>{
 	
-	private final SortedMap<K,V> memoryMap;
-	private SortedMap<K,V> diskMap=null;
-	
 	public SortedMapImplementation(){
-		memoryMap=new TreeMap<K,V>();
+		super(new TreeMap<K,V>());
 	}
 	
 	public SortedMapImplementation(final SortedMap<K,V> memoryMap){
-		this.memoryMap=memoryMap;
+		super(memoryMap);
 	}
 	
 	@Override
@@ -105,7 +102,7 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 						}
 						if(nextMemory==null) return nextDisk;
 						if(nextDisk==null) return nextMemory;
-						if(SortedMapImplementation.this.memoryMap.comparator().compare(nextMemory.getKey(), nextDisk.getKey())<=0){
+						if(((SortedMap<K,V>)SortedMapImplementation.this.memoryMap).comparator().compare(nextMemory.getKey(), nextDisk.getKey())<=0){
 							final java.util.Map.Entry<K, V> result=nextMemory;
 							nextMemory=null;
 							return result;
@@ -173,7 +170,7 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 		if(diskMap==null) {
 			Entry<K,V> entry=memoryMap.entrySet().iterator().next();
 			try {
-				diskMap=new DBBPTree<K,V>(memoryMap.comparator(),20,20, new StandardNodeDeSerializer<K, V>((Class<? super K>)entry.getKey().getClass(), (Class<? super V>)entry.getValue().getClass()));
+				diskMap=new DBBPTree<K,V>(((SortedMap<K,V>)memoryMap).comparator(),20,20, new StandardNodeDeSerializer<K, V>((Class<? super K>)entry.getKey().getClass(), (Class<? super V>)entry.getValue().getClass()));
 			} catch (IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
@@ -183,16 +180,16 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 	}
 
 	public Comparator<? super K> comparator() {
-		return memoryMap.comparator();
+		return ((SortedMap<K,V>)memoryMap).comparator();
 	}
 
 	public K firstKey() {
-		final K key1=memoryMap.firstKey();
+		final K key1=((SortedMap<K,V>)memoryMap).firstKey();
 		K key2=null;
-		if(diskMap!=null) key2=diskMap.firstKey();
+		if(diskMap!=null) key2=((SortedMap<K,V>)diskMap).firstKey();
 		if(key2==null) return key1;
 		if(key1==null) return key1;
-		if(memoryMap.comparator().compare(key1,key2)<=0) return key1;
+		if(((SortedMap<K,V>)memoryMap).comparator().compare(key1,key2)<=0) return key1;
 		else return key2;
 	}
 
@@ -201,12 +198,12 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 	}
 
 	public K lastKey() {
-		final K key1=memoryMap.lastKey();
+		final K key1=((SortedMap<K,V>)memoryMap).lastKey();
 		K key2=null;
-		if(diskMap!=null) key2=diskMap.lastKey();
+		if(diskMap!=null) key2=((SortedMap<K,V>)diskMap).lastKey();
 		if(key2==null) return key1;
 		if(key1==null) return key1;
-		if(memoryMap.comparator().compare(key1,key2)>=0) return key1;
+		if(((SortedMap<K,V>)memoryMap).comparator().compare(key1,key2)>=0) return key1;
 		else return key2;
 	}
 
