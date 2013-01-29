@@ -42,7 +42,6 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
@@ -112,7 +111,6 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			final int indexheap, final int mergeheapheight,
 			final Heap.HEAPTYPE mergeheaptype, final int chunk,
 			final int mergethreads, final int yagomax,
-			final SuperTrie.TRIETYPE stringsearch,
 			final QueryResult.TYPE resulttype, final STORAGE storage,
 			final JOIN join, final JOIN optional, final SORT sort,
 			final DISTINCT distinct,
@@ -123,7 +121,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				parallelOperands,blockwise,
 				limit,jointhreads,joinbuffer,				
 				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
-				stringsearch, resulttype, storage, join, optional, sort, distinct,
+				resulttype, storage, join, optional, sort, distinct,
 				merge_join_optional, encoding);
 		init(matcher);
 	}

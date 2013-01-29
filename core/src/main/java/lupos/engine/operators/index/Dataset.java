@@ -38,8 +38,7 @@ import java.util.Map.Entry;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
-import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingStringSearch;
-import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingStringSearchReplacementSelection;
+import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingTrie;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
@@ -70,7 +69,7 @@ import lupos.misc.Tuple;
 public class Dataset {
 
 	public enum SORT {
-		NORMAL, STRINGSEARCHTREE, STRINGSEARCHTREEREPLACEMENTSELECTION
+		NORMAL, STRINGSEARCHTREE
 	}
 
 	public enum ONTOLOGY {
@@ -145,199 +144,197 @@ public class Dataset {
 				public void run() {					
 					final SortedSet<String> rdftermsRepresentations = (SortingApproach == SORT.NORMAL) ? new DBMergeSortedSet<String>(
 							new SortConfiguration(), String.class)
-							: (SortingApproach == SORT.STRINGSEARCHTREE) ? new DBMergeSortedSetUsingStringSearch(
-									new SortConfiguration(), String.class)
-							: new DBMergeSortedSetUsingStringSearchReplacementSelection(
-									new SortConfiguration(),
-									String.class);
-									if(toAddToRdftermsRepresentations!=null){
-										for(String s: toAddToRdftermsRepresentations){
-											rdftermsRepresentations.add(s);
-										}								
-									}
-									final TripleConsumer tc = new TripleConsumer() {
+							: new DBMergeSortedSetUsingTrie(
+									new SortConfiguration(), String.class);
 
-										public void consume(final Triple triple) {
-											for (final Literal l : triple) {
-												// rdftermsRepresentations.add(l.
-												// originalString());
-												rdftermsRepresentations.add(l.toString());
-												if (l.originalStringDiffers())
-													rdftermsRepresentations.add(l
-															.originalString());
-											}
+							if(toAddToRdftermsRepresentations!=null){
+								for(String s: toAddToRdftermsRepresentations){
+									rdftermsRepresentations.add(s);
+								}								
+							}
+							final TripleConsumer tc = new TripleConsumer() {
+
+								public void consume(final Triple triple) {
+									for (final Literal l : triple) {
+										// rdftermsRepresentations.add(l.
+										// originalString());
+										rdftermsRepresentations.add(l.toString());
+										if (l.originalStringDiffers())
+											rdftermsRepresentations.add(l
+													.originalString());
+									}
+								}
+
+							};
+							for (final URILiteral u : defaultGraphs) {
+								insertUsedStringRepresentations(u, dataFormat,
+										rdftermsRepresentations, tc);
+							}
+							for (final URILiteral u : namedGraphs) {
+								insertUsedStringRepresentations(u, dataFormat,
+										rdftermsRepresentations, tc);
+							}
+							// now generate B+-tree for integer-string map and
+							// string-integer
+							// map of the codemap!
+							final Generator<String, Integer> smsi = new Generator<String, Integer>() {
+
+								public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
+									return new Iterator<java.util.Map.Entry<String, Integer>>() {
+										Iterator<String> it = rdftermsRepresentations
+										.iterator();
+										int index = 1;
+
+										public boolean hasNext() {
+											return it.hasNext();
 										}
 
-									};
-									for (final URILiteral u : defaultGraphs) {
-										insertUsedStringRepresentations(u, dataFormat,
-												rdftermsRepresentations, tc);
-									}
-									for (final URILiteral u : namedGraphs) {
-										insertUsedStringRepresentations(u, dataFormat,
-												rdftermsRepresentations, tc);
-									}
-									// now generate B+-tree for integer-string map and
-									// string-integer
-									// map of the codemap!
-									final Generator<String, Integer> smsi = new Generator<String, Integer>() {
+										public java.util.Map.Entry<String, Integer> next() {
+											if (!it.hasNext())
+												return null;
+											else {
+												return new java.util.Map.Entry<String, Integer>() {
+													String s = it.next();
+													int localIndex = index++;
 
-										public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
-											return new Iterator<java.util.Map.Entry<String, Integer>>() {
-												Iterator<String> it = rdftermsRepresentations
-												.iterator();
-												int index = 1;
-
-												public boolean hasNext() {
-													return it.hasNext();
-												}
-
-												public java.util.Map.Entry<String, Integer> next() {
-													if (!it.hasNext())
-														return null;
-													else {
-														return new java.util.Map.Entry<String, Integer>() {
-															String s = it.next();
-															int localIndex = index++;
-
-															public String getKey() {
-																return s;
-															}
-
-															public Integer getValue() {
-																return localIndex;
-															}
-
-															public Integer setValue(
-																	final Integer arg0) {
-																throw new UnsupportedOperationException();
-															}
-
-														};
+													public String getKey() {
+														return s;
 													}
-												}
 
-												public void remove() {
-													throw new UnsupportedOperationException();
-												}
-
-											};
-										}
-
-										public int size() {
-											return rdftermsRepresentations.size();
-										}
-
-									};
-									final Generator<Integer, String> smis = new Generator<Integer, String>() {
-
-										public Iterator<java.util.Map.Entry<Integer, String>> iterator() {
-											return new Iterator<java.util.Map.Entry<Integer, String>>() {
-												Iterator<String> it = rdftermsRepresentations
-												.iterator();
-												int index = 1;
-
-												public boolean hasNext() {
-													return it.hasNext();
-												}
-
-												public java.util.Map.Entry<Integer, String> next() {
-													if (!it.hasNext())
-														return null;
-													else {
-														return new java.util.Map.Entry<Integer, String>() {
-															String s = it.next();
-															int localIndex = index++;
-
-															public Integer getKey() {
-																return localIndex;
-															}
-
-															public String getValue() {
-																return s;
-															}
-
-															public String setValue(
-																	final String arg0) {
-																throw new UnsupportedOperationException();
-															}
-
-														};
+													public Integer getValue() {
+														return localIndex;
 													}
-												}
 
-												public void remove() {
-													throw new UnsupportedOperationException();
-												}
+													public Integer setValue(
+															final Integer arg0) {
+														throw new UnsupportedOperationException();
+													}
 
-											};
-										}
-
-										public int size() {
-											return rdftermsRepresentations.size();
-										}
-									};
-
-									if (rdftermsRepresentations instanceof DBMergeSortedSet) {
-										((DBMergeSortedSet) rdftermsRepresentations).sort();
-									}
-									final Thread thread0 = new Thread() {
-										@Override
-										public void run() {
-											lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap;
-											try {
-												simap = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
-														k,
-														k_,
-														new StandardNodeDeSerializer<String, Integer>(
-																String.class,
-																Integer.class));
-												simap.setName("Dictionary: String->Integer");
-												simap.generateDBBPTree(smsi);
-												LazyLiteral
-												.setHm(new StringIntegerMapJava(
-														simap));
-											} catch (final IOException e) {
-												System.err.println(e);
-												e.printStackTrace();
+												};
 											}
 										}
+
+										public void remove() {
+											throw new UnsupportedOperationException();
+										}
+
 									};
-									final Thread thread1 = new Thread() {
-										@Override
-										public void run() {
-											lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> ismap;
-											try {
-												ismap = new lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String>(
-														k,
-														k_,
-														new StandardNodeDeSerializer<Integer, String>(
-																Integer.class,
-																String.class));
-												ismap.setName("Dictionary: String->Integer");
-												ismap.generateDBBPTree(smis);
-												LazyLiteral
-												.setV(new IntegerStringMapJava(
-														ismap));
-											} catch (final IOException e) {
-												System.err.println(e);
-												e.printStackTrace();
+								}
+
+								public int size() {
+									return rdftermsRepresentations.size();
+								}
+
+							};
+							final Generator<Integer, String> smis = new Generator<Integer, String>() {
+
+								public Iterator<java.util.Map.Entry<Integer, String>> iterator() {
+									return new Iterator<java.util.Map.Entry<Integer, String>>() {
+										Iterator<String> it = rdftermsRepresentations
+										.iterator();
+										int index = 1;
+
+										public boolean hasNext() {
+											return it.hasNext();
+										}
+
+										public java.util.Map.Entry<Integer, String> next() {
+											if (!it.hasNext())
+												return null;
+											else {
+												return new java.util.Map.Entry<Integer, String>() {
+													String s = it.next();
+													int localIndex = index++;
+
+													public Integer getKey() {
+														return localIndex;
+													}
+
+													public String getValue() {
+														return s;
+													}
+
+													public String setValue(
+															final String arg0) {
+														throw new UnsupportedOperationException();
+													}
+
+												};
 											}
 										}
+
+										public void remove() {
+											throw new UnsupportedOperationException();
+										}
+
 									};
-									thread0.start();
-									thread1.start();
+								}
+
+								public int size() {
+									return rdftermsRepresentations.size();
+								}
+							};
+
+							if (rdftermsRepresentations instanceof DBMergeSortedSet) {
+								((DBMergeSortedSet) rdftermsRepresentations).sort();
+							}
+							final Thread thread0 = new Thread() {
+								@Override
+								public void run() {
+									lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap;
 									try {
-										thread0.join();
-										thread1.join();
-									} catch (final InterruptedException e) {
+										simap = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
+												k,
+												k_,
+												new StandardNodeDeSerializer<String, Integer>(
+														String.class,
+														Integer.class));
+										simap.setName("Dictionary: String->Integer");
+										simap.generateDBBPTree(smsi);
+										LazyLiteral
+										.setHm(new StringIntegerMapJava(
+												simap));
+									} catch (final IOException e) {
 										System.err.println(e);
 										e.printStackTrace();
 									}
-									if (rdftermsRepresentations instanceof DBMergeSortedSet) {
-										((DBMergeSortedSet) rdftermsRepresentations)
-										.release();
+								}
+							};
+							final Thread thread1 = new Thread() {
+								@Override
+								public void run() {
+									lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> ismap;
+									try {
+										ismap = new lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String>(
+												k,
+												k_,
+												new StandardNodeDeSerializer<Integer, String>(
+														Integer.class,
+														String.class));
+										ismap.setName("Dictionary: String->Integer");
+										ismap.generateDBBPTree(smis);
+										LazyLiteral
+										.setV(new IntegerStringMapJava(
+												ismap));
+									} catch (final IOException e) {
+										System.err.println(e);
+										e.printStackTrace();
 									}
+								}
+							};
+							thread0.start();
+							thread1.start();
+							try {
+								thread0.join();
+								thread1.join();
+							} catch (final InterruptedException e) {
+								System.err.println(e);
+								e.printStackTrace();
+							}
+							if (rdftermsRepresentations instanceof DBMergeSortedSet) {
+								((DBMergeSortedSet) rdftermsRepresentations)
+								.release();
+							}
 				}
 			};
 			codeMapConstructionThread.start();

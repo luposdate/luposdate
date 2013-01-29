@@ -28,6 +28,7 @@ import java.util.List;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
+import lupos.misc.Tuple;
 
 public abstract class TrieMap<T> extends TrieWithValue<T> {
 
@@ -35,24 +36,22 @@ public abstract class TrieMap<T> extends TrieWithValue<T> {
 	 * Insert a value for a given key
 	 * @param key the key for the value
 	 * @param value the value for a given key
-	 * @return true if a value for the given key is overwritten, false if no value for the given key was inside the patricia trie so far
-	 * @throws OperationNotAllowedForTrieModeException if this trie is not in map mode
+	 * @return the old value if a value for the given key is overwritten, <strong>null</strong> if no value for the given key was inside the patricia trie so far
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean put(final String key, final T value) {
+	public T put(final String key, final T value) {
 		
 		if (this.getRootNode() == null) {
 			this.setRootNode(createNodeInstance());
 		}
-		
-		return NodeHelper.put((NodeWithValue<T>)this.getRootNode(), key, value);	
+		Tuple<T, Boolean> result = NodeHelper.put((NodeWithValue<T>)this.getRootNode(), key, value); 
+		return (result==null)? null: result.getFirst();
 	}
 	
 	/**
 	 * method to get the value of a key
 	 * @param key the key of the value to be searched for
 	 * @return the value of the key
-	 * @throws OperationNotAllowedForTrieModeException if this trie is not in map mode
 	 */
 	@SuppressWarnings("unchecked")
 	public T get(final String key) {
@@ -62,6 +61,23 @@ public abstract class TrieMap<T> extends TrieWithValue<T> {
 		
 		T result = NodeHelper.get((NodeWithValue<T>)this.getRootNode(), key);
 		return result;
+	}
+	
+	/**
+	 * Removes a key from the trie.
+	 * 
+	 * @param key
+	 *            Key to remove
+	 * @return <strong>null</strong> if the key could not be removed (if the trie did not contain that key),
+	 *         the old value otherwise.
+	 */
+	public T removeKey(final String key) {
+		if (this.getRootNode() == null) {
+			return null;
+		}
+		@SuppressWarnings("unchecked")
+		Tuple<T, Boolean> result = NodeHelper.removeKey((NodeWithValue<T>) this.getRootNode(), key);
+		return (result==null)?null : result.getFirst();
 	}
 	
 	/**

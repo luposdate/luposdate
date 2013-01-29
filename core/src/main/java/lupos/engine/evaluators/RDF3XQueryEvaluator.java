@@ -41,7 +41,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
@@ -82,7 +81,6 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 			final int indexheap, final int mergeheapheight,
 			final Heap.HEAPTYPE mergeheaptype, final int chunk,
 			final int mergethreads, final int yagomax,
-			final SuperTrie.TRIETYPE stringsearch,
 			final QueryResult.TYPE resulttype, final STORAGE storage,
 			final JOIN join, final JOIN optional, final SORT sort,
 			final DISTINCT distinct,
@@ -96,7 +94,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 				parallelOperands, blockwise,
 				limit, jointhreads, joinbuffer,
 				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
-				stringsearch, resulttype, storage, join, optional, sort, distinct,
+				resulttype, storage, join, optional, sort, distinct,
 				merge_join_optional, encoding,
 				datastructure, datasetsort);
 		init(loadindexinfo, writeindexinfo, optimization);

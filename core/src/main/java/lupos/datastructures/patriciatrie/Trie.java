@@ -218,6 +218,6 @@ public abstract class Trie {
 	 * @return the rootNode
 	 */
 	public Node getRootNode() {
-		return rootNode;
+		return this.rootNode;
 	}
 }

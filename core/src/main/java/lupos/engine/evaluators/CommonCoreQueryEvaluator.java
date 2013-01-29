@@ -48,7 +48,6 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.CollectAllResults;
@@ -172,7 +171,6 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			final int indexheap, final int mergeheapheight,
 			final Heap.HEAPTYPE mergeheaptype, final int chunk,
 			final int mergethreads, final int yagomax,
-			final SuperTrie.TRIETYPE stringsearch,
 			final QueryResult.TYPE resulttype, final STORAGE storage,
 			final JOIN join, final JOIN optional, final SORT sort,
 			final DISTINCT distinct,
@@ -182,7 +180,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				parallelOperands, blockwise,
 				limit,jointhreads,joinbuffer,
 				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
-				stringsearch, resulttype, storage, join, optional, sort, distinct,
+				resulttype, storage, join, optional, sort, distinct,
 				merge_join_optional, encoding);
 	}
 
@@ -197,7 +195,6 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			final int indexheap, final int mergeheapheight,
 			final Heap.HEAPTYPE mergeheaptype, final int chunk,
 			final int mergethreads, final int yagomax,
-			final SuperTrie.TRIETYPE stringsearch,
 			final QueryResult.TYPE resulttype, final STORAGE storage,
 			final JOIN join, final JOIN optional, final SORT sort,
 			final DISTINCT distinct,
@@ -246,8 +243,6 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		}
 		Parser.setMaxTriples(yagomax);
 
-		SuperTrie.TYPE = stringsearch;
-
 		QueryResult.type=resulttype;
 		this.storage = storage;
 
@@ -279,8 +274,6 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	@Override
 	public void setupArguments() {
 		super.setupArguments();
-		args.addEnumOption("stringsearch",
-				"The type of trie used if a trie is applied...", SuperTrie.TYPE);
 		args.addEnumOption("optimization",
 				"Specify the optimization that should be applied",
 				defaultOptimization);
@@ -412,8 +405,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				args.getInt("indexheap"), args.getInt("mergeheapheight"),
 				(Heap.HEAPTYPE) args.getEnum("mergeheaptype"),
 				args.getInt("chunk"), args.getInt("mergethreads"),
-				args.getInt("yagomax"),
-				(SuperTrie.TRIETYPE) args.getEnum("stringsearch"),
+				args.getInt("yagomax"),				
 				(QueryResult.TYPE) args.getEnum("result"),
 				(STORAGE) args.getEnum("storage"), (JOIN) args.getEnum("join"),
 				(JOIN) args.getEnum("optional"), (SORT) args.getEnum("sort"),

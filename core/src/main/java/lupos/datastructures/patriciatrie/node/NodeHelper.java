@@ -259,10 +259,10 @@ public final class NodeHelper {
 	 *            Key for the value
 	 * @param value
 	 *            Value of the key
-	 * @return <strong>false</strong> if the key could not be added (if the node already contained that key) <br />
-	 *         <strong>true</strong> otherwise.
+	 * @return <strong>null</strong> if the key could not be removed (if the trie did not contain that key),
+	 *         the old value otherwise (inside a Tuple-object to distinguish case that the the value itself is a null value).
 	 */
-	public final static<T> boolean put(final NodeWithValue<T> node, final String key, final T value) {
+	public final static<T> Tuple<T, Boolean> put(final NodeWithValue<T> node, final String key, final T value) {
 		final int keyLength = key.length();
 		
 		// Search for a merge partner
@@ -274,20 +274,20 @@ public final class NodeHelper {
 			node.setContent(idx.getSecond(), key);
 			
 			// !!!!!!!!!!!!!!!!!!
-			// introduce counter!
 			node.setValue(idx.getSecond(), value);
 			// !!!!!!!!!!!!!!!!!!
 			
-			return true;
+			return null;
 		}
 		
 		// The empty string already exists
 		if (keyLength == 0) {
+			T oldValue = node.getValue(idx.getSecond());
 			// !!!!!!!!!!!!!!!!!!
 			// overwrite existing value
 			node.setValue(idx.getSecond(), value);
 			// !!!!!!!!!!!!!!!!!!
-			return false;
+			return new Tuple<T, Boolean>(oldValue, Boolean.TRUE);
 		}
 		
 		final String prefixKey = node.getContent(idx.getSecond());
@@ -297,13 +297,13 @@ public final class NodeHelper {
 		if (commonPrefixLength == prefixKeyLength) {
 			if (node.hasChild(idx.getSecond())) {
 				node.setIsOnRecursionStack(true);
-				final boolean added = NodeHelper.put(node.getChild(idx.getSecond()),key.substring(commonPrefixLength), value);
+				final Tuple<T, Boolean> oldValue = NodeHelper.put(node.getChild(idx.getSecond()),key.substring(commonPrefixLength), value);
 				node.setIsOnRecursionStack(false);
-				if (added){
+				if (oldValue!=null){
 					node.modifyNumberOfEntries(1);
 				}
 				
-				return added;
+				return oldValue;
 			}
 			else {
 				// There is more to add
@@ -325,17 +325,17 @@ public final class NodeHelper {
 					node.setValue(idx.getSecond(), null);
 					// !!!!!!!!!!!!!!!!!!
 					
-					return true;
+					return null;
 				}
 				else {
 					// string already exists!
-					
+					T oldValue = node.getValue(idx.getSecond());					
 					// !!!!!!!!!!!!!!!!!!
 					// overwrite existing value
 					node.setValue(idx.getSecond(), value);
 					// !!!!!!!!!!!!!!!!!!
 					
-					return false;
+					return new Tuple<T, Boolean>(oldValue, Boolean.TRUE);
 				}
 			}
 		}
@@ -380,7 +380,7 @@ public final class NodeHelper {
 		node.setChild(idx.getSecond(), newChild);
 		node.modifyNumberOfEntries(1);
 
-		return true;
+		return null;
 	}
 	
 	/**
@@ -545,6 +545,61 @@ public final class NodeHelper {
 				return true;
 			} else {
 				return false;
+			}
+		}
+	}
+	
+	/**
+	 * Removes a key from the node.
+	 * 
+	 * @param Node
+	 *            the node
+	 * @param key
+	 *            Key to remove
+	 * @return <strong>null</strong> if the key could not be removed (if the trie did not contain that key),
+	 *         the old value otherwise (inside a Tuple-object to distinguish case that the the value itself is a null value).
+	 */
+	public final static<T> Tuple<T, Boolean> removeKey(final NodeWithValue<T> node, final String key) {
+		final Tuple<Boolean, Integer> idx = NodeHelper.searchMergePartner(node, key);
+		
+		if (!idx.getFirst()) {
+			return null;
+		}
+		
+		final String prefixKey = node.getContent(idx.getSecond());
+		final int prefixKeyLength = prefixKey.length();
+		final int commonPrefixLength = NodeHelper.findLongestCommonPrefix(1, key, prefixKey) + 1;
+		
+		if (commonPrefixLength < prefixKeyLength) {
+			return null;
+		}
+
+		if (node.hasChild(idx.getSecond())) {
+			final NodeWithValue<T> childNode = node.getChild(idx.getSecond());
+			node.setIsOnRecursionStack(true);
+			Tuple<T, Boolean> oldValue = NodeHelper.removeKey(childNode, key.substring(commonPrefixLength)); 
+			if (oldValue!=null) {
+				if (childNode.getContentLength() == 1) {
+					node.setContent(idx.getSecond(), prefixKey + childNode.getContent(0));
+					node.setChild(idx.getSecond(), childNode.getChild(0));
+					childNode.destroyNode(false);
+				}
+				
+				node.modifyNumberOfEntries(-1);
+				node.setIsOnRecursionStack(false);
+				return oldValue;
+			} else {
+				node.setIsOnRecursionStack(false);
+				return null;
+			}
+		} else {
+			if (key.length() == prefixKeyLength) {
+				T oldValue = node.getValue(idx.getSecond());
+				node.decreaseArraySizes(idx.getSecond());
+				node.modifyNumberOfEntries(-1);
+				return new Tuple<T, Boolean>(oldValue, Boolean.TRUE);
+			} else {
+				return null;
 			}
 		}
 	}

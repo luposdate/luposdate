@@ -23,21 +23,57 @@
  */
 package lupos.datastructures.patriciatrie;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-import java.util.Map.Entry;
 
-import lupos.datastructures.dbmergesortedds.MapEntry;
+import lupos.datastructures.patriciatrie.disk.DBTrieSet;
 import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.node.Node;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
+import lupos.datastructures.patriciatrie.ram.RBTrieSet;
 import lupos.misc.Tuple;
 
 public abstract class TrieSet extends Trie implements Iterable<String> {
 
+	/**
+	 * Create a new main memory based trie
+	 * @return the newly created main memory based trie set
+	 */
+	public static RBTrieSet createRamBasedTrieSet(){
+		return new RBTrieSet();
+	}
+	
+	/**
+	 * Creates a new disk based trie with the default buffer size
+	 * 
+	 * @param fileName
+	 *            Base filename for the trie
+	 * @return the newly created disk based trie set
+	 * @throws IOException
+	 */
+	public static DBTrieSet createDiskBasedTrieSet(final String fileName) throws IOException {
+		return new DBTrieSet(fileName);
+	}
+	
+	/**
+	 * Creates a new trie
+	 * 
+	 * @param fileName
+	 *            Base filename for the trie
+	 * @param bufferSize
+	 *            Amount of nodes that are simultaneously kept in memory
+	 * @param pageSize
+	 *            The size of a page to be stored on disk
+	 * @return the newly created disk based trie set
+	 * @throws IOException
+	 */
+	public static DBTrieSet createDiskBasedTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
+		return new DBTrieSet(fileName, bufferSize, pageSize);
+	}
 	
 	/**
 	 * Deletes all nodes contained within this trie and copies all nodes from
@@ -84,7 +120,6 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 *            Key to add
 	 * @return <strong>false</strong> if the key could not be added (if the trie already contained that key),
 	 *         <strong>true</strong> otherwise.
-	 * @throws OperationNotAllowedForTrieModeException if this trie is in map mode
 	 */
 	public boolean add(final String key) {
 		

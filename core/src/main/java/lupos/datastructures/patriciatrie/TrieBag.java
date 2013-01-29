@@ -23,17 +23,56 @@
  */
 package lupos.datastructures.patriciatrie;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import lupos.datastructures.patriciatrie.disk.DBTrieBag;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
+import lupos.datastructures.patriciatrie.ram.RBTrieBag;
 
 public abstract class TrieBag extends TrieWithValue<Integer> {
 
+	/**
+	 * Create a new main memory based trie
+	 * @return the newly created main memory based trie set
+	 */
+	public static RBTrieBag createRamBasedTrieBag(){
+		return new RBTrieBag();
+	}
+	
+	/**
+	 * Creates a new disk based trie with the default buffer size
+	 * 
+	 * @param fileName
+	 *            Base filename for the trie
+	 * @return the newly created disk based trie set
+	 * @throws IOException
+	 */
+	public static DBTrieBag createDiskBasedTrieBag(final String fileName) throws IOException {
+		return new DBTrieBag(fileName);
+	}
+	
+	/**
+	 * Creates a new trie
+	 * 
+	 * @param fileName
+	 *            Base filename for the trie
+	 * @param bufferSize
+	 *            Amount of nodes that are simultaneously kept in memory
+	 * @param pageSize
+	 *            The size of a page to be stored on disk
+	 * @return the newly created disk based trie set
+	 * @throws IOException
+	 */
+	public static DBTrieBag createDiskBasedTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
+		return new DBTrieBag(fileName, bufferSize, pageSize);
+	}	
+	
 	/**
 	 * Adds a key to the trie.
 	 * 
@@ -41,7 +80,6 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 *            Key to add
 	 * @return <strong>false</strong> if the key could not be added (if the trie already contained that key),
 	 *         <strong>true</strong> otherwise.
-	 * @throws OperationNotAllowedForTrieModeException if this trie is in map mode
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean add(final String key) {
@@ -128,6 +166,9 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 		this.merge(tries, true);
 	}
 	
+	/**
+	 * @return an iterator to iterate trough the keys inside the patricia trie (returning also duplicates)
+	 */
 	public Iterator<String> keyIterator() {
 		final Iterator<Entry<String, Integer>> entryIterator = this.iterator();
 		return new Iterator<String>(){

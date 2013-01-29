@@ -226,8 +226,6 @@
 	      <option id="joinbuffer" name="Join Buffer" datatype="xpref.datatypes.IntegerDatatype" value="50" minimum="1" help="specifies the maximum size for the buffer for the parallel join operators..."/>
       </optionbox>
       <optionbox name="Datastructure Parameters">
-	      <option id="stringsearch" name="Type of Trie" datatype="xpref.datatypes.EnumDatatype" value="NORMAL" source="lupos.datastructures.trie.SuperTrie$TRIETYPE" help="The type of trie used if a trie is applied..."/>
-	      <line/>
 	      <option id="tosort" name="Tosort" datatype="xpref.datatypes.EnumDatatype" value="NONE" source="lupos.datastructures.dbmergesortedds.tosort.ToSort$TOSORT" help="specifies the tosort type to be used in heaps for the initial runs (if no heaps are used, i.e. tosort!=NONE)"/>
 	      <option id="chunk" name="Chunk" datatype="xpref.datatypes.IntegerDatatype" value="3" minimum="1" help="defines the chunk fraction of the data for SortedChunksHeap..." dependsOn="tosort=MERGESORT|PARALLELMERGESORT|QUICKSORT|HEAPSORT"/>
 	      <option id="heap" name="Heap" datatype="xpref.datatypes.EnumDatatype" value="SEQUENTIAL" source="lupos.datastructures.dbmergesortedds.heap.Heap$HEAPTYPE" help="specifies the heap type to be used" dependsOn="tosort=NONE"/>

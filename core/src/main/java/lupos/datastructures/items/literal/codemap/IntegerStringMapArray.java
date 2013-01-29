@@ -23,56 +23,53 @@
  */
 package lupos.datastructures.items.literal.codemap;
 
-import java.util.Map.Entry;
+public class IntegerStringMapArray implements IntegerStringMap {
+	
+	protected String[] values = new String[0]; 
 
-import lupos.datastructures.trie.TrieMap;
-
-public class IntegerStringMapTrieSlave implements IntegerStringMap {
-
-	protected final TrieMap<Integer> trieMap;
-	protected int[] indexMap;
-
-	public IntegerStringMapTrieSlave(final TrieMap<Integer> trieMap){
-		this.trieMap=trieMap;
-		updateIndexMap();
-	}
-
-	private void updateIndexMap(){
-		indexMap=new int[trieMap.size()];
-		Integer[] objectArray=trieMap.getObjectArray();
-		for(int index=0;index<objectArray.length;index++){
-			indexMap[objectArray[index]-1]=index;
-		}
-	}
-
+	@Override
 	public String get(int key) {
-		return trieMap.getTrie().get(indexMap[key-1]);
-	}
-
-	public void put(int key, String s) {
-		// this is the slave
-		// => we assume that trieMap has been updated before correspondingly
-		// => only update our indexMap according to trieMap!
-		updateIndexMap();
-	}
-
-	public void clear() {
-		trieMap.clear();
-		updateIndexMap();
-	}
-
-	public int size() {
-		return trieMap.size();
-	}
-
-	public void forEachValue(TProcedureValue<String> arg0) {
-		for(String value: trieMap.getTrie())
-			arg0.execute(value);
-	}
-
-	public void forEachEntry(TProcedureEntry<Integer, String> arg0) {
-		for (final Entry<String,Integer> entry : trieMap.entrySet()) {
-			arg0.execute(entry.getValue(), entry.getKey());
+		if(key >= this.values.length){
+			return null;
+		} else {
+			return this.values[key];
 		}
 	}
+
+	@Override
+	public void put(int key, String s) {
+		if(key >= this.values.length){
+			String[] newValues = new String[key+1];
+			System.arraycopy(this.values, 0, newValues, 0, this.values.length);
+			this.values = newValues;
+		}
+		this.values[key] = s;
+	}
+
+	@Override
+	public void clear() {
+		this.values = new String[0];
+	}
+
+	@Override
+	public int size() {
+		return this.values.length;
+	}
+
+	@Override
+	public void forEachValue(TProcedureValue<String> arg0) {
+		for (final String value: this.values) {
+			arg0.execute(value);
+		}
+	}
+
+	@Override
+	public void forEachEntry(TProcedureEntry<Integer, String> arg0) {
+		int i=0;
+		for (final String value: this.values) {
+			arg0.execute(i, value);
+			i++;
+		}
+	}
+
 }

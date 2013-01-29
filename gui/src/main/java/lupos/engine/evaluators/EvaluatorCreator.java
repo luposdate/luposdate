@@ -36,7 +36,6 @@ import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator.DISTINCT;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator.JOIN;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator.MERGE_JOIN_OPTIONAL;
@@ -140,7 +139,6 @@ public final class EvaluatorCreator {
 						IntegerDatatype.getValues("mergethreads").get(0),
 						(BooleanDatatype.getValues("yagomax.enableYagoMax").get(0)) ? IntegerDatatype
 								.getValues("yagomax.yagomaxNumber").get(0) : -1,
-						(SuperTrie.TRIETYPE) Helper.castEnum(EnumDatatype.getValues("stringsearch").get(0)),
 						(QueryResult.TYPE) Helper.castEnum(EnumDatatype.getValues("result").get(0)),
 						(STORAGE) Helper.castEnum(EnumDatatype.getValues("storage").get(0)),
 						(JOIN) Helper.castEnum(EnumDatatype.getValues("join").get(0)),
@@ -199,7 +197,6 @@ public final class EvaluatorCreator {
 						IntegerDatatype.getValues("mergethreads").get(0),
 						(BooleanDatatype.getValues("yagomax.enableYagoMax").get(0)) ? IntegerDatatype
 								.getValues("yagomax.yagomaxNumber").get(0) : -1,
-						(SuperTrie.TRIETYPE) Helper.castEnum(EnumDatatype.getValues("stringsearch").get(0)),
 						(QueryResult.TYPE) Helper.castEnum(EnumDatatype.getValues("result").get(0)),
 						(STORAGE) Helper.castEnum(EnumDatatype.getValues("storage").get(0)),
 						(JOIN) Helper.castEnum(EnumDatatype.getValues("join").get(0)),
@@ -257,7 +254,6 @@ public final class EvaluatorCreator {
 						IntegerDatatype.getValues("chunk").get(0),
 						IntegerDatatype.getValues("mergethreads").get(0),
 						(BooleanDatatype.getValues("yagomax.enableYagoMax").get(0)) ? IntegerDatatype.getValues("yagomax.yagomaxNumber").get(0) : -1,
-						(SuperTrie.TRIETYPE) Helper.castEnum(EnumDatatype.getValues("stringsearch").get(0)),
 						(QueryResult.TYPE) Helper.castEnum(EnumDatatype.getValues("result").get(0)),
 						(STORAGE) Helper.castEnum(EnumDatatype.getValues("storage").get(0)),
 						(JOIN) Helper.castEnum(EnumDatatype.getValues("join").get(0)),

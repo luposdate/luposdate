@@ -49,7 +49,6 @@ public class DBTrieSet extends TrieSet {
 	 *            Amount of nodes that are simultaneously kept in memory
 	 * @param pageSize
 	 *            The size of a page to be stored on disk
-	 * @param mode the mode of this trie
 	 * @throws IOException
 	 */
 	public DBTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {

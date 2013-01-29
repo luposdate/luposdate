@@ -38,7 +38,7 @@ import java.util.SortedSet;
 
 import lupos.compression.Compression;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
-import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingStringSearch;
+import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingTrie;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
@@ -51,8 +51,8 @@ import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.queryresult.SIPParallelIterator;
-import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.index.Indices;
@@ -70,6 +70,8 @@ import lupos.misc.TimeInterval;
 public class RDF3XIndexConstruction {
 	private static final int k = 1000;
 	private static final int k_ = 1000;
+	
+	public static long LIMIT_ELEMENTS_IN_TRIE = 50000000;
 
 	private static void insertUsedStringRepresentations(final URILiteral u,
 			final String dataFormat,
@@ -102,8 +104,8 @@ public class RDF3XIndexConstruction {
 			System.out.println("_______________________________________________________________");
 			
 			if (args.length < 5) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [<datafile2> [<datafile3> ...]]");
-				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex");
+				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY] [<datafile2> [<datafile3> ...]]");
+				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
 				return;
 			}
 			
@@ -138,7 +140,11 @@ public class RDF3XIndexConstruction {
 			final Collection<URILiteral> namedGraphs = new LinkedList<URILiteral>();
 			defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + datafile+ ">"));
 			
-			for(int i=5; i<args.length; i++){
+			if(args.length>5){
+				LIMIT_ELEMENTS_IN_TRIE = Long.parseLong(args[5]);
+				DBMergeSortedSetUsingTrie.LIMIT_ELEMENTS_IN_SET = LIMIT_ELEMENTS_IN_TRIE;
+			}
+			for(int i=6; i<args.length; i++){
 				defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + args[i]+ ">"));				
 			}
 
@@ -147,11 +153,11 @@ public class RDF3XIndexConstruction {
 			final Thread codeMapConstructionThread = new Thread() {
 				@Override
 				public void run() {
-						final DBMergeSortedSetUsingStringSearch rdftermsRepresentations = new DBMergeSortedSetUsingStringSearch(
-								new SortConfiguration(), String.class);
+						final DBMergeSortedSetUsingTrie rdftermsRepresentations = new DBMergeSortedSetUsingTrie(new SortConfiguration(), String.class);
 
 						final TripleConsumer tc = new TripleConsumer() {
 
+							@Override
 							public void consume(final Triple triple) {
 								for (final Literal l : triple) {
 									// rdftermsRepresentations.add(l.
@@ -177,16 +183,19 @@ public class RDF3XIndexConstruction {
 						// map of the codemap!
 						final Generator<String, Integer> smsi = new Generator<String, Integer>() {
 
+							@Override
 							public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
 								return new Iterator<java.util.Map.Entry<String, Integer>>() {
 									Iterator<String> it = rdftermsRepresentations
 									.iterator();
 									int index = 1;
 
+									@Override
 									public boolean hasNext() {
 										return it.hasNext();
 									}
 
+									@Override
 									public java.util.Map.Entry<String, Integer> next() {
 										if (!it.hasNext())
 											return null;
@@ -195,14 +204,17 @@ public class RDF3XIndexConstruction {
 												String s = it.next();
 												int localIndex = index++;
 
+												@Override
 												public String getKey() {
 													return s;
 												}
 
+												@Override
 												public Integer getValue() {
 													return localIndex;
 												}
 
+												@Override
 												public Integer setValue(
 														final Integer arg0) {
 													throw new UnsupportedOperationException();
@@ -212,6 +224,7 @@ public class RDF3XIndexConstruction {
 										}
 									}
 
+									@Override
 									public void remove() {
 										throw new UnsupportedOperationException();
 									}
@@ -219,6 +232,7 @@ public class RDF3XIndexConstruction {
 								};
 							}
 
+							@Override
 							public int size() {
 								return rdftermsRepresentations.size();
 							}
@@ -232,10 +246,12 @@ public class RDF3XIndexConstruction {
 									.iterator();
 									int index = 1;
 
+									@Override
 									public boolean hasNext() {
 										return it.hasNext();
 									}
 
+									@Override
 									public java.util.Map.Entry<Integer, String> next() {
 										if (!it.hasNext())
 											return null;
@@ -244,14 +260,17 @@ public class RDF3XIndexConstruction {
 												String s = it.next();
 												int localIndex = index++;
 
+												@Override
 												public Integer getKey() {
 													return localIndex;
 												}
 
+												@Override
 												public String getValue() {
 													return s;
 												}
 
+												@Override
 												public String setValue(
 														final String arg0) {
 													throw new UnsupportedOperationException();
@@ -261,6 +280,7 @@ public class RDF3XIndexConstruction {
 										}
 									}
 
+									@Override
 									public void remove() {
 										throw new UnsupportedOperationException();
 									}
@@ -268,6 +288,7 @@ public class RDF3XIndexConstruction {
 								};
 							}
 
+							@Override
 							public int size() {
 								return rdftermsRepresentations.size();
 							}
@@ -399,13 +420,13 @@ public class RDF3XIndexConstruction {
 			return "Error - no lazy literal";
 	}
 
-	protected static class GenerateIDTriplesUsingStringSearch2 {
+	public static class GenerateIDTriplesUsingStringSearch2 {
 
-		protected GenerateIDTriplesUsingStringSearch2(
+		public GenerateIDTriplesUsingStringSearch2(
 				final Collection<URILiteral> graphURIs, final String dataFormat,
 				final TripleConsumer tc) throws Exception {
 
-			final SuperTrie searchtree = SuperTrie.createInstance();
+			final TrieSet searchtree = TrieSet.createRamBasedTrieSet();
 
 			final DiskCollection<Triple> triples = new DiskCollection<Triple>(
 					Triple.class);
@@ -421,7 +442,7 @@ public class RDF3XIndexConstruction {
 								searchtree.add(l.originalString());
 						}
 						triples.add(triple);
-						if (searchtree.isFull()) {
+						if (searchtree.size()>LIMIT_ELEMENTS_IN_TRIE) {
 							handleRun(searchtree, triples, tc);
 						}
 					}
@@ -442,7 +463,7 @@ public class RDF3XIndexConstruction {
 			}
 		}
 
-		private void handleRun(final SuperTrie searchtree,
+		private void handleRun(final TrieSet searchtree,
 				final Collection<Triple> triples, final TripleConsumer tc) {
 			final int[] map = getMap(searchtree);
 
@@ -473,7 +494,7 @@ public class RDF3XIndexConstruction {
 			triples.clear();
 		}
 
-		private int[] getMap(final SuperTrie searchtree) {
+		private int[] getMap(final TrieSet searchtree) {
 			// build map from local dictionary to global
 			// dictionary...
 			final int[] map = new int[searchtree.size()];

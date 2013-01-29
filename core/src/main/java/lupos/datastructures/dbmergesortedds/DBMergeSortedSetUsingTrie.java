@@ -26,33 +26,35 @@ package lupos.datastructures.dbmergesortedds;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.queryresult.ParallelIterator;
-import lupos.datastructures.trie.SuperTrie;
 
-public class DBMergeSortedSetUsingStringSearch extends DBMergeSortedSet<String> {
+public class DBMergeSortedSetUsingTrie extends DBMergeSortedSet<String> {
 
-	protected SuperTrie searchtree = SuperTrie.createInstance();
+	protected TrieSet searchtree = TrieSet.createRamBasedTrieSet();
+	
+	public static long LIMIT_ELEMENTS_IN_SET = 50000000;
 
-	public DBMergeSortedSetUsingStringSearch(final SortConfiguration sortConfiguration, final Class<? extends String> classOfElements){
+	public DBMergeSortedSetUsingTrie(final SortConfiguration sortConfiguration, final Class<? extends String> classOfElements){
 		super(sortConfiguration, classOfElements);
 	}
 
-	public DBMergeSortedSetUsingStringSearch(){
+	public DBMergeSortedSetUsingTrie(){
 		super();
 	}
 
-	public DBMergeSortedSetUsingStringSearch(
+	public DBMergeSortedSetUsingTrie(
 			final Class<? extends String> classOfElements){
 		super(classOfElements);
 	}
 
-	public DBMergeSortedSetUsingStringSearch(final SortConfiguration sortConfiguration,
+	public DBMergeSortedSetUsingTrie(final SortConfiguration sortConfiguration,
 			final Comparator<? super String> comp,
 			final Class<? extends String> classOfElements){
 		super(sortConfiguration, comp, classOfElements);
 	}
 
-	public DBMergeSortedSetUsingStringSearch(
+	public DBMergeSortedSetUsingTrie(
 			final Comparator<? super String> comp,
 			final Class<? extends String> classOfElements){
 		super(comp, classOfElements);
@@ -60,7 +62,7 @@ public class DBMergeSortedSetUsingStringSearch extends DBMergeSortedSet<String> 
 
 	@Override
 	public boolean add(final String ele) {
-		if (searchtree.isFull()) {
+		if (searchtree.size()>LIMIT_ELEMENTS_IN_SET) {
 			writeToRun();
 		}
 
@@ -79,7 +81,7 @@ public class DBMergeSortedSetUsingStringSearch extends DBMergeSortedSet<String> 
 					new StandardComparator<String>(), n++);
 			currentRun.add(entry);
 		}
-		searchtree = SuperTrie.createInstance();
+		searchtree = TrieSet.createRamBasedTrieSet();
 	}
 
 	@Override

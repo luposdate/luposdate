@@ -26,14 +26,12 @@ package lupos.engine.operators.index.adaptedRDF3X;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
-import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
@@ -42,7 +40,6 @@ import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.TripleKeyComparator;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
-import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.items.literal.URILiteral;
@@ -58,8 +55,8 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.SIPParallelIterator;
 import lupos.datastructures.sorteddata.PrefixSearch;
 import lupos.datastructures.sorteddata.PrefixSearchFromSortedMap;
-import lupos.datastructures.trie.SuperTrie;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
+import lupos.engine.indexconstruction.RDF3XIndexConstruction;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
@@ -432,291 +429,16 @@ public class SixIndices extends Indices {
             ((ParallelIterator) iterator).close();
     }
 
-    protected class GenerateIDTriplesUsingStringSearch {
-
-        ReentrantLock lock = new ReentrantLock();
-        Condition waitForMapper = this.lock.newCondition();
-        Condition waitForDictionaryBuilder = this.lock.newCondition();
-        boolean mapped = false;
-        volatile boolean dictionaryBuilt = false;
-        int[] map = null;
-        volatile int tripleNumberDictionaryBuilder = 0;
-
-        protected GenerateIDTriplesUsingStringSearch(final URILiteral graphURI, final String dataFormat, final Dataset dataset, final TripleConsumer tc) throws Exception {
-            dataset.waitForCodeMapConstruction();
-            CommonCoreQueryEvaluator.setMultipleDataThreads(1); // necessary to
-                                                                // have a
-                                                                // deterministic
-                                                                // sequence of
-                                                                // read triples
-                                                                // for both
-                                                                // threads
-                                                                // threadDictionaryBuilder
-                                                                // and
-                                                                // threadMapper!
-            final SuperTrie searchtree = SuperTrie.createInstance();
-
-            final Thread threadDictionaryBuilder = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        CommonCoreQueryEvaluator.readTriples(dataFormat, graphURI.openStream(), new TripleConsumer() {
-
-                            @Override
-                            public void consume(final Triple triple) {
-                                for (final Literal l : triple) {
-                                    // rdftermsRepresentations.add(l.
-                                    // originalString());
-                                    searchtree.add(l.toString());
-                                    if (l.originalStringDiffers())
-                                        searchtree.add(l.originalString());
-                                }
-                                tripleNumberDictionaryBuilder++;
-                                if (searchtree.isFull()) {
-                                    handleRun(searchtree);
-                                }
-                            }
-
-                        });
-                        if (searchtree.size() > 0) {
-                            handleRun(searchtree);
-                        }
-                    } catch (final Exception e) {
-                        System.err.println(e);
-                        e.printStackTrace();
-                    }
-                }
-            };
-            threadDictionaryBuilder.start();
-
-            final Thread threadMapper = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                    	GenerateIDTriplesUsingStringSearch.this.lock.lock();
-                        try {
-                            while (!GenerateIDTriplesUsingStringSearch.this.dictionaryBuilt)
-                                try {
-                                    GenerateIDTriplesUsingStringSearch.this.waitForDictionaryBuilder.await();
-                                } catch (final InterruptedException e) {
-                                    System.err.println(e);
-                                    e.printStackTrace();
-                                }
-                            GenerateIDTriplesUsingStringSearch.this.dictionaryBuilt = false;
-                        } finally {
-                            GenerateIDTriplesUsingStringSearch.this.lock.unlock();
-                        }
-                        CommonCoreQueryEvaluator.readTriples(dataFormat, graphURI.openStream(), new TripleConsumer() {
-                            int tripleNumberMapper = 0;
-
-                            @Override
-                            public void consume(final Triple triple) {
-                                try {
-                                    for (int pos = 0; pos < 3; pos++) {
-                                        if (triple.getPos(pos).originalStringDiffers())
-                                            triple.setPos(pos, new LazyLiteralOriginalContent(map[searchtree.getIndex(triple.getPos(pos).toString())], map[searchtree.getIndex(triple.getPos(pos).originalString())]));
-                                        else
-                                            triple.setPos(pos, new LazyLiteral(map[searchtree.getIndex(triple.getPos(pos).toString())]));
-                                    }
-                                    tc.consume(triple);
-                                    this.tripleNumberMapper++;
-                                    if (this.tripleNumberMapper == tripleNumberDictionaryBuilder) {
-                                    	mapped = true;
-                                        lock.lock();
-                                        try {
-                                            waitForMapper.signalAll();
-                                            while (!dictionaryBuilt)
-                                                try {
-                                                    waitForDictionaryBuilder.await();
-                                                } catch (final InterruptedException e) {
-                                                    System.err.println(e);
-                                                    e.printStackTrace();
-                                                }
-                                            dictionaryBuilt = false;
-                                        } finally {
-                                            lock.unlock();
-                                        }
-                                    }
-                                } catch (final RuntimeException e) {
-                                    System.err.println("Error for mapping triple:" + triple);
-                                    System.err.println("tripleNumberMapper:" + tripleNumberMapper + "<-> tripleNumberDictionaryBuilder:" + tripleNumberDictionaryBuilder);
-                                    System.err.println(e);
-                                    e.printStackTrace();
-                                    throw e;
-                                }
-                            }
-                        });
-                    } catch (final Exception e) {
-                        System.err.println(e);
-                        e.printStackTrace();
-                    }
-                }
-            };
-            threadMapper.start();
-
-            threadDictionaryBuilder.join();
-
-            // handle remaining triples...
-            if (searchtree.size() > 0)
-                handleRun(searchtree);
-            // give the mapper thread chance to terminate!
-            dictionaryBuilt = true;
-            lock.lock();
-            try {
-                waitForDictionaryBuilder.signalAll();
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        private void handleRun(final SuperTrie searchtree) {
-            // new "Run"
-            lock.lock();
-            try {
-                map = getMap(searchtree);
-                dictionaryBuilt = true;
-                // now read the next triples,
-                // transform the ids
-                // concerning the global
-                // dictionary and transmit
-                // them to the SixIndices Object
-                waitForDictionaryBuilder.signalAll();
-                // wait until the previous step
-                // is ready...
-                while (!mapped)
-                    try {
-                        waitForMapper.await();
-                    } catch (final InterruptedException e) {
-                        System.err.println(e);
-                        e.printStackTrace();
-                    }
-                mapped = false;
-                // clear the searchtree for the next
-                // "Run"
-                searchtree.clear();
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        private int[] getMap(final SuperTrie searchtree) {
-            // build map from local dictionary to global
-            // dictionary...
-            final int[] map = new int[searchtree.size()];
-
-            // get global map:
-            final Iterator<java.util.Map.Entry<String, Integer>> iterator = ((StringIntegerMapJava) LazyLiteral.getHm()).getMap().entrySet().iterator();
-            java.util.Map.Entry<String, Integer> current = iterator.next();
-
-            int index = 0;
-            for (final String s : searchtree) {
-                if (iterator instanceof SIPParallelIterator) {
-                    while (s.compareTo(current.getKey()) != 0) {
-                        current = ((SIPParallelIterator<java.util.Map.Entry<String, Integer>, String>) iterator).next(s);
-                    }
-                } else {
-                    while (s.compareTo(current.getKey()) != 0) {
-                        current = iterator.next();
-                    }
-                }
-                map[index++] = current.getValue();
-            }
-            return map;
-        }
-    }
-
-    protected class GenerateIDTriplesUsingStringSearch2 {
-
-        protected GenerateIDTriplesUsingStringSearch2(final URILiteral graphURI, final String dataFormat, final Dataset dataset, final TripleConsumer tc) throws Exception {
-            dataset.waitForCodeMapConstruction();
-
-            final SuperTrie searchtree = SuperTrie.createInstance();
-
-            final DiskCollection<Triple> triples = new DiskCollection<Triple>(Triple.class);
-
-            try {
-                CommonCoreQueryEvaluator.readTriples(dataFormat, graphURI.openStream(), new TripleConsumer() {
-
-                    @Override
-                    public void consume(final Triple triple) {
-                        for (final Literal l : triple) {
-                            // rdftermsRepresentations.add(l.
-                            // originalString());
-                            searchtree.add(l.toString());
-                            if (l.originalStringDiffers())
-                                searchtree.add(l.originalString());
-                        }
-                        triples.add(triple);
-                        if (searchtree.isFull()) {
-                            handleRun(searchtree, triples, tc);
-                        }
-                    }
-
-                });
-                if (searchtree.size() > 0) {
-                    handleRun(searchtree, triples, tc);
-                    triples.release();
-                }
-            } catch (final IOException e) {
-                System.err.println(e);
-                e.printStackTrace();
-            }
-        }
-
-        private void handleRun(final SuperTrie searchtree, Collection<Triple> triples, final TripleConsumer tc) {
-            int[] map = getMap(searchtree);
-
-            for (Triple triple : triples) {
-                Triple dummy = new Triple(triple.getPos(0), triple.getPos(1), triple.getPos(2));
-                for (int pos = 0; pos < 3; pos++) {
-                    if (triple.getPos(pos).originalStringDiffers())
-                        dummy.setPos(pos, new LazyLiteralOriginalContent(map[searchtree.getIndex(triple.getPos(pos).toString())], map[searchtree.getIndex(triple.getPos(pos).originalString())]));
-                    else
-                        dummy.setPos(pos, new LazyLiteral(map[searchtree.getIndex(triple.getPos(pos).toString())]));
-                }
-                tc.consume(dummy);
-            }
-
-            // clear the searchtree and the triples collection for the next
-            // "Run"
-            searchtree.clear();
-            triples.clear();
-        }
-
-        private int[] getMap(final SuperTrie searchtree) {
-            // build map from local dictionary to global
-            // dictionary...
-            final int[] map = new int[searchtree.size()];
-
-            // get global map:
-            final Iterator<java.util.Map.Entry<String, Integer>> iterator = ((StringIntegerMapJava) LazyLiteral.getHm()).getMap().entrySet().iterator();
-            java.util.Map.Entry<String, Integer> current = iterator.next();
-
-            int index = 0;
-            for (final String s : searchtree) {
-                if (iterator instanceof SIPParallelIterator) {
-                    while (s.compareTo(current.getKey()) != 0) {
-                        current = ((SIPParallelIterator<java.util.Map.Entry<String, Integer>, String>) iterator).next(s);
-                    }
-                } else {
-                    while (s.compareTo(current.getKey()) != 0) {
-                        current = iterator.next();
-                    }
-                }
-                map[index++] = current.getValue();
-            }
-            return map;
-        }
-    }
-
     @Override
     protected void loadDataWithoutConsideringOntoloy(final URILiteral graphURI, final String dataFormat, final Dataset dataset) throws Exception {
         if (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
-                if (Dataset.getSortingApproach() == Dataset.SORT.STRINGSEARCHTREE || Dataset.getSortingApproach() == Dataset.SORT.STRINGSEARCHTREEREPLACEMENTSELECTION) {
+                if (Dataset.getSortingApproach() == Dataset.SORT.STRINGSEARCHTREE) {
                     // TODO check
                     // new GenerateIDTriplesUsingStringSearch(graphURI,
                     // dataFormat, dataset, this);
-                    new GenerateIDTriplesUsingStringSearch2(graphURI, dataFormat, dataset, this);
+                	dataset.waitForCodeMapConstruction();
+                	Collection<URILiteral> graphURIs = new LinkedList<URILiteral>();
+                    new RDF3XIndexConstruction.GenerateIDTriplesUsingStringSearch2(graphURIs, dataFormat, this);
                 } else {
                     final SortedSet<Triple> dsst_s;
                     dsst_s = new DBMergeSortedSet<Triple>(new SortConfiguration(), new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.SPO), Triple.class);

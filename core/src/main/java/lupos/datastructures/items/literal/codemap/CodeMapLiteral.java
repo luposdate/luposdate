@@ -37,9 +37,8 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.items.literal.string.StringLiteral;
-import lupos.datastructures.trie.Trie;
-import lupos.datastructures.trie.TrieMap;
-import lupos.datastructures.trie.TrieMap.TrieAndArraySizesDoNotFitException;
+import lupos.datastructures.patriciatrie.ram.RBTrieMap;
+import lupos.datastructures.patriciatrie.util.TrieMapImplementation;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 
@@ -156,17 +155,10 @@ public class CodeMapLiteral extends Literal implements Item,
 				v = new IntegerStringMapJava(LiteralFactory.getMapType());
 				break;
 			case TRIEMAP:
-				TrieMap<Integer> trieMap;
-				try {
-					trieMap = new TrieMap<Integer>(new Trie(),new Integer[]{});
-					ReentrantLock lock=new ReentrantLock();
-					hm = new StringIntegerMapLock(lock,new StringIntegerMapJava(trieMap));
-					v = new IntegerStringMapLock(lock,new IntegerStringMapTrieSlave(trieMap));
-					break;
-				} catch (TrieAndArraySizesDoNotFitException e) {
-					System.err.println(e);
-					e.printStackTrace();
-				}
+				TrieMapImplementation<Integer> trieMap = new TrieMapImplementation<Integer>(new RBTrieMap<Integer>());
+				hm = new StringIntegerMapLock(lock,new StringIntegerMapJava(trieMap));
+				v = new IntegerStringMapLock(lock,new IntegerStringMapArray());
+				break;
 			}
 		}
 	}
