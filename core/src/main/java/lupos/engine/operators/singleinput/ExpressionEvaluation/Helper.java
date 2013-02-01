@@ -786,14 +786,18 @@ public class Helper {
 	public static String getString(final Object o) {
 		if (o instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) o;
-			if (isNumeric(tl.getType()))
-				return tl.toString();
-			else if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#string>") == 0)
-				return tl.getContent().substring(1,
-						tl.getContent().length() - 1);
-			else
-				return tl.toString();
+			return tl.getContent().substring(1, tl.getContent().length() - 1);
+//			if (isNumeric(tl.getType()))
+//				return tl.toString();
+//			else if (tl.getType().compareTo(
+//					"<http://www.w3.org/2001/XMLSchema#string>") == 0)
+//				return tl.getContent().substring(1,
+//						tl.getContent().length() - 1);
+//			else
+//				return tl.toString();
+		} else if(o instanceof LanguageTaggedLiteral){
+			LanguageTaggedLiteral ltl = (LanguageTaggedLiteral) o;
+			return ltl.getContent().substring(1, ltl.getContent().length() - 1);
 		} else if (o instanceof Literal || o instanceof String) {
 			if ((o.toString().startsWith("\"") && o.toString().endsWith("\""))
 					|| (o.toString().startsWith("'") && o.toString().endsWith("'")))

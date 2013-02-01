@@ -356,15 +356,16 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		if (o instanceof URILiteral || o instanceof AnonymousLiteral)
 			return false;
 		final String cmp = Helper.getString(o);
-		String pattern = Helper.getString(resultOfChildOne(node, b, d));
+		String pattern = Helper.getString(Helper.unlazy(resultOfChildOne(node, b, d)));
 		String oldPattern;
 		do {
 			oldPattern = pattern;
 			pattern = pattern.replace("\\\\", "\\");
 		} while (oldPattern.compareTo(pattern) != 0);
 		String flags = "";
-		if (node.jjtGetNumChildren() > 2)
-			flags = Helper.getString(resultOfChildTwo(node, b, d));
+		if (node.jjtGetNumChildren() > 2){
+			flags = Helper.getString(Helper.unlazy(resultOfChildTwo(node, b, d)));
+		}
 		// return match(cmp,pattern,flags); // does not support flag x!!!
 		return Helper.matchXerces(cmp, pattern, flags);
 	}
