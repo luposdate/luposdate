@@ -21,69 +21,56 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.datastructures.sort.run.trie;
 
 import java.util.Iterator;
 
-import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.datastructures.patriciatrie.TrieSet;
+import lupos.datastructures.patriciatrie.diskseq.DBSeqTrieSet;
+import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
+import lupos.datastructures.sort.run.Run;
 
-public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
+public class TrieSetRun extends Run {
 
-	private final Heap<E> heap;
-
-	public HeapSort(final int height) {
-		this.heap = Heap.createInstance(height);
+	private final TrieSet trie;
+	
+	public TrieSetRun(final TrieSet trie){
+		this.trie = trie;
 	}
-
-	public HeapSort(final int length_or_height, final boolean length) {
-		this.heap = Heap.createInstance(length_or_height, length);
+	
+	@Override
+	public boolean add(String toBeAdded) {
+		return this.trie.add(toBeAdded);
 	}
 
 	@Override
-	public void add(final E elem) {
-		heap.add(elem);
-	}
-
-	@Override
-	public void clear() {
-		heap.clear();
-	}
-
-	@Override
-	public Iterator<E> emptyDatastructure() {
-		// return heap.emptyDatastructure();
-		return new Iterator<E>() {
-
-			public boolean hasNext() {
-				return !heap.isEmpty();
-			}
-
-			public E next() {
-				if (!heap.isEmpty())
-					return heap.pop();
-				else
-					return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
+	public Run swapRun() {
+		TrieSet diskbasedTrie = new DBSeqTrieSet(Run.getFilenameForNewRun());
+		try {
+			diskbasedTrie.copy(this.trie);
+		} catch (TrieNotCopyableException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
+		return new TrieSetRun(diskbasedTrie);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return heap.isEmpty();
+		return this.trie.size()==0;
 	}
 
 	@Override
-	public boolean isFull() {
-		return heap.isFull();
+	public Run sort() {
+		return this;
+	}
+	
+	public TrieSet getTrie(){
+		return this.trie;
 	}
 
 	@Override
-	public void release() {
-		heap.release();
+	public Iterator<String> iterator() {		
+		return this.trie.iterator();
 	}
 }

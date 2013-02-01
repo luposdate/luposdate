@@ -21,69 +21,38 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.datastructures.sort.run.trie;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
-import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.datastructures.patriciatrie.TrieSet;
+import lupos.datastructures.patriciatrie.diskseq.DBSeqTrieSet;
+import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
+import lupos.datastructures.patriciatrie.ram.RBTrieSet;
+import lupos.datastructures.sort.run.Run;
+import lupos.datastructures.sort.run.Runs;
 
-public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
+public class TrieSetRuns implements Runs {
 
-	private final Heap<E> heap;
-
-	public HeapSort(final int height) {
-		this.heap = Heap.createInstance(height);
-	}
-
-	public HeapSort(final int length_or_height, final boolean length) {
-		this.heap = Heap.createInstance(length_or_height, length);
+	@Override
+	public Run merge(final List<Run> runs, final boolean inmemory) {
+		ArrayList<TrieSet> triestoBeMerged = new ArrayList<TrieSet>(runs.size());
+		for(Run run: runs){
+			triestoBeMerged.add(((TrieSetRun)run).getTrie());
+		}
+		TrieSet result = (inmemory)? new RBTrieSet() : new DBSeqTrieSet(Run.getFilenameForNewRun());
+		try {
+			result.merge(triestoBeMerged);
+		} catch (TrieNotMergeableException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
+		return new TrieSetRun(result);
 	}
 
 	@Override
-	public void add(final E elem) {
-		heap.add(elem);
-	}
-
-	@Override
-	public void clear() {
-		heap.clear();
-	}
-
-	@Override
-	public Iterator<E> emptyDatastructure() {
-		// return heap.emptyDatastructure();
-		return new Iterator<E>() {
-
-			public boolean hasNext() {
-				return !heap.isEmpty();
-			}
-
-			public E next() {
-				if (!heap.isEmpty())
-					return heap.pop();
-				else
-					return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return heap.isEmpty();
-	}
-
-	@Override
-	public boolean isFull() {
-		return heap.isFull();
-	}
-
-	@Override
-	public void release() {
-		heap.release();
+	public Run createRun() {
+		return new TrieSetRun(TrieSet.createRamBasedTrieSet());
 	}
 }

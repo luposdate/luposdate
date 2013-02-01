@@ -29,18 +29,19 @@ import java.util.List;
 import lupos.datastructures.patriciatrie.TrieBag;
 import lupos.datastructures.patriciatrie.diskseq.DBSeqTrieBag;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
+import lupos.datastructures.patriciatrie.ram.RBTrieBag;
 import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.Runs;
 
 public class TrieBagRuns implements Runs {
 
 	@Override
-	public Run merge(List<Run> runs) {
+	public Run merge(List<Run> runs, final boolean inmemory) {
 		ArrayList<TrieBag> triestoBeMerged = new ArrayList<TrieBag>(runs.size());
 		for(Run run: runs){
 			triestoBeMerged.add(((TrieBagRun)run).getTrie());
 		}
-		TrieBag result = new DBSeqTrieBag(Run.getFilenameForNewRun());
+		TrieBag result = (inmemory)? new RBTrieBag() : new DBSeqTrieBag(Run.getFilenameForNewRun());
 		try {
 			result.merge(triestoBeMerged);
 		} catch (TrieNotMergeableException e) {

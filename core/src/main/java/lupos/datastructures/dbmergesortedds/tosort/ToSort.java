@@ -68,6 +68,21 @@ public abstract class ToSort<E extends Comparable<E>> {
 			return null;
 		}
 	}
+	
+	public static<T extends Comparable<T>> ToSort<T> createInstanceWithGivenNumberOfElements(final TOSORT tosort, final int numberOfElements) {
+		switch (tosort) {
+		case MERGESORT:
+			return new JavaMergeSort(numberOfElements);
+		case PARALLELMERGESORT:
+			return new ParallelMergeSort(numberOfElements);
+		case QUICKSORT:
+			return new QuickSort(numberOfElements);
+		case HEAPSORT:
+			return new HeapSort(numberOfElements, true);
+		default:
+			return null;
+		}
+	}
 
 	public static<T extends Comparable<T>> ToSort<T> createInstance() {
 		return ToSort.createInstance(ToSort.tosort, ToSort.height);

@@ -763,7 +763,6 @@ public final class NodeHelper {
 					node.setContent(index, nodeData.getSecond());
 					
 					if (node.isFromSameTrie(n)) {
-						System.out.println("Reusing child!");
 						node.setChild(index, n.getChild(nodeData.getFirst()));
 					} else {
 						NodeHelper.setChildCopy(node, index, n.getChild(nodeData.getFirst()));
@@ -1077,7 +1076,6 @@ public final class NodeHelper {
 					node.setContent(index, nodeData.getSecond());
 					
 					if (node.isFromSameTrie(n)) {
-						// System.out.println("Reusing child!");
 						node.setChild(index, n.getChild(nodeData.getFirst()));
 					} else {
 						NodeHelper.setChildCopy(node, index, n.getChild(nodeData.getFirst()));

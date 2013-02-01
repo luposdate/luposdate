@@ -140,7 +140,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 *            more tries have missing metadata.
 	 * @throws TrieNotMergeableException
 	 */
-	protected void merge(final List<Trie> tries, final boolean checkMetadata) throws TrieNotMergeableException {
+	protected void merge(final List<? extends Trie> tries, final boolean checkMetadata) throws TrieNotMergeableException {
 		final List<Node> nodesToMerge = new ArrayList<Node>(tries.size());
 		
 		// Only add valid root nodes
@@ -200,7 +200,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 *            List of tries
 	 * @throws TrieNotMergeableException
 	 */
-	public void merge(final List<Trie> tries) throws TrieNotMergeableException {
+	public void merge(final List<? extends Trie> tries) throws TrieNotMergeableException {
 		this.merge(tries, true);
 	}
 	

@@ -21,69 +21,49 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.datastructures.sort.run.memorysort;
 
 import java.util.Iterator;
 
-import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.datastructures.dbmergesortedds.tosort.ToSort;
+import lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT;
+import lupos.datastructures.sort.run.Run;
 
-public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
-
-	private final Heap<E> heap;
-
-	public HeapSort(final int height) {
-		this.heap = Heap.createInstance(height);
-	}
-
-	public HeapSort(final int length_or_height, final boolean length) {
-		this.heap = Heap.createInstance(length_or_height, length);
-	}
-
-	@Override
-	public void add(final E elem) {
-		heap.add(elem);
+public class MemorySortRun extends Run {
+	
+	protected final ToSort<String> tosort;
+	protected final boolean set;
+	
+	public MemorySortRun(final TOSORT sortType, final int numberOfElements, final boolean set){
+		this.tosort = ToSort.createInstanceWithGivenNumberOfElements(sortType, numberOfElements);
+		this.set = set;
 	}
 
 	@Override
-	public void clear() {
-		heap.clear();
+	public boolean add(String toBeAdded) {		
+		this.tosort.add(toBeAdded);
+		return true;
 	}
 
 	@Override
-	public Iterator<E> emptyDatastructure() {
-		// return heap.emptyDatastructure();
-		return new Iterator<E>() {
+	public Run sort() {
+		return new MemorySortSortedRun(this.tosort.emptyDatastructure(), this.set);
+	}
 
-			public boolean hasNext() {
-				return !heap.isEmpty();
-			}
-
-			public E next() {
-				if (!heap.isEmpty())
-					return heap.pop();
-				else
-					return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
+	@Override
+	public Run swapRun() {
+		// this is only allowed for already sorted runs (see MemorySortSortedRun)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return heap.isEmpty();
+		return this.tosort.isEmpty();
 	}
 
 	@Override
-	public boolean isFull() {
-		return heap.isFull();
-	}
-
-	@Override
-	public void release() {
-		heap.release();
+	public Iterator<String> iterator() {
+		// this is only allowed for already sorted runs (see MemorySortSortedRun)
+		throw new UnsupportedOperationException();
 	}
 }

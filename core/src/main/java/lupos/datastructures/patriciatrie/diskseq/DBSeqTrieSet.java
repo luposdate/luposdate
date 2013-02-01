@@ -144,7 +144,7 @@ public class DBSeqTrieSet extends TrieSet {
 	}
 	
 	@Override
-	public void merge(final List<Trie> tries) throws TrieNotMergeableException {
+	public void merge(final List<? extends Trie> tries) throws TrieNotMergeableException {
 		/*
 		 * This trie must be empty, because the file, that contains the original
 		 * elements, will be overwritten during the merge process. If this trie

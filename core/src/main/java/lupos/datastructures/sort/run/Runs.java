@@ -33,9 +33,10 @@ public interface Runs {
 	 * Merges two or more runs.
 	 * We assume that runs contains at least two runs!
 	 * @param runs the runs to be merged
+	 * @params inmemory true for merging in a run stored in main memory, false for merging in a run stored on disk  
 	 * @return the merged run
 	 */
-	public Run merge(List<Run> runs);
+	public Run merge(List<Run> runs, final boolean inmemory);
 	
 	/**
 	 * Creates a new run

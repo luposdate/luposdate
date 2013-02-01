@@ -31,16 +31,20 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.Runs;
+import lupos.datastructures.sort.run.memorysort.MemorySortRuns;
 import lupos.datastructures.sort.run.trie.TrieBagRuns;
+import lupos.datastructures.sort.run.trie.TrieSetRuns;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.misc.TimeInterval;
@@ -56,6 +60,71 @@ import lupos.misc.TimeInterval;
  */
 public class ExternalParallelSort {
 	
+	public static enum SORTTYPE {
+		SET {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new TrieSetRuns();
+			}
+		}, 
+		BAG {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new TrieBagRuns();
+			}
+		}, 
+		MERGESORTSET {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.MERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
+			}
+		}, 
+		MERGESORTBAG {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.MERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
+			}
+		}, 
+		PARALLELMERGESORTSET {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.PARALLELMERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
+			}
+		}, 
+		PARALLELMERGESORTBAG {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.PARALLELMERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
+			}
+		}, 
+		QUICKSORTSET {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.QUICKSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
+			}
+		}, 
+		QUICKSORTBAG {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.QUICKSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
+			}
+		}, 
+		HEAPSORTSET {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.HEAPSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
+			}
+		}, 
+		HEAPSORTBAG {
+			@Override
+			public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+				return new MemorySortRuns(TOSORT.HEAPSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
+			}
+		};
+		
+		public abstract Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS);
+	}
+	
 	// garbage collection cycles are once per minute per default, with
 	// java -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 ...
 	// it can be set to whatever you like (here 1 hour)...
@@ -69,19 +138,21 @@ public class ExternalParallelSort {
 	public static void main(String[] args) throws Exception {
 		System.out.println("Sorting Strings or RDF terms of large RDF data in computers with large main memory...");
 		System.out.println("Call:");
-		System.out.println("java lupos.datastructures.sort.ExternalParallelSort DATAFILE FORMAT [NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN FREE_MEMORY_LIMIT]");
+		System.out.println("java lupos.datastructures.sort.ExternalParallelSort DATAFILE FORMAT [SORTTYPE NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN FREE_MEMORY_LIMIT]");
 		System.out.println("FORMAT can be STRING for a large collection of strings in one file, or an RDF format like N3");
+		System.out.println("SORTTYPE can be "+Arrays.toString(SORTTYPE.values()));
 		System.out.println("Example:");
-		System.out.println("java -server -XX:+UseParallelGC -XX:+AggressiveOpts -Xms60G -Xmx60G lupos.test.ExternalParallelMergeSort SomeFiles.txt MULTIPLEN3 8 1000 2 100000");
-		if(!(args.length==2 || args.length==6)){
+		System.out.println("java -server -XX:+UseParallelGC -XX:+AggressiveOpts -Xms60G -Xmx60G lupos.test.ExternalParallelMergeSort SomeFiles.txt MULTIPLEN3 BAG 8 1000 2 100000");
+		if(!(args.length==2 || args.length==7)){
 			System.err.println("Wrong number of arguments!");
 			return;
 		}
 		Date start = new Date();
-		System.out.println("\nStart processing:"+start+"\n");		
+		System.out.println("\nStart processing:"+start+"\n");
+		final int NUMBER_ELEMENTS_IN_INITIAL_RUNS = Integer.parseInt(args[4]);
 		ExternalParallelSort sorter = (args.length==2)?
-				new ExternalParallelSort():
-				new ExternalParallelSort(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Long.parseLong(args[5]), new TrieBagRuns());
+				new ExternalParallelSort():					
+				new ExternalParallelSort(Integer.parseInt(args[3]), NUMBER_ELEMENTS_IN_INITIAL_RUNS, Integer.parseInt(args[5]), Long.parseLong(args[6]), SORTTYPE.valueOf(args[2]).createRuns(NUMBER_ELEMENTS_IN_INITIAL_RUNS));
 				
 		System.out.println("\nParameters:\n" + sorter.parametersToString() + "\n");
 		sorter.sort(new BufferedInputStream(new FileInputStream(args[0])), args[1]);
@@ -227,19 +298,19 @@ public class ExternalParallelSort {
 			// already merge in main memory?
 			result = runstoBeFinallyMerged.get(0);
 		} else {
-			result = this.runs.merge(runstoBeFinallyMerged);
+			result = this.runs.merge(runstoBeFinallyMerged, false);
 		}
 		
 		// just access all elements in the bag by iterating one time through
 		Iterator<String> it = result.iterator();
 		int i=0;
 		while(it.hasNext()){
-			//it.next();
-			//i++;
-			System.out.println((++i)+":"+it.next());
+			it.next();
+			i++;
+			// System.out.println((++i)+":"+it.next());
 		}
 		System.out.println("Number of sorted RDF terms:"+i);
-		System.out.println("There should be " + (i/3) + " triples read!");
+		System.out.println("Only if bags are used: There should be " + (i/3) + " triples read!");
 	}
 	
 	/**
@@ -288,7 +359,7 @@ public class ExternalParallelSort {
 					if(this.run.add(item)){
 						numberInRun++;
 					}
-					if(numberInRun > ExternalParallelSort.this.NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+					if(numberInRun >= ExternalParallelSort.this.NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 						// this run exceeds the limit for number of elements and becomes therefore a new initial run
 						this.finishInitialRun();
 						numberInRun =0;
@@ -304,11 +375,11 @@ public class ExternalParallelSort {
 		
 		public void finishInitialRun() throws InterruptedException{
 			if(!this.run.isEmpty()){
-				this.run.sort();
+				Run sortedRun = this.run.sort();
 				if(this.initialRunsLevel0.isCurrentlyFull()){
 					ExternalParallelSort.this.numberOfWaitsOfInitialRunGenerator++;
 				}
-				this.initialRunsLevel0.put(this.run);
+				this.initialRunsLevel0.put(sortedRun);
 				this.run = ExternalParallelSort.this.runs.createRun();
 			}
 		}
@@ -344,7 +415,7 @@ public class ExternalParallelSort {
 							for(Object bag: bagsToMerge){
 								toBeMerged.add((Run) bag);
 							}
-							run = ExternalParallelSort.this.runs.merge(toBeMerged);
+							run = ExternalParallelSort.this.runs.merge(toBeMerged, true);
 						} else if(bagsToMerge.length==1) {
 							run = (Run) bagsToMerge[0];
 						}
@@ -384,7 +455,7 @@ public class ExternalParallelSort {
 					listOfRunsToBeMerged.add(level.remove());					
 				}
 				
-				Run resultOfMerge = ExternalParallelSort.this.runs.merge(listOfRunsToBeMerged);
+				Run resultOfMerge = ExternalParallelSort.this.runs.merge(listOfRunsToBeMerged, true);
 				
 				// put the merged run to one level higher (and recursively merge there the runs if enough are there)
 				this.addToLevel(addLevel + 1, resultOfMerge);				

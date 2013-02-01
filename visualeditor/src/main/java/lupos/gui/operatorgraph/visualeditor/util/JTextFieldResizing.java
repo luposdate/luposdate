@@ -149,7 +149,7 @@ public class JTextFieldResizing extends JTextField {
 
 		final String placeholder = getPlaceholderString();
 
-		return new Dimension(fm.stringWidth(placeholder), fm.getLeading() + fm.getMaxAscent() + fm.getMaxDescent());
+		return new Dimension(fm.stringWidth(placeholder), fm.getHeight());
 	}
 
 	public String toString() {
