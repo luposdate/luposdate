@@ -97,7 +97,10 @@ public class XMLFormatReader extends MIMEFormatReader {
 				result.add(Bindings.createNewInstance());
 			}
 			return result;
-		} else {		
+		} else {
+			// This allows to follow the iterator concept also here:
+			// the XML is parsed whenever the iterator is asked for the next element (method next).
+			// Only some intermediate results (=bindings) are parsed beforehand and stored in the bounded buffer! 
 			return QueryResult.createInstance(new ParallelIterator<Bindings>(){
 	
 				@Override
@@ -176,12 +179,11 @@ public class XMLFormatReader extends MIMEFormatReader {
 		
 		private final BoundedBuffer<Bindings> boundedBuffer;
 		
-		private boolean booleanResultInHandler = false;
-		
 		private Bindings currentBindings;
 		private Variable currentVariable;
 		private TYPE currentType = TYPE.undefined;
 		private String currentAttribute = null;
+		private String content = "";
 		
 		public ResultsHandler(final BoundedBuffer<Bindings> boundedBuffer){
 			this.boundedBuffer = boundedBuffer;
@@ -190,9 +192,8 @@ public class XMLFormatReader extends MIMEFormatReader {
 		@Override
 		public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
 			this.currentType = TYPE.undefined;
-			if(qName.equalsIgnoreCase("boolean")){
-				this.booleanResultInHandler = true;
-			} else if(qName.equalsIgnoreCase("results")){
+			this.content = "";
+			if(qName.equalsIgnoreCase("results")){
 				XMLFormatReader.this.lock.lock();
 				try {
 					XMLFormatReader.this.decision=true;
@@ -228,12 +229,12 @@ public class XMLFormatReader extends MIMEFormatReader {
 					return;
 				}				
 				this.currentType = TYPE.literal; 
-			} 
+			}
+			// do nothing for boolean-tag, which will be handled, when the tag is closed!
 		}
 		
 		@Override
 		public void endElement(final String uri, final String localName, final String qName) throws SAXException {
-			this.currentType = TYPE.undefined;
 			if(qName.equalsIgnoreCase("result")){
 				try {
 					this.boundedBuffer.put(this.currentBindings);
@@ -241,48 +242,56 @@ public class XMLFormatReader extends MIMEFormatReader {
 					System.err.println(e);
 					e.printStackTrace();
 				}
-			}
-		}
-		
-		@Override
-		public void characters(final char ch[], final int start, final int length) throws SAXException {
-			final String content = new String(ch, start, length);
-			if(this.booleanResultInHandler){
+			} else if(qName.equalsIgnoreCase("uri") ||
+					qName.equalsIgnoreCase("bnode") ||
+					qName.equalsIgnoreCase("literal")){
+				this.handleValue();
+			} else if(qName.equalsIgnoreCase("boolean")){
 				XMLFormatReader.this.lock.lock();
 				try {
 					XMLFormatReader.this.booleanResult=true;
-					XMLFormatReader.this.resultOfBooleanResult = content.equals("true");
+					XMLFormatReader.this.resultOfBooleanResult = this.content.equals("true");
 					XMLFormatReader.this.decision=true;
 					XMLFormatReader.this.decisionMade.signalAll();
 				} finally {
 					XMLFormatReader.this.lock.unlock();
-				}
-				
-			}			
+				}	
+			}
+			this.currentType = TYPE.undefined;
+		}
+		
+		private void handleValue(){
 			Literal literal = null;
 			switch(this.currentType){
 			default:
 			case undefined:
 				break;
 			case uri:
-				literal = LiteralFactory.createURILiteralWithoutException("<"+content+">");
+				literal = LiteralFactory.createURILiteralWithoutException("<"+this.content+">");
 				break;
 			case literal:
-				literal = LiteralFactory.createLiteral("\""+content+"\"");
+				literal = LiteralFactory.createLiteral("\""+this.content+"\"");
 				break;
 			case typedliteral:
-				literal = LiteralFactory.createTypedLiteralWithoutException("\""+content+"\"", this.currentAttribute);
+				literal = LiteralFactory.createTypedLiteralWithoutException("\""+this.content+"\"", this.currentAttribute);
 				break;
 			case languagetaggedliteral:
-				literal = LiteralFactory.createLanguageTaggedLiteral("\""+content+"\"", this.currentAttribute);
+				literal = LiteralFactory.createLanguageTaggedLiteral("\""+this.content+"\"", this.currentAttribute);
 				break;
 			case blanknode:
-				literal = LiteralFactory.createAnonymousLiteral("_:"+content);
+				literal = LiteralFactory.createAnonymousLiteral("_:"+this.content);
 				break;
 			}
 			if(literal!=null){
 				this.currentBindings.add(this.currentVariable, literal);
-			}
+			}			
+		}
+		
+		@Override
+		public void characters(final char ch[], final int start, final int length) throws SAXException {
+			// for a text node, the XML parser may be calls characters(...) several times,
+			// such that the characters must be collected...
+			this.content += new String(ch, start, length);
 		}
 	}
 }
