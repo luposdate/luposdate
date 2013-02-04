@@ -31,7 +31,6 @@ public interface SPARQL1_1ParserPathVisitorStringGenerator
   public String visit(ASTAVerbType node, String subject, String object);
   public String visit(ASTPathAlternative node, String subject, String object);
   public String visit(ASTPathSequence node, String subject, String object);
-  public String visit(ASTDistinctPath node, String subject, String object);
   public String visit(ASTInvers node, String subject, String object);
   public String visit(ASTArbitraryOccurences node, String subject, String object);
   public String visit(ASTOptionalOccurence node, String subject, String object);

@@ -882,12 +882,6 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		String blank = getIntermediateVariable();
 		return node.jjtGetChild(0).accept(this, subject, blank) + "\n" + node.jjtGetChild(1).accept(this, blank, object);
 	}
-
-	@Override
-	public String visit(ASTDistinctPath node, String subject, String object) {
-		return node.jjtGetChild(0).accept(this, subject, object);
-	}
-	
 	
 	/**
 	 * @param node

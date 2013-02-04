@@ -89,7 +89,7 @@ void PathSequence() :{}{  PathEltOrInverse()  (    "/"     // PathEltOrInv
 void PathElt() :{}{  PathPrimary()    (    LOOKAHEAD(2)    PathMod()  )?}//86
 void PathEltOrInverse() :{}{  PathElt()|  (    "^" PathElt() #Invers(1)  )}//87
 void PathMod() :{}{  "*" #ArbitraryOccurences(1)| "?" #OptionalOccurence(1)| "+" #ArbitraryOccurencesNotZero(1)}//88
-void PathPrimary() :{ Token t;}{  IRIref()| ("a" #AVerbType)| ("!" PathNegatedPropertySet())| ("(" Path() ")")| DistinctPath()}void DistinctPath() #DistinctPath :{}{  "DISTINCT"  "(" Path() ")"}//89
+void PathPrimary() :{ Token t;}{  IRIref()| ("a" #AVerbType)| ("!" PathNegatedPropertySet())| ("(" Path() ")")}//89
 void PathNegatedPropertySet() #NegatedPath :{}{  PathOneInPropertySet()|  (    "("    (      PathOneInPropertySet()      (        "|" PathOneInPropertySet()      )*    )?    ")"  )}//90
 void PathOneInPropertySet() :{}{  IRIref()| ("a" #AVerbType)| ("^" (IRIref() | ("a" #AVerbType)) #Invers(1) )}//91
 void Integer() #Integer :{}{  < INTEGER >  {    jjtThis.setValue(token.image);  }}//92

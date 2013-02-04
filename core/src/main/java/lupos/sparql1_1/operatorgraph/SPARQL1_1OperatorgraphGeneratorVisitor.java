@@ -58,7 +58,6 @@ public interface SPARQL1_1OperatorgraphGeneratorVisitor
   public BasicOperator visit(ASTOptionalOccurence node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);
   public BasicOperator visit(ASTArbitraryOccurencesNotZero node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);
   public BasicOperator visit(ASTPathSequence node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);
-  public BasicOperator visit(ASTDistinctPath node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);
   public BasicOperator visit(ASTPathAlternative node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);
   public BasicOperator visit(ASTNegatedPath node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);
   public BasicOperator visit(ASTInvers node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode);

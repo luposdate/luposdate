@@ -579,11 +579,6 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 	
 	@Override
-	public BasicOperator visit(ASTDistinctPath node, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode){
-		return node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
-	}
-	
-	@Override
 	public BasicOperator visit(ASTOptionalOccurence node,
 			OperatorConnection connection, Item graphConstraint,
 			Variable subject, Variable object, Node subjectNode, Node objectNode) {

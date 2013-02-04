@@ -80,7 +80,6 @@ public interface SPARQL1_1ParserVisitorStringGenerator
   public String visit(ASTObjectList node);
   public String visit(ASTPathAlternative node);
   public String visit(ASTPathSequence node);
-  public String visit(ASTDistinctPath node);
   public String visit(ASTInvers node);
   public String visit(ASTArbitraryOccurences node);
   public String visit(ASTOptionalOccurence node);

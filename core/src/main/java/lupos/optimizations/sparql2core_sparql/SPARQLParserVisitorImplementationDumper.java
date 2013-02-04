@@ -995,11 +995,6 @@ public class SPARQLParserVisitorImplementationDumper implements
 	}
 	
 	@Override
-	public String visit(ASTDistinctPath node) {
-		return " DISTINCT("+visitChild(node, 0) +")";
-	}
-	
-	@Override
 	public String visit(ASTArbitraryOccurences node) {
 		return "("+visitChild(node, 0)+")*";
 	}

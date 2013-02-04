@@ -60,7 +60,6 @@ import lupos.sparql1_1.ASTDayFuncNode;
 import lupos.sparql1_1.ASTDefault;
 import lupos.sparql1_1.ASTDefaultGraph;
 import lupos.sparql1_1.ASTDelete;
-import lupos.sparql1_1.ASTDistinctPath;
 import lupos.sparql1_1.ASTDrop;
 import lupos.sparql1_1.ASTEncodeForUriFuncNode;
 import lupos.sparql1_1.ASTExists;
@@ -720,12 +719,6 @@ implements SPARQL1_1ParserVisitor {
 
 	@Override
 	public Object visit(ASTArbitraryOccurencesNotZero node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTDistinctPath node, Object data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
