@@ -160,6 +160,7 @@ public class ExternalParallelSort {
 		System.out.println("\nEnd processing:"+end);		
 		System.out.println("\nDuration:   " + (end.getTime() - start.getTime())/1000.0 + " seconds\n          = "+new TimeInterval(start, end));
 		
+		System.out.println("\nNumber of runs swapped to disk:" + sorter.getNumberOfRunsOnDisk());
 		System.out.println("\nNumber of waits of initial run generators:" + sorter.getNumberOfWaitsOfInitialRunGenerator());
 		System.out.println("Number of waits of merger thread:" + sorter.getNumberOfWaitsOfMerger());
 	}
@@ -311,6 +312,13 @@ public class ExternalParallelSort {
 		}
 		System.out.println("Number of sorted RDF terms:"+i);
 		System.out.println("Only if bags are used: There should be " + (i/3) + " triples read!");
+	}
+	
+	/**
+	 * @return the number of runs currently swapped to disk...
+	 */
+	public int getNumberOfRunsOnDisk(){
+		return this.runsOnDisk.size();
 	}
 	
 	/**
