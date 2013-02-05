@@ -216,6 +216,7 @@ public class BoundVariableinUnionRule extends Rule {
                     filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;
                 }
             }
+            return false;
         }
 
         return _result;

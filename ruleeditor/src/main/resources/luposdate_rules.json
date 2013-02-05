@@ -508,7 +508,7 @@
         "additional global java code": "",
         "additional import declarations": "",
         "check method": {
-          "additional code": "if(this.o1 instanceof lupos.engine.operators.multiinput.join.Join && this.o1.getPrecedingOperators().contains(this.o2)) {\n    return false;\n}\n\nlupos.engine.operators.singleinput.Filter filterOutestFilter = this.f;\njava.util.Collection<lupos.datastructures.items.Variable> variablesInnerUnion = this.o1.getIntersectionVariables();\njava.util.Collection<lupos.datastructures.items.Variable> variablesOuterUnion = this.o2.getUnionVariables();\nboolean checkFurther = true;\n\nwhile(checkFurther) {\n    if(!variablesInnerUnion.containsAll(filterOutestFilter.getUsedVariables())) {\n        for(lupos.datastructures.items.Variable v : filterOutestFilter.getUsedVariables()) {\n            if(!variablesInnerUnion.contains(v) && variablesOuterUnion.contains(v)) {\n                return true;\n            }\n        }\n    }\n\n    BasicOperator nextOp = filterOutestFilter.getPrecedingOperators().get(0);\n\n    if(nextOp.equals(this.o1)) {\n        checkFurther = false;\n    }\n    else {\n        filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;\n    }\n}",
+          "additional code": "if(this.o1 instanceof lupos.engine.operators.multiinput.join.Join && this.o1.getPrecedingOperators().contains(this.o2)) {\n    return false;\n}\n\nlupos.engine.operators.singleinput.Filter filterOutestFilter = this.f;\njava.util.Collection<lupos.datastructures.items.Variable> variablesInnerUnion = this.o1.getIntersectionVariables();\njava.util.Collection<lupos.datastructures.items.Variable> variablesOuterUnion = this.o2.getUnionVariables();\nboolean checkFurther = true;\n\nwhile(checkFurther) {\n    if(!variablesInnerUnion.containsAll(filterOutestFilter.getUsedVariables())) {\n        for(lupos.datastructures.items.Variable v : filterOutestFilter.getUsedVariables()) {\n            if(!variablesInnerUnion.contains(v) && variablesOuterUnion.contains(v)) {\n                return true;\n            }\n        }\n    }\n\n    BasicOperator nextOp = filterOutestFilter.getPrecedingOperators().get(0);\n\n    if(nextOp.equals(this.o1)) {\n        checkFurther = false;\n    }\n    else {\n        filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;\n    }\n}\nreturn false;",
           "code": "",
           "start node": "Operator",
           "use generated code": true
@@ -632,18 +632,18 @@
             }],
             "o2": [
               {
-                "active": true,
-                "id": 0,
-                "id label": "",
-                "mode": "EXISTS",
-                "to": "opt"
-              },
-              {
                 "active": false,
                 "id": -1,
                 "id label": "",
                 "mode": "EXISTS",
                 "to": "j"
+              },
+              {
+                "active": true,
+                "id": 0,
+                "id label": "",
+                "mode": "EXISTS",
+                "to": "opt"
               }
             ]
           },
@@ -728,7 +728,7 @@
         "additional global java code": "",
         "additional import declarations": "",
         "check method": {
-          "additional code": "if(this.u.getOperatorIDTuple(this.j).getId()==this.o3.getOperatorIDTuple(this.j).getId()){\n\treturn false;\n}\n\nlupos.engine.operators.singleinput.Filter filterOutestFilter = this.f;\njava.util.Collection<lupos.datastructures.items.Variable> variablesInnerUnion = this.o2.getIntersectionVariables();\njava.util.Collection<lupos.datastructures.items.Variable> variablesOuterUnion = this.o3.getUnionVariables();\nboolean checkFurther = true;\n\nwhile(checkFurther) {\n    if(!variablesInnerUnion.containsAll(filterOutestFilter.getUsedVariables())) {\n        for(lupos.datastructures.items.Variable v : filterOutestFilter.getUsedVariables()) {\n            if(!variablesInnerUnion.contains(v) && variablesOuterUnion.contains(v)) {\n                return true;\n            }\n        }\n    }\n\n    BasicOperator nextOp = filterOutestFilter.getPrecedingOperators().get(0);\n\n    if(nextOp.equals(this.o2)) {\n        checkFurther = false;\n    }\n    else {\n        filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;\n    }\n}",
+          "additional code": "if(this.u.getOperatorIDTuple(this.j).getId()==this.o3.getOperatorIDTuple(this.j).getId()){\n\treturn false;\n}\n\nlupos.engine.operators.singleinput.Filter filterOutestFilter = this.f;\njava.util.Collection<lupos.datastructures.items.Variable> variablesInnerUnion = this.o2.getIntersectionVariables();\njava.util.Collection<lupos.datastructures.items.Variable> variablesOuterUnion = this.o3.getUnionVariables();\nboolean checkFurther = true;\n\nwhile(checkFurther) {\n    if(!variablesInnerUnion.containsAll(filterOutestFilter.getUsedVariables())) {\n        for(lupos.datastructures.items.Variable v : filterOutestFilter.getUsedVariables()) {\n            if(!variablesInnerUnion.contains(v) && variablesOuterUnion.contains(v)) {\n                return true;\n            }\n        }\n    }\n\n    BasicOperator nextOp = filterOutestFilter.getPrecedingOperators().get(0);\n\n    if(nextOp.equals(this.o2)) {\n        checkFurther = false;\n    }\n    else {\n        filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;\n    }\n}\nreturn false;",
           "code": "",
           "start node": "Operator",
           "use generated code": true

@@ -349,7 +349,7 @@ public class Endpoint {
 			Endpoint.sendString(t, toSend.toString());
 		}
 	}
-	
+
 	public static class OutputStreamLogger extends OutputStream {
 		
 		private final OutputStream piped;
