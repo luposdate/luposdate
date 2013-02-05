@@ -59,6 +59,7 @@ import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
@@ -226,54 +227,6 @@ public class Dataset {
 								}
 
 							};
-							final Generator<Integer, String> smis = new Generator<Integer, String>() {
-
-								public Iterator<java.util.Map.Entry<Integer, String>> iterator() {
-									return new Iterator<java.util.Map.Entry<Integer, String>>() {
-										Iterator<String> it = rdftermsRepresentations
-										.iterator();
-										int index = 1;
-
-										public boolean hasNext() {
-											return it.hasNext();
-										}
-
-										public java.util.Map.Entry<Integer, String> next() {
-											if (!it.hasNext())
-												return null;
-											else {
-												return new java.util.Map.Entry<Integer, String>() {
-													String s = it.next();
-													int localIndex = index++;
-
-													public Integer getKey() {
-														return localIndex;
-													}
-
-													public String getValue() {
-														return s;
-													}
-
-													public String setValue(
-															final String arg0) {
-														throw new UnsupportedOperationException();
-													}
-
-												};
-											}
-										}
-
-										public void remove() {
-											throw new UnsupportedOperationException();
-										}
-
-									};
-								}
-
-								public int size() {
-									return rdftermsRepresentations.size();
-								}
-							};
 
 							if (rdftermsRepresentations instanceof DBMergeSortedSet) {
 								((DBMergeSortedSet) rdftermsRepresentations).sort();
@@ -303,19 +256,11 @@ public class Dataset {
 							final Thread thread1 = new Thread() {
 								@Override
 								public void run() {
-									lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> ismap;
+									StringArray ismap;
 									try {
-										ismap = new lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String>(
-												k,
-												k_,
-												new StandardNodeDeSerializer<Integer, String>(
-														Integer.class,
-														String.class));
-										ismap.setName("Dictionary: String->Integer");
-										ismap.generateDBBPTree(smis);
-										LazyLiteral
-										.setV(new IntegerStringMapJava(
-												ismap));
+										ismap = new StringArray();
+										ismap.generate(rdftermsRepresentations.iterator());										
+										LazyLiteral.setV(ismap);
 									} catch (final IOException e) {
 										System.err.println(e);
 										e.printStackTrace();
@@ -722,17 +667,18 @@ public class Dataset {
 	public void readIndexInfo(final LuposObjectInputStream in)
 			throws IOException, ClassNotFoundException {
 		
-		lupos.datastructures.paged_dbbptree.DBBPTree.setCurrentFileID(in
-					.readLuposInteger());
+		lupos.datastructures.paged_dbbptree.DBBPTree.setCurrentFileID(in.readLuposInteger());
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 			lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> dbbptreeSI =lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
 				dbbptreeSI.setName("Dictionary: String->Integer");
 				LazyLiteral.setHm(new StringIntegerMapJava(dbbptreeSI));
 				
-				lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> dbbptreeIS = lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
-				dbbptreeIS.setName("Dictionary: Integer->String");
-				LazyLiteral.setV(new IntegerStringMapJava(dbbptreeIS));
+				//lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> dbbptreeIS = lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
+				//dbbptreeIS.setName("Dictionary: Integer->String");
+				//LazyLiteral.setV(new IntegerStringMapJava(dbbptreeIS));
+				StringArray.setFileID(1);
+				LazyLiteral.setV(StringArray.readLuposStringArray(in));
 		} else {
 			if (LiteralFactory.getMapType() != MapType.NOCODEMAP
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERAL
@@ -796,8 +742,9 @@ public class Dataset {
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 				((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral
 						.getHm()).getOriginalMap()).writeLuposObject(out);
-				((lupos.datastructures.paged_dbbptree.DBBPTree) ((IntegerStringMapJava) LazyLiteral
-						.getV()).getOriginalMap()).writeLuposObject(out);
+				//((lupos.datastructures.paged_dbbptree.DBBPTree) ((IntegerStringMapJava) LazyLiteral
+				//		.getV()).getOriginalMap()).writeLuposObject(out);
+				((StringArray)LazyLiteral.getV()).writeLuposStringArray(out);
 		} else {
 			if (LiteralFactory.getMapType() != MapType.NOCODEMAP
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERAL

@@ -53,6 +53,7 @@ import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.queryresult.SIPParallelIterator;
+import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.index.Indices;
@@ -238,61 +239,6 @@ public class RDF3XIndexConstruction {
 							}
 
 						};
-						final Generator<Integer, String> smis = new Generator<Integer, String>() {
-
-							public Iterator<java.util.Map.Entry<Integer, String>> iterator() {
-								return new Iterator<java.util.Map.Entry<Integer, String>>() {
-									Iterator<String> it = rdftermsRepresentations
-									.iterator();
-									int index = 1;
-
-									@Override
-									public boolean hasNext() {
-										return it.hasNext();
-									}
-
-									@Override
-									public java.util.Map.Entry<Integer, String> next() {
-										if (!it.hasNext())
-											return null;
-										else {
-											return new java.util.Map.Entry<Integer, String>() {
-												String s = it.next();
-												int localIndex = index++;
-
-												@Override
-												public Integer getKey() {
-													return localIndex;
-												}
-
-												@Override
-												public String getValue() {
-													return s;
-												}
-
-												@Override
-												public String setValue(
-														final String arg0) {
-													throw new UnsupportedOperationException();
-												}
-
-											};
-										}
-									}
-
-									@Override
-									public void remove() {
-										throw new UnsupportedOperationException();
-									}
-
-								};
-							}
-
-							@Override
-							public int size() {
-								return rdftermsRepresentations.size();
-							}
-						};
 
 						rdftermsRepresentations.sort();
 
@@ -318,16 +264,11 @@ public class RDF3XIndexConstruction {
 						final Thread thread1 = new Thread() {
 							@Override
 							public void run() {
-								lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> ismap;
+								StringArray ismap;
 								try {
-									ismap = new lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String>(
-											k,
-											k_,
-											new StandardNodeDeSerializer<Integer, String>(
-													Integer.class, String.class));
-									ismap.generateDBBPTree(smis);
-									LazyLiteral.setV(new IntegerStringMapJava(
-											ismap));
+									ismap = new StringArray();
+									ismap.generate(rdftermsRepresentations.iterator());
+									LazyLiteral.setV(ismap);
 								} catch (final IOException e) {
 									System.err.println(e);
 									e.printStackTrace();
@@ -389,7 +330,7 @@ public class RDF3XIndexConstruction {
 			out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID());
 			
 			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
-			((lupos.datastructures.paged_dbbptree.DBBPTree) ((IntegerStringMapJava) LazyLiteral.getV()).getOriginalMap()).writeLuposObject(out);
+			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
 			out.writeLuposInt(1);
 			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
 			indices.writeIndexInfo(out);

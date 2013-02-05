@@ -91,9 +91,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				&& (!(dir.endsWith("//") || dir.endsWith("/") || dir
 						.endsWith("\""))))
 			dir = dir + "//";
-		mainFolder = dir + "tmp//dbbptree//";
+		DBBPTree.mainFolder = dir + "dbbptree//";
 		if (delete)
 			FileHelper.deleteDirectory(new File(mainFolder));
+	}
+	
+	public static String getMainFolder(){
+		return DBBPTree.mainFolder;
 	}
 
 	public static void setCurrentFileID(final int fileID) {
@@ -134,9 +138,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			currentID = currentFileID++;
 			final File f = new File(DBBPTree.mainFolder);
 			f.mkdirs();
-			FileHelper.deleteFilesStartingWithPattern(DBBPTree.mainFolder,currentID+ ".dbbptree_");
-			pageManager = new PageManager(DBBPTree.mainFolder + currentID
-					+ ".dbbptree");
+			if(currentID==0){
+				FileHelper.deleteFilesStartingWithPattern(DBBPTree.mainFolder, currentID + ".dbbptree_");
+			}
+			pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree");
 		} finally {
 			lock.unlock();
 		}
@@ -2105,7 +2110,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	 * @param keyClass
 	 * @param valueClass
 	 */
-	public DBBPTree(final int k, final int k_, final int size,
+	protected DBBPTree(final int k, final int k_, final int size,
 			final Comparator comp, final int rootFilename,
 			final int firstLeafFileName, final Class keyClass,
 			final Class valueClass, final int currentID,

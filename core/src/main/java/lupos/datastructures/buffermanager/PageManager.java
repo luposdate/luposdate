@@ -397,7 +397,7 @@ public class PageManager {
 	/**
 	 * @return the default page size in bytes
 	 */
-	public static int getDefaultPageSize() {
+	public final static int getDefaultPageSize() {
 		return PageManager.DEFAULTPAGESIZE;
 	}
 
@@ -405,7 +405,7 @@ public class PageManager {
 	 * sets the default page size 
 	 * @param defaultpagesize the default page size in bytes
 	 */
-	public static void setDefaultPageSize(int defaultpagesize) {
+	public final static void setDefaultPageSize(int defaultpagesize) {
 		PageManager.DEFAULTPAGESIZE = defaultpagesize;
 	}
 }

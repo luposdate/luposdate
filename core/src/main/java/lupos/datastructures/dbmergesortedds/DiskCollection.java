@@ -121,8 +121,8 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 			lock.unlock();
 		}
 	}
-
-	public DiskCollection(final Class<? extends E> classOfElements) {
+	
+	public static void makeFolders(){
 		lock.lock();
 		try {
 			for (final String singleFolder : DiskCollection.folder) {
@@ -132,21 +132,16 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		} finally {
 			lock.unlock();
 		}
+	}
+
+	public DiskCollection(final Class<? extends E> classOfElements) {
+		DiskCollection.makeFolders();
 		makeNewFile();
 		this.classOfElements = classOfElements;
 	}
 
-	public DiskCollection(final Class<? extends E> classOfElements,
-			final String filename) {
-		lock.lock();
-		try {
-			for (final String singleFolder : DiskCollection.folder) {
-				final File f = new File(singleFolder);
-				f.mkdirs();
-			}
-		} finally {
-			lock.unlock();
-		}
+	public DiskCollection(final Class<? extends E> classOfElements, final String filename) {
+		DiskCollection.makeFolders();
 		makeNewFile(filename);
 		this.classOfElements = classOfElements;
 	}
@@ -160,16 +155,17 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	}
 
 	public static String newBaseFilename() {
+		return DiskCollection.newBaseFilename("DiskCollection");
+	}
+	
+	public static String newBaseFilename(final String prefix) {
 		lock.lock();
 		try {
 			id++;
-			final String filename = folder[id % folder.length]
-					+ "DiskCollection" + id + "_";
-			return filename;
+			return folder[id % folder.length] + prefix + id + "_";
 		} finally {
 			lock.unlock();
 		}
-
 	}
 
 	private void makeNewFile() {

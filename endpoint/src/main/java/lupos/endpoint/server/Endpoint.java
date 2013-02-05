@@ -328,7 +328,7 @@ public class Endpoint {
 											"<textarea name=\"query\" cols=\"50\" rows=\"10\">SELECT * WHERE { ?s ?p ?o. } LIMIT 10</textarea>\n  </p>\n" +
 											"  <p>\n   Result Format:<br/>\n   <select name=\"format\" size=\"1\">\n   ";
 		private static String HTML_FORM_2 = "</select>\n  </p>\n  <p>\n   <input type=\"submit\" value=\" Submit Query \"/>\n  </p>\n "+
-											"</form>\n</body>";
+											"</form>\n</body>\n</html>";
 
 		private static String HTML_OPTION_1 = " <option value=\"";
 		private static String HTML_OPTION_2 = "\">";

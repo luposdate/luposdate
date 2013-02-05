@@ -225,7 +225,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	
 	public void writeOutIndexFile(String dir) throws FileNotFoundException, IOException {
 		final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(dir+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE)));
-		this.dataset.writeIndexInfo(out, 14);
+		this.dataset.writeIndexInfo(out, 13);
 		out.close();
 	}
 
