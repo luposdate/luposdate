@@ -53,13 +53,14 @@ import lupos.misc.FileHelper;
  * Strings can be only added to this array in the end.
  * We do not support any functionality to update or remove strings from the array.
  * 
- * The first four bytes in each file store the current maximum position in the file. 
+ * The first four bytes in the pointers file stores the maximum index for the strings,
+ * and the first 8 bytes in the strings file stores the maximum position in the strings file. 
  */
 public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStringMap{
 	
 	// the maximum index
 	private long max = 0;
-	// the enxt free byte in the strings file
+	// the next free byte in the strings file
 	private long lastString = 8;
 	
 	// the filename of the pointers file
@@ -160,6 +161,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		int posInPage = (int) (posInFile % defaultPageSize);
 		long toBeStored = value;
 		if(posInPage+3 >= defaultPageSize){
+			// the integer must be stored over two pages!
 			for(int i=0; i<4; i++){
 				if(posInPage>=defaultPageSize){
 					// next page is affected!
@@ -204,6 +206,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		int posInPage = (int) (posInFile % defaultPageSize);
 
 		if(posInPage+3>=defaultPageSize){
+			// the integer is stored over two pages!
 			long result = 0;
 			long factor = 1;
 			for(int i=0; i<4; i++){
@@ -239,6 +242,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		int posInPage = (int) (posInFile % defaultPageSize);
 		long toBeStored = value;
 		if(posInPage+7 >= defaultPageSize){
+			// the long must be stored over two pages!
 			for(int i=0; i<8; i++){
 				if(posInPage>=defaultPageSize){
 					// next page is affected!
@@ -295,6 +299,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		int posInPage = (int) (posInFile % defaultPageSize);
 
 		if(posInPage+7>=defaultPageSize){
+			// the long is stored over two pages!
 			long result = 0;
 			long factor = 1;
 			for(int i=0; i<8; i++){
@@ -360,10 +365,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			}
 		} else {
 			// just doing the normal case faster!
-			for(byte b: bytesOfValue){
-				page[posInPage] = b;
-				posInPage++;
-			}
+			System.arraycopy(bytesOfValue, 0, page, posInPage, length);
 		}
 		BufferManager.getBufferManager().modifyPage(defaultPageSize, pageAddress, page);
 		return posInFile + 4 + length; 
@@ -390,6 +392,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		final byte[] result = new byte[length];
 
 		if(posInPage+length>=defaultPageSize){
+			// the string is stored over two pages!
 			for(int i=0; i<length; i++){
 				if(posInPage>=defaultPageSize){
 					// next page is affected!
