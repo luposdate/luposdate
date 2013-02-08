@@ -172,4 +172,9 @@ public class MemorySortSortedRunOnDisk extends Run {
 			}
 		};
 	}
+
+	@Override
+	public int size() {
+		return this.diskCollection.size();
+	}
 }

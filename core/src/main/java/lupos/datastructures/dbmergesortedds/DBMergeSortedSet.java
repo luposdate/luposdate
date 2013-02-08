@@ -140,15 +140,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 			final Entry<E> e = iters[hm.get(res.run)].next();
 			e.runMatters = false;
 			mergeheap.add(e);
-		} else
-			for (final Iterator<Entry<E>> it : iters) {
-				if (it.hasNext()) {
-					final Entry<E> e = it.next();
-					e.runMatters = false;
-					mergeheap.add(e);
-					break;
-				}
-			}
+		} 
 		// remove duplicates during merging...
 		while (mergeheap.peek() != null && res.equals(mergeheap.peek())) {
 			res = mergeheap.pop();
@@ -172,15 +164,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 			final Entry<E> elem = iters[res.run - basisID].next();
 			elem.runMatters = false;
 			mergeheap.add(elem);
-		} else
-			for (final Iterator<Entry<E>> it : iters) {
-				if (it.hasNext()) {
-					final Entry<E> elem = it.next();
-					elem.runMatters = false;
-					mergeheap.add(elem);
-					break;
-				}
-			}
+		} 
 		// remove duplicates during merging...
 		while (mergeheap.peek() != null && res.equals(mergeheap.peek())) {
 			res = mergeheap.pop();

@@ -309,7 +309,6 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
 		return length;
 	}
 

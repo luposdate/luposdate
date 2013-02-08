@@ -42,6 +42,8 @@ public abstract class ToSort<E extends Comparable<E>> {
 	public abstract boolean isFull();
 
 	public abstract boolean isEmpty();
+	
+	public abstract int size();
 
 	public abstract void add(final E elem);
 

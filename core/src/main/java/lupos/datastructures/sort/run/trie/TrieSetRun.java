@@ -73,4 +73,9 @@ public class TrieSetRun extends Run {
 	public Iterator<String> iterator() {		
 		return this.trie.iterator();
 	}
+
+	@Override
+	public int size() {
+		return this.trie.size();
+	}
 }

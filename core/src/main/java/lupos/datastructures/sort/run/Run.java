@@ -69,4 +69,9 @@ public abstract class Run {
 	 * @return an iterator for iterating through the added elements
 	 */
 	public abstract Iterator<String> iterator();
+	
+	/**
+	 * @return the number of elements stored in this run
+	 */
+	public abstract int size();
 }

@@ -21,77 +21,21 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.datastructures.sort.run.trieWithStringMerging;
 
-import java.util.Iterator;
+import lupos.datastructures.patriciatrie.TrieSet;
+import lupos.datastructures.sort.run.Run;
+import lupos.datastructures.sort.run.memorysort.MemorySortSortedRunOnDisk;
+import lupos.datastructures.sort.run.trie.TrieSetRun;
 
-import lupos.datastructures.dbmergesortedds.heap.Heap;
+public class TrieSetRunWithStringMerging extends TrieSetRun {
 
-public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
-
-	private final Heap<E> heap;
-
-	public HeapSort(final int height) {
-		this.heap = Heap.createInstance(height);
+	public TrieSetRunWithStringMerging(final TrieSet trie) {
+		super(trie);
 	}
-
-	public HeapSort(final int length_or_height, final boolean length) {
-		this.heap = Heap.createInstance(length_or_height, length);
-	}
-
+	
 	@Override
-	public void add(final E elem) {
-		this.heap.add(elem);
-	}
-
-	@Override
-	public void clear() {
-		this.heap.clear();
-	}
-
-	@Override
-	public Iterator<E> emptyDatastructure() {
-		// return heap.emptyDatastructure();
-		return new Iterator<E>() {
-
-			@Override
-			public boolean hasNext() {
-				return !HeapSort.this.heap.isEmpty();
-			}
-
-			@Override
-			public E next() {
-				if (!HeapSort.this.heap.isEmpty())
-					return HeapSort.this.heap.pop();
-				else
-					return null;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return this.heap.isEmpty();
-	}
-
-	@Override
-	public boolean isFull() {
-		return this.heap.isFull();
-	}
-
-	@Override
-	public void release() {
-		this.heap.release();
-	}
-
-	@Override
-	public int size() {
-		return this.heap.size();
+	public Run swapRun() {
+		return new MemorySortSortedRunOnDisk(this.iterator(), true);
 	}
 }

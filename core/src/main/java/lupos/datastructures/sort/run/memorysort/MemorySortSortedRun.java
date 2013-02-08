@@ -79,26 +79,38 @@ public class MemorySortSortedRun extends Run {
 	
 	protected final StringWithoutCommonPrefix[] runContent;
 	
-	public MemorySortSortedRun(final Iterator<String> emptyDatastructure, final boolean set) {
-		ArrayList<String> contents = new ArrayList<String>();
-		String lastString = null;
-		while(emptyDatastructure.hasNext()){
-			String nextString = emptyDatastructure.next();
-			if(!set || lastString==null || lastString.compareTo(nextString)!=0){
-				contents.add(nextString);
+	public MemorySortSortedRun(final Iterator<String> emptyDatastructure, final int maxsize, final boolean set) {
+		if(set){
+			ArrayList<String> contents = new ArrayList<String>(maxsize);
+			String lastString = null;
+			while(emptyDatastructure.hasNext()){
+				String nextString = emptyDatastructure.next();
+				if(lastString==null || lastString.compareTo(nextString)!=0){
+					contents.add(nextString);
+				}
+				lastString = nextString;
 			}
-			lastString = nextString;
-		}
-		if(contents.size()==0){
-			throw new RuntimeException("Empty runs are not allowed to become a MemorySortSortedRun!");
-		}
-		this.runContent = new StringWithoutCommonPrefix[contents.size()];
-		lastString = "";
-		int id = 0;
-		for(String string: contents){
-			this.runContent[id] = MemorySortSortedRun.createStringWithoutCommonPrefix(string, lastString);
-			id++;
-			lastString = string;
+			if(contents.size()==0){
+				throw new RuntimeException("Empty runs are not allowed to become a MemorySortSortedRun!");
+			}
+			this.runContent = new StringWithoutCommonPrefix[contents.size()];
+			lastString = "";
+			int id = 0;
+			for(String string: contents){
+				this.runContent[id] = MemorySortSortedRun.createStringWithoutCommonPrefix(string, lastString);
+				id++;
+				lastString = string;
+			}
+		} else {
+			this.runContent = new StringWithoutCommonPrefix[maxsize];
+			String lastString = "";
+			int id = 0;
+			while(emptyDatastructure.hasNext()){
+				String nextString = emptyDatastructure.next();
+				this.runContent[id] = MemorySortSortedRun.createStringWithoutCommonPrefix(nextString, lastString);
+				id++;
+				lastString = nextString;
+			}			
 		}
 	}
 
@@ -152,5 +164,10 @@ public class MemorySortSortedRun extends Run {
 				throw new UnsupportedOperationException();
 			}			
 		};
+	}
+
+	@Override
+	public int size() {		
+		return this.runContent.length;
 	}
 }

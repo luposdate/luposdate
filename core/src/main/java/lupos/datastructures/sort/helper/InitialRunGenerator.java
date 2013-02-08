@@ -21,54 +21,62 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.sort.run.memorysort;
+package lupos.datastructures.sort.helper;
 
-import java.util.Iterator;
-
-import lupos.datastructures.dbmergesortedds.tosort.ToSort;
-import lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT;
+import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.sort.run.Run;
+import lupos.datastructures.sort.run.Runs;
 
-public class MemorySortRun extends Run {
+/**
+ * Thread for generating the initial runs... 
+ */
+public class InitialRunGenerator extends Thread {
 	
-	protected final ToSort<String> tosort;
-	protected final boolean set;
+	private final BoundedBuffer<String> buffer;
+	private Run run;
+	private final BoundedBuffer<Run> initialRunsLevel0;
+	private final int NUMBER_ELEMENTS_IN_INITIAL_RUNS;
+	private final Runs runs;
 	
-	public MemorySortRun(final TOSORT sortType, final int numberOfElements, final boolean set){
-		this.tosort = ToSort.createInstanceWithGivenNumberOfElements(sortType, numberOfElements);
-		this.set = set;
+	public InitialRunGenerator(final BoundedBuffer<String> buffer, final BoundedBuffer<Run> initialRunsLevel0, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS, final Runs runs){
+		this.buffer = buffer;
+		this.runs = runs;
+		this.run = this.runs.createRun();
+		this.initialRunsLevel0 = initialRunsLevel0;
+		this.NUMBER_ELEMENTS_IN_INITIAL_RUNS = NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 	}
-
+	
 	@Override
-	public boolean add(String toBeAdded) {		
-		this.tosort.add(toBeAdded);
-		return true;
+	public void run(){
+		try {
+			int numberInRun = 0;
+			while(true) {
+				String item = this.buffer.get();
+				if(item==null){
+					break;
+				}
+				if(this.run.add(item)){
+					numberInRun++;
+				}
+				if(numberInRun >= this.NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+					// this run exceeds the limit for number of elements and becomes therefore a new initial run
+					this.finishInitialRun();
+					numberInRun =0;
+				}
+			}
+			// the (not full) run becomes an initial run because all RDF terms have been consumed
+			this.finishInitialRun();
+		} catch (InterruptedException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
 	}
-
-	@Override
-	public Run sort() {
-		return new MemorySortSortedRun(this.tosort.emptyDatastructure(), this.tosort.size(), this.set);
-	}
-
-	@Override
-	public Run swapRun() {
-		// this is only allowed for already sorted runs (see MemorySortSortedRun)
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return this.tosort.isEmpty();
-	}
-
-	@Override
-	public Iterator<String> iterator() {
-		// this is only allowed for already sorted runs (see MemorySortSortedRun)
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int size() {		
-		return this.tosort.size();
+	
+	public void finishInitialRun() throws InterruptedException{
+		if(!this.run.isEmpty()){
+			Run sortedRun = this.run.sort();
+			this.initialRunsLevel0.put(sortedRun);
+			this.run = this.runs.createRun();
+		}
 	}
 }

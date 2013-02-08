@@ -73,4 +73,9 @@ public class TrieBagRun extends Run {
 	public Iterator<String> iterator() {		
 		return this.trie.keyIterator();
 	}
+
+	@Override
+	public int size() {
+		return this.trie.size();
+	}
 }

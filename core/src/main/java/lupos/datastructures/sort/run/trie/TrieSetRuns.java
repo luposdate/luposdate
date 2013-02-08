@@ -33,6 +33,10 @@ import lupos.datastructures.patriciatrie.ram.RBTrieSet;
 import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.Runs;
 
+/**
+ * Tries are used to generate the initial runs.
+ * Merging and swapping is done node-based.  
+ */
 public class TrieSetRuns implements Runs {
 
 	@Override
@@ -54,5 +58,10 @@ public class TrieSetRuns implements Runs {
 	@Override
 	public Run createRun() {
 		return new TrieSetRun(TrieSet.createRamBasedTrieSet());
+	}
+	
+	@Override
+	public String toString(){
+		return "Initial runs generated using trie sets (node-based merging)";
 	}
 }

@@ -21,77 +21,33 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.datastructures.sort.run.trieWithStringMerging;
 
-import java.util.Iterator;
+import java.util.List;
 
-import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.datastructures.patriciatrie.TrieBag;
+import lupos.datastructures.sort.run.Run;
+import lupos.datastructures.sort.run.Runs;
+import lupos.datastructures.sort.run.memorysort.MemorySortRuns;
 
-public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
+/**
+ * Tries are used to generate the initial runs.
+ * Merging and swapping is done string-based instead of being node-based.  
+ */
+public class TrieBagRunsWithStringMerging implements Runs {
 
-	private final Heap<E> heap;
-
-	public HeapSort(final int height) {
-		this.heap = Heap.createInstance(height);
-	}
-
-	public HeapSort(final int length_or_height, final boolean length) {
-		this.heap = Heap.createInstance(length_or_height, length);
+	@Override
+	public Run merge(List<Run> runs, boolean inmemory) {		
+		return MemorySortRuns.merge(runs, inmemory, false);
 	}
 
 	@Override
-	public void add(final E elem) {
-		this.heap.add(elem);
+	public Run createRun() {
+		return new TrieBagRunWithStringMerging(TrieBag.createRamBasedTrieBag());
 	}
 
 	@Override
-	public void clear() {
-		this.heap.clear();
-	}
-
-	@Override
-	public Iterator<E> emptyDatastructure() {
-		// return heap.emptyDatastructure();
-		return new Iterator<E>() {
-
-			@Override
-			public boolean hasNext() {
-				return !HeapSort.this.heap.isEmpty();
-			}
-
-			@Override
-			public E next() {
-				if (!HeapSort.this.heap.isEmpty())
-					return HeapSort.this.heap.pop();
-				else
-					return null;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return this.heap.isEmpty();
-	}
-
-	@Override
-	public boolean isFull() {
-		return this.heap.isFull();
-	}
-
-	@Override
-	public void release() {
-		this.heap.release();
-	}
-
-	@Override
-	public int size() {
-		return this.heap.size();
+	public String toString(){
+		return "Initial runs generated using trie bags (string-based merging)";
 	}
 }
