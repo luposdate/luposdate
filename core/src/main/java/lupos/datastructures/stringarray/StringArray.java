@@ -309,21 +309,21 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 					page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 					posInPage %= defaultPageSize;
 				}
-				result += (page[posInPage] + 128) * factor;
+				result += (page[posInPage] + 128L) * factor;
 				factor *= 256;
 				posInPage++;
 			}
 			return result;
 		} else {
 			// optimize the normal case!
-			return (page[posInPage]+128) + 
-					256 * ( (page[posInPage+1]+128) + 
-					256 * ( (page[posInPage+2]+128) + 
-					256 * ( (page[posInPage+3]+128) +
-					256 * ( (page[posInPage+4]+128) +
-					256 * ( (page[posInPage+5]+128) +
-					256 * ( (page[posInPage+6]+128) +
-					256 * ( (page[posInPage+7]+128)
+			return ((page[posInPage])+128L) + 
+					256L * ( (page[posInPage+1]+128L) + 
+					256L * ( (page[posInPage+2]+128L) + 
+					256L * ( (page[posInPage+3]+128L) +
+					256L * ( (page[posInPage+4]+128L) +
+					256L * ( (page[posInPage+5]+128L) +
+					256L * ( (page[posInPage+6]+128L) +
+					256L * ( (page[posInPage+7]+128L)
 				)))))));
 		}
 	}
