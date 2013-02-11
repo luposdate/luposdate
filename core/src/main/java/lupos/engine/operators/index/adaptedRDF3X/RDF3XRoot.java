@@ -33,7 +33,7 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.logical.OptimizeJoinOrder;
-import lupos.optimizations.physical.joinorder.jointree.RDF3XCostBasedOptimizer;
+import lupos.optimizations.physical.joinorder.costbasedoptimizer.RDF3XCostBasedOptimizer;
 
 public class RDF3XRoot extends
 		lupos.engine.operators.index.Root {
@@ -58,7 +58,7 @@ public class RDF3XRoot extends
 
 	@Override
 	public void optimizeJoinOrder(final int opt) {
-		if (opt == BasicIndexScan.Binary || opt == BasicIndexScan.MERGEJOIN
+		if (opt == BasicIndexScan.BINARY || opt == BasicIndexScan.MERGEJOIN
 				|| opt == BasicIndexScan.MERGEJOINSORT
 				|| opt == BasicIndexScan.NARYMERGEJOIN)
 			makeBinaryJoin(opt);

@@ -32,10 +32,11 @@ import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
-import lupos.optimizations.physical.joinorder.jointree.MemoryIndexCostBasedOptimizer;
-import lupos.optimizations.physical.joinorder.withinindexscan.RearrangeTriplePatternsInIndexScanLeastEntries;
-import lupos.optimizations.physical.joinorder.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariables;
-import lupos.optimizations.physical.joinorder.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries;
+import lupos.optimizations.physical.joinorder.costbasedoptimizer.MemoryIndexCostBasedOptimizer;
+import lupos.optimizations.physical.joinorder.staticanalysis.jointree.BuildJoinTreeLeastNewVariables;
+import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastEntries;
+import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariables;
+import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries;
 import lupos.engine.operators.RootChild;
 
 public abstract class Root extends Operator {
@@ -76,8 +77,11 @@ public abstract class Root extends Operator {
 					case BasicIndexScan.LEASTENTRIES:
 						root = RearrangeTriplePatternsInIndexScanLeastNewVariables.rearrangeJoinOrder(indexScan);
 						break;
-					case BasicIndexScan.Binary:
+					case BasicIndexScan.BINARY:
 						root = MemoryIndexCostBasedOptimizer.rearrangeJoinOrder(indexScan);
+						break;
+					case BasicIndexScan.BINARYSTATICANALYSIS:
+						root = BuildJoinTreeLeastNewVariables.rearrangeJoinOrder(indexScan);
 						break;
 					default:
 						root = RearrangeTriplePatternsInIndexScanLeastEntries.rearrangeJoinOrder(indexScan);

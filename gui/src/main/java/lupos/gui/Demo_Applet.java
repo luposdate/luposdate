@@ -1358,7 +1358,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		evaluator.getArgs().set("debug", DEBUG.ALL);
 		evaluator.getArgs().set("result", QueryResult.TYPE.MEMORY);
 		evaluator.getArgs().set("codemap", LiteralFactory.MapType.TRIEMAP);
-		//evaluator.getArgs().set("codemap", LiteralFactory.MapType.LAZYLITERAL);
+		// evaluator.getArgs().set("codemap", LiteralFactory.MapType.LAZYLITERAL);
+		// evaluator.getArgs().set("optimization", MemoryIndexQueryEvaluator.Optimizations.BINARYSTATICANALYSIS);
 		evaluator.getArgs().set("distinct", CommonCoreQueryEvaluator.DISTINCT.HASHSET);
 		evaluator.getArgs().set("optional", CommonCoreQueryEvaluator.JOIN.HASHMAPINDEX);
 

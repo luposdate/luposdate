@@ -40,8 +40,8 @@ import lupos.misc.Tuple;
 
 public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 
-	protected enum Optimizations {
-		NONE, MOSTRESTRICTIONS, MOSTRESTRICTIONSLEASTENTRIES, LEASTENTRIES, BINARY;
+	public enum Optimizations {
+		NONE, MOSTRESTRICTIONS, MOSTRESTRICTIONSLEASTENTRIES, LEASTENTRIES, BINARY, BINARYSTATICANALYSIS;
 	}
 
 	public MemoryIndexQueryEvaluator() throws Exception {
@@ -81,24 +81,27 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		init(datastructure, optimization);
 	}
 
-	private void init(final Indices.DATA_STRUCT datastructure,
+	private void init(final Indices.DATA_STRUCT datastructure_param,
 			final Optimizations optimization) {
-		Indices.setUsedDatastructure(datastructure);
+		Indices.setUsedDatastructure(datastructure_param);
 		switch (optimization) {
 		case MOSTRESTRICTIONS:
-			opt = BasicIndexScan.MOSTRESTRICTIONS;
+			this.opt = BasicIndexScan.MOSTRESTRICTIONS;
 			break;
 		case MOSTRESTRICTIONSLEASTENTRIES:
-			opt = BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES;
+			this.opt = BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES;
 			break;
 		case LEASTENTRIES:
-			opt = BasicIndexScan.LEASTENTRIES;
+			this.opt = BasicIndexScan.LEASTENTRIES;
 			break;
 		case BINARY:
-			opt = BasicIndexScan.Binary;
+			this.opt = BasicIndexScan.BINARY;
+			break;
+		case BINARYSTATICANALYSIS:
+			this.opt = BasicIndexScan.BINARYSTATICANALYSIS;
 			break;
 		default:
-			opt = BasicIndexScan.NONE;
+			this.opt = BasicIndexScan.NONE;
 			break;
 		}
 	}
@@ -108,13 +111,13 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		super.init();
 		// IndexMaps.setUsedDatastructure((IndexMaps.DATA_STRUCT)args.getEnum(
 		// "datastructure"));
-		init((Indices.DATA_STRUCT) args.getEnum("datastructure"),
+		init((Indices.DATA_STRUCT) this.args.getEnum("datastructure"),
 				(Optimizations) this.args.getEnum("optimization"));
 	}
 
 	@Override
 	public void setupArguments() {
-		defaultOptimization = Optimizations.MOSTRESTRICTIONSLEASTENTRIES;
+		this.defaultOptimization = Optimizations.MOSTRESTRICTIONSLEASTENTRIES;
 		super.setupArguments();
 	}
 
@@ -124,25 +127,27 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 			final Collection<URILiteral> namedGraphs) throws Exception {
 		final Date a = new Date();
 		super.prepareInputData(defaultGraphs, namedGraphs);
-		dataset = new Dataset(defaultGraphs, namedGraphs, type,
-				getMaterializeOntology(), opt, new Dataset.IndicesFactory() {
+		this.dataset = new Dataset(defaultGraphs, namedGraphs, this.type,
+				getMaterializeOntology(), this.opt, new Dataset.IndicesFactory() {
+			@Override
 			public Indices createIndices(final URILiteral uriLiteral) {
 				return new SevenMemoryIndices(uriLiteral);
 			}
 
+			@Override
 			public lupos.engine.operators.index.Root createRoot() {
 				MemoryIndexRoot ic=new MemoryIndexRoot();
-				ic.dataset=dataset;
+				ic.dataset=MemoryIndexQueryEvaluator.this.dataset;
 				return ic;
 			}
-		}, debug != DEBUG.NONE, inmemoryexternalontologyinference);
-		dataset.buildCompletelyAllIndices();
+		}, this.debug != DEBUG.NONE, this.inmemoryexternalontologyinference);
+		this.dataset.buildCompletelyAllIndices();
 		final long prepareTime = ((new Date()).getTime() - a.getTime());
 		return prepareTime;
 	}
 
 	public MemoryIndexRoot getRoot() {
-		return (MemoryIndexRoot) root;
+		return (MemoryIndexRoot) this.root;
 	}
 
 	public static void main(final String[] args) {
@@ -152,7 +157,7 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 	@Override
 	public lupos.engine.operators.index.Root createRoot() {
 		MemoryIndexRoot ic=new MemoryIndexRoot();
-		ic.dataset=dataset;
+		ic.dataset=this.dataset;
 		return ic;
 	}
 
@@ -163,19 +168,21 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 			throws Exception {
 		final Date a = new Date();
 		super.prepareInputDataWithSourcesOfNamedGraphs(defaultGraphs, namedGraphs);
-		dataset = new Dataset(defaultGraphs, namedGraphs,
-				getMaterializeOntology(), type, opt, new Dataset.IndicesFactory() {
+		this.dataset = new Dataset(defaultGraphs, namedGraphs,
+				getMaterializeOntology(), this.type, this.opt, new Dataset.IndicesFactory() {
+			@Override
 			public Indices createIndices(final URILiteral uriLiteral) {
 				return new SevenMemoryIndices(uriLiteral);
 			}
 
+			@Override
 			public lupos.engine.operators.index.Root createRoot() {
 				MemoryIndexRoot ic=new MemoryIndexRoot();
-				ic.dataset=dataset;
+				ic.dataset=MemoryIndexQueryEvaluator.this.dataset;
 				return ic;
 			}
-		}, debug != DEBUG.NONE, inmemoryexternalontologyinference);
-		dataset.buildCompletelyAllIndices();
+		}, this.debug != DEBUG.NONE, this.inmemoryexternalontologyinference);
+		this.dataset.buildCompletelyAllIndices();
 		final long prepareTime = ((new Date()).getTime() - a.getTime());
 		return prepareTime;
 	}

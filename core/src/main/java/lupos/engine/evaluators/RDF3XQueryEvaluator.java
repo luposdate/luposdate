@@ -109,7 +109,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		if (optimization == Optimizations.MERGEJOIN)
 			this.opt = BasicIndexScan.MERGEJOIN;
 		else if (optimization == Optimizations.BINARY)
-			this.opt = BasicIndexScan.Binary;
+			this.opt = BasicIndexScan.BINARY;
 		else if (optimization == Optimizations.NARYMERGEJOIN)
 			this.opt = BasicIndexScan.NARYMERGEJOIN;
 		else if (optimization == Optimizations.NONE)

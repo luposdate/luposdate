@@ -69,7 +69,7 @@ import lupos.misc.Tuple;
 import lupos.optimizations.logical.OptimizeJoinOrder;
 import lupos.optimizations.logical.statistics.Entry;
 import lupos.optimizations.logical.statistics.VarBucket;
-import lupos.optimizations.physical.joinorder.jointree.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
+import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
 
 /**
  * Instances of this class are used to process queries by using a special index
@@ -84,9 +84,10 @@ public abstract class BasicIndexScan extends RootChild {
 	public final static int MOSTRESTRICTIONSLEASTENTRIES = 2;
 	public final static int LEASTENTRIES = 3;
 	public final static int MERGEJOIN = 4;
-	public final static int Binary = 5;
+	public final static int BINARY = 5;
 	public final static int MERGEJOINSORT = 6;
 	public final static int NARYMERGEJOIN = 7;
+	public final static int BINARYSTATICANALYSIS = 8;
 	
 	protected final Root root;
 
