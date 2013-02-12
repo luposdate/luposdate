@@ -57,11 +57,16 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		if (codeFromHashMap != null && codeFromHashMap != 0) {
 			this.codeOriginalContent = codeFromHashMap.intValue();
 		} else {
-			this.codeOriginalContent = v.size() + 1;
-			hm.put(originalContent, new Integer(this.codeOriginalContent));
-			if (this.codeOriginalContent == Integer.MAX_VALUE)
-				System.err.println("Literal code overflow! Not good!");
-			v.put(new Integer(this.codeOriginalContent), originalContent);
+			lock.lock();
+			try{
+				this.codeOriginalContent = v.size() + 1;
+				hm.put(originalContent, new Integer(this.codeOriginalContent));
+				if (this.codeOriginalContent == Integer.MAX_VALUE)
+					System.err.println("Literal code overflow! Not good!");
+				v.put(new Integer(this.codeOriginalContent), originalContent);
+			} finally{
+				lock.unlock();
+			}
 		}
 	}
 
@@ -72,11 +77,16 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		if (codeFromHashMap != null && codeFromHashMap != 0) {
 			this.codeOriginalContent = codeFromHashMap.intValue();
 		} else {
-			this.codeOriginalContent = v.size() + 1;
-			hm.put(originalContent, new Integer(this.codeOriginalContent));
-			if (this.codeOriginalContent == Integer.MAX_VALUE)
-				System.err.println("Literal code overflow! Not good!");
-			v.put(new Integer(this.codeOriginalContent), originalContent);
+			lock.lock();
+			try{
+				this.codeOriginalContent = v.size() + 1;
+				hm.put(originalContent, new Integer(this.codeOriginalContent));
+				if (this.codeOriginalContent == Integer.MAX_VALUE)
+					System.err.println("Literal code overflow! Not good!");
+				v.put(new Integer(this.codeOriginalContent), originalContent);
+			} finally{
+				lock.unlock();
+			}
 		}
 	}
 

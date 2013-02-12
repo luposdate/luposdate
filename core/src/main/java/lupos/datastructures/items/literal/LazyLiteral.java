@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.URISyntaxException;
+import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.items.literal.codemap.IntegerStringMap;
 import lupos.datastructures.items.literal.codemap.StringIntegerMap;
@@ -63,6 +64,7 @@ public class LazyLiteral extends Literal {
 	private int code;
 	private String materializedContent = null;
 	private Literal materializedLiteral = null;
+	protected static ReentrantLock lock = new ReentrantLock();
 
 	public LazyLiteral() {
 		// nothing to initialize
@@ -73,11 +75,16 @@ public class LazyLiteral extends Literal {
 		if (codeFromHashMap != null && codeFromHashMap != 0) {
 			this.code = codeFromHashMap.intValue();
 		} else {
-			this.code = v.size() + 1;
-			hm.put(content, new Integer(this.code));
-			if (this.code == Integer.MAX_VALUE)
-				System.err.println("Literal code overflow! Not good!");
-			v.put(new Integer(this.code), content);
+			lock.lock();
+			try {
+				this.code = v.size() + 1;
+				hm.put(content, new Integer(this.code));
+				if (this.code == Integer.MAX_VALUE)
+					System.err.println("Literal code overflow! Not good!");
+				v.put(new Integer(this.code), content);
+			} finally{
+				lock.unlock();
+			}
 		}
 	}
 
