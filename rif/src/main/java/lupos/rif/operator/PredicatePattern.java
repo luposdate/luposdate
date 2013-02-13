@@ -24,7 +24,6 @@
 package lupos.rif.operator;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,17 +46,17 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 	private List<Item> patternArgs;
 
 	public PredicatePattern() {
-		this(null, null);
+		this(null, (Item[]) null);
 	}	
 	
+	@SuppressWarnings("unchecked")
 	public PredicatePattern(final URILiteral name, final Item... params) {
-		patternName = name;
-		patternArgs = (List<Item>) (params != null ? Arrays.asList(params)
-				: Arrays.asList());
+		this.patternName = name;
+		this.patternArgs = (List<Item>) (params != null ? Arrays.asList(params) : Arrays.asList());
 	}
 
 	public List<Item> getPatternItems() {
-		return patternArgs;
+		return this.patternArgs;
 	}
 
 	public void setPatternItems(List<Item> items) {
@@ -67,12 +66,12 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
-		unionVariables = new HashSet<Variable>(msg.getVariables());
-		for (final Item item : patternArgs)
+		this.unionVariables = new HashSet<Variable>(msg.getVariables());
+		for (final Item item : this.patternArgs)
 			if (item.isVariable())
-				unionVariables.add((Variable) item);
-		intersectionVariables = new HashSet<Variable>(unionVariables);
-		result.getVariables().addAll(intersectionVariables);
+				this.unionVariables.add((Variable) item);
+		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
+		result.getVariables().addAll(this.intersectionVariables);
 		return result;
 	}
 
@@ -82,22 +81,22 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		final QueryResult result = QueryResult.createInstance();
 		final RuleResult input = (RuleResult) (queryResult instanceof QueryResultDebug ? ((QueryResultDebug) queryResult)
 				.getOriginalQueryResult() : queryResult);
-		// Pattern auf alle Pr�dikate anwenden
+		// Pattern auf alle Praedikate anwenden
 		final Iterator<Predicate> predicateIterator = input
 				.getPredicateIterator();
 		while (predicateIterator.hasNext()) {
 			final Predicate pred = predicateIterator.next();
-			// Nur Pr�dikate, in dem die Anzahl der Parameter �bereinstimmt
-			// �berhaut betrachten
-			if (pred.getParameters().size() == patternArgs.size()
-					&& pred.getName().equals(patternName)) {
+			// Nur Praedikate, in dem die Anzahl der Parameter uebereinstimmt
+			// ueberhaut betrachten
+			if (pred.getParameters().size() == this.patternArgs.size()
+					&& pred.getName().equals(this.patternName)) {
 				final Bindings bind = Bindings.createNewInstance();
 				boolean matched = true;
 				for (int idx = 0; idx < pred.getParameters().size(); idx++)
-					if (patternArgs.get(idx).isVariable())
-						bind.add((Variable) patternArgs.get(idx), pred
+					if (this.patternArgs.get(idx).isVariable())
+						bind.add((Variable) this.patternArgs.get(idx), pred
 								.getParameters().get(idx));
-					else if (!patternArgs.get(idx).equals(
+					else if (!this.patternArgs.get(idx).equals(
 							pred.getParameters().get(idx))) {
 						matched = false;
 						break;
@@ -113,10 +112,10 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 	public String toString() {
 		final StringBuffer str = new StringBuffer();
 		str.append("PredicatePattern On ").append("\n")
-				.append(patternName.toString()).append("(");
-		for (int idx = 0; idx < patternArgs.size(); idx++) {
-			str.append(patternArgs.get(idx).toString());
-			if (idx < patternArgs.size() - 1)
+				.append(this.patternName.toString()).append("(");
+		for (int idx = 0; idx < this.patternArgs.size(); idx++) {
+			str.append(this.patternArgs.get(idx).toString());
+			if (idx < this.patternArgs.size() - 1)
 				str.append(", ");
 			else
 				str.append(")");
@@ -128,19 +127,19 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();
 		str.append("PredicatePattern On ").append("\n")
-				.append(patternName.toString(prefixInstance)).append("(");
-		for (int idx = 0; idx < patternArgs.size(); idx++) {
-			str.append(patternArgs.get(idx).toString());
-			if (idx < patternArgs.size() - 1)
+				.append(this.patternName.toString(prefixInstance)).append("(");
+		for (int idx = 0; idx < this.patternArgs.size(); idx++) {
+			str.append(this.patternArgs.get(idx).toString());
+			if (idx < this.patternArgs.size() - 1){
 				str.append(", ");
-			else
-				str.append(")");
+			}
 		}
+		str.append(")");
 		return str.toString();
 	}
 
 	public URILiteral getPredicateName() {
-		return patternName;
+		return this.patternName;
 	}
 	
 	public void setPredicateName(URILiteral name) {

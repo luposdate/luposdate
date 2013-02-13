@@ -620,7 +620,7 @@ public final class NodeHelper {
 
 		// If this.content contains an empty string, it must be the first element
 		if (keyLength == 0){
-			return new Tuple<Boolean, Integer>(node.getContent(0).length() == 0, 0);
+			return new Tuple<Boolean, Integer>(node.getContent()!=null && node.getContent(0).length() == 0, 0);
 		}
 
 		for (int contentIdx = 0, contentLength = node.getContentLength(); contentIdx < contentLength; contentIdx++) {

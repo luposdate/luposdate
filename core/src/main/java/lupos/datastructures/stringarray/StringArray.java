@@ -542,6 +542,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		this.lastString = getLongFromPage(this.stringsFilename, 0);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static StringArray readLuposStringArray(final LuposObjectInputStream lois) throws IOException{
 		final String pointersFilename = lois.readLuposString();
 		final String stringsFilename = lois.readLuposString();

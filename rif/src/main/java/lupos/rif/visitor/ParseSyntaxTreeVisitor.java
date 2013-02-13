@@ -178,10 +178,8 @@ public class ParseSyntaxTreeVisitor implements
 		RIFClause clause = null;
 		// Wenn Variablen vorhanden
 		if (n.f0.which == 0) {
-			final List<INode> seq = (List<INode>) n.f0.choice
-					.accept(this, rule);
-			for (final INode node : ((List<INode>) seq.get(1)
-					.accept(this, rule)))
+			final List<INode> seq = (List<INode>) n.f0.choice.accept(this, rule);
+			for (final INode node : ((List<INode>) seq.get(1).accept(this, rule)))
 				rule.addVariable((RuleVariable) node.accept(this, rule));
 			clause = (RIFClause) seq.get(3);
 		} else
@@ -195,20 +193,22 @@ public class ParseSyntaxTreeVisitor implements
 		// nur eine Aussage
 		if (n.f0.which == 0)
 			parent.setHead((IExpression) n.f0.choice.accept(this, argu));
-		else
-		// And-verkn�pfte Aussagen
-		{
+		else {
+			// And-verknuepfte Aussagen		
 			final Conjunction conj = new Conjunction();
 			conj.setParent(parent);
-			for (final INode node : (List<INode>) ((List<INode>) n.f0.choice
-					.accept(this, argu)).get(2).accept(this, argu))
+			for (final INode node : (List<INode>) ((List<INode>) n.f0.choice.accept(this, argu)).get(2).accept(this, argu))
 				conj.addExpr((IExpression) node.accept(this, argu));
 			if (!conj.isEmpty())
 				parent.setHead(conj);
 		}
-		if (n.f1.present())
-			parent.setBody((IExpression) ((List<INode>) n.f1.node.accept(this,
-					argu)).get(1).accept(this, argu));
+		if (n.f1.present()){
+			List<INode> bodyList = (List<INode>) n.f1.node.accept(this, argu);
+			parent.setBody((IExpression) bodyList.get(1).accept(this, argu));
+			for (final INode node : (List<INode>)(bodyList.get(2).accept(this, argu))){
+				parent.addNot((IExpression)(((NodeSequence) node).nodes.get(1).accept(this, argu)));
+			}
+		}		
 		return parent;
 	}
 

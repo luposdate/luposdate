@@ -51,7 +51,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 	final Set<RuleVariable> declaredVars = new HashSet<RuleVariable>();
 
 	public Object visit(Document obj, Object arg) throws RIFException {
-		// Fakten �berpr�fen
+		// Fakten ueberpruefen
 		// -nur Tripel erlaubt
 		for (Rule rule : obj.getRules()) {
 			if (!rule.isImplication()) {
@@ -67,7 +67,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 	}
 
 	public Object visit(Rule obj, Object arg) throws RIFException {
-		// Alle Deklarierten Variablen m�ssen auch verwendet werden und keine
+		// Alle deklarierten Variablen muessen auch verwendet werden und keine
 		// neuen verwendet werden
 		Set<RuleVariable> declared = new HashSet<RuleVariable>(
 				obj.getDeclaredVariables());
@@ -91,7 +91,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 				for (RuleVariable var : obj.getHead().getVariables())
 					obj.getBody().isBound(var, boundVars);
 			} while (initSize < boundVars.size());
-			// zweite Iteration, Ungebundene Variablen k�nnen an gebundene
+			// zweite Iteration, Ungebundene Variablen koennen an gebundene
 			// gebunden werden
 			for (RuleVariable var : obj.getHead().getVariables())
 				if (!boundVars.contains(var))
@@ -108,7 +108,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		// throw new RIFException(
 		// "Only Variables or Only Terms are allowed in Rule-Head!");
 
-		// Regelk�rper �berpr�fen
+		// Regelkoerper ueberpruefen
 		if (obj.isImplication())
 			obj.getBody().accept(this,
 					VALIDATION.CHECK_FOR_SINGLE_CONSTANTS_VARIABLES);

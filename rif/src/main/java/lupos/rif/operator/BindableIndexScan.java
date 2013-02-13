@@ -24,7 +24,6 @@
 package lupos.rif.operator;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
@@ -34,7 +33,6 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 
 public abstract class BindableIndexScan extends BasicIndexScan {

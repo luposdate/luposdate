@@ -31,21 +31,32 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.MultiInputOperator;
+import lupos.misc.debug.DebugStep;
 
 public class Minus extends MultiInputOperator {
 
 	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
 																	new ParallelIteratorMultipleQueryResults()};
 
+	protected final boolean considerEmptyIntersection;
+	
+	public Minus(){
+		this(true);
+	}
+	
+	public Minus(final boolean considerEmptyIntersection){
+		this.considerEmptyIntersection = considerEmptyIntersection;
+	}
+	
 	@Override
-	public synchronized QueryResult process(final QueryResult queryResult,
-			final int operandID) {
+	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
 		// wait for all query results and process them when
 		// EndOfEvaluationMessage arrives
 		this.operands[operandID].addQueryResult(queryResult);
@@ -60,28 +71,32 @@ public class Minus extends MultiInputOperator {
 			while (iteratorLeftChild.hasNext()) {
 				Bindings leftItem = iteratorLeftChild.next();
 				boolean found = false;
-				for (Bindings rightItem : this.operands[1].getQueryResult()) {
+				for(Bindings rightItem : this.operands[1].getQueryResult()) {
 					// compute intersection of the variable sets
 					Set<Variable> vars = rightItem.getVariableSet();
 					vars.retainAll(leftItem.getVariableSet());
+					
+					// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
+					// workaround: check whether vars is empty
+					if(vars.isEmpty() && this.considerEmptyIntersection){
+						continue;
+					}
 
 					boolean isEqual = true;
 					for (Variable v : vars) {
-						if ((v.getLiteral(leftItem)
-								.compareToNotNecessarilySPARQLSpecificationConform(v
-										.getLiteral(rightItem))) != 0) {
+						if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
 							isEqual = false;
 						}
 					}
 
-					// if intersection is empty then isEqual should always be
-					// false,
-					// workaround: check whether vars is empty
-					if (isEqual && !vars.isEmpty())
+					if (isEqual){
 						found = true;
+						break;
+					}
 				}
-				if (!found)
+				if (!found){
 					result.add(leftItem);
+				}
 			}
 
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
@@ -90,6 +105,53 @@ public class Minus extends MultiInputOperator {
 		} else if (!this.operands[0].isEmpty()) { // happens when the group constraint which follows the minus is empty
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(this.operands[0].getQueryResult());
+			}
+		}
+		return msg;
+	}
+	
+	@Override
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
+		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
+			QueryResult result = QueryResult.createInstance();
+			Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
+			while (iteratorLeftChild.hasNext()) {
+				Bindings leftItem = iteratorLeftChild.next();
+				boolean found = false;
+				for (Bindings rightItem : this.operands[1].getQueryResult()) {
+					// compute intersection of the variable sets
+					Set<Variable> vars = rightItem.getVariableSet();
+					vars.retainAll(leftItem.getVariableSet());
+
+					// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
+					// workaround: check whether vars is empty
+					if(vars.isEmpty() && this.considerEmptyIntersection){
+						continue;
+					}
+					
+					boolean isEqual = true;
+					for (Variable v : vars) {
+						if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
+							isEqual = false;
+						}
+					}
+
+					if (isEqual){
+						found = true;
+						break;
+					}
+				}
+				if (!found){
+					result.add(leftItem);
+				}
+			}
+
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAllDebug(new QueryResultDebug(result, debugstep, this, opId.getOperator(), true), debugstep);
+			}
+		} else if (!this.operands[0].isEmpty()) { // happens when the group constraint which follows the minus is empty
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAllDebug(this.operands[0].getQueryResult(), debugstep);
 			}
 		}
 		return msg;

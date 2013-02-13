@@ -32,8 +32,5 @@ public class InMemoryDistinct extends NonBlockingDistinct {
 		super(new HashSet<Bindings>());
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5670129779878953225L;
 }

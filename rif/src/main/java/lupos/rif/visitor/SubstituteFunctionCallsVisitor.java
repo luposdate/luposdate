@@ -58,7 +58,7 @@ public class SubstituteFunctionCallsVisitor implements
 	}
 
 	public IRuleNode visit(Conjunction obj, Object arg) throws RIFException {
-		// Conjunction k�nnen R�ckgabe sein, neu berechen
+		// Conjunction koennen Rueckgabe sein, neu berechen
 		List<IExpression> exprs = new ArrayList<IExpression>(obj.exprs);
 		obj.exprs.clear();
 		for (IExpression expr : exprs)
@@ -71,7 +71,7 @@ public class SubstituteFunctionCallsVisitor implements
 	}
 
 	public IRuleNode visit(Disjunction obj, Object arg) throws RIFException {
-		// Conjunction k�nnen R�ckgabe sein, neu berechen
+		// Conjunction koennen Rueckgabe sein, neu berechen
 		List<IExpression> exprs = new ArrayList<IExpression>(obj.exprs);
 		obj.exprs.clear();
 		for (IExpression expr : exprs)
@@ -118,7 +118,7 @@ public class SubstituteFunctionCallsVisitor implements
 		if (!(obj.getBody() instanceof External))
 			obj.setBody((IExpression) obj.getBody().accept(this, obj));
 
-		// dem Body hinzuf�gen
+		// dem Body hinzufuegen
 		if (!equalities.isEmpty()) {
 			Conjunction conj = new Conjunction();
 			conj.setParent(obj);
@@ -153,7 +153,7 @@ public class SubstituteFunctionCallsVisitor implements
 		// Funktionsaufrufe mit Variable ersetzen
 		ArrayList<IExpression> params = new ArrayList<IExpression>(
 				obj.termParams);
-		// Relationen k�nnen keine Externals sein.
+		// Relationen koennen keine Externals sein.
 		for (IExpression expr : obj.termParams) {
 			final IRuleNode result = expr.accept(this, obj);
 			if (result instanceof Conjunction) {

@@ -52,9 +52,9 @@ public class PredicateIndexScan extends InsertIndexScan {
 	public QueryResult process(final Dataset dataset) {
 		final RuleResult gr = new RuleResult();
 		gr.getPredicateResults().addAll(this.predFacts);
-		for (final OperatorIDTuple succOperator : this.succeedingOperators)
-			((Operator) succOperator.getOperator()).processAll(gr,
-					succOperator.getId());
+//		for (final OperatorIDTuple succOperator : this.succeedingOperators)
+//			((Operator) succOperator.getOperator()).processAll(gr,
+//					succOperator.getId());
 		return gr;
 	}
 

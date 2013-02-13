@@ -25,10 +25,10 @@ package lupos.rif.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import lupos.rif.IExpression;
@@ -42,29 +42,32 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	private final Set<RuleVariable> vars = Sets.newHashSet();
 	private IExpression head;
 	private IExpression body;
+	private List<IExpression> nots = new LinkedList<IExpression>();
 
 	@Deprecated
 	// only predicate in the head
 	public Set<IExpression> getHeadExpressions() {
 		final Set<IExpression> result = new HashSet<IExpression>();
-		if (head instanceof Conjunction)
-			result.addAll(((Conjunction) head).exprs);
+		if (this.head instanceof Conjunction)
+			result.addAll(((Conjunction) this.head).exprs);
 		else
-			result.add(head);
+			result.add(this.head);
 		return result;
 	}
 
+	@Override
 	public Set<RuleVariable> getDeclaredVariables() {
-		return vars;
+		return this.vars;
 	}
 
+	@Override
 	public void addVariable(RuleVariable var) {
 		var.setParent(this);
-		vars.add(var);
+		this.vars.add(var);
 	}
 
 	public boolean isImplication() {
-		return body != null;
+		return this.body != null;
 	}
 
 	public void setHead(IExpression head) {
@@ -72,7 +75,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	}
 
 	public IExpression getHead() {
-		return head;
+		return this.head;
 	}
 
 	public void setBody(IExpression body) {
@@ -80,20 +83,22 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	}
 
 	public IExpression getBody() {
-		return body;
+		return this.body;
 	}
 
 	public Set<Rule> getRecursiveConnections() {
-		return recursiveConnections;
+		return this.recursiveConnections;
 	}
 
 	@Override
 	public List<IRuleNode> getChildren() {
 		List<IRuleNode> ret = new ArrayList<IRuleNode>();
-		ret.addAll(vars);
-		ret.add(head);
-		if (isImplication())
-			ret.add(body);
+		ret.addAll(this.vars);
+		ret.add(this.head);
+		if (isImplication()){
+			ret.add(this.body);
+		}
+		ret.addAll(this.nots);
 		return ret;
 	}
 
@@ -124,7 +129,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 			// Do not remove any rule, which could create an equality
 			return true;
 		visited.add(this);
-		for (final Rule rule : recursiveConnections)
+		for (final Rule rule : this.recursiveConnections)
 			if (!visited.contains(rule)
 					&& rule.containsRecursion(conclusion, visited))
 				return true;
@@ -136,12 +141,26 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 		return getHead().toString();
 	}
 
+	@Override
 	public String getLabel() {
 		return isImplication() ? "Rule" : "Fact";
 	}
 
+	@Override
 	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg)
 			throws RIFException {
 		return visitor.visit(this, arg);
+	}
+
+	public void addNot(IExpression iExpression) {
+		this.nots.add(iExpression);
+	}
+	
+	public List<IExpression> getNots(){
+		return this.nots;
+	}
+	
+	public void setNots(List<IExpression> nots){
+		this.nots = nots;
 	}
 }

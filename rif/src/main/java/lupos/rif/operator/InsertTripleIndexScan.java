@@ -32,11 +32,10 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.BasicOperator;
-import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.singleinput.sparul.Insert;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
@@ -49,7 +48,7 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 	final protected Set<Triple> facts = new HashSet<Triple>();
 
 	public InsertTripleIndexScan(IndexScanCreatorInterface indexScanCreator) {
-		super(null);		
+		super((Root)indexScanCreator.getRoot());		
 		this.triplePatterns = Arrays.asList();
 		if(indexScanCreator instanceof IndexScanCreator_BasicIndex){
 			Insert insert = new Insert(new ArrayList<URILiteral>(), indexScanCreator.getDataset());
@@ -69,8 +68,8 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 		final GraphResult result = new GraphResult();
 		for (final Triple triple : this.facts)
 			result.addGraphResultTriple(triple);
-		for (final OperatorIDTuple oid : this.succeedingOperators)
-			((Operator) oid.getOperator()).processAll(result, oid.getId());
+//		for (final OperatorIDTuple oid : this.succeedingOperators)
+//			((Operator) oid.getOperator()).processAll(result, oid.getId());
 		return result;
 	}
 

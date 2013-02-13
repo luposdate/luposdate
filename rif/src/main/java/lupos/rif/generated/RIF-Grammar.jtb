@@ -76,6 +76,8 @@ TOKEN [IGNORE_CASE] :
 | < EXISTS: "exists" >
 | < LIST: "list" >
 | < CONC: "conclusion" >
+/* non-standard tokens in order to support stratified negation */
+| < NOT: "not" > 
 }
 
 /* LITERALS */
@@ -165,7 +167,10 @@ void RIFRule():
 void RIFClause():
 {}
 {
-  (RIFAtomic() | < AND > < LPAREN > ( RIFAtomic() )* < RPAREN > )  ( < IMPL > RIFFormula() )?
+  (RIFAtomic() | < AND > < LPAREN > ( RIFAtomic() )* < RPAREN > )
+  ( < IMPL > RIFFormula()
+  	( < NOT > RIFFormula() )* /* This line is not standard! It is for supporting stratified negation! */
+  )?
 }
 
 /* Condition Language */

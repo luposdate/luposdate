@@ -38,6 +38,7 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.sort.Sort;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorVariables;
+import lupos.misc.debug.DebugStep;
 
 public class SortedMinus extends Minus {
 
@@ -106,6 +107,50 @@ public class SortedMinus extends Minus {
 
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(result);
+			}
+		}
+
+		return msg;
+	}
+	
+	@Override
+	public Message preProcessMessageDebug(EndOfEvaluationMessage msg, final DebugStep debugstep) {
+
+		if (!this.isSortable || this.operands[1].isEmpty()) {
+			return super.preProcessMessage(msg);
+		} else if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
+			QueryResult result = QueryResult.createInstance();
+
+			Iterator<Bindings> leftIt = this.operands[0].getQueryResult().iterator();
+			Iterator<Bindings> rightIt = this.operands[1].getQueryResult().iterator();
+			Bindings leftBindings = null, rightBindings = null;
+			if (leftIt.hasNext()) {
+				leftBindings = leftIt.next();
+			}
+			if (rightIt.hasNext()) {
+				rightBindings = rightIt.next();
+			}
+
+			while (rightBindings != null && leftBindings != null) {
+				int difference = this.comp.compare(leftBindings, rightBindings);
+				if (difference > 0) {
+					rightBindings = rightIt.hasNext() ? rightIt.next() : null;
+				} else if (difference == 0) {
+					leftBindings = leftIt.hasNext() ? leftIt.next() : null;
+				} else if (difference < 0) {
+					result.add(leftBindings);
+					leftBindings = leftIt.hasNext() ? leftIt.next() : null;
+				}
+
+			}
+
+			while (leftBindings != null) {
+				result.add(leftBindings);
+				leftBindings = leftIt.hasNext() ? leftIt.next() : null;
+			}
+
+			for (final OperatorIDTuple opId : this.succeedingOperators) {
+				opId.processAllDebug(result, debugstep);
 			}
 		}
 

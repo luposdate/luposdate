@@ -63,6 +63,11 @@ public class ResolveListsRuleVisitor implements
 		obj.setParent(arg);
 		currentVariableScope = obj;
 		obj.setBody((IExpression) obj.getBody().accept(this, obj));
+		List<IExpression> listOfNots = new ArrayList<IExpression>(obj.getNots().size());
+		for(IExpression iExpression: obj.getNots()){
+			listOfNots.add((IExpression) iExpression.accept(this, obj));
+		}
+		obj.setNots(listOfNots);		
 		currentVariableScope = null;
 		return obj;
 	}

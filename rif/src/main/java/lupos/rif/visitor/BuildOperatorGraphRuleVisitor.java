@@ -45,6 +45,7 @@ import lupos.engine.operators.index.EmptyIndexScan;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.IndexJoinWithDuplicateElimination;
 import lupos.engine.operators.multiinput.join.Join;
+import lupos.engine.operators.multiinput.minus.Minus;
 import lupos.engine.operators.singleinput.Construct;
 import lupos.engine.operators.singleinput.MakeBooleanResult;
 import lupos.engine.operators.singleinput.Result;
@@ -81,9 +82,7 @@ import com.google.common.collect.Multimap;
 
 public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	protected final String VARIABLE_PREDICATE = "?";
-	/**
-	 * String -> Pr�dikatbezeichung bsp. cdp:example(...)
-	 */
+
 	protected final Map<KEY, Set<BasicOperator>> tripleProducer = new LinkedHashMap<KEY, Set<BasicOperator>>();
 	protected final Map<KEY, Set<BasicOperator>> tripleConsumer = new LinkedHashMap<KEY, Set<BasicOperator>>();
 	protected Multimap<IExpression, IExpression> equalityMap;
@@ -293,8 +292,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		this.tripleConsumer.clear();
 		this.equalityMap = HashMultimap.create();
 		this.usesEqualities = false;
-		// 1. Fakten m�ssen als erstes ausgewertet werden und dann in allen
-		// Operatorb�umen ber�cksichtigt werden.
+		// 1. Fakten muessen als erstes ausgewertet werden und dann in allen
+		// Operatorbaeumen beruecksichtigt werden.
 		this.predicateIndex = null;
 		InsertTripleIndexScan insertTripleIndex = null;
 		for (IExpression fact : obj.getFacts())
@@ -306,12 +305,10 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			} else {
 				final Object item = ((RulePredicate) fact).toDataStructure();
 				if (item instanceof Triple) {
-					insertTripleIndex = insertTripleIndex == null ? new InsertTripleIndexScan(this.indexScanCreator)
-							: insertTripleIndex;
+					insertTripleIndex = insertTripleIndex == null ? new InsertTripleIndexScan(this.indexScanCreator) : insertTripleIndex;
 					insertTripleIndex.addTripleFact((Triple) item);
 				} else if (item instanceof Predicate) {
-					this.predicateIndex = this.predicateIndex == null ? new PredicateIndexScan()
-							: this.predicateIndex;
+					this.predicateIndex = this.predicateIndex == null ? new PredicateIndexScan() : this.predicateIndex;
 					this.predicateIndex.addPredicateFact((Predicate) item);
 				}
 			}
@@ -324,13 +321,13 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			this.predicateIndex.addPrecedingOperator(this.indexScanCreator.getRoot());
 		}
 
-		// 2. �ber alle Regeln gehen und mitschreiben, welche
-		// Tripel-Pr�dikate
-		// produziert werden, Externals k�nnen nicht vorkommen
+		// 2. ueber alle Regeln gehen und mitschreiben, welche
+		// Tripel-Praedikate
+		// produziert werden, Externals koennen nicht vorkommen
 		for (Rule rule : obj.getRules())
 			if (rule.isImplication()) {
 				for (IExpression expr : rule.getHeadExpressions())
-					// Tripel mit variablen Pr�dikat wird generiert
+					// Tripel mit variablen Praedikat wird generiert
 					if (expr instanceof RulePredicate) {
 						final RulePredicate pred = (RulePredicate) expr;
 						BasicOperator pattern = this.generatePattern(pred, arg);
@@ -344,7 +341,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 					}
 			}
 
-		// 3. Operatorgraphen f�r einzelne Regeln berechnen
+		// 3. Operatorgraphen fuer einzelne Regeln berechnen
 		List<BasicOperator> subOperators = new ArrayList<BasicOperator>();
 		for (Rule rule : obj.getRules())
 			if (rule.isImplication()) {
@@ -352,7 +349,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				subOperators.add(result);
 			}
 
-		// 4. Rekursive Verbindungen aufl�sen
+		// 4. Rekursive Verbindungen aufloesen
 		for (Entry<KEY, Set<BasicOperator>> entry : this.tripleProducer.entrySet()) {
 			boolean consumerExists = false;
 			// find all matching consumers by just getting the previous determined tripleConsumers...
@@ -392,7 +389,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			}
 		}
 
-		// 5. Ergebniss aller Regeln in einem Result zusammenf�hren
+		// 5. Ergebniss aller Regeln in einem Result zusammenfuehren
 		BasicOperator finalResult = null;
 		if (obj.getConclusion() == null) {
 			finalResult = new Result();
@@ -435,7 +432,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			this.booleanIndex.removePrecedingOperator(this.indexScanCreator.getRoot());
 		}
 
-		// Falls Conclusion vorhanden, noch Result anh�ngen, zum Sammeln der
+		// Falls Conclusion vorhanden, noch Result anhaengen, zum Sammeln der
 		// Ergebnisse
 		if (!(finalResult instanceof Result)) {
 			if (obj.getConclusion() != null
@@ -457,7 +454,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	}
 
 	private BasicOperator patternFromConclusion(IExpression conclusion) {
-		// Annahme, Conclusion ist Pr�dikat
+		// Annahme, Conclusion ist Praedikat
 		final RulePredicate pred = (RulePredicate) conclusion;
 		if (pred.isTriple())
 			return unitermToTriplePattern(pred);
@@ -522,6 +519,26 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			subOperator = distinct;
 		}
 		
+		// add nots under subOperator 
+		for(IExpression not: obj.getNots()){
+			// TODO check for recursion in not expression and throw error in that case
+			// (In the current implementation, negation in rules retrieves reasonable results only for non-recursive rules) 
+			// first determine operator graph for the not expression:
+			BasicOperator notOperator = (BasicOperator) not.accept(this, null);
+			for(OperatorIDTuple opID: notOperator.getSucceedingOperators()){
+				opID.getOperator().removePrecedingOperator(notOperator);
+			}
+			notOperator.getSucceedingOperators().clear();
+			// now add a not operator below subOperator and notOperator!
+			// Luckily, the semantics of the not operator is exactly the same as of the minus operator! 
+			Minus minus = new Minus(false);
+			subOperator.addSucceedingOperator(minus, 0);
+			notOperator.addSucceedingOperator(minus, 1);
+			minus.addPrecedingOperator(subOperator);
+			minus.addPrecedingOperator(notOperator);
+			subOperator = minus;
+		}
+		
 		// 1. Construct erstellen
 		if (generateTriples) {
 			final Construct construct = new Construct();
@@ -535,10 +552,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				}
 			}
 			construct.setTemplates(patterns);
-			// F�r jedes Triplepattern in Construct ein Generate f�r
-			// Inferenz
-			// erstellen
-			// wird, falls es keinen Consumer gibt, sp�ter wieder entfernt
+			// Fuer jedes Triplepattern in Construct ein Generate fuer Inferenz erstellen
+			// wird, falls es keinen Consumer gibt, spaeter wieder entfernt
 			for (TriplePattern pattern : construct.getTemplates()) {
 				Generate generateTriplesOp = new Generate(pattern.getItems());
 				generateTriplesOp.addPrecedingOperator(subOperator);

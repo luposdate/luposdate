@@ -194,6 +194,11 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		obj.setParent(arg);
 		obj.setHead((IExpression) obj.getHead().accept(this, obj));
 		obj.setBody((IExpression) obj.getBody().accept(this, obj));
+		List<IExpression> listOfNots = new ArrayList<IExpression>(obj.getNots().size());
+		for(IExpression iExpression: obj.getNots()){
+			listOfNots.add((IExpression) iExpression.accept(this, obj));
+		}
+		obj.setNots(listOfNots);
 		return obj;
 	}
 

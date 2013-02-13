@@ -31,9 +31,6 @@ import lupos.datastructures.queryresult.QueryResult;
 
 public abstract class NonBlockingDistinct extends Distinct {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5670129779878953225L;
 
 	final protected Set<Bindings> bindings;

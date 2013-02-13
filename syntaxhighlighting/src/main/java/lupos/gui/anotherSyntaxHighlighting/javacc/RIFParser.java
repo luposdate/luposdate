@@ -110,8 +110,8 @@ public class RIFParser extends SemanticWebParser {
 	    	    "\"list\"",
 	    	    "\"conclusion\"",
 			    "\"#\"",
-			    "\"##\"",			    
-
+			    "\"##\"",
+			    "\"not\"",
 		};
 		
 		insertIntoTokenMap(reservedWords, TYPE__SemanticWeb.RESERVEDWORD);
