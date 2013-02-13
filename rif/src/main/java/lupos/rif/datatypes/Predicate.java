@@ -78,13 +78,11 @@ public class Predicate implements Serializable {
 		str.append(name.toString()).append("(");
 		for (int idx = 0; idx < literals.size(); idx++) {
 			str.append(literals.get(idx).toString());
-			if (idx < literals.size() - 1)
+			if (idx < literals.size() - 1){
 				str.append(", ");
-			else
-				str.append(")");
+			}
 		}
-		if (str.substring(str.length() - 1) != ")")
-			str.append(")");
+		str.append(")");
 		return str.toString();
 	}
 
@@ -93,13 +91,11 @@ public class Predicate implements Serializable {
 		str.append(name.toString(prefixInstance)).append("(");
 		for (int idx = 0; idx < literals.size(); idx++) {
 			str.append(literals.get(idx).toString(prefixInstance));
-			if (idx < literals.size() - 1)
+			if (idx < literals.size() - 1){
 				str.append(", ");
-			else
-				str.append(")");
+			}
 		}
-		if (str.substring(str.length() - 1) != ")")
-			str.append(")");
+		str.append(")");
 		return str.toString();
 	}
 
