@@ -25,35 +25,54 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
-
-import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 
-public class TSVFormatter extends SeparatorFormatter {
+/**
+ * This class is for returning the query-triples of a query 
+ */
+public class QueryTriplesFormatter extends Formatter {
 
-	public TSVFormatter() {
-		super("Tab Separated Values (TSV)", "text/tsv");
+	public QueryTriplesFormatter() {
+		super("Query Triples", "text/n3");
 	}
 	
 	@Override
-	public void writeSeparator(OutputStream os) throws IOException{
-		os.write("\t".getBytes());		
-	}
-	
-	@Override
-	public void writeFirstVariableInHead(final OutputStream os, final Variable v)
-			throws IOException {
-		os.write(v.toString().getBytes());
+	public String getMIMEType(QueryResult queryResult){
+		return "text/n3";
 	}
 
+	
 	@Override
-	public String getMIMEType(QueryResult queryResult) {
-		if (queryResult instanceof GraphResult) {
-			return super.getMIMEType(queryResult);
-		} else {
-			return "text/tsv";
+	public void writeResult(final OutputStream os, Set<Variable> variables, final QueryResult queryResult) throws IOException {
+		byte[] carriageReturn = "\n".getBytes();
+		
+		// use HashSet for eliminating duplicates!
+		HashSet<Triple> triples = new HashSet<Triple>(); 
+		
+		// collect all query-triples!
+		Iterator<Bindings> it = queryResult.oneTimeIterator();
+		while(it.hasNext()){
+			Bindings bindings = it.next();
+			for(Triple triple: bindings.getTriples()){
+				triples.add(triple);
+			}
 		}
+		// now write out all triples without any duplicates
+		for(Triple triple: triples){
+			os.write(triple.toN3String().getBytes());
+			os.write(carriageReturn);
+		}
+	}
+
+	@Override
+	public boolean isWriteQueryTriples() {
+		return true;
 	}
 }

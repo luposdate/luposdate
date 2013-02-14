@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
@@ -43,14 +44,21 @@ import lupos.datastructures.queryresult.QueryResult;
 public class JSONFormatReader extends MIMEFormatReader {
 
 	public final static String MIMETYPE = "application/sparql-results+json";
+	
+	private final boolean writeQueryTriples;
 
-	public JSONFormatReader() {
-		super("JSON", JSONFormatReader.MIMETYPE);
+	public JSONFormatReader(final boolean writeQueryTriples) {
+		super("JSON", JSONFormatReader.MIMETYPE+(writeQueryTriples?"+querytriples":""));
+		this.writeQueryTriples = writeQueryTriples;
+	}
+	
+	public JSONFormatReader(){
+		this(false);
 	}
 
 	@Override
 	public String getMIMEType() {
-		return JSONFormatReader.MIMETYPE;
+		return JSONFormatReader.MIMETYPE+(this.writeQueryTriples?"+querytriples":"");
 	}
 
 	@Override
@@ -110,7 +118,17 @@ public class JSONFormatReader extends MIMEFormatReader {
 		Iterator<String> keysIt = oneResult.keys();
 		while(keysIt.hasNext()){
 			String var = keysIt.next();
-			luposResult.add(new Variable(var), getLiteral(oneResult.getJSONObject(var)));			
+			if(var.compareTo("<Query-Triples>")!=0){
+				luposResult.add(new Variable(var), getLiteral(oneResult.getJSONObject(var)));
+			} else {
+				// This JSONObject contains the query-triples!
+				// This is no standard and a proprietary feature of LUPOSDATE!
+				final JSONArray triples = oneResult.getJSONArray(var);
+				for(int i=0; i<triples.length(); i++){
+					final JSONObject jsonTriple = triples.getJSONObject(i);
+					luposResult.addTriple(new Triple(getLiteral(jsonTriple.getJSONObject("subject")), getLiteral(jsonTriple.getJSONObject("predicate")), getLiteral(jsonTriple.getJSONObject("object"))));
+				}
+			}
 		}
 		return luposResult;
 	}

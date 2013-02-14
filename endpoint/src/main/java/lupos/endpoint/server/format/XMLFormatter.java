@@ -70,9 +70,14 @@ public class XMLFormatter extends HeadBodyFormatter {
 	private final static String XML_LITERAL_2 =	">";
 	private final static String XML_LITERAL_3 =	"</literal>\n";
 
+	private final static String indent = "     ";
 
+	public XMLFormatter(final boolean writeQueryTriples) {
+		super("XML"+(writeQueryTriples?" with Query Triples":""), "application/sparql-results+xml"+(writeQueryTriples?"+querytriples":""), writeQueryTriples);
+	}
+	
 	public XMLFormatter() {
-		super("XML", "application/sparql-results+xml");
+		this(false);
 	}
 	
 	@Override
@@ -108,6 +113,49 @@ public class XMLFormatter extends HeadBodyFormatter {
 	@Override
 	public void writeEndResult(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Result_2.getBytes());
+	}
+	
+	@Override
+	public void writeQueryTripleStart(final OutputStream os) throws IOException {
+		os.write("    <querytriple>".getBytes());
+	}
+
+	@Override
+	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
+		os.write("\n    </querytriple>\n".getBytes());
+	}
+
+	@Override
+	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		os.write("\n".getBytes());
+		os.write(indent.getBytes());
+		os.write("<subject>\n ".getBytes());
+		this.writeLiteral(os, literal);
+		os.write(indent.getBytes());
+		os.write("</subject>".getBytes());
+	}
+	
+	@Override
+	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		os.write("\n".getBytes());
+		os.write(indent.getBytes());
+		os.write("<predicate>\n ".getBytes());
+		this.writeLiteral(os, literal);
+		os.write(indent.getBytes());
+		os.write("</predicate>".getBytes());
+	}
+	
+	@Override
+	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		os.write("\n".getBytes());
+		os.write(indent.getBytes());
+		os.write("<object>\n ".getBytes());
+		this.writeLiteral(os, literal);
+		os.write(indent.getBytes());
+		os.write("</object>".getBytes());
 	}
 	
 	@Override

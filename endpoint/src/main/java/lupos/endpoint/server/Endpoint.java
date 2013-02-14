@@ -32,23 +32,29 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.server.format.CSVFormatter;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.HTMLFormatter;
 import lupos.endpoint.server.format.JSONFormatter;
 import lupos.endpoint.server.format.PlainFormatter;
+import lupos.endpoint.server.format.QueryTriplesFormatter;
 import lupos.endpoint.server.format.TSVFormatter;
 import lupos.endpoint.server.format.XMLFormatter;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.singleinput.federated.BitVectorFilterFunction;
 
+import com.google.common.collect.Sets;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -67,6 +73,8 @@ public class Endpoint {
 	private final static Map<String, HttpHandler> registeredhandler = Collections.synchronizedMap(new HashMap<String, HttpHandler>());
 	
 	private static HTMLForm htmlForm = new StandardHTMLForm();
+	
+	private static Class<? extends Bindings> defaultBindingsClass = Bindings.instanceClass;
 	
 	public static void registerFormatter(final Formatter formatter){
 		Endpoint.registeredFormatter.put(formatter.getKey().toLowerCase(), formatter);
@@ -116,6 +124,7 @@ public class Endpoint {
 			Endpoint.dir = directory;
 			Endpoint.evaluator.loadLargeScaleIndices(Endpoint.dir);
 			
+			defaultBindingsClass = Bindings.instanceClass;
 			
 			Endpoint.startServer();
 			System.out.println("Endpoint ready to receive requests...");
@@ -136,12 +145,17 @@ public class Endpoint {
 	
 	public static void registerStandardFormatter(){
 		Endpoint.registerFormatter(new XMLFormatter());
+		Endpoint.registerFormatter(new XMLFormatter(true));
 		Endpoint.registerFormatter(new PlainFormatter());
 		Endpoint.registerFormatter(new JSONFormatter());
+		Endpoint.registerFormatter(new JSONFormatter(true));
 		Endpoint.registerFormatter(new CSVFormatter());
 		Endpoint.registerFormatter(new TSVFormatter());
 		Endpoint.registerFormatter(new HTMLFormatter(false));
 		Endpoint.registerFormatter(new HTMLFormatter(true));
+		Endpoint.registerFormatter(new HTMLFormatter(false, true));
+		Endpoint.registerFormatter(new HTMLFormatter(true, true));
+		Endpoint.registerFormatter(new QueryTriplesFormatter());		
 	}
 	
 	public static void registerStandardContexts(){
@@ -201,6 +215,12 @@ public class Endpoint {
 			try {
 				synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
 					System.out.println("Evaluating query:\n"+queryParameter);
+					if((Endpoint.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
+						// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
+						Bindings.instanceClass = BindingsArrayReadTriples.class;
+					} else {
+						Bindings.instanceClass = Endpoint.defaultBindingsClass;
+					}
 					QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, true):Endpoint.evaluator.getResult(queryParameter);
 					final String mimeType = formatter.getMIMEType(queryResult);
 					System.out.println("Done, sending response using MIME type "+mimeType);
@@ -338,7 +358,16 @@ public class Endpoint {
 		@Override
 		public void sendHTMLForm(final HttpExchange t) throws IOException {
 			final StringBuilder toSend = new StringBuilder(StandardHTMLForm.HTML_FORM_1);
-			for(final Formatter formatter: Endpoint.getRegisteredFormatters().values()){
+			// do duplicate elimination!
+			Formatter[] formatters=Sets.newHashSet(Endpoint.getRegisteredFormatters().values()).toArray(new Formatter[0]);
+			// sort according to the name of the formatter
+			Arrays.sort(formatters, new Comparator<Formatter>(){
+				@Override
+				public int compare(Formatter o1, Formatter o2) {					
+					return o1.getName().compareTo(o2.getName());
+				}				
+			});
+			for(final Formatter formatter: formatters){
 				toSend.append(StandardHTMLForm.HTML_OPTION_1);
 				toSend.append(formatter.getKey());
 				toSend.append(StandardHTMLForm.HTML_OPTION_2);

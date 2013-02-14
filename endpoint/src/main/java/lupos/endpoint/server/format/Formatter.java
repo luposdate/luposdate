@@ -74,4 +74,12 @@ public abstract class Formatter {
 			System.err.println("lupos.endpoint.server.format.Formatter: QueryResult other than GraphResult should be handled by the class "+this.getClass().getCanonicalName());
 		}
 	}
+	
+	/**
+	 * This method is overwritten by those formatters, which support returning query-triples
+	 * @return true if returning query-triples is supported, otherwise false
+	 */
+	public boolean isWriteQueryTriples() {
+		return false;
+	}
 }

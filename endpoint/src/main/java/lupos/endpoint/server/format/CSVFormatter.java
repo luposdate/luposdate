@@ -32,7 +32,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public class CSVFormatter extends SeparatorFormatter {
 
 	public CSVFormatter() {
-		super("CSV", "text/csv");
+		super("Comma Separated Values (CSV)", "text/csv");
 	}
 	
 	@Override

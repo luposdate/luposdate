@@ -71,7 +71,9 @@ public class Client {
 		Client.registerFormatReader(new CSVFormatReader());
 		Client.registerFormatReader(new TSVFormatReader());
 		Client.registerFormatReader(new JSONFormatReader());
+		Client.registerFormatReader(new JSONFormatReader(true));
 		Client.registerFormatReader(new XMLFormatReader());
+		Client.registerFormatReader(new XMLFormatReader(true));
 		Client.registerFormatReader(new TripleFormatReader("N3", "text/n3", "N3"));
 		Client.registerFormatReader(new TripleFormatReader("Turtle", "text/turtle", "Turtle"));
 		Client.registerFormatReader(new TripleFormatReader("RDF XML", "application/rdf+xml", "Rdfxml"));

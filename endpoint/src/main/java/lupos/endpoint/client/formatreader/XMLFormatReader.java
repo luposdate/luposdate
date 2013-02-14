@@ -37,6 +37,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
@@ -53,6 +54,11 @@ public class XMLFormatReader extends MIMEFormatReader {
 	private static enum TYPE {
 		uri, literal, typedliteral, languagetaggedliteral, blanknode, undefined
 	}
+	
+	// the type of state for storing the value used for sax parsing
+	private static enum TARGET_TYPE {
+		var, subject, predicate, object, undefined
+	}
 
 	final ReentrantLock lock = new ReentrantLock();
 	final Condition decisionMade = this.lock.newCondition();
@@ -62,13 +68,20 @@ public class XMLFormatReader extends MIMEFormatReader {
 	
 	protected static int BUFFERSIZE = 50;
 
-	public XMLFormatReader() {
-		super("XML", XMLFormatReader.MIMETYPE);
+	private final boolean writeQueryTriples;
+
+	public XMLFormatReader(final boolean writeQueryTriples) {
+		super("XML", XMLFormatReader.MIMETYPE+(writeQueryTriples?"+querytriples":""));
+		this.writeQueryTriples = writeQueryTriples;
+	}
+	
+	public XMLFormatReader(){
+		this(false);
 	}
 
 	@Override
 	public String getMIMEType() {
-		return XMLFormatReader.MIMETYPE;
+		return XMLFormatReader.MIMETYPE+(this.writeQueryTriples?"+querytriples":"");
 	}
 
 	@Override
@@ -182,6 +195,8 @@ public class XMLFormatReader extends MIMEFormatReader {
 		private Bindings currentBindings;
 		private Variable currentVariable;
 		private TYPE currentType = TYPE.undefined;
+		private TARGET_TYPE currentTargetType = TARGET_TYPE.undefined;
+		private Triple currentTriple;
 		private String currentAttribute = null;
 		private String content = "";
 		
@@ -194,6 +209,7 @@ public class XMLFormatReader extends MIMEFormatReader {
 			this.currentType = TYPE.undefined;
 			this.content = "";
 			if(qName.equalsIgnoreCase("results")){
+				this.currentTargetType = TARGET_TYPE.undefined;
 				XMLFormatReader.this.lock.lock();
 				try {
 					XMLFormatReader.this.decision=true;
@@ -202,13 +218,14 @@ public class XMLFormatReader extends MIMEFormatReader {
 					XMLFormatReader.this.lock.unlock();
 				}
 			}  else if(qName.equalsIgnoreCase("result")){
+				this.currentTargetType = TARGET_TYPE.undefined;
 				this.currentBindings = Bindings.createNewInstance();
 			} else if(qName.equalsIgnoreCase("binding")){
 				String variableName = attributes.getValue("name");
 				if(variableName==null){
-					System.err.println("There is no name element given in a bindings-tag!");
-					Thread.dumpStack();
+					throw new RuntimeException("There is no name element given in a bindings-tag!");
 				} else {
+					this.currentTargetType = TARGET_TYPE.var;
 					this.currentVariable = new Variable(variableName);
 				}			
 			} else if(qName.equalsIgnoreCase("uri")){
@@ -229,6 +246,14 @@ public class XMLFormatReader extends MIMEFormatReader {
 					return;
 				}				
 				this.currentType = TYPE.literal; 
+			} else if(qName.equalsIgnoreCase("subject")){
+				this.currentTargetType = TARGET_TYPE.subject;
+			} else if(qName.equalsIgnoreCase("predicate")){
+				this.currentTargetType = TARGET_TYPE.predicate;
+			} else if(qName.equalsIgnoreCase("object")){
+				this.currentTargetType = TARGET_TYPE.object;
+			} else if(qName.equalsIgnoreCase("querytriple")){
+				this.currentTriple = new Triple();
 			}
 			// do nothing for boolean-tag, which will be handled, when the tag is closed!
 		}
@@ -256,6 +281,8 @@ public class XMLFormatReader extends MIMEFormatReader {
 				} finally {
 					XMLFormatReader.this.lock.unlock();
 				}	
+			} else if(qName.equalsIgnoreCase("querytriple")){
+				this.currentBindings.addTriple(this.currentTriple);
 			}
 			this.currentType = TYPE.undefined;
 		}
@@ -283,10 +310,25 @@ public class XMLFormatReader extends MIMEFormatReader {
 				break;
 			}
 			if(literal!=null){
-				this.currentBindings.add(this.currentVariable, literal);
-			}			
+				switch(this.currentTargetType){
+					case var:
+						this.currentBindings.add(this.currentVariable, literal);
+						break;
+					case subject:
+						this.currentTriple.setPos(0, literal);
+						break;
+					case predicate:
+						this.currentTriple.setPos(1, literal);
+						break;
+					case object:
+						this.currentTriple.setPos(2, literal);
+						break;
+					case undefined:
+						throw new RuntimeException("Retrieved sparql xml has bad structure!");
+				}
+			}
 		}
-		
+
 		@Override
 		public void characters(final char ch[], final int start, final int length) throws SAXException {
 			// for a text node, the XML parser may be calls characters(...) several times,

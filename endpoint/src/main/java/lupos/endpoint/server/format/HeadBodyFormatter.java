@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsArrayReadTriples;
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.LanguageTaggedLiteral;
@@ -43,14 +46,31 @@ import lupos.datastructures.queryresult.QueryResult;
 
 public abstract class HeadBodyFormatter extends Formatter {
 	
-	public HeadBodyFormatter(final String formatName){
+	/**
+	 * Whether or not query triples should be also written by the formatter...
+	 * Note that writing query triples is in no way standard!
+	 * This is a proprietary feature, which is useful in some application scenarios! 
+	 */
+	protected final boolean writeQueryTriples;
+	
+	public HeadBodyFormatter(final String formatName, final boolean writeQueryTriples){
 		super(formatName);
+		this.writeQueryTriples = writeQueryTriples;
 	}
 	
-	public HeadBodyFormatter(final String formatName, final String key){
+	public HeadBodyFormatter(final String formatName){
+		this(formatName, false);
+	}
+	
+	public HeadBodyFormatter(final String formatName, final String key, final boolean writeQueryTriples){
 		super(formatName, key);
+		this.writeQueryTriples = writeQueryTriples;
 	}
-	
+
+	public HeadBodyFormatter(final String formatName, final String key){
+		this(formatName, key, false);
+	}
+
 	public abstract void writeBooleanResult(final OutputStream os, final boolean result) throws IOException;
 	
 	public abstract void writeStartHead(final OutputStream os) throws IOException;
@@ -60,6 +80,12 @@ public abstract class HeadBodyFormatter extends Formatter {
 	}
 
 	public abstract void writeVariableInHead(final OutputStream os, final Variable v) throws IOException;
+	
+	@SuppressWarnings("unused")
+	public void writeQueryTriplesHead(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature! 
+	}
 	
 	public abstract void writeEndHead(final OutputStream os) throws IOException;
 	
@@ -71,6 +97,102 @@ public abstract class HeadBodyFormatter extends Formatter {
 
 	public abstract void writeEndResult(final OutputStream os) throws IOException;
 	
+	public void writeQueryTriples(final OutputStream os, List<Triple> queryTriples) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		this.writeQueryTriplesStart(os);
+		boolean firstTime = true;
+		for(Triple triple: queryTriples){
+			if(firstTime){
+				firstTime = false;
+				this.writeQueryFirstTriple(os, triple);
+				
+			} else {
+				this.writeQueryTriple(os, triple);
+			}
+		}
+		this.writeQueryTriplesEnd(os);
+	}
+
+	@SuppressWarnings("unused")
+	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+	}
+	
+	@SuppressWarnings("unused")
+	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+	}
+
+	@SuppressWarnings("unused")
+	public void writeQueryTripleStart(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+	}
+	
+	public void writeQueryTripleFirstStart(final OutputStream os) throws IOException {		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		this.writeQueryTripleStart(os);
+	}
+	
+	@SuppressWarnings("unused")
+	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+	}
+
+	@SuppressWarnings("unused")
+	public void writeQueryTripleStartComponent(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+	}
+	
+	@SuppressWarnings("unused")
+	public void writeQueryTripleEndComponent(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+	}
+	
+	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		this.writeQueryTripleStartComponent(os);
+		this.writeLiteral(os, literal);
+		this.writeQueryTripleEndComponent(os);
+	}
+	
+	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		this.writeQueryTripleStartComponent(os);
+		this.writeLiteral(os, literal);
+		this.writeQueryTripleEndComponent(os);
+	}
+	
+	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		this.writeQueryTripleStartComponent(os);
+		this.writeLiteral(os, literal);
+		this.writeQueryTripleEndComponent(os);
+	}
+	
+	public void writeQueryTriple(final OutputStream os, final Triple triple) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		this.writeQueryTripleStart(os);
+		this.writeQueryTripleSubject(os, triple.getSubject());
+		this.writeQueryTriplePredicate(os, triple.getPredicate());
+		this.writeQueryTripleObject(os, triple.getObject());
+		this.writeQueryTripleEnd(os);
+	}
+
+	public void writeQueryFirstTriple(final OutputStream os, final Triple triple) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		this.writeQueryTripleFirstStart(os);
+		this.writeQueryTripleSubject(os, triple.getSubject());
+		this.writeQueryTriplePredicate(os, triple.getPredicate());
+		this.writeQueryTripleObject(os, triple.getObject());
+		this.writeQueryTripleEnd(os);
+	}
+
 	public abstract void writeEpilogue(final OutputStream os) throws IOException;
 	
 	public void writeFirstStartBinding(final OutputStream os, final Variable v) throws IOException{
@@ -95,7 +217,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 	public Collection<Variable> getVariablesToIterateOnForOneBindings(Set<Variable> variables, Bindings bindings){
 		return bindings.getVariableSet();
 	}
-
+	
 	@Override
 	public void writeResult(OutputStream os, Set<Variable> variables, QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
@@ -112,6 +234,9 @@ public abstract class HeadBodyFormatter extends Formatter {
 				} else {
 					this.writeVariableInHead(os, v);
 				}
+			}
+			if(this.writeQueryTriples){
+				this.writeQueryTriplesHead(os);
 			}
 			this.writeEndHead(os);
 			firstTime = true;
@@ -137,6 +262,11 @@ public abstract class HeadBodyFormatter extends Formatter {
 					
 					this.writeEndBinding(os);
 				}
+				
+				if(this.writeQueryTriples && bindings instanceof BindingsArrayReadTriples){
+					this.writeQueryTriples(os, bindings.getTriples());
+				}
+				
 				this.writeEndResult(os);
 			}
 			this.writeEpilogue(os);		
@@ -162,5 +292,10 @@ public abstract class HeadBodyFormatter extends Formatter {
 					}
 			}
 		}
+	}
+
+	@Override
+	public boolean isWriteQueryTriples() {
+		return this.writeQueryTriples;
 	}
 }

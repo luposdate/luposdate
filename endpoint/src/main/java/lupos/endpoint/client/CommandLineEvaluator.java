@@ -48,10 +48,10 @@ public class CommandLineEvaluator {
 		int bitvectorsize = Integer.parseInt(args[2]);
 		FederatedQueryBitVectorJoin.substringSize = bitvectorsize;
 		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = bitvectorsize;
-		
+
 		String[] args2 = new String[args.length-4];
 		System.arraycopy(args, 4, args2, 0, args.length-4);
-		
+
 		String evaluator = args[3].toLowerCase();
 		if(evaluator.compareTo("memory")==0){
 			MemoryIndexQueryEvaluator.main(args2);

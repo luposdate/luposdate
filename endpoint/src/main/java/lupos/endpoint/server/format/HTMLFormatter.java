@@ -60,14 +60,18 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	
 	private final static String XML_Var_1 =	"    <th>";
 	private final static String XML_Var_2 =	"</th>\n";
-
+	
 	private final static String XML_Result_1 =	"   <tr>\n";
 	private final static String XML_Result_2 =	"   </tr>\n";
 
 	private final static String XML_Binding_1 =	"    <th>";
 	private final static String XML_Binding_2 =	"</th>\n";
 	
+	private final static String XML_QueryTriplesStart = "  <th><table border=\"1\">\n   <tr><th>subject</th><th>predicate</th><th>object</th></tr>\n";
+	private final static String XML_QueryTriplesEnd = "  </table></th>\n";
+
 	private final static String COLOR_VAR="7016A8";
+	private final static String COLOR_QUERYTRIPLES="00FF00";
 	private final static String COLOR_LITERAL="0000FF";
 	private final static String COLOR_URI="00B200";
 	private final static String COLOR_BLANKNODE="6F6F25";
@@ -79,7 +83,12 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	private final boolean colored;
 
 	public HTMLFormatter(final boolean colored) {
-		super(colored?"Colored HTML":"HTML");
+		this(colored, false);
+	}
+
+	
+	public HTMLFormatter(final boolean colored, final boolean queryTriples) {
+		super((colored?"Colored HTML":"HTML")+(queryTriples?" with Query-Triples":""), queryTriples);
 		this.colored = colored;
 	}
 	
@@ -120,6 +129,15 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeEndColor(os);
 		os.write(HTMLFormatter.XML_Var_2.getBytes());
 	}
+	
+	@Override
+	public void writeQueryTriplesHead(final OutputStream os) throws IOException {
+		os.write(HTMLFormatter.XML_Var_1.getBytes());
+		this.writeStartColor(os, HTMLFormatter.COLOR_QUERYTRIPLES);
+		os.write("Query-Triples".getBytes());
+		this.writeEndColor(os);
+		os.write(HTMLFormatter.XML_Var_2.getBytes());
+	}
 
 	@Override
 	public void writeEndHead(final OutputStream os) throws IOException{
@@ -134,6 +152,36 @@ public class HTMLFormatter extends HeadBodyFormatter {
 	@Override
 	public void writeEndResult(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Result_2.getBytes());
+	}
+	
+	@Override
+	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
+		os.write(HTMLFormatter.XML_QueryTriplesStart.getBytes());
+	}
+	
+	@Override
+	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
+		os.write(HTMLFormatter.XML_QueryTriplesEnd.getBytes());
+	}
+
+	@Override
+	public void writeQueryTripleStart(final OutputStream os) throws IOException {
+		this.writeStartResult(os);
+	}
+	
+	@Override
+	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
+		this.writeEndResult(os);
+	}
+	
+	@Override
+	public void writeQueryTripleStartComponent(final OutputStream os) throws IOException {
+		os.write(HTMLFormatter.XML_Binding_1.getBytes());
+	}
+	
+	@Override
+	public void writeQueryTripleEndComponent(final OutputStream os) throws IOException {
+		os.write(HTMLFormatter.XML_Binding_2.getBytes());
 	}
 	
 	@Override

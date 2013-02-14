@@ -37,10 +37,14 @@ import lupos.datastructures.queryresult.QueryResult;
 
 public class JSONFormatter extends HeadBodyFormatter {
 
-	public JSONFormatter() {
-		super("JSON", "application/sparql-results+json");
+	public JSONFormatter(final boolean writeQueryTriples) {
+		super("JSON"+(writeQueryTriples?" with Query-Triples":""), "application/sparql-results+json"+(writeQueryTriples?"+querytriples":""), writeQueryTriples);
 	}
-
+	
+	public JSONFormatter() {
+		this(false);
+	}
+	
 	@Override
 	public void writeBooleanResult(OutputStream os, boolean result)
 			throws IOException {
@@ -81,13 +85,55 @@ public class JSONFormatter extends HeadBodyFormatter {
 
 	@Override
 	public void writeStartResult(OutputStream os) throws IOException {
-		os.write(", ".getBytes());
+		os.write(",".getBytes());
 		this.writeFirstStartResult(os);
 	}
 
 	@Override
 	public void writeEndResult(OutputStream os) throws IOException {
 		os.write("\n   }".getBytes());
+	}
+	
+	@Override
+	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
+		os.write(",\n    \"<Query-Triples>\": [ ".getBytes());
+	}
+	
+	@Override
+	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
+		os.write("\n                       ]".getBytes());
+	}
+	
+	@Override
+	public void writeQueryTripleFirstStart(final OutputStream os) throws IOException {
+		// avoid writing comma!
+	}
+
+	@Override
+	public void writeQueryTripleStart(final OutputStream os) throws IOException {
+		os.write(",\n                         ".getBytes());
+	}
+
+	@Override
+	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+		os.write("{ \"subject\": { ".getBytes());
+		this.writeLiteral(os, literal);
+	}
+	
+	@Override
+	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		os.write(" },\n                           \"predicate\": { ".getBytes());
+		this.writeLiteral(os, literal);
+	}
+	
+	@Override
+	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
+		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		os.write(" },\n                           \"object\": { ".getBytes());
+		this.writeLiteral(os, literal);
+		os.write(" }\n                         }".getBytes());
 	}
 
 	@Override
