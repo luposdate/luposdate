@@ -97,6 +97,10 @@ public class Endpoint {
 		Endpoint.htmlForm = htmlForm;
 	}
 	
+	public static Class<? extends Bindings> getDefaultBindingsClass() {
+		return defaultBindingsClass;
+	}
+
 	/**
 	 * HTTP Request Example
 	 * http://localhost:8080/sparql?query=PREFIX+rdf%3A%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E+SELECT+*+WHERE%7B+%3Fs+rdf%3Atype+%3Fo.+%7D&format=application%2Fsparql-results%2Bxml

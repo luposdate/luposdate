@@ -40,11 +40,11 @@ public class FederatedQuerySemiJoin extends FederatedQueryWithSucceedingJoin {
 	@Override
 	public String toStringQuery(final QueryResult queryResult) {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() ;
-		String result = "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
+		String result = "SELECT * {" + this.federatedQuery.jjtGetChild(1).accept(dumper);
 		Iterator<Bindings> bindingsIterator = queryResult.oneTimeIterator();
 		if(bindingsIterator.hasNext()){
 			result = result.substring(0, result.length()-2);
-			result += "Filter(";
+			result += "}Filter(";
 			boolean oneOrMoreResults=false;
 			while (bindingsIterator.hasNext()) {
 				Bindings b = bindingsIterator.next();

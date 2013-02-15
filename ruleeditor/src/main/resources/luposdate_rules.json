@@ -406,27 +406,34 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "if(this.deleteAll){\r\n    this.i.removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators();\r\n    this.deleteNodeFromStartNodeMapNullCheck(this.i, _startNodes);\r\n    for(lupos.engine.operators.BasicOperator child : this.o) {\r\n        this.deleteOperatorWithoutParentsRecursive(child, _startNodes);\r\n    }\r\n}",
-          "code": "",
-          "use generated code": true
+          "additional code": "",
+          "code": "this.f.removeFromOperatorGraph();\r\nif(this.deleteAll){\r\n    this.i.removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators();\r\n    this.deleteNodeFromStartNodeMapNullCheck(this.i, _startNodes);\r\n    for(lupos.engine.operators.BasicOperator child : this.o) {\r\n        this.deleteOperatorWithoutParentsRecursive(child, _startNodes);\r\n    }\r\n}",
+          "use generated code": false
         }
       },
       "visual representation": {
         "left side": {
           "connections": {
             "f": [{
-              "active": true,
+              "active": false,
               "id": -1,
-              "id label": "a",
+              "id label": "",
               "mode": "ALL_SUCCEEDING",
               "to": "o"
+            }],
+            "f2": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "f"
             }],
             "i": [{
               "active": false,
               "id": -1,
               "id label": "",
               "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
-              "to": "f"
+              "to": "f2"
             }]
           },
           "f": {
@@ -434,8 +441,19 @@
             "class type": "Filter",
             "op type": "RuleOperator",
             "position": [
-              5,
-              276
+              11,
+              595
+            ]
+          },
+          "f2": {
+            "also subclasses": false,
+            "cardinality": "*",
+            "class type": "Filter",
+            "conditions": "",
+            "op type": "JumpOverOperator",
+            "position": [
+              0,
+              287
             ]
           },
           "i": {
@@ -452,38 +470,12 @@
             "class type": "Operator",
             "op type": "RuleOperator",
             "position": [
-              5,
-              547
+              0,
+              887
             ]
           }
         },
-        "right side": {
-          "connections": {"i": [{
-            "active": true,
-            "id": -1,
-            "id label": "a",
-            "mode": "ALL_SUCCEEDING",
-            "to": "o"
-          }]},
-          "i": {
-            "also subclasses": false,
-            "class type": "Index",
-            "op type": "RuleOperator",
-            "position": [
-              5,
-              5
-            ]
-          },
-          "o": {
-            "also subclasses": false,
-            "class type": "Operator",
-            "op type": "RuleOperator",
-            "position": [
-              5,
-              235
-            ]
-          }
-        },
+        "right side": {},
         "top toolbar": {
           "use colored arrows": false,
           "zoom": 100

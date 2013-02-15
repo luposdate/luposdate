@@ -33,7 +33,6 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 
 public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends EmptyIndexScan {
@@ -47,9 +46,9 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	private static final long serialVersionUID = -6813056199050211285L;
 
 	public EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, Item graphConstraint,
+			final Item graphConstraint,
 			final lupos.engine.operators.index.Root root_param) {
-		super(succeedingOperator, triplePattern, root_param);
+		super(succeedingOperator);
 		this.root = root_param;
 		this.rdfGraph = graphConstraint;
 	}

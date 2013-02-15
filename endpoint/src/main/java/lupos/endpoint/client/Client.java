@@ -26,6 +26,7 @@ package lupos.endpoint.client;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,6 +51,7 @@ import lupos.endpoint.client.formatreader.MIMEFormatReader;
 import lupos.endpoint.client.formatreader.TSVFormatReader;
 import lupos.endpoint.client.formatreader.TripleFormatReader;
 import lupos.endpoint.client.formatreader.XMLFormatReader;
+import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
 
 public class Client {
@@ -106,7 +108,12 @@ public class Client {
 				if(reader!=null){
 					return reader.getQueryResult(response.getSecond());
 				}
-			}			
+			}
+			if(contentType.compareTo("text/plain")==0){
+				final String errorMessage = "Error message received:\n" + FileHelper.readInputStreamToString(response.getSecond());
+				System.err.println(errorMessage);				
+				throw new RuntimeException(errorMessage);
+			}
 			System.err.println("Content type "+contentType+" is not supported!");
 			Thread.dumpStack();
 			System.err.println("Just try out application/sparql-results+xml as default...");

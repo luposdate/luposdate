@@ -59,12 +59,12 @@ public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 
 	@Override
 	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(OperatorIDTuple opID, Item graphConstraint) {
-		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(opID, null, graphConstraint, this.root), 0));
+		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(opID, graphConstraint, this.root), 0));
 	}
 
 	@Override
 	public void createEmptyIndexScanAndConnectWithRoot(OperatorIDTuple opID) {
-		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScan(opID, null, this.root), 0));
+		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScan(opID), 0));
 	}
 
 	@Override

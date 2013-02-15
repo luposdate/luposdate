@@ -230,6 +230,32 @@ public class FileHelper {
 		}
 		return content;
 	}
+	
+	public static String readInputStreamToString(
+			final InputStream inputStream) {
+		final StringBuilder content = new StringBuilder();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(inputStream));
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				content.append(line);
+			}
+		} catch (final IOException ioe) {
+			ioe.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (final IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+		return content.toString();
+	}
 
 	public static List<String> readFileToCollection(final String filename) {
 		final List<String> content = new LinkedList<String>();

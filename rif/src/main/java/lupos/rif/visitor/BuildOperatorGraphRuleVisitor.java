@@ -418,8 +418,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				finalResult = null;
 			}
 			final EmptyIndexScan empty = new EmptyIndexScan(finalResult == null ? null
-					: new OperatorIDTuple(finalResult, 0),
-					new ArrayList<TriplePattern>(), null);
+					: new OperatorIDTuple(finalResult, 0));
 			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(empty, this.indexScanCreator.getRoot().getSucceedingOperators().size()));
 			empty.addPrecedingOperator(this.indexScanCreator.getRoot());
 			if (finalResult == null)

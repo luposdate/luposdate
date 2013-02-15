@@ -40,7 +40,7 @@ import lupos.datastructures.queryresult.QueryResult;
 public class QueryTriplesFormatter extends Formatter {
 
 	public QueryTriplesFormatter() {
-		super("Query Triples", "text/n3");
+		super("Query-Triples", "text/n3");
 	}
 	
 	@Override

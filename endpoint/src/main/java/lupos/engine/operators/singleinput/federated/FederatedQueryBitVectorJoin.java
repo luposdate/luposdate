@@ -155,11 +155,11 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 	@Override
 	public String toStringQuery(final QueryResult queryResult) {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() ;
-		String result = "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
+		String result = "SELECT * {" + this.federatedQuery.jjtGetChild(1).accept(dumper);
 		Iterator<Bindings> bindingsIterator = queryResult.iterator();
 		if(bindingsIterator.hasNext()){
 			result = result.substring(0, result.length()-2);
-			result += "Filter(";
+			result += "}Filter(";
 			// determine all variables in the bindings
 			Set<Variable> allVars = new HashSet<Variable>();
 			for(Bindings b: queryResult){

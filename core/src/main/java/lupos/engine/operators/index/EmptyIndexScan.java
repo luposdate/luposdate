@@ -26,16 +26,14 @@ package lupos.engine.operators.index;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.RootChild;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class EmptyIndexScan extends RootChild {
 
-	public EmptyIndexScan(final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePattern, final lupos.engine.operators.index.Root root) {
+	public EmptyIndexScan(final OperatorIDTuple succeedingOperator) {
 		super();
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
 		if (succeedingOperator != null) {
@@ -45,11 +43,6 @@ public class EmptyIndexScan extends RootChild {
 
 	@Override
 	protected QueryResult process(final Dataset dataset) {
-		final QueryResult queryResult = QueryResult.createInstance();
-		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
-
-			((Operator) succOperator.getOperator()).processAll(queryResult, succOperator.getId());
-		}
-		return queryResult;
+		return QueryResult.createInstance();
 	}
 }

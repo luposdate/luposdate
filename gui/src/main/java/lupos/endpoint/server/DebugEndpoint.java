@@ -34,10 +34,11 @@ import xpref.XPref;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.server.Endpoint.OutputStreamLogger;
 import lupos.endpoint.server.Endpoint.SPARQLExecution;
-import lupos.endpoint.server.Endpoint.SPARQLExecutionImplementation;
 import lupos.endpoint.server.Endpoint.SPARQLHandler;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.OperatorgraphFormatter;
@@ -47,6 +48,12 @@ import lupos.gui.GUI;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.viewer.Viewer;
 
+/**
+ * This class provides an endpoint for debugging purposes:
+ * The operatorgraph can be returned (instead of the query result).
+ * Furthermore, in the context /sparqldebug (instead of the normal /sparql context),
+ * queries, their result, the sent message and the operator graph is stored in log files...  
+ */
 public class DebugEndpoint {
 
 	private static int queryNumber = 0;
@@ -80,6 +87,12 @@ public class DebugEndpoint {
 					FileWriter writer = new FileWriter(file);
 					writer.write("Evaluating query of size "+queryParameter.length()+":\n"+queryParameter);					
 					System.out.println("Evaluating query:\n"+queryParameter);
+					if((Endpoint.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
+						// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
+						Bindings.instanceClass = BindingsArrayReadTriples.class;
+					} else {
+						Bindings.instanceClass = Endpoint.getDefaultBindingsClass();
+					}
 					
 					QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, false):Endpoint.evaluator.getResult(queryParameter);
 					
@@ -98,6 +111,7 @@ public class DebugEndpoint {
 					os = new PipeOutputStream(os, writer);
 					formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
 					os.close();
+					writer.close();
 					Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
 					new Viewer(new GraphWrapperBasicOperator(Endpoint.evaluator.getRootNode()), logDirectory+DebugEndpoint.queryNumber+".jpg");
 				}

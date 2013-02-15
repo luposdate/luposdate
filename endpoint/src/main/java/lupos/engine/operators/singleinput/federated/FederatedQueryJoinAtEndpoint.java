@@ -44,7 +44,7 @@ public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedin
 	}
 	
 	public String toStringQuery(final QueryResult queryResult) {
-		String query = "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(new SPARQLParserVisitorImplementationDumper());
+		String query = "SELECT * {" + this.federatedQuery.jjtGetChild(1).accept(new SPARQLParserVisitorImplementationDumper());
 		if(queryResult.isEmpty()){
 			return query;
 		}
@@ -52,11 +52,11 @@ public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedin
 		for(Bindings bindings: queryResult){
 			vars.addAll(bindings.getVariableSet());
 		}
-		query += "\nVALUES ";
+		query += "}\nVALUES ( ";
 		for(Variable var: vars){
 			query += var.toString()+" ";
 		}
-		query+="{";
+		query+=") {";
 		for(Bindings bindings: queryResult){
 			query+="\n(";
 			boolean firstTime=true;

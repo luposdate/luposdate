@@ -35,6 +35,7 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.Client;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
+import lupos.sparql1_1.ASTSelectQuery;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 
@@ -110,6 +111,36 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 
 	public String toStringQuery(final Bindings bindings) {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() {
+			@Override
+			public String visit(final ASTSelectQuery node) {
+				String ret = "SELECT ";
+				int i = 0;
+				if (node.isDistinct()) {
+					ret += "DISTINCT ";
+				}
+				if (node.isReduced()) {
+					ret += "REDUCED ";
+				}
+				if (node.isSelectAll()) {
+					ret += "*";
+				} else {
+					while (i < node.jjtGetNumChildren()
+							&& node.jjtGetChild(i) instanceof ASTVar) {
+						// the only difference to its method in the super class:
+						// just ignore the variable if it is in the current bindings...
+						Variable var = new Variable(((ASTVar)node.jjtGetChild(i)).getName());
+						if ((bindings.get(var) == null)){
+							ret += visitChild(node, i) + " ";
+						}
+						i++;
+					}
+				}
+				ret += "\n";
+				while (i < node.jjtGetNumChildren()) {
+					ret += visitChild(node, i++);
+				}
+				return ret;
+			}
 			@Override
 			public String visit(final ASTVar node) {
 				Variable var = new Variable(node.getName());
