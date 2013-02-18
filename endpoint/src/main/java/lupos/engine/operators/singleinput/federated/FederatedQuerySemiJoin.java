@@ -24,6 +24,7 @@
 package lupos.engine.operators.singleinput.federated;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
@@ -39,8 +40,12 @@ public class FederatedQuerySemiJoin extends FederatedQueryWithSucceedingJoin {
 
 	@Override
 	public String toStringQuery(final QueryResult queryResult) {
+		return FederatedQuerySemiJoin.toStringQuery(this.surelyBoundVariablesInServiceCall, this.variablesInServiceCall, this.federatedQuery, queryResult);
+	}
+
+	public static String toStringQuery(final Set<Variable> surelyBoundVariablesInServiceCall, final Set<Variable> variablesInServiceCall, final Node federatedQuery, final QueryResult queryResult) {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() ;
-		String result = "SELECT * {" + this.federatedQuery.jjtGetChild(1).accept(dumper);
+		String result = "SELECT * {" + federatedQuery.jjtGetChild(1).accept(dumper);
 		Iterator<Bindings> bindingsIterator = queryResult.oneTimeIterator();
 		if(bindingsIterator.hasNext()){
 			result = result.substring(0, result.length()-2);
@@ -48,18 +53,18 @@ public class FederatedQuerySemiJoin extends FederatedQueryWithSucceedingJoin {
 			boolean oneOrMoreResults=false;
 			while (bindingsIterator.hasNext()) {
 				Bindings b = bindingsIterator.next();
-				Iterator<Variable> it = this.getVariablesInIntersectionOfServiceCallAndBindings(b).iterator();
+				Iterator<Variable> it = FederatedQuery.getVariablesInIntersectionOfSetOfVariablesAndBindings(variablesInServiceCall, b).iterator();
 				if(it.hasNext()){
 					result += "(";
 					while (it.hasNext()) {
 						oneOrMoreResults=true;
 						Variable variable = it.next();
 						result+="( ";
-						if(!this.surelyBoundVariablesInServiceCall.contains(variable)){
+						if(!surelyBoundVariablesInServiceCall.contains(variable)){
 							result += "(bound("+variable+") && ";							
 						}
 						result +=variable+"="+variable.getLiteral(b);
-						if(!this.surelyBoundVariablesInServiceCall.contains(variable)){
+						if(!surelyBoundVariablesInServiceCall.contains(variable)){
 							result += " ) || !bound("+variable+") ";
 						}
 						if(it.hasNext()){

@@ -29,6 +29,7 @@ import java.util.Iterator;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
@@ -64,8 +65,10 @@ public class SIPFilterOperatorIterator extends SIPFilterOperator {
 					final Iterator<BitVector> ibv = bloomFilters.iterator();
 					for (final Variable v : vars) {
 						final BitVector bv = ibv.next();
-						bv
-								.set((Math.abs(b.get(v).hashCode()) % NUMBEROFBITSFORBLOOMFILTER));
+						Literal literal = b.get(v);
+						if(literal!=null){
+							bv.set((Math.abs(literal.hashCode()) % NUMBEROFBITSFORBLOOMFILTER));
+						}
 					}
 					if (!itb.hasNext()) {
 						for (final TriplePattern tp : ctp) {

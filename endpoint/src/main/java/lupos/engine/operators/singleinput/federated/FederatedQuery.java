@@ -34,7 +34,10 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumperShort;
+import lupos.sparql1_1.ASTGroupConstraint;
+import lupos.sparql1_1.ASTSelectQuery;
 import lupos.sparql1_1.ASTTripleSet;
+import lupos.sparql1_1.ASTUnionConstraint;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 
@@ -77,38 +80,84 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 		return this.getApproachName()+"\n"+this.federatedQuery.accept(dumper);
 	}
 		
-	public void checkVariables(Node node, Collection<Variable> vars) {
+	public static void checkVariables(Node node, Collection<Variable> vars) {
 		if (node instanceof ASTVar) {
 			Variable v = new Variable(((ASTVar) node).getName());
 			vars.add(v);
 		} else {
 			if (node.getChildren() != null) {
 				for (Node child : node.getChildren()) {
-					checkVariables(child, vars);
+					FederatedQuery.checkVariables(child, vars);
 				}
 			}
 		}
 	}
 	
 	public Set<Variable> getVariablesInIntersectionOfServiceCallAndBindings(final Bindings bindings){
+		return FederatedQuery.getVariablesInIntersectionOfSetOfVariablesAndBindings(this.variablesInServiceCall, bindings);
+	}
+	
+	public static Set<Variable> getVariablesInIntersectionOfSetOfVariablesAndBindings(final Set<Variable> variablesInServiceCall, final Bindings bindings){
 		Set<Variable> result = bindings.getVariableSet();
-		result.retainAll(this.variablesInServiceCall);
+		result.retainAll(variablesInServiceCall);
 		return result;
 	}
 	
 	/**
-	 * This method uses a simple static analysis and considers only those variables, which are in triple patterns at top level.
-	 * Most queries (in service calls) contain only triple patterns at top level, such that this simple static analysis is usually enough. 
+	 * This method uses a simple static analysis to determine the variables, which are surely bound.
+	 * This simple static analysis is usually enough for most queries. 
 	 * @return the variables, which are surely bound (i.e., in any case) by the sparql endpoint
 	 */
 	private Set<Variable> getSurelyBoundVariables(){
-		Set<Variable> result = new HashSet<Variable>();
 		// this.federatedQuery.jjtGetChild(1) contains the ASTGroupConstraint (i.e., the { ... } part) of the service call query
-		for(Node node: this.federatedQuery.jjtGetChild(1).getChildren()){
-			if(node instanceof ASTTripleSet){
-				checkVariables(node, result);
+		return FederatedQuery.getSurelyBoundVariables(this.federatedQuery.jjtGetChild(1));
+	}
+	
+	/**
+	 * This method uses a simple static analysis to determine the variables, which are surely bound.
+	 * This simple static analysis is usually enough for most queries.
+	 * @param node the node in the abstract syntax tree to be checked...
+	 * @return the variables, which are surely bound (i.e., in any case) by the sparql endpoint
+	 */
+	private static Set<Variable> getSurelyBoundVariables(final Node node){
+		Set<Variable> result = new HashSet<Variable>();		
+
+		if(node instanceof ASTGroupConstraint){
+			Node[] children = node.getChildren();
+			if(children!=null){
+				for(Node child: node.getChildren()){
+					result.addAll(FederatedQuery.getSurelyBoundVariables(child));
+				}
 			}
+		} else if(node instanceof ASTTripleSet){
+			FederatedQuery.checkVariables(node, result);
+		} else if(node instanceof ASTSelectQuery){
+			// check embedded select queries recursively
+			ASTSelectQuery select = (ASTSelectQuery) node;
+			Set<Variable> innerQueryVariables = new HashSet<Variable>();
+			Set<Variable> innerQueryProjectedVariables = new HashSet<Variable>();
+			for(Node innerQueryChild: select.getChildren()){
+				if(innerQueryChild instanceof ASTVar){
+					Variable v = new Variable(((ASTVar) innerQueryChild).getName());
+					innerQueryProjectedVariables.add(v);
+				} else if(innerQueryChild instanceof ASTGroupConstraint){
+					innerQueryVariables.addAll(FederatedQuery.getSurelyBoundVariables(innerQueryChild));
+				}
+			}
+
+			if(!select.isSelectAll()){
+				innerQueryVariables.retainAll(innerQueryProjectedVariables);
+			}
+			result.addAll(innerQueryVariables);
+		} else if(node instanceof ASTUnionConstraint){
+			// Check union...
+			// Compute intersection of variables of left and right operand:
+			Set<Variable> resultUnion = FederatedQuery.getSurelyBoundVariables(node.jjtGetChild(0));
+			resultUnion.retainAll(FederatedQuery.getSurelyBoundVariables(node.jjtGetChild(1)));
+			result.addAll(resultUnion);
 		}
 		return result;
 	}
+	
+	
 }
