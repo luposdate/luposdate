@@ -53,7 +53,7 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.intersectionVariables = new HashSet<Variable>();
 		this.unionVariables = new HashSet<Variable>();
-		this.checkVariables(this.federatedQuery, this.unionVariables);
+		FederatedQuery.checkVariables(this.federatedQuery, this.unionVariables);
 		this.intersectionVariables.addAll(this.unionVariables);
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
 		result.getVariables().addAll(this.unionVariables);

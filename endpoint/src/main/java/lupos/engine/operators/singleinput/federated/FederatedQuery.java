@@ -60,7 +60,7 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 			this.endpoint = LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + child0.toString() + ">");
 		}
 		this.variablesInServiceCall = new HashSet<Variable>();
-		this.checkVariables(this.federatedQuery.jjtGetChild(1), this.variablesInServiceCall);
+		FederatedQuery.checkVariables(this.federatedQuery.jjtGetChild(1), this.variablesInServiceCall);
 		this.surelyBoundVariablesInServiceCall = this.getSurelyBoundVariables();
 	}
 	
