@@ -26,7 +26,6 @@ package lupos.endpoint.client;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,7 +41,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.formatreader.CSVFormatReader;
@@ -106,7 +104,7 @@ public class Client {
 			for(String contentTypeSecondTry: contentTypeParts){
 				reader = Client.registeredFormatReaders.get(contentTypeSecondTry);
 				if(reader!=null){
-					return reader.getQueryResult(response.getSecond());
+					return reader.getQueryResult(response.getSecond(), query);
 				}
 			}
 			if(contentType.compareTo("text/plain")==0){
@@ -122,7 +120,7 @@ public class Client {
 				return null;
 			}
 		}		
-		return reader.getQueryResult(response.getSecond());
+		return reader.getQueryResult(response.getSecond(), query);
 	}
 
 	public static Tuple<String, InputStream> doSubmit(final String url, List<NameValuePair> content) throws IOException {

@@ -62,7 +62,7 @@ public class JSONFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream) {
+	public QueryResult getQueryResult(final InputStream inputStream, final String query) {
 		try {
 			final JSONObject object = new JSONObject(new JSONTokener(new InputStreamReader(inputStream)));
 			if(object.has("boolean")){

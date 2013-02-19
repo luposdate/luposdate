@@ -85,7 +85,7 @@ public class XMLFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream) {
+	public QueryResult getQueryResult(final InputStream inputStream, final String query) {
 		final BoundedBuffer<Bindings> boundedBuffer = new BoundedBuffer<Bindings>(BUFFERSIZE);
 		
 		final ParseThread parseThread = new ParseThread(inputStream, boundedBuffer);

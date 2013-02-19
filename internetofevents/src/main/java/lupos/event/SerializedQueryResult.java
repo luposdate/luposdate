@@ -55,8 +55,10 @@ public class SerializedQueryResult implements Serializable {
 	
 	public QueryResult getQueryResult() {
 		ByteArrayInputStream bais = new ByteArrayInputStream(this.serialized);
-		return SerializedQueryResult.formatReader.getQueryResult(bais);
+		return SerializedQueryResult.formatReader.getQueryResult(bais, null); // the second parameter, the query itself is not used in most readers
 	}
 	
-	public String getId() { return this.id; }
+	public String getId() { 
+		return this.id; 
+	}
 }

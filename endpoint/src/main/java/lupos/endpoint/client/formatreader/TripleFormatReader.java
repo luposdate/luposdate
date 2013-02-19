@@ -46,7 +46,7 @@ public class TripleFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream) {
+	public QueryResult getQueryResult(final InputStream inputStream, String query) {
 		
 		final GraphResult result = new GraphResult();
 		

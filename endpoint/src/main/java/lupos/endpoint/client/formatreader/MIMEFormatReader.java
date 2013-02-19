@@ -50,5 +50,5 @@ public abstract class MIMEFormatReader {
 		return this.key;
 	}
 
-	public abstract QueryResult getQueryResult(final InputStream inputStream);
+	public abstract QueryResult getQueryResult(final InputStream inputStream, String query);
 }

@@ -330,7 +330,7 @@ public class Endpoint {
 		}
 	}
 	
-	protected static void sendString(final HttpExchange t, final String toSend) throws IOException{
+	public static void sendString(final HttpExchange t, final String toSend) throws IOException{
 		t.sendResponseHeaders(200, toSend.length());
 		OutputStream os = t.getResponseBody();
 		os.write(toSend.getBytes());

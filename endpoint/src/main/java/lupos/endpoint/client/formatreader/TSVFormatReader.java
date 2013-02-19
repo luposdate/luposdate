@@ -53,7 +53,7 @@ public class TSVFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(InputStream inputStream) {
+	public QueryResult getQueryResult(InputStream inputStream, final String query) {
 		QueryResult result = QueryResult.createInstance();
 		
 		try {
@@ -90,6 +90,7 @@ public class TSVFormatReader extends MIMEFormatReader {
 			e.printStackTrace();
 		}
 		
-		return result;	}
+		return result;	
+	}
 
 }
