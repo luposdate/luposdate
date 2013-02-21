@@ -45,9 +45,13 @@ public class Sort {
 			public Sorter createInstance(String[] args, int pos) {
 				if(args.length==pos){
 					return new ExternalParallelSorter();
-				} else if(args.length==pos+5){
-					final int NUMBER_ELEMENTS_IN_INITIAL_RUNS = Integer.parseInt(args[pos+2]);
-					return new ExternalParallelSorter(Integer.parseInt(args[pos+1]), NUMBER_ELEMENTS_IN_INITIAL_RUNS, Integer.parseInt(args[pos+3]), Long.parseLong(args[pos+4]), SORTTYPE.valueOf(args[pos]).createRuns(NUMBER_ELEMENTS_IN_INITIAL_RUNS));
+				} else if(args.length==pos+6){
+					final int NUMBER_ELEMENTS_IN_INITIAL_RUNS = Integer.parseInt(args[pos+3]);
+					final String detPar = args[pos+1].toUpperCase();
+					final boolean isDeterministic = 	detPar.compareTo("D")==0 				|| 
+														detPar.compareTo("DET")==0 				|| 
+														detPar.compareTo("DETERMINISTIC")==0;
+					return new ExternalParallelSorter(Integer.parseInt(args[pos+2]), NUMBER_ELEMENTS_IN_INITIAL_RUNS, Integer.parseInt(args[pos+4]), Long.parseLong(args[pos+5]), SORTTYPE.valueOf(args[pos]).createRuns(NUMBER_ELEMENTS_IN_INITIAL_RUNS), isDeterministic);
 				} else {
 					return null;
 				}
@@ -55,12 +59,12 @@ public class Sort {
 
 			@Override
 			public String getHelpText(final String indent) {				
-				return "[SORTTYPE NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN FREE_MEMORY_LIMIT]\n" + indent + "SORTTYPE can be "+Arrays.toString(SORTTYPE.values());
+				return "[SORTTYPE (D|F) NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN PARAMETER_FOR_SWAPPING]\n" + indent + "SORTTYPE can be "+Arrays.toString(SORTTYPE.values());
 			}
 
 			@Override
 			public String getExampleText() {
-				return "BAG 8 10000 2 100000";
+				return "D BAG 8 10000 2 10";
 			}
 			
 		},

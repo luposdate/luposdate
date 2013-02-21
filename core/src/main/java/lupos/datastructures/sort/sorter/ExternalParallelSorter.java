@@ -52,20 +52,23 @@ public class ExternalParallelSorter implements Sorter {
 	 * @param NUMBER_OF_RUNS_TO_JOIN
 	 * @param FREE_MEMORY_LIMIT
 	 */
-	public ExternalParallelSorter(final int NUMBER_INITIAL_RUN_GENERATION_THREADS, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS, final int NUMBER_OF_RUNS_TO_JOIN, final long FREE_MEMORY_LIMIT, final Runs runs){
+	public ExternalParallelSorter(final int NUMBER_INITIAL_RUN_GENERATION_THREADS, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS, final int NUMBER_OF_RUNS_TO_JOIN, final long FREE_MEMORY_LIMIT, final Runs runs, final boolean deterministic){
 		this.NUMBER_INITIAL_RUN_GENERATION_THREADS = NUMBER_INITIAL_RUN_GENERATION_THREADS;
 		this.NUMBER_ELEMENTS_IN_INITIAL_RUNS = NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 		this.NUMBER_OF_RUNS_TO_JOIN = NUMBER_OF_RUNS_TO_JOIN;
-		this.FREE_MEMORY_LIMIT = FREE_MEMORY_LIMIT;
+		this.PARAMETER_FOR_SWAPPING = FREE_MEMORY_LIMIT;
 		this.runs = runs;
+		this.deterministic = deterministic;
 	}
 	
 	/**
 	 * Default constructor using default parameters...
 	 */
 	public ExternalParallelSorter(){
-		this(8, 1000, 2, 100000, new TrieBagRuns());
+		this(8, 1000, 2, 10, new TrieBagRuns(), true);
 	}
+	
+	private final boolean deterministic;
 	
 	private final int NUMBER_INITIAL_RUN_GENERATION_THREADS;
 	
@@ -73,7 +76,7 @@ public class ExternalParallelSorter implements Sorter {
 	
 	private final int NUMBER_OF_RUNS_TO_JOIN;
 	
-	private final long FREE_MEMORY_LIMIT;
+	private final long PARAMETER_FOR_SWAPPING;
 
 	private final LinkedList<Run> runsOnDisk = new LinkedList<Run>();
 	
@@ -95,7 +98,9 @@ public class ExternalParallelSorter implements Sorter {
 		
 		// start the merge thread...
 		final ArrayList<LinkedList<Run>> levels = new ArrayList<LinkedList<Run>>();
-		Merger merger = new Merger(initialRunsLevel0, levels);
+		Merger merger = (this.deterministic)?
+				new DeterministicMerger(initialRunsLevel0, levels):
+				new MergerFreeMemory(initialRunsLevel0, levels);
 		merger.start();
 
 		// read in and parse the data...
@@ -153,16 +158,17 @@ public class ExternalParallelSorter implements Sorter {
 	@Override
 	public String parametersToString(){
 		return "Run-/Merging-Strategy:" + this.runs + 
+			"\n" + (this.deterministic?"Deterministic":"Free-Memory Based") + " Swapping" +
 			"\nNUMBER_INITIAL_RUN_GENERATION_THREADS:" + this.NUMBER_INITIAL_RUN_GENERATION_THREADS +			
 			"\nNUMBER_ELEMENTS_IN_INITIAL_RUNS      :" + this.NUMBER_ELEMENTS_IN_INITIAL_RUNS +			
 			"\nNUMBER_OF_RUNS_TO_JOIN               :" + this.NUMBER_OF_RUNS_TO_JOIN +			
-			"\nFREE_MEMORY_LIMIT                    :" + this.FREE_MEMORY_LIMIT;
+			"\nPARAMETER_FOR_SWAPPING               :" + this.PARAMETER_FOR_SWAPPING;
 	}
 	
-	public class Merger extends Thread {
+	public abstract class Merger extends Thread {
 		
-		private final BoundedBuffer<Run> initialRunsLevel0;
-		private final ArrayList<LinkedList<Run>> levels;
+		protected final BoundedBuffer<Run> initialRunsLevel0;
+		protected final ArrayList<LinkedList<Run>> levels;
 		
 		public Merger(final BoundedBuffer<Run> initialRunsLevel0, final ArrayList<LinkedList<Run>> levels){
 			this.initialRunsLevel0 = initialRunsLevel0; 
@@ -176,8 +182,6 @@ public class ExternalParallelSorter implements Sorter {
 				while(true){
 					// get as many runs to merge as specified
 					Object[] bagsToMerge = this.initialRunsLevel0.get(ExternalParallelSorter.this.NUMBER_OF_RUNS_TO_JOIN, ExternalParallelSorter.this.NUMBER_OF_RUNS_TO_JOIN);
-					
-					this.checkMemory();
 					
 					if(bagsToMerge!=null && bagsToMerge.length>0){
 						Run run = null;
@@ -210,7 +214,9 @@ public class ExternalParallelSorter implements Sorter {
 		 */
 		public void addToLevel(final int addLevel, final Run toBeAdded) {
 			
-			this.checkMemory();
+			if(this.checkSwapping(addLevel, toBeAdded)){
+				return;
+			}
 			
 			while(this.levels.size()<=addLevel){
 				this.levels.add(new LinkedList<Run>());
@@ -232,29 +238,71 @@ public class ExternalParallelSorter implements Sorter {
 				this.addToLevel(addLevel + 1, resultOfMerge);				
 			}
 			
-			this.checkMemory();
+			
 		}
 		
 		/**
+		 * Checks if the run to be added should be swapped to disk...
+		 * @param addLevel the level to which the run should be added
+		 * @param toBeAdded the run to be added
+		 * @return true if the run to be added is swapped to disk, otherwise false (also in the case that another run is swapped to disk)
+		 */
+		public abstract boolean checkSwapping(final int addLevel, final Run toBeAdded);
+
+	}
+	
+	public class MergerFreeMemory extends Merger{
+
+		public MergerFreeMemory(BoundedBuffer<Run> initialRunsLevel0, ArrayList<LinkedList<Run>> levels) {
+			super(initialRunsLevel0, levels);
+		}
+
+		/**
 		 * check free memory and intermediately store one of the biggest runs on disk if there is not enough memory any more 
 		 */
-		public void checkMemory() {
+		@Override
+		public boolean checkSwapping(int addLevel, Run toBeAdded) {
+			boolean flag = false;
 			// is there still enough memory available?
-			if(Runtime.getRuntime().freeMemory()<ExternalParallelSorter.this.FREE_MEMORY_LIMIT){
+			if(Runtime.getRuntime().freeMemory()<ExternalParallelSorter.this.PARAMETER_FOR_SWAPPING){
 				// get one of the biggest runs for storing it on disk and free it in memory...
 				int levelnr=this.levels.size();
 				do {
 					levelnr--;
 				} while(levelnr>0 && this.levels.get(levelnr).size()==0);
-				if(levelnr==0){
+				final Run runOnDisk;
+				if(levelnr==0 || addLevel>=levelnr){
 					System.err.println("ExternalParallelMergeSort: Heap space to low or FREE_MEMORY_LIMIT to high...");
-					return;
+					runOnDisk = toBeAdded;
+					flag = true;
+				} else {
+					LinkedList<Run> lastLevel = this.levels.get(levelnr);
+					runOnDisk = lastLevel.remove().swapRun();
+					System.gc();
 				}
-				LinkedList<Run> lastLevel = this.levels.get(levelnr);
-				Run runOnDisk = lastLevel.remove().swapRun();
-				System.gc();
 				ExternalParallelSorter.this.runsOnDisk.add(runOnDisk);
 			}
+			return flag;
+		}	
+	}
+	
+	public class DeterministicMerger extends Merger{
+		
+		public DeterministicMerger(BoundedBuffer<Run> initialRunsLevel0, ArrayList<LinkedList<Run>> levels) {
+			super(initialRunsLevel0, levels);
 		}
+
+		/**
+		 * swap if a certain level is reached... 
+		 */
+		@Override
+		public boolean checkSwapping(int addLevel, Run toBeAdded) {
+			if(addLevel == ExternalParallelSorter.this.PARAMETER_FOR_SWAPPING){
+				ExternalParallelSorter.this.runsOnDisk.add(toBeAdded.swapRun());
+				return true;
+			} else {
+				return false;
+			}
+		}	
 	}
 }
