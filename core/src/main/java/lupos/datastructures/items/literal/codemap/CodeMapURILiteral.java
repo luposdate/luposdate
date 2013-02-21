@@ -139,11 +139,6 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		return v.get(prefix) + content.toString();
 	}
 
-	@Override
-	public int hashCode() {
-		return content.hashCode();
-	}
-
 	public String printYagoStringWithPrefix() {
 		return ">p"
 				+ prefix
