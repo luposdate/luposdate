@@ -67,7 +67,9 @@ public class Endpoint {
 	
 	// enable or disable logging into console
 	public static boolean log = false;
-	
+	// enable or disable logging the sizes of the query and its response into console
+	public static boolean sizelog = false;
+		
 	private final static Map<String, Formatter> registeredFormatter = Collections.synchronizedMap(new HashMap<String, Formatter>());
 	
 	private final static Map<String, HttpHandler> registeredhandler = Collections.synchronizedMap(new HashMap<String, HttpHandler>());
@@ -109,8 +111,17 @@ public class Endpoint {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length < 1) {
-			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices>");
+			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [output] [size]");
+			System.err.println("If \"output\" is given, the response is written to console.");
+			System.err.println("If \"size\" is given, the size of the received query and the size of the response is written to console.");
 			return;
+		}
+		for(int i=1; i<args.length; i++){
+			if(args[i].compareTo("output")==0){
+				Endpoint.log = true;
+			} else if(args[i].compareTo("size")==0){
+				Endpoint.sizelog = true;
+			}
 		}
 		Endpoint.initAndStartServer(args[0]);
 	}
@@ -216,6 +227,9 @@ public class Endpoint {
 	public static class SPARQLExecutionImplementation implements SPARQLExecution {
 		@Override
 		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException {
+			if(Endpoint.sizelog){
+				System.out.println("Size of the received query (number of characters): "+queryParameter.length());
+			}
 			try {
 				synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
 					System.out.println("Evaluating query:\n"+queryParameter);
@@ -234,6 +248,9 @@ public class Endpoint {
 					OutputStream os = t.getResponseBody();
 					if(Endpoint.log){
 						os = new OutputStreamLogger(os);
+					}
+					if(Endpoint.sizelog){
+						os = new OutputStreamSizeLogger(os);
 					}
 					formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
 					os.close();
@@ -403,6 +420,30 @@ public class Endpoint {
 		
 		@Override
 		public void close() throws IOException{
+			this.piped.close();
+		}
+	}
+	
+	public static class OutputStreamSizeLogger extends OutputStream {
+		
+		private final OutputStream piped;
+		private int size = 0;
+		
+		public OutputStreamSizeLogger(final OutputStream piped){
+			this.piped = piped;
+		}
+		
+		@Override
+		public void write(int b) throws IOException {
+			if(b>=0){
+				this.size++;
+			}
+			this.piped.write(b);
+		}
+		
+		@Override
+		public void close() throws IOException{
+			System.out.println("Size of response in bytes: "+this.size);
 			this.piped.close();
 		}
 	}
