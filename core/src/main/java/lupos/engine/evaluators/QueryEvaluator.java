@@ -41,6 +41,7 @@ import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.application.Application;
+import lupos.engine.operators.application.IterateOneTimeThrough;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.ArgumentParser;
@@ -48,6 +49,7 @@ import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.rdf.Prefix;
+import lupos.sparql1_1.Node;
 
 public abstract class QueryEvaluator<A> {
 
@@ -289,6 +291,7 @@ public abstract class QueryEvaluator<A> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void _main(final QueryEvaluator evaluator,
 			final String datafile, final String queryfile) {
 		try {
@@ -583,17 +586,17 @@ public abstract class QueryEvaluator<A> {
 						final long[] evaluateQueryTimeArray = new long[times];
 						final long[] totalTimeArray = new long[times];
 						for (int i = 0; i < times; i++) {
-							compileQueryTimeArray[i] = evaluator
-									.compileQuery(query);
+							compileQueryTimeArray[i] = evaluator.compileQuery(query);
 							compileQueryTime += compileQueryTimeArray[i];
-							logicalOptimizationTimeArray[i] = evaluator
-									.logicalOptimization();
+							logicalOptimizationTimeArray[i] = evaluator.logicalOptimization();
 							logicalOptimizationTime += logicalOptimizationTimeArray[i];
-							physicalOptimizationTimeArray[i] = evaluator
-									.physicalOptimization();
+							physicalOptimizationTimeArray[i] = evaluator.physicalOptimization();
 							physicalOptimizationTime += physicalOptimizationTimeArray[i];
-							evaluateQueryTimeArray[i] = evaluator
-									.evaluateQuery();
+							if(evaluator instanceof CommonCoreQueryEvaluator){
+								// walk one time through whole result...
+								((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());								
+							}
+							evaluateQueryTimeArray[i] = evaluator.evaluateQuery();
 							evaluateQueryTime += evaluateQueryTimeArray[i];
 							totalTimeArray[i] = compileQueryTimeArray[i]
 									+ logicalOptimizationTimeArray[i]
@@ -623,17 +626,17 @@ public abstract class QueryEvaluator<A> {
 							evaluateQueryTime -= evaluateQueryTimeArray[0];
 							totalTime -= totalTimeArray[0];
 
-							compileQueryTimeArray[0] = evaluator
-									.compileQuery(query);
+							compileQueryTimeArray[0] = evaluator.compileQuery(query);
 							compileQueryTime += compileQueryTimeArray[0];
-							logicalOptimizationTimeArray[0] = evaluator
-									.logicalOptimization();
+							logicalOptimizationTimeArray[0] = evaluator.logicalOptimization();
 							logicalOptimizationTime += logicalOptimizationTimeArray[0];
-							physicalOptimizationTimeArray[0] = evaluator
-									.physicalOptimization();
+							physicalOptimizationTimeArray[0] = evaluator.physicalOptimization();
 							physicalOptimizationTime += physicalOptimizationTimeArray[0];
-							evaluateQueryTimeArray[0] = evaluator
-									.evaluateQuery();
+							if(evaluator instanceof CommonCoreQueryEvaluator){
+								// walk one time through whole result...
+								((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());								
+							}
+							evaluateQueryTimeArray[0] = evaluator.evaluateQuery();
 							evaluateQueryTime += evaluateQueryTimeArray[0];
 							totalTimeArray[0] = compileQueryTimeArray[0]
 									+ logicalOptimizationTimeArray[0]
