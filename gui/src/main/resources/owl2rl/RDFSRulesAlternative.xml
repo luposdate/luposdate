@@ -233,7 +233,7 @@ Forall ?u ?a ?x (
 <template><![CDATA[
 ?u[rdfs:subPropertyOf->?u]
 ]]></template>	
-<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.lupos.owl2rl.emitter.RuleEmitter</classname>
+<methodname>emitPropertyRules</methodname><classname>lupos.owl2rl.emitter.RuleEmitter</classname>
 <variable>?u</variable>
 </templaterule>
 
