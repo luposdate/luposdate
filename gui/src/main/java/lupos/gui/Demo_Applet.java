@@ -1708,6 +1708,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	@SuppressWarnings("rawtypes")
 	private void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
+		
+		this.resultpanel = new JPanel(new BorderLayout());
+		// set the empty resultpanel as component for the result tab
+		this.tabbedPane_globalMainpane.setComponentAt(
+				this.tabbedPane_globalMainpane.indexOfTab(this.TAB_TITLE_RESULT),
+				this.resultpanel);
+		
 		evaluation.getButtonEvaluate().setEnabled(false);
 		evaluation.getButtonEvalDemo().setEnabled(false);
 		evaluation.getButtonMeasureExecutionTimes().setEnabled(false);
@@ -1727,7 +1734,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 					if (mode == EvaluationMode.DEMO
 							|| mode == EvaluationMode.TIMES) {
-
+						this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
 						final long prepareInputData = evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
 
 						try {
@@ -1770,7 +1777,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 											};
 											bottomToolBar.setEvaluationThread(thread);
 											thread.start();
-											this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue(), null);
+											
 											BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
 
 											this.operatorGraphViewer = new Viewer(
@@ -1874,12 +1881,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					} else {
 
 						try {		
+							this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
 							evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
 
 							System.out.println("Compile query...");
 							try {
 								try {
-									this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
 									
 									this.debugViewerCreator = evaluation.compileQueryDebugByteArray(this.query);
 
@@ -1928,8 +1935,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 										repaint();
 									}
 
-									this.resultpanel = new JPanel(new BorderLayout());
-
 									outputResult();
 
 									// set resultpanel as component for the result tab and make the tab active
@@ -1951,7 +1956,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					}
 				} catch (final Throwable t) {
 					// ignore forwarded Throwable!
-
 					evaluation.enableButtons();
 				}
 			} catch (final Throwable t) {

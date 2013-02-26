@@ -31,6 +31,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.Client;
+import lupos.endpoint.client.CommandLineEvaluator;
 import lupos.endpoint.client.formatreader.MIMEFormatReader;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
@@ -93,4 +94,13 @@ public class DeltaClient {
 		}
 	}
 	
+	/**
+	 * This main method calls the main method of CommandLineEvaluator (after the DeltaClient has been initialized).
+	 * The delta approach for caching and reusing query triples is used for any communication with an endpoint
+	 * (which must be DeltaEndpoint, otherwise the approach will not work).
+	 * @param args Command line arguments
+	 */
+	public static void main(String[] args) {
+		CommandLineEvaluator.main(args);
+	}
 }
