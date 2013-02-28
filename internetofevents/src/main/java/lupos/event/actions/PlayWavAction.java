@@ -68,8 +68,9 @@ public class PlayWavAction extends Action {
 //	            Thread.yield();
 //	         }
 		} catch (Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+			// per default make standard beep!
+			System.err.println("Audio file not found, just use system beep...");
+			java.awt.Toolkit.getDefaultToolkit().beep();
 		}
 	}
 	
