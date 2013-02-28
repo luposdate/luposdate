@@ -34,6 +34,7 @@
 	    <module>distributiongui</module>
 	    <module>distributionendpoint</module>
 	    <module>distributionotherparsersandevaluators</module>
+	    <module>distributionall</module>
 	</modules>
 
 	<dependencyManagement>
