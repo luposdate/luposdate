@@ -41,7 +41,7 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.QueryResult;
 
-public class JSONFormatReader extends MIMEFormatReader {
+public class JSONFormatReader extends DefaultMIMEFormatReader {
 
 	public final static String MIMETYPE = "application/sparql-results+json";
 	
@@ -62,7 +62,7 @@ public class JSONFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream, final String query) {
+	public QueryResult getQueryResult(final InputStream inputStream) {
 		try {
 			final JSONObject object = new JSONObject(new JSONTokener(new InputStreamReader(inputStream)));
 			if(object.has("boolean")){

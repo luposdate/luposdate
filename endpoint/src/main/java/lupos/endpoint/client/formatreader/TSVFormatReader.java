@@ -39,7 +39,7 @@ import lupos.endpoint.client.formatreader.tsv.ParseException;
 import lupos.endpoint.client.formatreader.tsv.SimpleNode;
 import lupos.endpoint.client.formatreader.tsv.TSVParser;
 
-public class TSVFormatReader extends MIMEFormatReader {
+public class TSVFormatReader extends DefaultMIMEFormatReader {
 
 	public final static String MIMETYPE = "text/tsv";
 
@@ -53,7 +53,7 @@ public class TSVFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(InputStream inputStream, final String query) {
+	public QueryResult getQueryResult(final InputStream inputStream) {
 		QueryResult result = QueryResult.createInstance();
 		
 		try {

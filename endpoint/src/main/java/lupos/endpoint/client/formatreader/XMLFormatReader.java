@@ -46,7 +46,7 @@ import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 
-public class XMLFormatReader extends MIMEFormatReader {
+public class XMLFormatReader extends DefaultMIMEFormatReader {
 	
 	public final static String MIMETYPE = "application/sparql-results+xml";
 
@@ -85,7 +85,7 @@ public class XMLFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream, final String query) {
+	public QueryResult getQueryResult(final InputStream inputStream) {
 		final BoundedBuffer<Bindings> boundedBuffer = new BoundedBuffer<Bindings>(BUFFERSIZE);
 		
 		final ParseThread parseThread = new ParseThread(inputStream, boundedBuffer);

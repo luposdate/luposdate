@@ -39,7 +39,7 @@ public class SerializedQueryResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private static final Formatter formatter = new XMLFormatter();
-	private static final MIMEFormatReader formatReader = new XMLFormatReader();
+	private static final DefaultMIMEFormatReader formatReader = new XMLFormatReader();
 	
 	private String id;
 	private final byte[] serialized;	
@@ -55,7 +55,7 @@ public class SerializedQueryResult implements Serializable {
 	
 	public QueryResult getQueryResult() {
 		ByteArrayInputStream bais = new ByteArrayInputStream(this.serialized);
-		return SerializedQueryResult.formatReader.getQueryResult(bais, null); // the second parameter, the query itself is not used in most readers
+		return SerializedQueryResult.formatReader.getQueryResult(bais);
 	}
 	
 	public String getId() { 

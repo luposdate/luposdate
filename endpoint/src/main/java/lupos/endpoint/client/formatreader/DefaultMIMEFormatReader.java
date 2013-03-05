@@ -27,28 +27,24 @@ import java.io.InputStream;
 
 import lupos.datastructures.queryresult.QueryResult;
 
-public abstract class MIMEFormatReader {
-	private final String formatName;
-	private final String key;
-	
-	public MIMEFormatReader(final String formatName){
-		this(formatName, formatName);
-	}
-	
-	public MIMEFormatReader(final String formatName, final String key){
-		this.formatName = formatName;
-		this.key = key.toLowerCase();
-	}
-	
-	public abstract String getMIMEType();
-	
-	public String getName(){
-		return this.formatName;
-	}
-	
-	public String getKey(){
-		return this.key;
+/**
+ * Most MIMEFormatReader do not need the query for parsing the query result.
+ * This class supports the method getQueryResult without a given query.
+ */
+public abstract class DefaultMIMEFormatReader extends MIMEFormatReader{
+
+	public DefaultMIMEFormatReader(String formatName, String key) {
+		super(formatName, key);
 	}
 
-	public abstract QueryResult getQueryResult(final InputStream inputStream, final String query);
+	public DefaultMIMEFormatReader(String formatName) {
+		super(formatName);
+	}
+
+	@Override
+	public QueryResult getQueryResult(final InputStream inputStream, final String query){
+		return this.getQueryResult(inputStream, null);
+	}
+	
+	public abstract QueryResult getQueryResult(final InputStream inputStream);
 }

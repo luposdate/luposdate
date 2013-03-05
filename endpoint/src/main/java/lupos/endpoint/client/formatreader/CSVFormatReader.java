@@ -39,7 +39,7 @@ import lupos.endpoint.client.formatreader.csv.Node;
 import lupos.endpoint.client.formatreader.csv.ParseException;
 import lupos.endpoint.client.formatreader.csv.SimpleNode;
 
-public class CSVFormatReader extends MIMEFormatReader {
+public class CSVFormatReader extends DefaultMIMEFormatReader {
 	
 	public final static String MIMETYPE = "text/csv";
 
@@ -53,7 +53,7 @@ public class CSVFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(InputStream inputStream, final String query) {
+	public QueryResult getQueryResult(InputStream inputStream) {
 		QueryResult result = QueryResult.createInstance();
 		
 		try {

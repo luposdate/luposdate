@@ -31,7 +31,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 
-public class TripleFormatReader extends MIMEFormatReader {
+public class TripleFormatReader extends DefaultMIMEFormatReader {
 
 	protected final String formatParameter;
 	
@@ -46,7 +46,7 @@ public class TripleFormatReader extends MIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream, String query) {
+	public QueryResult getQueryResult(final InputStream inputStream) {
 		
 		final GraphResult result = new GraphResult();
 		
