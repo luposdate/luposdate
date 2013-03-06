@@ -23,8 +23,10 @@
  */
 package lupos.datastructures.sort.helper;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,6 +36,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
+import lupos.misc.FileHelper;
 
 /**
  * Helper class to read in and parse different types of data (strings or RDF terms of RDF data). 
@@ -86,13 +89,18 @@ public class DataToBoundedBuffer {
 	/**
 	 * Read in and parse strings or RDF terms of RDF data, and put one after the other in the given bounded buffer.
 	 * @param dataFiles the data
-	 * @param format the format (STRING => strings in a file, each line one string)
+	 * @param format the format (STRING => strings in a file, each line one string, MULTIPLESTRING => file contains file list, all are read in line by line, otherwise RDF format)
 	 * @param buffer the bounded buffer, in which the data is put
 	 * @throws Exception in case of any failure
 	 */
 	public static void dataToBoundedBuffer(final InputStream dataFiles, final String format, final BoundedBuffer<String> buffer) throws Exception {
 		if(format.toUpperCase().compareTo("STRING")==0){
 			DataToBoundedBuffer.stringsInFile(dataFiles, buffer);
+		} else if(format.toUpperCase().compareTo("MULTIPLESTRING")==0) {
+			for (final String filename : FileHelper.readInputStreamToCollection(dataFiles)) {
+				System.out.println("Reading data from file: " + filename);
+				DataToBoundedBuffer.stringsInFile(new BufferedInputStream(new FileInputStream(filename)), buffer);
+			}
 		} else {
 			DataToBoundedBuffer.rdfTerms(dataFiles, format, buffer);
 		}		
