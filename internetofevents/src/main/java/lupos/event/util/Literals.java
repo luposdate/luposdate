@@ -50,6 +50,7 @@ public abstract class Literals {
 		public static final URILiteral FLOAT = createURI(Prefixes.XSD, "float");
 		public static final URILiteral DECIMAL = createURI(Prefixes.XSD, "decimal");
 		public static final URILiteral String = createURI(Prefixes.XSD, "string");
+		public static final URILiteral DURATION = createURI(Prefixes.XSD, "duration");
 	}
 	
 	/**
@@ -81,5 +82,59 @@ public abstract class Literals {
 	
 	public static Literal createTyped(String value, URILiteral typeLiteral) throws URISyntaxException {
 		return LiteralFactory.createTypedLiteral("\"" + value + "\"", typeLiteral);		
+	}
+	
+	/**
+	 * Create a Literal of type {@link Duration}, encoding the given duration
+	 * values as described in
+	 * http://www.w3schools.com/schema/schema_dtypes_date.asp.
+	 * 
+	 * @param years
+	 *            Number of years.
+	 * @param months
+	 *            Number of months.
+	 * @param days
+	 *            Number of days.
+	 * @param hours
+	 *            Number of hours.
+	 * @param minutes
+	 *            Number of minutes.
+	 * @param seconds
+	 *            Number of seconds.
+	 * @return A new Literal of type {@link Duration}, containing the respective
+	 *         encoding of the specified duration.
+	 * @throws URISyntaxException
+	 */
+	public static Literal createDurationLiteral(final int years,
+			final int months, final int days, final int hours,
+			final int minutes, final int seconds) throws URISyntaxException {
+		String durationStr = "P";
+
+		if (years > 0)
+			durationStr += years + "Y";
+
+		if (months > 0)
+			durationStr += months + "M";
+
+		if (days > 0)
+			durationStr += days + "D";
+
+		if (hours > 0 || minutes > 0 || seconds > 0) {
+			durationStr += "T";
+
+			if (hours > 0)
+				durationStr += hours + "H";
+
+			if (minutes > 0)
+				durationStr += minutes + "M";
+
+			if (seconds > 0)
+				durationStr += seconds + "S";
+		}
+
+		if (durationStr.equals("P"))
+			durationStr += "T0S";
+
+		return createTyped(durationStr, Literals.XSD.DURATION);
 	}
 }

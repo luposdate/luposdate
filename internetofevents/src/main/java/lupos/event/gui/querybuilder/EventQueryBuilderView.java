@@ -36,6 +36,7 @@ import javax.swing.*;
 import lupos.event.producers.BTDevicesProducer;
 import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
+import lupos.event.producers.DBDelayProducer;
 import lupos.event.producers.MtGoxProducer;
 import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
@@ -60,11 +61,17 @@ public class EventQueryBuilderView extends JPanel {
 			new EventType(Literals.createURI(TwitterSearchProducer.NAMESPACE,"TwitterSearchEvent"), Literals.createURI("","text"), Literals.createURI("","id")),
 			new EventType(Literals.createURI(ButtonClickedProducer.NAMESPACE,"ButtonClickedEvent")),
 			new EventType(Literals.createURI(BTDevicesProducer.NAMESPACE,"BTDevicesEvent"), Literals.createURI(BTDevicesProducer.NAMESPACE,"inRange")),
-			new EventType(Literals.createURI(EbayProducer.NAMESPACE,"EbayAuctionEvent"), Literals.createURI(EbayProducer.NAMESPACE, "title"), 
-																						Literals.createURI(EbayProducer.NAMESPACE, "timeLeft"),
-																						Literals.createURI(EbayProducer.NAMESPACE, "currentPrice"),
-																						Literals.createURI(EbayProducer.NAMESPACE, "buyItNowPrice"),
-																						Literals.createURI(EbayProducer.NAMESPACE, "shippingCosts"))};	
+			new EventType(Literals.createURI(EbayProducer.NAMESPACE,"EbayAuctionEvent"), 
+					Literals.createURI(EbayProducer.NAMESPACE, "title"), 
+					Literals.createURI(EbayProducer.NAMESPACE, "timeLeft"),
+					Literals.createURI(EbayProducer.NAMESPACE, "currentPrice"),
+					Literals.createURI(EbayProducer.NAMESPACE, "buyItNowPrice"),
+					Literals.createURI(EbayProducer.NAMESPACE, "shippingCosts")),
+			new EventType(DBDelayProducer.TYPE, 
+					DBDelayProducer.NAME,
+					DBDelayProducer.MAXDELAY
+					)
+	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();
 	
