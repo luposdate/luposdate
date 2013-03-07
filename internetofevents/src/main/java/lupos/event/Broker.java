@@ -48,6 +48,11 @@ import lupos.event.util.Utils;
  * This is the central component which acts as a server. It manages the subscriptions from consumers and the stream-based evaluation of their queries.
  */
 public class Broker implements IMessageReceivedHandler<Serializable>, ISubscriptionChangedHandler, Observer {
+	
+	/**
+	 * used to generate really unique blank nodes
+	 */
+	private long running_number = 0;
 
 	/**
 	 * A list of all current subscribers (consumers)
@@ -86,14 +91,16 @@ public class Broker implements IMessageReceivedHandler<Serializable>, ISubscript
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void messageReceived(Object src, Serializable msg){
+	public synchronized void messageReceived(Object src, Serializable msg){
 		// check if the received message is a generic List which contains SerializedTriple instances
 		if(Utils.isHomogenousList(msg, SerializedTriple.class)) {
 			List<SerializedTriple> stl = (List<SerializedTriple>)msg;
 						
 			// -deserialize the triples and make subjects unique
 			// -das type-Tripel wird als letztes eingespeist
-			Literal subject = LiteralFactory.createAnonymousLiteral("_:subj"+UUID.randomUUID());
+			Literal subject = LiteralFactory.createAnonymousLiteral("_:broker"+this.running_number);
+			this.running_number++;
+			System.out.println(subject);
 			Triple typeTriple = null;
 			for(SerializedTriple st : stl) {
 				Triple t = st.getTriple();				
