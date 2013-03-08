@@ -43,7 +43,7 @@ public abstract class DefaultMIMEFormatReader extends MIMEFormatReader{
 
 	@Override
 	public QueryResult getQueryResult(final InputStream inputStream, final String query){
-		return this.getQueryResult(inputStream, null);
+		return this.getQueryResult(inputStream);
 	}
 	
 	public abstract QueryResult getQueryResult(final InputStream inputStream);

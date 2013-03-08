@@ -27,6 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
 import lupos.datastructures.queryresult.QueryResult;
@@ -91,7 +93,7 @@ public class Client {
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("query", query));
 		params.add(new BasicNameValuePair("format", formatKey));
-		Tuple<String, InputStream> response = doSubmit(url, params);
+		Tuple<String, InputStream> response = doSubmit(url, params, formatKey);
 		final String contentType = response.getFirst();
 		if(contentType==null){
 			System.err.println("Content type missing in response of SPARQL endpoint!");
@@ -123,16 +125,16 @@ public class Client {
 		return reader.getQueryResult(response.getSecond(), query);
 	}
 
-	public static Tuple<String, InputStream> doSubmit(final String url, List<NameValuePair> content) throws IOException {
+	public static Tuple<String, InputStream> doSubmit(final String url, List<NameValuePair> content, final String requestHeader) throws IOException {
 		int size=url.length();
 		for(NameValuePair entry: content){
 			size += entry.getName().length()+entry.getValue().length()+2; // size determination of &/? key = value
 		}
-		return doSubmit(url, content, size<Client.LIMIT_OF_BYTES_FOR_GET);
+		return doSubmit(url, content, requestHeader, size<Client.LIMIT_OF_BYTES_FOR_GET);
 	}
 
 	
-	public static Tuple<String, InputStream> doSubmit(final String url, final List<NameValuePair> content, final boolean useMethodGET) throws IOException {
+	public static Tuple<String, InputStream> doSubmit(final String url, final List<NameValuePair> content, final String requestHeader, final boolean useMethodGET) throws IOException {
 		HttpClient httpclient = new DefaultHttpClient();
 		final HttpUriRequest httpurirequest;
 		if(useMethodGET){
@@ -148,9 +150,12 @@ public class Client {
 				}
 				urlAndParams += param.getName() + "=" + URLEncoder.encode(param.getValue(), "UTF-8");
 			}
-			httpurirequest = new HttpGet(urlAndParams);
+			HttpGet httpget = new HttpGet(urlAndParams);
+			httpget.setHeader("Accept", requestHeader);			
+			httpurirequest = httpget;
 		} else {
 			HttpPost httppost = new HttpPost(url);
+			httppost.setHeader("Accept", requestHeader);
 			httppost.setEntity(new UrlEncodedFormEntity(content, org.apache.commons.lang.CharEncoding.UTF_8));
 			httpurirequest = httppost;
 		}
@@ -159,7 +164,7 @@ public class Client {
 		InputStream in = entity.getContent();
 		if(Client.log){
 			in = new InputStreamLogger(in);
-		}
+		}		
 		return new Tuple<String, InputStream>(entity.getContentType().getValue(), new BufferedInputStream(in));
 	}
 	
