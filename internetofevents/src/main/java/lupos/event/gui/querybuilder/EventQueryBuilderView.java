@@ -40,6 +40,7 @@ import lupos.event.producers.DBDelayProducer;
 import lupos.event.producers.MtGoxProducer;
 import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
+import lupos.event.producers.WeatherProducer;
 import lupos.event.producers.ebay.EbayProducer;
 import lupos.event.util.Literals;
 
@@ -68,9 +69,53 @@ public class EventQueryBuilderView extends JPanel {
 					Literals.createURI(EbayProducer.NAMESPACE, "buyItNowPrice"),
 					Literals.createURI(EbayProducer.NAMESPACE, "shippingCosts")),
 			new EventType(DBDelayProducer.TYPE, 
-					DBDelayProducer.NAME,
-					DBDelayProducer.MAXDELAY
-					)
+					DBDelayProducer.TRAIN_NAME,
+					DBDelayProducer.STATION_NAME,
+					DBDelayProducer.DELAY,
+					DBDelayProducer.DELAY_CAUSE,
+					DBDelayProducer.LATITUDE,
+					DBDelayProducer.LONGITUDE
+			),
+			new EventType(WeatherProducer.Predicates.TYPE, 
+					WeatherProducer.Predicates.CURRENT_WEATHER, 
+					WeatherProducer.Predicates.TEMPERATURE, 
+					WeatherProducer.Predicates.FEELSLIKE, 
+					WeatherProducer.Predicates.HUMIDITY, 
+					WeatherProducer.Predicates.WIND,
+					WeatherProducer.Predicates.OBSERVATION_TIME,
+					WeatherProducer.Predicates.CURRENT_TIME,
+					WeatherProducer.Predicates.ZT_SHORT,
+					WeatherProducer.Predicates.ZT_LONG,
+					WeatherProducer.Predicates.WIND_DEGREE,
+					WeatherProducer.Predicates.WIND_KPH,
+					WeatherProducer.Predicates.WIND_GUST_KPH,
+					WeatherProducer.Predicates.PRESSURE_MB,
+					WeatherProducer.Predicates.PRESSURE_IN,
+					WeatherProducer.Predicates.DEWPOINT,
+					WeatherProducer.Predicates.HEAT_INDEX,
+					WeatherProducer.Predicates.WINDCHILL,
+					WeatherProducer.Predicates.VISIBILITY_MI,
+					WeatherProducer.Predicates.VISIBILITY_KM,
+					WeatherProducer.Predicates.SOLARRADIATION,
+					WeatherProducer.Predicates.UV,
+					WeatherProducer.Predicates.PRECIP_1HR,
+					WeatherProducer.Predicates.PRECIP_TODAY,
+					WeatherProducer.Predicates.ICON,
+					WeatherProducer.Predicates.ICON_URL,
+					WeatherProducer.Predicates.FORECAST_URL,
+					WeatherProducer.Predicates.HISTORY_URL,
+					WeatherProducer.Predicates.OB_URL,
+					WeatherProducer.Predicates.CITY_NAME,
+					WeatherProducer.Predicates.COUNTRY_NAME,
+					WeatherProducer.Predicates.COUNTRYCODE,
+					WeatherProducer.Predicates.LATITUDE,
+					WeatherProducer.Predicates.LONGITUDE,
+					WeatherProducer.Predicates.ELEVATION,
+					WeatherProducer.Predicates.CURRENT_CITY,
+					WeatherProducer.Predicates.COUNTRY2CODE,
+					WeatherProducer.Predicates.LATITUDE2,
+					WeatherProducer.Predicates.LONGITUDE2,
+					WeatherProducer.Predicates.ELEVATION2)
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();

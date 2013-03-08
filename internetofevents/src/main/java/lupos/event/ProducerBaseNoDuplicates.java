@@ -72,8 +72,12 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 	@Override
 	public List<List<Triple>> produce() {
 		List<List<Triple>> curDataSet = produceWithDuplicates();
-		List<List<Triple>> newDataSet = eliminateDuplicates(curDataSet);
-		return newDataSet;
+		if(curDataSet!=null){
+			List<List<Triple>> newDataSet = eliminateDuplicates(curDataSet);
+			return newDataSet;
+		} else {
+			return null;
+		}
 	}
 
 	private List<List<Triple>> eliminateDuplicates(
