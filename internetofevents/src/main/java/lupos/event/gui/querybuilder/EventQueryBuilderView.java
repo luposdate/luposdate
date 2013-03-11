@@ -42,6 +42,9 @@ import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
 import lupos.event.producers.WeatherProducer;
 import lupos.event.producers.ebay.EbayProducer;
+import lupos.event.producers.webpage.LottoProducer;
+import lupos.event.producers.webpage.WaterTempProducer;
+import lupos.event.producers.webpage.WindFinderProducer;
 import lupos.event.util.Literals;
 
 
@@ -74,8 +77,7 @@ public class EventQueryBuilderView extends JPanel {
 					DBDelayProducer.DELAY,
 					DBDelayProducer.DELAY_CAUSE,
 					DBDelayProducer.LATITUDE,
-					DBDelayProducer.LONGITUDE
-			),
+					DBDelayProducer.LONGITUDE),
 			new EventType(WeatherProducer.Predicates.TYPE, 
 					WeatherProducer.Predicates.CURRENT_WEATHER, 
 					WeatherProducer.Predicates.TEMPERATURE, 
@@ -115,7 +117,21 @@ public class EventQueryBuilderView extends JPanel {
 					WeatherProducer.Predicates.COUNTRY2CODE,
 					WeatherProducer.Predicates.LATITUDE2,
 					WeatherProducer.Predicates.LONGITUDE2,
-					WeatherProducer.Predicates.ELEVATION2)
+					WeatherProducer.Predicates.ELEVATION2),
+			new EventType(WindFinderProducer.TYPE, 
+					WindFinderProducer.TIME,
+					WindFinderProducer.WIND_DIRECTION,
+					WindFinderProducer.WIND_SPEED,
+					WindFinderProducer.PRECIPITATION,
+					WindFinderProducer.PRESSURE,
+					WindFinderProducer.TEMPERATURE),
+			new EventType(WaterTempProducer.TYPE, 
+					WaterTempProducer.TIME,
+					WaterTempProducer.TEMP),
+			new EventType(LottoProducer.TYPE, 
+					LottoProducer.SIX_FROM_FOURTYNINE,
+					LottoProducer.ZUSATZZAHL,
+					LottoProducer.SUPERZAHL)
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();

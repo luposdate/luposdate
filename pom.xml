@@ -262,7 +262,20 @@
     			<groupId>com.jezhumble</groupId>
     			<artifactId>javasysmon</artifactId>
     			<version>0.3.3</version>
-			</dependency>    		
+			</dependency>
+			
+			<dependency>
+            	<groupId>net.sourceforge.htmlcleaner</groupId>
+            	<artifactId>htmlcleaner</artifactId>
+            	<version>2.2</version>
+        	</dependency>
+        
+        	<dependency>
+            	  <!-- jsoup HTML parser library @ http://jsoup.org/ -->
+              	<groupId>org.jsoup</groupId>
+              	<artifactId>jsoup</artifactId>
+              	<version>1.7.2</version>
+        	</dependency>
 
 		</dependencies>
 	</dependencyManagement>

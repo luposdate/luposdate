@@ -51,6 +51,7 @@ public abstract class Literals {
 		public static final URILiteral DECIMAL = createURI(Prefixes.XSD, "decimal");
 		public static final URILiteral String = createURI(Prefixes.XSD, "string");
 		public static final URILiteral DURATION = createURI(Prefixes.XSD, "duration");
+		public static final URILiteral TIME = createURI(Prefixes.XSD, "time");
 	}
 	
 	/**
