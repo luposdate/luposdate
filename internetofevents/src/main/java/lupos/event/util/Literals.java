@@ -49,9 +49,12 @@ public abstract class Literals {
 		public static final URILiteral LONG = createURI(Prefixes.XSD, "long");
 		public static final URILiteral FLOAT = createURI(Prefixes.XSD, "float");
 		public static final URILiteral DECIMAL = createURI(Prefixes.XSD, "decimal");
+		public static final URILiteral DOUBLE = createURI(Prefixes.XSD, "double");
 		public static final URILiteral String = createURI(Prefixes.XSD, "string");
 		public static final URILiteral DURATION = createURI(Prefixes.XSD, "duration");
 		public static final URILiteral TIME = createURI(Prefixes.XSD, "time");
+		public static final URILiteral DATETIME = createURI(Prefixes.XSD, "dateTime");
+		public static final URILiteral URL = createURI(Prefixes.XSD, "url");
 	}
 	
 	/**

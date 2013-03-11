@@ -37,6 +37,7 @@ import lupos.event.producers.BTDevicesProducer;
 import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
 import lupos.event.producers.DBDelayProducer;
+import lupos.event.producers.EventsProducer;
 import lupos.event.producers.MtGoxProducer;
 import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
@@ -131,7 +132,19 @@ public class EventQueryBuilderView extends JPanel {
 			new EventType(LottoProducer.TYPE, 
 					LottoProducer.SIX_FROM_FOURTYNINE,
 					LottoProducer.ZUSATZZAHL,
-					LottoProducer.SUPERZAHL)
+					LottoProducer.SUPERZAHL),
+			new EventType(EventsProducer.EVENT_TYPE_OBJECT, 
+					EventsProducer.HEADLINER_PREDICATE, 
+					EventsProducer.ID_PREDICATE,
+					EventsProducer.TITLE_PREDICATE,
+					EventsProducer.START_PREDICATE,
+					EventsProducer.NAME_PREDICATE,
+					EventsProducer.STREET_PREDICATE,
+					EventsProducer.POSTALCODE_PREDICATE, 
+					EventsProducer.CITY_PREDICATE,
+					EventsProducer.DESCRIPTION_PREDICATE,
+					EventsProducer.URL_PREDICATE,
+					EventsProducer.IMAGE_PREDICATE)
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();
