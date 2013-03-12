@@ -173,7 +173,7 @@ public class Sort {
 		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT SORTARGS\n\n";
 		result += "ALGO can be one of " + Arrays.toString(SORTER.values()) + "\n";
 		result += "DATAFILE contains the file with data (containing strings or RDF data)\n";
-		result += "FORMAT can be STRING for a large collection of strings in one file, or an RDF format like N3\n\n";
+		result += "FORMAT can be STRING for a large collection of strings in one file, MULTIPLESTRING for a list of files containing strings to be read, BZIP2STRING and MULTIPLEBZIP2STRING for analogous, but BZIP2 compressed files, or an RDF format like N3\n\n";
 		result += "ALGO                   | SORTARGS\n";
 		result += "--------------------------------------------------------------------------------------------------------------------------------------------------\n";
 		for(SORTER sorter: SORTER.values()){
