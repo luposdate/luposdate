@@ -61,7 +61,7 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 
 	public String NAMESPACE;
 	private Literal TYPE;
-	private static final int INTERVAL = 10000;
+	private static final int INTERVAL = 60000;
 	private URL url;
 	private List<Literal> literalList;
 	protected List<String> xpathList;
@@ -118,17 +118,18 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 	}
 	
 	/**
-	 * This method parses the website and executes every xpath expression.
+	 * This method parses the website and executes every XPath expression.
 	 * The result for each node in each query is put into a specific triple-list.
+	 * The results for  XPath can be casted to Integer by using regular expressions
 	 * @return result as List of triple-lists
 	 */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {
-			
+
 			//Configure HTML Cleaner
 			// This cleaner cleans dirty websites by editing tags
-			 
+
 			HtmlCleaner cleaner = new HtmlCleaner();
 			CleanerProperties props = cleaner.getProperties();
 			props.setAllowHtmlInsideAttributes(true);
@@ -145,9 +146,9 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 			//so that xpath 2.0 queries can be done (HTMLCleaner just supports XPath 1.0)
 			org.w3c.dom.Document doc = new DomSerializer(
 					new CleanerProperties()).createDOM(tagNode);
-		
+
 			List<NodeList> queryList = new ArrayList<NodeList>();
-			
+
 			// evaluate XPath expressions which are stored in xpathList 
 			// and save result nodes in queryList
 			for (int j = 0; j < this.xpathList.size(); j++) {
@@ -161,10 +162,10 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 
 			List<List<Triple>> result = new ArrayList<List<Triple>>();
 			List<Triple> res = new ArrayList<Triple>();
-			
+
 			//this id is intended to create unique subject values
 			Long id = 0l;
-			
+
 			//check how many entries  are in the first result of the xpathQuery and 
 			//go through each result
 			for (int k = 0; k < queryList.get(0).getLength(); k++) {
@@ -176,25 +177,36 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 				//add all entries to the res = (intermediate) result
 				for (int i = 0; i < queryList.size(); i++) {
 					//get data out of the XPath result node list
-					String data = queryList.get(i).item(k).getTextContent()
-							.trim();
-					
+					String data = queryList.get(i).item(k).getTextContent().trim();
+
 					// evaluate regex for information selection
 					boolean addValues=true;
 					// if regex given
-					if (this.regexString.get(i).length()>0)
-					{
+					if (this.regexString.get(i).length()>0) {
 						final Pattern pattern = Pattern.compile(this.regexString.get(i));
 						final Matcher matcher = pattern.matcher(data);
 						// if regex valid, extract information
 						if (matcher.find() == true) {
-							System.out.println("Executing regex");
-							data = matcher.group(0);
-						}
-						// if regex invalid ignore data
-						else
-						{
-							System.out.println("error in regular expression");
+
+							//the last regex value in parentheses is chosen as group							
+							if(matcher.groupCount()!=0){
+								data = matcher.group(matcher.groupCount());
+							} else { // otherwise group 0 is chosen as complete expression
+								data = matcher.group(0);							
+								String buffer = data;
+								data="";
+
+								// the whole result string is checked for digits which will remain in result
+								// others symbols are removed
+								for(int j=0;j<buffer.length();j++){
+									Character c= buffer.charAt(j);
+									if(Character.isDigit(c)){
+										data=data+c;
+									}
+								}
+							}
+
+						} else { // if regex invalid ignore data							
 							addValues = false;
 						}	
 					}
@@ -208,7 +220,7 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 				}
 				//increase counter for individual subject generation
 				id++;
-				
+
 				//add intermediate results to main result
 				result.add(res);
 				//clear the intermediate result variable

@@ -51,7 +51,7 @@ public class SysMonProducer extends ProducerBase {
 	private final static Literal TYPE = Literals.createURI(SysMonProducer.NAMESPACE, "SysMonEvent");
 	
 	static class Predicates {
-		public static final Literal UPTIME = Literals.createURI(NAMESPACE, "lastTrade");
+		public static final Literal UPTIME = Literals.createURI(NAMESPACE, "upTime");
 		public static final Literal CPU_USAGE = Literals.createURI(NAMESPACE, "cpuUsage");
 	}
 

@@ -59,7 +59,7 @@ public class WaterTempProducer extends GeneralProducer{
 	
 	// the other predicates...
 	public final static URILiteral TIME = Literals.createURI(WATERTEMPPRODUCER_NAMESPACE, "time");
-	public final static URILiteral TEMP = Literals.createURI(WATERTEMPPRODUCER_NAMESPACE, "temperature_in_Â°C");
+	public final static URILiteral TEMP = Literals.createURI(WATERTEMPPRODUCER_NAMESPACE, "temperature_in_Ã‚Â°C");
 	/**
 	 * the page of the referred provider
 	 */

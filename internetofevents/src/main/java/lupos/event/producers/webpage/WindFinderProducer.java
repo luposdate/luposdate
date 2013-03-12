@@ -64,7 +64,7 @@ public class WindFinderProducer extends GeneralProducer {
 	public final static URILiteral WIND_SPEED = Literals.createURI(WINDFINDERNAMESPACE, "windspeed_in_kts");
 	public final static URILiteral PRECIPITATION = Literals.createURI(WINDFINDERNAMESPACE, "precipitation_in_mm");
 	public final static URILiteral PRESSURE = Literals.createURI(WINDFINDERNAMESPACE, "pressure_in_hpa");
-	public final static URILiteral TEMPERATURE = Literals.createURI(WINDFINDERNAMESPACE, "temperature_in_Â°C");
+	public final static URILiteral TEMPERATURE = Literals.createURI(WINDFINDERNAMESPACE, "temperature_in_Ã‚Â°C");
 	
 	/**
 	 * the page of the referred provider

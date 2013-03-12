@@ -25,11 +25,8 @@ package lupos.event.producers.webpage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JOptionPane;
 
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.URILiteral;
@@ -57,7 +54,12 @@ public class LottoProducer extends GeneralProducer{
 	public final static URILiteral TYPE = Literals.createURI(LottoProducer.LOTTOPRODUCER_NAMESPACE, "LottoProducer");
 	
 	// the other predicates
-	public final static URILiteral SIX_FROM_FOURTYNINE = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49");
+	public final static URILiteral SIX_FROM_FOURTYNINE_1 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_1");
+	public final static URILiteral SIX_FROM_FOURTYNINE_2 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_2");
+	public final static URILiteral SIX_FROM_FOURTYNINE_3 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_3");
+	public final static URILiteral SIX_FROM_FOURTYNINE_4 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_4");
+	public final static URILiteral SIX_FROM_FOURTYNINE_5 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_5");
+	public final static URILiteral SIX_FROM_FOURTYNINE_6 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_6");
 	public final static URILiteral ZUSATZZAHL = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "Zusatzzahl");
 	public final static URILiteral SUPERZAHL = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "Superzahl");
 	/**
@@ -103,17 +105,43 @@ public class LottoProducer extends GeneralProducer{
 		List<String> regexString = new ArrayList<String>();
 		
 		xPathList.add("//p[@class='lz'][position()=1]");
-		infoString.add(Literals.XSD.String);
-		literalList.add(SIX_FROM_FOURTYNINE);
-		regexString.add("");
-		
-		xPathList.add("//p[@class='lzzz'][position()=1]");
-		infoString.add(Literals.XSD.String);
-		literalList.add(ZUSATZZAHL);
+		infoString.add(Literals.XSD.INT);
+		literalList.add(SIX_FROM_FOURTYNINE_1);
 		regexString.add("\\d+");
 		
+		xPathList.add("//p[@class='lz'][position()=1]");
+		infoString.add(Literals.XSD.INT);
+		literalList.add(SIX_FROM_FOURTYNINE_2);
+		regexString.add("[^\\d+]\\d+");
+		
+		xPathList.add("//p[@class='lz'][position()=1]");
+		infoString.add(Literals.XSD.INT);
+		literalList.add(SIX_FROM_FOURTYNINE_3);
+		regexString.add("\\d+\\D+\\d+\\D+(\\d+)");
+		
+		xPathList.add("//p[@class='lz'][position()=1]");
+		infoString.add(Literals.XSD.INT);
+		literalList.add(SIX_FROM_FOURTYNINE_4);
+		regexString.add("\\d+\\D+\\d+\\D+\\d+\\D+(\\d+)");
+		
+		xPathList.add("//p[@class='lz'][position()=1]");
+		infoString.add(Literals.XSD.INT);
+		literalList.add(SIX_FROM_FOURTYNINE_5);
+		regexString.add("\\d+\\D+\\d+\\D+\\d+\\D+\\d+\\D+(\\d+)");
+		
+		xPathList.add("//p[@class='lz'][position()=1]");
+		infoString.add(Literals.XSD.INT);
+		literalList.add(SIX_FROM_FOURTYNINE_6);
+		regexString.add("\\d+\\D+\\d+\\D+\\d+\\D+\\d+\\D+\\d+\\D+(\\d+)");
+		
+		
+		xPathList.add("//p[@class='lzzz'][position()=1]");
+		infoString.add(Literals.XSD.INT);
+		literalList.add(ZUSATZZAHL);
+		regexString.add("\\d");
+		
 		xPathList.add("//p[@class='lzsz'][position()=1]");
-		infoString.add(Literals.XSD.String);
+		infoString.add(Literals.XSD.INT);
 		literalList.add(SUPERZAHL);
 		regexString.add("\\d+");
 		

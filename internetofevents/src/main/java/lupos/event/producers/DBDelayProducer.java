@@ -296,8 +296,8 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			if (stationObj.has("station_id")) {
 				int stationID = stationObj.getInt("station_id");
 
-				if (stations.containsKey(stationID)) {
-					result.station = stations.get(stationID);
+				if (this.stations.containsKey(stationID)) {
+					result.station = this.stations.get(stationID);
 				} else {
 					System.err.println("Dammit! No station with id "
 							+ stationID + " known!");
@@ -360,7 +360,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 		String jsonStations = getHttp(STATION_URL);
 
 		// parse json data
-		stations = parseStationDataSets(jsonStations);
+		this.stations = parseStationDataSets(jsonStations);
 		List<TrainInfo> trainInfos = parseTrainDataSets(jsonTrains);
 
 		// encode to triples
