@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import lupos.compression.Compression;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.parallel.BoundedBuffer;
@@ -49,9 +50,9 @@ public class DataToBoundedBuffer {
 	 * @throws IOException in case of any failure
 	 * @throws InterruptedException in case of any failure
 	 */
-	private static void stringsInFile(final InputStream dataFiles, final BoundedBuffer<String> buffer) throws IOException, InterruptedException{
+	private static void stringsInFile(final InputStream dataFiles, final BoundedBuffer<String> buffer, Compression compression) throws IOException, InterruptedException{
 		// read in the strings...
-		BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(dataFiles)));
+		BufferedReader br = new BufferedReader(new InputStreamReader(compression.createInputStream(new DataInputStream(dataFiles))));
 		String strLine;
 		//Read File Line By Line
 		while ((strLine = br.readLine()) != null)   {
@@ -95,11 +96,18 @@ public class DataToBoundedBuffer {
 	 */
 	public static void dataToBoundedBuffer(final InputStream dataFiles, final String format, final BoundedBuffer<String> buffer) throws Exception {
 		if(format.toUpperCase().compareTo("STRING")==0){
-			DataToBoundedBuffer.stringsInFile(dataFiles, buffer);
+			DataToBoundedBuffer.stringsInFile(dataFiles, buffer, Compression.NONE);
 		} else if(format.toUpperCase().compareTo("MULTIPLESTRING")==0) {
 			for (final String filename : FileHelper.readInputStreamToCollection(dataFiles)) {
 				System.out.println("Reading data from file: " + filename);
-				DataToBoundedBuffer.stringsInFile(new BufferedInputStream(new FileInputStream(filename)), buffer);
+				DataToBoundedBuffer.stringsInFile(new BufferedInputStream(new FileInputStream(filename)), buffer, Compression.NONE);
+			}
+		} else if(format.toUpperCase().compareTo("BZIP2STRING")==0){
+			DataToBoundedBuffer.stringsInFile(dataFiles, buffer, Compression.BZIP2);
+		} else if(format.toUpperCase().compareTo("MULTIPLEBZIP2STRING")==0) {
+			for (final String filename : FileHelper.readInputStreamToCollection(dataFiles)) {
+				System.out.println("Reading data from file: " + filename);
+				DataToBoundedBuffer.stringsInFile(new BufferedInputStream(new FileInputStream(filename)), buffer, Compression.BZIP2);
 			}
 		} else {
 			DataToBoundedBuffer.rdfTerms(dataFiles, format, buffer);
