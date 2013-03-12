@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import lupos.datastructures.items.literal.URILiteral;
 import lupos.event.producers.BTDevicesProducer;
 import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
@@ -62,7 +63,17 @@ public class EventQueryBuilderView extends JPanel {
 	private EventType[] EVENTTYPES = {
 			new EventType(Literals.createURI(CountProducer.NAMESPACE,"CountEvent"), Literals.createURI(CountProducer.NAMESPACE, "count")), 
 			new EventType(Literals.createURI(MtGoxProducer.NAMESPACE,"MtGoxEvent"), Literals.createURI(MtGoxProducer.NAMESPACE,"lastTrade"), Literals.createURI(MtGoxProducer.NAMESPACE,"bestBid"), Literals.createURI(MtGoxProducer.NAMESPACE,"bestAsk")),
-			new EventType(Literals.createURI(SysMonProducer.NAMESPACE,"SysMonEvent"), Literals.createURI(SysMonProducer.NAMESPACE,"uptime"), Literals.createURI(SysMonProducer.NAMESPACE,"cpuUsage")),
+			new EventType(SysMonProducer.TYPE, 
+					SysMonProducer.Predicates.UPTIME, 
+					SysMonProducer.Predicates.CPU_USAGE,
+					SysMonProducer.Predicates.CPU_FREQUENCY,
+					SysMonProducer.Predicates.PID,
+					SysMonProducer.Predicates.CPUS,
+					SysMonProducer.Predicates.OS,
+					SysMonProducer.Predicates.TOTAL_PHYSICAL_BYTES,
+					SysMonProducer.Predicates.FREE_PHYSICAL_BYTES,
+					SysMonProducer.Predicates.TOTAL_SWAP_BYTES,
+					SysMonProducer.Predicates.FREE_SWAP_BYTES),
 			new EventType(Literals.createURI(TwitterSearchProducer.NAMESPACE,"TwitterSearchEvent"), Literals.createURI("","text"), Literals.createURI("","id")),
 			new EventType(Literals.createURI(ButtonClickedProducer.NAMESPACE,"ButtonClickedEvent")),
 			new EventType(Literals.createURI(BTDevicesProducer.NAMESPACE,"BTDevicesEvent"), Literals.createURI(BTDevicesProducer.NAMESPACE,"inRange")),

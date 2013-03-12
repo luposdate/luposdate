@@ -31,7 +31,9 @@ import com.jezhumble.javasysmon.*;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.URILiteral;
 import lupos.event.ProducerBase;
+import lupos.event.ProducerBaseNoDuplicates;
 import lupos.event.communication.*;
 import lupos.event.util.Literals;
 
@@ -40,7 +42,7 @@ import lupos.event.util.Literals;
  * Creates events which contain the computers current CPU usage and uptime.
  *
  */
-public class SysMonProducer extends ProducerBase {
+public class SysMonProducer extends ProducerBaseNoDuplicates {
 	
 	public static final String NAMESPACE = "http://localhost/events/SysMon/";
 	private static final int INTERVAL = 1000;
@@ -48,11 +50,19 @@ public class SysMonProducer extends ProducerBase {
 	private final JavaSysMon monitor = new JavaSysMon();
 	private CpuTimes previousCpuTimes = this.monitor.cpuTimes();
 	
-	private final static Literal TYPE = Literals.createURI(SysMonProducer.NAMESPACE, "SysMonEvent");
+	public final static URILiteral TYPE = Literals.createURI(SysMonProducer.NAMESPACE, "SysMonEvent");
 	
-	static class Predicates {
-		public static final Literal UPTIME = Literals.createURI(NAMESPACE, "upTime");
-		public static final Literal CPU_USAGE = Literals.createURI(NAMESPACE, "cpuUsage");
+	public static class Predicates {
+		public static final URILiteral UPTIME = Literals.createURI(NAMESPACE, "upTimeInSeconds");
+		public static final URILiteral CPU_USAGE = Literals.createURI(NAMESPACE, "cpuUsage");
+		public static final URILiteral CPU_FREQUENCY = Literals.createURI(NAMESPACE, "cpuFrequencyInHz");
+		public static final URILiteral PID = Literals.createURI(NAMESPACE, "currentPID");
+		public static final URILiteral CPUS = Literals.createURI(NAMESPACE, "numberOfCPUs");
+		public static final URILiteral OS = Literals.createURI(NAMESPACE, "osName");
+		public static final URILiteral TOTAL_PHYSICAL_BYTES = Literals.createURI(NAMESPACE, "totalPhysicalBytes");
+		public static final URILiteral FREE_PHYSICAL_BYTES = Literals.createURI(NAMESPACE, "freePhysicalBytes");
+		public static final URILiteral TOTAL_SWAP_BYTES = Literals.createURI(NAMESPACE, "totalSwapBytes");
+		public static final URILiteral FREE_SWAP_BYTES = Literals.createURI(NAMESPACE, "freeSwapBytes");
 	}
 
 
@@ -61,10 +71,18 @@ public class SysMonProducer extends ProducerBase {
 	}
 	
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 		try {			
 			// get data from sysmon library
 			long uptime = this.monitor.uptimeInSeconds();
+			long cpuFrequencyInHz = this.monitor.cpuFrequencyInHz();
+			int currentPID = this.monitor.currentPid();
+			int numberOfCPUs = this.monitor.numCpus();
+			String osName = this.monitor.osName();
+			long totalPhysicalBytes = this.monitor.physical().getTotalBytes();
+			long freePhysicalBytes = this.monitor.physical().getFreeBytes();
+			long totalSwapBytes = this.monitor.swap().getTotalBytes();
+			long freeSwapBytes = this.monitor.swap().getFreeBytes();
 
 			CpuTimes currentCpuTimes = this.monitor.cpuTimes();
 			float usage = currentCpuTimes.getCpuUsage(this.previousCpuTimes);
@@ -78,8 +96,17 @@ public class SysMonProducer extends ProducerBase {
 			
 			Literal usageObj = Literals.createTyped(usage+"", Literals.XSD.FLOAT);
 			Triple usageTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_USAGE, usageObj);
+			
+			Triple cpuFrequencyInHzTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(cpuFrequencyInHz+"", Literals.XSD.LONG));
+			Triple currentPIDTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(currentPID+"", Literals.XSD.INT));
+			Triple numberOfCPUsTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(numberOfCPUs+"", Literals.XSD.INT));
+			Triple osNameTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(osName+"", Literals.XSD.String));
+			Triple totalPhysicalBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(totalPhysicalBytes+"", Literals.XSD.LONG));
+			Triple freePhysicalBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(freePhysicalBytes+"", Literals.XSD.LONG));
+			Triple totalSwapBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(totalSwapBytes+"", Literals.XSD.LONG));
+			Triple freeSwapBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(freeSwapBytes+"", Literals.XSD.LONG));
 
-			return ProducerBase.fold(Arrays.asList(typeTriple, uptimeTriple, usageTriple));
+			return ProducerBase.fold(Arrays.asList(typeTriple, uptimeTriple, usageTriple, cpuFrequencyInHzTriple, currentPIDTriple, numberOfCPUsTriple, osNameTriple, totalPhysicalBytesTriple, freePhysicalBytesTriple, totalSwapBytesTriple, freeSwapBytesTriple));
 		} catch (URISyntaxException e) {
 			System.err.println(e);
 			e.printStackTrace();

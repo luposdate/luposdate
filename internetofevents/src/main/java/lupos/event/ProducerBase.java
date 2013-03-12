@@ -104,7 +104,7 @@ public abstract class ProducerBase {
 	
 	private List<List<Triple>> addTimestampTriples(List<List<Triple>> triples) throws URISyntaxException {
 		
-		List<List<Triple>> triples2 = new ArrayList<List<Triple>>(triples);
+		List<List<Triple>> triples2 = new ArrayList<List<Triple>>();
 		
 		for(List<Triple> listOfTriples: triples){
 			triples2.add(this.addTimestampTriple(listOfTriples));
