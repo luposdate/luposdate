@@ -21,32 +21,13 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.actions;
-
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.event.Action;
-import lupos.event.actions.send.SendEMail;
+package lupos.event.actions.send;
 
 /**
- * Action that sends a text message via XMPP when executed.
+ *  This interface is for all classes, the purpose of which is to send a string (e.g. plain or html) for displaying the string somewhere based on an action.
+ *  Examples are sending an email, displaying the string in a notification window or generation of html pages...
  */
-public class XmppMessageAction extends Action {
-
-	private final SendEMail sendEMail;
-		
-	public XmppMessageAction() {
-		super("SendMailAction");
-		this.sendEMail = new SendEMail();
-		this.sendEMail.init();
-	}
-
-	@Override
-	public void execute(QueryResult queryResult) {
-		this.sendEMail.sendContent(queryResult.toString());
-	}
-
-
-	public static void main(String[] args) {
-		new XmppMessageAction().execute(new QueryResult());
-	}
+public interface Send {
+	public void init();
+	public void sendContent(final String content);
 }
