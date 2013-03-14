@@ -39,6 +39,7 @@ import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
 import lupos.event.producers.DBDelayProducer;
 import lupos.event.producers.EventsProducer;
+import lupos.event.producers.FinanceProducer;
 import lupos.event.producers.MensaProducer;
 import lupos.event.producers.MtGoxProducer;
 import lupos.event.producers.SysMonProducer;
@@ -164,7 +165,16 @@ public class EventQueryBuilderView extends JPanel {
 					EventsProducer.IMAGE_PREDICATE),
 			new EventType(MensaProducer.TYPE,
 					MensaProducer.NAME,
-					MensaProducer.PRICE)
+					MensaProducer.PRICE),
+			new EventType(FinanceProducer.FINANCE_TYPE_OBJECT,
+					Literals.createURI(FinanceProducer.NAMESPACE, "Name"), 
+					Literals.createURI(FinanceProducer.NAMESPACE, "AskRealtime"),
+					Literals.createURI(FinanceProducer.NAMESPACE, "BidRealtime"), 
+					Literals.createURI(FinanceProducer.NAMESPACE, "BookValue"),
+					Literals.createURI(FinanceProducer.NAMESPACE, "ChangeRealtime"),
+					Literals.createURI(FinanceProducer.NAMESPACE, "DaysRange"),
+					Literals.createURI(FinanceProducer.NAMESPACE, "PEGRatio"),
+					Literals.createURI(FinanceProducer.NAMESPACE, "Volume"))
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();
