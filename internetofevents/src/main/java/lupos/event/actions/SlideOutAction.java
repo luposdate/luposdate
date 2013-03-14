@@ -21,50 +21,69 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.gui;
+package lupos.event.actions;
 
-import java.awt.BorderLayout;
-import java.util.Vector;
-
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-
+import java.util.Collection;
+import java.util.Set;
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.queryresult.QueryResult;
 import lupos.event.Action;
-import lupos.event.actions.MessageBoxAction;
-import lupos.event.actions.PlayWavAction;
-import lupos.event.actions.SlideOutAction;
-import lupos.event.actions.XmppMessageAction;
+import lupos.event.actions.send.Send;
+import lupos.event.actions.send.SlidingWindow;
 
+public class SlideOutAction extends Action {
 
-@SuppressWarnings("serial")
-public class ActionsEditView  extends JPanel {
+	private Send slidingWindow = new SlidingWindow();
 
-	private static final Vector<Class<? extends Action>> availableActionTypes = new Vector<Class<? extends Action>>() {{
-			add(MessageBoxAction.class);
-			add(PlayWavAction.class);
-			add(XmppMessageAction.class);
-			add(SlideOutAction.class);
-	}};
-	
-	private JComboBox actionTypesBox;
-	
-	public ActionsEditView() {
-		super.setLayout(new BorderLayout());
-		
-		this.actionTypesBox = new JComboBox(availableActionTypes);
-		super.add(this.actionTypesBox, BorderLayout.CENTER);
+	/**
+	 * CONSTRUCTOR!
+	 */
+	public SlideOutAction() {
+		super("SlideOutAction");
+		this.slidingWindow.init();
 	}
-	
-	public Action getAction() {
-		@SuppressWarnings("unchecked")
-		Class<? extends Action> selectedType = (Class<? extends Action>) this.actionTypesBox.getSelectedItem();
-		Action action = null;
-		try {
-			action = selectedType.newInstance();
-		} catch (Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+
+	protected SlideOutAction(String name) {
+		super(name);
+		this.slidingWindow.init();
+	}
+
+	@Override
+	public void execute(QueryResult queryResult) {
+		String msg = getMessage(queryResult);
+		this.slidingWindow.sendContent(msg);
+	}
+
+	protected String getMessage(QueryResult qr) {
+		String msg = new String();
+
+		Set<Variable> vars = qr.getVariableSet();
+		Collection<Bindings> bindings = qr.getCollection();
+
+		// This looks awful. I know. Don't know how to do this properly with
+		// generic Collections/Sets though ...
+		Object[] bArray = bindings.toArray();
+		Object[] vArray = vars.toArray();
+		for (int i = 0; i < bArray.length; i++) {
+			Bindings b = (Bindings) bArray[i];
+			
+			// separate bindings by newlines
+			if (i > 0) {
+				msg += '\n';
+			}
+
+			for (int j = 0; j < vArray.length; j++) {
+				Variable v = (Variable) vArray[j];
+
+				// separate variables in a binding by semicolon
+				if (j > 0) {
+					msg += "; ";
+				}
+				msg += b.get(v).originalString();
+			}
 		}
-		return action;
+
+		return msg;
 	}
 }

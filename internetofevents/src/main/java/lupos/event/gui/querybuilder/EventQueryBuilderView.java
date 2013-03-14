@@ -39,6 +39,7 @@ import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
 import lupos.event.producers.DBDelayProducer;
 import lupos.event.producers.EventsProducer;
+import lupos.event.producers.MensaProducer;
 import lupos.event.producers.MtGoxProducer;
 import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
@@ -160,7 +161,10 @@ public class EventQueryBuilderView extends JPanel {
 					EventsProducer.CITY_PREDICATE,
 					EventsProducer.DESCRIPTION_PREDICATE,
 					EventsProducer.URL_PREDICATE,
-					EventsProducer.IMAGE_PREDICATE)
+					EventsProducer.IMAGE_PREDICATE),
+			new EventType(MensaProducer.TYPE,
+					MensaProducer.NAME,
+					MensaProducer.PRICE)
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();
