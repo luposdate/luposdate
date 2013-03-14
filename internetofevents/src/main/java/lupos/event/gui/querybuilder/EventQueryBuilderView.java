@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-import lupos.datastructures.items.literal.URILiteral;
 import lupos.event.producers.BTDevicesProducer;
 import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
@@ -46,6 +45,8 @@ import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
 import lupos.event.producers.WeatherProducer;
 import lupos.event.producers.ebay.EbayProducer;
+import lupos.event.producers.rsssemantics.DBAnswer;
+import lupos.event.producers.rsssemantics.FeedMessage;
 import lupos.event.producers.webpage.LottoProducer;
 import lupos.event.producers.webpage.WaterTempProducer;
 import lupos.event.producers.webpage.WindFinderProducer;
@@ -174,7 +175,22 @@ public class EventQueryBuilderView extends JPanel {
 					Literals.createURI(FinanceProducer.NAMESPACE, "ChangeRealtime"),
 					Literals.createURI(FinanceProducer.NAMESPACE, "DaysRange"),
 					Literals.createURI(FinanceProducer.NAMESPACE, "PEGRatio"),
-					Literals.createURI(FinanceProducer.NAMESPACE, "Volume"))
+					Literals.createURI(FinanceProducer.NAMESPACE, "Volume")),
+			new EventType(FeedMessage.TYPE,
+					FeedMessage.Predicates.TITLE,
+					FeedMessage.Predicates.DESCRIPTION,
+					FeedMessage.Predicates.LINK,
+					FeedMessage.Predicates.AUTHOR,
+					FeedMessage.Predicates.GUID,
+					DBAnswer.Predicates.THUMBNAIL,
+					DBAnswer.Predicates.WIKIARTICLE,
+					DBAnswer.Predicates.SUBJECT,
+					DBAnswer.Predicates.NAME,
+					DBAnswer.Predicates.BIRTHDATE,
+					DBAnswer.Predicates.DEATHDATE,
+					DBAnswer.Predicates.COMMENT,
+					DBAnswer.Predicates.BIRTHPLACE,
+					DBAnswer.Predicates.LABEL)
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();

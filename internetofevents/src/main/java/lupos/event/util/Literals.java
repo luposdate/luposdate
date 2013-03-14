@@ -54,7 +54,7 @@ public abstract class Literals {
 		public static final URILiteral DURATION = createURI(Prefixes.XSD, "duration");
 		public static final URILiteral TIME = createURI(Prefixes.XSD, "time");
 		public static final URILiteral DATETIME = createURI(Prefixes.XSD, "dateTime");
-		public static final URILiteral URL = createURI(Prefixes.XSD, "url");
+		public static final URILiteral ANYURI = createURI(Prefixes.XSD, "anyURI");
 	}
 	
 	/**

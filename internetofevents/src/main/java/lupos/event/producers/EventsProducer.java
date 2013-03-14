@@ -148,7 +148,7 @@ public class EventsProducer extends ProducerBaseNoDuplicates {
 				triples.add(new Triple(subject, POSTALCODE_PREDICATE, LiteralFactory.createStringLiteral("\""+Utils.escape(postalcode)+"\"")));
 				triples.add(new Triple(subject, CITY_PREDICATE, LiteralFactory.createStringLiteral("\""+Utils.escape(city)+"\"")));
 				triples.add(new Triple(subject, DESCRIPTION_PREDICATE, LiteralFactory.createStringLiteral("\""+Utils.escape(description)+"\"")));
-				triples.add(new Triple(subject, URL_PREDICATE, LiteralFactory.createTypedLiteral("\""+url+"\"", XSD.URL)));
+				triples.add(new Triple(subject, URL_PREDICATE, LiteralFactory.createTypedLiteral("\""+url+"\"", XSD.ANYURI)));
 				triples.add(new Triple(subject, IMAGE_PREDICATE, LiteralFactory.createStringLiteral("\""+Utils.escape(image)+"\"")));
 				
 				events.add(triples);
