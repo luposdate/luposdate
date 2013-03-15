@@ -386,12 +386,10 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 		try {
 			// the train subject
-			Literal subj = LiteralFactory.createAnonymousLiteral("_:t"
-					+ train.id);
+			Literal subj = LiteralFactory.createAnonymousLiteral("_:t"+ train.id);
 
 			// the train's name
-			Literal nameObj = LiteralFactory.createLiteral("\"" + train.name
-					+ "\"");
+			Literal nameObj = LiteralFactory.createTypedLiteral("\"" + train.name + "\"", Literals.XSD.String);
 
 			// for each station, compose a new event
 			for (StationDelayInfo sdi : train.delayPerStation) {
@@ -429,13 +427,13 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			Literal obj;
 
 			// station name
-			obj = LiteralFactory.createLiteral("\"" + sdi.station.name + "\"");
+			obj = LiteralFactory.createTypedLiteral("\"" + sdi.station.name + "\"", Literals.XSD.String);
 			result.add(new Triple(trainSubj, STATION_NAME, obj));
-			
+
 			// latitude, longitude
 			obj = Literals.createTyped(sdi.station.latitude + "", Literals.XSD.FLOAT);
 			result.add(new Triple(trainSubj, LATITUDE, obj));
-			
+
 			obj = Literals.createTyped(sdi.station.longitude + "", Literals.XSD.FLOAT);
 			result.add(new Triple(trainSubj, LONGITUDE, obj));
 
@@ -456,7 +454,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			result.add(new Triple(trainSubj, DELAY, obj));
 
 			// delay cause
-			obj = LiteralFactory.createLiteral("\"" + sdi.delayCause + "\"");
+			obj = LiteralFactory.createTypedLiteral("\"" + sdi.delayCause + "\"", Literals.XSD.String);
 			result.add(new Triple(trainSubj, DELAY_CAUSE, obj));
 		} catch (URISyntaxException e) {
 			System.err.println(e);
