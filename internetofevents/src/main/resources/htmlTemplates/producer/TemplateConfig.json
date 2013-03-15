@@ -1,61 +1,61 @@
 {"templates": [
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Lotto.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Lotto.html",
     "name": "Lotto",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/Lotto/LottoProducer> SLIDINGINSTANCES 1 {\n      ?s1 <http://localhost/events/Lotto/6_aus_49_4> ?zahl4.\n      ?s1 <http://localhost/events/Lotto/6_aus_49_3> ?zahl3.\n      ?s1 <http://localhost/events/Lotto/6_aus_49_5> ?zahl5.\n      ?s1 <http://localhost/events/Lotto/Zusatzzahl> ?zusatzzahl.\n      ?s1 <http://localhost/events/Lotto/6_aus_49_1> ?zahl1.\n      ?s1 <http://localhost/events/Lotto/Superzahl> ?superzahl.\n      ?s1 <http://localhost/events/Lotto/6_aus_49_6> ?zahl6.\n      ?s1 <http://localhost/events/Lotto/6_aus_49_2> ?zahl2.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Wassertemperatur.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Wassertemperatur.html",
     "name": "Wassertemperatur",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/WaterTemp/WaterTempProducer> SLIDINGINSTANCES 8 {\n      ?s1 <http://localhost/events/WaterTemp/temperature_in_Ã\u201aÂ°C> ?temperature.\n      ?s1 <http://localhost/events/WaterTemp/time> ?time.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Wind.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Wind.html",
     "name": "Wind",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/WindFinder/WindFinderProducer> SLIDINGINSTANCES 5 {\n      ?s1 <http://localhost/events/WindFinder/pressure_in_hpa> ?pressure.\n      ?s1 <http://localhost/events/WindFinder/time> ?time.\n      ?s1 <http://localhost/events/WindFinder/temperature_in_°C> ?temperature.\n      ?s1 <http://localhost/events/WindFinder/windspeed_in_kts> ?speed.\n      ?s1 <http://localhost/events/WindFinder/wind_direction> ?direction.\n      ?s1 <http://localhost/events/WindFinder/precipitation_in_mm> ?precipitation.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Weather.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Weather.html",
     "name": "Weather",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 10000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/Weather/WeatherEvent> SLIDINGINSTANCES 1 {\n      ?s1 ?p1 ?o1.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Mensa.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Mensa.html",
     "name": "Mensa",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/Mensa/MensaEvent> SLIDINGINSTANCES 20 {\n      ?s1 <http://localhost/events/Mensa/price> ?preis.\n      ?s1 <http://localhost/events/Mensa/name> ?name.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Deutsche Bahn.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Deutsche Bahn.html",
     "name": "Deutsche Bahn",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/DB/TrainDBEvent> SLIDINGINSTANCES 1 {\n      ?s1 <http://localhost/events/DB/latitude> ?latitude.\n      ?s1 <http://localhost/events/DB/longitude> ?longitude.\n      ?s1 <http://localhost/events/DB/station_name> ?station_name.\n      ?s1 <http://localhost/events/DB/train_name> ?train_name.\n      ?s1 <http://localhost/events/DB/delay_cause> ?delay_cause.\n      ?s1 <http://localhost/events/DB/delay> ?delay.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\123.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/123.html",
     "name": "123",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/Count/CountEvent> SLIDINGINSTANCES 5 {\n      ?s1 <http://localhost/events/Count/count> ?time.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\12313.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/12313.html",
     "name": "12313",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/Count/CountEvent> SLIDINGINSTANCES 1 {\n      ?s1 <http://localhost/events/Count/count> ?zahl.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Finance.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Finance.html",
     "name": "Finance",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/FinanceProducer/FinanceProducer> SLIDINGINSTANCES 1 {\n      ?s1 <http://localhost/events/FinanceProducer/ChangeRealtime> ?changerealtime.\n      ?s1 <http://localhost/events/FinanceProducer/BookValue> ?bookvalue.\n      ?s1 <http://localhost/events/FinanceProducer/BidRealtime> ?bidrealtime.\n      ?s1 <http://localhost/events/FinanceProducer/Name> ?name.\n      ?s1 <http://localhost/events/FinanceProducer/AskRealtime> ?askrealtime.\n      ?s1 <http://localhost/events/FinanceProducer/PEGRatio> ?pegratio.\n      ?s1 <http://localhost/events/FinanceProducer/DaysRange> ?daysrange.\n      ?s1 <http://localhost/events/FinanceProducer/Volume> ?volume.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Sysmon.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Sysmon.html",
     "name": "Sysmon",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/SysMon/SysMonEvent> SLIDINGINSTANCES 1 {\n      ?s1 <http://localhost/events/SysMon/freePhysicalBytes> ?freePhysicalBytes.\n      ?s1 <http://localhost/events/SysMon/currentPID> ?currentPID.\n      ?s1 <http://localhost/events/SysMon/cpuUsage> ?cpuUsage.\n      ?s1 <http://localhost/events/SysMon/numberOfCPUs> ?numberOfCPUs.\n      ?s1 <http://localhost/events/SysMon/totalSwapBytes> ?totalSwapBytes.\n      ?s1 <http://localhost/events/SysMon/freeSwapBytes> ?freeSwapBytes.\n      ?s1 <http://localhost/events/SysMon/upTimeInSeconds> ?upTimeInSeconds.\n      ?s1 <http://localhost/events/SysMon/totalPhysicalBytes> ?totalPhysicalBytes.\n      ?s1 <http://localhost/events/SysMon/osName> ?osName.\n      ?s1 <http://localhost/events/SysMon/cpuFrequencyInHz> ?cpuFrequencyInHz.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Semantic RSS.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Semantic RSS.html",
     "name": "Semantic RSS",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/RSSSemanticInterpretationEvent> SLIDINGINSTANCES 1 {\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/DeathDate> ?DeathDate.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/Subject> ?Subject.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/Title> ?Title.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/WikiArticle> ?WikiArticle.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/Thumbnail> ?Thumbnail.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/Label> ?Label.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/BirthPlace> ?BirthPlace.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/BirthDate> ?BirthDate.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/guid> ?guid.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/Author> ?Author.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/Link> ?Link.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/Name> ?Name.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/Description> ?Description.\n      ?s1 <http://www.ifis.uni-luebeck.de/events/RSSSemantics/Comment> ?Comment.\n    }\n  }"
   },
   {
-    "htmlPath": "src\\main\\resources\\htmlTemplates\\producer\\Event.html",
+    "htmlPath": "src/main/resources/htmlTemplates/producer/Event.html",
     "name": "Event",
     "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/EventSearch/EventsProducer> SLIDINGINSTANCES 10 {\n      ?s1 <http://localhost/events/EventSearch/description> ?description.\n      ?s1 <http://localhost/events/EventSearch/postalcode> ?postalcode.\n      ?s1 <http://localhost/events/EventSearch/artist> ?artist.\n      ?s1 <http://localhost/events/EventSearch/city> ?city.\n      ?s1 <http://localhost/events/EventSearch/id> ?id.\n      ?s1 <http://localhost/events/EventSearch/street> ?street.\n      ?s1 <http://localhost/events/EventSearch/image> ?image.\n      ?s1 <http://localhost/events/EventSearch/startDate> ?startDate.\n      ?s1 <http://localhost/events/EventSearch/title> ?title.\n      ?s1 <http://localhost/events/EventSearch/location> ?location.\n      ?s1 <http://localhost/events/EventSearch/url> ?url.\n    }\n  }"
   }
