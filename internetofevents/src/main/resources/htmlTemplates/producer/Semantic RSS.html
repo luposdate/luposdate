@@ -1,0 +1,59 @@
+<!--
+
+    Copyright (c) 2013, Institute of Information Systems (Sven Groppe), University of Luebeck
+
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+    following conditions are met:
+
+    	- Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+    	  disclaimer.
+    	- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+    	  following disclaimer in the documentation and/or other materials provided with the distribution.
+    	- Neither the name of the University of Luebeck nor the names of its contributors may be used to endorse or promote
+    	  products derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+    GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>RSS Semantic Interpretation Event</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="language" content="de">
+</head>
+<body>
+<div class = "RSSSemEvent">
+<div class="RSS" style=" margin-top: 15%; height: 40em; padding: 0.5em; width: 50em; float:left; text-align: center; p{ display:block; } display: inline; background-color: #FFEC8B;">
+<p><h2>RSS Feed Message</h2></p>
+<p>%-CONTENT(?Title)-%</p>
+<p>%-CONTENT(?Description)-%</p>
+<p><a href="%-CONTENT(?Link)-%">Link zur Meldung</a></p>
+</div>
+
+<div class="DBResult" style=" margin-top: 15%; height: 40em; padding: 0.5em; width: 50em; float:right; background-color: #FFEC8B; text-align:center; p{ display:block; } ">
+<p><h2>DBPedia result</h2></p>
+<!-- je Element überprüfen ob vorhanden, falls ja, anzeigen, falls nicht, verstecken! -->
+<p><img src="%-CONTENT(?Thumbnail)-%"></p>
+<!-- entweder Label oder Name anzeigen, je nachdem ob Name vorhanden ist -->
+<p>%-CONTENT(?Name)-%</p>
+<p>%-CONTENT(?Label)-%</p>
+<!---------------------------------->
+<p>%-CONTENT(?BirthDate)-%</p>
+<pstyle="visibility:hidden;">%-CONTENT(?deathDate)-%</p>
+<p>%-CONTENT(?BirthPlace)-%</p>
+<p>%-CONTENT(?Comment)-%</p>
+<p><a href="%-CONTENT(?WikiArticle)-%">Wikipedia-Artikel</a></p>
+<p>%-CONTENT(?Subject)-%</p>
+</div>
+</div>
+</body>
+</html>

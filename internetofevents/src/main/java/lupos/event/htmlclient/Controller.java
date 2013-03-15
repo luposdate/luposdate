@@ -195,13 +195,12 @@ public class Controller {
 	 */
 	public void loadConfigDialog() {
 		JFileChooser chooser = new JFileChooser(
-				"./src/main/resources/templates");
+				"src/main/resources/htmlTemplates");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setFileFilter(new FileNameExtensionFilter("json", "json"));
 		chooser.setAcceptAllFileFilterUsed(false);
 		if (chooser.showDialog(this.view.getFrame(), "Open") == JFileChooser.APPROVE_OPTION) {
 			load(chooser.getSelectedFile());
-
 		}
 	}
 
