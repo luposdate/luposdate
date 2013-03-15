@@ -1,0 +1,13 @@
+{"templates": [
+  {
+    "name": "Standard",
+    "indexPage": "Index.html",
+    "linkPages":	 [
+			{"name"="Links.html"}
+			],
+    "pages": [
+		{"name"="Home.html"},
+		{"name"="Top.html"}
+		]
+  }
+]}
