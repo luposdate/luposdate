@@ -127,12 +127,6 @@ public class PageAction extends Action {
 		// delete Ecode for the final HTML Code
 		result = result.replaceAll(Encode.START + "(.*?)" + Encode.END, "");
 
-		// better contrast for the notification window
-		if (this.send instanceof SlidingWindow) {
-			result.replaceFirst("<body>", "<body><font color=\"#FFFFFF\">");
-			result.replaceFirst("</body>", "</font></body>");
-		}
-
 		this.send.sendContent(result);
 	}
 

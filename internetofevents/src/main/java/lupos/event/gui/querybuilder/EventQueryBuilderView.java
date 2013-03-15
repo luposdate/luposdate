@@ -40,6 +40,7 @@ import lupos.event.producers.DBDelayProducer;
 import lupos.event.producers.EventsProducer;
 import lupos.event.producers.FinanceProducer;
 import lupos.event.producers.MensaProducer;
+import lupos.event.producers.MoonProducer;
 import lupos.event.producers.MtGoxProducer;
 import lupos.event.producers.SysMonProducer;
 import lupos.event.producers.TwitterSearchProducer;
@@ -190,7 +191,15 @@ public class EventQueryBuilderView extends JPanel {
 					DBAnswer.Predicates.DEATHDATE,
 					DBAnswer.Predicates.COMMENT,
 					DBAnswer.Predicates.BIRTHPLACE,
-					DBAnswer.Predicates.LABEL)
+					DBAnswer.Predicates.LABEL),
+			new EventType(MoonProducer.Predicates.TYPE,
+					MoonProducer.Predicates.PERCENT_ILLUMINATED,
+					MoonProducer.Predicates.SUNRISE_HOUR,
+					MoonProducer.Predicates.SUNRISE_MINUTE,
+					MoonProducer.Predicates.SUNSET_HOUR,
+					MoonProducer.Predicates.SUNSET_MINUTE,
+					MoonProducer.Predicates.CURRENT_HOUR,
+					MoonProducer.Predicates.CURRENT_MINUTE)
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();

@@ -244,7 +244,7 @@ public class Controller {
 	 */
 	private void saveConfigDialog() {
 		JFileChooser chooser = new JFileChooser(
-				"./src/main/resources/templates");
+				"src/main/resources/htmlTemplates");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setFileFilter(new FileNameExtensionFilter("json", "json"));
 		chooser.setAcceptAllFileFilterUsed(false);
