@@ -94,8 +94,8 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	private static final long serialVersionUID = 1239937364810642875L;
 
 	// transparency values if mouse is (not) hovering over the window
-	private static final float hoveringTransparecy = 0.75f;
-	private static final float normalTransparecy = 0.45f;
+	private static final float hoveringTransparecy = 0.95f;
+	private static final float normalTransparecy = 0.75f;
 
 	// maximum window size
 	private int maxHeight;
@@ -120,8 +120,8 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	private int posOffset = 100;
 
 	// textcolor is ignored for html/rtf contents
-	private Color backgroundcolor = Color.DARK_GRAY;
-	private Color textcolor = Color.WHITE;
+	private Color backgroundcolor = Color.YELLOW;
+	private Color textcolor = Color.DARK_GRAY;
 
 	// content type
 	ContentType contentType = ContentType.HTML;

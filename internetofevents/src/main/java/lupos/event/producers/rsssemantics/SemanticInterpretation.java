@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
+import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.BooleanResult;
 
@@ -83,7 +83,10 @@ public class SemanticInterpretation {
 					&& !(askplaceresult.isTrue()))
 				continue;
 			else {
-				result = builder.query(toCheck, "person");
+				result = builder.query(toCheck, "place");
+				if(result.isEmpty()){
+					result = builder.query(toCheck, "person");
+				}
 			}
 			if (!(result.isEmpty())) {
 				for (Bindings b : result) {
@@ -132,6 +135,9 @@ public class SemanticInterpretation {
 			}
 		}
 		ArrayList<DBAnswer> detected = detectType();
+		ArrayList<DBAnswer> closerChoice = new ArrayList<DBAnswer>();
+		String longestPart = "";
+		DBAnswer matchingAnswer = null;
 		for (DBAnswer db : detected) {
 
 			/**
@@ -143,13 +149,22 @@ public class SemanticInterpretation {
 
 			/** split title & label... */
 			if (toCheck != null)
-				for (String s : toCheck.split("[ ]+"))
+				for (String s : toCheck.split("[ ]+")) {
+					if (singleTokens.size() > 0) {
+						singleTokens.add(singleTokens.size() - 1 + "_" + s);
+					}
 					singleTokens.add(s);
+				}
 			String messageTitle = message.getTitle();
 			ArrayList<String> splitTitle = new ArrayList<String>();
 			if (!(messageTitle.equals("")))
-				for (String s : messageTitle.split("[ ]+"))
+				for (String s : messageTitle.split("[ ]+")) {
 					splitTitle.add(s);
+					if (splitTitle.size() > 0) {
+						splitTitle.add(splitTitle.get(splitTitle.size() - 1)
+								+ "_" + s);
+					}
+				}
 
 			/** ... and compare each segment to the ones in the other ArrayList */
 			Iterator<String> it1 = singleTokens.iterator();
@@ -159,16 +174,28 @@ public class SemanticInterpretation {
 				while (it2.hasNext()) {
 					String titlepart = it2.next();
 					if (labelpart.equals(titlepart)) {
-						return db;
+						/**
+						 * if current search string is longer than the previous,
+						 * prefer its DBAnswer as a return value.
+						 */
+						if (labelpart.length() > longestPart.length())
+							longestPart = labelpart;
+						matchingAnswer = db;
 					}
+					closerChoice.add(db);
 				}
 			}
-			/**
-			 * if none of the label's segments matches one of the title's,
-			 * return the first successful DBResult
-			 */
-			return detected.get(0);
 		}
-		return new DBAnswer(new BindingsArray());
+		if (matchingAnswer != null)
+			return matchingAnswer;
+		else if (closerChoice.isEmpty() == false)
+			return closerChoice.get(0);
+
+		/**
+		 * if none of the label's segments matches one of the title's, return
+		 * the first successful DBResult
+		 */
+		if(!(detected.isEmpty())) return (detected.get(0));
+		return new DBAnswer(new BindingsMap());
 	}
 }

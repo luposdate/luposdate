@@ -38,7 +38,6 @@ import lupos.event.producers.ButtonClickedProducer;
 import lupos.event.producers.CountProducer;
 import lupos.event.producers.DBDelayProducer;
 import lupos.event.producers.EventsProducer;
-import lupos.event.producers.FinanceProducer;
 import lupos.event.producers.MensaProducer;
 import lupos.event.producers.MoonProducer;
 import lupos.event.producers.MtGoxProducer;
@@ -51,6 +50,8 @@ import lupos.event.producers.rsssemantics.FeedMessage;
 import lupos.event.producers.webpage.LottoProducer;
 import lupos.event.producers.webpage.WaterTempProducer;
 import lupos.event.producers.webpage.WindFinderProducer;
+import lupos.event.producers.yql.FinanceProducer;
+import lupos.event.producers.yql.WeatherBerlin;
 import lupos.event.util.Literals;
 
 
@@ -199,7 +200,14 @@ public class EventQueryBuilderView extends JPanel {
 					MoonProducer.Predicates.SUNSET_HOUR,
 					MoonProducer.Predicates.SUNSET_MINUTE,
 					MoonProducer.Predicates.CURRENT_HOUR,
-					MoonProducer.Predicates.CURRENT_MINUTE)
+					MoonProducer.Predicates.CURRENT_MINUTE),
+			new EventType(WeatherBerlin.TYPE,
+					Literals.createURI(WeatherBerlin.NAMESPACE_WEATHER, "temp"),
+					Literals.createURI(WeatherBerlin.NAMESPACE_WEATHER, "temperature"),
+					Literals.createURI(WeatherBerlin.NAMESPACE_WEATHER, "date"),
+					Literals.createURI(WeatherBerlin.NAMESPACE_WEATHER, "text"),
+					Literals.createURI(WeatherBerlin.NAMESPACE_WEATHER, "sunrise"),
+					Literals.createURI(WeatherBerlin.NAMESPACE_WEATHER, "sunset"))
 	};	
 	
 	private final List<EventWindowView> eventWindows = new ArrayList<EventWindowView>();

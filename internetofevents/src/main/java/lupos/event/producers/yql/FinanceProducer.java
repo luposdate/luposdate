@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.producers;
+package lupos.event.producers.yql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +99,7 @@ public class FinanceProducer extends ProducerBaseNoDuplicates {
 					
 					JSONArray results = quoteObject.names();
 					Literal subject = LiteralFactory.createAnonymousLiteral("<"+1+">");
-					triples.add(new Triple(subject, Literals.RDF.TYPE, this.FINANCE_TYPE_OBJECT));
+					triples.add(new Triple(subject, Literals.RDF.TYPE, FinanceProducer.FINANCE_TYPE_OBJECT));
 					for (int c=0; c<results.length();c++){
 						String resultName = results.getString(c);
 						String resultString = quoteObject.getString((String) results.get(c));
