@@ -37,7 +37,7 @@ import lupos.event.util.Literals;
 /**
  * Searches for bluetooth devices in range and builds events for it.
  */
-public class BTDevicesProducer extends ProducerBase {
+public class BTDevicesProducer extends ProducerBaseNoDuplicates {
 	
 	public final static String NAMESPACE = "http://localhost/events/BTDevices/";
 	
@@ -50,7 +50,7 @@ public class BTDevicesProducer extends ProducerBase {
 	}
 
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 		if (!LocalDevice.isPowerOn()) {
 			System.out.println("Local bluetooth device is powered off");
 			return null;

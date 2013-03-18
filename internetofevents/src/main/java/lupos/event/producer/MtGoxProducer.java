@@ -39,7 +39,7 @@ import org.json.JSONObject;
  * Produces events which contain current Bitcoin-related values gathered from Mt.Gox.
  *
  */
-public class MtGoxProducer extends ProducerBase {
+public class MtGoxProducer extends ProducerBaseNoDuplicates {
 
 	public static final String NAMESPACE = "http://localhost/events/MtGox/";
 	private static final int INTERVAL = 10000;
@@ -76,7 +76,7 @@ public class MtGoxProducer extends ProducerBase {
 	}	
 	
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 		try {
 			String url = API_BASE_URL + "BTC" + this.currency + "/ticker";
 			String jsonStr = Utils.httpGet(url);

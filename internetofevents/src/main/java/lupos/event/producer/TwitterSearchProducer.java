@@ -42,7 +42,7 @@ import lupos.event.util.Utils;
  * Searches twitter with a keyword and creates an event every a new tweet is found.
  *
  */
-public class TwitterSearchProducer extends ProducerBase {
+public class TwitterSearchProducer extends ProducerBaseNoDuplicates {
 	
 	public static final String NAMESPACE = "http://localhost/events/TwitterSearch/";
 	private final static int INTERVAL = 3000;
@@ -64,7 +64,7 @@ public class TwitterSearchProducer extends ProducerBase {
 	}
 	
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 		try {			
 			// search for query via twitter search API
 			String jsonStr = Utils.httpGet(SEARCH_URL + URLEncoder.encode(this.SEARCH_QUERY, "UTF-8") + "&since_id="+this.max_id);

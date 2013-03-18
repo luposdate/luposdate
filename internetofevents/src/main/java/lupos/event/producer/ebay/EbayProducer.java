@@ -36,10 +36,10 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.event.communication.SerializingMessageService;
 import lupos.event.communication.TcpConnectInfo;
 import lupos.event.communication.TcpMessageTransport;
-import lupos.event.producer.ProducerBase;
+import lupos.event.producer.ProducerBaseNoDuplicates;
 import lupos.event.util.Literals;
 
-public class EbayProducer extends ProducerBase {
+public class EbayProducer extends ProducerBaseNoDuplicates {
 	
 	public static final String NAMESPACE = "http://localhost/events/Ebay/";
 	private static final int INTERVAL = 20000;
@@ -78,7 +78,7 @@ public class EbayProducer extends ProducerBase {
 	}
 
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 
 		List<Auction> auctions = this.retriever.retrieveAuctions();
 		if(auctions == null) {

@@ -33,6 +33,7 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.event.communication.SerializingMessageService;
 import lupos.event.producer.ProducerBase;
+import lupos.event.producer.ProducerBaseNoDuplicates;
 import lupos.event.util.Literals;
 import lupos.event.util.Utils;
 import org.codehaus.jackson.*;
@@ -43,7 +44,7 @@ import org.codehaus.jackson.*;
  * @author Christopher Gudat, Guillaume Assaud
  *
  */
-public class YQLQueryProducer extends ProducerBase{
+public class YQLQueryProducer extends ProducerBaseNoDuplicates {
 	/**
 	 * Example YQL-Queries:
 	 * 
@@ -84,7 +85,7 @@ public class YQLQueryProducer extends ProducerBase{
 	}
 	
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 		try {		
 			//Query URL builder:
 			String encoded = java.net.URLEncoder.encode(this.SEARCH_YQL, "ISO-8859-1");

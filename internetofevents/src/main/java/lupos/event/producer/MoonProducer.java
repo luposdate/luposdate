@@ -44,7 +44,7 @@ import lupos.event.util.Utils;
  * @author  Anderson, Kutzner
  *
  */
-public class MoonProducer extends ProducerBase {
+public class MoonProducer extends ProducerBaseNoDuplicates {
 	
 	// Defines the name of the event
 	public static final String NAMESPACE = "http://localhost/events/Moon/";
@@ -99,7 +99,7 @@ public class MoonProducer extends ProducerBase {
 	 * Creates and returns triples with the moon information.
 	 */
 	@Override
-	public List<List<Triple>> produce() {
+	public List<List<Triple>> produceWithDuplicates() {
 		try {		
 				// search for query via wunderground API
 				// http://api.wunderground.com/api/5f028a996895c1d6/astronomy/q/Germany/Lubeck.json
