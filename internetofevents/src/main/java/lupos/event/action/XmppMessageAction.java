@@ -21,48 +21,31 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.action;
 
-import java.io.Serializable;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.event.action.send.SendEMail;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Action that sends a text message via XMPP when executed.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class XmppMessageAction extends Action {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
+	private final SendEMail sendEMail;
+		
+	public XmppMessageAction() {
+		super("SendMailAction");
+		this.sendEMail = new SendEMail();
+		this.sendEMail.init();
 	}
 
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
 	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public void execute(QueryResult queryResult) {
+		this.sendEMail.sendContent(queryResult.toString());
 	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+
+
+	public static void main(String[] args) {
+		new XmppMessageAction().execute(new QueryResult());
 	}
 }

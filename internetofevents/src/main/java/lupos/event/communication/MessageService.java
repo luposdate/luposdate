@@ -29,6 +29,7 @@ import java.util.*;
 public class MessageService extends Observable implements IDisconnectedHandler{
 	
 	private IMessageTransport transport = null;
+	private int transportPort = -1;
 	
 		
 	public MessageService(Class<? extends IMessageTransport> transportClass) throws InstantiationException, IllegalAccessException {
@@ -59,10 +60,41 @@ public class MessageService extends Observable implements IDisconnectedHandler{
 	public boolean isConnected() {
 		return this.transport.isConnected();
 	}
+	
+	/**
+	 * Adds a handler object which will be notified, if
+	 * this message service recieves a disconnect
+	 * @param handler the observing handler
+	 */
+	public void addDisconnectHandler(IDisconnectedHandler handler){
+		this.transport.addHandler(handler);
+	}
 
 	@Override
 	public void disconnected() {
 		this.setChanged();
 		this.notifyObservers();
 	}
+	
+	/**
+	 * Gets the tcp connection data of this message service
+	 * @return the tcp connect info object or <code>null</code>
+	 * if no port has been sent
+	 */
+	public TcpConnectInfo getConnectionInfo(){
+		if (this.transportPort < 0){
+			return null;
+		}
+		TcpConnectInfo tcpInfo = new TcpConnectInfo(this.transport.getHost(), this.transportPort);
+		return tcpInfo;
+	}
+	
+	/**
+	 * Sets the port for this message service
+	 * @param port a positive port number
+	 */
+	public void setConnectionPort(int port){
+		this.transportPort = port;
+	}
+	
 }

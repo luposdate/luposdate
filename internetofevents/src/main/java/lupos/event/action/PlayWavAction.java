@@ -21,48 +21,59 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.action;
 
-import java.io.Serializable;
+import java.io.File;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import lupos.datastructures.queryresult.QueryResult;
+
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Action that plays a WAV-file when executed.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class PlayWavAction extends Action {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+	private String wavFile = "/alarm.wav";
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
+	
+	public PlayWavAction() {
+		super("PlayWavAction");
+	}
+
 	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public void execute(QueryResult queryResult) {
+
+		try {
+			AudioInputStream ais;
+			try {
+				ais = AudioSystem.getAudioInputStream(PlayWavAction.class.getResource(this.wavFile));
+			} catch(Exception e){
+				ais = AudioSystem.getAudioInputStream(new File(PlayWavAction.class.getResource(this.wavFile).getFile()));
+			}
+
+			AudioFormat format = ais.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+
+			Clip clip = (Clip) AudioSystem.getLine(info);
+			clip.open(ais);
+			clip.start();
+			
+//	         while(clip.isRunning()) {
+//	            Thread.yield();
+//	         }
+		} catch (Exception e) {
+			// per default make standard beep!
+			System.err.println("Audio file not found, just use system beep...");
+			java.awt.Toolkit.getDefaultToolkit().beep();
 		}
-		return false;
 	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public static void main(String[] args) {
+		new PlayWavAction().execute(null);
 	}
 }

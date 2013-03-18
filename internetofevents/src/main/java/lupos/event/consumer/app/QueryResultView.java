@@ -21,48 +21,61 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.consumer.app;
 
-import java.io.Serializable;
+import java.awt.BorderLayout;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JPanel;
+import javax.swing.JTable;
+
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.queryresult.QueryResult;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Display the contents of a QueryResult in a table.
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class QueryResultView extends JPanel {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
+	public QueryResultView(QueryResult qr) {
+		Set<Variable> vars = qr.getVariableSet();
 
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+		Map<Variable, Integer> varColMap = new HashMap<Variable, Integer>();
+		int i = 0;
+		for(Variable v : vars)
+			varColMap.put(v, i);
+		
+		
+		Collection<Bindings> bindings = qr.getCollection();
+		
+		int rows = bindings.size();
+		int cols = vars.size();
+		
+		String[][] rowData = new String[rows][cols];
+		
+		int currRow = 0;
+		int currCol = 0;
+		System.out.println("-----BINDINGS----");
+		for(Bindings b : bindings) {
+			System.out.println("-----new row----");
+			for(Variable v : vars) {
+				rowData[currRow][currCol] = b.get(v).originalString();
+				System.out.println("v: "+v + " = " + b.get(v).originalString());
+				++currCol;
+			}
+			currCol = 0;
+			++currRow;
 		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+		
+		JTable table = new JTable(rowData, vars.toArray());
+		
+		super.setLayout(new BorderLayout());
+		super.add(table.getTableHeader(), BorderLayout.NORTH);
+		super.add(table, BorderLayout.CENTER);
 	}
 }

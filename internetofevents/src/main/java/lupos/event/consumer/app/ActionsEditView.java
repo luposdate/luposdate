@@ -21,48 +21,50 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.consumer.app;
 
-import java.io.Serializable;
+import java.awt.BorderLayout;
+import java.util.Vector;
 
-/**
- * Holds information required to connect to a TCP endpoint.
- */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
+import lupos.event.action.Action;
+import lupos.event.action.MessageBoxAction;
+import lupos.event.action.PlayWavAction;
+import lupos.event.action.SlideOutAction;
+import lupos.event.action.XmppMessageAction;
 
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
 
-	public String getHost() { 
-		return this.host; 
-	}
+@SuppressWarnings("serial")
+public class ActionsEditView  extends JPanel {
 
-	public int getPort() { 
-		return this.port; 
+	private static final Vector<Class<? extends Action>> availableActionTypes = new Vector<Class<? extends Action>>() {{
+			add(MessageBoxAction.class);
+			add(PlayWavAction.class);
+			add(XmppMessageAction.class);
+			add(SlideOutAction.class);
+	}};
+	
+	private JComboBox actionTypesBox;
+	
+	public ActionsEditView() {
+		super.setLayout(new BorderLayout());
+		
+		this.actionTypesBox = new JComboBox(availableActionTypes);
+		super.add(this.actionTypesBox, BorderLayout.CENTER);
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public Action getAction() {
+		@SuppressWarnings("unchecked")
+		Class<? extends Action> selectedType = (Class<? extends Action>) this.actionTypesBox.getSelectedItem();
+		Action action = null;
+		try {
+			action = selectedType.newInstance();
+		} catch (Exception e) {
+			System.err.println(e);
+			e.printStackTrace();
 		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+		return action;
 	}
 }

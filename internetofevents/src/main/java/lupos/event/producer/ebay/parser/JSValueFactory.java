@@ -21,48 +21,54 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
-
-import java.io.Serializable;
+package lupos.event.producer.ebay.parser;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Factory for incremental construction of a JSON string.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class JSValueFactory extends JSONFactory {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+	/**
+	 * Current character data.
+	 */
+	private StringBuilder value = new StringBuilder();
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * States, whether the next character has been escaped
+	 * (important for the termination character and the escape character itself).
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
-	}
+	private boolean escaped = false;
 	
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public boolean append(char c) {
+		boolean next = !this.finished;
+		
+		// Handle character c, if string isn't completed yet
+		if (next) {
+			// If c has been escaped, append it and turn off escape mode
+			if (this.escaped) {
+				this.value.append(c);
+				this.escaped = false;
+			}
+			// If c is termination character, finish construction 
+			else if (c == '"') {
+				this.finished = true;
+			}
+			// If c is escape character, turn on escape mode
+			else if (c == '\\') {
+				this.escaped = true;
+			}
+			// Otherwise, just append c
+			else {
+				this.value.append(c);
+			}
+		}
+		
+		return next;
+	}
+
+	@Override
+	public JSObject create() {
+		return new JSValue(this.value.toString());
 	}
 }

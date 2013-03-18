@@ -21,48 +21,34 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.consumer.querybuilder;
 
-import java.io.Serializable;
+import lupos.datastructures.items.literal.URILiteral;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Represents an event type which is a URI for the event type itself and a list of URIs for its properties.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+public class EventType {
+	URILiteralWrapper eventUri;
+	URILiteralWrapper[] properties;
+	
+	public EventType(URILiteral eventUri, URILiteral... properties) {
+		this.eventUri = new URILiteralWrapper(eventUri);
+		this.properties  = new URILiteralWrapper[properties.length];
+		for(int i=0; i<properties.length; i++)
+			this.properties[i] = new URILiteralWrapper(properties[i]);
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public URILiteral getEventUri() {
+		return this.eventUri.getWrappedLiteral();
+	}
+	
+	public URILiteralWrapper[] getProperties() {
+		return this.properties;
 	}
 	
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public String toString() {
+		return this.eventUri.toString();
 	}
 }

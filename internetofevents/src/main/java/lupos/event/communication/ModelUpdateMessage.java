@@ -24,45 +24,40 @@
 package lupos.event.communication;
 
 import java.io.Serializable;
+import java.util.List;
+
+import lupos.event.broker.distributed.model.BConsumer;
+import lupos.event.broker.distributed.model.BProducer;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * This message is used to tell the master
+ * broker that the model of a subbroker has been
+ * changed and transmits the new model data
+ * @author Kevin
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class ModelUpdateMessage implements Serializable {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+	private static final long serialVersionUID = -163937057661681038L;
+	private List<BProducer> producers;
+	private List<BConsumer> consumers;
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * Construct a new message by filling the data
+	 * @param producers the list of producers
+	 * @param consumers the list of consumers
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public ModelUpdateMessage(List<BProducer> producers, List<BConsumer> consumers){
+		this.producers = producers;
+		this.consumers = consumers;
 	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public List<BProducer> getProducers(){
+		return this.producers;
 	}
+	
+	public List<BConsumer> getConsumers(){
+		return this.consumers;
+	}
+
 }

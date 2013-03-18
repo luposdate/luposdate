@@ -21,48 +21,37 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.consumer.querybuilder;
 
-import java.io.Serializable;
+import lupos.datastructures.items.literal.URILiteral;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Wraps an URILiteral and overrides toString to return to return its string representation without the prefix
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class URILiteralWrapper {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
+	private URILiteral literal;
+	
+	public URILiteralWrapper(URILiteral literal) {
+		this.literal = literal;
 	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+	
+	public URILiteral getWrappedLiteral() {
+		return this.literal;
 	}
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * Returns the URI without the prefix
 	 */
 	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public String toString() {
+		String str = this.literal.getString();
+		int index1 = str.lastIndexOf('/');
+		int index2 = str.lastIndexOf('#');
+		int index = Math.max(index1, index2);
+		if(index >= 0 && str.length() > 1) {
+			str = str.substring(index+1);
 		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+		return str;
 	}
 }

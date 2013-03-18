@@ -21,48 +21,55 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer.rsssemantics;
 
-import java.io.Serializable;
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsMap;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.URILiteral;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
+import java.util.LinkedList;
+import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Establishes a connection to the database and sends queries.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class QueryDB {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
+	static {
+		/**
+		 * Define Literal type
+		 */
+		LiteralFactory.setType(LiteralFactory.MapType.HASHMAP);
+		Bindings.instanceClass = BindingsMap.class;
+		/**
+		 * Initialize JoinApproach
+		 */
+		ServiceApproaches.Semijoin_Approach.setup();
 	}
 
-	public String getHost() { 
-		return this.host; 
+	private String query;
+
+	public QueryDB(String query) {
+		this.query = query;
 	}
 
-	public int getPort() { 
-		return this.port; 
-	}
-	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public QueryResult query() {
+		try {
+			MemoryIndexQueryEvaluator evaluator = new MemoryIndexQueryEvaluator();
+			evaluator.prepareInputData(new LinkedList<URILiteral>(),
+					new LinkedList<URILiteral>());
+			/**
+			 * Query database
+			 */
+			QueryResult qr = evaluator.getResult(this.query);
+			return qr;
+		} catch (Exception e) {
+			System.out
+					.println("Connection to database could not be established.");
+			e.printStackTrace();
+			return null;
 		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
 	}
 }

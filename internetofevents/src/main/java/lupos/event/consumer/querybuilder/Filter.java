@@ -21,48 +21,19 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
-
-import java.io.Serializable;
+package lupos.event.consumer.querybuilder;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * A filter for a events property
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+public class Filter {
+	/**
+	 * The filters operation (only comparision operators allowed)
+	 */
+	public String op;
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * The parameter for the filter
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
-	}
+	public String param;
 }

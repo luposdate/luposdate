@@ -21,48 +21,56 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.broker.distributed.model;
 
 import java.io.Serializable;
 
+import lupos.event.communication.TcpConnectInfo;
+
 /**
- * Holds information required to connect to a TCP endpoint.
+ * This class encapsulates some data about
+ * a producer which is created for each event
+ * type which is produced and sent to a broker
+ * @author Kevin
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+public class BProducer implements Serializable{
+	
+	private static final long serialVersionUID = 5742786742120270728L;
+	
+	private String producedEvent;
+	private TcpConnectInfo tcpInfo;
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * Constructs a new BProducer by data
+	 * @param producedEvent the string rdf event type
+	 * @param tcpHost the connection data of this producer
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public BProducer(String producedEvent, TcpConnectInfo tcpHost){
+		
+		this.producedEvent = producedEvent;
+		
+		this.tcpInfo = tcpHost;
+		
+		if (this.tcpInfo == null){
+			throw new NullPointerException("TcpConnectInfo may not be null");
 		}
-		return false;
+	}
+	
+	public String getProducedEvent() {
+		return this.producedEvent;
+	}
+	
+	public TcpConnectInfo getConnectionInfo(){
+		return this.tcpInfo;
 	}
 	
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public boolean equals(Object o){
+		if (o instanceof BProducer){
+			BProducer prod = (BProducer)o;
+			return prod.producedEvent.equals(this.producedEvent) && prod.tcpInfo.equals(this.tcpInfo);
+		}
+		return false;
 	}
 }

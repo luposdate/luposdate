@@ -23,46 +23,50 @@
  */
 package lupos.event.communication;
 
+import java.io.IOException;
 import java.io.Serializable;
 
+import lupos.datastructures.items.Triple;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.Literal;
+
 /**
- * Holds information required to connect to a TCP endpoint.
+ * This class can be used to serialize a {@ Triple}
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+public class SerializedTriple implements Serializable {
+	
+	private static final long serialVersionUID = -9105841581411911228L;
+	
+	private String subjectStr, predicateStr, objectStr;
+	
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * 
+	 * @param t The triple that should be serialized.
+	 * @throws IOException
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public SerializedTriple(Triple t) throws IOException {
+		this.subjectStr = t.getSubject().toString();
+		this.predicateStr = t.getPredicate().toString();
+		this.objectStr = t.getObject().toString();
 	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+
+	/**
+	 * Returns the deserialized triple.
+	 * @return
+	 */
+	public Triple getTriple() {
+
+		try {			
+			Literal s = LazyLiteral.getLiteral(this.subjectStr);
+			Literal p = LazyLiteral.getLiteral(this.predicateStr);
+			Literal o = LazyLiteral.getLiteral(this.objectStr);
+			return new Triple(s, p, o);
+		
+		} catch(Exception ex) {
+			System.err.println(ex);
+			ex.printStackTrace();
+		}
+		return null;
 	}
 }

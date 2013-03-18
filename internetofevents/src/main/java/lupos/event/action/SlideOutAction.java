@@ -21,48 +21,68 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.action;
 
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.Set;
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.event.action.send.Send;
+import lupos.event.action.send.SlidingWindow;
 
-/**
- * Holds information required to connect to a TCP endpoint.
- */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class SlideOutAction extends Action {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
+	private Send slidingWindow = new SlidingWindow();
 
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * CONSTRUCTOR!
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public SlideOutAction() {
+		super("SlideOutAction");
+		this.slidingWindow.init();
 	}
-	
+
+	protected SlideOutAction(String name) {
+		super(name);
+		this.slidingWindow.init();
+	}
+
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public void execute(QueryResult queryResult) {
+		String msg = getMessage(queryResult);
+		this.slidingWindow.sendContent(msg);
+	}
+
+	protected String getMessage(QueryResult qr) {
+		String msg = new String();
+
+		Set<Variable> vars = qr.getVariableSet();
+		Collection<Bindings> bindings = qr.getCollection();
+
+		// This looks awful. I know. Don't know how to do this properly with
+		// generic Collections/Sets though ...
+		Object[] bArray = bindings.toArray();
+		Object[] vArray = vars.toArray();
+		for (int i = 0; i < bArray.length; i++) {
+			Bindings b = (Bindings) bArray[i];
+			
+			// separate bindings by newlines
+			if (i > 0) {
+				msg += '\n';
+			}
+
+			for (int j = 0; j < vArray.length; j++) {
+				Variable v = (Variable) vArray[j];
+
+				// separate variables in a binding by semicolon
+				if (j > 0) {
+					msg += "; ";
+				}
+				msg += b.get(v).originalString();
+			}
+		}
+
+		return msg;
 	}
 }

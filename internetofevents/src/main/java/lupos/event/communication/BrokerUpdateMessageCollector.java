@@ -24,45 +24,31 @@
 package lupos.event.communication;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Collection of Update Messages for Brokers
+ * @author Carsten
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+public class BrokerUpdateMessageCollector implements Serializable {
+	
+	private static final long serialVersionUID = 8066797072507726906L;
+	
+	private List<BrokerUpdateMessage> collectedMessages = new LinkedList<BrokerUpdateMessage>();
+	
+	
+	public List<BrokerUpdateMessage> getCollectedMessages() {
+		return this.collectedMessages;
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public void setCollectedMessages(List<BrokerUpdateMessage> collectedMessages) {
+		this.collectedMessages = collectedMessages;
 	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public void addMessage(BrokerUpdateMessage message){
+		this.collectedMessages.add(message);
 	}
+	
 }

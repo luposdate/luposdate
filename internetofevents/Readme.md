@@ -13,17 +13,30 @@ The following producers are currently implemented:
 - event containing a counter
 - empty event
 - BitCoin exchange rates
-- system monitor events (cpu usage, uptime)
+- system monitor events (cpu usage, uptime, cpu frequency, number of cpus, os, total and free physical/swap bytes)
 - blue tooth events
 - twitter search events
 - eBay auction events
+- DB train delays
+- Mensa meals events
+- news feeds with annotated data from DBPedia
+- alarm clock service
+- Moon and sunrise events
+- weather information (e.g., at Lübeck or in Berlin)
+- finance stock events
+- Lotto events
+- water temperature events
+- wind (for sealing) events
+- General producer for events on web pages
+- General producer for events based on YQL queries
 
 The following actions are currently implemented:
+- sliding window
 - message box action
 - play audio file
 - send email
 
 To use the publish-/subscribe system, you have to start
-- the broker (lupos.event.Main_Broker)
-- a consumer (lupos.event.gui.Main)
-- and at least one of the producers (in package lupos.event.producers)
+- the broker (lupos.event.broker.centralized.Broker for a centralized broker, or lupos.event.broker.distributed.MasterBroker and several lupos.event.broker.distributed.SubBroker for distributed brokers)
+- a consumer (lupos.event.consumer.app.Main or lupos.event.consumer.html.Main for generation of html content)
+- and at least one of the producers (in package lupos.event.producer)

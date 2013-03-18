@@ -21,48 +21,63 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer.ebay.parser;
 
-import java.io.Serializable;
+import java.util.LinkedList;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Factory for incremental construction of an array of JSON data structures.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class JSArrayFactory extends JSONFactory {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * List of JSON data structures yet appended to the array
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
-	}
+	private LinkedList<JSObject> list = new LinkedList<JSObject>();
 	
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public boolean append(char c) {
+		boolean next = !this.finished;
+		
+		// If the array is not yet completed ...
+		if (next) {
+			/*
+			 * ... delegate construction to the currently constructed JSON data structure
+			 * contained by the array
+			 */
+			boolean goon = (this.factory == null) ? false : this.factory.append(c);
+			
+			/*
+			 * If the currently constructed JSON data structure contained in the array
+			 * is completed (or there isn't any) ...
+			 */
+			if (!goon) {
+				// ... and if there is a completed JSON data structure ...
+				if (this.factory != null) {
+					// ... add it to the list of array elements
+					this.list.add(this.factory.create());
+					this.factory = null;
+				}
+				
+				// If c is termination character, finish construction
+				if (c == ']') {
+					this.finished = true;
+				}
+				/*
+				 * Otherwise begin construction of te next JSON data structure contained
+				 * by the array
+				 */
+				else {				
+					this.factory = JSONFactory.openWith(c);
+				}
+			}
+		}
+		
+		return next;
+	}
+
+	@Override
+	public JSObject create() {
+		return new JSOArray(this.list.toArray(new JSObject[this.list.size()]));
 	}
 }

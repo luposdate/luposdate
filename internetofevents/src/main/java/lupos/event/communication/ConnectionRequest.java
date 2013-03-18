@@ -25,44 +25,32 @@ package lupos.event.communication;
 
 import java.io.Serializable;
 
-/**
- * Holds information required to connect to a TCP endpoint.
- */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class ConnectionRequest implements Serializable {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
+	private static final long serialVersionUID = -282986518722016527L;
+	private int requestType = 1;
+	private int port = -1;
 
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
+	public static final int REQUESTTYPE_PRODUCER = 0;
+	public static final int REQUESTTYPE_BROKER = 1;
+	public static final int REQUESTTYPE_CONSUMER = 2;
+	public static final int REQUESTTYPE_DISCONNECT = 3;
+	
+	public ConnectionRequest(int requestType){
+		if (requestType > 3) throw new IllegalArgumentException("RequestType must be valid");
+		this.requestType = requestType;
+	}
+	
+	public void setPort(int port){
 		this.port = port;
 	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+	
+	public int getRequestType(){
+		return this.requestType;
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public int getPort(){
+		return this.port;
 	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
-	}
+
 }

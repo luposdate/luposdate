@@ -21,48 +21,57 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer;
 
-import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+
+import lupos.datastructures.items.Triple;
+import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.event.communication.SerializingMessageService;
+import lupos.event.util.Literals;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Increments a number every second and creates an event each time.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+public class CountProducer extends ProducerBase {	
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
+	public static final String NAMESPACE = "http://localhost/events/Count/";
+	
+	private final static Literal TYPE = Literals.createURI(NAMESPACE, "CountEvent");
+	private final static Literal PREDICATE = Literals.createURI(NAMESPACE, "count");
+	
+	private int count = 0;
+	
+
+	public CountProducer(SerializingMessageService msgService) {
+		super(msgService, 1000);
+	}
+
 	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public List<List<Triple>> produce() {
+		try {
+			Triple typeTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Literals.RDF.TYPE, CountProducer.TYPE);
+			
+			Literal obj = LiteralFactory.createTypedLiteral("\"" + (this.count++) + "\"", Literals.XSD.INT);
+			Triple t = new Triple(Literals.AnonymousLiteral.ANONYMOUS, PREDICATE, obj);				
+			
+			return ProducerBase.fold(Arrays.asList(typeTriple, t));
+		} catch (URISyntaxException e) {
+			System.err.println(e);
+			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
+
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public static void main(String[] args) throws Exception {
+		// create communication channel
+		SerializingMessageService msgService = ProducerBase.connectToMaster();
+		
+		// start producer
+		new CountProducer(msgService).start();
 	}
 }

@@ -21,48 +21,50 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer.rsssemantics;
 
-import java.io.Serializable;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Retrieves stoplist words from stoplist.txt (language sensitive, provisional
+ * stoplist words for english and german texts included so far) and removes
+ * these words from feed description string, if contained.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
-
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+public class StoplistReader {
+	@SuppressWarnings("unchecked")
+	public ArrayList<String>[] readStoplist(String path) {
+		ArrayList<String> germanstoplist = new ArrayList<String>();
+		ArrayList<String> englishstoplist = new ArrayList<String>();
+		try {
+			BufferedReader in;
+			try {
+				in = new BufferedReader(new InputStreamReader(StoplistReader.class.getResource(path).openStream()));
+			} catch(Exception e){
+				in = new BufferedReader(new FileReader(new File(StoplistReader.class.getResource(path).getFile())));
+			}
+			String zeile = null;
+			while ((zeile = in.readLine()) != null) {
+				if (zeile.equals("[de]")) {
+					while ((!((zeile = in.readLine())).equals("[/de]"))) {
+						germanstoplist.add(zeile);
+					}
+				} else if (zeile.equals("[en]")) {
+					while ((!((zeile = in.readLine())).equals("[/en]"))) {
+						englishstoplist.add(zeile);
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+
+		@SuppressWarnings("rawtypes")
+		ArrayList[] stoplist = { germanstoplist, englishstoplist };
+		return stoplist;
 	}
 }

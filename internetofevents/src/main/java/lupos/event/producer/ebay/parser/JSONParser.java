@@ -21,48 +21,62 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
-
-import java.io.Serializable;
+package lupos.event.producer.ebay.parser;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Parser to interpret JSON data.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class JSONParser {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+	/**
+	 * Hidden constructor.
+	 */
+	private JSONParser() {
+		// just to hide the constructor
 	}
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * Parses the JSON data contained in the string <code>str</code>, building an object
+	 * model of the data.
+	 * 
+	 * @param	str		JSON data
+	 * @return	Root element of the object model
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public static JSObject parse(String str) {
+		JSONFactory model = null;
+		JSONFactory factory = null;
+
+		// Read the JSON data character-wise
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			boolean goon = (factory == null) ? false : factory.append(c);
+			
+			/*
+			 * If the currently constructed JSON data structure
+			 * contained in the JSON data is completed (or there isn't any) ...
+			 */
+			if (!goon) {
+				// ... and if no root element is set yet, set it
+				if (factory != null && model == null) {
+					model = factory;
+				}
+				
+				/*
+				 * Begin construction of the next JSON data structure
+				 * contained in the JSON data
+				 */
+				factory = JSONFactory.openWith(c);
+			}
 		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+			
+		if (model != null){
+			return model.create();
+		} else {
+			if(factory!=null){
+				return factory.create();
+			} else {
+				return null;
+			}
+		}
 	}
 }

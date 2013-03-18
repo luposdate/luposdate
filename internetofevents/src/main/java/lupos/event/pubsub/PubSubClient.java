@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.util.*;
 
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.event.SerializedQueryResult;
 import lupos.event.communication.*;
 import lupos.event.util.TimedWrapper;
 
@@ -37,7 +36,7 @@ import lupos.event.util.TimedWrapper;
  */
 public class PubSubClient extends Observable implements IMessageReceivedHandler<Serializable> {
 	
-	private final SerializingMessageService msgService;
+	private SerializingMessageService msgService;
 	
 	/**
 	 * <Subscription-id, Subscription>
@@ -108,5 +107,30 @@ public class PubSubClient extends Observable implements IMessageReceivedHandler<
 	 */
 	public List<TimedWrapper<QueryResult>> getQueryResults(Subscription sub) {
 		return this.queryResults.get(sub);
+	}
+	
+	/**
+	 * Re-sends all subscriptions which are active
+	 * for this PubSub-server. This method should
+	 * be called on reconnect to a (new) broker
+	 */
+	public void resendSubscriptions(){
+		for (Subscription sub : this.subscriptions.values()){
+			try {
+				this.msgService.sendMessage(sub);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Changes the message service which is necessary
+	 * to realise runtime reconnects
+	 * @param msgService_param the new message service
+	 */
+	public void changeMessageService(SerializingMessageService msgService_param){
+		this.msgService = msgService_param;
+		msgService_param.addHandler2(this);
 	}
 }

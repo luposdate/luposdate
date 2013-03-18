@@ -23,46 +23,10 @@
  */
 package lupos.event.communication;
 
-import java.io.Serializable;
+import lupos.datastructures.queryresult.QueryResult;
 
-/**
- * Holds information required to connect to a TCP endpoint.
- */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
+public interface IResultReceivedHandler {
 
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
-	}
+	void resultReceived(QueryResult result);
 }

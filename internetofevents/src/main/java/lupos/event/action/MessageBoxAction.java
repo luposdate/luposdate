@@ -21,48 +21,32 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.action;
 
-import java.io.Serializable;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
+import lupos.datastructures.queryresult.QueryResult;
+
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Action that pop ups a message dialog...
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class MessageBoxAction extends Action {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public MessageBoxAction() {
+		super("MessageBoxAction");
 	}
 	
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public void execute(QueryResult queryResult) {
+		// Do not use JOptionPane.showMessageDialog(null, "QueryResult: " + queryResult);,
+		// because we want a non-modal dialog!
+		
+		JOptionPane pane = new JOptionPane("QueryResult: " + queryResult,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+		JDialog dialog = pane.createDialog(null, "New query result has been received!");
+		// Configure via set methods
+		dialog.setModal(false); // this says not to block background components
+		dialog.setVisible(true);
 	}
 }

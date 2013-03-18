@@ -25,44 +25,41 @@ package lupos.event.communication;
 
 import java.io.Serializable;
 
+import lupos.event.broker.distributed.model.BConsumer;
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Tells the broker which clients should connect to which other broker
+ * @author Carsten
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class BrokerUpdateMessage implements Serializable {
+	
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
+	private static final long serialVersionUID = 3645240401869445600L;
+	private TcpConnectInfo newBrokerInfo;
+	private BConsumer consumer;
+	
+	public BrokerUpdateMessage(TcpConnectInfo newBrokerInfo, BConsumer consumer) {
+		super();
+		this.newBrokerInfo = newBrokerInfo;
+		this.consumer = consumer;
 	}
 
-	public String getHost() { 
-		return this.host; 
+	public TcpConnectInfo getNewBrokerInfo() {
+		return this.newBrokerInfo;
 	}
 
-	public int getPort() { 
-		return this.port; 
+	public void setNewBrokerInfo(TcpConnectInfo newBrokerInfo) {
+		this.newBrokerInfo = newBrokerInfo;
+	}
+
+	public BConsumer getConsumer() {
+		return this.consumer;
+	}
+
+	public void setConsumer(BConsumer consumer) {
+		this.consumer = consumer;
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
-	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
-	}
+	
 }

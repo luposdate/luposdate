@@ -21,48 +21,40 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
-
-import java.io.Serializable;
+package lupos.event.producer.ebay.parser;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Representation of a simple JSON string, used for key identifiers and plain text data.
+
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class JSValue extends JSObject {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * String, containing the character data stored in this JSON string
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public final String value;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param	value	Character data stored in this JSON string
+	 */
+	public JSValue(String value) {
+		this.value = value;
 	}
-	
+
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public String toString() {
+		return this.value;
+	}
+
+	@Override
+	public JSObject get(String key) {
+		return this;
+	}
+
+	@Override
+	public String toString(String indent) {
+		return this.value;
 	}
 }

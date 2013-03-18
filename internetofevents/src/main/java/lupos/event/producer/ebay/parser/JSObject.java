@@ -21,48 +21,61 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
-
-import java.io.Serializable;
+package lupos.event.producer.ebay.parser;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Common interface for all structures possibly occurring in JSON data.
+ * 
+ * @author	matthias
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public abstract class JSObject {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+	/**
+	 * Returns the property <code>key</code> of this object.
+	 * 
+	 * @param	key		Name of the requested property
+	 * @return	The property <code>key</code> of this object
+	 */
+	abstract public JSObject get(String key);
+	
+	/**
+	 * Returns the property <code>index</code> of this object.
+	 * 
+	 * @param	index	Name of the requested property (or its index for {@link JSOArray}s)
+	 * @return	The property <code>index</code> of this object
+	 */
+	public JSObject get(int index) {
+		return this.get("" + index);
 	}
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * Returns a property within this object.
+	 * 
+	 * @param	path	Property names separated by dots ('.')
+	 * @return	The string representation of the requested property or <strong>null</strong>, if
+	 * 			it doesn't exist
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
+	public String access(String path) {
+		JSObject current = this;
+		String[] nodes = (path != null) ? path.split("\\.") : new String[0];
+		
+		for (int i = 0; i < nodes.length; i++) {
+			if (current != null) {
+				current = current.get(nodes[i]);
+			}
+			else {
+				break;
+			}
 		}
-		return false;
+		
+		return (current == null) ? null : current.toString();
 	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
-	}
+	/**
+	 * Returns a indented string representation of this object. 
+	 * 
+	 * @param	indent	Prefix of the string representation (usually some whitespace)
+	 * @return	A indented string representation of this object
+	 */
+	abstract public String toString(String indent);
 }

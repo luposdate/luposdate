@@ -23,46 +23,42 @@
  */
 package lupos.event.communication;
 
-import java.io.Serializable;
+import java.io.*;
+import java.util.Set;
+
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.endpoint.client.formatreader.*;
+import lupos.endpoint.server.format.*;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * This class can be used to serialize a {@ Triple}
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class SerializedQueryResult implements Serializable {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+	private static final long serialVersionUID = 1L;
+	
+	private static final Formatter formatter = new XMLFormatter();
+	private static final DefaultMIMEFormatReader formatReader = new XMLFormatReader();
+	
+	private String id;
+	private final byte[] serialized;	
+	
+	
+	public SerializedQueryResult(Set<Variable> vars, QueryResult result, String id) throws IOException {
+		this.id = id;
+		// serialize query result
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		SerializedQueryResult.formatter.writeResult(baos, vars, result);
+		this.serialized = baos.toByteArray();
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public QueryResult getQueryResult() {
+		ByteArrayInputStream bais = new ByteArrayInputStream(this.serialized);
+		return SerializedQueryResult.formatReader.getQueryResult(bais);
 	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public String getId() { 
+		return this.id; 
 	}
 }

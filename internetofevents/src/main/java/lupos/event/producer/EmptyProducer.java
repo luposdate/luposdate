@@ -21,48 +21,44 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import lupos.datastructures.items.Triple;
+import lupos.datastructures.items.literal.*;
+import lupos.event.communication.*;
+import lupos.event.util.Literals;
+
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Creates an event without additional properties every second.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class EmptyProducer extends ProducerBase {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
+	public static final String NAMESPACE = "http://localhost/events/Empty/";
+	private static final int INTERVAL = 1000;	
 
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+	private static final Literal TYPE = Literals.createURI(EmptyProducer.NAMESPACE, "EmptyEvent");
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public EmptyProducer(SerializingMessageService msgService) {
+		super(msgService, INTERVAL);
 	}
 	
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public List<List<Triple>> produce() {
+		List<Triple> triples = new ArrayList<Triple>();
+		triples.add(new Triple(Literals.AnonymousLiteral.ANONYMOUS, Literals.RDF.TYPE, EmptyProducer.TYPE));
+		return ProducerBase.fold(triples);
+	}
+	
+	
+	public static void main(String[] args) throws Exception {
+		// create communication channel
+		SerializingMessageService msgService = ProducerBase.connectToMaster();
+		
+		// start producer
+		new EmptyProducer(msgService).start();
 	}
 }

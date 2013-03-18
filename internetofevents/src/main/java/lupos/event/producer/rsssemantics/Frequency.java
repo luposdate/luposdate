@@ -21,48 +21,86 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer.rsssemantics;
 
-import java.io.Serializable;
+import java.util.*;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Experimental: Calculates the frequency of each substring contained in the
+ * FeedMessage's description. Currently not executed in main method, can be used
+ * for further improving the database results' quality.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class Frequency {
+	private ArrayList<String> substring = new ArrayList<String>();
+	private ArrayList<Integer> frequency = new ArrayList<Integer>();
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
-	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * increments the substring's frequency value at (index) in ArrayList
+	 * frequency
+	 * 
+	 * @param index
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public void incFrequency(int index) {
+		this.frequency.set(index, this.frequency.get(index) + 1);
 	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+
+	/**
+	 * @return ArrayList frequency
+	 */
+	public ArrayList<Integer> getFrequency() {
+		return this.frequency;
+	}
+
+	/**
+	 * 
+	 * @param i
+	 * @return Substring at position i in ArrayList substring
+	 */
+	public String getSubstringAt(int i) {
+		return this.substring.get(i);
+	}
+
+	/**
+	 * @return ArrayList substring
+	 */
+	public ArrayList<String> getSubstring() {
+		return this.substring;
+	}
+
+	/**
+	 * @return Size of ArrayList substring
+	 */
+	public int getSubstrLength() {
+		return this.substring.size();
+	}
+
+	/**
+	 * Adds param s to ArrayList substring.
+	 * 
+	 * @param String
+	 *            s
+	 */
+	public void addToSubstring(String s) {
+		this.substring.add(s);
+	}
+
+	/**
+	 * Adds param i to ArrayList frequency.
+	 * 
+	 * @param i
+	 */
+	public void addToFrequency(int i) {
+		this.frequency.add(i);
+	}
+
+	/**
+	 * @return true if substring is empty, false if not
+	 */
+	public boolean isEmpty() {
+		if (this.substring.size() == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

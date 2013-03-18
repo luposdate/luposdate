@@ -24,45 +24,33 @@
 package lupos.event.communication;
 
 import java.io.Serializable;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * This message class is sent to all subbrokers
+ * in some intervals to ensure that all event messages
+ * are forwarded to all needed brokers
+ * @author Kevin
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class BrokerNetworkUpdateMessage implements Serializable{
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
-	}
+	private static final long serialVersionUID = 8113982049811193597L;
+	private Hashtable<String, List<TcpConnectInfo>> table;
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * Sets this message
+	 * @param table the hash table which maps event type strings
+	 * to a list of tcpConnectInfo objects to which these
+	 * specific event types should be sent
 	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public BrokerNetworkUpdateMessage(Hashtable<String, List<TcpConnectInfo>> table){
+		this.table = table;
 	}
 	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public Hashtable<String, List<TcpConnectInfo>> getTable(){
+		return this.table;
 	}
+
 }

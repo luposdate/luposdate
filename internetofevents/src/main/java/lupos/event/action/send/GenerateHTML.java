@@ -21,48 +21,47 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.action.send;
 
-import java.io.Serializable;
+import lupos.event.consumer.html.Utils;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * Class for creating a HTML page.
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
+public class GenerateHTML implements Send {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+	private String name;
+	private String outPutFolder;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            the name of the file
+	 * @param outPutFolder
+	 *            the folder to save
+	 */
+	public GenerateHTML(String name, String outPutFolder) {
+		this.name = name;
+		this.outPutFolder = outPutFolder;
 	}
 	
 	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
+	 * For initializing.
 	 */
 	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
+	public void init() {
+		// no initialization necessary
 	}
 	
+	/**
+	 * For writing the file with given content.
+	 * 
+	 * @param content
+	 *            the content to save as file
+	 */
 	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
-	}
+	public void sendContent(String content) {
+		Utils.writeFile(this.outPutFolder + "HTML/" + this.name + ".html", content);
+	}	
 }

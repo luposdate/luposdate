@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -39,6 +40,9 @@ import lupos.event.util.HandlerList;
  * Implements a TCP-based message transport.
  */
 public class TcpMessageTransport implements IMessageTransport {
+	
+	//Quickfix for serverports:
+	public static int SERVER_PORT = 4444;
 	
 	private Socket socket = null;
 	private ProcessingThread processingThread = null;
@@ -92,7 +96,7 @@ public class TcpMessageTransport implements IMessageTransport {
 	public void connect(IConnectInfo connectInfo) throws Exception {
 		TcpConnectInfo connectInfo2 = (TcpConnectInfo)connectInfo;
 		try {
-			System.out.println("connecting to "+connectInfo2.getHost()+"..");
+			System.out.println("connecting to "+connectInfo2.getHost()+":"+connectInfo2.getPort()+"..");
 			this.socket = new Socket(connectInfo2.getHost(), connectInfo2.getPort());
 		} catch (Exception e) {
 			this.setConnected(false);
@@ -109,16 +113,31 @@ public class TcpMessageTransport implements IMessageTransport {
 	public void disconnect() {
 		
 		System.out.println("now disconnecting..");
-				
+	
 		this.setConnected(false);
-		
-		// close the socket
-		try {
-			this.socket.close();
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
+	}
+	
+	/**
+	 * Handles the disconnect when the run method
+	 * has come to an end
+	 */
+	private void disconnected(){
+		if (this.socket != null){
+			if (!this.socket.isClosed()){
+				try {
+					this.socket.close();
+					this.socket = null;
+				} catch (IOException e) {
+					System.err.println(e);
+					e.printStackTrace();
+				}
+			}
 		}
+		
+		// again make sure, that this transport is disconnected
+		this.isConnected = false;
+		
+		System.out.println("disconnected successfully");
 		
 		this.disconnectedHandlers.callAll();
 	}
@@ -131,7 +150,7 @@ public class TcpMessageTransport implements IMessageTransport {
 	public boolean waitForConnection() {
 		System.out.println("Waiting for incoming connection..");
 		try {
-			ServerSocket serverSocket = new ServerSocket(4444);
+			ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
 			this.socket = serverSocket.accept();
 			serverSocket.close();			
 		} catch (Exception e) {
@@ -186,7 +205,7 @@ public class TcpMessageTransport implements IMessageTransport {
 						msg.get(msgArr);
 						
 						outputStream.writeInt(msg.capacity());
-						outputStream.write(msgArr);			
+						outputStream.write(msgArr);
 					}
 					
 					// if currently no message is received and at least 4 bytes are available..
@@ -211,6 +230,7 @@ public class TcpMessageTransport implements IMessageTransport {
 					// if message has been completely received...
 					if(bytesLeftToRead == 0 && incomingMsg.size() > 0) {
 						System.out.println("incoming msg complete: ");
+						
 						byte[] msgArr = incomingMsg.toByteArray();
 						ByteBuffer msg = ByteBuffer.wrap(msgArr);
 						
@@ -221,12 +241,17 @@ public class TcpMessageTransport implements IMessageTransport {
 					Thread.sleep(50);
 				}				
 			} catch (Exception e) {
-				System.err.println(e);
-				e.printStackTrace();
+				System.err.println(e.getMessage());
+				//e.printStackTrace();
 			}			
-			disconnect();
 			System.out.println("PROCESSING THREAD ENDED");
+			disconnected();
 		}
+	}
+	
+	@Override
+	public String getHost(){
+		return ((InetSocketAddress)this.socket.getRemoteSocketAddress()).getHostName();
 	}
 
 

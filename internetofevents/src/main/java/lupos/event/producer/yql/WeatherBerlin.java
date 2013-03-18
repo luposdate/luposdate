@@ -21,48 +21,39 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.event.communication;
+package lupos.event.producer.yql;
 
-import java.io.Serializable;
+import lupos.datastructures.items.literal.URILiteral;
+import lupos.event.communication.SerializingMessageService;
+import lupos.event.producer.ProducerBase;
+import lupos.event.util.Literals;
 
 /**
- * Holds information required to connect to a TCP endpoint.
+ * 
+ * @author Christopher Gudat, Guillaume Assaud
+ * 
+ * YQLSpecializer can change into every Producer, YQL-Query is necessary
+ *
  */
-public class TcpConnectInfo implements IConnectInfo, Serializable {
 
-	private static final long serialVersionUID = 940289196762068761L;
-	private String host;
-	private int port;
-
-	public TcpConnectInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	public String getHost() { 
-		return this.host; 
-	}
-
-	public int getPort() { 
-		return this.port; 
+public class WeatherBerlin extends YQLQueryProducer {
+	//Change these values to create an other Producer
+	public final static String NAMESPACE_WEATHER = "http://localhost/events/weatherBerlin/";
+	private final static String NAME = "WeatherBerlin";
+	private final static String QUERY = "select * from weather.forecast where location in (select id from weather.search where query=\"berlin, germany\")";
+	public final static URILiteral TYPE = Literals.createURI(NAMESPACE_WEATHER, NAME);
+	
+	public WeatherBerlin(SerializingMessageService msgService){
+		super(msgService, NAMESPACE_WEATHER, TYPE, QUERY);
 	}
 	
-	/**
-	 * Checks whether two TcpConnectInfo
-	 * objects are equal which means the connection
-	 * data are the same
-	 */
-	@Override
-	public boolean equals(Object o){
-		if (o instanceof TcpConnectInfo){
-			TcpConnectInfo obj = (TcpConnectInfo) o;
-			return obj.host.equals(this.host) && obj.port == this.port;
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode(){
-		return this.host.hashCode()+this.port;
+	public static void main(String[] args) throws Exception {
+		//Create communication channel
+		SerializingMessageService msgService = ProducerBase.connectToMaster();
+		
+		WeatherBerlin tsp = new WeatherBerlin(msgService);
+		
+		// start producer
+		tsp.start();
 	}
 }

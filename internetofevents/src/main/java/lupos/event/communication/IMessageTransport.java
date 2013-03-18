@@ -37,4 +37,9 @@ public interface IMessageTransport {
 	void addHandler(IMessageReceivedHandler<ByteBuffer> handler);
 	void addHandler(IDisconnectedHandler handler);
 	boolean isConnected();
+	/**
+	 * Gets the host of this tcp connection
+	 * @return the tcp hostname
+	 */
+	String getHost();
 }

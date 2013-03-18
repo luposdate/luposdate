@@ -33,7 +33,6 @@ public class SerializingMessageService extends MessageService implements IMessag
 	
 	private final MessageReceivedHandlerList<Serializable> msgReceivedHandlers = new MessageReceivedHandlerList<Serializable>();
 	
-
 	public SerializingMessageService(Class<? extends IMessageTransport> transportClass) throws Exception {
 		super(transportClass);
 		super.addHandler(this);
@@ -77,7 +76,9 @@ public class SerializingMessageService extends MessageService implements IMessag
 			Serializable obj = (Serializable)in.readObject();
 			in.close();
 			bis.close();
+			
 			this.msgReceivedHandlers.callAll(this, obj);
+			
 		} catch (Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
