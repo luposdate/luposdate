@@ -102,6 +102,7 @@ public class DBSeqTrieBag extends TrieBag {
 	@Override
 	public void release() {
 		this.nodeManager.close();
+		this.nodeManager.release();
 		this.nodeManager = null;
 		super.release();
 	}

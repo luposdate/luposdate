@@ -154,7 +154,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	 */
 	public NodeManager(final Trie trie, final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		this.pageManager = new PageManager(fileName, pageSize);
-		
+
 		// If the given file contains data at page 1, it can be assumed that the
 		// root node of a trie is stored on that page
 		if (!this.isEmpty(1)){

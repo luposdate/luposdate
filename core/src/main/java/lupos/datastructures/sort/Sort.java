@@ -193,7 +193,6 @@ public class Sort {
 			execution_times[t] = end.getTime()-start.getTime();
 			total_time += execution_times[t];
 			
-			FileHelper.deleteFilesStartingWithPattern(absolutePath, "Run");
 			DiskCollection.removeCollectionsFromDisk();
 			DBMergeSortedBag.removeBagsFromDisk();
 		}

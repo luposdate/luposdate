@@ -299,4 +299,14 @@ public class SeqNodeManager {
 		this.releaseInputStream();
 		this.releaseOutputStream();
 	}
+
+	/**
+	 * deletes the file on disk
+	 */
+	public void release() {
+		File file = new File(this.fileName);
+		if(file.exists()){
+			file.delete();
+		}
+	}
 }
