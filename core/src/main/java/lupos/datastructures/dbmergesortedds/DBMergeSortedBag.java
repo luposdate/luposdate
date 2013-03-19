@@ -63,13 +63,17 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	protected static int numberOfThreads = 1;
 
 	static {
+		DBMergeSortedBag.removeBagsFromDisk();
+	}
+	
+	public static void removeBagsFromDisk(){
 		for (final String mf : mainFolder) {
 			FileHelper.deleteDirectory(new File(mf));
 		}
 	}
 
 	public int getNewId() {
-		return id++;
+		return this.id++;
 	}
 
 	public static void setTmpDir(final String[] dir) {

@@ -21,6 +21,7 @@
 		<module>integrationNxParser</module>
 		<module>integrationBZIP2</module>
 		<module>compression</module>
+	    <module>distributed</module>
     	<module>syntaxhighlighting</module>
 	    <module>operatorgraph</module>
 	    <module>visualeditor</module>
@@ -91,6 +92,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.compression</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.distributed</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

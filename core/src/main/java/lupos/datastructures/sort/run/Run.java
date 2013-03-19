@@ -74,4 +74,11 @@ public abstract class Run {
 	 * @return the number of elements stored in this run
 	 */
 	public abstract int size();
+	
+	/**
+	 * free some resources
+	 */
+	public void release() {
+		// default: do nothing
+	}
 }

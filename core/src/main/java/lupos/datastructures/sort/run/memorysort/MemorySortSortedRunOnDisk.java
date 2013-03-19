@@ -177,4 +177,9 @@ public class MemorySortSortedRunOnDisk extends Run {
 	public int size() {
 		return this.diskCollection.size();
 	}
+	
+	@Override
+	public void release() {
+		this.diskCollection.release();
+	}
 }

@@ -299,5 +299,4 @@ public class SeqNodeManager {
 		this.releaseInputStream();
 		this.releaseOutputStream();
 	}
-
 }

@@ -86,8 +86,11 @@ public class FileHelper {
 			}
 		});
 		boolean flag=true;
-		for(String fileName: filesToDelete)
-			flag=deleteFile(dir+fileName) && flag;
+		if(filesToDelete!=null){
+			for(String fileName: filesToDelete){
+				flag = deleteFile(dir+fileName) && flag;
+			}
+		}
 		return flag;
 	}
 

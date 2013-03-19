@@ -107,7 +107,10 @@ public class ExternalSorter implements Sorter {
 			result = this.runsOnDisk.get(0);
 		} else {
 			result = this.runs.merge(this.runsOnDisk, false);
-		}
+			for(Run run: this.runsOnDisk){
+				run.release();
+			}
+		}		
 		return result;
 	}
 	

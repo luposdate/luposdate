@@ -24,17 +24,22 @@
 package lupos.datastructures.sort;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 
+import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
+import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.SORTTYPE;
 import lupos.datastructures.sort.sorter.ExternalParallelSorter;
 import lupos.datastructures.sort.sorter.ExternalSorter;
 import lupos.datastructures.sort.sorter.ReplacementSelectionSorter;
 import lupos.datastructures.sort.sorter.Sorter;
+import lupos.engine.evaluators.QueryEvaluator;
+import lupos.misc.FileHelper;
 import lupos.misc.TimeInterval;
 
 public class Sort {
@@ -128,7 +133,7 @@ public class Sort {
 	 */
 	public static void main(final String[] args) throws Exception{
 		System.out.println("Sorting a large collection of Strings or RDF terms of large RDF data...");
-		if(args.length<3){
+		if(args.length<4){
 			System.out.println(Sort.getHelpText());
 			return;
 		}
@@ -137,43 +142,75 @@ public class Sort {
 			System.out.println(Sort.getHelpText());
 			return;
 		}
-		Sorter algo = sorter.createInstance(args, 3);
+		Sorter algo = sorter.createInstance(args, 4);
 		if(algo==null){
 			System.out.println(Sort.getHelpText());
 			return;
 		}
+		
+		final int times = Integer.parseInt(args[3]);
+
+		// just to use for deleting temporary files...  
+		File file = new File("");
+		String absolutePath = file.getAbsolutePath() + File.separator;
 
 		System.out.println("\nParameters:\n-----------\nMain Strategy:" + sorter.name() + "\n" + algo.parametersToString() + "\n");
-				
-		Date start = new Date();
-		System.out.println("\nStart processing:"+start+"\n");
 		
-		Run result = algo.sort(new BufferedInputStream(new FileInputStream(args[1])), args[2]);
+		long[] execution_times = new long[times];
+		long total_time = 0;
+		for(int t=0; t<times; t++){
+			sorter = SORTER.valueOf(args[0]);
+			if(sorter==null){
+				System.out.println(Sort.getHelpText());
+				return;
+			}
+			algo = sorter.createInstance(args, 4);
+			if(algo==null){
+				System.out.println(Sort.getHelpText());
+				return;
+			}
+			
+			Date start = new Date();
+			System.out.println("\n"+t+": Start processing:"+start+"\n");
+			
+			Run result = algo.sort(new BufferedInputStream(new FileInputStream(args[1])), args[2]);
+			
+			// just access all elements in the bag by iterating one time through
+			Iterator<String> it = result.iterator();
+			int i=0;
+			while(it.hasNext()){
+				it.next();
+				i++;
+				// System.out.println((++i)+":"+it.next());
+			}
+			result.release();
+			Date end = new Date();
+			
+			System.out.println("\n"+t+": End processing:"+end);		
+			System.out.println("\nNumber of sorted RDF terms/Strings:"+i);
+			System.out.println("Number of runs swapped to disk:" + algo.getNumberOfRunsOnDisk());
+			
+			execution_times[t] = end.getTime()-start.getTime();
+			total_time += execution_times[t];
+			
+			FileHelper.deleteFilesStartingWithPattern(absolutePath, "Run");
+			DiskCollection.removeCollectionsFromDisk();
+			DBMergeSortedBag.removeBagsFromDisk();
+		}
 		
-		// just access all elements in the bag by iterating one time through
-		Iterator<String> it = result.iterator();
-		int i=0;
-		while(it.hasNext()){
-			it.next();
-			i++;
-			// System.out.println((++i)+":"+it.next());
-		}		
-		Date end = new Date();
-		
-		System.out.println("Number of sorted RDF terms/Strings:"+i);
-		System.out.println("Only if bags are used for sorting RDF data: There should be " + (i/3) + " triples read!");
-		
-		System.out.println("\nEnd processing:"+end);		
-		System.out.println("\nDuration:   " + (end.getTime() - start.getTime())/1000.0 + " seconds\n          = "+new TimeInterval(start, end));
-		
-		System.out.println("\nNumber of runs swapped to disk:" + algo.getNumberOfRunsOnDisk());
+		long avg = total_time / times; 
+			
+		System.out.println("\nDuration:   " + QueryEvaluator.toString(execution_times) + " = " + (((double) total_time / times) / 1000) + " seconds\n          = " + new TimeInterval(avg));
+		System.out.println("Sample Standard Deviation: " + (QueryEvaluator.computeSampleStandardDeviation(execution_times) / 1000) + " seconds");
+		System.out.println("Standard Deviation of the Sample: " + (QueryEvaluator.computeStandardDeviationOfTheSample(execution_times) / 1000) + " seconds");
 	}
 	
 	public static String getHelpText(){
-		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT SORTARGS\n\n";
+		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT TIMES SORTARGS\n\n";
 		result += "ALGO can be one of " + Arrays.toString(SORTER.values()) + "\n";
 		result += "DATAFILE contains the file with data (containing strings or RDF data)\n";
-		result += "FORMAT can be STRING for a large collection of strings in one file, MULTIPLESTRING for a list of files containing strings to be read, BZIP2STRING and MULTIPLEBZIP2STRING for analogous, but BZIP2 compressed files, or an RDF format like N3\n\n";
+		result += "FORMAT can be STRING for a large collection of strings in one file, MULTIPLESTRING for a list of files containing strings to be read, BZIP2STRING and MULTIPLEBZIP2STRING for analogous, but BZIP2 compressed files, or an RDF format like N3\n";
+		result += "TIMES is the number of repetitions to calculate an average execution time\n\n";
 		result += "ALGO                   | SORTARGS\n";
 		result += "--------------------------------------------------------------------------------------------------------------------------------------------------\n";
 		for(SORTER sorter: SORTER.values()){
@@ -181,7 +218,7 @@ public class Sort {
 		}
 		result += "\nExamples:\n";
 		for(SORTER sorter: SORTER.values()){
-			result +="java -server -XX:+UseParallelGC -XX:+AggressiveOpts -Xms60G -Xmx60G lupos.datastructures.sort.sorter.Sort " + sorter.name() + " SomeFiles.txt MULTIPLEN3 " +sorter.getExampleText() + "\n";
+			result +="java -server -XX:+UseParallelGC -XX:+AggressiveOpts -Xms60G -Xmx60G lupos.datastructures.sort.sorter.Sort " + sorter.name() + " SomeFiles.txt MULTIPLEN3 10 " +sorter.getExampleText() + "\n";
 		}
 		return result;
 	}

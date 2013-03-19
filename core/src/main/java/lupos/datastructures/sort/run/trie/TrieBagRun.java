@@ -78,4 +78,9 @@ public class TrieBagRun extends Run {
 	public int size() {
 		return this.trie.size();
 	}
+	
+	@Override
+	public void release() {
+		this.trie.release();
+	}
 }
