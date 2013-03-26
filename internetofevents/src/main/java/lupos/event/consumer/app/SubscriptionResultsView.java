@@ -31,14 +31,12 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.Timer;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.event.consumer.Consumer;
-import lupos.event.pubsub.Subscription;
+import lupos.event.consumer.app.AbstractSubscriptionResultView;
 import lupos.event.util.TimedWrapper;
 
 
@@ -46,14 +44,8 @@ import lupos.event.util.TimedWrapper;
  * A panel which displays a list with the query results of specific subscription.
  */
 @SuppressWarnings("serial")
-public class SubscriptionResultsView extends JPanel implements ActionListener {
-	
-	private static final int UPDATE_INTERVAL = 500;
-	
-	private final Consumer consumer;
-	private Subscription subscription = null;
-	
-	private Timer timer;
+public class SubscriptionResultsView extends AbstractSubscriptionResultView implements ActionListener {
+
 	private JList resultsList;
 	private DefaultListModel resultsListModel;
 	private QueryResultView resultView = null;
@@ -65,9 +57,8 @@ public class SubscriptionResultsView extends JPanel implements ActionListener {
 	 * @param consumer The consumer from which to obtain query results.
 	 */
 	public SubscriptionResultsView(Consumer consumer) {
-		super(new BorderLayout());
-		this.consumer = consumer;
-
+		super(new BorderLayout(), consumer);
+		
 		this.resultsListModel = new DefaultListModel();
         this.resultsList = new JList(this.resultsListModel);
 
@@ -76,20 +67,10 @@ public class SubscriptionResultsView extends JPanel implements ActionListener {
 		this.splitPane.setTopComponent(new JScrollPane(this.resultsList));
 		        
         super.add(this.splitPane, BorderLayout.CENTER);
-        
-        this.timer = new Timer(UPDATE_INTERVAL, this);
-        this.timer.start();
 	}
 	
-	/**
-	 * Sets the subscription
-	 * @param subscription
-	 */
-	public void setSubscription(Subscription subscription) {
-		this.subscription = subscription;
-		if(this.subscription == null){
-			this.resultsListModel.clear();
-		}
+	protected void ClearDataset(){
+		this.resultsListModel.clear();
 	}
 
 	@Override

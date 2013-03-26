@@ -23,11 +23,13 @@
  */
 package lupos.event.action;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import lupos.datastructures.bindings.Bindings;
@@ -35,6 +37,8 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.*;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.event.action.send.Send;
+import lupos.event.consumer.app.charts.ChartFactory;
+import lupos.event.consumer.app.charts.DataModel;
 import lupos.event.consumer.html.Encode;
 
 /**
@@ -75,7 +79,7 @@ public class PageAction extends Action {
 	public void execute(QueryResult queryResult) {
 
 		String result = new String(this.template);
-		String nextForTemplate;
+		String nextForTemplate, nextChartTemplate;
 		String tmp;
 		StringBuilder lines;
 		Set<Variable> vars = queryResult.getVariableSet();
@@ -108,6 +112,19 @@ public class PageAction extends Action {
 				break;
 			}
 
+		}
+		
+		while(true){
+			nextChartTemplate = getNextChartTemplate(result);
+
+			if (nextChartTemplate != null){
+				tmp = analyseChartBlock(nextChartTemplate, queryResult);
+				result = result.replaceFirst(Encode.CHARTSTART + "(.*?)"
+						+ Encode.CHARTEND, tmp);
+			}
+			
+			else
+				break;
 		}
 
 		// set refresh time if exists
@@ -251,6 +268,19 @@ public class PageAction extends Action {
 		return null;
 	}
 
+	public String getNextChartTemplate(String chartCode){
+		
+		Pattern pattern = Pattern.compile(Encode.CHARTSTART + "(.*?)" + Encode.CHARTEND);
+		
+		Matcher matcher = pattern.matcher(chartCode);
+		
+		if (matcher.find()){
+			return matcher.group(1);
+		}
+		
+		return null;
+	}
+
 	/**
 	 * Replaces the ECode with the last word of the predicate of v.
 	 * 
@@ -276,5 +306,44 @@ public class PageAction extends Action {
 		result = result.replaceAll(Encode.REG_PREDICATE_OF(v.getName()), newInfo);
 		
 		return result;
+	}
+	
+	private String analyseChartBlock(String chartBlock, QueryResult queryResult){
+		
+		StringBuffer result = new StringBuffer("data:image/jpeg;base64,");
+		String chartTyp, variables, line = new String();
+		int width, height;
+		DataModel dm;
+		ByteArrayOutputStream output=new ByteArrayOutputStream();
+		Pattern pattern = Pattern.compile(Encode.OPTIONS + "\\((.*?),(.*?),width=(.*?),height=(.*?)\\)" + Encode.END + "(.*)");
+		
+		
+		Matcher matcher = pattern.matcher(chartBlock);
+		
+		if (matcher.find()){
+			chartTyp = matcher.group(1);
+			variables = matcher.group(2);
+			variables = variables.replaceAll("\\?", "");
+			width = Integer.parseInt(matcher.group(3));
+			height = Integer.parseInt(matcher.group(4));
+			line = matcher.group(5);
+			dm = ChartFactory.getModel(chartTyp, variables.split(","), queryResult);
+			output = dm.asImage(width, height);	
+			result.append(Base64.encodeBase64String(output.toByteArray()));
+			line = replaceImage(result.toString(), line);
+			line = replaceLegend(dm.getLegend(), line);
+		}
+		
+		return line;
+		
+	}
+	
+	public String replaceImage(String image, String template){
+		return template.replaceAll(Encode.IMAGE, image);
+	}
+	
+	public String replaceLegend(String legend, String template){
+		String finalLegend = legend.replaceAll("\\n","<br>");
+		return template.replaceAll(Encode.LEGEND, finalLegend);
 	}
 }

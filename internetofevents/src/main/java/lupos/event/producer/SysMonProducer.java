@@ -96,13 +96,14 @@ public class SysMonProducer extends ProducerBaseNoDuplicates {
 			Triple usageTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_USAGE, usageObj);
 			
 			Triple cpuFrequencyInHzTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(cpuFrequencyInHz+"", Literals.XSD.LONG));
-			Triple currentPIDTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(currentPID+"", Literals.XSD.INT));
-			Triple numberOfCPUsTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(numberOfCPUs+"", Literals.XSD.INT));
-			Triple osNameTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(osName+"", Literals.XSD.String));
-			Triple totalPhysicalBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(totalPhysicalBytes+"", Literals.XSD.LONG));
-			Triple freePhysicalBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(freePhysicalBytes+"", Literals.XSD.LONG));
-			Triple totalSwapBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(totalSwapBytes+"", Literals.XSD.LONG));
-			Triple freeSwapBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPU_FREQUENCY, Literals.createTyped(freeSwapBytes+"", Literals.XSD.LONG));
+			
+			Triple currentPIDTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.PID, Literals.createTyped(currentPID+"", Literals.XSD.INT));
+			Triple numberOfCPUsTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.CPUS, Literals.createTyped(numberOfCPUs+"", Literals.XSD.INT));
+			Triple osNameTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.OS, Literals.createTyped(osName+"", Literals.XSD.String));
+			Triple totalPhysicalBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.TOTAL_PHYSICAL_BYTES, Literals.createTyped(totalPhysicalBytes+"", Literals.XSD.LONG));
+			Triple freePhysicalBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.FREE_PHYSICAL_BYTES, Literals.createTyped(freePhysicalBytes+"", Literals.XSD.LONG));
+			Triple totalSwapBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.TOTAL_SWAP_BYTES, Literals.createTyped(totalSwapBytes+"", Literals.XSD.LONG));
+			Triple freeSwapBytesTriple = new Triple(Literals.AnonymousLiteral.ANONYMOUS, Predicates.FREE_SWAP_BYTES, Literals.createTyped(freeSwapBytes+"", Literals.XSD.LONG));
 
 			return ProducerBase.fold(Arrays.asList(typeTriple, uptimeTriple, usageTriple, cpuFrequencyInHzTriple, currentPIDTriple, numberOfCPUsTriple, osNameTriple, totalPhysicalBytesTriple, freePhysicalBytesTriple, totalSwapBytesTriple, freeSwapBytesTriple));
 		} catch (URISyntaxException e) {

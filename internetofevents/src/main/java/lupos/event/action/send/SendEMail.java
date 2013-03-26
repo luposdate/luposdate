@@ -49,6 +49,7 @@ public class SendEMail implements Send {
 	private String host;
 	private String user;
 	private String password;
+	private String subject;
 	private final String contentType;
 	
 	public SendEMail(){
@@ -63,6 +64,10 @@ public class SendEMail implements Send {
 	public void init() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		
+		panel.add(new JLabel("Subject"));
+		JTextField tf_subject = new JTextField("Message Action for");
+		panel.add(tf_subject);
 		
 		panel.add(new JLabel("EMail-Adress of Recipient"));
 		JTextField tf_to = new JTextField("xyz@ifis.uni-luebeck.de");
@@ -96,6 +101,7 @@ public class SendEMail implements Send {
 		this.from = tf_from.getText();
 		this.host = tf_host.getText();
 		this.user = tf_user.getText();
+		this.subject= tf_subject.getText();
         this.password = String.valueOf(passwordField.getPassword());
 	}
 
@@ -117,7 +123,6 @@ public class SendEMail implements Send {
 	         MimeMessage message = new MimeMessage(session);
 	         
 	         message.setHeader( "MIME-Version" , "1.0" );
-	         message.setHeader( "Content-Type" , this.contentType); 
 
 	         // Set From: header field of the header.
 	         message.setFrom(new InternetAddress(this.from));
@@ -126,10 +131,14 @@ public class SendEMail implements Send {
 	         message.addRecipient(Message.RecipientType.TO, new InternetAddress(this.to));
 
 	         // Set Subject: header field
-	         message.setSubject("Message Action for "+content);
+	         message.setSubject(subject);//+content);
 
 	         // Now set the actual message
-	         message.setText("You receive this email because you have been registered as recipient for events in the internet of events.\nYour notification information is "+content);
+	         //message.setText("You receive this email because you have been registered as recipient for events in the internet of events.\nYour notification information is "+content);
+	         message.setText(content);
+	         
+	         // Set the content type since setText() resets to "text/plain"
+	         message.setHeader( "Content-Type" , this.contentType); 
 
 	         // Send message
 	         Transport.send(message);

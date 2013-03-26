@@ -36,7 +36,12 @@ public class Encode {
 	public final static String CONTENT = "CONTENT";
 	public final static String ESCAPE = "ESCAPE";
 	public final static String PREDICATE = "PREDICATE";
-	public final static String REFRESH = "REFRESH(time in seconds)";
+ 	public final static String REFRESH = "REFRESH(time in seconds)";
+	public final static String CHARTSTART = START + "CHART" + END;
+ 	public final static String CHARTEND = START + "ENDCHART" + END; 	
+ 	public final static String OPTIONS = START + "OPTIONS";
+ 	public final static String LEGEND = START + "LEGEND" + END;
+ 	public final static String IMAGE = START + "IMAGE" + END;
 
 	/**
 	 * Creates the String for the Content function.
@@ -127,4 +132,5 @@ public class Encode {
 	public static String REG_PREDICATE_OF(String varName){
 		return START + PREDICATE + "\\(\\" + VARNOTATION + varName + "\\)" + END;
 	}
+	
 }

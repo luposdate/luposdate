@@ -51,6 +51,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.event.action.Action;
 import lupos.event.communication.IResultReceivedHandler;
 import lupos.event.consumer.Consumer;
+import lupos.event.consumer.app.SubscriptionChartView;
 import lupos.event.pubsub.Subscription;
 
 
@@ -70,9 +71,8 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
 	private JLabel label;
 	private SubscriptionEditView subscriptionEditView;
 	private SubscriptionResultsView subscriptionResultsView;
-	private JTabbedPane subscriptionTabbedPane;
-	//private JList subscriptionResultsList;
-	
+	private SubscriptionChartView subscriptionChartView;
+	private JTabbedPane subscriptionTabbedPane;	
 	
 	public ClientView(Consumer consumer) {		
 		this.consumer = consumer;
@@ -88,8 +88,7 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
         
         this.subscriptionEditView = new SubscriptionEditView();
         this.subscriptionResultsView = new SubscriptionResultsView(this.consumer);
-        
-        //BoxLayout layout = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
+        this.subscriptionChartView = new SubscriptionChartView(this.consumer);
         getContentPane().setLayout(new BorderLayout(5,5));
         
         JPanel connectPanel = new JPanel();
@@ -133,7 +132,7 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
         this.subscriptionTabbedPane = new JTabbedPane();
         this.subscriptionTabbedPane.addTab("Edit", this.subscriptionEditView);
         this.subscriptionTabbedPane.addTab("Results", this.subscriptionResultsView);
-		
+        this.subscriptionTabbedPane.addTab("Charts", this.subscriptionChartView);
 		
 		getContentPane().add(connectPanel, BorderLayout.NORTH);
 		getContentPane().add(this.mainPanel, BorderLayout.CENTER);
@@ -144,6 +143,7 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
 	
 	public void setActiveSubscription(Subscription sub) {
 		this.subscriptionResultsView.setSubscription(sub);
+		this.subscriptionChartView.setSubscription(sub);		
 		if(sub==null) {
 			this.manageSubscriptionsPanel.remove(this.subscriptionTabbedPane);
 		} else {

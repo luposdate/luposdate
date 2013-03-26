@@ -1,0 +1,37 @@
+{"templates": [
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/Wassertemperatur.html",
+    "name": "Wassertemperatur",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/WaterTemp/WaterTempProducer> SLIDINGINSTANCES 8 {\n      ?s1 <http://localhost/events/WaterTemp/temperature_in_Ã\u201aÂ°C> ?temperature.\n      ?s1 <http://localhost/events/WaterTemp/time> ?time.\n    }\n  }"
+  },
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/Wind.html",
+    "name": "Wind",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/WindFinder/WindFinderProducer> SLIDINGINSTANCES 5 {\n      ?s1 <http://localhost/events/WindFinder/pressure_in_hpa> ?pressure.\n      ?s1 <http://localhost/events/WindFinder/time> ?time.\n      ?s1 <http://localhost/events/WindFinder/windspeed_in_kts> ?speed.\n      ?s1 <http://localhost/events/WindFinder/wind_direction> ?direction.\n      ?s1 <http://localhost/events/WindFinder/precipitation_in_mm> ?precipitation.\n    }\n  }"
+  },
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/Sysmon Multi.html",
+    "name": "Sysmon Multi",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/SysMon/SysMonEvent> SLIDINGINSTANCES 5 {\n      ?s1 <http://localhost/events/SysMon/freePhysicalBytes> ?freePhysicalBytes.\n      ?s1 <http://localhost/events/SysMon/currentPID> ?currentPID.\n      ?s1 <http://localhost/events/SysMon/cpuUsage> ?cpuUsage.\n      ?s1 <http://localhost/events/SysMon/numberOfCPUs> ?numberOfCPUs.\n      ?s1 <http://localhost/events/SysMon/totalSwapBytes> ?totalSwapBytes.\n      ?s1 <http://localhost/events/SysMon/freeSwapBytes> ?freeSwapBytes.\n      ?s1 <http://localhost/events/SysMon/upTimeInSeconds> ?upTimeInSeconds.\n      ?s1 <http://localhost/events/SysMon/totalPhysicalBytes> ?totalPhysicalBytes.\n      ?s1 <http://localhost/events/SysMon/osName> ?osName.\n      ?s1 <http://localhost/events/SysMon/cpuFrequencyInHz> ?cpuFrequencyInHz.\n\t?s1 <timestamp> ?time\n    }\n  }"
+  },
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/weatherCharts.html",
+    "name": "weatherCharts",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 10000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/Weather/WeatherEvent> SLIDINGINSTANCES 5 {\n      ?s1 <http://localhost/events/Weather/temperature> ?temperature.\n\t?s1  <http://localhost/events/Weather/feelslike> ?feelslike.\n\t?s1  <http://localhost/events/Weather/windDegree> ?windDegree.\n\t?s1 <http://localhost/events/Weather/current_time> ?time.\n\t}\n  }"
+  },
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/Finance multiple.html",
+    "name": "Finance multiple",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/FinanceProducer/FinanceProducer> SLIDINGINSTANCES 1 {\n      ?s1 <http://localhost/events/FinanceProducer/ChangeRealtime> ?changerealtime.\n      ?s1 <http://localhost/events/FinanceProducer/BookValue> ?bookvalue.\n      ?s1 <http://localhost/events/FinanceProducer/BidRealtime> ?bidrealtime.\n      ?s1 <http://localhost/events/FinanceProducer/Name> ?name.\n      ?s1 <http://localhost/events/FinanceProducer/AskRealtime> ?askrealtime.\n      ?s1 <http://localhost/events/FinanceProducer/PEGRatio> ?pegratio.\n      ?s1 <http://localhost/events/FinanceProducer/DaysRange> ?daysrange.\n      ?s1 <http://localhost/events/FinanceProducer/Volume> ?volume.\n    }\n  }"
+  },
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/DB train overview.html",
+    "name": "DB train overview",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 2000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/DB/TrainDBEvent> SLIDINGINSTANCES 25 {\n      ?s1 <http://localhost/events/DB/station_name> ?station.\n      ?s1 <http://localhost/events/DB/train_name> ?name.\n    }\n  }"
+  },
+  {
+    "htmlPath": "src/main/resources/htmlTemplates/charts/BitCoins MtGox.html",
+    "name": "BitCoins MtGox",
+    "query": "SELECT *\n  STREAM INTERMEDIATERESULT DURATION 1000\n  WHERE {\n    WINDOW TYPE INSTANCE <http://localhost/events/MtGox/MtGoxEvent> SLIDINGINSTANCES 5 {\n      ?s1 <http://localhost/events/MtGox/bestBid> ?bid.\n      ?s1 <http://localhost/events/MtGox/bestAsk> ?ask.\n\t?s1 <timestamp> ?time\n    }\n  }"
+  }
+]}

@@ -46,6 +46,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import lupos.event.action.send.Send;
+import lupos.event.util.data.Handler;
 
 import com.sun.awt.AWTUtilities;
 
@@ -218,7 +219,8 @@ public class SlidingWindow extends JWindow implements ActionListener,
 		String contentTypeStr = "text/plain";
 		switch (contentType_param) {
 		case HTML:
-			contentTypeStr = "text/html";
+			contentTypeStr = "text/html; charset=UTF-8";
+			Handler.install();
 			break;
 		case RTF:
 			contentTypeStr = "text/rtf";
@@ -400,6 +402,7 @@ public class SlidingWindow extends JWindow implements ActionListener,
 		// set preferred width, clamping to maxWidth
 		int newWidth = (int) Math.min(
 				this.textPane.getPreferredSize().getWidth() + 10, this.maxWidth);
+
 		setSize(newWidth, 1);
 
 		// compute final height, clamping to maxHeight

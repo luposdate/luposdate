@@ -39,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import lupos.event.*;
 import lupos.event.action.PageAction;
 import lupos.event.action.send.GenerateHTML;
 import lupos.event.action.send.Send;
@@ -132,8 +131,9 @@ public class Controller {
 				send = new GenerateHTML(name, outPutFolder);
 
 			} else if (selectedSendOption.equals("Send EMail")) {
-
-				send = new SendEMail();
+				//_______________________________________________________________________________________________
+				send = new SendEMail("text/html");
+				//---------------------------------------------------------------------------------------
 
 			} else if (selectedSendOption.equals("Sliding Window")) {
 
