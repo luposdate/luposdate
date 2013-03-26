@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -199,12 +200,89 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private JComboBox comboBox_sparqlInferenceGenerated;
 	private JCheckBox checkBox_sparqlInferenceCheckInconsistency;
 	private QueryResult[] resultQueryEvaluator;
+	
+	/**
+	 * The following code is just for the possibility to register new query evaluators, which can be also used in this demo...
+	 */
+	private static List<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>> registeredEvaluators = new LinkedList<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>>();
+
+	public static void registerEvaluator(final String evaluatorName, final Class<? extends QueryEvaluator<Node>> evaluatorClass){
+		registeredEvaluators.add(new lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>(evaluatorName, evaluatorClass, new boolean[]{true, true, true, true}));
+	}
+	
+
+	public static void registerEvaluator(final String evaluatorName, final Class<? extends QueryEvaluator<Node>> evaluatorClass, final boolean[] enabled){
+		registeredEvaluators.add(new lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>(evaluatorName, evaluatorClass, enabled));
+	}
+	
+	{
+		final boolean[] allEnabled = new boolean[]{true, true, true, true};
+		final boolean[] partlyEnabled = new boolean[]{true, false, true, true};
+		Demo_Applet.registerEvaluator("MemoryIndex", MemoryIndexQueryEvaluator.class, allEnabled);
+		Demo_Applet.registerEvaluator("RDF3X", RDF3XQueryEvaluator.class, allEnabled);
+		Demo_Applet.registerEvaluator("Stream", StreamQueryEvaluator.class, allEnabled);
+		Demo_Applet.registerEvaluator("Jena", JenaQueryEvaluator.class, partlyEnabled);
+		Demo_Applet.registerEvaluator("Sesame", SesameQueryEvaluator.class, partlyEnabled);
+	}
+	
+	private int getCaseIndex(){
+		if (!this.isApplet && this.webdemo != DEMO_ENUM.ECLIPSE) {
+			if (this.webdemo == DEMO_ENUM.LOCALONEJAR) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else if (this.webdemo == DEMO_ENUM.LOCALONEJAR) {
+			return 2;
+		} else {
+			return 3;
+		}
+	}
+
+	private String[] getEvaluators() {
+		// started with Java Web Start? Java Web start has a more restrictive
+		// rights management, i.e. Jena and Sesame do not work with Java Web Start...
+		int caseIndex = this.getCaseIndex();
+		LinkedList<String> evals = new LinkedList<String>();
+		for(lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]> entry: Demo_Applet.registeredEvaluators){
+			if(entry.getThird()[caseIndex]){
+				evals.add(entry.getFirst());
+			}
+		}
+		return evals.toArray(new String[0]);
+	}
+
+	protected Class<? extends QueryEvaluator<Node>> getEvaluatorClass(final int index) {
+		int caseIndex = this.getCaseIndex();
+		Iterator<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>> entryIt = Demo_Applet.registeredEvaluators.iterator();
+		for(int k=0; true; k++){
+			lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]> entry = entryIt.next();
+			while(!entry.getThird()[caseIndex]){
+				entry = entryIt.next();
+			}
+			if(k==index){
+				return entry.getSecond();
+			}
+		}
+	}
 
 	public static void main(final String args[]) {
+		if (args.length > 0) {
+			Demo_Applet.startDemoAsApplication(args[0]);
+		} else {
+			Demo_Applet.startDemoAsApplication();
+		}
+	}
+	
+	public static void startDemoAsApplication(){
+		Demo_Applet.startDemoAsApplication(null);
+	}
+	
+	public static void startDemoAsApplication(String type){
 		final Demo_Applet applet = new Demo_Applet();
 
-		if (args.length > 0) {
-			applet.setType(args[0]);
+		if (type!=null) {
+			applet.setType(type);
 		}
 
 		final JPanel panel = applet.initialise();
@@ -379,18 +457,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	public static LinkedList<String> generateLookAndFeelList() {
 		final LinkedList<String> lafList = new LinkedList<String>();
-
-//		lafList.add("Acryl");
-//		lafList.add("Aero");
-//		lafList.add("Aluminium");
-//		lafList.add("Bernstein");
-//		lafList.add("Fast");
-//		lafList.add("HiFi");
-//		lafList.add("Luna");
-//		lafList.add("McWin");
-//		lafList.add("Mint");
-//		lafList.add("Noire");
-//		lafList.add("Smart");
 
 		final UIManager.LookAndFeelInfo[] lafInfo = UIManager
 				.getInstalledLookAndFeels();
@@ -1192,35 +1258,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		final JButton bt_evalDemo_local = new JButton("Eval. Demo");
 		bt_evalDemo_local.setEnabled(enabled);
 		return bt_evalDemo_local;
-	}
-
-	private String[] getEvaluators() {
-		// started with Java Web Start? Java Web start has a more restrictive
-		// rights
-		// management, i.e. Jena and Sesame do not work with Java Web Start...
-		if (!this.isApplet && this.webdemo != DEMO_ENUM.ECLIPSE) {
-			if (this.webdemo == DEMO_ENUM.LOCALONEJAR) {
-				return new String[] { "MemoryIndex", "RDF3X", "Stream", "Jena",
-						"Sesame" };
-			} else {
-				return new String[] { "MemoryIndex", "RDF3X", 
-						"Stream" };
-			}
-		} else if (this.webdemo == DEMO_ENUM.LOCALONEJAR) {
-			return new String[] { "MemoryIndex", "RDF3X", "Stream", "Jena",
-					"Sesame" };
-		} else {
-			return new String[] { "MemoryIndex", "RDF3X", 
-					"Stream", "Jena", "Sesame" };
-		}
-	}
-
-	protected Class<?> getEvaluatorClass(final int index) {
-			final Class<?>[] s = { MemoryIndexQueryEvaluator.class,
-					RDF3XQueryEvaluator.class, StreamQueryEvaluator.class,
-					JenaQueryEvaluator.class, SesameQueryEvaluator.class };
-
-			return s[index];
 	}
 	
 	private String[] getFiles(final String path, final String suffix){

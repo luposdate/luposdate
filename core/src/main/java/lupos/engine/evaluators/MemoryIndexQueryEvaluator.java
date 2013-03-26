@@ -121,7 +121,6 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		super.setupArguments();
 	}
 
-	// moved to lupos.rdf.Indices
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
