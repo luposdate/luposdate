@@ -61,8 +61,6 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 	 * @param interval Interval in milliseconds
 	 */
 	public ProducerBase(SerializingMessageService msgService, int interval) {
-		if(interval < MIN_INTERVAL)
-			throw new IllegalArgumentException("interval must be at least " + MIN_INTERVAL + "ms");
 		
 		this.msgService = msgService;
 		this.interval = interval;	
@@ -108,10 +106,9 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 	}
 	
 	private void waitForEndOfInterval(long startTime) throws InterruptedException {
-		long elapsedTime = System.currentTimeMillis() - startTime;
-		while (elapsedTime < this.interval) {
-			Thread.sleep(MIN_INTERVAL/2);
-			elapsedTime = System.currentTimeMillis() - startTime;
+		long elapsedTime = this.interval - (System.currentTimeMillis() - startTime);
+		if(elapsedTime>0){
+			Thread.sleep(elapsedTime);
 		}
 	}
 
