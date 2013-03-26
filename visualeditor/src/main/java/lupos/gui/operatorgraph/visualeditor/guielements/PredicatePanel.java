@@ -52,7 +52,7 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 	private LinkedList<JTextFieldResizing> predicateElementsList = new LinkedList<JTextFieldResizing>();
 	private Prefix prefix;
 
-	private JLabel addLabel = new JLabel();
+	protected JLabel addLabel = new JLabel();
 
 	public PredicatePanel(VisualGraph<Operator> parent, final RDFTerm operator, final RDFTerm child, Prefix prefix) {
 		super(parent, new GraphWrapperOperator(operator), operator, false);
@@ -112,7 +112,7 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		this.add(this.addLabel, mainGBC);
 	}
 
-	private JPanel createPredicateElement(final int tmpIndex, String predicateString) {
+	protected JPanel createPredicateElement(final int tmpIndex, String predicateString) {
 		final JPanel panel = new JPanel(new GridBagLayout());
 		panel.setOpaque(false);
 
