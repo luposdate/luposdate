@@ -51,6 +51,7 @@ IPrefixPanel {
 	protected Prefix prefix;
 	protected final GridBagConstraints gbc;
 	protected final JPanel prefixRowsPanel;
+	protected final JLabel addLabel;
 
 	public PrefixPanel(final Prefix prefix, final GraphWrapper gw,
 			final VisualGraph<Operator> parent) {
@@ -78,7 +79,7 @@ IPrefixPanel {
 		}
 
 		// create add button...
-		final JLabel addLabel = new JLabel(this.parent.addIcon);
+		addLabel = new JLabel(this.parent.addIcon);
 		addLabel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(final MouseEvent me) {
 				createPrefixRow("", "");
