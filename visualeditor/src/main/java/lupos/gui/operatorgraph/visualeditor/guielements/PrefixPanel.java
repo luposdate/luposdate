@@ -49,8 +49,8 @@ public class PrefixPanel extends AbstractGuiComponent<Operator> implements
 IPrefixPanel {
 	private static final long serialVersionUID = 1L;
 	protected Prefix prefix;
-	private final GridBagConstraints gbc;
-	private final JPanel prefixRowsPanel;
+	protected final GridBagConstraints gbc;
+	protected final JPanel prefixRowsPanel;
 
 	public PrefixPanel(final Prefix prefix, final GraphWrapper gw,
 			final VisualGraph<Operator> parent) {
@@ -331,7 +331,7 @@ IPrefixPanel {
 		this.revalidate(); // re-validate the PrefixPanel
 	}
 
-	private int showPrefixAddedOptionDialog() {
+	protected int showPrefixAddedOptionDialog() {
 		return JOptionPane
 		.showOptionDialog(
 				this.parent.visualEditor,
@@ -342,7 +342,7 @@ IPrefixPanel {
 				"Don't add prefix" }, 0);
 	}
 
-	private int showPrefixRemovedOptionDialog() {
+	protected int showPrefixRemovedOptionDialog() {
 		return JOptionPane
 		.showOptionDialog(
 				this.parent.visualEditor,
@@ -353,7 +353,7 @@ IPrefixPanel {
 				"Don't remove prefix" }, 0);
 	}
 
-	private int showPrefixNameChangedOptionDialog() {
+	protected int showPrefixNameChangedOptionDialog() {
 		return JOptionPane
 		.showOptionDialog(
 				this.parent.visualEditor,

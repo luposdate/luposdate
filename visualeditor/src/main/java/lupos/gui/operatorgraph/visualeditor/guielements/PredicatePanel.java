@@ -49,8 +49,8 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 
 public class PredicatePanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
-	private LinkedList<JTextFieldResizing> predicateElementsList = new LinkedList<JTextFieldResizing>();
-	private Prefix prefix;
+	protected LinkedList<JTextFieldResizing> predicateElementsList = new LinkedList<JTextFieldResizing>();
+	protected Prefix prefix;
 
 	protected JLabel addLabel = new JLabel();
 

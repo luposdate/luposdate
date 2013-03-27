@@ -46,7 +46,7 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 public class OperatorPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 	protected JTextFieldResizing textField;
-	private JLabel label;
+	protected JLabel label;
 
 	public OperatorPanel(JTFOperator operator, GraphWrapper gw, VisualGraph<Operator> parent, String text) {
 		this(operator, gw, parent, text, "");
