@@ -68,9 +68,7 @@ public class DeltaClient {
 								// add the received triples to the index
 								final Collection<Indices> ci = evaluator.getDataset().getDefaultGraphIndices();
 								for (final Indices indices : ci) {
-									if (!indices.contains(triple)) {
-										indices.add(triple);
-									}
+									indices.add(triple);
 								}
 							}
 						}); 

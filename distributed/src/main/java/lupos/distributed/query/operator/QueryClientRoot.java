@@ -21,60 +21,35 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.query.indexscan;
+package lupos.distributed.query.operator;
 
-import java.io.IOException;
+import java.util.Collection;
 
-import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.index.Indices;
+import lupos.datastructures.items.Item;
+import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class QueryClientIndices extends Indices {
-
-	public QueryClientIndices(URILiteral uriLiteral) {
-		this.rdfName = uriLiteral;
-	}
-
-	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern){
-		// TODO
-		return null;
-	}
+/**
+ * Represents the root node in the operator graph for distributed query processing.
+ */
+public class QueryClientRoot extends Root {
 	
-	@Override
-	public boolean add(Triple t) {
-		// TODO Auto-generated method stub
-		return false;
+	public QueryClientRoot(final Dataset dataset){
+		super();
+		this.dataset = dataset;
 	}
 
 	@Override
-	public boolean remove(Triple t) {
-		// TODO Auto-generated method stub
-		return false;
+	public BasicIndexScan newIndexScan(OperatorIDTuple succeedingOperator,
+			Collection<TriplePattern> triplePatterns, Item data) {
+		return new QueryClientIndexScan(succeedingOperator, triplePatterns, data, this);
 	}
 
 	@Override
-	public boolean contains(Triple t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void init(DATA_STRUCT ds) {
-	}
-
-	@Override
-	public void constructCompletely() {
-	}
-
-	@Override
-	public void writeOutAllModifiedPages() throws IOException {
-	}
-
-	@Override
-	public int numberOfTriples() {
-		// TODO Auto-generated method stub
-		return 0;
+	public Root newInstance(Dataset dataset_param) {
+		return new QueryClientRoot(dataset_param);
 	}
 }

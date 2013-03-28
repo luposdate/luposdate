@@ -71,6 +71,9 @@ public abstract class Root extends Operator {
 				if(indexScan.joinOrderToBeOptimized()){				
 					final lupos.engine.operators.index.Root root;	
 					switch (opt) {
+					case BasicIndexScan.MOSTRESTRICTIONS:
+						root = RearrangeTriplePatternsInIndexScanLeastNewVariables.rearrangeJoinOrder(indexScan);
+						break;					
 					case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
 						root = RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries.rearrangeJoinOrder(indexScan);
 						break;

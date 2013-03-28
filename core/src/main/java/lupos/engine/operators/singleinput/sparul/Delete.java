@@ -53,28 +53,23 @@ public class Delete extends MultipleURIOperator {
 				if (cu == null || cu.size() == 0) {
 					final Collection<Indices> ci = dataset.getDefaultGraphIndices();
 					for (final Indices indices : ci) {
-						if (indices.contains(t)) {
-							indices.remove(t);
-						}
+						indices.remove(t);
 					}
 				} else {
 					for (final URILiteral uri : cu) {
 						Indices indices = dataset.getNamedGraphIndices(uri);
 						if (indices != null)
-							if (indices.contains(t)) {
-								indices.remove(t);
-							}
+							indices.remove(t);
 						indices = dataset.getDefaultGraphIndices(uri);
 						if (indices != null)
-							if (indices.contains(t)) {
-								indices.remove(t);
-							}
+							indices.remove(t);
 
 					}
 				}
 			}
-		} else
+		} else {
 			System.err.println("GraphResult expected instead of " + bindings.getClass());
+		}
 		this.dataset.buildCompletelyAllIndices();
 		return null;
 	}

@@ -48,15 +48,9 @@ public class ResultCollector extends Operator implements
 
 	protected int countThreads;
 
-	// protected QueryResult[] resultArray;
 	protected List<QueryResult> resultList = new ArrayList<QueryResult>();
 
 	private Iterator<Bindings> currentIter;
-
-	// /**
-	// * fuer die Liste
-	// */
-	// private Iterator<QueryResult> listIter;
 
 	@Override
 	public QueryResult process(final QueryResult res, final int arg1) {

@@ -22,6 +22,7 @@
 		<module>integrationBZIP2</module>
 		<module>compression</module>
 	    <module>distributed</module>
+	    <module>distributedendpoints</module>
     	<module>syntaxhighlighting</module>
 	    <module>operatorgraph</module>
 	    <module>visualeditor</module>
@@ -98,6 +99,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.distributed</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.distributedendpoints</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

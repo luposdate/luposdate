@@ -21,32 +21,59 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.query.indexscan;
+package lupos.distributed.query.operator;
 
-import java.util.Collection;
+import java.io.IOException;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
+import lupos.datastructures.items.Triple;
+import lupos.datastructures.items.literal.URILiteral;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.storage.IStorage;
+import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class QueryClientRoot extends Root {
+/**
+ * The indices class for accessing the data of the distributed query evaluator.
+ * It just forwards the calls to an instance of IStorage to be given in the constructor.
+ */
+public class QueryClientIndices extends Indices {
 	
-	public QueryClientRoot(final Dataset dataset){
-		super();
-		this.dataset = dataset;
+	protected final IStorage storage;
+
+	public QueryClientIndices(final URILiteral uriLiteral, final IStorage storage) {
+		this.rdfName = uriLiteral;
+		this.storage = storage;
+	}
+
+	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern){
+		return this.storage.evaluateTriplePattern(triplePattern);
+	}
+	
+	@Override
+	public void add(Triple triple) {
+		this.storage.addTriple(triple);
 	}
 
 	@Override
-	public BasicIndexScan newIndexScan(OperatorIDTuple succeedingOperator,
-			Collection<TriplePattern> triplePatterns, Item data) {
-		return new QueryClientIndexScan(succeedingOperator, triplePatterns, data, this);
+	public void remove(Triple triple) {
+		this.storage.remove(triple);
 	}
 
 	@Override
-	public Root newInstance(Dataset dataset_param) {
-		return new QueryClientRoot(dataset_param);
+	public boolean contains(Triple triple) {
+		return this.storage.containsTriple(triple);
+	}
+
+	@Override
+	public void init(DATA_STRUCT ds) {
+	}
+
+	@Override
+	public void constructCompletely() {
+		this.storage.endImportData();
+	}
+
+	@Override
+	public void writeOutAllModifiedPages() throws IOException {
 	}
 }

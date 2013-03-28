@@ -53,9 +53,7 @@ public class Insert extends MultipleURIOperator {
 				if (cu == null || cu.size() == 0) {
 					final Collection<Indices> ci = this.dataset.getDefaultGraphIndices();
 					for (final Indices indices : ci) {
-						if (!indices.contains(t)) {
-							indices.add(t);
-						}
+						indices.add(t);
 					}
 				} else {
 					for (final URILiteral uri : cu) {
@@ -63,16 +61,12 @@ public class Insert extends MultipleURIOperator {
 						Indices indices = this.dataset.getNamedGraphIndices(uri);
 						if (indices != null){
 							flag = true;
-							if (!indices.contains(t)) {
-								indices.add(t);
-							}
+							indices.add(t);
 						}
 						indices = this.dataset.getDefaultGraphIndices(uri);
 						if (indices != null){
 							flag = true;
-							if (!indices.contains(t)) {
-								indices.add(t);
-							}
+							indices.add(t);
 						}
 						if(!flag){
 							try {

@@ -47,7 +47,6 @@ import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;

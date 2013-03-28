@@ -143,9 +143,8 @@ public abstract class Indices extends TripleOperator {
 	 * 
 	 * @param t
 	 *            the triple
-	 * @return true if a triple was successfully put into the index structure
 	 */
-	public abstract boolean add(Triple t);
+	public abstract void add(Triple t);
 
 	@Override
 	public void consume(final Triple e) {
@@ -158,9 +157,8 @@ public abstract class Indices extends TripleOperator {
 	 * 
 	 * @param t
 	 *            the triple to be removed
-	 * @return <code>true</code> if the triple was removed successfully
 	 */
-	public abstract boolean remove(Triple t);
+	public abstract void remove(Triple t);
 
 	/**
 	 * Returns whether the index structure contains a certain triple
@@ -446,6 +444,4 @@ public abstract class Indices extends TripleOperator {
 		System.err
 				.println("Reading index info is not supported by this type of index!");
 	}
-	
-	public abstract int numberOfTriples();
 }

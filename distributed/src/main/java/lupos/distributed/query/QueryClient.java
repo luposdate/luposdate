@@ -27,24 +27,36 @@ import java.util.Collection;
 import java.util.Date;
 
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.distributed.query.indexscan.QueryClientIndices;
-import lupos.distributed.query.indexscan.QueryClientRoot;
+import lupos.distributed.query.operator.QueryClientIndices;
+import lupos.distributed.query.operator.QueryClientRoot;
+import lupos.distributed.storage.IStorage;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
 import lupos.misc.Tuple;
 
 public class QueryClient extends BasicIndexQueryEvaluator {
+	
+	protected final IStorage storage;
 
-	public QueryClient() throws Exception {
+	public QueryClient(final IStorage storage) throws Exception {
 		super();
+		this.storage = storage;
 	}
 	
-	public QueryClient(final String[] args) throws Exception {
+	public QueryClient(final IStorage storage, final String[] args) throws Exception {
 		super(args);
+		this.storage = storage;
 	}
-
+	
+	public void init() throws Exception {
+		super.init();
+		// avoid evaluation of triple patterns for query optimization
+		this.opt = BasicIndexScan.MOSTRESTRICTIONS;
+	}
+	
 	@Override
 	public Root createRoot() {
 		return new QueryClientRoot(this.dataset);
@@ -59,7 +71,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 				getMaterializeOntology(), this.opt, new Dataset.IndicesFactory() {
 			@Override
 			public Indices createIndices(final URILiteral uriLiteral) {
-				return new QueryClientIndices(uriLiteral);
+				return new QueryClientIndices(uriLiteral, storage);
 			}
 
 			@Override
@@ -84,7 +96,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 				getMaterializeOntology(), this.type, this.opt, new Dataset.IndicesFactory() {
 			@Override
 			public Indices createIndices(final URILiteral uriLiteral) {
-				return new QueryClientIndices(uriLiteral);
+				return new QueryClientIndices(uriLiteral, storage);
 			}
 
 			@Override

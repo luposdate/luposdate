@@ -161,8 +161,13 @@ public class SevenMemoryIndices extends Indices {
 	 */
 
 	@Override
-	public boolean add(final Triple e) {
+	public void add(final Triple e) {
 		try {
+			
+			if(this.contains(e)) {
+				// already inside => do not need to insert!
+				return;
+			}
 
 			final StringBuffer subject = new StringBuffer(e.getSubject()
 					.toString());
@@ -198,19 +203,9 @@ public class SevenMemoryIndices extends Indices {
 			key = subjectPredicate.append(object).toString();
 			subjectPredicateObjectMap.putToCollection(key, e);
 
-			// System.out.println("SM: "+subjectMap.size()+" PM: "+predicateMap.
-			// size
-			// ()+" OM: "+objectMap.size()+" SPM: "+subjectPredicateMap.size(
-			// )+" SOM: "
-			// +subjectObjectMap.size()+" SPOM: "+subjectPredicateObjectMap
-			// .size());
-
-			return true;
 		} catch (final Exception ex) {
 			ex.printStackTrace();
-			System.err.println(
-							"Error while inserting a tripleElement into the \"subject\" -map which"+ ex);
-			return false;
+			System.err.println("Error while inserting a tripleElement into the \"subject\" -map which"+ ex);
 		}
 	}
 
@@ -261,8 +256,13 @@ public class SevenMemoryIndices extends Indices {
 	}
 
 	@Override
-	public boolean remove(final Triple t) {
+	public void remove(final Triple t) {
 		try {
+			
+			if(!this.contains(t)) {
+				// triple to be removed not inside => do not need to remove!
+				return;
+			}
 
 			final StringBuffer subject = new StringBuffer(t.getSubject()
 					.toString());
@@ -298,18 +298,9 @@ public class SevenMemoryIndices extends Indices {
 			key = subjectPredicate.append(object).toString();
 			subjectPredicateObjectMap.removeFromCollection(key, t);
 
-			// System.out.println("SM: "+subjectMap.size()+" PM: "+predicateMap.
-			// size
-			// ()+" OM: "+objectMap.size()+" SPM: "+subjectPredicateMap.size(
-			// )+" SOM: "
-			// +subjectObjectMap.size()+" SPOM: "+subjectPredicateObjectMap
-			// .size());
-
-			return true;
 		} catch (final Exception ex) {
 			ex.printStackTrace();
 			System.err.println("Error while deleting a tripleElement from the maps:"+ ex);
-			return false;
 		}
 	}
 
@@ -318,10 +309,5 @@ public class SevenMemoryIndices extends Indices {
 	}
 	
 	public void writeOutAllModifiedPages() throws IOException {
-	}
-
-	@Override
-	public int numberOfTriples() {
-		return subjectPredicateObjectMap.size();
 	}
 }

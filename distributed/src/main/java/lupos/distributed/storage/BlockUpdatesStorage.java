@@ -23,38 +23,92 @@
  */
 package lupos.distributed.storage;
 
+import java.util.HashSet;
+
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * Interface for accessing the data.
+ * This class inserts imported triples block-wise...
  */
-public interface IStorage {
+public abstract class BlockUpdatesStorage implements IStorage {
+	
 	/**
-	 * import phase has been finished, indices can now be constructed
+	 * The block of triples to be inserted...
 	 */
-	public void endImportData();
+	protected HashSet<Triple> toBeAdded = new HashSet<Triple>();
+	
 	/**
-	 * adds a triple to the distributed indices
-	 * @param triple the triple to be added
+	 * specifies how many triples are inserted at one time
 	 */
-	public void addTriple(Triple triple);
+	protected int blocksize = 1000;
+
+	@Override
+	public void endImportData() {
+		if(!this.toBeAdded.isEmpty()){
+			// insert the whole block
+			this.blockInsert();
+			this.toBeAdded.clear();
+		}
+	}
+
+	@Override
+	public void addTriple(Triple triple) {
+		this.toBeAdded.add(triple);
+		if(this.toBeAdded.size()>this.blocksize){
+			// a block is full => insert the whole block
+			this.endImportData();
+		}
+	}
+
+	@Override
+	public boolean containsTriple(Triple triple) {
+		// first add remaining triples
+		this.endImportData();
+		return this.containsTripleAfterAdding(triple);
+	}
+
+	@Override
+	public void remove(Triple triple) {
+		this.toBeAdded.remove(triple);
+		// add remaining triples
+		this.endImportData();
+		this.removeAfterAdding(triple);
+	}
+
+	@Override
+	public QueryResult evaluateTriplePattern(TriplePattern triplePattern) {
+		// first add remaining triples
+		this.endImportData();
+		return this.evaluateTriplePatternAfterAdding(triplePattern);
+	}
+	
 	/**
-	 * Checks whether or not a triple is contained in the distributed indices 
+	 * This method must implement the insertion of a block of triples (intermediately stored in toBeAdded)
+	 */
+	public abstract void blockInsert();
+	
+	/**
+	 * Checks whether or not a triple is contained in the distributed indices.
+	 * This method is called after all pending triples are inserted...
 	 * @param triple the triple to be checked
 	 * @return true, if the triple is contained, false otherwise
 	 */
-	public boolean containsTriple(Triple triple);
+	public abstract boolean containsTripleAfterAdding(Triple triple);
+
 	/**
-	 * removes a triple in the distributed indices
+	 * Removes a triple in the distributed indices.
+	 * This method is called after all pending triples are inserted...
 	 * @param triple the triple to e removed
 	 */
-	public void remove(Triple triple);
+	public abstract void removeAfterAdding(Triple triple);
+
 	/**
-	 * evaluates one triple pattern on the distributed indices
+	 * Evaluates one triple pattern on the distributed indices.
+	 * This method is called after all pending triples are inserted...
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query result of the triple pattern
 	 */
-	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern);
+	public abstract QueryResult evaluateTriplePatternAfterAdding(TriplePattern triplePattern);
 }

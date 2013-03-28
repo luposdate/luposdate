@@ -138,9 +138,8 @@ public class SixIndices extends Indices {
     }
 
     @Override
-    public boolean add(final Triple t) {
+    public void add(final Triple t) {
         addTriple(t);
-        return true;
     }
 
     protected Adder[] adders = null;
@@ -241,15 +240,13 @@ public class SixIndices extends Indices {
     }
 
     @Override
-    public boolean remove(final Triple t) {
-
+    public void remove(final Triple t) {
     	this.SPO.remove(new TripleKey(t, new TripleComparator(CollationOrder.SPO)));
     	this.SOP.remove(new TripleKey(t, new TripleComparator(CollationOrder.SOP)));
     	this.PSO.remove(new TripleKey(t, new TripleComparator(CollationOrder.PSO)));
     	this.POS.remove(new TripleKey(t, new TripleComparator(CollationOrder.POS)));
     	this.OSP.remove(new TripleKey(t, new TripleComparator(CollationOrder.OSP)));
     	this.OPS.remove(new TripleKey(t, new TripleComparator(CollationOrder.OPS)));
-        return true;
     }
 
     public Iterator<Triple> evaluateTriplePattern(final TriplePattern tp) {
@@ -544,9 +541,4 @@ public class SixIndices extends Indices {
             }
         }
     }
-
-	@Override
-	public int numberOfTriples() {
-		return SPO.size();
-	}
 }

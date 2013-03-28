@@ -21,14 +21,17 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.gui;
+package lupos.distributedendpoints.gui;
 
-import lupos.distributed.query.QueryClient;
+import lupos.distributed.gui.Start_Demo_Applet;
+import lupos.distributedendpoints.query.QueryClient_DE;
 
-public class Demo_Applet {
+/**
+ * This class is just for starting the Demo_Applet with our new distributed query evaluator...
+ */
+public class Start_Demo_Applet_DE {
 
-	public static void main(String[] args){
-		lupos.gui.Demo_Applet.registerEvaluator("Distributed Evaluator", QueryClient.class);
-		lupos.gui.Demo_Applet.main(args);
+	public static void main(String[] args) throws ClassNotFoundException {
+		Start_Demo_Applet.start(QueryClient_DE.class, args);
 	}
 }

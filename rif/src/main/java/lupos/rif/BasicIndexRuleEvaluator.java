@@ -436,9 +436,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 					for(Triple t: gr.getGraphResultTriples()){
 						final Collection<Indices> ci = ((BasicIndexQueryEvaluator)this.evaluator).getDataset().getDefaultGraphIndices();
 						for (final Indices indices : ci) {
-							if (!indices.contains(t)) {
-								indices.add(t);
-							}					
+							indices.add(t);
 						}
 					}
 				} else if(qr instanceof RuleResult){

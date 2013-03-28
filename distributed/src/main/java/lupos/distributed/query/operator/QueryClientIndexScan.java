@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.query.indexscan;
+package lupos.distributed.query.operator;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,6 +38,9 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
+/**
+ * This class represents an index scan operator for the distributed query evaluators... 
+ */
 public class QueryClientIndexScan extends BasicIndexScan {
 	
 	public QueryClientIndexScan(final Root root){
@@ -51,6 +54,7 @@ public class QueryClientIndexScan extends BasicIndexScan {
 
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
+		// a fetch as needed distributed join strategy is implemented
 		QueryClientIndices queryClientIndices = (QueryClientIndices) indices;
 		QueryResult result = QueryResult.createInstance();
 		result.add(bindings);
@@ -70,6 +74,12 @@ public class QueryClientIndexScan extends BasicIndexScan {
 		return result;
 	}
 
+	/**
+	 * Adds all bound values of variables in a given bindings to a query result
+	 * @param bindings the given bindings
+	 * @param queryResult the queryResult to be added with bindings
+	 * @return the query result each bindings of which is added with the given bindings
+	 */
 	private IteratorQueryResult addBindings(final Bindings bindings, final QueryResult queryResult) {
 		return new IteratorQueryResult(new Iterator<Bindings>(){
 
@@ -102,6 +112,12 @@ public class QueryClientIndexScan extends BasicIndexScan {
 		return new TriplePattern(getItem(pattern.getPos(0), b), getItem(pattern.getPos(1), b), getItem(pattern.getPos(2), b));
 	}
 	
+	/**
+	 * Replaces variables with their values in a given bindings, otherwise return the original literal. 
+	 * @param item the literal or variable
+	 * @param bindings the intermediate solution
+	 * @return the value in bindings if item is a variable and bound in bindings, otherwise just item
+	 */
 	private Item getItem(Item item, Bindings bindings){
 		if(item.isVariable()){
 			Literal literal = bindings.get((Variable)item);

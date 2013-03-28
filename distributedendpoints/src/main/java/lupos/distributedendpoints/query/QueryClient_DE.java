@@ -21,8 +21,36 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.query;
+package lupos.distributedendpoints.query;
 
-public interface IQuery {
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsMap;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.distributed.query.QueryClient;
+import lupos.distributedendpoints.storage.Storage_DE;
 
+/**
+ * This class is the query evaluator for querying distributed SPARQL endpoints.
+ * All registered endpoints are asked for the evaluation of the triple patterns within a SPARQL query.
+ * It is assumed that the data is not distributed in an intelligent way and that any registered endpoint
+ * can have data for any triple pattern.
+ * Also non-luposdate SPARQL endpoints are supported.
+ * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ */
+public class QueryClient_DE extends QueryClient {
+
+	public QueryClient_DE() throws Exception {
+		super(new Storage_DE());
+	}
+
+	public QueryClient_DE(final String[] args) throws Exception {
+		super(new Storage_DE(), args);
+	}
+	
+	public void init() throws Exception {
+		// just for avoiding problems in distributed scenarios
+		Bindings.instanceClass = BindingsMap.class;
+		LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
+		super.init();
+	}
 }

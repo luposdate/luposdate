@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
@@ -130,6 +131,24 @@ public class FileHelper {
 		});
 	}
 
+	public static String readFileFromJarOrFile(final String resourceName) {
+		return FileHelper.readFile(resourceName, new FileHelper.GetReader() {
+
+			@Override
+			public Reader getReader(final String filenameParameter) throws FileNotFoundException {
+				return new InputStreamReader(getInputStreamFromJarOrFile(filenameParameter));
+			}
+		});
+	}
+	
+	public static InputStream getInputStreamFromJarOrFile(final String resourceName) throws FileNotFoundException {
+		try {
+			return FileHelper.class.getResource(resourceName).openStream();
+		} catch (IOException e) {
+			return new FileInputStream(new File(FileHelper.class.getResource(resourceName).getFile()));
+		}		
+	}
+	
 	public static String readFile(final String filename,
 			final GetReader getReader) {
 		System.out.println("read file:" + filename);

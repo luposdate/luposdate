@@ -479,20 +479,14 @@ TripleDeleter, Iterable<Item> {
 	
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
-		final StringBuffer result = new StringBuffer(super.toString()+" ("); // start
-		// result
-		// string
+		final StringBuffer result = new StringBuffer(super.toString()+" ("); // start result string
 
-		for (int i = 0; i < 3; ++i) { // walk through items...
-			if (items[i] instanceof Literal)
+		for (int i = 0; i < 3; i++) { // walk through items...
+			if (items[i] instanceof Literal) {
 				result.append(((Literal) items[i]).toString(prefixInstance));
-			else
-				result.append(prefixInstance.add(this.items[i].toString()));// add
-			// item
-			// to
-			// result
-			// string
-
+			} else {
+				result.append(prefixInstance.add(this.items[i].toString())); // add item to result string
+			}
 			if (i < 2) { // add ", " between the items...
 				result.append(", ");
 			}
@@ -500,6 +494,36 @@ TripleDeleter, Iterable<Item> {
 
 		return result.toString() + ")" + getCardinalityString();
 	}
+	
+	public String toN3String() {
+		final StringBuffer result = new StringBuffer();
+
+		for (int i = 0; i < 3; i++) {
+			result.append(this.items[i].toString());
+			result.append(" ");
+		}
+
+		result.append(".");
+
+		return result.toString();
+	}
+	
+	public String toN3String(final lupos.rdf.Prefix prefixInstance) {
+		final StringBuffer result = new StringBuffer(); // start result string
+
+		for (int i = 0; i < 3; i++) { // walk through items...
+			if (items[i] instanceof Literal) {
+				result.append(((Literal) items[i]).toString(prefixInstance));
+			} else {
+				result.append(prefixInstance.add(this.items[i].toString()));// add item to result string
+			}
+			result.append(" ");
+		}
+		result.append(".");
+
+		return result.toString();
+	}
+
 
 	private String getCardinalityString() {
 		if (this.cardinality >= 0) {
