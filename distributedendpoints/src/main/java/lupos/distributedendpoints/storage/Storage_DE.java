@@ -53,7 +53,7 @@ public class Storage_DE extends BlockUpdatesStorage {
 	 */
 	public Storage_DE(){
 		try {
-			this.urlsOfEndpoints = FileHelper.readInputStreamToCollection(FileHelper.getInputStreamFromJarOrFile("/endpoints.txt")).toArray(new String[0]);
+			this.urlsOfEndpoints = FileHelper.readInputStreamToCollection(FileHelper.getInputStreamFromJarOrFile("/endpoints.config")).toArray(new String[0]);
 		} catch (FileNotFoundException e) {
 			System.err.println(e);
 			e.printStackTrace();
