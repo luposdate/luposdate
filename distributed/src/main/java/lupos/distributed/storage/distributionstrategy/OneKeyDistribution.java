@@ -21,40 +21,48 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage;
+package lupos.distributed.storage.distributionstrategy;
 
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * Interface for accessing the data.
+ * This class implements the distribution strategy, where the
+ * triples are distributed according to the subject, predicate and object
+ * (to three different nodes).
  */
-public interface IStorage {
-	/**
-	 * import phase has been finished, indices can now be constructed
-	 */
-	public void endImportData();
-	/**
-	 * adds a triple to the distributed indices
-	 * @param triple the triple to be added
-	 */
-	public void addTriple(Triple triple);
-	/**
-	 * Checks whether or not a triple is contained in the distributed indices 
-	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
-	 */
-	public boolean containsTriple(Triple triple);
-	/**
-	 * removes a triple in the distributed indices
-	 * @param triple the triple to e removed
-	 */
-	public void remove(Triple triple);
-	/**
-	 * evaluates one triple pattern on the distributed indices
-	 * @param triplePattern the triple pattern to be evaluated
-	 * @return the query result of the triple pattern
-	 */
-	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception;
+public class OneKeyDistribution implements IDistribution<String> {
+
+	@Override
+	public String[] getKeysForStoring(Triple triple) {		
+		return new String[]{
+				"S" + triple.getSubject().originalString(),
+				"P" + triple.getPredicate().originalString(),
+				"O" + triple.getObject().originalString()
+		};
+	}
+
+	@Override
+	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedException {
+		if(triplePattern.getSubject().isVariable()){
+			if(triplePattern.getObject().isVariable()){
+				if(triplePattern.getPredicate().isVariable()){
+					// only variables in the triple pattern is not supported!
+					throw new TriplePatternNotSupportedException(this, triplePattern);
+				} else {
+					return new String[]{ "P" + ((Literal)triplePattern.getPredicate()).originalString() };
+				}
+			} else {
+				return new String[]{ "O" + ((Literal)triplePattern.getObject()).originalString() };
+			}
+		} else {
+			return new String[]{ "S" + ((Literal)triplePattern.getSubject()).originalString() };
+		}
+	}
+	
+	@Override
+	public String toString(){
+		return "One key distribution strategy (triple (s, p, o) has keys { 'S' + s, 'P' + p, 'O' + o })";
+	}
 }

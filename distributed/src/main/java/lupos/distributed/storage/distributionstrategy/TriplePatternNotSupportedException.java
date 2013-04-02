@@ -21,40 +21,23 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage;
+package lupos.distributed.storage.distributionstrategy;
 
-import lupos.datastructures.items.Triple;
-import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * Interface for accessing the data.
+ * This exception is thrown whenever the triple pattern is not supported by
+ * the used distribution strategy (e.g., a triple pattern with three variables
+ * is not supported by the one key distribution)
  */
-public interface IStorage {
+public class TriplePatternNotSupportedException extends Exception {
+
 	/**
-	 * import phase has been finished, indices can now be constructed
+	 * 
 	 */
-	public void endImportData();
-	/**
-	 * adds a triple to the distributed indices
-	 * @param triple the triple to be added
-	 */
-	public void addTriple(Triple triple);
-	/**
-	 * Checks whether or not a triple is contained in the distributed indices 
-	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
-	 */
-	public boolean containsTriple(Triple triple);
-	/**
-	 * removes a triple in the distributed indices
-	 * @param triple the triple to e removed
-	 */
-	public void remove(Triple triple);
-	/**
-	 * evaluates one triple pattern on the distributed indices
-	 * @param triplePattern the triple pattern to be evaluated
-	 * @return the query result of the triple pattern
-	 */
-	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception;
+	private static final long serialVersionUID = -5802969991107830886L;
+
+	public TriplePatternNotSupportedException(final IDistribution<?> distribution, final TriplePattern triplePattern){
+		super("The triple pattern " + triplePattern + " is not supported by the distribution strategy " + distribution);
+	}
 }

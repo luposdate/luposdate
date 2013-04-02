@@ -174,6 +174,18 @@ TripleDeleter, Iterable<Item> {
 	public Item getPos(final int i) {
 		return items[i];
 	}
+	
+	public Item getSubject(){
+		return items[0];
+	}
+
+	public Item getPredicate(){
+		return items[1];
+	}
+
+	public Item getObject(){
+		return items[2];
+	}
 
 	public void setPos(final Item item, final int i) {
 		items[i] = item;

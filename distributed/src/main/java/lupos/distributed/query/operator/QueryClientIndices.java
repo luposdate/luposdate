@@ -46,7 +46,13 @@ public class QueryClientIndices extends Indices {
 	}
 
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern){
-		return this.storage.evaluateTriplePattern(triplePattern);
+		try {
+			return this.storage.evaluateTriplePattern(triplePattern);
+		} catch (Exception e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	@Override

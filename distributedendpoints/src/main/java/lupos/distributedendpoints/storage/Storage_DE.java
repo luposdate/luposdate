@@ -30,7 +30,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.distributed.storage.BlockUpdatesStorage;
+import lupos.distributed.storage.nodistributionstrategy.BlockUpdatesStorage;
 import lupos.endpoint.client.Client;
 import lupos.engine.operators.multiinput.join.parallel.ResultCollector;
 import lupos.engine.operators.tripleoperator.TriplePattern;

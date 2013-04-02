@@ -21,40 +21,27 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage;
+package lupos.distributed.storage.distributionstrategy;
 
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * Interface for accessing the data.
+ * This interface specifies the basic methods for distribution strategies.
+ * @param <K> the type of the keys
  */
-public interface IStorage {
+public interface IDistribution<K> {
 	/**
-	 * import phase has been finished, indices can now be constructed
+	 * This method returns the keys under which the given triple is stored...
+	 * @param triple the triple from which the keys are determined
+	 * @return an array of keys for this triple
 	 */
-	public void endImportData();
+	public K[] getKeysForStoring(Triple triple);
+	
 	/**
-	 * adds a triple to the distributed indices
-	 * @param triple the triple to be added
+	 * This method returns the keys under which the results of a triple pattern are determined.
+	 * @param triplePattern the triple pattern the result of which will be determined
+	 * @return the keys which are used to retrieve the results of the given triple pattern
 	 */
-	public void addTriple(Triple triple);
-	/**
-	 * Checks whether or not a triple is contained in the distributed indices 
-	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
-	 */
-	public boolean containsTriple(Triple triple);
-	/**
-	 * removes a triple in the distributed indices
-	 * @param triple the triple to e removed
-	 */
-	public void remove(Triple triple);
-	/**
-	 * evaluates one triple pattern on the distributed indices
-	 * @param triplePattern the triple pattern to be evaluated
-	 * @return the query result of the triple pattern
-	 */
-	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception;
+	public K[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedException;
 }

@@ -21,16 +21,18 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage;
+package lupos.distributed.storage.nodistributionstrategy;
 
 import java.util.HashSet;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.storage.IStorage;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * This class inserts imported triples block-wise...
+ * There is no distribution strategy assumed.
  */
 public abstract class BlockUpdatesStorage implements IStorage {
 	

@@ -21,40 +21,62 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage;
+package lupos.distributed.storage.distributionstrategy;
+
+import java.util.HashSet;
 
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * Interface for accessing the data.
+ * This class transforms a set of keys to ids of the storage node.
+ * @param <K> the type of keys to be transformed to ids of the storage node
  */
-public interface IStorage {
+public class HashingPipe<K> implements IDistribution<Integer> {
+	
 	/**
-	 * import phase has been finished, indices can now be constructed
+	 * The underlying distribution strategy
 	 */
-	public void endImportData();
+	protected final IDistribution<K> distribution;
+
 	/**
-	 * adds a triple to the distributed indices
-	 * @param triple the triple to be added
+	 * the maximum number of storage nodes
 	 */
-	public void addTriple(Triple triple);
+	protected final int maximumNodes;
+	
 	/**
-	 * Checks whether or not a triple is contained in the distributed indices 
-	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
+	 * Constructor
+	 * @param distribution the underlying distribution strategy
+	 * @param maximumNodes the maximum number of storage nodes
 	 */
-	public boolean containsTriple(Triple triple);
+	public HashingPipe(final IDistribution<K> distribution, final int maximumNodes){
+		this.distribution = distribution;
+		this.maximumNodes = maximumNodes;
+	}
+
+	@Override
+	public Integer[] getKeysForStoring(Triple triple) {
+		return HashingPipe.transformsKeys(this.distribution.getKeysForStoring(triple), this.maximumNodes);
+	}
+
+	@Override
+	public Integer[] getKeysForQuerying(TriplePattern triplePattern)
+			throws TriplePatternNotSupportedException {
+		return HashingPipe.transformsKeys(this.distribution.getKeysForQuerying(triplePattern), this.maximumNodes);
+	}
+
 	/**
-	 * removes a triple in the distributed indices
-	 * @param triple the triple to e removed
+	 * transforms a key array to an array of ids of the storage node (in the range of 0 to maximumNodes - 1)
+	 * @param keys the key array to be transformed to an id array of storage nodes
+	 * @param maximumNodes the maximum number of nodes
+	 * @return the id array of storage nodes
 	 */
-	public void remove(Triple triple);
-	/**
-	 * evaluates one triple pattern on the distributed indices
-	 * @param triplePattern the triple pattern to be evaluated
-	 * @return the query result of the triple pattern
-	 */
-	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception;
+	protected static<K> Integer[] transformsKeys(final K[] keys, final int maximumNodes) {
+		// use hash set to eliminate duplicates!
+		HashSet<Integer> set = new HashSet<Integer>();
+		for(K key: keys){
+			set.add(key.hashCode() % maximumNodes);
+		}
+		return set.toArray(new Integer[0]);
+	}
 }
