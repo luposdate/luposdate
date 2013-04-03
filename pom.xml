@@ -347,6 +347,22 @@
 
 	</repositories>
 	
+	<distributionManagement>
+		<repository>
+			<id>itm-maven-repository-releases</id>
+			<name>ITM UzL Maven releases repository</name>
+			<url>http://maven.itm.uni-luebeck.de/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>itm-maven-repository-snapshots</id>
+			<name>ITM UzL Maven snapshots repository</name>
+			<url>http://maven.itm.uni-luebeck.de/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git@github.com:luposdate/luposdate.git</connection>
+	</scm>
+
 	<build>
 	
 		<plugins>
