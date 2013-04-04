@@ -103,6 +103,7 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	@Override
 	public void removeAfterAdding(final Integer key, final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), key);
+		this.endpointManagement.waitForThreadPool();
 	}
 
 	@Override

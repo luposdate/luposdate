@@ -85,7 +85,7 @@ public class EndpointManagement {
 	}
 
 	/**
-	 * submits asynchronously a SPARUL query to a specific registered SPARQL endpoints
+	 * submits asynchronously a SPARUL query to a specific registered SPARQL endpoint
 	 * @param query the query to be submitted
 	 * @param number the number of the endpoint to which the query is sent to
 	 */
@@ -122,7 +122,7 @@ public class EndpointManagement {
 	}
 
 	/**
-	 * submits a SPARQL query to a specific registered SPARQL endpoints
+	 * submits a SPARQL query to a specific registered SPARQL endpoint
 	 * @param query the given query to be submitted
 	 * @param number the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted query

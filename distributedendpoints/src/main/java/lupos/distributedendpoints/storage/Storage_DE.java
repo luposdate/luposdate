@@ -66,6 +66,7 @@ public class Storage_DE extends BlockUpdatesStorage {
 	@Override
 	public void removeAfterAdding(final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple));
+		this.endpointManagement.waitForThreadPool();
 	}
 
 	@Override
