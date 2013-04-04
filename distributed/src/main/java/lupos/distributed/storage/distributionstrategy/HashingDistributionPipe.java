@@ -23,25 +23,60 @@
  */
 package lupos.distributed.storage.distributionstrategy;
 
+import java.util.HashSet;
+
 import lupos.datastructures.items.Triple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This interface specifies the basic methods for distribution strategies.
- * @param <K> the type of the keys
+ * This class transforms a set of keys to ids of the storage node.
+ * @param <K> the type of keys to be transformed to ids of the storage node
  */
-public interface IDistribution<K> {
-	/**
-	 * This method returns the keys under which the given triple is stored...
-	 * @param triple the triple from which the keys are determined
-	 * @return an array of keys for this triple
-	 */
-	public K[] getKeysForStoring(Triple triple);
+public class HashingDistributionPipe<K> implements IDistribution<Integer> {
 	
 	/**
-	 * This method returns the keys under which the results of a triple pattern are determined.
-	 * @param triplePattern the triple pattern the result of which will be determined
-	 * @return the keys which are used to retrieve the results of the given triple pattern
+	 * The underlying distribution strategy
 	 */
-	public K[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError;
+	protected final IDistribution<K> distribution;
+
+	/**
+	 * the maximum number of storage nodes
+	 */
+	protected final int maximumNodes;
+	
+	/**
+	 * Constructor
+	 * @param distribution the underlying distribution strategy
+	 * @param maximumNodes the maximum number of storage nodes
+	 */
+	public HashingDistributionPipe(final IDistribution<K> distribution, final int maximumNodes){
+		this.distribution = distribution;
+		this.maximumNodes = maximumNodes;
+	}
+
+	@Override
+	public Integer[] getKeysForStoring(Triple triple) {
+		return HashingDistributionPipe.transformsKeys(this.distribution.getKeysForStoring(triple), this.maximumNodes);
+	}
+
+	@Override
+	public Integer[] getKeysForQuerying(TriplePattern triplePattern)
+			throws TriplePatternNotSupportedError {
+		return HashingDistributionPipe.transformsKeys(this.distribution.getKeysForQuerying(triplePattern), this.maximumNodes);
+	}
+
+	/**
+	 * transforms a key array to an array of ids of the storage node (in the range of 0 to maximumNodes - 1)
+	 * @param keys the key array to be transformed to an id array of storage nodes
+	 * @param maximumNodes the maximum number of nodes
+	 * @return the id array of storage nodes
+	 */
+	protected static<K> Integer[] transformsKeys(final K[] keys, final int maximumNodes) {
+		// use hash set to eliminate duplicates!
+		HashSet<Integer> set = new HashSet<Integer>();
+		for(K key: keys){
+			set.add(key.hashCode() % maximumNodes);
+		}
+		return set.toArray(new Integer[0]);
+	}
 }

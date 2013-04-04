@@ -21,23 +21,23 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage.distributionstrategy;
+package lupos.distributedendpoints.query;
 
-import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.distributed.storage.distributionstrategy.DistributionStrategyEnum;
 
 /**
- * This exception is thrown whenever the triple pattern is not supported by
- * the used distribution strategy (e.g., a triple pattern with three variables
- * is not supported by the one key distribution)
+ * This class is the query evaluator for querying distributed SPARQL endpoints based on the one to three keys distribution strategy.
+ *
+ * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
  */
-public class TriplePatternNotSupportedException extends Exception {
+public class QueryClient_DE_OneToThreeKeysDistribution extends QueryClient_DE_DistributionStrategy<String> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5802969991107830886L;
-
-	public TriplePatternNotSupportedException(final IDistribution<?> distribution, final TriplePattern triplePattern){
-		super("The triple pattern " + triplePattern + " is not supported by the distribution strategy " + distribution);
+	public QueryClient_DE_OneToThreeKeysDistribution() throws Exception {
+		super(DistributionStrategyEnum.OneToThreeKeysDistribution.createInstance());
 	}
+
+	public QueryClient_DE_OneToThreeKeysDistribution(final String[] args) throws Exception {
+		super(DistributionStrategyEnum.OneToThreeKeysDistribution.createInstance(), args);
+	}
+
 }

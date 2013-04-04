@@ -170,26 +170,30 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception {
 		// first add remaining triples
 		this.endImportData();
-		K[] keys = this.distribution.getKeysForQuerying(triplePattern);
-		if(keys.length == 1) {
-			return this.evaluateTriplePatternAfterAdding(keys[0], triplePattern);
-		} else {
-			// asynchronously retrieve the results...
-			final ResultCollector resultCollector = new ResultCollector();
-			resultCollector.setNumberOfThreads(keys.length);
-			Thread[] threads = new Thread[keys.length];
-			for(int i=0; i<keys.length; i++) {
-				final K key = keys[i];
-				threads[i] = new Thread() {
-					@Override
-					public void run() {
-						resultCollector.process(evaluateTriplePatternAfterAdding(key, triplePattern), 0);
-						resultCollector.incNumberOfThreads();
-					}
-				};
-				threads[i].start();
-			}			
-			return resultCollector.getResult();
+		try {
+			K[] keys = this.distribution.getKeysForQuerying(triplePattern);
+			if(keys.length == 1) {
+				return this.evaluateTriplePatternAfterAdding(keys[0], triplePattern);
+			} else {
+				// asynchronously retrieve the results...
+				final ResultCollector resultCollector = new ResultCollector();
+				resultCollector.setNumberOfThreads(keys.length);
+				Thread[] threads = new Thread[keys.length];
+				for(int i=0; i<keys.length; i++) {
+					final K key = keys[i];
+					threads[i] = new Thread() {
+						@Override
+						public void run() {
+							resultCollector.process(evaluateTriplePatternAfterAdding(key, triplePattern), 0);
+							resultCollector.incNumberOfThreads();
+						}
+					};
+					threads[i].start();
+				}			
+				return resultCollector.getResult();
+			}
+		} catch(TriplePatternNotSupportedError e){
+			return this.evaluateTriplePatternAfterAdding(triplePattern);
 		}
 	}
 	
@@ -235,6 +239,23 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	 * @return the query result of the triple pattern
 	 */
 	public abstract QueryResult evaluateTriplePatternAfterAdding(K key, TriplePattern triplePattern);
+
+	/**
+	 * Evaluates one triple pattern on the distributed indices.
+	 * This method is called after all pending triples are inserted...
+	 * 
+	 * This method is called if during determining the keys a TriplePatternNotSupportedError is thrown.
+	 * It can be used in derived classes to implement a workaround by e.g.
+	 * broadcasting the query to all nodes and collect their results...
+	 * 
+	 * By default, it throws another TriplePatternNotSupportedError.
+	 * 
+	 * @param triplePattern the triple pattern to be evaluated
+	 * @return the query result of the triple pattern
+	 */
+	public QueryResult evaluateTriplePatternAfterAdding(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
+		throw new TriplePatternNotSupportedError(this.distribution, triplePattern);
+	}
 	
 	/**
 	 * A class for waiting one of future boolean results becoming true (or determining false if all are false)

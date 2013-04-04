@@ -23,60 +23,21 @@
  */
 package lupos.distributed.storage.distributionstrategy;
 
-import java.util.HashSet;
-
-import lupos.datastructures.items.Triple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class transforms a set of keys to ids of the storage node.
- * @param <K> the type of keys to be transformed to ids of the storage node
+ * This error is thrown whenever the triple pattern is not supported by
+ * the used distribution strategy (e.g., a triple pattern with three variables
+ * is not supported by the one key distribution)
  */
-public class HashingPipe<K> implements IDistribution<Integer> {
-	
-	/**
-	 * The underlying distribution strategy
-	 */
-	protected final IDistribution<K> distribution;
+public class TriplePatternNotSupportedError extends Error {
 
 	/**
-	 * the maximum number of storage nodes
+	 * 
 	 */
-	protected final int maximumNodes;
-	
-	/**
-	 * Constructor
-	 * @param distribution the underlying distribution strategy
-	 * @param maximumNodes the maximum number of storage nodes
-	 */
-	public HashingPipe(final IDistribution<K> distribution, final int maximumNodes){
-		this.distribution = distribution;
-		this.maximumNodes = maximumNodes;
-	}
+	private static final long serialVersionUID = -5802969991107830886L;
 
-	@Override
-	public Integer[] getKeysForStoring(Triple triple) {
-		return HashingPipe.transformsKeys(this.distribution.getKeysForStoring(triple), this.maximumNodes);
-	}
-
-	@Override
-	public Integer[] getKeysForQuerying(TriplePattern triplePattern)
-			throws TriplePatternNotSupportedException {
-		return HashingPipe.transformsKeys(this.distribution.getKeysForQuerying(triplePattern), this.maximumNodes);
-	}
-
-	/**
-	 * transforms a key array to an array of ids of the storage node (in the range of 0 to maximumNodes - 1)
-	 * @param keys the key array to be transformed to an id array of storage nodes
-	 * @param maximumNodes the maximum number of nodes
-	 * @return the id array of storage nodes
-	 */
-	protected static<K> Integer[] transformsKeys(final K[] keys, final int maximumNodes) {
-		// use hash set to eliminate duplicates!
-		HashSet<Integer> set = new HashSet<Integer>();
-		for(K key: keys){
-			set.add(key.hashCode() % maximumNodes);
-		}
-		return set.toArray(new Integer[0]);
+	public TriplePatternNotSupportedError(final IDistribution<?> distribution, final TriplePattern triplePattern){
+		super("The triple pattern " + triplePattern + " is not supported by the distribution strategy " + distribution);
 	}
 }

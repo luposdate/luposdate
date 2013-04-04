@@ -485,9 +485,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		info.setText("Choose an evaluator:\t");
 		leftpanel.add(info);
 
-		// create combobox for query files, fill it and add it to Applet...
+		// create combobox for the evaluators, fill it and add it to Applet...
 		this.cobo_evaluator = new JComboBox(this.getEvaluators());
-		this.cobo_evaluator.setPreferredSize(new Dimension(160, 20));
 		this.cobo_evaluator.addActionListener(new ActionListener() {
 
 			@Override

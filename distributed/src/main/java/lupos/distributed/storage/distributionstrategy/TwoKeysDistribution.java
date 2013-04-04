@@ -44,19 +44,19 @@ public class TwoKeysDistribution implements IDistribution<String> {
 	}
 
 	@Override
-	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedException {
+	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
 		if(triplePattern.getSubject().isVariable()){
 			if(!triplePattern.getPredicate().isVariable() && !triplePattern.getObject().isVariable()){
 				return new String[]{ "PO" + ((Literal)triplePattern.getPredicate()).originalString() + ((Literal)triplePattern.getObject()).originalString() };
 			} else {
 				// only one variable or no variables in the triple pattern is not supported!
-				throw new TriplePatternNotSupportedException(this, triplePattern);
+				throw new TriplePatternNotSupportedError(this, triplePattern);
 			}
 		} else {
 			if(triplePattern.getObject().isVariable()){
 				if(triplePattern.getPredicate().isVariable()){
 					// only one variable in the triple pattern is not supported!
-					throw new TriplePatternNotSupportedException(this, triplePattern);
+					throw new TriplePatternNotSupportedError(this, triplePattern);
 				} else {
 					return new String[]{ "SP" + ((Literal)triplePattern.getSubject()).originalString() + ((Literal)triplePattern.getPredicate()).originalString() };
 				}

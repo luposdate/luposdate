@@ -37,8 +37,8 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 public class OneToThreeKeysDistribution implements IDistribution<String> {
 	
 	// just for avoiding redundant code...
-	private OneKeyDistribution oneKeyDistribution;
-	private TwoKeysDistribution twoKeysDistribution;
+	private OneKeyDistribution oneKeyDistribution = new OneKeyDistribution();
+	private TwoKeysDistribution twoKeysDistribution = new TwoKeysDistribution();
 
 	@Override
 	public String[] getKeysForStoring(Triple triple) {
@@ -53,7 +53,7 @@ public class OneToThreeKeysDistribution implements IDistribution<String> {
 	}
 
 	@Override
-	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedException {
+	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
 		int numberOfLiterals = 0;
 		// count the number of literals in a triple pattern...
 		for(Item item: triplePattern){
@@ -69,7 +69,7 @@ public class OneToThreeKeysDistribution implements IDistribution<String> {
 			case 3:
 				return new String[]{ "SPO" + ((Literal)triplePattern.getSubject()).originalString() + ((Literal)triplePattern.getPredicate()).originalString() + ((Literal)triplePattern.getObject()).originalString() };
 			default:
-				throw new TriplePatternNotSupportedException(this, triplePattern);
+				throw new TriplePatternNotSupportedError(this, triplePattern);
 		}
 	}
 	

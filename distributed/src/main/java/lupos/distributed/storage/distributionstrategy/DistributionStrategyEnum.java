@@ -23,25 +23,38 @@
  */
 package lupos.distributed.storage.distributionstrategy;
 
-import lupos.datastructures.items.Triple;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+public enum DistributionStrategyEnum {
+	
+	OneKeyDistribution {
 
-/**
- * This interface specifies the basic methods for distribution strategies.
- * @param <K> the type of the keys
- */
-public interface IDistribution<K> {
-	/**
-	 * This method returns the keys under which the given triple is stored...
-	 * @param triple the triple from which the keys are determined
-	 * @return an array of keys for this triple
-	 */
-	public K[] getKeysForStoring(Triple triple);
+		@Override
+		public IDistribution<String> createInstance() {
+			return new OneKeyDistribution();
+		}
+		
+	},
+	
+	TwoKeysDistribution {
+
+		@Override
+		public IDistribution<String> createInstance() {
+			return new TwoKeysDistribution();
+		}
+		
+	},
+	
+	OneToThreeKeysDistribution {
+
+		@Override
+		public IDistribution<String> createInstance() {
+			return new OneToThreeKeysDistribution();
+		}
+				
+	};
 	
 	/**
-	 * This method returns the keys under which the results of a triple pattern are determined.
-	 * @param triplePattern the triple pattern the result of which will be determined
-	 * @return the keys which are used to retrieve the results of the given triple pattern
+	 * Creates an instance of the distribution strategy
+	 * @return the created instance
 	 */
-	public K[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError;
+	public abstract IDistribution<String> createInstance();
 }

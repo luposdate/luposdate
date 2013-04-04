@@ -44,12 +44,12 @@ public class OneKeyDistribution implements IDistribution<String> {
 	}
 
 	@Override
-	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedException {
+	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
 		if(triplePattern.getSubject().isVariable()){
 			if(triplePattern.getObject().isVariable()){
 				if(triplePattern.getPredicate().isVariable()){
 					// only variables in the triple pattern is not supported!
-					throw new TriplePatternNotSupportedException(this, triplePattern);
+					throw new TriplePatternNotSupportedError(this, triplePattern);
 				} else {
 					return new String[]{ "P" + ((Literal)triplePattern.getPredicate()).originalString() };
 				}

@@ -21,27 +21,34 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage.distributionstrategy;
+package lupos.distributedendpoints.query;
 
-import lupos.datastructures.items.Triple;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsMap;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.distributed.query.QueryClient;
+import lupos.distributed.storage.distributionstrategy.IDistribution;
+import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 
 /**
- * This interface specifies the basic methods for distribution strategies.
- * @param <K> the type of the keys
+ * This class is the query evaluator for querying distributed SPARQL endpoints based on a given distribution strategy.
+ *
+ * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
  */
-public interface IDistribution<K> {
-	/**
-	 * This method returns the keys under which the given triple is stored...
-	 * @param triple the triple from which the keys are determined
-	 * @return an array of keys for this triple
-	 */
-	public K[] getKeysForStoring(Triple triple);
+public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
+
+	public QueryClient_DE_DistributionStrategy(IDistribution<K> distribution) throws Exception {
+		super(Storage_DE_DistributionStrategy.createInstance(distribution));
+	}
+
+	public QueryClient_DE_DistributionStrategy(IDistribution<K> distribution, final String[] args) throws Exception {
+		super(Storage_DE_DistributionStrategy.createInstance(distribution), args);
+	}
 	
-	/**
-	 * This method returns the keys under which the results of a triple pattern are determined.
-	 * @param triplePattern the triple pattern the result of which will be determined
-	 * @return the keys which are used to retrieve the results of the given triple pattern
-	 */
-	public K[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError;
+	public void init() throws Exception {
+		// just for avoiding problems in distributed scenarios
+		Bindings.instanceClass = BindingsMap.class;
+		LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
+		super.init();
+	}
 }

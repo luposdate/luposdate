@@ -23,15 +23,22 @@
  */
 package lupos.distributedendpoints.gui;
 
-import lupos.distributed.gui.Start_Demo_Applet;
 import lupos.distributedendpoints.query.QueryClient_DE;
+import lupos.distributedendpoints.query.QueryClient_DE_OneKeyDistribution;
+import lupos.distributedendpoints.query.QueryClient_DE_OneToThreeKeysDistribution;
+import lupos.distributedendpoints.query.QueryClient_DE_TwoKeysDistribution;
+import lupos.gui.Demo_Applet;
 
 /**
- * This class is just for starting the Demo_Applet with our new distributed query evaluator...
+ * This class is just for starting the Demo_Applet with our new distributed query evaluators (without and with different distribution strategies)...
  */
 public class Start_Demo_Applet_DE {
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		Start_Demo_Applet.start(QueryClient_DE.class, args);
+		Demo_Applet.registerEvaluator("Distributed Evaluator (without distribution strategy)", QueryClient_DE.class);
+		Demo_Applet.registerEvaluator("Distributed Evaluator (one key distribution)", QueryClient_DE_OneKeyDistribution.class);
+		Demo_Applet.registerEvaluator("Distributed Evaluator (two keys distribution)", QueryClient_DE_TwoKeysDistribution.class);
+		Demo_Applet.registerEvaluator("Distributed Evaluator (one to three keys distribution)", QueryClient_DE_OneToThreeKeysDistribution.class);
+		Demo_Applet.main(args);
 	}
 }

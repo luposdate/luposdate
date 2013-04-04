@@ -39,10 +39,10 @@ import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class represents an index scan operator for the distributed query evaluators... 
+ * This class represents an index scan operator for the distributed query evaluators...
  */
 public class QueryClientIndexScan extends BasicIndexScan {
-	
+
 	public QueryClientIndexScan(final Root root){
 		super(root);
 	}
@@ -55,17 +55,17 @@ public class QueryClientIndexScan extends BasicIndexScan {
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		// a fetch as needed distributed join strategy is implemented
-		QueryClientIndices queryClientIndices = (QueryClientIndices) indices;
+		final QueryClientIndices queryClientIndices = (QueryClientIndices) indices;
 		QueryResult result = QueryResult.createInstance();
 		result.add(bindings);
-		
-		for (TriplePattern pattern : this.triplePatterns) {
-			QueryResult iResult = result;
+
+		for (final TriplePattern pattern : this.triplePatterns) {
+			final QueryResult iResult = result;
 			result = QueryResult.createInstance();
-						
-			for(Bindings b: iResult){
-				TriplePattern tpWithReplacedVariables = this.determineTriplePatternToEvaluate(pattern, b);
-				QueryResult resultOfTP = queryClientIndices.evaluateTriplePattern(tpWithReplacedVariables);
+
+			for(final Bindings b: iResult){
+				final TriplePattern tpWithReplacedVariables = this.determineTriplePatternToEvaluate(pattern, b);
+				final QueryResult resultOfTP = queryClientIndices.evaluateTriplePattern(tpWithReplacedVariables);
 				if(resultOfTP!=null){
 					result.addAll(this.addBindings(b, resultOfTP));
 				}
@@ -84,7 +84,7 @@ public class QueryClientIndexScan extends BasicIndexScan {
 		return new IteratorQueryResult(new Iterator<Bindings>(){
 
 			Iterator<Bindings> it = queryResult.oneTimeIterator();
-			
+
 			@Override
 			public boolean hasNext() {
 				return this.it.hasNext();
@@ -93,7 +93,7 @@ public class QueryClientIndexScan extends BasicIndexScan {
 			@Override
 			public Bindings next() {
 				if(this.it.hasNext()){
-					Bindings b = this.it.next().clone();
+					final Bindings b = this.it.next().clone();
 					b.addAll(bindings);
 					return b;
 				} else {
@@ -104,23 +104,23 @@ public class QueryClientIndexScan extends BasicIndexScan {
 			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
-			}			
+			}
 		});
 	}
 
-	private TriplePattern determineTriplePatternToEvaluate(TriplePattern pattern, Bindings b) {		
-		return new TriplePattern(getItem(pattern.getPos(0), b), getItem(pattern.getPos(1), b), getItem(pattern.getPos(2), b));
+	private TriplePattern determineTriplePatternToEvaluate(final TriplePattern pattern, final Bindings b) {
+		return new TriplePattern(this.getItem(pattern.getPos(0), b), this.getItem(pattern.getPos(1), b), this.getItem(pattern.getPos(2), b));
 	}
-	
+
 	/**
-	 * Replaces variables with their values in a given bindings, otherwise return the original literal. 
+	 * Replaces variables with their values in a given bindings, otherwise return the original literal.
 	 * @param item the literal or variable
 	 * @param bindings the intermediate solution
 	 * @return the value in bindings if item is a variable and bound in bindings, otherwise just item
 	 */
-	private Item getItem(Item item, Bindings bindings){
+	private Item getItem(final Item item, final Bindings bindings){
 		if(item.isVariable()){
-			Literal literal = bindings.get((Variable)item);
+			final Literal literal = bindings.get((Variable)item);
 			if(literal!=null){
 				return literal;
 			}
