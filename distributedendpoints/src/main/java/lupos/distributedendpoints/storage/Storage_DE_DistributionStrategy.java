@@ -38,7 +38,7 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This class contains the storage layer for our distributed SPARQL endpoint query evaluator.
  * This class handles the communication with the SPARQL endpoints during data manipulation and distributed querying.
- * 
+ *
  * The data is distributed according to the distribution strategy given as parameter to the constructor.
  * Only relevant endpoints are asked during answering a given query.
  */
@@ -48,71 +48,77 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 *  for managing the registered endpoints and submitting queries to them
 	 */
 	protected final EndpointManagement endpointManagement;
-	
+
 	/**
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
-	 * 
+	 *
 	 * @param distribution The distribution strategy to be used
 	 */
-	public Storage_DE_DistributionStrategy(IDistribution<Integer> distribution) {
+	public Storage_DE_DistributionStrategy(final IDistribution<Integer> distribution) {
 		this(new EndpointManagement(), distribution);
 	}
-	
+
 	/**
-	 * Constructor to set the distribution strategy as well as the endpoint management 
-	 * 
+	 * Constructor to set the distribution strategy as well as the endpoint management
+	 *
 	 * @param endpointManagement the endpoint management to be used
 	 * @param distribution the distribution strategy to be used
 	 */
-	private Storage_DE_DistributionStrategy(final EndpointManagement endpointManagement, IDistribution<Integer> distribution) {
+	private Storage_DE_DistributionStrategy(final EndpointManagement endpointManagement, final IDistribution<Integer> distribution) {
 		super(distribution);
 		this.endpointManagement = endpointManagement;
 	}
-	
+
 	/**
 	 * Creates an instance of Storage_DE_DistributionStrategy based on a given distribution.
 	 * The keys of the distribution are additionally transformed into integer values by hashing (and modulo calculation with the number of endpoints)
 	 * @param distribution the distribution strategy
 	 * @return an instance of Storage_DE_DistributionStrategy
 	 */
-	public static<K> Storage_DE_DistributionStrategy createInstance(IDistribution<K> distribution){
+	public static<K> Storage_DE_DistributionStrategy createInstance(final IDistribution<K> distribution){
 		final EndpointManagement endpointManagement = new EndpointManagement();
-		IDistribution<Integer> outer_distribution = new HashingDistributionPipe<K>(distribution, endpointManagement.numberOfEndpoints());
+		final IDistribution<Integer> outer_distribution = new HashingDistributionPipe<K>(distribution, endpointManagement.numberOfEndpoints());
 		return new Storage_DE_DistributionStrategy(endpointManagement, outer_distribution);
 	}
-	
+
 	/**
 	 * Creates an instance of Storage_DE_DistributionStrategy based on a given distribution strategy.
 	 * @param strategy the distribution strategy to be used
 	 * @return an instance of Storage_DE_DistributionStrategy
 	 */
-	public static Storage_DE_DistributionStrategy createInstance(DistributionStrategyEnum strategy){
+	public static Storage_DE_DistributionStrategy createInstance(final DistributionStrategyEnum strategy){
 		return Storage_DE_DistributionStrategy.createInstance(strategy.createInstance());
 	}
 
 	@Override
-	public void storeBlock(Integer key, List<Triple> triples) {
+	public void storeBlock(final Integer key, final List<Triple> triples) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildInsertQuery(triples), key);
 	}
 
 	@Override
-	public boolean containsTripleAfterAdding(Integer key, Triple triple) {
+	public boolean containsTripleAfterAdding(final Integer key, final Triple triple) {
 		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), key).isEmpty();
 	}
 
 	@Override
-	public void removeAfterAdding(Integer key, Triple triple) {
+	public void removeAfterAdding(final Integer key, final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), key);
 	}
 
 	@Override
-	public QueryResult evaluateTriplePatternAfterAdding(Integer key, TriplePattern triplePattern) {
+	public QueryResult evaluateTriplePatternAfterAdding(final Integer key, final TriplePattern triplePattern) {
 		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), key);
 	}
 
 	@Override
-	public QueryResult evaluateTriplePatternAfterAdding(TriplePattern triplePattern) {
+	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
 		// in case of non-supported triple patterns ask all endpoints for their results!
 		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern));
+	}
+
+	@Override
+	public void blockInsert() {
+		super.blockInsert();
+		this.endpointManagement.waitForThreadPool();
 	}
 }

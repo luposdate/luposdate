@@ -25,6 +25,9 @@ package lupos.distributedendpoints.storage.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.Client;
@@ -37,7 +40,9 @@ public class EndpointManagement {
 	 * contains the registered SPARQL endpoints...
 	 */
 	protected String[] urlsOfEndpoints;
-	
+
+	protected ExecutorService threadpool = Executors.newCachedThreadPool();
+
 	/**
 	 * Reads in the registered SPARQL endpoints from the configuration file /endpoints.txt.
 	 * Each line of this file must contain the URL of a SPARQL endpoint.
@@ -45,13 +50,13 @@ public class EndpointManagement {
 	public EndpointManagement(){
 		try {
 			this.urlsOfEndpoints = FileHelper.readInputStreamToCollection(FileHelper.getInputStreamFromJarOrFile("/endpoints.config")).toArray(new String[0]);
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			System.err.println(e);
 			e.printStackTrace();
 			this.urlsOfEndpoints = new String[0];
 		}
 	}
-	
+
 	/**
 	 * Returns the number of registered endpoints
 	 * @return the number of registered endpoints
@@ -59,7 +64,7 @@ public class EndpointManagement {
 	public int numberOfEndpoints(){
 		return this.urlsOfEndpoints.length;
 	}
-	
+
 	/**
 	 * submits a SPARUL query to all registered SPARQL endpoints
 	 * @param query the query to be submitted
@@ -69,7 +74,7 @@ public class EndpointManagement {
 			this.submitSPARULQuery(query, i);
 		}
 	}
-	
+
 	/**
 	 * submits asynchronously a SPARUL query to an arbitrary of the registered SPARQL endpoints
 	 * @param query the query to be submitted
@@ -78,7 +83,7 @@ public class EndpointManagement {
 		// choose randomly one endpoint to which the sparul request is submitted to
 		this.submitSPARULQuery(query, (int)(Math.random()*this.urlsOfEndpoints.length));
 	}
-	
+
 	/**
 	 * submits asynchronously a SPARUL query to a specific registered SPARQL endpoints
 	 * @param query the query to be submitted
@@ -86,20 +91,36 @@ public class EndpointManagement {
 	 */
 	public void submitSPARULQuery(final String query, final int number){
 		final String url = this.urlsOfEndpoints[number];
-		Thread thread = new Thread(){
+		final Thread thread = new Thread(){
 			@Override
 			public void run() {
 				try {
 					EndpointManagement.submitSPARQLQuery(url, query);
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					System.err.println(e);
 					e.printStackTrace();
 				}
 			}
 		};
-		thread.start();
+		this.threadpool.submit(thread);
 	}
-	
+
+	/**
+	 * Waits for the thread pool to terminate.
+	 * This method is to ensure that all the data is inserted at the different endpoints before being queried...
+	 */
+	public void waitForThreadPool() {
+		this.threadpool.shutdown();
+		try {
+			// just use an extremely high timeout...
+			this.threadpool.awaitTermination(7, TimeUnit.DAYS);
+			this.threadpool = Executors.newCachedThreadPool();
+		} catch (final InterruptedException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * submits a SPARQL query to a specific registered SPARQL endpoints
 	 * @param query the given query to be submitted
@@ -110,13 +131,13 @@ public class EndpointManagement {
 		final String url = this.urlsOfEndpoints[number];
 		try {
 			return EndpointManagement.submitSPARQLQuery(url, query);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	/**
 	 * submits a query parallel to all registered endpoints
 	 * @param query the query to be submitted
@@ -126,12 +147,12 @@ public class EndpointManagement {
 		final ResultCollector resultCollector = new ResultCollector();
 		resultCollector.setNumberOfThreads(this.urlsOfEndpoints.length);
 		for(final String url: this.urlsOfEndpoints){
-			Thread thread = new Thread(){
+			final Thread thread = new Thread(){
 				@Override
 				public void run() {
 					try {
 						resultCollector.process(EndpointManagement.submitSPARQLQuery(url, query) ,0);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
@@ -142,7 +163,7 @@ public class EndpointManagement {
 		}
 		return resultCollector.getResult();
 	}
-	
+
 	/**
 	 * submits a query to a SPARQL endpoint with a given url
 	 * @param url the url of the SPARQL endpoint

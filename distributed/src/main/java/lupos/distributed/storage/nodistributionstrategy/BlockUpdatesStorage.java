@@ -35,12 +35,12 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * There is no distribution strategy assumed.
  */
 public abstract class BlockUpdatesStorage implements IStorage {
-	
+
 	/**
 	 * The block of triples to be inserted...
 	 */
 	protected HashSet<Triple> toBeAdded = new HashSet<Triple>();
-	
+
 	/**
 	 * specifies how many triples are inserted at one time
 	 */
@@ -56,23 +56,24 @@ public abstract class BlockUpdatesStorage implements IStorage {
 	}
 
 	@Override
-	public void addTriple(Triple triple) {
+	public void addTriple(final Triple triple) {
 		this.toBeAdded.add(triple);
 		if(this.toBeAdded.size()>this.blocksize){
 			// a block is full => insert the whole block
-			this.endImportData();
+			this.blockInsert();
+			this.toBeAdded.clear();
 		}
 	}
 
 	@Override
-	public boolean containsTriple(Triple triple) {
+	public boolean containsTriple(final Triple triple) {
 		// first add remaining triples
 		this.endImportData();
 		return this.containsTripleAfterAdding(triple);
 	}
 
 	@Override
-	public void remove(Triple triple) {
+	public void remove(final Triple triple) {
 		this.toBeAdded.remove(triple);
 		// add remaining triples
 		this.endImportData();
@@ -80,17 +81,17 @@ public abstract class BlockUpdatesStorage implements IStorage {
 	}
 
 	@Override
-	public QueryResult evaluateTriplePattern(TriplePattern triplePattern) {
+	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) {
 		// first add remaining triples
 		this.endImportData();
 		return this.evaluateTriplePatternAfterAdding(triplePattern);
 	}
-	
+
 	/**
 	 * This method must implement the insertion of a block of triples (intermediately stored in toBeAdded)
 	 */
 	public abstract void blockInsert();
-	
+
 	/**
 	 * Checks whether or not a triple is contained in the distributed indices.
 	 * This method is called after all pending triples are inserted...

@@ -33,19 +33,19 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This class contains the storage layer for our distributed SPARQL endpoint query evaluator.
  * This class handles the communication with the SPARQL endpoints during data manipulation and distributed querying.
- * 
+ *
  * All registered endpoints are asked for the evaluation of the triple patterns within a SPARQL query.
  * It is assumed that the data is not distributed in an intelligent way and that any registered endpoint
  * can have data for any triple pattern.
  * Also non-luposdate SPARQL endpoints are supported.
  */
 public class Storage_DE extends BlockUpdatesStorage {
-	
+
 	/**
 	 *  for managing the registered endpoints and submitting queries to them
 	 */
 	protected final EndpointManagement endpointManagement;
-	
+
 	/**
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
 	 */
@@ -59,17 +59,25 @@ public class Storage_DE extends BlockUpdatesStorage {
 	}
 
 	@Override
-	public boolean containsTripleAfterAdding(Triple triple) {
+	public boolean containsTripleAfterAdding(final Triple triple) {
 		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple)).isEmpty();
 	}
 
 	@Override
-	public void removeAfterAdding(Triple triple) {
+	public void removeAfterAdding(final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple));
 	}
 
 	@Override
-	public QueryResult evaluateTriplePatternAfterAdding(TriplePattern triplePattern) {
+	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
 		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern));
+	}
+
+	@Override
+	public void endImportData() {
+		if(!this.toBeAdded.isEmpty()){
+			super.endImportData();
+			this.endpointManagement.waitForThreadPool();
+		}
 	}
 }
