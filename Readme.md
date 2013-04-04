@@ -16,5 +16,9 @@ We support indexing for large-scale datasets (disk based) and for medium-scale d
 The documentation is available in our [Wiki](https://github.com/luposdate/luposdate/wiki).
 A [webdemo](http://www.ifis.uni-luebeck.de/index.php?id=luposdate-demo&L=1) is also available.
 
+## Use LUPOSDATE in your Maven Projects
+
+Just follow [this link](https://github.com/luposdate/luposdate/wiki/Luposdate-in-maven-projects) for a short example...
+
 ## Contributors
 See our [contributors page](https://github.com/luposdate/luposdate/wiki/Contributors) for a list of contributors to LUPOSDATE. Thanks to all contributors!
