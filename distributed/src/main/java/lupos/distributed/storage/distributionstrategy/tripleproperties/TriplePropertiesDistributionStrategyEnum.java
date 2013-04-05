@@ -21,40 +21,41 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage.distributionstrategy;
+package lupos.distributed.storage.distributionstrategy.tripleproperties;
 
-public enum DistributionStrategyEnum {
-	
+
+public enum TriplePropertiesDistributionStrategyEnum {
+
 	OneKeyDistribution {
 
 		@Override
-		public IDistribution<String> createInstance() {
+		public IDistributionKeyContainer<String> createInstance() {
 			return new OneKeyDistribution();
 		}
-		
+
 	},
-	
+
 	TwoKeysDistribution {
 
 		@Override
-		public IDistribution<String> createInstance() {
+		public IDistributionKeyContainer<String> createInstance() {
 			return new TwoKeysDistribution();
 		}
-		
+
 	},
-	
+
 	OneToThreeKeysDistribution {
 
 		@Override
-		public IDistribution<String> createInstance() {
+		public IDistributionKeyContainer<String> createInstance() {
 			return new OneToThreeKeysDistribution();
 		}
-				
+
 	};
-	
+
 	/**
 	 * Creates an instance of the distribution strategy
 	 * @return the created instance
 	 */
-	public abstract IDistribution<String> createInstance();
+	public abstract IDistributionKeyContainer<String> createInstance();
 }

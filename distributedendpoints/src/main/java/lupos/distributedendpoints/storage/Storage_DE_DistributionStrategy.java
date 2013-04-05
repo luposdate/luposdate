@@ -28,9 +28,10 @@ import java.util.List;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.storage.distributionstrategy.BlockUpdatesStorageWithDistributionStrategy;
-import lupos.distributed.storage.distributionstrategy.DistributionStrategyEnum;
-import lupos.distributed.storage.distributionstrategy.HashingDistributionPipe;
-import lupos.distributed.storage.distributionstrategy.IDistribution;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.pipe.HashingDistributionPipe;
 import lupos.distributedendpoints.storage.util.EndpointManagement;
 import lupos.distributedendpoints.storage.util.QueryBuilder;
 import lupos.engine.operators.tripleoperator.TriplePattern;
@@ -42,7 +43,7 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * The data is distributed according to the distribution strategy given as parameter to the constructor.
  * Only relevant endpoints are asked during answering a given query.
  */
-public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDistributionStrategy<Integer> {
+public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDistributionStrategy<KeyContainer<Integer>> {
 
 	/**
 	 *  for managing the registered endpoints and submitting queries to them
@@ -54,7 +55,7 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 *
 	 * @param distribution The distribution strategy to be used
 	 */
-	public Storage_DE_DistributionStrategy(final IDistribution<Integer> distribution) {
+	public Storage_DE_DistributionStrategy(final IDistributionKeyContainer<Integer> distribution) {
 		this(new EndpointManagement(), distribution);
 	}
 
@@ -64,7 +65,7 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * @param endpointManagement the endpoint management to be used
 	 * @param distribution the distribution strategy to be used
 	 */
-	private Storage_DE_DistributionStrategy(final EndpointManagement endpointManagement, final IDistribution<Integer> distribution) {
+	private Storage_DE_DistributionStrategy(final EndpointManagement endpointManagement, final IDistributionKeyContainer<Integer> distribution) {
 		super(distribution);
 		this.endpointManagement = endpointManagement;
 	}
@@ -75,9 +76,9 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * @param distribution the distribution strategy
 	 * @return an instance of Storage_DE_DistributionStrategy
 	 */
-	public static<K> Storage_DE_DistributionStrategy createInstance(final IDistribution<K> distribution){
+	public static<K> Storage_DE_DistributionStrategy createInstance(final IDistributionKeyContainer<K> distribution){
 		final EndpointManagement endpointManagement = new EndpointManagement();
-		final IDistribution<Integer> outer_distribution = new HashingDistributionPipe<K>(distribution, endpointManagement.numberOfEndpoints());
+		final IDistributionKeyContainer<Integer> outer_distribution = new HashingDistributionPipe<K>(distribution, endpointManagement.numberOfEndpoints());
 		return new Storage_DE_DistributionStrategy(endpointManagement, outer_distribution);
 	}
 
@@ -86,35 +87,36 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * @param strategy the distribution strategy to be used
 	 * @return an instance of Storage_DE_DistributionStrategy
 	 */
-	public static Storage_DE_DistributionStrategy createInstance(final DistributionStrategyEnum strategy){
+	public static Storage_DE_DistributionStrategy createInstance(final TriplePropertiesDistributionStrategyEnum strategy){
 		return Storage_DE_DistributionStrategy.createInstance(strategy.createInstance());
 	}
 
 	@Override
-	public void storeBlock(final Integer key, final List<Triple> triples) {
+	public void storeBlock(final KeyContainer<Integer> key, final List<Triple> triples) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildInsertQuery(triples), key);
 	}
 
 	@Override
-	public boolean containsTripleAfterAdding(final Integer key, final Triple triple) {
+	public boolean containsTripleAfterAdding(final KeyContainer<Integer> key, final Triple triple) {
 		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), key).isEmpty();
 	}
 
 	@Override
-	public void removeAfterAdding(final Integer key, final Triple triple) {
+	public void removeAfterAdding(final KeyContainer<Integer> key, final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), key);
 		this.endpointManagement.waitForThreadPool();
 	}
 
 	@Override
-	public QueryResult evaluateTriplePatternAfterAdding(final Integer key, final TriplePattern triplePattern) {
+	public QueryResult evaluateTriplePatternAfterAdding(final KeyContainer<Integer> key, final TriplePattern triplePattern) {
 		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), key);
 	}
 
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
 		// in case of non-supported triple patterns ask all endpoints for their results!
-		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern));
+		final String[] possibleKeys = ((IDistributionKeyContainer<Integer>) this.distribution).getKeyTypes();
+		return this.endpointManagement.submitSPARQLQueryWithKeyType(QueryBuilder.buildQuery(triplePattern), possibleKeys[0]);
 	}
 
 	@Override

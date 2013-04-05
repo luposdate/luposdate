@@ -29,27 +29,28 @@ import java.util.Set;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.endpoint.server.Endpoint;
+import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.viewer.Viewer;
 
 public class OperatorgraphFormatter extends Formatter {
-	
-		private final String format; 
 
-		public OperatorgraphFormatter(String format) {
+		private final String format;
+		private final BasicIndexQueryEvaluator evaluator;
+
+		public OperatorgraphFormatter(final String format, final BasicIndexQueryEvaluator evaluator) {
 			super("Operatorgraph in " + format, "image/"+format);
 			this.format = format;
-		}
-
-		@SuppressWarnings("unused")
-		@Override
-		public void writeResult(OutputStream os, Set<Variable> variables, QueryResult queryResult) throws IOException {
-			new Viewer(new GraphWrapperBasicOperator(Endpoint.evaluator.getRootNode()), this.format, os);
+			this.evaluator = evaluator;
 		}
 
 		@Override
-		public String getMIMEType(QueryResult queryResult) {
+		public void writeResult(final OutputStream os, final Set<Variable> variables, final QueryResult queryResult) throws IOException {
+			new Viewer(new GraphWrapperBasicOperator(this.evaluator.getRootNode()), this.format, os);
+		}
+
+		@Override
+		public String getMIMEType(final QueryResult queryResult) {
 			return this.getKey();
-		}		
+		}
 }

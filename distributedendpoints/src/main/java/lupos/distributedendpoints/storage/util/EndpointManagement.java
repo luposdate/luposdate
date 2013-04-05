@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 import lupos.endpoint.client.Client;
 import lupos.engine.operators.multiinput.join.parallel.ResultCollector;
 import lupos.misc.FileHelper;
@@ -50,6 +51,12 @@ public class EndpointManagement {
 	public EndpointManagement(){
 		try {
 			this.urlsOfEndpoints = FileHelper.readInputStreamToCollection(FileHelper.getInputStreamFromJarOrFile("/endpoints.config")).toArray(new String[0]);
+			for(int i=0; i<this.urlsOfEndpoints.length; i++) {
+				if(!this.urlsOfEndpoints[i].endsWith("/")) {
+					// this is necessary when using distribution strategies as different contexts must be addressed for different key types
+					this.urlsOfEndpoints[i] += "/";
+				}
+			}
 		} catch (final FileNotFoundException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -90,7 +97,25 @@ public class EndpointManagement {
 	 * @param number the number of the endpoint to which the query is sent to
 	 */
 	public void submitSPARULQuery(final String query, final int number){
-		final String url = this.urlsOfEndpoints[number];
+		this.submitSPARULQuery(query, this.urlsOfEndpoints[number]);
+	}
+
+	/**
+	 * submits asynchronously a SPARUL query to a specific registered SPARQL endpoint
+	 * @param query the query to be submitted
+	 * @param key the key container containing the number of the endpoint to which the query is sent to
+	 */
+	public void submitSPARULQuery(final String query, final KeyContainer<Integer> key){
+		this.submitSPARULQuery(query, EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key));
+	}
+
+
+	/**
+	 * submits asynchronously a SPARUL query to a specific SPARQL endpoint
+	 * @param query the query to be submitted
+	 * @param url the url of the endpoint to which the query is sent to
+	 */
+	protected void submitSPARULQuery(final String query, final String url){
 		final Thread thread = new Thread(){
 			@Override
 			public void run() {
@@ -139,14 +164,41 @@ public class EndpointManagement {
 	}
 
 	/**
+	 * submits a SPARQL query to a specific registered SPARQL endpoint
+	 * @param query the given query to be submitted
+	 * @param key the key container containing the the number of the endpoint to which the query is sent to
+	 * @return the query result of the submitted query
+	 */
+	public QueryResult submitSPARQLQuery(final String query, final KeyContainer<Integer> key){
+		final String url = EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key);
+		try {
+			return EndpointManagement.submitSPARQLQuery(url, query);
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
 	 * submits a query parallel to all registered endpoints
 	 * @param query the query to be submitted
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
 	 */
 	public QueryResult submitSPARQLQuery(final String query){
+		return EndpointManagement.submitSPARQLQuery(query, this.urlsOfEndpoints);
+	}
+
+	/**
+	 * submits a query parallel to all given endpoints
+	 * @param query the query to be submitted
+	 * @param urlsOfEndpoints the urls of the endpoints to which the query will be submitted
+	 * @return the query result containing the result of all given endpoints (collected in an asynchronous way)
+	 */
+	protected static QueryResult submitSPARQLQuery(final String query, final String[] urlsOfEndpoints){
 		final ResultCollector resultCollector = new ResultCollector();
-		resultCollector.setNumberOfThreads(this.urlsOfEndpoints.length);
-		for(final String url: this.urlsOfEndpoints){
+		resultCollector.setNumberOfThreads(urlsOfEndpoints.length);
+		for(final String url: urlsOfEndpoints){
 			final Thread thread = new Thread(){
 				@Override
 				public void run() {
@@ -165,6 +217,20 @@ public class EndpointManagement {
 	}
 
 	/**
+	 * submits a query parallel to all registered endpoints (according to one key type to avoid duplicates)
+	 * @param query the query to be submitted
+	 * @param keyType the key type to be used
+	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
+	 */
+	public QueryResult submitSPARQLQueryWithKeyType(final String query, final String keyType){
+		final String[] urls = new String[this.urlsOfEndpoints.length];
+		for(int i=0; i<this.urlsOfEndpoints.length; i++){
+			urls[i] = EndpointManagement.addContext(this.urlsOfEndpoints[i], keyType);
+		}
+		return EndpointManagement.submitSPARQLQuery(query, urls);
+	}
+
+	/**
 	 * submits a query to a SPARQL endpoint with a given url
 	 * @param url the url of the SPARQL endpoint
 	 * @param query the query to be submitted
@@ -173,5 +239,25 @@ public class EndpointManagement {
 	 */
 	private final static QueryResult submitSPARQLQuery(final String url, final String query) throws IOException {
 		return Client.submitQuery(url, query);
+	}
+
+	/**
+	 * Adds the context according to the key type to a given url
+	 * @param url the url of the SPARQL endpoint
+	 * @param key the key container with the key type
+	 * @return url/key type
+	 */
+	private static String addContext(final String url, final KeyContainer<Integer> key){
+		return url + key.type;
+	}
+
+	/**
+	 * Adds the context according to the key type to a given url
+	 * @param url the url of the SPARQL endpoint
+	 * @param keyType the key type
+	 * @return url/key type
+	 */
+	private static String addContext(final String url, final String keyType){
+		return url + keyType;
 	}
 }

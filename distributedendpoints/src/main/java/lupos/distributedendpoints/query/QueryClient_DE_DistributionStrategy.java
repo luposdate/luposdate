@@ -27,7 +27,7 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.distributed.query.QueryClient;
-import lupos.distributed.storage.distributionstrategy.IDistribution;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
 import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 
 /**
@@ -37,14 +37,15 @@ import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
  */
 public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
 
-	public QueryClient_DE_DistributionStrategy(IDistribution<K> distribution) throws Exception {
+	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
 		super(Storage_DE_DistributionStrategy.createInstance(distribution));
 	}
 
-	public QueryClient_DE_DistributionStrategy(IDistribution<K> distribution, final String[] args) throws Exception {
+	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
 		super(Storage_DE_DistributionStrategy.createInstance(distribution), args);
 	}
-	
+
+	@Override
 	public void init() throws Exception {
 		// just for avoiding problems in distributed scenarios
 		Bindings.instanceClass = BindingsMap.class;

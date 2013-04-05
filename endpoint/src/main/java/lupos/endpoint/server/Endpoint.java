@@ -50,6 +50,7 @@ import lupos.endpoint.server.format.PlainFormatter;
 import lupos.endpoint.server.format.QueryTriplesFormatter;
 import lupos.endpoint.server.format.TSVFormatter;
 import lupos.endpoint.server.format.XMLFormatter;
+import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.singleinput.federated.BitVectorFilterFunction;
@@ -61,23 +62,20 @@ import com.sun.net.httpserver.HttpServer;
 
 @SuppressWarnings("restriction")
 public class Endpoint {
-	
-	public static RDF3XQueryEvaluator evaluator;
-	public static String dir;
-	
+
 	// enable or disable logging into console
 	public static boolean log = false;
 	// enable or disable logging the sizes of the query and its response into console
 	public static boolean sizelog = false;
-		
+
 	private final static Map<String, Formatter> registeredFormatter = Collections.synchronizedMap(new HashMap<String, Formatter>());
-	
+
 	private final static Map<String, HttpHandler> registeredhandler = Collections.synchronizedMap(new HashMap<String, HttpHandler>());
-	
+
 	private static HTMLForm htmlForm = new StandardHTMLForm();
-	
+
 	private static Class<? extends Bindings> defaultBindingsClass = Bindings.instanceClass;
-	
+
 	public static void registerFormatter(final Formatter formatter){
 		Endpoint.registeredFormatter.put(formatter.getKey().toLowerCase(), formatter);
 		Endpoint.registeredFormatter.put(formatter.getName().toLowerCase(), formatter);
@@ -86,19 +84,19 @@ public class Endpoint {
 	public static Map<String, Formatter> getRegisteredFormatters(){
 		return Endpoint.registeredFormatter;
 	}
-	
+
 	public static void registerHandler(final String context, final HttpHandler httpHandler){
 		Endpoint.registeredhandler.put(context, httpHandler);
 	}
-	
+
 	public static HTMLForm getHTMLForm(){
 		return Endpoint.htmlForm;
 	}
-	
+
 	public static void setHTMLForm(final HTMLForm htmlForm){
 		Endpoint.htmlForm = htmlForm;
 	}
-	
+
 	public static Class<? extends Bindings> getDefaultBindingsClass() {
 		return defaultBindingsClass;
 	}
@@ -109,12 +107,18 @@ public class Endpoint {
 	 * for query
 	 * PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{?s rdf:type ?o. }
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
+		Endpoint.init(args);
+		Endpoint.registerStandardFormattersAndContexts(args[0]);
+		Endpoint.initAndStartServer();
+	}
+
+	public static void init(final String[] args){
 		if (args.length < 1) {
 			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [output] [size]");
 			System.err.println("If \"output\" is given, the response is written to console.");
 			System.err.println("If \"size\" is given, the size of the received query and the size of the response is written to console.");
-			return;
+			System.exit(0);
 		}
 		for(int i=1; i<args.length; i++){
 			if(args[i].compareTo("output")==0){
@@ -123,41 +127,47 @@ public class Endpoint {
 				Endpoint.sizelog = true;
 			}
 		}
-		Endpoint.initAndStartServer(args[0]);
 	}
-	
-	public static void initAndStartServer(final String directory){
+
+	public static void initAndStartServer(){
 		try {
 			final String localHost = InetAddress.getLocalHost().getHostName();
 			System.out.println("Starting LUPOSDATE Endpoint on host: "+localHost);
-			System.out.println("Canonical host name: "+InetAddress.getLocalHost().getCanonicalHostName());			
-			for (InetAddress ia : InetAddress.getAllByName(localHost)){
+			System.out.println("Canonical host name: "+InetAddress.getLocalHost().getCanonicalHostName());
+			for (final InetAddress ia : InetAddress.getAllByName(localHost)){
 				System.out.println("IP: "+ia);
 			}
-			
-			Endpoint.evaluator = new RDF3XQueryEvaluator();
-			Endpoint.dir = directory;
-			Endpoint.evaluator.loadLargeScaleIndices(Endpoint.dir);
-			
-			defaultBindingsClass = Bindings.instanceClass;
-			
+
 			Endpoint.startServer();
 			System.out.println("Endpoint ready to receive requests...");
 			System.out.println("_____________________________________");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
-		}		
+		}
 	}
-	
+
+	public static BasicIndexQueryEvaluator createQueryEvaluator(final String directory){
+		try {
+			final RDF3XQueryEvaluator evaluator = new RDF3XQueryEvaluator();
+			evaluator.loadLargeScaleIndices(directory);
+			defaultBindingsClass = Bindings.instanceClass;
+			return evaluator;
+		} catch (final Exception e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	/**
 	 * register the standard formatters and contexts of the server...
 	 */
-	static {
-		Endpoint.registerStandardFormatter();		
-		Endpoint.registerStandardContexts();
+	public static void registerStandardFormattersAndContexts(final String directory) {
+		Endpoint.registerStandardFormatter();
+		Endpoint.registerStandardContexts(directory);
 	}
-	
+
 	public static void registerStandardFormatter(){
 		Endpoint.registerFormatter(new XMLFormatter());
 		Endpoint.registerFormatter(new XMLFormatter(true));
@@ -170,37 +180,37 @@ public class Endpoint {
 		Endpoint.registerFormatter(new HTMLFormatter(true));
 		Endpoint.registerFormatter(new HTMLFormatter(false, true));
 		Endpoint.registerFormatter(new HTMLFormatter(true, true));
-		Endpoint.registerFormatter(new QueryTriplesFormatter());		
+		Endpoint.registerFormatter(new QueryTriplesFormatter());
 	}
-	
-	public static void registerStandardContexts(){
-		Endpoint.registerHandler("/sparql", new SPARQLHandler(new SPARQLExecutionImplementation()));
+
+	public static void registerStandardContexts(final String directory){
+		Endpoint.registerHandler("/sparql", new SPARQLHandler(new SPARQLExecutionImplementation(Endpoint.createQueryEvaluator(directory), directory)));
 		Endpoint.registerHandler("/", new HTMLFormHandler());
 	}
-	
+
 	public static void startServer(){
 		try {
-			HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+			final HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-			for(Entry<String, HttpHandler> entry: Endpoint.registeredhandler.entrySet()){
-				server.createContext(entry.getKey(), entry.getValue());				
+			for(final Entry<String, HttpHandler> entry: Endpoint.registeredhandler.entrySet()){
+				server.createContext(entry.getKey(), entry.getValue());
 			}
 
 			server.setExecutor(null);
 			server.start();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
-		}		
+		}
 	}
-	
-	public static String getResponse(HttpExchange t) throws IOException {
+
+	public static String getResponse(final HttpExchange t) throws IOException {
 		final String requestMethod = t.getRequestMethod();
 		String response;
 		if (requestMethod.equalsIgnoreCase("POST")) {
-			final InputStream bodyStream = t.getRequestBody();				
-			StringBuilder builder = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(bodyStream, "UTF-8"));
+			final InputStream bodyStream = t.getRequestBody();
+			final StringBuilder builder = new StringBuilder();
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(bodyStream, "UTF-8"));
 			String readLine;
 			boolean firstTime=true;
 			while ((readLine = reader.readLine()) != null) {
@@ -212,34 +222,43 @@ public class Endpoint {
 				builder.append(readLine);
 			}
 			response=builder.toString();
-		} else if (requestMethod.equalsIgnoreCase("GET")) {				
+		} else if (requestMethod.equalsIgnoreCase("GET")) {
 			response = t.getRequestURI().getRawQuery();
 		} else {
 			response = "";
 		}
 		return response;
 	}
-	
+
 	public static interface SPARQLExecution {
 		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException;
 	}
-	
+
 	public static class SPARQLExecutionImplementation implements SPARQLExecution {
+
+		protected final BasicIndexQueryEvaluator evaluator;
+		protected final String dir;
+
+		public SPARQLExecutionImplementation(final BasicIndexQueryEvaluator evaluator, final String dir){
+			this.evaluator = evaluator;
+			this.dir = dir;
+		}
+
 		@Override
 		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException {
 			if(Endpoint.sizelog){
 				System.out.println("Size of the received query (number of characters): "+queryParameter.length());
 			}
 			try {
-				synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
+				synchronized(this.evaluator){ // avoid any inference of several queries in parallel!
 					System.out.println("Evaluating query:\n"+queryParameter);
-					if((Endpoint.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
+					if((this.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
 						// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
 						Bindings.instanceClass = BindingsArrayReadTriples.class;
 					} else {
 						Bindings.instanceClass = Endpoint.defaultBindingsClass;
 					}
-					QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, true):Endpoint.evaluator.getResult(queryParameter);
+					final QueryResult queryResult = (this.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)this.evaluator).getResult(queryParameter, true):this.evaluator.getResult(queryParameter);
 					final String mimeType = formatter.getMIMEType(queryResult);
 					System.out.println("Done, sending response using MIME type "+mimeType);
 					t.getResponseHeaders().add("Content-type", mimeType);
@@ -252,12 +271,14 @@ public class Endpoint {
 					if(Endpoint.sizelog){
 						os = new OutputStreamSizeLogger(os);
 					}
-					formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
+					formatter.writeResult(os, this.evaluator.getVariablesOfQuery(), queryResult);
 					os.close();
-					Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
+					if(this.evaluator instanceof RDF3XQueryEvaluator){
+						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
+					}
 				}
 				return;
-			} catch (Error e) {
+			} catch (final Error e) {
 				System.err.println(e);
 				e.printStackTrace();
 				t.getResponseHeaders().add("Content-type", "text/plain");
@@ -265,7 +286,7 @@ public class Endpoint {
 				System.out.println(answer);
 				Endpoint.sendString(t, answer);
 				return;
-			} catch (Exception e){
+			} catch (final Exception e){
 				System.err.println(e);
 				e.printStackTrace();
 				t.getResponseHeaders().add("Content-type", "text/plain");
@@ -273,41 +294,41 @@ public class Endpoint {
 				System.out.println(answer);
 				Endpoint.sendString(t, answer);
 				return;
-			}			
+			}
 		}
 	}
 
 	public static class SPARQLHandler implements HttpHandler {
-		
+
 		private final SPARQLExecution sparqlExecution;
-		
+
 		public SPARQLHandler(final SPARQLExecution sparqlExecution){
 			super();
 			this.sparqlExecution = sparqlExecution;
 			BitVectorFilterFunction.register();
 		}
-		
+
 		private final static String format = "format=";
 		private final static String query = "query=";
-					
+
 		@Override
-		public void handle(HttpExchange t) throws IOException {			
+		public void handle(final HttpExchange t) throws IOException {
 			System.out.println("\n-> Receiving request from: "+t.getRequestHeaders().get("Host"));
-			String response = Endpoint.getResponse(t);
-			String[] responseParts = response.split("[&]");
+			final String response = Endpoint.getResponse(t);
+			final String[] responseParts = response.split("[&]");
 			if(responseParts.length>0){
 				// first check whether or not a format is given (default is XML as defined by W3C)
-				String formatParameter = Endpoint.getParameter(responseParts, format, "XML");
-				Formatter formatter = registeredFormatter.get(formatParameter.toLowerCase());
+				final String formatParameter = Endpoint.getParameter(responseParts, format, "XML");
+				final Formatter formatter = registeredFormatter.get(formatParameter.toLowerCase());
 				if(formatter == null){
 					t.getResponseHeaders().add("Content-type", "text/plain");
-					final String answer = "Bad Request: format " + formatParameter + " not supported"; 
+					final String answer = "Bad Request: format " + formatParameter + " not supported";
 					System.out.println(answer);
 					Endpoint.sendString(t, answer);
 					return;
 				}
 				// now look for a query parameter
-				String queryParameter = getParameter(responseParts, query);
+				final String queryParameter = getParameter(responseParts, query);
 				if(queryParameter!=null){
 					this.sparqlExecution.execute(queryParameter, formatter, t);
 				} else {
@@ -321,24 +342,24 @@ public class Endpoint {
 			Endpoint.htmlForm.sendHTMLForm(t);
 		}
 	}
-	
+
 	public static class HTMLFormHandler implements HttpHandler {
 		@Override
-		public void handle(HttpExchange t) throws IOException {
+		public void handle(final HttpExchange t) throws IOException {
 			Endpoint.htmlForm.sendHTMLForm(t);
 		}
 	}
-	
-	protected static String getParameter(String[] responseParts, String parameter) throws UnsupportedEncodingException{
-		for(String item: responseParts){
+
+	protected static String getParameter(final String[] responseParts, final String parameter) throws UnsupportedEncodingException{
+		for(final String item: responseParts){
 			if(item.startsWith(parameter)){
-				return URLDecoder.decode(item.substring(parameter.length()), "UTF-8");						
+				return URLDecoder.decode(item.substring(parameter.length()), "UTF-8");
 			}
 		}
 		return null;
 	}
-	
-	protected static String getParameter(String[] responseParts, String parameter, String defaultValue) throws UnsupportedEncodingException{
+
+	protected static String getParameter(final String[] responseParts, final String parameter, final String defaultValue) throws UnsupportedEncodingException{
 		final String result = Endpoint.getParameter(responseParts, parameter);
 		if(result!=null){
 			return result;
@@ -346,18 +367,18 @@ public class Endpoint {
 			return defaultValue;
 		}
 	}
-	
+
 	public static void sendString(final HttpExchange t, final String toSend) throws IOException{
 		t.sendResponseHeaders(200, toSend.length());
-		OutputStream os = t.getResponseBody();
+		final OutputStream os = t.getResponseBody();
 		os.write(toSend.getBytes());
-		os.close();		
+		os.close();
 	}
-		
+
 	public static interface HTMLForm{
-		public void sendHTMLForm(final HttpExchange t) throws IOException; 
+		public void sendHTMLForm(final HttpExchange t) throws IOException;
 	}
-	
+
 	public static class StandardHTMLForm implements HTMLForm {
 
 		private static String HTML_FORM_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"+
@@ -380,13 +401,13 @@ public class Endpoint {
 		public void sendHTMLForm(final HttpExchange t) throws IOException {
 			final StringBuilder toSend = new StringBuilder(StandardHTMLForm.HTML_FORM_1);
 			// do duplicate elimination!
-			Formatter[] formatters=Sets.newHashSet(Endpoint.getRegisteredFormatters().values()).toArray(new Formatter[0]);
+			final Formatter[] formatters=Sets.newHashSet(Endpoint.getRegisteredFormatters().values()).toArray(new Formatter[0]);
 			// sort according to the name of the formatter
 			Arrays.sort(formatters, new Comparator<Formatter>(){
 				@Override
-				public int compare(Formatter o1, Formatter o2) {					
+				public int compare(final Formatter o1, final Formatter o2) {
 					return o1.getName().compareTo(o2.getName());
-				}				
+				}
 			});
 			for(final Formatter formatter: formatters){
 				toSend.append(StandardHTMLForm.HTML_OPTION_1);
@@ -401,46 +422,46 @@ public class Endpoint {
 	}
 
 	public static class OutputStreamLogger extends OutputStream {
-		
+
 		private final OutputStream piped;
-		
+
 		public OutputStreamLogger(final OutputStream piped){
 			this.piped = piped;
 		}
-		
+
 		@Override
-		public void write(int b) throws IOException {
+		public void write(final int b) throws IOException {
 			if(b>=0){
-				for(char c: Character.toChars(b)){
+				for(final char c: Character.toChars(b)){
 					System.out.print(c);
 				}
 			}
 			this.piped.write(b);
 		}
-		
+
 		@Override
 		public void close() throws IOException{
 			this.piped.close();
 		}
 	}
-	
+
 	public static class OutputStreamSizeLogger extends OutputStream {
-		
+
 		private final OutputStream piped;
 		private int size = 0;
-		
+
 		public OutputStreamSizeLogger(final OutputStream piped){
 			this.piped = piped;
 		}
-		
+
 		@Override
-		public void write(int b) throws IOException {
+		public void write(final int b) throws IOException {
 			if(b>=0){
 				this.size++;
 			}
 			this.piped.write(b);
 		}
-		
+
 		@Override
 		public void close() throws IOException{
 			System.out.println("Size of response in bytes: "+this.size);

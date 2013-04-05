@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import com.sun.net.httpserver.HttpExchange;
-
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.items.Triple;
@@ -41,12 +39,16 @@ import lupos.endpoint.server.Endpoint.OutputStreamLogger;
 import lupos.endpoint.server.Endpoint.SPARQLExecution;
 import lupos.endpoint.server.Endpoint.SPARQLHandler;
 import lupos.endpoint.server.format.Formatter;
+import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
+import lupos.engine.evaluators.RDF3XQueryEvaluator;
+
+import com.sun.net.httpserver.HttpExchange;
 
 /**
  * This class is the server-side-implementation of the delta approach:
  * The delta approach uses a cache of triples at the client and the server always sends
- * missing triples to the client for a new query. 
+ * missing triples to the client for a new query.
  * For this purpose, the server holds a set of triples already sent to the client,
  * retrieves the query triples for a new query and sends all those triples to the client,
  * which the client did not receive before.
@@ -54,29 +56,40 @@ import lupos.engine.evaluators.CommonCoreQueryEvaluator;
  * evaluates the query on it.
  */
 public class DeltaEndpoint {
-	
-	public static void main(String[] args) throws Exception {
+
+	public static void main(final String[] args) throws Exception {
+		// init according to command line arguments
+		Endpoint.init(args);
 		// register the sparqldelta context
-		Endpoint.registerHandler("/sparqldelta", new SPARQLHandler(new SPARQLExecutionDeltaImplementation()));
+		Endpoint.registerHandler("/sparqldelta", new SPARQLHandler(new SPARQLExecutionDeltaImplementation(Endpoint.createQueryEvaluator(args[0]), args[0])));
+		Endpoint.registerStandardFormatter();
 		// run the endpoint!
-		Endpoint.main(args);
+		Endpoint.initAndStartServer();
 	}
 
 	public static class SPARQLExecutionDeltaImplementation implements SPARQLExecution {
 
 		/** The already sent triples to the different clients.
 		 *  A client is identified by its InetSocketAddress.
-		 */		
-		protected HashMap<InetSocketAddress, HashSet<Triple>> deltaIndices = new HashMap<InetSocketAddress, HashSet<Triple>>(); 
+		 */
+		protected HashMap<InetSocketAddress, HashSet<Triple>> deltaIndices = new HashMap<InetSocketAddress, HashSet<Triple>>();
+
+		protected final BasicIndexQueryEvaluator evaluator;
+		protected final String dir;
+
+		public SPARQLExecutionDeltaImplementation(final BasicIndexQueryEvaluator evaluator, final String dir){
+			this.evaluator = evaluator;
+			this.dir = dir;
+		}
 
 		@Override
 		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException {
 			try {
-				synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
+				synchronized(this.evaluator){ // avoid any inference of several queries in parallel!
 					System.out.println("Evaluating query using the delta approach:\n"+queryParameter);
 					// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
 					Bindings.instanceClass = BindingsArrayReadTriples.class;
-					QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, true):Endpoint.evaluator.getResult(queryParameter);
+					final QueryResult queryResult = (this.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)this.evaluator).getResult(queryParameter, true):this.evaluator.getResult(queryParameter);
 					final String mimeType = "text/n3";
 					System.out.println("Done, sending response using MIME type "+mimeType);
 					t.getResponseHeaders().add("Content-type", mimeType);
@@ -96,10 +109,10 @@ public class DeltaEndpoint {
 						deltaIndex = new HashSet<Triple>();
 					}
 					// iterate through the solution and its query triples
-					Iterator<Bindings> itBindings = queryResult.oneTimeIterator();
+					final Iterator<Bindings> itBindings = queryResult.oneTimeIterator();
 					while(itBindings.hasNext()){
-						Bindings bindings = itBindings.next();
-						for(Triple triple: bindings.getTriples()){
+						final Bindings bindings = itBindings.next();
+						for(final Triple triple: bindings.getTriples()){
 							// Add the triple to the delta index and check if it is already in the delta index at the same time!
 							// (Previously sent triples are eliminated as well as duplicates within the query triples of the same query result.)
 							if(deltaIndex.add(triple)){
@@ -112,10 +125,13 @@ public class DeltaEndpoint {
 					this.deltaIndices.put(clientAddress, deltaIndex);
 
 					os.close();
-					Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
+
+					if(this.evaluator instanceof RDF3XQueryEvaluator){
+						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
+					}
 				}
 				return;
-			} catch (Error e) {
+			} catch (final Error e) {
 				System.err.println(e);
 				e.printStackTrace();
 				t.getResponseHeaders().add("Content-type", "text/plain");
@@ -123,7 +139,7 @@ public class DeltaEndpoint {
 				System.out.println(answer);
 				Endpoint.sendString(t, answer);
 				return;
-			} catch (Exception e){
+			} catch (final Exception e){
 				System.err.println(e);
 				e.printStackTrace();
 				t.getResponseHeaders().add("Content-type", "text/plain");
@@ -131,7 +147,7 @@ public class DeltaEndpoint {
 				System.out.println(answer);
 				Endpoint.sendString(t, answer);
 				return;
-			}			
-		}		
+			}
+		}
 	}
 }

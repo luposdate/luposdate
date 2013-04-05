@@ -30,29 +30,31 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 
-import xpref.XPref;
-
-import com.sun.net.httpserver.HttpExchange;
-
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.endpoint.server.Endpoint.HTMLFormHandler;
 import lupos.endpoint.server.Endpoint.OutputStreamLogger;
 import lupos.endpoint.server.Endpoint.SPARQLExecution;
 import lupos.endpoint.server.Endpoint.SPARQLHandler;
 import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.OperatorgraphFormatter;
+import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
+import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.gui.Demo_Applet;
 import lupos.gui.GUI;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.viewer.Viewer;
+import xpref.XPref;
+
+import com.sun.net.httpserver.HttpExchange;
 
 /**
  * This class provides an endpoint for debugging purposes:
  * The operatorgraph can be returned (instead of the query result).
  * Furthermore, in the context /sparqldebug (instead of the normal /sparql context),
- * queries, their result, the sent message and the operator graph is stored in log files...  
+ * queries, their result, the sent message and the operator graph is stored in log files...
  */
 public class DebugEndpoint {
 
@@ -60,44 +62,58 @@ public class DebugEndpoint {
 	// directory in which the logs are written
 	public static String logDirectory = "d:/luposdate/log/";
 
-	public static void main(String[] args) throws Exception {
-		File file = new File(logDirectory);
+	public static void main(final String[] args) throws Exception {
+		Endpoint.init(args);
+		final File file = new File(logDirectory);
 		file.mkdirs();
-		
+
 		try {
 			XPref.getInstance(Demo_Applet.class.getResource("/preferencesMenu.xml"));
-		} catch(Exception e){
+		} catch(final Exception e){
 			XPref.getInstance(new URL("file:"+GUI.class.getResource("/preferencesMenu.xml").getFile()));
 		}
-		
-		Endpoint.registerFormatter(new OperatorgraphFormatter("png"));
-		Endpoint.registerFormatter(new OperatorgraphFormatter("jpeg"));
-		Endpoint.registerFormatter(new OperatorgraphFormatter("gif"));
-		Endpoint.registerHandler("/sparqldebug", new SPARQLHandler(new SPARQLExecutionDebugImplementation()));
-		Endpoint.main(args);
+
+		final BasicIndexQueryEvaluator evaluator = Endpoint.createQueryEvaluator(args[0]);
+		Endpoint.registerFormatter(new OperatorgraphFormatter("png", evaluator));
+		Endpoint.registerFormatter(new OperatorgraphFormatter("jpeg", evaluator));
+		Endpoint.registerFormatter(new OperatorgraphFormatter("gif", evaluator));
+		Endpoint.registerHandler("/sparql", new SPARQLHandler(new Endpoint.SPARQLExecutionImplementation(evaluator, args[0])));
+		Endpoint.registerHandler("/sparqldebug", new SPARQLHandler(new SPARQLExecutionDebugImplementation(evaluator, args[0])));
+		Endpoint.registerStandardFormatter();
+		Endpoint.registerHandler("/", new HTMLFormHandler());
+		Endpoint.initAndStartServer();
 	}
-	
+
 	public static class SPARQLExecutionDebugImplementation implements SPARQLExecution {
+
+		protected final BasicIndexQueryEvaluator evaluator;
+		protected final String dir;
+
+		public SPARQLExecutionDebugImplementation(final BasicIndexQueryEvaluator evaluator, final String dir){
+			this.evaluator = evaluator;
+			this.dir = dir;
+		}
+
 		@Override
 		public void execute(final String queryParameter, final Formatter formatter, final HttpExchange t) throws IOException {
 			try {
-				synchronized(Endpoint.evaluator){ // avoid any inference of several queries in parallel!
+				synchronized(this.evaluator){ // avoid any inference of several queries in parallel!
 					DebugEndpoint.queryNumber++;
-					File file = new File(logDirectory+DebugEndpoint.queryNumber+".txt");
-					FileWriter writer = new FileWriter(file);
-					writer.write("Evaluating query of size "+queryParameter.length()+":\n"+queryParameter);					
+					final File file = new File(logDirectory+DebugEndpoint.queryNumber+".txt");
+					final FileWriter writer = new FileWriter(file);
+					writer.write("Evaluating query of size "+queryParameter.length()+":\n"+queryParameter);
 					System.out.println("Evaluating query:\n"+queryParameter);
-					if((Endpoint.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
+					if((this.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
 						// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
 						Bindings.instanceClass = BindingsArrayReadTriples.class;
 					} else {
 						Bindings.instanceClass = Endpoint.getDefaultBindingsClass();
 					}
-					
-					QueryResult queryResult = (Endpoint.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)Endpoint.evaluator).getResult(queryParameter, false):Endpoint.evaluator.getResult(queryParameter);
-					
+
+					final QueryResult queryResult = (this.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)this.evaluator).getResult(queryParameter, false):this.evaluator.getResult(queryParameter);
+
 					writer.write("\nResult (of size "+queryResult.size()+"):\n"+queryResult.toString());
-					
+
 					final String mimeType = formatter.getMIMEType(queryResult);
 					System.out.println("Done, sending response using MIME type "+mimeType+"\n");
 					writer.write("\nSending response using MIME type "+mimeType+"\n");
@@ -109,14 +125,16 @@ public class DebugEndpoint {
 						os = new OutputStreamLogger(os);
 					}
 					os = new PipeOutputStream(os, writer);
-					formatter.writeResult(os, Endpoint.evaluator.getVariablesOfQuery(), queryResult);
+					formatter.writeResult(os, this.evaluator.getVariablesOfQuery(), queryResult);
 					os.close();
 					writer.close();
-					Endpoint.evaluator.writeOutIndexFileAndModifiedPages(Endpoint.dir);
-					new Viewer(new GraphWrapperBasicOperator(Endpoint.evaluator.getRootNode()), logDirectory+DebugEndpoint.queryNumber+".jpg");
+					if(this.evaluator instanceof RDF3XQueryEvaluator){
+						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
+					}
+					new Viewer(new GraphWrapperBasicOperator(this.evaluator.getRootNode()), logDirectory+DebugEndpoint.queryNumber+".jpg");
 				}
 				return;
-			} catch (Error e) {
+			} catch (final Error e) {
 				System.err.println(e);
 				e.printStackTrace();
 				t.getResponseHeaders().add("Content-type", "text/plain");
@@ -124,7 +142,7 @@ public class DebugEndpoint {
 				System.out.println(answer);
 				Endpoint.sendString(t, answer);
 				return;
-			} catch (Exception e){
+			} catch (final Exception e){
 				System.err.println(e);
 				e.printStackTrace();
 				t.getResponseHeaders().add("Content-type", "text/plain");
@@ -132,28 +150,28 @@ public class DebugEndpoint {
 				System.out.println(answer);
 				Endpoint.sendString(t, answer);
 				return;
-			}			
+			}
 		}
 	}
-	
+
 	public static class PipeOutputStream extends OutputStream {
-		
+
 		private final OutputStream piped;
 		private final OutputStreamWriter logger;
 		private int numberOfBytes = 0;
-		
+
 		public PipeOutputStream(final OutputStream piped, final OutputStreamWriter logger){
 			this.piped = piped;
 			this.logger = logger;
 		}
-		
+
 		@Override
-		public void write(int b) throws IOException {
+		public void write(final int b) throws IOException {
 			this.numberOfBytes++;
 			this.logger.write(b);
 			this.piped.write(b);
 		}
-		
+
 		@Override
 		public void close() throws IOException{
 			this.logger.write("\n\nNumber of sent bytes:"+this.numberOfBytes);

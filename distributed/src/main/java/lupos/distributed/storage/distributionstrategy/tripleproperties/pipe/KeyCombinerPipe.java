@@ -21,62 +21,59 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage.distributionstrategy;
-
-import java.util.HashSet;
+package lupos.distributed.storage.distributionstrategy.tripleproperties.pipe;
 
 import lupos.datastructures.items.Triple;
+import lupos.distributed.storage.distributionstrategy.IDistribution;
+import lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class transforms a set of keys to ids of the storage node.
- * @param <K> the type of keys to be transformed to ids of the storage node
+ * This class transforms KeyContainer consisting of the key type and the key itself
+ * to one key of type String (by appending the key type and the key).
+ *
+ * It can be used as pipe between distribution strategies
+ * whenever the storage nodes are accessible via a key (e.g., like in P2P networks)
+ * (and LUPOPSDATE has no "direct" access to the storage nodes).
  */
-public class HashingDistributionPipe<K> implements IDistribution<Integer> {
-	
-	/**
-	 * The underlying distribution strategy
-	 */
-	protected final IDistribution<K> distribution;
+public class KeyCombinerPipe implements IDistribution<String> {
 
 	/**
-	 * the maximum number of storage nodes
+	 * The inner distribution strategy
 	 */
-	protected final int maximumNodes;
-	
+	protected final IDistributionKeyContainer<String> distribution;
+
 	/**
 	 * Constructor
-	 * @param distribution the underlying distribution strategy
-	 * @param maximumNodes the maximum number of storage nodes
+	 * @param distribution the inner distribution strategy producing key containers which are transformed to string keys
 	 */
-	public HashingDistributionPipe(final IDistribution<K> distribution, final int maximumNodes){
+	public KeyCombinerPipe(final IDistributionKeyContainer<String> distribution) {
 		this.distribution = distribution;
-		this.maximumNodes = maximumNodes;
 	}
 
 	@Override
-	public Integer[] getKeysForStoring(Triple triple) {
-		return HashingDistributionPipe.transformsKeys(this.distribution.getKeysForStoring(triple), this.maximumNodes);
+	public String[] getKeysForStoring(final Triple triple) {
+		return KeyCombinerPipe.transformToStringKeys(this.distribution.getKeysForStoring(triple));
 	}
 
 	@Override
-	public Integer[] getKeysForQuerying(TriplePattern triplePattern)
+	public String[] getKeysForQuerying(final TriplePattern triplePattern)
 			throws TriplePatternNotSupportedError {
-		return HashingDistributionPipe.transformsKeys(this.distribution.getKeysForQuerying(triplePattern), this.maximumNodes);
+		return KeyCombinerPipe.transformToStringKeys(this.distribution.getKeysForQuerying(triplePattern));
 	}
 
 	/**
-	 * transforms a key array to an array of ids of the storage node (in the range of 0 to maximumNodes - 1)
-	 * @param keys the key array to be transformed to an id array of storage nodes
-	 * @param maximumNodes the maximum number of nodes
-	 * @return the id array of storage nodes
+	 * Transforms an array of key containers to an array of string keys
+	 * @param keys the key containers
+	 * @return the transformed string keys
 	 */
-	protected static<K> Integer[] transformsKeys(final K[] keys, final int maximumNodes) {
-		// use hash set to eliminate duplicates!
-		HashSet<Integer> set = new HashSet<Integer>();
-		for(K key: keys){
-			set.add(key.hashCode() % maximumNodes);
+	protected static String[] transformToStringKeys(final KeyContainer<String>[] keys){
+		final String[] result = new String[keys.length];
+		for(int i=0; i<keys.length; i++){
+			result[i] = keys[i].type + keys[i].key;
 		}
-		return set.toArray(new Integer[0]);
+		return result;
 	}
 }

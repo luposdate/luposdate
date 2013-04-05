@@ -37,7 +37,7 @@ public interface IDistribution<K> {
 	 * @return an array of keys for this triple
 	 */
 	public K[] getKeysForStoring(Triple triple);
-	
+
 	/**
 	 * This method returns the keys under which the results of a triple pattern are determined.
 	 * @param triplePattern the triple pattern the result of which will be determined

@@ -21,48 +21,20 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage.distributionstrategy;
+package lupos.distributed.storage.distributionstrategy.tripleproperties;
 
-import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.literal.Literal;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.distributed.storage.distributionstrategy.IDistribution;
 
 /**
- * This class implements the distribution strategy, where the
- * triples are distributed according to the subject, predicate and object
- * (to three different nodes).
+ * adds additional methods for distribution strategies using KeyContainer
+ *
+ * @param <K> the java type of the key
  */
-public class OneKeyDistribution implements IDistribution<String> {
+public interface IDistributionKeyContainer<K> extends IDistribution<KeyContainer<K>> {
 
-	@Override
-	public String[] getKeysForStoring(Triple triple) {		
-		return new String[]{
-				"S" + triple.getSubject().originalString(),
-				"P" + triple.getPredicate().originalString(),
-				"O" + triple.getObject().originalString()
-		};
-	}
-
-	@Override
-	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
-		if(triplePattern.getSubject().isVariable()){
-			if(triplePattern.getObject().isVariable()){
-				if(triplePattern.getPredicate().isVariable()){
-					// only variables in the triple pattern is not supported!
-					throw new TriplePatternNotSupportedError(this, triplePattern);
-				} else {
-					return new String[]{ "P" + ((Literal)triplePattern.getPredicate()).originalString() };
-				}
-			} else {
-				return new String[]{ "O" + ((Literal)triplePattern.getObject()).originalString() };
-			}
-		} else {
-			return new String[]{ "S" + ((Literal)triplePattern.getSubject()).originalString() };
-		}
-	}
-	
-	@Override
-	public String toString(){
-		return "One key distribution strategy (triple (s, p, o) has keys { 'S' + s, 'P' + p, 'O' + o })";
-	}
+	/**
+	 * Returns all possible types of keys (e.g. for one key distribution {"S, "P", "O"})
+	 * @return all possible types of keys
+	 */
+	public String[] getKeyTypes();
 }

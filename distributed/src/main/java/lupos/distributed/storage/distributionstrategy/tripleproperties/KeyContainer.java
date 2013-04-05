@@ -21,23 +21,51 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.query;
-
-import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
+package lupos.distributed.storage.distributionstrategy.tripleproperties;
 
 /**
- * This class is the query evaluator for querying distributed SPARQL endpoints based on the one key distribution strategy.
+ * This class is a container for the key consisting of its type (e.g. "P" for a key consisting of the predicate of a triple)
+ * and the real key.
  *
- * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ * @param <K> the java type of the real key
  */
-public class QueryClient_DE_OneKeyDistribution extends QueryClient_DE_DistributionStrategy<String> {
+public class KeyContainer<K> {
 
-	public QueryClient_DE_OneKeyDistribution() throws Exception {
-		super(TriplePropertiesDistributionStrategyEnum.OneKeyDistribution.createInstance());
+	/**
+	 * the real key
+	 */
+	public final K key;
+	/**
+	 * the type of the key
+	 */
+	public final String type;
+
+	/**
+	 * constructor to set the type and the key
+	 * @param type the type of the key
+	 * @param key the real key
+	 */
+	public KeyContainer(final String type, final K key){
+		this.type = type;
+		this.key = key;
 	}
 
-	public QueryClient_DE_OneKeyDistribution(final String[] args) throws Exception {
-		super(TriplePropertiesDistributionStrategyEnum.OneKeyDistribution.createInstance(), args);
+	// the following methods "int hashCode()" and "boolean equals(Object o)" are overridden such that KeyContainers can be put into hash sets for duplicate elimination
+
+	@Override
+	public int hashCode(){
+		return this.key.hashCode() + this.type.hashCode();
 	}
 
+	@Override
+	public boolean equals(final Object o){
+		if(o instanceof KeyContainer){
+			@SuppressWarnings("rawtypes")
+			final
+			KeyContainer otherContainer = (KeyContainer) o;
+			return (this.type.compareTo(otherContainer.type)==0 && this.key.equals(otherContainer.key));
+		} else {
+			return false;
+		}
+	}
 }

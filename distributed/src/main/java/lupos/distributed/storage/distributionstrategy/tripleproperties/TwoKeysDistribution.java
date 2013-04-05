@@ -21,10 +21,11 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage.distributionstrategy;
+package lupos.distributed.storage.distributionstrategy.tripleproperties;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
+import lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
@@ -32,22 +33,28 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * triples are distributed according to the subject - predicate, predicate - object and subject - object
  * (to three different nodes).
  */
-public class TwoKeysDistribution implements IDistribution<String> {
+public class TwoKeysDistribution implements IDistributionKeyContainer<String> {
 
+	protected final static String TYPE_SP = "SP";
+	protected final static String TYPE_PO = "PO";
+	protected final static String TYPE_SO = "SO";
+
+	@SuppressWarnings("unchecked")
 	@Override
-	public String[] getKeysForStoring(Triple triple) {		
-		return new String[]{
-				"SP" + triple.getSubject().originalString() + triple.getPredicate().originalString(),
-				"PO" + triple.getPredicate().originalString() + triple.getObject().originalString(),
-				"SO" + triple.getSubject().originalString() + triple.getObject().originalString()
+	public KeyContainer<String>[] getKeysForStoring(final Triple triple) {
+		return new KeyContainer[]{
+				new KeyContainer<String>(TYPE_SP, triple.getSubject().originalString() + triple.getPredicate().originalString()),
+				new KeyContainer<String>(TYPE_PO, triple.getPredicate().originalString() + triple.getObject().originalString()),
+				new KeyContainer<String>(TYPE_SO, triple.getSubject().originalString() + triple.getObject().originalString())
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public String[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
+	public KeyContainer<String>[] getKeysForQuerying(final TriplePattern triplePattern) throws TriplePatternNotSupportedError {
 		if(triplePattern.getSubject().isVariable()){
 			if(!triplePattern.getPredicate().isVariable() && !triplePattern.getObject().isVariable()){
-				return new String[]{ "PO" + ((Literal)triplePattern.getPredicate()).originalString() + ((Literal)triplePattern.getObject()).originalString() };
+				return new KeyContainer[]{ new KeyContainer<String>(TYPE_PO, ((Literal)triplePattern.getPredicate()).originalString() + ((Literal)triplePattern.getObject()).originalString()) };
 			} else {
 				// only one variable or no variables in the triple pattern is not supported!
 				throw new TriplePatternNotSupportedError(this, triplePattern);
@@ -58,16 +65,25 @@ public class TwoKeysDistribution implements IDistribution<String> {
 					// only one variable in the triple pattern is not supported!
 					throw new TriplePatternNotSupportedError(this, triplePattern);
 				} else {
-					return new String[]{ "SP" + ((Literal)triplePattern.getSubject()).originalString() + ((Literal)triplePattern.getPredicate()).originalString() };
+					return new KeyContainer[]{ new KeyContainer<String>(TYPE_SP, ((Literal)triplePattern.getSubject()).originalString() + ((Literal)triplePattern.getPredicate()).originalString()) };
 				}
 			} else {
-				return new String[]{ "SO" + ((Literal)triplePattern.getSubject()).originalString() + ((Literal)triplePattern.getObject()).originalString() };
+				return new KeyContainer[]{ new KeyContainer<String>(TYPE_SO, ((Literal)triplePattern.getSubject()).originalString() + ((Literal)triplePattern.getObject()).originalString()) };
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		return "Two keys distribution strategy (triple (s, p, o) has keys { 'SP' + s + p, 'PO' + p + o, 'SO' + s + o })";
+	}
+
+	@Override
+	public String[] getKeyTypes() {
+		return TwoKeysDistribution.getPossibleKeyTypes();
+	}
+
+	public static String[] getPossibleKeyTypes(){
+		return new String[] {TYPE_SP, TYPE_SO, TYPE_PO};
 	}
 }

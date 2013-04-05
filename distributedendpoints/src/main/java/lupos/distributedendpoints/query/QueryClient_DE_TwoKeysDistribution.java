@@ -23,7 +23,7 @@
  */
 package lupos.distributedendpoints.query;
 
-import lupos.distributed.storage.distributionstrategy.DistributionStrategyEnum;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
 
 /**
  * This class is the query evaluator for querying distributed SPARQL endpoints based on the two keys distribution strategy.
@@ -33,11 +33,11 @@ import lupos.distributed.storage.distributionstrategy.DistributionStrategyEnum;
 public class QueryClient_DE_TwoKeysDistribution extends QueryClient_DE_DistributionStrategy<String> {
 
 	public QueryClient_DE_TwoKeysDistribution() throws Exception {
-		super(DistributionStrategyEnum.TwoKeysDistribution.createInstance());
+		super(TriplePropertiesDistributionStrategyEnum.TwoKeysDistribution.createInstance());
 	}
 
 	public QueryClient_DE_TwoKeysDistribution(final String[] args) throws Exception {
-		super(DistributionStrategyEnum.TwoKeysDistribution.createInstance(), args);
+		super(TriplePropertiesDistributionStrategyEnum.TwoKeysDistribution.createInstance(), args);
 	}
 
 }

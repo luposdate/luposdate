@@ -46,22 +46,33 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * @param <K> the type of the keys as retrieved from the distribution strategy
  */
 public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements IStorage {
-	
+
 	/**
 	 * The block of triples to be inserted...
 	 */
 	protected HashMap<K, List<Triple>> toBeAdded = new HashMap<K, List<Triple>>();
-	
+
 	/**
 	 * The distribution strategy
 	 */
 	protected final IDistribution<K> distribution;
-	
+
 	/**
 	 * specifies how many triples are inserted at one time
 	 */
 	protected int blocksize = 1000;
-	
+
+	/**
+	 * Specifies how many triples are max in main memory.
+	 * If this limit is reached, the largest block is inserted (and afterwards its resources are released)...
+	 */
+	protected int maxTriplesInMemory = 1000000;
+
+	/**
+	 * the current number of triples in main memory, which still must be inserted...
+	 */
+	protected int currentNumberOfTriples = 0;
+
 	/**
 	 * Constructor for the storage module
 	 * @param distribution The distribution strategy to be used in this storage
@@ -79,20 +90,36 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	}
 
 	@Override
-	public void addTriple(Triple triple) {
-		K[] keys = distribution.getKeysForStoring(triple);
-		for(K key: keys){
+	public void addTriple(final Triple triple) {
+		final K[] keys = this.distribution.getKeysForStoring(triple);
+		for(final K key: keys){
 			List<Triple> triplesOfKey = this.toBeAdded.get(key);
 			if(triplesOfKey == null){
 				triplesOfKey = new ArrayList<Triple>(this.blocksize);
 				this.toBeAdded.put(key, triplesOfKey);
 			}
 			triplesOfKey.add(triple);
+			this.currentNumberOfTriples++;
 			if(triplesOfKey.size()>this.blocksize){
 				// a block is full => insert the whole block
 				this.storeBlock(key, triplesOfKey);
+				this.currentNumberOfTriples -= triplesOfKey.size();
 				// delete block from buffer
 				this.toBeAdded.remove(key);
+			}
+			if(this.currentNumberOfTriples>this.maxTriplesInMemory){
+				// determine the block with maximum triples, insert this block into the distributed storage and delete this block from main memory
+				Entry<K, List<Triple>> maxentry = null;
+				for(final Entry<K, List<Triple>> entry: this.toBeAdded.entrySet()){
+					if(maxentry==null || maxentry.getValue().size()<entry.getValue().size()){
+						maxentry = entry;
+					}
+				}
+				// insert block
+				this.storeBlock(maxentry.getKey(), maxentry.getValue());
+				this.currentNumberOfTriples -=  maxentry.getValue().size();
+				// delete block from buffer
+				this.toBeAdded.remove(maxentry.getKey());
 			}
 		}
 	}
@@ -109,8 +136,9 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 			// If one result is true, this is already returned,
 			// otherwise it is waited until all have been checked
 			// (and false is returned)
-			ExecutorService executor = Executors.newFixedThreadPool(keys.length);
+			final ExecutorService executor = Executors.newFixedThreadPool(keys.length);
 			@SuppressWarnings("unchecked")
+			final
 			Future<Boolean>[] results = new Future[keys.length];
 			for(int i=0; i<keys.length; i++) {
 				final int index = i;
@@ -118,13 +146,13 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 						new Callable<Boolean>(){
 							@Override
 							public Boolean call() throws Exception {
-								return containsTripleAfterAdding(keys[index], triple);
+								return BlockUpdatesStorageWithDistributionStrategy.this.containsTripleAfterAdding(keys[index], triple);
 							}
 				});
 			}
 
-			ParallelBooleanOr parallelBooleanOr = new ParallelBooleanOr(results);
-			
+			final ParallelBooleanOr parallelBooleanOr = new ParallelBooleanOr(results);
+
 			return parallelBooleanOr.getResult();
 		}
 	}
@@ -132,10 +160,12 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	@Override
 	public void remove(final Triple triple) {
 		final K[] keys = this.distribution.getKeysForStoring(triple);
-		for(K key: keys){
-			List<Triple> triplesOfKey = this.toBeAdded.get(key);
+		for(final K key: keys){
+			final List<Triple> triplesOfKey = this.toBeAdded.get(key);
 			if(triplesOfKey!=null){
-				triplesOfKey.remove(triple);
+				while(triplesOfKey.remove(triple)){
+					this.currentNumberOfTriples--;
+				}
 			}
 		}
 		// add remaining triples
@@ -150,7 +180,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 				threads[i]  = new Thread() {
 					@Override
 					public void run() {
-						removeAfterAdding(key, triple);
+						BlockUpdatesStorageWithDistributionStrategy.this.removeAfterAdding(key, triple);
 					}
 				};
 				threads[i].start();
@@ -158,7 +188,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 			for(int i=0; i<keys.length; i++) {
 				try {
 					threads[i].join();
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					System.err.println(e);
 					e.printStackTrace();
 				}
@@ -171,40 +201,41 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 		// first add remaining triples
 		this.endImportData();
 		try {
-			K[] keys = this.distribution.getKeysForQuerying(triplePattern);
+			final K[] keys = this.distribution.getKeysForQuerying(triplePattern);
 			if(keys.length == 1) {
 				return this.evaluateTriplePatternAfterAdding(keys[0], triplePattern);
 			} else {
 				// asynchronously retrieve the results...
 				final ResultCollector resultCollector = new ResultCollector();
 				resultCollector.setNumberOfThreads(keys.length);
-				Thread[] threads = new Thread[keys.length];
+				final Thread[] threads = new Thread[keys.length];
 				for(int i=0; i<keys.length; i++) {
 					final K key = keys[i];
 					threads[i] = new Thread() {
 						@Override
 						public void run() {
-							resultCollector.process(evaluateTriplePatternAfterAdding(key, triplePattern), 0);
+							resultCollector.process(BlockUpdatesStorageWithDistributionStrategy.this.evaluateTriplePatternAfterAdding(key, triplePattern), 0);
 							resultCollector.incNumberOfThreads();
 						}
 					};
 					threads[i].start();
-				}			
+				}
 				return resultCollector.getResult();
 			}
-		} catch(TriplePatternNotSupportedError e){
+		} catch(final TriplePatternNotSupportedError e){
 			return this.evaluateTriplePatternAfterAdding(triplePattern);
 		}
 	}
-	
+
 	/**
 	 * This method implements the insertion of a block of triples (intermediately stored in toBeAdded)
 	 */
 	public void blockInsert() {
-		for(Entry<K, List<Triple>> entry: this.toBeAdded.entrySet()){
+		for(final Entry<K, List<Triple>> entry: this.toBeAdded.entrySet()){
 			this.storeBlock(entry.getKey(), entry.getValue());
 		}
 		this.toBeAdded.clear();
+		this.currentNumberOfTriples = 0;
 	}
 
 	/**
@@ -243,50 +274,50 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	/**
 	 * Evaluates one triple pattern on the distributed indices.
 	 * This method is called after all pending triples are inserted...
-	 * 
+	 *
 	 * This method is called if during determining the keys a TriplePatternNotSupportedError is thrown.
 	 * It can be used in derived classes to implement a workaround by e.g.
 	 * broadcasting the query to all nodes and collect their results...
-	 * 
+	 *
 	 * By default, it throws another TriplePatternNotSupportedError.
-	 * 
+	 *
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query result of the triple pattern
 	 */
-	public QueryResult evaluateTriplePatternAfterAdding(TriplePattern triplePattern) throws TriplePatternNotSupportedError {
+	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) throws TriplePatternNotSupportedError {
 		throw new TriplePatternNotSupportedError(this.distribution, triplePattern);
 	}
-	
+
 	/**
 	 * A class for waiting one of future boolean results becoming true (or determining false if all are false)
 	 */
 	public static class ParallelBooleanOr {
-		
+
 		/**
 		 * the lock
 		 */
-		private ReentrantLock lock = new ReentrantLock();
-		
+		private final ReentrantLock lock = new ReentrantLock();
+
 		/**
 		 * the condition variable for waiting for a specific condition and signaling if the condition might be reached
 		 */
-		private Condition condition = lock.newCondition();
-		
+		private final Condition condition = this.lock.newCondition();
+
 		/**
 		 * the future boolean results
 		 */
 		private final Future<Boolean>[] results;
-		
+
 		/**
 		 * will be true if one of the future results is true
 		 */
 		private boolean result = false;
-		
+
 		/**
 		 * The number of remaining tasks
 		 */
 		private int numberOfRemainingTasks;
-		
+
 		/**
 		 * Constructor
 		 * @param results the future boolean results to be checked
@@ -295,34 +326,34 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 			this.results = results;
 			this.numberOfRemainingTasks = results.length;
 		}
-		
+
 		/**
 		 * waits for one true result or returns false if all results are false...
 		 * @return true if one of results is true, otherwise false
 		 */
 		public boolean getResult(){
-			Thread[] threads = new Thread[results.length];
+			final Thread[] threads = new Thread[this.results.length];
 			for(int i=0; i<threads.length; i++) {
 				final int index = i;
 				threads[i] = new Thread(){
 					@Override
 					public void run(){
 						try {
-							Boolean localResult = results[index].get();
-							lock.lock();
+							final Boolean localResult = ParallelBooleanOr.this.results[index].get();
+							ParallelBooleanOr.this.lock.lock();
 							try {
 								if(localResult.booleanValue()) {
-									result = true;
+									ParallelBooleanOr.this.result = true;
 								}
-								numberOfRemainingTasks--;
-								condition.signalAll();
+								ParallelBooleanOr.this.numberOfRemainingTasks--;
+								ParallelBooleanOr.this.condition.signalAll();
 							} finally {
-								lock.unlock();
+								ParallelBooleanOr.this.lock.unlock();
 							}
-						} catch (InterruptedException e) {
+						} catch (final InterruptedException e) {
 							System.err.println(e);
 							e.printStackTrace();
-						} catch (ExecutionException e) {
+						} catch (final ExecutionException e) {
 							System.err.println(e);
 							e.printStackTrace();
 						}
@@ -330,21 +361,21 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 				};
 				threads[i].start();
 			}
-			lock.lock();
+			this.lock.lock();
 			try {
 				// wait for one true result or until all jobs are done
-				while(!result && numberOfRemainingTasks>0) {
+				while(!this.result && this.numberOfRemainingTasks>0) {
 					try {
-						condition.await();
-					} catch (InterruptedException e) {
+						this.condition.await();
+					} catch (final InterruptedException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
 				}
 			} finally {
-				lock.unlock();
+				this.lock.unlock();
 			}
-			return result;
+			return this.result;
 		}
 	}
 }

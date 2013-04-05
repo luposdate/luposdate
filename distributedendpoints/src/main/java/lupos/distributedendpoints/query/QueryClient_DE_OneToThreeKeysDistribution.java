@@ -23,7 +23,7 @@
  */
 package lupos.distributedendpoints.query;
 
-import lupos.distributed.storage.distributionstrategy.DistributionStrategyEnum;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
 
 /**
  * This class is the query evaluator for querying distributed SPARQL endpoints based on the one to three keys distribution strategy.
@@ -33,11 +33,11 @@ import lupos.distributed.storage.distributionstrategy.DistributionStrategyEnum;
 public class QueryClient_DE_OneToThreeKeysDistribution extends QueryClient_DE_DistributionStrategy<String> {
 
 	public QueryClient_DE_OneToThreeKeysDistribution() throws Exception {
-		super(DistributionStrategyEnum.OneToThreeKeysDistribution.createInstance());
+		super(TriplePropertiesDistributionStrategyEnum.OneToThreeKeysDistribution.createInstance());
 	}
 
 	public QueryClient_DE_OneToThreeKeysDistribution(final String[] args) throws Exception {
-		super(DistributionStrategyEnum.OneToThreeKeysDistribution.createInstance(), args);
+		super(TriplePropertiesDistributionStrategyEnum.OneToThreeKeysDistribution.createInstance(), args);
 	}
 
 }
