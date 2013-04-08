@@ -74,8 +74,8 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphge
 /**
  * Instances of this class are used to process queries by using a special index
  * structure for enhancement.<br>
- * The index structure has to be initialized previously. 
- * 
+ * The index structure has to be initialized previously.
+ *
  */
 public abstract class BasicIndexScan extends RootChild {
 
@@ -88,7 +88,7 @@ public abstract class BasicIndexScan extends RootChild {
 	public final static int MERGEJOINSORT = 6;
 	public final static int NARYMERGEJOIN = 7;
 	public final static int BINARYSTATICANALYSIS = 8;
-	
+
 	protected final Root root;
 
 	// Item is Var or Literal (URILiteral)
@@ -101,6 +101,11 @@ public abstract class BasicIndexScan extends RootChild {
 		this.root = root;
 	}
 
+	public BasicIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
+		this(root);
+		this.setTriplePatterns(triplePatterns);
+	}
+
 	public BasicIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root root) {
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
@@ -108,7 +113,7 @@ public abstract class BasicIndexScan extends RootChild {
 			this.succeedingOperators.add(succeedingOperator);
 		}
 		this.rdfGraph = rdfGraph;
-		setTriplePatterns(triplePattern);
+		this.setTriplePatterns(triplePattern);
 		this.root = root;
 	}
 
@@ -116,25 +121,26 @@ public abstract class BasicIndexScan extends RootChild {
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root root) {
 		this.succeedingOperators = succeedingOperators;
 		this.rdfGraph = rdfGraph;
-		setTriplePatterns(triplePattern);
+		this.setTriplePatterns(triplePattern);
 		this.root=root;
 	}
-	
+
 	public Root getRoot(){
 		return this.root;
 	}
-	
+
 	public void recomputeVariables(){
 		this.intersectionVariables = new HashSet<Variable>();
 		this.unionVariables = new HashSet<Variable>();
-		if (this.triplePatterns != null)
+		if (this.triplePatterns != null) {
 			for (final TriplePattern tp : this.triplePatterns) {
 				tp.recomputeVariables();
-				Collection<Variable> varsOfTP = tp.getUnionVariables();
+				final Collection<Variable> varsOfTP = tp.getUnionVariables();
 				this.intersectionVariables.addAll(varsOfTP);
 				this.unionVariables.addAll(varsOfTP);
 			}
-		final Item rdfGraphLocal = getGraphConstraint();
+		}
+		final Item rdfGraphLocal = this.getGraphConstraint();
 		if (rdfGraphLocal != null && rdfGraphLocal.isVariable()) {
 			this.intersectionVariables.add((Variable) rdfGraphLocal);
 			this.unionVariables.add((Variable) rdfGraphLocal);
@@ -143,7 +149,7 @@ public abstract class BasicIndexScan extends RootChild {
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		recomputeVariables();
+		this.recomputeVariables();
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
 		result.getVariables().addAll(this.unionVariables);
 		return result;
@@ -152,14 +158,14 @@ public abstract class BasicIndexScan extends RootChild {
 	/**
 	 * Joins the triple pattern using the index maps and returns the result.<br>
 	 * The succeeding operators are passed to the operator pipe to be processed.
-	 * 
+	 *
 	 * @param opt
 	 *            unused parameter
 	 * @return the result of the performed join
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {
-		final QueryResult queryResult = join(dataset);
+		final QueryResult queryResult = this.join(dataset);
 		if (queryResult == null) {
 			return null;
 		}
@@ -176,7 +182,7 @@ public abstract class BasicIndexScan extends RootChild {
 			// get the graph constraint from the super class.
 			// If it is null, a default graph is used, if not null a named one
 			// is used
-			final Item graphConstraintItem = getGraphConstraint();
+			final Item graphConstraintItem = this.getGraphConstraint();
 
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
@@ -209,12 +215,13 @@ public abstract class BasicIndexScan extends RootChild {
 								final URILiteral rdfName = indices.getRdfName();
 								graphConstraintBindings.add(
 										graphConstraint, rdfName);
-								if (queryResult == null)
-									queryResult = QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, rdfName, join(indices,
+								if (queryResult == null) {
+									queryResult = QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, rdfName, this.join(indices,
 											graphConstraintBindings).oneTimeIterator()));
-								else
-									queryResult.addAll(QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, rdfName, join(indices,
+								} else {
+									queryResult.addAll(QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, rdfName, this.join(indices,
 											graphConstraintBindings).oneTimeIterator())));
+								}
 
 							}
 
@@ -236,12 +243,13 @@ public abstract class BasicIndexScan extends RootChild {
 									graphConstraintBindings.add(
 											graphConstraint, indices
 											.getRdfName());
-									if (queryResult == null)
-										queryResult = QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, indices.getRdfName(), join(indices,
+									if (queryResult == null) {
+										queryResult = QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, indices.getRdfName(), this.join(indices,
 												graphConstraintBindings).oneTimeIterator()));
-									else
-										queryResult.addAll(QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, indices.getRdfName(), join(indices,
+									} else {
+										queryResult.addAll(QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, indices.getRdfName(), this.join(indices,
 												graphConstraintBindings).oneTimeIterator())));
+									}
 								}
 							}
 						}
@@ -254,12 +262,13 @@ public abstract class BasicIndexScan extends RootChild {
 
 						for (final Indices indices : indicesC) {
 
-							if (queryResult == null)
-								queryResult = join(indices, Bindings
+							if (queryResult == null) {
+								queryResult = this.join(indices, Bindings
 										.createNewInstance());
-							else
-								queryResult.addAll(join(indices, Bindings
+							} else {
+								queryResult.addAll(this.join(indices, Bindings
 										.createNewInstance()));
+							}
 						}
 					}
 				}
@@ -267,12 +276,13 @@ public abstract class BasicIndexScan extends RootChild {
 				// otherwise default graphs are used
 				else {
 					for (final Indices indices : indicesC) {
-						if (queryResult == null)
-							queryResult = join(indices, Bindings
+						if (queryResult == null) {
+							queryResult = this.join(indices, Bindings
 									.createNewInstance());
-						else
-							queryResult.addAll(join(indices, Bindings
+						} else {
+							queryResult.addAll(this.join(indices, Bindings
 									.createNewInstance()));
+						}
 					}
 				}
 			}
@@ -288,7 +298,7 @@ public abstract class BasicIndexScan extends RootChild {
 	 * Performs a join over a collection of triple elements and a provided
 	 * bindings object over data of a certain index structure. The collection of
 	 * triple patterns is to be retrieved from the super class.
-	 * 
+	 *
 	 * @param indices
 	 *            the index structure which contains the data
 	 * @param bindings
@@ -311,11 +321,11 @@ public abstract class BasicIndexScan extends RootChild {
 		this.triplePatterns = triplePatterns;
 		this.recomputeVariables();
 	}
-	
+
 	public Set<Variable> getVarsInTriplePatterns(){
-		HashSet<Variable> vars = new HashSet<Variable>();
-		for(TriplePattern tp: this.getTriplePattern()){
-			for(Item item: tp){
+		final HashSet<Variable> vars = new HashSet<Variable>();
+		for(final TriplePattern tp: this.getTriplePattern()){
+			for(final Item item: tp){
 				if(item.isVariable()){
 					vars.add((Variable) item);
 				}
@@ -336,11 +346,13 @@ public abstract class BasicIndexScan extends RootChild {
 	public String toString() {
 		String s = "Index Scan on";
 
-		if (this.triplePatterns != null && this.triplePatterns.size()>0)
-			for (final TriplePattern tp : this.triplePatterns)
+		if (this.triplePatterns != null && this.triplePatterns.size()>0) {
+			for (final TriplePattern tp : this.triplePatterns) {
 				s += "\n" + tp.toString();
-		else
+			}
+		} else {
 			s += " no triple pattern";
+		}
 
 		if (this.rdfGraph != null) {
 			s += "\nGraph" + this.rdfGraph;
@@ -348,7 +360,7 @@ public abstract class BasicIndexScan extends RootChild {
 
 		return s;
 	}
-	
+
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final StringBuffer s = new StringBuffer("Index Scan on");
@@ -371,8 +383,9 @@ public abstract class BasicIndexScan extends RootChild {
 	public boolean occurInSubjectOrPredicateOrObjectOriginalStringDoesNotDiffer(
 			final Variable var) {
 		for (final TriplePattern tp : this.triplePatterns) {
-			if (tp.getPos(0).equals(var) || tp.getPos(1).equals(var))
+			if (tp.getPos(0).equals(var) || tp.getPos(1).equals(var)) {
 				return true;
+			}
 			if (tp.getPos(2).equals(var)) {
 				final BooleanAndUnknown bau = tp.getObjectOriginalStringMayDiffer();
 				if (bau == BooleanAndUnknown.UNKNOWN) {
@@ -385,7 +398,7 @@ public abstract class BasicIndexScan extends RootChild {
 							((RDF3XIndexScan) this)
 							.setCollationOrder(RDF3XOperatorGraphGenerator.getCollationOrder(tp, new LinkedList<Variable>()));
 
-						} 
+						}
 						final QueryResult qr = this.join(this.root.dataset);
 						if (qr == null) {
 							this.setTriplePatterns(ztp);
@@ -409,12 +422,12 @@ public abstract class BasicIndexScan extends RootChild {
 										}
 									} else if(literal instanceof TypedLiteral){
 										if(Helper.isNumeric(literal)){
-											String content = Helper.unquote(((TypedLiteral) literal).getContent());
+											final String content = Helper.unquote(((TypedLiteral) literal).getContent());
 											if(content.startsWith("+")){
 												return false;
 											}
 											try{
-												Object type = Helper.getType(literal);
+												final Object type = Helper.getType(literal);
 												String content2;
 												if(type instanceof BigInteger){
 													content2 = Helper.getInteger(literal).toString();
@@ -422,29 +435,33 @@ public abstract class BasicIndexScan extends RootChild {
 													content2 = Helper.getDouble(literal).toString();
 												} else if(type instanceof Float){
 													content2 = Helper.getFloat(literal).toString();
-												} else content2 = Helper.getBigDecimal(literal).toString();
+												} else {
+													content2 = Helper.getBigDecimal(literal).toString();
+												}
 												if(content2.compareTo(content)!=0){
 													return false;
 												}
-											} catch(Exception e) { 
-												return false; 
+											} catch(final Exception e) {
+												return false;
 											}
 										}
 									}
 								}
 							}
 						} finally {
-							if (itb instanceof ParallelIterator)
+							if (itb instanceof ParallelIterator) {
 								((ParallelIterator<Bindings>) itb).close();
+							}
 						}
 					} finally {
 						this.setTriplePatterns(ztp);
 					}
 				}
-				if (bau == BooleanAndUnknown.TRUE)
+				if (bau == BooleanAndUnknown.TRUE) {
 					return false;
-				else
+				} else {
 					return true;
+				}
 			}
 		}
 		return true;
@@ -498,14 +515,15 @@ public abstract class BasicIndexScan extends RootChild {
 				}
 				key += v.toString();
 			} else {
-				if (tp.getPos(i) instanceof LazyLiteralOriginalContent)
+				if (tp.getPos(i) instanceof LazyLiteralOriginalContent) {
 					key += "\""
 							+ ((LazyLiteralOriginalContent) tp.getPos(i))
 									.getCodeOriginalContent() + "\"";
-				else if (tp.getPos(i) instanceof LazyLiteral)
+				} else if (tp.getPos(i) instanceof LazyLiteral) {
 					key += "\"" + ((LazyLiteral) tp.getPos(i)).getCode() + "\"";
-				else
+				} else {
 					key += tp.getPos(i).toString();
+				}
 			}
 		}
 		return key;
@@ -614,7 +632,7 @@ public abstract class BasicIndexScan extends RootChild {
 			((RDF3XIndexScan) this).setCollationOrder(RDF3XOperatorGraphGenerator.getCollationOrder(tp, joinPartners));
 			((RDF3XIndexScan) this).setMinimaMaxima(minima, maxima);
 
-		} 
+		}
 		final QueryResult qrSize = this.join(this.root.dataset);
 		if (qrSize == null) {
 			// System.out.println("No result for " + tp);
@@ -634,22 +652,26 @@ public abstract class BasicIndexScan extends RootChild {
 				for (final Variable v : b.getVariableSet()) {
 					final LazyLiteral ll = (LazyLiteral) b.get(v);
 					final int pos = hmvi.get(v);
-					if (minArray[pos] == null || minArray[pos] > ll.getCode())
+					if (minArray[pos] == null || minArray[pos] > ll.getCode()) {
 						minArray[pos] = ll.getCode();
-					if (maxArray[pos] == null || maxArray[pos] < ll.getCode())
+					}
+					if (maxArray[pos] == null || maxArray[pos] < ll.getCode()) {
 						maxArray[pos] = ll.getCode();
+					}
 				}
 				size++;
 
 				for (int i = 0; i < minArray.length; i++) {
-					if (minArray[i] != null)
+					if (minArray[i] != null) {
 						tp.addMinMaxLazyLiteral(i, minArray[i], maxArray[i]);
+					}
 				}
 			}
 		} else {
 			int maxId = 1;
-			if (qrSize instanceof IdIteratorQueryResult)
+			if (qrSize instanceof IdIteratorQueryResult) {
 				maxId = ((IdIteratorQueryResult) qrSize).getMaxId();
+			}
 
 			final int[][] min = new int[maxId][];
 			final int[][] max = new int[maxId][];
@@ -659,16 +681,18 @@ public abstract class BasicIndexScan extends RootChild {
 				final Bindings b = itbSize.next();
 				final Triple t = b.getTriples().iterator().next();
 				int id = 0;
-				if (qrSize instanceof IdIteratorQueryResult)
-					id = ((IdIteratorQueryResult) qrSize).getIDOfLastBinding();				
+				if (qrSize instanceof IdIteratorQueryResult) {
+					id = ((IdIteratorQueryResult) qrSize).getIDOfLastBinding();
+				}
 				size++;
 			}
 			for (int id = 0; id < maxId; id++) {
-				if (min[id] != null)
+				if (min[id] != null) {
 					for (int i = 0; i < min[id].length; i++) {
 						tp.addMinMaxPresortingNumbers(i, min[id].length,
 								id, min[id][i], max[id][i]);
 					}
+				}
 			}
 		}
 
@@ -725,12 +749,14 @@ public abstract class BasicIndexScan extends RootChild {
 							}
 						}, Bindings.class);
 				final Iterator<Bindings> itb = qr.oneTimeIterator();
-				while (itb.hasNext())
+				while (itb.hasNext()) {
 					sort.add(itb.next());
+				}
 				qr = QueryResult.createInstance(sort.iterator());
 			}
-			if (qr == null)
+			if (qr == null) {
 				return result;
+			}
 
 			if (size == 0) {
 				qr.release();
@@ -777,14 +803,16 @@ public abstract class BasicIndexScan extends RootChild {
 							currentEntry.literal = b2.get(v);
 							vb.selectivityOfInterval.add(currentEntry);
 						}
-					} else
+					} else {
 						vb.selectivityOfInterval.add(currentEntry);
+					}
 				}
 			}
 			qr.release();
 			result.put(v, vb);
-			if (intermediate != null)
+			if (intermediate != null) {
 				intermediate.put(v, vb);
+			}
 		}
 		this.setTriplePatterns(ztp);
 
@@ -801,10 +829,11 @@ public abstract class BasicIndexScan extends RootChild {
 			}
 		}
 		if (Indices.usedDatastructure == Indices.DATA_STRUCT.DBBPTREE) {
-			if (intermediate != null)
-				storeVarBuckets(tp, intermediate, key);
-			else
-				storeVarBuckets(tp, result, key);
+			if (intermediate != null) {
+				this.storeVarBuckets(tp, intermediate, key);
+			} else {
+				this.storeVarBuckets(tp, result, key);
+			}
 		}
 		return result;
 	}
@@ -814,9 +843,9 @@ public abstract class BasicIndexScan extends RootChild {
 			final Collection<Variable> joinPartners,
 			final HashMap<Variable, Literal> minima,
 			final HashMap<Variable, Literal> maxima) {
-		return getVarBucketsOriginal(tp, classBindings, joinPartners, minima, maxima);
+		return this.getVarBucketsOriginal(tp, classBindings, joinPartners, minima, maxima);
 	}
-	
+
 	/**
 	 * Returns whether or not the join order of the triple patterns inside this index scan operator should be optimized.
 	 * This is for almost all index scan operator types true (but not for PredicateIndexScan)
@@ -825,24 +854,24 @@ public abstract class BasicIndexScan extends RootChild {
 	public boolean joinOrderToBeOptimized(){
 		return true;
 	}
-	
+
 	public static class AddConstantBindingIterator implements Iterator<Bindings>{
-		
+
 		protected final Variable var;
 		protected final Literal literal;
 		protected final Iterator<Bindings> originalIterator;
 		protected Bindings next = null;
 		protected static Literal emptyURI;
-		
+
 		{
 			try {
 				emptyURI = LiteralFactory.createURILiteral("<>");
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
 		}
-		
+
 		public AddConstantBindingIterator(final Variable var, final Literal literal, final Iterator<Bindings> originalIterator){
 			this.var = var;
 			this.literal = literal;
@@ -851,27 +880,31 @@ public abstract class BasicIndexScan extends RootChild {
 
 		@Override
 		public boolean hasNext() {
-			if(this.next!=null)
+			if(this.next!=null) {
 				return true;
-			this.next = computeNext();
+			}
+			this.next = this.computeNext();
 			return (this.next!=null);
 		}
 
 		@Override
 		public Bindings next() {
 			if(this.next!=null){
-				Bindings znext = this.next;
+				final Bindings znext = this.next;
 				this.next = null;
 				return znext;
-			} else return computeNext();			
+			} else {
+				return this.computeNext();
+			}
 		}
-		
+
 		public Bindings computeNext(){
 			Bindings inter;
 			do {
 				inter = this.originalIterator.next();
-				if(inter==null)
+				if(inter==null) {
 					return null;
+				}
 			} while(inter.get(this.var)!= null && inter.get(this.var).compareToNotNecessarilySPARQLSpecificationConform(this.literal)!=0 && inter.get(this.var).compareToNotNecessarilySPARQLSpecificationConform(emptyURI)!=0);
 			// comparison with emptyURI for running W3C testcases successfully (import of relative URI was meant to be the URI of the named graph!)
 			inter.add(this.var, this.literal);
@@ -881,6 +914,6 @@ public abstract class BasicIndexScan extends RootChild {
 		@Override
 		public void remove() {
 			this.originalIterator.remove();
-		}		
+		}
 	}
 }

@@ -21,35 +21,30 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.index.memoryindex;
+package lupos.distributed.operator.format.operatorcreator;
 
 import java.util.Collection;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class MemoryIndexRoot extends
-		lupos.engine.operators.index.Root {
+/**
+ * Methods for creating the operators for the RDF3X approach
+ */
+public class RDF3XCreator implements IOperatorCreator {
 
-	public MemoryIndexRoot() {
-	}
-
-
-	public MemoryIndexRoot(final Dataset dataset) {
-		super(dataset);
+	@Override
+	public Root createRoot(final Dataset dataset) {
+		return new RDF3XRoot(dataset);
 	}
 
 	@Override
-	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
-	}
-
-	@Override
-	public MemoryIndexRoot newInstance(final Dataset dataset_param) {
-		return new MemoryIndexRoot(dataset_param);
+	public BasicIndexScan createIndexScan(final Root root,
+			final Collection<TriplePattern> triplePatterns) {
+		return new RDF3XIndexScan(root, triplePatterns);
 	}
 }

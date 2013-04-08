@@ -25,7 +25,6 @@ package lupos.distributed.operator;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.operator.format.SubgraphContainerFormatter;
-import lupos.distributed.storage.SubgraphExecutor;
 import lupos.engine.operators.RootChild;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Root;
@@ -49,11 +48,6 @@ public class SubgraphContainer<K> extends RootChild {
 	private final Root rootNodeOfSubGraph;
 
 	/**
-	 * the contained subgraph as serialized json string
-	 */
-	private final String subgraphSerializedAsJSON;
-
-	/**
 	 * the key which identifies to which node the operator graph is sent to
 	 */
 	private final K key;
@@ -61,7 +55,7 @@ public class SubgraphContainer<K> extends RootChild {
 	/**
 	 * the executor to submit a subgraph and retrieve its query result...
 	 */
-	private final SubgraphExecutor<K> subgraphExecutor;
+	private final ISubgraphExecutor<K> subgraphExecutor;
 
 	/**
 	 * Instantiates a new sub graph container.
@@ -71,13 +65,10 @@ public class SubgraphContainer<K> extends RootChild {
 	 * @param key the key which identifies to which node the operator graph is sent to
 	 * @throws JSONException
 	 */
-	public SubgraphContainer(final Root rootNodeOfSubGraph, final K key, final SubgraphExecutor<K> subgraphExecutor) throws JSONException {
+	public SubgraphContainer(final Root rootNodeOfSubGraph, final K key, final ISubgraphExecutor<K> subgraphExecutor) throws JSONException {
 		this.key = key;
 		this.rootNodeOfSubGraph = rootNodeOfSubGraph;
 		this.subgraphExecutor = subgraphExecutor;
-		final SubgraphContainerFormatter serializer = new SubgraphContainerFormatter();
-		final JSONObject serializedGraph = serializer.serialize(rootNodeOfSubGraph, 0);
-		this.subgraphSerializedAsJSON = serializedGraph.toString();
 	}
 
 	/**
@@ -91,7 +82,15 @@ public class SubgraphContainer<K> extends RootChild {
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {
-		return this.subgraphExecutor.evaluate(this.key, this.subgraphSerializedAsJSON);
+		final SubgraphContainerFormatter serializer = new SubgraphContainerFormatter();
+		try {
+			final JSONObject serializedGraph = serializer.serialize(this.rootNodeOfSubGraph, 0);
+			return this.subgraphExecutor.evaluate(this.key,  serializedGraph.toString());
+		} catch (final JSONException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

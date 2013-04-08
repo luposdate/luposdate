@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
 import lupos.distributed.query.operator.QueryClientIndexScan;
 import lupos.distributed.query.operator.QueryClientRoot;
 import lupos.engine.operators.BasicOperator;
@@ -48,8 +49,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-// TODO: Auto-generated Javadoc
-
 /**
  * The Class SubGraphContainerFormatter.
  */
@@ -57,18 +56,21 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 
 	private int id_counter;
 
-	private BasicOperator root;
+	private Root root;
 
 	private Dataset dataset;
 
 	private Application application;
 
+	private IOperatorCreator operatorCreator;
+
 	public SubgraphContainerFormatter() {
 	}
 
-	public SubgraphContainerFormatter(final Dataset dataset, final Application application) {
+	public SubgraphContainerFormatter(final Dataset dataset, final IOperatorCreator operatorCreator, final Application application) {
 		this.dataset = dataset;
 		this.application = application;
+		this.operatorCreator = operatorCreator;
 	}
 
 	@Override
@@ -116,9 +118,9 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 
 		OperatorFormatter serializer;
 		if (op instanceof BasicIndexScan) {
-			serializer = new QueryClientIndexScanFormatter();
+			serializer = new IndexScanFormatter();
 		} else if (op instanceof Root) {
-			serializer = new QueryClientRootFormatter();
+			serializer = new RootFormatter();
 		} else if (op instanceof Result) {
 			serializer = new ResultFormatter();
 		} else if (op instanceof Filter) {
@@ -141,18 +143,18 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 	}
 
 	@Override
-	public BasicOperator deserialize(final JSONObject serialiezedOperator) throws JSONException {
+	public Root deserialize(final JSONObject serializedOperator) throws JSONException {
 		this.root = null;
 
-		final HashMap<Integer, BasicOperator> nodes = this.deserializeNodes(serialiezedOperator);
+		final HashMap<Integer, BasicOperator> nodes = this.deserializeNodes(serializedOperator);
 
-		final JSONArray edgesJson = (JSONArray) serialiezedOperator.get("edges");
-		this.deserializeEdges(edgesJson, nodes);
+		final JSONArray edgesJson = (JSONArray) serializedOperator.get("edges");
+		SubgraphContainerFormatter.deserializeEdges(edgesJson, nodes);
 
 		return this.root;
 	}
 
-	private void deserializeEdges(final JSONArray edgesJson, final HashMap<Integer, BasicOperator> nodes) throws JSONException {
+	private static void deserializeEdges(final JSONArray edgesJson, final HashMap<Integer, BasicOperator> nodes) throws JSONException {
 
 		final HashMap<BasicOperator, List<OperatorIDTuple>> succeedingOperators = newHashMap();
 		final HashMap<BasicOperator, List<BasicOperator>> precedingOperators = newHashMap();
@@ -203,14 +205,14 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 			final BasicOperator node = formatter.deserialize(nodeJson);
 			nodes.put(nodeJson.getInt("node_id"), node);
 
-			if (node instanceof QueryClientRoot) {
-				final QueryClientIndexScanFormatter p2pIndexScanFormatter = (QueryClientIndexScanFormatter) formatters.get(QueryClientIndexScan.class.getName());
-				p2pIndexScanFormatter.setRoot((QueryClientRoot) node);
+			if (node instanceof Root) {
+				final IndexScanFormatter indexScanFormatter = (IndexScanFormatter) formatters.get(BasicIndexScan.class.getName());
+				indexScanFormatter.setRoot((Root)node);
 			}
 
 			try {
 				if (nodeJson.getBoolean("root")) {
-					this.root = node;
+					this.root = (Root) node;
 				}
 			} catch (final JSONException e) {
 				// ignore
@@ -222,8 +224,10 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 
 	private HashMap<String, OperatorFormatter> createFormatters() {
 		final HashMap<String, OperatorFormatter> formatters = newHashMap();
-		formatters.put(QueryClientRoot.class.getName(), new QueryClientRootFormatter(this.dataset));
-		formatters.put(QueryClientIndexScan.class.getName(), new QueryClientIndexScanFormatter());
+		formatters.put(Root.class.getName(), new RootFormatter(this.dataset, this.operatorCreator));
+		formatters.put(BasicIndexScan.class.getName(), new IndexScanFormatter(this.operatorCreator));
+		formatters.put(QueryClientRoot.class.getName(), new RootFormatter(this.dataset, this.operatorCreator));
+		formatters.put(QueryClientIndexScan.class.getName(), new IndexScanFormatter(this.operatorCreator));
 		formatters.put(Filter.class.getName(), new FilterFormatter());
 		formatters.put(Result.class.getName(), new ResultFormatter(this.application));
 		return formatters;

@@ -181,6 +181,23 @@ public class EndpointManagement {
 	}
 
 	/**
+	 * submits a subgraph to a specific registered SPARQL endpoint
+	 * @param subgraph the given subgraph to be submitted
+	 * @param key the key container containing the the number of the endpoint to which the query is sent to
+	 * @return the query result of the submitted subgraph
+	 */
+	public QueryResult submitSubgraphQuery(final String subgraph, final KeyContainer<Integer> key){
+		final String url = EndpointManagement.addContext(EndpointManagement.addContext(this.urlsOfEndpoints[key.key], "subgraph/"), key);
+		try {
+			return EndpointManagement.submitSPARQLQuery(url, subgraph);
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
 	 * submits a query parallel to all registered endpoints
 	 * @param query the query to be submitted
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)

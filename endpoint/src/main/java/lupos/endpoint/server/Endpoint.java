@@ -74,7 +74,7 @@ public class Endpoint {
 
 	private static HTMLForm htmlForm = new StandardHTMLForm();
 
-	private static Class<? extends Bindings> defaultBindingsClass = Bindings.instanceClass;
+	public static Class<? extends Bindings> defaultBindingsClass = Bindings.instanceClass;
 
 	public static void registerFormatter(final Formatter formatter){
 		Endpoint.registeredFormatter.put(formatter.getKey().toLowerCase(), formatter);

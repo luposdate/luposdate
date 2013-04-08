@@ -21,23 +21,24 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.query;
+package lupos.distributedendpoints.query.withsubgraphsubmission;
 
 import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
 
 /**
- * This class is the query evaluator for querying distributed SPARQL endpoints based on the one to three keys distribution strategy.
+ * This class is the query evaluator for querying distributed SPARQL endpoints based on the two keys distribution strategy.
+ * Complete subgraphs are submitted for evaluation to the storage nodes.
  *
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
  */
-public class QueryClient_DE_OneToThreeKeysDistribution extends QueryClient_DE_DistributionStrategy<String> {
+public class QueryClient_DE_SG_TwoKeysDistribution extends QueryClient_DE_SG_DistributionStrategy<String> {
 
-	public QueryClient_DE_OneToThreeKeysDistribution() throws Exception {
-		super(TriplePropertiesDistributionStrategyEnum.OneToThreeKeysDistribution.createInstance());
+	public QueryClient_DE_SG_TwoKeysDistribution() throws Exception {
+		super(TriplePropertiesDistributionStrategyEnum.TwoKeysDistribution.createInstance());
 	}
 
-	public QueryClient_DE_OneToThreeKeysDistribution(final String[] args) throws Exception {
-		super(TriplePropertiesDistributionStrategyEnum.OneToThreeKeysDistribution.createInstance(), args);
+	public QueryClient_DE_SG_TwoKeysDistribution(final String[] args) throws Exception {
+		super(TriplePropertiesDistributionStrategyEnum.TwoKeysDistribution.createInstance(), args);
 	}
 
 }

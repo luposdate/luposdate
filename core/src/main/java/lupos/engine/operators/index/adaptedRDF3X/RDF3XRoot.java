@@ -32,16 +32,23 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.optimizations.logical.OptimizeJoinOrder;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.RDF3XCostBasedOptimizer;
 
 public class RDF3XRoot extends
 		lupos.engine.operators.index.Root {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -1624295267286626002L;
+
+	public RDF3XRoot(){
+	}
+
+
+	public RDF3XRoot(final Dataset dataset_param){
+		super(dataset_param);
+	}
 
 	@Override
 	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
@@ -50,18 +57,17 @@ public class RDF3XRoot extends
 	}
 
 	@Override
-	public lupos.engine.operators.index.Root newInstance(Dataset dataset_param) {
-		RDF3XRoot root = new RDF3XRoot();
-		root.dataset = dataset_param;
-		return root;
+	public lupos.engine.operators.index.Root newInstance(final Dataset dataset_param) {
+		return new RDF3XRoot(dataset_param);
 	}
 
 	@Override
 	public void optimizeJoinOrder(final int opt) {
 		if (opt == BasicIndexScan.BINARY || opt == BasicIndexScan.MERGEJOIN
 				|| opt == BasicIndexScan.MERGEJOINSORT
-				|| opt == BasicIndexScan.NARYMERGEJOIN)
-			makeBinaryJoin(opt);
+				|| opt == BasicIndexScan.NARYMERGEJOIN) {
+			this.makeBinaryJoin(opt);
+		}
 	}
 
 	public void makeBinaryJoin(final int opt) {
@@ -70,13 +76,14 @@ public class RDF3XRoot extends
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
 			if (oit.getOperator() instanceof RDF3XIndexScan) {
 				final RDF3XIndexScan indexScan = (RDF3XIndexScan) oit.getOperator();
-				
+
 				final lupos.engine.operators.index.Root root = RDF3XCostBasedOptimizer.rearrangeJoinOrder(indexScan, opt == BasicIndexScan.MERGEJOINSORT, opt==BasicIndexScan.NARYMERGEJOIN);
-				c.addAll(root.getSucceedingOperators());								
-			} else
+				c.addAll(root.getSucceedingOperators());
+			} else {
 				c.add(oit);
+			}
 		}
-		setSucceedingOperators(c);
+		this.setSucceedingOperators(c);
 		this.deleteParents();
 		this.setParents();
 		this.detectCycles();

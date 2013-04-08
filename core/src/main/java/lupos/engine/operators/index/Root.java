@@ -30,6 +30,7 @@ import java.util.List;
 import lupos.datastructures.items.Item;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.RootChild;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.MemoryIndexCostBasedOptimizer;
@@ -37,19 +38,26 @@ import lupos.optimizations.physical.joinorder.staticanalysis.jointree.BuildJoinT
 import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastEntries;
 import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariables;
 import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries;
-import lupos.engine.operators.RootChild;
 
 public abstract class Root extends Operator {
 	public List<String> defaultGraphs;
 	public List<String> namedGraphs;
 	public Dataset dataset;
 
+	public Root() {
+	}
+
+	public Root(final Dataset dataset) {
+		this.dataset = dataset;
+	}
+
 	public abstract BasicIndexScan newIndexScan(OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, Item data);
 
 	public void startProcessing() {
-		if (this.succeedingOperators.size() == 0)
+		if (this.succeedingOperators.size() == 0) {
 			return;
+		}
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
 			((RootChild) oit.getOperator()).startProcessing(this.dataset);
 		}
@@ -63,17 +71,17 @@ public abstract class Root extends Operator {
 
 	public void optimizeJoinOrder(final int opt) {
 		final List<OperatorIDTuple> c = new LinkedList<OperatorIDTuple>();
-		
+
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
 			if (oit.getOperator() instanceof BasicIndexScan) {
 				final BasicIndexScan indexScan = (BasicIndexScan) oit.getOperator();
 
-				if(indexScan.joinOrderToBeOptimized()){				
-					final lupos.engine.operators.index.Root root;	
+				if(indexScan.joinOrderToBeOptimized()){
+					final lupos.engine.operators.index.Root root;
 					switch (opt) {
 					case BasicIndexScan.MOSTRESTRICTIONS:
 						root = RearrangeTriplePatternsInIndexScanLeastNewVariables.rearrangeJoinOrder(indexScan);
-						break;					
+						break;
 					case BasicIndexScan.MOSTRESTRICTIONSLEASTENTRIES:
 						root = RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries.rearrangeJoinOrder(indexScan);
 						break;
@@ -89,7 +97,7 @@ public abstract class Root extends Operator {
 					default:
 						root = RearrangeTriplePatternsInIndexScanLeastEntries.rearrangeJoinOrder(indexScan);
 					}
-					
+
 					c.addAll(root.getSucceedingOperators());
 				} else {
 					c.add(oit);
@@ -98,8 +106,8 @@ public abstract class Root extends Operator {
 				// Operators not being index scan operators should remain!
 				c.add(oit);
 			}
-		} 
-		setSucceedingOperators(c);
+		}
+		this.setSucceedingOperators(c);
 		this.deleteParents();
 		this.setParents();
 		this.detectCycles();
@@ -107,7 +115,7 @@ public abstract class Root extends Operator {
 	}
 
 	public void remove(final BasicIndexScan i) {
-		removeSucceedingOperator(i);
+		this.removeSucceedingOperator(i);
 	}
 
 	public abstract Root newInstance(Dataset dataset_param);
@@ -116,24 +124,27 @@ public abstract class Root extends Operator {
 		String graph;
 		System.out.println();
 		System.out.println("default graphs: ");
-		if (this.defaultGraphs != null)
+		if (this.defaultGraphs != null) {
 			for (int i = 0; i < this.defaultGraphs.size(); i++) {
 				graph = this.defaultGraphs.get(i);
 				System.out.println(i + ": " + graph);
 			}
+		}
 		System.out.println();
 		System.out.println("named graphs: ");
-		if (this.namedGraphs != null)
+		if (this.namedGraphs != null) {
 			for (int i = 0; i < this.namedGraphs.size(); i++) {
 				graph = this.namedGraphs.get(i);
 				System.out.println(i + ": " + graph);
 			}
+		}
 		System.out.println();
 	}
-	
+
 	public void startProcessingDebug(final DebugStep debugstep) {
-		if (this.succeedingOperators.size() == 0)
+		if (this.succeedingOperators.size() == 0) {
 			return;
+		}
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
 			((RootChild) oit.getOperator()).startProcessingDebug(this.dataset, debugstep);
 		}

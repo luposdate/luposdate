@@ -21,35 +21,23 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.index.memoryindex;
+package lupos.distributedendpoints.query.withoutsubgraphsubmission;
 
-import java.util.Collection;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+/**
+ * This class is the query evaluator for querying distributed SPARQL endpoints based on the one to three keys distribution strategy.
+ *
+ * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ */
+public class QueryClient_DE_OneToThreeKeysDistribution extends QueryClient_DE_DistributionStrategy<String> {
 
-public class MemoryIndexRoot extends
-		lupos.engine.operators.index.Root {
-
-	public MemoryIndexRoot() {
+	public QueryClient_DE_OneToThreeKeysDistribution() throws Exception {
+		super(TriplePropertiesDistributionStrategyEnum.OneToThreeKeysDistribution.createInstance());
 	}
 
-
-	public MemoryIndexRoot(final Dataset dataset) {
-		super(dataset);
+	public QueryClient_DE_OneToThreeKeysDistribution(final String[] args) throws Exception {
+		super(TriplePropertiesDistributionStrategyEnum.OneToThreeKeysDistribution.createInstance(), args);
 	}
 
-	@Override
-	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
-	}
-
-	@Override
-	public MemoryIndexRoot newInstance(final Dataset dataset_param) {
-		return new MemoryIndexRoot(dataset_param);
-	}
 }

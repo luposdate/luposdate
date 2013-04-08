@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.storage;
+package lupos.distributed.operator;
 
 import lupos.datastructures.queryresult.QueryResult;
 
@@ -29,7 +29,7 @@ import lupos.datastructures.queryresult.QueryResult;
  * This interface declares the methods to submit a subgraph and retrieve its result
  * @param <K> the type of the key which addresses the node where the subgraph is submitted to
  */
-public interface SubgraphExecutor<K> {
+public interface ISubgraphExecutor<K> {
 
 	/**
 	 * This method submits a given subgraph and returns the result of the evaluated subgraph
@@ -37,5 +37,5 @@ public interface SubgraphExecutor<K> {
 	 * @param subgraphSeriliazedAsJSON the subgraph serialized as JSON string
 	 * @return the retrieved query result
 	 */
-	public QueryResult evaluate(K key, String subgraphSeriliazedAsJSON);
+	public QueryResult evaluate(K key, String subgraphSerializedAsJSON);
 }

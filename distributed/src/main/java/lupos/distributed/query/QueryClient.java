@@ -38,45 +38,48 @@ import lupos.engine.operators.index.Root;
 import lupos.misc.Tuple;
 
 public class QueryClient extends BasicIndexQueryEvaluator {
-	
+
 	protected final IStorage storage;
 
 	public QueryClient(final IStorage storage) throws Exception {
 		super();
 		this.storage = storage;
 	}
-	
+
 	public QueryClient(final IStorage storage, final String[] args) throws Exception {
 		super(args);
 		this.storage = storage;
 	}
-	
+
+	@Override
 	public void init() throws Exception {
 		super.init();
-		// avoid evaluation of triple patterns for query optimization
+		// avoid evaluation of triple patterns for query optimization,
+		// in other words: use a static analysis for reorder triple patterns for optimized query evaluation
+		// (fetch-as-needed is used)
 		this.opt = BasicIndexScan.MOSTRESTRICTIONS;
 	}
-	
+
 	@Override
 	public Root createRoot() {
 		return new QueryClientRoot(this.dataset);
 	}
-	
+
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
 		final Date a = new Date();
 		super.prepareInputData(defaultGraphs, namedGraphs);
 		this.dataset = new Dataset(defaultGraphs, namedGraphs, this.type,
-				getMaterializeOntology(), this.opt, new Dataset.IndicesFactory() {
+				this.getMaterializeOntology(), this.opt, new Dataset.IndicesFactory() {
 			@Override
 			public Indices createIndices(final URILiteral uriLiteral) {
-				return new QueryClientIndices(uriLiteral, storage);
+				return new QueryClientIndices(uriLiteral, QueryClient.this.storage);
 			}
 
 			@Override
 			public lupos.engine.operators.index.Root createRoot() {
-				QueryClientRoot ic=new QueryClientRoot(QueryClient.this.dataset);
+				final QueryClientRoot ic=new QueryClientRoot(QueryClient.this.dataset);
 				return ic;
 			}
 		}, this.debug != DEBUG.NONE, this.inmemoryexternalontologyinference);
@@ -84,24 +87,24 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 		final long prepareTime = ((new Date()).getTime() - a.getTime());
 		return prepareTime;
 	}
-	
+
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
-			Collection<URILiteral> defaultGraphs,
-			Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
+			final Collection<URILiteral> defaultGraphs,
+			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
 			throws Exception {
 		final Date a = new Date();
 		super.prepareInputDataWithSourcesOfNamedGraphs(defaultGraphs, namedGraphs);
 		this.dataset = new Dataset(defaultGraphs, namedGraphs,
-				getMaterializeOntology(), this.type, this.opt, new Dataset.IndicesFactory() {
+				this.getMaterializeOntology(), this.type, this.opt, new Dataset.IndicesFactory() {
 			@Override
 			public Indices createIndices(final URILiteral uriLiteral) {
-				return new QueryClientIndices(uriLiteral, storage);
+				return new QueryClientIndices(uriLiteral, QueryClient.this.storage);
 			}
 
 			@Override
 			public lupos.engine.operators.index.Root createRoot() {
-				QueryClientRoot ic=new QueryClientRoot(QueryClient.this.dataset);
+				final QueryClientRoot ic=new QueryClientRoot(QueryClient.this.dataset);
 				return ic;
 			}
 		}, this.debug != DEBUG.NONE, this.inmemoryexternalontologyinference);

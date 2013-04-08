@@ -23,10 +23,13 @@
  */
 package lupos.distributedendpoints.gui;
 
-import lupos.distributedendpoints.query.QueryClient_DE;
-import lupos.distributedendpoints.query.QueryClient_DE_OneKeyDistribution;
-import lupos.distributedendpoints.query.QueryClient_DE_OneToThreeKeysDistribution;
-import lupos.distributedendpoints.query.QueryClient_DE_TwoKeysDistribution;
+import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE;
+import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE_OneKeyDistribution;
+import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE_OneToThreeKeysDistribution;
+import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE_TwoKeysDistribution;
+import lupos.distributedendpoints.query.withsubgraphsubmission.QueryClient_DE_SG_OneKeyDistribution;
+import lupos.distributedendpoints.query.withsubgraphsubmission.QueryClient_DE_SG_OneToThreeKeysDistribution;
+import lupos.distributedendpoints.query.withsubgraphsubmission.QueryClient_DE_SG_TwoKeysDistribution;
 import lupos.gui.Demo_Applet;
 
 /**
@@ -34,11 +37,14 @@ import lupos.gui.Demo_Applet;
  */
 public class Start_Demo_Applet_DE {
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(final String[] args) throws ClassNotFoundException {
 		Demo_Applet.registerEvaluator("Distributed Evaluator (without distribution strategy)", QueryClient_DE.class);
 		Demo_Applet.registerEvaluator("Distributed Evaluator (one key distribution)", QueryClient_DE_OneKeyDistribution.class);
 		Demo_Applet.registerEvaluator("Distributed Evaluator (two keys distribution)", QueryClient_DE_TwoKeysDistribution.class);
 		Demo_Applet.registerEvaluator("Distributed Evaluator (one to three keys distribution)", QueryClient_DE_OneToThreeKeysDistribution.class);
+		Demo_Applet.registerEvaluator("Distributed Evaluator with subgraph submission (one key distribution)", QueryClient_DE_SG_OneKeyDistribution.class);
+		Demo_Applet.registerEvaluator("Distributed Evaluator with subgraph submission (two keys distribution)", QueryClient_DE_SG_TwoKeysDistribution.class);
+		Demo_Applet.registerEvaluator("Distributed Evaluator with subgraph submission (one to three keys distribution)", QueryClient_DE_SG_OneToThreeKeysDistribution.class);
 		Demo_Applet.main(args);
 	}
 }

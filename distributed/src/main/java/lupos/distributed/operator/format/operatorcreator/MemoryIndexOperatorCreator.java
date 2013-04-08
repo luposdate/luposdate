@@ -21,76 +21,30 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator.format;
+package lupos.distributed.operator.format.operatorcreator;
 
-import lupos.distributed.query.operator.QueryClientRoot;
-import lupos.engine.operators.BasicOperator;
+import java.util.Collection;
+
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import lupos.engine.operators.index.Root;
+import lupos.engine.operators.index.memoryindex.MemoryIndexRoot;
+import lupos.engine.operators.index.memoryindex.MemoryIndexScan;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * Implements the formatter for the root operator
+ * Methods for creating the operators for the Memory Index approach
  */
-public class QueryClientRootFormatter implements OperatorFormatter {
+public class MemoryIndexOperatorCreator implements IOperatorCreator {
 
-		/** The dataset. */
-		private Dataset		dataset;
+	@Override
+	public Root createRoot(final Dataset dataset) {
+		return new MemoryIndexRoot(dataset);
+	}
 
-		/**
-		 * Gets the dataset.
-		 *
-		 * @return the dataset
-		 */
-		public Dataset getDataset() {
-			return this.dataset;
-		}
-
-		/**
-		 * Instantiates a new root formatter.
-		 *
-		 * @param dataset
-		 *            the dataset
-		 */
-		public QueryClientRootFormatter(final Dataset dataset) {
-			this.dataset = dataset;
-		}
-
-		/**
-		 * Instantiates a new root formatter.
-		 */
-		public QueryClientRootFormatter() {
-		}
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
-		 * .operators.BasicOperator, int)
-		 */
-		@Override
-		public JSONObject serialize(final BasicOperator operator, final int node_id)
-				throws JSONException {
-			final JSONObject json = new JSONObject();
-
-			json.put("type", operator.getClass().getName());
-			json.put("node_id", node_id);
-			json.put("root", true);
-
-			return json;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.
-		 * JSONObject)
-		 */
-		@Override
-		public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
-			return new QueryClientRoot(this.dataset);
-		}
+	@Override
+	public BasicIndexScan createIndexScan(final Root root,
+			final Collection<TriplePattern> triplePatterns) {
+		return new MemoryIndexScan(root, triplePatterns);
+	}
 }

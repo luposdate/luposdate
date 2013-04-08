@@ -43,13 +43,13 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  */
 public class QueryClientIndexScan extends BasicIndexScan {
 
-	public QueryClientIndexScan(final Root root){
-		super(root);
-	}
-
 	public QueryClientIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final Root root) {
 		super(succeedingOperator, triplePatterns, rdfGraph, root);
+	}
+
+	public QueryClientIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
+		super(root, triplePatterns);
 	}
 
 	@Override

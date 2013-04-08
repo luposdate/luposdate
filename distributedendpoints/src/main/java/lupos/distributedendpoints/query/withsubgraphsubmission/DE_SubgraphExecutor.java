@@ -21,35 +21,23 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.index.memoryindex;
+package lupos.distributedendpoints.query.withsubgraphsubmission;
 
-import java.util.Collection;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.operator.ISubgraphExecutor;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
+import lupos.distributedendpoints.storage.util.EndpointManagement;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+public class DE_SubgraphExecutor implements ISubgraphExecutor<KeyContainer<Integer>> {
 
-public class MemoryIndexRoot extends
-		lupos.engine.operators.index.Root {
+	protected final EndpointManagement endpointManagement;
 
-	public MemoryIndexRoot() {
-	}
-
-
-	public MemoryIndexRoot(final Dataset dataset) {
-		super(dataset);
+	public DE_SubgraphExecutor(final EndpointManagement endpointManagement) {
+		this.endpointManagement = endpointManagement;
 	}
 
 	@Override
-	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
-	}
-
-	@Override
-	public MemoryIndexRoot newInstance(final Dataset dataset_param) {
-		return new MemoryIndexRoot(dataset_param);
+	public QueryResult evaluate(final KeyContainer<Integer> key, final String subgraphSerializedAsJSON) {
+		return this.endpointManagement.submitSubgraphQuery(subgraphSerializedAsJSON, key);
 	}
 }

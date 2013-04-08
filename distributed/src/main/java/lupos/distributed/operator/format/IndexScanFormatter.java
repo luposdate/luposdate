@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LazyLiteral;
-import lupos.distributed.query.operator.QueryClientIndexScan;
+import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Root;
@@ -42,25 +42,29 @@ import org.json.JSONObject;
 /**
  * Implements the formatter for the index scan operator
  */
-public class QueryClientIndexScanFormatter implements OperatorFormatter {
+public class IndexScanFormatter implements OperatorFormatter {
 
 		/** The index collection. */
 		private Root root;
 
 		/**
-		 * Instantiates a new index scan formatter.
+		 * the operator creator for creating the index scan operator
 		 */
-		public QueryClientIndexScanFormatter() {
-		}
+		private IOperatorCreator operatorCreator;
 
 		/**
 		 * Instantiates a new index scan formatter.
 		 *
-		 * @param root
-		 *            the index collection
+		 * @param operatorCreator the operator creator for creating the index scan operator
 		 */
-		public QueryClientIndexScanFormatter(final Root root) {
-			this.setRoot(root);
+		public IndexScanFormatter(final IOperatorCreator operatorCreator) {
+			this.operatorCreator = operatorCreator;
+		}
+
+		/**
+		 * Instantiates a new index scan formatter.
+		 */
+		public IndexScanFormatter() {
 		}
 
 		/*
@@ -76,7 +80,7 @@ public class QueryClientIndexScanFormatter implements OperatorFormatter {
 
 			final BasicIndexScan indexScan = (BasicIndexScan) operator;
 			try {
-				json.put("type", operator.getClass().getName());
+				json.put("type", BasicIndexScan.class.getName());
 				json.put("node_id", node_id);
 
 				final Collection<JSONObject> triplePatterns = new LinkedList<JSONObject>();
@@ -151,13 +155,8 @@ public class QueryClientIndexScanFormatter implements OperatorFormatter {
 		 */
 		@Override
 		public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
-			final QueryClientIndexScan indexScan = new QueryClientIndexScan(this.root);
-
 			final Collection<TriplePattern> triplePatterns = this.createTriplePatternsListFromJSON(serializedOperator);
-			indexScan.setTriplePatterns(triplePatterns);
-
-			return indexScan;
-
+			return this.operatorCreator.createIndexScan(this.root, triplePatterns);
 		}
 
 		/**

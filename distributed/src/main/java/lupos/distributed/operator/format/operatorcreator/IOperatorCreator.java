@@ -21,35 +21,31 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.index.memoryindex;
+package lupos.distributed.operator.format.operatorcreator;
 
 import java.util.Collection;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-public class MemoryIndexRoot extends
-		lupos.engine.operators.index.Root {
+/**
+ * Methods for creating the basic operators Root and IndexScan
+ */
+public interface IOperatorCreator {
+	/**
+	 * create the root node
+	 * @param dataset the dataset to be used in the root node
+	 * @return the new root node
+	 */
+	public Root createRoot(final Dataset dataset);
 
-	public MemoryIndexRoot() {
-	}
-
-
-	public MemoryIndexRoot(final Dataset dataset) {
-		super(dataset);
-	}
-
-	@Override
-	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
-	}
-
-	@Override
-	public MemoryIndexRoot newInstance(final Dataset dataset_param) {
-		return new MemoryIndexRoot(dataset_param);
-	}
+	/**
+	 * create the index scan operator
+	 * @param root the root node
+	 * @param triplePatterns the triple patterns to be matched by the new index scan operator
+	 * @return the new index scan operator
+	 */
+	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns);
 }

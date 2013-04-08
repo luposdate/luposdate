@@ -24,9 +24,7 @@
 package lupos.engine.operators.index.memoryindex;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
@@ -37,9 +35,9 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Indices.MAP_PATTERN;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
@@ -70,6 +68,10 @@ public class MemoryIndexScan extends BasicIndexScan {
 		super(succeedingOperators, triplePattern, rdfGraph, root);
 	}
 
+	public MemoryIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
+		super(root, triplePatterns);
+	}
+
 	@Override
 	public BasicIndexScan clone() {
 		return new MemoryIndexScan(this.succeedingOperators,
@@ -80,13 +82,13 @@ public class MemoryIndexScan extends BasicIndexScan {
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		final QueryResult queryResult = QueryResult.createInstance();
 		queryResult.add(bindings); // empty since no bindings exist yet
-		return join(indices, queryResult);
+		return this.join(indices, queryResult);
 	}
 
 	/**
 	 * Returns the result of a join operation using triple patterns and results
 	 * of previous queries
-	 * 
+	 *
 	 * @param tps
 	 *            a collection of triple patterns
 	 * @param queryResult
@@ -98,7 +100,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 		try {
 
 			// move over the collection of the provided triple patterns
-			for (final TriplePattern tp : triplePatterns) {
+			for (final TriplePattern tp : this.triplePatterns) {
 
 				final QueryResult zQueryResult = queryResult;
 
@@ -109,54 +111,60 @@ public class MemoryIndexScan extends BasicIndexScan {
 					Iterator<Triple> newTriples = null;
 					Bindings next = null;
 
+					@Override
 					public boolean hasNext() {
-						if (next != null)
+						if (this.next != null) {
 							return true;
-						next = computeNext();
-						return (next != null);
+						}
+						this.next = this.computeNext();
+						return (this.next != null);
 					}
 
+					@Override
 					public Bindings next() {
-						if (next != null) {
-							final Bindings znext = next;
-							next = null;
+						if (this.next != null) {
+							final Bindings znext = this.next;
+							this.next = null;
 							return znext;
 						}
-						return computeNext();
+						return this.computeNext();
 					}
 
 					public Bindings computeNext() {
-						while ((newTriples == null || !newTriples.hasNext())
-								&& oldBindings.hasNext()) {
-							retrieveNewTriples();
+						while ((this.newTriples == null || !this.newTriples.hasNext())
+								&& this.oldBindings.hasNext()) {
+							this.retrieveNewTriples();
 						}
-						if (newTriples == null || !newTriples.hasNext())
+						if (this.newTriples == null || !this.newTriples.hasNext()) {
 							return null;
-						final Triple triple = newTriples.next();
-						final Bindings cB = currentBindings.clone();
+						}
+						final Triple triple = this.newTriples.next();
+						final Bindings cB = this.currentBindings.clone();
 						for (int i = 0; i < 3; i++) {
 							if (tp.getPos(i).isVariable()) {
 								final Literal l = cB.get((Variable) tp
 										.getPos(i));
 								if (l != null) {
 									if (!triple.getPos(i).equals(l)) {
-										return computeNext();
+										return this.computeNext();
 									}
-								} else
+								} else {
 									cB.add((Variable) tp.getPos(i), triple
 											.getPos(i));
+								}
 							}
 						}
 						cB.addTriple(triple);
 						return cB;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
 
 					private void retrieveNewTriples() {
-						currentBindings = oldBindings.next();
+						this.currentBindings = this.oldBindings.next();
 
 						final StringBuffer key = new StringBuffer();
 						int mapPattern = MAP_PATTERN.NONE.ordinal();
@@ -165,21 +173,22 @@ public class MemoryIndexScan extends BasicIndexScan {
 						// to cut down the amount of triple pattern which
 						// have
 						// to be processed to produce the result
-						if (computeKey4Maps(currentBindings, key, tp.getPos(0))) {
+						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(0))) {
 							mapPattern += MAP_PATTERN.SMAP.ordinal();
 						}
-						if (computeKey4Maps(currentBindings, key, tp.getPos(1))) {
+						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(1))) {
 							mapPattern += MAP_PATTERN.PMAP.ordinal();
 						}
-						if (computeKey4Maps(currentBindings, key, tp.getPos(2))) {
+						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(2))) {
 							mapPattern += MAP_PATTERN.OMAP.ordinal();
 						}
-						final Collection<Triple> tec = getFromMap(MAP_PATTERN
+						final Collection<Triple> tec = MemoryIndexScan.this.getFromMap(MAP_PATTERN
 								.values()[mapPattern], key.toString(), indices);
-						if (tec == null)
-							newTriples = null;
-						else
-							newTriples = tec.iterator();
+						if (tec == null) {
+							this.newTriples = null;
+						} else {
+							this.newTriples = tec.iterator();
+						}
 					}
 				};
 
@@ -209,7 +218,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 	 * Computes and alters the key, respectively used to query the maps.<br>
 	 * To do this the information about the currently bound variables and the
 	 * information if the item is used.
-	 * 
+	 *
 	 * @param bindings
 	 *            - the currently available bindings
 	 * @param key
@@ -249,9 +258,9 @@ public class MemoryIndexScan extends BasicIndexScan {
 	public String toString() {
 		return "Memory " + super.toString();
 	}
-	
+
 	@Override
-	public String toString(lupos.rdf.Prefix prefixInstance) {
+	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "Memory " + super.toString(prefixInstance);
 	}
 }

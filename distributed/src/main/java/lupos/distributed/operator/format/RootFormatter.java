@@ -23,51 +23,81 @@
  */
 package lupos.distributed.operator.format;
 
+import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
 import lupos.engine.operators.BasicOperator;
-import lupos.engine.operators.singleinput.Filter;
-import lupos.sparql1_1.ParseException;
+import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Implements the formatter for the Filter Operator.
+ * Implements the formatter for the root operator
  */
-public class FilterFormatter implements OperatorFormatter {
+public class RootFormatter implements OperatorFormatter {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
-	 * .operators.BasicOperator, int)
-	 */
-	@Override
-	public JSONObject serialize(final BasicOperator operator, final int node_id)
-			throws JSONException {
-		final JSONObject json = new JSONObject();
-		json.put("type", Filter.class.getName());
-		json.put("node_id", node_id);
-		json.put("expression", operator.toString());
-		return json;
-	}
+		/** The dataset. */
+		private Dataset	dataset;
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.JSONObject)
-	 */
-	@Override
-	public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
-		final JSONObject json = serializedOperator;
-		String filtername =  json.getString("expression");
-		filtername = filtername.substring(0,filtername.length()-3);
-		try {
-			return new Filter(filtername);
-		} catch (final ParseException e) {
-			e.printStackTrace();
+		/**
+		 * the operator creator for creating the root operator
+		 */
+		private IOperatorCreator operatorCreator;
+
+		/**
+		 * Gets the dataset.
+		 *
+		 * @return the dataset
+		 */
+		public Dataset getDataset() {
+			return this.dataset;
 		}
-		return null;
-	}
+
+		/**
+		 * Instantiates a new root formatter.
+		 *
+		 * @param dataset
+		 *            the dataset
+		 */
+		public RootFormatter(final Dataset dataset, final IOperatorCreator operatorCreator) {
+			this.dataset = dataset;
+			this.operatorCreator = operatorCreator;
+		}
+
+		/**
+		 * Instantiates a new root formatter.
+		 */
+		public RootFormatter() {
+		}
+
+		/*
+		 * (non-Javadoc)
+		 *
+		 * @see
+		 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
+		 * .operators.BasicOperator, int)
+		 */
+		@Override
+		public JSONObject serialize(final BasicOperator operator, final int node_id)
+				throws JSONException {
+			final JSONObject json = new JSONObject();
+
+			json.put("type", Root.class.getName());
+			json.put("node_id", node_id);
+			json.put("root", true);
+
+			return json;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 *
+		 * @see
+		 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.
+		 * JSONObject)
+		 */
+		@Override
+		public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
+			return this.operatorCreator.createRoot(this.dataset);
+		}
 }

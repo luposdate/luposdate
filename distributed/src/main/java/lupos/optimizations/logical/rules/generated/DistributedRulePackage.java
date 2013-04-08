@@ -21,23 +21,16 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.query;
+package lupos.optimizations.logical.rules.generated;
 
-import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
+import lupos.optimizations.logical.rules.generated.runtime.Rule;
+import lupos.optimizations.logical.rules.generated.runtime.RulePackage;
+import lupos.optimizations.logical.rules.generated.runtime.RulePackageWithStartNodeMap;
 
-/**
- * This class is the query evaluator for querying distributed SPARQL endpoints based on the one key distribution strategy.
- *
- * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
- */
-public class QueryClient_DE_OneKeyDistribution extends QueryClient_DE_DistributionStrategy<String> {
-
-	public QueryClient_DE_OneKeyDistribution() throws Exception {
-		super(TriplePropertiesDistributionStrategyEnum.OneKeyDistribution.createInstance());
-	}
-
-	public QueryClient_DE_OneKeyDistribution(final String[] args) throws Exception {
-		super(TriplePropertiesDistributionStrategyEnum.OneKeyDistribution.createInstance(), args);
-	}
-
+public class DistributedRulePackage extends RulePackage {
+    public DistributedRulePackage() {
+        this.rules = new Rule[] {
+		        new AddSubGraphContainerRule()
+        };
+    }
 }

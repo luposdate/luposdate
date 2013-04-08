@@ -239,6 +239,14 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	}
 
 	/**
+	 * Gets the distribution strategy
+	 * @return the distribution of this storage
+	 */
+	public IDistribution<K> getDistribution(){
+		return this.distribution;
+	}
+
+	/**
 	 * This method must implement the insertion of a list of triples under a given key
 	 * @param key the key under which the triples are stored
 	 * @param triples the triples to be stored

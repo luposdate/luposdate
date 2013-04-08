@@ -28,9 +28,10 @@ import java.util.List;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.storage.distributionstrategy.BlockUpdatesStorageWithDistributionStrategy;
-import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
+import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePropertiesDistributionStrategyEnum;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.pipe.HashingDistributionPipe;
 import lupos.distributedendpoints.storage.util.EndpointManagement;
 import lupos.distributedendpoints.storage.util.QueryBuilder;
@@ -123,5 +124,18 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	public void blockInsert() {
 		super.blockInsert();
 		this.endpointManagement.waitForThreadPool();
+	}
+
+	/**
+	 * return the endpoint management object for communication to the endpoints
+	 * @return the endpoint manager
+	 */
+	public EndpointManagement getEndpointManagement() {
+		return this.endpointManagement;
+	}
+
+	@Override
+	public IDistribution<KeyContainer<Integer>> getDistribution(){
+		return this.distribution;
 	}
 }

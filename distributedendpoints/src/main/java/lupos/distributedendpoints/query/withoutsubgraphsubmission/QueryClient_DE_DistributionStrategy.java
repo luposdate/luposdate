@@ -21,35 +21,35 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.index.memoryindex;
+package lupos.distributedendpoints.query.withoutsubgraphsubmission;
 
-import java.util.Collection;
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsMap;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.distributed.query.QueryClient;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
+import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+/**
+ * This class is the query evaluator for querying distributed SPARQL endpoints based on a given distribution strategy.
+ *
+ * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ */
+public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
 
-public class MemoryIndexRoot extends
-		lupos.engine.operators.index.Root {
-
-	public MemoryIndexRoot() {
+	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
+		super(Storage_DE_DistributionStrategy.createInstance(distribution));
 	}
 
-
-	public MemoryIndexRoot(final Dataset dataset) {
-		super(dataset);
-	}
-
-	@Override
-	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
-			final Collection<TriplePattern> triplePattern, final Item data) {
-		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
+	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
+		super(Storage_DE_DistributionStrategy.createInstance(distribution), args);
 	}
 
 	@Override
-	public MemoryIndexRoot newInstance(final Dataset dataset_param) {
-		return new MemoryIndexRoot(dataset_param);
+	public void init() throws Exception {
+		// just for avoiding problems in distributed scenarios
+		Bindings.instanceClass = BindingsMap.class;
+		LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
+		super.init();
 	}
 }

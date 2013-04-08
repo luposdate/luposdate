@@ -21,28 +21,38 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.query;
+package lupos.distributedendpoints.query.withsubgraphsubmission;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.distributed.query.QueryClient;
+import lupos.distributed.query.QueryClientWithSubgraphTransmission;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
+import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 
 /**
  * This class is the query evaluator for querying distributed SPARQL endpoints based on a given distribution strategy.
+ * Complete subgraphs are submitted for evaluation to the storage nodes.
  *
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
  */
-public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
+public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSubgraphTransmission<KeyContainer<Integer>> {
 
-	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
-		super(Storage_DE_DistributionStrategy.createInstance(distribution));
+	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
+		this(Storage_DE_DistributionStrategy.createInstance(distribution));
 	}
 
-	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
-		super(Storage_DE_DistributionStrategy.createInstance(distribution), args);
+	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage) throws Exception {
+		super(storage, storage.getDistribution(), new DE_SubgraphExecutor(storage.getEndpointManagement()));
+	}
+
+	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
+		this(Storage_DE_DistributionStrategy.createInstance(distribution), args);
+	}
+
+	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage, final String[] args) throws Exception {
+		super(storage, storage.getDistribution(), new DE_SubgraphExecutor(storage.getEndpointManagement()), args);
 	}
 
 	@Override

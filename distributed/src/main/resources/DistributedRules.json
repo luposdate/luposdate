@@ -1,0 +1,57 @@
+{
+  "associations": {"Distributed": ["AddSubGraphContainer"]},
+  "rule packages": {"Distributed": {"documentation": {
+    "long description": "",
+    "see also": {
+      "rule packages": [],
+      "rules": []
+    },
+    "short description": ""
+  }}},
+  "rules": {"AddSubGraphContainer": {
+    "documentation": {
+      "left image": "",
+      "long description": "",
+      "right image": "",
+      "see also": {
+        "rule packages": [],
+        "rules": []
+      },
+      "short description": "",
+      "show visual representation": true,
+      "transition text": "",
+      "use generated visual representation": true
+    },
+    "implementation": {
+      "additional global java code": "\r\n\tpublic static IDistribution distribution;\r\n\r\n\tpublic static ISubgraphExecutor subgraphExecutor;\r\n\r\n\tprivate Filter getFilterFromIndexScan(BasicOperator root) {\r\n\t\tList<OperatorIDTuple> succs = root.getSucceedingOperators();\r\n\t\tif (succs.size() == 1) {\r\n\t\t\tfor (OperatorIDTuple succ : succs) {\r\n\t\t\t\tBasicOperator op = succ.getOperator();\r\n\t\t\t\tif (op instanceof Filter) {\r\n\t\t\t\t\treturn (Filter) op;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\treturn null;\r\n\r\n\t}\r\n\r\n\t/**\r\n\t * replace index scan operator with SubgraphContainer\r\n\t * \r\n\t * @param indexScan\r\n\t *            the index scan operator\r\n\t */\r\n\tprivate void replaceIndexScanOperatorWithSubGraphContainer(\r\n\t\t\tBasicIndexScan indexScan) {\r\n\r\n    \t\ttry {\r\n    \t\t\tfinal Root rootNodeOfOuterGraph = indexScan.getRoot();\r\n    \t\t\tfinal Root rootNodeOfSubGraph = rootNodeOfOuterGraph.newInstance(rootNodeOfOuterGraph.dataset);\r\n\r\n    \t\t\t// TODO for several keys: union of different SubgraphContainer!\r\n    \t\t\tfinal SubgraphContainer container = new SubgraphContainer(rootNodeOfSubGraph, distribution.getKeysForQuerying(indexScan.getTriplePattern().iterator().next())[0], subgraphExecutor);\r\n    \t\t\tfinal HashSet<Variable> variables = new HashSet<Variable>(indexScan.getIntersectionVariables());\r\n\r\n    \t\t\tcontainer.setUnionVariables(variables);\r\n    \t\t\tcontainer.setIntersectionVariables(variables);\r\n\r\n    \t\t\t// remember original connections and connect new graph with these connections\r\n    \t\t\tfinal Collection<BasicOperator> preds = indexScan.getPrecedingOperators();\r\n    \t\t\tfinal List<OperatorIDTuple> succs = indexScan.getSucceedingOperators();\r\n\r\n    \t\t\tfor (final BasicOperator pred : preds) {\r\n    \t\t\t\tpred.getOperatorIDTuple(indexScan).setOperator(container);\r\n    \t\t\t}\r\n\r\n    \t\t\t// generate new connections...\r\n\r\n    \t\t\tfinal Filter filter = this.getFilterFromIndexScan(indexScan);\r\n\r\n    \t\t\tif (filter != null) {\r\n    \t\t\t\tif (indexScan.getUnionVariables().containsAll(\r\n    \t\t\t\t\t\tfilter.getUsedVariables())) {\r\n    \t\t\t\t\tFilter newFilter;\r\n    \t\t\t\t\ttry {\r\n    \t\t\t\t\t\tnewFilter = new Filter(filter.toString().substring(0,\r\n    \t\t\t\t\t\t\t\tfilter.toString().length() - 2));\r\n    \t\t\t\t\t\tindexScan.setSucceedingOperator(new OperatorIDTuple(\r\n    \t\t\t\t\t\t\t\tnewFilter, 0));\r\n    \t\t\t\t\t\tnewFilter.setSucceedingOperator(new OperatorIDTuple(new Result(), 0));\r\n    \t\t\t\t\t} catch (final ParseException e) {\r\n    \t\t\t\t\t\te.printStackTrace();\r\n    \t\t\t\t\t}\r\n\r\n    \t\t\t\t} else {\r\n    \t\t\t\t\tindexScan.setSucceedingOperator(new OperatorIDTuple(\r\n    \t\t\t\t\t\t\tnew Result(), 0));\r\n    \t\t\t\t}\r\n    \t\t\t} else {\r\n    \t\t\t\tindexScan\r\n    \t\t\t\t.setSucceedingOperator(new OperatorIDTuple(new Result(), 0));\r\n    \t\t\t}\r\n\r\n    \t\t\t// indexScan.setSucceedingOperator(new OperatorIDTuple(new Result(),\r\n    \t\t\t// 0));\r\n    \t\t\trootNodeOfSubGraph.setSucceedingOperator(new OperatorIDTuple(indexScan, 0));\r\n\r\n    \t\t\trootNodeOfSubGraph.setParents();\r\n\r\n    \t\t\t// original connections set at new graph\r\n    \t\t\tcontainer.setSucceedingOperators(succs);\r\n\r\n    \t\t\t// iterate through the new predecessors of the successors of the original index scan operators and set new SubgraphContainer\r\n    \t\t\tfor (final OperatorIDTuple succ : succs) {\r\n    \t\t\t\tsucc.getOperator().removePrecedingOperator(indexScan);\r\n    \t\t\t\tsucc.getOperator().addPrecedingOperator(container);\r\n    \t\t\t}\r\n\r\n    \t\t} catch (final JSONException e1) {\r\n    \t\t\tSystem.err.println(e1);\r\n    \t\t\te1.printStackTrace();\r\n    \t\t} catch (final TriplePatternNotSupportedError e1) {\r\n    \t\t\tSystem.err.println(e1);\r\n    \t\t\te1.printStackTrace();\r\n    \t\t}\r\n\t}\r\n\r\n\r\n",
+      "additional import declarations": "import java.util.Collection;\r\n\r\nimport lupos.sparql1_1.ParseException;\r\nimport lupos.datastructures.items.Variable;\r\nimport lupos.distributed.operator.SubgraphContainer;\r\nimport lupos.engine.operators.index.BasicIndexScan;\r\nimport lupos.engine.operators.index.Root;\r\nimport lupos.engine.operators.singleinput.Filter;\r\nimport lupos.engine.operators.singleinput.Result;\r\nimport lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError;\r\nimport lupos.distributed.storage.distributionstrategy.IDistribution;\r\nimport lupos.distributed.operator.ISubgraphExecutor;\r\n\r\nimport org.json.JSONException;\r\n",
+      "check method": {
+        "additional code": "",
+        "code": "",
+        "start node": "Operator",
+        "use generated code": true
+      },
+      "replace method": {
+        "additional code": "",
+        "code": "this.replaceIndexScanOperatorWithSubGraphContainer(this.indexScan);\r\n",
+        "use generated code": false
+      }
+    },
+    "visual representation": {
+      "left side": {"indexScan": {
+        "also subclasses": true,
+        "class type": "Index",
+        "op type": "RuleOperator",
+        "position": [
+          32,
+          24
+        ]
+      }},
+      "right side": {},
+      "top toolbar": {
+        "use colored arrows": false,
+        "zoom": 100
+      }
+    }
+  }}
+}

@@ -41,7 +41,6 @@ import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
-import lupos.datastructures.dbmergesortedds.heap.SortAndMergeHeap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
@@ -51,7 +50,6 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.CollectAllResults;
-import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.multiinput.join.parallel.ParallelJoin;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.parallel.ParallelOperand;
@@ -127,7 +125,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	public static Collection<String> supportedCharSets() {
 		return Charset.availableCharsets().keySet();
 	}
-	
+
 	private PARALLELOPERANDS parallelOperands;
 
 	public void parallelOperator(final BasicOperator bo) {
@@ -160,7 +158,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		super(args);
 	}
 
-	public CommonCoreQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset,
+	public CommonCoreQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
 			final LiteralFactory.MapType codemap, final String[] tmpDirs,
@@ -176,7 +174,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			final DISTINCT distinct,
 			final MERGE_JOIN_OPTIONAL merge_join_optional, final String encoding){
 		super(debug, multiplequeries, compare, compareoptions, times, dataset);
-		init(type, externalontology,inmemoryexternalontologyinference, rdfs, codemap, tmpDirs, loadindexinfo,
+		this.init(type, externalontology,inmemoryexternalontologyinference, rdfs, codemap, tmpDirs, loadindexinfo,
 				parallelOperands, blockwise,
 				limit,jointhreads,joinbuffer,
 				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
@@ -184,7 +182,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				merge_join_optional, encoding);
 	}
 
-	
+
 	private void init(final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
 			final LiteralFactory.MapType codemap, final String[] tmpDirs,
@@ -219,22 +217,23 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		} else if (parallelOperands == PARALLELOPERANDS.ALL) {
 			RuleEngineForParallelOperator.setLastJoin(false);
 		}
-		if (limit > 0)
+		if (limit > 0) {
 			ParallelOperand.setQueueLimit(limit);
+		}
 		ParallelJoin.setDEFAULT_NUMBER_THREADS(jointhreads);
 		ParallelJoin.setMAXBUFFER(joinbuffer);
-		
+
 		SortConfiguration.setDEFAULT_HEAP_TYPE(heap);
 		SortConfiguration.setDEFAULT_TOSORT(tosort);
 
 		SortConfiguration.setDEFAULT_TOSORT_SIZE(indexheap);
 		SortConfiguration.setDEFAULT_HEIGHT(indexheap);
-		
+
 		SortConfiguration.setDEFAULT_MERGE_HEAP_HEIGHT(mergeheapheight);
 		SortConfiguration.setDEFAULT_MERGEHEAP_TYPE(mergeheaptype);
-		
+
 		SortConfiguration.setDEFAULT_K(chunk);
-		
+
 		if (mergethreads <= 1) {
 			DBMergeSortedBag.setParallelMerging(false);
 		} else {
@@ -274,88 +273,88 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	@Override
 	public void setupArguments() {
 		super.setupArguments();
-		args.addEnumOption("optimization",
+		this.args.addEnumOption("optimization",
 				"Specify the optimization that should be applied",
-				defaultOptimization);
-		args.addEnumOption("join", "Specify the join algorithm to be used",
+				this.defaultOptimization);
+		this.args.addEnumOption("join", "Specify the join algorithm to be used",
 				JOIN.DEFAULT);
-		args.addEnumOption(
+		this.args.addEnumOption(
 				"optional",
 				"Specify the join algorithm to be used in the optional operator",
 				JOIN.DEFAULT);
-		args.addEnumOption("sort", "Specify the sort algorithm to be used",
+		this.args.addEnumOption("sort", "Specify the sort algorithm to be used",
 				SORT.DEFAULT);
-		args.addEnumOption("distinct",
+		this.args.addEnumOption("distinct",
 				"Specify the distinct algorithm to be used", DISTINCT.DEFAULT);
-		args.addEnumOption("result", "Specify the storage type of the result",
+		this.args.addEnumOption("result", "Specify the storage type of the result",
 				QueryResult.type);
-		args.addEnumOption(
+		this.args.addEnumOption(
 				"codemap",
 				"The type of map used for administrating the codes for values.",
 				LiteralFactory.MapType.PREFIXCODEMAP);
-		args.addEnumOption(
+		this.args.addEnumOption(
 				"storage",
 				"The type of storage used for all operators, indices and (intermediate) results.",
 				STORAGE.MEMORY);
-		args.addStringOption(
+		this.args.addStringOption(
 				"tmpdir",
 				"The type of storage used for all operators, indices and (intermediate) results. You can also specify several temporary directories (separated by commas) in order to e.g. use several hard disks for performance reasons.",
 				"");
-		args.addEnumOption(
+		this.args.addEnumOption(
 				"merge_join_optional",
 				"Specifies if MergeJoinWithoutSorting, MergeJoinSort, MergeWithoutSortingOptional and MergeJoinOptional should be replaced by their parallel versions.",
 				MERGE_JOIN_OPTIONAL.SEQUENTIAL);
-		args.addStringOption(
+		this.args.addStringOption(
 				"paralleloperands",
 				"specifies whether or not ParallelOperands are added as operands of joins in order to compute operand results in parallel. The string option can be \"NONE\" for do not add ParallelOperators, \"N\", where N is a number, which is used as size for the Bounded Queue (the default is used when N<=0), and \"lastN\" if only the last join should get ParallelOperators (N like before). Furthermore, if the the string starts with BLOCK, then the computed operand results are transmitted blockwise to the join/optional operator.",
 				"NONE");
-		args.addIntegerOption(
+		this.args.addIntegerOption(
 				"jointhreads",
 				"specifies the number of threads to start for the parallel join operators...",
 				ParallelJoin.getDEFAULT_NUMBER_THREADS());
-		args.addIntegerOption(
+		this.args.addIntegerOption(
 				"joinbuffer",
 				"specifies the maximum size for the buffer for the parallel join operators...",
-				ParallelJoin.getMAXBUFFER());		
-		args.addEnumOption("heap", "specifies the heap type to be used",
+				ParallelJoin.getMAXBUFFER());
+		this.args.addEnumOption("heap", "specifies the heap type to be used",
 				SortConfiguration.getDEFAULT_HEAP_TYPE());
-		args.addIntegerOption("indexheap",
+		this.args.addIntegerOption("indexheap",
 				"specifies the heap height used for index construction",
 				SortConfiguration.getDEFAULT_HEIGHT());
-		args.addEnumOption(
+		this.args.addEnumOption(
 				"tosort",
 				"specifies the tosort type to be used in heaps for the initial runs (if no heaps are used, i.e. tosort!=NONE)",
 				SortConfiguration.getDEFAULT_TOSORT());
-		args.addEnumOption(
+		this.args.addEnumOption(
 				"mergeheaptype",
 				"The heap type to be used for merging the initial runs for external merge sort.",
 				SortConfiguration.getDEFAULT_MERGEHEAP_TYPE());
-		args.addIntegerOption(
+		this.args.addIntegerOption(
 				"mergeheapheight",
 				"The heap size to be used for merging the initial runs for external merge sort.",
 				SortConfiguration.getDEFAULT_MERGE_HEAP_HEIGHT());
 
-		args.addIntegerOption(
+		this.args.addIntegerOption(
 				"mergethreads",
 				"specifies the number of threads to start for the merging phase of merge sort (=1 means sequential merging).",
 				DBMergeSortedBag.getNumberOfThreads());
-		args.addStringOption(
+		this.args.addStringOption(
 				"externalontology",
 				"specifies an external ontology, which is used to optimize RDFS inference by replacing triple patterns adressing RDFS triple by concrete ones regarding the external ontology...",
 				"");
-		args.addIntegerOption(
+		this.args.addIntegerOption(
 				"chunk",
 				"defines the chunk fraction of the data for SortedChunksHeap...",
 				SortConfiguration.getDEFAULT_K());
-		args.addIntegerOption(
+		this.args.addIntegerOption(
 				"yagomax",
 				"specifies the maximum triples read by the YAGO parser (<=0 for all triples)...",
 				YagoParser.getMaxTriples());
-		args.addBooleanOption(
+		this.args.addBooleanOption(
 				"inmemoryexternalontologyinference",
 				"specifies if the inference computations in external ontologies are done in memory (or disks are used for temporary data)",
 				false);
-		args.addStringOption("encoding",
+		this.args.addStringOption("encoding",
 				"specifies the used encoding for reading in data files...",
 				encoding);
 	}
@@ -368,10 +367,10 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		boolean blockwise = false;
 		int limit = 0;
 
-		String s = args.getString("paralleloperands").toUpperCase();
-		if (s.compareTo("NONE") == 0)
+		String s = this.args.getString("paralleloperands").toUpperCase();
+		if (s.compareTo("NONE") == 0) {
 			parallelOperands = PARALLELOPERANDS.NONE;
-		else {
+		} else {
 			if (s.startsWith("BLOCK")) {
 				s = s.substring(5);
 				blockwise = true;
@@ -392,47 +391,53 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			}
 		}
 
-		init(args.getString("type"), args.getString("externalontology"),
-				args.getBool("inmemoryexternalontologyinference"),
-				(RDFS) args.getEnum("rdfs"),
-				(LiteralFactory.MapType) args.getEnum("codemap"), args
+		this.init(this.args.getString("type"), this.args.getString("externalontology"),
+				this.args.getBool("inmemoryexternalontologyinference"),
+				(RDFS) this.args.getEnum("rdfs"),
+				(LiteralFactory.MapType) this.args.getEnum("codemap"), this.args
 						.getString("tmpdir").split(","),
-				args.get("loadindexinfo") != null,
+				this.args.get("loadindexinfo") != null,
 				parallelOperands, blockwise,
-				limit, args.getInt("jointhreads"), args.getInt("joinbuffer"),
-				(Heap.HEAPTYPE) args.getEnum("heap"),
-				(ToSort.TOSORT) args.getEnum("tosort"),
-				args.getInt("indexheap"), args.getInt("mergeheapheight"),
-				(Heap.HEAPTYPE) args.getEnum("mergeheaptype"),
-				args.getInt("chunk"), args.getInt("mergethreads"),
-				args.getInt("yagomax"),				
-				(QueryResult.TYPE) args.getEnum("result"),
-				(STORAGE) args.getEnum("storage"), (JOIN) args.getEnum("join"),
-				(JOIN) args.getEnum("optional"), (SORT) args.getEnum("sort"),
-				(DISTINCT) args.getEnum("distinct"),
-				(MERGE_JOIN_OPTIONAL) args.getEnum("merge_join_optional"),
-				args.getString("encoding"));
+				limit, this.args.getInt("jointhreads"), this.args.getInt("joinbuffer"),
+				(Heap.HEAPTYPE) this.args.getEnum("heap"),
+				(ToSort.TOSORT) this.args.getEnum("tosort"),
+				this.args.getInt("indexheap"), this.args.getInt("mergeheapheight"),
+				(Heap.HEAPTYPE) this.args.getEnum("mergeheaptype"),
+				this.args.getInt("chunk"), this.args.getInt("mergethreads"),
+				this.args.getInt("yagomax"),
+				(QueryResult.TYPE) this.args.getEnum("result"),
+				(STORAGE) this.args.getEnum("storage"), (JOIN) this.args.getEnum("join"),
+				(JOIN) this.args.getEnum("optional"), (SORT) this.args.getEnum("sort"),
+				(DISTINCT) this.args.getEnum("distinct"),
+				(MERGE_JOIN_OPTIONAL) this.args.getEnum("merge_join_optional"),
+				this.args.getString("encoding"));
 	}
-	
+
 	public abstract IndexScanCreatorInterface createIndexScanCreator();
-	
+
 	@SuppressWarnings("deprecation")
 	public void setBindingsVariablesBasedOnOperatorgraph(){
-		BindingsArray.forceVariables(getAllVariablesOfQuery());
+		BindingsArray.forceVariables(this.getAllVariablesOfQuery());
 	}
 
 	/**
-	 * 
+	 *
 	 * @return all used variables in the current query (also those, which are not projected)
 	 * @see getVariablesOfQuery()
 	 */
 	@SuppressWarnings("serial")
 	public Set<Variable> getAllVariablesOfQuery(){
+		return CommonCoreQueryEvaluator.getAllVariablesOfQuery(this.rootNode);
+	}
+
+	public static  Set<Variable> getAllVariablesOfQuery(final BasicOperator rootNode) {
 		final Set<Variable> maxVariables = new TreeSet<Variable>();
-		this.rootNode.visit(new SimpleOperatorGraphVisitor() {
+		rootNode.visit(new SimpleOperatorGraphVisitor() {
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
-				if (basicOperator.getUnionVariables() != null)
+				if (basicOperator.getUnionVariables() != null) {
 					maxVariables.addAll(basicOperator.getUnionVariables());
+				}
 				return null;
 			}
 
@@ -441,17 +446,17 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	}
 
 	/**
-	 * 
-	 * @return the variables which may occur in the result of the current query, but not all used variables in the query (e.g., variables are left away, which are not projected)
+	 *
+	 * @return the variables which may occur in the result of the current query, but not all used variables in the query (e.g., variables are left away, which are projected)
 	 * @see getAllVariablesOfQuery()
 	 */
 	public Set<Variable> getVariablesOfQuery(){
 		return new HashSet<Variable>(this.getResultOperator().getUnionVariables());
 	}
-	
+
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
-		physicalOptimization();
+		this.physicalOptimization();
 		final LinkedList<DebugContainer<BasicOperatorByteArray>> debug = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 		debug.add(new DebugContainer<BasicOperatorByteArray>(
 				"After physical optimization...", "physicaloptimizationRule",
@@ -468,7 +473,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	public QueryResult getResult(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
 		this.result.addApplication(cr);
-		evaluateQuery();
+		this.evaluateQuery();
 		return cr.getResult();
 	}
 
@@ -479,28 +484,28 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	public QueryResult[] getResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
 		this.result.addApplication(cr);
-		evaluateQuery();
+		this.evaluateQuery();
 		return cr.getQueryResults();
 	}
-	
+
 	public QueryResult getResult(final String query, final boolean oneTime) throws Exception {
-		compileQuery(query);
-		logicalOptimization();
-		physicalOptimization();
-		return getResult(oneTime);
+		this.compileQuery(query);
+		this.logicalOptimization();
+		this.physicalOptimization();
+		return this.getResult(oneTime);
 	}
-	
+
 	public QueryResult[] getResults(final String query, final boolean oneTime) throws Exception {
-		compileQuery(query);
-		logicalOptimization();
-		physicalOptimization();
-		return getResults(oneTime);
-	}	
+		this.compileQuery(query);
+		this.logicalOptimization();
+		this.physicalOptimization();
+		return this.getResults(oneTime);
+	}
 
 	public CollectAllResults getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
 		this.result.addApplication(cr);
-		evaluateQuery();
+		this.evaluateQuery();
 		return cr;
 	}
 
@@ -508,7 +513,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return this.rootNode;
 	}
 
-	public void setRootNode(BasicOperator rootNode) {
+	public void setRootNode(final BasicOperator rootNode) {
 		this.rootNode = rootNode;
 	}
 
@@ -551,18 +556,21 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 								String type2;
 								if (typeWithoutMultiple.compareTo("DETECT") == 0) {
 									final int index = filename.lastIndexOf('.');
-									if (index == -1)
+									if (index == -1) {
 										System.err
 												.println("Type of "
 														+ filename
 														+ " could not be automatically detected!");
+									}
 									type2 = filename.substring(index + 1)
 											.toUpperCase();
-								} else
+								} else {
 									type2 = typeWithoutMultiple;
+								}
 								readTriplesWithoutMultipleFiles(type2,
 										new FileInputStream(filename),
 										new TripleConsumer() {
+											@Override
 											public void consume(
 													final Triple triple) {
 												try {
@@ -593,6 +601,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				}
 			} else {
 				final TripleConsumer synchronizedTC = new TripleConsumer() {
+					@Override
 					public synchronized void consume(final Triple triple) {
 						tc.consume(triple);
 					}
@@ -602,13 +611,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 						.readInputStreamToCollection(input);
 				final BoundedBuffer<String> filenamesBB = new BoundedBuffer<String>(
 						filenames.size());
-				for (final String filename : filenames)
+				for (final String filename : filenames) {
 					try {
 						filenamesBB.put(filename);
 					} catch (final InterruptedException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
+				}
 				filenamesBB.endOfData();
 				final Thread[] threads = new Thread[MULTIPLEDATATHREADS];
 				for (int i = 0; i < MULTIPLEDATATHREADS; i++) {
@@ -618,8 +628,9 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 							try {
 								while (filenamesBB.hasNext()) {
 									final String filename = filenamesBB.get();
-									if (filename == null)
+									if (filename == null) {
 										break;
+									}
 									System.out
 											.println("Reading data from file: "
 													+ filename);
@@ -627,15 +638,17 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 									if (typeWithoutMultiple.compareTo("DETECT") == 0) {
 										final int index = filename
 												.lastIndexOf('.');
-										if (index == -1)
+										if (index == -1) {
 											System.err
 													.println("Type of "
 															+ filename
 															+ " could not be automatically detected!");
+										}
 										type2 = filename.substring(index + 1)
 												.toUpperCase();
-									} else
+									} else {
 										type2 = typeWithoutMultiple;
+									}
 									try {
 										readTriplesWithoutMultipleFiles(type2,
 												new FileInputStream(filename),
@@ -662,21 +675,22 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 					}
 				}
 			}
-		} else
+		} else {
 			readTriplesWithoutMultipleFiles(type, input, tc);
+		}
 	}
 
 	public static void readTriplesWithoutMultipleFiles(final String type,
 			final InputStream input, final TripleConsumer tc)
 			throws Exception {
-		if (type.startsWith("BZIP2")) {			
-			InputStream uncompressed = Compression.BZIP2.createInputStream(input);			
+		if (type.startsWith("BZIP2")) {
+			final InputStream uncompressed = Compression.BZIP2.createInputStream(input);
 			readTriplesWithoutMultipleFilesUncompressed(type.substring(5), uncompressed, tc);
-		} else if (type.startsWith("GZIP")) {			
-			InputStream uncompressed = Compression.GZIP.createInputStream(input);			
+		} else if (type.startsWith("GZIP")) {
+			final InputStream uncompressed = Compression.GZIP.createInputStream(input);
 			readTriplesWithoutMultipleFilesUncompressed(type.substring(4), uncompressed, tc);
-		} else if (type.startsWith("HUFFMAN")) {			
-			InputStream uncompressed = Compression.HUFFMAN.createInputStream(input);			
+		} else if (type.startsWith("HUFFMAN")) {
+			final InputStream uncompressed = Compression.HUFFMAN.createInputStream(input);
 			readTriplesWithoutMultipleFilesUncompressed(type.substring(7), uncompressed, tc);
 		} else {
 			readTriplesWithoutMultipleFilesUncompressed(type, input, tc);
@@ -689,32 +703,37 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		final int length=type.length();
 		if(length>0){
 			String className=type.substring(0, 1).toUpperCase();
-			if(length>1)
+			if(length>1) {
 				className+=type.substring(1).toLowerCase();
+			}
 			className+="Parser";
 			try {
-				Class<?> c = Class.forName("lupos.rdf.parser."+className);
-				Method m = c.getMethod("parseRDFData", InputStream.class, TripleConsumer.class, String.class);
-				int number= (Integer) m.invoke(c, input, tc, encoding);
-				System.out.println("Number of read triples:"+ number);				
-			} catch (ClassNotFoundException e) {
+				final Class<?> c = Class.forName("lupos.rdf.parser."+className);
+				final Method m = c.getMethod("parseRDFData", InputStream.class, TripleConsumer.class, String.class);
+				final int number= (Integer) m.invoke(c, input, tc, encoding);
+				System.out.println("Number of read triples:"+ number);
+			} catch (final ClassNotFoundException e) {
 				System.err.println("No parser for RDF data format "+type+" found!");
-			} catch (SecurityException e) {
+			} catch (final SecurityException e) {
 				System.err.println("No parser for RDF data format "+type+" found!");
-			} catch (NoSuchMethodException e) {
+			} catch (final NoSuchMethodException e) {
 				System.err.println("No parser for RDF data format "+type+" found!");
-			} catch (IllegalArgumentException e) {
+			} catch (final IllegalArgumentException e) {
 				System.err.println("No parser for RDF data format "+type+" found!");
-			} catch (IllegalAccessException e) {
+			} catch (final IllegalAccessException e) {
 				System.err.println("No parser for RDF data format "+type+" found!");
-			} catch (InvocationTargetException e) {
-				Throwable t=e.getCause();
-				if(t!=null && t instanceof Exception)
+			} catch (final InvocationTargetException e) {
+				final Throwable t=e.getCause();
+				if(t!=null && t instanceof Exception) {
 					throw (Exception)t;
-				if(t!=null && t instanceof Error)
+				}
+				if(t!=null && t instanceof Error) {
 					throw (Error)t;
+				}
 				System.err.println("No parser for RDF data format "+type+" found!");
 			}
-		} else System.err.println("No input type for RDF data given!");		
+		} else {
+			System.err.println("No input type for RDF data given!");
+		}
 	}
 }

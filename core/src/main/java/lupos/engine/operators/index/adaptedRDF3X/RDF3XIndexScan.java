@@ -69,7 +69,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	protected Map<Variable, Literal> maxima;
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2346474799334082208L;
 
@@ -80,18 +80,18 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	}
 
 	public Map<Variable, Literal> getMinima() {
-		return minima;
+		return this.minima;
 	}
 
 	public Map<Variable, Literal> getMaxima() {
-		return maxima;
+		return this.maxima;
 	}
 
 	@Override
 	public BasicOperator clone() {
 		final RDF3XIndexScan clone = new RDF3XIndexScan(this.succeedingOperators,
 				this.triplePatterns, this.rdfGraph, this.root);
-		clone.collationOrder = collationOrder;
+		clone.collationOrder = this.collationOrder;
 		return clone;
 	}
 
@@ -114,6 +114,11 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		this.maxima = maxima;
 	}
 
+	public RDF3XIndexScan(final lupos.engine.operators.index.Root root,
+			final Collection<TriplePattern> triplePatterns) {
+		super(root, triplePatterns);
+	}
+
 	@Override
 	public QueryResult join(final Dataset dataset) {
 		try {
@@ -121,7 +126,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			// get the graph constraint from the super class.
 			// If it is null, a default graph is used, if not null a named one
 			// is used
-			final Item graphConstraintItem = getGraphConstraint();
+			final Item graphConstraintItem = this.getGraphConstraint();
 
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
@@ -130,29 +135,30 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				if (graphConstraintItem == null) {
 					if (indicesC != null && indicesC.size() > 1) {
 						// deal with special case: several default graphs!
-						if (triplePatterns.size() != 1) {
+						if (this.triplePatterns.size() != 1) {
 							System.err.println("Can only process one triple pattern!");
 						}
-						final TriplePattern tp = triplePatterns.iterator()
+						final TriplePattern tp = this.triplePatterns.iterator()
 								.next();
 						final Triple key = getKey(tp, null);
-						final Triple keyMinimum = getKeyMinimum(tp, null);
-						final Triple keyMaximum = getKeyMaximum(tp, null);
+						final Triple keyMinimum = this.getKeyMinimum(tp, null);
+						final Triple keyMaximum = this.getKeyMaximum(tp, null);
 
 						final IndicesTripleIterator[] ita = new IndicesTripleIterator[indicesC
 								.size()];
 						int id = 0;
 						for (final Indices indices : indicesC) {
-							ita[id] = new IndicesTripleIterator(getIterator(
+							ita[id] = new IndicesTripleIterator(this.getIterator(
 									(SixIndices) indices, key, keyMinimum,
 									keyMaximum), id);
 							id++;
 						}
 
-						final MergeIndicesTripleIterator it = new MergeIndicesTripleIterator(ita, collationOrder);
+						final MergeIndicesTripleIterator it = new MergeIndicesTripleIterator(ita, this.collationOrder);
 
-						if (!it.hasNext())
+						if (!it.hasNext()) {
 							return null;
+						}
 
 						return QueryResult.createInstance(it, tp);
 					}
@@ -176,22 +182,24 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				if (bindings != null
 						&& bindings.getVariableSet().contains(items[i])) {
 					key.setPos(i, bindings.get((Variable) items[i]));
-				} else
+				} else {
 					key.setPos(i, null);
-			} else
+				}
+			} else {
 				key.setPos(i, (Literal) items[i]);
+			}
 		}
 		return key;
 	}
 
 	protected Triple getKeyMinimum(final TriplePattern tp,
 			final Bindings bindings) {
-		return getKey(tp, bindings, minima);
+		return this.getKey(tp, bindings, this.minima);
 	}
 
 	protected Triple getKeyMaximum(final TriplePattern tp,
 			final Bindings bindings) {
-		return getKey(tp, bindings, maxima);
+		return this.getKey(tp, bindings, this.maxima);
 	}
 
 	protected Triple getKey(final TriplePattern tp, final Bindings bindings,
@@ -208,11 +216,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 					final Literal l = (minMax == null) ? null : minMax
 							.get(items[i]);
 					key.setPos(i, l);
-					if (l != null)
+					if (l != null) {
 						flag = true;
+					}
 				}
-			} else
+			} else {
 				key.setPos(i, (Literal) items[i]);
+			}
 		}
 		return flag ? key : null;
 	}
@@ -372,20 +382,21 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		final SixIndices sixIndices = (SixIndices) indices;
-		if (triplePatterns.size() != 1) {
+		if (this.triplePatterns.size() != 1) {
 			System.err.println("Can only process one triple pattern!");
 		}
-		final TriplePattern tp = triplePatterns.iterator().next();
+		final TriplePattern tp = this.triplePatterns.iterator().next();
 		final Triple key = getKey(tp, bindings);
-		final Triple keyMinimum = getKeyMinimum(tp, bindings);
-		final Triple keyMaximum = getKeyMaximum(tp, bindings);
-		final Iterator<Triple> it = getIterator(sixIndices, key, keyMinimum,
+		final Triple keyMinimum = this.getKeyMinimum(tp, bindings);
+		final Triple keyMaximum = this.getKeyMaximum(tp, bindings);
+		final Iterator<Triple> it = this.getIterator(sixIndices, key, keyMinimum,
 				keyMaximum);
 
-		if (!it.hasNext())
+		if (!it.hasNext()) {
 			return null;
+		}
 
-		return QueryResult.createInstance(it, tp, collationOrder, tp
+		return QueryResult.createInstance(it, tp, this.collationOrder, tp
 				.getBloomFilters() != null);
 	}
 
@@ -403,7 +414,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		}
 
 		// get the positions of these items
-		if (sortCriterium != null)
+		if (sortCriterium != null) {
 			for (final Variable variables : sortCriterium) {
 				for (int i = 0; i < 3; i++) {
 					if (first.getItems()[i].equals(variables)) {
@@ -411,6 +422,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 					}
 				}
 			}
+		}
 
 		// fill up the items to receive valid order patterns (which have three
 		// digits)
@@ -438,7 +450,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 	public RDF3XRoot getBinaryJoin() {
 		final RDF3XRoot ic = new RDF3XRoot();
-		if (triplePatterns.size() <= 1) {
+		if (this.triplePatterns.size() <= 1) {
 			int[] collationOrder1 = { -1, -1, -1 };
 			int i1 = 0;
 			for (int i = 0; i < 3; i++) {
@@ -453,15 +465,15 @@ public class RDF3XIndexScan extends BasicIndexScan {
 						.getPos(v);
 				i1++;
 			}
-			collationOrder1 = fill(collationOrder1, i1);
+			collationOrder1 = this.fill(collationOrder1, i1);
 			final CollationOrder co1 = getCollationOrder(collationOrder1);
 			this.setCollationOrder(co1);
 			ic.setSucceedingOperator(new OperatorIDTuple(this, 0));
 			return ic;
 		}
-		optimizeJoinOrderAccordingToMostRestrictionsForMergeJoin();
+		this.optimizeJoinOrderAccordingToMostRestrictionsForMergeJoin();
 		final Collection<BasicOperator> remainingJoins = new LinkedList<BasicOperator>();
-		final Iterator<TriplePattern> itp = triplePatterns.iterator();
+		final Iterator<TriplePattern> itp = this.triplePatterns.iterator();
 		while (itp.hasNext()) {
 			final Collection<TriplePattern> c1 = new LinkedList<TriplePattern>();
 			c1.add(itp.next());
@@ -521,8 +533,8 @@ public class RDF3XIndexScan extends BasicIndexScan {
 					i1++;
 					i2++;
 				}
-				collationOrder1 = fill(collationOrder1, i1);
-				collationOrder2 = fill(collationOrder2, i2);
+				collationOrder1 = this.fill(collationOrder1, i1);
+				collationOrder2 = this.fill(collationOrder2, i2);
 				final CollationOrder co1 = getCollationOrder(collationOrder1);
 				final CollationOrder co2 = getCollationOrder(collationOrder2);
 				index1.setCollationOrder(co1);
@@ -552,7 +564,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 							.next().getPos(v);
 					i1++;
 				}
-				collationOrder1 = fill(collationOrder1, i1);
+				collationOrder1 = this.fill(collationOrder1, i1);
 				final CollationOrder co1 = getCollationOrder(collationOrder1);
 				index1.setCollationOrder(co1);
 				ic.addSucceedingOperator(new OperatorIDTuple(index1, 0));
@@ -561,7 +573,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		}
 		while (remainingJoins.size() > 1) {
 			// choose best combination
-			final Collection<BasicOperator> co = getNextJoin(remainingJoins);
+			final Collection<BasicOperator> co = this.getNextJoin(remainingJoins);
 			final Iterator<BasicOperator> io = co.iterator();
 			final BasicOperator first = io.next();
 			final BasicOperator second = io.next();
@@ -586,8 +598,9 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			for (int j = 0; j < 3; j++) {
 				int i2 = 0;
 				for (; i2 < i; i2++) {
-					if (j == collationOrder[i2])
+					if (j == collationOrder[i2]) {
 						break;
+					}
 				}
 				if (i2 == i) {
 					collationOrder[i] = j;
@@ -648,7 +661,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 	private void optimizeJoinOrderAccordingToMostRestrictionsForMergeJoin() {
 		final Collection<TriplePattern> remainingTP = new LinkedList<TriplePattern>();
-		remainingTP.addAll(triplePatterns);
+		remainingTP.addAll(this.triplePatterns);
 		final Collection<TriplePattern> newTriplePattern = new LinkedList<TriplePattern>();
 		while (remainingTP.size() > 1) {
 			TriplePattern best1 = null;
@@ -679,7 +692,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				newTriplePattern.add(tp1);
 			}
 		}
-		triplePatterns = newTriplePattern;
+		this.triplePatterns = newTriplePattern;
 	}
 
 	@Override
@@ -687,8 +700,9 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			final TriplePattern tp) {
 		int pos = 0;
 		for (final Item item : tp.getItems()) {
-			if (v.equals(item))
+			if (v.equals(item)) {
 				break;
+			}
 			pos++;
 		}
 		final Literal min = this.getMin(v, tp);
@@ -698,7 +712,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		}
 		return null;
 	}
-	
+
 	public Literal getMin(final Variable v,
 			final TriplePattern tp) {
 		final Collection<TriplePattern> ztp = this.getTriplePattern();
@@ -719,8 +733,9 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			return null;
 		}
 		final Literal min = itb.next().get(v);
-		if (itb instanceof ParallelIterator)
+		if (itb instanceof ParallelIterator) {
 			((ParallelIterator<Bindings>) itb).close();
+		}
 
 		this.setTriplePatterns(ztp);
 		return min;
@@ -733,7 +748,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			// get the graph constraint from the super class.
 			// If it is null, a default graph is used, if not null a named one
 			// is used
-			final Item graphConstraintItem = getGraphConstraint();
+			final Item graphConstraintItem = this.getGraphConstraint();
 
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = this.root.dataset.indexingRDFGraphs(
@@ -776,12 +791,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 													.equals(tp.getPos(2)) ? rdfName
 													: tp.getPos(2));
 									final Triple zkey = getKey(ztp, null);
-									final Literal intermediateMax = getMaxLiteral(
+									final Literal intermediateMax = this.getMaxLiteral(
 											(SixIndices) indices, zkey, pos);
 									if (intermediateMax != null
 											&& (max == null || max
-													.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0))
+													.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0)) {
 										max = intermediateMax;
+									}
 								}
 
 							}
@@ -813,12 +829,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 													.getRdfName()
 													: tp.getPos(2));
 									final Triple zkey = getKey(ztp, null);
-									final Literal intermediateMax = getMaxLiteral(
+									final Literal intermediateMax = this.getMaxLiteral(
 											(SixIndices) indices, zkey, pos);
 									if (intermediateMax != null
 											&& (max == null || max
-													.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0))
+													.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0)) {
 										max = intermediateMax;
+									}
 								}
 							}
 						}
@@ -832,12 +849,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 							final URILiteral rdfName = indices.getRdfName();
 							if (namedGraphs.contains(rdfName)) {
-								final Literal intermediateMax = getMaxLiteral(
+								final Literal intermediateMax = this.getMaxLiteral(
 										(SixIndices) indices, key, pos);
 								if (intermediateMax != null
 										&& (max == null || max
-												.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0))
+												.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0)) {
 									max = intermediateMax;
+								}
 							}
 
 						}
@@ -850,12 +868,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 						// }
 
 						for (final Indices indices : indicesC) {
-							final Literal intermediateMax = getMaxLiteral(
+							final Literal intermediateMax = this.getMaxLiteral(
 									(SixIndices) indices, key, pos);
 							if (intermediateMax != null
 									&& (max == null || max
-											.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0))
+											.compareToNotNecessarilySPARQLSpecificationConform(intermediateMax) < 0)) {
 								max = intermediateMax;
+							}
 						}
 
 						return max;
@@ -875,7 +894,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			final Triple key, final int pos) {
 		if (sixIndices.SPO instanceof OptimizedDBBPTreeGeneration) {
 			DBBPTree<TripleKey, Triple> dbbptree = null;
-			switch (collationOrder) {
+			switch (this.collationOrder) {
 			case SPO:
 				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.SPO)
 						.getDBBPTree();
@@ -902,7 +921,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 						.getDBBPTree();
 				break;
 			}
-			return dbbptree.getMaximum(new TripleKey(key, collationOrder))
+			return dbbptree.getMaximum(new TripleKey(key, this.collationOrder))
 					.getPos(pos);
 
 		}
@@ -917,9 +936,10 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			final HashMap<Variable, Literal> maxima) {
 		if (Indices.usedDatastructure != Indices.DATA_STRUCT.DBBPTREE
 				|| (LiteralFactory.getMapType() != LiteralFactory.MapType.LAZYLITERAL && LiteralFactory
-						.getMapType() != LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP))
+						.getMapType() != LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			return super.getVarBuckets(tp, classBindings,
 					joinPartners, minima, maxima);
+		}
 		// use B+-tree with statistics about number of triples in subtree
 		// and distinct literals at the subject, predicate or object position!
 		final HashSet<Variable> joinPartnersTP = new HashSet<Variable>();
@@ -1006,7 +1026,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				// If it is null, a default graph is used, if not null a named
 				// one
 				// is used
-				final Item graphConstraintItem = getGraphConstraint();
+				final Item graphConstraintItem = this.getGraphConstraint();
 
 				// get a collection of indices using the determined graph
 				// constraint
@@ -1026,14 +1046,14 @@ public class RDF3XIndexScan extends BasicIndexScan {
 							final Variable graphConstraint = (Variable) graphConstraintItem;
 
 							// check if named graphs were provided at query time
-							if (root.namedGraphs != null
-									&& root.namedGraphs.size() > 0) {
+							if (this.root.namedGraphs != null
+									&& this.root.namedGraphs.size() > 0) {
 
 								// Convert the named graphs' names into
 								// URILiterals
 								// to be applicable
 								// later on
-								for (final String name : root.namedGraphs) {
+								for (final String name : this.root.namedGraphs) {
 
 									final Indices indices = this.root.dataset
 											.getNamedGraphIndices(LiteralFactory
@@ -1053,20 +1073,21 @@ public class RDF3XIndexScan extends BasicIndexScan {
 														.getPos(2)) ? rdfName
 														: tp.getPos(2));
 										final Triple zkey = getKey(ztp, null);
-										final Triple keyMinimum = getKey(ztp,
+										final Triple keyMinimum = this.getKey(ztp,
 												null, minima);
-										final Triple keyMaximum = getKey(ztp,
+										final Triple keyMaximum = this.getKey(ztp,
 												null, maxima);
 
-										final VarBucket vb = getVarBucket(v,
+										final VarBucket vb = this.getVarBucket(v,
 												ztp, zkey, keyMinimum,
 												keyMaximum,
 												(SixIndices) indices);
 										if (vb != null) {
 											final VarBucket previous_vb = result
 													.get(v);
-											if (previous_vb != null)
+											if (previous_vb != null) {
 												vb.add(previous_vb);
+											}
 											vb.minimum = (minima == null) ? null
 													: minima.get(v);
 											vb.maximum = (maxima == null) ? null
@@ -1106,19 +1127,20 @@ public class RDF3XIndexScan extends BasicIndexScan {
 														.getRdfName() : tp
 														.getPos(2));
 										final Triple zkey = getKey(ztp, null);
-										final Triple keyMinimum = getKey(ztp,
+										final Triple keyMinimum = this.getKey(ztp,
 												null, minima);
-										final Triple keyMaximum = getKey(ztp,
+										final Triple keyMaximum = this.getKey(ztp,
 												null, maxima);
-										final VarBucket vb = getVarBucket(v,
+										final VarBucket vb = this.getVarBucket(v,
 												ztp, zkey, keyMinimum,
 												keyMaximum,
 												(SixIndices) indices);
 										if (vb != null) {
 											final VarBucket previous_vb = result
 													.get(v);
-											if (previous_vb != null)
+											if (previous_vb != null) {
 												vb.add(previous_vb);
+											}
 											vb.minimum = (minima == null) ? null
 													: minima.get(v);
 											vb.maximum = (maxima == null) ? null
@@ -1134,20 +1156,21 @@ public class RDF3XIndexScan extends BasicIndexScan {
 						// matching indices object
 						// but do not bind anything
 						else {
-							final Triple keyMinimum = getKey(tp, null, minima);
-							final Triple keyMaximum = getKey(tp, null, maxima);
+							final Triple keyMinimum = this.getKey(tp, null, minima);
+							final Triple keyMaximum = this.getKey(tp, null, maxima);
 							for (final Indices indices : indicesC) {
 
 								final URILiteral rdfName = indices.getRdfName();
 								if (namedGraphs.contains(rdfName)) {
-									final VarBucket vb = getVarBucket(v, tp,
+									final VarBucket vb = this.getVarBucket(v, tp,
 											key, keyMinimum, keyMaximum,
 											(SixIndices) indices);
 									if (vb != null) {
 										final VarBucket previous_vb = result
 												.get(v);
-										if (previous_vb != null)
+										if (previous_vb != null) {
 											vb.add(previous_vb);
+										}
 										vb.minimum = (minima == null) ? null
 												: minima.get(v);
 										vb.maximum = (maxima == null) ? null
@@ -1164,11 +1187,11 @@ public class RDF3XIndexScan extends BasicIndexScan {
 							// if (triplePatterns.size() != 1) {
 							//log.error("Can only process one triple pattern!");
 							// }
-							final Triple keyMinimum = getKey(tp, null, minima);
-							final Triple keyMaximum = getKey(tp, null, maxima);
+							final Triple keyMinimum = this.getKey(tp, null, minima);
+							final Triple keyMaximum = this.getKey(tp, null, maxima);
 
 							for (final Indices indices : indicesC) {
-								final VarBucket vb = getVarBucket(v, tp, key,
+								final VarBucket vb = this.getVarBucket(v, tp, key,
 										keyMinimum, keyMaximum,
 										(SixIndices) indices);
 								if (vb != null) {
@@ -1177,8 +1200,9 @@ public class RDF3XIndexScan extends BasicIndexScan {
 									vb.maximum = (maxima == null) ? null
 											: maxima.get(v);
 									final VarBucket previous_vb = result.get(v);
-									if (previous_vb != null)
+									if (previous_vb != null) {
 										vb.add(previous_vb);
+									}
 									result.put(v, vb);
 								}
 							}
@@ -1222,19 +1246,22 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		// }
 		// }
 		if (result.size() > 0) {
-			storeVarBuckets(tp, result, keyHistogram);
+			this.storeVarBuckets(tp, result, keyHistogram);
 			return result;
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	private VarBucket getVarBucket(final Variable v, final TriplePattern tp,
 			final Triple key, final Triple keyMinimum, final Triple keyMaximum,
 			final SixIndices indices) {
 		int pos = 0;
-		for (; pos < 3; pos++)
-			if (tp.getItems()[pos].isVariable() && v.equals(tp.getItems()[pos]))
+		for (; pos < 3; pos++) {
+			if (tp.getItems()[pos].isVariable() && v.equals(tp.getItems()[pos])) {
 				break;
+			}
+		}
 		final Collection<Variable> cv = new LinkedList<Variable>();
 		cv.add(v);
 		int i = 0;
@@ -1257,15 +1284,15 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	public String toString() {
 		return "RDF3X"
 				+ super.toString()
-				+ ((collationOrder == null) ? "" : "\nCollationOrder:"
-						+ CollationOrder.values()[collationOrder.ordinal()]);
+				+ ((this.collationOrder == null) ? "" : "\nCollationOrder:"
+						+ CollationOrder.values()[this.collationOrder.ordinal()]);
 	}
-	
+
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "RDF3X "
 				+ super.toString(prefixInstance)
-				+ ((collationOrder == null) ? "" : "\nCollationOrder:"
-						+ CollationOrder.values()[collationOrder.ordinal()]);
+				+ ((this.collationOrder == null) ? "" : "\nCollationOrder:"
+						+ CollationOrder.values()[this.collationOrder.ordinal()]);
 	}
 }
