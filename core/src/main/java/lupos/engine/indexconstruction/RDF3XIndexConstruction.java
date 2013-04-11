@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * 
+ *
  */
 package lupos.engine.indexconstruction;
 
@@ -70,7 +70,7 @@ import lupos.misc.TimeInterval;
 public class RDF3XIndexConstruction {
 	private static final int k = 1000;
 	private static final int k_ = 1000;
-	
+
 	public static long LIMIT_ELEMENTS_IN_TRIE = 50000000;
 
 	private static void insertUsedStringRepresentations(final URILiteral u,
@@ -79,8 +79,7 @@ public class RDF3XIndexConstruction {
 			final TripleConsumer tc) {
 		rdftermsRepresentations.add(u.toString());
 		try {
-			CommonCoreQueryEvaluator
-			.readTriples(dataFormat, u.openStream(), tc);
+			CommonCoreQueryEvaluator.readTriples(dataFormat, u.openStream(), tc);
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -88,11 +87,11 @@ public class RDF3XIndexConstruction {
 	}
 
 	/**
-	 * Constructs the large-scale indices for RDF3X. 
+	 * Constructs the large-scale indices for RDF3X.
 	 * The command line arguments are
-	 * <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [<datafile2> [<datafile3> ...]]
+	 * <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY [<datafile2> [<datafile3> ...]]]
 	 * If you want to import more than one file you can use the additional parameters <datafilei>!
-	 * 
+	 *
 	 * @param args
 	 *            command line arguments
 	 */
@@ -102,23 +101,23 @@ public class RDF3XIndexConstruction {
 			System.out.println("Program to construct an RDF3X Index for LUPOSDATE...");
 			System.out.println("[help is printed when using less than 5 command line arguments]");
 			System.out.println("_______________________________________________________________");
-			
+
 			if (args.length < 5) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY] [<datafile2> [<datafile3> ...]]");
+				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
 				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
 				return;
 			}
-			
-			Date start = new Date();
+
+			final Date start = new Date();
 			System.out.println("Starting time: "+start);
-			
+
 			LiteralFactory.setType(LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
-			
+
 			final String datafile = args[0];
 			final String dataFormat = args[1];
 			CommonCoreQueryEvaluator.encoding = args[2];
-			
+
 			final String compressor = args[3];
 			if(compressor.compareTo("BZIP2")==0){
 				SortConfiguration.setDEFAULT_COMPRESSION(Compression.BZIP2);
@@ -129,7 +128,7 @@ public class RDF3XIndexConstruction {
 			} else {
 				SortConfiguration.setDEFAULT_COMPRESSION(Compression.NONE);
 			}
-		
+
 			final String[] dir = new String[] { args[4] };
 			final String writeindexinfo = dir[0]+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE;
 			DBMergeSortedBag.setTmpDir(dir);
@@ -139,13 +138,13 @@ public class RDF3XIndexConstruction {
 			final Collection<URILiteral> defaultGraphs = new LinkedList<URILiteral>();
 			final Collection<URILiteral> namedGraphs = new LinkedList<URILiteral>();
 			defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + datafile+ ">"));
-			
+
 			if(args.length>5){
 				LIMIT_ELEMENTS_IN_TRIE = Long.parseLong(args[5]);
 				DBMergeSortedSetUsingTrie.LIMIT_ELEMENTS_IN_SET = LIMIT_ELEMENTS_IN_TRIE;
 			}
 			for(int i=6; i<args.length; i++){
-				defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + args[i]+ ">"));				
+				defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + args[i]+ ">"));
 			}
 
 			// Construct dictionary:
@@ -163,20 +162,18 @@ public class RDF3XIndexConstruction {
 									// rdftermsRepresentations.add(l.
 									// originalString());
 									rdftermsRepresentations.add(l.toString());
-									if (l.originalStringDiffers())
-										rdftermsRepresentations.add(l
-												.originalString());
+									if (l.originalStringDiffers()) {
+										rdftermsRepresentations.add(l.originalString());
+									}
 								}
 							}
 
 						};
 						for (final URILiteral u : defaultGraphs) {
-							insertUsedStringRepresentations(u, dataFormat,
-									rdftermsRepresentations, tc);
+							insertUsedStringRepresentations(u, dataFormat, rdftermsRepresentations, tc);
 						}
 						for (final URILiteral u : namedGraphs) {
-							insertUsedStringRepresentations(u, dataFormat,
-									rdftermsRepresentations, tc);
+							insertUsedStringRepresentations(u, dataFormat, rdftermsRepresentations, tc);
 						}
 						// now generate B+-tree for integer-string map and
 						// string-integer
@@ -186,32 +183,31 @@ public class RDF3XIndexConstruction {
 							@Override
 							public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
 								return new Iterator<java.util.Map.Entry<String, Integer>>() {
-									Iterator<String> it = rdftermsRepresentations
-									.iterator();
+									Iterator<String> it = rdftermsRepresentations.iterator();
 									int index = 1;
 
 									@Override
 									public boolean hasNext() {
-										return it.hasNext();
+										return this.it.hasNext();
 									}
 
 									@Override
 									public java.util.Map.Entry<String, Integer> next() {
-										if (!it.hasNext())
+										if (!this.it.hasNext()) {
 											return null;
-										else {
+										} else {
 											return new java.util.Map.Entry<String, Integer>() {
 												String s = it.next();
 												int localIndex = index++;
 
 												@Override
 												public String getKey() {
-													return s;
+													return this.s;
 												}
 
 												@Override
 												public Integer getValue() {
-													return localIndex;
+													return this.localIndex;
 												}
 
 												@Override
@@ -295,9 +291,9 @@ public class RDF3XIndexConstruction {
 				System.err.println(e);
 				e.printStackTrace();
 			}
-			
-			Date intermediate = new Date();
-			TimeInterval codemapInterval = new TimeInterval(start, intermediate);
+
+			final Date intermediate = new Date();
+			final TimeInterval codemapInterval = new TimeInterval(start, intermediate);
 			System.out.println("Codemap constructed in: " + codemapInterval);
 			System.out.println("Codemap contains "+LazyLiteral.getHm().size()+" entries!");
 
@@ -320,14 +316,14 @@ public class RDF3XIndexConstruction {
 
 			final Indices indices = new SixIndices(defaultGraphs.iterator().next());
 			new GenerateIDTriplesUsingStringSearch2(defaultGraphs, dataFormat, indices);
-			
+
 			// write out index info
 
 			final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(writeindexinfo)));
 			indices.constructCompletely();
 
 			out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID());
-			
+
 			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
 			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
 			out.writeLuposInt(1);
@@ -335,10 +331,10 @@ public class RDF3XIndexConstruction {
 			indices.writeIndexInfo(out);
 			out.writeLuposInt(0);
 			out.close();
-			Date end = new Date(); 
+			final Date end = new Date();
 			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
-			
-			TimeInterval interval = new TimeInterval(start, end);			
+
+			final TimeInterval interval = new TimeInterval(start, end);
 			System.out.println("Used time: " + interval);
 			System.out.println("Number of imported triples: "+((SixIndices)indices).getIndex(CollationOrder.SPO).size());
 		} catch (final Exception e) {
@@ -356,8 +352,9 @@ public class RDF3XIndexConstruction {
 					.getCodeOriginalContent() + ")";
 			}
 			return result;
-		} else
+		} else {
 			return "Error - no lazy literal";
+		}
 	}
 
 	public static class GenerateIDTriplesUsingStringSearch2 {
@@ -368,33 +365,34 @@ public class RDF3XIndexConstruction {
 
 			final TrieSet searchtree = TrieSet.createRamBasedTrieSet();
 
-			final DiskCollection<Triple> triples = new DiskCollection<Triple>(
-					Triple.class);
+			final DiskCollection<Triple> triples = new DiskCollection<Triple>(Triple.class);
 
 			try {
-				
-				TripleConsumer tripleConsumer=new TripleConsumer() {
-					
+
+				final TripleConsumer tripleConsumer=new TripleConsumer() {
+
+					@Override
 					public void consume(final Triple triple) {
 						for (final Literal l : triple) {
 							searchtree.add(l.toString());
-							if (l.originalStringDiffers())
+							if (l.originalStringDiffers()) {
 								searchtree.add(l.originalString());
+							}
 						}
 						triples.add(triple);
 						if (searchtree.size()>LIMIT_ELEMENTS_IN_TRIE) {
-							handleRun(searchtree, triples, tc);
+							GenerateIDTriplesUsingStringSearch2.this.handleRun(searchtree, triples, tc);
 						}
 					}
 
 				};
-				
-				for(URILiteral graphURI:graphURIs){
+
+				for(final URILiteral graphURI:graphURIs){
 					CommonCoreQueryEvaluator.readTriples(dataFormat,
 							graphURI.openStream(), tripleConsumer);
 				}
 				if (searchtree.size() > 0) {
-					handleRun(searchtree, triples, tc);
+					this.handleRun(searchtree, triples, tc);
 					triples.release();
 				}
 			} catch (final IOException e) {
@@ -405,13 +403,13 @@ public class RDF3XIndexConstruction {
 
 		private void handleRun(final TrieSet searchtree,
 				final Collection<Triple> triples, final TripleConsumer tc) {
-			final int[] map = getMap(searchtree);
+			final int[] map = this.getMap(searchtree);
 
 			for (final Triple triple : triples) {
 				final Triple dummy = new Triple(triple.getPos(0),
 						triple.getPos(1), triple.getPos(2));
 				for (int pos = 0; pos < 3; pos++) {
-					if (triple.getPos(pos).originalStringDiffers())
+					if (triple.getPos(pos).originalStringDiffers()) {
 						dummy.setPos(
 								pos,
 								new LazyLiteralOriginalContent(
@@ -419,11 +417,12 @@ public class RDF3XIndexConstruction {
 												pos).toString())],
 												map[searchtree.getIndex(triple.getPos(
 														pos).originalString())]));
-					else
+					} else {
 						dummy.setPos(
 								pos,
 								new LazyLiteral(map[searchtree.getIndex(triple
 										.getPos(pos).toString())]));
+					}
 				}
 				tc.consume(dummy);
 			}
@@ -461,5 +460,4 @@ public class RDF3XIndexConstruction {
 			return map;
 		}
 	}
-
 }
