@@ -73,7 +73,7 @@ public class RDF3XIndexConstruction {
 
 	public static long LIMIT_ELEMENTS_IN_TRIE = 50000000;
 
-	private static void insertUsedStringRepresentations(final URILiteral u,
+	public static void insertUsedStringRepresentations(final URILiteral u,
 			final String dataFormat,
 			final SortedSet<String> rdftermsRepresentations,
 			final TripleConsumer tc) {
@@ -159,8 +159,6 @@ public class RDF3XIndexConstruction {
 							@Override
 							public void consume(final Triple triple) {
 								for (final Literal l : triple) {
-									// rdftermsRepresentations.add(l.
-									// originalString());
 									rdftermsRepresentations.add(l.toString());
 									if (l.originalStringDiffers()) {
 										rdftermsRepresentations.add(l.originalString());

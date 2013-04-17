@@ -45,6 +45,7 @@ import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
+import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.LazyLiteralNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.NodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration;
@@ -80,7 +81,7 @@ public class SixIndices extends Indices {
     protected static final int k_ = 500;
 
     public SixIndices() {
-        init(Indices.usedDatastructure);
+        this.init(Indices.usedDatastructure);
     }
 
     public lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics getDBBPTreeStatistics(final CollationOrder order) {
@@ -91,15 +92,16 @@ public class SixIndices extends Indices {
         try {
             if (Indices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
 
-                NodeDeSerializer<TripleKey, Triple> nodeDeSerializer = (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) ? new LazyLiteralNodeDeSerializer(order) : new StandardNodeDeSerializer<TripleKey, Triple>(TripleKey.class, Triple.class);
+                final NodeDeSerializer<TripleKey, Triple> nodeDeSerializer = (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) ? new LazyLiteralNodeDeSerializer(order) : new StandardNodeDeSerializer<TripleKey, Triple>(TripleKey.class, Triple.class);
 
-                DBBPTree<TripleKey, Triple> dbbptree = new DBBPTree<TripleKey, Triple>(null, k, k_, nodeDeSerializer);
+                final DBBPTree<TripleKey, Triple> dbbptree = new DBBPTree<TripleKey, Triple>(null, k, k_, nodeDeSerializer);
 
                 dbbptree.setName(order.toString());
 
                 return new OptimizedDBBPTreeGeneration<TripleKey, Triple>(new DBMergeSortedMap<TripleKey, Triple>(new SortConfiguration(), (Class<lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>>) (new lupos.datastructures.dbmergesortedds.MapEntry<TripleKey, Triple>(null, null)).getClass()), dbbptree);
-            } else
-                return new PrefixSearchFromSortedMap<TripleKey, Triple>(new TreeMap<TripleKey, Triple>(new TripleKeyComparator(new TripleComparator(order))));
+            } else {
+				return new PrefixSearchFromSortedMap<TripleKey, Triple>(new TreeMap<TripleKey, Triple>(new TripleKeyComparator(new TripleComparator(order))));
+			}
 
         } catch (final IOException e) {
             System.err.println(e);
@@ -107,7 +109,72 @@ public class SixIndices extends Indices {
             return null;
         }
     }
-    
+
+    public void generate(final CollationOrder order, final Generator<TripleKey, Triple> generator) throws IOException {
+    	final PrefixSearchMinMax<TripleKey, Triple> psmm = this.getIndex(order);
+
+    	DBBPTree<TripleKey, Triple> tree = null;
+
+    	if(psmm instanceof OptimizedDBBPTreeGeneration){
+        	tree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>)psmm).getDBBPTree();
+        } else if(psmm instanceof DBBPTree) {
+        	tree = (DBBPTree<TripleKey, Triple>) psmm;
+        } else {
+        	final NodeDeSerializer<TripleKey, Triple> nodeDeSerializer = (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) ? new LazyLiteralNodeDeSerializer(order) : new StandardNodeDeSerializer<TripleKey, Triple>(TripleKey.class, Triple.class);
+            tree = new DBBPTree<TripleKey, Triple>(null, k, k_, nodeDeSerializer);
+        }
+		tree.generateDBBPTree(generator);
+    	switch(order){
+			default:
+			case SPO:
+				this.SPO = tree;
+				break;
+			case SOP:
+				this.SOP = tree;
+				break;
+			case PSO:
+				this.PSO = tree;
+				break;
+			case POS:
+				this.POS = tree;
+				break;
+			case OSP:
+				this.OSP = tree;
+				break;
+			case OPS:
+				this.OPS = tree;
+				break;
+    	}
+    }
+
+    /**
+     * Generates the statistics based on the triples in the evaluation indices...
+     * @param order the collation order the statistics of which is to be generated!
+     */
+    public void generateStatistics(final CollationOrder order){
+    	if (Indices.usedDatastructure == Indices.DATA_STRUCT.DBBPTREE && (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
+    		try {
+
+    			if(this.statisticsIndicesForFastHistogramComputation==null){
+    				this.statisticsIndicesForFastHistogramComputation = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics[CollationOrder.values().length];
+     				for (int i = 0; i < this.statisticsIndicesForFastHistogramComputation.length; i++) {
+    					try {
+    						this.statisticsIndicesForFastHistogramComputation[i] = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics(null, 1500, 1500, CollationOrder.values()[i]);
+    					} catch (final IOException e) {
+    						System.err.println(e);
+    						e.printStackTrace();
+    					}
+    				}
+    			}
+
+    			SixIndices.this.getDBBPTreeStatistics(order).generateDBBPTree(this.getIndex(order).entrySet());
+    		} catch (final IOException e) {
+    			System.err.println(e);
+    			e.printStackTrace();
+    		}
+    	}
+    }
+
     public PrefixSearchMinMax<TripleKey, Triple> getIndex(final CollationOrder order) {
     	switch(order){
     		default:
@@ -128,18 +195,19 @@ public class SixIndices extends Indices {
 
     public SixIndices(final URILiteral uriLiteral) {
     	this.rdfName = uriLiteral;
-        init(Indices.usedDatastructure);
+        this.init(Indices.usedDatastructure);
     }
 
     public SixIndices(final URILiteral uriLiteral, final boolean initialize) {
     	this.rdfName = uriLiteral;
-        if (initialize)
-            init(Indices.usedDatastructure);
+        if (initialize) {
+			this.init(Indices.usedDatastructure);
+		}
     }
 
     @Override
     public void add(final Triple t) {
-        addTriple(t);
+        this.addTriple(t);
     }
 
     protected Adder[] adders = null;
@@ -196,8 +264,9 @@ public class SixIndices extends Indices {
 
     private void waitForAdderThreads() {
         if (this.adders != null) {
-            for (int i = 0; i < 6; i++)
-            	this.adders[i].getBoundedBuffer().endOfData();
+            for (int i = 0; i < 6; i++) {
+				this.adders[i].getBoundedBuffer().endOfData();
+			}
             for (int i = 0; i < 6; i++) {
                 try {
                 	this.adders[i].join();
@@ -221,7 +290,7 @@ public class SixIndices extends Indices {
     	this.waitForAdderThreads();
         return (this.SPO.get(new TripleKey(t, new TripleComparator(CollationOrder.SPO))) != null);
     }
-    
+
     public int size(){
     	return this.SPO.size();
     }
@@ -231,12 +300,12 @@ public class SixIndices extends Indices {
         Indices.usedDatastructure = ds;
         // the initialization for PREPHASE.INDEPENDANTBAGS must be done after
         // the prephase!
-        this.SPO = getDatastructure(CollationOrder.SPO);
-        this.SOP = getDatastructure(CollationOrder.SOP);
-        this.PSO = getDatastructure(CollationOrder.PSO);
-        this.POS = getDatastructure(CollationOrder.POS);
-        this.OSP = getDatastructure(CollationOrder.OSP);
-        this.OPS = getDatastructure(CollationOrder.OPS);
+        this.SPO = this.getDatastructure(CollationOrder.SPO);
+        this.SOP = this.getDatastructure(CollationOrder.SOP);
+        this.PSO = this.getDatastructure(CollationOrder.PSO);
+        this.POS = this.getDatastructure(CollationOrder.POS);
+        this.OSP = this.getDatastructure(CollationOrder.OSP);
+        this.OPS = this.getDatastructure(CollationOrder.OPS);
     }
 
     @Override
@@ -257,8 +326,9 @@ public class SixIndices extends Indices {
     public void constructCompletely() {
         this.waitForAdderThreads();
         if (this.SPO instanceof OptimizedDBBPTreeGeneration) {
-            if (((OptimizedDBBPTreeGeneration) SPO).generatedCompletely() && ((OptimizedDBBPTreeGeneration) SOP).generatedCompletely() && ((OptimizedDBBPTreeGeneration) PSO).generatedCompletely() && ((OptimizedDBBPTreeGeneration) POS).generatedCompletely() && ((OptimizedDBBPTreeGeneration) OSP).generatedCompletely() && ((OptimizedDBBPTreeGeneration) OPS).generatedCompletely())
-                return;
+            if (((OptimizedDBBPTreeGeneration) this.SPO).generatedCompletely() && ((OptimizedDBBPTreeGeneration) this.SOP).generatedCompletely() && ((OptimizedDBBPTreeGeneration) this.PSO).generatedCompletely() && ((OptimizedDBBPTreeGeneration) this.POS).generatedCompletely() && ((OptimizedDBBPTreeGeneration) this.OSP).generatedCompletely() && ((OptimizedDBBPTreeGeneration) this.OPS).generatedCompletely()) {
+				return;
+			}
             if (Indices.usedDatastructure == Indices.DATA_STRUCT.DBBPTREE && (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
                 this.statisticsIndicesForFastHistogramComputation = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics[CollationOrder.values().length];
                 // new
@@ -276,17 +346,17 @@ public class SixIndices extends Indices {
                 }
             }
             final Thread[] threads = new Thread[6];
-            threads[0] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) SPO, CollationOrder.SPO);
+            threads[0] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) this.SPO, CollationOrder.SPO);
             threads[0].start();
-            threads[1] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) SOP, CollationOrder.SOP);
+            threads[1] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) this.SOP, CollationOrder.SOP);
             threads[1].start();
-            threads[2] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) PSO, CollationOrder.PSO);
+            threads[2] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) this.PSO, CollationOrder.PSO);
             threads[2].start();
-            threads[3] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) POS, CollationOrder.POS);
+            threads[3] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) this.POS, CollationOrder.POS);
             threads[3].start();
-            threads[4] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) OSP, CollationOrder.OSP);
+            threads[4] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) this.OSP, CollationOrder.OSP);
             threads[4].start();
-            threads[5] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) OPS, CollationOrder.OPS);
+            threads[5] = new GenerateCompletelyRunner2((OptimizedDBBPTreeGeneration) this.OPS, CollationOrder.OPS);
             threads[5].start();
             try {
                 threads[0].join();
@@ -339,11 +409,11 @@ public class SixIndices extends Indices {
 
         @Override
         public void run() {
-            index.generateCompletely();
+            this.index.generateCompletely();
             if (Indices.usedDatastructure == Indices.DATA_STRUCT.DBBPTREE && (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
                 try {
-                    getDBBPTreeStatistics(order).generateDBBPTree(index.getDBBPTree().entrySet());
-                } catch (IOException e) {
+                    SixIndices.this.getDBBPTreeStatistics(this.order).generateDBBPTree(this.index.getDBBPTree().entrySet());
+                } catch (final IOException e) {
                     System.err.println(e);
                     e.printStackTrace();
                 }
@@ -364,7 +434,7 @@ public class SixIndices extends Indices {
         }
 
         public BoundedBuffer<Triple> getBoundedBuffer() {
-            return bbt;
+            return this.bbt;
         }
 
         @Override
@@ -382,7 +452,7 @@ public class SixIndices extends Indices {
     }
 
     private void makeLazyLiteral(final int pos, final SortedSet<Triple> dsst_current, final SortedSet<Triple> dsst_next) {
-        makeLazyLiteral(pos, dsst_current, new TripleConsumer() {
+        this.makeLazyLiteral(pos, dsst_current, new TripleConsumer() {
 
             @Override
             public void consume(final Triple triple) {
@@ -412,18 +482,20 @@ public class SixIndices extends Indices {
                 // + t.getPos(pos).toString());
                 // else
                 // System.out.println(current.getKey());
-                if (t.getPos(pos).originalStringDiffers())
-                    t.setPos(pos, new LazyLiteralOriginalContent(current.getValue(), t.getPos(pos).originalString()));
-                else
-                    t.setPos(pos, new LazyLiteral(current.getValue()));
+                if (t.getPos(pos).originalStringDiffers()) {
+					t.setPos(pos, new LazyLiteralOriginalContent(current.getValue(), t.getPos(pos).originalString()));
+				} else {
+					t.setPos(pos, new LazyLiteral(current.getValue()));
+				}
                 next.consume(t);
             } catch (final NullPointerException e) {
                 System.err.println(e);
                 e.printStackTrace();
             }
         }
-        if (iterator instanceof ParallelIterator)
-            ((ParallelIterator) iterator).close();
+        if (iterator instanceof ParallelIterator) {
+			((ParallelIterator) iterator).close();
+		}
     }
 
     @Override
@@ -434,7 +506,7 @@ public class SixIndices extends Indices {
                     // new GenerateIDTriplesUsingStringSearch(graphURI,
                     // dataFormat, dataset, this);
                 	dataset.waitForCodeMapConstruction();
-                	Collection<URILiteral> graphURIs = new LinkedList<URILiteral>();
+                	final Collection<URILiteral> graphURIs = new LinkedList<URILiteral>();
                     new RDF3XIndexConstruction.GenerateIDTriplesUsingStringSearch2(graphURIs, dataFormat, this);
                 } else {
                     final SortedSet<Triple> dsst_s;
@@ -456,36 +528,40 @@ public class SixIndices extends Indices {
                     dsst_p = new DBMergeSortedSet<Triple>(new SortConfiguration(), new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.PSO), Triple.class);
                     ((DBMergeSortedSet<Triple>) dsst_s).sort();
                     dataset.waitForCodeMapConstruction();
-                    makeLazyLiteral(0, dsst_s, dsst_p);
-                    if (dsst_s instanceof DBMergeSortedSet)
-                        ((DBMergeSortedSet) dsst_s).release();
+                    this.makeLazyLiteral(0, dsst_s, dsst_p);
+                    if (dsst_s instanceof DBMergeSortedSet) {
+						((DBMergeSortedSet) dsst_s).release();
+					}
                     final SortedSet<Triple> dsst_o;
                     dsst_o = new DBMergeSortedSet<Triple>(new SortConfiguration(), new TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(CollationOrder.OPS), Triple.class);
-                    makeLazyLiteral(1, dsst_p, dsst_o);
-                    if (dsst_p instanceof DBMergeSortedSet)
-                        ((DBMergeSortedSet) dsst_p).release();
-                    makeLazyLiteral(2, dsst_o, this);
-                    if (dsst_o instanceof DBMergeSortedSet)
-                        ((DBMergeSortedSet) dsst_o).release();
+                    this.makeLazyLiteral(1, dsst_p, dsst_o);
+                    if (dsst_p instanceof DBMergeSortedSet) {
+						((DBMergeSortedSet) dsst_p).release();
+					}
+                    this.makeLazyLiteral(2, dsst_o, this);
+                    if (dsst_o instanceof DBMergeSortedSet) {
+						((DBMergeSortedSet) dsst_o).release();
+					}
                 }
-        } else
-        	super.loadDataWithoutConsideringOntoloy(graphURI, dataFormat, dataset);
+        } else {
+			super.loadDataWithoutConsideringOntoloy(graphURI, dataFormat, dataset);
+		}
     }
 
     @Override
     public void readIndexInfo(final LuposObjectInputStream in) throws IOException, ClassNotFoundException {
-        SPO = DBBPTree.readLuposObject(in);
-        ((DBBPTree) SPO).setName("SPO");
-        SOP = DBBPTree.readLuposObject(in);
-        ((DBBPTree) SOP).setName("SOP");
-        PSO = DBBPTree.readLuposObject(in);
-        ((DBBPTree) PSO).setName("PSO");
-        POS = DBBPTree.readLuposObject(in);
-        ((DBBPTree) POS).setName("POS");
-        OSP = DBBPTree.readLuposObject(in);
-        ((DBBPTree) OSP).setName("OSP");
-        OPS = DBBPTree.readLuposObject(in);
-        ((DBBPTree) OPS).setName("OPS");
+        this.SPO = DBBPTree.readLuposObject(in);
+        ((DBBPTree) this.SPO).setName("SPO");
+        this.SOP = DBBPTree.readLuposObject(in);
+        ((DBBPTree) this.SOP).setName("SOP");
+        this.PSO = DBBPTree.readLuposObject(in);
+        ((DBBPTree) this.PSO).setName("PSO");
+        this.POS = DBBPTree.readLuposObject(in);
+        ((DBBPTree) this.POS).setName("POS");
+        this.OSP = DBBPTree.readLuposObject(in);
+        ((DBBPTree) this.OSP).setName("OSP");
+        this.OPS = DBBPTree.readLuposObject(in);
+        ((DBBPTree) this.OPS).setName("OPS");
         if (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
             this.statisticsIndicesForFastHistogramComputation = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics[CollationOrder.values().length];
             for (int i = 0; i < CollationOrder.values().length; i++) {
@@ -497,47 +573,48 @@ public class SixIndices extends Indices {
     @Override
     public void writeIndexInfo(final LuposObjectOutputStream out) throws IOException {
         if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
-            if (SPO instanceof OptimizedDBBPTreeGeneration) {
-                (((OptimizedDBBPTreeGeneration) SPO).getDBBPTree()).writeLuposObject(out);
-                (((OptimizedDBBPTreeGeneration) SOP).getDBBPTree()).writeLuposObject(out);
-                (((OptimizedDBBPTreeGeneration) PSO).getDBBPTree()).writeLuposObject(out);
-                (((OptimizedDBBPTreeGeneration) POS).getDBBPTree()).writeLuposObject(out);
-                (((OptimizedDBBPTreeGeneration) OSP).getDBBPTree()).writeLuposObject(out);
-                (((OptimizedDBBPTreeGeneration) OPS).getDBBPTree()).writeLuposObject(out);
-            } else if(SPO instanceof DBBPTree){
-            	((DBBPTree) SPO).writeLuposObject(out);
-            	((DBBPTree) SOP).writeLuposObject(out);
-            	((DBBPTree) PSO).writeLuposObject(out);
-            	((DBBPTree) POS).writeLuposObject(out);
-            	((DBBPTree) OSP).writeLuposObject(out);
-            	((DBBPTree) OPS).writeLuposObject(out);
+            if (this.SPO instanceof OptimizedDBBPTreeGeneration) {
+                (((OptimizedDBBPTreeGeneration) this.SPO).getDBBPTree()).writeLuposObject(out);
+                (((OptimizedDBBPTreeGeneration) this.SOP).getDBBPTree()).writeLuposObject(out);
+                (((OptimizedDBBPTreeGeneration) this.PSO).getDBBPTree()).writeLuposObject(out);
+                (((OptimizedDBBPTreeGeneration) this.POS).getDBBPTree()).writeLuposObject(out);
+                (((OptimizedDBBPTreeGeneration) this.OSP).getDBBPTree()).writeLuposObject(out);
+                (((OptimizedDBBPTreeGeneration) this.OPS).getDBBPTree()).writeLuposObject(out);
+            } else if(this.SPO instanceof DBBPTree){
+            	((DBBPTree) this.SPO).writeLuposObject(out);
+            	((DBBPTree) this.SOP).writeLuposObject(out);
+            	((DBBPTree) this.PSO).writeLuposObject(out);
+            	((DBBPTree) this.POS).writeLuposObject(out);
+            	((DBBPTree) this.OSP).writeLuposObject(out);
+            	((DBBPTree) this.OPS).writeLuposObject(out);
             }
             if (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
-                for (int i = 0; i < statisticsIndicesForFastHistogramComputation.length; i++) {
-                    statisticsIndicesForFastHistogramComputation[i].writeLuposObject(out);
+                for (int i = 0; i < this.statisticsIndicesForFastHistogramComputation.length; i++) {
+                    this.statisticsIndicesForFastHistogramComputation[i].writeLuposObject(out);
                 }
             }
-        } else
-            System.err.println("Cannot write the index info: It is only a main memory index!");
+        } else {
+			System.err.println("Cannot write the index info: It is only a main memory index!");
+		}
     }
 
     @Override
     public void writeOutAllModifiedPages() throws IOException {
         if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
-        	if (SPO instanceof OptimizedDBBPTreeGeneration) {
-                (((OptimizedDBBPTreeGeneration) SPO).getDBBPTree()).writeAllModifiedPages();
-                (((OptimizedDBBPTreeGeneration) SOP).getDBBPTree()).writeAllModifiedPages();
-                (((OptimizedDBBPTreeGeneration) PSO).getDBBPTree()).writeAllModifiedPages();
-                (((OptimizedDBBPTreeGeneration) POS).getDBBPTree()).writeAllModifiedPages();
-                (((OptimizedDBBPTreeGeneration) OSP).getDBBPTree()).writeAllModifiedPages();
-                (((OptimizedDBBPTreeGeneration) OPS).getDBBPTree()).writeAllModifiedPages();
-            } else if (SPO instanceof DBBPTree) {
-            	((DBBPTree) SPO).writeAllModifiedPages();
-            	((DBBPTree) SOP).writeAllModifiedPages();
-            	((DBBPTree) PSO).writeAllModifiedPages();
-            	((DBBPTree) POS).writeAllModifiedPages();
-            	((DBBPTree) OSP).writeAllModifiedPages();
-            	((DBBPTree) OPS).writeAllModifiedPages();
+        	if (this.SPO instanceof OptimizedDBBPTreeGeneration) {
+                (((OptimizedDBBPTreeGeneration) this.SPO).getDBBPTree()).writeAllModifiedPages();
+                (((OptimizedDBBPTreeGeneration) this.SOP).getDBBPTree()).writeAllModifiedPages();
+                (((OptimizedDBBPTreeGeneration) this.PSO).getDBBPTree()).writeAllModifiedPages();
+                (((OptimizedDBBPTreeGeneration) this.POS).getDBBPTree()).writeAllModifiedPages();
+                (((OptimizedDBBPTreeGeneration) this.OSP).getDBBPTree()).writeAllModifiedPages();
+                (((OptimizedDBBPTreeGeneration) this.OPS).getDBBPTree()).writeAllModifiedPages();
+            } else if (this.SPO instanceof DBBPTree) {
+            	((DBBPTree) this.SPO).writeAllModifiedPages();
+            	((DBBPTree) this.SOP).writeAllModifiedPages();
+            	((DBBPTree) this.PSO).writeAllModifiedPages();
+            	((DBBPTree) this.POS).writeAllModifiedPages();
+            	((DBBPTree) this.OSP).writeAllModifiedPages();
+            	((DBBPTree) this.OPS).writeAllModifiedPages();
             }
         }
     }

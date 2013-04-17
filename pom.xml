@@ -41,7 +41,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-
+		
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.core</artifactId>

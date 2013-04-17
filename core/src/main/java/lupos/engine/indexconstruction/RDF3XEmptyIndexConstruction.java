@@ -67,8 +67,8 @@ public class RDF3XEmptyIndexConstruction {
 			System.out.println("_______________________________________________________________");
 
 			if (args.length < 1) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <directory for indices>");
-				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction /luposdateindex");
+				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XEmptyIndexConstruction <directory for indices>");
+				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XEmptyIndexConstruction /luposdateindex");
 				return;
 			}
 

@@ -42,7 +42,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1262243818707458832L;
 
@@ -62,181 +62,199 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 	}
 
 	public boolean generatedCompletely() {
-		return phase == PhaseEnum.DBBPTREE;
+		return this.phase == PhaseEnum.DBBPTREE;
 	}
 
+	@Override
 	public Comparator<? super K> comparator() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.comparator();
+			return this.sortedMap.comparator();
 		default:
-			return dbbptree.comparator();
+			return this.dbbptree.comparator();
 		}
 	}
 
+	@Override
 	public Set<Entry<K, V>> entrySet() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.entrySet();
+			return this.sortedMap.entrySet();
 		default:
-			return dbbptree.entrySet();
+			return this.dbbptree.entrySet();
 		}
 	}
 
+	@Override
 	public K firstKey() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.firstKey();
+			return this.dbbptree.firstKey();
 		}
 	}
 
+	@Override
 	public SortedMap<K, V> headMap(final K toKey) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.headMap(toKey);
+			return this.dbbptree.headMap(toKey);
 		}
 	}
 
+	@Override
 	public Set<K> keySet() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.keySet();
+			return this.sortedMap.keySet();
 		default:
-			return dbbptree.keySet();
+			return this.dbbptree.keySet();
 		}
 	}
 
+	@Override
 	public K lastKey() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.lastKey();
+			return this.dbbptree.lastKey();
 		}
 	}
 
+	@Override
 	public SortedMap<K, V> subMap(final K fromKey, final K toKey) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.subMap(fromKey, toKey);
+			return this.dbbptree.subMap(fromKey, toKey);
 		}
 	}
 
+	@Override
 	public SortedMap<K, V> tailMap(final K fromKey) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.tailMap(fromKey);
+			return this.dbbptree.tailMap(fromKey);
 		}
 	}
 
+	@Override
 	public Collection<V> values() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.values();
+			return this.sortedMap.values();
 		default:
-			return dbbptree.values();
+			return this.dbbptree.values();
 		}
 	}
 
+	@Override
 	public void clear() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			sortedMap.clear();
+			this.sortedMap.clear();
 			break;
 		default:
-			dbbptree.clear();
+			this.dbbptree.clear();
 			break;
 		}
 	}
 
+	@Override
 	public boolean containsKey(final Object key) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.containsKey(key);
+			return this.dbbptree.containsKey(key);
 		}
 	}
 
+	@Override
 	public boolean containsValue(final Object value) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.containsValue(value);
+			return this.dbbptree.containsValue(value);
 		}
 	}
 
+	@Override
 	public V get(final Object key) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.get(key);
+			return this.dbbptree.get(key);
 		}
 	}
 
+	@Override
 	public boolean isEmpty() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.isEmpty();
+			return this.sortedMap.isEmpty();
 		default:
-			return dbbptree.isEmpty();
+			return this.dbbptree.isEmpty();
 		}
 	}
 
+	@Override
 	public V put(final K key, final V value) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.put(key, value);
+			return this.sortedMap.put(key, value);
 		default:
-			return dbbptree.put(key, value);
+			return this.dbbptree.put(key, value);
 		}
 	}
 
+	@Override
 	public void putAll(final Map<? extends K, ? extends V> m) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			sortedMap.putAll(m);
+			this.sortedMap.putAll(m);
 			break;
 		default:
-			dbbptree.putAll(m);
+			this.dbbptree.putAll(m);
 			break;
 		}
 	}
 
+	@Override
 	public V remove(final Object key) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.remove(key);
+			return this.dbbptree.remove(key);
 		}
 	}
 
+	@Override
 	public int size() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			return sortedMap.size();
+			return this.sortedMap.size();
 		default:
-			return dbbptree.size();
+			return this.dbbptree.size();
 		}
 	}
 
 	public void writeLuposObject(final LuposObjectOutputStream loos)
 			throws IOException {
-		if (phase == PhaseEnum.SORTEDMAP) {
-			switchPhase();
+		if (this.phase == PhaseEnum.SORTEDMAP) {
+			this.switchPhase();
 		}
-		dbbptree.writeLuposObject(loos);
+		this.dbbptree.writeLuposObject(loos);
 	}
 
 	/**
@@ -256,78 +274,83 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 	}
 
 	public void generateCompletely() {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
 		}
 	}
 
 	public SortedMap<K, V> getSortedMap() {
-		return sortedMap;
+		return this.sortedMap;
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.prefixSearch(arg0);
+			return this.dbbptree.prefixSearch(arg0);
 		}
 	}
 
+	@Override
 	public Object[] getClosestElements(final K arg0) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.getClosestElements(arg0);
+			return this.dbbptree.getClosestElements(arg0);
 		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.prefixSearch(arg0, min);
+			return this.dbbptree.prefixSearch(arg0, min);
 		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min, final K max) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.prefixSearch(arg0, min, max);
+			return this.dbbptree.prefixSearch(arg0, min, max);
 		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K max) {
-		switch (phase) {
+		switch (this.phase) {
 		case SORTEDMAP:
-			switchPhase();
+			this.switchPhase();
 		default:
-			return dbbptree.prefixSearchMax(arg0, max);
+			return this.dbbptree.prefixSearchMax(arg0, max);
 		}
 	}
 
 	private void switchPhase() {
 		try{
-			dbbptree.generateDBBPTree(sortedMap);
-		} catch(IOException e){
+			this.dbbptree.generateDBBPTree(this.sortedMap);
+		} catch(final IOException e){
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		phase = PhaseEnum.DBBPTREE;
-		if (sortedMap instanceof DBMergeSortedBag) {
-			((DBMergeSortedBag) sortedMap).release();
-		} else if (sortedMap instanceof DBMergeSortedMapOfCollections) {
-			((DBMergeSortedMapOfCollections) sortedMap).release();
-		} else if (sortedMap instanceof DBMergeSortedMap) {
-			((DBMergeSortedMap) sortedMap).release();
+		this.phase = PhaseEnum.DBBPTREE;
+		if (this.sortedMap instanceof DBMergeSortedBag) {
+			((DBMergeSortedBag) this.sortedMap).release();
+		} else if (this.sortedMap instanceof DBMergeSortedMapOfCollections) {
+			((DBMergeSortedMapOfCollections) this.sortedMap).release();
+		} else if (this.sortedMap instanceof DBMergeSortedMap) {
+			((DBMergeSortedMap) this.sortedMap).release();
 		}
-		sortedMap = null;
+		this.sortedMap = null;
 	}
 
 	public DBBPTree<K, V> getDBBPTree() {

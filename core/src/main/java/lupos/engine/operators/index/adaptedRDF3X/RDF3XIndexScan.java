@@ -60,7 +60,115 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphge
 public class RDF3XIndexScan extends BasicIndexScan {
 
 	public enum CollationOrder {
-		SPO, SOP, PSO, POS, OSP, OPS
+		SPO {
+			@Override
+			public int getSortCriterium(final int pos) {
+				switch(pos){
+					default:
+					case 0:
+						return 0;
+					case 1:
+						return 1;
+					case 2:
+						return 2;
+				}
+			}
+		},
+		SOP {
+			@Override
+			public int getSortCriterium(final int pos) {
+				switch(pos){
+					default:
+					case 0:
+						return 0;
+					case 1:
+						return 2;
+					case 2:
+						return 1;
+				}
+			}
+		},
+		PSO {
+			@Override
+			public int getSortCriterium(final int pos) {
+				switch(pos){
+					default:
+					case 0:
+						return 1;
+					case 1:
+						return 0;
+					case 2:
+						return 2;
+				}
+			}
+		},
+		POS {
+			@Override
+			public int getSortCriterium(final int pos) {
+				switch(pos){
+					default:
+					case 0:
+						return 1;
+					case 1:
+						return 2;
+					case 2:
+						return 0;
+				}
+			}
+		},
+		OSP {
+			@Override
+			public int getSortCriterium(final int pos) {
+				switch(pos){
+					default:
+					case 0:
+						return 2;
+					case 1:
+						return 0;
+					case 2:
+						return 1;
+				}
+			}
+		},
+		OPS {
+			@Override
+			public int getSortCriterium(final int pos) {
+				switch(pos){
+					default:
+					case 0:
+						return 2;
+					case 1:
+						return 1;
+					case 2:
+						return 0;
+				}
+			}
+		};
+
+		public abstract int getSortCriterium(int pos);
+
+		public static CollationOrder createCollationOrder(final int primaryCriterium, final int secondaryCriterium){
+			if(primaryCriterium==1) {
+				if(secondaryCriterium==0){
+					return PSO;
+				} else {
+					return POS;
+				}
+			} else if(primaryCriterium==2) {
+				if(secondaryCriterium==0){
+					return OSP;
+				} else {
+					return OPS;
+				}
+
+			} else {
+				if(secondaryCriterium==1){
+					return SPO;
+				} else {
+					return SOP;
+				}
+			}
+		}
 	}
 
 	protected CollationOrder collationOrder = CollationOrder.SPO;
@@ -1211,6 +1319,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				}
 			} catch (final Exception e) {
 				System.err.println("Error while joining triple patterns: "+ e);
+				e.printStackTrace();
 				return null;
 			}
 

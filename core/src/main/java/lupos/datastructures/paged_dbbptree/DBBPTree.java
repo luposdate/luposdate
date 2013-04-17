@@ -81,21 +81,21 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	protected final NodeDeSerializer<K, V> nodeDeSerializer;
 
 	public static boolean enableSIP = true;
-	
+
 	// you can give a name to this dbbptree (e.g. for debugging purposes...)
 	protected String name = "Name not yet given!";
 
 	public static void setTmpDir(String dir, final boolean delete) {
 
-		if (dir.compareTo("") != 0
-				&& (!(dir.endsWith("//") || dir.endsWith("/") || dir
-						.endsWith("\""))))
+		if (dir.compareTo("") != 0 && (!(dir.endsWith("//") || dir.endsWith("/") || dir.endsWith("\\")))){
 			dir = dir + "//";
+		}
 		DBBPTree.mainFolder = dir + "dbbptree//";
-		if (delete)
+		if (delete) {
 			FileHelper.deleteDirectory(new File(mainFolder));
+		}
 	}
-	
+
 	public static String getMainFolder(){
 		return DBBPTree.mainFolder;
 	}
@@ -109,19 +109,19 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	public DBBPTree(final Comparator<? super K> comparator, final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
-		init(comparator, k, k_);
+		this.init(comparator, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
 	public DBBPTree(final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
-		init(null, k, k_);
+		this.init(null, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
-	
-	public void setName(String name){
+
+	public void setName(final String name){
 		this.name=name;
 	}
-	
+
 	public String getName(){
 		return this.name;
 	}
@@ -132,143 +132,165 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			final int k_) throws IOException {
 		this.k = k;
 		this.k_ = k_;
-		size = 0;
+		this.size = 0;
 		lock.lock();
 		try {
-			currentID = currentFileID++;
+			this.currentID = currentFileID++;
 			final File f = new File(DBBPTree.mainFolder);
 			f.mkdirs();
-			if(currentID==0){
-				FileHelper.deleteFilesStartingWithPattern(DBBPTree.mainFolder, currentID + ".dbbptree_");
+			if(this.currentID==0){
+				FileHelper.deleteFilesStartingWithPattern(DBBPTree.mainFolder, this.currentID + ".dbbptree_");
 			}
-			pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree");
+			this.pageManager = new PageManager(DBBPTree.mainFolder + this.currentID + ".dbbptree");
 		} finally {
 			lock.unlock();
 		}
 
 		if (comparator == null) {
 			this.comparator = new StandardComparator<K>();
-		} else
+		} else {
 			this.comparator = comparator;
+		}
 	}
 
+	@Override
 	public Comparator<? super K> comparator() {
 		return this.comparator;
 	}
 
+	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
-		if (firstLeafPage < 0)
+		if (this.firstLeafPage < 0) {
 			return new HashSet<java.util.Map.Entry<K, V>>();
-		else
+		} else {
 			return new Set<java.util.Map.Entry<K, V>>() {
+			@Override
 			public boolean add(final java.util.Map.Entry<K, V> arg0) {
 				final V value = DBBPTree.this.put(arg0.getKey(), arg0
 						.getValue());
-				if (value == null)
+				if (value == null) {
 					return true;
-				else
+				} else {
 					return !value.equals(arg0.getValue());
+				}
 			}
 
+			@Override
 			public boolean addAll(
 					final Collection<? extends java.util.Map.Entry<K, V>> arg0) {
 				boolean result = false;
 				for (final java.util.Map.Entry<K, V> me : arg0) {
-					result = result || add(me);
+					result = result || this.add(me);
 				}
 				return result;
 			}
 
+			@Override
 			public void clear() {
 				DBBPTree.this.clear();
 			}
 
+			@Override
 			public boolean contains(final Object arg0) {
 				final V value = DBBPTree.this
 				.get(((java.util.Map.Entry<K, V>) arg0).getKey());
 				if (value != null) {
 					return (value.equals(((java.util.Map.Entry<K, V>) arg0)
 							.getValue()));
-				} else
+				} else {
 					return false;
+				}
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> arg0) {
-				for (final Object o : arg0)
-					if (!contains(o))
+				for (final Object o : arg0) {
+					if (!this.contains(o)) {
 						return false;
+					}
+				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBBPTree.this.isEmpty();
 			}
 
+			@Override
 			public SIPParallelIterator<java.util.Map.Entry<K, V>, K> iterator() {
-				if (size() == 0)
+				if (this.size() == 0) {
 					return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
+					@Override
 					public boolean hasNext() {
 						return false;
 					}
 
+					@Override
 					public java.util.Map.Entry<K, V> next() {
 						return null;
 					}
 
+					@Override
 					public void remove() {
 					}
 
+					@Override
 					public java.util.Map.Entry<K, V> next(final K k) {
 						return null;
 					}
 
+					@Override
 					public void close() {
 					}
 				};
+				}
 				try {
 					return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
 						private LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader<V>(
-								new PageInputStream(firstLeafPage,
-										pageManager), null);
+								new PageInputStream(DBBPTree.this.firstLeafPage,
+										DBBPTree.this.pageManager), null);
 						{
-							innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
-							in.readLuposBoolean();
+							this.innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
+							this.in.readLuposBoolean();
 						}
 						private List<Tuple<K, LuposObjectInputStream<V>>> innerNodes;
 						private int entrynumber = 0;
 						private K lastKey = null;
 						private V lastValue = null;
 
+						@Override
 						public boolean hasNext() {
-							return (entrynumber < DBBPTree.this.size());
+							return (this.entrynumber < DBBPTree.this.size());
 						}
 
 						private java.util.Map.Entry<K, V> getFirst(
 								final int filename, final K k) {
-							if (filename < 0)
+							if (filename < 0) {
 								return null;
+							}
 							InputStream fis;
 							try {
 								fis = new PageInputStream(filename,
-										pageManager);
+										DBBPTree.this.pageManager);
 								final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
 										fis, null);
 								final boolean leaf = in.readLuposBoolean();
 								if (leaf) { // leaf node reached!
-									lastKey = null;
-									lastValue = null;
+									this.lastKey = null;
+									this.lastValue = null;
 									while (true) {
-										final DBBPTreeEntry<K, V> e = getNextLeafEntry(
-												in, lastKey, lastValue);
+										final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(
+												in, this.lastKey, this.lastValue);
 										if (e == null || e.key == null) {
 											in.close();
-											close();
+											this.close();
 											return null;
 										}
 										final K key = e.key;
-										lastKey = key;
-										lastValue = e.value;
-										final int compare = comparator
+										this.lastKey = key;
+										this.lastValue = e.value;
+										final int compare = DBBPTree.this.comparator
 										.compare(key, k);
 										if (compare == 0) {
 											this.in = in;
@@ -283,32 +305,32 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								} else {
 									K lastKey = null;
 									while (true) {
-										final Tuple<K, Integer> nextEntry = getNextInnerNodeEntry(
+										final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
 												lastKey, in);
 										if (nextEntry == null
 												|| nextEntry.getSecond() <= 0) {
 											in.close();
-											close();
+											this.close();
 											return null;
 										}
 										lastKey = nextEntry.getFirst();
 										if (nextEntry.getFirst() == null) {
-											innerNodes
+											this.innerNodes
 											.add(new Tuple<K, LuposObjectInputStream<V>>(
 													null, in));
-											return getFirst(nextEntry
+											return this.getFirst(nextEntry
 													.getSecond(), k);
 										}
-										final int compare = comparator
+										final int compare = DBBPTree.this.comparator
 										.compare(nextEntry
 												.getFirst(), k);
 										if (compare >= 0) {
-											innerNodes
+											this.innerNodes
 											.add(new Tuple<K, LuposObjectInputStream<V>>(
 													nextEntry
 													.getFirst(),
 													in));
-											return getFirst(nextEntry
+											return this.getFirst(nextEntry
 													.getSecond(), k);
 										}
 									}
@@ -327,30 +349,32 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 						private java.util.Map.Entry<K, V> getFirstUsingCache(
 								final int index, final K kkey) {
-							if (index < 0)
+							if (index < 0) {
 								return null;
+							}
 							try {
-								if (innerNodes.size() <= index) {
-									close();
+								if (this.innerNodes.size() <= index) {
+									this.close();
 									return null;
 									// close();
 									// innerNodes.clear();
 									// return getFirst(rootFilename,
 									// triplekey);
 								}
-								final Tuple<K, LuposObjectInputStream<V>> current = innerNodes
+								final Tuple<K, LuposObjectInputStream<V>> current = this.innerNodes
 								.get(index);
 								final LuposObjectInputStream<V> in = current
 								.getSecond();
 								K lastKey = current.getFirst();
 								if (lastKey == null
-										|| comparator
-										.compare(lastKey, kkey) >= 0)
-									return getFirstUsingCache(index + 1,
+										|| DBBPTree.this.comparator
+										.compare(lastKey, kkey) >= 0) {
+									return this.getFirstUsingCache(index + 1,
 											kkey);
-								while (innerNodes.size() > index + 1) {
-									final Tuple<K, LuposObjectInputStream<V>> toBeDeleted = innerNodes
-									.remove(innerNodes.size() - 1);
+								}
+								while (this.innerNodes.size() > index + 1) {
+									final Tuple<K, LuposObjectInputStream<V>> toBeDeleted = this.innerNodes
+									.remove(this.innerNodes.size() - 1);
 									try {
 										toBeDeleted.getSecond().close();
 									} catch (final IOException e) {
@@ -359,26 +383,26 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 									}
 								}
 								while (true) {
-									final Tuple<K, Integer> nextEntry = getNextInnerNodeEntry(
+									final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
 											lastKey, in);
 									if (nextEntry == null
 											|| nextEntry.getSecond() <= 0) {
 										in.close();
-										close();
+										this.close();
 										return null;
 									}
 									lastKey = nextEntry.getFirst();
 									if (nextEntry.getFirst() == null) {
 										current.setFirst(null);
-										return getFirst(nextEntry
+										return this.getFirst(nextEntry
 												.getSecond(), kkey);
 									}
-									final int compare = comparator.compare(
+									final int compare = DBBPTree.this.comparator.compare(
 											nextEntry.getFirst(), kkey);
 									if (compare >= 0) {
 										current.setFirst(nextEntry
 												.getFirst());
-										return getFirst(nextEntry
+										return this.getFirst(nextEntry
 												.getSecond(), kkey);
 									}
 								}
@@ -393,26 +417,28 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 							return null;
 						}
 
+						@Override
 						public java.util.Map.Entry<K, V> next() {
-							if(!hasNext())
+							if(!this.hasNext()) {
 								return null;
+							}
 							try {
-								final DBBPTreeEntry<K, V> e = getNextLeafEntry(
-										in, lastKey, lastValue);
+								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(
+										this.in, this.lastKey, this.lastValue);
 								if (e != null) {
 									if (e.key == null) {
 										if (e.filenameOfNextLeafNode >= 0) {
-											in.close();
+											this.in.close();
 											try{
-												in = new LuposObjectInputStreamWithoutReadingHeader<V>(
+												this.in = new LuposObjectInputStreamWithoutReadingHeader<V>(
 														new PageInputStream(
 																e.filenameOfNextLeafNode,
-																pageManager),
+																DBBPTree.this.pageManager),
 																null);
-												in.readLuposBoolean();
-												lastKey = null;
-												lastValue = null;
-												return next();
+												this.in.readLuposBoolean();
+												this.lastKey = null;
+												this.lastValue = null;
+												return this.next();
 											} catch(final Exception e1){
 												System.err.println(e1);
 												e1.printStackTrace();
@@ -420,9 +446,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 											}
 										}
 									} else {
-										lastKey = e.key;
-										lastValue = e.value;
-										entrynumber++;
+										this.lastKey = e.key;
+										this.lastValue = e.value;
+										this.entrynumber++;
 										return new MapEntry<K, V>(e.key,
 												e.value);
 									}
@@ -437,6 +463,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 							return null;
 						}
 
+						@Override
 						public void remove() {
 							throw (new UnsupportedOperationException(
 							"This iterator is ReadOnly."));
@@ -445,21 +472,22 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						@Override
 						protected void finalize() throws Throwable {
 							try {
-								in.close();
+								this.in.close();
 							} finally {
 								super.finalize();
 							}
 						}
 
+						@Override
 						public void close() {
-							for (final Tuple<K, LuposObjectInputStream<V>> tuple : innerNodes) {
+							for (final Tuple<K, LuposObjectInputStream<V>> tuple : this.innerNodes) {
 								try {
 									tuple.getSecond().close();
 								} catch (final IOException e) {
 								}
 							}
 							try {
-								in.close();
+								this.in.close();
 							} catch (final IOException e) {
 								System.err.println(e);
 								e.printStackTrace();
@@ -468,24 +496,24 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 						private java.util.Map.Entry<K, V> getNext(final K k) {
 							try {
-								final DBBPTreeEntry<K, V> e = getNextLeafEntry(
-										in, lastKey, lastValue);
+								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(
+										this.in, this.lastKey, this.lastValue);
 								if (e != null) {
 									if (e.key == null) {
 										if (e.filenameOfNextLeafNode >= 0) {
-											in.close();
-											in = new LuposObjectInputStreamWithoutReadingHeader<V>(
+											this.in.close();
+											this.in = new LuposObjectInputStreamWithoutReadingHeader<V>(
 													new PageInputStream(
 															e.filenameOfNextLeafNode,
-															pageManager),
+															DBBPTree.this.pageManager),
 															null);
-											in.readLuposBoolean();
-											lastKey = null;
-											lastValue = null;
+											this.in.readLuposBoolean();
+											this.lastKey = null;
+											this.lastValue = null;
 											while (true) {
-												final DBBPTreeEntry<K, V> e1 = getNextLeafEntry(
-														in, lastKey,
-														lastValue);
+												final DBBPTreeEntry<K, V> e1 = DBBPTree.this.getNextLeafEntry(
+														this.in, this.lastKey,
+														this.lastValue);
 												if (e1 != null) {
 													if (e1.key == null) {
 														// read over one
@@ -498,22 +526,23 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 														// corresponding
 														// leaf node!
 														if (e.filenameOfNextLeafNode >= 0) {
-															in.close();
-															if (innerNodes
-																	.size() == 0)
-																return getFirst(
-																		rootPage,
+															this.in.close();
+															if (this.innerNodes
+																	.size() == 0) {
+																return this.getFirst(
+																		DBBPTree.this.rootPage,
 																		k);
-															else
-																return getFirstUsingCache(
+															} else {
+																return this.getFirstUsingCache(
 																		0,
 																		k);
+															}
 														}
 													} else {
-														entrynumber++;
-														lastKey = e1.key;
-														lastValue = e1.value;
-														if (comparator
+														this.entrynumber++;
+														this.lastKey = e1.key;
+														this.lastValue = e1.value;
+														if (DBBPTree.this.comparator
 																.compare(
 																		k,
 																		e1.key) <= 0) {
@@ -523,19 +552,19 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 														}
 													}
 												} else {
-													in.close();
-													close();
+													this.in.close();
+													this.close();
 													return null;
 												}
 											}
 										}
-										in.close();
-										close();
+										this.in.close();
+										this.close();
 										return null;
 									} else {
-										lastKey = e.key;
-										lastValue = e.value;
-										entrynumber++;
+										this.lastKey = e.key;
+										this.lastValue = e.value;
+										this.entrynumber++;
 										return new MapEntry<K, V>(e.key,
 												e.value);
 									}
@@ -550,12 +579,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 							return null;
 						}
 
+						@Override
 						public java.util.Map.Entry<K, V> next(final K k) {
 							java.util.Map.Entry<K, V> result;
 							do {
-								result = getNext(k);
+								result = this.getNext(k);
 							} while (result != null
-									&& comparator.compare(k, result
+									&& DBBPTree.this.comparator.compare(k, result
 											.getKey()) > 0);
 							return result;
 						}
@@ -567,42 +597,48 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				}
 			}
 
+			@Override
 			public boolean remove(final Object arg0) {
 				final V value = DBBPTree.this
 				.remove(((java.util.Map.Entry<K, V>) arg0).getKey());
-				if (value == null)
+				if (value == null) {
 					return false;
-				else
+				} else {
 					return value.equals(((java.util.Map.Entry<K, V>) arg0)
 							.getValue());
+				}
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> arg0) {
 				boolean result = false;
 				for (final Object me : arg0) {
-					result = result || remove(me);
+					result = result || this.remove(me);
 				}
 				return result;
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> arg0) {
 				boolean result = false;
 				for (final java.util.Map.Entry<K, V> o : this) {
 					if (!arg0.contains(o)) {
-						remove(o);
+						this.remove(o);
 						result = true;
 					}
 				}
 				return result;
 			}
 
+			@Override
 			public int size() {
 				return DBBPTree.this.size();
 			}
 
+			@Override
 			public Object[] toArray() {
-				final Object[] o = new Object[size()];
-				final Iterator<java.util.Map.Entry<K, V>> kit = iterator();
+				final Object[] o = new Object[this.size()];
+				final Iterator<java.util.Map.Entry<K, V>> kit = this.iterator();
 				int i = 0;
 				while (kit.hasNext()) {
 					o[i++] = kit.next();
@@ -610,9 +646,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] arg0) {
-				final T[] o = (T[]) new Object[size()];
-				final Iterator<java.util.Map.Entry<K, V>> kit = iterator();
+				final T[] o = (T[]) new Object[this.size()];
+				final Iterator<java.util.Map.Entry<K, V>> kit = this.iterator();
 				int i = 0;
 				while (kit.hasNext()) {
 					o[i++] = (T) kit.next();
@@ -620,113 +657,136 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 		};
+		}
 	}
 
 	protected Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2,
 			final LuposObjectInputStream<V> in2) {
-		return nodeDeSerializer.getNextInnerNodeEntry(lastKey2, in2);
+		return this.nodeDeSerializer.getNextInnerNodeEntry(lastKey2, in2);
 	}
 
+	@Override
 	public K firstKey() {
-		final Iterator<K> it = keySet().iterator();
-		if (it.hasNext())
+		final Iterator<K> it = this.keySet().iterator();
+		if (it.hasNext()) {
 			return it.next();
-		else
+		} else {
 			return null;
+		}
 	}
 
+	@Override
 	public SortedMap<K, V> headMap(final K arg0) {
 		throw (new UnsupportedOperationException("headMap is not supported."));
 	}
 
+	@Override
 	public Set<K> keySet() {
-		if (firstLeafPage < 0)
+		if (this.firstLeafPage < 0) {
 			return new HashSet<K>();
-		else
+		} else {
 			return new Set<K>() {
+			@Override
 			public boolean add(final K arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public boolean addAll(final Collection<? extends K> arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public void clear() {
 				DBBPTree.this.clear();
 			}
 
+			@Override
 			public boolean contains(final Object arg0) {
 				return DBBPTree.this.containsKey(arg0);
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> arg0) {
-				for (final Object o : arg0)
-					if (!contains(o))
+				for (final Object o : arg0) {
+					if (!this.contains(o)) {
 						return false;
+					}
+				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBBPTree.this.isEmpty();
 			}
 
+			@Override
 			public Iterator<K> iterator() {
 				return new Iterator<K>() {
 					Iterator<java.util.Map.Entry<K, V>> it = DBBPTree.this
 					.entrySet().iterator();
 
+					@Override
 					public boolean hasNext() {
-						return it.hasNext();
+						return this.it.hasNext();
 					}
 
+					@Override
 					public K next() {
-						final java.util.Map.Entry<K, V> me = it.next();
-						if (me != null)
+						final java.util.Map.Entry<K, V> me = this.it.next();
+						if (me != null) {
 							return me.getKey();
-						else
+						} else {
 							return null;
+						}
 					}
 
+					@Override
 					public void remove() {
-						it.remove();
+						this.it.remove();
 					}
 				};
 			}
 
+			@Override
 			public boolean remove(final Object arg0) {
 				return (DBBPTree.this
 						.remove(((java.util.Map.Entry<K, V>) arg0).getKey()) == null);
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> arg0) {
 				boolean result = false;
 				for (final Object me : arg0) {
-					result = result || remove(me);
+					result = result || this.remove(me);
 				}
 				return result;
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> arg0) {
 				boolean result = false;
 				for (final K o : this) {
 					if (!arg0.contains(o)) {
-						remove(o);
+						this.remove(o);
 						result = true;
 					}
 				}
 				return result;
 			}
 
+			@Override
 			public int size() {
 				return DBBPTree.this.size();
 			}
 
+			@Override
 			public Object[] toArray() {
-				final Object[] o = new Object[size()];
-				final Iterator<K> kit = iterator();
+				final Object[] o = new Object[this.size()];
+				final Iterator<K> kit = this.iterator();
 				int i = 0;
 				while (kit.hasNext()) {
 					o[i++] = kit.next();
@@ -734,9 +794,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] arg0) {
-				final T[] o = (T[]) new Object[size()];
-				final Iterator<K> kit = iterator();
+				final T[] o = (T[]) new Object[this.size()];
+				final Iterator<K> kit = this.iterator();
 				int i = 0;
 				while (kit.hasNext()) {
 					o[i++] = (T) kit.next();
@@ -744,99 +805,122 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 		};
+		}
 	}
 
+	@Override
 	public K lastKey() {
 		throw (new UnsupportedOperationException("lastKey is not supported."));
 	}
 
+	@Override
 	public SortedMap<K, V> subMap(final K arg0, final K arg1) {
 		throw (new UnsupportedOperationException("subMap is not supported."));
 	}
 
+	@Override
 	public SortedMap<K, V> tailMap(final K arg0) {
 		throw (new UnsupportedOperationException("tailMap is not supported."));
 	}
 
+	@Override
 	public Collection<V> values() {
-		if (firstLeafPage < 0)
+		if (this.firstLeafPage < 0) {
 			return new HashSet<V>();
-		else
+		} else {
 			return new Collection<V>() {
+			@Override
 			public boolean add(final V arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public boolean addAll(final Collection<? extends V> arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public void clear() {
 				DBBPTree.this.clear();
 			}
 
+			@Override
 			public boolean contains(final Object arg0) {
 				return DBBPTree.this.containsKey(arg0);
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> arg0) {
-				for (final Object o : arg0)
-					if (!contains(o))
+				for (final Object o : arg0) {
+					if (!this.contains(o)) {
 						return false;
+					}
+				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBBPTree.this.isEmpty();
 			}
 
+			@Override
 			public Iterator<V> iterator() {
 				return new Iterator<V>() {
 					Iterator<java.util.Map.Entry<K, V>> it = DBBPTree.this
 					.entrySet().iterator();
 
+					@Override
 					public boolean hasNext() {
-						return it.hasNext();
+						return this.it.hasNext();
 					}
 
+					@Override
 					public V next() {
-						final java.util.Map.Entry<K, V> me = it.next();
-						if (me != null)
+						final java.util.Map.Entry<K, V> me = this.it.next();
+						if (me != null) {
 							return me.getValue();
-						else
+						} else {
 							return null;
+						}
 					}
 
+					@Override
 					public void remove() {
-						it.remove();
+						this.it.remove();
 					}
 				};
 			}
 
+			@Override
 			public boolean remove(final Object arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> arg0) {
 				throw (new UnsupportedOperationException(
 				"This set is ReadOnly."));
 			}
 
+			@Override
 			public int size() {
 				return DBBPTree.this.size();
 			}
 
+			@Override
 			public Object[] toArray() {
-				final Object[] o = new Object[size()];
-				final Iterator<V> kit = iterator();
+				final Object[] o = new Object[this.size()];
+				final Iterator<V> kit = this.iterator();
 				int i = 0;
 				while (kit.hasNext()) {
 					o[i++] = kit.next();
@@ -844,9 +928,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] arg0) {
-				final T[] o = (T[]) new Object[size()];
-				final Iterator<V> kit = iterator();
+				final T[] o = (T[]) new Object[this.size()];
+				final Iterator<V> kit = this.iterator();
 				int i = 0;
 				while (kit.hasNext()) {
 					o[i++] = (T) kit.next();
@@ -854,54 +939,61 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 		};
+		}
 	}
 
+	@Override
 	public void clear() {
-		FileHelper.deleteFile(DBBPTree.mainFolder+currentID+ ".dbbptree_*");
+		FileHelper.deleteFile(DBBPTree.mainFolder+this.currentID+ ".dbbptree_*");
 		final File f = new File(DBBPTree.mainFolder);
 		f.mkdirs();
 		try {
-			pageManager.close();
-			pageManager = new PageManager(DBBPTree.mainFolder + currentID
+			this.pageManager.close();
+			this.pageManager = new PageManager(DBBPTree.mainFolder + this.currentID
 					+ ".dbbptree");
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		size = 0;
-		rootPage = -1;
-		firstLeafPage = -1;
+		this.size = 0;
+		this.rootPage = -1;
+		this.firstLeafPage = -1;
 	}
 
+	@Override
 	public boolean containsKey(final Object arg0) {
-		return (get(arg0) != null);
+		return (this.get(arg0) != null);
 	}
 
+	@Override
 	public boolean containsValue(final Object arg0) {
-		for (final V v : values()) {
-			if (v.equals(arg0))
+		for (final V v : this.values()) {
+			if (v.equals(arg0)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
+	@Override
 	public V get(final Object arg0) {
-		return get(arg0, rootPage);
+		return this.get(arg0, this.rootPage);
 	}
 
 	protected DBBPTreeEntry<K, V> getNextLeafEntry(
 			final LuposObjectInputStream<V> in, final K lastKey,
 			final V lastValue) {
-		return nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
+		return this.nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
 	}
 
 	private V get(final Object arg0, final int filename) {
-		
-		if (filename < 0 || size == 0)
+
+		if (filename < 0 || this.size == 0) {
 			return null;
+		}
 		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, pageManager);
+			fis = new PageInputStream(filename, this.pageManager);
 			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader<V>(
 					fis, null);
 			final boolean leaf = in.readLuposBoolean();
@@ -909,13 +1001,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				K lastKey = null;
 				V lastValue = null;
 				while (true) {
-					final DBBPTreeEntry<K, V> e = getNextLeafEntry(in, lastKey,
+					final DBBPTreeEntry<K, V> e = this.getNextLeafEntry(in, lastKey,
 							lastValue);
 					if (e == null || e.key == null) {
 						in.close();
 						return null;
 					}
-					final int compare = comparator.compare(e.key, (K) arg0);
+					final int compare = this.comparator.compare(e.key, (K) arg0);
 					lastKey = e.key;
 					lastValue = e.value;
 					if (compare == 0) {
@@ -929,31 +1021,31 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			} else {
 					K lastKey=null;
 					while (true) {
-						
-						Tuple<K, Integer> nextEntry=nodeDeSerializer.getNextInnerNodeEntry(lastKey, in);
-						
+
+						final Tuple<K, Integer> nextEntry=this.nodeDeSerializer.getNextInnerNodeEntry(lastKey, in);
+
 						if(nextEntry==null){
 							in.close();
 							return null;
 						}
-						
-						int nextFilename=nextEntry.getSecond();
-						
+
+						final int nextFilename=nextEntry.getSecond();
+
 						if(nextEntry.getSecond()<0){
 							in.close();
 							return null;
 						}
-												
-						K nextKey = nextEntry.getFirst();
+
+						final K nextKey = nextEntry.getFirst();
 						if (nextKey == null) {
 							in.close();
-							return get(arg0, nextFilename);
+							return this.get(arg0, nextFilename);
 						}
-						final int compare = comparator.compare(nextKey,
+						final int compare = this.comparator.compare(nextKey,
 								(K) arg0);
 						if (compare >= 0) {
 							in.close();
-							return get(arg0, nextFilename);
+							return this.get(arg0, nextFilename);
 						}
 						lastKey=nextKey;
 					}
@@ -967,54 +1059,56 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			System.err.println("Page "+filename+" of DBBPTree "+this.currentID);
 			e.printStackTrace();
 			System.err.println(e);
-		} 
+		}
 		return null;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return (size == 0);
+		return (this.size == 0);
 	}
 
 	protected int newFilename() {
-		return pageManager.getNumberOfNewPage();
+		return this.pageManager.getNumberOfNewPage();
 	}
 
+	@Override
 	public V put(final K arg0, final V arg1) {
-		keyClass = (Class<? super K>) arg0.getClass();
-		valueClass = (Class<? super V>) arg1.getClass();
-		if (rootPage < 0 || size == 0) {
+		this.keyClass = (Class<? super K>) arg0.getClass();
+		this.valueClass = (Class<? super V>) arg1.getClass();
+		if (this.rootPage < 0 || this.size == 0) {
 			// just create one new leaf node as root node of the B+-tree...
-			rootPage = newFilename();
-			firstLeafPage = rootPage;
+			this.rootPage = this.newFilename();
+			this.firstLeafPage = this.rootPage;
 			try {
-				final OutputStream fosRoot = new PageOutputStream(rootPage, pageManager, true);
+				final OutputStream fosRoot = new PageOutputStream(this.rootPage, this.pageManager, true);
 				final LuposObjectOutputStreamWithoutWritingHeader outRoot = new LuposObjectOutputStreamWithoutWritingHeader(fosRoot);
 				outRoot.writeLuposBoolean(true);
-				writeLeafEntry(arg0, arg1, outRoot, null, null);
-				size = 1;
+				this.writeLeafEntry(arg0, arg1, outRoot, null, null);
+				this.size = 1;
 				outRoot.close();
 			} catch (final FileNotFoundException e) {
 				System.err.println(e);
 				e.printStackTrace();
-				rootPage = -1;
-				firstLeafPage = -1;
+				this.rootPage = -1;
+				this.firstLeafPage = -1;
 			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
-				rootPage = -1;
-				firstLeafPage = -1;
+				this.rootPage = -1;
+				this.firstLeafPage = -1;
 			}
 		} else {
-			final List<Node<K, V>> navCol = navigateTo(arg0, rootPage,
+			final List<Node<K, V>> navCol = this.navigateTo(arg0, this.rootPage,
 					new LinkedList<Node<K, V>>());
-			if (navCol == null)
+			if (navCol == null) {
 				System.err.println("Error while navigating to insertion position.");
-			else {
+			} else {
 				final Node<K, V> navigateToClass = navCol
 				.get(navCol.size() - 1);
-				if (navigateToClass == null)
+				if (navigateToClass == null) {
 					System.err.println("Error while navigating to insertion position.");
-				else {
+				} else {
 					final LeafNode<K, V> leafNode = (LeafNode<K, V>) navigateToClass;
 					int pos = leafNode.readValues.size();
 					leafNode.readFullLeafNode();
@@ -1023,35 +1117,36 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						// replace value!
 						oldValue = leafNode.readValues.get(pos - 1);
 						leafNode.readValues.set(pos - 1, arg1);
-						closeInputStreams(navCol);
+						this.closeInputStreams(navCol);
 						leafNode.writeLeafNode(true);
 						return oldValue;
 					} else {
 						if (pos > 0) {
-							if (arg0.compareTo(leafNode.getKeys().get(pos - 1)) < 0)
+							if (arg0.compareTo(leafNode.getKeys().get(pos - 1)) < 0) {
 								pos--;
+							}
 						}
 						final int pos2 = leafNode.readValues.size();
 						// add node!
 						leafNode.readKeys.add(pos, arg0);
 						leafNode.readValues.add(pos, arg1);
-						size++;
+						this.size++;
 
-						if (pos2 + 1 > 2 * k_) {
+						if (pos2 + 1 > 2 * this.k_) {
 							// split leaf node!
 							final LeafNode<K, V> newLeafNode = new LeafNode<K, V>(
-									keyClass, valueClass, k, pageManager,
-									nodeDeSerializer);
-							newLeafNode.filename = newFilename();
+									this.keyClass, this.valueClass, this.k, this.pageManager,
+									this.nodeDeSerializer);
+							newLeafNode.filename = this.newFilename();
 							newLeafNode.nextLeafNode = leafNode.nextLeafNode;
 							leafNode.nextLeafNode = newLeafNode.filename;
-							for (int i = k_ + 1; i < leafNode.readKeys.size(); i++) {
+							for (int i = this.k_ + 1; i < leafNode.readKeys.size(); i++) {
 								newLeafNode.readKeys.add(leafNode.readKeys
 										.get(i));
 								newLeafNode.readValues.add(leafNode.readValues
 										.get(i));
 							}
-							for (int i = leafNode.readKeys.size() - 1; i > k_; i--) {
+							for (int i = leafNode.readKeys.size() - 1; i > this.k_; i--) {
 								leafNode.readKeys.remove(i);
 								leafNode.readValues.remove(i);
 							}
@@ -1079,9 +1174,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								posInNavCol--;
 								if (posInNavCol < 0) {
 									final InnerNode<K, V> innerNode = new InnerNode<K, V>(
-											keyClass, valueClass, k,
-											pageManager, nodeDeSerializer);
-									innerNode.filename = newFilename();
+											this.keyClass, this.valueClass, this.k,
+											this.pageManager, this.nodeDeSerializer);
+									innerNode.filename = this.newFilename();
 									innerNode.readReferences
 									.add(leftNodeFilename);
 									innerNode.readKeys.add(key);
@@ -1093,15 +1188,16 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								}
 								InnerNode<K, V> innerNode = (InnerNode<K, V>) navCol
 								.get(posInNavCol);
-								int posInnerNode = innerNode.readReferences.size();								
+								int posInnerNode = innerNode.readReferences.size();
 								innerNode.readFullInnerNode();
 								int posInnerNode2 = innerNode.readReferences
 								.size();
 								if (pos2 == pos
 										&& posInnerNode - 1 < innerNode.readKeys
-										.size())
+										.size()) {
 									innerNode.readKeys.set(posInnerNode - 1,
 											arg0);
+								}
 								innerNode.readReferences.set(
 										posInnerNode == 0 ? 0
 												: posInnerNode - 1,
@@ -1112,13 +1208,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 										posInnerNode == 0 ? 0
 												: posInnerNode - 1,
 												leftNodeFilename);
-								if (innerNode.readKeys.size() > 2 * k) {
+								if (innerNode.readKeys.size() > 2 * this.k) {
 									// split node!
 									final InnerNode<K, V> newInnerNode = new InnerNode<K, V>(
-											keyClass, valueClass, k,
-											pageManager, nodeDeSerializer);
-									newInnerNode.filename = newFilename();
-									for (int i = k + 1; i < innerNode.readKeys
+											this.keyClass, this.valueClass, this.k,
+											this.pageManager, this.nodeDeSerializer);
+									newInnerNode.filename = this.newFilename();
+									for (int i = this.k + 1; i < innerNode.readKeys
 									.size(); i++) {
 										newInnerNode.readKeys
 										.add(innerNode.readKeys.get(i));
@@ -1134,11 +1230,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 									innerNode.readReferences
 									.remove(innerNode.readReferences
 											.size() - 1);
-									for (int i = innerNode.readKeys.size() - 1; i > k; i--) {
+									for (int i = innerNode.readKeys.size() - 1; i > this.k; i--) {
 										innerNode.readKeys.remove(i);
 										innerNode.readReferences.remove(i);
 									}
-									innerNode.readKeys.remove(k);
+									innerNode.readKeys.remove(this.k);
 
 									innerNode.writeInnerNode(true);
 									try {
@@ -1151,7 +1247,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 									leftNodeFilename = innerNode.filename;
 									rightNodeFilename = newInnerNode.filename;
-									key = rightMost(innerNode);
+									key = this.rightMost(innerNode);
 								} else {
 									innerNode.writeInnerNode(true);
 									if (pos2 == pos) {
@@ -1183,8 +1279,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 												e.printStackTrace();
 											}
 											navCol.remove(i);
-											if (posInnerNode < posInnerNode2)
+											if (posInnerNode < posInnerNode2) {
 												break;
+											}
 										}
 									}
 									break;
@@ -1224,12 +1321,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 										e.printStackTrace();
 									}
 									navCol.remove(i);
-									if (posInnerNode < posInnerNode2)
+									if (posInnerNode < posInnerNode2) {
 										break;
+									}
 								}
 							}
 						}
-						closeInputStreams(navCol);
+						this.closeInputStreams(navCol);
 						return null;
 					}
 				}
@@ -1252,11 +1350,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		while (rightMostLeaf == null) {
 			final int rightMostFilename = rightMostInnerNode.getReferences()
 			.get(rightMostInnerNode.getReferences().size() - 1);
-			final Node<K, V> n = getNode(rightMostFilename);
-			if (n instanceof LeafNode)
+			final Node<K, V> n = this.getNode(rightMostFilename);
+			if (n instanceof LeafNode) {
 				rightMostLeaf = (LeafNode<K, V>) n;
-			else
+			} else {
 				rightMostInnerNode = (InnerNode<K, V>) n;
+			}
 		}
 		return rightMostLeaf.readKeys.get(rightMostLeaf.readKeys.size() - 1);
 	}
@@ -1271,21 +1370,21 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	public Node<K, V> getNode(final int filename) {
 		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, pageManager);
+			fis = new PageInputStream(filename, this.pageManager);
 			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader<V>(
 					fis, null);
 			final boolean leaf = in.readLuposBoolean();
 			if (leaf) {
-				final LeafNode<K, V> leafNode = new LeafNode<K, V>(keyClass,
-						valueClass, k_, pageManager, nodeDeSerializer);
+				final LeafNode<K, V> leafNode = new LeafNode<K, V>(this.keyClass,
+						this.valueClass, this.k_, this.pageManager, this.nodeDeSerializer);
 				leafNode.filename = filename;
 				leafNode.in = in;
 				leafNode.readFullLeafNode();
 				in.close();
 				return leafNode;
 			} else {
-				final InnerNode<K, V> innerNode = new InnerNode<K, V>(keyClass,
-						valueClass, k, pageManager, nodeDeSerializer);
+				final InnerNode<K, V> innerNode = new InnerNode<K, V>(this.keyClass,
+						this.valueClass, this.k, this.pageManager, this.nodeDeSerializer);
 				innerNode.filename = filename;
 				innerNode.in = in;
 				innerNode.readFullInnerNode();
@@ -1305,7 +1404,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	protected void writeLeafEntry(final K k, final V v,
 			final LuposObjectOutputStream out, final K lastKey,
 			final V lastValue) throws IOException {
-		nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
+		this.nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
 	}
 
 	protected void closeInputStreams(
@@ -1322,24 +1421,25 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 	protected List<Node<K, V>> navigateTo(final Object arg0,
 			final int filename, final List<Node<K, V>> currentCollection) {
-		if (filename < 0)
+		if (filename < 0) {
 			return null;
+		}
 		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, pageManager);
+			fis = new PageInputStream(filename, this.pageManager);
 			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
 					fis, null);
 			final boolean leaf = in.readLuposBoolean();
 			if (leaf) { // leaf node reached!
 				final LeafNode<K, V> navigateToClassLeafNode = new LeafNode<K, V>(
-						keyClass, valueClass, k_, pageManager, nodeDeSerializer);
+						this.keyClass, this.valueClass, this.k_, this.pageManager, this.nodeDeSerializer);
 				navigateToClassLeafNode.filename = filename;
 				navigateToClassLeafNode.in = in;
 				currentCollection.add(navigateToClassLeafNode);
 				K lastKey = null;
 				V lastValue = null;
 				while (true) {
-					final DBBPTreeEntry<K, V> e = getNextLeafEntry(in, lastKey,
+					final DBBPTreeEntry<K, V> e = this.getNextLeafEntry(in, lastKey,
 							lastValue);
 					if (e != null && e.filenameOfNextLeafNode >= 0) {
 						navigateToClassLeafNode.nextLeafNode = e.filenameOfNextLeafNode;
@@ -1352,9 +1452,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					lastKey = e.key;
 					lastValue = e.value;
 					navigateToClassLeafNode.readKeys.add(e.key);
-					if (e.value != null)
+					if (e.value != null) {
 						navigateToClassLeafNode.readValues.add(e.value);
-					final int compare = comparator.compare(e.key, (K) arg0);
+					}
+					final int compare = this.comparator.compare(e.key, (K) arg0);
 					if (compare == 0) {
 						navigateToClassLeafNode.found = true;
 						return currentCollection;
@@ -1365,41 +1466,41 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				}
 			} else {
 					final InnerNode<K, V> navigateToClassInnerNode = new InnerNode<K, V>(
-							keyClass, valueClass, k, pageManager,
-							nodeDeSerializer);
+							this.keyClass, this.valueClass, this.k, this.pageManager,
+							this.nodeDeSerializer);
 					navigateToClassInnerNode.filename = filename;
 					navigateToClassInnerNode.in = in;
 					currentCollection.add(navigateToClassInnerNode);
 					K lastKey=null;
 					while (true) {
-						
-						Tuple<K, Integer> nextEntry=nodeDeSerializer.getNextInnerNodeEntry(lastKey, in);
-						
+
+						final Tuple<K, Integer> nextEntry=this.nodeDeSerializer.getNextInnerNodeEntry(lastKey, in);
+
 						if(nextEntry==null){
-							closeInputStreams(currentCollection);
+							this.closeInputStreams(currentCollection);
 							return null;
 						}
-						
-						int nextFilename=nextEntry.getSecond();
-						
+
+						final int nextFilename=nextEntry.getSecond();
+
 						if(nextEntry.getSecond()<0){
-							closeInputStreams(currentCollection);
+							this.closeInputStreams(currentCollection);
 							return null;
 						}
-						
+
 						navigateToClassInnerNode.readReferences
 						.add(nextFilename);
-						
-						K nextKey = nextEntry.getFirst();
+
+						final K nextKey = nextEntry.getFirst();
 						if (nextKey == null) {
-							return navigateTo(arg0, nextFilename,
+							return this.navigateTo(arg0, nextFilename,
 									currentCollection);
 						}
 						navigateToClassInnerNode.readKeys.add(nextKey);
-						final int compare = comparator.compare(nextKey,
+						final int compare = this.comparator.compare(nextKey,
 								(K) arg0);
 						if (compare >= 0) {
-							return navigateTo(arg0, nextFilename,
+							return this.navigateTo(arg0, nextFilename,
 									currentCollection);
 						}
 						lastKey=nextKey;
@@ -1416,24 +1517,27 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	@Override
 	public void putAll(final Map<? extends K, ? extends V> arg0) {
 		for (final K k : arg0.keySet()) {
-			put(k, arg0.get(k));
+			this.put(k, arg0.get(k));
 		}
 	}
 
+	@Override
 	public V remove(final Object arg0) {
-		if (rootPage < 0)
+		if (this.rootPage < 0) {
 			return null;
-		final List<Node<K, V>> navCol = navigateTo(arg0, rootPage,
+		}
+		final List<Node<K, V>> navCol = this.navigateTo(arg0, this.rootPage,
 				new LinkedList<Node<K, V>>());
-		if (navCol == null)
+		if (navCol == null) {
 			System.err.println("Error while navigating to insertion position.");
-		else {
+		} else {
 			final Node<K, V> navigateToClass = navCol.get(navCol.size() - 1);
-			if (navigateToClass == null)
+			if (navigateToClass == null) {
 				System.err.println("Error while navigating to insertion position.");
-			else {
+			} else {
 				final LeafNode<K, V> leafNode = (LeafNode<K, V>) navigateToClass;
 				if (!leafNode.found) {
 					return null;
@@ -1443,7 +1547,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					// final int pos2 = leafNode.readValues.size();
 					leafNode.readKeys.remove(pos - 1);
 					final V oldValue = leafNode.readValues.remove(pos - 1);
-					if (leafNode.readKeys.size() >= k_ || navCol.size()==1) {
+					if (leafNode.readKeys.size() >= this.k_ || navCol.size()==1) {
 						// this leaf node can remain and does not have to be
 						// deleted!
 						leafNode.writeLeafNode(true);
@@ -1462,11 +1566,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								.getReferences().indexOf(
 										currentNode.filename);
 								if (posOfCurrentNode > 0) {
-									final Node<K, V> leftNeighbor = getNode(innerNode
+									final Node<K, V> leftNeighbor = this.getNode(innerNode
 											.getReferences().get(
 													posOfCurrentNode - 1));
-									final int comp = leftNeighbor instanceof LeafNode ? k_
-											: k;
+									final int comp = leftNeighbor instanceof LeafNode ? this.k_
+											: this.k;
 									if (leftNeighbor.getKeys().size() > comp) {
 										final K k = leftNeighbor.getKeys().remove(
 												leftNeighbor.getKeys().size() - 1);
@@ -1503,7 +1607,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 											((InnerNode<K, V>) currentNode)
 											.getReferences().add(0, ref);
 											currentNode.getKeys().add(0,
-													rightMost(getNode(ref)));
+													this.rightMost(this.getNode(ref)));
 											innerNode.getKeys().set(
 													posOfCurrentNode == 0 ? 0
 															: posOfCurrentNode - 1,
@@ -1520,11 +1624,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								// borrow from right neighbor?
 								if (posOfCurrentNode < innerNode.getReferences()
 										.size() - 1) {
-									final Node<K, V> rightNeighbor = getNode(innerNode
+									final Node<K, V> rightNeighbor = this.getNode(innerNode
 											.getReferences().get(
 													posOfCurrentNode + 1));
-									final int comp = rightNeighbor instanceof LeafNode ? k_
-											: k;
+									final int comp = rightNeighbor instanceof LeafNode ? this.k_
+											: this.k;
 									if (rightNeighbor.getKeys().size() > comp) {
 										final K k = rightNeighbor.getKeys().remove(
 												0);
@@ -1543,7 +1647,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 										} else {
 											currentNode.getKeys().add(
 													currentNode.getKeys().size(),
-													rightMost(currentNode));
+													this.rightMost(currentNode));
 											final int ref = ((InnerNode<K, V>) rightNeighbor)
 											.getReferences().remove(0);
 											((InnerNode<K, V>) currentNode)
@@ -1577,7 +1681,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 											.getKeys()
 											.add(
 													0,
-													rightMost(getNode(((InnerNode<K, V>) currentNode)
+													this.rightMost(this.getNode(((InnerNode<K, V>) currentNode)
 															.getReferences()
 															.get(
 																	((InnerNode<K, V>) currentNode)
@@ -1612,7 +1716,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 											}
 											// update pointers at leaf nodes!
 											if (posOfCurrentNode > 0) {
-												final LeafNode<K, V> leftNeighbor = (LeafNode<K, V>) getNode(innerNode.readReferences
+												final LeafNode<K, V> leftNeighbor = (LeafNode<K, V>) this.getNode(innerNode.readReferences
 														.get(posOfCurrentNode - 1));
 												leftNeighbor.nextLeafNode = rightNeighbor.filename;
 												leftNeighbor.writeLeafNode(true);
@@ -1625,28 +1729,30 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 										innerNode.getReferences().remove(
 												posOfCurrentNode);
 										innerNode.writeInnerNode(true);
-										if (firstLeafPage == currentNode.filename)
-											firstLeafPage = rightNeighbor.filename;
+										if (this.firstLeafPage == currentNode.filename) {
+											this.firstLeafPage = rightNeighbor.filename;
+										}
 										try {
-											pageManager
+											this.pageManager
 											.releaseSequenceOfPages(currentNode.filename);
 										} catch (final IOException e) {
 											System.err.println(e);
 											e.printStackTrace();
 										}
-										if (innerNode.getKeys().size() >= k)
+										if (innerNode.getKeys().size() >= this.k) {
 											return oldValue;
-										if (innerNode.filename == rootPage) {
+										}
+										if (innerNode.filename == this.rootPage) {
 											if (innerNode.getKeys().size() == 0
 													&& rightNeighbor instanceof InnerNode) {
 												try {
-													pageManager
-													.releaseSequenceOfPages(rootPage);
+													this.pageManager
+													.releaseSequenceOfPages(this.rootPage);
 												} catch (final IOException e) {
 													System.err.println(e);
 													e.printStackTrace();
 												}
-												rootPage = rightNeighbor.filename;
+												this.rootPage = rightNeighbor.filename;
 												return oldValue;
 											}
 											return oldValue;
@@ -1659,14 +1765,14 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								}
 								// special case: merge with left neighbor!
 								if (posOfCurrentNode > 0) {
-									final Node<K, V> leftNeighbor = getNode(innerNode
+									final Node<K, V> leftNeighbor = this.getNode(innerNode
 											.getReferences().get(
 													posOfCurrentNode - 1));
 									if (leftNeighbor instanceof InnerNode) {
 										leftNeighbor
 										.getKeys()
 										.add(
-												rightMost(getNode(((InnerNode<K, V>) leftNeighbor)
+												this.rightMost(this.getNode(((InnerNode<K, V>) leftNeighbor)
 														.getReferences()
 														.get(
 																((InnerNode<K, V>) leftNeighbor)
@@ -1718,28 +1824,30 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 									innerNode.getReferences().remove(
 											posOfCurrentNode);
 									innerNode.writeInnerNode(true);
-									if (firstLeafPage == currentNode.filename)
-										firstLeafPage = leftNeighbor.filename;
+									if (this.firstLeafPage == currentNode.filename) {
+										this.firstLeafPage = leftNeighbor.filename;
+									}
 									try {
-										pageManager
+										this.pageManager
 										.releaseSequenceOfPages(currentNode.filename);
 									} catch (final IOException e) {
 										System.err.println(e);
 										e.printStackTrace();
 									}
-									if (innerNode.getKeys().size() >= k)
+									if (innerNode.getKeys().size() >= this.k) {
 										return oldValue;
-									if (innerNode.filename == rootPage) {
+									}
+									if (innerNode.filename == this.rootPage) {
 										if (innerNode.getKeys().size() == 0
 												&& leftNeighbor instanceof InnerNode) {
 											try {
-												pageManager
-												.releaseSequenceOfPages(rootPage);
+												this.pageManager
+												.releaseSequenceOfPages(this.rootPage);
 											} catch (final IOException e) {
 												System.err.println(e);
 												e.printStackTrace();
 											}
-											rootPage = leftNeighbor.filename;
+											this.rootPage = leftNeighbor.filename;
 											return oldValue;
 										}
 										return oldValue;
@@ -1748,13 +1856,14 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 									currentNode = innerNode;
 									continue;
 								}
-	
+
 								if (currentNode instanceof LeafNode) {
 									((LeafNode<K, V>) currentNode)
 									.writeLeafNode(true);
-								} else
+								} else {
 									((InnerNode<K, V>) currentNode)
 									.writeInnerNode(true);
+								}
 								return oldValue;
 							}
 						}
@@ -1765,143 +1874,175 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	@Override
 	public int size() {
-		return size;
+		return this.size;
 	}
 
 	public void writeInnerNodeEntry(final int fileName, final K key,
 			final LuposObjectOutputStream out, final K lastKey)
 	throws IOException {
-		nodeDeSerializer.writeInnerNodeEntry(fileName, key, out, lastKey);
+		this.nodeDeSerializer.writeInnerNodeEntry(fileName, key, out, lastKey);
 	}
 
 	public void writeInnerNodeEntry(final int fileName,
 			final LuposObjectOutputStream out) throws IOException {
-		nodeDeSerializer.writeInnerNodeEntry(fileName, out);
+		this.nodeDeSerializer.writeInnerNodeEntry(fileName, out);
 	}
 
 	public void generateDBBPTree(final Generator<K, V> generator) throws IOException {
-		generateDBBPTree(new SortedMap<K, V>() {
+		this.generateDBBPTree(new SortedMap<K, V>() {
+			@Override
 			public Comparator<? super K> comparator() {
 				return null;
 			}
 
+			@Override
 			public Set<java.util.Map.Entry<K, V>> entrySet() {
 				return new Set<java.util.Map.Entry<K, V>>() {
+					@Override
 					public boolean add(final java.util.Map.Entry<K, V> e) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public boolean addAll(final Collection<? extends java.util.Map.Entry<K, V>> c) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public void clear() {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public boolean contains(final Object o) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public boolean containsAll(final Collection<?> c) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public boolean isEmpty() {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public Iterator<java.util.Map.Entry<K, V>> iterator() {
 						return generator.iterator();
 					}
 
+					@Override
 					public boolean remove(final Object o) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public boolean removeAll(final Collection<?> c) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public boolean retainAll(final Collection<?> c) {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public int size() {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public Object[] toArray() {
 						throw new UnsupportedOperationException();
 					}
 
+					@Override
 					public <T> T[] toArray(final T[] a) {
 						throw new UnsupportedOperationException();
 					}
 				};
 			}
 
+			@Override
 			public K firstKey() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public SortedMap<K, V> headMap(final K toKey) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public Set<K> keySet() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public K lastKey() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public SortedMap<K, V> subMap(final K fromKey, final K toKey) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public SortedMap<K, V> tailMap(final K fromKey) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public Collection<V> values() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public void clear() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public boolean containsKey(final Object key) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public boolean containsValue(final Object value) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public V get(final Object key) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public boolean isEmpty() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public V put(final K key, final V value) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public void putAll(final Map<? extends K, ? extends V> m) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public V remove(final Object key) {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public int size() {
 				return generator.size();
 			}
@@ -1909,12 +2050,14 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	public void generateDBBPTree(final SortedMap<K, V> sortedMap) throws IOException {
+		this.pageManager.reset();
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
 		this.size = sortedMap.size();
-		final Container leaf = new Container(this.size, k_, true);
-		firstLeafPage = leaf.getFileName();
-		if (sortedMap.comparator() != null)
+		final Container leaf = new Container(this.size, this.k_, true);
+		this.firstLeafPage = leaf.getFileName();
+		if (sortedMap.comparator() != null) {
 			this.comparator = sortedMap.comparator();
+		}
 		final Iterator<Entry<K, V>> it = sortedMap.entrySet().iterator();
 
 		while (it.hasNext()) {
@@ -1934,7 +2077,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			container.close();
 			previous = container;
 		}
-		rootPage = previous.filename;
+		this.rootPage = previous.filename;
 		this.pageManager.writeAllModifiedPages();
 	}
 
@@ -1953,24 +2096,25 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		public Container(final long numberOfEntries, final int kk_,
 				final boolean leaf) {
 			this.leaf = leaf;
-			filename = newFilename();
-			init();
-			numberOfNodes = Math.round(Math
+			this.filename = DBBPTree.this.newFilename();
+			this.init();
+			this.numberOfNodes = Math.round(Math
 					.ceil((double) numberOfEntries / kk_));
-			this.factor = (double) numberOfEntries / numberOfNodes;
+			this.factor = (double) numberOfEntries / this.numberOfNodes;
 			this.limitNextNode = this.factor;
 		}
 
 		protected void init() {
 			try {
-				if (out != null)
-					out.close();
-				final OutputStream fos = new PageOutputStream(filename,
-						pageManager, true);
-				out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-				out.writeLuposBoolean(leaf);
-				lastKey = null;
-				lastValue = null;
+				if (this.out != null) {
+					this.out.close();
+				}
+				final OutputStream fos = new PageOutputStream(this.filename,
+						DBBPTree.this.pageManager, true);
+				this.out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
+				this.out.writeLuposBoolean(this.leaf);
+				this.lastKey = null;
+				this.lastValue = null;
 			} catch (final FileNotFoundException e) {
 				e.printStackTrace();
 				System.err.println(e);
@@ -1981,26 +2125,27 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		public int getFileName() {
-			return filename;
+			return this.filename;
 		}
 
 		public boolean newNodeForNextEntry() {
-			if (currentEntry + 1 > limitNextNode) {
+			if (this.currentEntry + 1 > this.limitNextNode) {
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		}
 
 		public void storeInLeafNode(final Entry<K, V> entry) {
-			lastStoredEntry = entry;
-			currentEntry++;
-			keyClass = (Class<? super K>) entry.getKey().getClass();
-			valueClass = (Class<? super V>) entry.getValue().getClass();
+			this.lastStoredEntry = entry;
+			this.currentEntry++;
+			DBBPTree.this.keyClass = (Class<? super K>) entry.getKey().getClass();
+			DBBPTree.this.valueClass = (Class<? super V>) entry.getValue().getClass();
 			try {
-				writeLeafEntry(entry.getKey(), entry.getValue(), out, lastKey,
-						lastValue);
-				lastKey = entry.getKey();
-				lastValue = entry.getValue();
+				DBBPTree.this.writeLeafEntry(entry.getKey(), entry.getValue(), this.out, this.lastKey,
+						this.lastValue);
+				this.lastKey = entry.getKey();
+				this.lastValue = entry.getValue();
 				// System.out.println("leaf "+ filename
 				// +" ("+entry.getKey()+", "+entry.getValue()+")");
 			} catch (final IOException e) {
@@ -2010,10 +2155,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		public void storeInInnerNode(final int fileName, final Entry<K, V> entry) {
-			currentEntry++;
+			this.currentEntry++;
 			try {
-				writeInnerNodeEntry(fileName, entry.getKey(), out, lastKey);
-				lastKey = entry.getKey();
+				DBBPTree.this.writeInnerNodeEntry(fileName, entry.getKey(), this.out, this.lastKey);
+				this.lastKey = entry.getKey();
 			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
@@ -2022,7 +2167,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 		public void storeInInnerNode(final int fileName) {
 			try {
-				writeInnerNodeEntry(fileName, out);
+				DBBPTree.this.writeInnerNodeEntry(fileName, this.out);
 			} catch (final IOException e) {
 				e.printStackTrace();
 				System.err.println(e);
@@ -2030,18 +2175,18 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		public void closeNode(final LinkedList<Container> innerNodes) {
-			addToInnerNodes(innerNodes, 0, this, this.filename,
+			this.addToInnerNodes(innerNodes, 0, this, this.filename,
 					this.lastStoredEntry);
-			filename = newFilename();
-			writeLeafEntryNextFileName(filename, out);
+			this.filename = DBBPTree.this.newFilename();
+			DBBPTree.this.writeLeafEntryNextFileName(this.filename, this.out);
 
-			init();
-			limitNextNode = currentEntry + factor;
+			this.init();
+			this.limitNextNode = this.currentEntry + this.factor;
 		}
 
 		public void close() {
 			try {
-				out.close();
+				this.out.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
 				System.err.println(e);
@@ -2052,7 +2197,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				final int position, Container previous, final int filename,
 				final Entry<K, V> lastStoredEntry) {
 			while (innerNodes.size() < position + 1) {
-				final Container container = new Container(numberOfNodes - 1, k,
+				final Container container = new Container(this.numberOfNodes - 1, DBBPTree.this.k,
 						false);
 				previous = container;
 				innerNodes.add(container);
@@ -2060,9 +2205,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			final Container container = innerNodes.get(position);
 			if (container.newNodeForNextEntry()) {
 				container.storeInInnerNode(filename);
-				addToInnerNodes(innerNodes, position + 1, container,
+				this.addToInnerNodes(innerNodes, position + 1, container,
 						container.filename, lastStoredEntry);
-				container.filename = newFilename();
+				container.filename = DBBPTree.this.newFilename();
 				container.init();
 				container.limitNextNode = container.currentEntry
 				+ container.factor;
@@ -2074,23 +2219,23 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 	public void writeLuposObject(final LuposObjectOutputStream loos)
 	throws IOException {
-		pageManager.writeAllModifiedPages();
-		loos.writeLuposInt(currentID);
-		loos.writeLuposInt(k);
-		loos.writeLuposInt(k_);
-		loos.writeLuposInt(size);
-		loos.writeObject(comparator);
-		loos.writeLuposInt(rootPage);
-		loos.writeLuposInt(firstLeafPage);
-		loos.writeObject(keyClass);
-		loos.writeObject(valueClass);
-		loos.writeObject(nodeDeSerializer);
+		this.pageManager.writeAllModifiedPages();
+		loos.writeLuposInt(this.currentID);
+		loos.writeLuposInt(this.k);
+		loos.writeLuposInt(this.k_);
+		loos.writeLuposInt(this.size);
+		loos.writeObject(this.comparator);
+		loos.writeLuposInt(this.rootPage);
+		loos.writeLuposInt(this.firstLeafPage);
+		loos.writeObject(this.keyClass);
+		loos.writeObject(this.valueClass);
+		loos.writeObject(this.nodeDeSerializer);
 	}
 
 	protected void writeLeafEntryNextFileName(final int filename,
 			final LuposObjectOutputStream out) {
 		try {
-			nodeDeSerializer.writeLeafEntryNextFileName(filename, out);
+			this.nodeDeSerializer.writeLeafEntryNextFileName(filename, out);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -2100,7 +2245,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	/**
 	 * This constructor is only used for creating a DBBPTree after reading it
 	 * from file!
-	 * 
+	 *
 	 * @param k
 	 * @param k_
 	 * @param size
@@ -2125,7 +2270,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.valueClass = valueClass;
 		this.currentID = currentID;
 		this.nodeDeSerializer = nodeDeSerializer;
-		pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree", false);
+		this.pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree", false);
 	}
 
 	public static DBBPTree readLuposObject(final LuposObjectInputStream lois)
@@ -2152,20 +2297,22 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				final K smallest, final K largest) {
 			super(arg0, smallest);
 			this.largest = largest;
-			if (next != null) {
-				if (largest.compareTo(lastKey) < 0)
-					next = null;
+			if (this.next != null) {
+				if (largest.compareTo(this.lastKey) < 0) {
+					this.next = null;
+				}
 			}
 		}
 
 		@Override
 		public V next() {
-			final V result = next;
+			final V result = this.next;
 			if (result != null) {
-				next = getNext();
-				if (next != null) {
-					if (largest.compareTo(lastKey) < 0)
-						next = null;
+				this.next = this.getNext();
+				if (this.next != null) {
+					if (this.largest.compareTo(this.lastKey) < 0) {
+						this.next = null;
+					}
 				}
 			}
 			return result;
@@ -2179,20 +2326,22 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				final K largest) {
 			super(arg0, smallest);
 			this.largest = largest;
-			if (next != null) {
-				if (largest.compareTo(lastKey) < 0)
-					next = null;
+			if (this.next != null) {
+				if (largest.compareTo(this.lastKey) < 0) {
+					this.next = null;
+				}
 			}
 		}
 
 		@Override
 		public V next() {
-			final V result = next;
+			final V result = this.next;
 			if (result != null) {
-				next = getNext();
-				if (next != null) {
-					if (largest.compareTo(lastKey) < 0)
-						next = null;
+				this.next = this.getNext();
+				if (this.next != null) {
+					if (this.largest.compareTo(this.lastKey) < 0) {
+						this.next = null;
+					}
 				}
 			}
 			return result;
@@ -2200,16 +2349,17 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 		@Override
 		public V next(final K k) {
-			V result = next;
+			V result = this.next;
 			if (result != null) {
-				next = getNext(k);
+				this.next = this.getNext(k);
 			}
-			while (result != null && k.compareTo(lastKey) > 0) {
-				result = next;
-				next = getNext(k);
-				if (next != null) {
-					if (largest.compareTo(lastKey) < 0)
-						next = null;
+			while (result != null && k.compareTo(this.lastKey) > 0) {
+				result = this.next;
+				this.next = this.getNext(k);
+				if (this.next != null) {
+					if (this.largest.compareTo(this.lastKey) < 0) {
+						this.next = null;
+					}
 				}
 			}
 			return result;
@@ -2223,21 +2373,22 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 		public PrefixSearchIteratorWithoutSIP(final K arg0) {
 			this.arg0 = arg0;
-			lastTriple = null;
-			lastKey = null;
-			innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
-			next = getFirst(rootPage);
+			this.lastTriple = null;
+			this.lastKey = null;
+			this.innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
+			this.next = this.getFirst(DBBPTree.this.rootPage);
 		}
 
 		public PrefixSearchIteratorWithoutSIP(final K arg0, final K smallest) {
 			this.arg0 = arg0;
-			lastTriple = null;
-			lastKey = null;
-			innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
-			if (smallest != null)
-				next = getFirst(rootPage, smallest);
-			else
-				next = getFirst(rootPage);
+			this.lastTriple = null;
+			this.lastKey = null;
+			this.innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
+			if (smallest != null) {
+				this.next = this.getFirst(DBBPTree.this.rootPage, smallest);
+			} else {
+				this.next = this.getFirst(DBBPTree.this.rootPage);
+			}
 		}
 
 		List<Tuple<K, LuposObjectInputStream<V>>> innerNodes;
@@ -2246,59 +2397,60 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		K lastKey;
 
 		private V getFirst(final int filename) {
-			if (filename < 0)
+			if (filename < 0) {
 				return null;
+			}
 			InputStream fis;
 			try {
-				fis = new PageInputStream(filename, pageManager);
+				fis = new PageInputStream(filename, DBBPTree.this.pageManager);
 				final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
 						fis, null);
 				final boolean leaf = in.readLuposBoolean();
 				if (leaf) { // leaf node reached!
 					while (true) {
-						final DBBPTreeEntry<K, V> e = nodeDeSerializer
-						.getNextLeafEntry(in, lastKey, lastTriple);
+						final DBBPTreeEntry<K, V> e = DBBPTree.this.nodeDeSerializer
+						.getNextLeafEntry(in, this.lastKey, this.lastTriple);
 						if (e == null || e.key == null) {
-							currentLeafIn = in;
-							close();
+							this.currentLeafIn = in;
+							this.close();
 							return null;
 						}
-						lastTriple = e.value;
-						lastKey = e.key;
-						final int compare = comparator.compare(lastKey, arg0);
+						this.lastTriple = e.value;
+						this.lastKey = e.key;
+						final int compare = DBBPTree.this.comparator.compare(this.lastKey, this.arg0);
 						if (compare == 0) {
-							currentLeafIn = in;
+							this.currentLeafIn = in;
 							return e.value;
 						} else if (compare > 0) {
-							currentLeafIn = in;
-							close();
+							this.currentLeafIn = in;
+							this.close();
 							return null;
 						}
 					}
 				} else {
 					K lastKey = null;
 					while (true) {
-						final Tuple<K, Integer> nextEntry = getNextInnerNodeEntry(
+						final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
 								lastKey, in);
 						if (nextEntry == null || nextEntry.getSecond() == 0
 								|| nextEntry.getSecond() < 0) {
 							in.close();
-							close();
+							this.close();
 							return null;
 						}
 						if (nextEntry.getFirst() == null) {
-							innerNodes
+							this.innerNodes
 							.add(new Tuple<K, LuposObjectInputStream<V>>(
 									null, in));
-							return getFirst(nextEntry.getSecond());
+							return this.getFirst(nextEntry.getSecond());
 						}
-						final int compare = comparator.compare(nextEntry
-								.getFirst(), arg0);
+						final int compare = DBBPTree.this.comparator.compare(nextEntry
+								.getFirst(), this.arg0);
 						if (compare >= 0) {
-							innerNodes
+							this.innerNodes
 							.add(new Tuple<K, LuposObjectInputStream<V>>(
 									nextEntry.getFirst(), in));
-							return getFirst(nextEntry.getSecond());
+							return this.getFirst(nextEntry.getSecond());
 						}
 						lastKey = nextEntry.getFirst();
 					}
@@ -2315,39 +2467,40 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		private V getFirst(final int filename, final K triplekey) {
-			if (filename < 0)
+			if (filename < 0) {
 				return null;
+			}
 			InputStream fis;
 			try {
-				fis = new PageInputStream(filename, pageManager);
+				fis = new PageInputStream(filename, DBBPTree.this.pageManager);
 				final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
 						fis, null);
 				final boolean leaf = in.readLuposBoolean();
-				lastTriple = null;
-				lastKey = null;
+				this.lastTriple = null;
+				this.lastKey = null;
 				if (leaf) { // leaf node reached!
 					while (true) {
-						final DBBPTreeEntry<K, V> e = nodeDeSerializer
-						.getNextLeafEntry(in, lastKey, lastTriple);
+						final DBBPTreeEntry<K, V> e = DBBPTree.this.nodeDeSerializer
+						.getNextLeafEntry(in, this.lastKey, this.lastTriple);
 						if (e == null || e.key == null) {
-							currentLeafIn = in;
-							close();
+							this.currentLeafIn = in;
+							this.close();
 							return null;
 						}
-						lastTriple = e.value;
-						lastKey = e.key;
-						final int compare = comparator.compare(lastKey,
+						this.lastTriple = e.value;
+						this.lastKey = e.key;
+						final int compare = DBBPTree.this.comparator.compare(this.lastKey,
 								triplekey);
 						if (compare == 0) {
-							currentLeafIn = in;
+							this.currentLeafIn = in;
 							return e.value;
 						} else if (compare > 0) {
-							if (comparator.compare(lastKey, arg0) > 0) {
-								currentLeafIn = in;
-								close();
+							if (DBBPTree.this.comparator.compare(this.lastKey, this.arg0) > 0) {
+								this.currentLeafIn = in;
+								this.close();
 								return null;
 							} else {
-								currentLeafIn = in;
+								this.currentLeafIn = in;
 								return e.value;
 							}
 						}
@@ -2355,27 +2508,27 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				} else {
 					K lastKey = null;
 					while (true) {
-						final Tuple<K, Integer> nextEntry = getNextInnerNodeEntry(
+						final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
 								lastKey, in);
 						if (nextEntry == null || nextEntry.getSecond() <= 0) {
 							in.close();
-							close();
+							this.close();
 							return null;
 						}
 						lastKey = nextEntry.getFirst();
 						if (nextEntry.getFirst() == null) {
-							innerNodes
+							this.innerNodes
 							.add(new Tuple<K, LuposObjectInputStream<V>>(
 									null, in));
-							return getFirst(nextEntry.getSecond(), triplekey);
+							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
-						final int compare = comparator.compare(nextEntry
+						final int compare = DBBPTree.this.comparator.compare(nextEntry
 								.getFirst(), triplekey);
 						if (compare >= 0) {
-							innerNodes
+							this.innerNodes
 							.add(new Tuple<K, LuposObjectInputStream<V>>(
 									nextEntry.getFirst(), in));
-							return getFirst(nextEntry.getSecond(), triplekey);
+							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
 					}
 				}
@@ -2391,26 +2544,28 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		protected V getFirstUsingCache(final int index, final K triplekey) {
-			if (index < 0)
+			if (index < 0) {
 				return null;
+			}
 			try {
-				if (innerNodes.size() <= index) {
-					close();
+				if (this.innerNodes.size() <= index) {
+					this.close();
 					return null;
 					// close();
 					// innerNodes.clear();
 					// return getFirst(rootFilename, triplekey);
 				}
-				final Tuple<K, LuposObjectInputStream<V>> current = innerNodes
+				final Tuple<K, LuposObjectInputStream<V>> current = this.innerNodes
 				.get(index);
 				final LuposObjectInputStream<V> in = current.getSecond();
 				K lastKey = current.getFirst();
 				if (lastKey == null
-						|| comparator.compare(lastKey, triplekey) >= 0)
-					return getFirstUsingCache(index + 1, triplekey);
-				while (innerNodes.size() > index + 1) {
-					final Tuple<K, LuposObjectInputStream<V>> toBeDeleted = innerNodes
-					.remove(innerNodes.size() - 1);
+						|| DBBPTree.this.comparator.compare(lastKey, triplekey) >= 0) {
+					return this.getFirstUsingCache(index + 1, triplekey);
+				}
+				while (this.innerNodes.size() > index + 1) {
+					final Tuple<K, LuposObjectInputStream<V>> toBeDeleted = this.innerNodes
+					.remove(this.innerNodes.size() - 1);
 					try {
 						toBeDeleted.getSecond().close();
 					} catch (final IOException e) {
@@ -2419,23 +2574,23 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					}
 				}
 				while (true) {
-					final Tuple<K, Integer> nextEntry = getNextInnerNodeEntry(
+					final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
 							lastKey, in);
 					if (nextEntry == null || nextEntry.getSecond() <= 0) {
 						in.close();
-						close();
+						this.close();
 						return null;
 					}
 					lastKey = nextEntry.getFirst();
 					if (nextEntry.getFirst() == null) {
 						current.setFirst(null);
-						return getFirst(nextEntry.getSecond(), triplekey);
+						return this.getFirst(nextEntry.getSecond(), triplekey);
 					}
-					final int compare = comparator.compare(
+					final int compare = DBBPTree.this.comparator.compare(
 							nextEntry.getFirst(), triplekey);
 					if (compare >= 0) {
 						current.setFirst(nextEntry.getFirst());
-						return getFirst(nextEntry.getSecond(), triplekey);
+						return this.getFirst(nextEntry.getSecond(), triplekey);
 					}
 				}
 
@@ -2451,43 +2606,43 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 		protected V getNext() {
 			try {
-				DBBPTreeEntry<K, V> e = nodeDeSerializer.getNextLeafEntry(
-						currentLeafIn, lastKey, lastTriple);
+				DBBPTreeEntry<K, V> e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(
+						this.currentLeafIn, this.lastKey, this.lastTriple);
 				if (e == null) {
-					currentLeafIn.close();
+					this.currentLeafIn.close();
 					return null;
 				}
 				if (e.key == null) {
 					// next leaf node!
 					if (e.filenameOfNextLeafNode >= 0) {
-						currentLeafIn.close();
-						lastTriple = null;
-						lastKey = null;
+						this.currentLeafIn.close();
+						this.lastTriple = null;
+						this.lastKey = null;
 						final InputStream fis = new PageInputStream(
-								e.filenameOfNextLeafNode, pageManager);
-						currentLeafIn = new LuposObjectInputStreamWithoutReadingHeader<V>(fis, null);
+								e.filenameOfNextLeafNode, DBBPTree.this.pageManager);
+						this.currentLeafIn = new LuposObjectInputStreamWithoutReadingHeader<V>(fis, null);
 						// read over the leaf flag!
-						currentLeafIn.readLuposBoolean();
-						e = nodeDeSerializer.getNextLeafEntry(currentLeafIn,
-								lastKey, lastTriple);
+						this.currentLeafIn.readLuposBoolean();
+						e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(this.currentLeafIn,
+								this.lastKey, this.lastTriple);
 						if (e == null || e.key == null) {
 							// should never happen!
-							currentLeafIn.close();
+							this.currentLeafIn.close();
 							return null;
 						}
 					} else {
 						// should never happen!
-						currentLeafIn.close();
+						this.currentLeafIn.close();
 						return null;
 					}
 				}
-				lastTriple = e.value;
-				lastKey = e.key;
-				final int compare = comparator.compare(lastKey, arg0);
+				this.lastTriple = e.value;
+				this.lastKey = e.key;
+				final int compare = DBBPTree.this.comparator.compare(this.lastKey, this.arg0);
 				if (compare == 0) {
 					return e.value;
 				}
-				close();
+				this.close();
 			} catch (final IOException e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
@@ -2495,33 +2650,37 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			return null;
 		}
 
+		@Override
 		public boolean hasNext() {
-			return (next != null);
+			return (this.next != null);
 		}
 
+		@Override
 		public V next() {
-			final V result = next;
+			final V result = this.next;
 			if (result != null) {
-				next = getNext();
+				this.next = this.getNext();
 			}
 			return result;
 		}
 
+		@Override
 		public void remove() {
 			throw (new UnsupportedOperationException(
 			"This iterator is ReadOnly."));
 		}
 
+		@Override
 		public void close() {
-			for (final Tuple<K, LuposObjectInputStream<V>> tuple : innerNodes) {
+			for (final Tuple<K, LuposObjectInputStream<V>> tuple : this.innerNodes) {
 				try {
 					tuple.getSecond().close();
 				} catch (final IOException e) {
 				}
 			}
-			innerNodes.clear();
+			this.innerNodes.clear();
 			try {
-				currentLeafIn.close();
+				this.currentLeafIn.close();
 			} catch (final IOException e) {
 			}
 		}
@@ -2540,71 +2699,71 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 		protected V getNext(final K k) {
 			try {
-				DBBPTreeEntry<K, V> e = nodeDeSerializer.getNextLeafEntry(
-						currentLeafIn, lastKey, lastTriple);
+				DBBPTreeEntry<K, V> e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(
+						this.currentLeafIn, this.lastKey, this.lastTriple);
 				if (e == null) {
-					currentLeafIn.close();
+					this.currentLeafIn.close();
 					return null;
 				}
 				if (e.key == null) {
 					// next leaf node!
 					if (e.filenameOfNextLeafNode >= 0) {
-						currentLeafIn.close();
-						lastTriple = null;
-						lastKey = null;
+						this.currentLeafIn.close();
+						this.lastTriple = null;
+						this.lastKey = null;
 						final InputStream fis = new PageInputStream(
-								e.filenameOfNextLeafNode, pageManager);
-						currentLeafIn = new LuposObjectInputStreamWithoutReadingHeader<V>(fis, null);
+								e.filenameOfNextLeafNode, DBBPTree.this.pageManager);
+						this.currentLeafIn = new LuposObjectInputStreamWithoutReadingHeader<V>(fis, null);
 						// read over the leaf flag!
-						currentLeafIn.readLuposBoolean();
-						e = nodeDeSerializer.getNextLeafEntry(currentLeafIn,
-								lastKey, lastTriple);
+						this.currentLeafIn.readLuposBoolean();
+						e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(this.currentLeafIn,
+								this.lastKey, this.lastTriple);
 						if (e == null || e.key == null) {
 							// should never happen!
-							close();
+							this.close();
 							return null;
 						}
-						lastTriple = e.value;
-						lastKey = e.key;
-						int compare = comparator.compare(lastKey, k);
+						this.lastTriple = e.value;
+						this.lastKey = e.key;
+						int compare = DBBPTree.this.comparator.compare(this.lastKey, k);
 						while (compare < 0) {
-							e = nodeDeSerializer.getNextLeafEntry(
-									currentLeafIn, lastKey, lastTriple);
+							e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(
+									this.currentLeafIn, this.lastKey, this.lastTriple);
 							if (e == null) {
-								close();
+								this.close();
 								return null;
 							}
 							if (e.key == null) {
-								currentLeafIn.close();
+								this.currentLeafIn.close();
 								// one leaf node does not had any triples
 								// for key
 								// => use SIP information to jump to the
 								// right B+-tree leaf node directly!
-								return getFirstUsingCache(0, k);
+								return this.getFirstUsingCache(0, k);
 							} else {
-								lastTriple = e.value;
-								lastKey = e.key;
-								compare = comparator.compare(lastKey, k);
+								this.lastTriple = e.value;
+								this.lastKey = e.key;
+								compare = DBBPTree.this.comparator.compare(this.lastKey, k);
 							}
 						}
-						if (comparator.compare(lastKey, arg0) == 0) {
+						if (DBBPTree.this.comparator.compare(this.lastKey, this.arg0) == 0) {
 							return e.value;
 						}
-						currentLeafIn.close();
+						this.currentLeafIn.close();
 						return null;
 					} else {
 						// should never happen!
-						currentLeafIn.close();
+						this.currentLeafIn.close();
 						return null;
 					}
 				}
-				lastTriple = e.value;
-				lastKey = e.key;
-				final int compare = comparator.compare(lastKey, arg0);
+				this.lastTriple = e.value;
+				this.lastKey = e.key;
+				final int compare = DBBPTree.this.comparator.compare(this.lastKey, this.arg0);
 				if (compare == 0) {
 					return e.value;
 				}
-				close();
+				this.close();
 			} catch (final IOException e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
@@ -2612,56 +2771,66 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			return null;
 		}
 
+		@Override
 		public V next(final K k) {
-			V result = next;
+			V result = this.next;
 			if (result != null) {
-				next = getNext(k);
+				this.next = this.getNext(k);
 			}
-			while (result != null && k.compareTo(lastKey) > 0) {
-				result = next;
-				next = getNext(k);
+			while (result != null && k.compareTo(this.lastKey) > 0) {
+				result = this.next;
+				this.next = this.getNext(k);
 				// next = getNext();
 			}
 			return result;
 		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
-		if (enableSIP)
+		if (enableSIP) {
 			return new PrefixSearchIterator(arg0);
-		else
+		} else {
 			return new PrefixSearchIteratorWithoutSIP(arg0);
+		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
-		if (enableSIP)
+		if (enableSIP) {
 			return new PrefixSearchIterator(arg0, min);
-		else
+		} else {
 			return new PrefixSearchIteratorWithoutSIP(arg0, min);
+		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K smallest,
 			final K largest) {
-		if (enableSIP)
+		if (enableSIP) {
 			return new PrefixSearchIteratorMaxMin(arg0, smallest, largest);
-		else
+		} else {
 			return new PrefixSearchIteratorMaxMinWithoutSIP(arg0, smallest,
 					largest);
+		}
 	}
 
+	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K largest) {
-		if (enableSIP)
+		if (enableSIP) {
 			return new PrefixSearchIteratorMaxMin(arg0, null, largest);
-		else
+		} else {
 			return new PrefixSearchIteratorMaxMinWithoutSIP(arg0, null, largest);
+		}
 	}
 
 	private V getMaximum(final int filename, final K arg0) {
-		if (filename < 0)
+		if (filename < 0) {
 			return null;
+		}
 		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, pageManager);
+			fis = new PageInputStream(filename, this.pageManager);
 			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
 					fis, null);
 			final boolean leaf = in.readLuposBoolean();
@@ -2669,14 +2838,14 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				V lastTriple = null;
 				K lastKey = null;
 				while (true) {
-					final DBBPTreeEntry<K, V> e = nodeDeSerializer
+					final DBBPTreeEntry<K, V> e = this.nodeDeSerializer
 					.getNextLeafEntry(in, lastKey, lastTriple);
 					if (e == null || e.key == null) {
 						in.close();
 						return lastTriple;
 					}
 					final K key = e.key;
-					final int compare = comparator.compare(key, arg0);
+					final int compare = this.comparator.compare(key, arg0);
 					if (compare > 0) {
 						in.close();
 						return lastTriple;
@@ -2690,7 +2859,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				K lastKey = null;
 				int lastFilename = -1;
 				while (true) {
-					final Tuple<K, Integer> nextEntry = getNextInnerNodeEntry(
+					final Tuple<K, Integer> nextEntry = this.getNextInnerNodeEntry(
 							lastKey, in);
 					if (nextEntry == null || nextEntry.getSecond() == 0
 							|| nextEntry.getSecond() < 0) {
@@ -2699,19 +2868,21 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					}
 					if (nextEntry.getFirst() == null) {
 						in.close();
-						return getMaximum(nextEntry.getSecond(), arg0);
+						return this.getMaximum(nextEntry.getSecond(), arg0);
 					}
-					final int compare = comparator.compare(
+					final int compare = this.comparator.compare(
 							nextEntry.getFirst(), arg0);
 					if (compare > 0) {
 						in.close();
-						final V t = getMaximum(nextEntry.getSecond(), arg0);
-						if (t != null)
+						final V t = this.getMaximum(nextEntry.getSecond(), arg0);
+						if (t != null) {
 							return t;
+						}
 						if (lastFilename > 0) {
-							return getMaximum(lastFilename, arg0);
-						} else
+							return this.getMaximum(lastFilename, arg0);
+						} else {
 							return null;
+						}
 					}
 					lastKey = nextEntry.getFirst();
 					if (compare == 0) {
@@ -2730,18 +2901,20 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	public V getMaximum(final K arg0) {
-		return getMaximum(rootPage, arg0);
+		return this.getMaximum(this.rootPage, arg0);
 	}
 
+	@Override
 	public Object[] getClosestElements(final K arg0) {
-		final List<Node<K, V>> navCol = navigateTo(arg0, rootPage,
+		final List<Node<K, V>> navCol = this.navigateTo(arg0, this.rootPage,
 				new LinkedList<Node<K, V>>());
-		if (navCol == null)
+		if (navCol == null) {
 			return null;
+		}
 		final int pos = navCol.get(navCol.size() - 1).readKeys.size() - 1;
 		final Object[] oa = new Object[2];
-		oa[0] = getLeft(navCol, pos, arg0);
-		oa[1] = getRight(navCol, pos, arg0);
+		oa[0] = this.getLeft(navCol, pos, arg0);
+		oa[1] = this.getRight(navCol, pos, arg0);
 		return oa;
 	}
 
@@ -2754,24 +2927,27 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			final LeafNode<K, V> leafNode = (LeafNode<K, V>) navigateToClass;
 
 			// right end reached?
-			if (comparator.compare(leafNode.readKeys.get(pos), arg0) < 0)
+			if (this.comparator.compare(leafNode.readKeys.get(pos), arg0) < 0) {
 				return leafNode.readValues.get(pos);
+			}
 			// otherwise it is the one which is one left from the found!
-			if (pos > 0)
+			if (pos > 0) {
 				return leafNode.getValues().get(pos - 1);
-			else {
+			} else {
 				// get the last entry of the previous leaf node!
 				int ipos = navCol.size() - 2;
-				if (ipos < 0)
+				if (ipos < 0) {
 					return null;
+				}
 				InnerNode<K, V> innerNode = (InnerNode<K, V>) navCol.get(ipos);
 				while (innerNode.readReferences.size() == 1) {
 					ipos--;
-					if (ipos < 0)
+					if (ipos < 0) {
 						return null;
+					}
 					innerNode = (InnerNode<K, V>) navCol.get(ipos);
 				}
-				return rightMostValue(getNode(innerNode.readReferences
+				return this.rightMostValue(this.getNode(innerNode.readReferences
 						.get(innerNode.readReferences.size() - 2)));
 			}
 		} else {
@@ -2783,7 +2959,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	private V getRight(final List<Node<K, V>> navCol, final int pos,
 			final K arg0) {
 		if (navCol == null || navCol.size() == 0) {
-			closeInputStreams(navCol);
+			this.closeInputStreams(navCol);
 			return null;
 		}
 		final Node<K, V> navigateToClass = navCol.get(navCol.size() - 1);
@@ -2798,20 +2974,21 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					pos2++;
 					if (pos2 > leafNode.readKeys.size() - 1) {
 						if (leafNode.getNextLeafNode() < 0) {
-							closeInputStreams(navCol);
+							this.closeInputStreams(navCol);
 							return null;
 						}
-						leafNode = (LeafNode<K, V>) getNode(leafNode
+						leafNode = (LeafNode<K, V>) this.getNode(leafNode
 								.getNextLeafNode());
 						pos2 = 0;
 					}
-				} while (comparator.compare(leafNode.readKeys.get(pos2), arg0) <= 0);
+				} while (this.comparator.compare(leafNode.readKeys.get(pos2), arg0) <= 0);
 			}
-			closeInputStreams(navCol);
-			if (comparator.compare(leafNode.readKeys.get(pos2), arg0) > 0)
+			this.closeInputStreams(navCol);
+			if (this.comparator.compare(leafNode.readKeys.get(pos2), arg0) > 0) {
 				return leafNode.readValues.get(pos2);
-			else
+			} else {
 				return null;
+			}
 
 		} else {
 			System.err.println("No leaf node found!");
@@ -2833,11 +3010,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		while (rightMostLeaf == null) {
 			final int rightMostFilename = rightMostInnerNode.getReferences()
 			.get(rightMostInnerNode.getReferences().size() - 1);
-			final Node<K, V> n = getNode(rightMostFilename);
-			if (n instanceof LeafNode)
+			final Node<K, V> n = this.getNode(rightMostFilename);
+			if (n instanceof LeafNode) {
 				rightMostLeaf = (LeafNode<K, V>) n;
-			else
+			} else {
 				rightMostInnerNode = (InnerNode<K, V>) n;
+			}
 		}
 		return rightMostLeaf.readValues
 		.get(rightMostLeaf.readValues.size() - 1);
@@ -2908,25 +3086,30 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				private final static int max = 1000000;
 				private final int maxNumbers = (int) Math.ceil(Math.log10(max));
 
+				@Override
 				public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
 					return new Iterator<java.util.Map.Entry<String, Integer>>() {
 						private int current = 0;
 
+						@Override
 						public boolean hasNext() {
-							return current < max;
+							return this.current < max;
 						}
 
+						@Override
 						public java.util.Map.Entry<String, Integer> next() {
-							final int zcurrent = current;
-							current++;
+							final int zcurrent = this.current;
+							this.current++;
 							String s = "";
 							for (int i = 0; i < maxNumbers
-							- (int) Math.ceil(Math.log10(zcurrent)); i++)
+							- (int) Math.ceil(Math.log10(zcurrent)); i++) {
 								s += "0";
+							}
 							return new MapEntry<String, Integer>("from_" + s
 									+ zcurrent, zcurrent);
 						}
 
+						@Override
 						public void remove() {
 							throw new UnsupportedOperationException();
 						}
@@ -2934,6 +3117,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					};
 				}
 
+				@Override
 				public int size() {
 					return max;
 				}
@@ -2945,14 +3129,16 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 			while (iterator.hasNext()) {
 				String s = "";
-				for (int j = 0; j < 6 - (int) Math.ceil(Math.log10(i)); j++)
+				for (int j = 0; j < 6 - (int) Math.ceil(Math.log10(i)); j++) {
 					s += "0";
+				}
 				final String key = "from_" + s + i;
 				System.out.print(key + ":");
 				final java.util.Map.Entry<String, Integer> entry = iterator
 				.next(key);
-				if (entry == null)
+				if (entry == null) {
 					break;
+				}
 				System.out.println(entry);
 				i += 1000;
 			}

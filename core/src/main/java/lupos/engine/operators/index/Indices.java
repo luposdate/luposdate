@@ -54,6 +54,7 @@ import lupos.engine.operators.rdfs.RudimentaryRDFSchemaInference;
 import lupos.engine.operators.rdfs.index.RDFSPutIntoIndices;
 import lupos.engine.operators.rdfs.index.RDFSPutIntoIndicesCyclicComputation;
 import lupos.engine.operators.singleinput.Result;
+import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
@@ -68,9 +69,9 @@ import lupos.optimizations.physical.PhysicalOptimizations;
 /**
  * Instances of this class are used as data structure for storing triples
  * indexed by various criteria.
- * 
+ *
  */
-public abstract class Indices extends TripleOperator {
+public abstract class Indices implements TripleConsumer {
 
 	protected static int HEAPHEIGHT = 16;
 
@@ -87,7 +88,7 @@ public abstract class Indices extends TripleOperator {
 	 * </ul>
 	 * The SubjectPredicateMap can be found at position 3 (1+2).<br>
 	 * The SubjectObjectMap can be found at position 3 (1+2) and so on.
-	 * 
+	 *
 	 */
 	public enum MAP_PATTERN {
 		/**
@@ -140,7 +141,7 @@ public abstract class Indices extends TripleOperator {
 
 	/**
 	 * Returns whether a triple was successfully put into the index structure
-	 * 
+	 *
 	 * @param t
 	 *            the triple
 	 */
@@ -148,13 +149,13 @@ public abstract class Indices extends TripleOperator {
 
 	@Override
 	public void consume(final Triple e) {
-		add(e);
+		this.add(e);
 	}
 
 	/**
 	 * Returns whether a triple was successfully removed from the index
 	 * structure.
-	 * 
+	 *
 	 * @param t
 	 *            the triple to be removed
 	 */
@@ -162,7 +163,7 @@ public abstract class Indices extends TripleOperator {
 
 	/**
 	 * Returns whether the index structure contains a certain triple
-	 * 
+	 *
 	 * @param t
 	 *            the triple to be found
 	 * @return <code>true</code> if the index structure contains a certain
@@ -185,7 +186,7 @@ public abstract class Indices extends TripleOperator {
 
 	/**
 	 * Sets the data structure used for the index structure
-	 * 
+	 *
 	 * @param ds
 	 *            the data structure used for the index structure
 	 */
@@ -195,7 +196,7 @@ public abstract class Indices extends TripleOperator {
 
 	/**
 	 * Returns the data structure used for the index structure
-	 * 
+	 *
 	 * @return the data structure used for the index structure
 	 */
 	public static DATA_STRUCT getUsedDatastructure() {
@@ -203,7 +204,7 @@ public abstract class Indices extends TripleOperator {
 	}
 
 	public void clear() {
-		init(usedDatastructure);
+		this.init(usedDatastructure);
 	}
 
 	public abstract void init(DATA_STRUCT ds);
@@ -211,7 +212,7 @@ public abstract class Indices extends TripleOperator {
 	public void build() {
 		// may be overridden...
 	}
-	
+
 	public void loadData(
 			final URILiteral graphURI, final String dataFormat,
 			final ONTOLOGY materialize,
@@ -261,8 +262,9 @@ public abstract class Indices extends TripleOperator {
 			final Set<Variable> maxVariables = new TreeSet<Variable>();
 			for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
 				final BasicOperator op = oit.getOperator();
-				for (final Variable v : op.getUnionVariables())
+				for (final Variable v : op.getUnionVariables()) {
 					maxVariables.add(v);
+				}
 			}
 			if (inMemoryExternalOntologyComputation) {
 				BindingsArray.forceVariables(maxVariables);
@@ -271,10 +273,11 @@ public abstract class Indices extends TripleOperator {
 				ic.physicalOptimization();
 									do {
 						for (final Triple t : newTriples) {
-							if (debug)
+							if (debug) {
 								System.out
 										.println(">>>>>>>>>>>>>> Inferred Triple in memory:"
 												+ t);
+							}
 							this.add(t);
 						}
 						this.build();
@@ -348,6 +351,7 @@ public abstract class Indices extends TripleOperator {
 				final Result result = new Result();
 				result.addApplication(new Application() {
 
+					@Override
 					public void call(final QueryResult res) {
 						final Iterator<Bindings> itb = res.oneTimeIterator();
 						while (itb.hasNext()) {
@@ -356,23 +360,28 @@ public abstract class Indices extends TripleOperator {
 									.get(new Variable("s")), b
 									.get(new Variable("p")), b
 									.get(new Variable("o")));
-							if (debug)
+							if (debug) {
 								System.out
 										.println(">>>>>>>>>>>>>> Inferred Triple using disk-based approach:"
 												+ t);
+							}
 							rpiim.consume(t);
 						}
 					}
 
+					@Override
 					public void start(final Type type) {
 					}
 
+					@Override
 					public void stop() {
 					}
 
+					@Override
 					public void deleteResult(final QueryResult res) {
 					}
 
+					@Override
 					public void deleteResult() {
 					}
 
@@ -402,9 +411,10 @@ public abstract class Indices extends TripleOperator {
 							.transformStreamToIndexOperatorGraph(pm, ic);
 					for (final OperatorIDTuple oit : ic
 							.getSucceedingOperators()) {
-						if (oit.getOperator() instanceof RDF3XIndexScan)
+						if (oit.getOperator() instanceof RDF3XIndexScan) {
 							((RDF3XIndexScan) oit.getOperator())
 									.setCollationOrder(new LinkedList<Variable>());
+						}
 					}
 					PhysicalOptimizations.addReplacement("multiinput.join.",
 							"Join", "MergeJoinWithoutSortingSeveralIterations");
@@ -414,8 +424,9 @@ public abstract class Indices extends TripleOperator {
 					ic.sendMessage(new EndOfEvaluationMessage());
 					this.build();
 			}
-			if (vars != null)
+			if (vars != null) {
 				BindingsArray.forceVariables(vars.keySet());
+			}
 			return;
 		}
 		this.build();
@@ -430,7 +441,7 @@ public abstract class Indices extends TripleOperator {
 	}
 
 	public abstract void constructCompletely();
-	
+
 	public abstract void writeOutAllModifiedPages() throws IOException;
 
 	public void writeIndexInfo(final LuposObjectOutputStream out)
