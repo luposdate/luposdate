@@ -27,7 +27,6 @@ import java.util.List;
 
 import lupos.datastructures.patriciatrie.Trie;
 import lupos.datastructures.patriciatrie.TrieSet;
-import lupos.datastructures.patriciatrie.diskseq.DBSeqNode;
 import lupos.datastructures.patriciatrie.diskseq.nodemanager.SeqNodeManager;
 import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
@@ -36,35 +35,35 @@ import lupos.datastructures.patriciatrie.node.NodeHelper;
 
 /**
  * This class implements a special disk based behavior for a trie for set of strings.
- * 
+ *
  * It can be used to store intermediary results on disk, that can be merged into
  * a DBTrie or a RBTrie later.
- * 
+ *
  * However, because of its underlying data structure, it is not suited for the
  * basic operations add/remove.
- * 
+ *
  * Merging is possible, but it breaks to possibility to convert this trie back
  * into a RBTrie or DBTrie, because the values of numberOfEntries for the
  * children will be wrong.
  */
 public class DBSeqTrieSet extends TrieSet {
-	
+
 	/**
 	 * Name of the file, that holds this trie.
 	 */
 	protected String fileName;
-	
+
 	/**
 	 * Node Manager that manages write and read operations.
 	 */
 	protected SeqNodeManager nodeManager;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param fileName
 	 *            Name of the file for this Trie
-	 *            
+	 *
 	 * @param mode the mode of this trie
 	 */
 	public DBSeqTrieSet(final String fileName) {
@@ -72,31 +71,31 @@ public class DBSeqTrieSet extends TrieSet {
 		this.fileName = fileName;
 		this.nodeManager = new SeqNodeManager(fileName);
 	}
-		
+
 	@Override
 	public void copy(final Trie trie) throws TrieNotCopyableException {
 		if (!trie.hasCompleteMetadata()){
 			throw new TrieNotCopyableException();
 		}
-		
+
 		this.nodeManager.clear();
 		this.nodeManager.writeNextNodeRecursive(DBSeqNode.deSerializer, trie.getRootNode());
-		
+
 		this.prepareForReading();
 	}
-	
+
 	/**
 	 * Resets the InputStream, that is responsible for the retrieval of the nodes from the underlying filesystem.
-	 * 
+	 *
 	 * This method must be called before trying to merge this trie into another.
 	 */
 	@Override
 	protected void prepareForReading() {
 		this.nodeManager.readAgain();
-		
+
 		this.setRootNode(this.nodeManager.readNextNode(DBSeqNode.deSerializer));
 	}
-	
+
 	@Override
 	public void release() {
 		this.nodeManager.close();
@@ -123,27 +122,27 @@ public class DBSeqTrieSet extends TrieSet {
 	public void clear() {
 		// TODO Implementieren
 	}
-	
+
 	@Override
 	public boolean add(final String key) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public String get(final int index) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public int getIndex(final String key) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public boolean remove(final String key) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public void merge(final List<? extends Trie> tries) throws TrieNotMergeableException {
 		/*
@@ -156,22 +155,23 @@ public class DBSeqTrieSet extends TrieSet {
 			System.err.println("Warning: Calling DBSeqTrie.merge() on a non-empty DBSeqTrie does not work. All entries from this DBSeqTrie will be removed before merging.");
 		}
 		this.setRootNode(null);
-		
+
 		this.nodeManager.setCompleteMetadata(false);
 		this.nodeManager.clear();
 		this.merge(tries, false);
+		this.prepareForReading();
 	}
-	
+
 	@Override
 	public boolean hasCompleteMetadata() {
 		return this.nodeManager.hasCompleteMetadata();
 	}
-	
+
 	@Override
 	public int getNodeCount() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	protected void mergeAfterCheck(final Node root, final List<Node> nodesToMerge){
 		NodeHelper.mergeSeqSet((DBSeqNode) root, nodesToMerge);

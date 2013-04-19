@@ -46,10 +46,10 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	public static RBTrieSet createRamBasedTrieSet(){
 		return new RBTrieSet();
 	}
-	
+
 	/**
 	 * Creates a new disk based trie with the default buffer size
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @return the newly created disk based trie set
@@ -58,10 +58,10 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	public static DBTrieSet createDiskBasedTrieSet(final String fileName) throws IOException {
 		return new DBTrieSet(fileName);
 	}
-	
+
 	/**
 	 * Creates a new trie
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @param bufferSize
@@ -74,65 +74,66 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	public static DBTrieSet createDiskBasedTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		return new DBTrieSet(fileName, bufferSize, pageSize);
 	}
-	
+
 	/**
 	 * Deletes all nodes contained within this trie and copies all nodes from
 	 * the other trie.
-	 * 
+	 *
 	 * The main purpose of this method is to convert one trie type into another
 	 * (e.g. RAM-based to disk-based)
-	 * 
+	 *
 	 * @param trie
 	 *            Trie to copy
-	 * @throws TrieNotCopyableException 
+	 * @throws TrieNotCopyableException
 	 */
 	public void copy(final Trie trie) throws TrieNotCopyableException {
-		if (!trie.hasCompleteMetadata())
+		if (!trie.hasCompleteMetadata()) {
 			throw new TrieNotCopyableException();
-		
+		}
+
 		this.clear();
-		
+
 		trie.prepareForReading();
-		
+
 		if (trie.getRootNode() != null) {
 			this.setRootNode(this.createRootNodeInstance());
-			
+
 			this.getRootNode().setContent(new String[trie.getRootNode().getContentLength()]);
-			
+
 			this.getRootNode().setNumberOfEntries(trie.getRootNode().getNumberOfEntries());
-			
+
 			for (int j = 0; j < trie.getRootNode().getContentLength(); j++) {
 				this.getRootNode().setContent(j, trie.getRootNode().getContent(j));
 			}
-			
+
 			for (int j = 0; j < trie.getRootNode().getChildrenLength(); j++) {
 				NodeHelper.setChildCopy(this.getRootNode(), j, trie.getRootNode().getChild(j));
 			}
-			
+
 			this.getRootNode().setChanged(true);
 		}
 	}
-	
+
 	/**
 	 * Adds a key to the trie.
-	 * 
+	 *
 	 * @param key
 	 *            Key to add
 	 * @return <strong>false</strong> if the key could not be added (if the trie already contained that key),
 	 *         <strong>true</strong> otherwise.
 	 */
 	public boolean add(final String key) {
-		
+
 		if (this.getRootNode() == null) {
-			this.setRootNode(createNodeInstance());
+			this.setRootNode(this.createNodeInstance());
 		}
-		
+
 		return NodeHelper.addToSet(this.getRootNode(), key);
 	}
-	
+
 	/**
 	 * Merges a list of tries into this trie.
-	 * 
+	 *
 	 * @param tries
 	 *            List of tries
 	 * @param checkMetadata
@@ -142,7 +143,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 */
 	protected void merge(final List<? extends Trie> tries, final boolean checkMetadata) throws TrieNotMergeableException {
 		final List<Node> nodesToMerge = new ArrayList<Node>(tries.size());
-		
+
 		// Only add valid root nodes
 		for (final Trie t : tries) {
 			if (checkMetadata && !t.hasCompleteMetadata()){
@@ -154,36 +155,33 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 				}
 			}
 		}
-		
+
 		// Only do something, if anything mergeable is available
 		if (nodesToMerge.size() > 0) {
-			
+
 			// Add our own root node
 			if (this.getRootNode() != null){
 				nodesToMerge.add(this.getRootNode());
 			}
-			
+
 			// If there is only one valid root node to merge, skip merging and use
 			// this as result
 			if (nodesToMerge.size() == 1) {
-				// 
+				//
 				if (nodesToMerge.get(0) != this.getRootNode()) {
 					System.err.println("Please do not use merge for one trie, use copy instead!");
 					this.setRootNode(nodesToMerge.get(0)); // TODO Hier muss kopiert werden, nicht einfach der rootNode uebernommen
 				}
-			}
-			
-			// Only merge if there are at least 2 valid root nodes
-			else if (nodesToMerge.size() > 1) {
+			} else if (nodesToMerge.size() > 1) { // Only merge if there are at least 2 valid root nodes
 				final Node root = this.createNodeInstance();
-	
+
 				this.mergeAfterCheck(root, nodesToMerge);
-				
+
 				this.changeRootNode(root);
 			}
 		}
 	}
-	
+
 	/**
 	 * This method is overwritten by DBSeqTrieSet
 	 * @param root the new root node
@@ -192,10 +190,10 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	protected void mergeAfterCheck(final Node root, final List<Node> nodesToMerge){
 		NodeHelper.mergeSet(root, nodesToMerge);
 	}
-	
+
 	/**
 	 * Merges a list of tries into this trie.
-	 * 
+	 *
 	 * @param tries
 	 *            List of tries
 	 * @throws TrieNotMergeableException
@@ -203,23 +201,23 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	public void merge(final List<? extends Trie> tries) throws TrieNotMergeableException {
 		this.merge(tries, true);
 	}
-	
+
 	@Override
 	public final Iterator<String> iterator() {
 		this.prepareForReading();
 		if (this.getRootNode() == null) {
 			return new Iterator<String>() {
-				
+
 				@Override
 				public boolean hasNext() {
 					return false;
 				}
-	
+
 				@Override
 				public String next() {
 					return null;
 				}
-	
+
 				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
@@ -228,13 +226,13 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 		}
 		else {
 			return new Iterator<String>() {
-				
+
 				private Stack<Tuple<Node, Integer>> nodeIndexStack;
 				private String currentPrefix;
 				private Node currentNode;
 				private int currentNodeIndex;
 				private int indexCounter;
-				
+
 				// Anonymous constructor
 				{
 					this.nodeIndexStack = new Stack<Tuple<Node, Integer>>();
@@ -247,15 +245,15 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 
 				@Override
 				public boolean hasNext() {
-					return this.indexCounter < size();
+					return this.indexCounter < TrieSet.this.size();
 				}
 
 				@Override
 				public String next() {
 					String result = null;
-					
+
 					// No more entries left
-					if (this.indexCounter < size()) {
+					if (this.indexCounter < TrieSet.this.size()) {
 						// Use the current node
 						if (this.currentNodeIndex < this.currentNode.getContentLength()) {
 							while (this.currentNode.hasChild(this.currentNodeIndex)) {
@@ -264,31 +262,31 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 								this.currentNode = this.currentNode.getChild(this.currentNodeIndex);
 								this.currentNodeIndex = 0;
 							}
-							
+
 							result = this.currentPrefix + this.currentNode.getContent(this.currentNodeIndex);
-							
+
 							this.currentNodeIndex++;
 							this.indexCounter++;
-							
+
 							return result;
 						} else {
 							final Tuple<Node, Integer> entry = this.nodeIndexStack.pop();
 							this.currentPrefix = this.currentPrefix.substring(0, this.currentPrefix.length() - entry.getFirst().getContent(entry.getSecond()).length());
 							this.currentNode = entry.getFirst();
 							this.currentNodeIndex = entry.getSecond() + 1;
-							
-							return next();
+
+							return this.next();
 						}
 					} else {
 						return null;
-					}					
+					}
 				}
 
 				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
-				
+
 			};
 		}
 	}
