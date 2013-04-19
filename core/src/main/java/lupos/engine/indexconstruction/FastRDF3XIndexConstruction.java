@@ -143,6 +143,10 @@ public class FastRDF3XIndexConstruction {
 			if(!dir.endsWith("\\") && !dir.endsWith("/")) {
 				dir += "/";
 			}
+			// make directory such that we can store something inside!
+			final File f_dir = new File(dir);
+			f_dir.mkdirs();
+
 			final String[] dirArray = new String[] { dir };
 			final String writeindexinfo = dirArray[0]+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE;
 			DBMergeSortedBag.setTmpDir(dirArray);
@@ -467,7 +471,7 @@ public class FastRDF3XIndexConstruction {
 				}
 			}
 			// write out patricia trie
-			final DBSeqTrieSet disk_set = new DBSeqTrieSet("Set_"+this.runNumber);
+			final DBSeqTrieSet disk_set = new DBSeqTrieSet(this.dir+"Set_"+this.runNumber);
 			try {
 				disk_set.copy(this.map);
 				this.listOfTries.add(disk_set);
