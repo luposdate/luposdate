@@ -21,29 +21,35 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator.format.operatorcreator;
+package lupos.distributed.query.operator.withouthistogramsubmission;
 
 import java.util.Collection;
 
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientIndexScan;
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientRoot;
+import lupos.datastructures.items.Item;
+import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class is for creating the operators of the query client...
+ * Represents the root node in the operator graph for distributed query processing.
  */
-public class QueryClientOperatorCreator implements IOperatorCreator {
+public class QueryClientRoot extends Root {
 
-	@Override
-	public Root createRoot(final Dataset dataset) {
-		return new QueryClientRoot(dataset);
+	public QueryClientRoot(final Dataset dataset){
+		super();
+		this.dataset = dataset;
 	}
 
 	@Override
-	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
-		return new QueryClientIndexScan(root, triplePatterns);
+	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
+			final Collection<TriplePattern> triplePatterns, final Item data) {
+		return new QueryClientIndexScan(succeedingOperator, triplePatterns, data, this);
+	}
+
+	@Override
+	public Root newInstance(final Dataset dataset_param) {
+		return new QueryClientRoot(dataset_param);
 	}
 }

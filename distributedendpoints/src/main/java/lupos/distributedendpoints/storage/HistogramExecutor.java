@@ -21,29 +21,25 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator.format.operatorcreator;
+package lupos.distributedendpoints.storage;
 
-import java.util.Collection;
-
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientIndexScan;
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientRoot;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
+import lupos.distributed.query.operator.histogramsubmission.AbstractHistogramExecutor;
+import lupos.distributedendpoints.storage.util.EndpointManagement;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
-/**
- * This class is for creating the operators of the query client...
- */
-public class QueryClientOperatorCreator implements IOperatorCreator {
+public class HistogramExecutor extends AbstractHistogramExecutor {
 
-	@Override
-	public Root createRoot(final Dataset dataset) {
-		return new QueryClientRoot(dataset);
+	protected final EndpointManagement endpointManagement;
+
+	public HistogramExecutor(final EndpointManagement endpointManagement) {
+		super();
+		this.endpointManagement = endpointManagement;
 	}
 
+
 	@Override
-	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
-		return new QueryClientIndexScan(root, triplePatterns);
+	public String[] sendJSONRequests(final String request, final TriplePattern triplePattern) {
+		// triple pattern is not used as key => just ignore and submit histogram request to all endpoints...
+		return this.endpointManagement.submitHistogramRequest(request);
 	}
 }

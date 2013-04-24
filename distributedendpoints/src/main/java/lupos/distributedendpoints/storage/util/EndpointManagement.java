@@ -23,8 +23,10 @@
  */
 package lupos.distributedendpoints.storage.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +36,7 @@ import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContai
 import lupos.endpoint.client.Client;
 import lupos.engine.operators.multiinput.join.parallel.ResultCollector;
 import lupos.misc.FileHelper;
+import lupos.misc.Tuple;
 
 public class EndpointManagement {
 
@@ -198,6 +201,55 @@ public class EndpointManagement {
 	}
 
 	/**
+	 * submits a histogram request to a specific registered SPARQL endpoint
+	 * @param histogram the given subgraph to be submitted
+	 * @param key the key container containing the the number of the endpoint to which the query is sent to
+	 * @return the query result of the submitted subgraph
+	 */
+	public String submitHistogramRequest(final String histogram, final KeyContainer<Integer> key){
+		final String url = EndpointManagement.addContext(EndpointManagement.addContext(this.urlsOfEndpoints[key.key], "histogram/"), key);
+		return EndpointManagement.submitHistogramRequest(histogram, url);
+	}
+
+	/**
+	 * Submits a histogram request to a given url
+	 *
+	 * @param histogram the histogram request
+	 * @param url the url to which the request is sent to
+	 * @return the response of the histogram request
+	 */
+	public static String submitHistogramRequest(final String histogram, final String url) {
+		try {
+			final Tuple<String, InputStream> response = Client.submitQueryAndRetrieveStream(url, histogram, "application/sparql-results+json"); //mime type would be better application/json, but for that we do not have registered formatter, such that errors would occur
+			return EndpointManagement.getStringFromInputStream(response.getSecond());
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Reads an UTF-8 encoded string from an input stream and returns it
+	 *
+	 * @param in the input stream from which the string is read
+	 * @return the string
+	 * @throws IOException
+	 */
+	public static String getStringFromInputStream(final InputStream in) throws IOException {
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int next;
+		while((next=in.read())>=0){
+			out.write(next);
+		}
+		in.close();
+		out.close();
+
+		return new String(out.toByteArray(), "UTF-8");
+	}
+
+
+	/**
 	 * submits a query parallel to all registered endpoints
 	 * @param query the query to be submitted
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
@@ -232,6 +284,70 @@ public class EndpointManagement {
 		}
 		return resultCollector.getResult();
 	}
+
+	/**
+	 * Submits a histogram request to all registered endpoints
+	 *
+	 * @param histogram the histogram request to be submitted to all endpoints
+	 * @return the histograms of all endpoints
+	 */
+	public String[] submitHistogramRequest(final String histogram) {
+		final String[] urlsWithContext = new String[this.urlsOfEndpoints.length];
+		for(int i=0; i<this.urlsOfEndpoints.length; i++){
+			urlsWithContext[i] = EndpointManagement.addContext(this.urlsOfEndpoints[i], "histogram/");
+		}
+		return EndpointManagement.submitHistogramRequest(histogram, urlsWithContext);
+	}
+
+	/**
+	 * submits histogram requests in parallel to all given endpoints
+	 *
+	 * @param histogram the histogram request to be submitted
+	 * @param urlsOfEndpoints the endpoints to be queries
+	 * @return the result of all the endpoints
+	 */
+	protected static String[] submitHistogramRequest(final String histogram, final String[] urlsOfEndpoints){
+		final Thread[] threads = new Thread[urlsOfEndpoints.length];
+		final String[] result = new String[urlsOfEndpoints.length];
+		// ask nodes in parallel for their histograms
+		for(int i=0; i<urlsOfEndpoints.length; i++){
+			final int index = i;
+
+			threads[index] = new Thread(){
+				@Override
+				public void run(){
+					result[index] = EndpointManagement.submitHistogramRequest(histogram, urlsOfEndpoints[index]);
+				}
+			};
+
+			threads[index].start();
+		}
+		for(final Thread thread: threads){
+			try {
+				thread.join();
+			} catch (final InterruptedException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * submits histogram requests in parallel to all given endpoints according to a given key type
+	 *
+	 * @param histogram the histogram request
+	 * @param keyType the key type
+	 * @return the result of the addressed endpoints
+	 */
+	public String[] submitHistogramRequestWithKeyType(final String histogram, final String keyType) {
+		final String[] urls = new String[this.urlsOfEndpoints.length];
+		for(int i=0; i<this.urlsOfEndpoints.length; i++){
+			urls[i] = EndpointManagement.addContext(EndpointManagement.addContext(this.urlsOfEndpoints[i], "histogram/"), keyType);
+		}
+		return EndpointManagement.submitHistogramRequest(histogram, urls);
+	}
+
 
 	/**
 	 * submits a query parallel to all registered endpoints (according to one key type to avoid duplicates)

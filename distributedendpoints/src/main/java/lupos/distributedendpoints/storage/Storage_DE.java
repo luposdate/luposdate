@@ -25,6 +25,7 @@ package lupos.distributedendpoints.storage;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.query.operator.histogramsubmission.AbstractHistogramExecutor;
 import lupos.distributed.storage.nodistributionstrategy.BlockUpdatesStorage;
 import lupos.distributedendpoints.storage.util.EndpointManagement;
 import lupos.distributedendpoints.storage.util.QueryBuilder;
@@ -47,6 +48,11 @@ public class Storage_DE extends BlockUpdatesStorage {
 	protected final EndpointManagement endpointManagement;
 
 	/**
+	 * this flag is true if data has been inserted, otherwise it is false
+	 */
+	protected boolean insertedData = false;
+
+	/**
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
 	 */
 	public Storage_DE(){
@@ -56,6 +62,7 @@ public class Storage_DE extends BlockUpdatesStorage {
 	@Override
 	public void blockInsert(){
 		this.endpointManagement.submitSPARULQueryToArbitraryEndpoint(QueryBuilder.buildInsertQuery(this.toBeAdded));
+		this.insertedData = true;
 	}
 
 	@Override
@@ -78,7 +85,19 @@ public class Storage_DE extends BlockUpdatesStorage {
 	public void endImportData() {
 		if(!this.toBeAdded.isEmpty()){
 			super.endImportData();
-			this.endpointManagement.waitForThreadPool();
 		}
+		this.endpointManagement.waitForThreadPool();
+		if(this.insertedData){
+			// send request for rebuilding the statistics!
+			this.endpointManagement.submitHistogramRequest(AbstractHistogramExecutor.createRebuildStatisticsRequestString());
+			this.insertedData = false;
+		}
+	}
+
+	/**
+	 * @return the endpoint management object for submitting to the registered endpoints
+	 */
+	public EndpointManagement getEndpointManagement(){
+		return this.endpointManagement;
 	}
 }

@@ -38,12 +38,12 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
- * This class represents a leaf node of the plan. 
+ * This class represents a leaf node of the plan.
  */
 public class LeafNodePlan extends Plan {
-	
+
 	/**
-	 * This constructor is used for cloning... 
+	 * This constructor is used for cloning...
 	 * @param triplePatterns the triple patterns of this node (usually one if it is a leaf)
 	 * @param joinPartner the join partners (usually empty for a leaf node)
 	 * @param variables the variables appearing (can be determined from the triple patterns)
@@ -81,19 +81,21 @@ public class LeafNodePlan extends Plan {
 	 * @param maxima the maximum values of a variable
 	 */
 	public LeafNodePlan(
-			final TriplePattern tp, 
+			final TriplePattern tp,
 			final BasicIndexScan indexScan,
 			final Class<? extends Bindings> classBindings,
-			HashMap<Variable, Literal> minima,
-			HashMap<Variable, Literal> maxima) {
+			final Collection<Variable> joinPartner,
+			final HashMap<Variable, Literal> minima,
+			final HashMap<Variable, Literal> maxima) {
 		this.triplePatterns = new LinkedList<TriplePattern>();
 		this.triplePatterns.add(tp);
 		this.joinPartner = tp.getVariables();
+		this.joinPartner.retainAll(joinPartner);
 		this.variables = tp.getVariables();
 		this.numberMergeJoins = 0;
 		this.numberJoins = 0;
 		this.order = new LinkedList<Variable>();
-		// determine the selectivity of this triple pattern
+		// determine the selectivity of this triple pattern (only compute histograms of the given join partners)
 		this.selectivity = indexScan.getVarBuckets(tp, classBindings, this.joinPartner, minima, maxima);
 		// determine the cardinality and cost of this triple pattern...
 		if (this.selectivity == null) {
@@ -114,7 +116,7 @@ public class LeafNodePlan extends Plan {
 	}
 
 	/**
-	 * This method checks whether or not the ordering can be fulfilled by this leaf node (i.e., all variables of the given ordering to check appear in the result?) 
+	 * This method checks whether or not the ordering can be fulfilled by this leaf node (i.e., all variables of the given ordering to check appear in the result?)
 	 */
 	@Override
 	protected boolean canUseMergeJoin(final LinkedList<Variable> possibleOrdering) {
@@ -134,14 +136,14 @@ public class LeafNodePlan extends Plan {
 	protected String getNodeString() {
 		return "+ Leaf:" + super.getNodeString();
 	}
-	
+
 	@Override
 	public LeafNodePlan clone(){
 		return new LeafNodePlan(this.triplePatterns, this.joinPartner, this.joinPartner, this.order, this.numberJoins, this.numberJoins, this.selectivity, this.getCardinality(), this.getCardinality());
 	}
 
 	@Override
-	protected boolean checkOrdering(LinkedList<Variable> possibleOrdering) {
+	protected boolean checkOrdering(final LinkedList<Variable> possibleOrdering) {
 		// Leaf node does not count as merge join! => this.numberMergeJoin remains 0 through whole lifetime of this leaf node!
 		// Any ordering is anyway possible in the leaf node!
 		this.order = possibleOrdering;

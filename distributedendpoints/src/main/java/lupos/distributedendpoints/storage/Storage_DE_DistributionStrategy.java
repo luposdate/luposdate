@@ -27,6 +27,7 @@ import java.util.List;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.query.operator.histogramsubmission.AbstractHistogramExecutor;
 import lupos.distributed.storage.distributionstrategy.BlockUpdatesStorageWithDistributionStrategy;
 import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
@@ -50,6 +51,11 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 *  for managing the registered endpoints and submitting queries to them
 	 */
 	protected final EndpointManagement endpointManagement;
+
+	/**
+	 * this flag is true if data has been inserted, otherwise it is false
+	 */
+	protected boolean insertedData = false;
 
 	/**
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
@@ -95,6 +101,7 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	@Override
 	public void storeBlock(final KeyContainer<Integer> key, final List<Triple> triples) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildInsertQuery(triples), key);
+		this.insertedData = true;
 	}
 
 	@Override
@@ -124,6 +131,18 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	public void blockInsert() {
 		super.blockInsert();
 		this.endpointManagement.waitForThreadPool();
+	}
+
+	@Override
+	public void endImportData() {
+		super.blockInsert();
+		if(this.insertedData){
+			// send request for rebuilding the statistics!
+			for(final String keyType:((IDistributionKeyContainer<Integer>)this.distribution).getKeyTypes()){
+				this.endpointManagement.submitHistogramRequestWithKeyType(AbstractHistogramExecutor.createRebuildStatisticsRequestString(), keyType);
+			}
+			this.insertedData = false;
+		}
 	}
 
 	/**

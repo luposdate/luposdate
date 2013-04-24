@@ -21,29 +21,33 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator.format.operatorcreator;
+package lupos.optimizations.physical.joinorder.costbasedoptimizer;
 
-import java.util.Collection;
-
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientIndexScan;
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientRoot;
 import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Root;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator.QueryClientOperatorGraphGenerator;
 
 /**
- * This class is for creating the operators of the query client...
+ * This class is the cost-based optimizer for the QueryClient query evaluator.
  */
-public class QueryClientOperatorCreator implements IOperatorCreator {
+public class QueryClientCostBasedOptimizer extends CostBasedOptimizer {
 
-	@Override
-	public Root createRoot(final Dataset dataset) {
-		return new QueryClientRoot(dataset);
+	/**
+	 * Constructor
+	 */
+	public QueryClientCostBasedOptimizer() {
+		super(new QueryClientOperatorGraphGenerator());
 	}
 
-	@Override
-	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
-		return new QueryClientIndexScan(root, triplePatterns);
+	/**
+	 * Static method to call the cost-based optimizer for the QueryClient query evaluator
+	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
+	 * @return the root operator under which the subgraph with the reordered joins are inserted
+	 */
+	public static Root rearrangeJoinOrder(final BasicIndexScan indexScan){
+		final Root newRoot = indexScan.getRoot().newInstance(indexScan.getRoot().dataset);
+		final QueryClientCostBasedOptimizer optimizer = new QueryClientCostBasedOptimizer();
+		optimizer.rearrangeJoinOrder(newRoot, indexScan);
+		return newRoot;
 	}
 }

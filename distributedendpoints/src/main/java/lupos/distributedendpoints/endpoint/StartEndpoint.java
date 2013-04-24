@@ -29,6 +29,7 @@ import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
+import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
@@ -36,7 +37,7 @@ import lupos.distributed.operator.format.operatorcreator.RDF3XCreator;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneKeyDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneToThreeKeysDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.TwoKeysDistribution;
-import lupos.distributed.storage.util.SubgraphLocalExecutor;
+import lupos.distributed.storage.util.LocalExecutor;
 import lupos.endpoint.server.Endpoint;
 import lupos.endpoint.server.Endpoint.OutputStreamLogger;
 import lupos.endpoint.server.Endpoint.OutputStreamSizeLogger;
@@ -70,10 +71,16 @@ public class StartEndpoint {
 			// start for each type of the keys a different context
 			final String directory = base_dir + keyType;
 			final BasicIndexQueryEvaluator evaluator = Endpoint.createQueryEvaluator(directory);
+
 			// evaluate context for SPARQL query processing...
 			Endpoint.registerHandler("/sparql/" + keyType, new SPARQLHandler(new SPARQLExecutionImplementation(evaluator, directory)));
+
+			final RDF3XCreator creator = new RDF3XCreator();
 			// register context for evaluating subgraphs...
-			Endpoint.registerHandler("/sparql/subgraph/" + keyType, new SPARQLHandler(new SubgraphExecutionImplementation(evaluator, directory, new RDF3XCreator())));
+			Endpoint.registerHandler("/sparql/subgraph/" + keyType, new SPARQLHandler(new SubgraphExecutionImplementation(evaluator, directory, creator)));
+
+			// register context for determining histograms...
+			Endpoint.registerHandler("/sparql/histogram/" + keyType, new SPARQLHandler(new HistogramExecutionImplementation(evaluator, creator)));
 		}
 		Endpoint.registerStandardFormatter();
 		Endpoint.initAndStartServer();
@@ -132,10 +139,10 @@ public class StartEndpoint {
 		@Override
 		public void execute(final String subgraphSerializedAsJSONString, final Formatter formatter, final HttpExchange t) throws IOException {
 			if(Endpoint.sizelog){
-				System.out.println("Size of the received query (number of characters): "+subgraphSerializedAsJSONString.length());
+				System.out.println("Size of the received subgraph (number of characters of serialized subgraph): "+subgraphSerializedAsJSONString.length());
 			}
 			try {
-				synchronized(this.evaluator){ // avoid any inference of several queries in parallel!
+				synchronized(this.evaluator){ // avoid any inference of executing several subgraphs in parallel!
 					System.out.println("Evaluating subgraph:\n"+subgraphSerializedAsJSONString);
 					if((this.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
 						// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
@@ -144,12 +151,12 @@ public class StartEndpoint {
 						Bindings.instanceClass = Endpoint.defaultBindingsClass;
 					}
 
-					final Tuple<QueryResult, Set<Variable>> queryResult = SubgraphLocalExecutor.evaluateSubgraph(subgraphSerializedAsJSONString, (this.evaluator instanceof BasicIndexQueryEvaluator)?this.evaluator.getDataset() : null, this.operatorCreator);
+					final Tuple<QueryResult, Set<Variable>> queryResult = LocalExecutor.evaluateSubgraph(subgraphSerializedAsJSONString, (this.evaluator instanceof BasicIndexQueryEvaluator)?this.evaluator.getDataset() : null, this.operatorCreator);
 
 					final String mimeType = formatter.getMIMEType(queryResult.getFirst());
 					System.out.println("Done, sending response using MIME type "+mimeType);
 					t.getResponseHeaders().add("Content-type", mimeType);
-					t.getResponseHeaders().add("Transfer-encoding", "chunked");
+					t.getResponseHeaders().add("Transfer-encoding", "chunked"); // currently chunked transmission blocks the processing=> enable again if parallel execution works!
 					t.sendResponseHeaders(200, 0);
 					OutputStream os = t.getResponseBody();
 					if(Endpoint.log){
@@ -163,6 +170,64 @@ public class StartEndpoint {
 					if(this.evaluator instanceof RDF3XQueryEvaluator){
 						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
 					}
+				}
+				return;
+			} catch (final Error e) {
+				System.err.println(e);
+				e.printStackTrace();
+				t.getResponseHeaders().add("Content-type", "text/plain");
+				final String answer = "Error:\n"+e.getMessage();
+				System.out.println(answer);
+				Endpoint.sendString(t, answer);
+				return;
+			} catch (final Exception e){
+				System.err.println(e);
+				e.printStackTrace();
+				t.getResponseHeaders().add("Content-type", "text/plain");
+				final String answer = "Error:\n"+e.getMessage();
+				System.out.println(answer);
+				Endpoint.sendString(t, answer);
+				return;
+			}
+		}
+	}
+
+	public static class HistogramExecutionImplementation implements SPARQLExecution {
+
+		protected final BasicIndexQueryEvaluator evaluator;
+		protected final IOperatorCreator operatorCreator;
+
+		public HistogramExecutionImplementation(final BasicIndexQueryEvaluator evaluator, final IOperatorCreator operatorCreator){
+			this.evaluator = evaluator;
+			this.operatorCreator = operatorCreator;
+		}
+
+		@Override
+		public void execute(final String histogramRequestSerializedAsJSONString, final Formatter formatter, final HttpExchange t) throws IOException {
+			if(Endpoint.sizelog){
+				System.out.println("Size of the received histogram request (number of characters of serialized request): "+histogramRequestSerializedAsJSONString.length());
+			}
+			try {
+				synchronized(this.evaluator){ // avoid any inference of executing several subgraphs in parallel!
+					System.out.println("Determining Histogram:\n"+histogramRequestSerializedAsJSONString);
+					Bindings.instanceClass = BindingsMap.class;
+
+					final String result = LocalExecutor.getHistogramOrMinMax(histogramRequestSerializedAsJSONString, (this.evaluator instanceof BasicIndexQueryEvaluator)?this.evaluator.getDataset() : null, this.operatorCreator);
+
+					final String mimeType = "application/json";
+					System.out.println("Done, sending response using MIME type "+mimeType);
+					t.getResponseHeaders().add("Content-type", mimeType);
+					t.getResponseHeaders().add("Transfer-encoding", "chunked");
+					t.sendResponseHeaders(200, 0);
+					OutputStream os = t.getResponseBody();
+					if(Endpoint.log){
+						os = new OutputStreamLogger(os);
+					}
+					if(Endpoint.sizelog){
+						os = new OutputStreamSizeLogger(os);
+					}
+					os.write(result.getBytes("UTF-8"));
+					os.close();
 				}
 				return;
 			} catch (final Error e) {

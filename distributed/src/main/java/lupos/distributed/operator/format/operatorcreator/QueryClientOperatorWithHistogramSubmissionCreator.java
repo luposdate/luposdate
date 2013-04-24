@@ -21,49 +21,36 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.query.withoutsubgraphsubmission;
+package lupos.distributed.operator.format.operatorcreator;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsMap;
-import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.distributed.query.QueryClient;
-import lupos.distributedendpoints.gui.Start_Demo_Applet_DE;
-import lupos.distributedendpoints.storage.HistogramExecutor;
-import lupos.distributedendpoints.storage.Storage_DE;
+import java.util.Collection;
+
+import lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor;
+import lupos.distributed.query.operator.histogramsubmission.QueryClientIndexScanWithHistogramSubmission;
+import lupos.distributed.query.operator.histogramsubmission.QueryClientRootWithHistogramSubmission;
+import lupos.engine.operators.index.BasicIndexScan;
+import lupos.engine.operators.index.Dataset;
+import lupos.engine.operators.index.Root;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class is the query evaluator for querying distributed SPARQL endpoints.
- * All registered endpoints are asked for the evaluation of the triple patterns within a SPARQL query.
- * It is assumed that the data is not distributed in an intelligent way and that any registered endpoint
- * can have data for any triple pattern.
- * Also non-luposdate SPARQL endpoints are supported.
- * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ * This class is for creating the operators of the query client...
  */
-public class QueryClient_DE extends QueryClient {
+public class QueryClientOperatorWithHistogramSubmissionCreator implements IOperatorCreator {
 
-	public QueryClient_DE() throws Exception {
-		super(new Storage_DE());
-		this.askForHistogramRequests();
+	protected final IHistogramExecutor histogramExecutor;
+
+	public QueryClientOperatorWithHistogramSubmissionCreator(final IHistogramExecutor histogramExecutor) {
+		this.histogramExecutor = histogramExecutor;
 	}
-
-	public QueryClient_DE(final String[] args) throws Exception {
-		super(new Storage_DE(), args);
-		this.askForHistogramRequests();
-	}
-
-	private void askForHistogramRequests(){
-		if(Start_Demo_Applet_DE.askForHistogramRequests()){
-			this.histogramExecutor = new HistogramExecutor(((Storage_DE)this.storage).getEndpointManagement());
-			this.initOptimization();
-		}
-	}
-
 
 	@Override
-	public void init() throws Exception {
-		// just for avoiding problems in distributed scenarios
-		Bindings.instanceClass = BindingsMap.class;
-		LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
-		super.init();
+	public Root createRoot(final Dataset dataset) {
+		return new QueryClientRootWithHistogramSubmission(dataset, this.histogramExecutor);
+	}
+
+	@Override
+	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
+		return new QueryClientIndexScanWithHistogramSubmission((QueryClientRootWithHistogramSubmission) root, triplePatterns);
 	}
 }

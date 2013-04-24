@@ -85,7 +85,9 @@ public class SubgraphContainer<K> extends RootChild {
 		final SubgraphContainerFormatter serializer = new SubgraphContainerFormatter();
 		try {
 			final JSONObject serializedGraph = serializer.serialize(this.rootNodeOfSubGraph, 0);
-			return this.subgraphExecutor.evaluate(this.key,  serializedGraph.toString());
+			final QueryResult result = this.subgraphExecutor.evaluate(this.key,  serializedGraph.toString());
+			result.materialize(); // just for now read all from the stream sent by the endpoint, otherwise it may be blocked! (may be removed if each endpoint can work completely in parallel!)
+			return result;
 		} catch (final JSONException e) {
 			System.err.println(e);
 			e.printStackTrace();

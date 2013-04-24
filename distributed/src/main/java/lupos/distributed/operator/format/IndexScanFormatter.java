@@ -23,19 +23,11 @@
  */
 package lupos.distributed.operator.format;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
-import lupos.datastructures.items.Item;
-import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Root;
-import lupos.engine.operators.tripleoperator.TriplePattern;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,74 +68,19 @@ public class IndexScanFormatter implements OperatorFormatter {
 		 */
 		@Override
 		public JSONObject serialize(final BasicOperator operator, final int node_id) {
-			final JSONObject json = new JSONObject();
-
 			final BasicIndexScan indexScan = (BasicIndexScan) operator;
 			try {
+				final JSONObject json = Helper.createTriplePatternsJSONObject(indexScan.getTriplePattern());
+
 				json.put("type", BasicIndexScan.class.getName());
 				json.put("node_id", node_id);
 
-				final Collection<JSONObject> triplePatterns = new LinkedList<JSONObject>();
+				return json;
 
-				for (final TriplePattern triplePattern : indexScan.getTriplePattern()) {
-					final JSONObject tripleJson = new JSONObject();
-					final Collection<JSONObject> tripleItems = this.createTriplePatternItemsArray(triplePattern);
-
-					tripleJson.put("items", tripleItems);
-
-					triplePatterns.add(tripleJson);
-				}
-
-				json.put("triple_pattern", triplePatterns);
 			} catch (final JSONException e) {
 				e.printStackTrace();
 			}
-
-			return json;
-		}
-
-		/**
-		 * Creates the triple pattern items array.
-		 *
-		 * @param triplePattern
-		 *            the triple pattern
-		 * @return the collection
-		 * @throws JSONException
-		 *             the jSON exception
-		 */
-		private Collection<JSONObject> createTriplePatternItemsArray(
-				final TriplePattern triplePattern) throws JSONException {
-			final Collection<JSONObject> tripleItems = new LinkedList<JSONObject>();
-
-			for (final Item item : triplePattern.getItems()) {
-				final JSONObject itemJson = this.createTriplePatternItemAsJsonString(item);
-				tripleItems.add(itemJson);
-			}
-			return tripleItems;
-		}
-
-		/**
-		 * Creates the triple pattern item as json string.
-		 *
-		 * @param item
-		 *            the item
-		 * @return the jSON object
-		 * @throws JSONException
-		 *             the jSON exception
-		 */
-		private JSONObject createTriplePatternItemAsJsonString(final Item item)
-				throws JSONException {
-			final JSONObject itemJson = new JSONObject();
-
-			if (item.isVariable()) {
-				itemJson.put("type", "variable");
-				itemJson.put("name", item.getName());
-			} else {
-				itemJson.put("type", "literal");
-				itemJson.put("value", item.getName());
-				// item.getName().substring(1, item.getName().length() - 1));
-			}
-			return itemJson;
+			return new JSONObject();
 		}
 
 		/*
@@ -155,41 +92,7 @@ public class IndexScanFormatter implements OperatorFormatter {
 		 */
 		@Override
 		public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
-			final Collection<TriplePattern> triplePatterns = this.createTriplePatternsListFromJSON(serializedOperator);
-			return this.operatorCreator.createIndexScan(this.root, triplePatterns);
-		}
-
-		/**
-		 * Creates the triple patterns list from json.
-		 *
-		 * @param json
-		 *            the json
-		 * @return the collection
-		 */
-		private Collection<TriplePattern> createTriplePatternsListFromJSON(final JSONObject json) {
-			final Collection<TriplePattern> result = new LinkedList<TriplePattern>();
-			try {
-				final JSONArray triplePatternsJson = (JSONArray) json.get("triple_pattern");
-				for (int i = 0; i < triplePatternsJson.length(); i++) {
-					final JSONObject triplePatternJson = triplePatternsJson.getJSONObject(i);
-					final JSONArray itemsJson = (JSONArray) triplePatternJson.get("items");
-					final Item[] items = new Item[3];
-					for (int h = 0; h < 3; h++) {
-						final JSONObject itemJson = itemsJson.getJSONObject(h);
-						if (itemJson.getString("type").equals("variable")) {
-							items[h] = new Variable(itemJson.getString("name"));
-						} else {
-							items[h] = LazyLiteral.getLiteral(itemJson.getString("value"));
-						}
-					}
-					final TriplePattern triplePattern = new TriplePattern(items[0], items[1], items[2]);
-					result.add(triplePattern);
-				}
-			} catch (final JSONException e) {
-				System.err.println(e);
-				e.printStackTrace();
-			}
-			return result;
+			return this.operatorCreator.createIndexScan(this.root, Helper.createTriplePatternsFromJSON(serializedOperator));
 		}
 
 		/**

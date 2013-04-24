@@ -28,6 +28,8 @@ import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.distributed.query.QueryClient;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
+import lupos.distributedendpoints.gui.Start_Demo_Applet_DE;
+import lupos.distributedendpoints.storage.DistributionHistogramExecutor;
 import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 
 /**
@@ -39,10 +41,20 @@ public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
 
 	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
 		super(Storage_DE_DistributionStrategy.createInstance(distribution));
+		this.askForHistogramRequests();
 	}
 
 	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
 		super(Storage_DE_DistributionStrategy.createInstance(distribution), args);
+		this.askForHistogramRequests();
+	}
+
+	private void askForHistogramRequests(){
+		if(Start_Demo_Applet_DE.askForHistogramRequests()){
+			final Storage_DE_DistributionStrategy storage_DE_DS = (Storage_DE_DistributionStrategy) this.storage;
+			this.histogramExecutor = new DistributionHistogramExecutor(storage_DE_DS.getDistribution(), storage_DE_DS.getEndpointManagement());
+			this.initOptimization();
+		}
 	}
 
 	@Override

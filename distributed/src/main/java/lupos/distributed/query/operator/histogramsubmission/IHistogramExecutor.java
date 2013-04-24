@@ -21,35 +21,20 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.query.operator;
+package lupos.distributed.query.operator.histogramsubmission;
 
 import java.util.Collection;
+import java.util.Map;
 
-import lupos.datastructures.items.Item;
-import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.Tuple;
+import lupos.optimizations.logical.statistics.VarBucket;
 
-/**
- * Represents the root node in the operator graph for distributed query processing.
- */
-public class QueryClientRoot extends Root {
-	
-	public QueryClientRoot(final Dataset dataset){
-		super();
-		this.dataset = dataset;
-	}
+public interface IHistogramExecutor {
 
-	@Override
-	public BasicIndexScan newIndexScan(OperatorIDTuple succeedingOperator,
-			Collection<TriplePattern> triplePatterns, Item data) {
-		return new QueryClientIndexScan(succeedingOperator, triplePatterns, data, this);
-	}
+	public Map<Variable, Tuple<Literal, Literal>> getMinMax(TriplePattern triplePattern, Collection<Variable> variables);
 
-	@Override
-	public Root newInstance(Dataset dataset_param) {
-		return new QueryClientRoot(dataset_param);
-	}
+	public Map<Variable, VarBucket> getHistograms(TriplePattern triplePattern, Collection<Variable> variables, Map<Variable, Literal> minima, Map<Variable, Literal> maxima);
 }

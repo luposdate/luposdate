@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import lupos.distributed.operator.ISubgraphExecutor;
+import lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor;
 import lupos.distributed.storage.IStorage;
 import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.engine.operators.index.BasicIndexScan;
@@ -42,27 +43,36 @@ public class QueryClientWithSubgraphTransmission<K> extends QueryClient {
 
 	public final ISubgraphExecutor<K> subgraphExecutor;
 
+	public QueryClientWithSubgraphTransmission(final IStorage storage, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor) throws Exception {
+		this(storage, null, distribution, subgraphExecutor);
+	}
 
-	public QueryClientWithSubgraphTransmission(final IStorage storage, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor)
-			throws Exception {
-		super(storage);
+	public QueryClientWithSubgraphTransmission(final IStorage storage, final IHistogramExecutor histogramExecutor, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor) throws Exception {
+		super(storage, histogramExecutor);
 		this.distribution = distribution;
 		this.subgraphExecutor = subgraphExecutor;
 	}
 
 	public QueryClientWithSubgraphTransmission(final IStorage storage, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor, final String[] args) throws Exception {
-		super(storage, args);
+		this(storage, null, distribution, subgraphExecutor, args);
+	}
+
+	public QueryClientWithSubgraphTransmission(final IStorage storage, final IHistogramExecutor histogramExecutor, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor, final String[] args) throws Exception {
+		super(storage, histogramExecutor, args);
 		this.distribution = distribution;
 		this.subgraphExecutor = subgraphExecutor;
 	}
 
 	@Override
-	public void init() throws Exception {
-		super.init();
-		// make binary joins such that subgraphs can be identified...
-		this.opt = BasicIndexScan.BINARYSTATICANALYSIS;
+	protected void initOptimization() {
+		if(this.histogramExecutor == null){
+			// make binary joins such that subgraphs can be identified...
+			this.opt = BasicIndexScan.BINARYSTATICANALYSIS;
+		} else {
+			// use histograms to find best join order
+			this.opt = BasicIndexScan.BINARY;
+		}
 	}
-
 
 	@Override
 	public long logicalOptimization() {

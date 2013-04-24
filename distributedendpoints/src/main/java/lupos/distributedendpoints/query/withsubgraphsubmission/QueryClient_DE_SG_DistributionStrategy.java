@@ -29,6 +29,8 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.distributed.query.QueryClientWithSubgraphTransmission;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
+import lupos.distributedendpoints.gui.Start_Demo_Applet_DE;
+import lupos.distributedendpoints.storage.DistributionHistogramExecutor;
 import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 
 /**
@@ -45,6 +47,7 @@ public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSu
 
 	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage) throws Exception {
 		super(storage, storage.getDistribution(), new DE_SubgraphExecutor(storage.getEndpointManagement()));
+		this.askForHistogramRequests();
 	}
 
 	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
@@ -53,7 +56,17 @@ public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSu
 
 	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage, final String[] args) throws Exception {
 		super(storage, storage.getDistribution(), new DE_SubgraphExecutor(storage.getEndpointManagement()), args);
+		this.askForHistogramRequests();
 	}
+
+	private void askForHistogramRequests(){
+		if(Start_Demo_Applet_DE.askForHistogramRequests()){
+			final Storage_DE_DistributionStrategy storage_DE_DS = (Storage_DE_DistributionStrategy) this.storage;
+			this.histogramExecutor = new DistributionHistogramExecutor(storage_DE_DS.getDistribution(), storage_DE_DS.getEndpointManagement());
+			this.initOptimization();
+		}
+	}
+
 
 	@Override
 	public void init() throws Exception {

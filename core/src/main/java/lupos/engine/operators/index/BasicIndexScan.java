@@ -59,6 +59,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.RootChild;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.memoryindex.MemoryIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
@@ -66,7 +67,6 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.TriplePattern.BooleanAndUnknown;
 import lupos.misc.Tuple;
-import lupos.optimizations.logical.OptimizeJoinOrder;
 import lupos.optimizations.logical.statistics.Entry;
 import lupos.optimizations.logical.statistics.VarBucket;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
@@ -469,11 +469,11 @@ public abstract class BasicIndexScan extends RootChild {
 
 	/**
 	 * This method is overridden by subclasses, e.g. RDF3XIndexScan
-	 * @param v the variable the minimum and maximum value of which is determined
-	 * @param tp the triple pattern to be considered
-	 * @return the minimum and maximum value of a variable, null if the variable does not appear in the triple patterns
+	 * @param triplePattern the triple pattern to be considered
+	 * @param variables the variables the minimum and maximum value of which is determined
+	 * @return the minimum and maximum values of the given variables, null if determining the minimum and maximum is not supported
 	 */
-	public Tuple<Literal, Literal> getMinMax(final Variable v, final TriplePattern tp) {
+	public Map<Variable, Tuple<Literal, Literal>> getMinMax(final TriplePattern triplePattern, final Collection<Variable> variables) {
 		return null;
 	}
 
@@ -570,8 +570,8 @@ public abstract class BasicIndexScan extends RootChild {
 			final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
-			final HashMap<Variable, Literal> minima,
-			final HashMap<Variable, Literal> maxima) {
+			final Map<Variable, Literal> minima,
+			final Map<Variable, Literal> maxima) {
 		final HashSet<Variable> joinPartnersTP = new HashSet<Variable>();
 		joinPartnersTP.addAll(joinPartners);
 		joinPartnersTP.retainAll(tp.getVariables());
@@ -732,8 +732,7 @@ public abstract class BasicIndexScan extends RootChild {
 			final Collection<Variable> cv = new LinkedList<Variable>();
 			cv.add(v);
 			if (this instanceof RDF3XIndexScan) {
-				((RDF3XIndexScan) this).setCollationOrder(OptimizeJoinOrder
-						.getCollationOrder(tp, cv));
+				((RDF3XIndexScan) this).setCollationOrder(CollationOrder.getCollationOrder(tp, cv));
 			}
 
 			QueryResult qr = this.join(this.root.dataset);
@@ -841,8 +840,8 @@ public abstract class BasicIndexScan extends RootChild {
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
-			final HashMap<Variable, Literal> minima,
-			final HashMap<Variable, Literal> maxima) {
+			final Map<Variable, Literal> minima,
+			final Map<Variable, Literal> maxima) {
 		return this.getVarBucketsOriginal(tp, classBindings, joinPartners, minima, maxima);
 	}
 

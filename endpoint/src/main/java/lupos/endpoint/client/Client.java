@@ -27,22 +27,9 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.formatreader.CSVFormatReader;
@@ -54,17 +41,28 @@ import lupos.endpoint.client.formatreader.XMLFormatReader;
 import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 public class Client {
-	
+
 	public static String DEFAULT_FORMAT = XMLFormatReader.MIMETYPE;
-	
+
 	public final static int LIMIT_OF_BYTES_FOR_GET = 4*1024;
-	
+
 	// enable or disable logging into console
 	private final static boolean log = false;
-	
+
 	protected static HashMap<String, MIMEFormatReader> registeredFormatReaders;
-	
+
 	/**
 	 * register the different MIME type format readers...
 	 */
@@ -80,7 +78,7 @@ public class Client {
 		Client.registerFormatReader(new TripleFormatReader("Turtle", "text/turtle", "Turtle"));
 		Client.registerFormatReader(new TripleFormatReader("RDF XML", "application/rdf+xml", "Rdfxml"));
 	}
-	
+
 	public static void registerFormatReader(final MIMEFormatReader formatReader){
 		Client.registeredFormatReaders.put(formatReader.getMIMEType(), formatReader);
 	}
@@ -88,12 +86,9 @@ public class Client {
 	public static QueryResult submitQuery(final String url, final String query) throws IOException {
 		return Client.submitQuery(url, query, DEFAULT_FORMAT);
 	}
-	
+
 	public static QueryResult submitQuery(final String url, final String query, final String formatKey) throws IOException {
-		List<NameValuePair> params = new LinkedList<NameValuePair>();
-		params.add(new BasicNameValuePair("query", query));
-		params.add(new BasicNameValuePair("format", formatKey));
-		Tuple<String, InputStream> response = doSubmit(url, params, formatKey);
+		final Tuple<String, InputStream> response = submitQueryAndRetrieveStream(url, query, formatKey);
 		final String contentType = response.getFirst();
 		if(contentType==null){
 			System.err.println("Content type missing in response of SPARQL endpoint!");
@@ -102,8 +97,8 @@ public class Client {
 		}
 		MIMEFormatReader reader = Client.registeredFormatReaders.get(contentType);
 		if(reader==null){
-			String[] contentTypeParts=contentType.split(";");
-			for(String contentTypeSecondTry: contentTypeParts){
+			final String[] contentTypeParts=contentType.split(";");
+			for(final String contentTypeSecondTry: contentTypeParts){
 				reader = Client.registeredFormatReaders.get(contentTypeSecondTry);
 				if(reader!=null){
 					return reader.getQueryResult(response.getSecond(), query);
@@ -111,7 +106,7 @@ public class Client {
 			}
 			if(contentType.compareTo("text/plain")==0){
 				final String errorMessage = "Error message received:\n" + FileHelper.readInputStreamToString(response.getSecond());
-				System.err.println(errorMessage);				
+				System.err.println(errorMessage);
 				throw new RuntimeException(errorMessage);
 			}
 			System.err.println("Content type "+contentType+" is not supported!");
@@ -121,27 +116,34 @@ public class Client {
 			if(reader==null){
 				return null;
 			}
-		}		
+		}
 		return reader.getQueryResult(response.getSecond(), query);
 	}
 
-	public static Tuple<String, InputStream> doSubmit(final String url, List<NameValuePair> content, final String requestHeader) throws IOException {
+	public static Tuple<String, InputStream> submitQueryAndRetrieveStream(final String url, final String query, final String formatKey) throws IOException {
+		final List<NameValuePair> params = new LinkedList<NameValuePair>();
+		params.add(new BasicNameValuePair("query", query));
+		params.add(new BasicNameValuePair("format", formatKey));
+		return doSubmit(url, params, formatKey);
+	}
+
+	public static Tuple<String, InputStream> doSubmit(final String url, final List<NameValuePair> content, final String requestHeader) throws IOException {
 		int size=url.length();
-		for(NameValuePair entry: content){
+		for(final NameValuePair entry: content){
 			size += entry.getName().length()+entry.getValue().length()+2; // size determination of &/? key = value
 		}
 		return doSubmit(url, content, requestHeader, size<Client.LIMIT_OF_BYTES_FOR_GET);
 	}
 
-	
+
 	public static Tuple<String, InputStream> doSubmit(final String url, final List<NameValuePair> content, final String requestHeader, final boolean useMethodGET) throws IOException {
-		HttpClient httpclient = new DefaultHttpClient();
+		final HttpClient httpclient = new DefaultHttpClient();
 		final HttpUriRequest httpurirequest;
 		if(useMethodGET){
 			// first build uri with get parameters...
 			String urlAndParams = url;
 			boolean firstTime = true;
-			for(NameValuePair param: content){
+			for(final NameValuePair param: content){
 				if(firstTime){
 					urlAndParams += "?";
 					firstTime = false;
@@ -150,43 +152,43 @@ public class Client {
 				}
 				urlAndParams += param.getName() + "=" + URLEncoder.encode(param.getValue(), "UTF-8");
 			}
-			HttpGet httpget = new HttpGet(urlAndParams);
-			httpget.setHeader("Accept", requestHeader);			
+			final HttpGet httpget = new HttpGet(urlAndParams);
+			httpget.setHeader("Accept", requestHeader);
 			httpurirequest = httpget;
 		} else {
-			HttpPost httppost = new HttpPost(url);
+			final HttpPost httppost = new HttpPost(url);
 			httppost.setHeader("Accept", requestHeader);
 			httppost.setEntity(new UrlEncodedFormEntity(content, org.apache.commons.lang.CharEncoding.UTF_8));
 			httpurirequest = httppost;
 		}
-		HttpResponse response = httpclient.execute(httpurirequest);
-		HttpEntity entity = response.getEntity();
+		final HttpResponse response = httpclient.execute(httpurirequest);
+		final HttpEntity entity = response.getEntity();
 		InputStream in = entity.getContent();
 		if(Client.log){
 			in = new InputStreamLogger(in);
-		}		
+		}
 		return new Tuple<String, InputStream>(entity.getContentType().getValue(), new BufferedInputStream(in));
 	}
-	
+
 	public static class InputStreamLogger extends InputStream {
-		
+
 		private final InputStream piped;
-		
+
 		public InputStreamLogger(final InputStream piped){
 			this.piped = piped;
 		}
 
 		@Override
 		public int read() throws IOException {
-			int result = this.piped.read();
+			final int result = this.piped.read();
 			if(result>=0){
-				for(char c: Character.toChars(result)){
+				for(final char c: Character.toChars(result)){
 					System.out.print(c);
 				}
 			}
 			return result;
 		}
-		
+
 		@Override
 		public void close() throws IOException {
 			this.piped.close();

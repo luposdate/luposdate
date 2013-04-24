@@ -42,6 +42,7 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration;
+import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
@@ -166,6 +167,67 @@ public class RDF3XIndexScan extends BasicIndexScan {
 					return SPO;
 				} else {
 					return SOP;
+				}
+			}
+		}
+
+		public static CollationOrder getCollationOrder(final TriplePattern tp, final Collection<Variable> orderVars) {
+			int[] collationOrder1 = { -1, -1, -1 };
+			int i1 = 0;
+			for (int i = 0; i < 3; i++) {
+				if (!tp.getPos(i).isVariable()) {
+					collationOrder1[i1] = i;
+					i1++;
+				}
+			}
+			for (final Variable v : orderVars) {
+				final int pos = tp.getPos(v);
+				if (pos >= 0) {
+					collationOrder1[i1] = pos;
+					i1++;
+				}
+			}
+			collationOrder1 = fill(collationOrder1, i1);
+			return getCollationOrder(collationOrder1);
+		}
+
+		protected static int[] fill(final int[] collationOrder, int i) {
+			for (; i < 3; i++) {
+				for (int j = 0; j < 3; j++) {
+					int i2 = 0;
+					for (; i2 < i; i2++) {
+						if (j == collationOrder[i2]) {
+							break;
+						}
+					}
+					if (i2 == i) {
+						collationOrder[i] = j;
+						break;
+					}
+				}
+			}
+			return collationOrder;
+		}
+
+		protected static CollationOrder getCollationOrder(
+				final int[] collationOrderArray) {
+			if (collationOrderArray[0] == 0) {
+				if (collationOrderArray[1] == 1) {
+					return CollationOrder.SPO;
+				} else {
+					return CollationOrder.SOP;
+				}
+			} else if (collationOrderArray[0] == 1) {
+				if (collationOrderArray[1] == 0) {
+					return CollationOrder.PSO;
+				} else {
+					return CollationOrder.POS;
+				}
+			} else {
+				if (collationOrderArray[1] == 0) {
+					return CollationOrder.OSP;
+				} else {
+					return CollationOrder.OPS;
 				}
 			}
 		}
@@ -337,7 +399,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 	protected Iterator<Triple> getIterator(final SixIndices sixIndices,
 			final Triple key, final Triple keyMinimum, final Triple keyMaximum) {
-		return this.getIterator(sixIndices, key, this.collationOrder,
+		return RDF3XIndexScan.getIterator(sixIndices, key, this.collationOrder,
 				keyMinimum, keyMaximum);
 	}
 
@@ -804,19 +866,24 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	}
 
 	@Override
-	public Tuple<Literal, Literal> getMinMax(final Variable v,
-			final TriplePattern tp) {
-		int pos = 0;
-		for (final Item item : tp.getItems()) {
-			if (v.equals(item)) {
-				break;
+	public Map<Variable, Tuple<Literal, Literal>> getMinMax(final TriplePattern triplePattern, final Collection<Variable> variables) {
+		final Map<Variable, Tuple<Literal, Literal>> result = new HashMap<Variable, Tuple<Literal, Literal>>();
+		for(final Variable v: variables){
+			int pos = 0;
+			for (final Item item : triplePattern.getItems()) {
+				if (v.equals(item)) {
+					break;
+				}
+				pos++;
 			}
-			pos++;
+			final Literal min = this.getMin(v, triplePattern);
+			if (min != null){
+				// collation order is already set by getMin(...) method!
+				result.put(v, new Tuple<Literal, Literal>(min, this.getMax(triplePattern, pos)));
+			}
 		}
-		final Literal min = this.getMin(v, tp);
-		if (min != null){
-			// collation order is already set by getMin(...) method!
-			return new Tuple<Literal, Literal>(min, this.getMax(tp, pos));
+		if(result.size()>0){
+			return result;
 		}
 		return null;
 	}
@@ -1000,38 +1067,15 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 	private Literal getMaxLiteral(final SixIndices sixIndices,
 			final Triple key, final int pos) {
-		if (sixIndices.SPO instanceof OptimizedDBBPTreeGeneration) {
-			DBBPTree<TripleKey, Triple> dbbptree = null;
-			switch (this.collationOrder) {
-			case SPO:
-				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.SPO)
-						.getDBBPTree();
-				break;
-			case SOP:
-				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.SOP)
-						.getDBBPTree();
-				break;
-			case PSO:
-				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.PSO)
-						.getDBBPTree();
-				break;
-			case POS:
-				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.POS)
-						.getDBBPTree();
-				break;
-			case OSP:
-				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.OSP)
-						.getDBBPTree();
-				break;
-			default:
-			case OPS:
-				dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) sixIndices.OPS)
-						.getDBBPTree();
-				break;
-			}
-			return dbbptree.getMaximum(new TripleKey(key, this.collationOrder))
-					.getPos(pos);
-
+		DBBPTree<TripleKey, Triple> dbbptree = null;
+		final PrefixSearchMinMax<TripleKey, Triple> index = sixIndices.getIndex(this.collationOrder);
+		if(index instanceof OptimizedDBBPTreeGeneration){
+			dbbptree = ((OptimizedDBBPTreeGeneration<TripleKey, Triple>) index).getDBBPTree();
+		} else if(index instanceof DBBPTree){
+			dbbptree = (DBBPTree<TripleKey, Triple>) index;
+		}
+		if(dbbptree!=null){
+			return dbbptree.getMaximum(new TripleKey(key, this.collationOrder)).getPos(pos);
 		}
 		return null;
 	}
@@ -1040,8 +1084,8 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
-			final HashMap<Variable, Literal> minima,
-			final HashMap<Variable, Literal> maxima) {
+			final Map<Variable, Literal> minima,
+			final Map<Variable, Literal> maxima) {
 		if (Indices.usedDatastructure != Indices.DATA_STRUCT.DBBPTREE
 				|| (LiteralFactory.getMapType() != LiteralFactory.MapType.LAZYLITERAL && LiteralFactory
 						.getMapType() != LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {

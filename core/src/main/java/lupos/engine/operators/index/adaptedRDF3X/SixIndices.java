@@ -175,6 +175,15 @@ public class SixIndices extends Indices {
     	}
     }
 
+    /**
+     *  Generates the statistics (of all collation orders) based on the triples in the evaluation indices...
+     */
+    public void generateStatistics(){
+    	for(final CollationOrder order: CollationOrder.values()){
+    		this.generateStatistics(order);
+    	}
+    }
+
     public PrefixSearchMinMax<TripleKey, Triple> getIndex(final CollationOrder order) {
     	switch(order){
     		default:

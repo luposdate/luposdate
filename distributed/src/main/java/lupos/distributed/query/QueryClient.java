@@ -28,7 +28,9 @@ import java.util.Date;
 
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.distributed.query.operator.QueryClientIndices;
-import lupos.distributed.query.operator.QueryClientRoot;
+import lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor;
+import lupos.distributed.query.operator.histogramsubmission.QueryClientRootWithHistogramSubmission;
+import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientRoot;
 import lupos.distributed.storage.IStorage;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.operators.index.BasicIndexScan;
@@ -41,28 +43,53 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 
 	protected final IStorage storage;
 
+	protected IHistogramExecutor histogramExecutor;
+
 	public QueryClient(final IStorage storage) throws Exception {
+		this(storage, (IHistogramExecutor) null);
+	}
+
+	public QueryClient(final IStorage storage, final IHistogramExecutor histogramExecutor) throws Exception {
 		super();
 		this.storage = storage;
+		if(this.histogramExecutor==null){
+			this.histogramExecutor = histogramExecutor;
+		} // else ignore if histogramExecutor is already set in init()
+		this.initOptimization();
 	}
 
 	public QueryClient(final IStorage storage, final String[] args) throws Exception {
-		super(args);
-		this.storage = storage;
+		this(storage, null, args);
 	}
 
-	@Override
-	public void init() throws Exception {
-		super.init();
-		// avoid evaluation of triple patterns for query optimization,
-		// in other words: use a static analysis for reorder triple patterns for optimized query evaluation
-		// (fetch-as-needed is used)
-		this.opt = BasicIndexScan.MOSTRESTRICTIONS;
+	public QueryClient(final IStorage storage, final IHistogramExecutor histogramExecutor, final String[] args) throws Exception {
+		super(args);
+		this.storage = storage;
+		if(this.histogramExecutor==null){
+			this.histogramExecutor = histogramExecutor;
+		} // else ignore if histogramExecutor is already set in init()
+		this.initOptimization();
+	}
+
+	protected void initOptimization() {
+		if(this.histogramExecutor == null){
+			// avoid evaluation of triple patterns for query optimization,
+			// in other words: use a static analysis for reorder triple patterns for optimized query evaluation
+			// (fetch-as-needed is used)
+			this.opt = BasicIndexScan.MOSTRESTRICTIONS;
+		} else {
+			// use histograms to find best join order
+			this.opt = BasicIndexScan.BINARY;
+		}
 	}
 
 	@Override
 	public Root createRoot() {
-		return new QueryClientRoot(this.dataset);
+		if(this.histogramExecutor == null) {
+			return new QueryClientRoot(this.dataset);
+		} else {
+			return new QueryClientRootWithHistogramSubmission(this.dataset, this.histogramExecutor);
+		}
 	}
 
 	@Override
@@ -79,8 +106,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 
 			@Override
 			public lupos.engine.operators.index.Root createRoot() {
-				final QueryClientRoot ic=new QueryClientRoot(QueryClient.this.dataset);
-				return ic;
+				return QueryClient.this.createRoot();
 			}
 		}, this.debug != DEBUG.NONE, this.inmemoryexternalontologyinference);
 		this.dataset.buildCompletelyAllIndices();
@@ -104,8 +130,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 
 			@Override
 			public lupos.engine.operators.index.Root createRoot() {
-				final QueryClientRoot ic=new QueryClientRoot(QueryClient.this.dataset);
-				return ic;
+				return QueryClient.this.createRoot();
 			}
 		}, this.debug != DEBUG.NONE, this.inmemoryexternalontologyinference);
 		this.dataset.buildCompletelyAllIndices();

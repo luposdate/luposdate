@@ -23,84 +23,83 @@
  */
 package lupos.optimizations.logical.rules.generated;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import lupos.optimizations.logical.rules.generated.runtime.Rule;
+import lupos.datastructures.items.Variable;
+import lupos.distributed.operator.ISubgraphExecutor;
+import lupos.distributed.operator.SubgraphContainer;
+import lupos.distributed.storage.distributionstrategy.IDistribution;
+import lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-
-import java.util.Collection;
-
-import lupos.sparql1_1.ParseException;
-import lupos.datastructures.items.Variable;
-import lupos.distributed.operator.SubgraphContainer;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.singleinput.Result;
-import lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError;
-import lupos.distributed.storage.distributionstrategy.IDistribution;
-import lupos.distributed.operator.ISubgraphExecutor;
+import lupos.optimizations.logical.rules.generated.runtime.Rule;
+import lupos.sparql1_1.ParseException;
 
 import org.json.JSONException;
 
 
 
 public class AddSubGraphContainerRule extends Rule {
-    
+
     	public static IDistribution distribution;
-    
+
     	public static ISubgraphExecutor subgraphExecutor;
-    
-    	private Filter getFilterFromIndexScan(BasicOperator root) {
-    		List<OperatorIDTuple> succs = root.getSucceedingOperators();
+
+    	private Filter getFilterFromIndexScan(final BasicOperator root) {
+    		final List<OperatorIDTuple> succs = root.getSucceedingOperators();
     		if (succs.size() == 1) {
-    			for (OperatorIDTuple succ : succs) {
-    				BasicOperator op = succ.getOperator();
+    			for (final OperatorIDTuple succ : succs) {
+    				final BasicOperator op = succ.getOperator();
     				if (op instanceof Filter) {
     					return (Filter) op;
     				}
     			}
     		}
-    
+
     		return null;
-    
+
     	}
-    
+
     	/**
     	 * replace index scan operator with SubgraphContainer
-    	 * 
+    	 *
     	 * @param indexScan
     	 *            the index scan operator
     	 */
     	private void replaceIndexScanOperatorWithSubGraphContainer(
-    			BasicIndexScan indexScan) {
-    
+    			final BasicIndexScan indexScan) {
+
         		try {
         			final Root rootNodeOfOuterGraph = indexScan.getRoot();
         			final Root rootNodeOfSubGraph = rootNodeOfOuterGraph.newInstance(rootNodeOfOuterGraph.dataset);
-    
-        			// TODO for several keys: union of different SubgraphContainer!
+
+        			// TODO: 1) for several keys: union of different SubgraphContainer!
+        			// TODO: 2) catch TriplePatternNotSupportedError and make union of SubgraphContainer to all possible nodes...
         			final SubgraphContainer container = new SubgraphContainer(rootNodeOfSubGraph, distribution.getKeysForQuerying(indexScan.getTriplePattern().iterator().next())[0], subgraphExecutor);
         			final HashSet<Variable> variables = new HashSet<Variable>(indexScan.getIntersectionVariables());
-    
+
         			container.setUnionVariables(variables);
         			container.setIntersectionVariables(variables);
-    
+
         			// remember original connections and connect new graph with these connections
         			final Collection<BasicOperator> preds = indexScan.getPrecedingOperators();
         			final List<OperatorIDTuple> succs = indexScan.getSucceedingOperators();
-    
+
         			for (final BasicOperator pred : preds) {
         				pred.getOperatorIDTuple(indexScan).setOperator(container);
         			}
-    
+
         			// generate new connections...
-    
+
         			final Filter filter = this.getFilterFromIndexScan(indexScan);
-    
+
         			if (filter != null) {
         				if (indexScan.getUnionVariables().containsAll(
         						filter.getUsedVariables())) {
@@ -114,7 +113,7 @@ public class AddSubGraphContainerRule extends Rule {
         					} catch (final ParseException e) {
         						e.printStackTrace();
         					}
-    
+
         				} else {
         					indexScan.setSucceedingOperator(new OperatorIDTuple(
         							new Result(), 0));
@@ -123,22 +122,22 @@ public class AddSubGraphContainerRule extends Rule {
         				indexScan
         				.setSucceedingOperator(new OperatorIDTuple(new Result(), 0));
         			}
-    
+
         			// indexScan.setSucceedingOperator(new OperatorIDTuple(new Result(),
         			// 0));
         			rootNodeOfSubGraph.setSucceedingOperator(new OperatorIDTuple(indexScan, 0));
-    
+
         			rootNodeOfSubGraph.setParents();
-    
+
         			// original connections set at new graph
         			container.setSucceedingOperators(succs);
-    
+
         			// iterate through the new predecessors of the successors of the original index scan operators and set new SubgraphContainer
         			for (final OperatorIDTuple succ : succs) {
         				succ.getOperator().removePrecedingOperator(indexScan);
         				succ.getOperator().addPrecedingOperator(container);
         			}
-    
+
         		} catch (final JSONException e1) {
         			System.err.println(e1);
         			e1.printStackTrace();
@@ -147,11 +146,11 @@ public class AddSubGraphContainerRule extends Rule {
         			e1.printStackTrace();
         		}
     	}
-    
-    
+
+
     private lupos.engine.operators.index.BasicIndexScan indexScan = null;
 
-    private boolean _checkPrivate0(BasicOperator _op) {
+    private boolean _checkPrivate0(final BasicOperator _op) {
         if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
@@ -167,11 +166,13 @@ public class AddSubGraphContainerRule extends Rule {
         this.ruleName = "AddSubGraphContainer";
     }
 
-    protected boolean check(BasicOperator _op) {
+    @Override
+	protected boolean check(final BasicOperator _op) {
         return this._checkPrivate0(_op);
     }
 
-    protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
+    @Override
+	protected void replace(final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         this.replaceIndexScanOperatorWithSubGraphContainer(this.indexScan);
     }
 }

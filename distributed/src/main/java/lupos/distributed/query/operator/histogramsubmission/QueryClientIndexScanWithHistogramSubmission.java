@@ -21,29 +21,51 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator.format.operatorcreator;
+package lupos.distributed.query.operator.histogramsubmission;
 
 import java.util.Collection;
+import java.util.Map;
 
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.items.Item;
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.Literal;
 import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientIndexScan;
-import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientRoot;
-import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
+import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.Tuple;
+import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
- * This class is for creating the operators of the query client...
+ * This class represents an index scan operator for the distributed query evaluators...
  */
-public class QueryClientOperatorCreator implements IOperatorCreator {
+public class QueryClientIndexScanWithHistogramSubmission extends QueryClientIndexScan {
+
+	protected final IHistogramExecutor histogramExecutor;
+
+	public QueryClientIndexScanWithHistogramSubmission(final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final QueryClientRootWithHistogramSubmission root) {
+		super(succeedingOperator, triplePatterns, rdfGraph, root);
+		this.histogramExecutor = root.histogramExecutor;
+	}
+
+	public QueryClientIndexScanWithHistogramSubmission(final QueryClientRootWithHistogramSubmission root, final Collection<TriplePattern> triplePatterns) {
+		super(root, triplePatterns);
+		this.histogramExecutor = root.histogramExecutor;
+	}
+
 
 	@Override
-	public Root createRoot(final Dataset dataset) {
-		return new QueryClientRoot(dataset);
+	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern triplePattern,
+			final Class<? extends Bindings> classBindings,
+			final Collection<Variable> joinPartners,
+			final Map<Variable, Literal> minima,
+			final Map<Variable, Literal> maxima) {
+		return this.histogramExecutor.getHistograms(triplePattern, joinPartners, minima, maxima);
 	}
 
 	@Override
-	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
-		return new QueryClientIndexScan(root, triplePatterns);
+	public Map<Variable, Tuple<Literal, Literal>> getMinMax(final TriplePattern triplePattern, final Collection<Variable> variables) {
+		return this.histogramExecutor.getMinMax(triplePattern, variables);
 	}
+
 }

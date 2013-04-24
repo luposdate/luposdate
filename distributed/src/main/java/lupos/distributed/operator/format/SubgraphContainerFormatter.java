@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
-import lupos.distributed.query.operator.QueryClientIndexScan;
-import lupos.distributed.query.operator.QueryClientRoot;
+import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientIndexScan;
+import lupos.distributed.query.operator.withouthistogramsubmission.QueryClientRoot;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.application.Application;

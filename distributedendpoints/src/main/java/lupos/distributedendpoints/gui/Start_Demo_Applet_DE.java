@@ -23,6 +23,8 @@
  */
 package lupos.distributedendpoints.gui;
 
+import javax.swing.JOptionPane;
+
 import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE;
 import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE_OneKeyDistribution;
 import lupos.distributedendpoints.query.withoutsubgraphsubmission.QueryClient_DE_OneToThreeKeysDistribution;
@@ -46,5 +48,19 @@ public class Start_Demo_Applet_DE {
 		Demo_Applet.registerEvaluator("Distributed Evaluator with subgraph submission (two keys distribution)", QueryClient_DE_SG_TwoKeysDistribution.class);
 		Demo_Applet.registerEvaluator("Distributed Evaluator with subgraph submission (one to three keys distribution)", QueryClient_DE_SG_OneToThreeKeysDistribution.class);
 		Demo_Applet.main(args);
+	}
+
+	public static boolean askForHistogramRequests(){
+		final Object[] options = {"Histogram Requests", "Static Analysis"};
+		final int ret = JOptionPane.showOptionDialog(
+				null,
+				"Use histogram requests during join order optimization\n(leads to better optimization results, but also to more messages)\nor a static analysis (no extra messages)",
+				"Histogram requests or static analysis",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE,
+				null,
+				options, options[0]);
+
+		return (ret == JOptionPane.YES_OPTION);
 	}
 }

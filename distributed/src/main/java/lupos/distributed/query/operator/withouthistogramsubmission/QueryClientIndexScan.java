@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.query.operator;
+package lupos.distributed.query.operator.withouthistogramsubmission;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,6 +32,7 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.IteratorQueryResult;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.query.operator.QueryClientIndices;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Indices;
