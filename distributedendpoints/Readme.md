@@ -14,3 +14,15 @@ It uses the super and helper classes of the distributed module for a first and s
 
 2) The data is distributed according to a specific distribution strategy (one key, two keys or one to three keys).
 The distributed querying is optimized concerning the data distribution strategy.
+
+First run lupos.distributedendpoints.endpoint.ClearIndex to create (empty) indices for initialization purposes.
+Start the endpoints on the different nodes by running lupos.distributedendpoints.endpoint.StartEndpoint.
+
+Edit distributedendpoints/src/main/resources/endpoints.config: 
+For registering a new endpoint, type in its url in a new line of the file.
+
+Run lupos.gui.Start_Demo_Applet for starting the Demo_Applet 
+in which evaluators with different distribution strategies can be
+chosen and queries can be processed. When evaluating a query, you are asked
+whether histograms for query optimization are asked for at the endpoints or
+a static query optimization is used.
