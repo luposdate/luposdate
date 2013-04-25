@@ -119,6 +119,11 @@
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.internetofevents</artifactId>
 			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.geosparql</artifactId>
+			</dependency>
 
 	</dependencies>
 	
