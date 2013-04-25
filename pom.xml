@@ -37,6 +37,7 @@
 	    <module>distributionendpoint</module>
 	    <module>distributionotherparsersandevaluators</module>
 	    <module>distributionall</module>
+		<module>geosparql</module>
 	</modules>
 
 	<dependencyManagement>
@@ -159,6 +160,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.internetofevents</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.geosparql</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			
@@ -295,6 +302,12 @@
 				<groupId>org.jfree</groupId>
 				<artifactId>jfreechart</artifactId>
 				<version>1.0.14</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>1.13</version>
 			</dependency>
 
 		</dependencies>

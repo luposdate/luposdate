@@ -7,6 +7,7 @@ LUPOSDATE is a Semantic Web database supporting
 - the RDF query language SPARQL 1.1
 - the rule language RIF BLD
 - RDFS and OWL2RL
+- parts of geosparql and stparql
 - visual editing of SPARQL queries, RIF rules and RDF data
 - visual representation of query execution plans (operator graphs), optimization and evaluation steps, and abstract syntax trees of parsed queries and rules
 
