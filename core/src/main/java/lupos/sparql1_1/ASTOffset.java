@@ -31,33 +31,36 @@ import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
 public
 class ASTOffset extends SimpleNode {
 	private int offset;
-  public ASTOffset(int id) {
+  public ASTOffset(final int id) {
     super(id);
   }
 
-  public ASTOffset(SPARQL1_1Parser p, int id) {
+  public ASTOffset(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
 
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+    @Override
+	public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
-    public void accept(SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection) {
+    @Override
+	public void accept(final SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection) {
   	    visitor.visit(this, connection);
     }
 
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  @Override
+public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
 
 public int getOffset() {
-	return offset;
+	return this.offset;
 }
 
-public void setOffset(String offset) {
+public void setOffset(final String offset) {
 	this.offset = Integer.parseInt(offset);
 }
 
@@ -68,8 +71,7 @@ public void init(final SimpleNode node){
 
 @Override
 public String toString() {
-	// TODO Auto-generated method stub
-	return super.toString()+" "+offset;
+	return super.toString()+" "+this.offset;
 }
 }
 /* JavaCC - OriginalChecksum=17da9b662db798aa73b44462c5485eaf (do not edit this line) */

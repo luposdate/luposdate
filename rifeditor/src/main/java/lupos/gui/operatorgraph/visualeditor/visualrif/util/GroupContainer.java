@@ -31,90 +31,63 @@ import javax.swing.tree.TreePath;
 
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel;
 
 public class GroupContainer implements ITree {
-	
-	
+
 	private VisualRifEditor visualRifEditor;
 	private GroupPanel activeGroup;
 	private HashMap<String,GroupPanel> groups = new HashMap<String,GroupPanel>();
 	private LinkedList<GroupIdentifier> groupPanelList;
 
-	
-	
-	
-	
 	//Constructor
-	public GroupContainer(VisualRifEditor visualRifEditor){
+	public GroupContainer(final VisualRifEditor visualRifEditor){
 		this.visualRifEditor = visualRifEditor;
 		this.setGroupPanelList(new LinkedList<GroupIdentifier>());
 	}
-	
-	
-	
-	public void showGroup(String ruleName) {
-		this.activeGroup = this.groups.get(ruleName);
 
+	public void showGroup(final String ruleName) {
+		this.activeGroup = this.groups.get(ruleName);
 		this.visualRifEditor.setRightComponent(this.activeGroup);
 	}
-	
-	
-	public GroupPanel getGroupByName(String groupName){
+
+	public GroupPanel getGroupByName(final String groupName){
 		return this.groups.get(groupName);
 	}
-	
-	
+
 	public GroupPanel createNewGroup(){
-
-		String name = this.checkName("Group", "Group", 0);
-		
-		
+		final String name = this.checkName("Group", "Group", 0);
 		this.activeGroup = new GroupPanel(this.visualRifEditor, name);
-		
 		this.groups.put(name, this.activeGroup);
-		visualRifEditor.getTreePane().addNewGroup(this.activeGroup,visualRifEditor.getDocumentContainer().getNameOfActiveElement());
-		printGroups();
-
-		TreePath path = this.activeGroup.getGroupPath();
-//		visualRifEditor.getDocumentContainer().getActiveDocument().getListOfGroups().add(name);
-		visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().updateRuleNameInVisualGraphsComponentArray(name, name);
-		
+		this.visualRifEditor.getTreePane().addNewGroup(this.activeGroup,this.visualRifEditor.getDocumentContainer().getNameOfActiveElement());
+		this.printGroups();
+		final TreePath path = this.activeGroup.getGroupPath();
+		this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().updateRuleNameInVisualGraphsComponentArray(name, name);
 		return this.activeGroup;
 	}
-	
-	
-	public void deleteGroup(String groupName){
+
+	public void deleteGroup(final String groupName){
 		//delete visual Component on Canvas
 		this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().deleteGroup(groupName);
-		
 		this.groups.remove(groupName);
-		
 		// delete GroupPanel
 		for (int i = 0; i < this.groupPanelList.size(); i++) {
 			if (this.groupPanelList.get(i).getGroupName().equals(groupName)){
 				this.groupPanelList.remove(i);
-				}
+			}
 		}
-		
-		// set GroupCnt
-//		this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().setGroupsCnt(this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getGroupsCnt()-1);
-		
 	}
-	
 
 	/**
-	 * Checks whether the name of 
+	 * Checks whether the name of
 	 * the new rule is already used.
 	 * @param basename
 	 * @param newname
 	 * @param index
 	 * @return a new auto-generated name for the new rule
 	 */
-	public String checkName(String basename, String newname, int index) {
+	public String checkName(final String basename, String newname, int index) {
 		boolean exists = false;
-
-		for(String documentName : this.groups.keySet()) {
+		for(final String documentName : this.groups.keySet()) {
 			if(newname.equalsIgnoreCase(documentName)) {
 				newname = basename + index;
 				index += 1;
@@ -123,94 +96,61 @@ public class GroupContainer implements ITree {
 				break;
 			}
 		}
-
 		if(exists) {
 			newname = this.checkName(basename, newname, index);
 		}
-
 		return newname;
 	}
-	
 
-	
 	/**
 	 * Loads the RulePanel and shows it on the right side of the GUI
 	 * @param ruleName
 	 */
-	public void showDocument(String ruleName){
-		
+	public void showDocument(final String ruleName){
 		this.activeGroup = this.groups.get(ruleName);
-//		this.activeDocument.updateDocument();
-		
 		this.visualRifEditor.setRightComponent(this.activeGroup);
-		
 	}
-	
 
-
+	@Override
 	@SuppressWarnings("unchecked")
-	public void removeElement(String elem, TreeNode parentNode) {
-		GroupPanel ret = this.groups.remove(elem);
-
-			this.activeGroup = null;
-
-
+	public void removeElement(final String elem, final TreeNode parentNode) {
+		final GroupPanel ret = this.groups.remove(elem);
+		this.activeGroup = null;
 		this.visualRifEditor.setRightComponent(new JPanel());
 	}
 
-
-	public boolean nameChanged(TypeEnum e, String oldName, String newName) {
+	@Override
+	public boolean nameChanged(final TypeEnum e, final String oldName, final String newName) {
 		String tmpName = this.checkName(newName, newName, 0);
-
 		if(!tmpName.equalsIgnoreCase(newName)) {
 			this.activeGroup.setGroupName(oldName);
-
 			return false;
 		}
-
 		tmpName = this.visualRifEditor.getDocumentContainer().checkName(newName, newName, 0);
-
 		if(!tmpName.equalsIgnoreCase(newName)) {
 			return false;
 		}
-
 		this.activeGroup = this.groups.get(oldName);
 		this.activeGroup.setGroupName(newName);
-
 		this.groups.remove(oldName);
 		this.groups.put(newName, this.activeGroup);
-		
 		this.updateNameInGroupPanelList(oldName, newName);
-		
 		this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().updateGroupNameInVisualGraphsComponentArray(oldName, newName);
-		
-
-
 		this.visualRifEditor.getTreePane().updateTopComponent(oldName, newName);
-
-
-
-		
 		return true;
 	}
 
-
-
-
 	@Override
 	public String getNameOfActiveElement() {
-		// TODO Auto-generated method stub
 		return this.activeGroup.toString();
 	}
 
-	private void updateNameInGroupPanelList(String oldName, String newName){
-		
+	private void updateNameInGroupPanelList(final String oldName, final String newName){
 		for(int i = 0 ; i < this.groupPanelList.size() ; i++){
 			if(this.groupPanelList.get(i).getGroupName().equals(oldName)){
 				this.groupPanelList.get(i).setGroupName(newName);
 			}
 		}
-		
 	}
 
 	public void cancelModi() {
@@ -218,80 +158,50 @@ public class GroupContainer implements ITree {
 			this.activeGroup.cancelModi();
 		}
 	}
-	
+
 	/**
 	 * Test
 	 */
 	private void printGroups(){
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-		for(String name : this.groups.keySet()) {
+		for(final String name : this.groups.keySet()) {
 			System.out.println(name);
 		}
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	}
 
-
-
-	
-	
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
-	
-	
-
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
-
-
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
-
-
 	public GroupPanel getActiveGroup() {
-		return activeGroup;
+		return this.activeGroup;
 	}
 
-
-
-	public void setActiveGroup(GroupPanel activeGroup) {
+	public void setActiveGroup(final GroupPanel activeGroup) {
 		this.activeGroup = activeGroup;
 	}
 
-
-
 	public HashMap<String, GroupPanel> getGroups() {
-		return groups;
+		return this.groups;
 	}
 
-
-
-	public void setGroups(HashMap<String, GroupPanel> groups) {
+	public void setGroups(final HashMap<String, GroupPanel> groups) {
 		this.groups = groups;
 	}
 
-
-
 	public LinkedList<GroupIdentifier> getGroupPanelList() {
-		return groupPanelList;
+		return this.groupPanelList;
 	}
 
-
-
-	public void setGroupPanelList(LinkedList<GroupIdentifier> groupPanelList) {
+	public void setGroupPanelList(final LinkedList<GroupIdentifier> groupPanelList) {
 		this.groupPanelList = groupPanelList;
 	}
-
-
-
-
-
-
-
-
-
 }

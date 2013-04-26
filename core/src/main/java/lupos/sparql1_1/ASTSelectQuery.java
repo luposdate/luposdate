@@ -34,64 +34,67 @@ class ASTSelectQuery extends SimpleNode {
 	private boolean distinct;
 	private boolean reduced;
 	private boolean selectAll;
-  public ASTSelectQuery(int id) {
+  public ASTSelectQuery(final int id) {
     super(id);
   }
 
-  public ASTSelectQuery(SPARQL1_1Parser p, int id) {
+  public ASTSelectQuery(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
 
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+    @Override
+	public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
-    public void accept(SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection) {
+    @Override
+	public void accept(final SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection) {
   	    visitor.visit(this, connection);
     }
 
-    public void accept(SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection, Item graphConstraint){
+    @Override
+	public void accept(final SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection, final Item graphConstraint){
   	    visitor.visit(this, connection, graphConstraint);
     }
-        
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+
+  @Override
+public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
 
 public boolean isDistinct() {
-	return distinct;
+	return this.distinct;
 }
 
-public void setDistinct(boolean distinct) {
+public void setDistinct(final boolean distinct) {
 	this.distinct = distinct;
 }
 
 public boolean isReduced() {
-	return reduced;
+	return this.reduced;
 }
 
-public void setReduced(boolean reduced) {
+public void setReduced(final boolean reduced) {
 	this.reduced = reduced;
 }
 
 public boolean isSelectAll() {
-	return selectAll;
+	return this.selectAll;
 }
 
-public void setSelectAll(boolean selectAll) {
+public void setSelectAll(final boolean selectAll) {
 	this.selectAll = selectAll;
 }
 @Override
 public String toString() {
-	// TODO Auto-generated method stub
-	return super.toString()+" disctinct :"+distinct+" reduced:"+reduced+" select all:"+selectAll;
+	return super.toString()+" disctinct :"+this.distinct+" reduced:"+this.reduced+" select all:"+this.selectAll;
 }
 
 @Override
 public void init(final SimpleNode node){
-	ASTSelectQuery other = (ASTSelectQuery) node;
+	final ASTSelectQuery other = (ASTSelectQuery) node;
 	this.setDistinct(other.isDistinct());
 	this.setSelectAll(other.isSelectAll());
 	this.setReduced(other.isReduced());

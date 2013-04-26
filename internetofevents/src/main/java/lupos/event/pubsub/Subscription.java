@@ -24,39 +24,71 @@
 package lupos.event.pubsub;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Subscription implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Each subscription is identified by its ID //TODO UUID could result in collision
-	 */
-	private final String id = UUID.randomUUID().toString();
-	
+	private final String id;
+
+	private final static ReentrantLock lock = new ReentrantLock();
+	private static int max_id =0;
+	private final static String computer_id = computeComputerId();
 
 	private String name;
-	
+
 	private String query;
-	
-	
-	public Subscription(String query) {
+
+	/**
+	 * Returns a unique id for each computer and probably for each client on this computer.
+	 * It fails if two or more clients on the same computer in different vms
+	 * call this method within the same millisecond.
+	 *
+	 * @return a unique id for each computer
+	 */
+	private static String computeComputerId(){
+		String computername="Unknown Host";
+		try {
+			computername = InetAddress.getLocalHost().getHostName();
+		} catch (final UnknownHostException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
+		final Random rn = new Random(System.currentTimeMillis());
+		return " (" + computername + ") " + rn.nextLong();
+	}
+
+	public Subscription(final String query) {
 		this("NO_NAME", query);
 	}
-	
-	public Subscription(String name, String query) {
+
+	public Subscription(final String name, final String query) {
+		this();
 		this.name = name;
 		this.query = query;
 	}
-	
-	public void setName(String name) { this.name = name; }
-	public void setQuery(String query) { this.query = query; }
+
+	private Subscription() {
+		lock.lock();
+		try {
+			this.id = "ID " + Subscription.max_id + Subscription.computeComputerId();
+			Subscription.max_id++;
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public void setName(final String name) { this.name = name; }
+	public void setQuery(final String query) { this.query = query; }
 
 	public String getQuery() { return this.query; }
 	public String getName() { return this.name; }
 	public String getId() { return this.id; }
-	
+
 	@Override
 	public String toString() {
 		return this.name;
@@ -64,21 +96,21 @@ public class Subscription implements Serializable {
 
 	/**
 	 * Checks for equality of this Subscription and another Subscription OR a String.
-	 * In case of obj being a String, it gets directly compared with the id of this Subscription instance. 
+	 * In case of obj being a String, it gets directly compared with the id of this Subscription instance.
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if(obj instanceof Subscription) {
-			Subscription other = (Subscription)obj;
+			final Subscription other = (Subscription)obj;
 			return this.id.equals(other.id);
 		}
 		else if(obj instanceof String) {
-			String str = (String)obj;
+			final String str = (String)obj;
 			return this.id.equals(str);
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.id.hashCode();

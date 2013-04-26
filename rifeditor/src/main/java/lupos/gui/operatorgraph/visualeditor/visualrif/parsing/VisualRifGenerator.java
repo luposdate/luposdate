@@ -86,7 +86,7 @@ import lupos.sparql1_1.Node;
 public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 	String query;
-	
+
 	private VisualRifEditor visualRifEditor;
 	protected final CommonCoreQueryEvaluator<Node> evaluator = null;
 	private CompilationUnit compilationUnit;
@@ -94,34 +94,28 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	private DocumentEditorPane documentEditorPane;
 	private PrefixOperator po = null;
 	private String[] comboBoxEntries;
-	private Scout scout = new Scout();
+	private final Scout scout = new Scout();
 
-	
-	// Constructor	
-	public VisualRifGenerator(String query, DocumentEditorPane that, Console console, JTabbedPane bottomPane, VisualRifEditor visualRifEditor, IRuleNode arg){
+
+	// Constructor
+	public VisualRifGenerator(final String query, final DocumentEditorPane that, final Console console, final JTabbedPane bottomPane, final VisualRifEditor visualRifEditor, final IRuleNode arg){
 		this.setVisualRifEditor(visualRifEditor);
 		this.setQuery(query);
 		this.setDocumentEditorPane(that);
-		
+
 		final RIFParser parser = new RIFParser(new StringReader(query));
-		
+
 		try {
-			
+
 			this.compilationUnit = parser.CompilationUnit();
-			
-		} catch (ParseException e) {
-			
+
+		} catch (final ParseException e) {
 			console.setText(e.getLocalizedMessage());
 			bottomPane.setSelectedIndex(1);
-
-			
-
-//			e.printStackTrace();
-			
 		}
-		
+
 		this.rifDocument = (Document) this.compilationUnit.accept(new ParseSyntaxTreeVisitor(), arg);
-		
+
 
 		final ValidateRuleVisitor valVisitor = new ValidateRuleVisitor();
 		final NormalizeRuleVisitor normVisitor = new NormalizeRuleVisitor();
@@ -136,35 +130,25 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		this.rifDocument.accept(valVisitor, arg);
 		this.rifDocument.accept(dependencyVisitor, arg);
 		this.rifDocument.accept(filteringVisitor, arg);
-		
-
-		
-
 	}
-	
 
-
-	// Visit 
+	// Visit
 	@Override
-	public Object visit(Document obj, Object arg) throws RIFException {
-		
-		
-		
+	public Object visit(final Document obj, final Object arg) throws RIFException {
 		// Prefix + Base
 		if (!obj.getPrefixMap().isEmpty() || obj.getBaseNamespace() != null) {
-
-			po = new PrefixOperator();
+			this.po = new PrefixOperator();
 			int prefixCnt = 0;
-			
+
 			// Base
 			if (obj.getBaseNamespace() != null) {
-				po.addEntry("BASE", obj.getBaseNamespace());
+				this.po.addEntry("BASE", obj.getBaseNamespace());
 				prefixCnt++;
 			}
-			
+
 			// Prefix
-			for (Entry<String, String> e : obj.getPrefixMap().entrySet()) {
-				po.addEntry(e.getKey(), e.getValue());
+			for (final Entry<String, String> e : obj.getPrefixMap().entrySet()) {
+				this.po.addEntry(e.getKey(), e.getValue());
 				prefixCnt++;
 			}
 
@@ -175,1196 +159,793 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 				this.comboBoxEntries[prefixCnt-cnt] = "BASE";
 				cnt--;
 			}
-			
-			for (Entry<String, String> e : obj.getPrefixMap().entrySet()) {
+
+			for (final Entry<String, String> e : obj.getPrefixMap().entrySet()) {
 				if ( e.getKey().equals("xsd")){;}else
-				if ( e.getKey().equals("xs") ){
-					this.comboBoxEntries[prefixCnt-cnt] = e.getKey();cnt--;
-					this.comboBoxEntries[prefixCnt-cnt] = "xs#integer"; cnt--;
-					this.comboBoxEntries[prefixCnt-cnt] = "xs#string";cnt--;
-					this.comboBoxEntries[prefixCnt-cnt] = "integer";
-					cnt--;
-				}else{
-					this.comboBoxEntries[prefixCnt-cnt] = e.getKey();
-					cnt--;
-				}
+					if ( e.getKey().equals("xs") ){
+						this.comboBoxEntries[prefixCnt-cnt] = e.getKey();cnt--;
+						this.comboBoxEntries[prefixCnt-cnt] = "xs#integer"; cnt--;
+						this.comboBoxEntries[prefixCnt-cnt] = "xs#string";cnt--;
+						this.comboBoxEntries[prefixCnt-cnt] = "integer";
+						cnt--;
+					}else{
+						this.comboBoxEntries[prefixCnt-cnt] = e.getKey();
+						cnt--;
+					}
 			}
-			
-			
 
 		} // end prefix
-		
+
 		if (!obj.getFacts().isEmpty()) {
 
-
-			for (Iterator iterator = obj.getFacts().iterator(); iterator
+			for (final Iterator iterator = obj.getFacts().iterator(); iterator
 					.hasNext();) {
-				IExpression type = (IExpression) iterator.next();
-//				type.accept(this, null);
-//				System.out.println(type.get);
-
+				final IExpression type = (IExpression) iterator.next();
 			}
 
 		}
-		
-		
-		return  po;
-	
+		return  this.po;
+
 	}
 
 	@Override
-	public Object visit(Rule obj, Object arg) throws RIFException {
+	public Object visit(final Rule obj, final Object arg) throws RIFException {
 		System.out.println("visit(Rule obj, Object arg)");
-		
-		RuleOperator ro = new RuleOperator();
+
+		final RuleOperator ro = new RuleOperator();
 		ro.setVisualRifEditor(this.visualRifEditor);
 		ro.initRule();
 
 		ro.setUnVisitedObject(obj);
-
-		
-
-		
-
-		
 		return ro;
 	}
 
 	@Override
-	public Object visit(ExistExpression obj, Object arg) throws RIFException {
+	public Object visit(final ExistExpression obj, final Object arg) throws RIFException {
 		System.out.println("visit(ExistExpression obj, Object arg)");
 
-		ExistsContainer existsContainer = new ExistsContainer();
-		existsContainer.setVisualRifEditor(visualRifEditor);
+		final ExistsContainer existsContainer = new ExistsContainer();
+		existsContainer.setVisualRifEditor(this.visualRifEditor);
 
 		existsContainer.draw(new GraphWrapperOperator(existsContainer),
 				(RuleGraph) arg);
 
-		LinkedList<String> existsVar = new LinkedList<String>();
+		final LinkedList<String> existsVar = new LinkedList<String>();
 
+		final Operator op = (Operator) obj
+				.getChildren()
+				.get(obj.getChildren().size()-1)
+				.accept(this, existsContainer.getRecursiveOperatorGraph());
 
-		
-		
-			
-			Operator op = (Operator) obj
-						.getChildren()
-						.get(obj.getChildren().size()-1)
-						.accept(this, existsContainer.getRecursiveOperatorGraph());
-			
-			for (int i = 0 ; i < obj.getChildren().size()-1; i++){
-				
-
-				
-				existsVar.add((String)obj.getChildren().get(i).getLabel().substring(1));
-				
-			
-			
+		for (int i = 0 ; i < obj.getChildren().size()-1; i++){
+			existsVar.add(obj.getChildren().get(i).getLabel().substring(1));
 			existsContainer.addOperator(op);
 		}
-		
-//		for (int i = 0; i < obj.getChildren().size(); i++) {
-//
-//			if (obj.getChildren().get(i)
-//					.accept(this, existsContainer.getRecursiveOperatorGraph()) instanceof Operator) {
-//
-//				existsContainer.addOperator((Operator) obj
-//						.getChildren()
-//						.get(i)
-//						.accept(this,
-//								existsContainer.getRecursiveOperatorGraph()));
-//
-//			} else
-//
-//				existsVar.add((String) obj
-//						.getChildren()
-//						.get(i)
-//						.accept(this,
-//								existsContainer.getRecursiveOperatorGraph()));
-//
-//		}
-
 		return existsContainer;
 	}
 
 	@Override
-	public Object visit(Conjunction obj, Object arg) throws RIFException {
+	public Object visit(final Conjunction obj, final Object arg) throws RIFException {
 		System.out.println("visit(Conjunction obj, Object arg)");
-	
-	
-		
-			AndContainer andContainer = new AndContainer();
-			andContainer.setVisualRifEditor(visualRifEditor);
-			
-			
-			
-			AbstractGuiComponent<Operator> recrusiveOperatorGraph = andContainer.draw(new GraphWrapperOperator(andContainer),
-					(RuleGraph) arg);
-			
-//			andContainer.initRecursiveOperatorGraph((RuleGraph)arg);
-			
-			// TODO
-			System.out.println("NullTest andContainer.getRecursiveOperatorGraph(): "+(andContainer.getRecursiveOperatorGraph()==null));
-			
-			for (int i = 0; i < obj.getChildren().size(); i++) {
-				Operator operator = (Operator) obj.getChildren().get(i).accept(this, andContainer.getRecursiveOperatorGraph());
-				andContainer.addOperator(operator);
-			}
 
+		final AndContainer andContainer = new AndContainer();
+		andContainer.setVisualRifEditor(this.visualRifEditor);
+
+		final AbstractGuiComponent<Operator> recrusiveOperatorGraph = andContainer.draw(new GraphWrapperOperator(andContainer),
+				(RuleGraph) arg);
+		for (int i = 0; i < obj.getChildren().size(); i++) {
+			final Operator operator = (Operator) obj.getChildren().get(i).accept(this, andContainer.getRecursiveOperatorGraph());
+			andContainer.addOperator(operator);
+		}
 		return andContainer;
 	}
 
 	@Override
-	public Object visit(Disjunction obj, Object arg) throws RIFException {
+	public Object visit(final Disjunction obj, final Object arg) throws RIFException {
 		System.out.println("visit(Disjunction obj, Object arg)");
-		
 
-		
-		OrContainer orContainer = new OrContainer();
+		final OrContainer orContainer = new OrContainer();
 		orContainer.setVisualRifEditor(this.visualRifEditor);
-		
+
 		orContainer.draw(new GraphWrapperOperator(orContainer),
 				(RuleGraph) arg);
-//		orContainer.setRecursiveOperatorGraph(recursiveOperatorGraph)
-//		orContainer.initRecursiveOperatorGraph((RuleGraph)arg);
-		
 		for (int i = 0; i < obj.getChildren().size(); i++) {
-			
 			orContainer.addOperator((Operator) obj.getChildren().get(i).accept(this, orContainer.getRecursiveOperatorGraph()));
-		
 		}
-
-	return orContainer;
+		return orContainer;
 	}
 
 	@Override
-	public Object visit(RulePredicate obj, Object arg) throws RIFException {
+	public Object visit(final RulePredicate obj, final Object arg) throws RIFException {
 		System.out.println("visit(RulePredicate obj, Object arg)");
-		LinkedList<Term> terms = new LinkedList<Term>();
-		
-		
+		final LinkedList<Term> terms = new LinkedList<Term>();
+
 		// FrameOperator
 		if(obj.getLabel().contains("[") && obj.getLabel().contains("]")){
-			
-			FrameOperator frameOperator = new FrameOperator();
+			final FrameOperator frameOperator = new FrameOperator();
 			frameOperator.setVisualRifEditor(this.visualRifEditor);
 			frameOperator.setConstantComboBoxEntries(this.comboBoxEntries);
-			
-
 			// create Terms
-				
-				switch((Integer) obj.termParams.get(0).accept(this.scout, arg)){
 
-				
-				case Scout.RULEVARIABLE :   if(((String)obj.termParams.get(0).accept(this, arg)).startsWith("ALIASVAR")){
-												// TODO: check!
-											}
-											Term termVar1 = frameOperator.prepareToCreateVariableTerm((String)obj.termParams.get(0).accept(this, arg)); 
-											terms.add(termVar1);
-											break;
-				
-				case Scout.CONSTANT: String[] constArray = new String[2];
-									 constArray = (String[]) obj.termParams.get(0).accept(this, arg);
-									 Term termConst1 = frameOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],comboBoxEntries);
-									 terms.add(termConst1);
-									 break;
-				
-										
-							case Scout.RULELIST:   
-													
-															ListOperator listOperator = (ListOperator) obj.termParams.get(0).accept(this, arg);
-															Term listTerm = frameOperator.prepareToCreateListTerm(listOperator, comboBoxEntries);
-															terms.add(listTerm);
-															break;
-													
-													
-							case Scout.RULEPREDICATE:  
-													
-															UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(0).accept(this, arg);
-												
-															Term unitermTerm = frameOperator.prepareToCreateUnitermTerm(unitermOperator, comboBoxEntries);
-															terms.add(unitermTerm);
-				
-														break;
-														
-							case Scout.EXTERNAL:  
-								
-															UnitermOperator external = (UnitermOperator) obj.termParams.get(0).accept(this, arg);
-															
-															Term externalTerm = frameOperator.prepareToCreateUnitermTerm(external, comboBoxEntries);
-															terms.add(externalTerm);
-
-														
-														break;
-														
-										
-							default: 				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
-													break;
-			
+			switch((Integer) obj.termParams.get(0).accept(this.scout, arg)){
+			case Scout.RULEVARIABLE :   if(((String)obj.termParams.get(0).accept(this, arg)).startsWith("ALIASVAR")){
+				// TODO: check!
 			}
-				
+			final Term termVar1 = frameOperator.prepareToCreateVariableTerm((String)obj.termParams.get(0).accept(this, arg));
+			terms.add(termVar1);
+			break;
 
-				switch((Integer) obj.termName.accept(scout, arg)){
-				
-				
-				
-				case Scout.RULEVARIABLE :   Term termNameVar = frameOperator.prepareToCreateVariableTerm((String)obj.termName.accept(this, arg)); 
-											terms.add(termNameVar);
-											break;
-				
-				case Scout.CONSTANT:
-									 String[] constArray = new String[2];
-									 constArray = (String[]) obj.termName.accept(this, arg);
-									 Term termNameConst = frameOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],comboBoxEntries);
-									 terms.add(termNameConst);
-									 break;
-				
-										
-							case Scout.RULELIST:   
-													
-															ListOperator listOperator = (ListOperator) obj.termName.accept(this, arg);
-															Term listTerm = frameOperator.prepareToCreateListTerm(listOperator, comboBoxEntries);
-															terms.add(listTerm);
-															break;
-													
-													
-							case Scout.RULEPREDICATE:  
-													
-															UnitermOperator unitermOperator = (UnitermOperator) obj.termName.accept(this, arg);
-												
-															Term unitermTerm = frameOperator.prepareToCreateUnitermTerm(unitermOperator, comboBoxEntries);
-															terms.add(unitermTerm);
-				
-														break;
-														
-							case Scout.EXTERNAL:  
-								
-															UnitermOperator external = (UnitermOperator) obj.termName.accept(this, arg);
-															
-															Term externalTerm = frameOperator.prepareToCreateUnitermTerm(external, comboBoxEntries);
-															terms.add(externalTerm);
-
-														
-														break;
-														
-										
-							default: 				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
-													break;
-			
+			case Scout.CONSTANT: String[] constArray = new String[2];
+			constArray = (String[]) obj.termParams.get(0).accept(this, arg);
+			final Term termConst1 = frameOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
+			terms.add(termConst1);
+			break;
+			case Scout.RULELIST:
+				final ListOperator listOperator = (ListOperator) obj.termParams.get(0).accept(this, arg);
+				final Term listTerm = frameOperator.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
+				terms.add(listTerm);
+				break;
+			case Scout.RULEPREDICATE:
+				final UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(0).accept(this, arg);
+				final Term unitermTerm = frameOperator.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
+				terms.add(unitermTerm);
+				break;
+			case Scout.EXTERNAL:
+				final UnitermOperator external = (UnitermOperator) obj.termParams.get(0).accept(this, arg);
+				final Term externalTerm = frameOperator.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
+				terms.add(externalTerm);
+				break;
+			default:
+				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
+				break;
 			}
-				
-				
-				switch((Integer) obj.termParams.get(1).accept(scout, arg)){
-				
-					
-				
-					case Scout.RULEVARIABLE :  Term termVar2 = frameOperator.prepareToCreateVariableTerm((String)obj.termParams.get(1).accept(this, arg)); 
-												terms.add(termVar2);
-												break;
-					
-					case Scout.CONSTANT: String[] constArray = new String[2];
-										 constArray = (String[]) obj.termParams.get(1).accept(this, arg);
-										 Term termConst2 = frameOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],comboBoxEntries);
-										 terms.add(termConst2);
-										 break;
-					
-											
-					case Scout.RULELIST:   
-											
-													ListOperator listOperator = (ListOperator) obj.termParams.get(1).accept(this, arg);
-													Term listTerm = frameOperator.prepareToCreateListTerm(listOperator, comboBoxEntries);
-													terms.add(listTerm);
-													break;
-											
-											
-					case Scout.RULEPREDICATE:  
-											
-													UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(1).accept(this, arg);
-										
-													Term unitermTerm = frameOperator.prepareToCreateUnitermTerm(unitermOperator, comboBoxEntries);
-													terms.add(unitermTerm);
-		
-												break;
-												
-					case Scout.EXTERNAL:  
-						
-													UnitermOperator external = (UnitermOperator) obj.termParams.get(1).accept(this, arg);
-													
-													Term externalTerm = frameOperator.prepareToCreateUnitermTerm(external, comboBoxEntries);
-													terms.add(externalTerm);
 
-												
-												break;
-												
-								
-					default: 				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
-											break;
-				
-				}
-				
+			switch((Integer) obj.termName.accept(this.scout, arg)){
+			case Scout.RULEVARIABLE :
+				final Term termNameVar = frameOperator.prepareToCreateVariableTerm((String)obj.termName.accept(this, arg));
+				terms.add(termNameVar);
+				break;
 
+			case Scout.CONSTANT:
+				String[] constArray = new String[2];
+				constArray = (String[]) obj.termName.accept(this, arg);
+				final Term termNameConst = frameOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
+				terms.add(termNameConst);
+				break;
+
+			case Scout.RULELIST:
+				final ListOperator listOperator = (ListOperator) obj.termName.accept(this, arg);
+				final Term listTerm = frameOperator.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
+				terms.add(listTerm);
+				break;
+
+			case Scout.RULEPREDICATE:
+				final UnitermOperator unitermOperator = (UnitermOperator) obj.termName.accept(this, arg);
+				final Term unitermTerm = frameOperator.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
+				terms.add(unitermTerm);
+				break;
+
+			case Scout.EXTERNAL:
+				final UnitermOperator external = (UnitermOperator) obj.termName.accept(this, arg);
+				final Term externalTerm = frameOperator.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
+				terms.add(externalTerm);
+				break;
+
+			default:
+				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
+				break;
+			}
+
+			switch((Integer) obj.termParams.get(1).accept(this.scout, arg)){
+			case Scout.RULEVARIABLE :
+				final Term termVar2 = frameOperator.prepareToCreateVariableTerm((String)obj.termParams.get(1).accept(this, arg));
+				terms.add(termVar2);
+				break;
+
+			case Scout.CONSTANT: String[] constArray = new String[2];
+				constArray = (String[]) obj.termParams.get(1).accept(this, arg);
+				final Term termConst2 = frameOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
+				terms.add(termConst2);
+				break;
+
+			case Scout.RULELIST:
+				final ListOperator listOperator = (ListOperator) obj.termParams.get(1).accept(this, arg);
+				final Term listTerm = frameOperator.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
+				terms.add(listTerm);
+				break;
+
+			case Scout.RULEPREDICATE:
+				final UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(1).accept(this, arg);
+				final Term unitermTerm = frameOperator.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
+				terms.add(unitermTerm);
+				break;
+
+			case Scout.EXTERNAL:
+				final UnitermOperator external = (UnitermOperator) obj.termParams.get(1).accept(this, arg);
+				final Term externalTerm = frameOperator.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
+				terms.add(externalTerm);
+				break;
+
+			default:
+				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
+				break;
+			}
 			frameOperator.setTerms(terms);
-
-			
 			if( (arg instanceof RuleGraph) &&((RuleGraph) arg).isRecursiveOperatorGraph()  ){
 				System.out.println("!Ich wart hier");
-				RuleGraph rg = ((RuleGraph) arg);
+				final RuleGraph rg = ((RuleGraph) arg);
 				rg.getOperatorContainer().addOperator(frameOperator);
 			}
-			
 			return frameOperator;
-			
-		}else{
-			
-		// Uniterm
-		UnitermOperator uniTerm = new UnitermOperator();
-		uniTerm.setVisualRifEditor(this.visualRifEditor);
-		uniTerm.setConstantComboBoxEntries(this.comboBoxEntries);
-		
-		// Prefix + Name
-		String[] termPref = (String[]) obj.termName.accept(this, arg);
-	
-		// set prefix
-		uniTerm.getUniTermComboBox().setSelectedItem(termPref[0]);
-		uniTerm.setSelectedPrefix(termPref[0]);
-		
-		// set name
-		uniTerm.setTermName(termPref[1]);
+		} else {
 
-		// create Terms
-		int tmp = 0;
-		
-		for (int i = 0; i < obj.termParams.size(); i++) {
-			
-			tmp =  (Integer) obj.termParams.get(i).accept(this.scout, arg);
-			
-			switch(tmp){
-			
-			
-				case Scout.RULEVARIABLE: 				
-										
-										Term termVar = uniTerm.prepareToCreateVariableTerm((String)obj.termParams.get(i).accept(this, arg));
-										terms.add(termVar);
-										break;
-										
+			// Uniterm
+			final UnitermOperator uniTerm = new UnitermOperator();
+			uniTerm.setVisualRifEditor(this.visualRifEditor);
+			uniTerm.setConstantComboBoxEntries(this.comboBoxEntries);
+
+			// Prefix + Name
+			final String[] termPref = (String[]) obj.termName.accept(this, arg);
+
+			// set prefix
+			uniTerm.getUniTermComboBox().setSelectedItem(termPref[0]);
+			uniTerm.setSelectedPrefix(termPref[0]);
+
+			// set name
+			uniTerm.setTermName(termPref[1]);
+
+			// create Terms
+			int tmp = 0;
+			for (int i = 0; i < obj.termParams.size(); i++) {
+				tmp =  (Integer) obj.termParams.get(i).accept(this.scout, arg);
+				switch(tmp){
+				case Scout.RULEVARIABLE:
+					final Term termVar = uniTerm.prepareToCreateVariableTerm((String)obj.termParams.get(i).accept(this, arg));
+					terms.add(termVar);
+					break;
+
 				case Scout.CONSTANT:
-				
-										String[] constArray = new String[2];
-										constArray = (String[]) obj.termParams.get(i).accept(this, arg);
-										Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
-										terms.add(termConst);
-										break;
-										
-				case Scout.RULELIST:   
-										
-												ListOperator listOperator = (ListOperator) obj.termParams.get(i).accept(this, arg);
-												Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
-												terms.add(listTerm);
-												break;
-										
-										
-				case Scout.RULEPREDICATE:  
-										
-												UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
-									
-												Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
-												terms.add(unitermTerm);
-	
-											break;
-											
-				case Scout.EXTERNAL:  
-					
-												UnitermOperator external = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
-												
-												Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
-												terms.add(externalTerm);
+					String[] constArray = new String[2];
+					constArray = (String[]) obj.termParams.get(i).accept(this, arg);
+					final Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
+					terms.add(termConst);
+					break;
 
-											
-											break;
-											
-							
-				default: 				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
-										break;
-			
-			}
+				case Scout.RULELIST:
+					final ListOperator listOperator = (ListOperator) obj.termParams.get(i).accept(this, arg);
+					final Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
+					terms.add(listTerm);
+					break;
 
-			
-		} // end for
-		
-		uniTerm.setTerms(terms);
-		
-		return uniTerm;
+				case Scout.RULEPREDICATE:
+					final UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
+					final Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
+					terms.add(unitermTerm);
+					break;
+
+				case Scout.EXTERNAL:
+					final UnitermOperator external = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
+					final Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
+					terms.add(externalTerm);
+					break;
+
+					default:
+						System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
+						break;
+				}
+			} // end for
+			uniTerm.setTerms(terms);
+			return uniTerm;
 		}
-		
-		
-	
-		
 	}
-	
+
 	@Override
-	public Object visit(Equality obj, Object arg) throws RIFException {
+	public Object visit(final Equality obj, final Object arg) throws RIFException {
 		System.out.println("visit(Equality obj, Object arg)");
-		
-		Object left = obj.leftExpr.accept(this, arg);
-		Object right = obj.rightExpr.accept(this, arg);
-	   
+
+		final Object left = obj.leftExpr.accept(this, arg);
+		final Object right = obj.rightExpr.accept(this, arg);
+
 		// Constant
 		if (left instanceof String[]){
-			String[] constArray = (String[])left;
-			ConstantOperator constOpL = new ConstantOperator();
+			final String[] constArray = (String[])left;
+			final ConstantOperator constOpL = new ConstantOperator();
 			constOpL.setConstant(constArray[1]);
 			constOpL.setComboBoxEntries(this.comboBoxEntries);
 			constOpL.setVisualRifEditor(this.visualRifEditor);
-			constOpL.getConstantComboBox().setSelectedItem((String)constArray[0]);
-			constOpL.setSelectedPrefix((String)constArray[0]);
-			
+			constOpL.getConstantComboBox().setSelectedItem(constArray[0]);
+			constOpL.setSelectedPrefix(constArray[0]);
+
 			switch((Integer) obj.rightExpr.accept(this.scout, arg)){
-			
-			
-			case Scout.RULEVARIABLE: 			
-										VariableOperator varOpR = new VariableOperator();
-										varOpR.setVariable((String)right);
-										OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
-										constOpL.addSucceedingOperator(oidtVar);
-										break;
-										
-										
-			case Scout.CONSTANT: 		ConstantOperator constOpR = new ConstantOperator();
-										constOpR.setVisualRifEditor(this.visualRifEditor);
-										constOpR.setComboBoxEntries(this.comboBoxEntries);
-										String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
-										constOpR.setConstant(prefConst[1]);
-										constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
-										constOpR.setSelectedPrefix((String)prefConst[0]);
-										OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
-										constOpL.addSucceedingOperator(oidtConst);
-										break;
-										
-			case Scout.RULEPREDICATE:
-										
-										if(right instanceof UnitermOperator){
-											UnitermOperator factOpR = (UnitermOperator) right;
-									
-											OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-											constOpL.addSucceedingOperator(oidtRulePred);
-										}
-										
-										break;
-										
-			case Scout.EXTERNAL:		
-										if(right instanceof UnitermOperator){
-											UnitermOperator factOpR = (UnitermOperator) right;
-				
-											OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-											constOpL.addSucceedingOperator(oidtRulePred);
-										}
-			
-										break;
-				
-				
-				
-			
-										
-										
-			case Scout.RULELIST: 		
-				
-										
-										ListOperator listOpR = (ListOperator) right;
-										
-										OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
-										constOpL.addSucceedingOperator(oidt);
-										
-										break;
-										
-										
-			default:					break;
-										
-										
-			
+				case Scout.RULEVARIABLE:
+					final VariableOperator varOpR = new VariableOperator();
+					varOpR.setVariable((String)right);
+					final OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
+					constOpL.addSucceedingOperator(oidtVar);
+					break;
+
+				case Scout.CONSTANT:
+					final ConstantOperator constOpR = new ConstantOperator();
+					constOpR.setVisualRifEditor(this.visualRifEditor);
+					constOpR.setComboBoxEntries(this.comboBoxEntries);
+					final String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
+					constOpR.setConstant(prefConst[1]);
+					constOpR.getConstantComboBox().setSelectedItem(prefConst[0]);
+					constOpR.setSelectedPrefix(prefConst[0]);
+					final OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
+					constOpL.addSucceedingOperator(oidtConst);
+					break;
+
+				case Scout.RULEPREDICATE:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						constOpL.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.EXTERNAL:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						constOpL.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.RULELIST:
+					final ListOperator listOpR = (ListOperator) right;
+					final OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
+					constOpL.addSucceedingOperator(oidt);
+					break;
+
+				default:
+					break;
 			}
-		
-			
 			return constOpL;
 		} // End Constant
-		
-		
 		// Variable
 		if (left instanceof String){
 
-			VariableOperator varOpL = new VariableOperator();
+			final VariableOperator varOpL = new VariableOperator();
 			varOpL.setVariable((String)left);
-			
-			switch((Integer) obj.rightExpr.accept(scout, arg)){
-			
-			
-			case Scout.RULEVARIABLE: 			
-										VariableOperator varOpR = new VariableOperator();
-										varOpR.setVariable((String)right);
-										OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
-										varOpL.addSucceedingOperator(oidtVar);
-										break;
-										
-										
-			case Scout.CONSTANT: 		ConstantOperator constOpR = new ConstantOperator();
-										constOpR.setVisualRifEditor(this.visualRifEditor);
-										constOpR.setComboBoxEntries(this.comboBoxEntries);
-										String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
-										constOpR.setConstant(prefConst[1]);
-										constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
-										constOpR.setSelectedPrefix((String)prefConst[0]);
-										OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
-										varOpL.addSucceedingOperator(oidtConst);
-										break;
-										
-			case Scout.RULEPREDICATE:
-										
-										if(right instanceof UnitermOperator){
-											UnitermOperator factOpR = (UnitermOperator) right;
-									
-											OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-											varOpL.addSucceedingOperator(oidtRulePred);
-										}
-										
-										break;
-										
-			case Scout.EXTERNAL:		
-										if(right instanceof UnitermOperator){
-											UnitermOperator factOpR = (UnitermOperator) right;
-				
-											OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-											varOpL.addSucceedingOperator(oidtRulePred);
-										}
-			
-										break;
-				
-				
-				
-			
-										
-										
-			case Scout.RULELIST: 		
-				
-										
-										ListOperator listOpR = (ListOperator) right;
-										
-										OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
-										varOpL.addSucceedingOperator(oidt);
-										
-										break;
-										
-										
-			default:					break;
-										
-										
-			
+
+			switch((Integer) obj.rightExpr.accept(this.scout, arg)){
+
+				case Scout.RULEVARIABLE:
+					final VariableOperator varOpR = new VariableOperator();
+					varOpR.setVariable((String)right);
+					final OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
+					varOpL.addSucceedingOperator(oidtVar);
+					break;
+
+				case Scout.CONSTANT:
+					final ConstantOperator constOpR = new ConstantOperator();
+					constOpR.setVisualRifEditor(this.visualRifEditor);
+					constOpR.setComboBoxEntries(this.comboBoxEntries);
+					final String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
+					constOpR.setConstant(prefConst[1]);
+					constOpR.getConstantComboBox().setSelectedItem(prefConst[0]);
+					constOpR.setSelectedPrefix(prefConst[0]);
+					final OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
+					varOpL.addSucceedingOperator(oidtConst);
+					break;
+
+				case Scout.RULEPREDICATE:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						varOpL.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.EXTERNAL:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						varOpL.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.RULELIST:
+					final ListOperator listOpR = (ListOperator) right;
+					final OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
+					varOpL.addSucceedingOperator(oidt);
+					break;
+
+				default:
+					break;
 			}
-		
-			
 			return varOpL;
 		}// End Variable
-		
+
 		// Uniterm
-				if (left instanceof UnitermOperator){
+		if (left instanceof UnitermOperator){
+			final UnitermOperator unitermOperator = (UnitermOperator) left;
+			switch((Integer) obj.rightExpr.accept(this.scout, arg)){
+				case Scout.RULEVARIABLE:
+					final VariableOperator varOpR = new VariableOperator();
+					varOpR.setVariable((String)right);
+					final OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
+					unitermOperator.addSucceedingOperator(oidtVar);
+					break;
 
-					UnitermOperator unitermOperator = (UnitermOperator) left;
-					
-					switch((Integer) obj.rightExpr.accept(scout, arg)){
-					
-					
-					case Scout.RULEVARIABLE: 			
-												VariableOperator varOpR = new VariableOperator();
-												varOpR.setVariable((String)right);
-												OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
-												unitermOperator.addSucceedingOperator(oidtVar);
-												break;
-												
-												
-					case Scout.CONSTANT: 	
-												
-												ConstantOperator constOpR = new ConstantOperator();
-												constOpR.setVisualRifEditor(this.visualRifEditor);
-												constOpR.setComboBoxEntries(this.comboBoxEntries);
-												String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
-												constOpR.setConstant(prefConst[1]);
-												constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
-												constOpR.setSelectedPrefix((String)prefConst[0]);
-												OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
-												unitermOperator.addSucceedingOperator(oidtConst);
-												break;
-												
-												
-												
-					case Scout.RULEPREDICATE:
-												
-												if(right instanceof UnitermOperator){
-													UnitermOperator factOpR = (UnitermOperator) right;
-											
-													OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-													unitermOperator.addSucceedingOperator(oidtRulePred);
-												}
-												
-												break;
-												
-					case Scout.EXTERNAL:		
-												if(right instanceof UnitermOperator){
-													UnitermOperator factOpR = (UnitermOperator) right;
-						
-													OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-													unitermOperator.addSucceedingOperator(oidtRulePred);
-												}
-					
-												break;
-						
-						
-						
-					
-												
-												
-					case Scout.RULELIST: 		
-						
-												
-												ListOperator listOpR = (ListOperator) right;
-												
-												OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
-												unitermOperator.addSucceedingOperator(oidt);
-												
-												break;
-												
-												
-					default:					break;
-												
-												
-					
-					}
-				
-					
-					return unitermOperator;
-				}// End Uniterm
-		
-				// List
-				if (left instanceof ListOperator){
+				case Scout.CONSTANT:
+					final ConstantOperator constOpR = new ConstantOperator();
+					constOpR.setVisualRifEditor(this.visualRifEditor);
+					constOpR.setComboBoxEntries(this.comboBoxEntries);
+					final String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
+					constOpR.setConstant(prefConst[1]);
+					constOpR.getConstantComboBox().setSelectedItem(prefConst[0]);
+					constOpR.setSelectedPrefix(prefConst[0]);
+					final OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
+					unitermOperator.addSucceedingOperator(oidtConst);
+					break;
 
-					ListOperator listOperator = (ListOperator) left;
-					
-					switch((Integer) obj.rightExpr.accept(scout, arg)){
-					
-					
-					case Scout.RULEVARIABLE: 			
-												VariableOperator varOpR = new VariableOperator();
-												varOpR.setVariable((String)right);
-												OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
-												listOperator.addSucceedingOperator(oidtVar);
-												break;
-												
-												
-					case Scout.CONSTANT: 		
-												
-												
-												ConstantOperator constOpR = new ConstantOperator();
-												constOpR.setVisualRifEditor(this.visualRifEditor);
-												constOpR.setComboBoxEntries(this.comboBoxEntries);
-												String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
-												constOpR.setConstant(prefConst[1]);
-												constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
-												constOpR.setSelectedPrefix((String)prefConst[0]);
-												OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
-												listOperator.addSucceedingOperator(oidtConst);
-												break;
-												
-												
-												
-												
-					case Scout.RULEPREDICATE:
-												
-												if(right instanceof UnitermOperator){
-													UnitermOperator factOpR = (UnitermOperator) right;
-											
-													OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-													listOperator.addSucceedingOperator(oidtRulePred);
-												}
-												
-												break;
-												
-					case Scout.EXTERNAL:		
-												if(right instanceof UnitermOperator){
-													UnitermOperator factOpR = (UnitermOperator) right;
-						
-													OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-													listOperator.addSucceedingOperator(oidtRulePred);
-												}
-					
-												break;
-						
-						
-						
-					
-												
-												
-					case Scout.RULELIST: 		
-						
-												
-												ListOperator listOpR = (ListOperator) right;
-												
-												OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
-												listOperator.addSucceedingOperator(oidt);
-												
-												break;
-												
-												
-					default:					break;
-												
-												
-					
+				case Scout.RULEPREDICATE:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						unitermOperator.addSucceedingOperator(oidtRulePred);
 					}
-				
-					
-					return listOperator;
-				}// End List
-				
-				// Frame
-				if (left instanceof FrameOperator){
+					break;
 
-					FrameOperator frameOperator = (FrameOperator) left;
-					
-					switch((Integer) obj.rightExpr.accept(this.scout, arg)){
-					
-					
-					case Scout.RULEVARIABLE: 			
-												VariableOperator varOpR = new VariableOperator();
-												varOpR.setVariable((String)right);
-												OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
-												frameOperator.addSucceedingOperator(oidtVar);
-												break;
-												
-												
-					case Scout.CONSTANT: 		
-												
-												
-												ConstantOperator constOpR = new ConstantOperator();
-												constOpR.setVisualRifEditor(this.visualRifEditor);
-												constOpR.setComboBoxEntries(this.comboBoxEntries);
-												String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
-												constOpR.setConstant(prefConst[1]);
-												constOpR.getConstantComboBox().setSelectedItem((String)prefConst[0]);
-												constOpR.setSelectedPrefix((String)prefConst[0]);
-												OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
-												frameOperator.addSucceedingOperator(oidtConst);
-												break;
-												
-					case Scout.RULEPREDICATE:
-												
-												if(right instanceof UnitermOperator){
-													UnitermOperator factOpR = (UnitermOperator) right;
-											
-													OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-													frameOperator.addSucceedingOperator(oidtRulePred);
-												}
-												
-												break;
-												
-					case Scout.EXTERNAL:		
-												if(right instanceof UnitermOperator){
-													UnitermOperator factOpR = (UnitermOperator) right;
-						
-													OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
-													frameOperator.addSucceedingOperator(oidtRulePred);
-												}
-					
-												break;
-						
-						
-						
-					
-												
-												
-					case Scout.RULELIST: 		
-						
-												
-												ListOperator listOpR = (ListOperator) right;
-												
-												OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
-												frameOperator.addSucceedingOperator(oidt);
-												
-												break;
-												
-												
-					default:					break;
-												
-												
-					
+				case Scout.EXTERNAL:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						unitermOperator.addSucceedingOperator(oidtRulePred);
 					}
-				
-					
-					return frameOperator;
-				}// End Frame
-				
-		
+					break;
+
+				case Scout.RULELIST:
+					final ListOperator listOpR = (ListOperator) right;
+					final OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
+					unitermOperator.addSucceedingOperator(oidt);
+					break;
+
+				default:
+					break;
+			}
+			return unitermOperator;
+		}// End Uniterm
+
+		// List
+		if (left instanceof ListOperator){
+			final ListOperator listOperator = (ListOperator) left;
+			switch((Integer) obj.rightExpr.accept(this.scout, arg)){
+
+				case Scout.RULEVARIABLE:
+					final VariableOperator varOpR = new VariableOperator();
+					varOpR.setVariable((String)right);
+					final OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
+					listOperator.addSucceedingOperator(oidtVar);
+					break;
+
+				case Scout.CONSTANT:
+					final ConstantOperator constOpR = new ConstantOperator();
+					constOpR.setVisualRifEditor(this.visualRifEditor);
+					constOpR.setComboBoxEntries(this.comboBoxEntries);
+					final String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
+					constOpR.setConstant(prefConst[1]);
+					constOpR.getConstantComboBox().setSelectedItem(prefConst[0]);
+					constOpR.setSelectedPrefix(prefConst[0]);
+					final OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
+					listOperator.addSucceedingOperator(oidtConst);
+					break;
+
+				case Scout.RULEPREDICATE:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						listOperator.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.EXTERNAL:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						listOperator.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.RULELIST:
+					final ListOperator listOpR = (ListOperator) right;
+					final OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
+					listOperator.addSucceedingOperator(oidt);
+					break;
+
+				default:
+					break;
+			}
+
+			return listOperator;
+		}// End List
+
+		// Frame
+		if (left instanceof FrameOperator){
+			final FrameOperator frameOperator = (FrameOperator) left;
+			switch((Integer) obj.rightExpr.accept(this.scout, arg)){
+
+				case Scout.RULEVARIABLE:
+					final VariableOperator varOpR = new VariableOperator();
+					varOpR.setVariable((String)right);
+					final OperatorIDTuple<Operator> oidtVar = new OperatorIDTuple<Operator> (varOpR, 0);
+					frameOperator.addSucceedingOperator(oidtVar);
+					break;
+
+				case Scout.CONSTANT:
+					final ConstantOperator constOpR = new ConstantOperator();
+					constOpR.setVisualRifEditor(this.visualRifEditor);
+					constOpR.setComboBoxEntries(this.comboBoxEntries);
+					final String[] prefConst = (String[]) obj.rightExpr.accept(this, arg);
+					constOpR.setConstant(prefConst[1]);
+					constOpR.getConstantComboBox().setSelectedItem(prefConst[0]);
+					constOpR.setSelectedPrefix(prefConst[0]);
+					final OperatorIDTuple<Operator> oidtConst = new OperatorIDTuple<Operator> (constOpR, 0);
+					frameOperator.addSucceedingOperator(oidtConst);
+					break;
+
+				case Scout.RULEPREDICATE:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						frameOperator.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.EXTERNAL:
+					if(right instanceof UnitermOperator){
+						final UnitermOperator factOpR = (UnitermOperator) right;
+						final OperatorIDTuple<Operator> oidtRulePred = new OperatorIDTuple<Operator> (factOpR, 0);
+						frameOperator.addSucceedingOperator(oidtRulePred);
+					}
+					break;
+
+				case Scout.RULELIST:
+					final ListOperator listOpR = (ListOperator) right;
+					final OperatorIDTuple<Operator> oidt = new OperatorIDTuple<Operator> (listOpR, 0);
+					frameOperator.addSucceedingOperator(oidt);
+					break;
+
+				default:
+					break;
+			}
+			return frameOperator;
+		}// End Frame
 		return null;
 	}
-	
+
 	@Override
-	public Object visit(External obj, Object arg) throws RIFException {
+	public Object visit(final External obj, final Object arg) throws RIFException {
 		System.out.println("visit(External obj, Object arg)");
 
-		LinkedList<Term> terms = new LinkedList<Term>();
-		UnitermOperator uniTerm = new UnitermOperator();
+		final LinkedList<Term> terms = new LinkedList<Term>();
+		final UnitermOperator uniTerm = new UnitermOperator();
 		uniTerm.setVisualRifEditor(this.visualRifEditor);
 		uniTerm.setConstantComboBoxEntries(this.comboBoxEntries);
 		uniTerm.setExternal(true);
-		
+
 		// Prefix + Name
-		String[] termPref = (String[]) obj.termName.accept(this, arg);
-	
+		final String[] termPref = (String[]) obj.termName.accept(this, arg);
+
 		// set prefix
 		uniTerm.getUniTermComboBox().setSelectedItem(termPref[0]);
 		uniTerm.setSelectedPrefix(termPref[0]);
-		
+
 		// set name
 		uniTerm.setTermName(termPref[1]);
 
 		// create Terms
 		int tmp = 0;
-		
+
 		for (int i = 0; i < obj.termParams.size(); i++) {
-			
+
 			tmp =  (Integer) obj.termParams.get(i).accept(this.scout, arg);
-			
+
 			switch(tmp){
-			
-			
-				case Scout.RULEVARIABLE: 				
-										
-										Term termVar = uniTerm.prepareToCreateVariableTerm((String)obj.termParams.get(i).accept(this, arg));
-										terms.add(termVar);
-										break;
-										
+
+				case Scout.RULEVARIABLE:
+					final Term termVar = uniTerm.prepareToCreateVariableTerm((String)obj.termParams.get(i).accept(this, arg));
+					terms.add(termVar);
+					break;
+
 				case Scout.CONSTANT:
-				
-										String[] constArray = new String[2];
-										constArray = (String[]) obj.termParams.get(i).accept(this, arg);
-										Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
-										terms.add(termConst);
-										break;
-										
-				case Scout.RULELIST:   
-										
-										ListOperator listOperator = (ListOperator) obj.termParams.get(i).accept(this, arg);
-										Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
-										terms.add(listTerm);
-										break;
-			
-			
-				case Scout.RULEPREDICATE:  
-			
-										UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
-							
-										Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
-										terms.add(unitermTerm);
-					
-									break;
-				
-				case Scout.EXTERNAL:  
+					String[] constArray = new String[2];
+					constArray = (String[]) obj.termParams.get(i).accept(this, arg);
+					final Term termConst = uniTerm.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
+					terms.add(termConst);
+					break;
 
-											UnitermOperator external = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
-											
-											Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
-											terms.add(externalTerm);
-						
-										
-										break;
-											
-							
-				default: 				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
-										break;
-			
+				case Scout.RULELIST:
+					final ListOperator listOperator = (ListOperator) obj.termParams.get(i).accept(this, arg);
+					final Term listTerm = uniTerm.prepareToCreateListTerm(listOperator, this.comboBoxEntries);
+					terms.add(listTerm);
+					break;
+
+				case Scout.RULEPREDICATE:
+					final UnitermOperator unitermOperator = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
+					final Term unitermTerm = uniTerm.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
+					terms.add(unitermTerm);
+					break;
+
+				case Scout.EXTERNAL:
+					final UnitermOperator external = (UnitermOperator) obj.termParams.get(i).accept(this, arg);
+					final Term externalTerm = uniTerm.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
+					terms.add(externalTerm);
+					break;
+
+				default:
+					System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
+					break;
 			}
-
-			
 		} // end for
-		
 		uniTerm.setTerms(terms);
-		
 		return uniTerm;
 	}
 
 	@Override
-	public Object visit(RuleList obj, Object arg) throws RIFException {
+	public Object visit(final RuleList obj, final Object arg) throws RIFException {
 		System.out.println("visit(RuleList obj, Object arg)");
-		
-		LinkedList<Term> terms = new LinkedList<Term>();
-		ListOperator listOperator = new ListOperator();
+
+		final LinkedList<Term> terms = new LinkedList<Term>();
+		final ListOperator listOperator = new ListOperator();
 		listOperator.setVisualRifEditor(this.visualRifEditor);
 		listOperator.setConstantComboBoxEntries(this.comboBoxEntries);
 		listOperator.setOpen(obj.isOpen);
 
-
-
 		// create Terms
-				int tmp = 0;
-				
-				for (int i = 0; i < obj.getItems().size(); i++) {
-					
-					tmp =  (Integer) obj.getItems().get(i).accept(this.scout, arg);
-					
-					switch(tmp){
-					
-					
-						case Scout.RULEVARIABLE: 				
-												
-												Term termVar = listOperator.prepareToCreateVariableTerm((String)obj.getItems().get(i).accept(this, arg));
-												terms.add(termVar);
-												break;
-												
-						case Scout.CONSTANT:
-						
-												String[] constArray = new String[2];
-												constArray = (String[]) obj.getItems().get(i).accept(this, arg);
-												Term termConst = listOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
-												terms.add(termConst);
-												break;
-												
-						case Scout.RULELIST:   
-												
-														ListOperator listOperatorTerm = (ListOperator) obj.getItems().get(i).accept(this, arg);
-														Term listTerm = listOperator.prepareToCreateListTerm(listOperatorTerm, this.comboBoxEntries);
-														terms.add(listTerm);
-														break;
-												
-												
-						case Scout.RULEPREDICATE:  
-												
-														UnitermOperator unitermOperator = (UnitermOperator) obj.getItems().get(i).accept(this, arg);
-											
-														Term unitermTerm = listOperator.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
-														terms.add(unitermTerm);
-			
-													break;
-													
-						case Scout.EXTERNAL:  
-							
-														UnitermOperator external = (UnitermOperator) obj.getItems().get(i).accept(this, arg);
-														
-														Term externalTerm = listOperator.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
-														terms.add(externalTerm);
+		int tmp = 0;
+		for (int i = 0; i < obj.getItems().size(); i++) {
+			tmp =  (Integer) obj.getItems().get(i).accept(this.scout, arg);
+			switch(tmp){
 
-													
-													break;
-													
-									
-						default: 				System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
-												break;
-					
-					}
+				case Scout.RULEVARIABLE:
+					final Term termVar = listOperator.prepareToCreateVariableTerm((String)obj.getItems().get(i).accept(this, arg));
+					terms.add(termVar);
+					break;
 
-					
-				} // end for
+				case Scout.CONSTANT:
+					String[] constArray = new String[2];
+					constArray = (String[]) obj.getItems().get(i).accept(this, arg);
+					final Term termConst = listOperator.prepareToCreateConstantTerm(constArray[0],constArray[1],this.comboBoxEntries);
+					terms.add(termConst);
+					break;
+
+				case Scout.RULELIST:
+					final ListOperator listOperatorTerm = (ListOperator) obj.getItems().get(i).accept(this, arg);
+					final Term listTerm = listOperator.prepareToCreateListTerm(listOperatorTerm, this.comboBoxEntries);
+					terms.add(listTerm);
+					break;
+
+				case Scout.RULEPREDICATE:
+					final UnitermOperator unitermOperator = (UnitermOperator) obj.getItems().get(i).accept(this, arg);
+					final Term unitermTerm = listOperator.prepareToCreateUnitermTerm(unitermOperator, this.comboBoxEntries);
+					terms.add(unitermTerm);
+					break;
+
+				case Scout.EXTERNAL:
+					final UnitermOperator external = (UnitermOperator) obj.getItems().get(i).accept(this, arg);
+					final Term externalTerm = listOperator.prepareToCreateUnitermTerm(external, this.comboBoxEntries);
+					terms.add(externalTerm);
+					break;
+
+				default:
+					System.err.println("VisualRifGenerator.visit(RulePredicate obj, Object arg)");//TODO
+					break;
+			}
+		} // end for
 		listOperator.setTerms(terms);
 		return listOperator;
 	}
 
 	@Override
-	public Object visit(RuleVariable obj, Object arg) throws RIFException {
+	public Object visit(final RuleVariable obj, final Object arg) throws RIFException {
 		System.out.println("visit(RuleVariable obj, Object arg)");
-		
 		return obj.getLabel().substring(1);
 	}
 
 	@Override
-	public Object visit(Constant obj, Object arg) throws RIFException {
+	public Object visit(final Constant obj, final Object arg) throws RIFException {
 		System.out.println("visit(Constant obj, Object arg)");
 
-		// [0] = Prefix ; [1] = name
 		String[] prefValueArray = new String[2];
-		
-		
-		
-				// prefix:postfix
-//				Pattern prefixPostfixPattern = Pattern.compile( ".+:.+" ); 
-//				if ( Pattern.matches(".+:.+", obj.getLabel()) ){
-//					System.out.println("prefix:postfix");
-//				}
-				
-				// BASE:postfix
-//				Pattern basePostfixPattern = Pattern.compile( ":.+" ); 
-				if ( Pattern.matches( ":.+", obj.getLabel() ) ){
-					System.out.println("BASE:postfix");
-				}
-				
-				// simpleLiteral
-//				Pattern simpleLiteralPattern = Pattern.compile( "<.+>" ); 
-				if ( Pattern.matches( "<http://.+>", obj.getLabel() ) ){
 
-					String iri = obj.getLabel().substring(1, obj.getLabel().length()-1);
-					for (Entry<String, String> entry : this.po.getPrefixList().entrySet()) {
-						if(iri.startsWith(entry.getKey())){
-							prefValueArray[0] = entry.getValue();
-							prefValueArray[1] = iri.substring(entry.getKey().length(), iri.length());
-							return prefValueArray;
-						}
-					}
-				}else	if ( Pattern.matches( "<.+>", obj.getLabel() ) ){
-		
-					String iri = obj.getLabel().substring(1, obj.getLabel().length()-1);
-					
-							prefValueArray[0] = "BASE";
-							prefValueArray[1] = iri;
-							return prefValueArray;
-					
-				}
-				
+		if ( Pattern.matches( ":.+", obj.getLabel() ) ){
+			System.out.println("BASE:postfix");
+		}
 
-//				// typedLiteralPatternINTEGER
-//				if ( Pattern.matches( "\"\\d+\"\\^\\^.+:.+",  obj.getLabel() ) ){
-//					String value, prefix, type; value = prefix = type = "";
-//					
-//					System.out.println("typedLiteralPatternINTEGER");
-//					for ( MatchResult r : findMatches( "\"\\d+\"", obj.getLabel() ) ) 
-//						  value = r.group().substring(1, r.group().length()-1);
-//
-//	
-//							prefValueArray[0] = "integer";
-//							prefValueArray[1] = value;
-//							return prefValueArray;
-//				
-//					
-//				}else			
-				// typedLiteralPattern
-				if ( Pattern.matches( "\".*\"\\^\\^.+:.+",  obj.getLabel() ) ){
-					String value, prefix, type; value = prefix = type = "";
-					
-		
-					for ( MatchResult r : findMatches( "\".*\"", obj.getLabel() ) ) 
-						  value = r.group().substring(1, r.group().length()-1);
-					for ( MatchResult r : findMatches( "<.+#", obj.getLabel() ) ) 
-						 prefix = r.group().substring(1, r.group().length());
-					for ( MatchResult r : findMatches( "#.+>", obj.getLabel() ) ) 
-						 type = r.group().substring(1, r.group().length()-1);
-					
-		
-					for (Entry<String, String> entry : this.po.getPrefixList().entrySet()) {
-		
-						if((prefix).equals(entry.getKey())){
-							prefValueArray[0] = entry.getValue()+"#"+type;
-							prefValueArray[1] = value;
-							return prefValueArray;
-						}
-					}
-					
+		if ( Pattern.matches( "<http://.+>", obj.getLabel() ) ){
+			final String iri = obj.getLabel().substring(1, obj.getLabel().length()-1);
+			for (final Entry<String, String> entry : this.po.getPrefixList().entrySet()) {
+				if(iri.startsWith(entry.getKey())){
+					prefValueArray[0] = entry.getValue();
+					prefValueArray[1] = iri.substring(entry.getKey().length(), iri.length());
+					return prefValueArray;
 				}
-				
-			
-				
-				
-				// typedLiteralXSPattern
-//				Pattern typedLiteralXSPattern = Pattern.compile( "\".+\"" ); 
-				if ( Pattern.matches( "\".+\"", obj.getLabel() ) ){
-					String value  = "";
-					
-		
-					for ( MatchResult r : findMatches( "\".*\"", obj.getLabel() ) ) 
-						  value = r.group().substring(1, r.group().length()-1);
-				
-					prefValueArray[0] = "xs#string";
+			}
+		} else	if ( Pattern.matches( "<.+>", obj.getLabel() ) ){
+			final String iri = obj.getLabel().substring(1, obj.getLabel().length()-1);
+			prefValueArray[0] = "BASE";
+			prefValueArray[1] = iri;
+			return prefValueArray;
+
+		}
+
+		if ( Pattern.matches( "\".*\"\\^\\^.+:.+",  obj.getLabel() ) ){
+			String value, prefix, type; value = prefix = type = "";
+			for ( final MatchResult r : findMatches( "\".*\"", obj.getLabel() ) ) {
+				value = r.group().substring(1, r.group().length()-1);
+			}
+			for ( final MatchResult r : findMatches( "<.+#", obj.getLabel() ) ) {
+				prefix = r.group().substring(1, r.group().length());
+			}
+			for ( final MatchResult r : findMatches( "#.+>", obj.getLabel() ) ) {
+				type = r.group().substring(1, r.group().length()-1);
+			}
+
+			for (final Entry<String, String> entry : this.po.getPrefixList().entrySet()) {
+				if((prefix).equals(entry.getKey())){
+					prefValueArray[0] = entry.getValue()+"#"+type;
 					prefValueArray[1] = value;
 					return prefValueArray;
-					
 				}
-				
-				// integerLiteralXSPattern
-//				Pattern integerLiteralXSPattern = Pattern.compile( "\\d+" ); 
-				if ( Pattern.matches( "\\d*", obj.getLabel()) ){
-					// TODO check!
-				}
-		
-				// languagetaggedLiteralXSPattern
-//				Pattern languagetaggedLiteralXSPattern = Pattern.compile( "\".*\"\\@.+" ); 
-				if ( Pattern.matches( "\".*\"\\@.+" , obj.getLabel() ) ){
-					System.out.println("languagetaggedLiteralXSPattern");
-				}
-		
-		
-		
-		
-		
-		
-		
+			}
+		}
+
+		if ( Pattern.matches( "\".+\"", obj.getLabel() ) ){
+			String value  = "";
+			for ( final MatchResult r : findMatches( "\".*\"", obj.getLabel() ) ) {
+				value = r.group().substring(1, r.group().length()-1);
+			}
+			prefValueArray[0] = "xs#string";
+			prefValueArray[1] = value;
+			return prefValueArray;
+		}
+
+		if ( Pattern.matches( "\\d*", obj.getLabel()) ){
+			// TODO check!
+		}
+
+		if ( Pattern.matches( "\".*\"\\@.+" , obj.getLabel() ) ){
+			System.out.println("languagetaggedLiteralXSPattern");
+		}
+
 		// TODO Append ConstantCombo for single constants
 		// save prefValueArray
-		String[] tmp = prefValueArray;
-		int cnt = prefValueArray.length + this.comboBoxEntries.length;
+		final String[] tmp = prefValueArray;
+		final int cnt = prefValueArray.length + this.comboBoxEntries.length;
 		prefValueArray = new String[cnt];
-		
 
-			for (int j = 0; j < tmp.length; j++) {
-				prefValueArray[j] = tmp[j];
-			}
-			
-			for (int i = 0; i < this.comboBoxEntries.length; i++) {
-				prefValueArray[i+tmp.length] = tmp[i];
-			}
-		
-		
-		
-		
-//		String iri = obj.getLabel().substring(1, obj.getLabel().length()-1);
-//		
-//		System.out.println("IRI: "+iri);
-//		
-//		// "constant"
-//		if ( obj.getLabel().startsWith("\"") &&  obj.getLabel().endsWith("\"") ){
-//			
-//			prefValueArray[0] = "";
-//			prefValueArray[1] = obj.getLabel();
-//			
-//			return prefValueArray;
-//		
-//		}
-//
-//		// pref:const
-//		for (Entry<String, String> entry : po.getPrefixList().entrySet()) {
-//			if(iri.startsWith(entry.getKey())){
-//				prefValueArray[0] = entry.getValue();
-//				prefValueArray[1] = iri.substring(entry.getKey().length(), iri.length());
-//				return prefValueArray;
-//			}
-//		}
-//		
-//
-//		
-//		if(iri.endsWith("\"^^<http://www.w3.org/2001/XMLSchema#integer")){
-//			
-//			prefValueArray[0] = "Integer";
-//			prefValueArray[1] = iri.substring(0, iri.indexOf("\"^^<http://www.w3.org/2001/XMLSchema#integer")); 
-//			
-//		}else{
-//		
-//		prefValueArray[0] = "BASE";
-//		prefValueArray[1] = iri; 
-//		}
-		
+		for (int j = 0; j < tmp.length; j++) {
+			prefValueArray[j] = tmp[j];
+		}
+
+		for (int i = 0; i < this.comboBoxEntries.length; i++) {
+			prefValueArray[i+tmp.length] = tmp[i];
+		}
 		return prefValueArray;
 	}
-	
-	
-	public static Iterable<MatchResult> findMatches( String pattern, CharSequence s ) 
-	{ 
-	  List<MatchResult> results = new ArrayList<MatchResult>(); 
-	 
-	  for ( Matcher m = Pattern.compile(pattern).matcher(s); m.find(); ) 
-	    results.add( m.toMatchResult() ); 
-	 
-	  return results; 
+
+	public static Iterable<MatchResult> findMatches( final String pattern, final CharSequence s ) {
+		final List<MatchResult> results = new ArrayList<MatchResult>();
+		for ( final Matcher m = Pattern.compile(pattern).matcher(s); m.find(); ) {
+			results.add( m.toMatchResult() );
+		}
+		return results;
 	}
-	
-	
+
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
-	
 	public String getQuery() {
-		return query;
+		return this.query;
 	}
 
-	public void setQuery(String query) {
+	public void setQuery(final String query) {
 		this.query = query;
 	}
 
@@ -1372,7 +953,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return this.compilationUnit;
 	}
 
-	public void setCompilationUnit(CompilationUnit compilationUnit) {
+	public void setCompilationUnit(final CompilationUnit compilationUnit) {
 		this.compilationUnit = compilationUnit;
 	}
 
@@ -1380,7 +961,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return this.rifDocument;
 	}
 
-	public void setRifDocument(Document rifDocument) {
+	public void setRifDocument(final Document rifDocument) {
 		this.rifDocument = rifDocument;
 	}
 
@@ -1391,28 +972,16 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	public DocumentEditorPane getDocumentEditorPane() {
 		return this.documentEditorPane;
 	}
-	
-	public void setDocumentEditorPane(DocumentEditorPane documentEditorPane) {
+
+	public void setDocumentEditorPane(final DocumentEditorPane documentEditorPane) {
 		this.documentEditorPane = documentEditorPane;
 	}
-
-
 
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
-
-
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
-
-
-
-
-	
-	
-	
-
 }

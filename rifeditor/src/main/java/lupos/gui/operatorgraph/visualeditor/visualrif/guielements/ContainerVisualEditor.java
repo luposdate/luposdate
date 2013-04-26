@@ -30,23 +30,18 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 
 public class ContainerVisualEditor extends VisualEditor<Operator> {
 
-	public ContainerVisualEditor(boolean standAlone) {
+	public ContainerVisualEditor(final boolean standAlone) {
 		super(standAlone);
-		// TODO Auto-generated constructor stub
 	}
 
 	private static final long serialVersionUID = 9188638407656666175L;
 
 	@Override
 	public JMenuBar buildMenuBar() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected void pasteElements(String content) {
-		// TODO Auto-generated method stub
-		
+	protected void pasteElements(final String content) {
 	}
-
 }

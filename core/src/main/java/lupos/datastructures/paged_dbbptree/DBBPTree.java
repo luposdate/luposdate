@@ -1360,13 +1360,6 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return rightMostLeaf.readKeys.get(rightMostLeaf.readKeys.size() - 1);
 	}
 
-	public void displayDBBPTree(final String title) {
-		// TODO
-		// new Viewer(new GraphWrapperDBBPTree(this.getNode(this.rootPage),
-		// this,
-		// null), title, false, false);
-	}
-
 	public Node<K, V> getNode(final int filename) {
 		InputStream fis;
 		try {

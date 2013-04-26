@@ -50,15 +50,12 @@ import xpref.datatypes.BooleanDatatype;
 public class GraphWrapperOperator extends GraphWrapperEditable {
 	public GraphWrapperOperator(final Operator element) {
 		super(element);
-
-		// TODO: test this later...
-		// this.prefix.addOperator(element);
 	}
 
 	/**
 	 * Returns a list of GraphWrapper elements which are the preceding elements
 	 * of the current element.
-	 * 
+	 *
 	 * @return List of preceding elements
 	 */
 	@Override
@@ -87,7 +84,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	/**
 	 * Returns a list of GraphWrapperIdTuple elements which are the succeeding
 	 * elements of the current element.
-	 * 
+	 *
 	 * @return List of succeeding elements
 	 */
 	@Override
@@ -200,7 +197,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d, final Dimension size) {
 		try {
-			AbstractGuiComponent<Operator> component = ((Operator) this.element).getGUIComponent();
+			final AbstractGuiComponent<Operator> component = ((Operator) this.element).getGUIComponent();
 			boolean already=false;
 			if(component!=null){
 				String className = component.getParentQG().visualEditor.getXPrefPrefix();
@@ -213,7 +210,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 			}
 			if(!already){
 				DrawObject drawObject = null;
-				
+
 				drawObject = this.getOperatorStyle(((Operator) this.element).getXPrefIDForAnnotation());
 
 				if(drawObject != null) {

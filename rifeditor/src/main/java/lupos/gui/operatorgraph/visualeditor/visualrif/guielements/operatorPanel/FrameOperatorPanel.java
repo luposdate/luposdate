@@ -23,7 +23,6 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -56,17 +55,14 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.HintTextFieldResizing;
-import lupos.gui.operatorgraph.visualeditor.visualrif.util.JIconButton;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.TermConnection;
 
 public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 
 	private static final long serialVersionUID = 8238554719560169292L;
-	
 
 	private VisualRifEditor visualRifEditor;
 	protected GridBagConstraints gbc = null;
@@ -78,26 +74,16 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 	private int termCounter = 0;
 	private FocusListener comboBoxFocusListener;
 	String[] typComboEntries = {"Const","Var","Expr","List"};
-	 
-
 
 	// Constructor
 	public FrameOperatorPanel(final VisualGraph<Operator> parent,
-			GraphWrapper gw, final FrameOperator frameOperator,
-			boolean startNode, boolean alsoSubClasses, VisualRifEditor visualRifEditor) {
-
+			final GraphWrapper gw, final FrameOperator frameOperator,
+			final boolean startNode, final boolean alsoSubClasses, final VisualRifEditor visualRifEditor) {
 		super(parent, gw, frameOperator, true);
-
 		this.setVisualRifEditor(visualRifEditor);
-	
 		this.frameOperator = frameOperator;
-
 		this.init();
-
-		
-
 	}
-	
 
 	private void init() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -111,430 +97,382 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.gbc.gridwidth = this.gbc.gridheight = 1;
 		this.gbc.weightx = this.gbc.weighty = 1.0;
 
-		this.gbc.insets = new Insets((int) parent.PADDING,
-				(int) parent.PADDING, (int) parent.PADDING,
-				(int) parent.PADDING);
+		this.gbc.insets = new Insets((int) this.parent.PADDING,
+				(int) this.parent.PADDING, (int) this.parent.PADDING,
+				(int) this.parent.PADDING);
 		this.gbc.gridx = this.gbc.gridy = 0;
 		this.gbc.fill = GridBagConstraints.BOTH;
-		
-//		Font font = new Font(Font.SANS_SERIF, Font.ROMAN_BASELINE, 14);
-//		LineBorder lineBorder = new LineBorder(Color.black,1);
-//		
-//		Border empty = BorderFactory.createEmptyBorder();
-		
-//		TitledBorder titled = BorderFactory.createTitledBorder(raisedbevel," Frame ", 0, 0, font, Color.BLACK);;
-//		titled.setTitleJustification(TitledBorder.CENTER);
-//		titled.setTitlePosition(TitledBorder.DEFAULT_POSITION);
 
-//		titled = BorderFactory.createTitledBorder(empty," Frame ");
-		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
 		this.setBorder(raisedbevel);
-		
-		
-		
+
 		/*
 		 *  Elements
 		 */
-		
-
 		// Labels
 		this.gbc.gridx = 1;
-		JLabel frameLabel = new JLabel("Frame");
+		final JLabel frameLabel = new JLabel("Frame");
 		frameLabel.setFont(this.parent.getFONT());
 		this.termRowsPanel.add(frameLabel ,this.gbc);
 		this.gbc.gridx = 3;
-		JPanel displayPanel = new JPanel();
+		final JPanel displayPanel = new JPanel();
 		displayPanel.setForeground(Color.WHITE);
-		display = new JLabel(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
-		display.setFont(parent.getFONT());
-		displayPanel.add(display);
-		Border loweredbevel = BorderFactory.createLoweredBevelBorder();
+		this.display = new JLabel(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
+		this.display.setFont(this.parent.getFONT());
+		displayPanel.add(this.display);
+		final Border loweredbevel = BorderFactory.createLoweredBevelBorder();
 		displayPanel.setBorder( loweredbevel);
 		this.termRowsPanel.add(displayPanel ,this.gbc);
 //		this.createNextTermCombo();
 
-
-		
-		
 		/*
 		 * calibration
 		 */
-
 		this.gbc.gridy++;
 
 		this.gbc.gridx = 0;
-		
-		
 
-		
 		if ( this.frameOperator.hasElements() ) {
-			
-
-			
 			for (int i = 0; i < this.frameOperator.getTerms().size(); i++) {
-				
+
 				// Constant
-				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isConstant() ) this.createConstantTerm(this.frameOperator.getTerms().get(i),i);
-				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isConstant() ) this.recreateConstantRow(this.frameOperator.getTerms().get(i),i );
-				
+				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isConstant() ) {
+					this.createConstantTerm(this.frameOperator.getTerms().get(i),i);
+				}
+				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isConstant() ) {
+					this.recreateConstantRow(this.frameOperator.getTerms().get(i),i );
+				}
+
 				// Variable
-				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isVariable() ) this.createVariableTerm(this.frameOperator.getTerms().get(i),i);
-				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isVariable() ) this.recreateVariableRow(this.frameOperator.getTerms().get(i),i );
-				
+				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isVariable() ) {
+					this.createVariableTerm(this.frameOperator.getTerms().get(i),i);
+				}
+				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isVariable() ) {
+					this.recreateVariableRow(this.frameOperator.getTerms().get(i),i );
+				}
+
 				// Uniterm
-				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isUniterm() ) this.createUnitermTerm(this.frameOperator.getTerms().get(i),i);
-				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isUniterm() ) this.recreateUnitermRow(this.frameOperator.getTerms().get(i),i );
-				
+				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isUniterm() ) {
+					this.createUnitermTerm(this.frameOperator.getTerms().get(i),i);
+				}
+				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isUniterm() ) {
+					this.recreateUnitermRow(this.frameOperator.getTerms().get(i),i );
+				}
+
 				// List
-				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isList() ) this.createListTerm(this.frameOperator.getTerms().get(i),i);
-				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isList() ) this.recreateListRow(this.frameOperator.getTerms().get(i),i );
+				if ( !this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isList() ) {
+					this.createListTerm(this.frameOperator.getTerms().get(i),i);
+				}
+				if (  this.frameOperator.getTerms().get(i).isInit() && this.frameOperator.getTerms().get(i).isList() ) {
+					this.recreateListRow(this.frameOperator.getTerms().get(i),i );
+				}
 			}
 		}else{
-        	createVariableRow(termCounter); termCounter++;
-        	createVariableRow(termCounter); termCounter++;
-        	createVariableRow(termCounter); 
+        	this.createVariableRow(this.termCounter); this.termCounter++;
+        	this.createVariableRow(this.termCounter); this.termCounter++;
+        	this.createVariableRow(this.termCounter);
 		}
-		
-		
-		
 
 		this.add(this.termRowsPanel);
 
-
 		// FocusListener
-		FocusListener FL = new FocusListener() {
-
-			public void focusGained(FocusEvent arg0) {
-
-
-				
-				
-				if (visualRifEditor.getDocumentContainer().getActiveDocument()
+		final FocusListener FL = new FocusListener() {
+			@Override
+			public void focusGained(final FocusEvent arg0) {
+				if (FrameOperatorPanel.this.visualRifEditor.getDocumentContainer().getActiveDocument()
 						.getDocumentEditorPane().getPrefixList().length > 0) {
+					FrameOperatorPanel.this.frameOperator.savePrefixes();
+					FrameOperatorPanel.this.frameOperator.saveUnitermPrefix();
+					FrameOperatorPanel.this.frameOperator.saveNamePrefixes();
 
-					frameOperator.savePrefixes();
-					frameOperator.saveUnitermPrefix();
-					frameOperator.saveNamePrefixes();
-
-					frameOperator.setConstantComboBoxEntries(visualRifEditor
+					FrameOperatorPanel.this.frameOperator.setConstantComboBoxEntries(FrameOperatorPanel.this.visualRifEditor
 							.getDocumentContainer().getActiveDocument()
 							.getDocumentEditorPane().getPrefixList());
-
 				}
 			}
-
-			public void focusLost(FocusEvent arg0) {
+			@Override
+			public void focusLost(final FocusEvent arg0) {
 			}
 		};
-	
+
 		this.setFocusListener(FL);
-		
+
 		this.addComponentListener(new ComponentAdapter() {
-			
-
-			public void componentResized(ComponentEvent e) {
-				
-				updateSize();
+			@Override
+			public void componentResized(final ComponentEvent e) {
+				FrameOperatorPanel.this.updateSize();
 			}
-
-
-
 		});
 
+		if(this.frameOperator.getConstantComboBox().getFocusListeners().length <= 1) {
+			this.frameOperator.getConstantComboBox().addFocusListener(FL);
+		}
 
-		
-		if(frameOperator.getConstantComboBox().getFocusListeners().length <= 1)
-			frameOperator.getConstantComboBox().addFocusListener(FL);
-		
-		if (frameOperator.getUniTermComboBox().getFocusListeners().length <= 1) 
-			frameOperator.getUniTermComboBox().addFocusListener(FL);
-		
-		
+		if (this.frameOperator.getUniTermComboBox().getFocusListeners().length <= 1) {
+			this.frameOperator.getUniTermComboBox().addFocusListener(FL);
+		}
+
 		this.updateSize();
-		
-		
 	}
 
 	/* ******** **
 	 * Constant **
 	 * ******** */
-	
+	private void createConstantRow(final int termID) {
 
-
-
-	private void createConstantRow(int termID) {
-		
 		final Term term = new Term();
 		term.setConstant( true );
 		term.setTermFrameID(termID);
-		
+
 		/*
 		 *  Elements
 		 */
-		
 		// PrefixCombo
-		JComboBox constCombo  = new JComboBox();
-		constCombo.addFocusListener(comboBoxFocusListener);
+		final JComboBox constCombo  = new JComboBox();
+		constCombo.addFocusListener(this.comboBoxFocusListener);
 		constCombo.addItemListener( new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-
+			@Override
+			public void itemStateChanged(final ItemEvent evt) {
 				   if (evt.getStateChange() == ItemEvent.SELECTED) {
-					   JComboBox selectedChoice = (JComboBox)evt.getSource();
-				
+					   final JComboBox selectedChoice = (JComboBox)evt.getSource();
 				        term.setSelectedPrefix(selectedChoice.getSelectedItem().toString());
 				        term.setPrefix(true);
-					   
 				   }
 				   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 				}
 		    } );
 		term.setConstantCombo(constCombo);
-		
 
 		// typCombo
-
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-						        
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
+
 						        if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
-//		term.setNameComboBox(namedConstCombo);
-		
-		
+
 		// TextField Value
 		final JTextFieldResizing tfValue = new HintTextFieldResizing("Value",
 				"Value", this.parent.getFONT(), this);
 
 		tfValue.addFocusListener(new FocusAdapter() {
-
+			@Override
 			public void focusLost(final FocusEvent fe) {
-				
 				term.setValue(tfValue.getText());
-				updateSize();
+				FrameOperatorPanel.this.updateSize();
 				}});
 
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
-		this.termRowsPanel.add(termLabel,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(typCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
 
-		
-		this.termRowsPanel.add(constCombo,this.gbc);
-		
+		this.termRowsPanel.add(termLabel,this.gbc);
+
 		this.gbc.gridx++;
-		
+
+		this.termRowsPanel.add(typCombo,this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(constCombo,this.gbc);
+
+		this.gbc.gridx++;
+
 		this.termRowsPanel.add(tfValue, this.gbc);
-		
+
 		term.setTermLabel(termLabel);
 		term.setTextFieldResizing(tfValue);
 		term.setTypCombo(typCombo);
 		term.setInit(true);
-		
-		frameOperator.getTerms().add( term );
+
+		this.frameOperator.getTerms().add( term );
 		this.updateSize();
-		
-		
 	}
-	
-	
-	private void createConstantTerm(final Term term, int termID) {
-		
+
+	private void createConstantTerm(final Term term, final int termID) {
 		term.setTermFrameID(termID);
-		frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-    	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-		
-		String selectedPref = term.getSelectedPrefix();
+		this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+    	this.display.setText(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
+
+		final String selectedPref = term.getSelectedPrefix();
 		/*
 		 *  Elements
 		 */
-		
 		// typCombo
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.addItemListener( new ItemListener() {
-							public void itemStateChanged(ItemEvent evt) {
+							@Override
+							public void itemStateChanged(final ItemEvent evt) {
 
 								   if (evt.getStateChange() == ItemEvent.SELECTED) {
-									   JComboBox selectedChoice = (JComboBox)evt.getSource();
-								        
+									   final JComboBox selectedChoice = (JComboBox)evt.getSource();
+
 								        if (selectedChoice.getSelectedItem().toString().equals("Var")){
-								        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-								        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-								        	createVariableRow(term.getTermFrameID());
-								        	removeRow(term);
-								        	frameOperator.getTerms().remove(term);
-								        	frameOperator.sortTermsByTermFrameID();
-								        	repaintAllTerms();
+								        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+								        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+								        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+								        	FrameOperatorPanel.this.removeRow(term);
+								        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+								        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+								        	FrameOperatorPanel.this.repaintAllTerms();
 								        	}
 								        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-								        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-								        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-								        	createConstantRow(term.getTermFrameID());
-								        	removeRow(term);
-								        	frameOperator.getTerms().remove(term);
-								        	frameOperator.sortTermsByTermFrameID();
-								        	repaintAllTerms();
+								        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+								        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+								        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+								        	FrameOperatorPanel.this.removeRow(term);
+								        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+								        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+								        	FrameOperatorPanel.this.repaintAllTerms();
 								        	}
 								        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-								        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-								        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-								        	createUnitermRow(term.getTermFrameID());
-								        	removeRow(term);
-								        	frameOperator.getTerms().remove(term);
-								        	frameOperator.sortTermsByTermFrameID();
-								        	repaintAllTerms();
+								        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+								        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+								        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+								        	FrameOperatorPanel.this.removeRow(term);
+								        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+								        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+								        	FrameOperatorPanel.this.repaintAllTerms();
 								        	}
 								        if (selectedChoice.getSelectedItem().toString().equals("List")){
-								        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-								        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-								        	createListRow(term.getTermFrameID());
-								        	removeRow(term);
-								        	frameOperator.getTerms().remove(term);
-								        	frameOperator.sortTermsByTermFrameID();
-								        	repaintAllTerms();
+								        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+								        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+								        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+								        	FrameOperatorPanel.this.removeRow(term);
+								        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+								        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+								        	FrameOperatorPanel.this.repaintAllTerms();
 								        	}
-								        
-									   
 								   }
 								   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 								}
 						    } );
-
-		
 		// PrefixCombo
-		JComboBox constCombo  = new JComboBox();
-		constCombo.addFocusListener(comboBoxFocusListener);
+		final JComboBox constCombo  = new JComboBox();
+		constCombo.addFocusListener(this.comboBoxFocusListener);
 		constCombo.addItemListener( new ItemListener() {
-			public void itemStateChanged(ItemEvent evt) {
-
+			@Override
+			public void itemStateChanged(final ItemEvent evt) {
 				   if (evt.getStateChange() == ItemEvent.SELECTED) {
-					   JComboBox selectedChoice = (JComboBox)evt.getSource();
-				
+					   final JComboBox selectedChoice = (JComboBox)evt.getSource();
 				        term.setSelectedPrefix(selectedChoice.getSelectedItem().toString());
 				        term.setPrefix(true);
-					   
 				   }
 				   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 				}
 		    } );
 		term.setConstantCombo(constCombo);
-		
-		for (String s : term.getComboEntries()){
+
+		for (final String s : term.getComboEntries()){
 			term.getConstantCombo().addItem(s);
 		}
 
 		term.getConstantCombo().setSelectedItem(selectedPref);
-		
 
 		// TextField Value
-		final JTextFieldResizing tfValue = new HintTextFieldResizing(term.getValue(),
-				"Value", this.parent.getFONT(), this);
+		final JTextFieldResizing tfValue = new HintTextFieldResizing(term.getValue(), "Value", this.parent.getFONT(), this);
 
 		tfValue.addFocusListener(new FocusAdapter() {
-
+			@Override
 			public void focusLost(final FocusEvent fe) {
-				
 				term.setValue(tfValue.getText());
-			
 				}});
 
-
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
-		this.termRowsPanel.add(termLabel,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(typCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(constCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(tfValue, this.gbc);
-		
 
-		
-		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		this.termRowsPanel.add(termLabel,this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(typCombo,this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(constCombo,this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(tfValue, this.gbc);
+
+		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
 		this.termRowsPanel.setBorder(raisedbevel);
-		
+
 		term.setTermLabel(termLabel);
 
 		term.setTypCombo(typCombo);
@@ -542,980 +480,823 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 		term.setTextFieldResizing(tfValue);
 
 		term.setInit(true);
-		
-	
 
 		this.updateSize();
-		
 	}
-	
 
-	private void recreateConstantRow(final Term term, int termID){
-		
+	private void recreateConstantRow(final Term term, final int termID){
 		term.setTermFrameID(termID);
-		frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-    	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
+		this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+    	this.display.setText(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
-		this.termRowsPanel.add(term.getTermLabel(),this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(term.getTypCombo(),this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(term.getConstantCombo(),this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(term.getTextFieldResizing(), this.gbc);
-		
 
-		
-	
+		this.termRowsPanel.add(term.getTermLabel(),this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(term.getTypCombo(),this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(term.getConstantCombo(),this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(term.getTextFieldResizing(), this.gbc);
 	}
 
 
 	/* ******** **
 	 * Variable **
 	 * ******** */
-	
-	
-	private void createVariableRow(int termID) {
-		
+	private void createVariableRow(final int termID) {
+
 		final Term term = new Term();
 		term.setVariable( true );
 		term.setTermFrameID(termID);
-		
+
 		/*
 		 *  Elements
 		 */
-		
-	
-		
 		// typCombo
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.setSelectedItem("Var");
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
-
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-							  
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
 							   if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						      
+
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
+
+
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
-//		term.setNameComboBox(namedConstCombo);
-		
-		
 		// TextField Value
-		final JTextFieldResizing tfValue = new HintTextFieldResizing("Value",
-				"Value", this.parent.getFONT(), this);
+		final JTextFieldResizing tfValue = new HintTextFieldResizing("Value", "Value", this.parent.getFONT(), this);
 
 		tfValue.addFocusListener(new FocusAdapter() {
-
+			@Override
 			public void focusLost(final FocusEvent fe) {
-				
 				term.setValue(tfValue.getText());
-				updateSize();
+				FrameOperatorPanel.this.updateSize();
 				}});
-		
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(termLabel,this.gbc);
-		
+
 		this.gbc.gridx++;
 
-		
 		this.termRowsPanel.add(typCombo,this.gbc);
-		
+
 		this.gbc.gridx++;
 
-		
 		this.gbc.gridx++;
-		
+
 		this.termRowsPanel.add(tfValue, this.gbc);
-		
+
 		term.setTermLabel(termLabel);
 		term.setTextFieldResizing(tfValue);
 		term.setTypCombo(typCombo);
 		term.setInit(true);
-		
-		frameOperator.getTerms().add( term );
+
+		this.frameOperator.getTerms().add( term );
 		this.updateSize();
-		
-		
 	}
-	
-	
-	private void createVariableTerm(final Term term, int termID){
-		
+
+
+	private void createVariableTerm(final Term term, final int termID){
 		term.setTermFrameID(termID);
-		frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-    	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
+		this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+    	this.display.setText(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
 		/*
 		 *  Elements
 		 */
-		
-		
 		// typCombo
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.setSelectedItem("Var");
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
-
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-							  
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
+
 							   if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						      
+
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
-		
-		
-		
-		
-		
-		
-		
+
 		// TextField Value
-		final JTextFieldResizing tfValue = new HintTextFieldResizing(term.getValue(),
-				"Value", this.parent.getFONT(), this);
+		final JTextFieldResizing tfValue = new HintTextFieldResizing(term.getValue(), "Value", this.parent.getFONT(), this);
 
 		tfValue.addFocusListener(new FocusAdapter() {
-
+			@Override
 			public void focusLost(final FocusEvent fe) {
-				
 				term.setValue(tfValue.getText());
-			
 				}});
 
-	
-	
-		
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(termLabel,this.gbc);
-		
+
 		this.gbc.gridx++;
-		
-	
+
 		this.termRowsPanel.add(typCombo,this.gbc);
-		
+
 		this.gbc.gridx++;
 
 		this.gbc.gridx++;
-		
+
 		this.termRowsPanel.add(tfValue,this.gbc);
-		
 
 		term.setTermLabel(termLabel);
 		term.setTypCombo(typCombo);
 		term.setTextFieldResizing(tfValue);
 		term.setInit(true);
-		
 
-		
 		this.updateSize();
-
-		
-
-		
 	}
-	
-	
-	private void recreateVariableRow(final Term term, int termID){
-		
+
+	private void recreateVariableRow(final Term term, final int termID){
 		term.setTermFrameID(termID);
-		frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-    	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
+		this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+    	this.display.setText(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
-		this.termRowsPanel.add(term.getTermLabel(),this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(term.getTypCombo(),this.gbc);
-		
-		this.gbc.gridx++;
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(term.getTextFieldResizing(), this.gbc);
 
-		
-	
+		this.termRowsPanel.add(term.getTermLabel(),this.gbc);
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(term.getTypCombo(),this.gbc);
+
+		this.gbc.gridx++;
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(term.getTextFieldResizing(), this.gbc);
 	}
-	
-	
+
+
 	/* ******** **
 	 * UniTerm  **
 	 * ******** */
-	
-
-	private void createUnitermRow(int termID) {
-		
+	private void createUnitermRow(final int termID) {
 		final Term term = new Term();
 		term.setUniterm(true);
 		term.setTermFrameID(termID);
-		
+
 		/*
 		 *  Elements
 		 */
-		
 		// typCombo
-
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.setSelectedItem("Expr");
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-						        
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
+
 						        if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
 
-		
 		final JButton connectionButton = new JButton("Connection");
 		connectionButton.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-					
-					RuleGraph ruleGraph = (RuleGraph) parent;
-
-					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,frameOperator,term);
-					
-					connectionButton.setEnabled(false);  
-				
+			 @Override
+			public void actionPerformed(final ActionEvent e) {
+					final RuleGraph ruleGraph = (RuleGraph) FrameOperatorPanel.this.parent;
+					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,FrameOperatorPanel.this.frameOperator,term);
+					connectionButton.setEnabled(false);
 					 }});
-		
-		
-		
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(termLabel,this.gbc);
-		
-		this.gbc.gridx++;
-		
 
-		
+		this.gbc.gridx++;
+
 		this.termRowsPanel.add(typCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(connectionButton, this.gbc);
-		
 
-//		term.setAbstractTermOperator(abstractTermOperator)
+		this.gbc.gridx++;
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(connectionButton, this.gbc);
+
 		term.setTermLabel(termLabel);
 		term.setTypCombo(typCombo);
 		term.setConnectionButton(connectionButton);
 		term.setInit(true);
-		
-		frameOperator.getTerms().add( term );
-		this.updateSize();
-		
-		
-	}
-	
-	private void createUnitermTerm(final Term term, int termID) {
-		
 
+		this.frameOperator.getTerms().add( term );
+		this.updateSize();
+	}
+
+	private void createUnitermTerm(final Term term, final int termID) {
 
 		term.setTermFrameID(termID);
-		
+
 		/*
 		 *  Elements
 		 */
-		
 		// typCombo
-
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.setSelectedItem("Expr");
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
-
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-						        
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
 						        if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
 
-		
 		final JButton connectionButton = new JButton("Connection");
 		connectionButton.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-					
-					RuleGraph ruleGraph = (RuleGraph) parent;
-
-					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,frameOperator,term);
-					
-					connectionButton.setEnabled(false);  
-				
+			 @Override
+			public void actionPerformed(final ActionEvent e) {
+					final RuleGraph ruleGraph = (RuleGraph) FrameOperatorPanel.this.parent;
+					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,FrameOperatorPanel.this.frameOperator,term);
+					connectionButton.setEnabled(false);
 					 }});
-		
-		
-		
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(termLabel,this.gbc);
-		
-		this.gbc.gridx++;
-		
 
-		
+		this.gbc.gridx++;
+
 		this.termRowsPanel.add(typCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(connectionButton, this.gbc);
-		
 
-//		term.setAbstractTermOperator(abstractTermOperator)
+		this.gbc.gridx++;
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(connectionButton, this.gbc);
+
 		term.setTermLabel(termLabel);
 		term.setTypCombo(typCombo);
 		term.setConnectionButton(connectionButton);
 		term.setInit(true);
-		
-		frameOperator.getTerms().add( term );
-		this.updateSize();
-		
 
-		
-		
+		this.frameOperator.getTerms().add( term );
+		this.updateSize();
 	}
-	
-	private void recreateUnitermRow(Term term, int termID) {
-		
+
+	private void recreateUnitermRow(final Term term, final int termID) {
 		term.setTermFrameID(termID);
-		frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-    	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
+		this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+    	this.display.setText(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(term.getTermLabel(),this.gbc);
-		
+
 		this.gbc.gridx++;
-		
+
 		this.termRowsPanel.add(term.getTypCombo(),this.gbc);
-		
+
 		this.gbc.gridx++;
 		this.gbc.gridx++;
-	
-		
+
 		this.termRowsPanel.add(term.getConnectionButton() ,this.gbc);
-		
-
-
-		
 	}
-	
-	
+
+
 	/* **** **
 	 * List **
 	 * **** */
-	
-	
-	private void createListRow(int termID) {
-		
+	private void createListRow(final int termID) {
+
 		final Term term = new Term();
 		term.setList(true);
 		term.setTermFrameID(termID);
-		
+
 		/*
 		 *  Elements
 		 */
-		
-		
 		// typCombo
-
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.setSelectedItem("List");
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
-
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-						        
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
+
 						        if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
 
-		
 		final JButton connectionButton = new JButton("Connection");
 		connectionButton.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-					
-								RuleGraph ruleGraph = (RuleGraph) parent;
-
-					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,frameOperator,term);
-					
-					connectionButton.setEnabled(false);  
-					  
+			 @Override
+			public void actionPerformed(final ActionEvent e) {
+								final RuleGraph ruleGraph = (RuleGraph) FrameOperatorPanel.this.parent;
+					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,FrameOperatorPanel.this.frameOperator,term);
+					connectionButton.setEnabled(false);
 					 }});
-		
-		
-		
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(termLabel,this.gbc);
-		
-		this.gbc.gridx++;
-		
 
-		
+		this.gbc.gridx++;
+
 		this.termRowsPanel.add(typCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(connectionButton, this.gbc);
-		
 
-//		term.setAbstractTermOperator(abstractTermOperator)
+		this.gbc.gridx++;
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(connectionButton, this.gbc);
+
 		term.setTypCombo(typCombo);
 		term.setConnectionButton(connectionButton);
 		term.setInit(true);
 		term.setTermLabel(termLabel);
-		
-		frameOperator.getTerms().add( term );
+
+		this.frameOperator.getTerms().add( term );
 		this.updateSize();
-		
-		
 	}
-	
-	
-	private void recreateListRow(Term term, int termID) {
-		
+
+	private void recreateListRow(final Term term, final int termID) {
 		term.setTermFrameID(termID);
-		frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-    	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
+		this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+    	this.display.setText(this.frameOperator.getTermTypArray()[0]+"["+this.frameOperator.getTermTypArray()[1]+"->"+this.frameOperator.getTermTypArray()[2]+"]");
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(term.getTermLabel(),this.gbc);
-		
+
 		this.gbc.gridx++;
-		
+
 		this.termRowsPanel.add(term.getTypCombo(),this.gbc);
-		
+
 		this.gbc.gridx++;
 		this.gbc.gridx++;
-	
-		
+
 		this.termRowsPanel.add(term.getConnectionButton() ,this.gbc);
-		
-
-
-		
 	}
-	
-	private void createListTerm(final Term term, int termID) {
 
+	private void createListTerm(final Term term, final int termID) {
 		term.setTermFrameID(termID);
-		
 		/*
 		 *  Elements
 		 */
-		
-		
 		// typCombo
-
-		JComboBox typCombo = new JComboBox(typComboEntries);
+		final JComboBox typCombo = new JComboBox(this.typComboEntries);
 		typCombo.setSelectedItem("List");
 		typCombo.addItemListener( new ItemListener() {
-					public void itemStateChanged(ItemEvent evt) {
-
+					@Override
+					public void itemStateChanged(final ItemEvent evt) {
 						   if (evt.getStateChange() == ItemEvent.SELECTED) {
-							   JComboBox selectedChoice = (JComboBox)evt.getSource();
-						        
+							   final JComboBox selectedChoice = (JComboBox)evt.getSource();
 						        if (selectedChoice.getSelectedItem().toString().equals("Var")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createVariableRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Var";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createVariableRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Const")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createConstantRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Const";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createConstantRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("Expr")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createUnitermRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "Expr";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createUnitermRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
 						        if (selectedChoice.getSelectedItem().toString().equals("List")){
-						        	frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
-						        	display.setText(frameOperator.getTermTypArray()[0]+"["+frameOperator.getTermTypArray()[1]+"->"+frameOperator.getTermTypArray()[2]+"]");
-						        	createListRow(term.getTermFrameID());
-						        	removeRow(term);
-						        	frameOperator.getTerms().remove(term);
-						        	frameOperator.sortTermsByTermFrameID();
-						        	repaintAllTerms();
+						        	FrameOperatorPanel.this.frameOperator.getTermTypArray()[term.getTermFrameID()] = "List";
+						        	FrameOperatorPanel.this.display.setText(FrameOperatorPanel.this.frameOperator.getTermTypArray()[0]+"["+FrameOperatorPanel.this.frameOperator.getTermTypArray()[1]+"->"+FrameOperatorPanel.this.frameOperator.getTermTypArray()[2]+"]");
+						        	FrameOperatorPanel.this.createListRow(term.getTermFrameID());
+						        	FrameOperatorPanel.this.removeRow(term);
+						        	FrameOperatorPanel.this.frameOperator.getTerms().remove(term);
+						        	FrameOperatorPanel.this.frameOperator.sortTermsByTermFrameID();
+						        	FrameOperatorPanel.this.repaintAllTerms();
 						        	}
-						        
-							   
 						   }
 						   else if (evt.getStateChange() == ItemEvent.DESELECTED) {}
 						}
 				    } );
 
-		
 		final JButton connectionButton = new JButton("Connection");
 		connectionButton.addActionListener(new ActionListener(){
-			 public void actionPerformed(ActionEvent e) {
-					
-								RuleGraph ruleGraph = (RuleGraph) parent;
-
-					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,frameOperator,term);
-					
-					connectionButton.setEnabled(false);  
-					  
+			 @Override
+			public void actionPerformed(final ActionEvent e) {
+								final RuleGraph ruleGraph = (RuleGraph) FrameOperatorPanel.this.parent;
+					ruleGraph.getVisualEditor().connectionMode = new TermConnection(ruleGraph,FrameOperatorPanel.this.frameOperator,term);
+					connectionButton.setEnabled(false);
 					 }});
-		
-		
-		
-		JLabel termLabel = new JLabel();
-		termLabel.setFont(parent.getFONT());
+
+		final JLabel termLabel = new JLabel();
+		termLabel.setFont(this.parent.getFONT());
 		String labelString = "";
-		if(termID == 0) labelString = "Subject:";
-		if(termID == 1) labelString = "Predicate:";
-		if(termID == 2) labelString = "Object:";
+		if(termID == 0) {
+			labelString = "Subject:";
+		}
+		if(termID == 1) {
+			labelString = "Predicate:";
+		}
+		if(termID == 2) {
+			labelString = "Object:";
+		}
 		termLabel.setText(labelString);
-		
+
 		/*
 		 * Calibration
 		 */
-		
 		this.gbc.gridy++;
 		this.gbc.gridx = 0;
-		
+
 		this.termRowsPanel.add(termLabel,this.gbc);
-		
-		this.gbc.gridx++;
-		
 
-		
+		this.gbc.gridx++;
+
 		this.termRowsPanel.add(typCombo,this.gbc);
-		
-		this.gbc.gridx++;
-		
-		this.gbc.gridx++;
-		
-		this.termRowsPanel.add(connectionButton, this.gbc);
-		
 
-//		term.setAbstractTermOperator(abstractTermOperator)
+		this.gbc.gridx++;
+
+		this.gbc.gridx++;
+
+		this.termRowsPanel.add(connectionButton, this.gbc);
+
 		term.setTypCombo(typCombo);
 		term.setConnectionButton(connectionButton);
 		term.setInit(true);
 		term.setTermLabel(termLabel);
-		
-		frameOperator.getTerms().add( term );
+
+		this.frameOperator.getTerms().add( term );
 		this.updateSize();
-		
 	}
-	
-	
-	
+
 	/* **** **
 	 * Util **
 	 * **** */
-	
 	/**
-	 * Sets the ComboBox entries for UniTermComboBox and the 
+	 * Sets the ComboBox entries for UniTermComboBox and the
 	 * ConstantComboBox
 	 * @param comboBoxEntries
 	 */
-	public void setConstantComboBoxEntries(String[] comboBoxEntries){
-
+	public void setConstantComboBoxEntries(final String[] comboBoxEntries){
 		this.comboBoxEntries = comboBoxEntries;
-
 		this.frameOperator.getConstantComboBox().removeAllItems();
-
-
-		
-
-		
-		
 		int constantCnt = 0;
 		int termCnt = 0;
-		
 		for (int i = 0 ; i < this.frameOperator.getTerms().size() ; i++){
-			
-			
 			if( this.frameOperator.getTerms().get(i).isConstant() ){
-				
 				this.frameOperator.getTerms().get(i).getConstantCombo().removeAllItems();
-				
-				for (String s : comboBoxEntries){
+				for (final String s : comboBoxEntries){
 					this.frameOperator.getTerms().get(i).getConstantCombo().addItem(s);
 				}
-				JComboBox tmp = this.frameOperator.getTerms().get(i).getConstantCombo();
-				tmp.setSelectedItem(frameOperator.getSavedPrefixes().get(constantCnt));
+				final JComboBox tmp = this.frameOperator.getTerms().get(i).getConstantCombo();
+				tmp.setSelectedItem(this.frameOperator.getSavedPrefixes().get(constantCnt));
 				constantCnt++;
 			}
-			
+
 			if( this.frameOperator.isNamed() ) {
-				
 				this.frameOperator.getTerms().get(i).getNameComboBox().removeAllItems();
-				
-				for (String s : comboBoxEntries){
+				for (final String s : comboBoxEntries){
 					this.frameOperator.getTerms().get(i).getNameComboBox().addItem(s);
 				}
-				
-					JComboBox tmp = this.frameOperator.getTerms().get(i).getNameComboBox();
-					LinkedList<String> l = frameOperator.getSavedNamePrefixes();
-					tmp.setSelectedItem(l.get(termCnt));
-					termCnt++;
-				
-				
+				final JComboBox tmp = this.frameOperator.getTerms().get(i).getNameComboBox();
+				final LinkedList<String> l = this.frameOperator.getSavedNamePrefixes();
+				tmp.setSelectedItem(l.get(termCnt));
+				termCnt++;
 			}
-			
-			
 		}
-
 	}
-	
-	
-	private void removeRow(Term term) {
-		
+
+	private void removeRow(final Term term) {
 		// Constant
 		if ( term.isConstant() ) {
-
 			this.termRowsPanel.remove( term.getConstantCombo() );
 			this.termRowsPanel.remove( term.getTextFieldResizing() );
-			
-
-
 		}
-		
+
 		// Variable
-		
 		if ( term.isVariable() ){
-			
 			this.termRowsPanel.remove( term.getTextFieldResizing() );
-
-			
 		}
-		
+
 		// Uniterm || List
 		if ( term.isUniterm() || term.isList() ){
-			
 			this.termRowsPanel.remove( term.getConnectionButton() );
-			
 		}
-		
+
 		this.termRowsPanel.remove( term.getTermLabel() );
 		this.termRowsPanel.remove(term.getTypCombo());
-	
-		
 
 		this.updateSize();
 	}
-	
-	
+
+	@Override
 	public void updateSize() {
 		this.setMinimumSize(this.termRowsPanel.getSize());
-
 		// --- update width of the JTextFieldResizing to the max size per
 		// column
 		// - begin ---
@@ -1524,31 +1305,20 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 			int maxWidthLeftColumn = 10;
 			Container textField = null;
 			Dimension d = null;
-
 			for (int i = 0; i < this.termRowsPanel.getComponentCount(); i ++) {
-				
-
 				if(this.termRowsPanel.getComponent(i) instanceof JTextFieldResizing){
-
 				textField = (Container) this.termRowsPanel.getComponent(i);
-
 				final Dimension leftSize = (textField instanceof JTextFieldResizing) ? ((JTextFieldResizing) textField)
 						.calculateSize() : textField.getPreferredSize();
 
-				maxWidthLeftColumn = Math.max(maxWidthLeftColumn,
-						leftSize.width);
-
-
+				maxWidthLeftColumn = Math.max(maxWidthLeftColumn, leftSize.width);
 				}
 			}
 			// -- get max width for each column - end --
-
 			// -- update elements of each column - begin --
 			// walk through rows...
 			for (int i = 0; i < this.termRowsPanel.getComponentCount(); i ++) {
-			
 				if(this.termRowsPanel.getComponent(i) instanceof JTextFieldResizing){
-
 				textField = (Container) this.termRowsPanel.getComponent(i);
 				d = new Dimension(maxWidthLeftColumn,
 						textField.getPreferredSize().height);
@@ -1557,7 +1327,6 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 				textField.setMaximumSize(d);
 				textField.setMinimumSize(d);
 				textField.repaint();
-
 				}
 			}
 			// -- update elements of each column - end --
@@ -1565,20 +1334,16 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 		// --- update width of the JTextFieldResizing to the max size per
 		// column
 		// - begin ---
-
 		// update height of the GraphBox...
 		if (this.getBox() != null) {
 			this.getBox().height = this.getPreferredSize().height;
 		}
-
 		this.setSize(this.getPreferredSize());
 		this.revalidate(); // re-validate the PrefixPanel
 	}
 
-	
 	@Override
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
-		// TODO Auto-generated method stub
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
 	}
 
@@ -1587,90 +1352,57 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 		for (int i = 0; i < this.frameOperator.getTerms().size(); i++) {
 			this.removeRow(this.frameOperator.getTerms().get(i));
 		}
-		
 		if ( this.frameOperator.hasElements() ) {
-			
 			for (int i = 0; i < this.frameOperator.getTerms().size(); i++) {
-				
-	
-				
 				if (  this.frameOperator.getTerms().get(i).isConstant() ){
-
 					this.recreateConstantRow(this.frameOperator.getTerms().get(i),i );
 				}
-				
 				if (  this.frameOperator.getTerms().get(i).isVariable() ) {
-				
 					this.recreateVariableRow(this.frameOperator.getTerms().get(i),i );
 				}
-				
 				if (  this.frameOperator.getTerms().get(i).isUniterm() ) {
-					
 					this.recreateUnitermRow(this.frameOperator.getTerms().get(i),i );
 				}
-				
 				if (  this.frameOperator.getTerms().get(i).isList() ) {
-					
 					this.recreateListRow(this.frameOperator.getTerms().get(i),i );
 				}
-				
 			}
 		}
-		
-		
-
 		this.updateSize();
 	}
-	
-	
-
-
 
 	/* ***************** **
 	 * Getter and Setter **
 	 * ***************** */
-	
-
 	public FrameOperator getFrameOperator() {
-		return frameOperator;
+		return this.frameOperator;
 	}
 
-	public void setFactOperator(FrameOperator frameOperator) {
+	public void setFactOperator(final FrameOperator frameOperator) {
 		this.frameOperator = frameOperator;
 	}
 
 	public String getSelectedChoiceString() {
-		return selectedChoiceString;
+		return this.selectedChoiceString;
 	}
 
-	public void setSelectedChoiceString(String selectedChoiceString) {
+	public void setSelectedChoiceString(final String selectedChoiceString) {
 		this.selectedChoiceString = selectedChoiceString;
 	}
 
 	public String[] getComboBoxEntries() {
-		return comboBoxEntries;
+		return this.comboBoxEntries;
 	}
 
-	public void setFocusListener(FocusListener fL) {
+	public void setFocusListener(final FocusListener fL) {
 		this.comboBoxFocusListener = fL;
-		
 	}
 
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
-
-
-	
-
-
-
-
-	
-	
-	
 }

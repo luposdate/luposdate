@@ -23,29 +23,12 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.HashSet;
-
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
-import lupos.gui.operatorgraph.GraphBox;
-import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
-import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer;
-
-
 
 public class ContainerPanel extends lupos.gui.operatorgraph.visualeditor.guielements.ContainerPanel {
 
@@ -55,58 +38,38 @@ public class ContainerPanel extends lupos.gui.operatorgraph.visualeditor.guielem
 
 	private AbstractContainer operatorContainer;
 	private VisualRifEditor visualRifEditor;
-	
+
 	// Constructor
-	public ContainerPanel(final AbstractContainer operatorContainer, final GraphWrapper gw, final JPanel graphPanel, final RuleGraph ruleGraph, final RuleGraph parent, VisualRifEditor visualRifEditor) {
-		super(operatorContainer, gw, graphPanel, ruleGraph, parent);		
+	public ContainerPanel(final AbstractContainer operatorContainer, final GraphWrapper gw, final JPanel graphPanel, final RuleGraph ruleGraph, final RuleGraph parent, final VisualRifEditor visualRifEditor) {
+		super(operatorContainer, gw, graphPanel, ruleGraph, parent);
 		this.operatorContainer = operatorContainer;
 		this.setMinimumSize(null);
-		// this.graphSP.setMinimumSize(null);	
+		// this.graphSP.setMinimumSize(null);
 	}
-
-	
-//	@Override
-//	public boolean validateOperatorPanel(boolean showErrors, Object data) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-	
 
 	public RuleGraph getRuleGraph(){
 		return this.ruleGraph;
 	}
-	
-	
-	public void setRuleGraph(RuleGraph ruleGraph){
+
+	public void setRuleGraph(final RuleGraph ruleGraph){
 		this.ruleGraph = ruleGraph;
 		this.qg = ruleGraph;
 	}
 
-
 	public AbstractContainer getOperatorContainer() {
-		return operatorContainer;
+		return this.operatorContainer;
 	}
 
-
-	public void setOperatorContainer(AbstractContainer operatorContainer) {
+	public void setOperatorContainer(final AbstractContainer operatorContainer) {
 		this.operatorContainer = operatorContainer;
 	}
 
-
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
-
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 		this.operatorContainer.setVisualRifEditor(this.visualRifEditor);
-
 	}
-
-
-
-
-	
-
-} //End  class ContainerPanel
+}

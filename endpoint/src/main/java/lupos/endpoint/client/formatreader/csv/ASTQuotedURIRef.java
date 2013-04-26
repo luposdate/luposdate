@@ -29,19 +29,19 @@ public class ASTQuotedURIRef extends SimpleNode {
 
 	private String qRef;
 
-	public ASTQuotedURIRef(int id) {
+	public ASTQuotedURIRef(final int id) {
 		super(id);
 	}
 
-	public ASTQuotedURIRef(CSVParser p, int id) {
+	public ASTQuotedURIRef(final CSVParser p, final int id) {
 		super(p, id);
 	}
 
 	public String getQRef() {
-		return qRef;
+		return this.qRef;
 	}
 
-	public void setQRef(String qRef) {
+	public void setQRef(final String qRef) {
 		this.qRef = qRef;
 	}
 
@@ -51,8 +51,7 @@ public class ASTQuotedURIRef extends SimpleNode {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return qRef;
+		return this.qRef;
 	}
 }
 /* JavaCC - OriginalChecksum=580cbe96d458886859ca50ad019b6c4c (do not edit this line) */

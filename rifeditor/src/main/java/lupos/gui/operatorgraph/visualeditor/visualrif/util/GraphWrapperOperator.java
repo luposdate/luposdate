@@ -59,15 +59,12 @@ import xpref.datatypes.BooleanDatatype;
 public class GraphWrapperOperator extends GraphWrapperEditable {
 	public GraphWrapperOperator(final Operator element) {
 		super(element);
-
-		// TODO: test this later...
-		// this.prefix.addOperator(element);
 	}
 
 	/**
 	 * Returns a list of GraphWrapper elements which are the preceding elements
 	 * of the current element.
-	 * 
+	 *
 	 * @return List of preceding elements
 	 */
 	@Override
@@ -84,7 +81,6 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		for(final Operator op : precedingOperators) {
 			precedingElements.add(new GraphWrapperOperator(op));
 		}
-
 		return precedingElements; // return preceding elements
 	}
 
@@ -96,7 +92,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	/**
 	 * Returns a list of GraphWrapperIdTuple elements which are the succeeding
 	 * elements of the current element.
-	 * 
+	 *
 	 * @return List of succeeding elements
 	 */
 	@Override
@@ -117,7 +113,6 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 			// succeeding elements...
 			succedingElements.add(new GraphWrapperIDTuple(element, oit.getId()));
 		}
-
 		return succedingElements; // return succeeding elements
 	}
 
@@ -131,18 +126,15 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		if(this.element instanceof AbstractContainer) {
 			return true;
 		}
-
 		return false;
 	}
 
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		final LinkedList<GraphWrapper> gwList = new LinkedList<GraphWrapper>();
-
 		for(final Operator op : ((AbstractContainer) this.element).getOperators()) {
 			gwList.add(new GraphWrapperOperator(op));
 		}
-
 		return gwList;
 	}
 
@@ -172,61 +164,41 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	public boolean variableInUse(final String variable) {
 		return ((Operator) this.element).variableInUse(variable, new HashSet<Operator>());
 	}
-	
+
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
 			String className = ((Operator) this.element).getGUIComponent().getParentQG().visualEditor.getXPrefPrefix();
 			className = className.substring(0, 1).toLowerCase() + className.substring(1);
-			
 			if(this.element instanceof AbstractContainer){
 				return;
 			}
-
 			if(!BooleanDatatype.getValues(className + "_useStyledBoxes").get(0).booleanValue()) {
 				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1, size.height - 1, Color.WHITE, Color.BLACK);
-			}
-			else {
+			} else {
 				DrawObject drawObject = null;
-
 				if(this.element instanceof PrefixOperator) {
 					drawObject = this.getOperatorStyle("documentEditorPane_style_prefixoperator");
 				}
 				if(this.element instanceof ImportOperator) {
 					drawObject = this.getOperatorStyle("documentEditorPane_style_importoperator");
-				}
-				else if(this.element instanceof RuleOperator) {
+				} else if(this.element instanceof RuleOperator) {
 					drawObject = this.getOperatorStyle("documentEditorPane_style_ruleoperator");
-				}
-				else if(this.element instanceof AnnotationOperator) {
+				} else if(this.element instanceof AnnotationOperator) {
 					drawObject = this.getOperatorStyle("documentEditorPane_style_annotationoperator");
-				}
-				else if(this.element instanceof GroupOperator) {
+				} else if(this.element instanceof GroupOperator) {
 					drawObject = this.getOperatorStyle("documentEditorPane_style_groupoperator");
-				}
-				
-				else if(this.element instanceof VariableOperator) {
+				} else if(this.element instanceof VariableOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_variableoperator");
-				}
-				
-				else if(this.element instanceof ConstantOperator) {
+				} else if(this.element instanceof ConstantOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_constantoperator");
-				}
-				
-				else if(this.element instanceof UnitermOperator) {
+				} else if(this.element instanceof UnitermOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_unitermoperator");
-				}
-				
-				else if(this.element instanceof ListOperator) {
+				} else if(this.element instanceof ListOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_listoperator");
-				}
-				
-				else if(this.element instanceof FrameOperator) {
+				} else if(this.element instanceof FrameOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_frameoperator");
 				}
-				
-
-
 
 				if(drawObject == null) {
 					drawObject = this.getOperatorStyle(className + "_style_operator");
@@ -234,15 +206,12 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 
 				if(drawObject != null) {
 					drawObject.draw(g2d, 0, 0, size.width, size.height);
-				}
-				else {
+				} else {
 					DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width, size.height, Color.WHITE, Color.BLACK);
 				}
 			}
-		}
-		catch(final Exception e) {
+		} catch(final Exception e) {
 			System.err.println(e);
-
 			e.printStackTrace();
 		}
 	}
@@ -253,50 +222,40 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 			String className = ((Operator) this.element).getGUIComponent().getParentQG().visualEditor.getXPrefPrefix();
 			className = className.substring(0, 1).toLowerCase() + className.substring(1);
 
-//			if(this.element instanceof AbstractContainer){
-//				return;
-//			}
-			
 			if(!BooleanDatatype.getValues(className + "_useStyledBoxes").get(0).booleanValue()) {
 				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1, size.height - 1, Color.WHITE, Color.BLACK);
 			}
 			else {
 				DrawObject drawObject = null;
 
-				
 				if(this.element instanceof VariableOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_variableoperator");
 				}
-				
+
 				if(this.element instanceof ConstantOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_constantoperator");
 				}
-				
+
 				if(this.element instanceof UnitermOperator) {
-//					DrawObject os = this.getOperatorStyle("ruleEditorPane_style_unitermoperator");
-//					DrawObject os2 = new DrawObject(Type.ROUNDBOX, OuterAttribute.NONE, OuterAttribute.NONE,)
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_unitermoperator");
 				}
-				
+
 				if(this.element instanceof ListOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_listoperator");
 				}
-				
+
 				if(this.element instanceof FrameOperator) {
 					drawObject = this.getOperatorStyle("ruleEditorPane_style_frameoperator");
 				}
 
 				if(drawObject != null) {
 					drawObject.draw(g2d, 0, 0, size.width, size.height);
-				}
-				else {
+				} else {
 					DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width, size.height, Color.WHITE, Color.BLACK);
 				}
 			}
-		}
-		catch(final Exception e) {
+		} catch(final Exception e) {
 			System.err.println(e);
-
 			e.printStackTrace();
 		}
 	}
@@ -304,7 +263,6 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	@Override
 	public int hashCode() {
 		final Operator elem = (Operator) this.element;
-
 		return System.identityHashCode(elem);
 	}
 
@@ -313,7 +271,6 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		if(element instanceof GraphWrapperOperator) {
 			return (Operator) this.element == (Operator) ((GraphWrapperOperator) element).element;
 		}
-
 		return false;
 	}
 
@@ -351,8 +308,8 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	@Override
 	public void deleteAnnotation(final GraphWrapper gw) {
 		if ( this.element instanceof AbstractTermOperator ){
-			
-			for (Term term: ((AbstractTermOperator)this.element).getTerms()) {
+
+			for (final Term term: ((AbstractTermOperator)this.element).getTerms()) {
 				if(term.getSucceedingOperator()!=null && term.getSucceedingOperator().getElement().equals(gw.getElement())){
 					term.setSucceedingOperator(null);
 					term.setDummyOperator(null);
@@ -362,29 +319,18 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 				}
 			}
 			((AbstractTermOperator)gw.getElement()).setChild(false);
-		} 
-		LinkedList<GraphWrapper> tmp = this.getGUIComponent().getParentQG().getRootList(true);
-		
-		//((Operator) this.element)gw.get
+		}
+		final LinkedList<GraphWrapper> tmp = this.getGUIComponent().getParentQG().getRootList(true);
+
 		((Operator) this.element).deleteAnnotation((Operator) gw.getElement());
-//		if(gw.getElement() instanceof AbstractTermOperator){
-//			((AbstractTermOperator)gw.getElement()).setChild(false);
-//		}
-		// TODO Testen ob selbes Ergebnis ohne if()
 		if(tmp.contains(this)){
 			this.getGUIComponent().getParentQG().addToRootList(this);
 		}
-//		// TODO wenn drin dann 2 Operatoren
-//		if(((Operator) this.element).getParentContainer()!=null){
-//			((Operator) this.element).getParentContainer().determineRootNodes();
-//		}
 	}
 
 	@Override
 	public void delete(final boolean subtree) {
-		
 		((Operator) this.element).delete(subtree);
-		
 	}
 
 	@Override
@@ -397,7 +343,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 	public AbstractGuiComponent getAnnotationLabel(final GraphWrapper gw) {
 		return ((Operator) this.element).getAnnotationLabel((Operator) gw.getElement());
 	}
-	
+
 	@Override
 	public String getWantedPreferencesID() {
 		return "documentEditorPane_style_prefixoperator";

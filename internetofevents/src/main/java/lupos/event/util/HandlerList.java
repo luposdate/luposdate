@@ -32,25 +32,25 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("serial")
 public class HandlerList<T> extends ArrayList<T> {
-	private Method methodToCall;
-	
+	private final Method methodToCall;
+
 	/**
 	 * Constructor.
 	 * @param methodToCall The method that should be called on all contained on all contained objects.
 	 */
-	public HandlerList(Method methodToCall) {		
+	public HandlerList(final Method methodToCall) {
 		this.methodToCall = methodToCall;
 	}
-	
+
 	/**
 	 * Calls the specified method on all objects contained in the list.
 	 */
 	public void callAll() {
-		for(T t : this) {
+		for(final T t : this) {
 			try {
 				this.methodToCall.invoke(t);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
+			} catch (final Exception e) {
+				System.err.println(e);
 				e.printStackTrace();
 			}
 		}

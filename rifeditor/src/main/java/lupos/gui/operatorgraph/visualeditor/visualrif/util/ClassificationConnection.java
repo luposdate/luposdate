@@ -23,36 +23,28 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
-
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AndContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 
-
-
-
-
 public class ClassificationConnection  extends ConnectionRIF<Operator>{
 
-	public ClassificationConnection(VisualEditor<Operator> visualEditor) {
+	public ClassificationConnection(final VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
-		
 	}
-	
-	public ClassificationConnection(VisualEditor<Operator> visualEditor, VisualRIFGraph<Operator> ruleGraph) {
+
+	public ClassificationConnection(final VisualEditor<Operator> visualEditor, final VisualRIFGraph<Operator> ruleGraph) {
 		super(visualEditor);
 		this.queryGraph = ruleGraph;
 	}
 
-	
-	
 	@Override
 	protected String validateConnection() {
 		String errorString = "";
-		
-		// no connection to itself 
+
+		// no connection to itself
 		if ( this.firstOp.getElement() == this.secondOp.getElement() ) {
 			errorString = "You can't connect an operator with itself!";
 		}
@@ -60,20 +52,15 @@ public class ClassificationConnection  extends ConnectionRIF<Operator>{
 		if( this.firstOp.getElement() instanceof FrameOperator ){
 			errorString = "Not Possible";
 		}
-		
+
 		if ( (this.firstOp.getElement() instanceof AndContainer) ){
 			errorString = "Not Possible"; // TODO
+		} else {
+			if ( this.secondOp.getElement() instanceof AndContainer ){
+				errorString = "Not Possible"; // TODO
+			}
 		}
-		
-		else
-		
-		if ( this.secondOp.getElement() instanceof AndContainer ){
-			errorString = "Not Possible"; // TODO
-		}
-		
-		
-		
+
 		return errorString;
 	}
-
 }

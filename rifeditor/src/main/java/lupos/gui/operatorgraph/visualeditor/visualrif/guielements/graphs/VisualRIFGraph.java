@@ -23,35 +23,25 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
-
-import javax.swing.ImageIcon;
 
 import lupos.datastructures.items.Item;
 import lupos.gui.operatorgraph.GraphBox;
-import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
-import lupos.gui.operatorgraph.visualeditor.util.DummyItem;
-import lupos.gui.operatorgraph.util.VEImageIcon;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ClassificationOperatorPanel;
+import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.util.ConnectionRIF;
 
 public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	/**
@@ -69,11 +59,10 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	 * Adds the chosen operator with the given content in it to the
 	 * QueryGraphCanvas. Returns the new added Operator.
 	 */
+	@Override
 	public T addOperator(final int x, final int y, final Item content) {
 		this.visualEditor.isInInsertMode = false; // leave insertMode
-
 		final Class<? extends T> clazz = this.visualEditor.getInsertOperator(); // get the class
-
 		// get some class names...
 		final String newClassName = clazz.getSimpleName();
 
@@ -85,13 +74,13 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 
 		try {
 			final T newOp = this.createOperator(clazz, content);
-			
+
 			this.createOperator(newOp);
 
 			this.handleAddOperator(newOp);
-			
+
 			final GraphWrapper gw = this.createGraphWrapper(newOp);
-			
+
 			// create the GraphBox at the right position...
 			final GraphBox box = this.graphBoxCreator.createGraphBox(this, gw);
 			box.setY(y);
@@ -101,9 +90,8 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 
 			this.boxes.put(gw, box);
 			this.rootList.add(gw);
-
 //			this.createOperator(newOp);
-			
+
 			this.revalidate();
 			this.visualEditor.repaint();
 
@@ -116,9 +104,7 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 		}
 	}
 
-	
-
-	
+	@Override
 	public void addOperator(final int x, final int y, final T newOp) {
 		this.visualEditor.isInInsertMode = false; // leave insertMode
 
@@ -131,12 +117,12 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 		this.visualEditor.activateGraphMenus();
 
 		this.createOperator(newOp);
-		
+
 		this.handleAddOperator(newOp);
 
 		//		final GraphWrapper gw = new GraphWrapperOperator(newOp, this.prefix);
 		final GraphWrapper gw = this.createGraphWrapper(newOp);
-		
+
 		// find out whether the operator is a subclass of RetrieveData...
 		if(newClassSuperName.startsWith("RetrieveData")) {
 			this.rootList.add(gw);
@@ -152,80 +138,65 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 		this.boxes.put(gw, box);
 		this.rootList.add(gw);
 
-
-		
 		this.revalidate();
 		this.visualEditor.repaint();
 	}
 
-
-	private void createOperator(T newOp) {
-		
+	private void createOperator(final T newOp) {
 		/* Document */
-		
 		// add Rule
 		if ( newOp instanceof RuleOperator){
-			RuleOperator ro =  (RuleOperator) newOp;
+			final RuleOperator ro =  (RuleOperator) newOp;
 			this.createNewRule(ro);
 		}
-		
+
 		// add Prefix
 		if ( newOp instanceof PrefixOperator ){
-			PrefixOperator po = (PrefixOperator) newOp;
+			final PrefixOperator po = (PrefixOperator) newOp;
 			this.createNewPrefix(po);
 		}
-		
+
 		// add Import
 		if ( newOp instanceof ImportOperator ){
-			ImportOperator io = (ImportOperator) newOp;
+			final ImportOperator io = (ImportOperator) newOp;
 			this.createNewImport(io);
 		}
 
-		
 		/* Rule */
-		
 		if ( newOp instanceof UnitermOperator ){
-			UnitermOperator fo = (UnitermOperator) newOp;
+			final UnitermOperator fo = (UnitermOperator) newOp;
 			this.createNewUniterm(fo);
 		}
-		
+
 		if ( newOp instanceof AbstractContainer ){
-			AbstractContainer oc = (AbstractContainer) newOp;
+			final AbstractContainer oc = (AbstractContainer) newOp;
 			this.createNewOperatorContainer(oc);
 		}
-		
+
 		if ( newOp instanceof ListOperator ){
-			ListOperator lo = (ListOperator) newOp;
+			final ListOperator lo = (ListOperator) newOp;
 			this.createNewListOperator(lo);
 		}
-		
+
 		if ( newOp instanceof FrameOperator ){
-			FrameOperator fo = (FrameOperator) newOp;
+			final FrameOperator fo = (FrameOperator) newOp;
 			this.createNewFrameOperator(fo);
 		}
-		
+
 		if ( newOp instanceof ConstantOperator ){
-			ConstantOperator co = (ConstantOperator) newOp;
+			final ConstantOperator co = (ConstantOperator) newOp;
 			this.createNewConstantOperator(co);
 		}
-		
+
 		if ( newOp instanceof VariableOperator ){
-			VariableOperator vo = (VariableOperator) newOp;
+			final VariableOperator vo = (VariableOperator) newOp;
 			this.createNewVariableOperator(vo);
 		}
-		
-		
-		
 	}
-
-
-	
-
 
 	/* ******************** **
 	 * Canvas input methods **
 	 * ******************** */
-
 	protected abstract void createNewRule(RuleOperator ro);
 	protected abstract void createNewPrefix(PrefixOperator po);
 	protected abstract void createNewImport(ImportOperator io);
@@ -236,26 +207,24 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	protected abstract void createNewConstantOperator(ConstantOperator co);
 	protected abstract void createNewVariableOperator(VariableOperator vo);
 
-	
 	@Override
 	public String serializeSuperGraph() {
 		final StringBuffer ret = new StringBuffer();
-
 		for (int i = 0; i < super.rootList.size(); ++i) {
 			if (i > 1) {
 				ret.append("\n");
 			}
 			if( ! (super.rootList.get(i).getElement() instanceof ClassificationOperatorPanel) ){
 				ret.append(super.rootList.get(i).serializeObjectAndTree());
-			}else
+			}
+			else {
 				System.out.println("ClassificationOperatorPanel"); // TODO
+			}
 		}
-
 		return ret.toString();
 	}
 
-
-	public VisualRIFGraph getVisualGraph(){
+	public VisualRIFGraph<T> getVisualGraph(){
 		return this;
 	}
 }

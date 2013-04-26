@@ -33,45 +33,44 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.ScrollPane;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
- * 
- * Ein DocumentPanel ist die Visualisierung eines Dokumentes. 
+ *
+ * Ein DocumentPanel ist die Visualisierung eines Dokumentes.
  * Jedes Dokument enthaelt eine DocumentEditorPane, welches den Dokumentengraphen enthaelt
  *
  */
 public class DocumentPanel extends JTabbedPane {
 
 	private static final long serialVersionUID = -525542825181366616L;
-	
+
 
 	private DocumentPanel that = this;
 	private VisualRifEditor visualRifEditor;
 	private String documentName;
 	private LinkedList<String> listOfRules;
 	private String tabTitle;
-    
-	//visual representation 
+
+	//visual representation
 	private DocumentEditorPane documentEditorPane = null;
 
 
 	// Constructor
-	public DocumentPanel(VisualRifEditor visualRifEditor, String name) {
+	public DocumentPanel(final VisualRifEditor visualRifEditor, final String name) {
 		this(visualRifEditor, name, null);
 	}
 
 	// Constructor
-	public DocumentPanel(VisualRifEditor visualRifEditor, String name,
-			JSONObject loadObject) {
+	public DocumentPanel(final VisualRifEditor visualRifEditor, final String name,
+			final JSONObject loadObject) {
 
 		super();
-		
+
 		this.setDocumentName(name);
 
 		this.listOfRules = new LinkedList<String>();
@@ -81,69 +80,71 @@ public class DocumentPanel extends JTabbedPane {
 		if (loadObject == null) {
 			this.add("visual representation",
 					this.getVisualRepresentationTab(null));
-		} else
+		} else {
 			try {
 				this.add("visual representation",
 						this.getVisualRepresentationTab(loadObject.getJSONObject("VISUAL REPRESENTATION")));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+			} catch (final JSONException e) {
+				System.err.println(e);
 				e.printStackTrace();
 			}
+		}
 
 		this.addChangeListener(new ChangeListener() {
-			
 
-			public void stateChanged(ChangeEvent ce) {
-				JTabbedPane tabSource = (JTabbedPane) ce.getSource();
-				setTabTitle(tabSource.getTitleAt(tabSource
+
+			@Override
+			public void stateChanged(final ChangeEvent ce) {
+				final JTabbedPane tabSource = (JTabbedPane) ce.getSource();
+				DocumentPanel.this.setTabTitle(tabSource.getTitleAt(tabSource
 						.getSelectedIndex()));
-				
+
 			}
 		});
 	}
-	
+
 	//visual representation
-	private JPanel getVisualRepresentationTab(JSONObject loadObject) {
-		
+	private JPanel getVisualRepresentationTab(final JSONObject loadObject) {
+
 			this.documentEditorPane = new DocumentEditorPane(this.visualRifEditor);
 			this.documentEditorPane.setDocumentName(this.documentName);
-			
-			
-			JPanel topPanel = new JPanel(new BorderLayout());
+
+
+			final JPanel topPanel = new JPanel(new BorderLayout());
 			topPanel.add(new ScrollPane(this.documentEditorPane.getVisualGraphs().get(0)));
 
-			JPanel bottomPanel = new JPanel(new BorderLayout());
+			final JPanel bottomPanel = new JPanel(new BorderLayout());
 			bottomPanel.add(new ScrollPane(new JTextField()));
 
-			JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+			final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 			splitPane.setContinuousLayout(true);
 			splitPane.setOneTouchExpandable(true);
 			splitPane.setResizeWeight(0.8);
 			splitPane.setTopComponent(topPanel);
 			splitPane.setBottomComponent(this.documentEditorPane.buildBottomPane());
-			
-			JPanel visualPanel = new JPanel(new BorderLayout());
+
+			final JPanel visualPanel = new JPanel(new BorderLayout());
 			visualPanel.add(this.documentEditorPane.buildMenuBar(), BorderLayout.NORTH);
-			
+
 			JPanel topToolbar = null;
 
 			if(loadObject != null) {
 				try {
-					JSONObject toolBar = loadObject.getJSONObject("TOPTOOLBAR");
+					final JSONObject toolBar = loadObject.getJSONObject("TOPTOOLBAR");
 					topToolbar = this.documentEditorPane.createTopToolBar(toolBar);
 				}
-				catch(JSONException e) {
+				catch(final JSONException e) {
 					e.printStackTrace();
 				}
 			}else
 			{
 				topToolbar = this.documentEditorPane.createTopToolBar(null);
 			}
-				
-			JPanel innerPanel = new JPanel(new BorderLayout());
+
+			final JPanel innerPanel = new JPanel(new BorderLayout());
 			innerPanel.add(topToolbar, BorderLayout.NORTH);
 			innerPanel.add(splitPane, BorderLayout.CENTER);
-			
+
 			visualPanel.add(innerPanel, BorderLayout.CENTER);
 
 			this.documentEditorPane.fromJSON(loadObject);
@@ -155,81 +156,82 @@ public class DocumentPanel extends JTabbedPane {
 			if(this.documentEditorPane != null) {
 				this.documentEditorPane.cancelModi();
 			}
-		}	
-		
+		}
+
+	@Override
 	public String toString(){
 		return this.getDocumentName();
 	}
 
 	public JSONObject toJSON() throws JSONException {
-		JSONObject saveObject = new JSONObject();
+		final JSONObject saveObject = new JSONObject();
 
 		saveObject.put("VISUAL REPRESENTATION", this.documentEditorPane.toJSON());
 
 
 		return saveObject;
 	}
-	
+
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
-	
+
 
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
 	public String getDocumentName() {
-		return documentName;
+		return this.documentName;
 	}
 
-	public void setDocumentName(String documentName) {
+	public void setDocumentName(final String documentName) {
 		this.documentName = documentName;
 	}
 
 	public DocumentPanel getThat() {
-		return that;
+		return this.that;
 	}
 
-	public void setThat(DocumentPanel that) {
+	public void setThat(final DocumentPanel that) {
 		this.that = that;
 	}
 
 	public DocumentEditorPane getDocumentEditorPane() {
-		return documentEditorPane;
+		return this.documentEditorPane;
 	}
 
-	public void setDocumentEditorPane(DocumentEditorPane documentEditorPane) {
+	public void setDocumentEditorPane(final DocumentEditorPane documentEditorPane) {
 		this.documentEditorPane = documentEditorPane;
 	}
 
 	public LinkedList<String> getListOfRules() {
-		return listOfRules;
+		return this.listOfRules;
 	}
 
-	public void setListOfRules(LinkedList<String> listOfRules) {
+	public void setListOfRules(final LinkedList<String> listOfRules) {
 		this.listOfRules = listOfRules;
 	}
 
-	public void updateRuleName(String oldName, String newName) {
+	public void updateRuleName(final String oldName, final String newName) {
 		for (int i = 0; i < this.listOfRules.size(); i++) {
 			if(this.listOfRules.get(i).equals(oldName)){
 				this.listOfRules.remove(i);
 				this.listOfRules.add(newName);
 			}
 		}
-		
+
 	}
 
 	public String getTabTitle() {
-		return tabTitle;
+		return this.tabTitle;
 	}
 
-	public void setTabTitle(String tabTitle) {
+	public void setTabTitle(final String tabTitle) {
 		this.tabTitle = tabTitle;
 	}
 

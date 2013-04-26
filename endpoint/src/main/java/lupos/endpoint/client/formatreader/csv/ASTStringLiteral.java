@@ -29,26 +29,25 @@ public class ASTStringLiteral extends SimpleNode {
 
 	private String stringLiteral;
 
-	public ASTStringLiteral(int id) {
+	public ASTStringLiteral(final int id) {
 		super(id);
 	}
 
-	public ASTStringLiteral(CSVParser p, int id) {
+	public ASTStringLiteral(final CSVParser p, final int id) {
 		super(p, id);
 	}
 
 	public String getStringLiteral() {
-		return stringLiteral;
+		return this.stringLiteral;
 	}
 
-	public void setStringLiteral(String stringLiteral) {
+	public void setStringLiteral(final String stringLiteral) {
 		this.stringLiteral = stringLiteral;
 	}
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString()+" "+stringLiteral;
+		return super.toString()+" "+this.stringLiteral;
 	}
 }
 /* JavaCC - OriginalChecksum=80678bf7014b58a0d7b683999dde8ebb (do not edit this line) */

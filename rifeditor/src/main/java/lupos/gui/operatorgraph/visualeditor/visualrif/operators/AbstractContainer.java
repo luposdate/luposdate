@@ -29,7 +29,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.util.HashSet;
-
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -59,256 +58,266 @@ import org.json.JSONObject;
 
 
 public abstract class AbstractContainer extends OperatorContainer {
-	
+
 	protected VisualRifEditor visualRifEditor;
 	protected RuleGraph recursiveOperatorGraph;
-	private ContainerVisualEditor containerVisualEditor = new ContainerVisualEditor(false);
+	private final ContainerVisualEditor containerVisualEditor = new ContainerVisualEditor(false);
 	protected JSONObject loadOperatorGraph;
-	
 
-	
+
+
 
 	public AbstractContainer() {
 	} // needed for insertOperator()...
 
+	@Override
 	public void addOperator(final Operator op) {
 		this.getOperators().add(op);
-//		containerVisualEditor.getVisualGraphs().get(0).add(op);
+		//		containerVisualEditor.getVisualGraphs().get(0).add(op);
 		this.determineRootNodes();
 	}
 
 	protected AbstractGuiComponent<Operator> drawPanel(final GraphWrapper gw, final RuleGraph parent, final Color bgColor, final String title) {
-		
-		recursiveOperatorGraph = new RuleGraph(parent.getVisualEditor(),this.visualRifEditor,true);
 
-		parent.addChildComponent(recursiveOperatorGraph);
-		
+		this.recursiveOperatorGraph = new RuleGraph(parent.getVisualEditor(),this.visualRifEditor,true);
+
+		parent.addChildComponent(this.recursiveOperatorGraph);
+
 		this.initRecursiveOperatorGraph(parent);
 
-		
+
 		if(this.loadOperatorGraph != null){
 			try {
 				this.recursiveOperatorGraph.fromJSON(this.loadOperatorGraph);
-			} catch (JSONException e) {
+			} catch (final JSONException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		final JPanel panel = recursiveOperatorGraph.createGraph(
+
+		final JPanel panel = this.recursiveOperatorGraph.createGraph(
 				gw.getContainerElements(),
 				Arrange.values()[0]);
 
-		this.panel = new ContainerPanel(this, gw, panel, recursiveOperatorGraph, parent, visualRifEditor);
-		
+		this.panel = new ContainerPanel(this, gw, panel, this.recursiveOperatorGraph, parent, this.visualRifEditor);
+
 		// Border
-		LineBorder lineBorder = new LineBorder(bgColor,5);
+		final LineBorder lineBorder = new LineBorder(bgColor,5);
 		TitledBorder titled;
-		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+		final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 20);
 		titled = BorderFactory.createTitledBorder(lineBorder," "+title+" ", 0, 0, font, Color.BLACK);
-        this.panel.setBorder(titled);
+		this.panel.setBorder(titled);
 
 		if(this.getOperators().size() == 0) {
 			this.panel.setPreferredSize(new Dimension(150, 100));
 
 			panel.setPreferredSize(new Dimension(150 - 14, 100 - 2));
-		}
-		else
+		} else {
 			this.panel.setPreferredSize(this.panel.getPreferredSize());
+		}
 
-//		this.recursiveOperatorGraph.setAbstractContainer(this);
-		
+		//		this.recursiveOperatorGraph.setAbstractContainer(this);
+
 		return this.panel;
 	}
 
-	
+
 	public void initRecursiveOperatorGraph(final RuleGraph parent) {
-		
+
 		System.out.println("AbstractContainer.initRecursiveOperatorGraph(final RuleGraph parent) NullTest:" +" "+ (this.containerVisualEditor == null) +" "+(this.recursiveOperatorGraph==null));
-		
+
 		this.containerVisualEditor.getVisualGraphs().add(this.recursiveOperatorGraph);
 		this.recursiveOperatorGraph.setRecursiveOperatorGraph(true);
 		this.recursiveOperatorGraph.setOperatorContainer(this);
-		
-	
+
+
 	}
 
 
 
-	// TODO!!!
-	public LinkedList<Term> getVariableList(LinkedList<Term> varTerms){
-//		LinkedList<Term> varTerms = new LinkedList<Term>();
+	public LinkedList<Term> getVariableList(final LinkedList<Term> varTerms){
+		//		LinkedList<Term> varTerms = new LinkedList<Term>();
 		System.out.println("AbstractContainer.getVariableList() NullTest:" +" "+ (this.containerVisualEditor == null) +" "+(this.recursiveOperatorGraph==null));
 
-		System.out.println("AbstractContainer.getVariableList()"+containerVisualEditor.getVisualGraphs().get(0).getComponents().length);
-//		Component[] comp = containerVisualEditor.getVisualGraphs().get(0).getComponents();
-		Component[] comp = this.recursiveOperatorGraph.getVisualGraph().getComponents();
-		
+		System.out.println("AbstractContainer.getVariableList()"+this.containerVisualEditor.getVisualGraphs().get(0).getComponents().length);
+		//		Component[] comp = containerVisualEditor.getVisualGraphs().get(0).getComponents();
+		final Component[] comp = this.recursiveOperatorGraph.getVisualGraph().getComponents();
 
-	
+
+
 		for (int i = 0; i < comp.length; i++) {
-			
+
 			// UnitermOperator
 			if( comp[i] instanceof UnitermOperatorPanel ){
-				
-				UnitermOperatorPanel fop = (UnitermOperatorPanel) comp[i];
-				
+
+				final UnitermOperatorPanel fop = (UnitermOperatorPanel) comp[i];
+
 				for (int j = 0; j < fop.getUnitermOperator().getTerms().size(); j++) {
-					
-					if(!listContainsElement(varTerms,fop.getUnitermOperator().getTerms().get(j).getValue())){
+
+					if(!this.listContainsElement(varTerms,fop.getUnitermOperator().getTerms().get(j).getValue())){
 						varTerms.add(fop.getUnitermOperator().getTerms().get(j));
 					}
-					
+
 				}
-				
+
 			} // end UnitermOperator
-			
-			
+
+
 			// ListOperator
 			if( comp[i] instanceof ListOperatorPanel ){
-				
-				ListOperatorPanel lop = (ListOperatorPanel) comp[i];
-				
+
+				final ListOperatorPanel lop = (ListOperatorPanel) comp[i];
+
 				for (int j = 0; j < lop.getListOperator().getTerms().size(); j++) {
-					
-					if(!listContainsElement(varTerms,lop.getListOperator().getTerms().get(j).getValue())){
+
+					if(!this.listContainsElement(varTerms,lop.getListOperator().getTerms().get(j).getValue())){
 						varTerms.add(lop.getListOperator().getTerms().get(j));
 					}
-					
+
 				}
-				
+
 			} // end ListOperator
-			
-			
+
+
 			// FrameOperator
 			if( comp[i] instanceof FrameOperatorPanel ){
-				
-				FrameOperatorPanel fop = (FrameOperatorPanel) comp[i];
-				
+
+				final FrameOperatorPanel fop = (FrameOperatorPanel) comp[i];
+
 				for (int j = 0; j < fop.getFrameOperator().getTerms().size(); j++) {
-					
-					if(!listContainsElement(varTerms,fop.getFrameOperator().getTerms().get(j).getValue())){
+
+					if(!this.listContainsElement(varTerms,fop.getFrameOperator().getTerms().get(j).getValue())){
 						varTerms.add(fop.getFrameOperator().getTerms().get(j));
 					}
-					
+
 				}
-				
+
 			} // end FrameOperator
-			
+
 			// Container Panel
 			if( comp[i] instanceof ContainerPanel ){
-				
-				ContainerPanel cp = (ContainerPanel) comp[i];
+
+				final ContainerPanel cp = (ContainerPanel) comp[i];
 				cp.getOperatorContainer().getVariableList(varTerms);
-				
+
 			}//end ContainerPanel
-		
-		
+
+
 			// Variable
 			if( comp[i] instanceof  VariablePanel ){
-			
-				VariablePanel vp = ( VariablePanel ) comp[i];
-				Term term = new Term( vp.getVariableOperator().getVariable() );
+
+				final VariablePanel vp = ( VariablePanel ) comp[i];
+				final Term term = new Term( vp.getVariableOperator().getVariable() );
 				term.setVariable(true);
 				varTerms.add(term);
-				
-				
+
+
 			}// end Variable
-			
-			
-			
-			
-			
+
+
+
+
+
 		} // end for comp.length
 
-		
+
 
 
 		return this.deleteRedundantVariables(varTerms);
-		
-	}
-	
-	protected LinkedList<Term> deleteRedundantVariables(LinkedList<Term> varTerms) {
 
-		LinkedList<Term> tmp = new LinkedList<Term>();
-	
+	}
+
+	protected LinkedList<Term> deleteRedundantVariables(final LinkedList<Term> varTerms) {
+
+		final LinkedList<Term> tmp = new LinkedList<Term>();
+
 		for (int i = 0; i < varTerms.size(); i++) {
 			if (varTerms.get(i).isVariable() && !this.listContainsElement(tmp, varTerms.get(i).getValue()) ) {
 				tmp.add(varTerms.get(i));
 			}
 		}
-		
-		
-		
+
+
+
 		return tmp;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param varTerms
 	 * @param value
 	 * @return returns true if the List contains the String
 	 */
-	protected boolean listContainsElement(LinkedList<Term> varTerms, String value) {
+	protected boolean listContainsElement(final LinkedList<Term> varTerms, final String value) {
 		for (int i = 0; i < varTerms.size(); i++) {
-			if (varTerms.get(i).isVariable() && varTerms.get(i).getValue().equals(value)) return true;
+			if (varTerms.get(i).isVariable() && varTerms.get(i).getValue().equals(value)) {
+				return true;
+			}
 		}
 		return false;
 	}
 
+	@Override
 	public abstract StringBuffer serializeOperator();
 
-	
+
+	@Override
 	public abstract StringBuffer serializeOperatorAndTree(HashSet<Operator> visited);
 
 
-	
+
 	public JSONObject toJSON() {
-		JSONObject saveObject = new JSONObject();
-		
+		final JSONObject saveObject = new JSONObject();
+
 		try {
-			
-			if( this instanceof AndContainer ) saveObject.put("OP TYPE", "and");
-			if( this instanceof OrContainer ) saveObject.put("OP TYPE", "or");
-			if( this instanceof ExistsContainer )  saveObject.put("OP TYPE", "exists");
-			
-			Point position = ((ContainerPanel) this.panel).getPositionAndDimension().getFirst();
+
+			if( this instanceof AndContainer ) {
+				saveObject.put("OP TYPE", "and");
+			}
+			if( this instanceof OrContainer ) {
+				saveObject.put("OP TYPE", "or");
+			}
+			if( this instanceof ExistsContainer ) {
+				saveObject.put("OP TYPE", "exists");
+			}
+
+			final Point position = ((ContainerPanel) this.panel).getPositionAndDimension().getFirst();
 
 			saveObject.put("POSITION", new double[]{position.getX(), position.getY()});
-			
-	
-			
+
+
+
 			saveObject.put("OPERATORGRAPH", this.recursiveOperatorGraph.toJSON());
-			
-		} catch (JSONException e) {
+
+		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return saveObject;
 	}
-	
-	public void fromJSON(JSONObject loadOperatorGraph) throws JSONException{
+
+	public void fromJSON(final JSONObject loadOperatorGraph) throws JSONException{
 		this.loadOperatorGraph = loadOperatorGraph;
 	}
-	
+
 	/*
 	 * Getter + Setter
 	 */
-	
+
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
 	public RuleGraph getRecursiveOperatorGraph() {
-		return recursiveOperatorGraph;
+		return this.recursiveOperatorGraph;
 	}
 
-	public void setRecursiveOperatorGraph(RuleGraph recursiveOperatorGraph) {
+	public void setRecursiveOperatorGraph(final RuleGraph recursiveOperatorGraph) {
 		this.recursiveOperatorGraph = recursiveOperatorGraph;
 	}
-	
+
 }

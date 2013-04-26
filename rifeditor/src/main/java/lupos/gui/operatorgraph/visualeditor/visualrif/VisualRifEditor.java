@@ -60,76 +60,76 @@ public class VisualRifEditor extends JFrame {
 
 	private static final long serialVersionUID = 136000538613610467L;
 
-	private VisualRifEditor that = this;
-	
+	private final VisualRifEditor that = this;
+
 	private StatusBar statusBar = null;
 
 	private TreePane treePane;
 
-	private JSplitPane splitPane;
+	private final JSplitPane splitPane;
 
 	private DocumentContainer documentContainer;
-	
+
 	private RuleContainer ruleContainer;
-	
+
 	private SaveLoader saveLoader = new SaveLoader(this);
 
 	public VisualRifEditor(){
 		this(null, null);
 	}
-	
-	
+
+
 	/* Constructor */
 	public VisualRifEditor(final String rules, final Image icon){
 		super();
-		
+
 		try {
-			URL ressource = VisualRifEditor.class.getResource("/preferencesMenu.xml");
-			XPref.getInstance(ressource);				
+			final URL ressource = VisualRifEditor.class.getResource("/preferencesMenu.xml");
+			XPref.getInstance(ressource);
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			try {
 				XPref.getInstance(new URL("file:"+VisualRifEditor.class.getResource("/preferencesMenu.xml").getFile()));
-			} catch(Exception e1) {
+			} catch(final Exception e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
 			}
 		}
-		
-		
-		
+
+
+
 		this.statusBar = new StatusBar();
-		
+
 		this.documentContainer = new DocumentContainer(this);
 		this.ruleContainer = new RuleContainer(this);
 
-		
+
 		this.treePane = new TreePane(this, this.documentContainer);
-		
-		
+
+
 		this.splitPane = new JSplitPane();
 		this.splitPane.setContinuousLayout(true);
 		this.splitPane.setOneTouchExpandable(true);
 		this.splitPane.setDividerLocation(170); // 160
 		this.splitPane.setLeftComponent(this.treePane);
 		this.splitPane.setRightComponent(new JPanel());
-		
-		
+
+
 		this.setLayout(new BorderLayout());
 		this.add(this.splitPane, BorderLayout.CENTER);
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			e.printStackTrace();
 		}
 
 		if(rules==null && icon==null){
 			this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		}
-		
-		
+
+
 		this.setJMenuBar(this.buildMenuBar());
 		this.getContentPane().add(this.splitPane, BorderLayout.CENTER);
 		this.getContentPane().add(this.statusBar, BorderLayout.SOUTH);
@@ -137,11 +137,11 @@ public class VisualRifEditor extends JFrame {
 		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-		
+
 		if(rules != null){
 			this.importNewDocument(rules);
 		}
-		
+
 		if(icon!=null){
 			this.setIconImage(icon);
 		}
@@ -155,20 +155,21 @@ public class VisualRifEditor extends JFrame {
 	 * @return MenuBar
 	 */
 	private JMenuBar buildMenuBar() {
-		JMenuBar menuBar = new JMenuBar();
+		final JMenuBar menuBar = new JMenuBar();
 		menuBar.getSelectionModel().addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent ce) {
+			@Override
+			public void stateChanged(final ChangeEvent ce) {
 //				that.documentContainer.cancelModi();
-				
+
 			}
 		});
-		menuBar.add(this.buildFileMenu());		
+		menuBar.add(this.buildFileMenu());
 		return menuBar;
 	}//End Constructor
-		
-	
+
+
 	/**
-	 * The FileMenu contains 
+	 * The FileMenu contains
 	 * <li> New Document
 	 * <li> Save
 	 * <li> Load
@@ -176,128 +177,134 @@ public class VisualRifEditor extends JFrame {
 	 * @return FileMenu
 	 */
 	private JMenu buildFileMenu() {
-		
-		// create JMenuITem to add new Document...
-		JMenuItem newDocumentMI = new JMenuItem("New Document");
-		newDocumentMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				DocumentPanel newDocument = that.documentContainer
-						.createNewDocument();
-				that.treePane.addNewDocument(newDocument);
-				that.setRightComponent(newDocument);
-				that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
-				that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
-				that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
-			}
-		});
-		
-		JMenuItem newFileMI = new JMenuItem("New File");
-		newFileMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				getDocumentContainer().setActiveDocument(null);
-				getDocumentContainer().getDocuments().clear();
 
-				getRuleContainer().getRulePanelList().clear();
-				getRuleContainer().setActiveRule(null);
-				getRuleContainer().getRules().clear();
-				setRightComponent(new JLabel());
-				getTreePane().clearTopComponent();
-				DocumentPanel newDocument = that.documentContainer
+		// create JMenuITem to add new Document...
+		final JMenuItem newDocumentMI = new JMenuItem("New Document");
+		newDocumentMI.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				final DocumentPanel newDocument = VisualRifEditor.this.that.documentContainer
 						.createNewDocument();
-				that.treePane.addNewDocument(newDocument);
-				that.setRightComponent(newDocument);
-				that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
-				that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
-				that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
+				VisualRifEditor.this.that.treePane.addNewDocument(newDocument);
+				VisualRifEditor.this.that.setRightComponent(newDocument);
+				VisualRifEditor.this.that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
+				VisualRifEditor.this.that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
+				VisualRifEditor.this.that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
 			}
 		});
-		
-		
+
+		final JMenuItem newFileMI = new JMenuItem("New File");
+		newFileMI.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				VisualRifEditor.this.getDocumentContainer().setActiveDocument(null);
+				VisualRifEditor.this.getDocumentContainer().getDocuments().clear();
+
+				VisualRifEditor.this.getRuleContainer().getRulePanelList().clear();
+				VisualRifEditor.this.getRuleContainer().setActiveRule(null);
+				VisualRifEditor.this.getRuleContainer().getRules().clear();
+				VisualRifEditor.this.setRightComponent(new JLabel());
+				VisualRifEditor.this.getTreePane().clearTopComponent();
+				final DocumentPanel newDocument = VisualRifEditor.this.that.documentContainer
+						.createNewDocument();
+				VisualRifEditor.this.that.treePane.addNewDocument(newDocument);
+				VisualRifEditor.this.that.setRightComponent(newDocument);
+				VisualRifEditor.this.that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
+				VisualRifEditor.this.that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
+				VisualRifEditor.this.that.getDocumentContainer().getActiveDocument().getDocumentEditorPane().generateRif();
+			}
+		});
+
+
 		newFileMI.setAccelerator(
 				  KeyStroke.getKeyStroke( 'N', InputEvent.CTRL_DOWN_MASK )
 				);
-		
+
 		newDocumentMI.setAccelerator(
 				  KeyStroke.getKeyStroke( 'D', InputEvent.CTRL_DOWN_MASK )
 				);
-		
-		JMenu submenu = new JMenu("New");
+
+		final JMenu submenu = new JMenu("New");
 		submenu.add(newFileMI);
 		submenu.add(newDocumentMI);
-		
+
 		// create JMenuItem to load...
-		JMenuItem loadMI = new JMenuItem("Open File");
+		final JMenuItem loadMI = new JMenuItem("Open File");
 		loadMI.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				final JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("JSON Save files", "json"));
 
-				if(chooser.showDialog(that, "Open") == JFileChooser.APPROVE_OPTION) {
-					String fileName = chooser.getSelectedFile().getAbsolutePath();
+				if(chooser.showDialog(VisualRifEditor.this.that, "Open") == JFileChooser.APPROVE_OPTION) {
+					final String fileName = chooser.getSelectedFile().getAbsolutePath();
 
-					that.saveLoader.load(fileName);
+					VisualRifEditor.this.that.saveLoader.load(fileName);
 				}
 			}
 		});
 
 		// create JMenuItem to save...
-		JMenuItem saveMI = new JMenuItem("Save File");
+		final JMenuItem saveMI = new JMenuItem("Save File");
 		saveMI.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				
-				SaveDialog chooser = new SaveDialog(System.getProperty("user.dir"));
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+
+				final SaveDialog chooser = new SaveDialog(System.getProperty("user.dir"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("JSON Save files", "json"));
 
-				if(chooser.showDialog(that, "Save") == SaveDialog.APPROVE_OPTION) {
+				if(chooser.showDialog(VisualRifEditor.this.that, "Save") == SaveDialog.APPROVE_OPTION) {
 					String fileName = chooser.getSelectedFile().getAbsolutePath();
 
 					if(!fileName.endsWith(".json")) {
 						fileName += ".json";
 					}
 
-					that.saveLoader.save(fileName);
+					VisualRifEditor.this.that.saveLoader.save(fileName);
 				}
 			}
 		});
-		
 
-		JMenuItem importMI = new JMenuItem("Import Document");
+
+		final JMenuItem importMI = new JMenuItem("Import Document");
 		importMI.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				final JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("rif document", "txt","rif"));
 
-				if(chooser.showDialog(that, "Import") == JFileChooser.APPROVE_OPTION) {
-					String fileName = chooser.getSelectedFile().getAbsolutePath();
+				if(chooser.showDialog(VisualRifEditor.this.that, "Import") == JFileChooser.APPROVE_OPTION) {
+					final String fileName = chooser.getSelectedFile().getAbsolutePath();
 
-					that.importNewDocument(FileHelper.fastReadFile(fileName));
-				}				
+					VisualRifEditor.this.that.importNewDocument(FileHelper.fastReadFile(fileName));
+				}
 			}
 		});
 
-		JMenuItem exportMI = new JMenuItem("Export Document");
+		final JMenuItem exportMI = new JMenuItem("Export Document");
 		exportMI.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-			
-				SaveDialog chooser = new SaveDialog(System.getProperty("user.dir"));
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+
+				final SaveDialog chooser = new SaveDialog(System.getProperty("user.dir"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("rif document", "txt","rif"));
 
-				if(chooser.showDialog(that, "Export") == SaveDialog.APPROVE_OPTION) {
+				if(chooser.showDialog(VisualRifEditor.this.that, "Export") == SaveDialog.APPROVE_OPTION) {
 					String fileName = chooser.getSelectedFile().getAbsolutePath();
 
 					if(!fileName.endsWith(".rif")) {
 						fileName += ".rif";
 					}
 
-					that.saveLoader.export(fileName);
+					VisualRifEditor.this.that.saveLoader.export(fileName);
 				}
 			}
 		});
-		
+
 		importMI.setAccelerator(
 				  KeyStroke.getKeyStroke( 'I', InputEvent.CTRL_DOWN_MASK )
 				);
@@ -310,20 +317,18 @@ public class VisualRifEditor extends JFrame {
 		saveMI.setAccelerator(
 				  KeyStroke.getKeyStroke( 'S', InputEvent.CTRL_DOWN_MASK )
 				);
-		
+
 		// create JMenuItem to end the program...
-		JMenuItem endMI = new JMenuItem("Exit");
+		final JMenuItem endMI = new JMenuItem("Exit");
 		endMI.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				System.out.println("VisualRifEditor.buildFileMenu(): endMI"); //TODO
-				that.setVisible(false);
-
-
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				VisualRifEditor.this.that.setVisible(false);
 			}
 		});
 
 		// create File Menu and add components to it...
-		JMenu fileMenu = new JMenu("File");
+		final JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('f');
 		endMI.setMnemonic('e');
 		submenu.setMnemonic('n');
@@ -340,15 +345,15 @@ public class VisualRifEditor extends JFrame {
 
 		return fileMenu;
 	}
-	
+
 	public void importNewDocument(final String rules){
-		DocumentPanel newDocument = this.documentContainer.createNewDocument();
+		final DocumentPanel newDocument = this.documentContainer.createNewDocument();
 		this.treePane.addNewDocument(newDocument);
 		this.setRightComponent(newDocument);
 		this.importDocument(rules);
 	}
 
-	
+
 	public void importDocument(final String rules){
 		this.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getRifCodeEditor().getTp_rifInput().setText(rules);
 		this.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
@@ -356,67 +361,67 @@ public class VisualRifEditor extends JFrame {
 
 	/**
 	 * Loads the component on the right side
-	 * 
+	 *
 	 * @param component
 	 */
 	public void setRightComponent(final JComponent component) {
-		int dividerLocation = this.splitPane.getDividerLocation();
+		final int dividerLocation = this.splitPane.getDividerLocation();
 
 		this.splitPane.setRightComponent(component);
 		this.splitPane.setDividerLocation(dividerLocation);
 	}
-	
-	public void enableMenus(boolean state) {
-		System.out.println("VisualrifEditor.enableMenus(): TODO"); // TODO
+
+	public void enableMenus(final boolean state) {
+		System.out.println("VisualrifEditor.enableMenus():");
 	}
-	
-	
+
+
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
-	
-	public void setDocumentContainer(DocumentContainer documentContainer){
+
+	public void setDocumentContainer(final DocumentContainer documentContainer){
 		this.documentContainer = documentContainer;
 	}
-	
+
 	public DocumentContainer getDocumentContainer(){
 		return this.documentContainer;
 	}
-		
-	public void setRuleContainer(RuleContainer ruleContainer){
+
+	public void setRuleContainer(final RuleContainer ruleContainer){
 		this.ruleContainer = ruleContainer;
 	}
-	
+
 	public RuleContainer getRuleContainer(){
 		return this.ruleContainer;
 	}
-	
-	public void setStatusBar(StatusBar statusBar){
+
+	public void setStatusBar(final StatusBar statusBar){
 		this.statusBar = statusBar;
 	}
-	
+
 	public StatusBar getStatusBar(){
 		return this.statusBar;
 	}
-	
-	public void setTreePane(TreePane treePane){
+
+	public void setTreePane(final TreePane treePane){
 		this.treePane = treePane;
 	}
-	
+
 	public TreePane getTreePane(){
 		return this.treePane;
 	}
-	
+
 	public SaveLoader getSaveLoader() {
-		return saveLoader;
+		return this.saveLoader;
 	}
 
-	public void setSaveLoader(SaveLoader saveLoader) {
+	public void setSaveLoader(final SaveLoader saveLoader) {
 		this.saveLoader = saveLoader;
 	}
-	
-	// Start 
-	public static void main(String[] args){
+
+	// Start
+	public static void main(final String[] args){
 		new VisualRifEditor();
 	}
 }

@@ -26,25 +26,23 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 import lupos.datastructures.items.Item;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
+import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualGraphOperator;
 
 public class GroupGraph extends VisualGraphOperator{
-	
-	private static final long serialVersionUID = -2936295936044533187L;
-	
 
-	
+	private static final long serialVersionUID = -2936295936044533187L;
+
 	// Constructor
-	public GroupGraph(VisualEditor<Operator> visualEditor) {
+	public GroupGraph(final VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
 
 		this.SPACING_X = 190;
@@ -53,119 +51,70 @@ public class GroupGraph extends VisualGraphOperator{
 		this.construct();
 	}
 
-
 	@Override
-	protected Operator createOperator(Class<? extends Operator> clazz, Item content) throws Exception {
-		
+	protected Operator createOperator(final Class<? extends Operator> clazz, final Item content) throws Exception {
+
 		Operator newOp = null;
-	
+
 		newOp = clazz.newInstance();
 
 		return newOp;
 	}
 
+	@Override
+	protected void handleAddOperator(final Operator arg0) {}
 
-	protected void handleAddOperator(Operator arg0) {}
-
-
+	@Override
 	public String serializeGraph() {
 		final String graph = super.serializeSuperGraph();
 		final StringBuffer ret = new StringBuffer();
 		ret.append("Group( \n\n");
 
 		ret.append("\t"+graph);
-		
+
 
 		ret.append("\n\n)");
 		return ret.toString();
 	}
 
-	
 	@Override
-	protected boolean validateAddOperator(int arg0, int arg1, String arg2) {
+	protected boolean validateAddOperator(final int arg0, final int arg1, final String arg2) {
 		return true;
 	}
 
-
 	@Override
-	protected void createNewRule(RuleOperator ro) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewRule(final RuleOperator ro) {
 	}
 
-
 	@Override
-	protected void createNewPrefix(PrefixOperator po) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewPrefix(final PrefixOperator po) {
 	}
 
-
 	@Override
-	protected void createNewImport(ImportOperator io) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewImport(final ImportOperator io) {
 	}
 
-
 	@Override
-	protected void createNewUniterm(UnitermOperator fo) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewUniterm(final UnitermOperator fo) {
 	}
 
-
 	@Override
-	protected void createNewOperatorContainer(AbstractContainer oc) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewOperatorContainer(final AbstractContainer oc) {
 	}
 
-
 	@Override
-	protected void createNewListOperator(ListOperator lo) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewListOperator(final ListOperator lo) {
 	}
 
-
 	@Override
-	protected void createNewFrameOperator(FrameOperator fo) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewFrameOperator(final FrameOperator fo) {
 	}
 
-
 	@Override
-	protected void createNewConstantOperator(ConstantOperator co) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewConstantOperator(final ConstantOperator co) {
 	}
 
-
 	@Override
-	protected void createNewVariableOperator(VariableOperator vo) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewVariableOperator(final VariableOperator vo) {
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
 }

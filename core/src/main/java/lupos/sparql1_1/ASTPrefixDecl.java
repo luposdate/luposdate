@@ -28,29 +28,31 @@ package lupos.sparql1_1;
 public
 class ASTPrefixDecl extends SimpleNode {
 	private String prefix;
-  public ASTPrefixDecl(int id) {
+  public ASTPrefixDecl(final int id) {
     super(id);
   }
 
-  public ASTPrefixDecl(SPARQL1_1Parser p, int id) {
+  public ASTPrefixDecl(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
 
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+    @Override
+	public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  @Override
+public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
 
 public String getPrefix() {
-	return prefix;
+	return this.prefix;
 }
 
-public void setPrefix(String prefix) {
+public void setPrefix(final String prefix) {
 	this.prefix = prefix;
 }
 
@@ -62,8 +64,7 @@ public void init(final SimpleNode node){
 
 @Override
 public String toString() {
-	// TODO Auto-generated method stub
-	return super.toString()+" "+prefix;
+	return super.toString()+" "+this.prefix;
 }
 
 }

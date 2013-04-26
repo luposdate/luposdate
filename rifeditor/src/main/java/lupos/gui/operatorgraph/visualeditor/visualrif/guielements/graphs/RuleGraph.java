@@ -59,17 +59,17 @@ import org.json.JSONObject;
 
 
 public class RuleGraph  extends VisualGraphOperator{
-	
-	
+
+
 	private static final long serialVersionUID = -2936295936044533187L;
 	private boolean recursiveOperatorGraph;
-	private LinkedList<String> operatorNames = new LinkedList<String>();
+	private final LinkedList<String> operatorNames = new LinkedList<String>();
 	private VisualEditor<Operator> visualEditor;
 
 	private AbstractContainer operatorContainer;
 	private LinkedList<Term> ruleVariableList = new LinkedList<Term>();
 
-	
+
 
 
 
@@ -79,32 +79,32 @@ public class RuleGraph  extends VisualGraphOperator{
 
 
 	// Constructor
-	public RuleGraph(VisualEditor<Operator> visualEditor, VisualRifEditor visualRifEditor,boolean isRecursiveOperatorGraph) {
+	public RuleGraph(final VisualEditor<Operator> visualEditor, final VisualRifEditor visualRifEditor,final boolean isRecursiveOperatorGraph) {
 		super(visualEditor);
-		
+
 		this.setVisualEditor(visualEditor);
-		
+
 		this.graphBoxCreator = new GraphBoxRif.RifGraphBoxCreator();
 
 		this.visualRifEditor = visualRifEditor;
-		
+
 		this.setRecursiveOperatorGraph(isRecursiveOperatorGraph);
-		
+
 		this.SPACING_X = 190;
 		this.SPACING_Y = 190;
 
 		this.construct();
 	}
 
-	
 
-	
-	
+
+
+
 
 
 	@Override
-	protected Operator createOperator(Class<? extends Operator> clazz, Item content) throws Exception {
-		
+	protected Operator createOperator(final Class<? extends Operator> clazz, final Item content) throws Exception {
+
 		Operator newOp = null;
 
 		newOp = clazz.newInstance();
@@ -112,8 +112,10 @@ public class RuleGraph  extends VisualGraphOperator{
 		return newOp;
 	}
 
-	protected void handleAddOperator(Operator arg0) {}
+	@Override
+	protected void handleAddOperator(final Operator arg0) {}
 
+	@Override
 	public String serializeGraph() {
 		final String ruleGraph = super.serializeSuperGraph();
 		final StringBuffer ret = new StringBuffer();
@@ -122,127 +124,105 @@ public class RuleGraph  extends VisualGraphOperator{
 	}
 
 	@Override
-	protected boolean validateAddOperator(int arg0, int arg1, String arg2) {
+	protected boolean validateAddOperator(final int arg0, final int arg1, final String arg2) {
 		return true;
 	}
 
-
 	@Override
-	protected void createNewRule(RuleOperator ro) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewRule(final RuleOperator ro) {
 	}
 
 
 	@Override
-	protected void createNewPrefix(PrefixOperator po) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewPrefix(final PrefixOperator po) {
 	}
-
 
 	@Override
-	protected void createNewImport(ImportOperator io) {
-		// TODO Auto-generated method stub
-		
+	protected void createNewImport(final ImportOperator io) {
 	}
 
-	
+
 	/*
 	 * Rule Elements
 	 */
-	
-	public void createNewUniterm(UnitermOperator fo) {
+	@Override
+	public void createNewUniterm(final UnitermOperator fo) {
+		fo.setVisualRifEditor(this.visualRifEditor);
 
-		
-		fo.setVisualRifEditor(visualRifEditor);
-		
-		if( this.isRecursiveOperatorGraph() ) this.getOperatorContainer().addOperator(fo);
-		
+		if( this.isRecursiveOperatorGraph() ) {
+			this.getOperatorContainer().addOperator(fo);
+		}
 	}
 
-
-	protected void createNewOperatorContainer(AbstractContainer oc) {
-		oc.setVisualRifEditor(visualRifEditor);
+	@Override
+	protected void createNewOperatorContainer(final AbstractContainer oc) {
+		oc.setVisualRifEditor(this.visualRifEditor);
 		System.out.println("RuleGraph.createNewOperatorContainer(AbstractContainer oc)");
 		if ( oc.getGUIComponent() == null ){
 			oc.draw(new GraphWrapperOperator(oc),
 					this);
 			System.out.println("oc.getGUIComponent() == null!!!!!!!!!!!!!!!!!!!!");
 		}
-		
 		if( this.isRecursiveOperatorGraph() ) {
 			this.getOperatorContainer().addOperator(oc);
 		}
-		
 	}
-
 
 	@Override
-	protected void createNewListOperator(ListOperator lo) {
-		lo.setVisualRifEditor(visualRifEditor);
-		
-		if( this.isRecursiveOperatorGraph() ) this.getOperatorContainer().addOperator(lo);
-		
+	protected void createNewListOperator(final ListOperator lo) {
+		lo.setVisualRifEditor(this.visualRifEditor);
+		if( this.isRecursiveOperatorGraph() ) {
+			this.getOperatorContainer().addOperator(lo);
+		}
 	}
-	
 
 	@Override
-	protected void createNewFrameOperator(FrameOperator fo) {
-		fo.setVisualRifEditor(visualRifEditor);
-		
-		if( this.isRecursiveOperatorGraph() ) this.getOperatorContainer().addOperator(fo);
-		
+	protected void createNewFrameOperator(final FrameOperator fo) {
+		fo.setVisualRifEditor(this.visualRifEditor);
+		if( this.isRecursiveOperatorGraph() ) {
+			this.getOperatorContainer().addOperator(fo);
+		}
 	}
-
 
 	@Override
-	protected void createNewConstantOperator(ConstantOperator co) {
-		co.setVisualRifEditor(visualRifEditor);
-		
-		if( this.isRecursiveOperatorGraph() ) this.getOperatorContainer().addOperator(co);
-		
+	protected void createNewConstantOperator(final ConstantOperator co) {
+		co.setVisualRifEditor(this.visualRifEditor);
+		if( this.isRecursiveOperatorGraph() ) {
+			this.getOperatorContainer().addOperator(co);
+		}
 	}
-
 
 	@Override
-	protected void createNewVariableOperator(VariableOperator vo) {
-		vo.setVisualRifEditor(visualRifEditor);
-		
-		if( this.isRecursiveOperatorGraph() ) this.getOperatorContainer().addOperator(vo);
-		
+	protected void createNewVariableOperator(final VariableOperator vo) {
+		vo.setVisualRifEditor(this.visualRifEditor);
+		if( this.isRecursiveOperatorGraph() ) {
+			this.getOperatorContainer().addOperator(vo);
+		}
 	}
-
-
-
-
 
 	public AbstractContainer getOperatorContainer() {
-		return operatorContainer;
+		return this.operatorContainer;
 	}
 
-
-	public void setOperatorContainer(AbstractContainer operatorContainer) {
+	public void setOperatorContainer(final AbstractContainer operatorContainer) {
 		this.operatorContainer = operatorContainer;
 	}
 
-
-	
 	public JSONObject toJSON() {
-		JSONObject saveObject = new JSONObject();
+		final JSONObject saveObject = new JSONObject();
 		this.operatorNames.clear();
-		
-		for(GraphWrapper gw : this.boxes.keySet()) {
-			Operator op = (Operator) gw.getElement();
-			
+
+		for(final GraphWrapper gw : this.boxes.keySet()) {
+			final Operator op = (Operator) gw.getElement();
+
 			// AbstractTermOperator
 			if (op instanceof AbstractTermOperator) {
-				AbstractTermOperator ato = (AbstractTermOperator) op;
+				final AbstractTermOperator ato = (AbstractTermOperator) op;
 				if (!ato.isChild()) {
 					try {
 						saveObject.put(this.checkName("AbstractTermOperator",
 								"AbstractTermOperator", 0), ato.toJSON());
-					} catch (JSONException e) {
+					} catch (final JSONException e) {
 						e.printStackTrace();
 					}
 				}
@@ -250,12 +230,12 @@ public class RuleGraph  extends VisualGraphOperator{
 
 			// OperatorContainer
 			if (op instanceof AbstractContainer) {
-				AbstractContainer ac = (AbstractContainer) op;
+				final AbstractContainer ac = (AbstractContainer) op;
 
 				try {
 					saveObject.put(this.checkName("AbstractContainer",
 							"AbstractContainer", 0), ac.toJSON());
-				} catch (JSONException e) {
+				} catch (final JSONException e) {
 					e.printStackTrace();
 				}
 
@@ -263,12 +243,12 @@ public class RuleGraph  extends VisualGraphOperator{
 
 			// Variable
 			if (op instanceof VariableOperator) {
-				VariableOperator vo = (VariableOperator) op;
+				final VariableOperator vo = (VariableOperator) op;
 				if (!vo.isChild()) {
 					try {
 						saveObject.put(this.checkName("VariableOperator",
 								"VariableOperator", 0), vo.toJSON());
-					} catch (JSONException e) {
+					} catch (final JSONException e) {
 						e.printStackTrace();
 					}
 				}
@@ -276,270 +256,230 @@ public class RuleGraph  extends VisualGraphOperator{
 
 			// Constant
 			if (op instanceof ConstantOperator) {
-				ConstantOperator co = (ConstantOperator) op;
+				final ConstantOperator co = (ConstantOperator) op;
 				if (!co.isChild()) {
 					try {
 						saveObject.put(this.checkName("ConstantOperator",
 								"ConstantOperator", 0), co.toJSON());
-					} catch (JSONException e) {
+					} catch (final JSONException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-			
-			
+
+
 		}
-		
-		
+
+
 		return saveObject;
 	}
-	
-	public void fromJSON(JSONObject loadRuleGraph) throws JSONException{
+
+	public void fromJSON(final JSONObject loadRuleGraph) throws JSONException{
 		@SuppressWarnings("unchecked")
+		final
 		Iterator<String> keyIt = loadRuleGraph.keys();
 		JSONObject termsObject = null;
 
 		while (keyIt.hasNext()) {
-			String opName = keyIt.next();
-			
-			JSONObject operatorObject = loadRuleGraph.getJSONObject(opName);
-			
-			if( operatorObject.has("TERMS") )
-			termsObject = operatorObject.getJSONObject("TERMS");
+			final String opName = keyIt.next();
+
+			final JSONObject operatorObject = loadRuleGraph.getJSONObject(opName);
+
+			if( operatorObject.has("TERMS") ) {
+				termsObject = operatorObject.getJSONObject("TERMS");
+			}
 
 			Operator op = null;
-
-			
 			// Connections
 			if (opName.equals("CONNECTIONS")) {
 				continue;
 			}
-
-	
-			
 			// UnitermOperator
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"UnitermOperator" ) && (termsObject != null)) {
-				
-				UnitermOperator uniTerm = new UnitermOperator();
+
+				final UnitermOperator uniTerm = new UnitermOperator();
 				uniTerm.fromJSON(operatorObject, uniTerm, this);
-				
+
 				uniTerm.setConstantComboBoxEntries(this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getPrefixList());
-				uniTerm.setVisualRifEditor(visualRifEditor);
+				uniTerm.setVisualRifEditor(this.visualRifEditor);
 				uniTerm.setTermName(operatorObject.getString("TERMNAME"));
 				uniTerm.getUniTermComboBox().setSelectedItem(operatorObject.getString("SELECTEDPREFIX"));
 				uniTerm.setSelectedPrefix(operatorObject.getString("SELECTEDPREFIX"));
 				uniTerm.setExternal(operatorObject.getBoolean("EXTERNAL"));
 				uniTerm.setNamed(operatorObject.getBoolean("NAMED"));
-	
+
 				// get savedTerms
-				HashMap<String,Term> unsortedTerms = this.getSavedTerms(termsObject,uniTerm);
-				
+				final HashMap<String,Term> unsortedTerms = this.getSavedTerms(termsObject,uniTerm);
+
 				// sort terms
-				LinkedList<Term> terms =  this.sortTerms(unsortedTerms);
-				
+				final LinkedList<Term> terms =  this.sortTerms(unsortedTerms);
+
 				uniTerm.setTerms(terms);
-		
+
 				op = uniTerm;
 			} // end UnitermOperator
 
-			
-			
 			// ListOperator
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"ListOperator") && (termsObject != null)) {
-				
-				ListOperator listOp = new ListOperator();
-				
+
+				final ListOperator listOp = new ListOperator();
+
 				listOp.fromJSON(operatorObject, listOp, this);
-				
+
 				listOp.setConstantComboBoxEntries(this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getPrefixList());
-				listOp.setVisualRifEditor(visualRifEditor);
+				listOp.setVisualRifEditor(this.visualRifEditor);
 				listOp.setOpen(operatorObject.getBoolean("ISOPEN"));
-	
+
 				// get savedTerms
-				HashMap<String,Term> unsortedTerms = this.getSavedTerms(termsObject,listOp);
-				
+				final HashMap<String,Term> unsortedTerms = this.getSavedTerms(termsObject,listOp);
+
 				// sort terms
-				LinkedList<Term> terms =  this.sortTerms(unsortedTerms);
-				
+				final LinkedList<Term> terms =  this.sortTerms(unsortedTerms);
+
 				listOp.setTerms(terms);
-		
+
 				op = listOp;
 			} // end ListOperator
-			
-			
-			
+
 			// FrameOperator
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"FrameOperator") && (termsObject != null)) {
-				
-				FrameOperator frameOp = new FrameOperator();
+
+				final FrameOperator frameOp = new FrameOperator();
 				frameOp.setConstantComboBoxEntries(this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getPrefixList());
-				frameOp.setVisualRifEditor(visualRifEditor);
-			
-	
+				frameOp.setVisualRifEditor(this.visualRifEditor);
+
+
 				// get savedTerms
-				HashMap<String,Term> unsortedTerms = this.getSavedTerms(termsObject,frameOp);
-				
+				final HashMap<String,Term> unsortedTerms = this.getSavedTerms(termsObject,frameOp);
+
 				// sort terms
-				LinkedList<Term> terms =  this.sortTerms(unsortedTerms);
-				
+				final LinkedList<Term> terms =  this.sortTerms(unsortedTerms);
+
 				frameOp.setTerms(terms);
-		
+
 				op = frameOp;
 			} // end FrameOperator
-			
-			
+
 			// AND
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"and")) {
-				AndContainer andContainer = new AndContainer();
-				andContainer.setVisualRifEditor(visualRifEditor);
+				final AndContainer andContainer = new AndContainer();
+				andContainer.setVisualRifEditor(this.visualRifEditor);
 				andContainer.fromJSON(operatorObject.getJSONObject("OPERATORGRAPH"));
 				op = andContainer;
 			}
-			
-			
+
 			// Or
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"or")) {
-				OrContainer orContainer = new OrContainer();
-				orContainer.setVisualRifEditor(visualRifEditor);
+				final OrContainer orContainer = new OrContainer();
+				orContainer.setVisualRifEditor(this.visualRifEditor);
 				orContainer.fromJSON(operatorObject.getJSONObject("OPERATORGRAPH"));
 				op = orContainer;
 			}
-			
-			
+
 			// Exists
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"exists")) {
-				ExistsContainer existsContainer = new ExistsContainer();
-				existsContainer.setVisualRifEditor(visualRifEditor);
+				final ExistsContainer existsContainer = new ExistsContainer();
+				existsContainer.setVisualRifEditor(this.visualRifEditor);
 				existsContainer.fromJSON(operatorObject.getJSONObject("OPERATORGRAPH"));
 				op = existsContainer;
 			}
-			
-			
+
 			// Variable
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"VariableOperator")) {
-				VariableOperator variableOperator = new VariableOperator();
-				variableOperator.setVisualRifEditor(visualRifEditor);
+				final VariableOperator variableOperator = new VariableOperator();
+				variableOperator.setVisualRifEditor(this.visualRifEditor);
 				variableOperator.fromJSON(operatorObject,variableOperator,this);
 				op = variableOperator;
 			}
-			
-			
+
 			// Constant
 			if (operatorObject.has("OP TYPE")
 					&& operatorObject.getString("OP TYPE").equals(
 							"ConstantOperator")) {
-				ConstantOperator constantOperator = new ConstantOperator();
-				constantOperator.setVisualRifEditor(visualRifEditor);
+				final ConstantOperator constantOperator = new ConstantOperator();
+				constantOperator.setVisualRifEditor(this.visualRifEditor);
 				constantOperator.fromJSON(operatorObject, constantOperator, this);
 				op = constantOperator;
 			}
-			
-			
-			System.out.println(operatorObject.getString("OP TYPE"));
-			JSONArray positionArray = operatorObject.getJSONArray("POSITION");
-			
 
-			
+			System.out.println(operatorObject.getString("OP TYPE"));
+			final JSONArray positionArray = operatorObject.getJSONArray("POSITION");
+
 			if (this.isRecursiveOperatorGraph() ) {
 				System.out.println("this.isRecursiveOperatorGraph() "+op.getClass().getSimpleName());
-				
-				this.operatorContainer.addOperator(op); 
+
+				this.operatorContainer.addOperator(op);
 			}
-			
 
-			this.addOperator(positionArray.getInt(0), positionArray.getInt(1),
-					op);
-			
-
+			this.addOperator(positionArray.getInt(0), positionArray.getInt(1), op);
 		}
 	}
-	
 
-	private HashMap<String, Term> getSavedTerms(JSONObject termsObject, AbstractTermOperator operator) throws JSONException {
-		HashMap<String,Term> unsortedTerms = new HashMap<String,Term>();
-		
+
+	private HashMap<String, Term> getSavedTerms(final JSONObject termsObject, final AbstractTermOperator operator) throws JSONException {
+		final HashMap<String,Term> unsortedTerms = new HashMap<String,Term>();
+
 		@SuppressWarnings("unchecked")
+		final
 		Iterator<String> key = termsObject.keys();
-		
+
 		while(key.hasNext()) {
-			
-			String termName = key.next();
-			JSONObject termObj = termsObject.getJSONObject(termName);
-			
+
+			final String termName = key.next();
+			final JSONObject termObj = termsObject.getJSONObject(termName);
+
 			if (termObj.get("TYPE").equals("variable")) {
 
-				String value = termObj.getString("VALUE");
-				Term term = operator.prepareToCreateVariableTerm(value);
+				final String value = termObj.getString("VALUE");
+				final Term term = operator.prepareToCreateVariableTerm(value);
 				unsortedTerms.put(termName, term);
 			}
-			
-			if (termObj.get("TYPE").equals("constant")) {
-				
-				String prefix = termObj.getString("PREFIXVALUE");
-				String value = termObj.getString("VALUE");
-			
-				Term term = operator.prepareToCreateConstantTerm(prefix, value, this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getPrefixList());
-				unsortedTerms.put(termName, term);
-			}
-			
-		}
 
+			if (termObj.get("TYPE").equals("constant")) {
+
+				final String prefix = termObj.getString("PREFIXVALUE");
+				final String value = termObj.getString("VALUE");
+
+				final Term term = operator.prepareToCreateConstantTerm(prefix, value, this.visualRifEditor.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getPrefixList());
+				unsortedTerms.put(termName, term);
+			}
+		}
 		return unsortedTerms;
 	}
 
-
-
-
-
-
-
-	private LinkedList<Term> sortTerms(HashMap<String, Term> unsortedTerms) {
-		
-		LinkedList<Term> terms = new LinkedList<Term>();
-		
-		TreeMap<String, Term> treeMap = new TreeMap<String, Term>();
-				
+	private LinkedList<Term> sortTerms(final HashMap<String, Term> unsortedTerms) {
+		final LinkedList<Term> terms = new LinkedList<Term>();
+		final TreeMap<String, Term> treeMap = new TreeMap<String, Term>();
 		treeMap.putAll(unsortedTerms);
-		
-		for (Entry<String, Term> entry : treeMap.entrySet()) {
+		for (final Entry<String, Term> entry : treeMap.entrySet()) {
 			terms.add(entry.getValue());
 		}
-	
-		
 		return terms;
 	}
-	
-	
-
-
-
-
-
-
 
 	/**
-	 * Checks whether the name of 
+	 * Checks whether the name of
 	 * the operator is already used.
 	 * @param basename
 	 * @param newname
 	 * @param index
 	 * @return a new auto-generated name for the new rule
 	 */
-	public String checkName(String basename, String newname, int index) {
+	public String checkName(final String basename, String newname, int index) {
 		boolean exists = false;
 
 		if (this.operatorNames.size() > 0) {
@@ -548,33 +488,24 @@ public class RuleGraph  extends VisualGraphOperator{
 					newname = basename + index;
 					index += 1;
 					exists = true;
-
 					break;
 				}
 			}
-
 			if (exists) {
 				newname = this.checkName(basename, newname, index);
 			}
 		}
-		
 		this.operatorNames.add(newname);
-
 		return newname;
 	}
-	
-
-
 
 	public boolean isRecursiveOperatorGraph() {
-		return recursiveOperatorGraph;
+		return this.recursiveOperatorGraph;
 	}
 
-
-	public void setRecursiveOperatorGraph(boolean recursiveOperatorGraph) {
+	public void setRecursiveOperatorGraph(final boolean recursiveOperatorGraph) {
 		this.recursiveOperatorGraph = recursiveOperatorGraph;
 	}
-
 
 	public VisualRifEditor getVisualRifEditor(){
 		return this.visualRifEditor;
@@ -582,32 +513,18 @@ public class RuleGraph  extends VisualGraphOperator{
 
 
 	public VisualEditor<Operator> getVisualEditor() {
-		return visualEditor;
+		return this.visualEditor;
 	}
 
-
-	public void setVisualEditor(VisualEditor<Operator> visualEditor) {
+	public void setVisualEditor(final VisualEditor<Operator> visualEditor) {
 		this.visualEditor = visualEditor;
 	}
 
-
-	public void setRuleVariableList(LinkedList<Term> ruleVariableList) {
+	public void setRuleVariableList(final LinkedList<Term> ruleVariableList) {
 		this.ruleVariableList = ruleVariableList;
-		
 	}
-
 
 	public LinkedList<Term> getRuleVariableList() {
-		return ruleVariableList;
+		return this.ruleVariableList;
 	}
-
-
-
-
-
-
-
-
-
-
 }

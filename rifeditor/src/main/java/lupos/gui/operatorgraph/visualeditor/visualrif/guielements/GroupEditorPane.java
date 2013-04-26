@@ -25,14 +25,12 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -49,9 +47,7 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.StatusBar;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.DocumentGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.GroupGraph;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.AnnotationOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.GroupOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel;
@@ -61,10 +57,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.AnnotationConnection;
-import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleIdentifier;
-import lupos.gui.operatorgraph.visualeditor.visualrif.util.ScrollPane;
-
-
 
 public class GroupEditorPane extends VisualEditor<Operator> {
 
@@ -77,143 +69,107 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 
 	private String groupName;
 	private Operator startNode = null;
-	
 
-	private RifCodeEditor rifCodeEditor;  
+
+	private RifCodeEditor rifCodeEditor;
 	private Console console;
 	private LuposJTextPane tp_rifInput;
-	
+
 	private RulePanel rulePanel;
 	private PrefixOperatorPanel prefixOperatorPanel;
-	
+
 	private int componentCnt ;
 	private int rulesCnt =0;
 	private int rulesOnCanvasCnt=0;
 
-
-
-
 	// Constructor
- 	protected GroupEditorPane(final StatusBar statusBar) {
+	protected GroupEditorPane(final StatusBar statusBar) {
 		super(true);
 		this.rifCodeEditor  = new RifCodeEditor();
 		this.console = new Console();
 		// from VisualEditor<Operator>
 		this.statusBar = statusBar;
-		
-		this.groupGraph = new GroupGraph(this); 
+
+		this.groupGraph = new GroupGraph(this);
 		this.visualGraphs.add(this.groupGraph);
 		LANGUAGE.SEMANTIC_WEB.setStyles();
-//		LANGUAGE.SPARQL_N3.setStyles();
-//		LANGUAGE.JAVA.setStyles();
-//		LANGUAGE.HTML.setStyles();
-		
-
 		this.visualGraphs.get(0).addComponentListener(new ComponentAdapter(){
-	    
-	    public void componentResized(ComponentEvent e) {
-	    	
-	    	
-	    	componentCnt = visualGraphs.get(0).getComponentCount();
-	    	rulesOnCanvasCnt = countRulesOnCanvas();
 
-	    	// Rules 
-	    	initRuleComponents();
-	    	if (componentCnt > 0 
-	    				&& ( visualGraphs.get(0).getComponent(componentCnt - 1).isVisible() )
-						&& ( visualGraphs.get(0).getComponent(componentCnt - 1) instanceof RuleOperatorPanel )
-						&& ( rulesOnCanvasCnt-1 == rulesCnt ) 
-				) {	    		
-	    	
-			    rulesCnt++;
+			@Override
+			public void componentResized(final ComponentEvent e) {
 
-//				rulePanel = visualRifEditor.getRuleContainer().createNewRule();
-				
-				RuleOperatorPanel rop = (RuleOperatorPanel) visualGraphs.get(0).getComponent(componentCnt - 1);
-				
-				rop.setRuleName(rulePanel.getRuleName());
-				
-//				visualRifEditor.getRuleContainer().getRulePanelList().add(new RuleIdentifier(rulePanel.getRuleName(), rulePanel,  rop, rulePanel.getRulePath()));
-	
-				
-	    	} // End Rules
-	    	
-	    	// Prefix
-	    	if (componentCnt > 0 
-	    			&& ( visualGraphs.get(0).getComponent(componentCnt - 1).isVisible() )
-					&& ( visualGraphs.get(0).getComponent(componentCnt - 1) instanceof PrefixOperatorPanel) 
-				){
-	    		
-	    		final PrefixOperatorPanel pop = ( PrefixOperatorPanel ) visualGraphs.get(0).getComponent(componentCnt - 1);
-	    		
-	    		pop.addComponentListener(new ComponentAdapter() {
-	    			
+				GroupEditorPane.this.componentCnt = GroupEditorPane.this.visualGraphs.get(0).getComponentCount();
+				GroupEditorPane.this.rulesOnCanvasCnt = GroupEditorPane.this.countRulesOnCanvas();
 
-					public void componentResized(ComponentEvent e) {
-						
-						pop.updateSize();
-					}
+				// Rules
+				GroupEditorPane.this.initRuleComponents();
+				if (GroupEditorPane.this.componentCnt > 0
+						&& ( GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1).isVisible() )
+						&& ( GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1) instanceof RuleOperatorPanel )
+						&& ( GroupEditorPane.this.rulesOnCanvasCnt-1 == GroupEditorPane.this.rulesCnt )
+						) {
 
-				});
-	
-	    	} // End Prefix
-	    	
-	    	// Group
-	    	if (componentCnt > 0 
-	    			&& ( visualGraphs.get(0).getComponent(componentCnt - 1).isVisible() )
-					&& ( visualGraphs.get(0).getComponent(componentCnt - 1) instanceof GroupOperatorPanel) 
-				){
-	    		
-	    		
-	    	}// End Group
+					GroupEditorPane.this.rulesCnt++;
 
-	    	
-	    }// End componentResized()
+					final RuleOperatorPanel rop = (RuleOperatorPanel) GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1);
 
-	    
+					rop.setRuleName(GroupEditorPane.this.rulePanel.getRuleName());
+				} // End Rules
+
+				// Prefix
+				if (GroupEditorPane.this.componentCnt > 0
+						&& ( GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1).isVisible() )
+						&& ( GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1) instanceof PrefixOperatorPanel)
+						){
+
+					final PrefixOperatorPanel pop = ( PrefixOperatorPanel ) GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1);
+
+					pop.addComponentListener(new ComponentAdapter() {
+
+						@Override
+						public void componentResized(final ComponentEvent e) {
+
+							pop.updateSize();
+						}
+
+					});
+
+				} // End Prefix
+
+				// Group
+				if (GroupEditorPane.this.componentCnt > 0
+						&& ( GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1).isVisible() )
+						&& ( GroupEditorPane.this.visualGraphs.get(0).getComponent(GroupEditorPane.this.componentCnt - 1) instanceof GroupOperatorPanel)
+						){
+				}// End Group
+			}// End componentResized()
 		});
-		
-		
-		
+
 	}//End Constructor
 
-	
-
 	/**
-	 * Add a RuleListener to each Rule 
+	 * Add a RuleListener to each Rule
 	 */
 	private void initRuleComponents() {
-
-		Component[] temp = new Component[countRulesOnCanvas()];
-    	Component[] comp = this.visualGraphs.get(0).getComponents();
-    	
-    	
+		final Component[] temp = new Component[this.countRulesOnCanvas()];
+    	final Component[] comp = this.visualGraphs.get(0).getComponents();
     	int j = 0;
-    	
     	for (int i = 0; i < comp.length; i++) {
-    		
 			if(comp[i] instanceof RuleOperatorPanel){
-				
 				this.addRuleListenerToComponent(i);
-				
 				temp[j] = comp[i];
-				
-			
 				j++;
 			}
 		}
-    		
-	
-		
 	}
 
-
 	/**
-	 * <li> EditMenu 
+	 * <li> EditMenu
 	 * <li> GraphMenu
 	 * <li> OperatorMenu
 	 * <li> GenerateMenu
 	 */
+	@Override
 	public JMenuBar buildMenuBar() {
 		final JMenuBar menuBar = this.createMenuBar();
 		menuBar.add(this.buildEditMenu());
@@ -221,34 +177,31 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		menuBar.add(this.buildOperatorMenu());
 		menuBar.add(this.buildGenerateMenu());
 		menuBar.setMinimumSize(menuBar.getPreferredSize());
-
 		return menuBar;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return JMenu with following MenuItems :
 	 * <li> RIF Code
 	 * <li> Visual RIF
 	 */
 	private JMenu buildGenerateMenu() {
-		
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem rifMI = new JMenuItem("RIF Code");
 		rifMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				generateRif();
-
+				GroupEditorPane.this.generateRif();
 			}
 		});
 
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem visualMI = new JMenuItem("Visual RIF");
 		visualMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				System.out
-						.println("DocumentEditorPane.buildGenerateMenu(): visualMI"); // TODO
-
+				System.out.println("DocumentEditorPane.buildGenerateMenu(): visualMI"); // TODO
 			}
 		});
 
@@ -259,35 +212,30 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 
 		return generateMenu;
 	}
-	
 
 	private JMenu buildGraphMenu() {
 		// create JMenuItem to rearrange the QueryGraph...
 		final JMenuItem rearrangeMI = new JMenuItem("Arrange Graph");
 		rearrangeMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				that.statusBar.setText("Arranging query ...");
-
-				for (final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
+				GroupEditorPane.this.that.statusBar.setText("Arranging query ...");
+				for (final VisualGraph<Operator> visualGraph : GroupEditorPane.this.that.getVisualGraphs()) {
 					visualGraph.arrange(Arrange.values()[0]);
 				}
-
-				that.statusBar.clear();
+				GroupEditorPane.this.that.statusBar.clear();
 			}
 		});
-
 		// create Graph menu and add components to it...
 		this.graphMenu = new JMenu("Graph");
 		this.graphMenu.setEnabled(false);
 		this.graphMenu.add(rearrangeMI);
-
 		this.jGraphMenus.add(this.graphMenu);
-
 		return this.graphMenu;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return JMenu with following MenuItems :
 	 * <li> Group
 	 * <li> Rule
@@ -299,76 +247,61 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem groupMI = new JMenuItem("Group");
 		groupMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-		
-				that.prepareOperatorForAdd(GroupOperator.class);
-
+				GroupEditorPane.this.that.prepareOperatorForAdd(GroupOperator.class);
 			}
 		});
 
 		// create JMenuItem to add Operator...
 		final JMenuItem ruleMI = new JMenuItem("Rule");
 		ruleMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				
-			
-				that.prepareOperatorForAdd(RuleOperator.class);
-				
-
+				GroupEditorPane.this.that.prepareOperatorForAdd(RuleOperator.class);
 			}
 		});
-		
 
 		// create JMenuItem to add Operator...
 		final JMenuItem prefixMI = new JMenuItem("Prefix");
 		prefixMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-		
-				that.prepareOperatorForAdd(PrefixOperator.class);
+				GroupEditorPane.this.that.prepareOperatorForAdd(PrefixOperator.class);
 				prefixMI.setEnabled(false);
 			}
 		});
-				
-				
-		// create JMenuItem 
+
+		// create JMenuItem
 		final JMenuItem annoMI = new JMenuItem("Annotation");
 		annoMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-			
-				that.prepareOperatorForAdd(AnnotationOperator.class);
-			
-				
+				GroupEditorPane.this.that.prepareOperatorForAdd(AnnotationOperator.class);
 			}
 		});
-		
-		
+
 		// create JMenuItem to add JumpOver-Operator...
 		final JMenuItem conMI = new JMenuItem("Connection");
 		conMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				boolean tmp = false;
-				for (int n = 0 ; n < visualGraphs.get(0).getComponentCount() ; n++){
-				if (visualGraphs.get(0).getComponent(n) instanceof AnnotationOperatorPanel){
+				for (int n = 0 ; n < GroupEditorPane.this.visualGraphs.get(0).getComponentCount() ; n++){
+				if (GroupEditorPane.this.visualGraphs.get(0).getComponent(n) instanceof AnnotationOperatorPanel){
 						tmp = true;
 					}
 				}
-				
 				if(tmp) {
-					connectionMode = new AnnotationConnection(myself);
-				}else
-					showThereIsNoAnnotationOperatorDialog();
-				
+					GroupEditorPane.this.connectionMode = new AnnotationConnection(GroupEditorPane.this.myself);
+				} else {
+					GroupEditorPane.this.showThereIsNoAnnotationOperatorDialog();
+				}
 			}
 		});
-		
-		
 
 		// create Operator menu and add components to it...
 		final JMenu operatorMenu = new JMenu("Add");
-
-
-		
-		
 		operatorMenu.add(ruleMI);
 		operatorMenu.add(groupMI);
 		operatorMenu.addSeparator();
@@ -376,58 +309,37 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		operatorMenu.addSeparator();
 		operatorMenu.add(annoMI);
 		operatorMenu.add(conMI);
-		
-
 		return operatorMenu;
 	}
-	
-	
+
+	@Override
 	protected void manageMenuItems() {
 		super.manageMenuItems();
-
 		boolean empty = true;
-
 		for(final VisualGraph<Operator> visualGraph : this.visualGraphs) {
 			if(visualGraph.getBoxes().size() != 0) {
 				empty = false;
-
 				break;
 			}
 		}
-
 		this.graphMenu.setEnabled(!empty);
-		
-
-
 	}
 
-	
 	public void addJGraphMenu(final JMenu menu) {
 		this.jGraphMenus.add(menu);
 	}
 
+	@Override
+	protected void pasteElements(final String arg0) {}
 
-	protected void pasteElements(String arg0) {}
-
-	
 	public JTabbedPane buildBottomPane(){
-		
-//		final HighlightedDocumentColorAll document = new HighlightedDocumentColorAll(100);
-//		document.setHighlightStyle(SPARQLLexer.class);
-//
-//		this.tp_rifInput  = new JTextPaneControllingRepaint(document);
-//		this.tp_rifInput.setFont(new Font("Courier New", Font.PLAIN, 12));
-//		
 
 		new LinePainter(this.tp_rifInput, new Color(202, 223, 245));
-		
-		this.rifCodeEditor = new RifCodeEditor(/*this.tp_rifInput*/);
-		
 
-		
-		
+		this.rifCodeEditor = new RifCodeEditor(/*this.tp_rifInput*/);
+
 		this.rifCodeEditor.getTp_rifInput().setEditable(false);
-		
+
 		this.rifCodeEditor.getTp_rifInput().setText("(*Dies ist lediglich ein Beispiel*)\n\n" +
 				"Document(" +
 				"\n\n"+
@@ -441,164 +353,110 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 				"\n" +
 				"\n" +
 				")");
-		
 
-		
-		bottomPane = new JTabbedPane();
-//		bottomPane.add("RIF Code",rifCodeEditor);
-//		bottomPane.add("Console",new ScrollPane(this.console));
-		return bottomPane;
+		this.bottomPane = new JTabbedPane();
+		return this.bottomPane;
 	}
-	
-	
-	private void addRuleListenerToComponent(int pos){
-		getVisualGraphs().get(0).getComponent(pos).addMouseListener(new MouseAdapter(){
-		     public void mouseClicked(MouseEvent e){
-		         if (e.getClickCount() == 2){
-		        	
-		        	RuleOperatorPanel rop = (RuleOperatorPanel) e.getComponent();
-		        	String ruleName = rop.getRuleName();
 
-		        	visualRifEditor.getTreePane().getTree_documents().setSelectionPath( visualRifEditor.getRuleContainer().getRuleByName(ruleName).getRulePath());
-		            visualRifEditor.getRuleContainer().showRule(ruleName);
-		            
-		            }
-		         }
-		        } );
+	private void addRuleListenerToComponent(final int pos){
+		this.getVisualGraphs().get(0).getComponent(pos).addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(final MouseEvent e){
+				if (e.getClickCount() == 2){
+					final RuleOperatorPanel rop = (RuleOperatorPanel) e.getComponent();
+					final String ruleName = rop.getRuleName();
+					GroupEditorPane.this.visualRifEditor.getTreePane().getTree_documents().setSelectionPath( GroupEditorPane.this.visualRifEditor.getRuleContainer().getRuleByName(ruleName).getRulePath());
+					GroupEditorPane.this.visualRifEditor.getRuleContainer().showRule(ruleName);
+				}
+			}
+		} );
 	}
-	
 
     private int countRulesOnCanvas(){
-    	Component[] components = visualGraphs.get(0).getComponents();
+    	final Component[] components = this.visualGraphs.get(0).getComponents();
     	int cnt=0;
     	for (int i = 0; i < components.length ; i++){
-    	
-    		if(components[i] instanceof RuleOperatorPanel) cnt++;
+    		if(components[i] instanceof RuleOperatorPanel) {
+				cnt++;
+			}
     	}
-    	
 		return cnt;
     }
-    
-    
+
 	private void generateRif(){
 		this.statusBar.setText("Validating query ...");
-		
-		
-		// TODO returns always true
 		final boolean valid = this.visualGraphs.get(0).validateGraph(true,null);
 		System.out.println(" DocumentEditorPane.isValid(): "+valid);
 
 		this.statusBar.clear();
-	
+
 		if (valid) {
 			this.statusBar.setText("Serializing query ...");
-			
-//			if (this.prefixIsOnCanvas()) {
-//				this.setPrefixOperatorPanel();
-//				HashMap<String, String> prefixList = this.prefixOperatorPanel
-//						.getPrefix().getPrefixList();
-//				this.groupGraph.setPrefixList(prefixList);
-//			}
-			
-			// serialize Rules 
+			// serialize Rules
 			this.serializeRules();
-			
-			final String serializedDocument = this.visualGraphs.get(0)
-			.serializeGraph();
-			
+
+			final String serializedDocument = this.visualGraphs.get(0).serializeGraph();
 
 			this.statusBar.clear();
-			String[] ret = new String[1];
+			final String[] ret = new String[1];
 			ret[0] = "";
-			String rif = serializedDocument;
-			
-			
+			final String rif = serializedDocument;
+
 			this.rifCodeEditor.getTp_rifInput().setText(rif);
-
-
-			
 		}
-				
-	
-
-		
-	
 	}
-	
-	
+
+
 	private void setPrefixOperatorPanel() {
-		Component[] comp = this.visualGraphs.get(0).getComponents();
-		
+		final Component[] comp = this.visualGraphs.get(0).getComponents();
 		for (int i = 0; i < comp.length; i++) {
 			if (comp[i] instanceof PrefixOperatorPanel) {
-				setPrefixOperatorPanel((PrefixOperatorPanel) comp[i]);
+				this.setPrefixOperatorPanel((PrefixOperatorPanel) comp[i]);
 				break;
 			}
 		}
-
-		
 	}
 
-	
 	private void serializeRules() {
-
-		
-		for (int i = 0; i < visualRifEditor.getRuleContainer().getRulePanelList().size(); i++) {
-			StringBuffer sb = visualRifEditor.getRuleContainer().getRulePanelList().get(i).getRulePanel().getRuleEditorPane().serializeRule();
-			RuleOperatorPanel rop = (RuleOperatorPanel)visualRifEditor.getRuleContainer().getRulePanelList().get(i).getComponent();
+		for (int i = 0; i < this.visualRifEditor.getRuleContainer().getRulePanelList().size(); i++) {
+			final StringBuffer sb = this.visualRifEditor.getRuleContainer().getRulePanelList().get(i).getRulePanel().getRuleEditorPane().serializeRule();
+			final RuleOperatorPanel rop = (RuleOperatorPanel)this.visualRifEditor.getRuleContainer().getRulePanelList().get(i).getComponent();
 			rop.setSerializedOperator(sb);
 		}
-		
 	}
 
-	
 	private void showThereIsNoAnnotationOperatorDialog(){
 		JOptionPane
 		.showMessageDialog(this,
 		"Please insert an annotation first!");
-	
-	} 
-
-	
-	public void deleteRule(String ruleName) {
-		
-		Component[] c = this.visualGraphs.get(0).getComponents();
-		
-		int pos = getArrayPosition(ruleName);
-		
-
-				this.visualGraphs.get(0).remove(pos);
-				
-			RuleOperatorPanel rop = (RuleOperatorPanel)c[pos];
-					rop.delete();
-
-		
 	}
-	
-	
-	public void updateRuleNameInVisualGraphsComponentArray(String oldName, String newName){
-		Component[] c = this.visualGraphs.get(0).getComponents();
-		
+
+	public void deleteRule(final String ruleName) {
+		final Component[] c = this.visualGraphs.get(0).getComponents();
+		final int pos = this.getArrayPosition(ruleName);
+		this.visualGraphs.get(0).remove(pos);
+		final RuleOperatorPanel rop = (RuleOperatorPanel)c[pos];
+		rop.delete();
+	}
+
+	public void updateRuleNameInVisualGraphsComponentArray(final String oldName, final String newName){
+		final Component[] c = this.visualGraphs.get(0).getComponents();
 		for(int i = 0 ; i < c.length ; i++){
 			if(c[i] instanceof RuleOperatorPanel){
-				RuleOperatorPanel rop = (RuleOperatorPanel)c[i];
+				final RuleOperatorPanel rop = (RuleOperatorPanel)c[i];
 				if(rop.getRuleName().equals(oldName)){
 					rop.setRuleName(newName);
 					rop.setRuleLabelName(newName);
 				}
 			}
 		}
-		
-		
 	}
-	
-	
-	private int getArrayPosition(String name){
-		Component[] c = this.visualGraphs.get(0).getComponents();
-		
+
+	private int getArrayPosition(final String name){
+		final Component[] c = this.visualGraphs.get(0).getComponents();
 		for(int i = 0 ; i < c.length ; i++){
 			if(c[i] instanceof RuleOperatorPanel){
-				RuleOperatorPanel rop = (RuleOperatorPanel)c[i];
+				final RuleOperatorPanel rop = (RuleOperatorPanel)c[i];
 				if(rop.getRuleName().equals(name)){
 					return i;
 				}
@@ -606,29 +464,25 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		}
 		return 9999;
 	}
-	
-	
+
 	private boolean prefixIsOnCanvas(){
-		Component[] comp = this.visualGraphs.get(0).getComponents();
-		
+		final Component[] comp = this.visualGraphs.get(0).getComponents();
 		for (int i = 0; i < comp.length; i++) {
 			if(comp[i] instanceof PrefixOperatorPanel){
 				return true;
 			}
 		}
-
 		return false;
-		}
-	
-	
+	}
+
 	public String[] getPrefixList() {
-		Component[] comp = this.visualGraphs.get(0).getComponents();
+		final Component[] comp = this.visualGraphs.get(0).getComponents();
 		String[] ret = new String[1];
 		ret[0] = "";
-		
+
 		for (int i = 0; i < comp.length; i++) {
 			if (comp[i] instanceof PrefixOperatorPanel) {
-				setPrefixOperatorPanel((PrefixOperatorPanel) comp[i]);
+				this.setPrefixOperatorPanel((PrefixOperatorPanel) comp[i]);
 				break;
 			}
 		}
@@ -638,9 +492,9 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 
 			ret = new String[this.getPrefixOperatorPanel().getPrefix()
 					.getPrefixList().size()+1];
-			
+
 			int i = 0;
-			
+
 			for (final String namespace : this.getPrefixOperatorPanel()
 					.getPrefix().getPrefixList().keySet()) {
 
@@ -648,7 +502,7 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 						.getPrefixList().get(namespace);
 				i++;
 			}
-			
+
 			ret[this.getPrefixOperatorPanel().getPrefix()
 				.getPrefixList().size()] = "";
 
@@ -658,92 +512,79 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		}
 		return ret;
 	}
-	
-	
+
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
-
-
 	public JTabbedPane getBottomPane() {
-		return bottomPane;
+		return this.bottomPane;
 	}
 
-	public void setBottomPane(JTabbedPane bottomPane) {
+	public void setBottomPane(final JTabbedPane bottomPane) {
 		this.bottomPane = bottomPane;
 	}
 
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
 
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
-
-	
 	public Console getConsole() {
-		return console;
+		return this.console;
 	}
 
-	public void setConsole(Console console) {
+	public void setConsole(final Console console) {
 		this.console = console;
 	}
 
 	public RulePanel getRulePanel() {
-		return rulePanel;
+		return this.rulePanel;
 	}
 
-	public void setRulePanel(RulePanel rulePanel) {
+	public void setRulePanel(final RulePanel rulePanel) {
 		this.rulePanel = rulePanel;
 	}
 
 	public int getRulesCnt() {
-		return rulesCnt;
+		return this.rulesCnt;
 	}
 
-	public void setRulesCnt(int rulesCnt) {
+	public void setRulesCnt(final int rulesCnt) {
 		this.rulesCnt = rulesCnt;
 	}
 
 	public int getRulesOnCanvasCnt() {
-		return rulesOnCanvasCnt;
+		return this.rulesOnCanvasCnt;
 	}
 
-	public void setRulesOnCanvasCnt(int rulesOnCanvasCnt) {
+	public void setRulesOnCanvasCnt(final int rulesOnCanvasCnt) {
 		this.rulesOnCanvasCnt = rulesOnCanvasCnt;
 	}
 
 	public PrefixOperatorPanel getPrefixOperatorPanel() {
-		return prefixOperatorPanel;
+		return this.prefixOperatorPanel;
 	}
 
-	public void setPrefixOperatorPanel(PrefixOperatorPanel prefixOperatorPanel) {
+	public void setPrefixOperatorPanel(final PrefixOperatorPanel prefixOperatorPanel) {
 		this.prefixOperatorPanel = prefixOperatorPanel;
 	}
-
-
 
 	public void setStartNode(final Operator op) {
 		this.startNode = op;
 	}
 
 	public Operator getStartNode() {
-		return startNode;
+		return this.startNode;
 	}
-
-
 
 	public String getGroupName() {
-		return groupName;
+		return this.groupName;
 	}
 
-
-
-	public void setGroupName(String groupName) {
+	public void setGroupName(final String groupName) {
 		this.groupName = groupName;
 	}
-	
-
 }

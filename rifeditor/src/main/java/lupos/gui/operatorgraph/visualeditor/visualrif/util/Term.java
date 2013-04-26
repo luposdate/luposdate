@@ -23,7 +23,6 @@
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -38,171 +37,156 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOper
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
 public class Term {
 
 	private boolean init = false;
-	
-	// type
-    private	boolean variable = false;
-    private boolean constant = false;
-    private boolean uniterm = false;
-    private boolean list = false;
-    private boolean frame = false;
-    
-    // prefix
-    private boolean prefix = false;
-    private String selectedPrefix = "";
 
-    // constant or variable value  // (named UnitermOperator)
+	// type
+	private	boolean variable = false;
+	private boolean constant = false;
+	private boolean uniterm = false;
+	private boolean list = false;
+	private boolean frame = false;
+
+	// prefix
+	private boolean prefix = false;
+	private String selectedPrefix = "";
+
+	// constant or variable value  // (named UnitermOperator)
 	private String value, prefixForName;
-	
-	
+
 	/*
 	 * Swing elements
 	 */
 	private JTextFieldResizing tfName, tfValue;
 	private JButton upButton , downButton, deleteButton, connectionButton;
 	private JLabel label;
-	
-    // PrefixCombo for Value
-    private JComboBox constantCombo;
-    
-    //PrefixCombo for Name (named unitermOperator)
-    private JComboBox nameComboBox;
-    
+
+	// PrefixCombo for Value
+	private JComboBox constantCombo;
+
+	//PrefixCombo for Name (named unitermOperator)
+	private JComboBox nameComboBox;
+
 	private String[] comboEntries;
-	
+
 	// special frame fields
 	private int termFrameID;
 	private JComboBox termTypCombo;
-	
+
 	private JLabel termLabel;
-	
+
 	/*
-	 * term as succeeding operator 
+	 * term as succeeding operator
 	 */
 	private GraphWrapper succeedingOperatorGW;
 	private Operator dummyOperator;
- 	private boolean hasSucceedingOperator = false;
+	private boolean hasSucceedingOperator = false;
 	private GraphBox childBox;
 	private GraphWrapperEditable secondOp;
 
 	private AbstractTermOperator abstractTermOperator;
 
-	
-	
 	// Constructor
 	public Term(){}
-	
+
 	// Constructor
-	public Term (String value){
-		
+	public Term (final String value){
 		this.setValue(value);
-		
 		if(this.getSelectedPrefix().equals("Var")){
 			this.setVariable(true);
-		}else
+		} else {
 			this.setVariable(false);
+		}
 	}
-	
-	
+
 	// save term
 	public JSONObject toJSON() {
-		JSONObject saveObject = new JSONObject();
-		
+		final JSONObject saveObject = new JSONObject();
 		try {
-			
-			if(this.variable) saveObject.put("TYPE", "variable");
-			if(this.constant) saveObject.put("TYPE", "constant");
-			if(this.uniterm) saveObject.put("TYPE", "expression");
-			if(this.list) saveObject.put("TYPE", "list");
+
+			if(this.variable) {
+				saveObject.put("TYPE", "variable");
+			}
+			if(this.constant) {
+				saveObject.put("TYPE", "constant");
+			}
+			if(this.uniterm) {
+				saveObject.put("TYPE", "expression");
+			}
+			if(this.list) {
+				saveObject.put("TYPE", "list");
+			}
 			saveObject.put("PREFIXVALUE", this.selectedPrefix);
 			saveObject.put("VALUE", this.value);
 			saveObject.put("PREFIXNAME", this.prefixForName);
-		
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
 		return saveObject;
 	}
 
-	
-	public void setSelectedPrefix(String selectedPrefix) {
-
+	public void setSelectedPrefix(final String selectedPrefix) {
 		this.selectedPrefix = selectedPrefix;
-		
-//		if(this.getSelectedPrefix().equals("Var")){
-//			this.setVariable(true);
-//		}else
-//			this.setVariable(false);
-	
 	}
-	
-	
+
 	/* *************** **
 	 * Getter + Setter **
-	 * *************** */ 
-	
+	 * *************** */
 	public boolean isVariable() {
-		return variable;
+		return this.variable;
 	}
 
-	public void setVariable(boolean variable) {
+	public void setVariable(final boolean variable) {
 		this.variable = variable;
 	}
-	
-    public boolean isConstant() {
-		return constant;
+
+	public boolean isConstant() {
+		return this.constant;
 	}
-	
-	public void setConstant(boolean constant) {
+
+	public void setConstant(final boolean constant) {
 		this.constant = constant;
 	}
 
 	public boolean isUniterm() {
-		return uniterm;
+		return this.uniterm;
 	}
 
-	public void setUniterm(boolean uniterm) {
+	public void setUniterm(final boolean uniterm) {
 		this.uniterm = uniterm;
 	}
 
 	public boolean isList() {
-		return list;
+		return this.list;
 	}
 
-	public void setList(boolean list) {
+	public void setList(final boolean list) {
 		this.list = list;
 	}
-	
+
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(final String value) {
 		this.value = value;
 	}
 
 	public String getSelectedPrefix() {
-		return selectedPrefix;
+		return this.selectedPrefix;
 	}
-	
-	public void setConstantCombo(JComboBox constantCombo) {
+
+	public void setConstantCombo(final JComboBox constantCombo) {
 		this.constantCombo = constantCombo;
 	}
 
 	public JComboBox getConstantCombo() {
-		return constantCombo;
+		return this.constantCombo;
 	}
 
-	public void setPrefix(boolean prefix) {
+	public void setPrefix(final boolean prefix) {
 		this.prefix = prefix;
-		
 	}
 
 	public boolean isPrefix(){
@@ -210,124 +194,119 @@ public class Term {
 	}
 
 	public JButton getUpButton() {
-		return upButton;
+		return this.upButton;
 	}
 
-	public void setUpButton(JButton upButton) {
+	public void setUpButton(final JButton upButton) {
 		this.upButton = upButton;
 	}
 
 	public JButton getDownButton() {
-		return downButton;
+		return this.downButton;
 	}
 
-	public void setDownButton(JButton downButton) {
+	public void setDownButton(final JButton downButton) {
 		this.downButton = downButton;
 	}
 
 	public JButton getDeleteButton() {
-		return deleteButton;
+		return this.deleteButton;
 	}
 
-	public void setDeleteButton(JButton deleteButton) {
+	public void setDeleteButton(final JButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
 	public JLabel getLabel() {
-		return label;
+		return this.label;
 	}
 
-	public void setLabel(JLabel label) {
+	public void setLabel(final JLabel label) {
 		this.label = label;
 	}
 
-	public void setTextFieldResizing(JTextFieldResizing textFieldResizing) {
+	public void setTextFieldResizing(final JTextFieldResizing textFieldResizing) {
 		this.tfValue = textFieldResizing;
 	}
 
 	public JTextFieldResizing getTextFieldResizing() {
-		return tfValue;
+		return this.tfValue;
 	}
 
 	public JTextFieldResizing getTfName() {
-		return tfName;
+		return this.tfName;
 	}
 
-	public void setTfName(JTextFieldResizing tfName) {
+	public void setTfName(final JTextFieldResizing tfName) {
 		this.tfName = tfName;
 	}
 
 	public JComboBox getNameComboBox() {
-		return nameComboBox;
+		return this.nameComboBox;
 	}
-	
-	public void setNameComboBox(JComboBox nameComboBox) {
+
+	public void setNameComboBox(final JComboBox nameComboBox) {
 		this.nameComboBox = nameComboBox;
 	}
 
 	public String getPrefixForName() {
-		return prefixForName;
+		return this.prefixForName;
 	}
-	
-	public void setPrefixForName(String prefixForName) {
+
+	public void setPrefixForName(final String prefixForName) {
 		this.prefixForName = prefixForName;
 	}
 
 	public boolean isInit() {
-		return init;
+		return this.init;
 	}
 
-	public void setInit(boolean init) {
+	public void setInit(final boolean init) {
 		this.init = init;
 	}
 
 	public String[] getComboEntries() {
-		return comboEntries;
+		return this.comboEntries;
 	}
 
-	public void setComboEntries(String[] comboEntries) {
+	public void setComboEntries(final String[] comboEntries) {
 		this.comboEntries = comboEntries;
 	}
 
-	public void setTermFrameID(int termID) {
+	public void setTermFrameID(final int termID) {
 		this.termFrameID = termID;
-		
 	}
-	
+
 	public int getTermFrameID(){
 		return this.termFrameID;
 	}
 
-	public void setTypCombo(JComboBox typCombo) {
+	public void setTypCombo(final JComboBox typCombo) {
 		this.termTypCombo = typCombo;
-		
 	}
-	
+
 	public JComboBox getTypCombo(){
 		return this.termTypCombo;
 	}
 
-
 	public boolean isFrame() {
-		return frame;
+		return this.frame;
 	}
 
-	public void setFrame(boolean frame) {
+	public void setFrame(final boolean frame) {
 		this.frame = frame;
 	}
 
 	public JButton getConnectionButton() {
-		return connectionButton;
+		return this.connectionButton;
 	}
 
-	public void setConnectionButton(JButton connectionButton) {
+	public void setConnectionButton(final JButton connectionButton) {
 		this.connectionButton = connectionButton;
 	}
 
-	
-	public void setSucceedingOperatorGW(GraphWrapper graphWrapper) {
+	public void setSucceedingOperatorGW(final GraphWrapper graphWrapper) {
 		this.succeedingOperatorGW = graphWrapper;
-		
 	}
 
 	public GraphWrapper getSucceedingOperatorGW(){
@@ -335,59 +314,50 @@ public class Term {
 	}
 
 	public boolean hasSucceedingOperator() {
-		return hasSucceedingOperator;
+		return this.hasSucceedingOperator;
 	}
 
-	public void setHasSucceedingOperator(boolean hasSucceedingOperator) {
+	public void setHasSucceedingOperator(final boolean hasSucceedingOperator) {
 		this.hasSucceedingOperator = hasSucceedingOperator;
 	}
 
-	public void setSucceedingOperatorBox(GraphBox childBox) {
-		// TODO Auto-generated method stub
+	public void setSucceedingOperatorBox(final GraphBox childBox) {
 		this.childBox = childBox;
 	}
-	
+
 	public GraphBox getSucceedingOperatorBox(){
 		return this.childBox;
 	}
 
-	public void setSucceedingOperator(GraphWrapperEditable secondOp) {
+	public void setSucceedingOperator(final GraphWrapperEditable secondOp) {
 		this.secondOp = secondOp;
-		
 	}
-	
+
 	public GraphWrapperEditable getSucceedingOperator(){
 		return this.secondOp;
 	}
 
-	public void setDummyOperator(Operator dummyOperator) {
+	public void setDummyOperator(final Operator dummyOperator) {
 		this.dummyOperator = dummyOperator;
-		
 	}
-	
+
 	public Operator getDummyOperator(){
 		return this.dummyOperator;
 	}
 
-	
 	public AbstractTermOperator getAbstractTermOperator() {
-		return abstractTermOperator;
+		return this.abstractTermOperator;
 	}
-	
 
-	public void setAbstractTermOperator(AbstractTermOperator abstractTermOperator) {
+	public void setAbstractTermOperator(final AbstractTermOperator abstractTermOperator) {
 		this.abstractTermOperator = abstractTermOperator;
 	}
 
 	public JLabel getTermLabel() {
-		return termLabel;
+		return this.termLabel;
 	}
 
-	public void setTermLabel(JLabel termLabel) {
+	public void setTermLabel(final JLabel termLabel) {
 		this.termLabel = termLabel;
 	}
-
-
-
-	
 }

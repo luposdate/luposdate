@@ -24,154 +24,112 @@
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
 import java.awt.Point;
-import java.util.Collection;
 import java.util.HashSet;
 
 import javax.swing.JOptionPane;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.AnnotationOperatorPanel;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.RuleOperatorPanel;
 import lupos.misc.util.OperatorIDTuple;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class AnnotationOperator extends Operator {
-	
-	private String annotation = ""; 
+
+	private String annotation = "";
 	private boolean minimized = true;
-	
-	
-	
-//	public AnnotationOperator(JSONObject loadObject) throws JSONException {
-//		this.annotation = (String) loadObject.get("TEXT");
-//	}
-
-
 
 	@Override
-
-	public void prefixRemoved(String prefix, String namespace) {
-		// TODO Auto-generated method stub
-		
+	public void prefixRemoved(final String prefix, final String namespace) {
 	}
 
 	@Override
 	public void prefixAdded() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void prefixModified(String oldPrefix, String newPrefix) {
-		// TODO Auto-generated method stub
-		
+	public void prefixModified(final String oldPrefix, final String newPrefix) {
 	}
 
 	@Override
-	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
-		
-		this.panel = new AnnotationOperatorPanel(parent, gw, this,annotation,"Annotation",true);
-		
+	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw, final VisualGraph<Operator> parent) {
+		this.panel = new AnnotationOperatorPanel(parent, gw, this,this.annotation,"Annotation",true);
 		return this.panel;
 	}
 
 	@Override
 	public StringBuffer serializeOperator() {
-		StringBuffer sb = new StringBuffer();
+		final StringBuffer sb = new StringBuffer();
 		sb.append("(* "+this.annotation+" *)");
 		return sb;
 	}
 
 	@Override
-	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
-		StringBuffer sb = new StringBuffer();
+	public StringBuffer serializeOperatorAndTree(final HashSet<Operator> visited) {
+		final StringBuffer sb = new StringBuffer();
 		sb.append("(* "+this.annotation+" *)");
-		for(OperatorIDTuple<Operator> opIDT : this.getSucceedingOperators()) {
+		for(final OperatorIDTuple<Operator> opIDT : this.getSucceedingOperators()) {
 			sb.append(opIDT.getOperator().serializeOperator());
-//			System.out.println(opIDT.serializeOperator());
 		}
-		
-		
 		return sb;
 	}
 
 	@Override
-	public boolean variableInUse(String variable, HashSet<Operator> visited) {
-		// TODO Auto-generated method stub
+	public boolean variableInUse(final String variable, final HashSet<Operator> visited) {
 		return false;
 	}
-	
-	public boolean validateOperator(boolean showErrors,
-			HashSet<Operator> visited, Object data) {
-		
 
-		
+	@Override
+	public boolean validateOperator(final boolean showErrors,
+			final HashSet<Operator> visited, final Object data) {
 		if(visited.contains(this)) {
 			return true;
 		}
-
 		visited.add(this);
-		
-	
-		
-		
-
 		if (this.getSucceedingOperators().size() == 0){
 			if (showErrors) {
-				JOptionPane
-						.showOptionDialog(
-								this.panel.getParentQG().visualEditor,
-								"Please connect the Annotation Operator with the Operator, you want annotate!",
-								"Error", JOptionPane.DEFAULT_OPTION,
-								JOptionPane.ERROR_MESSAGE, null, null, null);
+				JOptionPane.showOptionDialog(
+						this.panel.getParentQG().visualEditor,
+						"Please connect the Annotation Operator with the Operator, you want annotate!",
+						"Error", JOptionPane.DEFAULT_OPTION,
+						JOptionPane.ERROR_MESSAGE, null, null, null);
 				return false;
-			
-		}
 
+			}
 		}
-
 		return true;
-		
 	}
 
-	
 	// Getter + Setter
-	
 	public String getAnnotation() {
-		return annotation;
+		return this.annotation;
 	}
-	
-	public void setAnnotation(String annotation) {
+
+	public void setAnnotation(final String annotation) {
 		this.annotation = annotation;
 	}
-	
+
 	public boolean isMinimized() {
-		return minimized;
+		return this.minimized;
 	}
 
-	public void setMinimized(boolean minimized) {
+	public void setMinimized(final boolean minimized) {
 		this.minimized = minimized;
 	}
 
-	
 	public JSONObject toJSON() throws JSONException {
-		JSONObject saveObject = new JSONObject();
-
+		final JSONObject saveObject = new JSONObject();
 		saveObject.put("TEXT", this.getAnnotation());
-		
-		Point position = ((AnnotationOperatorPanel) this.panel).getPositionAndDimension().getFirst();
+		final Point position = ((AnnotationOperatorPanel) this.panel).getPositionAndDimension().getFirst();
 		saveObject.put("POSITION",  new double[]{position.getX(), position.getY()});
-		
 		return  saveObject;
 	}
-	
-	public void fromJSON(JSONObject loadObject) throws JSONException {
+
+	public void fromJSON(final JSONObject loadObject) throws JSONException {
 		this.annotation = (String) loadObject.get("TEXT");
 	}
 }

@@ -32,26 +32,23 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator;
 
-
 public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
-
 	protected GridBagConstraints gbc = null;
 	private GroupOperator groupOperator;
 	private JLabel label;
 	private static final long serialVersionUID = -9204167792670922418L;
 
 	// Constructor
-	public GroupOperatorPanel(VisualGraph<Operator> parent, GraphWrapper gw,
-			GroupOperator operator, boolean movable) {
+	public GroupOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw,
+			final GroupOperator operator, final boolean movable) {
 		super(parent, gw, operator, movable);
 
 		this.parent = parent;
-		
+
 		this.setGroupOperator(operator);
-		
+
 		this.gbc = new GridBagConstraints();
 		this.gbc.anchor = GridBagConstraints.NORTHWEST;
 		this.gbc.gridwidth = this.gbc.gridheight = 1;
@@ -60,60 +57,57 @@ public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.gbc.insets = new Insets((int) parent.PADDING,
 				(int) parent.PADDING, (int) parent.PADDING,
 				(int) parent.PADDING);
-		
+
 		this.gbc.gridx = this.gbc.gridy = 0;
 		this.gbc.fill = GridBagConstraints.BOTH;
-		
 
-		label = new JLabel(this.getGroupLabelName());
-		label.setFont(parent.getFONT());
 
-		this.add(label,this.gbc);
-		
+		this.label = new JLabel(this.getGroupLabelName());
+		this.label.setFont(parent.getFONT());
+
+		this.add(this.label,this.gbc);
 	}
 
-
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
-		// TODO Auto-generated method stub
+	@Override
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
 	}
 
 	public GroupOperator getGroupOperator() {
-		return groupOperator;
+		return this.groupOperator;
 	}
 
-	public void setGroupOperator(GroupOperator operator) {
+	public void setGroupOperator(final GroupOperator operator) {
 		this.groupOperator = operator;
 	}
-	
+
+	@Override
 	public void updateSize(){
 		this.setMinimumSize(this.label.getSize());
 		this.setSize(this.getPreferredSize());
-		this.revalidate(); 
-	} 
-	
-	public String getGroupLabelName() {
-		return groupOperator.getGroupLabelName();
+		this.revalidate();
 	}
 
-	public void setGroupLabelName(String groupLabelName) {
-		this.groupOperator.setGroupLabelName(groupLabelName);
-		
-		this.remove(label);
-		
-		label = new JLabel(this.getGroupLabelName());
-		label.setFont(parent.getFONT());
-		this.add(label,this.gbc);
-		this.updateSize();
-	
+	public String getGroupLabelName() {
+		return this.groupOperator.getGroupLabelName();
 	}
-	
-	public void setGroupName(String groupName){
+
+	public void setGroupLabelName(final String groupLabelName) {
+		this.groupOperator.setGroupLabelName(groupLabelName);
+
+		this.remove(this.label);
+
+		this.label = new JLabel(this.getGroupLabelName());
+		this.label.setFont(this.parent.getFONT());
+		this.add(this.label,this.gbc);
+		this.updateSize();
+	}
+
+	public void setGroupName(final String groupName){
 		this.groupOperator.setGroupName(groupName);
 	}
-	
+
 	public String getGroupName(){
 		return this.groupOperator.getGroupName();
 	}
-
 }

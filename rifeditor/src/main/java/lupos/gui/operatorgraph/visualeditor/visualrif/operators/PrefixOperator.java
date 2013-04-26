@@ -29,105 +29,67 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel;
 
-
-
-
-
-
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PrefixOperator extends AbstractPrefixOperator {
-
-
 	private boolean startNode;
 	private boolean base = false;
-
-
-
-
-
-
 	protected final HashMap<String, String> prefixList = new HashMap<String, String>();
 	protected int prefixCount = 0; // internal count for the prefixes
 	private int prefixRowCnt = 1;
-	
 
 	// Constructor
 	public PrefixOperator(){
 		super();
-//		this.getClass().getSimpleName().
-		
 	}
-	
+
 	// Constructor
-	public PrefixOperator(String name, JSONObject loadObject) throws JSONException {
+	public PrefixOperator(final String name, final JSONObject loadObject) throws JSONException {
 		super(name, loadObject);
 	}
 
-	
-	public PrefixOperator(JSONObject opLoadObject) {
+	public PrefixOperator(final JSONObject opLoadObject) {
 		try {
 			this.fromJSON(opLoadObject);
-		} catch (JSONException e) {
-
+		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
 	}
 
-
-
 	@Override
-	public AbstractGuiComponent<Operator> draw(GraphWrapper gw,
-			VisualGraph<Operator> parent) {
-	
+	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw,
+			final VisualGraph<Operator> parent) {
 		this.panel = new PrefixOperatorPanel(parent, gw, this,
 				this.determineNameForDrawing(), this.startNode,
 				this.alsoSubClasses);
-		
-		return (AbstractGuiComponent<Operator>) this.panel;
+		return this.panel;
 	}
 
-	public void addEntry(String prefix, final String namespace) {
+	public void addEntry(final String prefix, final String namespace) {
 		this.prefixCount++;
 		this.prefixList.put(namespace, prefix); // key , value
-
 	}
-	
-	public void removeEntry(String namespace, final boolean notify) {
-		String prefix = this.prefixList.get(namespace);
 
+	public void removeEntry(final String namespace, final boolean notify) {
+		String prefix = this.prefixList.get(namespace);
 		if (prefix == null) {
 			prefix = "";
 		}
-
 		this.prefixList.remove(namespace);
 		this.prefixCount--;
-//		if (namespace.matches("<.*>")) {
-//			namespace = namespace.substring(1, namespace.length() - 1);
-//		}
-
-
-		
 	}
 
 	public void changeEntryName(final String oldPrefix, final String newPrefix) {
 		final String namespace = this.getNamespace(oldPrefix);
-
 		this.prefixList.remove(namespace);
 		this.prefixList.put(namespace, newPrefix);
-
 	}
 
 	public String getPrefix(final String namespace){
@@ -136,245 +98,144 @@ public class PrefixOperator extends AbstractPrefixOperator {
 				return entry.getValue();
 			}
 		}
-
 		return "";
 	}
-	
+
 	public String getNamespace(final String prefix) {
 		for (final Entry<String, String> entry : this.prefixList.entrySet()) {
 			if (entry.getValue().equals(prefix)) {
 				return entry.getKey().substring(1, entry.getKey().length() - 1);
 			}
 		}
-
 		return "";
 	}
-	
+
 	public boolean prefixIsInUse(final String prefix){
 		for (final Entry<String, String> entry : this.prefixList.entrySet()) {
 			if (entry.getValue().equals(prefix)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
-	
+
 	public boolean namespaceIsInUse(final String namespace){
 		for (final Entry<String, String> entry : this.prefixList.entrySet()) {
 			if (entry.getValue().equals(namespace)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
-	
+
 	public boolean baseIsAlreadySet(){
 		for (final Entry<String, String> entry : this.prefixList.entrySet()) {
 			if (entry.getKey().equals("BASE")) {
 				return true;
 			}
 		}
-
 		return false;
 	}
-	
-	
-	 /** This method determines whether the internal prefixList is empty or not.
-	 * 
+
+	/** This method determines whether the internal prefixList is empty or not.
+	 *
 	 * @return true, if internal prefixList is not empty, false if it is
 	 */
-
 	public boolean hasElements() {
 		return !this.prefixList.isEmpty();
 	}
-	
+
 	public HashMap<String, String> getPrefixList() {
 		return this.prefixList;
 	}
-	
-	
+
+	@Override
 	public StringBuffer serializeOperator() {
-
-		StringBuffer sb = new StringBuffer();
-//		
-//		
-//		sb.append("\n");
-//		for(Entry<String,String> e : prefixList.entrySet()){
-//				
-//			if(e.getValue().equals("BASE")) {
-//				sb.append("\tBase (<"+e.getKey()+"#>)");
-//			}else
-//				sb.append("\tPrefix ("+e.getValue()+"  <"+e.getKey()+">)");
-//				
-//				sb.append("\n");
-//				
-//			
-//		
-//		}
-//		sb.append("\n");
+		final StringBuffer sb = new StringBuffer();
 		sb.append("");
 		return sb;
 	}
 
-
-	public StringBuffer serializeOperatorAndTree(HashSet<Operator> arg0) {
-		
-		StringBuffer sb = new StringBuffer();
-//	
-//		sb.append("\n");
-//		
-//		for(Operator op : this.getPrecedingOperators()) {
-//			sb.append("\t"+op.serializeOperator());
-//			System.out.println(op.serializeOperator());
-//		}
-//		
-//		
-//		for(Entry<String,String> e : prefixList.entrySet()){
-//				
-//			if(e.getValue().equals("BASE")) {
-//				sb.append("\tBase (<"+e.getKey()+">)");
-//			}else
-//				sb.append("\tPrefix ("+e.getValue()+"  <"+e.getKey()+">)");
-//				
-//				sb.append("\n");
-//				
-//			
-//		
-//		}
-//		
-//		sb.append("\n");
+	@Override
+	public StringBuffer serializeOperatorAndTree(final HashSet<Operator> arg0) {
+		final StringBuffer sb = new StringBuffer();
 		sb.append("");
 		return sb;
 	}
-	
-	public boolean validateOperator(boolean showErrors,
-			HashSet<Operator> visited, Object data) {
-		
-		boolean ret = super.validateOperator(showErrors, visited, data);
 
-		
-		
+	@Override
+	public boolean validateOperator(final boolean showErrors,
+			final HashSet<Operator> visited, final Object data) {
+		final boolean ret = super.validateOperator(showErrors, visited, data);
 		if (!ret) {
 			return ret;
 		}
-
-//		if (this.getPrecedingOperators().size() == 0
-//				&& this.getSucceedingOperators().size() == 0) {
-//			if (showErrors) {
-//				JOptionPane
-//						.showOptionDialog(
-//								this.panel.getParentQG().visualEditor,
-//								"A PrefixOperator must have preceding or succeeding elements!",
-//								"Error", JOptionPane.DEFAULT_OPTION,
-//								JOptionPane.ERROR_MESSAGE, null, null, null);
-//			}
-//			System.out
-//					.println("PrefixOperator.validateOperator(boolean showErrors, HashSet<Operator> visited, Object data)");// TODO
-//			return false;
-//		}
-
 		return true;
 	}
-	
 
-	public JSONObject toJSON(JSONObject connectionsObject) throws JSONException {
-		JSONObject saveObject = new JSONObject();
-		JSONObject saveObjectPrefixList = new JSONObject();
+	public JSONObject toJSON(final JSONObject connectionsObject) throws JSONException {
+		final JSONObject saveObject = new JSONObject();
+		final JSONObject saveObjectPrefixList = new JSONObject();
 
-		Point position = ((PrefixOperatorPanel) this.panel).getPositionAndDimension().getFirst();
+		final Point position = ((PrefixOperatorPanel) this.panel).getPositionAndDimension().getFirst();
 
 		saveObject.put("OP TYPE", this.getClass().getSimpleName());
 
 		saveObject.put("POSITION", new double[]{position.getX(), position.getY()});
-		
-		for (Entry<String, String> entry : this.prefixList.entrySet()) {
+
+		for (final Entry<String, String> entry : this.prefixList.entrySet()) {
 			saveObjectPrefixList.put(entry.getKey(), entry.getValue());
 		}
-		
+
 		saveObject.put("PREFIXLIST", saveObjectPrefixList);
-		
-
-		// --- handle connections - begin ---
-//		JSONArray connectionsArray = new JSONArray();
-
-//		for(Operator child : this.annotationLabels.keySet()) {
-//			AbstractRuleOperator childOp = (AbstractRuleOperator) child;
-//			AnnotationPanel ap = (AnnotationPanel) this.annotationLabels.get(child);
-//
-//			JSONObject childConnectionObject = new JSONObject();
-//			childConnectionObject.put("to", childOp.getName());
-//			childConnectionObject.put("active", ap.isActive());
-//			childConnectionObject.put("id", ap.getOpID());
-//			childConnectionObject.put("id label", ap.getOpLabel());
-//			childConnectionObject.put("mode", ap.getMode().name());
-//
-//			connectionsArray.put(childConnectionObject);
-//		}
-//
-//		if(connectionsArray.length() > 0) {
-//			connectionsObject.put(this.getName(), connectionsArray);
-//		}
-		// --- handle connections - end ---
-
 		return saveObject;
 	}
-	
-	private void fromJSON(JSONObject opLoadObject) throws JSONException {
-	
-	
-		JSONObject prefixList = opLoadObject.getJSONObject("PREFIXLIST");
-		
+
+	private void fromJSON(final JSONObject opLoadObject) throws JSONException {
+		final JSONObject prefixList = opLoadObject.getJSONObject("PREFIXLIST");
 		@SuppressWarnings("unchecked")
+		final
 		Iterator<String> keyIt = prefixList.keys();
-
 		while(keyIt.hasNext()) {
-			String key = keyIt.next();
+			final String key = keyIt.next();
 			this.prefixList.put(key, prefixList.getString(key));
-
-			
-
 		}
 	}
-	
-	
+
 	// Getter + Setter
-	
 	public boolean isStartNode() {
-		return startNode;
+		return this.startNode;
 	}
 
-	public void setStartNode(boolean startNode) {
+	public void setStartNode(final boolean startNode) {
 		this.startNode = startNode;
 	}
 
 	public boolean isBase() {
-		return base;
+		return this.base;
 	}
 
-	public void setBase(boolean base) {
+	public void setBase(final boolean base) {
 		this.base = base;
 	}
 
 	public int getPrefixCount() {
-		return prefixCount;
+		return this.prefixCount;
 	}
 
-	public void setPrefixCount(int prefixCount) {
+	public void setPrefixCount(final int prefixCount) {
 		this.prefixCount = prefixCount;
 	}
 
 	public int getPrefixRowCnt() {
-		return prefixRowCnt;
+		return this.prefixRowCnt;
 	}
 
-	public void setPrefixRowCnt(int prefixRowCnt) {
+	public void setPrefixRowCnt(final int prefixRowCnt) {
 		this.prefixRowCnt = prefixRowCnt;
 	}
-	
+
 	public PrefixOperatorPanel getPrefixOperatorPanel(){
 		return (PrefixOperatorPanel) this.panel;
 	}
-		
 }

@@ -25,13 +25,9 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
 public class DocumentEnum {
 
-	
-	
-	
-	
-	private Class<? extends lupos.engine.operators.BasicOperator> clazz;
+	private final Class<? extends lupos.engine.operators.BasicOperator> clazz;
 
-	private DocumentEnum(Class<? extends lupos.engine.operators.BasicOperator> clazz) {
+	private DocumentEnum(final Class<? extends lupos.engine.operators.BasicOperator> clazz) {
 		this.clazz = clazz;
 	}
 
@@ -40,7 +36,6 @@ public class DocumentEnum {
 	}
 
 	public static Object[] values() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

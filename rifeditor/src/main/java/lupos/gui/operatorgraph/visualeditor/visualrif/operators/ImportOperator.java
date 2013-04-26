@@ -26,83 +26,60 @@ package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ImportOperatorPanel;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
 public class ImportOperator  extends AbstractPrefixOperator {
-
-
 	private boolean startNode;
-
 	protected final HashMap<String, String> importList = new HashMap<String, String>();
 	protected int importCount = 0; // internal count for the prefixes
 	private int importRowCnt = 1;
 	private ImportOperator importOperator;
 
-
 	// Constructor
 	public ImportOperator(){
 		super();
-		
 	}
-	
+
 	// Constructor
-	public ImportOperator(String name, JSONObject loadObject) throws JSONException {
+	public ImportOperator(final String name, final JSONObject loadObject) throws JSONException {
 		super(name, loadObject);
 	}
 
-	
-	public AbstractGuiComponent<Operator> draw(GraphWrapper gw,
-			VisualGraph<Operator> parent) {
-	
+	@Override
+	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw,
+			final VisualGraph<Operator> parent) {
 		this.panel = new ImportOperatorPanel(parent, gw, this,
 				this.determineNameForDrawing(), this.startNode,
 				this.alsoSubClasses);
-		
-		return (AbstractGuiComponent<Operator>) this.panel;
+		return this.panel;
 	}
 
-	public void addEntry(String prefix, final String namespace) {
+	public void addEntry(final String prefix, final String namespace) {
 		this.importCount++;
 		this.importList.put(namespace, prefix); // key , value
-
-
 	}
-	
-	public void removeEntry(String namespace, final boolean notify) {
-		String prefix = this.importList.get(namespace);
 
+	public void removeEntry(final String namespace, final boolean notify) {
+		String prefix = this.importList.get(namespace);
 		if (prefix == null) {
 			prefix = "";
 		}
-
 		this.importList.remove(namespace);
 		this.importCount--;
-//		if (namespace.matches("<.*>")) {
-//			namespace = namespace.substring(1, namespace.length() - 1);
-//		}
-
-
-		
 	}
 
 	public void changeEntryName(final String oldPrefix, final String newPrefix) {
 		final String namespace = this.getNamespace(oldPrefix);
-
 		this.importList.remove(namespace);
 		this.importList.put(namespace, newPrefix);
-
-
 	}
 
 	public String getPrefix(final String namespace){
@@ -111,146 +88,119 @@ public class ImportOperator  extends AbstractPrefixOperator {
 				return entry.getValue();
 			}
 		}
-
 		return "";
 	}
-	
+
 	public String getNamespace(final String prefix) {
 		for (final Entry<String, String> entry : this.importList.entrySet()) {
 			if (entry.getValue().equals(prefix)) {
 				return entry.getKey().substring(1, entry.getKey().length() - 1);
 			}
 		}
-
 		return "";
 	}
-	
+
 	public boolean prefixIsInUse(final String prefix){
 		for (final Entry<String, String> entry : this.importList.entrySet()) {
 			if (entry.getValue().equals(prefix)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
-	
+
 	public boolean namespaceIsInUse(final String namespace){
 		for (final Entry<String, String> entry : this.importList.entrySet()) {
 			if (entry.getValue().equals(namespace)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
-	
+
 	public boolean baseIsAlreadySet(){
 		for (final Entry<String, String> entry : this.importList.entrySet()) {
 			if (entry.getKey().equals("BASE")) {
 				return true;
 			}
 		}
-
 		return false;
 	}
-	
-	
+
 	 /** This method determines whether the internal prefixList is empty or not.
-	 * 
+	 *
 	 * @return true, if internal prefixList is not empty, false if it is
 	 */
-
 	public boolean hasElements() {
 		return !this.importList.isEmpty();
 	}
-	
+
 	public HashMap<String, String> getPrefixList() {
 		return this.importList;
 	}
-	
-	
+
+	@Override
 	public StringBuffer serializeOperator() {
-
-		StringBuffer sb = new StringBuffer();
-
+		final StringBuffer sb = new StringBuffer();
 		sb.append("");
 		return sb;
 	}
 
-
-	public StringBuffer serializeOperatorAndTree(HashSet<Operator> arg0) {
-		
-		StringBuffer sb = new StringBuffer();
-
+	@Override
+	public StringBuffer serializeOperatorAndTree(final HashSet<Operator> arg0) {
+		final StringBuffer sb = new StringBuffer();
 		sb.append("");
 		return sb;
 	}
-	
-	public boolean validateOperator(boolean showErrors,
-			HashSet<Operator> visited, Object data) {
-		
-		boolean ret = super.validateOperator(showErrors, visited, data);
 
-		
-		
+	@Override
+	public boolean validateOperator(final boolean showErrors,
+			final HashSet<Operator> visited, final Object data) {
+		final boolean ret = super.validateOperator(showErrors, visited, data);
 		if (!ret) {
 			return ret;
 		}
-
-
-
 		return true;
 	}
-	
 
-	
-	
-
-	
 	// Getter + Setter
-	
-
 	public boolean isStartNode() {
-		return startNode;
+		return this.startNode;
 	}
 
-	public void setStartNode(boolean startNode) {
+	public void setStartNode(final boolean startNode) {
 		this.startNode = startNode;
 	}
 
 	public int getImportCount() {
-		return importCount;
+		return this.importCount;
 	}
 
-	public void setImportCount(int importCount) {
+	public void setImportCount(final int importCount) {
 		this.importCount = importCount;
 	}
 
 	public int getImportRowCnt() {
-		return importRowCnt;
+		return this.importRowCnt;
 	}
 
-	public void setImportRowCnt(int importRowCnt) {
+	public void setImportRowCnt(final int importRowCnt) {
 		this.importRowCnt = importRowCnt;
 	}
 
 	public HashMap<String, String> getImportList() {
-		return importList;
+		return this.importList;
 	}
 
 	public ImportOperator getImportOperator() {
-		return importOperator;
+		return this.importOperator;
 	}
 
-	public void setImportOperator(ImportOperator importOperator) {
+	public void setImportOperator(final ImportOperator importOperator) {
 		this.importOperator = importOperator;
 	}
 
-	
 	public ImportOperatorPanel getImportOperatorPanel() {
-		// TODO Auto-generated method stub
 		return (ImportOperatorPanel) this.panel;
 	}
-	
 }

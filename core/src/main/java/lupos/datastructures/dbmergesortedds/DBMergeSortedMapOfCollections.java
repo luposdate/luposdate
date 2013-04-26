@@ -44,7 +44,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	/**
 	 * Create a new DBMergeSortedMapOfCollections that sorts according to the
 	 * elements' natural order.
-	 * 
+	 *
 	 * @param collectionClass
 	 *            The class object used to create the collections that are
 	 *            returned by this map. This should be the same collection class
@@ -58,13 +58,13 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 			final SortConfiguration sortConfiguration,
 			final Class<? extends MapEntry<K, V>> classOfElements) {
 		this.collectionClass = collectionClass;
-		bag = new DBMergeSortedBag<MapEntry<K, V>>(sortConfiguration, classOfElements);
+		this.bag = new DBMergeSortedBag<MapEntry<K, V>>(sortConfiguration, classOfElements);
 	}
 
 	/**
 	 * Create a new DBMergeSortedMapOfCollections that sorts using the specified
 	 * Comparator.
-	 * 
+	 *
 	 * @param collectionClass
 	 *            The class object used to create the collections that are
 	 *            returned by this map. This should be the same collection class
@@ -79,22 +79,25 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	public DBMergeSortedMapOfCollections(final Class<?> collectionClass,
 			final SortConfiguration sortConfiguration, final Comparator<? super K> comp,
 			final Class<? extends MapEntry<K, V>> classOfElements) {
-		if (comp != null)
+		if (comp != null) {
 			this.comp = comp;
-		else
+		} else {
 			this.comp = new Comparator<K>() {
+				@Override
 				public int compare(final K arg0, final K arg1) {
 					return ((Comparable<K>) arg0).compareTo(arg1);
 				}
 			};
+		}
 		this.collectionClass = collectionClass;
 		final Comparator<Entry<K, V>> compa = new Comparator<Entry<K, V>>() {
+			@Override
 			public int compare(final java.util.Map.Entry<K, V> e1,
 					final java.util.Map.Entry<K, V> e2) {
 				return comp.compare(e1.getKey(), e2.getKey());
 			}
 		};
-		bag = new DBMergeSortedBag<MapEntry<K, V>>(sortConfiguration, compa,
+		this.bag = new DBMergeSortedBag<MapEntry<K, V>>(sortConfiguration, compa,
 				classOfElements);
 	}
 
@@ -106,7 +109,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	@SuppressWarnings("unchecked")
 	protected CV createCollection() {
 		try {
-			return (CV) collectionClass.newInstance();
+			return (CV) this.collectionClass.newInstance();
 		} catch (final InstantiationException e) {
 			e.printStackTrace();
 		} catch (final IllegalAccessException e) {
@@ -115,111 +118,137 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return null;
 	}
 
+	@Override
 	public Comparator<? super K> comparator() {
-		return comp;
+		return this.comp;
 	}
 
+	@Override
 	public K firstKey() {
-		return bag.first().getKey();
+		return this.bag.first().getKey();
 	}
 
+	@Override
 	public SortedMap<K, CV> headMap(final K toKey) {
-		return new DBMergeSortedMapOfCollections<K, V, CV>(bag
+		return new DBMergeSortedMapOfCollections<K, V, CV>(this.bag
 				.headBag(new MapEntry<K, V>(toKey)));
 	}
 
+	@Override
 	public K lastKey() {
-		return bag.last().getKey();
+		return this.bag.last().getKey();
 	}
 
+	@Override
 	public SortedMap<K, CV> subMap(final K fromKey, final K toKey) {
-		return new DBMergeSortedMapOfCollections<K, V, CV>(bag.subBag(
+		return new DBMergeSortedMapOfCollections<K, V, CV>(this.bag.subBag(
 				new MapEntry<K, V>(fromKey), new MapEntry<K, V>(toKey)));
 	}
 
+	@Override
 	public SortedMap<K, CV> tailMap(final K fromKey) {
-		return new DBMergeSortedMapOfCollections<K, V, CV>(bag
+		return new DBMergeSortedMapOfCollections<K, V, CV>(this.bag
 				.tailBag(new MapEntry<K, V>(fromKey)));
 	}
 
+	@Override
 	public void clear() {
-		bag.clear();
+		this.bag.clear();
 	}
 
+	@Override
 	public boolean containsKey(final Object key) {
-		for (final K k : keySet())
-			if (k.equals(key))
+		for (final K k : this.keySet()) {
+			if (k.equals(key)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
+	@Override
 	public boolean containsValue(final Object value) {
-		return values().contains(value);
+		return this.values().contains(value);
 	}
 
+	@Override
 	public Set<java.util.Map.Entry<K, CV>> entrySet() {
 		return new Set<Map.Entry<K, CV>>() {
+			@Override
 			public boolean add(final java.util.Map.Entry<K, CV> o) {
-				put(o.getKey(), o.getValue());
+				DBMergeSortedMapOfCollections.this.put(o.getKey(), o.getValue());
 				return true;
 			}
 
+			@Override
 			public boolean addAll(
 					final Collection<? extends java.util.Map.Entry<K, CV>> c) {
 				for (final Map.Entry<K, CV> entry : c) {
-					add(entry);
+					this.add(entry);
 				}
 				return true;
 			}
 
+			@Override
 			public void clear() {
 				DBMergeSortedMapOfCollections.this.clear();
 			}
 
+			@Override
 			public boolean contains(final Object o) {
 				final Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
-				return containsKey(entry.getKey())
-						&& get(entry.getKey()).equals(entry.getValue());
+				return DBMergeSortedMapOfCollections.this.containsKey(entry.getKey())
+						&& DBMergeSortedMapOfCollections.this.get(entry.getKey()).equals(entry.getValue());
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> c) {
-				for (final Object o : c)
-					if (!contains(o))
+				for (final Object o : c) {
+					if (!this.contains(o)) {
 						return false;
+					}
+				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBMergeSortedMapOfCollections.this.isEmpty();
 			}
 
+			@Override
 			public ParallelIterator<java.util.Map.Entry<K, CV>> iterator() {
 				final Iterator<MapEntry<K, V>> iter = DBMergeSortedMapOfCollections.this
 						.iterator();
 				return new ParallelIterator<Map.Entry<K, CV>>() {
 					Entry<K, V> next = null;
 
+					@Override
 					public boolean hasNext() {
-						return next != null || iter.hasNext();
+						return this.next != null || iter.hasNext();
 					}
 
+					@Override
 					public Map.Entry<K, CV> next() {
-						if (next == null)
-							next = iter.next();
-						Entry<K, V> cur = next;
-						final CV col = createCollection();
-						while (next != null
-								&& cur.getKey().equals(next.getKey())) {
-							cur = next;
+						if (this.next == null) {
+							this.next = iter.next();
+						}
+						Entry<K, V> cur = this.next;
+						final CV col = DBMergeSortedMapOfCollections.this.createCollection();
+						while (this.next != null
+								&& cur.getKey().equals(this.next.getKey())) {
+							cur = this.next;
 							col.add(cur.getValue());
-							if (iter.hasNext())
-								next = iter.next();
-							else
-								next = null;
+							if (iter.hasNext()) {
+								this.next = iter.next();
+							} else {
+								this.next = null;
+							}
 						}
 						return new MapEntry<K, CV>(cur.getKey(), col);
 					}
 
+					@Override
 					public void remove() {
 						throw (new UnsupportedOperationException(
 								"Remove not implemented."));
@@ -227,9 +256,10 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 
 					@Override
 					public void finalize() {
-						close();
+						this.close();
 					}
 
+					@Override
 					public void close() {
 						if (iter instanceof ParallelIterator) {
 							((ParallelIterator) iter).close();
@@ -239,32 +269,39 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 
 			}
 
+			@Override
 			public boolean remove(final Object o) {
 				return DBMergeSortedMapOfCollections.this
 						.remove(((Map.Entry<?, ?>) o).getKey()) != null;
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> c) {
 				boolean result = true;
-				for (final Object o : c)
-					result = remove(o) && result;
+				for (final Object o : c) {
+					result = this.remove(o) && result;
+				}
 				return result;
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> c) {
 				throw (new UnsupportedOperationException(
 						"This operation is not supported."));
 			}
 
+			@Override
 			public int size() {
 				return DBMergeSortedMapOfCollections.this.size();
 			}
 
+			@Override
 			public Object[] toArray() {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] a) {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
@@ -273,70 +310,86 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	@Override
 	public CV get(final Object key) {
-		for (final Map.Entry<K, CV> entry : entrySet()) {
-			if (entry.getKey().equals(key))
+		for (final Map.Entry<K, CV> entry : this.entrySet()) {
+			if (entry.getKey().equals(key)) {
 				return entry.getValue();
+			}
 		}
 		return null;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return bag.isEmpty();
+		return this.bag.isEmpty();
 	}
 
+	@Override
 	public Set<K> keySet() {
 		return new Set<K>() {
+			@Override
 			public boolean add(final K arg0) {
 				throw (new UnsupportedOperationException(
 						"Can't add key without a value"));
 			}
 
+			@Override
 			public boolean addAll(final Collection<? extends K> arg0) {
 				throw (new UnsupportedOperationException(
 						"Can't add key without a value"));
 			}
 
+			@Override
 			public void clear() {
 				DBMergeSortedMapOfCollections.this.clear();
 			}
 
+			@Override
 			public boolean contains(final Object arg0) {
 				return DBMergeSortedMapOfCollections.this.containsKey(arg0);
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> arg0) {
 				for (final Object o : arg0) {
-					if (!contains(o))
+					if (!this.contains(o)) {
 						return false;
+					}
 				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBMergeSortedMapOfCollections.this.isEmpty();
 			}
 
+			@Override
 			public ParallelIterator<K> iterator() {
-				final Iterator<Map.Entry<K, CV>> iter = entrySet().iterator();
+				final Iterator<Map.Entry<K, CV>> iter = DBMergeSortedMapOfCollections.this.entrySet().iterator();
 				return new ParallelIterator<K>() {
+					@Override
 					public boolean hasNext() {
 						return iter.hasNext();
 					}
 
+					@Override
 					public K next() {
 						return iter.next().getKey();
 					}
 
+					@Override
 					public void remove() {
 						iter.remove();
 					}
 
 					@Override
 					public void finalize() {
-						close();
+						this.close();
 					}
 
+					@Override
 					public void close() {
 						if (iter instanceof ParallelIterator) {
 							((ParallelIterator) iter).close();
@@ -345,31 +398,38 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 				};
 			}
 
+			@Override
 			public boolean remove(final Object arg0) {
 				return DBMergeSortedMapOfCollections.this.remove(arg0) != null;
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> arg0) {
 				boolean result = true;
-				for (final Object o : arg0)
-					result = remove(o) && result;
+				for (final Object o : arg0) {
+					result = this.remove(o) && result;
+				}
 				return result;
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> arg0) {
 				throw (new UnsupportedOperationException(
 						"This operation is not supported."));
 			}
 
+			@Override
 			public int size() {
 				return DBMergeSortedMapOfCollections.this.size();
 			}
 
+			@Override
 			public Object[] toArray() {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] arg0) {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
@@ -377,97 +437,115 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	@Override
 	public CV put(final K key, final CV values) {
-		// TODO: Do we want to remove the old values when inserting a new
+		// Do we want to remove the old values when inserting a new
 		// collection?
 		// If we don't, remove the following line.
-		final CV result = remove(key);
+		final CV result = this.remove(key);
 		for (final V value : values) {
-			putToCollection(key, value);
+			this.putToCollection(key, value);
 		}
 		return result;
 	}
 
+	@Override
 	public void putAll(final Map<? extends K, ? extends CV> t) {
-		// TODO: Do we want to remove the old values when inserting a new
+		// Do we want to remove the old values when inserting a new
 		// collection?
 		// If we don't, remove the following for-loop.
 		for (final Map.Entry<? extends K, ? extends CV> entry : t.entrySet()) {
-			remove(entry.getKey());
+			this.remove(entry.getKey());
 		}
 		for (final Map.Entry<? extends K, ? extends CV> entry : t.entrySet()) {
-			put(entry.getKey(), entry.getValue());
+			this.put(entry.getKey(), entry.getValue());
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public CV remove(final Object key) {
 		final MapEntry<K, V> entry = new MapEntry<K, V>((K) key);
-		final CV res = createCollection();
-		Entry<K, V> cur = bag.removeAndReturn(entry);
+		final CV res = this.createCollection();
+		Entry<K, V> cur = this.bag.removeAndReturn(entry);
 		while (cur != null) {
 			res.add(cur.getValue());
-			cur = bag.removeAndReturn(entry);
+			cur = this.bag.removeAndReturn(entry);
 		}
 		return res;
 	}
 
+	@Override
 	public int size() {
-		if (size < 0)
-			size = values().size();
-		return size;
+		if (this.size < 0) {
+			this.size = this.values().size();
+		}
+		return this.size;
 	}
 
+	@Override
 	public Collection<CV> values() {
 		return new Collection<CV>() {
 			private int size = -1;
 
+			@Override
 			public boolean add(final CV o) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean addAll(final Collection<? extends CV> c) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public void clear() {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean contains(final Object o) {
 				for (final CV col : this) {
-					if (!col.equals(o))
+					if (!col.equals(o)) {
 						return false;
+					}
 				}
 				return true;
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> c) {
 				for (final Object o : c) {
-					if (!contains(o))
+					if (!this.contains(o)) {
 						return false;
+					}
 				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBMergeSortedMapOfCollections.this.isEmpty();
 			}
 
+			@Override
 			public ParallelIterator<CV> iterator() {
-				final Iterator<Map.Entry<K, CV>> iter = entrySet().iterator();
+				final Iterator<Map.Entry<K, CV>> iter = DBMergeSortedMapOfCollections.this.entrySet().iterator();
 				return new ParallelIterator<CV>() {
+					@Override
 					public boolean hasNext() {
 						return iter.hasNext();
 					}
 
+					@Override
 					public CV next() {
 						return iter.next().getValue();
 					}
 
+					@Override
 					public void remove() {
 						throw (new UnsupportedOperationException(
 								"Remove not implemented."));
@@ -475,9 +553,10 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 
 					@Override
 					public void finalize() {
-						close();
+						this.close();
 					}
 
+					@Override
 					public void close() {
 						if (iter instanceof ParallelIterator) {
 							((ParallelIterator) iter).close();
@@ -486,36 +565,43 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 				};
 			}
 
+			@Override
 			public boolean remove(final Object o) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> c) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> c) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			@SuppressWarnings("unused")
 			public int size() {
-				if (size < 0) {
-					size = 0;
-					for (final CV col : this)
-						size++;
+				if (this.size < 0) {
+					this.size = 0;
+					for (final CV col : this) {
+						this.size++;
+					}
 				}
-				return size;
+				return this.size;
 			}
 
+			@Override
 			public Object[] toArray() {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] a) {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
@@ -524,120 +610,146 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	@Override
 	public boolean containsValueInCollections(final Object arg0) {
-		return bag.contains(arg0);
+		return this.bag.contains(arg0);
 	}
 
+	@Override
 	public void putAllIntoCollections(final Map<? extends K, ? extends CV> arg0) {
 		for (final K key : arg0.keySet()) {
 			for (final V value : arg0.get(key)) {
-				putToCollection(key, value);
+				this.putToCollection(key, value);
 			}
 		}
 	}
 
+	@Override
 	public void putToCollection(final K key, final V value) {
-		bag.add(new MapEntry<K, V>(key, value));
+		this.bag.add(new MapEntry<K, V>(key, value));
 	}
 
+	@Override
 	public boolean removeFromCollection(final K key, final V value) {
-		return bag.remove(new MapEntry<K, V>(key, value));
+		return this.bag.remove(new MapEntry<K, V>(key, value));
 	}
 
+	@Override
 	public int sizeOfElementsInCollections() {
-		return bag.size();
+		return this.bag.size();
 	}
 
+	@Override
 	public Collection<V> valuesInCollections() {
 		return new Collection<V>() {
 
+			@Override
 			public boolean add(final V o) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean addAll(final Collection<? extends V> c) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public void clear() {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean contains(final Object o) {
 				for (final Entry<K, V> entry : DBMergeSortedMapOfCollections.this) {
-					if (entry.getKey().equals(o))
+					if (entry.getKey().equals(o)) {
 						return true;
+					}
 				}
 				return false;
 			}
 
+			@Override
 			public boolean containsAll(final Collection<?> c) {
 				for (final Object o : c) {
-					if (!contains(o))
+					if (!this.contains(o)) {
 						return false;
+					}
 				}
 				return true;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return DBMergeSortedMapOfCollections.this.isEmpty();
 			}
 
+			@Override
 			public ParallelIterator<V> iterator() {
 				final Iterator<MapEntry<K, V>> iter = DBMergeSortedMapOfCollections.this
 						.iterator();
 				return new ParallelIterator<V>() {
+					@Override
 					public boolean hasNext() {
 						return iter.hasNext();
 					}
 
+					@Override
 					public V next() {
 						return iter.next().getValue();
 					}
 
+					@Override
 					public void remove() {
 						iter.remove();
 					}
 
 					@Override
 					public void finalize() {
-						close();
+						this.close();
 					}
 
+					@Override
 					public void close() {
-						if (iter instanceof ParallelIterator)
+						if (iter instanceof ParallelIterator) {
 							((ParallelIterator) iter).close();
+						}
 					}
 				};
 			}
 
+			@Override
 			public boolean remove(final Object o) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean removeAll(final Collection<?> c) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public boolean retainAll(final Collection<?> c) {
 				throw (new UnsupportedOperationException(
 						"This Collection is ReadOnly."));
 			}
 
+			@Override
 			public int size() {
-				return bag.size();
+				return DBMergeSortedMapOfCollections.this.bag.size();
 			}
 
+			@Override
 			public Object[] toArray() {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 			}
 
+			@Override
 			public <T> T[] toArray(final T[] a) {
 				throw (new UnsupportedOperationException(
 						"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
@@ -646,16 +758,19 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	@Override
 	public Iterator<V> valuesInCollectionsIterator() {
-		return valuesInCollections().iterator();
+		return this.valuesInCollections().iterator();
 	}
 
+	@Override
 	public Iterator<MapEntry<K, V>> iterator() {
-		return bag.iterator();
+		return this.bag.iterator();
 	}
 
 	public void release() {
-		if (bag != null)
-			bag.release();
+		if (this.bag != null) {
+			this.bag.release();
+		}
 	}
 }

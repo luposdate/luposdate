@@ -38,7 +38,6 @@ import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -46,28 +45,20 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
 
 public class VariablePanel extends AbstractGuiComponent<Operator>{
 
-
 	private static final long serialVersionUID = -6789368326247215391L;
-	
+
 	protected GridBagConstraints gbc = null;
 	private VariableOperator variableOperator;
-	
 
-
-
-	public VariablePanel(VisualGraph<Operator> parent, GraphWrapper gw,
-			VariableOperator operator, boolean movable) {
+	public VariablePanel(final VisualGraph<Operator> parent, final GraphWrapper gw,
+			final VariableOperator operator, final boolean movable) {
 		super(parent, gw, operator, movable);
-
 		this.parent = parent;
-		
 		this.setVariableOperator(operator);
-		
 		this.gbc = new GridBagConstraints();
 		this.gbc.anchor = GridBagConstraints.NORTHWEST;
 		this.gbc.gridwidth = this.gbc.gridheight = 1;
@@ -76,120 +67,102 @@ public class VariablePanel extends AbstractGuiComponent<Operator>{
 		this.gbc.insets = new Insets((int) parent.PADDING,
 				(int) parent.PADDING, (int) parent.PADDING,
 				(int) parent.PADDING);
-		
+
 		this.gbc.gridx = this.gbc.gridy = 0;
 		this.gbc.fill = GridBagConstraints.BOTH;
-		
 
 		final JTextFieldResizing textField = new JTextFieldResizing(
 				"", this.parent.getFONT(), this);
-		
+
 		textField.setPreferredSize(new Dimension(15 , 20));
 
 		textField.addFocusListener((new FocusAdapter() {
-
+			@Override
 			public void focusGained(final FocusEvent fe){
-				updateSize();
+				VariablePanel.this.updateSize();
 			}
-			
 
+			@Override
 			public void focusLost(final FocusEvent fe) {
-				variableOperator.setVariable(textField.getText());
-				updateSize();
+				VariablePanel.this.variableOperator.setVariable(textField.getText());
+				VariablePanel.this.updateSize();
 			}
 		}));
-
 		textField.addKeyListener( new KeyListener()
 		{
-			  public void keyTyped( KeyEvent e ) {
+			@Override
+			public void keyTyped( final KeyEvent e ) {
+			}
+			@Override
+			public void keyPressed( final KeyEvent e ) {
+			}
+			@Override
+			public void keyReleased( final KeyEvent e ) {
+				if(e.getKeyCode()==10){
+					VariablePanel.this.updateSize();
+				}
+			}
+		});
 
-			  }
-			  public void keyPressed( KeyEvent e ) {
-
-			  }
-			  public void keyReleased( KeyEvent e ) {
-			 
-			   if(e.getKeyCode()==10){
-				   
-				   updateSize();
-			   } 
-			  
-			  }
-			});
-		
 		textField.setText(this.variableOperator.getVariable());
 		this.add(textField,this.gbc);
-		
-//		LineBorder lineBorder = new LineBorder(Color.black,1);
-		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+
+		//		LineBorder lineBorder = new LineBorder(Color.black,1);
+		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
 		TitledBorder titled;
-		Font font = new Font(Font.SANS_SERIF, Font.ROMAN_BASELINE, 11);
+		final Font font = new Font(Font.SANS_SERIF, Font.ROMAN_BASELINE, 11);
 		titled = BorderFactory.createTitledBorder(raisedbevel," Variable ", 0, 0, font, Color.BLACK);
 		this.setBorder(titled);
-		
+
 		this.addComponentListener(new ComponentAdapter() {
-			
-
-			public void componentResized(ComponentEvent e) {
-				
-				updateSize();
+			@Override
+			public void componentResized(final ComponentEvent e) {
+				VariablePanel.this.updateSize();
 			}
-
-
-
 		});
-		
 		this.updateSize();
 	}
-	
-	public void updateSize(){
-	
-			int maxWidthLeftColumn = 50;
-	
-			Container textField = null;
-			Dimension d = null;
-			textField = (Container) this.getComponent(0);
-			final Dimension size = (textField instanceof JTextFieldResizing) ? ((JTextFieldResizing) textField)
-					.calculateSize()
-					: textField.getPreferredSize();
-					
-					maxWidthLeftColumn = Math.max(maxWidthLeftColumn,
-							size.width);
-					
-					textField = (Container) this.getComponent(0);
-					d = new Dimension(maxWidthLeftColumn, textField
-							.getPreferredSize().height);
-					textField.setPreferredSize(d);
-					textField.setSize(d);
-					textField.setMaximumSize(d);
-					textField.setMinimumSize(d);
-					textField.repaint();		
-					
-					if (this.getBox() != null) {
-						this.getBox().height = this.getPreferredSize().height;
-					}
-
-					this.setSize(this.getPreferredSize());
-					this.revalidate(); 	
-		
-
-		
-		
-	}
-	
 
 	@Override
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
-		// TODO Auto-generated method stub
+	public void updateSize(){
+		int maxWidthLeftColumn = 50;
+		Container textField = null;
+		Dimension d = null;
+		textField = (Container) this.getComponent(0);
+		final Dimension size = (textField instanceof JTextFieldResizing) ? ((JTextFieldResizing) textField)
+				.calculateSize()
+				: textField.getPreferredSize();
+
+				maxWidthLeftColumn = Math.max(maxWidthLeftColumn,
+						size.width);
+
+				textField = (Container) this.getComponent(0);
+				d = new Dimension(maxWidthLeftColumn, textField
+						.getPreferredSize().height);
+				textField.setPreferredSize(d);
+				textField.setSize(d);
+				textField.setMaximumSize(d);
+				textField.setMinimumSize(d);
+				textField.repaint();
+
+				if (this.getBox() != null) {
+					this.getBox().height = this.getPreferredSize().height;
+				}
+
+				this.setSize(this.getPreferredSize());
+				this.revalidate();
+	}
+
+	@Override
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return true;
 	}
 
 	public VariableOperator getVariableOperator() {
-		return variableOperator;
+		return this.variableOperator;
 	}
 
-	public void setVariableOperator(VariableOperator variableOperator) {
+	public void setVariableOperator(final VariableOperator variableOperator) {
 		this.variableOperator = variableOperator;
 	}
-
 }

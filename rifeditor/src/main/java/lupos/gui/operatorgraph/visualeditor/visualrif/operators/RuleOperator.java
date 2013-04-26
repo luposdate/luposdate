@@ -24,13 +24,7 @@
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
 import java.awt.Point;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.HashSet;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
@@ -38,15 +32,16 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.RuleOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer;
-import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleIdentifier;
 import lupos.rif.model.Rule;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class RuleOperator extends Operator  {
-	
+
 	private String ruleName = "Rule";
 	private String ruleLabelName = "Rule";
 	private StringBuffer serializedOperator = null;
@@ -55,65 +50,41 @@ public class RuleOperator extends Operator  {
 	private boolean initRulePanel = false;
 	private String documentName;
 	private RulePanel rulePanel;
-	
-	// rif -> visualRif 
+
+	// rif -> visualRif
 	private Rule object;
-//	private Object visitedObjectLeft;
-//	private Object visitedObjectRight;
 
 	public RuleOperator(){
 	}
-		
-	public RuleOperator(String name, JSONObject loadObject) throws JSONException {
+
+	public RuleOperator(final String name, final JSONObject loadObject) throws JSONException {
 		this.documentName = loadObject.getString("DOCUMENTNAME");
 		this.ruleName = name;
 	}
-	
 
 	public void initRule() {
-		
-		if (this.getDocumentName() == null) this.setDocumentName(this.visualRifEditor.getDocumentContainer().getNameOfActiveElement());
-		
-		RuleContainer ruleContainer = this.visualRifEditor.getRuleContainer();
-		
-		RulePanel rp = ruleContainer.createNewRule(this.getDocumentName(),this.getRuleName());
-		
+		if (this.getDocumentName() == null) {
+			this.setDocumentName(this.visualRifEditor.getDocumentContainer().getNameOfActiveElement());
+		}
+		final RuleContainer ruleContainer = this.visualRifEditor.getRuleContainer();
+		final RulePanel rp = ruleContainer.createNewRule(this.getDocumentName(),this.getRuleName());
 		this.setRulePanel(rp);
-	
 		this.setRuleName(rp.getRuleName());
-		
 		this.setInitRule(true);
-		
-//		this.getVisualRifEditor().getRuleContainer().getRulePanelList().add(new RuleIdentifier(rulePanel.getRuleName(), rulePanel,  this, rulePanel.getRulePath(),this.getDocumentName()));
-//		
-//		this.addComponentListener(new ComponentAdapter() {
-//			public void componentResized(ComponentEvent e) {
-//				
-//				updateSize();
-//			}
-//
-//		});
-		
-		
-		
 	}
-
-
-
 
 	@Override
 	public void prefixAdded() {}
 
 	@Override
-	public void prefixModified(String arg0, String arg1) {}
+	public void prefixModified(final String arg0, final String arg1) {}
 
 	@Override
-	public void prefixRemoved(String arg0, String arg1) {}
+	public void prefixRemoved(final String arg0, final String arg1) {}
 
 	@Override
-	public AbstractGuiComponent<Operator> draw(GraphWrapper arg0,
-			VisualGraph<Operator> arg1) {
-
+	public AbstractGuiComponent<Operator> draw(final GraphWrapper arg0,
+			final VisualGraph<Operator> arg1) {
 		this.panel = new RuleOperatorPanel(arg1, arg0, this, true);
 		return this.panel;
 	}
@@ -124,185 +95,111 @@ public class RuleOperator extends Operator  {
 	}
 
 	@Override
-	public StringBuffer serializeOperatorAndTree(HashSet<Operator> arg0) {
-
+	public StringBuffer serializeOperatorAndTree(final HashSet<Operator> arg0) {
 		return this.getSerializedOperator();
 	}
 
-	public JSONObject toJSON(JSONObject connectionsObject) throws JSONException {
-		JSONObject saveObject = new JSONObject();
-
-		Point position = ((RuleOperatorPanel) this.panel).getPositionAndDimension().getFirst();
-
+	public JSONObject toJSON(final JSONObject connectionsObject) throws JSONException {
+		final JSONObject saveObject = new JSONObject();
+		final Point position = ((RuleOperatorPanel) this.panel).getPositionAndDimension().getFirst();
 		saveObject.put("OP TYPE", this.getClass().getSimpleName());
-
 		saveObject.put("POSITION", new double[]{position.getX(), position.getY()});
-
-		if(!(this.getPrecedingOperators() == null) && this.getPrecedingOperators().size() > 0)
-		saveObject.put("ANNOTATION", ((AnnotationOperator) this.getPrecedingOperators().get(0)).toJSON());
+		if(!(this.getPrecedingOperators() == null) && this.getPrecedingOperators().size() > 0) {
+			saveObject.put("ANNOTATION", ((AnnotationOperator) this.getPrecedingOperators().get(0)).toJSON());
+		}
 		// --- handle connections - begin ---
-//		JSONArray connectionsArray = new JSONArray();
-
-//		for(Operator child : this.annotationLabels.keySet()) {
-//			AbstractRuleOperator childOp = (AbstractRuleOperator) child;
-//			AnnotationPanel ap = (AnnotationPanel) this.annotationLabels.get(child);
-//
-//			JSONObject childConnectionObject = new JSONObject();
-//			childConnectionObject.put("to", childOp.getName());
-//			childConnectionObject.put("active", ap.isActive());
-//			childConnectionObject.put("id", ap.getOpID());
-//			childConnectionObject.put("id label", ap.getOpLabel());
-//			childConnectionObject.put("mode", ap.getMode().name());
-//
-//			connectionsArray.put(childConnectionObject);
-//		}
-//
-//		if(connectionsArray.length() > 0) {
-//			connectionsObject.put(this.getName(), connectionsArray);
-//		}
 		// --- handle connections - end ---
-
 		return saveObject;
 	}
 
-	
-	
 	@Override
-	public boolean variableInUse(String arg0, HashSet<Operator> arg1) {
+	public boolean variableInUse(final String arg0, final HashSet<Operator> arg1) {
 		return false;
 	}
 
 	public String getRuleName() {
-		return ruleName;
+		return this.ruleName;
 	}
 
-	public void setRuleName(String ruleName) {
+	public void setRuleName(final String ruleName) {
 		this.ruleName = ruleName;
 	}
 
-	
 	public String getRuleLabelName() {
-		return ruleLabelName;
+		return this.ruleLabelName;
 	}
 
-	public void setRuleLabelName(String ruleLabelName) {
+	public void setRuleLabelName(final String ruleLabelName) {
 		this.ruleLabelName = ruleLabelName;
 		System.out.println("New RuleLabel Name: "+ruleLabelName);
 		this.panel.revalidate();
 		this.panel.repaint();
 	}
 
-	
 	public StringBuffer getSerializedOperator() {
-		return serializedOperator;
+		return this.serializedOperator;
 	}
 
-	public void setSerializedOperator(StringBuffer serializedOperator) {
+	public void setSerializedOperator(final StringBuffer serializedOperator) {
 		this.serializedOperator = serializedOperator;
 	}
 
-	public boolean validateOperator(boolean showErrors, HashSet<Operator> visited, Object data) {
-	
-
+	@Override
+	public boolean validateOperator(final boolean showErrors, final HashSet<Operator> visited, final Object data) {
 		return true;
 	}
-	
+
 	public RuleOperatorPanel getRuleOperatorPanel(){
 		return (RuleOperatorPanel) this.panel;
 	}
-	
 
-	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
+	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
-		
 	}
 
 	public VisualRifEditor getVisualRifEditor() {
-		return visualRifEditor;
+		return this.visualRifEditor;
 	}
-
-
 
 	public boolean isInitRule() {
-		return initRule;
+		return this.initRule;
 	}
 
-
-
-	public void setInitRule(boolean initRule) {
+	public void setInitRule(final boolean initRule) {
 		this.initRule = initRule;
 	}
 
-
-
 	public String getDocumentName() {
-		return documentName;
+		return this.documentName;
 	}
 
-
-
-	public void setDocumentName(String documentName) {
+	public void setDocumentName(final String documentName) {
 		this.documentName = documentName;
 	}
 
-
-
-	
-	public void setRulePanel(RulePanel rulePanel) {
+	public void setRulePanel(final RulePanel rulePanel) {
 		this.rulePanel = rulePanel;
-		
 	}
-	
+
 	public RulePanel getRulePanel(){
 		return this.rulePanel;
 	}
 
-
-
-	
 	// rif -> visualRif
-	public void setUnVisitedObject(Rule obj) {
+	public void setUnVisitedObject(final Rule obj) {
 		this.object = obj;
-		
+
 	}
 
 	public Rule getUnVisitedObject(){
 		return this.object;
 	}
 
-
-
 	public boolean isInitRulePanel() {
-		// TODO Auto-generated method stub
 		return this.initRulePanel;
 	}
 
-
-
-	public void setInitRulePanel(boolean b) {
+	public void setInitRulePanel(final boolean b) {
 		this.initRulePanel = b;
-		
 	}
-
-
-	
-//	public void setVisitedObjectLeft(Object left) {
-//		this.visitedObjectLeft = left;
-//		
-//	}
-//
-//	public void setVisitedObjectRight(Object right) {
-//		this.visitedObjectRight = right;
-//		
-//	}
-//	
-//	public Object getVisitedObejectLeft(){
-//		return this.visitedObjectLeft;
-//	}
-//	
-//	public Object getVisitedObjectRight(){
-//		return this.visitedObjectRight;
-//	}
-
-	
 }

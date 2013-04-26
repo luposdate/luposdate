@@ -30,52 +30,54 @@ import lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserPathVisitorStringGe
 public
 class ASTQName extends SimpleNode {
 	private String nameSpace,localName;
-	public ASTQName(int id) {
+	public ASTQName(final int id) {
 		super(id);
 	}
 
-	public ASTQName(SPARQL1_1Parser p, int id) {
+	public ASTQName(final SPARQL1_1Parser p, final int id) {
 		super(p, id);
 	}
 
 
 	/** Accept the visitor. **/
-	public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+	@Override
+	public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
 		return visitor.visit(this);
 	}
 
-	public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+	@Override
+	public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
 		return visitor.visit(this, data);
 	}
 
-	public String accept(SPARQL1_1ParserPathVisitorStringGenerator visitor, String subject, String object){
+	@Override
+	public String accept(final SPARQL1_1ParserPathVisitorStringGenerator visitor, final String subject, final String object){
 		return visitor.visit(this, subject, object);
 	}
 
 	public String getNameSpace() {
-		return nameSpace;
+		return this.nameSpace;
 	}
 
-	public void setNameSpace(String nameSpace) {
+	public void setNameSpace(final String nameSpace) {
 		this.nameSpace = nameSpace;
 	}
 
 	public String getLocalName() {
-		return localName;
+		return this.localName;
 	}
 
-	public void setLocalName(String localName) {
+	public void setLocalName(final String localName) {
 		this.localName = localName;
 	}
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString()+" "+nameSpace+" "+localName;
+		return super.toString()+" "+this.nameSpace+" "+this.localName;
 	}
-	
+
 	@Override
 	public void init(final SimpleNode node){
-		ASTQName other = (ASTQName) node;
+		final ASTQName other = (ASTQName) node;
 		this.setLocalName(other.getLocalName());
 		this.setNameSpace(other.getNameSpace());
 	}

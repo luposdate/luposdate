@@ -37,7 +37,6 @@ import java.awt.event.FocusEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -49,180 +48,132 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator;
 
-
 public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 
-
 	private static final long serialVersionUID = -6993813701569431678L;
-	
+
 	protected GridBagConstraints gbc = null;
 	private JTextField textField;
 	private JLabel label;
 	private JButton addButton;
 	private boolean minimizedByLostFocus;
-	
+
 	protected AnnotationOperator annotationOperator;
-	
-	
+
 	// Constructor
-	public AnnotationOperatorPanel(VisualGraph<Operator> parent,
-			GraphWrapper gw, final AnnotationOperator operator, String text, String slabel, boolean movable) {
-		
+	public AnnotationOperatorPanel(final VisualGraph<Operator> parent,
+			final GraphWrapper gw, final AnnotationOperator operator, final String text, final String slabel, final boolean movable) {
+
 		super(parent, gw, operator, movable);
-		
+
 		this.annotationOperator = operator;
-		
-		
-		
+
+
 		/* ********************************************************************** **
 		 * EBNF:                                            					  **
 		 *                                              					      **
-		 * IRIMETA        ::= '(*' IRICONST? (Frame | 'And' '(' Frame* ')')? '*)' ** 
+		 * IRIMETA        ::= '(*' IRICONST? (Frame | 'And' '(' Frame* ')')? '*)' **
 		 * *********************************************************************** */
 
-		init(operator, parent.PADDING, parent.getFONT(), text, slabel);
-		updateSize();
-		
-		
-		
-
-		
+		this.init(operator, parent.PADDING, parent.getFONT(), text, slabel);
+		this.updateSize();
 		}
 
-	
-	
-	private void init(final Operator operator, double PADDING, Font font, String text, String label) {
+	private void init(final Operator operator, final double PADDING, final Font font, final String text, final String label) {
 		this.setLayout(new GridBagLayout());
 
-	   
 		this.gbc = new GridBagConstraints();
 		this.gbc.anchor = GridBagConstraints.NORTHWEST;
 		this.gbc.gridwidth = this.gbc.gridheight = 1;
 		this.gbc.weightx = this.gbc.weighty = 1.0;
 
-		this.gbc.insets = new Insets((int) parent.PADDING,
-				(int) parent.PADDING, (int) parent.PADDING,
-				(int) parent.PADDING);
-		
+		this.gbc.insets = new Insets((int) this.parent.PADDING,
+				(int) this.parent.PADDING, (int) this.parent.PADDING,
+				(int) this.parent.PADDING);
+
 		this.gbc.gridx = this.gbc.gridy = 0;
 		this.gbc.fill = GridBagConstraints.BOTH;
-		
-		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+
+		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
 		this.setBorder(raisedbevel);
 
 		this.textField = new JTextFieldResizing(text, font, this);
-		
+
 		this.textField.addFocusListener(new FocusAdapter() {
-		
 
+			@Override
 			public void focusLost(final FocusEvent fe) {
-
-			
-			    minimizedByLostFocus = true;
-				minimizeTextField();
-				updateSize();
-				
-				
-			
+			    AnnotationOperatorPanel.this.minimizedByLostFocus = true;
+				AnnotationOperatorPanel.this.minimizeTextField();
+				AnnotationOperatorPanel.this.updateSize();
 				}});
-			
-		Border loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+
+		final Border loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		this.label = new JLabel("Annotation");
 		this.label.setBorder(loweredetched);
-		
-		this.label.setFont(parent.getFONT());
-	
-		
-		
-	
-		
-		addButton = new JButton("+");
-		addButton.setFont(parent.getFONT());
-		addButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				
-				if(annotationOperator.isMinimized()&&!minimizedByLostFocus){
-				maximizeTextField();
-				textField.grabFocus();
+		this.label.setFont(this.parent.getFONT());
+		this.addButton = new JButton("+");
+		this.addButton.setFont(this.parent.getFONT());
+		this.addButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				if(AnnotationOperatorPanel.this.annotationOperator.isMinimized()&&!AnnotationOperatorPanel.this.minimizedByLostFocus){
+				AnnotationOperatorPanel.this.maximizeTextField();
+				AnnotationOperatorPanel.this.textField.grabFocus();
 				}
-					
-				minimizedByLostFocus=false;
-				
-			
-				updateSize();
+				AnnotationOperatorPanel.this.minimizedByLostFocus=false;
+				AnnotationOperatorPanel.this.updateSize();
 			}});
-	
-		
-
 		this.add(this.label,this.gbc);
 		this.gbc.gridy++;
 		this.add(this.addButton,this.gbc);
-		
-
-
 	}
-	
 
 	private void maximizeTextField(){
-		annotationOperator.setMinimized(false);
-		minimizedByLostFocus = false;
+		this.annotationOperator.setMinimized(false);
+		this.minimizedByLostFocus = false;
 		this.addButton.setText("-");
-		
+
 		this.textField.setText(this.annotationOperator.getAnnotation());
-		
+
 		this.gbc.gridx = 0;
 		this.gbc.gridy++;
-		
-		this.textField.setPreferredSize(new Dimension(textField
-				.getPreferredSize().width + 250, textField
+
+		this.textField.setPreferredSize(new Dimension(this.textField
+				.getPreferredSize().width + 250, this.textField
 				.getPreferredSize().height));
-		
-		this.add(textField,this.gbc);
+
+		this.add(this.textField,this.gbc);
 		this.gbc.gridx++;
-		
-
-		
-	
-		
-		
-		
 	}
-
 
 	private void minimizeTextField(){
-		annotationOperator.setMinimized(true);
+		this.annotationOperator.setMinimized(true);
 		this.addButton.setText("+");
-
 		this.annotationOperator.setAnnotation(this.textField.getText());
-
 		this.remove(this.textField);
-	
-
-	
 	}
-	
 
 	@Override
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
-		// TODO Auto-generated method stub
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
 	}
 
-	
+	@Override
 	public void updateSize(){
 		if(this.getComponentCount() >= 2){
 			int maxWidthLeftColumn = 50;
-	
+
 			Container textField = null;
 			Dimension d = null;
 			textField = (Container) this.getComponent(1);
 			final Dimension size = (textField instanceof JTextFieldResizing) ? ((JTextFieldResizing) textField)
 					.calculateSize()
 					: textField.getPreferredSize();
-					
+
 					maxWidthLeftColumn = Math.max(maxWidthLeftColumn,
 							size.width);
-					
+
 					textField = (Container) this.getComponent(1);
 					d = new Dimension(maxWidthLeftColumn, textField
 							.getPreferredSize().height);
@@ -230,16 +181,16 @@ public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 					textField.setSize(d);
 					textField.setMaximumSize(d);
 					textField.setMinimumSize(d);
-					textField.repaint();		
-					
+					textField.repaint();
+
 					if (this.getBox() != null) {
 						this.getBox().height = this.getPreferredSize().height;
 					}
 
 					this.setSize(this.getPreferredSize());
-					this.revalidate(); 	
+					this.revalidate();
 		}
-		
+
 		if (this.getComponentCount() < 2){
 
 //			this.setMinimumSize(this.labelButton.getSize());
@@ -249,58 +200,38 @@ public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 
 			this.setSize(this.getPreferredSize());
 			this.revalidate(); // re-validate the PrefixPanel
-		
-			
 		}
-		
-		
 	}
-	
-	
+
 	public JTextField getTextField() {
-		return textField;
+		return this.textField;
 	}
 
-
-	public void setTextField(JTextField textField) {
+	public void setTextField(final JTextField textField) {
 		this.textField = textField;
 	}
 
-
 	public JLabel getLabel() {
-		return label;
+		return this.label;
 	}
 
-
-	public void setLabel(JLabel label) {
+	public void setLabel(final JLabel label) {
 		this.label = label;
 	}
 
-
 	public JButton getAddButton() {
-		return addButton;
+		return this.addButton;
 	}
 
-
-	public void setAddButton(JButton addButton) {
+	public void setAddButton(final JButton addButton) {
 		this.addButton = addButton;
 	}
 
-
 	public boolean isMinimizedByLostFocus() {
-		return minimizedByLostFocus;
+		return this.minimizedByLostFocus;
 	}
 
-
-	public void setMinimizedByLostFocus(boolean minimizedByLostFocus) {
+	public void setMinimizedByLostFocus(final boolean minimizedByLostFocus) {
 		this.minimizedByLostFocus = minimizedByLostFocus;
 	}
-
-
-
-
-
-
-
-
 }

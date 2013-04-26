@@ -55,34 +55,34 @@ public class RifCodeEditor  {
 	private JTextArea ta_rifInputErrors;
 
 	private JScrollPane rifInputSP;
-	
+
 	public RifCodeEditor(){
 		super();
-		
+
 		final LuposDocument document = new LuposDocument();
 		this.tp_rifInput = new VisualRifJTextPane(document);
 		this.tp_rifInput.setFont(new Font("Courier", Font.PLAIN, 12));
 		this.tp_rifInput.setTabWidth(4);
 		document.init(lupos.gui.anotherSyntaxHighlighting.javacc.RIFParser.createILuposParser(new LuposDocumentReader(document)), true, 100);
 		this.setRifInputSP(new JScrollPane(this.tp_rifInput));
-		TextLineNumber tln = new TextLineNumber(this.tp_rifInput);
-		rifInputSP.setRowHeaderView( tln );
+		final TextLineNumber tln = new TextLineNumber(this.tp_rifInput);
+		this.rifInputSP.setRowHeaderView( tln );
 	}
 
 
-	
-	
-	public void insertText(int position, String text){
-		StringBuilder oldtext = new StringBuilder(this.tp_rifInput.getText());
+
+
+	public void insertText(final int position, final String text){
+		final StringBuilder oldtext = new StringBuilder(this.tp_rifInput.getText());
 		oldtext.insert(position, text);
-		String newText = oldtext.toString();
+		final String newText = oldtext.toString();
 		this.tp_rifInput.setText(newText);
 	}
-	
-	public JSONObject toJSON() throws JSONException {
-		JSONObject saveObject = new JSONObject();
 
-		
+	public JSONObject toJSON() throws JSONException {
+		final JSONObject saveObject = new JSONObject();
+
+
 
 		saveObject.put("RIF CODE", this.tp_rifInput.getText());
 
@@ -92,61 +92,61 @@ public class RifCodeEditor  {
 
 		return saveObject;
 	}
-	
-	public void fromJSON(JSONObject loadObject) {
+
+	public void fromJSON(final JSONObject loadObject) {
 		try {
 			this.tp_rifInput.setText(loadObject.getString("RIF CODE"));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+		} catch (final JSONException e) {
+			System.err.println(e);
 			e.printStackTrace();
 		}
-		
-	}
-	
-	
-	public VisualRifJTextPane getTp_rifInput() {
-		return tp_rifInput;
+
 	}
 
-	public void setTp_rifInput(VisualRifJTextPane tp_rifInput) {
+
+	public VisualRifJTextPane getTp_rifInput() {
+		return this.tp_rifInput;
+	}
+
+	public void setTp_rifInput(final VisualRifJTextPane tp_rifInput) {
 		this.tp_rifInput = tp_rifInput;
 	}
 
 	public LinePainter getLp_rifInput() {
-		return lp_rifInput;
+		return this.lp_rifInput;
 	}
 
-	public void setLp_rifInput(LinePainter lp_rifInput) {
+	public void setLp_rifInput(final LinePainter lp_rifInput) {
 		this.lp_rifInput = lp_rifInput;
 	}
 
 
 	public JTextArea getTa_rifInputErrors() {
-		return ta_rifInputErrors;
+		return this.ta_rifInputErrors;
 	}
 
 
-	public void setTa_rifInputErrors(JTextArea ta_rifInputErrors) {
+	public void setTa_rifInputErrors(final JTextArea ta_rifInputErrors) {
 		this.ta_rifInputErrors = ta_rifInputErrors;
 	}
 
 
 	public JScrollPane getRifInputSP() {
-		return rifInputSP;
+		return this.rifInputSP;
 	}
 
 
-	public void setRifInputSP(JScrollPane rifInputSP) {
+	public void setRifInputSP(final JScrollPane rifInputSP) {
 		this.rifInputSP = rifInputSP;
 	}
 
 
-	
 
 
-	
-	
-	
+
+
+
+
 
 
 }

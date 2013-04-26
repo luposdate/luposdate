@@ -24,24 +24,14 @@
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.regex.Pattern;
+
+import lupos.gui.operatorgraph.visualeditor.operators.Operator;
+import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
+import lupos.misc.util.OperatorIDTuple;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
-import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
-import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
-
-
-import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
-import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
-import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
-import lupos.misc.util.OperatorIDTuple;
-
 
 public abstract class AbstractPrefixOperator extends Operator {
 
@@ -54,44 +44,34 @@ public abstract class AbstractPrefixOperator extends Operator {
 	protected String opIDLabel = "";
 	private static final HashSet<String> reservedKeyWords = new HashSet<String>();
 
-
-
 	//Constructor
 	public AbstractPrefixOperator(){
 		super();
-
 	}
-	
+
 	//Constructor
-	public AbstractPrefixOperator(String name){
+	public AbstractPrefixOperator(final String name){
 		this.setName(name);
 	}
-	
+
 	//Constructor
-	public AbstractPrefixOperator(String name, JSONObject loadObject) throws JSONException {
-		
-
+	public AbstractPrefixOperator(final String name, final JSONObject loadObject) throws JSONException {
 		this.name = name;
-
-	
-		// TODO
 	}
-	
-	
+
 	static {
 		reservedKeyWords.add("prefix");
 	}
-	
-	
-	
 
+	@Override
 	public void prefixAdded() {}
-	
-	public void prefixModified(String arg0, String arg1) {}
-	
-	public void prefixRemoved(String arg0, String arg1) {}
-	
-	
+
+	@Override
+	public void prefixModified(final String arg0, final String arg1) {}
+
+	@Override
+	public void prefixRemoved(final String arg0, final String arg1) {}
+
 	protected String determineNameForDrawing() {
 		if(this.name.matches(AbstractPrefixOperator.internal_name + "\\d+")) {
 			return "";
@@ -101,33 +81,29 @@ public abstract class AbstractPrefixOperator extends Operator {
 		}
 	}
 
-
-
-	public boolean variableInUse(String arg0, HashSet<Operator> arg1) {
+	@Override
+	public boolean variableInUse(final String arg0, final HashSet<Operator> arg1) {
 		return false;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public void applyChange(String value) throws ModificationException {
+	public void applyChange(final String value) throws ModificationException {
 		if(!value.equals("")) {
 			if(AbstractPrefixOperator.reservedKeyWords.contains(value)) {
 				throw new ModificationException("Operator name can not be a java keyword!", this);
 			}
-
-			Pattern p = Pattern.compile("^[a-z]\\w*$", Pattern.CASE_INSENSITIVE);
-
+			final Pattern p = Pattern.compile("^[a-z]\\w*$", Pattern.CASE_INSENSITIVE);
 			if(!p.matcher(value).matches()) {
 				throw new ModificationException("Invalid operator name! Operator name must match /^[a-z]\\w*$/", this);
 			}
 		}
-
 		this.name = value;
 	}
 
@@ -135,42 +111,32 @@ public abstract class AbstractPrefixOperator extends Operator {
 		return internal_global_id;
 	}
 
-	public static void setInternal_global_id(int internal_global_id) {
+	public static void setInternal_global_id(final int internal_global_id) {
 		AbstractPrefixOperator.internal_global_id = internal_global_id;
 	}
 
 	public int getInternal_id() {
-		return internal_id;
+		return this.internal_id;
 	}
 
-	public void setInternal_id(int internal_id) {
+	public void setInternal_id(final int internal_id) {
 		this.internal_id = internal_id;
 	}
 
-	public boolean validateOperator(boolean showErrors, HashSet<Operator> visited, Object data) {
-
+	@Override
+	public boolean validateOperator(final boolean showErrors, final HashSet<Operator> visited, final Object data) {
 		if(visited.contains(this)) {
 			return true;
 		}
-
 		visited.add(this);
 		if(this.panel.validateOperatorPanel(showErrors, data) == false) {
 			return false;
 		}
-
-		
-
-		for(OperatorIDTuple<Operator> opIDT : this.succeedingOperators) {
-			
+		for(final OperatorIDTuple<Operator> opIDT : this.succeedingOperators) {
 			if(opIDT.getOperator().validateOperator(showErrors, visited, data) == false) {
 				return false;
 			}
 		}
-
 		return true;
 	}
-
-
-
-
 }

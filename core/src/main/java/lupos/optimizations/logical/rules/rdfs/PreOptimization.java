@@ -36,7 +36,7 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class PreOptimization {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -73,7 +73,7 @@ public class PreOptimization {
 				try {
 					Thread.sleep(50);
 				} catch (final InterruptedException e) {
-					// TODO Auto-generated catch block
+					System.err.println(e);
 					e.printStackTrace();
 				}
 				System.out.println(generate.toString() + "----"

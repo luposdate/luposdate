@@ -28,29 +28,31 @@ package lupos.sparql1_1;
 public
 class ASTDescribeQuery extends SimpleNode {
 	private boolean describeAll;
-  public ASTDescribeQuery(int id) {
+  public ASTDescribeQuery(final int id) {
     super(id);
   }
 
-  public ASTDescribeQuery(SPARQL1_1Parser p, int id) {
+  public ASTDescribeQuery(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
 
   /** Accept the visitor. **/
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+    @Override
+	public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  @Override
+public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
 
 public boolean isDescribeAll() {
-	return describeAll;
+	return this.describeAll;
 }
 
-public void setDescribeAll(boolean describeAll) {
+public void setDescribeAll(final boolean describeAll) {
 	this.describeAll = describeAll;
 }
 
@@ -62,8 +64,7 @@ public void init(final SimpleNode node){
 
 @Override
 public String toString() {
-	// TODO Auto-generated method stub
-	return super.toString()+" "+describeAll;
+	return super.toString()+" "+this.describeAll;
 }
 
 }
