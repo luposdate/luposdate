@@ -34,7 +34,53 @@ import java.util.LinkedList;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.singleinput.NotBoundException;
-import lupos.sparql1_1.*;
+import lupos.sparql1_1.ASTAVerbType;
+import lupos.sparql1_1.ASTAdd;
+import lupos.sparql1_1.ASTAndNode;
+import lupos.sparql1_1.ASTArbitraryOccurences;
+import lupos.sparql1_1.ASTArbitraryOccurencesNotZero;
+import lupos.sparql1_1.ASTAskQuery;
+import lupos.sparql1_1.ASTBaseDecl;
+import lupos.sparql1_1.ASTBlankNode;
+import lupos.sparql1_1.ASTBlankNodePropertyList;
+import lupos.sparql1_1.ASTBooleanLiteral;
+import lupos.sparql1_1.ASTBoundFuncNode;
+import lupos.sparql1_1.ASTCollection;
+import lupos.sparql1_1.ASTConstructQuery;
+import lupos.sparql1_1.ASTConstructTemplate;
+import lupos.sparql1_1.ASTCopy;
+import lupos.sparql1_1.ASTDefault;
+import lupos.sparql1_1.ASTDescribeQuery;
+import lupos.sparql1_1.ASTEmptyNode;
+import lupos.sparql1_1.ASTExists;
+import lupos.sparql1_1.ASTFilterConstraint;
+import lupos.sparql1_1.ASTGraphConstraint;
+import lupos.sparql1_1.ASTGroupConstraint;
+import lupos.sparql1_1.ASTHaving;
+import lupos.sparql1_1.ASTInvers;
+import lupos.sparql1_1.ASTMove;
+import lupos.sparql1_1.ASTNegatedPath;
+import lupos.sparql1_1.ASTNodeSet;
+import lupos.sparql1_1.ASTNotExists;
+import lupos.sparql1_1.ASTNotNode;
+import lupos.sparql1_1.ASTObjectList;
+import lupos.sparql1_1.ASTOptionalConstraint;
+import lupos.sparql1_1.ASTOptionalOccurence;
+import lupos.sparql1_1.ASTOrNode;
+import lupos.sparql1_1.ASTOrderConditions;
+import lupos.sparql1_1.ASTPathAlternative;
+import lupos.sparql1_1.ASTPathSequence;
+import lupos.sparql1_1.ASTPrefixDecl;
+import lupos.sparql1_1.ASTQName;
+import lupos.sparql1_1.ASTQuery;
+import lupos.sparql1_1.ASTQuotedURIRef;
+import lupos.sparql1_1.ASTSelectQuery;
+import lupos.sparql1_1.ASTService;
+import lupos.sparql1_1.ASTTripleSet;
+import lupos.sparql1_1.ASTUnionConstraint;
+import lupos.sparql1_1.ASTVar;
+import lupos.sparql1_1.Node;
+import lupos.sparql1_1.SimpleNode;
 import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
 
 public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
@@ -42,49 +88,51 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	protected final HashMap<Node, String> blankNodeHash = new HashMap<Node, String>();
 	protected final HashMap<String, String> prefixHash = new HashMap<String, String>();
 	protected final ArrayList<String> realVars = new ArrayList<String>();
-	
+
 	protected int bn_nmbr = 0;
 	protected boolean construct = false;
 	protected boolean mustAddProjectionOnRealVars = false;
-	
+
 	public static Class<? extends SPARQL2CoreSPARQLParserVisitorImplementationDumper> SPARQL2CoreSPARQLClass = SPARQL2CoreSPARQLParserVisitorImplementationDumper.class;
-	
+
 	public static SPARQL2CoreSPARQLParserVisitorImplementationDumper createInstance() throws InstantiationException, IllegalAccessException{
-		SPARQL2CoreSPARQLParserVisitorImplementationDumper result = SPARQL2CoreSPARQLClass.newInstance();
+		final SPARQL2CoreSPARQLParserVisitorImplementationDumper result = SPARQL2CoreSPARQLClass.newInstance();
 		result.prefixHash.put("rdf", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>");
 		return result;
 	}
 
 	public static SPARQL2CoreSPARQLParserVisitorImplementationDumper createInstance(final boolean[] rules) throws InstantiationException, IllegalAccessException{
-		SPARQL2CoreSPARQLParserVisitorImplementationDumper result = createInstance();
+		final SPARQL2CoreSPARQLParserVisitorImplementationDumper result = createInstance();
 		if (rules.length != result.LENGTH) {
 			System.err.println("Parameter rules should have length " + result.LENGTH
 					+ ", but it has length " + rules.length);
-		} else
+		} else {
 			result.rules = rules;
+		}
 		return result;
 	}
-	
+
 	public static SPARQL2CoreSPARQLParserVisitorImplementationDumper createInstance(final boolean allRules) throws InstantiationException, IllegalAccessException{
-		SPARQL2CoreSPARQLParserVisitorImplementationDumper result = createInstance();
-		if (!allRules)
+		final SPARQL2CoreSPARQLParserVisitorImplementationDumper result = createInstance();
+		if (!allRules) {
 			result.rules = new boolean[] { false, false, false, false, false, false,
 					false, false, false, false, false, false, false };
+		}
 		return result;
 	}
-		
+
 	protected SPARQL2CoreSPARQLParserVisitorImplementationDumper() {
 		super();
 	}
 
 	protected String getBlankNodeLabel() {
-		mustAddProjectionOnRealVars = true;
-		final String ret = "b" + String.valueOf(bn_nmbr++);
+		this.mustAddProjectionOnRealVars = true;
+		final String ret = "b" + String.valueOf(this.bn_nmbr++);
 		if (this.blankNodeHash.containsValue("_" + ret)
 				|| this.realVars.contains("?_" + ret)) {
-			return getBlankNodeLabel();
+			return this.getBlankNodeLabel();
 		}
-		if (rules[BN_VARS] && !construct) {
+		if (this.rules[BN_VARS] && !this.construct) {
 			return "?_" + ret;
 		} else {
 			return "_:" + ret;
@@ -94,39 +142,43 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	protected void determineRealVariables(final Node node) {
 		if (node instanceof ASTVar){
 			final String name = ((ASTVar)node).getName();
-			blankNodeHash.put(node, name);
-			if (!realVars.contains("?" + name)) {
-				realVars.add("?" + name);
+			this.blankNodeHash.put(node, name);
+			if (!this.realVars.contains("?" + name)) {
+				this.realVars.add("?" + name);
 			}
 		}
 		final int numberChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numberChildren; i++) {
-			determineRealVariables(node.jjtGetChild(i));
+			this.determineRealVariables(node.jjtGetChild(i));
 		}
 	}
 
+	@Override
 	public String visit(final ASTQuery node) {
 		// first determine all "real" variables
-		determineRealVariables(node);
+		this.determineRealVariables(node);
 		return super.visit(node);
 	}
 
 	protected URILiteral base = null;
 
+	@Override
 	public String visit(final ASTBaseDecl node) {
 		try {
-			base = LiteralFactory
-					.createURILiteralWithoutLazyLiteral(visitChildren(node));
+			this.base = LiteralFactory
+					.createURILiteralWithoutLazyLiteral(this.visitChildren(node));
 		} catch (final URISyntaxException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		if (rules[BASE]) {
+		if (this.rules[BASE]) {
 			return "";
-		} else
-			return "BASE\t" + visitChildren(node) + "\n";
+		} else {
+			return "BASE\t" + this.visitChildren(node) + "\n";
+		}
 	}
 
+	@Override
 	public String visit(final ASTPrefixDecl node) {
 		final String pref = node.getPrefix();
 		// final ASTQuotedURIRef content = (ASTQuotedURIRef)
@@ -138,7 +190,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		// return "PREFIX\t"+pref+":\t"+visitChild( node, 0 )+"\n";
 		// }
 
-		if (rules[BASE] && base != null) {
+		if (this.rules[BASE] && this.base != null) {
 			final URI uri = URI.create(pref);
 			final ASTQuotedURIRef content = (ASTQuotedURIRef) node
 					.jjtGetChild(0);
@@ -149,9 +201,9 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 				// base.toString().length() - 1) + pref + ">";
 				try {
 					qRef = "<"
-							+ base.toString().substring(1,
-									base.toString().length() - 1) + qRef + ">";
-					prefixHash.put(pref, qRef);
+							+ this.base.toString().substring(1,
+									this.base.toString().length() - 1) + qRef + ">";
+					this.prefixHash.put(pref, qRef);
 				} catch (final Exception e) {
 					System.err.println("Undeclared Prefix " + pref + " used");
 				}
@@ -159,11 +211,13 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 
 		}
 		// final Object test = visitChild(node, 0);
-		else
-			prefixHash.put(pref, visitChild(node, 0));
+ else {
+			this.prefixHash.put(pref, this.visitChild(node, 0));
+		}
 		return "";
 	}
 
+	@Override
 	public String visit(final ASTSelectQuery node) {
 		String ret = "SELECT ";
 		if (node.isDistinct()) {
@@ -172,13 +226,14 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		if (node.isReduced()) {
 			ret += "REDUCED ";
 		}
-		final String suff = visitChildrenSep(node);
+		final String suff = this.visitChildrenSep(node);
 		if (node.isSelectAll()) {
-			if (mustAddProjectionOnRealVars) {
-				final Iterator<String> iter = realVars.iterator();
+			if (this.mustAddProjectionOnRealVars) {
+				final Iterator<String> iter = this.realVars.iterator();
 				String vars = "";
-				if (iter.hasNext())
+				if (iter.hasNext()) {
 					vars = iter.next();
+				}
 				while (iter.hasNext()) {
 					vars += " " + iter.next();
 				}
@@ -190,17 +245,19 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return ret + "\n" + suff;
 	}
 
+	@Override
 	public String visit(final ASTDescribeQuery node) {
-		if (!rules[DESCRIBE]) {
+		if (!this.rules[DESCRIBE]) {
 			String ret = "DESCRIBE\t";
 
-			final String suff = visitChildrenSep(node);
+			final String suff = this.visitChildrenSep(node);
 			if (node.isDescribeAll()) {
-				if (mustAddProjectionOnRealVars) {
-					final Iterator<String> iter = realVars.iterator();
+				if (this.mustAddProjectionOnRealVars) {
+					final Iterator<String> iter = this.realVars.iterator();
 					String vars = "";
-					if (iter.hasNext())
+					if (iter.hasNext()) {
 						vars = iter.next();
+					}
 					while (iter.hasNext()) {
 						vars += " " + iter.next();
 					}
@@ -217,8 +274,8 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			if (node.isDescribeAll()) {
 				// case Describe * ...: determine all variables inside the
 				// query!
-				determineRealVariables(node);
-				vars.addAll(realVars);
+				this.determineRealVariables(node);
+				vars.addAll(this.realVars);
 			} else {
 				for (final Node n : node.getChildren()) {
 					if (n instanceof ASTVar) {
@@ -226,14 +283,14 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 					} else if (n instanceof ASTQuotedURIRef) {
 						vars.add(((ASTQuotedURIRef) n).toQueryString());
 					} else if (n instanceof ASTQName) {
-						vars.add((String) visit(((ASTQName) n)));
+						vars.add(this.visit(((ASTQName) n)));
 					}
 				}
 			}
 			String suff = "";
 			for (final Node n : node.getChildren()) {
 				if (n instanceof ASTGroupConstraint) {
-					suff = (String) this.visit((ASTGroupConstraint) n);
+					suff = this.visit((ASTGroupConstraint) n);
 				}
 			}
 			String templates = "";
@@ -241,19 +298,22 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			int index = 0;
 			for (final String var : vars) {
 				String helperVar1 = "?__h" + (index++);
-				while (realVars.contains(helperVar1))
+				while (this.realVars.contains(helperVar1)) {
 					helperVar1 = "?__h" + (index++);
+				}
 				final String helperVar2 = "?__h" + (index++);
-				while (realVars.contains(helperVar2))
+				while (this.realVars.contains(helperVar2)) {
 					helperVar1 = "?__h" + (index++);
+				}
 				templates += var + " " + helperVar1 + " " + helperVar2 + ".\n";
 				optional += "OPTIONAL{" + var + " " + helperVar1 + " "
 						+ helperVar2 + "}.\n";
 			}
 			final int lastOccurrence = suff.lastIndexOf("}");
-			if (lastOccurrence >= 0)
+			if (lastOccurrence >= 0) {
 				suff = suff.substring(0, lastOccurrence);
-			String stream = "";
+			}
+			final String stream = "";
 //			for (final Node n : node.getChildren()) {
 //				if (n instanceof ASTStream) {
 //					stream = (String) this.visit((ASTStream) n) + "\n";
@@ -264,75 +324,78 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	@Override
 	public String visit(final ASTGroupConstraint node) {
 		if (node.jjtGetParent() instanceof ASTSelectQuery
 				|| node.jjtGetParent() instanceof ASTAskQuery
 				|| node.jjtGetParent() instanceof ASTDescribeQuery
 				|| node.jjtGetParent() instanceof ASTConstructQuery
 				|| node.jjtGetParent() instanceof ASTQuery) {
-			checkFilterOfGroupConstraint(node, new HashSet<String>());
+			this.checkFilterOfGroupConstraint(node, new HashSet<String>());
 		}
 		String ret = "\n{";
-		String retEnd = "}";
+		final String retEnd = "}";
 		if (node.jjtGetParent() instanceof ASTSelectQuery
 				|| node.jjtGetParent() instanceof ASTConstructQuery
-				|| (node.jjtGetParent() instanceof ASTDescribeQuery && !rules[DESCRIBE])
+				|| (node.jjtGetParent() instanceof ASTDescribeQuery && !this.rules[DESCRIBE])
 				|| node.jjtGetParent() instanceof ASTQuery) {
 			ret = "\nWHERE \n{\n";
-		} 
+		} else if(node.jjtGetParent() instanceof ASTDescribeQuery){
+			ret = "\n";
+		}
 		final int numberOfChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numberOfChildren; i++) {
-			ret += visitChild(node, i);
+			ret += this.visitChild(node, i);
 		}
 		return ret + retEnd;
 	}
 
 	private void boundVariables(final Node node, final HashSet<String> variables) {
-		if (node instanceof ASTFilterConstraint)
+		if (node instanceof ASTFilterConstraint) {
 			return;
+		}
 		if (node instanceof ASTVar) {
 			variables.add(((ASTVar) node).getName());
 		}
 		final int numberOfChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numberOfChildren; i++) {
-			boundVariables(node.jjtGetChild(i), variables);
+			this.boundVariables(node.jjtGetChild(i), variables);
 		}
 	}
 
 	private boolean inScopeOfOptionalOrUnion(final Node node) {
-		if (node == null)
+		if (node == null) {
 			return false;
-		else if (node instanceof ASTOptionalConstraint)
+		} else if (node instanceof ASTOptionalConstraint) {
 			return true;
-		else if (node instanceof ASTUnionConstraint)
+		} else if (node instanceof ASTUnionConstraint) {
 			return true;
-//		else if (node instanceof ASTGroupConstraint)
-//			return false;
-		else if(node instanceof ASTSelectQuery || 
+		} else if(node instanceof ASTSelectQuery ||
 				node instanceof ASTAskQuery ||
 				node instanceof ASTConstructQuery ||
 				node instanceof ASTDescribeQuery ||
 				node instanceof ASTQuery ||
 				node instanceof ASTExists ||
 				node instanceof ASTNotExists ||
-				node instanceof ASTService				
-				)
+				node instanceof ASTService
+				) {
 			return false;
-		else
-			return inScopeOfOptionalOrUnion(node.jjtGetParent());
+		} else {
+			return this.inScopeOfOptionalOrUnion(node.jjtGetParent());
+		}
 	}
 
 	private void checkFilterOfGroupConstraint(final Node node,
 			final HashSet<String> variables) {
 		if (node instanceof ASTGroupConstraint) {
-			final HashSet<String> variablesNew = (inScopeOfOptionalOrUnion(node.jjtGetParent())) ? (HashSet<String>) variables.clone() : new HashSet<String>();
-			boundVariables(node, variablesNew);
+			final HashSet<String> variablesNew = (this.inScopeOfOptionalOrUnion(node.jjtGetParent())) ? (HashSet<String>) variables.clone() : new HashSet<String>();
+			this.boundVariables(node, variablesNew);
 
 			final int numberOfChildren = node.jjtGetNumChildren();
 			for (int i = 0; i < numberOfChildren; i++) {
 				if (node.jjtGetChild(i) instanceof ASTFilterConstraint) {
 					try {
-						checkFilterConstraint(node.jjtGetChild(i)
+						this.checkFilterConstraint(node.jjtGetChild(i)
 								.jjtGetChild(0), variablesNew);
 					} catch (final NotBoundException e) {
 						node.jjtGetChild(i).clearChildren();
@@ -341,19 +404,20 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 						bl.jjtSetParent(node.jjtGetChild(i));
 						node.jjtGetChild(i).jjtAddChild(bl, 0);
 					}
-				} else
-					checkFilterOfGroupConstraint(node.jjtGetChild(i),
+				} else {
+					this.checkFilterOfGroupConstraint(node.jjtGetChild(i),
 							variablesNew);
+				}
 			}
 		} else if (node instanceof ASTUnionConstraint) {
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 				final HashSet<String> variablesClone = (HashSet<String>) variables.clone();
-				checkFilterOfGroupConstraint(node.jjtGetChild(i), variablesClone);
+				this.checkFilterOfGroupConstraint(node.jjtGetChild(i), variablesClone);
 			}
 		} else if (node instanceof ASTOptionalConstraint) {
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 				final HashSet<String> variablesClone = (HashSet<String>) variables.clone();
-				checkFilterOfGroupConstraint(node.jjtGetChild(i), variablesClone);
+				this.checkFilterOfGroupConstraint(node.jjtGetChild(i), variablesClone);
 			}
 		}
 	}
@@ -364,18 +428,19 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			boolean deleteLeftOperand = false;
 			boolean deleteRightOperand = false;
 			try {
-				checkFilterConstraint(n.jjtGetChild(0), variables);
+				this.checkFilterConstraint(n.jjtGetChild(0), variables);
 			} catch (final NotBoundException nbe) {
 				deleteLeftOperand = true;
 			}
 			try {
-				checkFilterConstraint(n.jjtGetChild(1), variables);
+				this.checkFilterConstraint(n.jjtGetChild(1), variables);
 			} catch (final NotBoundException nbe) {
 				deleteRightOperand = true;
 			}
-			if (deleteLeftOperand && deleteRightOperand)
+			if (deleteLeftOperand && deleteRightOperand) {
 				throw new NotBoundException(
 						"Both operands of an Or-Operator in a filter throw NotBoundException!");
+			}
 			if (deleteLeftOperand) {
 				n.jjtGetParent().replaceChild2(n, n.jjtGetChild(1));
 				n.jjtGetChild(1).jjtSetParent(n.jjtGetParent());
@@ -385,13 +450,14 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 				n.jjtGetChild(0).jjtSetParent(n.jjtGetParent());
 			}
 		} else if (n instanceof lupos.sparql1_1.ASTVar) {
-			if (!variables.contains(((lupos.sparql1_1.ASTVar) n).getName()))
+			if (!variables.contains(((lupos.sparql1_1.ASTVar) n).getName())) {
 				throw new NotBoundException("Variable "
 						+ ((lupos.sparql1_1.ASTVar) n).getName() + " not bound");
+			}
 		} else {
 			if(!(n instanceof ASTExists || n instanceof ASTNotExists || n instanceof ASTBoundFuncNode)){
 				for(int i=0; i<n.jjtGetNumChildren(); i++){
-					checkFilterConstraint(n.jjtGetChild(i), variables);
+					this.checkFilterConstraint(n.jjtGetChild(i), variables);
 				}
 			}
 		}
@@ -400,7 +466,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	private void nestedGroups(final ASTGroupConstraint node) {
 		final ArrayList<ASTVar> vars_in_scope = new ArrayList<ASTVar>();
 		final ArrayList<ASTVar> vars_in_filter = new ArrayList<ASTVar>();
-		checkChildren(vars_in_scope, vars_in_filter, node, false);
+		this.checkChildren(vars_in_scope, vars_in_filter, node, false);
 		boolean indicator = true;
 		if (vars_in_filter.size() > 0) {
 			indicator = false;
@@ -415,21 +481,24 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			filter = true;
 		} else if (currentNode instanceof ASTVar) {
 			if (filter) {
-				if (!vars_in_filter.contains(currentNode))
+				if (!vars_in_filter.contains(currentNode)) {
 					vars_in_filter.add((ASTVar) currentNode);
+				}
 			} else {
-				if (!vars_in_scope.contains(currentNode))
+				if (!vars_in_scope.contains(currentNode)) {
 					vars_in_scope.add((ASTVar) currentNode);
+				}
 			}
 		} else if (currentNode instanceof ASTGroupConstraint) {
-			nestedGroups((ASTGroupConstraint) currentNode);
+			this.nestedGroups((ASTGroupConstraint) currentNode);
 		}
 		for (int i = 0; i < currentNode.jjtGetNumChildren(); i++) {
-			checkChildren(vars_in_scope, vars_in_filter, currentNode
+			this.checkChildren(vars_in_scope, vars_in_filter, currentNode
 					.jjtGetChild(i), filter);
 		}
 	}
 
+	@Override
 	public String visit(final ASTFilterConstraint node) {
 		final Node n = new SimpleNode(0);
 		final Node parent = node.jjtGetParent();
@@ -437,41 +506,44 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		node.jjtSetParent(n);
 		parent.replaceChild2(node, n);
 		n.jjtSetParent(parent);
-		applyRules(node);
+		this.applyRules(node);
 		String ret = "";
-		String prefix = (parent instanceof ASTOrderConditions || parent instanceof ASTHaving)? "" : "FILTER";
-		String postfix = (parent instanceof ASTOrderConditions || parent instanceof ASTHaving)? "" : ".\n";
+		final String prefix = (parent instanceof ASTOrderConditions || parent instanceof ASTHaving)? "" : "FILTER";
+		final String postfix = (parent instanceof ASTOrderConditions || parent instanceof ASTHaving)? "" : ".\n";
 		final int numberOfChildren = n.jjtGetNumChildren();
 		for (int i = 0; i < numberOfChildren; i++) {
-			Node currentChild=n.jjtGetChild(i);
+			final Node currentChild=n.jjtGetChild(i);
 			for(int j=0; j<currentChild.jjtGetNumChildren();j++){
-				ret += prefix + "(" + visitChild(currentChild, j) + ")"+postfix;
-			}				
+				ret += prefix + "(" + this.visitChild(currentChild, j) + ")"+postfix;
+			}
 		}
 		return ret;
 	}
 
 	public String dumpFilter(final ASTFilterConstraint node) {
-		return "FILTER(" + visitChild(node.jjtGetChild(0), 0) + ").";
+		return "FILTER(" + this.visitChild(node.jjtGetChild(0), 0) + ").";
 	}
 
 	private int applyRules(final Node node) {
-		if (rules[FILTER_AND] && node instanceof ASTFilterConstraint
+		if (this.rules[FILTER_AND] && node instanceof ASTFilterConstraint
 				&& node.jjtGetChild(0) instanceof ASTAndNode) {
 			final Node parent = node.jjtGetParent();
-			if (filter_and((ASTFilterConstraint) node))
-				return applyRules(parent);
+			if (this.filter_and((ASTFilterConstraint) node)) {
+				return this.applyRules(parent);
+			}
 		}
-		if (rules[FILTER_OR] && node instanceof ASTAndNode) {
-			if (nestedOr((ASTAndNode) node))
-				return applyRules(node.jjtGetParent());
+		if (this.rules[FILTER_OR] && node instanceof ASTAndNode) {
+			if (this.nestedOr((ASTAndNode) node)) {
+				return this.applyRules(node.jjtGetParent());
+			}
 		}
-		if (rules[FILTER_NOT] && node instanceof ASTNotNode) {
-			if (downNot(node))
-				return applyRules(node.jjtGetParent());
+		if (this.rules[FILTER_NOT] && node instanceof ASTNotNode) {
+			if (this.downNot(node)) {
+				return this.applyRules(node.jjtGetParent());
+			}
 		}
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			applyRules(node.jjtGetChild(i));
+			this.applyRules(node.jjtGetChild(i));
 		}
 		return -1;
 	}
@@ -489,7 +561,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 	private boolean nestedOr(final ASTAndNode node) {
-		final int ind = checkNestedOr(node);
+		final int ind = this.checkNestedOr(node);
 		if (ind >= 0) {
 			final Node parent = node.jjtGetParent();
 			final Node or = node.jjtGetChild(ind).clone(false);
@@ -505,8 +577,9 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 
 	private int checkNestedOr(final ASTAndNode node) {
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			if (node.jjtGetChild(i) instanceof ASTOrNode)
+			if (node.jjtGetChild(i) instanceof ASTOrNode) {
 				return i;
+			}
 		}
 		return -1;
 	}
@@ -549,46 +622,53 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	// "))||((" + visitChild( orChild, 1 ) + ")&&(" + evalOther + "))";
 	// }
 
+	@Override
 	public String visit(final ASTConstructTemplate node) {
 		this.construct = true;
-		final String ret = "{" + visitChildrenSep(node) + "}";
+		final String ret = "{" + this.visitChildrenSep(node) + "}";
 		this.construct = false;
 		return ret;
 	}
 
+	@Override
 	public String visit(final ASTNodeSet node) {
-		return visitChild(node, 0)+this.solvePOAndOLists(node, getVarOrBlankNode(node.jjtGetChild(0)), 1);
+		return this.visitChild(node, 0)+this.solvePOAndOLists(node, this.getVarOrBlankNode(node.jjtGetChild(0)), 1);
 	}
 
 	private String getVarOrBlankNode(final Node node) {
-		if (node instanceof ASTVar)
+		if (node instanceof ASTVar) {
 			return "?" + ((ASTVar) node).getName();
+		}
 		final String sub;
-		if (blankNodeHash.containsKey(node)) {
-			sub = blankNodeHash.get(node);
-		} else
-			sub = getBlankNodeLabel();
-		blankNodeHash.put(node, sub);
+		if (this.blankNodeHash.containsKey(node)) {
+			sub = this.blankNodeHash.get(node);
+		} else {
+			sub = this.getBlankNodeLabel();
+		}
+		this.blankNodeHash.put(node, sub);
 		return sub;
 	}
 
+	@Override
 	public String visit(final ASTObjectList node) {
-		if (rules[PO_LISTS]) {
+		if (this.rules[PO_LISTS]) {
 			throw new Error("This code position should not be reached!");
 		} else {
 			return super.visit(node);
 		}
 	}
 
+	@Override
 	public String visit(final ASTAVerbType node) {
-		if (rules[RDF_TYPE]) {
+		if (this.rules[RDF_TYPE]) {
 			return "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>";
 		}
 		return "a";
 	}
 
+	@Override
 	public String visit(final ASTBlankNodePropertyList node) {
-		if (rules[BLANK_NODES]) {
+		if (this.rules[BLANK_NODES]) {
 			/* The BlankNodePropertyList has at least 2 Children
 			 * Every uneven node holds a Predicate
 			 * Every even node except the first one holds an ObjectList
@@ -598,71 +678,79 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return super.visit(node);
 	}
 
+	@Override
 	public String visit(final ASTCollection node) {
-		if (rules[RDF_COLLECTIONS]) {
-			String bcur = getVarOrBlankNode(node);
+		if (this.rules[RDF_COLLECTIONS]) {
+			String bcur = this.getVarOrBlankNode(node);
 			String ret = "";
 			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 				if (node.jjtGetChild(i) instanceof ASTBlankNodePropertyList
 						|| node.jjtGetChild(i) instanceof ASTCollection) {
 					ret += bcur
 							+ " <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "
-							+ getVarOrBlankNode(node.jjtGetChild(i)) + " .\n"
-							+ visitChild(node, i);
+							+ this.getVarOrBlankNode(node.jjtGetChild(i)) + " .\n"
+							+ this.visitChild(node, i);
 				} else {
 					ret += bcur
 							+ " <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "
-							+ visitChild(node, i) + " .\n";
+							+ this.visitChild(node, i) + " .\n";
 				}
-				String bnext =(i < node.jjtGetNumChildren() - 1)? getBlankNodeLabel() : "<http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>";
+				final String bnext =(i < node.jjtGetNumChildren() - 1)? this.getBlankNodeLabel() : "<http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>";
 				ret += bcur
 						+ " <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> "
 						+ bnext + " .\n";
 				bcur = bnext;
 			}
 			return ret;
-		} else return super.visit(node);
+		} else {
+			return super.visit(node);
+		}
 	}
 
+	@Override
 	public String visit(final ASTVar node) {
 		return "?" + node.getName();
 	}
 
+	@Override
 	public String visit(final ASTQName node) {
-		String ret = prefixHash.get(node.getNameSpace());
+		String ret = this.prefixHash.get(node.getNameSpace());
 		if (ret == null) {
 			ret = "<>";
-			if (rules[BASE]) {
+			if (this.rules[BASE]) {
 				try {
-					ret = base.toString();
+					ret = this.base.toString();
 				} catch (final Exception e) {
 					System.err.println("Undeclared Prefix "
 							+ node.getNameSpace() + " used");
 				}
 			}
 		}
-		if (node.getLocalName().equals(""))
+		if (node.getLocalName().equals("")) {
 			return ret;
+		}
 		return ret.substring(0, ret.length() - 1) + node.getLocalName() + ">";
 	}
 
+	@Override
 	public String visit(final ASTEmptyNode node) {
-		if (rules[BLANK_NODES]) {
-			if (blankNodeHash.containsKey(node)) {
-				return blankNodeHash.get(node);
+		if (this.rules[BLANK_NODES]) {
+			if (this.blankNodeHash.containsKey(node)) {
+				return this.blankNodeHash.get(node);
 			}
-			final String tbn = getBlankNodeLabel();
-			blankNodeHash.put(node, tbn);
+			final String tbn = this.getBlankNodeLabel();
+			this.blankNodeHash.put(node, tbn);
 			return tbn;
 		}
 		return "[]";
 	}
 
+	@Override
 	public String visit(final ASTQuotedURIRef node) {
-		if (rules[BASE] && base != null) {
+		if (this.rules[BASE] && this.base != null) {
 			return "<"
-					+ base.toString()
-							.substring(1, base.toString().length() - 1)
+					+ this.base.toString()
+							.substring(1, this.base.toString().length() - 1)
 					+ node.getQRef() + ">";
 		}
 		return "<" + node.getQRef() + ">";
@@ -722,120 +810,131 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 
 	private final HashMap<String, String> variablesOfBlankNodes = new HashMap<String, String>();
 
+	@Override
 	public String visit(final ASTBlankNode node) {
-		if (rules[BN_VARS]) {
-			String name = variablesOfBlankNodes.get(node.getIdentifier());
+		if (this.rules[BN_VARS]) {
+			String name = this.variablesOfBlankNodes.get(node.getIdentifier());
 			if (name == null) {
-				name = getBlankNodeLabel();
-				variablesOfBlankNodes.put(node.getIdentifier(), name);
+				name = this.getBlankNodeLabel();
+				this.variablesOfBlankNodes.put(node.getIdentifier(), name);
 			}
 			return name;
-		} else
+		} else {
 			return node.getIdentifier();
+		}
 	}
-	
-	public String getInsert(Node node){
-		String vChild1=visitChild(node, 1);
-		String vChild0=visitChild(node, 0);
+
+	public String getInsert(final Node node){
+		final String vChild1=this.visitChild(node, 1);
+		final String vChild0=this.visitChild(node, 0);
 		if(vChild1.compareTo(vChild0)==0){
 			return " # Adding to the same graph does not have any effect!\n";
 		}
-		boolean flag1 =(node.jjtGetChild(1) instanceof ASTDefault);
-		String start1=flag1?"":"GRAPH "+vChild1+" {";
-		String end1=flag1?"":"}";
-		boolean flag2 =(node.jjtGetChild(0) instanceof ASTDefault);
-		String start2=flag2?"":"GRAPH "+vChild0+" {";
-		String end2=flag2?"":"}";
-		return " INSERT { "+start1+"?s ?p ?o."+end1+"} WHERE { "+start2+"?s ?p ?o."+end2+"}";		
+		final boolean flag1 =(node.jjtGetChild(1) instanceof ASTDefault);
+		final String start1=flag1?"":"GRAPH "+vChild1+" {";
+		final String end1=flag1?"":"}";
+		final boolean flag2 =(node.jjtGetChild(0) instanceof ASTDefault);
+		final String start2=flag2?"":"GRAPH "+vChild0+" {";
+		final String end2=flag2?"":"}";
+		return " INSERT { "+start1+"?s ?p ?o."+end1+"} WHERE { "+start2+"?s ?p ?o."+end2+"}";
 	}
 
 	@Override
-	public String visit(ASTAdd node) {
-		if(rules[ADD]){
-			return getInsert(node);
-		} else return super.toString();	
+	public String visit(final ASTAdd node) {
+		if(this.rules[ADD]){
+			return this.getInsert(node);
+		} else {
+			return super.toString();
+		}
 	}
-	
-	public String getDropAndInsert(Node node){
-		String vChild1=visitChild(node, 1);
-		if(vChild1.compareTo(visitChild(node, 0))==0){
+
+	public String getDropAndInsert(final Node node){
+		final String vChild1=this.visitChild(node, 1);
+		if(vChild1.compareTo(this.visitChild(node, 0))==0){
 			return " # Copying to the same graph does not have any effect!\n";
 		}
-		String dropOrClear = (vChild1.compareTo("DEFAULT")==0)?" CLEAR":" DROP";
-		return dropOrClear+" SILENT "+(node.jjtGetChild(1) instanceof ASTDefault?"":"GRAPH ")+vChild1+";\n"+getInsert(node);
-	}
-	
-	@Override
-	public String visit(ASTCopy node) {
-		if(rules[COPY]){
-			return getDropAndInsert(node);
-		} else return super.toString();
+		final String dropOrClear = (vChild1.compareTo("DEFAULT")==0)?" CLEAR":" DROP";
+		return dropOrClear+" SILENT "+(node.jjtGetChild(1) instanceof ASTDefault?"":"GRAPH ")+vChild1+";\n"+this.getInsert(node);
 	}
 
 	@Override
-	public String visit(ASTMove node) {
-		if(rules[MOVE]){
-			String vChild0 = visitChild(node,0);
-			if(vChild0.compareTo(visitChild(node, 1))==0){
+	public String visit(final ASTCopy node) {
+		if(this.rules[COPY]){
+			return this.getDropAndInsert(node);
+		} else {
+			return super.toString();
+		}
+	}
+
+	@Override
+	public String visit(final ASTMove node) {
+		if(this.rules[MOVE]){
+			final String vChild0 = this.visitChild(node,0);
+			if(vChild0.compareTo(this.visitChild(node, 1))==0){
 				return " # Moving to the same graph does not have any effect!\n";
-			}			
-			String dropOrClear = (vChild0.compareTo("DEFAULT")==0)?"CLEAR":"DROP";
-			return getDropAndInsert(node) + ";\n"+dropOrClear+" SILENT "+(node.jjtGetChild(0) instanceof ASTDefault?"":"GRAPH ")+vChild0;
-		} else return super.toString();
+			}
+			final String dropOrClear = (vChild0.compareTo("DEFAULT")==0)?"CLEAR":"DROP";
+			return this.getDropAndInsert(node) + ";\n"+dropOrClear+" SILENT "+(node.jjtGetChild(0) instanceof ASTDefault?"":"GRAPH ")+vChild0;
+		} else {
+			return super.toString();
+		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @return An unique variable which is definitely not used in the original query
 	 */
 	protected String getIntermediateVariable() {
 		this.mustAddProjectionOnRealVars = true;
-		final String ret = "b" + String.valueOf(bn_nmbr++);
+		final String ret = "b" + String.valueOf(this.bn_nmbr++);
 		/* checks if variable is already used
 		 * if true generate a new one
 		 * else return the variable in form ?_charNumber
 		 */
 		if (this.blankNodeHash.containsValue("_" + ret)
 				|| this.realVars.contains("?_" + ret)) {
-			return getIntermediateVariable();
+			return this.getIntermediateVariable();
 		}
 		return "?_" + ret;
 	}
-	
+
 
 	/** This method visits an ASTTripleSet and computes a String, representing the expression of the Triple set.
 	 * @param node The visited ASTTripleSet
 	 * @return a String put together by Subject Predicate and Object of the Triple Set and a break
 	 */
+	@Override
 	public String visit(final ASTTripleSet node) {
-		if(rules[PO_LISTS]){
+		if(this.rules[PO_LISTS]){
 			/* The Triple Set has at least 3 Children
 			 * The first child is always the subject
 			 * Every even node holds a Predicate
 			 * Every uneven node except the first one holds an ObjectList
 			 */
-			return this.solvePOAndOLists(node, visitChild(node,0), 1);
-		} else return super.visit(node);
+			return this.solvePOAndOLists(node, this.visitChild(node,0), 1);
+		} else {
+			return super.visit(node);
+		}
 	}
-	
-	protected String solvePOAndOLists(Node node, String subject, int indexStart){
+
+	protected String solvePOAndOLists(final Node node, final String subject, final int indexStart){
 		String ret = "";
 		/* The loop starts at 1, as explained above this is the first predicate
 		 * It always jumps for 2 nodes, meaning it will always point at a predicate
 		 * In a second loop every object of the ObjectList is visited and stored
 		 * Then the predicate gets visited by teaching him about the curent subject and object
 		 * The returned expression is stored in the ret String
-		 * This way the loop will put together all predicates with every element of the correspondending ObjectList 
+		 * This way the loop will put together all predicates with every element of the correspondending ObjectList
 		 */
 		for (int i = indexStart; i < node.jjtGetNumChildren(); i+=2) {
-			Node currentObjectList =node.jjtGetChild(i+1);
+			final Node currentObjectList =node.jjtGetChild(i+1);
 			for(int j = 0; j < currentObjectList.jjtGetNumChildren(); j++){
-				Node currentObject = currentObjectList.jjtGetChild(j);					
+				final Node currentObject = currentObjectList.jjtGetChild(j);
 				if(currentObject instanceof ASTBlankNodePropertyList || currentObject instanceof ASTCollection){
-					ret += node.jjtGetChild(i).accept(this, subject, getVarOrBlankNode(currentObject)) + "\n";
-					ret += visitChild(currentObjectList,j);
+					ret += node.jjtGetChild(i).accept(this, subject, this.getVarOrBlankNode(currentObject)) + "\n";
+					ret += this.visitChild(currentObjectList,j);
 				} else {
-					ret += node.jjtGetChild(i).accept(this, subject, visitChild(currentObjectList,j)) + "\n";
+					ret += node.jjtGetChild(i).accept(this, subject, this.visitChild(currentObjectList,j)) + "\n";
 				}
 			}
 		}
@@ -850,10 +949,10 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @return The variable inside this node surrounded by subject and object
 	 */
 	@Override
-	public String visit(ASTAVerbType node, String subject, String object) {
-		return subject + " " + visit(node) + " " + object + " .";
+	public String visit(final ASTAVerbType node, final String subject, final String object) {
+		return subject + " " + this.visit(node) + " " + object + " .";
 	}
-	
+
 	/**
 	 * AlternativePaths are equal to UNIONS of the input
 	 * @param node
@@ -862,9 +961,9 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @return The result string for AlternativePath Querys(x|y)
 	 */
 	@Override
-	public String visit(ASTPathAlternative node, String subject, String object) {
+	public String visit(final ASTPathAlternative node, final String subject, final String object) {
 		//example input (x|y) leads to {x}UNION{y}
-		return "{" + node.jjtGetChild(0).accept(this, subject, object) + "}\nUNION\n{" 
+		return "{" + node.jjtGetChild(0).accept(this, subject, object) + "}\nUNION\n{"
 				+ node.jjtGetChild(1).accept(this, subject, object) + "}";
 	}
 
@@ -875,31 +974,31 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @param node
 	 * @param subject
 	 * @param object
-	 * @return 
+	 * @return
 	 */
 	@Override
-	public String visit(ASTPathSequence node, String subject, String object) {
-		String blank = getIntermediateVariable();
+	public String visit(final ASTPathSequence node, final String subject, final String object) {
+		final String blank = this.getIntermediateVariable();
 		return node.jjtGetChild(0).accept(this, subject, blank) + "\n" + node.jjtGetChild(1).accept(this, blank, object);
 	}
-	
+
 	/**
 	 * @param node
 	 * @param subject
 	 * @param object
-	 * @return A String where subject and object are exchanged around the predicate 
+	 * @return A String where subject and object are exchanged around the predicate
 	 */
 	@Override
-	public String visit(ASTInvers node, String subject, String object) {
+	public String visit(final ASTInvers node, final String subject, final String object) {
 		return  node.jjtGetChild(0).accept(this, object, subject) ;
 	}
 
 	/**
 	 * @return String containing the subquery for a zero path...
 	 */
-	private String getZeroPathSubquery(String subject, String object, Node n){
+	private String getZeroPathSubquery(final String subject, final String object, Node n){
 		/* If the minimalDepth is zero a special semantic rule applies
-		 * A path of the length zero is recognized as every object by itself. 
+		 * A path of the length zero is recognized as every object by itself.
 		 */
 		// If the subject and object are fixed parameters then the result is empty, because no variables get bound
 		if((subject.charAt(0) != '?' && subject.charAt(0) != '$') && (object.charAt(0) != '?' && object.charAt(0) != '$')){
@@ -924,26 +1023,27 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 			}
 			String additionalGraphVariable = "";
 			if(n instanceof ASTGraphConstraint){
-				Node child0 = n.jjtGetChild(0);
-				if(child0 instanceof ASTVar)
+				final Node child0 = n.jjtGetChild(0);
+				if(child0 instanceof ASTVar) {
 					additionalGraphVariable = " " + ((ASTVar)child0).toQueryString();
+				}
 			}
 			// intermediate Strings are used for the special queries
-			String intermediatePredicate = getIntermediateVariable();
-			String intermediateObject = getIntermediateVariable();
-			return "{SELECT DISTINCT " + subject + additionalGraphVariable + "\nWHERE{{ " + subject + " " + intermediatePredicate +" " 
-					+ intermediateObject + " .}\nUNION\n{" +intermediateObject  + " " + intermediatePredicate + " " + subject 
+			final String intermediatePredicate = this.getIntermediateVariable();
+			final String intermediateObject = this.getIntermediateVariable();
+			return "{SELECT DISTINCT " + subject + additionalGraphVariable + "\nWHERE{{ " + subject + " " + intermediatePredicate +" "
+					+ intermediateObject + " .}\nUNION\n{" +intermediateObject  + " " + intermediatePredicate + " " + subject
 					+" .}\n}}\nBIND(" + subject + " AS " + object + ").\n";
 		}
 	}
 
-	
+
 	@Override
-	public String visit(ASTArbitraryOccurences node, String subject, String object) {
+	public String visit(final ASTArbitraryOccurences node, final String subject, final String object) {
 		if(SPARQLCoreParserVisitorImplementation.USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
-			return subject + " (" +node.jjtGetChild(0).accept(this) + ")* " +object +".\n"; 			
+			return subject + " (" +node.jjtGetChild(0).accept(this) + ")* " +object +".\n";
 		} else {
-			return "{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + subject + " (" + visitChild(node,0) + ")+ " + object +"}";
+			return "{" + this.getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + subject + " (" + this.visitChild(node,0) + ")+ " + object +"}";
 		}
 	}
 
@@ -952,55 +1052,58 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @param node
 	 * @param subject
 	 * @param object
-	 * @return 
+	 * @return
 	 */
 	@Override
-	public String visit(ASTOptionalOccurence node, String subject, String object) {
+	public String visit(final ASTOptionalOccurence node, final String subject, final String object) {
 		if(SPARQLCoreParserVisitorImplementation.USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
-			return subject + " (" +node.jjtGetChild(0).accept(this) + ")? " +object +".\n"; 			
+			return subject + " (" +node.jjtGetChild(0).accept(this) + ")? " +object +".\n";
 		} else {
-			return "{" + getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + node.jjtGetChild(0).accept(this, subject, object) + "}";
-		}		
+			return "{" + this.getZeroPathSubquery(subject, object, node) + "}\nUNION\n{" + node.jjtGetChild(0).accept(this, subject, object) + "}";
+		}
 	}
 
 	@Override
-	public String visit(ASTArbitraryOccurencesNotZero node, String subject,
-			String object) {
-		return  subject + " (" +node.jjtGetChild(0).accept(this) + ")+ " +object +".\n"; 
+	public String visit(final ASTArbitraryOccurencesNotZero node, final String subject,
+			final String object) {
+		return  subject + " (" +node.jjtGetChild(0).accept(this) + ")+ " +object +".\n";
 	}
-	
+
 	/**
 	 * A negated path takes all possible paths and substracts all paths using the predicate via the MINUS operator.
 	 * @param node
 	 * @param subject
 	 * @param object
-	 * @return 
+	 * @return
 	 */
 	@Override
-	public String visit(ASTNegatedPath node, String subject, String object) {
+	public String visit(final ASTNegatedPath node, final String subject, final String object) {
 		// Get a intermediatePredicate, serving the query later
-		String intermediatePredicate = getIntermediateVariable();
+		final String intermediatePredicate = this.getIntermediateVariable();
 		// Check out the number of alternative paths in this negation
-		int numberOfChildren = node.jjtGetNumChildren();
+		final int numberOfChildren = node.jjtGetNumChildren();
 		// Start the CoreSPARQL Query with all possible combinations of subject and object
 		String ret = subject + " " + intermediatePredicate + " " + object + " . MINUS {" ;
 		// Now substract all alternative paths via the MINUS operator
 		// Using UNION for connecting alternative paths like normal
 		for(int i = 0; i < numberOfChildren; i++){
 			// { should be there if a UNION is needed later
-			if (numberOfChildren > 1) 
+			if (numberOfChildren > 1) {
 				ret += "{";
+			}
 			ret += node.jjtGetChild(i).accept(this, subject, object);
 			// } If a UNION is needed
-			if(numberOfChildren > 1) 
+			if(numberOfChildren > 1) {
 				ret += "}";
+			}
 			// If there are alternative paths left a UNION is needed
-			if(numberOfChildren > 1 && i < numberOfChildren - 1) 
+			if(numberOfChildren > 1 && i < numberOfChildren - 1) {
 				ret += "\nUNION\n";
+			}
 		}
 		// } closing the MINUS term
 		ret += "}";
-		return ret; 
+		return ret;
 	}
 
 	/**
@@ -1010,8 +1113,8 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @return A string surrounding the variable by subject and object
 	 */
 	@Override
-	public String visit(ASTVar node, String subject, String object) {
-		return subject + " " + visit(node) + " " + object + " .";
+	public String visit(final ASTVar node, final String subject, final String object) {
+		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
 	/**
@@ -1021,8 +1124,8 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @return A string surrounding the variable by subject and object
 	 */
 	@Override
-	public String visit(ASTQuotedURIRef node, String subject, String object) {
-		return subject + " " + visit(node) + " " + object + " .";
+	public String visit(final ASTQuotedURIRef node, final String subject, final String object) {
+		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
 	/**
@@ -1032,12 +1135,12 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	 * @return A string surrounding the variable by subject and object
 	 */
 	@Override
-	public String visit(ASTQName node, String subject, String object) {
-		return subject + " " + visit(node) + " " + object + " .";
+	public String visit(final ASTQName node, final String subject, final String object) {
+		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
 	@Override
-	public String visit(SimpleNode node, String subject, String object) {
+	public String visit(final SimpleNode node, final String subject, final String object) {
 		throw new UnsupportedOperationException("This class " + node.getClass() + " does not support an SPARQL1_1ParserPathVisitorStringGenerator!");
 	}
 }

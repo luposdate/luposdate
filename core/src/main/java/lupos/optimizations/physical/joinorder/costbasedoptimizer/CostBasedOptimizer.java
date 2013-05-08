@@ -382,18 +382,20 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 			vars.retainAll(joinPartners);
 			if(vars.size()>0) {
 				final Map<Variable, Tuple<Literal, Literal>> localExtrema = indexScan.getMinMax(tp, vars);
-				for(final Entry<Variable, Tuple<Literal, Literal>> entry: localExtrema.entrySet()){
-					final Variable var = entry.getKey();
-					final Literal min = minima.get(var);
-					final Literal otherMin = entry.getValue().getFirst();
-					if(min==null || min.compareToNotNecessarilySPARQLSpecificationConform(otherMin)>0) {
-						minima.put(var, otherMin);
-					}
+				if(localExtrema!=null){
+					for(final Entry<Variable, Tuple<Literal, Literal>> entry: localExtrema.entrySet()){
+						final Variable var = entry.getKey();
+						final Literal min = minima.get(var);
+						final Literal otherMin = entry.getValue().getFirst();
+						if(min==null || min.compareToNotNecessarilySPARQLSpecificationConform(otherMin)>0) {
+							minima.put(var, otherMin);
+						}
 
-					final Literal max = maxima.get(var);
-					final Literal otherMax = entry.getValue().getSecond();
-					if(max==null || max.compareToNotNecessarilySPARQLSpecificationConform(otherMax)<0) {
-						maxima.put(var, otherMax);
+						final Literal max = maxima.get(var);
+						final Literal otherMax = entry.getValue().getSecond();
+						if(max==null || max.compareToNotNecessarilySPARQLSpecificationConform(otherMax)<0) {
+							maxima.put(var, otherMax);
+						}
 					}
 				}
 			}
