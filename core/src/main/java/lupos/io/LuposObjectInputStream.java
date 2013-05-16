@@ -473,7 +473,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		if (i2 < 0) {
 			return null;
 		}
-		return i1 + 256 * i2;
+		return (0xFF & i1) | (0xFF & i2) << 8;
 	}
 
 	public Integer readLuposInteger3Bytes() throws IOException {
@@ -489,7 +489,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		if (i3 < 0) {
 			return null;
 		}
-		return i1 + 256 * (i2 + 256 * i3);
+		return (0xFF & i1) | ((0xFF & i2) | (0xFF & i3) << 8) << 8;
 	}
 
 	public Integer readLuposInteger() throws IOException {
@@ -509,7 +509,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		if (i4 < 0) {
 			return null;
 		}
-		return (i1 + 256 * (i2 + 256 * (i3 + 256 * i4)));
+		return (0xFF & i1) | ((0xFF & i2) | ((0xFF & i3) | (0xFF & i4) << 8) << 8) << 8;
 	}
 
 	public Long readLuposLong() throws IOException {
@@ -518,7 +518,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		if (a == null || b == null) {
 			return null;
 		}
-		return (long) a + (long) b * ((long) 256 * 256 * 256 * 256);
+		return (long) a | ((long) b) << 32;
 	}
 
 	public int readLuposInt() throws IOException {
@@ -538,7 +538,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		if (i4 < 0) {
 			return i4;
 		}
-		return (i1 + 256 * (i2 + 256 * (i3 + 256 * i4)));
+		return (0xFF & i1) | ((0xFF & i2) | ((0xFF & i3) | (0xFF & i4) << 8) << 8) << 8;
 	}
 
 	public byte readLuposByte() throws IOException {
@@ -578,9 +578,9 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		}
 		int result = 251;
 		int offset = 1;
-		for (int i = 0; i < i0 - 251; i++) {
+		for (int i = 1; i <= i0 - 251; i++) {
 			result += this.readLuposInteger1Byte() * offset;
-			offset *= 256;
+			offset <<= 8;
 		}
 		return result;
 	}
@@ -592,9 +592,9 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		}
 		int result = 251;
 		int offset = 1;
-		for (int i = 0; i < i0 - 251; i++) {
+		for (int i = 1; i <= i0 - 251; i++) {
 			result += in.read() * offset;
-			offset *= 256;
+			offset <<= 8;
 		}
 		return result;
 	}
@@ -610,5 +610,4 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 			return new CodeMapLiteral(LuposObjectInputStream.readLuposInt(in));
 		}
 	}
-
 }

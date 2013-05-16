@@ -40,7 +40,7 @@ public class PageOutputStream extends OutputStream {
 		this.pageManager = pageManager;
 		this.currentPageNumber = pagenumber;
 		if (emptyPage) {
-			emptyPage();
+			this.emptyPage();
 		} else {
 			this.currentPage = pageManager.getPage(pagenumber);
 		}
@@ -53,48 +53,46 @@ public class PageOutputStream extends OutputStream {
 
 	public PageOutputStream(final PageManager pageManager) {
 		this.pageManager = pageManager;
-		emptyPage();
+		this.emptyPage();
 		this.currentPageNumber = pageManager.getNumberOfNewPage();
 	}
 
 	private void emptyPage() {
 		this.currentPage = this.pageManager.getEmptyPage();
-		this.currentPage[0] = -128;
-		this.currentPage[1] = -128;
-		this.currentPage[2] = -128;
-		this.currentPage[3] = -128;
+		this.currentPage[0] = 0;
+		this.currentPage[1] = 0;
+		this.currentPage[2] = 0;
+		this.currentPage[3] = 0;
 	}
 
-	private int getNextPageNumber() {
-		return (((this.currentPage[0] + 128) * 256 + (this.currentPage[1] + 128)) * 256 + (this.currentPage[2] + 128))
-				* 256 + (this.currentPage[3] + 128);
+	private final int getNextPageNumber() {
+		return (((0xFF & this.currentPage[0]) << 8 | (0xFF & this.currentPage[1])) << 8 | (0xFF & this.currentPage[2])) << 8 | (0xFF & this.currentPage[3]);
 	}
 
-	private void setMaxOnThisPage() {
-		int intermediate = (this.index > this.currentPage.length) ? this.currentPage.length : this.index;
-		this.currentPage[5] = (byte) ((intermediate % 256) - 128);
-		intermediate /= 256;
-		this.currentPage[4] = (byte) ((intermediate % 256) - 128);
+	private final void setMaxOnThisPage() {
+		final int intermediate = (this.index > this.currentPage.length) ? this.currentPage.length : this.index;
+		this.currentPage[5] = (byte) intermediate;
+		this.currentPage[4] = (byte) (intermediate >>> 8);
 	}
 
 	@Override
 	public void write(final int b) throws IOException {
 		if (this.index >= this.currentPage.length) {
 			// write this page and open new page...
-			setMaxOnThisPage();
-			int nextPageNumber = getNextPageNumber();
+			this.setMaxOnThisPage();
+			int nextPageNumber = this.getNextPageNumber();
 			if (nextPageNumber <= 0) { // old sequence of pages cannot be reused!
 				nextPageNumber = this.pageManager.getNumberOfNewPage();
 				int intermediate = nextPageNumber;
-				this.currentPage[3] = (byte) ((intermediate % 256) - 128);
-				intermediate /= 256;
-				this.currentPage[2] = (byte) ((intermediate % 256) - 128);
-				intermediate /= 256;
-				this.currentPage[1] = (byte) ((intermediate % 256) - 128);
-				intermediate /= 256;
-				this.currentPage[0] = (byte) ((intermediate % 256) - 128);
+				this.currentPage[3] = (byte) intermediate;
+				intermediate >>>= 8;
+				this.currentPage[2] = (byte) intermediate;
+				intermediate >>>= 8;
+				this.currentPage[1] = (byte) intermediate;
+				intermediate >>>= 8;
+				this.currentPage[0] = (byte) intermediate;
 				this.pageManager.modifyPage(this.currentPageNumber, this.currentPage);
-				emptyPage();
+				this.emptyPage();
 			} else { // follow the old sequence of pages...
 				this.pageManager.modifyPage(this.currentPageNumber, this.currentPage);
 				this.currentPage = this.pageManager.getPage(nextPageNumber);
@@ -102,24 +100,24 @@ public class PageOutputStream extends OutputStream {
 			this.currentPageNumber = nextPageNumber;
 			this.index = 6;
 		}
-		this.currentPage[this.index++] = (byte) ((b % 256) - 128);
+		this.currentPage[this.index++] = (byte) b;
 	}
 
 	@Override
 	public void close() throws IOException {
-		int nextPageNumber = getNextPageNumber();
-		setMaxOnThisPage();
+		int nextPageNumber = this.getNextPageNumber();
+		this.setMaxOnThisPage();
 		// mark current page as end of this sequence of pages...
-		this.currentPage[0] = -128;
-		this.currentPage[1] = -128;
-		this.currentPage[2] = -128;
-		this.currentPage[3] = -128;
+		this.currentPage[0] = 0;
+		this.currentPage[1] = 0;
+		this.currentPage[2] = 0;
+		this.currentPage[3] = 0;
 		this.pageManager.modifyPage(this.currentPageNumber, this.currentPage);
 		while (nextPageNumber > 0) {
 			// release old sequence of pages...
 			this.currentPage = this.pageManager.getPage(nextPageNumber);
 			this.pageManager.releasePage(nextPageNumber);
-			nextPageNumber = getNextPageNumber();
+			nextPageNumber = this.getNextPageNumber();
 		}
 	}
 }

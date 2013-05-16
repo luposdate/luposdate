@@ -26,6 +26,7 @@ package lupos.engine.operators.singleinput.modifiers;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.SingleInputOperator;
@@ -37,7 +38,7 @@ public class Limit extends SingleInputOperator {
 
 	/**
 	 * Constructs a limit-operator
-	 * 
+	 *
 	 * @param limit
 	 *            limitation of return values
 	 */
@@ -51,7 +52,7 @@ public class Limit extends SingleInputOperator {
 
 	@Override
 	public void cloneFrom(final BasicOperator op) {
-		limit = ((Limit) op).limit;
+		this.limit = ((Limit) op).limit;
 	}
 
 	/**
@@ -59,30 +60,51 @@ public class Limit extends SingleInputOperator {
 	 */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		if (pos >= limit || bindings.size() == 0)
+		if (this.pos >= this.limit || bindings.isEmpty()) {
 			return null; // to do: close evaluation of query!
-		if (pos + bindings.size() < limit) {
-			pos += bindings.size();
-			return bindings;
 		}
-		final QueryResult ret = QueryResult.createInstance();
+
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
-		while (itb.hasNext()) {
-			if (pos < limit)
-				ret.add(itb.next());
-			else
-				break;
-			pos++;
-		}
-		return ret;
+
+		return QueryResult.createInstance(
+				new ParallelIterator<Bindings>(){
+
+					@Override
+					public boolean hasNext() {
+						return (Limit.this.pos<Limit.this.limit) && itb.hasNext();
+					}
+
+					@Override
+					public Bindings next() {
+						if(this.hasNext()){
+							Limit.this.pos++;
+							return itb.next();
+						} else {
+							return null;
+						}
+					}
+
+					@Override
+					public void remove() {
+						itb.remove();
+					}
+
+					@Override
+					public void close() {
+						if(itb instanceof ParallelIterator){
+							((ParallelIterator<Bindings>)itb).close();
+						}
+					}
+
+		});
 	}
 
 	public int getLimit() {
-		return limit;
+		return this.limit;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " " + limit;
+		return super.toString() + " " + this.limit;
 	}
 }

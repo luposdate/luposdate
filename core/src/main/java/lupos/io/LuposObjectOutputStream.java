@@ -28,9 +28,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.util.Collection;
-import java.util.LinkedList;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
@@ -51,13 +48,13 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 
 	public LuposObjectOutputStream(final OutputStream arg0) throws IOException {
 		super(arg0);
-		os = arg0;
+		this.os = arg0;
 	}
-	
+
 	protected Literal 	lastSubject = null,
-						lastPredicate = null, 
+						lastPredicate = null,
 						lastObject = null;
-	
+
 	protected byte[] lastString = null;
 
 	public void writeLuposObject(final Object arg0) throws IOException {
@@ -65,20 +62,20 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	}
 
 	protected void writeLuposVarBucket(final VarBucket vb) throws IOException {
-		writeLuposInt(vb.selectivityOfInterval.size());
+		this.writeLuposInt(vb.selectivityOfInterval.size());
 		if (vb.minimum == null) {
 			if (vb.maximum == null) {
-				writeLuposByte((byte) 0);
+				this.writeLuposByte((byte) 0);
 			} else {
-				writeLuposByte((byte) 1);
+				this.writeLuposByte((byte) 1);
 				LiteralFactory.writeLuposLiteral(vb.maximum, this);
 			}
 		} else {
 			if (vb.maximum == null) {
-				writeLuposByte((byte) 2);
+				this.writeLuposByte((byte) 2);
 				LiteralFactory.writeLuposLiteral(vb.minimum, this);
 			} else {
-				writeLuposByte((byte) 3);
+				this.writeLuposByte((byte) 3);
 				LiteralFactory.writeLuposLiteral(vb.minimum, this);
 				LiteralFactory.writeLuposLiteral(vb.maximum, this);
 			}
@@ -105,85 +102,88 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 			LuposObjectInputStream.triplePatternHashMapID.put(tp, id);
 			LuposObjectInputStream.triplePatternHashMap.put(id, tp);
 		}
-		writeLuposByte((byte) id);
+		this.writeLuposByte((byte) id);
 	}
 
 	protected Bindings previousBindings = null;
 
 	public void writeLuposTriple(final Triple t) throws IOException {
 		int diff = 0;
-		if (lastSubject == null
+		if (this.lastSubject == null
 				|| t.getSubject() instanceof LazyLiteral
-				&& !t.getSubject().equals(lastSubject)
+				&& !t.getSubject().equals(this.lastSubject)
 				|| !(t.getSubject() instanceof LazyLiteral)
 				&& t.getSubject().originalString().compareTo(
-						lastSubject.originalString()) != 0) {
+						this.lastSubject.originalString()) != 0) {
 			diff = 1;
-			lastSubject = t.getSubject();
+			this.lastSubject = t.getSubject();
 		}
-		if (lastPredicate == null
+		if (this.lastPredicate == null
 				|| t.getPredicate() instanceof LazyLiteral
-				&& !t.getPredicate().equals(lastPredicate)
+				&& !t.getPredicate().equals(this.lastPredicate)
 				|| !(t.getPredicate() instanceof LazyLiteral)
 				&& t.getPredicate().originalString().compareTo(
-						lastPredicate.originalString()) != 0) {
+						this.lastPredicate.originalString()) != 0) {
 			diff += 2;
-			lastPredicate = t.getPredicate();
+			this.lastPredicate = t.getPredicate();
 		}
-		if (lastObject == null
+		if (this.lastObject == null
 				|| t.getObject() instanceof LazyLiteral
-				&& !t.getObject().equals(lastObject)
+				&& !t.getObject().equals(this.lastObject)
 				|| !(t.getObject() instanceof LazyLiteral)
 				&& t.getObject().originalString().compareTo(
-						lastObject.originalString()) != 0) {
+						this.lastObject.originalString()) != 0) {
 			diff += 4;
-			lastObject = t.getObject();
+			this.lastObject = t.getObject();
 		}
-		os.write(diff);
-		if (diff % 2 == 1)
-			writeLuposObject(t.getSubject());
-		if ((diff / 2) % 2 == 1)
-			writeLuposObject(t.getPredicate());
-		if ((diff / 4) % 2 == 1)
-			writeLuposObject(t.getObject());
+		this.os.write(diff);
+		if (diff % 2 == 1) {
+			this.writeLuposObject(t.getSubject());
+		}
+		if ((diff / 2) % 2 == 1) {
+			this.writeLuposObject(t.getPredicate());
+		}
+		if ((diff / 4) % 2 == 1) {
+			this.writeLuposObject(t.getObject());
+		}
 	}
 
 	protected void writeStringKey(final String s) throws IOException {
-		if (s.startsWith(lastSubject.toString())) {
-			if (s.compareTo(lastSubject.toString() + lastPredicate.toString()
-					+ lastObject.toString()) == 0) {
-				os.write(1);
+		if (s.startsWith(this.lastSubject.toString())) {
+			if (s.compareTo(this.lastSubject.toString() + this.lastPredicate.toString()
+					+ this.lastObject.toString()) == 0) {
+				this.os.write(1);
 				return;
-			} else if (s.compareTo(lastSubject.toString()
-					+ lastObject.toString() + lastPredicate.toString()) == 0) {
-				os.write(2);
-				return;
-			}
-		} else if (s.startsWith(lastPredicate.toString())) {
-			if (s.compareTo(lastPredicate.toString() + lastSubject.toString()
-					+ lastObject.toString()) == 0) {
-				os.write(3);
-				return;
-			} else if (s.compareTo(lastPredicate.toString()
-					+ lastObject.toString() + lastSubject.toString()) == 0) {
-				os.write(4);
+			} else if (s.compareTo(this.lastSubject.toString()
+					+ this.lastObject.toString() + this.lastPredicate.toString()) == 0) {
+				this.os.write(2);
 				return;
 			}
-		} else if (s.startsWith(lastObject.toString())) {
-			if (s.compareTo(lastObject.toString() + lastSubject.toString()
-					+ lastPredicate.toString()) == 0) {
-				os.write(5);
+		} else if (s.startsWith(this.lastPredicate.toString())) {
+			if (s.compareTo(this.lastPredicate.toString() + this.lastSubject.toString()
+					+ this.lastObject.toString()) == 0) {
+				this.os.write(3);
 				return;
-			} else if (s.compareTo(lastObject.toString()
-					+ lastPredicate.toString() + lastSubject.toString()) == 0) {
-				os.write(6);
+			} else if (s.compareTo(this.lastPredicate.toString()
+					+ this.lastObject.toString() + this.lastSubject.toString()) == 0) {
+				this.os.write(4);
+				return;
+			}
+		} else if (s.startsWith(this.lastObject.toString())) {
+			if (s.compareTo(this.lastObject.toString() + this.lastSubject.toString()
+					+ this.lastPredicate.toString()) == 0) {
+				this.os.write(5);
+				return;
+			} else if (s.compareTo(this.lastObject.toString()
+					+ this.lastPredicate.toString() + this.lastSubject.toString()) == 0) {
+				this.os.write(6);
 				return;
 			}
 		}
-		os.write(0);
-		writeLuposString(s);
+		this.os.write(0);
+		this.writeLuposString(s);
 	}
-	
+
 	public void writeLuposDifferenceString(final String s) throws IOException {
 		if (s == null){
 			return;
@@ -193,26 +193,26 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 			this.writeLuposString(s);
 			return;
 		}
-		byte[] bytesOfS = s.getBytes(LuposObjectInputStream.UTF8);
+		final byte[] bytesOfS = s.getBytes(LuposObjectInputStream.UTF8);
 		// determine common prefix of new string and last stored string
 		int common = 0;
 		while(common<bytesOfS.length && common < this.lastString.length && bytesOfS[common]==this.lastString[common]){
 			common++;
 		}
 		this.writeLuposIntVariableBytes(common);
-		
+
 		// now write only difference string
 		final int length = bytesOfS.length;
 		this.writeLuposIntVariableBytes(length-common);
 		this.os.write(bytesOfS, common, length-common);
 		this.lastString = bytesOfS;
-	}	
+	}
 
 	public void writeLuposString(final String s) throws IOException {
 		if (s == null){
 			return;
 		}
-		byte[] bytesOfS = s.getBytes(LuposObjectInputStream.UTF8);
+		final byte[] bytesOfS = s.getBytes(LuposObjectInputStream.UTF8);
 		final int length = bytesOfS.length;
 		this.writeLuposIntVariableBytes(length);
 		this.os.write(bytesOfS);
@@ -227,66 +227,66 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	}
 
 	public void writeLuposInt(final int i) throws IOException {
-		final int i1 = i % 256;
-		final int i2 = (i / 256) % 256;
-		final int i3 = (i / (256 * 256)) % 256;
-		final int i4 = (i / (256 * 256 * 256)) % 256;
-		this.os.write(i1);
-		this.os.write(i2);
-		this.os.write(i3);
-		this.os.write(i4);
+		int remaining = i;
+		this.os.write((byte) remaining);
+		remaining>>>=8;
+		this.os.write((byte) remaining);
+		remaining>>>=8;
+		this.os.write((byte) remaining);
+		remaining>>>=8;
+		this.os.write((byte) remaining);
 	}
-	
+
 	public void writeLuposBigInteger(final BigInteger value, final int numberOfBits) throws IOException {
 		int remainingBits = numberOfBits;
 		BigInteger remainingValue = value;
 		final BigInteger BYTE = BigInteger.valueOf(256);
 		while(remainingBits>0){
-			BigInteger[] result = remainingValue.divideAndRemainder(BYTE);
+			final BigInteger[] result = remainingValue.divideAndRemainder(BYTE);
 			remainingValue = result[0];
-			this.os.write(result[1].intValue()%256);
+			this.os.write((byte) result[1].intValue());
 			remainingBits-=8;
 		}
 	}
-	
+
 	public void writeLuposInt1Byte(final int i) throws IOException {
-		os.write(i % 256);
+		this.os.write((byte) i);
 	}
 
 	public void writeLuposInt2Bytes(final int i) throws IOException {
-		final int i1 = i % 256;
-		final int i2 = (i / 256) % 256;
-		os.write(i1);
-		os.write(i2);
+		int remaining = i;
+		this.os.write((byte) remaining);
+		remaining>>>=8;
+		this.os.write((byte) remaining);
 	}
 
 	public void writeLuposInt3Bytes(final int i) throws IOException {
-		final int i1 = i % 256;
-		final int i2 = (i / 256) % 256;
-		final int i3 = (i / (256 * 256)) % 256;
-		os.write(i1);
-		os.write(i2);
-		os.write(i3);
+		int remaining = i;
+		this.os.write((byte) remaining);
+		remaining>>>=8;
+		this.os.write((byte) remaining);
+		remaining>>>=8;
+		this.os.write((byte) remaining);
 	}
 
 	public void writeLuposLong(final long l) throws IOException {
-		writeLuposInt((int) (l % ((long) 256 * 256 * 256 * 256)));
-		writeLuposInt((int) (l / ((long) 256 * 256 * 256 * 256)));
+		this.writeLuposInt((int) l);
+		this.writeLuposInt((int) (l >>> 32));
 	}
 
 	public void writeLuposByte(final byte b) throws IOException {
-		os.write(b);
+		this.os.write(b);
 	}
-	
-	public void writeLuposIntVariableBytes(int i_par) throws IOException {
-		int i = i_par; 
+
+	public void writeLuposIntVariableBytes(final int i_par) throws IOException {
+		int i = i_par;
 		if (i <= 251) {
 			this.writeLuposInt1Byte(i);
 		} else {
 			i -= 251;
 			if (i >= 256) {
-				if (i / 256 >= 256) {
-					if (i / (256 * 256) >= 256) {
+				if (i >>> 8 >= 256) {
+					if (i >>> 16 >= 256) {
 						this.writeLuposInt1Byte(255);
 					} else {
 						this.writeLuposInt1Byte(254);
@@ -298,21 +298,21 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 				this.writeLuposInt1Byte(252);
 			}
 			while (i > 0) {
-				this.writeLuposInt1Byte(i % 256);
-				i /= 256;
+				this.writeLuposInt1Byte((byte)i);
+				i >>>= 8;
 			}
 		}
 	}
 
-	public static void writeLuposInt(int i_par, final ObjectOutput out) throws IOException {
+	public static void writeLuposInt(final int i_par, final ObjectOutput out) throws IOException {
 		int i = i_par;
 		if (i <= 251) {
 			out.writeByte(i);
 		} else {
 			i -= 251;
 			if (i >= 256) {
-				if (i / 256 >= 256) {
-					if (i / (256 * 256) >= 256) {
+				if (i >>> 8 >= 256) {
+					if (i >>> 16 >= 256) {
 						out.writeByte(255);
 					} else {
 						out.writeByte(254);
@@ -324,46 +324,18 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 				out.writeByte(252);
 			}
 			while (i > 0) {
-				out.writeByte(i % 256);
-				i /= 256;
+				out.writeByte((byte) i);
+				i >>>= 8;
 			}
 		}
 	}
 
 	public static void writeLuposLiteral(final Literal literal,
 			final ObjectOutput out) throws IOException {
-		if (literal instanceof StringLiteral)
+		if (literal instanceof StringLiteral) {
 			out.writeObject(((StringLiteral) literal).originalString());
-		else
+		} else {
 			LuposObjectOutputStream.writeLuposInt(((CodeMapLiteral) literal).getCode(), out);
-	}
-
-	private static Collection<String> splitStringInto64KBUTFBlocks(
-			final String value) throws IOException {
-		String remaining = value;
-		final LinkedList<String> result = new LinkedList<String>();
-		final int len = value.length();
-		long sum = 0;
-		int i = 0;
-		while (i < remaining.length()) {
-			final char c = remaining.charAt(i);
-			if (c >= '\u0001' && c <= '\u007f')
-				sum += 1;
-			else if (c == '\u0000' || (c >= '\u0080' && c <= '\u07ff'))
-				sum += 2;
-			else
-				sum += 3;
-			if (sum >= 65500) {
-				result.add(remaining.substring(0, i));
-				remaining = remaining.substring(i);
-				sum = 0;
-				i = 0;
-			}
-			++i;
 		}
-
-		if (remaining.length() > 0)
-			result.add(remaining);
-		return result;
 	}
 }

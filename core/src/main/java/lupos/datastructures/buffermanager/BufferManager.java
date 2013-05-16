@@ -37,7 +37,7 @@ public class BufferManager {
 	public interface REPLACEMENTSTRATEGY<T> {
 		/**
 		 * this method is called whenever an item is accessed
-		 * 
+		 *
 		 * @param address
 		 *            the accessed item
 		 */
@@ -47,7 +47,7 @@ public class BufferManager {
 		 * This method is called whenever the buffer manager is full. This
 		 * method returns the item to be replaced with another one. The returned
 		 * item should be deleted from all records in the replacement strategy.
-		 * 
+		 *
 		 * @return the item to be removed from the buffer manager to free main
 		 *         memory
 		 */
@@ -59,9 +59,9 @@ public class BufferManager {
 		 * internal data structures of the replacement strategy.
 		 */
 		public void release(T address);
-		
+
 		/**
-		 * This method marks all items to be released, i.e., 
+		 * This method marks all items to be released, i.e.,
 		 * their contents do not need to be stored on disk and all
 		 * the items can be deleted from the internal data structures of
 		 * the replacement strategy.
@@ -75,7 +75,7 @@ public class BufferManager {
 	 */
 	public class LeastRecentlyUsed<T> implements REPLACEMENTSTRATEGY<T> {
 		protected HashMap<T, Long> timestamps = new HashMap<T, Long>();
-		
+
 		private long currentTime = 0;
 
 		@Override
@@ -87,8 +87,9 @@ public class BufferManager {
 		public T getToBeReplaced() {
 			Entry<T, Long> min = null;
 			for (final Entry<T, Long> entry : this.timestamps.entrySet()) {
-				if (min == null || entry.getValue() < min.getValue())
+				if (min == null || entry.getValue() < min.getValue()) {
 					min = entry;
+				}
 			}
 			if(min!=null){
 				final T key = min.getKey();
@@ -104,48 +105,48 @@ public class BufferManager {
 		public void release(final T address) {
 			this.timestamps.remove(address);
 		}
-		
+
 		@Override
 		public void releaseAll(){
 			this.timestamps.clear();
-		}		
+		}
 	}
-	
+
 	/**
-	 * This class stores all the information necessary to access a page (pagenumber plus filename of basis file)... 
+	 * This class stores all the information necessary to access a page (pagenumber plus filename of basis file)...
 	 */
 	public static class PageAddress{
 		public int pagenumber;
 		public String filename;
-		
+
 		public PageAddress(final int pagenumber, final String filename){
 			this.pagenumber = pagenumber;
 			this.filename = filename;
 		}
-		
+
 		@Override
-		public boolean equals(Object o){
+		public boolean equals(final Object o){
 			if(o instanceof PageAddress){
-				PageAddress other = (PageAddress)o;
+				final PageAddress other = (PageAddress)o;
 				return other.pagenumber == this.pagenumber && other.filename.compareTo(this.filename)==0;
 			} else {
 				return false;
-			}			
+			}
 		}
-		
+
 		@Override
 		public int hashCode(){
 			return (int)((long)this.pagenumber + this.filename.hashCode());
 		}
-		
+
 		@Override
 		public String toString(){
 			return this.pagenumber + " in " + this.filename;
 		}
 	}
-	
+
 	/**
-	 * This class contains the content of a single page plus a flag for storing whether or not the page has been modified... 
+	 * This class contains the content of a single page plus a flag for storing whether or not the page has been modified...
 	 */
 	public static class Page {
 		public byte[] page;
@@ -163,10 +164,10 @@ public class BufferManager {
 			this.pageaddress = pageaddress;
 			this.pagesize = pagesize;
 		}
-		
+
 		@Override
 		public String toString(){
-			StringBuilder sb=new StringBuilder();
+			final StringBuilder sb=new StringBuilder();
 			sb.append('(');
 			sb.append(this.pageaddress.toString());
 			sb.append(", Size: ");
@@ -176,16 +177,16 @@ public class BufferManager {
 				sb.append('m');
 			}
 			sb.append('[');
-			sb.append((this.page[0]+128));
+			sb.append((0xFF & this.page[0]));
 			for(int i=1;i<this.page.length;i++){
 				sb.append(',');
-				sb.append((this.page[i]+128));
+				sb.append((0xFF & this.page[i]));
 			}
 			sb.append(']');
 			return sb.toString();
 		}
 	}
-	
+
 	/**
 	 * The max. number of bytes in the buffer
 	 */
@@ -195,17 +196,17 @@ public class BufferManager {
 	 * the max. number of bytes stored in a file, which can be handled by java without problems
 	 */
 	protected static int JAVALIMITFILESIZE_IN_BYTES = 1024 * 1024 * 1024;
-			
+
 	/**
 	 * the max. number of opened files
 	 */
 	protected static int MAXOPENEDFILES = 10;
-	
+
 	/**
 	 * BufferManager is a singleton!
 	 */
 	private static BufferManager bufferManager = null;
-	
+
 	/**
 	 * the only way to get the singleton buffer manager
 	 * @return the singleton buffer manager
@@ -221,7 +222,7 @@ public class BufferManager {
 			lock.unlock();
 		}
 	}
-	
+
 	/**
 	 * the used replacement strategy for pages in the buffer, if new pages must be loaded which do not fit any more into the buffer
 	 */
@@ -231,27 +232,27 @@ public class BufferManager {
 	 * the used replacement strategy for opened files
 	 */
 	protected REPLACEMENTSTRATEGY<String> replacementStrategyOpenedFiles;
-	
+
 	/**
 	 * The buffered pages
 	 */
 	protected Map<PageAddress, Page> bufferedPages = new HashMap<PageAddress, Page>();
-	
+
 	/**
 	 * The buffered opened files
 	 */
 	protected Map<String, RandomAccessFile> bufferedFiles = new HashMap<String, RandomAccessFile>();
-	
+
 	/**
 	 * The lock used for any operation on a page
 	 */
 	protected static ReentrantLock lock = new ReentrantLock();
-	
+
 	/**
 	 * the current number of bytes in the buffer
 	 */
-	protected int currentNumberOfBytesInPuffer = 0;	
-	
+	protected int currentNumberOfBytesInPuffer = 0;
+
 	/**
 	 * the private constructor
 	 * @see getBufferManager()
@@ -266,18 +267,18 @@ public class BufferManager {
 	 * @param pagesize the size of a page
 	 * @param pageaddress
 	 *            The page address to be accessed afterwards...
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private RandomAccessFile jumpToPage(final int pagesize, final PageAddress pageaddress) throws IOException {
-		final int javalimitfilesize = (BufferManager.JAVALIMITFILESIZE_IN_BYTES / pagesize); 
+		final int javalimitfilesize = (BufferManager.JAVALIMITFILESIZE_IN_BYTES / pagesize);
 		final int newFile = pageaddress.pagenumber / javalimitfilesize;
 		final String newFilename = pageaddress.filename + "_" + newFile;
 		RandomAccessFile file = this.bufferedFiles.get(newFilename);
 		if(file==null){
 			if(this.bufferedFiles.size()>=MAXOPENEDFILES){
-				String filenameToBeClosed = this.replacementStrategyOpenedFiles.getToBeReplaced();
-				RandomAccessFile oldFile=this.bufferedFiles.remove(filenameToBeClosed);
+				final String filenameToBeClosed = this.replacementStrategyOpenedFiles.getToBeReplaced();
+				final RandomAccessFile oldFile=this.bufferedFiles.remove(filenameToBeClosed);
 				oldFile.close();
 			}
 			file = new RandomAccessFile(new File(newFilename), "rw");
@@ -290,19 +291,19 @@ public class BufferManager {
 
 	/**
 	 * This method writes a page on disk if it has been modified...
-	 * 
+	 *
 	 * @param page
 	 *            The page to be stored on disk if it has been modified...
 	 * @param pageaddress
 	 *            The page address (filename, pagenumber, ...)
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void writeModifiedPage(final Page page, final PageAddress pageaddress)
-			throws IOException {		
+			throws IOException {
 		if (page.modified) {
 			// write outside in file
-			jumpToPage(page.pagesize, pageaddress).write(page.page);
+			this.jumpToPage(page.pagesize, pageaddress).write(page.page);
 			page.modified = false;
 		}
 	}
@@ -312,7 +313,7 @@ public class BufferManager {
 	 * method determines a page according to the used replacement strategy,
 	 * which is then removed from the buffer (and stored on disk if it has been
 	 * modified)
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void handleFullBuffer() throws IOException {
@@ -320,7 +321,7 @@ public class BufferManager {
 			final PageAddress toBeReplaced = this.replacementStrategy.getToBeReplaced();
 			final Page pageToBeReplaced = this.bufferedPages.get(toBeReplaced);
 			if (pageToBeReplaced != null) {
-				writeModifiedPage(pageToBeReplaced, toBeReplaced);
+				this.writeModifiedPage(pageToBeReplaced, toBeReplaced);
 				this.bufferedPages.remove(toBeReplaced);
 				this.currentNumberOfBytesInPuffer -= pageToBeReplaced.pagesize;
 			}
@@ -330,12 +331,12 @@ public class BufferManager {
 	/**
 	 * This method returns a page. If the page is not in the buffer, it is
 	 * loaded from disk and added to the buffer.
-	 * 
+	 *
 	 * @param pagesize the size of the page
 	 * @param pagenumber
 	 *            The number of the page to be retrieved.
 	 * @return The content of the page
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public byte[] getPage(final int pagesize, final PageAddress pageaddress) throws IOException {
@@ -343,14 +344,14 @@ public class BufferManager {
 		try {
 			Page page = this.bufferedPages.get(pageaddress);
 			if (page == null) {
-				handleFullBuffer();
+				this.handleFullBuffer();
 				// load page
 				final byte[] pageContent = new byte[pagesize];
-				jumpToPage(pagesize, pageaddress).read(pageContent);
+				this.jumpToPage(pagesize, pageaddress).read(pageContent);
 				page = new Page(pagesize, pageaddress, pageContent);
 				this.bufferedPages.put(pageaddress, page);
 				this.currentNumberOfBytesInPuffer += pagesize;
-			} 
+			}
 			this.replacementStrategy.accessNow(pageaddress);
 			return page.page;
 		} finally {
@@ -366,7 +367,7 @@ public class BufferManager {
 	 *            The number of the modified page
 	 * @param pageContent
 	 *            The modified page
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void modifyPage(final int pagesize, final PageAddress pageaddress, final byte[] pageContent)
@@ -375,7 +376,7 @@ public class BufferManager {
 		try {
 			Page page = this.bufferedPages.get(pageaddress);
 			if (page == null) {
-				handleFullBuffer();
+				this.handleFullBuffer();
 				page = new Page(pagesize, pageaddress, pageContent, true);
 				this.bufferedPages.put(pageaddress, page);
 				this.currentNumberOfBytesInPuffer += pagesize;
@@ -384,7 +385,7 @@ public class BufferManager {
 				page.modified = true;
 			}
 			this.replacementStrategy.accessNow(pageaddress);
-			
+
 		} finally {
 			BufferManager.lock.unlock();
 		}
@@ -399,7 +400,7 @@ public class BufferManager {
 		BufferManager.lock.lock();
 		try {
 			this.replacementStrategy.release(pageaddress);
-			Page page = this.bufferedPages.remove(pageaddress);
+			final Page page = this.bufferedPages.remove(pageaddress);
 			if(page!=null){
 				this.currentNumberOfBytesInPuffer -= page.pagesize;
 			}
@@ -407,7 +408,7 @@ public class BufferManager {
 			BufferManager.lock.unlock();
 		}
 	}
-	
+
 	/**
 	 * This method releases all pages, i.e., their contents do not need to be stored
 	 * on disk.
@@ -420,7 +421,7 @@ public class BufferManager {
 			this.currentNumberOfBytesInPuffer = 0;
 		} finally {
 			BufferManager.lock.unlock();
-		}		
+		}
 	}
 
 	/**
@@ -433,7 +434,7 @@ public class BufferManager {
 		try {
 			for (final Entry<PageAddress, Page> entry : this.bufferedPages.entrySet()) {
 				if(entry.getKey().filename.compareTo(filename)==0){
-					writeModifiedPage(entry.getValue(), entry.getKey());
+					this.writeModifiedPage(entry.getValue(), entry.getKey());
 				}
 			}
 		} finally {
@@ -441,7 +442,7 @@ public class BufferManager {
 		}
 	}
 
-	
+
 	/**
 	 * This method writes all modified pages (in the buffer) to disk
 	 * @throws IOException
@@ -450,7 +451,7 @@ public class BufferManager {
 		BufferManager.lock.lock();
 		try {
 			for (final Entry<PageAddress, Page> entry : this.bufferedPages.entrySet()) {
-				writeModifiedPage(entry.getValue(), entry.getKey());
+				this.writeModifiedPage(entry.getValue(), entry.getKey());
 			}
 		} finally {
 			BufferManager.lock.unlock();
@@ -459,7 +460,7 @@ public class BufferManager {
 
 	/**
 	 * Returns an empty page in the size of the given page size.
-	 * 
+	 *
 	 * @param pagesize the size of a page
 	 * @return an empty page
 	 */
@@ -474,7 +475,7 @@ public class BufferManager {
 	public void close() throws IOException {
 		BufferManager.lock.lock();
 		try {
-			for(RandomAccessFile file: this.bufferedFiles.values()){
+			for(final RandomAccessFile file: this.bufferedFiles.values()){
 				file.close();
 			}
 			this.bufferedFiles.clear();
@@ -483,20 +484,20 @@ public class BufferManager {
 			BufferManager.lock.unlock();
 		}
 	}
-	
+
 	/**
 	 * This method releases all pages of a basis filename, i.e., their contents do not need to be stored
 	 * on disk.
-	 * @param filename the filename of the basis file 
+	 * @param filename the filename of the basis file
 	 */
 	public void releaseAllPages(final String filename){
 		BufferManager.lock.lock();
 		try {
-			LinkedList<PageAddress> pageAddresses = new LinkedList<PageAddress>();
-			for(Entry<PageAddress, Page> entry: this.bufferedPages.entrySet()){
+			final LinkedList<PageAddress> pageAddresses = new LinkedList<PageAddress>();
+			for(final Entry<PageAddress, Page> entry: this.bufferedPages.entrySet()){
 				if(entry.getKey().filename.compareTo(filename)==0){
 					pageAddresses.add(entry.getKey());
-					this.currentNumberOfBytesInPuffer -= entry.getValue().pagesize; 
+					this.currentNumberOfBytesInPuffer -= entry.getValue().pagesize;
 				}
 			}
 			for(final PageAddress pageAddress: pageAddresses){
@@ -505,19 +506,19 @@ public class BufferManager {
 			}
 		} finally {
 			BufferManager.lock.unlock();
-		}		
+		}
 	}
 
 	/**
 	 * This method closes the underlying files of basis filename.
-	 * @param filename the filename of the basis file 
+	 * @param filename the filename of the basis file
 	 */
 	public void close(final String filename) throws IOException {
 		final String filenamePrefix = filename + "_";
 		BufferManager.lock.lock();
 		try {
-			LinkedList<String> files = new LinkedList<String>();
-			for(Entry<String, RandomAccessFile> entry: this.bufferedFiles.entrySet()){
+			final LinkedList<String> files = new LinkedList<String>();
+			for(final Entry<String, RandomAccessFile> entry: this.bufferedFiles.entrySet()){
 				if(entry.getKey().startsWith(filenamePrefix)){
 					files.add(entry.getKey());
 					entry.getValue().close();
@@ -530,21 +531,21 @@ public class BufferManager {
 		} finally {
 			BufferManager.lock.unlock();
 		}
-	}	
-	
+	}
+
 	/**
 	 * This method releases all pages, deletes the buffered file from disk and starts with a new file,
 	 * i.e. all content of the buffered file is deleted.
-	 * @param filename the filename of the basis file 
+	 * @param filename the filename of the basis file
 	 * @throws IOException
 	 */
-	public void reset(String filename) throws IOException {
+	public void reset(final String filename) throws IOException {
 		this.releaseAllPages(filename);
 		this.close(filename);
-		int i=0;
+		final int i=0;
 		boolean flag = true;
 		do {
-			File file = new File(filename + "_" + i);
+			final File file = new File(filename + "_" + i);
 			if(file.exists()){
 				file.delete();
 			} else {
@@ -563,7 +564,7 @@ public class BufferManager {
 	/**
 	 * @param mAXBYTESINBUFFER the max number of bytes in the buffer
 	 */
-	public static void setMaxBytesInBuffer(int maxBytesInBuffer) {
+	public static void setMaxBytesInBuffer(final int maxBytesInBuffer) {
 		BufferManager.MAXBYTESINBUFFER = maxBytesInBuffer;
 	}
 
@@ -579,7 +580,7 @@ public class BufferManager {
 	 * This method should be called only if the default replacement strategy is not used and it should be called before the BufferManager is used the first time.
 	 * @param replacementStrategy the replacement strategy to be used
 	 */
-	public void setReplacementStrategy(REPLACEMENTSTRATEGY<PageAddress> replacementStrategy) {
+	public void setReplacementStrategy(final REPLACEMENTSTRATEGY<PageAddress> replacementStrategy) {
 		this.replacementStrategy = replacementStrategy;
 	}
 
@@ -593,7 +594,7 @@ public class BufferManager {
 	/**
 	 * @param maxOpenedFiles the max opened number of files in the buffer manager
 	 */
-	public static void setMaxOpenedFiles(int maxOpenedFiles) {
+	public static void setMaxOpenedFiles(final int maxOpenedFiles) {
 		MAXOPENEDFILES = maxOpenedFiles;
 	}
 }

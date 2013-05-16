@@ -38,7 +38,7 @@ public class Offset extends SingleInputOperator {
 
 	/**
 	 * constructs an offset-operator with given offset
-	 * 
+	 *
 	 * @param offset
 	 *            to use
 	 */
@@ -48,15 +48,16 @@ public class Offset extends SingleInputOperator {
 
 	/**
 	 * changes offset to given value
-	 * 
+	 *
 	 * @param offset
 	 *            the new offset
 	 */
 	public void setOffset(final int offset) {
 		this.offset = offset;
-		if (offset < 0)
+		if (offset < 0) {
 			System.out
 					.println("Error: OFFSET has to be either positive or zero!");
+		}
 	}
 
 	public int getOffset() {
@@ -65,36 +66,32 @@ public class Offset extends SingleInputOperator {
 
 	@Override
 	public void cloneFrom(final BasicOperator op) {
-		offset = ((Offset) op).offset;
+		this.offset = ((Offset) op).offset;
 	}
 
 	/**
 	 * overrides process method from OperatorInterface
-	 * 
+	 *
 	 * @return the BindingsList cut to offset:bindings.length;
 	 */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		if (pos >= offset)
+		if (this.pos >= this.offset){
 			return bindings;
-		if (pos + bindings.size() < offset) {
-			pos += bindings.size();
-			return null;
 		}
-		final QueryResult ret = QueryResult.createInstance();
+
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
-		while (itb.hasNext()) {
-			if (pos >= offset)
-				ret.add(itb.next());
-			else
-				itb.next();
-			pos++;
+
+		while (itb.hasNext() && this.pos < this.offset) {
+			itb.next();
+			this.pos++;
 		}
-		return ret;
+
+		return QueryResult.createInstance(itb);
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " " + offset;
+		return super.toString() + " " + this.offset;
 	}
 }
