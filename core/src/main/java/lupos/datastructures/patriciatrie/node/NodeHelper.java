@@ -1010,12 +1010,6 @@ public final class NodeHelper {
 						if (o instanceof Node) {
 							// Temporary node (should be the empty string with no children)
 							nL.add((Node) o);
-						} else if (o instanceof Tuple<?, ?>) {
-							// Child node
-							final Tuple<?, ?> t = (Tuple<?, ?>) o;
-							final Node n = (Node) t.getFirst();
-							final Integer nIdx = (Integer) t.getSecond();
-							nL.add(n.getChild(nIdx));
 						} else if (o instanceof Triple<?, ?, ?>) {
 							// Temporary node with remaining suffix
 							final Triple<?, ?, ?> t = (Triple<?, ?, ?>) o;
@@ -1024,6 +1018,12 @@ public final class NodeHelper {
 							final Integer nIdx = (Integer) t.getThird();
 							final Node newNode = NodeHelper.createTemporaryNode(s, n.getChild(nIdx));
 							nL.add(newNode);
+						} else if (o instanceof Tuple<?, ?>) {
+							// Child node
+							final Tuple<?, ?> t = (Tuple<?, ?>) o;
+							final Node n = (Node) t.getFirst();
+							final Integer nIdx = (Integer) t.getSecond();
+							nL.add(n.getChild(nIdx));
 						}
 					}
 					NodeHelper.mergeSeqSet((DBSeqNode)nodeMore, nL);
@@ -1366,12 +1366,6 @@ public final class NodeHelper {
 						if (o instanceof NodeWithValue) {
 							// Temporary node (should be the empty string with no children)
 							nL.add((NodeWithValue<Integer>) o);
-						} else if (o instanceof Tuple<?, ?>) {
-							// Child node
-							final Tuple<?, ?> t = (Tuple<?, ?>) o;
-							final Node n = (Node) t.getFirst();
-							final Integer nIdx = (Integer) t.getSecond();
-							nL.add((NodeWithValue<Integer>) n.getChild(nIdx));
 						} else if (o instanceof Triple<?, ?, ?>) {
 							// Temporary node with remaining suffix
 							final Triple<?, ?, ?> t = (Triple<?, ?, ?>) o;
@@ -1383,6 +1377,12 @@ public final class NodeHelper {
 									(NodeWithValue<Integer>) n.getChild(nIdx));
 
 							nL.add(newNode);
+						} else if (o instanceof Tuple<?, ?>) {
+							// Child node
+							final Tuple<?, ?> t = (Tuple<?, ?>) o;
+							final Node n = (Node) t.getFirst();
+							final Integer nIdx = (Integer) t.getSecond();
+							nL.add((NodeWithValue<Integer>) n.getChild(nIdx));
 						}
 					}
 					NodeHelper.mergeSeqBag((DBSeqNodeWithValue<Integer>)nodeMore, nL);

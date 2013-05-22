@@ -23,52 +23,31 @@
  */
 package lupos.misc;
 
-public class Triple<T1, T2, T3> {
-	protected T1 t1;
-	protected T2 t2;
+public class Triple<T1, T2, T3> extends Tuple<T1, T2>{
 	protected T3 t3;
 
-	public Triple(T1 t1, T2 t2, T3 t3) {
-		this.t1 = t1;
-		this.t2 = t2;
+	public Triple(final T1 t1, final T2 t2, final T3 t3) {
+		super(t1, t2);
 		this.t3 = t3;
-	}
-
-	public T1 getFirst() {
-		return this.t1;
-	}
-
-	public void setFirst(T1 t1) {
-		this.t1 = t1;
-	}
-
-	public T2 getSecond() {
-		return this.t2;
-	}
-
-	public void setSecond(T2 t2) {
-		this.t2 = t2;
 	}
 
 	public T3 getThird() {
 		return this.t3;
 	}
 
-	public void setThird(T3 t3) {
+	public void setThird(final T3 t3) {
 		this.t3 = t3;
 	}
 
-	public boolean equals(Object object) {
+	@Override
+	public boolean equals(final Object object) {
 		if(object instanceof Triple) {
-			Triple triple = (Triple) object;
-
-			if(!this.t1.equals(triple.t1)) {
+			if(!super.equals(object)) {
 				return false;
 			}
 
-			if(!this.t2.equals(triple.t2)) {
-				return false;
-			}
+			@SuppressWarnings("unchecked")
+			final Triple<T1, T2, T3> triple = (Triple<T1, T2, T3>) object;
 
 			return this.t3.equals(triple.t3);
 		}
@@ -77,11 +56,13 @@ public class Triple<T1, T2, T3> {
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		return (int) (((long) this.t1.hashCode() + this.t2.hashCode() + this.t3.hashCode()) % Integer.MAX_VALUE);
 	}
-	
+
+	@Override
 	public String toString(){
-		return "(" + t1.toString()+", "+t2.toString()+", "+t3.toString()+")";
+		return "(" + this.t1.toString()+", "+this.t2.toString()+", "+this.t3.toString()+")";
 	}
 }

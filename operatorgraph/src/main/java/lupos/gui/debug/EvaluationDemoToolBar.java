@@ -62,10 +62,9 @@ import lupos.engine.operators.multiinput.join.IndexJoin;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.gui.operatorgraph.util.VEImageIcon;
+import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.misc.Tuple;
-import lupos.misc.debug.DebugStep;
 import lupos.misc.debug.DebugStepRIF;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
@@ -91,8 +90,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	 * These conditions are used to synchronize the GUI thread with the
 	 * evaluator thread
 	 */
-	protected Condition condition = lock.newCondition();
-	protected Condition conditionEnableAction = lock.newCondition();
+	protected Condition condition = this.lock.newCondition();
+	protected Condition conditionEnableAction = this.lock.newCondition();
 	/**
 	 * This variable is used to synchronize the GUI thread with the evaluator
 	 * thread
@@ -185,13 +184,13 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 		this.generateEndButton();
 
 		if (infiniteStreams) {
-			gotoEndButton.setVisible(false);
+			this.gotoEndButton.setVisible(false);
 		}
 
 		this.generateSpeedComboBox();
 
 		// create the buffer
-		ringBuffer = new RingBuffer();
+		this.ringBuffer = new RingBuffer();
 	}
 
 	private void generateSpeedComboBox() {
@@ -205,6 +204,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				- (int) CommentLabelElement.getPercentageSteps());
 		jslider.addChangeListener(new ChangeListener() {
 
+			@Override
 			public void stateChanged(final ChangeEvent e) {
 				final JSlider source = (JSlider) e.getSource();
 
@@ -229,92 +229,96 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 
 	/**
 	 * generates the begin button
-	 * 
+	 *
 	 */
 	private void generateBeginButton() {
-		gotoBeginButton = new JButton("<<");
-		gotoBeginButton
+		this.gotoBeginButton = new JButton("<<");
+		this.gotoBeginButton
 		.setToolTipText("Return to the beginning of the ring buffer!");
-		gotoBeginButton.addActionListener(new ActionListener() {
+		this.gotoBeginButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				eventLock.lock();
+				EvaluationDemoToolBar.this.eventLock.lock();
 
 				try {
-					final StepContainer firstStep = ringBuffer.goBackToStart();
+					final StepContainer firstStep = EvaluationDemoToolBar.this.ringBuffer.goBackToStart();
 
 					if (firstStep != null) {
-						displayCommentLabel(firstStep);
+						EvaluationDemoToolBar.this.displayCommentLabel(firstStep);
 					}
 
-					gotoBeginButton.setEnabled(false);
-					stepBackButton.setEnabled(false);
-					playPauseButton.setEnabled(true);
-					stepButton.setEnabled(true);
-					gotoEndButton.setEnabled(true);
+					EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(false);
+					EvaluationDemoToolBar.this.stepBackButton.setEnabled(false);
+					EvaluationDemoToolBar.this.playPauseButton.setEnabled(true);
+					EvaluationDemoToolBar.this.stepButton.setEnabled(true);
+					EvaluationDemoToolBar.this.gotoEndButton.setEnabled(true);
 				} finally {
-					eventLock.unlock();
+					EvaluationDemoToolBar.this.eventLock.unlock();
 				}
 			}
 		});
 
-		gotoBeginButton.setEnabled(false);
-		this.add(gotoBeginButton);
+		this.gotoBeginButton.setEnabled(false);
+		this.add(this.gotoBeginButton);
 	}
 
 	/**
 	 * generates the end button
-	 * 
+	 *
 	 */
 	private void generateEndButton() {
-		gotoEndButton = new JButton(">>");
-		gotoEndButton.setToolTipText("process all steps until end!");
-		gotoEndButton.addActionListener(new ActionListener() {
+		this.gotoEndButton = new JButton(">>");
+		this.gotoEndButton.setToolTipText("process all steps until end!");
+		this.gotoEndButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				eventLock.lock();
+				EvaluationDemoToolBar.this.eventLock.lock();
 				try {
-					gotoBeginButton.setEnabled(false);
-					stepBackButton.setEnabled(false);
-					gotoEndButton.setEnabled(false);
-					stepButton.setEnabled(false);
-					playPauseButton.setEnabled(false);
-					displayCommentLabel = false;
-					while (!hasEnded || ringBuffer.hasNext()) {
-						if (ringBuffer.hasNext()) {
-							ringBuffer.next();
+					EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(false);
+					EvaluationDemoToolBar.this.stepBackButton.setEnabled(false);
+					EvaluationDemoToolBar.this.gotoEndButton.setEnabled(false);
+					EvaluationDemoToolBar.this.stepButton.setEnabled(false);
+					EvaluationDemoToolBar.this.playPauseButton.setEnabled(false);
+					EvaluationDemoToolBar.this.displayCommentLabel = false;
+					while (!EvaluationDemoToolBar.this.hasEnded || EvaluationDemoToolBar.this.ringBuffer.hasNext()) {
+						if (EvaluationDemoToolBar.this.ringBuffer.hasNext()) {
+							EvaluationDemoToolBar.this.ringBuffer.next();
 						} else {
-							lock.lock();
+							EvaluationDemoToolBar.this.lock.lock();
 							try {
-								nextstep = true;
-								condition.signalAll();
+								EvaluationDemoToolBar.this.nextstep = true;
+								EvaluationDemoToolBar.this.condition.signalAll();
 							} finally {
-								lock.unlock();
+								EvaluationDemoToolBar.this.lock.unlock();
 							}
-							lock.lock();
+							EvaluationDemoToolBar.this.lock.lock();
 							try {
-								while (nextstep == true && !hasEnded && !resume)
+								while (EvaluationDemoToolBar.this.nextstep == true && !EvaluationDemoToolBar.this.hasEnded && !EvaluationDemoToolBar.this.resume) {
 									try {
-										conditionEnableAction.await();
+										EvaluationDemoToolBar.this.conditionEnableAction.await();
 									} catch (final InterruptedException e1) {
 										System.err.println(e1);
 										e1.printStackTrace();
 									}
+								}
 							} finally {
-								lock.unlock();
+								EvaluationDemoToolBar.this.lock.unlock();
 							}
 						}
 					}
-					displayCommentLabel = true;
-					if (ringBuffer.getCurrentStepContainer() != null)
-						displayCommentLabel(ringBuffer
+					EvaluationDemoToolBar.this.displayCommentLabel = true;
+					if (EvaluationDemoToolBar.this.ringBuffer.getCurrentStepContainer() != null) {
+						EvaluationDemoToolBar.this.displayCommentLabel(EvaluationDemoToolBar.this.ringBuffer
 								.getCurrentStepContainer());
-					gotoBeginButton.setEnabled(ringBuffer.hasPrevious());
-					stepBackButton.setEnabled(ringBuffer.hasPrevious());
+					}
+					EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+					EvaluationDemoToolBar.this.stepBackButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
 				} finally {
-					eventLock.unlock();
+					EvaluationDemoToolBar.this.eventLock.unlock();
 				}
 			}
 		});
-		this.add(gotoEndButton);
+		this.add(this.gotoEndButton);
 	}
 
 	private Font getStandardFont() {
@@ -331,187 +335,194 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	}
 
 	private void setPlayButton() {
-		playPauseButton.setText(" Play");
-		final int size = getStandardFont().getSize();
-		playPauseButton.setIcon(VEImageIcon.getPlayIcon(size, Color.GREEN
+		this.playPauseButton.setText(" Play");
+		final int size = this.getStandardFont().getSize();
+		this.playPauseButton.setIcon(VEImageIcon.getPlayIcon(size, Color.GREEN
 				.darker()));
-		playPauseButton.setDisabledIcon(VEImageIcon.getPlayIcon(size,
+		this.playPauseButton.setDisabledIcon(VEImageIcon.getPlayIcon(size,
 				Color.GRAY));
-		playPauseButton.setToolTipText("Play/pause the animation!");
+		this.playPauseButton.setToolTipText("Play/pause the animation!");
 	}
 
 	/**
 	 * generates a play button, that switches to "pause" when pressed
-	 * 
+	 *
 	 */
 	private void generatePlayPauseButton() {
-		playPauseButton = new JButton();
-		setPlayButton();
-		playPauseButton.addActionListener(new ActionListener() {
+		this.playPauseButton = new JButton();
+		this.setPlayButton();
+		this.playPauseButton.addActionListener(new ActionListener() {
 			/**
 			 * the playThread invoked when the user presses the play-button
 			 */
 			protected PlayThread playThread;
 
+			@Override
 			public synchronized void actionPerformed(final ActionEvent arg0) {
-				eventLock.lock();
+				EvaluationDemoToolBar.this.eventLock.lock();
 				try {
-					if (playThread != null && playThread.isAlive()) {
-						playThread.pausePlayAnimation();
+					if (this.playThread != null && this.playThread.isAlive()) {
+						this.playThread.pausePlayAnimation();
 						try {
-							playThread.join();
+							this.playThread.join();
 						} catch (final InterruptedException e) {
 							System.err.println(e);
 							e.printStackTrace();
 						}
-						setEnabledContextMenu(true);
-						playThread = null;
-						enableButtons = true;
-						setPlayButton();
-						stepButton
-						.setEnabled(!hasEnded || ringBuffer.hasNext());
-						stepBackButton.setEnabled(ringBuffer.hasPrevious());
-						gotoBeginButton.setEnabled(ringBuffer.hasPrevious());
-						gotoEndButton.setEnabled(!hasEnded
-								|| ringBuffer.hasNext());
-						playPauseButton.setEnabled(!hasEnded
-								|| ringBuffer.hasNext());
+						EvaluationDemoToolBar.this.setEnabledContextMenu(true);
+						this.playThread = null;
+						EvaluationDemoToolBar.this.enableButtons = true;
+						EvaluationDemoToolBar.this.setPlayButton();
+						EvaluationDemoToolBar.this.stepButton
+						.setEnabled(!EvaluationDemoToolBar.this.hasEnded || EvaluationDemoToolBar.this.ringBuffer.hasNext());
+						EvaluationDemoToolBar.this.stepBackButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+						EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+						EvaluationDemoToolBar.this.gotoEndButton.setEnabled(!EvaluationDemoToolBar.this.hasEnded
+								|| EvaluationDemoToolBar.this.ringBuffer.hasNext());
+						EvaluationDemoToolBar.this.playPauseButton.setEnabled(!EvaluationDemoToolBar.this.hasEnded
+								|| EvaluationDemoToolBar.this.ringBuffer.hasNext());
 					} else {
 
-						playThread = new PlayThread();
-						setEnabledContextMenu(false);
-						stepButton.setEnabled(false);
-						stepBackButton.setEnabled(false);
-						gotoBeginButton.setEnabled(false);
-						gotoEndButton.setEnabled(false);
+						this.playThread = new PlayThread();
+						EvaluationDemoToolBar.this.setEnabledContextMenu(false);
+						EvaluationDemoToolBar.this.stepButton.setEnabled(false);
+						EvaluationDemoToolBar.this.stepBackButton.setEnabled(false);
+						EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(false);
+						EvaluationDemoToolBar.this.gotoEndButton.setEnabled(false);
 						// start the thread
-						playPauseButton.setText(" Pause");
-						final int size = getStandardFont().getSize();
-						playPauseButton.setIcon(VEImageIcon.getPauseIcon(size,
+						EvaluationDemoToolBar.this.playPauseButton.setText(" Pause");
+						final int size = EvaluationDemoToolBar.this.getStandardFont().getSize();
+						EvaluationDemoToolBar.this.playPauseButton.setIcon(VEImageIcon.getPauseIcon(size,
 								Color.YELLOW.darker()));
-						playPauseButton.setDisabledIcon(VEImageIcon
+						EvaluationDemoToolBar.this.playPauseButton.setDisabledIcon(VEImageIcon
 								.getPauseIcon(size, Color.GRAY));
-						playThread.start();
+						this.playThread.start();
 					}
 				} finally {
-					eventLock.unlock();
+					EvaluationDemoToolBar.this.eventLock.unlock();
 				}
 			}
 		});
-		this.add(playPauseButton);
+		this.add(this.playPauseButton);
 	}
 
 	private class PlayThread extends Thread {
 		private volatile boolean pausedPlayAnimation = false;
 
 		public synchronized void pausePlayAnimation() {
-			pausedPlayAnimation = true;
+			this.pausedPlayAnimation = true;
 		}
 
 		@Override
 		public void run() {
-			enableButtons = false;
-			while (!hasEnded || ringBuffer.hasNext()) {
+			EvaluationDemoToolBar.this.enableButtons = false;
+			while (!EvaluationDemoToolBar.this.hasEnded || EvaluationDemoToolBar.this.ringBuffer.hasNext()) {
 				// only display the next step, if the user did not pause the
 				// animation
-				if (commentLabelElement != null) {
-					while (commentLabelElement.getAnimationthread().isAlive())
-						if (pausedPlayAnimation)
+				if (EvaluationDemoToolBar.this.commentLabelElement != null) {
+					while (EvaluationDemoToolBar.this.commentLabelElement.getAnimationthread().isAlive()) {
+						if (this.pausedPlayAnimation) {
 							return;
+						}
+					}
 				}
-				if (pausedPlayAnimation)
+				if (this.pausedPlayAnimation) {
 					return;
-				nextButtonClick();
+				}
+				EvaluationDemoToolBar.this.nextButtonClick();
 			}
 			// the loop has ended so we change the button
-			eventLock.lock();
+			EvaluationDemoToolBar.this.eventLock.lock();
 			try {
-				enableButtons = true;
-				playPauseButton.setText(" Play");
-				playPauseButton.setIcon(VEImageIcon.getPlayIcon(getFont()
+				EvaluationDemoToolBar.this.enableButtons = true;
+				EvaluationDemoToolBar.this.playPauseButton.setText(" Play");
+				EvaluationDemoToolBar.this.playPauseButton.setIcon(VEImageIcon.getPlayIcon(EvaluationDemoToolBar.this.getFont()
 						.getSize(), Color.GREEN.darker()));
-				playPauseButton.setDisabledIcon(VEImageIcon.getPlayIcon(
-						getFont().getSize(), Color.GRAY));
-				stepButton.setEnabled(false);
-				stepBackButton.setEnabled(ringBuffer.hasPrevious());
-				gotoBeginButton.setEnabled(ringBuffer.hasPrevious());
-				gotoEndButton.setEnabled(false);
-				playPauseButton.setEnabled(false);
-				setEnabledContextMenu(true);
+				EvaluationDemoToolBar.this.playPauseButton.setDisabledIcon(VEImageIcon.getPlayIcon(
+						EvaluationDemoToolBar.this.getFont().getSize(), Color.GRAY));
+				EvaluationDemoToolBar.this.stepButton.setEnabled(false);
+				EvaluationDemoToolBar.this.stepBackButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+				EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+				EvaluationDemoToolBar.this.gotoEndButton.setEnabled(false);
+				EvaluationDemoToolBar.this.playPauseButton.setEnabled(false);
+				EvaluationDemoToolBar.this.setEnabledContextMenu(true);
 			} finally {
-				eventLock.unlock();
+				EvaluationDemoToolBar.this.eventLock.unlock();
 			}
 		}
 	}
 
 	private void setEnabledContextMenu(final boolean enabled) {
-		for (final JMenuItem menuItem : menuItems)
+		for (final JMenuItem menuItem : this.menuItems) {
 			menuItem.setEnabled(enabled);
+		}
 	}
 
 	/**
 	 * This method generates and adds the "Next step" button
 	 */
 	private void generateStepButton() {
-		stepButton = new JButton(">");
-		stepButton.setToolTipText("process the next step!");
-		stepButton.addActionListener(new ActionListener() {
+		this.stepButton = new JButton(">");
+		this.stepButton.setToolTipText("process the next step!");
+		this.stepButton.addActionListener(new ActionListener() {
+			@Override
 			public synchronized void actionPerformed(final ActionEvent e) {
-				eventLock.lock();
+				EvaluationDemoToolBar.this.eventLock.lock();
 				try {
-					if (commentLabelElement != null
-							&& commentLabelElement.getAnimationthread() != null) {
-						commentLabelElement.stopAnimation = true;
+					if (EvaluationDemoToolBar.this.commentLabelElement != null
+							&& EvaluationDemoToolBar.this.commentLabelElement.getAnimationthread() != null) {
+						EvaluationDemoToolBar.this.commentLabelElement.stopAnimation = true;
 						try {
-							commentLabelElement.getAnimationthread().join();
+							EvaluationDemoToolBar.this.commentLabelElement.getAnimationthread().join();
 						} catch (final InterruptedException e1) {
 							System.err.println(e1);
 							e1.printStackTrace();
 						}
 					}
-					nextButtonClick();
-					stepBackButton.setEnabled(ringBuffer.hasPrevious());
-					gotoBeginButton.setEnabled(ringBuffer.hasPrevious());
+					EvaluationDemoToolBar.this.nextButtonClick();
+					EvaluationDemoToolBar.this.stepBackButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+					EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
 				} finally {
-					eventLock.unlock();
+					EvaluationDemoToolBar.this.eventLock.unlock();
 				}
 			}
 		});
-		this.add(stepButton);
+		this.add(this.stepButton);
 	}
 
 	/**
 	 * the action which is performed when the next-step button is clicked
-	 * 
+	 *
 	 */
 	private void nextButtonClick() {
-		if (ringBuffer.hasNext()) {
-			final StepContainer resultStepContainer = ringBuffer.next();
-			displayCommentLabel(resultStepContainer);
-			if (!ringBuffer.hasNext() && hasEnded) {
-				stepButton.setEnabled(false);
-				playPauseButton.setEnabled(false);
-				gotoEndButton.setEnabled(false);
+		if (this.ringBuffer.hasNext()) {
+			final StepContainer resultStepContainer = this.ringBuffer.next();
+			this.displayCommentLabel(resultStepContainer);
+			if (!this.ringBuffer.hasNext() && this.hasEnded) {
+				this.stepButton.setEnabled(false);
+				this.playPauseButton.setEnabled(false);
+				this.gotoEndButton.setEnabled(false);
 			}
 		} else {
-			lock.lock();
+			this.lock.lock();
 			try {
-				nextstep = true;
-				condition.signalAll();
+				this.nextstep = true;
+				this.condition.signalAll();
 			} finally {
-				lock.unlock();
+				this.lock.unlock();
 			}
-			lock.lock();
+			this.lock.lock();
 			try {
-				while (nextstep == true && !hasEnded && !resume)
+				while (this.nextstep == true && !this.hasEnded && !this.resume) {
 					try {
-						conditionEnableAction.await();
+						this.conditionEnableAction.await();
 					} catch (final InterruptedException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
+				}
 			} finally {
-				lock.unlock();
+				this.lock.unlock();
 			}
 		}
 	}
@@ -520,22 +531,23 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	 * This method generates and adds the "Previous step" button
 	 */
 	private void generateStepBackButton() {
-		stepBackButton = new JButton("<");
-		stepBackButton.setToolTipText("process the previous step!");
-		stepBackButton.addActionListener(new ActionListener() {
+		this.stepBackButton = new JButton("<");
+		this.stepBackButton.setToolTipText("process the previous step!");
+		this.stepBackButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				eventLock.lock();
+				EvaluationDemoToolBar.this.eventLock.lock();
 				try {
-					stepButton.setEnabled(true);
-					playPauseButton.setEnabled(true);
-					gotoEndButton.setEnabled(true);
-					final StepContainer prevStepContainer = ringBuffer
+					EvaluationDemoToolBar.this.stepButton.setEnabled(true);
+					EvaluationDemoToolBar.this.playPauseButton.setEnabled(true);
+					EvaluationDemoToolBar.this.gotoEndButton.setEnabled(true);
+					final StepContainer prevStepContainer = EvaluationDemoToolBar.this.ringBuffer
 					.previous();
-					if (commentLabelElement != null
-							&& commentLabelElement.getAnimationthread() != null) {
-						commentLabelElement.stopAnimation = true;
+					if (EvaluationDemoToolBar.this.commentLabelElement != null
+							&& EvaluationDemoToolBar.this.commentLabelElement.getAnimationthread() != null) {
+						EvaluationDemoToolBar.this.commentLabelElement.stopAnimation = true;
 						try {
-							commentLabelElement.getAnimationthread().join();
+							EvaluationDemoToolBar.this.commentLabelElement.getAnimationthread().join();
 						} catch (final InterruptedException e1) {
 							System.err.println(e1);
 							e1.printStackTrace();
@@ -543,17 +555,17 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 					}
 					// show the comment label box
 					if (prevStepContainer != null) {
-						displayCommentLabel(prevStepContainer);
+						EvaluationDemoToolBar.this.displayCommentLabel(prevStepContainer);
 					}
-					stepBackButton.setEnabled(ringBuffer.hasPrevious());
-					gotoBeginButton.setEnabled(ringBuffer.hasPrevious());
+					EvaluationDemoToolBar.this.stepBackButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
+					EvaluationDemoToolBar.this.gotoBeginButton.setEnabled(EvaluationDemoToolBar.this.ringBuffer.hasPrevious());
 				} finally {
-					eventLock.unlock();
+					EvaluationDemoToolBar.this.eventLock.unlock();
 				}
 			}
 		});
-		stepBackButton.setEnabled(false);
-		this.add(stepBackButton);
+		this.stepBackButton.setEnabled(false);
+		this.add(this.stepBackButton);
 	}
 
 	/**
@@ -565,7 +577,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 
 	/**
 	 * This method sets the operatorGraphViewer
-	 * 
+	 *
 	 * @param operatorGraphViewer
 	 */
 	public void setOperatorGraphViewer(final Viewer operatorGraphViewer) {
@@ -574,18 +586,18 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 		this.operatorGraphViewer.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(final WindowEvent e) {
-				displayCommentLabel = false;
-				if (commentLabelElement != null
-						&& commentLabelElement.getAnimationthread() != null) {
-					commentLabelElement.stopAnimation = true;
+				EvaluationDemoToolBar.this.displayCommentLabel = false;
+				if (EvaluationDemoToolBar.this.commentLabelElement != null
+						&& EvaluationDemoToolBar.this.commentLabelElement.getAnimationthread() != null) {
+					EvaluationDemoToolBar.this.commentLabelElement.stopAnimation = true;
 				}
 				operatorGraphViewer.setVisible(false);
-				close();
+				EvaluationDemoToolBar.this.close();
 				operatorGraphViewer.dispose();
 			}
 		});
 
-		setUpContextMenus();
+		this.setUpContextMenus();
 	}
 
 	/**
@@ -598,7 +610,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 		final OperatorGraph operatorGraph = this.operatorGraphViewer
 		.getOperatorGraph();
 
-		menuItems = new LinkedList<JMenuItem>();
+		this.menuItems = new LinkedList<JMenuItem>();
 
 		// walk through the list of root GraphWrappers...
 		final HashSet<GraphWrapper> visited = new HashSet<GraphWrapper>();
@@ -616,7 +628,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	/**
 	 * This method sets a context menu for the given GraphWrappers and all their
 	 * children.
-	 * 
+	 *
 	 * @param operatorGraph
 	 *            instance of the OperatorGraph
 	 * @param graphWrappers
@@ -649,7 +661,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 
 	/**
 	 * This method creates a context menu to a specific GraphWrapper
-	 * 
+	 *
 	 * @param graphWrapper
 	 *            The GraphWrapper to which the context menu is attached to
 	 * @return the context menu
@@ -688,6 +700,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 		"Previous Add Step from here");
 
 		final CheckStep checkStepAll = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return true;
 			}
@@ -699,6 +712,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				graphWrapper, checkStepAll));
 
 		final CheckStep checkStepBindings = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return stepContainer.getObject() instanceof Bindings;
 			}
@@ -712,6 +726,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				graphWrapper, checkStepBindings));
 
 		final CheckStep checkStepPredicates = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return stepContainer.getObject() instanceof RuleResult;
 			}
@@ -725,6 +740,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				graphWrapper, checkStepPredicates));
 
 		final CheckStep checkStepTriple = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return stepContainer.getObject() instanceof Triple;
 			}
@@ -736,6 +752,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				graphWrapper, checkStepTriple));
 
 		final CheckStep checkStepMessage = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return stepContainer.getObject() instanceof Message;
 			}
@@ -749,6 +766,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				graphWrapper, checkStepMessage));
 
 		final CheckStep checkStepAddStep = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return !stepContainer.isDeleteStep();
 			}
@@ -762,6 +780,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				graphWrapper, checkStepAddStep));
 
 		final CheckStep checkStepDeleteStep = new CheckStep() {
+			@Override
 			public boolean check(final StepContainer stepContainer) {
 				return stepContainer.isDeleteStep();
 			}
@@ -792,37 +811,38 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 		contextMenu.addSeparator();
 		contextMenu.add(menuItemNextDeleteStep);
 		contextMenu.add(menuItemPrevDeleteStep);
-		menuItems.add(menuItemNext);
-		menuItems.add(menuItemPrev);
-		menuItems.add(menuItemNextBindings);
-		menuItems.add(menuItemPrevBindings);
-		menuItems.add(menuItemNextTriple);
-		menuItems.add(menuItemPrevTriple);
-		menuItems.add(menuItemNextMessage);
-		menuItems.add(menuItemPrevMessage);
-		menuItems.add(menuItemNextAddStep);
-		menuItems.add(menuItemPrevAddStep);
-		menuItems.add(menuItemNextDeleteStep);
-		menuItems.add(menuItemPrevDeleteStep);
+		this.menuItems.add(menuItemNext);
+		this.menuItems.add(menuItemPrev);
+		this.menuItems.add(menuItemNextBindings);
+		this.menuItems.add(menuItemPrevBindings);
+		this.menuItems.add(menuItemNextTriple);
+		this.menuItems.add(menuItemPrevTriple);
+		this.menuItems.add(menuItemNextMessage);
+		this.menuItems.add(menuItemPrevMessage);
+		this.menuItems.add(menuItemNextAddStep);
+		this.menuItems.add(menuItemPrevAddStep);
+		this.menuItems.add(menuItemNextDeleteStep);
+		this.menuItems.add(menuItemPrevDeleteStep);
 
 		if (graphWrapper.getElement() instanceof IndexJoin) {
 			final JMenuItem menuItemIndices = new JMenuItem(
 					"Show internal indices");
 			menuItemIndices.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent e) {
-					eventLock.lock();
+					EvaluationDemoToolBar.this.eventLock.lock();
 					try {
 						final IndexJoin indexJoin = (IndexJoin) graphWrapper
 						.getElement();
 
-						final Tuple<Vector<String>, Vector<Vector<String>>> left = getTable(indexJoin
+						final Tuple<Vector<String>, Vector<Vector<String>>> left = EvaluationDemoToolBar.this.getTable(indexJoin
 								.getLba()[0]);
-						final Tuple<Vector<String>, Vector<Vector<String>>> right = getTable(indexJoin
+						final Tuple<Vector<String>, Vector<Vector<String>>> right = EvaluationDemoToolBar.this.getTable(indexJoin
 								.getLba()[1]);
 
 						final JTable leftTable = CommentLabelElement.getTable(
 								left.getSecond(), left.getFirst(),
-								operatorGraphViewer.getOperatorGraph());
+								EvaluationDemoToolBar.this.operatorGraphViewer.getOperatorGraph());
 						// final JTable leftTable = new JTable(left.getSecond(),
 						// left.getFirst());
 						// leftTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -830,7 +850,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 
 						final JTable rightTable = CommentLabelElement.getTable(
 								right.getSecond(), right.getFirst(),
-								operatorGraphViewer.getOperatorGraph());
+								EvaluationDemoToolBar.this.operatorGraphViewer.getOperatorGraph());
 						// final JTable rightTable = new
 						// JTable(right.getSecond(),
 						// right.getFirst());
@@ -882,13 +902,13 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 						frame.pack();
 						frame.setVisible(true);
 					} finally {
-						eventLock.unlock();
+						EvaluationDemoToolBar.this.eventLock.unlock();
 					}
 				}
 			});
 			contextMenu.addSeparator();
 			contextMenu.add(menuItemIndices);
-			menuItems.add(menuItemIndices);
+			this.menuItems.add(menuItemIndices);
 		}
 
 		return contextMenu;
@@ -919,12 +939,13 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 				columns.add(entry.getKey());
 				for (final Variable v : allVariables) {
 					final Literal value = b.get(v);
-					if (value == null)
+					if (value == null) {
 						columns.add("");
-					else
+					} else {
 						columns.add(value.toString(this
 								.getOperatorGraphViewer().getOperatorGraph()
 								.getPrefix()));
+					}
 				}
 				data.add(columns);
 				number++;
@@ -945,22 +966,25 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 			this.checkStep = checkStep;
 		}
 
+		@Override
 		public void actionPerformed(final ActionEvent ae) {
-			eventLock.lock();
+			EvaluationDemoToolBar.this.eventLock.lock();
 			try {
-				Tuple<Boolean, StepContainer> resultNextStep = nextStep(graphWrapper);
+				Tuple<Boolean, StepContainer> resultNextStep = EvaluationDemoToolBar.this.nextStep(this.graphWrapper);
 				while (resultNextStep != null && resultNextStep.getFirst()
-						&& !checkStep.check(resultNextStep.getSecond()))
-					resultNextStep = nextStep(graphWrapper);
+						&& !this.checkStep.check(resultNextStep.getSecond())) {
+					resultNextStep = EvaluationDemoToolBar.this.nextStep(this.graphWrapper);
+				}
 
-				displayCommentLabel = true;
+				EvaluationDemoToolBar.this.displayCommentLabel = true;
 				if (resultNextStep != null && resultNextStep.getFirst()
-						&& resultNextStep.getSecond() != null)
-					displayCommentLabel(resultNextStep.getSecond());
+						&& resultNextStep.getSecond() != null) {
+					EvaluationDemoToolBar.this.displayCommentLabel(resultNextStep.getSecond());
+				}
 
-				actualizeButtons();
+				EvaluationDemoToolBar.this.actualizeButtons();
 			} finally {
-				eventLock.unlock();
+				EvaluationDemoToolBar.this.eventLock.unlock();
 			}
 		}
 	}
@@ -976,26 +1000,28 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 			this.checkStep = checkStep;
 		}
 
+		@Override
 		public void actionPerformed(final ActionEvent ae) {
-			eventLock.lock();
+			EvaluationDemoToolBar.this.eventLock.lock();
 			try {
-				if (graphWrapper != null) {
-					StepContainer searchedStepContainer = ringBuffer
-					.goBackTo((BasicOperator) graphWrapper.getElement());
+				if (this.graphWrapper != null) {
+					StepContainer searchedStepContainer = EvaluationDemoToolBar.this.ringBuffer
+					.goBackTo((BasicOperator) this.graphWrapper.getElement());
 					while (searchedStepContainer != null
-							&& !checkStep.check(searchedStepContainer))
-						searchedStepContainer = ringBuffer
-						.goBackTo((BasicOperator) graphWrapper
+							&& !this.checkStep.check(searchedStepContainer)) {
+						searchedStepContainer = EvaluationDemoToolBar.this.ringBuffer
+						.goBackTo((BasicOperator) this.graphWrapper
 								.getElement());
+					}
 					if (searchedStepContainer != null) {
-						displayCommentLabel(searchedStepContainer);
+						EvaluationDemoToolBar.this.displayCommentLabel(searchedStepContainer);
 					} else {
 						JOptionPane.showMessageDialog(null, "No more elements");
 					}
-					actualizeButtons();
+					EvaluationDemoToolBar.this.actualizeButtons();
 				}
 			} finally {
-				eventLock.unlock();
+				EvaluationDemoToolBar.this.eventLock.unlock();
 			}
 		}
 	}
@@ -1006,13 +1032,13 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 
 	private Tuple<Boolean, StepContainer> nextStep(
 			final GraphWrapper graphWrapper) {
-		if (ringBuffer.hasNext() || !hasEnded) {
+		if (this.ringBuffer.hasNext() || !this.hasEnded) {
 			// very important! stop the animation if it's running
-			if (commentLabelElement != null
-					&& commentLabelElement.getAnimationthread() != null) {
-				commentLabelElement.stopAnimation = true;
+			if (this.commentLabelElement != null
+					&& this.commentLabelElement.getAnimationthread() != null) {
+				this.commentLabelElement.stopAnimation = true;
 				try {
-					commentLabelElement.getAnimationthread().join();
+					this.commentLabelElement.getAnimationthread().join();
 				} catch (final InterruptedException e) {
 					System.err.println(e);
 					e.printStackTrace();
@@ -1023,33 +1049,34 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 			final BasicOperator lastOperator = (BasicOperator) graphWrapper
 			.getElement();
 			boolean found = false;
-			displayCommentLabel = false;
+			this.displayCommentLabel = false;
 			BasicOperator lastOperatorFrom;
-			while (!found && (!hasEnded || ringBuffer.hasNext())) {
-				if (ringBuffer.hasNext()) {
-					final StepContainer resultStepContainer = ringBuffer.next();
+			while (!found && (!this.hasEnded || this.ringBuffer.hasNext())) {
+				if (this.ringBuffer.hasNext()) {
+					final StepContainer resultStepContainer = this.ringBuffer.next();
 					lastOperatorFrom = resultStepContainer.getFrom();
 				} else {
-					lock.lock();
+					this.lock.lock();
 					try {
-						nextstep = true;
-						condition.signalAll();
+						this.nextstep = true;
+						this.condition.signalAll();
 					} finally {
-						lock.unlock();
+						this.lock.unlock();
 					}
-					lock.lock();
+					this.lock.lock();
 					try {
-						while (nextstep == true && !hasEnded && !resume)
+						while (this.nextstep == true && !this.hasEnded && !this.resume) {
 							try {
-								conditionEnableAction.await();
+								this.conditionEnableAction.await();
 							} catch (final InterruptedException e) {
 								System.err.println(e);
 								e.printStackTrace();
 							}
+						}
 					} finally {
-						lock.unlock();
+						this.lock.unlock();
 					}
-					lastOperatorFrom = ringBuffer.getCurrentStepContainer()
+					lastOperatorFrom = this.ringBuffer.getCurrentStepContainer()
 					.getFrom();
 				}
 				// check if we found the correct operator and then
@@ -1059,44 +1086,44 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 					found = true;
 				}
 			} // end while
-			final StepContainer resultStepContainer = ringBuffer
+			final StepContainer resultStepContainer = this.ringBuffer
 			.getCurrentStepContainer();
 			if (!found) {
-				displayCommentLabel = true;
-				displayCommentLabel(resultStepContainer);
+				this.displayCommentLabel = true;
+				this.displayCommentLabel(resultStepContainer);
 				JOptionPane.showMessageDialog(null, "No more elements");
 			}
 			return new Tuple<Boolean, StepContainer>(found, resultStepContainer);
 		} else {
-			displayCommentLabel = true;
-			displayCommentLabel(ringBuffer.getCurrentStepContainer());
+			this.displayCommentLabel = true;
+			this.displayCommentLabel(this.ringBuffer.getCurrentStepContainer());
 			JOptionPane.showMessageDialog(null, "No more elements");
 		}
 		return null;
 	}
 
 	private void actualizeButtons() {
-		if (!ringBuffer.hasNext() && hasEnded) {
-			stepButton.setEnabled(false);
-			playPauseButton.setEnabled(false);
-			gotoEndButton.setEnabled(false);
+		if (!this.ringBuffer.hasNext() && this.hasEnded) {
+			this.stepButton.setEnabled(false);
+			this.playPauseButton.setEnabled(false);
+			this.gotoEndButton.setEnabled(false);
 		} else {
-			stepButton.setEnabled(true);
-			playPauseButton.setEnabled(true);
-			gotoEndButton.setEnabled(true);
+			this.stepButton.setEnabled(true);
+			this.playPauseButton.setEnabled(true);
+			this.gotoEndButton.setEnabled(true);
 		}
-		if (ringBuffer.hasPrevious()) {
-			stepBackButton.setEnabled(true);
-			gotoBeginButton.setEnabled(true);
+		if (this.ringBuffer.hasPrevious()) {
+			this.stepBackButton.setEnabled(true);
+			this.gotoBeginButton.setEnabled(true);
 		} else {
-			stepBackButton.setEnabled(false);
-			gotoBeginButton.setEnabled(false);
+			this.stepBackButton.setEnabled(false);
+			this.gotoBeginButton.setEnabled(false);
 		}
 	}
 
 	/**
 	 * This method sets the thread for evaluation
-	 * 
+	 *
 	 * @param evaluationThread
 	 *            the thread for evaluation
 	 */
@@ -1160,7 +1187,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 		this.lock.lock();
 		try {
 			this.nextstep = false;
-			conditionEnableAction.signalAll();
+			this.conditionEnableAction.signalAll();
 		} finally {
 			this.lock.unlock();
 		}
@@ -1169,7 +1196,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	private void displayCommentLabel(final StepContainer stepContainer) {
 		// don't do anything if the user clicked "Next from here" or
 		// "Back to this"
-		if (!displayCommentLabel) {
+		if (!this.displayCommentLabel) {
 			return;
 		}
 		if (stepContainer.getObject() != null) {
@@ -1223,8 +1250,9 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 					max = Math.max(max, p.getParameters().size());
 				}
 				columnNames.add("Predicate");
-				for (int i = 1; i <= max; i++)
+				for (int i = 1; i <= max; i++) {
 					columnNames.add("Arg. " + i);
+				}
 				for (final Predicate p : rr.getPredicateResults()) {
 					final Vector<String> columns = new Vector<String>();
 					columns.add(p.getName().toString(
@@ -1234,8 +1262,9 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 						columns.add(l.toString(this.operatorGraphViewer
 								.getOperatorGraph().getPrefix()));
 					}
-					for (int i = p.getParameters().size(); i <= max; i++)
+					for (int i = p.getParameters().size(); i <= max; i++) {
 						columns.add("");
+					}
 					data.add(columns);
 				}
 				this.commentLabelElement = new CommentLabelElement(
@@ -1256,96 +1285,105 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	 * This method is called whenever an intermediate result is transmitted
 	 * between two operators
 	 */
+	@Override
 	public synchronized void step(final BasicOperator from,
 			final BasicOperator to, final Bindings bindings) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, bindings, false));
+		this.endOfStep(new StepContainer(from, to, bindings, false));
 	}
 
 	/**
 	 * This method is called whenever a triple is transmitted between two
 	 * operators
 	 */
+	@Override
 	public synchronized void step(final BasicOperator from,
 			final BasicOperator to, final Triple triple) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, triple, false));
+		this.endOfStep(new StepContainer(from, to, triple, false));
 	}
 
 	/**
 	 * This method is called whenever an intermediate result to be deleted is
 	 * transmitted between two operators
 	 */
+	@Override
 	public synchronized void stepDelete(final BasicOperator from,
 			final BasicOperator to, final Bindings bindings) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, bindings, true));
+		this.endOfStep(new StepContainer(from, to, bindings, true));
 	}
 
 	/**
 	 * This method is called whenever a triple to be deleted is transmitted
 	 * between two operators
 	 */
+	@Override
 	public synchronized void stepDelete(final BasicOperator from,
 			final BasicOperator to, final Triple triple) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, triple, true));
+		this.endOfStep(new StepContainer(from, to, triple, true));
 	}
 
 	/**
 	 * This method is called whenever an event for deleting all intermediate
 	 * results is transmitted between two operators
 	 */
+	@Override
 	public synchronized void stepDeleteAll(final BasicOperator from,
 			final BasicOperator to) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, "Delete all solutions", true));
+		this.endOfStep(new StepContainer(from, to, "Delete all solutions", true));
 	}
 
 	/**
 	 * This method is called whenever a message is transmitted between two
 	 * operators
 	 */
+	@Override
 	public synchronized void stepMessage(final BasicOperator from,
 			final BasicOperator to, final Message msg) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, msg, false));
+		this.endOfStep(new StepContainer(from, to, msg, false));
 	}
 
 	private void endOfStep(final StepContainer stepContainer) {
-		ringBuffer.next(stepContainer);
-		if (enableButtons) {
-			stepBackButton.setEnabled(ringBuffer.hasPrevious());
-			gotoBeginButton.setEnabled(ringBuffer.hasPrevious());
+		this.ringBuffer.next(stepContainer);
+		if (this.enableButtons) {
+			this.stepBackButton.setEnabled(this.ringBuffer.hasPrevious());
+			this.gotoBeginButton.setEnabled(this.ringBuffer.hasPrevious());
 		}
-		displayCommentLabel(stepContainer);
+		this.displayCommentLabel(stepContainer);
 		this.enableAction();
 	}
 
 	/**
 	 * This method is called after the evaluation of the query has ended
 	 */
+	@Override
 	public synchronized void endOfEvaluation() {
 		// there is no next step any more => disable the step button!
-		stepButton.setEnabled(false);
-		playPauseButton.setEnabled(false);
-		gotoEndButton.setEnabled(false);
-		lock.lock();
+		this.stepButton.setEnabled(false);
+		this.playPauseButton.setEnabled(false);
+		this.gotoEndButton.setEnabled(false);
+		this.lock.lock();
 		try {
-			hasEnded = true;
+			this.hasEnded = true;
 			this.conditionEnableAction.signalAll();
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
+	@Override
 	public void step(final BasicOperator from, final BasicOperator to, final RuleResult rr) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, rr, false));
+		this.endOfStep(new StepContainer(from, to, rr, false));
 	}
 
+	@Override
 	public void stepDelete(final BasicOperator from, final BasicOperator to, final RuleResult rr) {
 		this.waitForAction();
-		endOfStep(new StepContainer(from, to, rr, false));
+		this.endOfStep(new StepContainer(from, to, rr, false));
 	}
 }

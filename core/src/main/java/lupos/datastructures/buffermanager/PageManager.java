@@ -161,7 +161,7 @@ public class PageManager {
 	 * @return an empty page
 	 */
 	public byte[] getEmptyPage() {
-		return this.bufferManager.getEmptyPage(this.pagesize);
+		return new byte[this.pagesize];
 	}
 
 	/**
