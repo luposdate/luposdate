@@ -27,7 +27,7 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	 */
 	private static int MAXOPENEDFILES = 10;
 
-	public interface REPLACEMENTSTRATEGY<T> {
+	public static interface REPLACEMENTSTRATEGY<T> {
 		/**
 		 * this method is called whenever an item is accessed
 		 *
@@ -66,42 +66,118 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	 * This replacement strategy returns the number of the least recently used
 	 * item if the buffer is full.
 	 */
-	public class LeastRecentlyUsed<T> implements REPLACEMENTSTRATEGY<T> {
-		protected HashMap<T, Long> timestamps = new HashMap<T, Long>();
+	public static class LeastRecentlyUsed<T> implements REPLACEMENTSTRATEGY<T> {
 
-		private long currentTime = 0;
+		/**
+		 * This is one element of the doubly linked list.
+		 * The list should have a dummy element, which succeeding element is the head of the list
+		 * and its previous element is the tail of the list.
+		 * The empty list contains a dummy element referring to itself.
+		 * The dummy element avoids checking many special cases when inserting and removing elements...
+		 *
+		 * @param <T> the type of the keys to be stored...
+		 */
+		public final static class Pointers<T> {
+			private final T key;
+			private Pointers<T> before;
+			private Pointers<T> after;
+
+			/**
+			 * This constructor is just for constructing the dummy element
+			 */
+			public Pointers(){
+				this.key = null;
+				// just for the dummy:
+				// refer to itself as succeeding/preceding element
+				this.before = this;
+				this.after = this;
+			}
+
+			/**
+			 * Constructs one element in the doubly linked list and inserts this element after the given other element (in our use case before is the dummy).
+			 *
+			 * @param key the key to be stored
+			 * @param before the element after which the newly created element is stored
+			 */
+			public Pointers(final T key, final Pointers<T> before){
+				this.key = key;
+				this.insertAfter(before);
+			}
+
+			/**
+			 * removes the current element from the doubly linked list
+			 */
+			public final void remove(){
+				this.before.after = this.after;
+				this.after.before = this.before;
+			}
+
+			/**
+			 * @return the stored key
+			 */
+			public final T getKey(){
+				return this.key;
+			}
+
+			/**
+			 * inserts this element after the given element
+			 * @param before the element after which this element is inserted
+			 */
+			public final void insertAfter(final Pointers<T> before){
+				this.before = before;
+				this.after = before.after;
+				before.after = this;
+				this.after.before = this;
+			}
+
+			/**
+			 * initializes this element to be the dummy element:
+			 * it just points to itself...
+			 */
+			public final void initDummy(){
+				// just for the dummy:
+				// refer to itself as succeeding/preceding element
+				this.before = this;
+				this.after = this;
+			}
+		}
+
+		private final HashMap<T, Pointers<T>> entries = new HashMap<T, Pointers<T>>();
+		final Pointers<T> dummy = new Pointers<T>();
 
 		@Override
 		public void accessNow(final T address) {
-			this.timestamps.put(address, this.currentTime++);
+			final Pointers<T> pointers = this.entries.get(address);
+			if(pointers!=null){
+				pointers.remove();
+				pointers.insertAfter(this.dummy);
+			} else {
+				this.entries.put(address, new Pointers<T>(address, this.dummy));
+			}
 		}
 
 		@Override
 		public T getToBeReplaced() {
-			Entry<T, Long> min = null;
-			for (final Entry<T, Long> entry : this.timestamps.entrySet()) {
-				if (min == null || entry.getValue() < min.getValue()) {
-					min = entry;
-				}
-			}
-			if(min!=null){
-				final T key = min.getKey();
-				this.timestamps.remove(key);
-				return key;
-			} else {
-				// return error code...
-				return null;
-			}
+			final Pointers<T> leastRecentlyUsed = this.dummy.before;
+			leastRecentlyUsed.remove();
+			final T key = leastRecentlyUsed.getKey();
+			this.entries.remove(key);
+			return key;
 		}
 
 		@Override
 		public void release(final T address) {
-			this.timestamps.remove(address);
+			final Pointers<T> pointers = this.entries.get(address);
+			if(pointers!=null){
+				pointers.remove();
+				this.entries.remove(address);
+			}
 		}
 
 		@Override
 		public void releaseAll(){
-			this.timestamps.clear();
+			this.entries.clear();
+			this.dummy.initDummy();
 		}
 	}
 

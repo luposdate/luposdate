@@ -38,10 +38,16 @@ import lupos.misc.Triple;
  */
 public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 
+
+	/**
+	 * The percentage of space from the maximum heap space the buffer manager will use
+	 */
+	private final static int percentageOfHeapSpace = 50;
+
 	/**
 	 * The max. number of bytes in the buffer
 	 */
-	protected static int MAXBYTESINBUFFER = 100 * 8 * 1024;
+	protected static long MAXBYTESINBUFFER = (Runtime.getRuntime().maxMemory() * BufferManager_RandomAccess.percentageOfHeapSpace) / 100; // for 100 pages with default page size: 100 * 8 * 1024;
 
 	/**
 	 * the used replacement strategy for pages in the buffer, if new pages must be loaded which do not fit any more into the buffer
@@ -98,7 +104,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	/**
 	 * the current number of bytes in the buffer
 	 */
-	protected int currentNumberOfBytesInPuffer = 0;
+	protected long currentNumberOfBytesInPuffer = 0;
 
 	/**
 	 * the protected constructor
@@ -326,14 +332,14 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	/**
 	 * @return the max number of bytes in the buffer
 	 */
-	public static int getMaxBytesInBuffer() {
+	public static long getMaxBytesInBuffer() {
 		return BufferManager_RandomAccess.MAXBYTESINBUFFER;
 	}
 
 	/**
 	 * @param mAXBYTESINBUFFER the max number of bytes in the buffer
 	 */
-	public static void setMaxBytesInBuffer(final int maxBytesInBuffer) {
+	public static void setMaxBytesInBuffer(final long maxBytesInBuffer) {
 		BufferManager_RandomAccess.MAXBYTESINBUFFER = maxBytesInBuffer;
 	}
 
