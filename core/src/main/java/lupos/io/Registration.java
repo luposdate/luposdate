@@ -606,7 +606,7 @@ public class Registration {
 		}
 	}
 
-	public static <T> T deserializeWithoutId(
+	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass,
 			final LuposObjectInputStream<T> in) throws IOException,
 			ClassNotFoundException, URISyntaxException {
@@ -621,7 +621,7 @@ public class Registration {
 		}
 	}
 
-	public static <T> T deserializeWithoutId(
+	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass,
 			final InputStream in) throws IOException,
 			ClassNotFoundException, URISyntaxException {
@@ -677,7 +677,7 @@ public class Registration {
 		}
 	}
 
-	public static <T> T deserializeWithId(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
+	public static<T> T deserializeWithId(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int index = in.read();
 		if (index == -1) {
 			return null;
