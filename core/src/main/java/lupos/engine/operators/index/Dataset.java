@@ -32,9 +32,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.Map.Entry;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
@@ -46,18 +46,17 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
+import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapURILiteral;
 import lupos.datastructures.items.literal.codemap.IntegerStringMap;
-import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
 import lupos.datastructures.items.literal.codemap.StringIntegerMap;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.items.literal.codemap.TProcedureEntry;
 import lupos.datastructures.items.literal.string.StringURILiteral;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
+import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
@@ -65,6 +64,8 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
 
 public class Dataset {
@@ -79,7 +80,7 @@ public class Dataset {
 
 	/**
 	 * @author groppe
-	 * 
+	 *
 	 */
 	public interface IndicesFactory {
 		Indices createIndices(URILiteral uriLiteral);
@@ -94,9 +95,9 @@ public class Dataset {
 
 	private static boolean cachedDBBPTree = true;
 
-	private Map<URILiteral, Indices> defaultGraphData = new HashMap<URILiteral, Indices>();
+	private final Map<URILiteral, Indices> defaultGraphData = new HashMap<URILiteral, Indices>();
 
-	private Map<URILiteral, Indices> namedGraphData = new HashMap<URILiteral, Indices>();
+	private final Map<URILiteral, Indices> namedGraphData = new HashMap<URILiteral, Indices>();
 
 	private IndicesFactory indicesFactory;
 
@@ -109,7 +110,7 @@ public class Dataset {
 	private Thread codeMapConstructionThread = null;
 
 	public IndicesFactory getIndicesFactory() {
-		return indicesFactory;
+		return this.indicesFactory;
 	}
 
 	public Dataset(final String dataFormat, final ONTOLOGY materialize,
@@ -123,7 +124,7 @@ public class Dataset {
 
 		this.readIndexInfo(in);
 	}
-	
+
 	private void init(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs, final String dataFormat,
 			final ONTOLOGY materialize, final int opt,
@@ -140,39 +141,41 @@ public class Dataset {
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 
-			codeMapConstructionThread = new Thread() {
+			this.codeMapConstructionThread = new Thread() {
 				@Override
-				public void run() {					
+				public void run() {
 					final SortedSet<String> rdftermsRepresentations = (SortingApproach == SORT.NORMAL) ? new DBMergeSortedSet<String>(
 							new SortConfiguration(), String.class)
 							: new DBMergeSortedSetUsingTrie(
 									new SortConfiguration(), String.class);
 
 							if(toAddToRdftermsRepresentations!=null){
-								for(String s: toAddToRdftermsRepresentations){
+								for(final String s: toAddToRdftermsRepresentations){
 									rdftermsRepresentations.add(s);
-								}								
+								}
 							}
 							final TripleConsumer tc = new TripleConsumer() {
 
+								@Override
 								public void consume(final Triple triple) {
 									for (final Literal l : triple) {
 										// rdftermsRepresentations.add(l.
 										// originalString());
 										rdftermsRepresentations.add(l.toString());
-										if (l.originalStringDiffers())
+										if (l.originalStringDiffers()) {
 											rdftermsRepresentations.add(l
 													.originalString());
+										}
 									}
 								}
 
 							};
 							for (final URILiteral u : defaultGraphs) {
-								insertUsedStringRepresentations(u, dataFormat,
+								Dataset.this.insertUsedStringRepresentations(u, dataFormat,
 										rdftermsRepresentations, tc);
 							}
 							for (final URILiteral u : namedGraphs) {
-								insertUsedStringRepresentations(u, dataFormat,
+								Dataset.this.insertUsedStringRepresentations(u, dataFormat,
 										rdftermsRepresentations, tc);
 							}
 							// now generate B+-tree for integer-string map and
@@ -180,32 +183,38 @@ public class Dataset {
 							// map of the codemap!
 							final Generator<String, Integer> smsi = new Generator<String, Integer>() {
 
+								@Override
 								public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
 									return new Iterator<java.util.Map.Entry<String, Integer>>() {
 										Iterator<String> it = rdftermsRepresentations
 										.iterator();
 										int index = 1;
 
+										@Override
 										public boolean hasNext() {
-											return it.hasNext();
+											return this.it.hasNext();
 										}
 
+										@Override
 										public java.util.Map.Entry<String, Integer> next() {
-											if (!it.hasNext())
+											if (!this.it.hasNext()) {
 												return null;
-											else {
+											} else {
 												return new java.util.Map.Entry<String, Integer>() {
 													String s = it.next();
 													int localIndex = index++;
 
+													@Override
 													public String getKey() {
-														return s;
+														return this.s;
 													}
 
+													@Override
 													public Integer getValue() {
-														return localIndex;
+														return this.localIndex;
 													}
 
+													@Override
 													public Integer setValue(
 															final Integer arg0) {
 														throw new UnsupportedOperationException();
@@ -215,6 +224,7 @@ public class Dataset {
 											}
 										}
 
+										@Override
 										public void remove() {
 											throw new UnsupportedOperationException();
 										}
@@ -222,6 +232,7 @@ public class Dataset {
 									};
 								}
 
+								@Override
 								public int size() {
 									return rdftermsRepresentations.size();
 								}
@@ -259,7 +270,7 @@ public class Dataset {
 									StringArray ismap;
 									try {
 										ismap = new StringArray();
-										ismap.generate(rdftermsRepresentations.iterator());										
+										ismap.generate(rdftermsRepresentations.iterator());
 										LazyLiteral.setV(ismap);
 									} catch (final IOException e) {
 										System.err.println(e);
@@ -282,11 +293,11 @@ public class Dataset {
 							}
 				}
 			};
-			codeMapConstructionThread.start();
+			this.codeMapConstructionThread.start();
 		}
 
 		for (final URILiteral u : defaultGraphs) {
-			indexingRDFGraph(u, defaultGraphData, debug, inMemoryExternalOntologyComputation);
+			this.indexingRDFGraph(u, this.defaultGraphData, debug, inMemoryExternalOntologyComputation);
 		}
 	}
 
@@ -296,29 +307,29 @@ public class Dataset {
 			final IndicesFactory indicesFactory, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
 
-		init(defaultGraphs, namedGraphs, dataFormat, materialize, opt, indicesFactory, debug, inMemoryExternalOntologyComputation, null);	
-		
+		this.init(defaultGraphs, namedGraphs, dataFormat, materialize, opt, indicesFactory, debug, inMemoryExternalOntologyComputation, null);
+
 		for (final URILiteral u : namedGraphs) {
-			indexingRDFGraph(u, namedGraphData, debug, inMemoryExternalOntologyComputation);
+			this.indexingRDFGraph(u, this.namedGraphData, debug, inMemoryExternalOntologyComputation);
 		}
 	}
-	
+
 	public Dataset(final Collection<URILiteral> defaultGraphs,
-			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs, 
+			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs,
 			final ONTOLOGY materialize, final String dataFormat, final int opt,
 			final IndicesFactory indicesFactory, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
-		
-		Collection<URILiteral> urisOfNamedGraphs = new LinkedList<URILiteral>();
-		Collection<String> urisAsStrings = new LinkedList<String>();
-		for(Tuple<URILiteral, URILiteral> tuple: namedGraphs){
+
+		final Collection<URILiteral> urisOfNamedGraphs = new LinkedList<URILiteral>();
+		final Collection<String> urisAsStrings = new LinkedList<String>();
+		for(final Tuple<URILiteral, URILiteral> tuple: namedGraphs){
 			// first is source, second is content!
 			urisOfNamedGraphs.add(tuple.getSecond());
 			urisAsStrings.add(tuple.getFirst().toString());
 		}
 
-		init(defaultGraphs, urisOfNamedGraphs, dataFormat, materialize, opt, indicesFactory, debug, inMemoryExternalOntologyComputation, urisAsStrings);
-		
+		this.init(defaultGraphs, urisOfNamedGraphs, dataFormat, materialize, opt, indicesFactory, debug, inMemoryExternalOntologyComputation, urisAsStrings);
+
 		for (final Tuple<URILiteral, URILiteral> tuple : namedGraphs) {
 			this.addNamedGraph(tuple.getFirst(), tuple.getSecond(), debug, inMemoryExternalOntologyComputation);
 		}
@@ -341,84 +352,88 @@ public class Dataset {
 
 	public Indices getNamedGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
-		for(Entry<URILiteral, Indices> entry: namedGraphData.entrySet()){
-			if(entry.getKey().equals(rdfName))
+		for(final Entry<URILiteral, Indices> entry: this.namedGraphData.entrySet()){
+			if(entry.getKey().equals(rdfName)) {
 				return entry.getValue();
+			}
 		}
 		return null;
 		// return namedGraphData.get(rdfName);
 	}
-	
+
 	public void removeNamedGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
-		Iterator<Entry<URILiteral, Indices>> it = namedGraphData.entrySet().iterator();
+		final Iterator<Entry<URILiteral, Indices>> it = this.namedGraphData.entrySet().iterator();
 		while(it.hasNext()){
-			Entry<URILiteral, Indices> entry = it.next();
-			if(entry.getKey().equals(rdfName))
+			final Entry<URILiteral, Indices> entry = it.next();
+			if(entry.getKey().equals(rdfName)) {
 				it.remove();
+			}
 		}
 	}
 
 	public Set<URILiteral> getNamedGraphs() {
-		return namedGraphData.keySet();
+		return this.namedGraphData.keySet();
 	}
 
 	public Collection<Indices> getNamedGraphIndices() {
-		return namedGraphData.values();
+		return this.namedGraphData.values();
 	}
 
 	public Indices getDefaultGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
-		for(Entry<URILiteral, Indices> entry: defaultGraphData.entrySet()){
-			if(entry.getKey().equals(rdfName))
+		for(final Entry<URILiteral, Indices> entry: this.defaultGraphData.entrySet()){
+			if(entry.getKey().equals(rdfName)) {
 				return entry.getValue();
+			}
 		}
 		return null;
 		// return defaultGraphData.get(rdfName);
 	}
-	
+
 	public void removeDefaultGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
-		Iterator<Entry<URILiteral, Indices>> it = defaultGraphData.entrySet().iterator();
+		final Iterator<Entry<URILiteral, Indices>> it = this.defaultGraphData.entrySet().iterator();
 		while(it.hasNext()){
-			Entry<URILiteral, Indices> entry = it.next();
-			if(entry.getKey().equals(rdfName))
+			final Entry<URILiteral, Indices> entry = it.next();
+			if(entry.getKey().equals(rdfName)) {
 				it.remove();
+			}
 		}
 	}
 
 	public Set<URILiteral> getDefaultGraphs() {
-		return defaultGraphData.keySet();
+		return this.defaultGraphData.keySet();
 	}
 
 	public Collection<Indices> getDefaultGraphIndices() {
-		return defaultGraphData.values();
+		return this.defaultGraphData.values();
 	}
 
 	public long buildCompletelyAllIndices() {
 		final Date a = new Date();
-		for (final Indices indices : defaultGraphData.values()) {
+		for (final Indices indices : this.defaultGraphData.values()) {
 			indices.constructCompletely();
 		}
-		for (final Indices indices : namedGraphData.values()) {
+		for (final Indices indices : this.namedGraphData.values()) {
 			indices.constructCompletely();
 		}
 		final Date b = new Date();
 		return b.getTime() - a.getTime();
 	}
-	
+
 	public void writeOutAllModifiedPages() throws IOException{
-		for (final Indices indices : defaultGraphData.values()) {
+		for (final Indices indices : this.defaultGraphData.values()) {
 			indices.writeOutAllModifiedPages();
 		}
-		for (final Indices indices : namedGraphData.values()) {
+		for (final Indices indices : this.namedGraphData.values()) {
 			indices.writeOutAllModifiedPages();
-		}		
+		}
 	}
 
 	public Collection<Indices> indexingRDFGraphs(final Item graphConstraint,
 			final boolean debug,
-			final boolean inMemoryExternalOntologyComputation, Root root) {
+			final boolean inMemoryExternalOntologyComputation, final Root root) {
 
 		final LinkedList<Indices> indicesC = new LinkedList<Indices>();
 		Indices indices;
@@ -430,7 +445,7 @@ public class Dataset {
 				final List<String> graphs = root.defaultGraphs;
 				if (graphs != null && graphs.size() != 0) {
 					for (final String graph : graphs) {
-						indices = indexingRDFGraph(LiteralFactory
+						indices = this.indexingRDFGraph(LiteralFactory
 								.createURILiteralWithoutLazyLiteral("<"+graph+">"),
 								indicesC, debug,
 								inMemoryExternalOntologyComputation).getSecond();
@@ -439,17 +454,19 @@ public class Dataset {
 				}
 
 				// default RDF graph is given from command line
-				if (defaultGraphData.size() == 0)
+				if (this.defaultGraphData.size() == 0) {
 					return null;
-				return defaultGraphData.values();
+				}
+				return this.defaultGraphData.values();
 			}
 
 			// named graph
 			if (!(graphConstraint.isVariable())) {
-				Tuple<Boolean, Indices> tuple = indexingRDFGraph((URILiteral) graphConstraint,
+				final Tuple<Boolean, Indices> tuple = this.indexingRDFGraph((URILiteral) graphConstraint,
 						indicesC, debug, inMemoryExternalOntologyComputation);
-				if(tuple.getFirst())
-					namedGraphData.put((URILiteral) graphConstraint, tuple.getSecond());
+				if(tuple.getFirst()) {
+					this.namedGraphData.put((URILiteral) graphConstraint, tuple.getSecond());
+				}
 				return indicesC;
 			}
 
@@ -461,14 +478,15 @@ public class Dataset {
 				final List<String> graphs = root.namedGraphs;
 				if (graphs != null && graphs.size() != 0) {
 					for (final String graph : graphs) {
-						Tuple<Boolean, Indices> tuple = indexingRDFGraph(LiteralFactory.createURILiteralWithoutLazyLiteral("<"+graph+">"), indicesC, debug, inMemoryExternalOntologyComputation);
-						if(tuple.getFirst())
-							namedGraphData.put(LiteralFactory.createURILiteralWithoutLazyLiteral("<"+graph+">"), tuple.getSecond());
+						final Tuple<Boolean, Indices> tuple = this.indexingRDFGraph(LiteralFactory.createURILiteralWithoutLazyLiteral("<"+graph+">"), indicesC, debug, inMemoryExternalOntologyComputation);
+						if(tuple.getFirst()) {
+							this.namedGraphData.put(LiteralFactory.createURILiteralWithoutLazyLiteral("<"+graph+">"), tuple.getSecond());
+						}
 					}
 					return indicesC;
 				}
 
-				return namedGraphData.values();
+				return this.namedGraphData.values();
 			}
 			return null;
 		} catch (final Exception e) {
@@ -476,15 +494,16 @@ public class Dataset {
 			return null;
 		}
 	}
-	
+
 	public void addNamedGraph(final URILiteral graphURI, final URILiteral graphSource, final boolean debug, final boolean inMemoryExternalOntologyComputation) throws Exception{
 		Indices indices = this.namedGraphData.get(graphURI);
 		if(indices == null){
-			indices = indicesFactory.createIndices(graphURI);
+			indices = this.indicesFactory.createIndices(graphURI);
 			this.namedGraphData.put(graphURI, indices);
 		}
-		if(graphSource.originalString().compareTo("<inlinedata:>")!=0)
-			indices.loadData(graphSource, dataFormat, materialize, indicesFactory,opt, this, debug, inMemoryExternalOntologyComputation);
+		if(graphSource.originalString().compareTo("<inlinedata:>")!=0) {
+			indices.loadData(graphSource, this.dataFormat, this.materialize, this.indicesFactory,this.opt, this, debug, inMemoryExternalOntologyComputation);
+		}
 	}
 
 	public Tuple<Boolean,Indices> indexingRDFGraph(final URILiteral graphURI,
@@ -492,12 +511,13 @@ public class Dataset {
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
 		final boolean newIndices;
 		Indices indices = this.defaultGraphData.get(graphURI);
-		if(indices==null)
+		if(indices==null) {
 			indices=this.getNamedGraphIndices(graphURI);
+		}
 		if (indices == null) {
-			indices = indicesFactory.createIndices(graphURI);
+			indices = this.indicesFactory.createIndices(graphURI);
 			indicesC.add(indices);
-			indexingRDFGraph(graphURI, indices, debug,
+			this.indexingRDFGraph(graphURI, indices, debug,
 					inMemoryExternalOntologyComputation);
 			newIndices = true;
 		} else {
@@ -512,20 +532,22 @@ public class Dataset {
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
 		Indices indices = graphs.get(graphURI);
 		if (indices == null) {
-			indices = indicesFactory.createIndices(graphURI);
+			indices = this.indicesFactory.createIndices(graphURI);
 			graphs.put(graphURI, indices);
-			indexingRDFGraph(graphURI, indices, debug,
+			this.indexingRDFGraph(graphURI, indices, debug,
 					inMemoryExternalOntologyComputation);
-		} else
+		} else {
 			graphs.put(graphURI, indices);
+		}
 		return indices;
 	}
 
 	public void indexingRDFGraph(final URILiteral graphURI,
 			final Indices indices, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
-		if(graphURI.originalString().compareTo("<inlinedata:>")!=0)
-			indices.loadData(graphURI, dataFormat, materialize, indicesFactory,opt, this, debug, inMemoryExternalOntologyComputation);
+		if(graphURI.originalString().compareTo("<inlinedata:>")!=0) {
+			indices.loadData(graphURI, this.dataFormat, this.materialize, this.indicesFactory,this.opt, this, debug, inMemoryExternalOntologyComputation);
+		}
 	}
 
 	// maybe this method should is in other class
@@ -537,8 +559,9 @@ public class Dataset {
 		QueryResult qr;
 		for (final Bindings currentBindings : queryResult) {
 			qr = variableBinding(tec, tp, currentBindings, indices, index);
-			if (qr != null)
+			if (qr != null) {
 				qResult.addAll(qr);
+			}
 		}
 		return qResult;
 	}
@@ -551,8 +574,9 @@ public class Dataset {
 
 		// join the elements of the collection
 		if (indices == null) {
-			if (tec == null || tec.size() == 0)
+			if (tec == null || tec.size() == 0) {
 				return null;
+			}
 			// compute the variable names to be bound
 			final Variable[] var = { null, null, null };
 			for (int i = 0; i < 3; i++) {
@@ -585,8 +609,9 @@ public class Dataset {
 			final URILiteral value = (URILiteral) currentBindings
 					.get((Variable) varGraph);
 			if (value != null) {
-				if (value.compareTo(graph) != 0)
+				if (value.compareTo(graph) != 0) {
 					return null;
+				}
 			}
 		}
 
@@ -641,24 +666,24 @@ public class Dataset {
 	// }
 
 	public void putIntoDefaultGraphs(final URILiteral u, final Indices indices) {
-		defaultGraphData.put(u, indices);
+		this.defaultGraphData.put(u, indices);
 	}
 
 	public void putIntoNamedGraphs(final URILiteral u, final Indices indices) {
-		namedGraphData.put(u, indices);
+		this.namedGraphData.put(u, indices);
 	}
 
 	public int getIdMax() {
-		return defaultGraphData.size() + namedGraphData.size();
+		return this.defaultGraphData.size() + this.namedGraphData.size();
 	}
 
 	private void readIntegerStringMapAndStringIntegerMap(
 			final IntegerStringMap ism, final StringIntegerMap sim,
 			final LuposObjectInputStream in) throws IOException {
-		final int number = in.readLuposInt();
+		final int number = InputHelper.readLuposInt(in.is);
 		for (int i = 0; i < number; i++) {
-			final int code = in.readLuposInt();
-			final String value = in.readLuposString();
+			final int code = InputHelper.readLuposInt(in.is);
+			final String value = InputHelper.readLuposString(in.is);
 			ism.put(code, value);
 			sim.put(value, code);
 		}
@@ -666,14 +691,14 @@ public class Dataset {
 
 	public void readIndexInfo(final LuposObjectInputStream in)
 			throws IOException, ClassNotFoundException {
-		
-		lupos.datastructures.paged_dbbptree.DBBPTree.setCurrentFileID(in.readLuposInteger());
+
+		lupos.datastructures.paged_dbbptree.DBBPTree.setCurrentFileID(InputHelper.readLuposInt(in.is));
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
-			lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> dbbptreeSI =lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
+			final lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> dbbptreeSI =lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
 				dbbptreeSI.setName("Dictionary: String->Integer");
 				LazyLiteral.setHm(new StringIntegerMapJava(dbbptreeSI));
-				
+
 				//lupos.datastructures.paged_dbbptree.DBBPTree<Integer, String> dbbptreeIS = lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
 				//dbbptreeIS.setName("Dictionary: Integer->String");
 				//LazyLiteral.setV(new IntegerStringMapJava(dbbptreeIS));
@@ -684,42 +709,41 @@ public class Dataset {
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERAL
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 					&& LiteralFactory.getMapType() != MapType.PREFIXCODEMAP) {
-				readIntegerStringMapAndStringIntegerMap(CodeMapLiteral.getV(),
+				this.readIntegerStringMapAndStringIntegerMap(CodeMapLiteral.getV(),
 						CodeMapLiteral.getHm(), in);
 			}
 			if (LiteralFactory.getMapType() != MapType.NOCODEMAP
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERAL
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
-				readIntegerStringMapAndStringIntegerMap(CodeMapURILiteral
+				this.readIntegerStringMapAndStringIntegerMap(CodeMapURILiteral
 						.getV(), CodeMapURILiteral.getHm(), in);
 			}
 		}
-		int number = in.readLuposInt();
+		int number = InputHelper.readLuposInt(in.is);
 		for (int i = 0; i < number; i++) {
-			final URILiteral uri = (URILiteral) LiteralFactory
-					.readLuposLiteral(in);
-			final Indices indices = indicesFactory.createIndices(uri);
+			final URILiteral uri = (URILiteral) LiteralFactory.readLuposLiteral(in.is);
+			final Indices indices = this.indicesFactory.createIndices(uri);
 			indices.readIndexInfo(in);
-			defaultGraphData.put(uri, indices);
+			this.defaultGraphData.put(uri, indices);
 		}
-		number = in.readLuposInt();
+		number = InputHelper.readLuposInt(in.is);
 		for (int i = 0; i < number; i++) {
-			final URILiteral uri = (URILiteral) LiteralFactory
-					.readLuposLiteral(in);
-			final Indices indices = indicesFactory.createIndices(uri);
+			final URILiteral uri = (URILiteral) LiteralFactory.readLuposLiteral(in.is);
+			final Indices indices = this.indicesFactory.createIndices(uri);
 			indices.readIndexInfo(in);
-			namedGraphData.put(uri, indices);
+			this.namedGraphData.put(uri, indices);
 		}
 	}
 
 	private void writeIntegerStringMap(final IntegerStringMap ism,
 			final LuposObjectOutputStream out) throws IOException {
-		out.writeLuposInt(ism.size());
+		OutHelper.writeLuposInt(ism.size(), out.os);
 		ism.forEachEntry(new TProcedureEntry<Integer,String>() {
+			@Override
 			public boolean execute(final Integer arg0, final String arg1) {
 				try {
-					out.writeLuposInt(arg0);
-					out.writeLuposString(arg1);
+					OutHelper.writeLuposInt(arg0, out.os);
+					OutHelper.writeLuposString(arg1, out.os);
 				} catch (final IOException e) {
 					System.err.println(e);
 					e.printStackTrace();
@@ -733,9 +757,9 @@ public class Dataset {
 			throws IOException {
 		this.buildCompletelyAllIndices();
 		if(currentFileID==null){
-			out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID());
+			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out.os);
 		} else {
-			out.writeLuposInt(currentFileID);
+			OutHelper.writeLuposInt(currentFileID, out.os);
 		}
 
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
@@ -750,21 +774,21 @@ public class Dataset {
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERAL
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 					&& LiteralFactory.getMapType() != MapType.PREFIXCODEMAP) {
-				writeIntegerStringMap(CodeMapLiteral.getV(), out);
+				this.writeIntegerStringMap(CodeMapLiteral.getV(), out);
 			}
 			if (LiteralFactory.getMapType() != MapType.NOCODEMAP
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERAL
 					&& LiteralFactory.getMapType() != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
-				writeIntegerStringMap(CodeMapURILiteral.getV(), out);
+				this.writeIntegerStringMap(CodeMapURILiteral.getV(), out);
 			}
 		}
-		out.writeLuposInt(defaultGraphData.size());
-		for (final Entry<URILiteral, Indices> entry : defaultGraphData.entrySet()) {
+		OutHelper.writeLuposInt(this.defaultGraphData.size(), out.os);
+		for (final Entry<URILiteral, Indices> entry : this.defaultGraphData.entrySet()) {
 			LiteralFactory.writeLuposLiteral(entry.getKey(), out);
 			entry.getValue().writeIndexInfo(out);
 		}
-		out.writeLuposInt(namedGraphData.size());
-		for (final Entry<URILiteral, Indices> entry : namedGraphData.entrySet()) {
+		OutHelper.writeLuposInt(this.namedGraphData.size(), out.os);
+		for (final Entry<URILiteral, Indices> entry : this.namedGraphData.entrySet()) {
 			LiteralFactory.writeLuposLiteral(entry.getKey(), out);
 			entry.getValue().writeIndexInfo(out);
 		}
@@ -779,12 +803,13 @@ public class Dataset {
 	}
 
 	public void waitForCodeMapConstruction() {
-		if (codeMapConstructionThread != null)
+		if (this.codeMapConstructionThread != null) {
 			try {
-				codeMapConstructionThread.join();
+				this.codeMapConstructionThread.join();
 			} catch (final InterruptedException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
+		}
 	}
 }

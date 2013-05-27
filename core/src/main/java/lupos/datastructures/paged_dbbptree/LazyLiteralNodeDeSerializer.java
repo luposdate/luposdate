@@ -36,13 +36,15 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 
 public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, Triple> {
 
 	private static final long serialVersionUID = -8131702796960262942L;
-	
+
 	protected final RDF3XIndexScan.CollationOrder order;
 
 	protected final static int[][] map = { { 0, 1, 2 }, // SPO
@@ -69,43 +71,47 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		final boolean mustWriteLazyLiteralOriginalContent = (v.getObject() instanceof LazyLiteralOriginalContent)
 				&& (lastValue == null || !(lastValue.getObject().equals(v
 						.getObject())));
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			bits.set(1);
-		else
+		} else {
 			bits.clear(1);
+		}
 		int value = 0;
-		if (lastValue == null)
+		if (lastValue == null) {
 			value = 3;
-		else {
+		} else {
 			for (int i = 0; i < 3; i++) {
 				if (lastValue != null
-						&& v.getPos(map[order.ordinal()][i]).equals(
-								lastValue.getPos(map[order.ordinal()][i])))
+						&& v.getPos(map[this.order.ordinal()][i]).equals(
+								lastValue.getPos(map[this.order.ordinal()][i]))) {
 					value++;
-				else
+				} else {
 					break;
+				}
 			}
 		}
 		if (value <= 1) {
 			bits.clear(2);
-		} else
+		} else {
 			bits.set(2);
+		}
 		if (value % 2 == 0) {
 			bits.clear(3);
-		} else
+		} else {
 			bits.set(3);
+		}
 
 		int index = 3;
 
 		for (int i = 0; i < 3; i++) {
 			if (lastValue == null
-					|| !v.getPos(map[order.ordinal()][i]).equals(
-							lastValue.getPos(map[order.ordinal()][i]))) {
+					|| !v.getPos(map[this.order.ordinal()][i]).equals(
+							lastValue.getPos(map[this.order.ordinal()][i]))) {
 				if (lastValue != null) {
 					// determine difference
-					final int diff = ((LazyLiteral) v.getPos(map[order
+					final int diff = ((LazyLiteral) v.getPos(map[this.order
 							.ordinal()][i])).getCode()
-							- ((LazyLiteral) lastValue.getPos(map[order
+							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
 					index = determineNumberOfBytesForRepresentation(diff, bits,
 							index, out);
@@ -113,41 +119,43 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 				for (int j = i + ((value == 3) ? 0 : 1); j < 3; j++) {
 					// deal with the "rest"
 					index = determineNumberOfBytesForRepresentation(
-							((LazyLiteral) v.getPos(map[order.ordinal()][j]))
+							((LazyLiteral) v.getPos(map[this.order.ordinal()][j]))
 									.getCode(), bits, index, out);
 				}
 				break;
 			}
 		}
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			index = determineNumberOfBytesForRepresentation(
 					((LazyLiteralOriginalContent) v.getObject())
 							.getCodeOriginalContent(), bits, index, out);
+		}
 		index = determineNumberOfBytesForRepresentation(fileName, bits, index,
 				out);
 		bits.writeWithoutSize(out);
 		writeIntWithoutLeadingZeros(fileName, out);
 
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			writeIntWithoutLeadingZeros(((LazyLiteralOriginalContent) v
 					.getObject()).getCodeOriginalContent(), out);
+		}
 
 		for (int i = 0; i < 3; i++) {
 			if (lastValue == null
-					|| !v.getPos(map[order.ordinal()][i]).equals(
-							lastValue.getPos(map[order.ordinal()][i]))) {
+					|| !v.getPos(map[this.order.ordinal()][i]).equals(
+							lastValue.getPos(map[this.order.ordinal()][i]))) {
 				if (lastValue != null) {
 					// determine difference
-					final int diff = ((LazyLiteral) v.getPos(map[order
+					final int diff = ((LazyLiteral) v.getPos(map[this.order
 							.ordinal()][i])).getCode()
-							- ((LazyLiteral) lastValue.getPos(map[order
+							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
 					writeIntWithoutLeadingZeros(diff, out);
 				}
 				for (int j = i + ((value == 3) ? 0 : 1); j < 3; j++) {
 					// deal with the "rest"
 					writeIntWithoutLeadingZeros(((LazyLiteral) v
-							.getPos(map[order.ordinal()][j])).getCode(), out);
+							.getPos(map[this.order.ordinal()][j])).getCode(), out);
 				}
 				break;
 			}
@@ -173,41 +181,46 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		final boolean mustWriteLazyLiteralOriginalContent = (v.getObject() instanceof LazyLiteralOriginalContent)
 				&& (lastValue == null || !(lastValue.getObject().equals(v
 						.getObject())));
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			bits.set(1);
-		else
+		} else {
 			bits.clear(1);
+		}
 		int value = 0;
-		if (lastValue == null)
+		if (lastValue == null) {
 			value = 3;
-		else {
+		} else {
 			for (int i = 0; i < 3; i++) {
-					if(v.getPos(map[order.ordinal()][i]).equals(
-								lastValue.getPos(map[order.ordinal()][i])))
+					if(v.getPos(map[this.order.ordinal()][i]).equals(
+								lastValue.getPos(map[this.order.ordinal()][i]))) {
 						value++;
-					else break;
+					} else {
+						break;
+					}
 			}
 		}
 		if (value <= 1) {
 			bits.clear(2);
-		} else
+		} else {
 			bits.set(2);
+		}
 		if (value % 2 == 0) {
 			bits.clear(3);
-		} else
+		} else {
 			bits.set(3);
+		}
 
 		int index = 3;
 
 		for (int i = 0; i < 3; i++) {
 			if (lastValue == null
-					|| !v.getPos(map[order.ordinal()][i]).equals(
-							lastValue.getPos(map[order.ordinal()][i]))) {
+					|| !v.getPos(map[this.order.ordinal()][i]).equals(
+							lastValue.getPos(map[this.order.ordinal()][i]))) {
 				if (lastValue != null) {
 					// determine difference
-					final int diff = ((LazyLiteral) v.getPos(map[order
+					final int diff = ((LazyLiteral) v.getPos(map[this.order
 							.ordinal()][i])).getCode()
-							- ((LazyLiteral) lastValue.getPos(map[order
+							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
 					index = determineNumberOfBytesForRepresentation(diff, bits,
 							index, out);
@@ -215,38 +228,40 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 				for (int j = i + ((value == 3) ? 0 : 1); j < 3; j++) {
 					// deal with the "rest"
 					index = determineNumberOfBytesForRepresentation(
-							((LazyLiteral) v.getPos(map[order.ordinal()][j]))
+							((LazyLiteral) v.getPos(map[this.order.ordinal()][j]))
 									.getCode(), bits, index, out);
 				}
 				break;
 			}
 		}
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			index = determineNumberOfBytesForRepresentation(
 					((LazyLiteralOriginalContent) v.getObject())
 							.getCodeOriginalContent(), bits, index, out);
+		}
 		bits.writeWithoutSize(out);
 
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			writeIntWithoutLeadingZeros(((LazyLiteralOriginalContent) v
 					.getObject()).getCodeOriginalContent(), out);
+		}
 
 		for (int i = 0; i < 3; i++) {
 			if (lastValue == null
-					|| !v.getPos(map[order.ordinal()][i]).equals(
-							lastValue.getPos(map[order.ordinal()][i]))) {
+					|| !v.getPos(map[this.order.ordinal()][i]).equals(
+							lastValue.getPos(map[this.order.ordinal()][i]))) {
 				if (lastValue != null) {
 					// determine difference
-					final int diff = ((LazyLiteral) v.getPos(map[order
+					final int diff = ((LazyLiteral) v.getPos(map[this.order
 							.ordinal()][i])).getCode()
-							- ((LazyLiteral) lastValue.getPos(map[order
+							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
 					writeIntWithoutLeadingZeros(diff, out);
 				}
 				for (int j = i + ((value == 3) ? 0 : 1); j < 3; j++) {
 					// deal with the "rest"
 					writeIntWithoutLeadingZeros(((LazyLiteral) v
-							.getPos(map[order.ordinal()][j])).getCode(), out);
+							.getPos(map[this.order.ordinal()][j])).getCode(), out);
 				}
 				break;
 			}
@@ -267,17 +282,17 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 			final LuposObjectOutputStream out) throws IOException {
 		switch (determineNumberOfBytesForRepresentation(diff)) {
 		case 0:
-			out.writeLuposInt1Byte(diff);
+			OutHelper.writeLuposInt1Byte(diff, out.os);
 			break;
 		case 1:
-			out.writeLuposInt2Bytes(diff);
+			OutHelper.writeLuposInt2Bytes(diff, out.os);
 			break;
 		case 2:
-			out.writeLuposInt3Bytes(diff);
+			OutHelper.writeLuposInt3Bytes(diff, out.os);
 			break;
 		default:
 		case 3:
-			out.writeLuposInt(diff);
+			OutHelper.writeLuposInt(diff, out.os);
 			break;
 		}
 	}
@@ -293,19 +308,22 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 		if (number >= 2) {
 			bits.set(index);
-		} else
+		} else {
 			bits.clear(index);
+		}
 		index++;
 		if (number % 2 == 0) {
 			bits.clear(index);
-		} else
+		} else {
 			bits.set(index);
+		}
 		return index;
 	}
 
 	protected static int determineNumberOfBytesForRepresentation(int diff) {
-		if (diff < 0)
+		if (diff < 0) {
 			diff *= -1;
+		}
 		int number = 0;
 		while (diff >= 256) {
 			diff /= 256;
@@ -318,16 +336,16 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 			final LuposObjectInputStream<Triple> in) throws IOException {
 		if (bv.get(index)) {
 			if (bv.get(index + 1)) {
-				return in.readLuposInteger();
+				return InputHelper.readLuposInteger(in.is);
 			} else {
-				return in.readLuposInteger3Bytes();
+				return  InputHelper.readLuposInteger3Bytes(in.is);
 			}
 		} else {
 			if (bv.get(index + 1)) {
-				return in.readLuposInteger2Bytes();
+				return  InputHelper.readLuposInteger2Bytes(in.is);
 
 			} else {
-				return in.readLuposInteger1Byte();
+				return  InputHelper.readLuposInteger1Byte(in.is);
 			}
 		}
 	}
@@ -343,8 +361,9 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		if (bits.get(index)) {
 			number = 2;
 		}
-		if (bits.get(index + 1))
+		if (bits.get(index + 1)) {
 			number += 1;
+		}
 		return number;
 	}
 
@@ -354,14 +373,14 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		case 0:
 			return 0;
 		case 1:
-			return in.readLuposInteger1Byte();
+			return InputHelper.readLuposInteger1Byte(in.is);
 		case 2:
-			return in.readLuposInteger2Bytes();
+			return InputHelper.readLuposInteger2Bytes(in.is);
 		case 3:
-			return in.readLuposInteger3Bytes();
+			return InputHelper.readLuposInteger3Bytes(in.is);
 		default:
 		case 4:
-			return in.readLuposInteger();
+			return InputHelper.readLuposInteger(in.is);
 		}
 	}
 
@@ -369,7 +388,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 	public DBBPTreeEntry<TripleKey, Triple> getNextLeafEntry(
 			final LuposObjectInputStream<Triple> in, final TripleKey lastKey,
 			final Triple lastValue) {
-		return getNextLeafEntry(lastValue, in);
+		return this.getNextLeafEntry(lastValue, in);
 	}
 
 	private synchronized DBBPTreeEntry<TripleKey, Triple> getNextLeafEntry(
@@ -389,14 +408,17 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 
 			final boolean objectIsLazyLiteralOriginalContent = bits.get(1);
 			int whereDifferentLiteral = 0;
-			if (bits.get(2))
+			if (bits.get(2)) {
 				whereDifferentLiteral = 2;
-			if (bits.get(3))
+			}
+			if (bits.get(3)) {
 				whereDifferentLiteral += 1;
+			}
 			final Triple t = new Triple();
 			if(whereDifferentLiteral==3 && lastTriple!=null){
-				for(int i=0; i<3; i++)
+				for(int i=0; i<3; i++) {
 					t.setPos(i, lastTriple.getPos(i));
+				}
 			} else {
 				final int numberDifferent = (whereDifferentLiteral==3)?3:3 - whereDifferentLiteral;
 				final int[] numberBytesForInt = new int[numberDifferent];
@@ -414,23 +436,23 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 				int index2 = 0;
 				for (int i = 0; i < 3; i++) {
 					if (i < whereDifferentLiteral && whereDifferentLiteral != 3) {
-						t.setPos(map[order.ordinal()][i], lastTriple
-								.getPos(map[order.ordinal()][i]));
+						t.setPos(map[this.order.ordinal()][i], lastTriple
+								.getPos(map[this.order.ordinal()][i]));
 					} else {
 						if (whereDifferentLiteral != 3) {
 							final int diff = getInt(
 									numberBytesForInt[index2++] + 1, in);
-							t.setPos(map[order.ordinal()][i], getLiteral(diff
-									+ ((LazyLiteral) lastTriple.getPos(map[order
-											.ordinal()][i])).getCode(), map[order
+							t.setPos(map[this.order.ordinal()][i], getLiteral(diff
+									+ ((LazyLiteral) lastTriple.getPos(map[this.order
+											.ordinal()][i])).getCode(), map[this.order
 									.ordinal()][i], codeForOriginalContent,
 									objectIsLazyLiteralOriginalContent));
 						}
 						for (int j = i + ((whereDifferentLiteral != 3) ? 1 : 0); j < 3; j++) {
 							final int code = getInt(
 									numberBytesForInt[index2++] + 1, in);
-							t.setPos(map[order.ordinal()][j], getLiteral(code,
-									map[order.ordinal()][j],
+							t.setPos(map[this.order.ordinal()][j], getLiteral(code,
+									map[this.order.ordinal()][j],
 									codeForOriginalContent,
 									objectIsLazyLiteralOriginalContent));
 						}
@@ -439,7 +461,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 				}
 			}
 			return new DBBPTreeEntry<TripleKey, Triple>(new TripleKey(t,
-					new TripleComparator(order)), t, filenameOfNextLeafNode);
+					new TripleComparator(this.order)), t, filenameOfNextLeafNode);
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println(e);
@@ -466,10 +488,12 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 
 			final boolean objectIsLazyLiteralOriginalContent = bits.get(1);
 			int whereDifferentLiteral = 0;
-			if (bits.get(2))
+			if (bits.get(2)) {
 				whereDifferentLiteral = 2;
-			if (bits.get(3))
+			}
+			if (bits.get(3)) {
 				whereDifferentLiteral += 1;
+			}
 			final int numberDifferent = (whereDifferentLiteral == 3) ? 3
 					: 3 - whereDifferentLiteral;
 			final int[] numberBytesForInt = new int[numberDifferent];
@@ -491,23 +515,23 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 			int index2 = 0;
 			for (int i = 0; i < 3; i++) {
 				if (i < whereDifferentLiteral && whereDifferentLiteral != 3) {
-					t.setPos(map[order.ordinal()][i], lastTriple
-							.getPos(map[order.ordinal()][i]));
+					t.setPos(map[this.order.ordinal()][i], lastTriple
+							.getPos(map[this.order.ordinal()][i]));
 				} else {
 					if (whereDifferentLiteral != 3) {
 						final int diff = getInt(
 								numberBytesForInt[index2++] + 1, in);
-						t.setPos(map[order.ordinal()][i], getLiteral(diff
-								+ ((LazyLiteral) lastTriple.getPos(map[order
-										.ordinal()][i])).getCode(), map[order
+						t.setPos(map[this.order.ordinal()][i], getLiteral(diff
+								+ ((LazyLiteral) lastTriple.getPos(map[this.order
+										.ordinal()][i])).getCode(), map[this.order
 								.ordinal()][i], codeForOriginalContent,
 								objectIsLazyLiteralOriginalContent));
 					}
 					for (int j = i + ((whereDifferentLiteral != 3) ? 1 : 0); j < 3; j++) {
 						final int code = getInt(
 								numberBytesForInt[index2++] + 1, in);
-						t.setPos(map[order.ordinal()][j], getLiteral(code,
-								map[order.ordinal()][j],
+						t.setPos(map[this.order.ordinal()][j], getLiteral(code,
+								map[this.order.ordinal()][j],
 								codeForOriginalContent,
 								objectIsLazyLiteralOriginalContent));
 					}
@@ -515,7 +539,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 				}
 			}
 			return new Tuple<TripleKey, Integer>(new TripleKey(t,
-					new TripleComparator(order)), fileName);
+					new TripleComparator(this.order)), fileName);
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println(e);

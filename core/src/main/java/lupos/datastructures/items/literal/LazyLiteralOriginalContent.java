@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 /**
  * This class determines the type of it (like URILiteral, AnonymousLiteral,
@@ -40,7 +40,7 @@ import lupos.io.LuposObjectOutputStream;
 public class LazyLiteralOriginalContent extends LazyLiteral {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8200285980229881388L;
 	private int codeOriginalContent;
@@ -61,8 +61,9 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 			try{
 				this.codeOriginalContent = v.size() + 1;
 				hm.put(originalContent, new Integer(this.codeOriginalContent));
-				if (this.codeOriginalContent == Integer.MAX_VALUE)
+				if (this.codeOriginalContent == Integer.MAX_VALUE) {
 					System.err.println("Literal code overflow! Not good!");
+				}
 				v.put(new Integer(this.codeOriginalContent), originalContent);
 			} finally{
 				lock.unlock();
@@ -81,8 +82,9 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 			try{
 				this.codeOriginalContent = v.size() + 1;
 				hm.put(originalContent, new Integer(this.codeOriginalContent));
-				if (this.codeOriginalContent == Integer.MAX_VALUE)
+				if (this.codeOriginalContent == Integer.MAX_VALUE) {
 					System.err.println("Literal code overflow! Not good!");
+				}
 				v.put(new Integer(this.codeOriginalContent), originalContent);
 			} finally{
 				lock.unlock();
@@ -105,9 +107,9 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 
 	@Override
 	public String[] getUsedStringRepresentations() {
-		return new String[] { toString(), originalString() };
+		return new String[] { this.toString(), this.originalString() };
 	}
-	
+
 	@Override
 	public String getOriginalKey(){
 		return ""+this.codeOriginalContent;
@@ -115,8 +117,9 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 
 	@Override
 	public String originalString() {
-		if (this.originalString == null)
+		if (this.originalString == null) {
 			this.originalString = v.get(this.codeOriginalContent);
+		}
 		return this.originalString;
 	}
 
@@ -133,12 +136,12 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
 		super.readExternal(in);
-		this.codeOriginalContent = LuposObjectInputStream.readLuposInt(in);
+		this.codeOriginalContent = InputHelper.readLuposInt(in);
 	}
 
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		super.writeExternal(out);
-		LuposObjectOutputStream.writeLuposInt(this.codeOriginalContent, out);
+		OutHelper.writeLuposInt(this.codeOriginalContent, out);
 	}
 }

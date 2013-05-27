@@ -33,30 +33,30 @@ import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__JAVA;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
-import lupos.gui.anotherSyntaxHighlighting.javacc.java.Token;
 import lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5Constants;
+import lupos.gui.anotherSyntaxHighlighting.javacc.java.Token;
 
 public class JavaScanner implements PARSER {
 
 	private static TYPE__JAVA[] TOKEN_MAP;
 	private final lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5 parser;
-	
+
 	private JavaScanner(final LuposDocumentReader reader){
 		this.parser = new lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5(reader);
 	}
-	
+
 	public static ILuposParser createILuposParser(final LuposDocumentReader reader){
 		return new JAVACCParser(reader, new JavaScanner(reader));
 	}
-	
+
 	@Override
 	public TOKEN getNextToken() {
-		Token token = this.parser.getNextToken();
+		final Token token = this.parser.getNextToken();
 		if(token==null){
 			return null;
 		} else {
 			return new JavaToken(token);
-		}			
+		}
 	}
 
 	@Override
@@ -64,13 +64,17 @@ public class JavaScanner implements PARSER {
 		return JavaScanner.TOKEN_MAP;
 	}
 
+	public static TYPE__JAVA[] getStaticTokenMap() {
+		return JavaScanner.TOKEN_MAP;
+	}
+
 	@Override
-	public void ReInit(Reader reader) {
+	public void ReInit(final Reader reader) {
 		this.parser.ReInit(reader);
 	}
-	
+
 	@Override
-	public void ReInit(InputStream inputstream) {
+	public void ReInit(final InputStream inputstream) {
 		this.parser.ReInit(inputstream);
 	}
 
@@ -83,10 +87,10 @@ public class JavaScanner implements PARSER {
 				return true;
 			}
 			return content.substring(beginChar, beginChar+2).compareTo("/*")==0;
-		}		
-		return flag;	
+		}
+		return flag;
 	}
-	
+
 	@Override
 	public ILuposToken handleComment(final String content, final int beginChar){
 		if(content.charAt(beginChar+1)=='*'){
@@ -94,19 +98,19 @@ public class JavaScanner implements PARSER {
 			while(endOfComment<content.length()+2 && content.substring(endOfComment, endOfComment+2).compareTo("*/")!=0){
 				endOfComment++;
 			}
-			return create(TYPE__JAVA.COMMENT, content.substring(beginChar, endOfComment+2), beginChar);
+			return this.create(TYPE__JAVA.COMMENT, content.substring(beginChar, endOfComment+2), beginChar);
 		} else {
 			int endOfComment = beginChar+1;
 			while(endOfComment<content.length() && content.charAt(endOfComment)!='\n'){
 				endOfComment++;
 			}
-			return create(TYPE__JAVA.COMMENT, content.substring(beginChar, endOfComment), beginChar);
+			return this.create(TYPE__JAVA.COMMENT, content.substring(beginChar, endOfComment), beginChar);
 		}
 	}
-	
+
 	@Override
 	public boolean endOfSearchOfComment(final String content, final int beginChar){
-		boolean flag = content.charAt(beginChar)=='\n';
+		final boolean flag = content.charAt(beginChar)=='\n';
 		if(flag){
 			return true;
 		}
@@ -115,10 +119,10 @@ public class JavaScanner implements PARSER {
 		}
 		return false;
 	}
-	
+
 	{
 		JavaScanner.TOKEN_MAP = new TYPE__JAVA[JavaParser1_5Constants.tokenImage.length];
-		
+
 		insertIntoTokenMap(	new String[]{
 				   "<EOF>",
 				    "\" \"",
@@ -127,12 +131,12 @@ public class JavaScanner implements PARSER {
 				    "\"\\r\"",
 				    "\"\\f\""
 				}, TYPE__JAVA.WHITESPACE);
-		
+
 		insertIntoTokenMap(	new String[]{
 			    "<token of kind 6>",
 			    "<token of kind 7>"
 				}, TYPE__JAVA.COMMENT);
-		
+
 		insertIntoTokenMap(	new String[]{
 			    "\"abstract\"",
 			    "\"assert\"",
@@ -188,7 +192,7 @@ public class JavaScanner implements PARSER {
 			    "\"volatile\"",
 			    "\"while\""
 				}, TYPE__JAVA.RESERVEDWORD);
-		
+
 		insertIntoTokenMap(	new String[]{
 			    "<LONG_LITERAL>",
 			    "<INTEGER_LITERAL>",
@@ -203,13 +207,13 @@ public class JavaScanner implements PARSER {
 			    "<CHARACTER_LITERAL>",
 			    "<STRING_LITERAL>"
 				}, TYPE__JAVA.LITERAL);
-		
+
 		insertIntoTokenMap(	new String[]{
 			    "<IDENTIFIER>",
 			    "<LETTER>",
 			    "<PART_LETTER>"
 				}, TYPE__JAVA.IDENTIFIER);
-		
+
 		insertIntoTokenMap(	new String[]{
 			    "\"(\"",
 			    "\")\"",
@@ -222,7 +226,7 @@ public class JavaScanner implements PARSER {
 			    "\".\"",
 			    "\"@\""
 				}, TYPE__JAVA.SEPARATOR);
-		
+
 		insertIntoTokenMap(	new String[]{
 			    "\"=\"",
 			    "\"<\"",
@@ -264,11 +268,11 @@ public class JavaScanner implements PARSER {
 			    "\">>\"",
 			    "\">\""
 				}, TYPE__JAVA.OPERATOR);
-		
+
 
 		checkTopicMap();
 	}
-	
+
 	protected static void insertIntoTokenMap(final String[] imagesToSet, final TYPE__JAVA type){
 		JAVACCParser.insertIntoTokenMap(JavaParser1_5Constants.tokenImage, JavaScanner.TOKEN_MAP, imagesToSet, type);
 	}
@@ -276,15 +280,15 @@ public class JavaScanner implements PARSER {
 	protected static void checkTopicMap(){
 		JAVACCParser.checkTopicMap(JavaParser1_5Constants.tokenImage, JavaScanner.TOKEN_MAP);
 	}
-	
+
 	public static class JavaToken implements TOKEN {
 
 		private final Token javatoken;
-		
+
 		public JavaToken(final Token sparql1_1token){
-			this.javatoken = sparql1_1token; 
+			this.javatoken = sparql1_1token;
 		}
-		
+
 		@Override
 		public int getKind() {
 			return this.javatoken.kind;
@@ -293,7 +297,7 @@ public class JavaScanner implements PARSER {
 		@Override
 		public String getImage() {
 			return this.javatoken.image;
-		}		
+		}
 	}
 
 	@Override
@@ -302,7 +306,7 @@ public class JavaScanner implements PARSER {
 	}
 
 	@Override
-	public ILuposToken createErrorToken(String contents, int beginChar) {
+	public ILuposToken createErrorToken(final String contents, final int beginChar) {
 		return new lupos.gui.anotherSyntaxHighlighting.javacc.JavaToken(TYPE__JAVA.ERROR, contents, beginChar);
 	}
 }

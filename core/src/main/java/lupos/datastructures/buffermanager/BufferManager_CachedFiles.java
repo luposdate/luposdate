@@ -165,8 +165,12 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 			}
 		}
 
-		private final HashMap<T, Pointers<T>> entries = new HashMap<T, Pointers<T>>();
+		private final HashMap<T, Pointers<T>> entries;
 		final Pointers<T> dummy = new Pointers<T>();
+
+		public LeastRecentlyUsed(final int size){
+			this.entries = new HashMap<T, Pointers<T>>(size);
+		}
 
 		@Override
 		public void accessNow(final T address) {
@@ -217,13 +221,13 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	/**
 	 * The buffered opened files
 	 */
-	private final Map<String, RandomAccessFile> bufferedFiles = new HashMap<String, RandomAccessFile>();
+	private final Map<String, RandomAccessFile> bufferedFiles = new HashMap<String, RandomAccessFile>(BufferManager_CachedFiles.MAXOPENEDFILES);
 
 	/**
 	 * The constructor...
 	 */
 	protected BufferManager_CachedFiles(){
-		this.replacementStrategyOpenedFiles = new LeastRecentlyUsed<String>();
+		this.replacementStrategyOpenedFiles = new LeastRecentlyUsed<String>(BufferManager_CachedFiles.MAXOPENEDFILES);
 	}
 
 	/**

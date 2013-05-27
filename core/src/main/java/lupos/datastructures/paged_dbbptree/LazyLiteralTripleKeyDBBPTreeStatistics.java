@@ -40,8 +40,8 @@ import lupos.datastructures.buffermanager.PageInputStream;
 import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
-import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.TripleComparator.COMPARE;
+import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.queryresult.ParallelIterator;
@@ -51,6 +51,8 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectInputStreamWithoutReadingHeader;
 import lupos.io.LuposObjectOutputStream;
 import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.VarBucket;
@@ -92,55 +94,62 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		final boolean mustWriteLazyLiteralOriginalContent = (v.getObject() instanceof LazyLiteralOriginalContent)
 				&& (lastValue == null || !(lastValue.getObject().equals(v
 						.getObject())));
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			bits.set(1);
-		else
+		} else {
 			bits.clear(1);
+		}
 		int value = 0;
-		if (lastValue == null)
+		if (lastValue == null) {
 			value = 3;
-		else {
+		} else {
 			for (int i = 0; i < 3; i++) {
-				if (v.getPos(map[order.ordinal()][i]).equals(
-						lastValue.getPos(map[order.ordinal()][i])))
+				if (v.getPos(map[this.order.ordinal()][i]).equals(
+						lastValue.getPos(map[this.order.ordinal()][i]))) {
 					value++;
-				else
+				} else {
 					break;
+				}
 			}
 		}
 		if (value <= 1) {
 			bits.clear(2);
-		} else
+		} else {
 			bits.set(2);
+		}
 		if (value % 2 == 0) {
 			bits.clear(3);
-		} else
+		} else {
 			bits.set(3);
+		}
 
-		if (subjectDifferentFromPreviousTriple)
+		if (subjectDifferentFromPreviousTriple) {
 			bits.set(4);
-		else
+		} else {
 			bits.clear(4);
-		if (predicateDifferentFromPreviousTriple)
+		}
+		if (predicateDifferentFromPreviousTriple) {
 			bits.set(5);
-		else
+		} else {
 			bits.clear(5);
-		if (objectDifferentFromPreviousTriple)
+		}
+		if (objectDifferentFromPreviousTriple) {
 			bits.set(6);
-		else
+		} else {
 			bits.clear(6);
+		}
 
 		int index = 7;
 
 		for (int i = 0; i < 3; i++) {
 			if (lastValue == null
-					|| !v.getPos(map[order.ordinal()][i]).equals(
-							lastValue.getPos(map[order.ordinal()][i]))) {
+					|| !v.getPos(map[this.order.ordinal()][i]).equals(
+							lastValue.getPos(map[this.order.ordinal()][i]))) {
 				if (lastValue != null) {
 					// determine difference
-					final int diff = ((LazyLiteral) v.getPos(map[order
+					final int diff = ((LazyLiteral) v.getPos(map[this.order
 							.ordinal()][i])).getCode()
-							- ((LazyLiteral) lastValue.getPos(map[order
+							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
 					index = LazyLiteralNodeDeSerializer
 							.determineNumberOfBytesForRepresentation(diff,
@@ -151,17 +160,18 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 					index = LazyLiteralNodeDeSerializer
 							.determineNumberOfBytesForRepresentation(
 									((LazyLiteral) v
-											.getPos(map[order.ordinal()][j]))
+											.getPos(map[this.order.ordinal()][j]))
 											.getCode(), bits, index, out);
 				}
 				break;
 			}
 		}
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			index = LazyLiteralNodeDeSerializer
 					.determineNumberOfBytesForRepresentation(
 							((LazyLiteralOriginalContent) v.getObject())
 									.getCodeOriginalContent(), bits, index, out);
+		}
 		index = LazyLiteralNodeDeSerializer
 				.determineNumberOfBytesForRepresentation(fileName, bits, index,
 						out);
@@ -189,20 +199,21 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		LazyLiteralNodeDeSerializer.writeIntWithoutLeadingZeros(
 				numberDistinctObjects, out);
 
-		if (mustWriteLazyLiteralOriginalContent)
+		if (mustWriteLazyLiteralOriginalContent) {
 			LazyLiteralNodeDeSerializer.writeIntWithoutLeadingZeros(
 					((LazyLiteralOriginalContent) v.getObject())
 							.getCodeOriginalContent(), out);
+		}
 
 		for (int i = 0; i < 3; i++) {
 			if (lastValue == null
-					|| !v.getPos(map[order.ordinal()][i]).equals(
-							lastValue.getPos(map[order.ordinal()][i]))) {
+					|| !v.getPos(map[this.order.ordinal()][i]).equals(
+							lastValue.getPos(map[this.order.ordinal()][i]))) {
 				if (lastValue != null) {
 					// determine difference
-					final int diff = ((LazyLiteral) v.getPos(map[order
+					final int diff = ((LazyLiteral) v.getPos(map[this.order
 							.ordinal()][i])).getCode()
-							- ((LazyLiteral) lastValue.getPos(map[order
+							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
 					LazyLiteralNodeDeSerializer.writeIntWithoutLeadingZeros(
 							diff, out);
@@ -210,7 +221,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				for (int j = i + ((value == 3) ? 0 : 1); j < 3; j++) {
 					// deal with the "rest"
 					LazyLiteralNodeDeSerializer.writeIntWithoutLeadingZeros(
-							((LazyLiteral) v.getPos(map[order.ordinal()][j]))
+							((LazyLiteral) v.getPos(map[this.order.ordinal()][j]))
 									.getCode(), out);
 				}
 				break;
@@ -228,18 +239,21 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			final LuposObjectOutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
 		bits.clear(0);
-		if (subjectDifferentFromPreviousTriple)
+		if (subjectDifferentFromPreviousTriple) {
 			bits.set(1);
-		else
+		} else {
 			bits.clear(1);
-		if (predicateDifferentFromPreviousTriple)
+		}
+		if (predicateDifferentFromPreviousTriple) {
 			bits.set(2);
-		else
+		} else {
 			bits.clear(2);
-		if (objectDifferentFromPreviousTriple)
+		}
+		if (objectDifferentFromPreviousTriple) {
 			bits.set(3);
-		else
+		} else {
 			bits.clear(3);
+		}
 		int index = LazyLiteralNodeDeSerializer
 				.determineNumberOfBytesForRepresentation(fileName, bits, 3, out);
 		index = LazyLiteralNodeDeSerializer
@@ -348,10 +362,12 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 
 			final boolean objectIsLazyLiteralOriginalContent = bits.get(1);
 			int whereDifferentLiteral = 0;
-			if (bits.get(2))
+			if (bits.get(2)) {
 				whereDifferentLiteral = 2;
-			if (bits.get(3))
+			}
+			if (bits.get(3)) {
 				whereDifferentLiteral += 1;
+			}
 			final boolean subjectDifferentFromPreviousTriple = bits.get(4);
 			final boolean predicateDifferentFromPreviousTriple = bits.get(5);
 			final boolean objectDifferentFromPreviousTriple = bits.get(6);
@@ -409,32 +425,32 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			int index2 = 0;
 			for (int i = 0; i < 3; i++) {
 				if (i < whereDifferentLiteral && whereDifferentLiteral != 3) {
-					t.setPos(map[order.ordinal()][i], lastTriple
-							.getPos(map[order.ordinal()][i]));
+					t.setPos(map[this.order.ordinal()][i], lastTriple
+							.getPos(map[this.order.ordinal()][i]));
 				} else {
 					if (whereDifferentLiteral != 3) {
 						final int diff = LazyLiteralNodeDeSerializer.getInt(
 								numberBytesForInt[index2++] + 1, in);
 						t
 								.setPos(
-										map[order.ordinal()][i],
+										map[this.order.ordinal()][i],
 										LazyLiteralNodeDeSerializer
 												.getLiteral(
 														diff
 																+ ((LazyLiteral) lastTriple
-																		.getPos(map[order
+																		.getPos(map[this.order
 																				.ordinal()][i]))
 																		.getCode(),
-														map[order.ordinal()][i],
+														map[this.order.ordinal()][i],
 														codeForOriginalContent,
 														objectIsLazyLiteralOriginalContent));
 					}
 					for (int j = i + ((whereDifferentLiteral != 3) ? 1 : 0); j < 3; j++) {
 						final int code = LazyLiteralNodeDeSerializer.getInt(
 								numberBytesForInt[index2++] + 1, in);
-						t.setPos(map[order.ordinal()][j],
+						t.setPos(map[this.order.ordinal()][j],
 								LazyLiteralNodeDeSerializer.getLiteral(code,
-										map[order.ordinal()][j],
+										map[this.order.ordinal()][j],
 										codeForOriginalContent,
 										objectIsLazyLiteralOriginalContent));
 					}
@@ -442,7 +458,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				}
 			}
 			return new InnerNodeEntry(new TripleKey(t, new TripleComparator(
-					order)), fileName, numberOfTriples, numberDistinctSubjects,
+					this.order)), fileName, numberOfTriples, numberDistinctSubjects,
 					numberDistinctPredicates, numberDistinctObjects,
 					subjectDifferentFromPreviousTriple,
 					predicateDifferentFromPreviousTriple,
@@ -458,11 +474,12 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	public VarBucket getVarBucket(final TripleKey key, final TripleKey minimum,
 			final TripleKey maximum, final int pos) {
 		final VarBucket result = new VarBucket();
-		final int distance = (minimum == null) ? getDistance(key, key)
-				: (maximum == null) ? getDistance(minimum, minimum)
-						: getDistance(minimum, maximum);
-		if (distance < 0)
+		final int distance = (minimum == null) ? this.getDistance(key, key)
+				: (maximum == null) ? this.getDistance(minimum, minimum)
+						: this.getDistance(minimum, maximum);
+		if (distance < 0) {
 			return null;
+		}
 		if (distance == 0) {
 			// special treatment: only one element!
 			final ParallelIterator<Triple> it = (minimum == null) ? (ParallelIterator<Triple>) this
@@ -470,8 +487,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 					: (ParallelIterator<Triple>) this.prefixSearch(minimum);
 			final Triple t = it.next();
 			it.close();
-			if (t == null)
+			if (t == null) {
 				return null;
+			}
 			result.maximum = t.getPos(pos);
 			result.minimum = result.maximum;
 			final lupos.optimizations.logical.statistics.Entry entry = new lupos.optimizations.logical.statistics.Entry();
@@ -483,8 +501,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		}
 		final int MAXNUMBERBUCKETS = BasicIndexScan.getMaxNumberBuckets();
 		double step = (double) distance / MAXNUMBERBUCKETS;
-		if (step < 1.0)
+		if (step < 1.0) {
 			step = 1.0;
+		}
 		final PrefixSearchIteratorMaxMinDistanceJump it = (minimum == null) ? new PrefixSearchIteratorMaxMinDistanceJump(
 				key)
 				: new PrefixSearchIteratorMaxMinDistanceJump(key, minimum,
@@ -522,21 +541,23 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				final TripleKey smallest, final TripleKey largest) {
 			this(arg0, smallest);
 			this.largest = largest;
-			if (next != null && largest != null) {
-				if (largest.compareTo(next) < 0)
-					next = null;
+			if (this.next != null && largest != null) {
+				if (largest.compareTo(this.next) < 0) {
+					this.next = null;
+				}
 			}
 		}
 
 		public lupos.optimizations.logical.statistics.Entry next(
 				final double distance, final int pos) {
 			final lupos.optimizations.logical.statistics.Entry entry = new lupos.optimizations.logical.statistics.Entry();
-			if (next == null)
+			if (this.next == null) {
 				return null;
-			next = getNext(distance, pos, entry);
-			if (next != null && largest != null) {
-				if (largest.compareTo(next) < 0) {
-					next = null;
+			}
+			this.next = this.getNext(distance, pos, entry);
+			if (this.next != null && this.largest != null) {
+				if (this.largest.compareTo(this.next) < 0) {
+					this.next = null;
 					return entry;
 				}
 			}
@@ -545,75 +566,77 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 
 		public PrefixSearchIteratorMaxMinDistanceJump(final TripleKey arg0) {
 			this.arg0 = arg0;
-			lastTriple = null;
-			innerNodes = new LinkedList<Tuple<TripleKey, LuposObjectInputStream<Triple>>>();
-			next = getFirst(rootPage);
+			this.lastTriple = null;
+			this.innerNodes = new LinkedList<Tuple<TripleKey, LuposObjectInputStream<Triple>>>();
+			this.next = this.getFirst(LazyLiteralTripleKeyDBBPTreeStatistics.this.rootPage);
 		}
 
 		public PrefixSearchIteratorMaxMinDistanceJump(final TripleKey arg0,
 				final TripleKey smallest) {
 			this.arg0 = arg0;
-			lastTriple = null;
-			innerNodes = new LinkedList<Tuple<TripleKey, LuposObjectInputStream<Triple>>>();
-			next = getFirst(rootPage, smallest);
+			this.lastTriple = null;
+			this.innerNodes = new LinkedList<Tuple<TripleKey, LuposObjectInputStream<Triple>>>();
+			this.next = this.getFirst(LazyLiteralTripleKeyDBBPTreeStatistics.this.rootPage, smallest);
 		}
 
 		private Triple getFirst(final int filename) {
-			if (filename < 0)
+			if (filename < 0) {
 				return null;
+			}
 			InputStream fis;
 			try {
-				fis = new PageInputStream(filename, pageManager);
+				fis = new PageInputStream(filename, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
 				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = in.readLuposBoolean();
+				final boolean leaf =  InputHelper.readLuposBoolean(in.is);
 				if (leaf) { // leaf node reached!
 					while (true) {
-						final DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(
-								in, (lastTriple == null) ? null
-										: new TripleKey(lastTriple, order),
-								lastTriple);
+						final DBBPTreeEntry<TripleKey, Triple> e = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextLeafEntry(
+								in, (this.lastTriple == null) ? null
+										: new TripleKey(this.lastTriple, LazyLiteralTripleKeyDBBPTreeStatistics.this.order),
+								this.lastTriple);
 						if (e == null || e.key == null) {
-							currentLeafIn = in;
-							close();
+							this.currentLeafIn = in;
+							this.close();
 							return null;
 						}
-						if (e.value != null)
-							lastTriple = e.value;
+						if (e.value != null) {
+							this.lastTriple = e.value;
+						}
 						final TripleKey key = e.key;
-						final int compare = comparator.compare(key, arg0);
+						final int compare = LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(key, this.arg0);
 						if (compare == 0) {
-							currentLeafIn = in;
+							this.currentLeafIn = in;
 							return e.value;
 						} else if (compare > 0) {
-							currentLeafIn = in;
-							close();
+							this.currentLeafIn = in;
+							this.close();
 							return null;
 						}
 					}
 				} else {
 					TripleKey lastKey = null;
 					while (true) {
-						final Tuple<TripleKey, Integer> nextEntry = getNextInnerNodeEntry(
+						final Tuple<TripleKey, Integer> nextEntry = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntry(
 								lastKey, in);
 						if (nextEntry == null || nextEntry.getSecond() == 0
 								|| nextEntry.getSecond() < 0) {
 							in.close();
-							close();
+							this.close();
 							return null;
 						}
 						if (nextEntry.getFirst() == null) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											null, in));
-							return getFirst(nextEntry.getSecond());
+							return this.getFirst(nextEntry.getSecond());
 						}
-						final int compare = comparator.compare(nextEntry
-								.getFirst(), arg0);
+						final int compare = LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry
+								.getFirst(), this.arg0);
 						if (compare >= 0) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											nextEntry.getFirst(), in));
-							return getFirst(nextEntry.getSecond());
+							return this.getFirst(nextEntry.getSecond());
 						}
 						lastKey = nextEntry.getFirst();
 					}
@@ -630,39 +653,41 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		}
 
 		private Triple getFirst(final int filename, final TripleKey triplekey) {
-			if (filename < 0)
+			if (filename < 0) {
 				return null;
+			}
 			InputStream fis;
 			try {
-				fis = new PageInputStream(filename, pageManager);
+				fis = new PageInputStream(filename, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
 				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = in.readLuposBoolean();
-				lastTriple = null;
+				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				this.lastTriple = null;
 				if (leaf) { // leaf node reached!
 					while (true) {
-						final DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(
-								in, (lastTriple == null) ? null
-										: new TripleKey(lastTriple, order),
-								lastTriple);
+						final DBBPTreeEntry<TripleKey, Triple> e = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextLeafEntry(
+								in, (this.lastTriple == null) ? null
+										: new TripleKey(this.lastTriple, LazyLiteralTripleKeyDBBPTreeStatistics.this.order),
+								this.lastTriple);
 						if (e == null || e.key == null) {
-							currentLeafIn = in;
-							close();
+							this.currentLeafIn = in;
+							this.close();
 							return null;
 						}
-						if (e.value != null)
-							lastTriple = e.value;
+						if (e.value != null) {
+							this.lastTriple = e.value;
+						}
 						final TripleKey key = e.key;
-						final int compare = comparator.compare(key, triplekey);
+						final int compare = LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(key, triplekey);
 						if (compare == 0) {
-							currentLeafIn = in;
+							this.currentLeafIn = in;
 							return e.value;
 						} else if (compare > 0) {
-							if (comparator.compare(key, arg0) > 0) {
-								currentLeafIn = in;
-								close();
+							if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(key, this.arg0) > 0) {
+								this.currentLeafIn = in;
+								this.close();
 								return null;
 							} else {
-								currentLeafIn = in;
+								this.currentLeafIn = in;
 								return e.value;
 							}
 						}
@@ -670,27 +695,27 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					TripleKey lastKey = null;
 					while (true) {
-						final Tuple<TripleKey, Integer> nextEntry = getNextInnerNodeEntry(
+						final Tuple<TripleKey, Integer> nextEntry = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntry(
 								lastKey, in);
 						if (nextEntry == null || nextEntry.getSecond() <= 0) {
 							in.close();
-							close();
+							this.close();
 							return null;
 						}
 						lastKey = nextEntry.getFirst();
 						if (nextEntry.getFirst() == null) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											null, in));
-							return getFirst(nextEntry.getSecond(), triplekey);
+							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
-						final int compare = comparator.compare(nextEntry
+						final int compare = LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry
 								.getFirst(), triplekey);
 						if (compare >= 0) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											nextEntry.getFirst(), in));
-							return getFirst(nextEntry.getSecond(), triplekey);
+							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
 					}
 				}
@@ -708,10 +733,11 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		protected Triple useInnerNodes(final double distance, final int pos,
 				final lupos.optimizations.logical.statistics.Entry entry,
 				final int index) {
-			if (index < 0)
+			if (index < 0) {
 				return null;
+			}
 			double countDown = distance;
-			final Tuple<TripleKey, LuposObjectInputStream<Triple>> innerNode = innerNodes
+			final Tuple<TripleKey, LuposObjectInputStream<Triple>> innerNode = this.innerNodes
 					.get(index);
 			if (innerNode.getFirst() == null) {
 				try {
@@ -720,11 +746,11 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 					System.out.println(e);
 					e.printStackTrace();
 				}
-				innerNodes.remove(index);
-				return useInnerNodes(distance, pos, entry, index - 1);
+				this.innerNodes.remove(index);
+				return this.useInnerNodes(distance, pos, entry, index - 1);
 			}
 			while (countDown > 0.0) {
-				final InnerNodeEntry ine = getNextInnerNodeEntryStatistics(
+				final InnerNodeEntry ine = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntryStatistics(
 						innerNode.getFirst(), innerNode.getSecond());
 				if (ine == null) {
 					try {
@@ -733,27 +759,30 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						System.out.println(e);
 						e.printStackTrace();
 					}
-					innerNodes.remove(index);
-					return useInnerNodes(distance, pos, entry, index - 1);
+					this.innerNodes.remove(index);
+					return this.useInnerNodes(distance, pos, entry, index - 1);
 				}
 				innerNode.setFirst(ine.key);
 				if (countDown - ine.numberOfTriples < 0.0) {
 					switch (pos) {
 					case 0:
-						if (!ine.subjectDifferentFromPreviousTriple)
+						if (!ine.subjectDifferentFromPreviousTriple) {
 							entry.distinctLiterals--;
+						}
 						break;
 					case 1:
-						if (!ine.predicateDifferentFromPreviousTriple)
+						if (!ine.predicateDifferentFromPreviousTriple) {
 							entry.distinctLiterals--;
+						}
 						break;
 					case 2:
-						if (!ine.objectDifferentFromPreviousTriple)
+						if (!ine.objectDifferentFromPreviousTriple) {
 							entry.distinctLiterals--;
+						}
 						break;
 					}
 					// now go down this child node
-					return useInnerNodesGoDown(countDown, pos, entry,
+					return this.useInnerNodesGoDown(countDown, pos, entry,
 							ine.fileName);
 				}
 				countDown -= ine.numberOfTriples;
@@ -761,18 +790,21 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				switch (pos) {
 				case 0:
 					entry.distinctLiterals += ine.numberDistinctSubjects;
-					if (!ine.subjectDifferentFromPreviousTriple)
+					if (!ine.subjectDifferentFromPreviousTriple) {
 						entry.distinctLiterals--;
+					}
 					break;
 				case 1:
 					entry.distinctLiterals += ine.numberDistinctPredicates;
-					if (!ine.predicateDifferentFromPreviousTriple)
+					if (!ine.predicateDifferentFromPreviousTriple) {
 						entry.distinctLiterals--;
+					}
 					break;
 				case 2:
 					entry.distinctLiterals += ine.numberDistinctObjects;
-					if (!ine.objectDifferentFromPreviousTriple)
+					if (!ine.objectDifferentFromPreviousTriple) {
 						entry.distinctLiterals--;
+					}
 					break;
 				}
 				// last node accessed?
@@ -783,8 +815,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						System.out.println(e);
 						e.printStackTrace();
 					}
-					innerNodes.remove(index);
-					return useInnerNodes(distance, pos, entry, index - 1);
+					this.innerNodes.remove(index);
+					return this.useInnerNodes(distance, pos, entry, index - 1);
 				}
 			}
 			// this should never be reached!
@@ -794,24 +826,25 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		private Triple useInnerNodesGoDown(double countDown, final int pos,
 				final lupos.optimizations.logical.statistics.Entry entry,
 				final int fileName) {
-			if (fileName < 0)
+			if (fileName < 0) {
 				return null;
+			}
 			InputStream fis;
 			try {
-				fis = new PageInputStream(fileName, pageManager);
+				fis = new PageInputStream(fileName, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
 				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = in.readLuposBoolean();
-				lastTriple = null;
+				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				this.lastTriple = null;
 				if (leaf) { // leaf node reached!
-					currentLeafIn = in;
+					this.currentLeafIn = in;
 					while (countDown >= 0.0) {
-						final DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(
-								in, (lastTriple == null) ? null
-										: new TripleKey(lastTriple, order),
-								lastTriple);
+						final DBBPTreeEntry<TripleKey, Triple> e = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextLeafEntry(
+								in, (this.lastTriple == null) ? null
+										: new TripleKey(this.lastTriple, LazyLiteralTripleKeyDBBPTreeStatistics.this.order),
+								this.lastTriple);
 						if (e == null) {
-							close();
-							next = null;
+							this.close();
+							this.next = null;
 							return null;
 						}
 						if (e.key == null) {
@@ -819,75 +852,76 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 							// the inner nodes!
 							// this case should never happen!
 							if (e.filenameOfNextLeafNode >= 0) {
-								currentLeafIn.close();
+								this.currentLeafIn.close();
 								return this.useInnerNodes(countDown, pos,
-										entry, innerNodes.size() - 1);
+										entry, this.innerNodes.size() - 1);
 							} else {
 								// should never happen!
-								currentLeafIn.close();
-								close();
-								next = null;
+								this.currentLeafIn.close();
+								this.close();
+								this.next = null;
 								return null;
 							}
 						}
-						if (comparator.compare(e.key, arg0) != 0) {
-							close();
-							next = null;
+						if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(e.key, this.arg0) != 0) {
+							this.close();
+							this.next = null;
 							return null;
 						}
-						if (largest != null) {
-							if (comparator.compare(e.key, largest) > 0) {
-								close();
-								next = null;
+						if (this.largest != null) {
+							if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(e.key, this.largest) > 0) {
+								this.close();
+								this.next = null;
 								return null;
 							}
 						}
 						entry.selectivity += 1.0;
 						countDown -= 1.0;
-						if (lastTriple == null
-								|| lastTriple
+						if (this.lastTriple == null
+								|| this.lastTriple
 										.getPos(pos)
 										.compareToNotNecessarilySPARQLSpecificationConform(
-												e.value.getPos(pos)) != 0)
+												e.value.getPos(pos)) != 0) {
 							entry.distinctLiterals += 1.0;
-						lastTriple = e.value;
-						entry.literal = lastTriple.getPos(pos);
+						}
+						this.lastTriple = e.value;
+						entry.literal = this.lastTriple.getPos(pos);
 					}
 					// read over the triples with the same literal at position
 					// pos
-					return readOver(lastTriple, entry, pos);
+					return this.readOver(this.lastTriple, entry, pos);
 				} else {
 					TripleKey lastKey = null;
 					while (true) {
-						final InnerNodeEntry nextEntry = getNextInnerNodeEntryStatistics(
+						final InnerNodeEntry nextEntry = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntryStatistics(
 								lastKey, in);
 						if (nextEntry == null || nextEntry.fileName <= 0) {
 							in.close();
-							close();
-							next = null;
+							this.close();
+							this.next = null;
 							return null;
 						}
 						lastKey = nextEntry.key;
 						if (nextEntry.key == null) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											null, in));
-							return useInnerNodesGoDown(countDown, pos, entry,
+							return this.useInnerNodesGoDown(countDown, pos, entry,
 									nextEntry.fileName);
 						}
 						if (countDown - nextEntry.numberOfTriples < 0.0) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											nextEntry.key, in));
-							return useInnerNodesGoDown(countDown, pos, entry,
+							return this.useInnerNodesGoDown(countDown, pos, entry,
 									nextEntry.fileName);
 						}
-						if (largest == null
-								|| comparator.compare(nextEntry.key, largest) > 0) {
-							innerNodes
+						if (this.largest == null
+								|| LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry.key, this.largest) > 0) {
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											nextEntry.key, in));
-							return useInnerNodesGoDown(countDown, pos, entry,
+							return this.useInnerNodesGoDown(countDown, pos, entry,
 									nextEntry.fileName);
 						} else {
 							countDown -= nextEntry.numberOfTriples;
@@ -895,18 +929,21 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 							switch (pos) {
 							case 0:
 								entry.distinctLiterals += nextEntry.numberDistinctSubjects;
-								if (!nextEntry.subjectDifferentFromPreviousTriple)
+								if (!nextEntry.subjectDifferentFromPreviousTriple) {
 									entry.distinctLiterals--;
+								}
 								break;
 							case 1:
 								entry.distinctLiterals += nextEntry.numberDistinctPredicates;
-								if (!nextEntry.predicateDifferentFromPreviousTriple)
+								if (!nextEntry.predicateDifferentFromPreviousTriple) {
 									entry.distinctLiterals--;
+								}
 								break;
 							case 2:
 								entry.distinctLiterals += nextEntry.numberDistinctObjects;
-								if (!nextEntry.objectDifferentFromPreviousTriple)
+								if (!nextEntry.objectDifferentFromPreviousTriple) {
 									entry.distinctLiterals--;
+								}
 								break;
 							}
 						}
@@ -925,20 +962,20 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		protected Triple getNext(final double distance, final int pos,
 				final lupos.optimizations.logical.statistics.Entry entry) {
 			try {
-				lastTriple = next;
+				this.lastTriple = this.next;
 				entry.selectivity = 1.0;
 				entry.distinctLiterals = 1.0;
-				entry.literal = lastTriple.getPos(pos);
+				entry.literal = this.lastTriple.getPos(pos);
 				double countDown = distance - 1.0;
 				while (countDown > 0.0) {
-					final DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(
-							currentLeafIn, (lastTriple == null) ? null
-									: new TripleKey(lastTriple, order),
-							lastTriple);
+					final DBBPTreeEntry<TripleKey, Triple> e = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextLeafEntry(
+							this.currentLeafIn, (this.lastTriple == null) ? null
+									: new TripleKey(this.lastTriple, LazyLiteralTripleKeyDBBPTreeStatistics.this.order),
+							this.lastTriple);
 					if (e == null) {
-						currentLeafIn.close();
+						this.currentLeafIn.close();
 						return this.useInnerNodes(countDown, pos, entry,
-								innerNodes.size() - 1);
+								this.innerNodes.size() - 1);
 						// close();
 						// next = null;
 						// return null;
@@ -947,74 +984,75 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						// next leaf node, but we do big jumps by going over the
 						// inner nodes!
 						if (e.filenameOfNextLeafNode >= 0) {
-							currentLeafIn.close();
+							this.currentLeafIn.close();
 							return this.useInnerNodes(countDown, pos, entry,
-									innerNodes.size() - 1);
+									this.innerNodes.size() - 1);
 						} else {
 							// should never happen!
-							currentLeafIn.close();
-							close();
-							next = null;
+							this.currentLeafIn.close();
+							this.close();
+							this.next = null;
 							return null;
 						}
 					}
-					if (comparator.compare(e.key, arg0) != 0) {
-						close();
-						next = null;
+					if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(e.key, this.arg0) != 0) {
+						this.close();
+						this.next = null;
 						return null;
 					}
-					if (largest != null) {
-						if (comparator.compare(e.key, largest) > 0) {
-							close();
-							next = null;
+					if (this.largest != null) {
+						if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(e.key, this.largest) > 0) {
+							this.close();
+							this.next = null;
 							return null;
 						}
 					}
 					entry.selectivity += 1.0;
 					countDown -= 1.0;
-					if (lastTriple.getPos(pos)
+					if (this.lastTriple.getPos(pos)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									e.value.getPos(pos)) != 0)
+									e.value.getPos(pos)) != 0) {
 						entry.distinctLiterals += 1.0;
-					lastTriple = e.value;
-					entry.literal = lastTriple.getPos(pos);
+					}
+					this.lastTriple = e.value;
+					entry.literal = this.lastTriple.getPos(pos);
 				}
 				// read over the triples with the same literal at position pos
-				return readOver(lastTriple, entry, pos);
+				return this.readOver(this.lastTriple, entry, pos);
 			} catch (final IOException e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
 			}
-			next = lastTriple;
-			return lastTriple;
+			this.next = this.lastTriple;
+			return this.lastTriple;
 		}
 
 		private Triple readOver(Triple lastTriple,
 				final lupos.optimizations.logical.statistics.Entry entry,
 				final int pos) {
 			while (true) {
-				final DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(
-						currentLeafIn, (lastTriple == null) ? null
-								: new TripleKey(lastTriple, order), lastTriple);
+				final DBBPTreeEntry<TripleKey, Triple> e = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextLeafEntry(
+						this.currentLeafIn, (lastTriple == null) ? null
+								: new TripleKey(lastTriple, LazyLiteralTripleKeyDBBPTreeStatistics.this.order), lastTriple);
 				if (e == null) {
-					close();
-					next = null;
+					this.close();
+					this.next = null;
 					return null;
 				}
 				if (e.key == null) {
 					// next leaf node (accessed over the inner nodes)!
-					return useInnerNodesReadOver(entry, pos, lastTriple,
-							innerNodes.size() - 1);
+					return this.useInnerNodesReadOver(entry, pos, lastTriple,
+							this.innerNodes.size() - 1);
 				} else {
-					if (comparator.compare(e.key, arg0) != 0) {
-						close();
-						next = null;
+					if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(e.key, this.arg0) != 0) {
+						this.close();
+						this.next = null;
 						return null;
 					}
-					if (largest != null) {
-						if (comparator.compare(e.key, largest) > 0) {
-							close();
-							next = null;
+					if (this.largest != null) {
+						if (LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(e.key, this.largest) > 0) {
+							this.close();
+							this.next = null;
 							return null;
 						}
 					}
@@ -1024,8 +1062,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 									.compareToNotNecessarilySPARQLSpecificationConform(
 											e.value.getPos(pos)) != 0) {
 						lastTriple = e.value;
-						next = lastTriple;
-						return next;
+						this.next = lastTriple;
+						return this.next;
 					}
 					entry.selectivity += 1.0;
 					lastTriple = e.value;
@@ -1036,9 +1074,10 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		protected Triple useInnerNodesReadOver(
 				final lupos.optimizations.logical.statistics.Entry entry,
 				final int pos, final Triple lastTriple, final int index) {
-			if (index < 0)
+			if (index < 0) {
 				return null;
-			final Tuple<TripleKey, LuposObjectInputStream<Triple>> innerNode = innerNodes
+			}
+			final Tuple<TripleKey, LuposObjectInputStream<Triple>> innerNode = this.innerNodes
 					.get(index);
 			if (innerNode.getFirst() == null) {
 				try {
@@ -1047,8 +1086,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 					System.out.println(e);
 					e.printStackTrace();
 				}
-				innerNodes.remove(index);
-				return useInnerNodesReadOver(entry, pos, lastTriple, index - 1);
+				this.innerNodes.remove(index);
+				return this.useInnerNodesReadOver(entry, pos, lastTriple, index - 1);
 			} else {
 				final COMPARE primary = innerNode.getFirst()
 						.getTripleComparator().getPrimary();
@@ -1065,7 +1104,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				final TripleKey key = new TripleKey(lastTriple,
 						new TripleComparator(primary, secondary, tertiary));
 				while (innerNode.getFirst().compareTo(key) < 0) {
-					final InnerNodeEntry ine = getNextInnerNodeEntryStatistics(
+					final InnerNodeEntry ine = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntryStatistics(
 							innerNode.getFirst(), innerNode.getSecond());
 					if (ine == null) {
 						try {
@@ -1074,32 +1113,35 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 							System.out.println(e);
 							e.printStackTrace();
 						}
-						innerNodes.remove(index);
-						return useInnerNodesReadOver(entry, pos, lastTriple,
+						this.innerNodes.remove(index);
+						return this.useInnerNodesReadOver(entry, pos, lastTriple,
 								index - 1);
 					}
 					innerNode.setFirst(ine.key);
 					if (ine.key.compareTo(key) < 0) {
 						// now go down this child node
-						return useInnerNodesGoDownReadOver(entry, pos,
+						return this.useInnerNodesGoDownReadOver(entry, pos,
 								lastTriple, ine.fileName);
 					}
 					entry.selectivity += ine.numberOfTriples;
 					switch (pos) {
 					case 0:
 						entry.distinctLiterals += ine.numberDistinctSubjects;
-						if (!ine.subjectDifferentFromPreviousTriple)
+						if (!ine.subjectDifferentFromPreviousTriple) {
 							entry.distinctLiterals--;
+						}
 						break;
 					case 1:
 						entry.distinctLiterals += ine.numberDistinctPredicates;
-						if (!ine.predicateDifferentFromPreviousTriple)
+						if (!ine.predicateDifferentFromPreviousTriple) {
 							entry.distinctLiterals--;
+						}
 						break;
 					case 2:
 						entry.distinctLiterals += ine.numberDistinctObjects;
-						if (!ine.objectDifferentFromPreviousTriple)
+						if (!ine.objectDifferentFromPreviousTriple) {
 							entry.distinctLiterals--;
+						}
 						break;
 					}
 					// last node accessed?
@@ -1110,8 +1152,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 							System.out.println(e);
 							e.printStackTrace();
 						}
-						innerNodes.remove(index);
-						return useInnerNodesReadOver(entry, pos, lastTriple,
+						this.innerNodes.remove(index);
+						return this.useInnerNodesReadOver(entry, pos, lastTriple,
 								index - 1);
 					}
 				}
@@ -1123,20 +1165,21 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		private Triple useInnerNodesGoDownReadOver(
 				final lupos.optimizations.logical.statistics.Entry entry,
 				final int pos, Triple lastTriple, final int fileName) {
-			if (fileName < 0)
+			if (fileName < 0) {
 				return null;
+			}
 			InputStream fis;
 			try {
-				fis = new PageInputStream(fileName, pageManager);
+				fis = new PageInputStream(fileName, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
 				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = in.readLuposBoolean();
+				final boolean leaf = InputHelper.readLuposBoolean(in.is);
 				lastTriple = null;
 				if (leaf) { // leaf node reached!
-					currentLeafIn = in;
-					return readOver(lastTriple, entry, pos);
+					this.currentLeafIn = in;
+					return this.readOver(lastTriple, entry, pos);
 				} else {
 					TripleKey lastKey = null;
-					InnerNodeEntry nextEntry = getNextInnerNodeEntryStatistics(
+					InnerNodeEntry nextEntry = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntryStatistics(
 							lastKey, in);
 					final COMPARE primary = nextEntry.key.getTripleComparator()
 							.getPrimary();
@@ -1147,53 +1190,56 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 					while (true) {
 						if (nextEntry == null || nextEntry.fileName <= 0) {
 							in.close();
-							close();
-							next = null;
+							this.close();
+							this.next = null;
 							return null;
 						}
 						lastKey = nextEntry.key;
 						if (nextEntry.key == null) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											null, in));
-							return useInnerNodesGoDownReadOver(entry, pos,
+							return this.useInnerNodesGoDownReadOver(entry, pos,
 									lastTriple, nextEntry.fileName);
 						}
 						if (nextEntry.key.compareTo(key) < 0) {
-							innerNodes
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											nextEntry.key, in));
-							return useInnerNodesGoDownReadOver(entry, pos,
+							return this.useInnerNodesGoDownReadOver(entry, pos,
 									lastTriple, nextEntry.fileName);
 						}
-						if (largest == null
-								|| comparator.compare(nextEntry.key, largest) > 0) {
-							innerNodes
+						if (this.largest == null
+								|| LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry.key, this.largest) > 0) {
+							this.innerNodes
 									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
 											nextEntry.key, in));
-							return useInnerNodesGoDownReadOver(entry, pos,
+							return this.useInnerNodesGoDownReadOver(entry, pos,
 									lastTriple, nextEntry.fileName);
 						} else {
 							entry.selectivity += nextEntry.numberOfTriples;
 							switch (pos) {
 							case 0:
 								entry.distinctLiterals += nextEntry.numberDistinctSubjects;
-								if (!nextEntry.subjectDifferentFromPreviousTriple)
+								if (!nextEntry.subjectDifferentFromPreviousTriple) {
 									entry.distinctLiterals--;
+								}
 								break;
 							case 1:
 								entry.distinctLiterals += nextEntry.numberDistinctPredicates;
-								if (!nextEntry.predicateDifferentFromPreviousTriple)
+								if (!nextEntry.predicateDifferentFromPreviousTriple) {
 									entry.distinctLiterals--;
+								}
 								break;
 							case 2:
 								entry.distinctLiterals += nextEntry.numberDistinctObjects;
-								if (!nextEntry.objectDifferentFromPreviousTriple)
+								if (!nextEntry.objectDifferentFromPreviousTriple) {
 									entry.distinctLiterals--;
+								}
 								break;
 							}
 						}
-						nextEntry = getNextInnerNodeEntryStatistics(lastKey, in);
+						nextEntry = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextInnerNodeEntryStatistics(lastKey, in);
 					}
 				}
 			} catch (final FileNotFoundException e) {
@@ -1207,60 +1253,63 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		}
 
 		public void close() {
-			for (final Tuple<TripleKey, LuposObjectInputStream<Triple>> tuple : innerNodes) {
+			for (final Tuple<TripleKey, LuposObjectInputStream<Triple>> tuple : this.innerNodes) {
 				try {
 					tuple.getSecond().close();
 				} catch (final IOException e) {
 				}
 			}
-			innerNodes.clear();
+			this.innerNodes.clear();
 			try {
-				currentLeafIn.close();
+				this.currentLeafIn.close();
 			} catch (final IOException e) {
 			}
 		}
 	}
 
 	public int getDistance(final TripleKey minimum, final TripleKey maximum) {
-		return getDistance(this.rootPage, minimum, maximum);
+		return this.getDistance(this.rootPage, minimum, maximum);
 	}
 
 	private int getDistance(final int filename, final TripleKey minimum,
 			final TripleKey maximum) {
-		if (filename < 0)
+		if (filename < 0) {
 			return -1;
+		}
 		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, pageManager);
+			fis = new PageInputStream(filename, this.pageManager);
 			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-			final boolean leaf = in.readLuposBoolean();
+			final boolean leaf = InputHelper.readLuposBoolean(in.is);
 			Triple lastTriple = null;
 			if (leaf) { // leaf node reached!
 				while (true) {
-					DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(in,
+					DBBPTreeEntry<TripleKey, Triple> e = this.getNextLeafEntry(in,
 							(lastTriple == null) ? null : new TripleKey(
-									lastTriple, order), lastTriple);
+									lastTriple, this.order), lastTriple);
 					if (e == null || e.key == null) {
 						in.close();
 						return -1;
 					}
-					if (e.value != null)
+					if (e.value != null) {
 						lastTriple = e.value;
+					}
 					final TripleKey key = e.key;
-					final int compare = comparator.compare(key, minimum);
+					final int compare = this.comparator.compare(key, minimum);
 					if (compare >= 0) {
 						// now find maximum already here or reach the end of
 						// this leaf node...
 						int dist = -1;
 						while (e != null && e.key != null
-								&& comparator.compare(e.key, maximum) <= 0) {
+								&& this.comparator.compare(e.key, maximum) <= 0) {
 							dist++;
-							e = getNextLeafEntry(in,
+							e = this.getNextLeafEntry(in,
 									(lastTriple == null) ? null
-											: new TripleKey(lastTriple, order),
+											: new TripleKey(lastTriple, this.order),
 									lastTriple);
-							if (e!=null && e.value != null)
+							if (e!=null && e.value != null) {
 								lastTriple = e.value;
+							}
 						}
 						in.close();
 						return dist;
@@ -1269,7 +1318,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			} else {
 				TripleKey lastKey = null;
 				while (true) {
-					InnerNodeEntry nextEntry = getNextInnerNodeEntryStatistics(
+					InnerNodeEntry nextEntry = this.getNextInnerNodeEntryStatistics(
 							lastKey, in);
 					if (nextEntry == null || nextEntry.fileName <= 0) {
 						in.close();
@@ -1283,22 +1332,22 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						// or for finding the maximum, ancestor inner nodes must
 						// be considered
 						// as this inner node has already ended...
-						return getDistance(nextEntry.fileName, minimum, maximum);
+						return this.getDistance(nextEntry.fileName, minimum, maximum);
 					}
-					final int compare = comparator.compare(nextEntry.key,
+					final int compare = this.comparator.compare(nextEntry.key,
 							minimum);
 					if (compare >= 0) {
-						int dist = getDistance(nextEntry.fileName, minimum,
+						int dist = this.getDistance(nextEntry.fileName, minimum,
 								maximum);
 						if (dist < 0) {
 							return -1;
 						} else {
 							// now find maximum (already in this inner
 							// node?)
-							if (comparator.compare(nextEntry.key, maximum) <= 0) {
-								while (comparator.compare(nextEntry.key,
+							if (this.comparator.compare(nextEntry.key, maximum) <= 0) {
+								while (this.comparator.compare(nextEntry.key,
 										maximum) <= 0) {
-									nextEntry = getNextInnerNodeEntryStatistics(
+									nextEntry = this.getNextInnerNodeEntryStatistics(
 											lastKey, in);
 									if (nextEntry == null
 											|| nextEntry.fileName <= 0) {
@@ -1310,17 +1359,19 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 										in.close();
 										return dist;
 									}
-									if (comparator.compare(nextEntry.key,
-											maximum) <= 0)
+									if (this.comparator.compare(nextEntry.key,
+											maximum) <= 0) {
 										dist += nextEntry.numberOfTriples;
+									}
 								}
 								// check remaining triples in this child
 								// node and find maximum...
 								return dist
-										+ getDistanceToFindMaximum(
+										+ this.getDistanceToFindMaximum(
 												nextEntry.fileName, maximum, 0);
-							} else
+							} else {
 								return dist;
+							}
 						}
 					}
 				}
@@ -1338,25 +1389,26 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 
 	private int getDistanceToFindMaximum(final int filename,
 			final TripleKey arg0, int dist) {
-		if (filename < 0)
+		if (filename < 0) {
 			return dist;
+		}
 		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, pageManager);
+			fis = new PageInputStream(filename, this.pageManager);
 			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-			final boolean leaf = in.readLuposBoolean();
+			final boolean leaf = InputHelper.readLuposBoolean(in.is);
 			if (leaf) { // leaf node reached!
 				Triple lastTriple = null;
 				while (true) {
-					final DBBPTreeEntry<TripleKey, Triple> e = getNextLeafEntry(
+					final DBBPTreeEntry<TripleKey, Triple> e = this.getNextLeafEntry(
 							in, (lastTriple == null) ? null : new TripleKey(
-									lastTriple, order), lastTriple);
+									lastTriple, this.order), lastTriple);
 					if (e == null || e.key == null) {
 						in.close();
 						return dist;
 					}
 					final TripleKey key = e.key;
-					final int compare = comparator.compare(key, arg0);
+					final int compare = this.comparator.compare(key, arg0);
 					if (compare > 0) {
 						in.close();
 						return dist;
@@ -1371,7 +1423,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				int lastFilename = -1;
 				int lastDistance = 0;
 				while (true) {
-					final InnerNodeEntry nextEntry = getNextInnerNodeEntryStatistics(
+					final InnerNodeEntry nextEntry = this.getNextInnerNodeEntryStatistics(
 							lastKey, in);
 					if (nextEntry == null || nextEntry.fileName <= 0) {
 						in.close();
@@ -1379,21 +1431,23 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 					}
 					if (nextEntry.key == null) {
 						in.close();
-						return getDistanceToFindMaximum(nextEntry.fileName,
+						return this.getDistanceToFindMaximum(nextEntry.fileName,
 								arg0, dist + lastDistance);
 					}
-					final int compare = comparator.compare(nextEntry.key, arg0);
+					final int compare = this.comparator.compare(nextEntry.key, arg0);
 					if (compare > 0) {
 						in.close();
-						final int interDist = getDistanceToFindMaximum(
+						final int interDist = this.getDistanceToFindMaximum(
 								nextEntry.fileName, arg0, 0);
-						if (interDist > 0)
+						if (interDist > 0) {
 							return dist + lastDistance + interDist;
+						}
 						if (lastFilename > 0) {
-							return getDistanceToFindMaximum(lastFilename, arg0,
+							return this.getDistanceToFindMaximum(lastFilename, arg0,
 									dist);
-						} else
+						} else {
 							return dist;
+						}
 					}
 					lastKey = nextEntry.key;
 					if (compare <= 0) {
@@ -1417,10 +1471,11 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	public void generateDBBPTree(final SortedMap<TripleKey, Triple> sortedMap) {
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
 		this.size = sortedMap.size();
-		final Container leaf = new Container(this.size, k_, true);
-		firstLeafPage = leaf.getFileName();
-		if (sortedMap.comparator() != null)
+		final Container leaf = new Container(this.size, this.k_, true);
+		this.firstLeafPage = leaf.getFileName();
+		if (sortedMap.comparator() != null) {
 			this.comparator = sortedMap.comparator();
+		}
 		final Iterator<Entry<TripleKey, Triple>> it = sortedMap.entrySet()
 				.iterator();
 
@@ -1434,22 +1489,25 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				if (previousTriple != null) {
 					if (previousTriple.getPos(0)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(0)) == 0)
+									entry.getValue().getPos(0)) == 0) {
 						subjectDifferentFromPreviousTriple = false;
-					else
+					} else {
 						subjectDifferentFromPreviousTriple = true;
+					}
 					if (previousTriple.getPos(1)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(1)) == 0)
+									entry.getValue().getPos(1)) == 0) {
 						predicateDifferentFromPreviousTriple = false;
-					else
+					} else {
 						predicateDifferentFromPreviousTriple = true;
+					}
 					if (previousTriple.getPos(2)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(2)) == 0)
+									entry.getValue().getPos(2)) == 0) {
 						objectDifferentFromPreviousTriple = false;
-					else
+					} else {
 						objectDifferentFromPreviousTriple = true;
+					}
 				}
 				leaf.closeNode(innerNodes, subjectDifferentFromPreviousTriple,
 						predicateDifferentFromPreviousTriple,
@@ -1474,14 +1532,14 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			container.close();
 			previous = container;
 		}
-		rootPage = previous.filename;
+		this.rootPage = previous.filename;
 	}
 
 	public void generateDBBPTree(final Set<Map.Entry<TripleKey, Triple>> set) throws IOException {
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
 		this.size = set.size();
-		final Container leaf = new Container(this.size, k_, true);
-		firstLeafPage = leaf.getFileName();
+		final Container leaf = new Container(this.size, this.k_, true);
+		this.firstLeafPage = leaf.getFileName();
 		final Iterator<Entry<TripleKey, Triple>> it = set.iterator();
 
 		Triple previousTriple = null;
@@ -1494,22 +1552,25 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				if (previousTriple != null) {
 					if (previousTriple.getPos(0)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(0)) == 0)
+									entry.getValue().getPos(0)) == 0) {
 						subjectDifferentFromPreviousTriple = false;
-					else
+					} else {
 						subjectDifferentFromPreviousTriple = true;
+					}
 					if (previousTriple.getPos(1)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(1)) == 0)
+									entry.getValue().getPos(1)) == 0) {
 						predicateDifferentFromPreviousTriple = false;
-					else
+					} else {
 						predicateDifferentFromPreviousTriple = true;
+					}
 					if (previousTriple.getPos(2)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(2)) == 0)
+									entry.getValue().getPos(2)) == 0) {
 						objectDifferentFromPreviousTriple = false;
-					else
+					} else {
 						objectDifferentFromPreviousTriple = true;
+					}
 				}
 				leaf.closeNode(innerNodes, subjectDifferentFromPreviousTriple,
 						predicateDifferentFromPreviousTriple,
@@ -1535,7 +1596,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			container.close();
 			previous = container;
 		}
-		rootPage = previous.filename;
+		this.rootPage = previous.filename;
 		this.pageManager.writeAllModifiedPages();
 	}
 
@@ -1562,28 +1623,29 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		public Container(final long numberOfEntries, final int kk_,
 				final boolean leaf) {
 			this.leaf = leaf;
-			filename = newFilename();
-			init(null);
-			numberOfNodes = Math.round(Math
+			this.filename = LazyLiteralTripleKeyDBBPTreeStatistics.this.newFilename();
+			this.init(null);
+			this.numberOfNodes = Math.round(Math
 					.ceil((double) numberOfEntries / kk_));
-			this.factor = (double) numberOfEntries / numberOfNodes;
+			this.factor = (double) numberOfEntries / this.numberOfNodes;
 			this.limitNextNode = this.factor;
 		}
 
 		protected void init(final Triple leftKey) {
 			try {
-				if (out != null)
-					out.close();
-				final OutputStream fos = new PageOutputStream(filename,
-						pageManager, true);
-				out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-				out.writeLuposBoolean(leaf);
-				lastKey = null;
-				lastValue = null;
-				numberOfTriples = 0;
-				numberDistinctSubjects = 0;
-				numberDistinctPredicates = 0;
-				numberDistinctObjects = 0;
+				if (this.out != null) {
+					this.out.close();
+				}
+				final OutputStream fos = new PageOutputStream(this.filename,
+						LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager, true);
+				this.out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
+				OutHelper.writeLuposBoolean(this.leaf, this.out.os);
+				this.lastKey = null;
+				this.lastValue = null;
+				this.numberOfTriples = 0;
+				this.numberDistinctSubjects = 0;
+				this.numberDistinctPredicates = 0;
+				this.numberDistinctObjects = 0;
 			} catch (final FileNotFoundException e) {
 				e.printStackTrace();
 				System.err.println(e);
@@ -1594,23 +1656,24 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		}
 
 		public int getFileName() {
-			return filename;
+			return this.filename;
 		}
 
 		public boolean newNodeForNextEntry() {
-			if (currentEntry + 1 > limitNextNode) {
+			if (this.currentEntry + 1 > this.limitNextNode) {
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		}
 
 		public void storeInLeafNode(final Entry<TripleKey, Triple> entry,
 				final Triple previous) {
-			lastStoredEntry = entry;
-			currentEntry++;
-			keyClass = (Class<? super TripleKey>) entry.getKey().getClass();
-			valueClass = (Class<? super Triple>) entry.getValue().getClass();
-			if (numberOfTriples == 0) {
+			this.lastStoredEntry = entry;
+			this.currentEntry++;
+			LazyLiteralTripleKeyDBBPTreeStatistics.this.keyClass = (Class<? super TripleKey>) entry.getKey().getClass();
+			LazyLiteralTripleKeyDBBPTreeStatistics.this.valueClass = (Class<? super Triple>) entry.getValue().getClass();
+			if (this.numberOfTriples == 0) {
 				if (previous == null) {
 					this.subjectDifferentFromPreviousTriple = true;
 					this.predicateDifferentFromPreviousTriple = true;
@@ -1618,54 +1681,57 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					if (previous.getPos(0)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(0)) == 0)
+									entry.getValue().getPos(0)) == 0) {
 						this.subjectDifferentFromPreviousTriple = false;
-					else
+					} else {
 						this.subjectDifferentFromPreviousTriple = true;
+					}
 					if (previous.getPos(1)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(1)) == 0)
+									entry.getValue().getPos(1)) == 0) {
 						this.predicateDifferentFromPreviousTriple = false;
-					else
+					} else {
 						this.predicateDifferentFromPreviousTriple = true;
+					}
 					if (previous.getPos(2)
 							.compareToNotNecessarilySPARQLSpecificationConform(
-									entry.getValue().getPos(2)) == 0)
+									entry.getValue().getPos(2)) == 0) {
 						this.objectDifferentFromPreviousTriple = false;
-					else
+					} else {
 						this.objectDifferentFromPreviousTriple = true;
+					}
 				}
 			}
 			try {
-				writeLeafEntry(entry.getKey(), entry.getValue(), out, lastKey,
-						lastValue);
-				numberOfTriples++;
-				if (lastValue == null
+				LazyLiteralTripleKeyDBBPTreeStatistics.this.writeLeafEntry(entry.getKey(), entry.getValue(), this.out, this.lastKey,
+						this.lastValue);
+				this.numberOfTriples++;
+				if (this.lastValue == null
 						|| entry
 								.getValue()
 								.getSubject()
 								.compareToNotNecessarilySPARQLSpecificationConform(
-										lastValue.getSubject()) != 0) {
-					numberDistinctSubjects++;
+										this.lastValue.getSubject()) != 0) {
+					this.numberDistinctSubjects++;
 				}
-				if (lastValue == null
+				if (this.lastValue == null
 						|| entry
 								.getValue()
 								.getPredicate()
 								.compareToNotNecessarilySPARQLSpecificationConform(
-										lastValue.getPredicate()) != 0) {
-					numberDistinctPredicates++;
+										this.lastValue.getPredicate()) != 0) {
+					this.numberDistinctPredicates++;
 				}
-				if (lastValue == null
+				if (this.lastValue == null
 						|| entry
 								.getValue()
 								.getObject()
 								.compareToNotNecessarilySPARQLSpecificationConform(
-										lastValue.getObject()) != 0) {
-					numberDistinctObjects++;
+										this.lastValue.getObject()) != 0) {
+					this.numberDistinctObjects++;
 				}
-				lastKey = entry.getKey();
-				lastValue = entry.getValue();
+				this.lastKey = entry.getKey();
+				this.lastValue = entry.getValue();
 				// System.out.println("leaf "+ filename
 				// +" ("+entry.getKey()+", "+entry.getValue()+")");
 			} catch (final IOException e) {
@@ -1687,19 +1753,19 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				this.predicateDifferentFromPreviousTriple = predicateDifferentFromPreviousTriple;
 				this.objectDifferentFromPreviousTriple = objectDifferentFromPreviousTriple;
 			}
-			currentEntry++;
+			this.currentEntry++;
 			try {
 				this.lastStoredEntry = entry;
 				this.lastValue = entry.getValue();
-				writeInnerNodeEntry(fileName, entry.getKey(), out, lastKey,
+				LazyLiteralTripleKeyDBBPTreeStatistics.this.writeInnerNodeEntry(fileName, entry.getKey(), this.out, this.lastKey,
 						numberOfTriples, numberDistinctSubjects,
 						numberDistinctPredicates, numberDistinctObjects,
 						subjectDifferentFromPreviousTriple,
 						predicateDifferentFromPreviousTriple,
 						objectDifferentFromPreviousTriple);
 				this.numberOfTriples += numberOfTriples;
-				if (lastKey != null
-						&& lastKey
+				if (this.lastKey != null
+						&& this.lastKey
 								.getTriple()
 								.getSubject()
 								.compareToNotNecessarilySPARQLSpecificationConform(
@@ -1708,8 +1774,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					this.numberDistinctSubjects += numberDistinctSubjects;
 				}
-				if (lastKey != null
-						&& lastKey
+				if (this.lastKey != null
+						&& this.lastKey
 								.getTriple()
 								.getPredicate()
 								.compareToNotNecessarilySPARQLSpecificationConform(
@@ -1719,8 +1785,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					this.numberDistinctPredicates += numberDistinctPredicates;
 				}
-				if (lastKey != null
-						&& lastKey
+				if (this.lastKey != null
+						&& this.lastKey
 								.getTriple()
 								.getObject()
 								.compareToNotNecessarilySPARQLSpecificationConform(
@@ -1729,7 +1795,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					this.numberDistinctObjects += numberDistinctObjects;
 				}
-				lastKey = entry.getKey();
+				this.lastKey = entry.getKey();
 			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
@@ -1752,15 +1818,15 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				}
 				this.lastStoredEntry = entry;
 				this.lastValue = entry.getValue();
-				writeInnerNodeEntry(fileName, numberOfTriples,
+				LazyLiteralTripleKeyDBBPTreeStatistics.this.writeInnerNodeEntry(fileName, numberOfTriples,
 						numberDistinctSubjects, numberDistinctPredicates,
 						numberDistinctObjects,
 						subjectDifferentFromPreviousTriple,
 						predicateDifferentFromPreviousTriple,
-						objectDifferentFromPreviousTriple, out);
+						objectDifferentFromPreviousTriple, this.out);
 				this.numberOfTriples += numberOfTriples;
-				if (lastKey != null
-						&& lastKey
+				if (this.lastKey != null
+						&& this.lastKey
 								.getTriple()
 								.getSubject()
 								.compareToNotNecessarilySPARQLSpecificationConform(
@@ -1769,8 +1835,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					this.numberDistinctSubjects += numberDistinctSubjects;
 				}
-				if (lastKey != null
-						&& lastKey
+				if (this.lastKey != null
+						&& this.lastKey
 								.getTriple()
 								.getPredicate()
 								.compareToNotNecessarilySPARQLSpecificationConform(
@@ -1780,8 +1846,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				} else {
 					this.numberDistinctPredicates += numberDistinctPredicates;
 				}
-				if (lastKey != null
-						&& lastKey
+				if (this.lastKey != null
+						&& this.lastKey
 								.getTriple()
 								.getObject()
 								.compareToNotNecessarilySPARQLSpecificationConform(
@@ -1801,22 +1867,22 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				final boolean subjectDifferentFromPreviousTriple,
 				final boolean predicateDifferentFromPreviousTriple,
 				final boolean objectDifferentFromPreviousTriple) {
-			addToInnerNodes(innerNodes, 0, this, this.filename,
-					this.lastStoredEntry, numberOfTriples,
-					numberDistinctSubjects, numberDistinctPredicates,
-					numberDistinctObjects, subjectDifferentFromPreviousTriple,
+			this.addToInnerNodes(innerNodes, 0, this, this.filename,
+					this.lastStoredEntry, this.numberOfTriples,
+					this.numberDistinctSubjects, this.numberDistinctPredicates,
+					this.numberDistinctObjects, subjectDifferentFromPreviousTriple,
 					predicateDifferentFromPreviousTriple,
 					objectDifferentFromPreviousTriple);
-			filename = newFilename();
-			writeLeafEntryNextFileName(filename, out);
+			this.filename = LazyLiteralTripleKeyDBBPTreeStatistics.this.newFilename();
+			LazyLiteralTripleKeyDBBPTreeStatistics.this.writeLeafEntryNextFileName(this.filename, this.out);
 
-			init(this.lastStoredEntry.getValue());
-			limitNextNode = currentEntry + factor;
+			this.init(this.lastStoredEntry.getValue());
+			this.limitNextNode = this.currentEntry + this.factor;
 		}
 
 		public void close() {
 			try {
-				out.close();
+				this.out.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
 				System.err.println(e);
@@ -1833,7 +1899,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				final boolean predicateDifferentFromPreviousTriple,
 				final boolean objectDifferentFromPreviousTriple) {
 			while (innerNodes.size() < position + 1) {
-				final Container container = new Container(numberOfNodes - 1, k,
+				final Container container = new Container(this.numberOfNodes - 1, LazyLiteralTripleKeyDBBPTreeStatistics.this.k,
 						false);
 				previous = container;
 				innerNodes.add(container);
@@ -1846,7 +1912,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						subjectDifferentFromPreviousTriple,
 						predicateDifferentFromPreviousTriple,
 						objectDifferentFromPreviousTriple, lastStoredEntry);
-				addToInnerNodes(innerNodes, position + 1, container,
+				this.addToInnerNodes(innerNodes, position + 1, container,
 						container.filename, lastStoredEntry,
 						container.numberOfTriples,
 						container.numberDistinctSubjects,
@@ -1855,7 +1921,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						subjectDifferentFromPreviousTriple,
 						predicateDifferentFromPreviousTriple,
 						objectDifferentFromPreviousTriple);
-				container.filename = newFilename();
+				container.filename = LazyLiteralTripleKeyDBBPTreeStatistics.this.newFilename();
 				container.init(lastStoredEntry.getValue());
 				container.limitNextNode = container.currentEntry
 						+ container.factor;
@@ -1873,23 +1939,23 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	@Override
 	public void writeLuposObject(final LuposObjectOutputStream loos)
 			throws IOException {
-		pageManager.writeAllModifiedPages();
-		loos.writeLuposInt(currentID);
-		loos.writeLuposInt(k);
-		loos.writeLuposInt(k_);
-		loos.writeLuposInt(size);
-		loos.writeObject(comparator);
-		loos.writeLuposInt(rootPage);
-		loos.writeLuposInt(firstLeafPage);
-		loos.writeObject(keyClass);
-		loos.writeObject(valueClass);
-		loos.writeLuposByte((byte) order.ordinal());
+		this.pageManager.writeAllModifiedPages();
+		OutHelper.writeLuposInt(this.currentID, loos.os);
+		OutHelper.writeLuposInt(this.k, loos.os);
+		OutHelper.writeLuposInt(this.k_, loos.os);
+		OutHelper.writeLuposInt(this.size, loos.os);
+		loos.writeObject(this.comparator);
+		OutHelper.writeLuposInt(this.rootPage, loos.os);
+		OutHelper.writeLuposInt(this.firstLeafPage, loos.os);
+		loos.writeObject(this.keyClass);
+		loos.writeObject(this.valueClass);
+		OutHelper.writeLuposByte((byte) this.order.ordinal(), loos.os);
 	}
 
 	/**
 	 * This constructor is only used for creating a DBBPTree after reading it
 	 * from file!
-	 * 
+	 *
 	 * @param k
 	 * @param k_
 	 * @param size
@@ -1912,19 +1978,17 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		this.order = order;
 	}
 
-	public static LazyLiteralTripleKeyDBBPTreeStatistics readLuposObject(
-			final LuposObjectInputStream lois) throws IOException,
-			ClassNotFoundException {
-		final int currentID = lois.readLuposInt();
-		final int k = lois.readLuposInt();
-		final int k_ = lois.readLuposInt();
-		final int size = lois.readLuposInt();
+	public static LazyLiteralTripleKeyDBBPTreeStatistics readLuposObject(final LuposObjectInputStream lois) throws IOException, ClassNotFoundException {
+		final int currentID = InputHelper.readLuposInt(lois.is);
+		final int k = InputHelper.readLuposInt(lois.is);
+		final int k_ = InputHelper.readLuposInt(lois.is);
+		final int size = InputHelper.readLuposInt(lois.is);
 		final Comparator comp = (Comparator) lois.readObject();
-		final int rootFilename = lois.readLuposInt();
-		final int firstLeafFileName = lois.readLuposInt();
+		final int rootFilename = InputHelper.readLuposInt(lois.is);
+		final int firstLeafFileName = InputHelper.readLuposInt(lois.is);
 		final Class keyClass = (Class) lois.readObject();
 		final Class valueClass = (Class) lois.readObject();
-		final byte b = lois.readLuposByte();
+		final byte b = InputHelper.readLuposByte(lois.is);
 		final RDF3XIndexScan.CollationOrder order = RDF3XIndexScan.CollationOrder.values()[b];
 		final LazyLiteralTripleKeyDBBPTreeStatistics dbbptree = new LazyLiteralTripleKeyDBBPTreeStatistics(
 				k, k_, size, comp, rootFilename, firstLeafFileName, keyClass,

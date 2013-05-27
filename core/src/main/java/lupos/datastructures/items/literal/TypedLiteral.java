@@ -33,13 +33,13 @@ import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapURILiteral;
 import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 public class TypedLiteral extends Literal {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2634525515134231815L;
 	protected Literal content;
@@ -79,7 +79,7 @@ public class TypedLiteral extends Literal {
 			String content2 = originalContent;
 			// transform to an unique representation for numeric values...
 			if (Helper.isNumeric(type)) {
-				final String lowerCase = content2.toLowerCase(); 
+				final String lowerCase = content2.toLowerCase();
 				if (lowerCase.compareTo("\"nan\"") == 0
 						|| lowerCase.compareTo("\"infinity\"") == 0
 						|| lowerCase.compareTo("\"-infinity\"") == 0
@@ -93,11 +93,12 @@ public class TypedLiteral extends Literal {
 					content2 = "\"" + content2.substring(2, content2.length());
 				}
 				// delete too much?
-				if (content2.length() == 2)
+				if (content2.length() == 2) {
 					content2 = "\"0\"";
+				}
 			}
 			if (Helper.isFloatingPoint(type)) {
-				final String lowerCase = content2.toLowerCase(); 
+				final String lowerCase = content2.toLowerCase();
 				if (lowerCase.compareTo("\"nan\"") == 0
 						|| lowerCase.compareTo("\"infinity\"") == 0
 						|| lowerCase.compareTo("\"-infinity\"") == 0
@@ -109,22 +110,25 @@ public class TypedLiteral extends Literal {
 						content2.length() - 1));
 				bd = bd.stripTrailingZeros();
 				String bd_string = bd.toString();
-				if (bd_string.compareTo("") == 0)
+				if (bd_string.compareTo("") == 0) {
 					bd_string = "0";
+				}
 				// is bd_string distinguishable to an integer?
 				if (bd.divide(new BigDecimal(1)).subtract(bd)
 						.compareTo(new BigDecimal(0)) != 0
-						&& !(bd_string.contains("e") || bd_string.contains("E")))
+						&& !(bd_string.contains("e") || bd_string.contains("E"))) {
 					content2 = "\"" + bd_string + ".0\"";
-				else
+				} else {
 					content2 = "\"" + bd_string + "\"";
+				}
 			} else if (type
 					.compareTo("<http://www.w3.org/2001/XMLSchema#boolean>") == 0) {
 				if (content2.compareTo("\"true\"") == 0
-						|| content2.compareTo("\"1\"") == 0)
+						|| content2.compareTo("\"1\"") == 0) {
 					content2 = "\"true\"";
-				else
+				} else {
 					content2 = "\"false\"";
+				}
 			}
 			return content2;
 		} catch (final NumberFormatException e) {
@@ -138,10 +142,10 @@ public class TypedLiteral extends Literal {
 		return "^^" + this.type.toString();
 	}
 
-	private String getTypeString(lupos.rdf.Prefix prefixInstance) {
+	private String getTypeString(final lupos.rdf.Prefix prefixInstance) {
 		return "^^" + this.type.toString(prefixInstance);
 	}
-	
+
 	public String getType() {
 		return this.type.toString();
 	}
@@ -164,20 +168,20 @@ public class TypedLiteral extends Literal {
 
 	protected String commonToString(final String superToString) {
 		if (LiteralFactory.semanticInterpretationOfLiterals && this.type.toString().compareTo("<http://www.w3.org/2001/XMLSchema#string>") == 0){
-			// according to RDF Semantics document "text" and "text"^^xsd:string is the same, but only do this if semantic interpretation of literals is enabled... 
+			// according to RDF Semantics document "text" and "text"^^xsd:string is the same, but only do this if semantic interpretation of literals is enabled...
 			return superToString;
 		} else {
-			return superToString + getTypeString();
+			return superToString + this.getTypeString();
 		}
 	}
 
 	protected String commonToOriginalString(final String superToString) {
-		return superToString + getTypeString();
+		return superToString + this.getTypeString();
 	}
 
 	@Override
 	public String originalString() {
-		return commonToOriginalString(this.content.toString());
+		return this.commonToOriginalString(this.content.toString());
 	}
 
 	@Override
@@ -188,21 +192,21 @@ public class TypedLiteral extends Literal {
 
 	@Override
 	public String toString() {
-		return commonToString(this.content.toString());
+		return this.commonToString(this.content.toString());
 	}
-	
-	protected String commonToOriginalString(String superToString, lupos.rdf.Prefix prefixInstance) {
+
+	protected String commonToOriginalString(final String superToString, final lupos.rdf.Prefix prefixInstance) {
 		if (LiteralFactory.semanticInterpretationOfLiterals && this.type.toString().compareTo("<http://www.w3.org/2001/XMLSchema#string>") == 0){
-			// according to RDF Semantics document "text" and "text"^^xsd:string is the same, but only do this if semantic interpretation of literals is enabled... 
+			// according to RDF Semantics document "text" and "text"^^xsd:string is the same, but only do this if semantic interpretation of literals is enabled...
 			return superToString;
 		} else {
-			return superToString + getTypeString(prefixInstance);
+			return superToString + this.getTypeString(prefixInstance);
 		}
 	}
-	
+
 	@Override
-	public String toString(lupos.rdf.Prefix prefixInstance) {
-		return commonToOriginalString(this.content.toString(), prefixInstance);
+	public String toString(final lupos.rdf.Prefix prefixInstance) {
+		return this.commonToOriginalString(this.content.toString(), prefixInstance);
 	}
 
 	@Override
@@ -212,12 +216,14 @@ public class TypedLiteral extends Literal {
 			// for numerical XML Schema datatypes do not consider the datatypes
 			// for comparison, but for other datatypes do!
 			if (Helper.isNumeric(this.getType())
-					&& Helper.isNumeric(lit.getType()))
+					&& Helper.isNumeric(lit.getType())) {
 				return lit.getContent().equals(this.getContent());
-			else
+			} else {
 				return this.content.equals(lit.content) && this.type.equals(lit.type);
-		} else
+			}
+		} else {
 			return (this.toString().compareTo(obj.toString()) == 0);
+		}
 	}
 
 	@Override
@@ -230,20 +236,21 @@ public class TypedLiteral extends Literal {
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
 		if (LiteralFactory.getMapType() == MapType.NOCODEMAP
-				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)
+				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 			this.type = new StringURILiteral();
-		else
+		} else {
 			this.type = new CodeMapURILiteral();
+		}
 		this.type.readExternal(in);
-		this.content = LuposObjectInputStream.readLuposLiteral(in);
+		this.content = InputHelper.readLuposLiteral(in);
 	}
 
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		this.type.writeExternal(out);
-		LuposObjectOutputStream.writeLuposLiteral(this.content, out);
+		OutHelper.writeLuposLiteral(this.content, out);
 	}
-	
+
 	@Override
 	public boolean isXMLSchemaStringLiteral(){
 		return this.type.toString().compareTo("<http://www.w3.org/2001/XMLSchema#string>")==0;

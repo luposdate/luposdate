@@ -24,6 +24,8 @@
 package lupos.datastructures.items.literal;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
@@ -32,120 +34,170 @@ import lupos.datastructures.items.literal.string.PlainStringLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
 
 public class LiteralFactory {
-	
+
 	/**
 	 * setting semanticInterpretationOfLiterals to true leads to
 	 * handle e.g. +4 like 3 or "hello"@en like "hello"@EN, i.e.
 	 * some values are interpreted according to their datatypes.
 	 * However, some test cases of W3C state that this is not
-	 * 100% according to their specification! 
+	 * 100% according to their specification!
 	 */
 	public static boolean semanticInterpretationOfLiterals = false;
 
-	public static void writeLuposLiteral(final Literal lit,
-			final LuposObjectOutputStream out) throws IOException {
+	public static void writeLuposLiteral(final Literal lit, final OutputStream out) throws IOException {
 		if (lit instanceof CodeMapURILiteral) {
-			out.writeLuposByte((byte) LuposObjectInputStream.URILITERAL);
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.URILITERAL, out);
 			writeContentOfLiteral(((CodeMapURILiteral) lit).getContent(), out);
-			out.writeLuposInt(((CodeMapURILiteral) lit).getPrefixCode());
+			OutHelper.writeLuposInt(((CodeMapURILiteral) lit).getPrefixCode(), out);
 		} else if (lit instanceof StringURILiteral) {
-			out.writeLuposByte((byte) LuposObjectInputStream.URILITERAL);
-			out.writeLuposString(((StringURILiteral) lit).getString());
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.URILITERAL, out);
+			OutHelper.writeLuposString(((StringURILiteral) lit).getString(), out);
 		} else if (lit instanceof TypedLiteral) {
-			out.writeLuposByte((byte) LuposObjectInputStream.TYPEDLITERAL);
-			if (lit instanceof TypedLiteralOriginalContent)
-				writeContentOfLiteral(
-						((TypedLiteralOriginalContent) lit).originalContent,
-						out);
-			else
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.TYPEDLITERAL, out);
+			if (lit instanceof TypedLiteralOriginalContent) {
+				writeContentOfLiteral(((TypedLiteralOriginalContent) lit).originalContent, out);
+			} else {
 				writeContentOfLiteral(((TypedLiteral) lit).content, out);
+			}
 			writeLuposLiteral(((TypedLiteral) lit).type, out);
 		} else if (lit instanceof LanguageTaggedLiteral) {
-			out
-					.writeLuposByte((byte) LuposObjectInputStream.LANGUAGETAGGEDLITERAL);
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.LANGUAGETAGGEDLITERAL, out);
 			writeContentOfLiteral(((LanguageTaggedLiteral) lit).content, out);
-			if (lit instanceof LanguageTaggedLiteralOriginalLanguage)
-				writeContentOfLiteral(
-						((LanguageTaggedLiteralOriginalLanguage) lit).originalLang,
-						out);
-			else
+			if (lit instanceof LanguageTaggedLiteralOriginalLanguage) {
+				writeContentOfLiteral(((LanguageTaggedLiteralOriginalLanguage) lit).originalLang, out);
+			} else {
 				writeContentOfLiteral(((LanguageTaggedLiteral) lit).lang, out);
+			}
 		} else if (lit instanceof AnonymousLiteral) {
-			out.writeLuposByte((byte) LuposObjectInputStream.ANONYMOUSLITERAL);
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.ANONYMOUSLITERAL, out);
 			writeContentOfLiteral(((AnonymousLiteral) lit).content, out);
 		} else if (lit instanceof LazyLiteralOriginalContent) {
-			if (((LazyLiteralOriginalContent) lit).isMaterialized())
-				out
-						.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERALORIGINALCONTENTMATERIALIZED);
-			else
-				out
-						.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERALORIGINALCONTENT);
-			out.writeLuposInt(((LazyLiteral) lit).getCode());
-			out.writeLuposInt(((LazyLiteralOriginalContent) lit)
-					.getCodeOriginalContent());
-			if (((LazyLiteralOriginalContent) lit).isMaterialized())
-				writeLuposLiteral(((LazyLiteralOriginalContent) lit)
-						.getLiteral(), out);
+			if (((LazyLiteralOriginalContent) lit).isMaterialized()) {
+				OutHelper.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERALORIGINALCONTENTMATERIALIZED, out);
+			} else {
+				OutHelper.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERALORIGINALCONTENT, out);
+			}
+			OutHelper.writeLuposInt(((LazyLiteral) lit).getCode(), out);
+			OutHelper.writeLuposInt(((LazyLiteralOriginalContent) lit).getCodeOriginalContent(), out);
+			if (((LazyLiteralOriginalContent) lit).isMaterialized()) {
+				writeLuposLiteral(((LazyLiteralOriginalContent) lit).getLiteral(), out);
+			}
 		} else if (lit instanceof LazyLiteral) {
-			if (((LazyLiteral) lit).isMaterialized())
-				out
-						.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERALMATERIALIZED);
-			else
-				out.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERAL);
-			out.writeLuposInt(((LazyLiteral) lit).getCode());
-			if (((LazyLiteral) lit).isMaterialized())
+			if (((LazyLiteral) lit).isMaterialized()) {
+				OutHelper.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERALMATERIALIZED, out);
+			} else {
+				OutHelper.writeLuposByte((byte) LuposObjectInputStream.LAZYLITERAL, out);
+			}
+			OutHelper.writeLuposInt(((LazyLiteral) lit).getCode(), out);
+			if (((LazyLiteral) lit).isMaterialized()) {
 				writeLuposLiteral(((LazyLiteral) lit).getLiteral(), out);
+			}
 		} else if (lit.getClass() == PlainStringLiteral.class) {
-			out
-					.writeLuposByte((byte) LuposObjectInputStream.PLAINSTRINGLITERAL);
-			out.writeLuposString(lit.toString());
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.PLAINSTRINGLITERAL, out);
+			OutHelper.writeLuposString(lit.toString(), out);
 		} else {
 			// "normal" Literal object!
-			out.writeLuposByte((byte) LuposObjectInputStream.LITERAL);
+			OutHelper.writeLuposByte((byte) LuposObjectInputStream.LITERAL, out);
 			writeContentOfLiteral(lit, out);
 		}
 	}
 
-	protected static void writeContentOfLiteral(final Literal lit,
-			final LuposObjectOutputStream out) throws IOException {
+	protected static void writeContentOfLiteral(final Literal lit, final OutputStream out) throws IOException {
 		if (lit instanceof StringLiteral) {
-			out.writeLuposString(lit.toString());
+			OutHelper.writeLuposString(lit.toString(), out);
 		} else {
-			out.writeLuposInt(((CodeMapLiteral) lit).getCode());
+			OutHelper.writeLuposInt(((CodeMapLiteral) lit).getCode(), out);
 		}
 	}
 
-	public static Literal readLuposLiteral(final LuposObjectInputStream in)
+	public static int lengthLuposLiteral(final Literal lit) {
+		if (lit instanceof CodeMapURILiteral) {
+			return 	LengthHelper.lengthLuposByte() +
+					lengthContentOfLiteral(((CodeMapURILiteral) lit).getContent()) +
+					LengthHelper.lengthLuposInt(((CodeMapURILiteral) lit).getPrefixCode());
+		} else if (lit instanceof StringURILiteral) {
+			return 	LengthHelper.lengthLuposByte() +
+					LengthHelper.lengthLuposString(((StringURILiteral) lit).getString());
+		} else if (lit instanceof TypedLiteral) {
+			int result = LengthHelper.lengthLuposByte();
+			if (lit instanceof TypedLiteralOriginalContent) {
+				result += lengthContentOfLiteral(((TypedLiteralOriginalContent) lit).originalContent);
+			} else {
+				result += lengthContentOfLiteral(((TypedLiteral) lit).content);
+			}
+			return result + lengthLuposLiteral(((TypedLiteral) lit).type);
+		} else if (lit instanceof LanguageTaggedLiteral) {
+			int result = LengthHelper.lengthLuposByte() + lengthContentOfLiteral(((LanguageTaggedLiteral) lit).content);
+			if (lit instanceof LanguageTaggedLiteralOriginalLanguage) {
+				result += lengthContentOfLiteral(((LanguageTaggedLiteralOriginalLanguage) lit).originalLang);
+			} else {
+				result += lengthContentOfLiteral(((LanguageTaggedLiteral) lit).lang);
+			}
+			return result;
+		} else if (lit instanceof AnonymousLiteral) {
+			return LengthHelper.lengthLuposByte() + lengthContentOfLiteral(((AnonymousLiteral) lit).content);
+		} else if (lit instanceof LazyLiteralOriginalContent) {
+			return	LengthHelper.lengthLuposByte() +
+					LengthHelper.lengthLuposInt(((LazyLiteral) lit).getCode()) +
+					LengthHelper.lengthLuposInt(((LazyLiteralOriginalContent) lit).getCodeOriginalContent()) +
+					((((LazyLiteralOriginalContent) lit).isMaterialized())?
+							lengthLuposLiteral(((LazyLiteralOriginalContent) lit).getLiteral())
+							: 0);
+		} else if (lit instanceof LazyLiteral) {
+			return 	LengthHelper.lengthLuposByte() +
+					LengthHelper.lengthLuposInt(((LazyLiteral) lit).getCode()) +
+					((((LazyLiteral) lit).isMaterialized())?
+							lengthLuposLiteral(((LazyLiteral) lit).getLiteral())
+							:0);
+		} else if (lit.getClass() == PlainStringLiteral.class) {
+			return LengthHelper.lengthLuposByte()  +LengthHelper.lengthLuposString(lit.toString());
+		} else {
+			// "normal" Literal object!
+			return LengthHelper.lengthLuposByte() + lengthContentOfLiteral(lit);
+		}
+	}
+
+	protected static int lengthContentOfLiteral(final Literal lit) {
+		if (lit instanceof StringLiteral) {
+			return LengthHelper.lengthLuposString(lit.toString());
+		} else {
+			return LengthHelper.lengthLuposInt(((CodeMapLiteral) lit).getCode());
+		}
+	}
+
+
+	public static Literal readLuposLiteral(final InputStream in)
 			throws IOException {
 		try {
-			final int type = in.readLuposByte();
+			final int type = InputHelper.readLuposByte(in);
 			switch (type) {
 			case LuposObjectInputStream.URILITERAL:
 				if (mapType == MapType.NOCODEMAP
 						|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
-					return new StringURILiteral("<" + in.readLuposString()
+					return new StringURILiteral("<" + InputHelper.readLuposString(in)
 							+ ">");
 				} else if (mapType == MapType.PREFIXCODEMAP
 						|| mapType == MapType.LAZYLITERAL) {
-					return new CodeMapURILiteral(in.readLuposString(), in
-							.readLuposInt());
-				} else
-					return new CodeMapURILiteral(in.readLuposInt(), in
-							.readLuposInt());
+					return new CodeMapURILiteral(InputHelper.readLuposString(in), InputHelper.readLuposInt(in));
+				} else {
+					return new CodeMapURILiteral(InputHelper.readLuposInt(in), InputHelper.readLuposInt(in));
+				}
 			case LuposObjectInputStream.TYPEDLITERAL:
 				if (mapType == MapType.NOCODEMAP
 						|| mapType == MapType.LAZYLITERAL
 						|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 						|| mapType == MapType.PREFIXCODEMAP
 						|| mapType == MapType.URICODEMAP) {
-					final String content = in.readLuposString();
+					final String content = InputHelper.readLuposString(in);
 					return TypedLiteralOriginalContent.createTypedLiteral(
 							content, (URILiteral) readLuposLiteral(in));
 				} else {
-					final int content = in.readLuposInt();
+					final int content = InputHelper.readLuposInt(in);
 					return TypedLiteralOriginalContent.createTypedLiteral(
 							content, (URILiteral) readLuposLiteral(in));
 				}
@@ -155,13 +207,13 @@ public class LiteralFactory {
 						|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 						|| mapType == MapType.PREFIXCODEMAP
 						|| mapType == MapType.URICODEMAP) {
-					final String content = in.readLuposString();
-					final String lang = in.readLuposString();
+					final String content = InputHelper.readLuposString(in);
+					final String lang = InputHelper.readLuposString(in);
 					return LanguageTaggedLiteralOriginalLanguage
 							.createLanguageTaggedLiteral(content, lang);
 				} else {
-					final int content = in.readLuposInt();
-					final int lang = in.readLuposInt();
+					final int content = InputHelper.readLuposInt(in);
+					final int lang = InputHelper.readLuposInt(in);
 					return LanguageTaggedLiteralOriginalLanguage
 							.createLanguageTaggedLiteral(content, lang);
 				}
@@ -171,22 +223,20 @@ public class LiteralFactory {
 						|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 						|| mapType == MapType.PREFIXCODEMAP
 						|| mapType == MapType.URICODEMAP) {
-					return new AnonymousLiteral(in.readLuposString());
+					return new AnonymousLiteral(InputHelper.readLuposString(in));
 				} else {
-					return new AnonymousLiteral(in.readLuposInt());
+					return new AnonymousLiteral(InputHelper.readLuposInt(in));
 				}
 			case LuposObjectInputStream.LAZYLITERAL:
-				return new LazyLiteral(in.readLuposInt());
+				return new LazyLiteral(InputHelper.readLuposInt(in));
 			case LuposObjectInputStream.LAZYLITERALORIGINALCONTENT:
-				return new LazyLiteralOriginalContent(in.readLuposInt(), in
-						.readLuposInt());
+				return new LazyLiteralOriginalContent(InputHelper.readLuposInt(in), InputHelper.readLuposInt(in));
 			case LuposObjectInputStream.LAZYLITERALMATERIALIZED:
-				return new LazyLiteral(in.readLuposInt(), readLuposLiteral(in));
+				return new LazyLiteral(InputHelper.readLuposInt(in), readLuposLiteral(in));
 			case LuposObjectInputStream.LAZYLITERALORIGINALCONTENTMATERIALIZED:
-				return new LazyLiteralOriginalContent(in.readLuposInt(), in
-						.readLuposInt(), readLuposLiteral(in));
+				return new LazyLiteralOriginalContent(InputHelper.readLuposInt(in), InputHelper.readLuposInt(in), readLuposLiteral(in));
 			case LuposObjectInputStream.PLAINSTRINGLITERAL:
-				return new PlainStringLiteral(in.readLuposString());
+				return new PlainStringLiteral(InputHelper.readLuposString(in));
 			default:
 			case LuposObjectInputStream.LITERAL:
 				if (mapType == MapType.NOCODEMAP
@@ -194,10 +244,10 @@ public class LiteralFactory {
 						|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 						|| mapType == MapType.PREFIXCODEMAP
 						|| mapType == MapType.URICODEMAP) {
-					return new StringLiteral(in.readLuposString());
+					return new StringLiteral(InputHelper.readLuposString(in));
 				} else {
 
-					return new CodeMapLiteral(in.readLuposInt());
+					return new CodeMapLiteral(InputHelper.readLuposInt(in));
 				}
 			}
 		} catch (final URISyntaxException e) {
@@ -209,35 +259,37 @@ public class LiteralFactory {
 	public static URILiteral createURILiteralWithoutLazyLiteral(
 			final String content) throws java.net.URISyntaxException {
 		if (mapType == MapType.NOCODEMAP
-				|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)
+				|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 			return new StringURILiteral(content);
-		else
+		} else {
 			return new CodeMapURILiteral(content);
+		}
 	}
-	
+
 	public static URILiteral createURILiteralWithoutLazyLiteralWithoutException(
 			final String content) {
 		try {
 			if (mapType == MapType.NOCODEMAP
-					|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)
+					|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 				return new StringURILiteral(content);
-			else
+			} else {
 				return new CodeMapURILiteral(content);
-		} catch(java.net.URISyntaxException e){
+			}
+		} catch(final java.net.URISyntaxException e){
 			System.err.println(e);
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
-	public static URILiteral createStringURILiteral(String content) throws URISyntaxException {
+
+	public static URILiteral createStringURILiteral(final String content) throws URISyntaxException {
 		return new StringURILiteral(content);
 	}
 
-	public static URILiteral createStringURILiteralWithoutException(String content) {
+	public static URILiteral createStringURILiteralWithoutException(final String content) {
 		try {
 			return new StringURILiteral(content);
-		} catch(URISyntaxException e){
+		} catch(final URISyntaxException e){
 			System.err.println(e);
 			e.printStackTrace();
 			return null;
@@ -260,10 +312,11 @@ public class LiteralFactory {
 		if (mapType == MapType.NOCODEMAP || mapType == MapType.LAZYLITERAL
 				|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 				|| mapType == MapType.PREFIXCODEMAP
-				|| mapType == MapType.URICODEMAP)
+				|| mapType == MapType.URICODEMAP) {
 			return new StringLiteral(content);
-		else
+		} else {
 			return new CodeMapLiteral(content);
+		}
 	}
 
 	public static Literal createStringLiteral(final String content) {
@@ -283,56 +336,62 @@ public class LiteralFactory {
 	public static Literal createURILiteral(final String content)
 	throws java.net.URISyntaxException {
 		if (LazyLiteral.getHm() != null
-				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP))
+				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			return new LazyLiteral(content);
-		else
+		} else {
 			return createURILiteralWithoutLazyLiteral(content);
+		}
 
 	}
 
 	public static Literal createURILiteralWithoutException(final String content) {
 		if (LazyLiteral.getHm() != null
-				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP))
+				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			return new LazyLiteral(content);
-		else
+		} else {
 			return createURILiteralWithoutLazyLiteralWithoutException(content);
+		}
 	}
 
 	public static Literal createTypedLiteralWithoutException(final String content, final String type) {
 		try {
 			return LiteralFactory.createTypedLiteral(content, type);
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			System.err.println(e);
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public static Literal createTypedLiteral(final String content, final String type) throws java.net.URISyntaxException {
 		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(
 				content, type);
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
-			if (typedLiteral.originalStringDiffers())
+			if (typedLiteral.originalStringDiffers()) {
 				return new LazyLiteralOriginalContent(typedLiteral.toString(),
 						typedLiteral.originalString());
-			else
+			} else {
 				return new LazyLiteral(typedLiteral.toString());
-		} else
+			}
+		} else {
 			return typedLiteral;
+		}
 	}
 
 	public static Literal createTypedLiteral(final String content, final URILiteral type) throws java.net.URISyntaxException {
 		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(content, type);
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
-			if (typedLiteral.originalStringDiffers())
+			if (typedLiteral.originalStringDiffers()) {
 				return new LazyLiteralOriginalContent(typedLiteral.toString(),
 						typedLiteral.originalString());
-			else
+			} else {
 				return new LazyLiteral(typedLiteral.toString());
-		} else
+			}
+		} else {
 			return typedLiteral;
+		}
 	}
 
 	public static PlainStringLiteral creatPlainStringLiteral(
@@ -342,10 +401,11 @@ public class LiteralFactory {
 
 	public static Literal createLiteral(final String content) {
 		if (LazyLiteral.getHm() != null
-				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP))
+				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			return new LazyLiteral(content);
-		else
+		} else {
 			return createLiteralWithoutLazyLiteral(content);
+		}
 	}
 
 	public static Literal createLanguageTaggedLiteral(final String content,
@@ -354,30 +414,34 @@ public class LiteralFactory {
 				content, language);
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
-			if (languageTaggedLiteral.originalStringDiffers())
+			if (languageTaggedLiteral.originalStringDiffers()) {
 				return new LazyLiteralOriginalContent(languageTaggedLiteral
 						.toString(), languageTaggedLiteral.originalString());
-			else
+			} else {
 				return new LazyLiteral(languageTaggedLiteral.toString());
-		} else
+			}
+		} else {
 			return languageTaggedLiteral;
+		}
 	}
 
 	public static Literal createAnonymousLiteral(final String content) {
 		if (LazyLiteral.getHm() != null
-				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP))
+				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			return new LazyLiteral(content);
-		else
+		} else {
 			return createAnonymousLiteralWithoutLazyLiteral(content);
+		}
 	}
 
 	public static Literal createPostFixOfURI(final String content) {
 		if (mapType == MapType.NOCODEMAP || mapType == MapType.LAZYLITERAL
 				|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
-				|| mapType == MapType.PREFIXCODEMAP)
+				|| mapType == MapType.PREFIXCODEMAP) {
 			return new StringLiteral(content);
-		else
+		} else {
 			return new CodeMapLiteral(content);
+		}
 	}
 
 	public enum MapType {
@@ -390,11 +454,13 @@ public class LiteralFactory {
 		LiteralFactory.mapType = mapType;
 		if (mapType != MapType.NOCODEMAP && mapType != MapType.LAZYLITERAL
 				&& mapType != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
-				&& mapType != MapType.PREFIXCODEMAP)
+				&& mapType != MapType.PREFIXCODEMAP) {
 			CodeMapLiteral.init();
+		}
 		if (mapType != MapType.NOCODEMAP && mapType != MapType.LAZYLITERAL
-				&& mapType != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)
+				&& mapType != MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 			CodeMapURILiteral.init();
+		}
 	}
 
 	public static void setTypeWithoutInitializing(final MapType mapType) {

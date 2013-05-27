@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * 
+ *
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -34,6 +34,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -47,6 +49,9 @@ import lupos.io.LuposObjectInputStreamWithoutReadingHeader;
 import lupos.io.LuposObjectOutputStream;
 import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
 import lupos.io.Registration;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 
 /**
@@ -56,15 +61,15 @@ import lupos.misc.FileHelper;
  * provides a fast implementation to retrieve the iterator of the entries
  * besides the fact that all is stored and read from disk. Most of the other
  * methods are rather slow.
- * 
+ *
  * @author groppe
- * 
+ *
  */
 public class DiskCollection<E extends Serializable> implements Collection<E>,
 		Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 950171040308418130L;
 
@@ -77,7 +82,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	private static String[] folder = new String[] { "tmp//DiskCollection//" };
 	private LuposObjectOutputStream out = null;
 	private boolean wroteOnDisk = false;
-	private Class<? extends E> classOfElements;
+	private final Class<? extends E> classOfElements;
 
 	private static final int STORAGELIMIT = 1000000000;
 
@@ -86,8 +91,9 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	static {
 		lock.lock();
 		try {
-			for (final String f : folder)
+			for (final String f : folder) {
 				FileHelper.deleteDirectory(new File(f));
+			}
 		} finally {
 			lock.unlock();
 		}
@@ -97,13 +103,15 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		lock.lock();
 		try {
 			if (dir == null || dir.length == 0
-					|| (dir.length == 1 && dir[0].compareTo("") == 0))
+					|| (dir.length == 1 && dir[0].compareTo("") == 0)) {
 				return;
+			}
 			folder = new String[dir.length];
 			for (int i = 0; i < dir.length; i++) {
 				if (!(dir[i].endsWith("//") || dir[i].endsWith("/") || dir[i]
-						.endsWith("\"")))
+						.endsWith("\""))) {
 					dir[i] = dir[i] + "//";
+				}
 				folder[i] = dir[i] + "tmp//DiskCollection//";
 				FileHelper.deleteDirectory(new File(folder[i]));
 			}
@@ -115,13 +123,14 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	public static void removeCollectionsFromDisk() {
 		lock.lock();
 		try {
-			for (final String f : folder)
+			for (final String f : folder) {
 				FileHelper.deleteDirectory(new File(f));
+			}
 		} finally {
 			lock.unlock();
 		}
 	}
-	
+
 	public static void makeFolders(){
 		lock.lock();
 		try {
@@ -136,13 +145,13 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	public DiskCollection(final Class<? extends E> classOfElements) {
 		DiskCollection.makeFolders();
-		makeNewFile();
+		this.makeNewFile();
 		this.classOfElements = classOfElements;
 	}
 
 	public DiskCollection(final Class<? extends E> classOfElements, final String filename) {
 		DiskCollection.makeFolders();
-		makeNewFile(filename);
+		this.makeNewFile(filename);
 		this.classOfElements = classOfElements;
 	}
 
@@ -157,7 +166,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	public static String newBaseFilename() {
 		return DiskCollection.newBaseFilename("DiskCollection");
 	}
-	
+
 	public static String newBaseFilename(final String prefix) {
 		lock.lock();
 		try {
@@ -169,19 +178,20 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	}
 
 	private void makeNewFile() {
-		makeNewFile(newBaseFilename());
+		this.makeNewFile(newBaseFilename());
 	}
 
 	private void makeNewFile(final String filename) {
 		this.filename = filename;
 		FileOutputStream fos;
-		numberFiles = 0;
+		this.numberFiles = 0;
 		try {
-			file = new File(filename + numberFiles);
-			if (file.exists())
-				file.delete();
-			fos = new FileOutputStream(file, false);
-			out = new LuposObjectOutputStreamWithoutWritingHeader(
+			this.file = new File(filename + this.numberFiles);
+			if (this.file.exists()) {
+				this.file.delete();
+			}
+			fos = new FileOutputStream(this.file, false);
+			this.out = new LuposObjectOutputStreamWithoutWritingHeader(
 					new BufferedOutputStream(fos));
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
@@ -194,28 +204,29 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#add(java.lang.Object)
 	 */
+	@Override
 	public boolean add(final E arg0) {
 		try {
-			if (out == null) {
-				file = new File(filename + numberFiles);
-				final FileOutputStream fos = new FileOutputStream(file, true);
-				out = new LuposObjectOutputStreamWithoutWritingHeader(
+			if (this.out == null) {
+				this.file = new File(this.filename + this.numberFiles);
+				final FileOutputStream fos = new FileOutputStream(this.file, true);
+				this.out = new LuposObjectOutputStreamWithoutWritingHeader(
 						new BufferedOutputStream(fos));
 			}
-			if (file.length() > STORAGELIMIT) {
-				out.close();
-				numberFiles++;
-				file = new File(filename + numberFiles);
-				final FileOutputStream fos = new FileOutputStream(file, true);
-				out = new LuposObjectOutputStreamWithoutWritingHeader(
+			if (this.file.length() > STORAGELIMIT) {
+				this.out.close();
+				this.numberFiles++;
+				this.file = new File(this.filename + this.numberFiles);
+				final FileOutputStream fos = new FileOutputStream(this.file, true);
+				this.out = new LuposObjectOutputStreamWithoutWritingHeader(
 						new BufferedOutputStream(fos));
 
 			}
-			out.writeLuposObject(arg0);
-			size++;
+			this.out.writeLuposObject(arg0);
+			this.size++;
 			return true;
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
@@ -229,38 +240,40 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#addAll(java.util.Collection)
 	 */
+	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag = true;
 		for (final E e : arg0) {
-			flag = flag && add(e);
+			flag = flag && this.add(e);
 		}
 		return flag;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#clear()
 	 */
+	@Override
 	public void clear() {
-		if (out != null) {
+		if (this.out != null) {
 			try {
-				out.close();
+				this.out.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
-			out = null;
+			this.out = null;
 		}
-		deleteAllFiles();
-		makeNewFile();
-		size = 0;
+		this.deleteAllFiles();
+		this.makeNewFile();
+		this.size = 0;
 	}
 
 	private void deleteAllFiles() {
-		deleteAllFiles(filename, numberFiles);
+		deleteAllFiles(this.filename, this.numberFiles);
 	}
 
 	private static void deleteAllFiles(final String baseFilename,
@@ -271,13 +284,13 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	}
 
 	public void close() {
-		if (out != null) {
+		if (this.out != null) {
 			try {
-				out.close();
+				this.out.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
-			out = null;
+			this.out = null;
 		}
 	}
 
@@ -289,32 +302,33 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		// for (final StackTraceElement trace : new Throwable().getStackTrace())
 		// traceString += trace + "\n";
 
-		if (out != null) {
+		if (this.out != null) {
 			try {
-				out.close();
+				this.out.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
-			out = null;
+			this.out = null;
 		}
-		deleteAllFiles();
+		this.deleteAllFiles();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#contains(java.lang.Object)
 	 */
+	@Override
 	public boolean contains(final Object arg0) {
 		try {
-			if (out != null) {
-				out.close();
-				out = null;
+			if (this.out != null) {
+				this.out.close();
+				this.out = null;
 			}
-			for (int i = 0; i <= numberFiles; i++) {
+			for (int i = 0; i <= this.numberFiles; i++) {
 				final LuposObjectInputStream in = new LuposObjectInputStreamWithoutReadingHeader<E>(
-						new BufferedInputStream(new FileInputStream(filename
-								+ numberFiles)), (Class<E>) arg0.getClass());
+						new BufferedInputStream(new FileInputStream(this.filename
+								+ this.numberFiles)), (Class<E>) arg0.getClass());
 				try {
 					while (true) {
 						final E e = (E) in.readLuposObject();
@@ -349,37 +363,40 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#containsAll(java.util.Collection)
 	 */
+	@Override
 	public boolean containsAll(final Collection<?> arg0) {
 		final HashSet<E> hs = new HashSet<E>();
 		hs.addAll((Collection<E>) arg0);
 		try {
-			if (out != null) {
-				out.close();
-				out = null;
+			if (this.out != null) {
+				this.out.close();
+				this.out = null;
 			}
-			for (int i = 0; i <= numberFiles; i++) {
+			for (int i = 0; i <= this.numberFiles; i++) {
 				final LuposObjectInputStream in = new LuposObjectInputStreamWithoutReadingHeader<E>(
-						new BufferedInputStream(new FileInputStream(filename
-								+ i)), classOfElements);
+						new BufferedInputStream(new FileInputStream(this.filename
+								+ i)), this.classOfElements);
 				try {
 					while (true) {
 						final E e = (E) in.readLuposObject();
 						if (e == null) {
 							in.close();
-							if (hs.size() == 0)
+							if (hs.size() == 0) {
 								return true;
-							else
+							} else {
 								break;
+							}
 						}
 						hs.remove(e);
 					}
 				} catch (final EOFException e) {
 					in.close();
-					if (hs.size() == 0)
+					if (hs.size() == 0) {
 						return true;
+					}
 				}
 			}
 		} catch (final FileNotFoundException e) {
@@ -400,18 +417,20 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#isEmpty()
 	 */
+	@Override
 	public boolean isEmpty() {
-		return (size == 0);
+		return (this.size == 0);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#iterator()
 	 */
+	@Override
 	public ParallelIterator<E> iterator() {
 		try {
 			// if (released)
@@ -419,38 +438,40 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 			// .println(
 			// "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! already released !!!!!!!!!!!!!!!!!! "
 			// + filename + "\n" + traceString);
-			if (out != null) {
+			if (this.out != null) {
 				try {
-					out.close();
+					this.out.close();
 				} catch (final IOException ex) {
 					System.err.println(ex);
 					ex.printStackTrace();
 				}
-				out = null;
+				this.out = null;
 			}
-			if (!isEmpty())
+			if (!this.isEmpty()) {
 				return new ParallelIterator<E>() {
 					private LuposObjectInputStream<E> in;
 					private int currentFile = 0;
-					private final String baseFilename = filename;
-					private final int numberFilesLocal = numberFiles;
+					private final String baseFilename = DiskCollection.this.filename;
+					private final int numberFilesLocal = DiskCollection.this.numberFiles;
 					private E next;
 					{
-						in = new LuposObjectInputStreamWithoutReadingHeader<E>(
+						this.in = new LuposObjectInputStreamWithoutReadingHeader<E>(
 								new BufferedInputStream(new FileInputStream(
-										baseFilename + "0")), classOfElements);
-						next();
+										this.baseFilename + "0")), DiskCollection.this.classOfElements);
+						this.next();
 					}
 
+					@Override
 					public boolean hasNext() {
-						return (next != null);
+						return (this.next != null);
 					}
 
+					@Override
 					public E next() {
-						final E current = next;
-						next = null;
+						final E current = this.next;
+						this.next = null;
 						try {
-							next = in.readLuposObject();
+							this.next = this.in.readLuposObject();
 						} catch (final EOFException e) {
 						} catch (final IOException e) {
 							System.err.println(e);
@@ -462,10 +483,10 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 							System.err.println(e);
 							e.printStackTrace();
 						}
-						if (next == null) {
-							if (openNextFile()) {
+						if (this.next == null) {
+							if (this.openNextFile()) {
 								try {
-									next = in.readLuposObject();
+									this.next = this.in.readLuposObject();
 								} catch (final IOException e) {
 									System.err.println(e);
 									e.printStackTrace();
@@ -482,21 +503,21 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 					}
 
 					private boolean openNextFile() {
-						if (currentFile < numberFilesLocal) {
+						if (this.currentFile < this.numberFilesLocal) {
 							try {
-								in.close();
+								this.in.close();
 							} catch (final IOException e) {
 								System.err.println(e);
 								e.printStackTrace();
 							}
-							currentFile++;
+							this.currentFile++;
 							try {
-								in = new LuposObjectInputStreamWithoutReadingHeader<E>(
+								this.in = new LuposObjectInputStreamWithoutReadingHeader<E>(
 										new BufferedInputStream(
 												new FileInputStream(
-														baseFilename
-																+ currentFile)),
-										classOfElements);
+														this.baseFilename
+																+ this.currentFile)),
+										DiskCollection.this.classOfElements);
 							} catch (final EOFException e1) {
 								System.err.println(e1);
 								e1.printStackTrace();
@@ -508,10 +529,12 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 								e1.printStackTrace();
 							}
 							return true;
-						} else
+						} else {
 							return false;
+						}
 					}
 
+					@Override
 					public void remove() {
 						throw (new UnsupportedOperationException(
 								"This iterator is read-only."));
@@ -520,40 +543,46 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 					@Override
 					protected void finalize() throws Throwable {
 						try {
-							close();
+							this.close();
 						} finally {
 							super.finalize();
 						}
 					}
 
+					@Override
 					public void close() {
-						if (in != null) {
+						if (this.in != null) {
 							try {
-								in.close();
+								this.in.close();
 							} catch (final IOException e) {
 								System.err.println(e);
 								e.printStackTrace();
 							}
-							in = null;
+							this.in = null;
 						}
 					}
 				};
+			}
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 		return new ParallelIterator<E>() {
+			@Override
 			public boolean hasNext() {
 				return false;
 			}
 
+			@Override
 			public E next() {
 				return null;
 			}
 
+			@Override
 			public void remove() {
 			}
 
+			@Override
 			public void close() {
 			}
 		};
@@ -561,32 +590,34 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#remove(java.lang.Object)
 	 */
+	@Override
 	public boolean remove(final Object arg0) {
-		final String oldFilename = filename;
-		final int oldNumberFiles = numberFiles;
+		final String oldFilename = this.filename;
+		final int oldNumberFiles = this.numberFiles;
 		boolean result = false;
 		boolean firstTime = true;
 		for (final E e : this) {
 			if (firstTime) {
 				firstTime = false;
-				if (out != null) {
+				if (this.out != null) {
 					try {
-						out.close();
+						this.out.close();
 					} catch (final IOException ex) {
 						ex.printStackTrace();
 					}
-					out = null;
+					this.out = null;
 				}
-				makeNewFile();
-				size = 0;
+				this.makeNewFile();
+				this.size = 0;
 			}
-			if (!e.equals(arg0) && !result)
-				add(e);
-			else
+			if (!e.equals(arg0) && !result) {
+				this.add(e);
+			} else {
 				result = true;
+			}
 		}
 
 		deleteAllFiles(oldFilename, oldNumberFiles);
@@ -596,32 +627,34 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#removeAll(java.util.Collection)
 	 */
+	@Override
 	public boolean removeAll(final Collection<?> arg0) {
-		final String oldFilename = filename;
-		final int oldNumberFiles = numberFiles;
+		final String oldFilename = this.filename;
+		final int oldNumberFiles = this.numberFiles;
 		boolean result = false;
 		boolean firstTime = true;
 		for (final E e : this) {
 			if (firstTime) {
 				firstTime = false;
-				if (out != null) {
+				if (this.out != null) {
 					try {
-						out.close();
+						this.out.close();
 					} catch (final IOException ex) {
 						ex.printStackTrace();
 					}
-					out = null;
+					this.out = null;
 				}
-				makeNewFile();
-				size = 0;
+				this.makeNewFile();
+				this.size = 0;
 			}
-			if (!arg0.contains(e))
-				add(e);
-			else
+			if (!arg0.contains(e)) {
+				this.add(e);
+			} else {
 				result = true;
+			}
 		}
 
 		deleteAllFiles(oldFilename, oldNumberFiles);
@@ -631,32 +664,34 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#retainAll(java.util.Collection)
 	 */
+	@Override
 	public boolean retainAll(final Collection<?> arg0) {
-		final String oldFilename = filename;
-		final int oldNumberFiles = numberFiles;
+		final String oldFilename = this.filename;
+		final int oldNumberFiles = this.numberFiles;
 		boolean result = false;
 		boolean firstTime = true;
 		for (final E e : this) {
 			if (firstTime) {
 				firstTime = false;
-				if (out != null) {
+				if (this.out != null) {
 					try {
-						out.close();
+						this.out.close();
 					} catch (final IOException ex) {
 						ex.printStackTrace();
 					}
-					out = null;
+					this.out = null;
 				}
-				makeNewFile();
-				size = 0;
+				this.makeNewFile();
+				this.size = 0;
 			}
-			if (arg0.contains(e))
-				add(e);
-			else
+			if (arg0.contains(e)) {
+				this.add(e);
+			} else {
 				result = true;
+			}
 		}
 
 		deleteAllFiles(oldFilename, oldNumberFiles);
@@ -666,18 +701,20 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#size()
 	 */
+	@Override
 	public int size() {
-		return (int) size;
+		return (int) this.size;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#toArray()
 	 */
+	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
@@ -685,84 +722,94 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.Collection#toArray(T[])
 	 */
+	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
 	}
 
-	private void writeObject(final java.io.ObjectOutputStream out)
-			throws IOException {
+	public void writeLuposObject(final LuposObjectOutputStream out) throws IOException {
+		this.writeCommonPart(out);
+		Registration.serializeClass(this.classOfElements, out);
+	}
+
+	public void writeLuposObject(final OutputStream out) throws IOException {
+		this.writeCommonPart(out);
+		Registration.serializeClass(this.classOfElements, out);
+	}
+
+	private void writeCommonPart(final OutputStream out) throws IOException {
 		if (this.out != null) {
 			this.out.close();
 			this.out = null;
 		}
-		out.writeLong(size);
-		out.writeUTF(filename);
-		out.writeInt(numberFiles);
-		out.writeObject(classOfElements);
-		wroteOnDisk = true;
-	}
-
-	private void readObject(final java.io.ObjectInputStream in)
-			throws IOException, ClassNotFoundException {
-		size = in.readLong();
-		filename = in.readUTF();
-		numberFiles = in.readInt();
-		classOfElements = (Class<? extends E>) in.readObject();
-		out = null;
-		wroteOnDisk = true;
-	}
-
-	public void writeLuposObject(final LuposObjectOutputStream out)
-			throws IOException {
-		if (this.out != null) {
-			this.out.close();
-			this.out = null;
-		}
-		out.writeLuposLong(size);
-		out.writeLuposString(filename);
-		out.writeLuposInt(numberFiles);
-		Registration.serializeClass(classOfElements, out);
-		wroteOnDisk = true;
-	}
-
-	public void readLuposObject(final LuposObjectInputStream in)
-			throws IOException, ClassNotFoundException {
-		size = in.readLuposLong();
-		filename = in.readLuposString();
-		numberFiles = in.readLuposInt();
-		classOfElements = (Class<? extends E>) Registration.deserializeId(in)[0];
-		out = null;
-		wroteOnDisk = true;
+		OutHelper.writeLuposLong(this.size, out);
+		OutHelper.writeLuposString(this.filename, out);
+		OutHelper.writeLuposInt(this.numberFiles, out);
+		this.wroteOnDisk = true;
 	}
 
 	public static DiskCollection readAndCreateLuposObject(
 			final LuposObjectInputStream in) throws IOException,
 			ClassNotFoundException {
-		final long size = in.readLuposLong();
-		final String filename = in.readLuposString();
-		final int numberFiles = in.readLuposInt();
+		final long size = InputHelper.readLuposLong(in);
+		final String filename = InputHelper.readLuposString(in);
+		final int numberFiles = InputHelper.readLuposInt((InputStream) in);
 		final Class<?> classOfElements = Registration.deserializeId(in)[0];
 		DiskCollection dc;
 		if (classOfElements == Triple.class) {
 			dc = new DiskCollection<Triple>((Class<Triple>) classOfElements,
 					size, filename, numberFiles);
-		} else
+		} else {
 			dc = new DiskCollection(classOfElements, size, filename,
 					numberFiles);
+		}
 		dc.wroteOnDisk = true;
 		return dc;
+	}
+
+	public static DiskCollection readAndCreateLuposObject(final InputStream in) throws IOException, ClassNotFoundException {
+		final long size = InputHelper.readLuposLong(in);
+		final String filename = InputHelper.readLuposString(in);
+		final int numberFiles = InputHelper.readLuposInt(in);
+		final Class<?> classOfElements = Registration.deserializeId(in)[0];
+		DiskCollection dc;
+		if (classOfElements == Triple.class) {
+			dc = new DiskCollection<Triple>((Class<Triple>) classOfElements,
+					size, filename, numberFiles);
+		} else {
+			dc = new DiskCollection(classOfElements, size, filename,
+					numberFiles);
+		}
+		dc.wroteOnDisk = true;
+		return dc;
+	}
+
+	public int lengthLuposObject() {
+		return DiskCollection.lengthLuposObject(this.filename);
+	}
+
+	public static int lengthLuposObject(final String filename){
+		return	LengthHelper.lengthLuposLong() +
+				LengthHelper.lengthLuposString(filename) +
+				LengthHelper.lengthLuposInt() +
+				LengthHelper.lengthLuposByte();
+	}
+
+	public static int lengthLuposObjectOfNextDiskCollection(){
+		return DiskCollection.lengthLuposObject(folder[id % folder.length] + "DiskCollection" + (id+1) + "_");
 	}
 
 	@Override
 	public String toString() {
 		String s = "";
 		for (final E e : this) {
-			if (s.compareTo("") != 0)
+			if (s.compareTo("") != 0) {
 				s += ", ";
+			}
 			s += e.toString();
 		}
 		return "[ " + s + " ]";
@@ -771,14 +818,15 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			if (out != null) {
-				out.close();
-				out = null;
+			if (this.out != null) {
+				this.out.close();
+				this.out = null;
 			}
-			if (!wroteOnDisk) {
-				final File file = new File(filename);
-				if (file.exists())
+			if (!this.wroteOnDisk) {
+				final File file = new File(this.filename);
+				if (file.exists()) {
 					file.delete();
+				}
 			}
 		} finally {
 			super.finalize();

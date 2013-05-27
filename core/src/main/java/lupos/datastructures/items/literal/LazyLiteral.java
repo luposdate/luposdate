@@ -31,8 +31,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.items.literal.codemap.IntegerStringMap;
 import lupos.datastructures.items.literal.codemap.StringIntegerMap;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.sparql1_1.ASTBlankNode;
 import lupos.sparql1_1.ASTBooleanLiteral;
 import lupos.sparql1_1.ASTDoubleCircumflex;
@@ -58,7 +58,7 @@ import lupos.sparql1_1.SimpleNode;
 public class LazyLiteral extends Literal {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2768495922178003010L;
 	private int code;
@@ -79,8 +79,9 @@ public class LazyLiteral extends Literal {
 			try {
 				this.code = v.size() + 1;
 				hm.put(content, new Integer(this.code));
-				if (this.code == Integer.MAX_VALUE)
+				if (this.code == Integer.MAX_VALUE) {
 					System.err.println("Literal code overflow! Not good!");
+				}
 				v.put(new Integer(this.code), content);
 			} finally{
 				lock.unlock();
@@ -100,9 +101,9 @@ public class LazyLiteral extends Literal {
 
 	@Override
 	public String[] getUsedStringRepresentations() {
-		return new String[] { toString() };
+		return new String[] { this.toString() };
 	}
-	
+
 	@Override
 	public String getKey(){
 		return ""+this.code;
@@ -144,14 +145,15 @@ public class LazyLiteral extends Literal {
 
 	@Override
 	public boolean equals(final Object l) {
-		if (!(l instanceof Literal))
+		if (!(l instanceof Literal)) {
 			return false;
-		return compareToNotNecessarilySPARQLSpecificationConform((Literal) l) == 0;
+		}
+		return this.compareToNotNecessarilySPARQLSpecificationConform((Literal) l) == 0;
 	}
 
 	@Override
 	public boolean valueEquals(final Literal lit) {
-		return compareToNotNecessarilySPARQLSpecificationConform(lit) == 0;
+		return this.compareToNotNecessarilySPARQLSpecificationConform(lit) == 0;
 	}
 
 	public int getCode() {
@@ -189,7 +191,7 @@ public class LazyLiteral extends Literal {
 		return LazyLiteral.getLiteral(content, false);
 	}
 
-	
+
 	public static Literal getLiteral(final String content, final boolean allowLazyLiteral) {
 		try {
 			final SimpleNode node = SPARQL1_1Parser.parseGraphTerm(content, null);
@@ -209,7 +211,7 @@ public class LazyLiteral extends Literal {
 	public static Literal getLiteral(final Node node, final boolean allowLazyLiteral) {
 		Literal literal = null;
 		Node n = node;
-		
+
 		if (n instanceof ASTNIL) {
 			try {
 				literal = (allowLazyLiteral) ? LiteralFactory
@@ -241,21 +243,24 @@ public class LazyLiteral extends Literal {
 							.createLiteral("<" + name + ">") : LiteralFactory
 							.createLiteralWithoutLazyLiteral("<" + name + ">");
 				}
-			} else
+			} else {
 				literal = (allowLazyLiteral) ? LiteralFactory.createLiteral("<"
 						+ name + ">") : LiteralFactory
 						.createLiteralWithoutLazyLiteral("<" + name + ">");
-		} else if (n instanceof ASTRDFLiteral)
+			}
+		} else if (n instanceof ASTRDFLiteral) {
 			n = n.jjtGetChild(0);
+		}
 
-		if (literal != null)
+		if (literal != null) {
 			return literal;
+		}
 
 		if (n instanceof ASTStringLiteral) {
 			final ASTStringLiteral lit = (ASTStringLiteral) n;
 			final String quotedContent = lit.getStringLiteral();
 
-			literal = (allowLazyLiteral) ? 
+			literal = (allowLazyLiteral) ?
 					LiteralFactory.createLiteral(quotedContent)
 					: LiteralFactory.createLiteralWithoutLazyLiteral(quotedContent);
 		} else if (n instanceof ASTInteger) {
@@ -279,20 +284,21 @@ public class LazyLiteral extends Literal {
 			final String content = lit.getValue();
 
 			try {
-				if (content.contains("e") || content.contains("E"))
+				if (content.contains("e") || content.contains("E")) {
 					literal = (allowLazyLiteral) ? LiteralFactory
 							.createTypedLiteral("\"" + content + "\"",
 									"<http://www.w3.org/2001/XMLSchema#double>")
 							: TypedLiteralOriginalContent
 									.createTypedLiteral("\"" + content + "\"",
 											"<http://www.w3.org/2001/XMLSchema#double>");
-				else
+				} else {
 					literal = (allowLazyLiteral) ? LiteralFactory
 							.createTypedLiteral("\"" + content + "\"",
 									"<http://www.w3.org/2001/XMLSchema#decimal>")
 							: TypedLiteralOriginalContent
 									.createTypedLiteral("\"" + content + "\"",
 											"<http://www.w3.org/2001/XMLSchema#decimal>");
+				}
 			} catch (final URISyntaxException e) {
 				literal = (allowLazyLiteral) ? LiteralFactory
 						.createLiteral(content) : LiteralFactory
@@ -314,9 +320,9 @@ public class LazyLiteral extends Literal {
 						.createLiteralWithoutLazyLiteral(content);
 			}
 		} else if (n instanceof ASTDoubleCircumflex) {
-			if (n.jjtGetNumChildren() != 2)
+			if (n.jjtGetNumChildren() != 2) {
 				System.err.println(n + " is expected to have 2 children!");
-			else {
+			} else {
 				final String content = getLiteral(n.jjtGetChild(0)).toString();
 				final String type = getLiteral(n.jjtGetChild(1)).toString();
 
@@ -359,30 +365,31 @@ public class LazyLiteral extends Literal {
 							.createLiteral("<" + name + ">") : LiteralFactory
 							.createLiteralWithoutLazyLiteral("<" + name + ">");
 				}
-			} else
+			} else {
 				literal = (allowLazyLiteral) ? LiteralFactory.createLiteral("<"
 						+ name + ">") : LiteralFactory
 						.createLiteralWithoutLazyLiteral("<" + name + ">");
+			}
 		} else if(n instanceof ASTObjectList){
 			literal = getLiteral(n.jjtGetChild(0));
-		}else
+		} else {
 			System.err.println("Unexpected type! "
 					+ n.getClass().getSimpleName());
+		}
 
 		return literal;
 	}
 
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-		this.code = LuposObjectInputStream.readLuposInt(in);
-		// code = in.readInt();
+		this.code =InputHelper.readLuposInt(in);
 	}
 
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
-		LuposObjectOutputStream.writeLuposInt(this.code, out);
+		OutHelper.writeLuposInt(this.code, out);
 	}
-	
+
 	@Override
 	public boolean isBlank() {
 		return this.getLiteral().isBlank();
@@ -392,17 +399,17 @@ public class LazyLiteral extends Literal {
 	public boolean isURI() {
 		return this.getLiteral().isURI();
 	}
-	
+
 	@Override
 	public boolean isTypedLiteral(){
 		return this.getLiteral().isTypedLiteral();
 	}
-	
+
 	@Override
 	public boolean isLanguageTaggedLiteral(){
 		return this.getLiteral().isLanguageTaggedLiteral();
 	}
-	
+
 	@Override
 	public boolean isSimpleLiteral(){
 		return this.getLiteral().isSimpleLiteral();
@@ -412,7 +419,7 @@ public class LazyLiteral extends Literal {
 	public boolean isXMLSchemaStringLiteral(){
 		return this.getLiteral().isXMLSchemaStringLiteral();
 	}
-	
+
 	@Override
 	public Literal createThisLiteralNew() {
 		return this.getLiteral().createThisLiteralNew();

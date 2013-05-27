@@ -35,15 +35,15 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapURILiteral;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 //import java.util.*;
 
 public class StringURILiteral extends URILiteral implements Externalizable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7170680344509876823L;
 	protected Literal content;
@@ -53,7 +53,7 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 
 	public StringURILiteral(final String content)
 			throws java.net.URISyntaxException {
-		update(content);
+		this.update(content);
 	}
 
 	@Override
@@ -82,19 +82,20 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 			return super.equals(obj);
 		} else if (obj instanceof LazyLiteral) {
 			return (this.toString().compareTo(obj.toString()) == 0);
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
 	public String getString() {
-		return content.toString();
+		return this.content.toString();
 	}
 
 	@Override
 	public String[] getUsedStringRepresentations() {
 		try {
-			return CodeMapURILiteral.getPreAndPostfix("<" + content.toString()
+			return CodeMapURILiteral.getPreAndPostfix("<" + this.content.toString()
 					+ ">");
 		} catch (final URISyntaxException e) {
 			System.err.println(e);
@@ -103,12 +104,14 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 		}
 	}
 
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
-		content = LuposObjectInputStream.readLuposLiteral(in);
+		this.content = InputHelper.readLuposLiteral(in);
 	}
 
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
-		LuposObjectOutputStream.writeLuposLiteral(content, out);
+		OutHelper.writeLuposLiteral(this.content, out);
 	}
 }

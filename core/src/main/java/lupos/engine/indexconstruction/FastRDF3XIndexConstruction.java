@@ -74,6 +74,8 @@ import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.TimeInterval;
 
@@ -338,14 +340,14 @@ public class FastRDF3XIndexConstruction {
 
 			BufferManager.getBufferManager().writeAllModifiedPages();
 
-			out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID());
+			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out.os);
 
 			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
 			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
-			out.writeLuposInt(1);
-			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
+			OutHelper.writeLuposInt(1, out.os);
+			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out.os);
 			indices.writeIndexInfo(out);
-			out.writeLuposInt(0);
+			OutHelper.writeLuposInt(0, out.os);
 			out.close();
 			final Date end = new Date();
 			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
@@ -660,10 +662,10 @@ public class FastRDF3XIndexConstruction {
 	private static int writeBlock(final int[][] block, final int start, final int end, final int primaryPos, final int secondaryPos, final int tertiaryPos, final int previousPrimaryCode, final LuposObjectOutputStream out) throws IOException{
 		final int primaryCode = block[start][primaryPos];
 		// difference encoding for the primary position
-		out.writeLuposIntVariableBytes(primaryCode - previousPrimaryCode);
+		OutHelper.writeLuposIntVariableBytes(primaryCode - previousPrimaryCode, out.os);
 
 		// how many times this primary code is repeated?
-		out.writeLuposIntVariableBytes(end-start);
+		OutHelper.writeLuposIntVariableBytes(end-start, out.os);
 
 		int previousSecondaryCode = 0;
 		int previousTertiaryCode = 0;
@@ -672,13 +674,13 @@ public class FastRDF3XIndexConstruction {
 			// use difference encoding also for the secondary position
 			final int differenceSecondaryPosition = secondaryCode - previousSecondaryCode;
 
-			out.writeLuposIntVariableBytes(differenceSecondaryPosition);
+			OutHelper.writeLuposIntVariableBytes(differenceSecondaryPosition, out.os);
 			if(differenceSecondaryPosition>0){
 				// difference encoding cannot be used for the tertiary position, as the secondary position changed
 				previousTertiaryCode = 0;
 			}
 			final int tertiaryCode = block[j][tertiaryPos];
-			out.writeLuposIntVariableBytes(tertiaryCode - previousTertiaryCode);
+			OutHelper.writeLuposIntVariableBytes(tertiaryCode - previousTertiaryCode, out.os);
 
 			previousSecondaryCode = secondaryCode;
 			previousTertiaryCode = tertiaryCode;
@@ -783,13 +785,13 @@ public class FastRDF3XIndexConstruction {
 				int previousPrimaryCode = 0;
 				int previousMappedPrimaryCode = 0;
 				Integer primaryCode;
-				while((primaryCode = in.readLuposIntVariableBytes()) != null){
+				while((primaryCode = InputHelper.readLuposIntVariableBytes(in.is)) != null){
 					primaryCode+=previousPrimaryCode;
 					final int primaryMappedCode = this.mapping[primaryCode];
-					out.writeLuposIntVariableBytes(primaryMappedCode - previousMappedPrimaryCode);
+					OutHelper.writeLuposIntVariableBytes(primaryMappedCode - previousMappedPrimaryCode, out.os);
 
-					final int repetitions = in.readLuposIntVariableBytes();
-					out.writeLuposIntVariableBytes(repetitions);
+					final int repetitions = InputHelper.readLuposIntVariableBytes(in.is);
+					OutHelper.writeLuposIntVariableBytes(repetitions, out.os);
 
 					int previousSecondaryCode = 0;
 					int previousMappedSecondaryCode = 0;
@@ -797,17 +799,17 @@ public class FastRDF3XIndexConstruction {
 					int previousMappedTertiaryCode = 0;
 
 					for(int i=0; i<repetitions; i++) {
-						final int secondaryCode = in.readLuposIntVariableBytes() + previousSecondaryCode;
+						final int secondaryCode = InputHelper.readLuposIntVariableBytes(in.is) + previousSecondaryCode;
 						final int secondaryMappedCode = this.mapping[secondaryCode];
-						out.writeLuposIntVariableBytes(secondaryMappedCode - previousMappedSecondaryCode);
+						OutHelper.writeLuposIntVariableBytes(secondaryMappedCode - previousMappedSecondaryCode, out.os);
 						if(secondaryMappedCode != previousMappedSecondaryCode) {
 							previousTertiaryCode = 0;
 							previousMappedTertiaryCode = 0;
 						}
 
-						final int tertiaryCode = in.readLuposIntVariableBytes() + previousTertiaryCode;
+						final int tertiaryCode = InputHelper.readLuposIntVariableBytes(in.is) + previousTertiaryCode;
 						final int tertiaryMappedCode = this.mapping[tertiaryCode];
-						out.writeLuposIntVariableBytes(tertiaryMappedCode - previousMappedTertiaryCode);
+						OutHelper.writeLuposIntVariableBytes(tertiaryMappedCode - previousMappedTertiaryCode, out.os);
 
 						previousMappedSecondaryCode = secondaryMappedCode;
 						previousSecondaryCode = secondaryCode;
@@ -850,7 +852,7 @@ public class FastRDF3XIndexConstruction {
 
 		public int[] next() throws IOException {
 			if(this.leftWithSamePrimaryCode==0) {
-				final Integer code = this.in.readLuposIntVariableBytes();
+				final Integer code = InputHelper.readLuposIntVariableBytes(this.in.is);
 				if(code == null){
 					this.in.close();
 					return null;
@@ -858,14 +860,14 @@ public class FastRDF3XIndexConstruction {
 				this.previousPrimaryCode += code;
 				this.previousSecondaryCode = 0;
 				this.previousTertiaryCode = 0;
-				this.leftWithSamePrimaryCode = this.in.readLuposIntVariableBytes();
+				this.leftWithSamePrimaryCode = InputHelper.readLuposIntVariableBytes(this.in.is);
 			}
-			final int code = this.in.readLuposIntVariableBytes();
+			final int code = InputHelper.readLuposIntVariableBytes(this.in.is);
 			if(code > 0) {
 				this.previousTertiaryCode = 0;
 			}
 			this.previousSecondaryCode += code;
-			this.previousTertiaryCode += this.in.readLuposIntVariableBytes();
+			this.previousTertiaryCode += InputHelper.readLuposIntVariableBytes(this.in.is);
 			this.leftWithSamePrimaryCode--;
 			return new int[] { this.previousPrimaryCode, this.previousSecondaryCode, this.previousTertiaryCode};
 		}

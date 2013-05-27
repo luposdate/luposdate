@@ -29,15 +29,15 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 //import java.util.*;
 
 public class LanguageTaggedLiteral extends Literal implements Externalizable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6816588722364640397L;
 	protected Literal content;
@@ -48,8 +48,9 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 
 	protected LanguageTaggedLiteral(final String content, String language) {
 		this.content = LiteralFactory.createLiteralWithoutLazyLiteral(content);
-		if (language.startsWith("@"))
+		if (language.startsWith("@")) {
 			language = language.substring(1);
+		}
 		final String languageUniqueRepresentation = language.toUpperCase();
 		this.lang = LiteralFactory
 				.createLiteralWithoutLazyLiteral(languageUniqueRepresentation);
@@ -64,55 +65,59 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 	public boolean equals(final Object obj) {
 		if (obj instanceof LanguageTaggedLiteral) {
 			final LanguageTaggedLiteral lit = (LanguageTaggedLiteral) obj;
-			return content.equals(lit.content) && lang.equals(lit.lang);
-		} else
+			return this.content.equals(lit.content) && this.lang.equals(lit.lang);
+		} else {
 			return (this.toString().compareTo(obj.toString()) == 0);
+		}
 	}
 
 	@Override
 	public String toString() {
-		return content.toString() + "@" + lang.toString();
+		return this.content.toString() + "@" + this.lang.toString();
 	}
 
+	@Override
 	public String printYagoStringWithPrefix() {
-		return content.printYagoStringWithPrefix() + "@"
-				+ lang.printYagoStringWithPrefix();
+		return this.content.printYagoStringWithPrefix() + "@"
+				+ this.lang.printYagoStringWithPrefix();
 	}
 
 	public String getLanguage() {
-		return lang.toString();
+		return this.lang.toString();
 	}
 
 	public String getOriginalLanguage() {
-		return lang.toString();
+		return this.lang.toString();
 	}
 
 	public String getContent() {
-		return content.toString();
+		return this.content.toString();
 	}
 
 	@Override
 	public String[] getUsedStringRepresentations() {
-		return new String[] { content.toString(), lang.toString() };
+		return new String[] { this.content.toString(), this.lang.toString() };
 	}
 
 	public Literal getLang() {
-		return lang;
+		return this.lang;
 	}
 
 	public Literal getContentLiteral() {
-		return content;
+		return this.content;
 	}
 
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
-		content = LuposObjectInputStream.readLuposLiteral(in);
-		lang = LuposObjectInputStream.readLuposLiteral(in);
+		this.content = InputHelper.readLuposLiteral(in);
+		this.lang = InputHelper.readLuposLiteral(in);
 	}
 
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
-		LuposObjectOutputStream.writeLuposLiteral(content, out);
-		LuposObjectOutputStream.writeLuposLiteral(lang, out);
+		OutHelper.writeLuposLiteral(this.content, out);
+		OutHelper.writeLuposLiteral(this.lang, out);
 	}
 
 	@Override

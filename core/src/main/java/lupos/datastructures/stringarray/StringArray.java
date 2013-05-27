@@ -40,41 +40,43 @@ import lupos.datastructures.items.literal.codemap.TProcedureValue;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 
 /**
  * This class implements an array of strings on disk.
  * Its functionality can be also described as an only-appendable disk-based map from integer to string.
  * This class is used as part of the dictionary for the mapping from an integer number to a string.
- * 
+ *
  * It uses two files: In the first file pointers to the start position of strings are stored.
  * In the second file the actual strings are stored.
- * 
+ *
  * Strings can be only added to this array in the end.
  * We do not support any functionality to update or remove strings from the array.
- * 
+ *
  * The first four bytes in the pointers file stores the maximum index for the strings,
- * and the first 8 bytes in the strings file stores the maximum position in the strings file. 
+ * and the first 8 bytes in the strings file stores the maximum position in the strings file.
  */
 public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStringMap{
-	
+
 	// the maximum index
 	private long max = 0;
 	// the next free byte in the strings file
 	private long lastString = 8;
-	
+
 	// the filename of the pointers file
 	private final String pointersFilename;
 	// the filename of the strings file
 	private final String stringsFilename;
-	
+
 	// the current id, important, if several string arrays are instantiated
 	// (each instance gets another id and therefore stores its content into different files)
 	private static int fileID=0;
-	
+
 	// the lock for getting a new id
 	protected static ReentrantLock lock = new ReentrantLock();
-	
+
 	public StringArray() {
 		StringArray.lock.lock();
 		try{
@@ -87,7 +89,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 				// only the first instance removes old pointers and strings files from disk!
 				FileHelper.deleteFilesStartingWithPattern(mainFolder,currentID+ ".pointers_");
 				FileHelper.deleteFilesStartingWithPattern(mainFolder,currentID+ ".strings_");
-			}			
+			}
 			this.pointersFilename = mainFolder + currentID + ".pointers";
 			this.stringsFilename = mainFolder + currentID + ".strings";
 		} finally {
@@ -101,28 +103,28 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 * @throws IOException in case of any i/o failures
 	 */
 	public void add(final String string) throws IOException {
-		
+
 		// first store position of string in pointers file...
-		
+
 		// the first four bytes store the maximum position in this file!
 		final long posInFile = 4 + this.max*8;
-				
+
 		StringArray.storeLongInPage(this.pointersFilename, posInFile, this.lastString);
-		
+
 		// update max also in pointers file...
-		
+
 		this.max++;
-		
+
 		StringArray.storeIntInPage(this.pointersFilename, 0, this.max);
-		
+
 		// now store the string...
 		this.lastString = StringArray.storeStringInPage(this.stringsFilename, this.lastString, string);
-		
+
 		// and update the position into which the last string is stored!
-		
+
 		StringArray.storeLongInPage(this.stringsFilename, 0, this.lastString);
 	}
-	
+
 	/**
 	 * Retrieves a string
 	 * @param index the index of the string
@@ -138,14 +140,14 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		// the first four bytes store the maximum position in this file!
 		final long posInFile = 4 + (index-1)*8;
 		try {
-			long posOfString = StringArray.getLongFromPage(this.pointersFilename, posInFile);
-	
+			final long posOfString = StringArray.getLongFromPage(this.pointersFilename, posInFile);
+
 			return StringArray.getStringFromPage(this.stringsFilename, posOfString);
-		} catch(IOException e){
+		} catch(final IOException e){
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Stores an integer into a file
 	 * @param fileName the file into which is stored
@@ -155,9 +157,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 */
 	private final static void storeIntInPage(final String fileName, final long posInFile, final long value) throws IOException{
 		final int defaultPageSize = PageManager.getDefaultPageSize();
-		final int pageNumber = (int) (posInFile / defaultPageSize);		
+		final int pageNumber = (int) (posInFile / defaultPageSize);
 		PageAddress pageAddress = new PageAddress(pageNumber, fileName);
-		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);		
+		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 		int posInPage = (int) (posInFile % defaultPageSize);
 		long toBeStored = value;
 		if(posInPage+3 >= defaultPageSize){
@@ -172,27 +174,27 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 				}
 				page[posInPage] = (byte)((toBeStored % 256)-128);
 				toBeStored/=256;
-				posInPage++;		
+				posInPage++;
 			}
 		} else {
 			// optimize the normal case!
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
-			page[posInPage] = (byte)((toBeStored % 256)-128);			
+			posInPage++;
+			page[posInPage] = (byte)((toBeStored % 256)-128);
 		}
-		
+
 		BufferManager.getBufferManager().modifyPage(defaultPageSize, pageAddress, page);
 	}
-	
+
 	/**
-	 * Retrieves an integer from disk 
+	 * Retrieves an integer from disk
 	 * @param fileName the file in which the integer is stored
 	 * @param posInFile the position in the file in which the integer is stored
 	 * @return the integer stored at posInFile in file fileName
@@ -200,9 +202,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 */
 	private final static long getIntFromPage(final String fileName, final long posInFile) throws IOException{
 		final int defaultPageSize = PageManager.getDefaultPageSize();
-		final int pageNumber = (int) (posInFile / defaultPageSize);		
+		final int pageNumber = (int) (posInFile / defaultPageSize);
 		PageAddress pageAddress = new PageAddress(pageNumber, fileName);
-		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);		
+		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 		int posInPage = (int) (posInFile % defaultPageSize);
 
 		if(posInPage+3>=defaultPageSize){
@@ -226,7 +228,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			return (page[posInPage]+128) + 256 * ( (page[posInPage+1]+128) + 256 * ( (page[posInPage+2]+128) + 256 * (page[posInPage+3]+128)));
 		}
 	}
-	
+
 	/**
 	 * Stores a long into a file
 	 * @param fileName the file into which is stored
@@ -236,9 +238,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 */
 	private final static void storeLongInPage(final String fileName, final long posInFile, final long value) throws IOException{
 		final int defaultPageSize = PageManager.getDefaultPageSize();
-		final int pageNumber = (int) (posInFile / defaultPageSize);		
+		final int pageNumber = (int) (posInFile / defaultPageSize);
 		PageAddress pageAddress = new PageAddress(pageNumber, fileName);
-		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);		
+		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 		int posInPage = (int) (posInFile % defaultPageSize);
 		long toBeStored = value;
 		if(posInPage+7 >= defaultPageSize){
@@ -253,39 +255,39 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 				}
 				page[posInPage] = (byte)((toBeStored % 256)-128);
 				toBeStored/=256;
-				posInPage++;		
+				posInPage++;
 			}
 		} else {
 			// optimize the normal case!
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 			toBeStored/=256;
-			posInPage++;		
+			posInPage++;
 			page[posInPage] = (byte)((toBeStored % 256)-128);
 		}
-		
+
 		BufferManager.getBufferManager().modifyPage(defaultPageSize, pageAddress, page);
 	}
-	
+
 	/**
-	 * Retrieves a long from disk 
+	 * Retrieves a long from disk
 	 * @param fileName the file in which the long is stored
 	 * @param posInFile the position in the file in which the long is stored
 	 * @return the long stored at posInFile in file fileName
@@ -293,9 +295,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 */
 	private final static long getLongFromPage(final String fileName, final long posInFile) throws IOException{
 		final int defaultPageSize = PageManager.getDefaultPageSize();
-		final int pageNumber = (int) (posInFile / defaultPageSize);		
+		final int pageNumber = (int) (posInFile / defaultPageSize);
 		PageAddress pageAddress = new PageAddress(pageNumber, fileName);
-		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);		
+		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 		int posInPage = (int) (posInFile % defaultPageSize);
 
 		if(posInPage+7>=defaultPageSize){
@@ -316,9 +318,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			return result;
 		} else {
 			// optimize the normal case!
-			return ((page[posInPage])+128L) + 
-					256L * ( (page[posInPage+1]+128L) + 
-					256L * ( (page[posInPage+2]+128L) + 
+			return ((page[posInPage])+128L) +
+					256L * ( (page[posInPage+1]+128L) +
+					256L * ( (page[posInPage+2]+128L) +
 					256L * ( (page[posInPage+3]+128L) +
 					256L * ( (page[posInPage+4]+128L) +
 					256L * ( (page[posInPage+5]+128L) +
@@ -327,7 +329,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 				)))))));
 		}
 	}
-	
+
 	/**
 	 * Stores a string into the file...
 	 * @param fileName the file in which the string is stored
@@ -338,21 +340,21 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 */
 	private final static long storeStringInPage(final String fileName, final long posInFile, final String value) throws IOException {
 		// store length of string...
-		byte[] bytesOfValue = value.getBytes(LuposObjectInputStream.UTF8);
+		final byte[] bytesOfValue = value.getBytes(LuposObjectInputStream.UTF8);
 		final int length = bytesOfValue.length;
 		StringArray.storeIntInPage(fileName, posInFile, length);
 
 		// store bytes of string...
 		final long startString = posInFile + 4;
 		final int defaultPageSize = PageManager.getDefaultPageSize();
-		final int pageNumber = (int) (startString / defaultPageSize);		
+		final int pageNumber = (int) (startString / defaultPageSize);
 		PageAddress pageAddress = new PageAddress(pageNumber, fileName);
-		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);		
+		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 		int posInPage = (int) (startString % defaultPageSize);
 
 		// Is the string stored over several pages?
 		if(posInPage+length>=defaultPageSize){
-			for(byte b: bytesOfValue){
+			for(final byte b: bytesOfValue){
 				page[posInPage] = b;
 				posInPage++;
 				if(posInPage>=defaultPageSize){
@@ -361,16 +363,16 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 					pageAddress = new PageAddress(pageAddress.pagenumber+1, pageAddress.filename);
 					page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 					posInPage %= defaultPageSize;
-				}			
+				}
 			}
 		} else {
 			// just doing the normal case faster!
 			System.arraycopy(bytesOfValue, 0, page, posInPage, length);
 		}
 		BufferManager.getBufferManager().modifyPage(defaultPageSize, pageAddress, page);
-		return posInFile + 4 + length; 
+		return posInFile + 4 + length;
 	}
-	
+
 	/**
 	 * Retrieves a string from a file at a certain position
 	 * @param fileName the file in which the string is stored
@@ -384,9 +386,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		// get the string as byte array
 		final long startOfString = posInFile + 4;
 		final int defaultPageSize = PageManager.getDefaultPageSize();
-		final int pageNumber = (int) (startOfString / defaultPageSize);		
+		final int pageNumber = (int) (startOfString / defaultPageSize);
 		PageAddress pageAddress = new PageAddress(pageNumber, fileName);
-		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);		
+		byte[] page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 		int posInPage = (int) (startOfString % defaultPageSize);
 
 		final byte[] result = new byte[length];
@@ -399,7 +401,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 					pageAddress = new PageAddress(pageAddress.pagenumber+1, pageAddress.filename);
 					page = BufferManager.getBufferManager().getPage(defaultPageSize, pageAddress);
 					posInPage %= defaultPageSize;
-				}				
+				}
 				result[i] = page[posInPage];
 				posInPage++;
 			}
@@ -410,11 +412,11 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		// create resultant string!
 		return new String(result, LuposObjectInputStream.UTF8);
 	}
-	
+
 	@Override
 	public Iterator<Entry<Integer, String>> iterator() {
 		return new Iterator<Entry<Integer, String>>(){
-			
+
 			private int current = 0;
 
 			@Override
@@ -425,7 +427,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 
 			@Override
 			public Entry<Integer, String> next() {
-				if(hasNext()){
+				if(this.hasNext()){
 					// start with index=1
 					this.current++;
 					return new MapEntry<Integer, String>(this.current, StringArray.this.get(this.current));
@@ -437,15 +439,15 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
-			
+
 		};
 	}
-	
+
 	@Override
 	public String toString(){
 		String result = "(Only appendable disk-based) Map from Integer to String: {";
 		boolean firstTime = true;
-		for(Entry<Integer, String> entry: this){
+		for(final Entry<Integer, String> entry: this){
 			if(firstTime){
 				firstTime = false;
 			} else {
@@ -455,16 +457,16 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		}
 		return result+" }";
 	}
-	
+
 	@Override
-	public void put(int key, String value) {
+	public void put(final int key, final String value) {
 		if(key!=this.max+1){
 			// the typical use in a dictionary should follow this condition!
 			throw new RuntimeException("It is only allowed to put under the key " + (this.max+1) + ", but it is tried to put under the key " + key + "!");
 		} else {
 			try {
 				this.add(value);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -477,7 +479,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			StringArray.storeIntInPage(this.pointersFilename, 0, this.max);
 			this.lastString = 8;
 			StringArray.storeLongInPage(this.stringsFilename, 0, this.lastString);
-		} catch(IOException e){
+		} catch(final IOException e){
 			throw new RuntimeException(e);
 		}
 	}
@@ -488,19 +490,19 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	}
 
 	@Override
-	public void forEachValue(TProcedureValue<String> arg0) {
-		for(Entry<Integer, String> entry: this){
+	public void forEachValue(final TProcedureValue<String> arg0) {
+		for(final Entry<Integer, String> entry: this){
 			arg0.execute(entry.getValue());
 		}
 	}
 
 	@Override
-	public void forEachEntry(TProcedureEntry<Integer, String> arg0) {
-		for(Entry<Integer, String> entry: this){
+	public void forEachEntry(final TProcedureEntry<Integer, String> arg0) {
+		for(final Entry<Integer, String> entry: this){
 			arg0.execute(entry.getKey(), entry.getValue());
 		}
 	}
-	
+
 	/**
 	 * This method creates the string array on disk by storing the string given by an iterator.
 	 * It is optimized to store many strings and is therefore faster than just using the methods add or put for each string...
@@ -513,19 +515,19 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		}
 		// the first four bytes store the maximum position in this file!
 		long posInFile = 4;
-		
+
 		while(valuesIterator.hasNext()){
 			// first store position of string in pointers file...
 
 			StringArray.storeLongInPage(this.pointersFilename, posInFile, this.lastString);
-			
+
 			posInFile += 8;
-			
+
 			this.max++;
-			
+
 			// now store the string...
 			this.lastString = StringArray.storeStringInPage(this.stringsFilename, this.lastString, valuesIterator.next());
-			
+
 		}
 		// update max also in pointers file...
 
@@ -534,40 +536,40 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 
 		StringArray.storeLongInPage(this.stringsFilename, 0, this.lastString);
 	}
-	
+
 	protected StringArray(final String pointersFilename, final String stringsFilename) throws IOException{
 		this.pointersFilename = pointersFilename;
 		this.stringsFilename = stringsFilename;
 		this.max = getIntFromPage(this.pointersFilename, 0);
 		this.lastString = getLongFromPage(this.stringsFilename, 0);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static StringArray readLuposStringArray(final LuposObjectInputStream lois) throws IOException{
-		final String pointersFilename = lois.readLuposString();
-		final String stringsFilename = lois.readLuposString();
+		final String pointersFilename = InputHelper.readLuposString(lois.is);
+		final String stringsFilename = InputHelper.readLuposString(lois.is);
 		return new StringArray(pointersFilename, stringsFilename);
 	}
-	
+
 	public void writeLuposStringArray(final LuposObjectOutputStream loos) throws IOException{
 		BufferManager.getBufferManager().writeAllModifiedPages();
-		loos.writeLuposString(this.pointersFilename);
-		loos.writeLuposString(this.stringsFilename);
+		OutHelper.writeLuposString(this.pointersFilename, loos.os);
+		OutHelper.writeLuposString(this.stringsFilename, loos.os);
 	}
-	
+
 	public static int getFileID() {
 		return StringArray.fileID;
 	}
 
-	public static void setFileID(int fileID) {
+	public static void setFileID(final int fileID) {
 		StringArray.fileID = fileID;
 	}
 
 	/**
-	 * just to quickly test the implementation... 
+	 * just to quickly test the implementation...
 	 */
 	public static void main(final String[] args) throws IOException{
-		StringArray d = new StringArray();
+		final StringArray d = new StringArray();
 		d.add("hallo");
 		d.add("hello");
 		d.add("3");
@@ -575,7 +577,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		System.out.println(d);
 		d.put(d.size()+1, "5");
 		System.out.println(d);
-		StringArray d2 = new StringArray();
+		final StringArray d2 = new StringArray();
 		d2.generate(Arrays.asList("a", "b", "c").iterator());
 		System.out.println(d2);
 		BufferManager.getBufferManager().writeAllModifiedPages();

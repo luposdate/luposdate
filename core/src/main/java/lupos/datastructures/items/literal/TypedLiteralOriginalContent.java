@@ -29,13 +29,13 @@ import java.io.ObjectOutput;
 import java.net.URISyntaxException;
 
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 public class TypedLiteralOriginalContent extends TypedLiteral {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -913934251866276647L;
 	protected Literal originalContent;
@@ -52,7 +52,7 @@ public class TypedLiteralOriginalContent extends TypedLiteral {
 	protected TypedLiteralOriginalContent(final String content2,
 			final URILiteral type) {
 		super(content2, type);
-		this.originalContent = (this.content.toString().compareTo(content2) != 0) ? 
+		this.originalContent = (this.content.toString().compareTo(content2) != 0) ?
 				LiteralFactory.createLiteralWithoutLazyLiteral(content2)
 				: this.content;
 	}
@@ -62,34 +62,37 @@ public class TypedLiteralOriginalContent extends TypedLiteral {
 		super(codeContent, type);
 		this.originalContent = this.content;
 		final String uniqueRepresentation = checkContent(this.originalContent.toString(), this.type);
-		this.content = (uniqueRepresentation.compareTo(this.originalContent.toString()) != 0) ? 
+		this.content = (uniqueRepresentation.compareTo(this.originalContent.toString()) != 0) ?
 				LiteralFactory.createLiteralWithoutLazyLiteral(uniqueRepresentation)
 				: this.originalContent;
 	}
 
 	public static TypedLiteral createTypedLiteral(final String content2,
 			final String type) throws URISyntaxException {
-		if (checkContent(content2, type).compareTo(content2) != 0)
+		if (checkContent(content2, type).compareTo(content2) != 0) {
 			return new TypedLiteralOriginalContent(content2, type);
-		else
+		} else {
 			return new TypedLiteral(content2, type);
+		}
 	}
 
 	public static TypedLiteral createTypedLiteral(final String content2,
 			final URILiteral type) {
-		if (checkContent(content2, type).compareTo(content2) != 0)
+		if (checkContent(content2, type).compareTo(content2) != 0) {
 			return new TypedLiteralOriginalContent(content2, type);
-		else
+		} else {
 			return new TypedLiteral(content2, type);
+		}
 	}
 
 	public static TypedLiteral createTypedLiteral(final int codeContent,
 			final URILiteral type) {
 		final String content2 = CodeMapLiteral.getValue(codeContent);
-		if (checkContent(content2, type).compareTo(content2) != 0)
+		if (checkContent(content2, type).compareTo(content2) != 0) {
 			return new TypedLiteralOriginalContent(content2, type);
-		else
+		} else {
 			return new TypedLiteral(content2, type);
+		}
 	}
 
 	@Override
@@ -99,14 +102,14 @@ public class TypedLiteralOriginalContent extends TypedLiteral {
 
 	@Override
 	public String originalString() {
-		return commonToOriginalString(this.originalContent.toString());
+		return this.commonToOriginalString(this.originalContent.toString());
 	}
 
 	@Override
-	public String toString(lupos.rdf.Prefix prefixInstance) {
-		return commonToOriginalString(this.originalContent.toString(), prefixInstance);
+	public String toString(final lupos.rdf.Prefix prefixInstance) {
+		return this.commonToOriginalString(this.originalContent.toString(), prefixInstance);
 	}
-	
+
 	@Override
 	public String[] getUsedStringRepresentations() {
 		final String[] typeRepr = this.type.getUsedStringRepresentations();
@@ -132,12 +135,12 @@ public class TypedLiteralOriginalContent extends TypedLiteral {
 	public void readExternal(final ObjectInput in) throws IOException,
 	ClassNotFoundException {
 		super.readExternal(in);
-		this.originalContent = LuposObjectInputStream.readLuposLiteral(in);
+		this.originalContent = InputHelper.readLuposLiteral(in);
 	}
 
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		super.writeExternal(out);
-		LuposObjectOutputStream.writeLuposLiteral(this.originalContent, out);
+		OutHelper.writeLuposLiteral(this.originalContent, out);
 	}
 }

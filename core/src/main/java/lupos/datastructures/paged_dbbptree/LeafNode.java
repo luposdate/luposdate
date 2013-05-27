@@ -36,6 +36,7 @@ import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
+import lupos.io.helper.OutHelper;
 
 public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializable>
 		extends Node<K, V> {
@@ -51,44 +52,46 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 			final PageManager pageManager,
 			final NodeDeSerializer<K, V> nodeDeSerializer) {
 		super(keyClass, valueClass, k_);
-		readValues = new ArrayList<V>(k_);
+		this.readValues = new ArrayList<V>(k_);
 		this.pageManager = pageManager;
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
 	@Override
 	public String toString() {
-		final String result = "Node stored in " + filename + "\n";
-		final Iterator<K> it = readKeys.iterator();
+		final String result = "Node stored in " + this.filename + "\n";
+		final Iterator<K> it = this.readKeys.iterator();
 		String s = "";
-		for (final V v : readValues) {
-			if (s.compareTo("") != 0)
+		for (final V v : this.readValues) {
+			if (s.compareTo("") != 0) {
 				s += ",";
+			}
 			s += "(";
-			if (it.hasNext())
+			if (it.hasNext()) {
 				s += it.next() + ",";
+			}
 			s += v + ")";
 		}
-		return result + s + "\n-> " + nextLeafNode;
+		return result + s + "\n-> " + this.nextLeafNode;
 	}
 
 	public void writeLeafNode(final boolean overwrite) {
 		try {
-			final OutputStream fos = new PageOutputStream(filename,
-					pageManager, !overwrite);
+			final OutputStream fos = new PageOutputStream(this.filename,
+					this.pageManager, !overwrite);
 			final LuposObjectOutputStream out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-			out.writeLuposBoolean(true);
-			final Iterator<V> it = readValues.iterator();
+			OutHelper.writeLuposBoolean(true, out.os);
+			final Iterator<V> it = this.readValues.iterator();
 			V lastValue = null;
 			K lastKey = null;
-			for (final K k : readKeys) {
+			for (final K k : this.readKeys) {
 				final V v = it.next();
-				writeLeafEntry(k, v, lastKey, lastValue, out);
+				this.writeLeafEntry(k, v, lastKey, lastValue, out);
 				lastKey = k;
 				lastValue = v;
 			}
-			if (nextLeafNode != null) {
-				nodeDeSerializer.writeLeafEntryNextFileName(nextLeafNode, out);
+			if (this.nextLeafNode != null) {
+				this.nodeDeSerializer.writeLeafEntryNextFileName(this.nextLeafNode, out);
 			}
 			out.close();
 		} catch (final IOException e) {
@@ -98,7 +101,7 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	}
 
 	public List<V> getValues() {
-		return readValues;
+		return this.readValues;
 	}
 
 	public void setValues(final List<V> readValues) {
@@ -106,7 +109,7 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	}
 
 	public int getNextLeafNode() {
-		return nextLeafNode;
+		return this.nextLeafNode;
 	}
 
 	public void setNextLeafNode(final int nextLeafNode) {
@@ -114,7 +117,7 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	}
 
 	public boolean isFound() {
-		return found;
+		return this.found;
 	}
 
 	public void setFound(final boolean found) {
@@ -122,47 +125,53 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	}
 
 	public DBBPTreeEntry<K, V> getNextLeafEntry(final int index) {
-		if (index >= readValues.size()) {
-			if (nextLeafNode != null) {
-				return new DBBPTreeEntry<K, V>(null, null, nextLeafNode);
+		if (index >= this.readValues.size()) {
+			if (this.nextLeafNode != null) {
+				return new DBBPTreeEntry<K, V>(null, null, this.nextLeafNode);
 			} else {
-				final DBBPTreeEntry<K, V> e = getNextLeafEntry(in,
-						readKeys.size() == 0 ? null : readKeys.get(readKeys
-								.size() - 1), readValues.size() == 0 ? null
-								: readValues.get(readValues.size() - 1));
+				final DBBPTreeEntry<K, V> e = this.getNextLeafEntry(this.in,
+						this.readKeys.size() == 0 ? null : this.readKeys.get(this.readKeys
+								.size() - 1), this.readValues.size() == 0 ? null
+								: this.readValues.get(this.readValues.size() - 1));
 				if (e != null) {
-					if (e.key != null)
-						readKeys.add(e.key);
-					if (e.value != null)
-						readValues.add(e.value);
-					if (e.filenameOfNextLeafNode >= 0)
+					if (e.key != null) {
+						this.readKeys.add(e.key);
+					}
+					if (e.value != null) {
+						this.readValues.add(e.value);
+					}
+					if (e.filenameOfNextLeafNode >= 0) {
 						this.nextLeafNode = e.filenameOfNextLeafNode;
+					}
 				}
 				return e;
 			}
 		} else {
-			return new DBBPTreeEntry<K, V>(readKeys.get(index), readValues
+			return new DBBPTreeEntry<K, V>(this.readKeys.get(index), this.readValues
 					.get(index));
 		}
 	}
 
 	public void readFullLeafNode() {
-		int posKey=readKeys.size();
-		K lastKey=(posKey == 0) ? null : readKeys.get(posKey - 1);
-		int posValue=readValues.size();
-		V lastValue=(posValue == 0) ? null : readValues.get(posValue - 1);
+		final int posKey=this.readKeys.size();
+		K lastKey=(posKey == 0) ? null : this.readKeys.get(posKey - 1);
+		final int posValue=this.readValues.size();
+		V lastValue=(posValue == 0) ? null : this.readValues.get(posValue - 1);
 		while (true) {
-			final DBBPTreeEntry<K, V> e = nodeDeSerializer.getNextLeafEntry(in,lastKey,lastValue);
-			if (e == null)
-				return;
-			if (e.filenameOfNextLeafNode >= 0) {
-				nextLeafNode = e.filenameOfNextLeafNode;
+			final DBBPTreeEntry<K, V> e = this.nodeDeSerializer.getNextLeafEntry(this.in,lastKey,lastValue);
+			if (e == null) {
 				return;
 			}
-			if (e.key != null)
-				readKeys.add(e.key);
-			if (e.value != null)
-				readValues.add(e.value);
+			if (e.filenameOfNextLeafNode >= 0) {
+				this.nextLeafNode = e.filenameOfNextLeafNode;
+				return;
+			}
+			if (e.key != null) {
+				this.readKeys.add(e.key);
+			}
+			if (e.value != null) {
+				this.readValues.add(e.value);
+			}
 			lastKey=e.key;
 			lastValue=e.value;
 		}
@@ -171,12 +180,12 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	protected void writeLeafEntry(final K k, final V v, final K lastKey,
 			final V lastValue, final LuposObjectOutputStream out)
 			throws IOException {
-		nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
+		this.nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
 	}
 
 	protected DBBPTreeEntry<K, V> getNextLeafEntry(
 			final LuposObjectInputStream<V> in, final K lastKey,
 			final V lastValue) {
-		return nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
+		return this.nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
 	}
 }

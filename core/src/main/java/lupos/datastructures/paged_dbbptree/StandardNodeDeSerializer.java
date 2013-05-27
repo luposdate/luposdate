@@ -31,6 +31,8 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
 
 public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
@@ -47,11 +49,12 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		this.valueClass = valueClass;
 	}
 
+	@Override
 	public Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2,
 			final LuposObjectInputStream<V> in2) {
 		int nextFilename;
 		try {
-			nextFilename = in2.readLuposInt();
+			nextFilename = InputHelper.readLuposInt(in2.is);
 		} catch (final java.io.EOFException e) {
 			return null;
 		} catch (final IOException e) {
@@ -64,7 +67,7 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		}
 		K nextKey;
 		try {
-			nextKey = (K) in2.readLuposObject(keyClass);
+			nextKey = (K) in2.readLuposObject(this.keyClass);
 			return new Tuple<K, Integer>(nextKey, nextFilename);
 		} catch (final java.io.EOFException e) {
 			return new Tuple<K, Integer>(null, nextFilename);
@@ -83,28 +86,18 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		}
 	}
 
-	private static String readDifferenceString(final String lastString,
-			final LuposObjectInputStream in) throws IOException {
-		if (lastString == null)
-			return in.readLuposString();
-		else {
-			final Integer index = in.readLuposInteger1Byte();
-			if (index == null)
-				return null;
-			return lastString.substring(0, index) + in.readLuposString();
-		}
-	}
-
+	@Override
 	public DBBPTreeEntry<K, V> getNextLeafEntry(
 			final LuposObjectInputStream<V> in, final K lastKey,
 			final V lastValue) {
 		try {
 			try {
-				final byte type = in.readLuposByte();
-				if (type < 0)
+				final byte type = InputHelper.readLuposByte(in.is);
+				if (type < 0) {
 					return null;
+				}
 				if (type == FILENAMEOFNEXTLEAFNODE) {
-					final int filenameOfNextLeafNode = in.readLuposInt();
+					final int filenameOfNextLeafNode = InputHelper.readLuposInt(in.is);
 					return new DBBPTreeEntry<K, V>(null, null,
 							filenameOfNextLeafNode);
 				}
@@ -112,9 +105,9 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 				V nextValue = null;
 				K nextKey = null;
 				try {
-					final Object o = (valueClass == String.class) ? readDifferenceString(
-							(String) lastValue, in)
-							: in.readLuposObject(valueClass);
+					final Object o = (this.valueClass == String.class) ? InputHelper.readLuposString(
+							(String) lastValue, in.is)
+							: in.readLuposObject(this.valueClass);
 					if (o == null) {
 						in.close();
 						return null;
@@ -128,13 +121,13 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 					in.close();
 					return null;
 				}
-				if (nextValue instanceof Triple && keyClass == String.class) {
+				if (nextValue instanceof Triple && this.keyClass == String.class) {
 					final Literal lastSubject = ((Triple) nextValue)
 							.getSubject();
 					final Literal lastPredicate = ((Triple) nextValue)
 							.getPredicate();
 					final Literal lastObject = ((Triple) nextValue).getObject();
-					final byte compressed = in.readLuposByte();
+					final byte compressed = InputHelper.readLuposByte(in.is);
 					switch (compressed) {
 					case 1:
 						nextKey = (K) new String(lastSubject.toString()
@@ -170,9 +163,9 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 				}
 				if (nextKey == null) {
 					try {
-						nextKey = (K) ((keyClass == String.class) ? readDifferenceString(
-								(String) lastKey, in)
-								: in.readLuposObject(keyClass));
+						nextKey = (K) ((this.keyClass == String.class) ? InputHelper.readLuposString(
+								(String) lastKey, in.is)
+								: in.readLuposObject(this.keyClass));
 					} catch (final java.io.EOFException e) {
 						in.close();
 						if (nextValue != null) {
@@ -209,53 +202,37 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		return null;
 	}
 
+	@Override
 	public void writeInnerNodeEntry(final int fileName,
 			final LuposObjectOutputStream out) throws IOException {
-		out.writeLuposInt(fileName);
+		OutHelper.writeLuposInt(fileName, out.os);
 	}
 
+	@Override
 	public void writeInnerNodeEntry(final int fileName, final K key,
 			final LuposObjectOutputStream out, final K lastKey)
 			throws IOException {
-		out.writeLuposInt(fileName);
+		OutHelper.writeLuposInt(fileName, out.os);
 		out.writeLuposObject(key);
 	}
 
+	@Override
 	public void writeLeafEntryNextFileName(final int filename,
 			final LuposObjectOutputStream out) throws IOException {
-		out.writeLuposByte(FILENAMEOFNEXTLEAFNODE);
-		out.writeLuposInt(filename);
+		OutHelper.writeLuposByte(FILENAMEOFNEXTLEAFNODE, out.os);
+		OutHelper.writeLuposInt(filename, out.os);
 	}
 
-	private static void writeDifferenceString(final String lastString,
-			final String currentString, final LuposObjectOutputStream out)
-			throws IOException {
-		if (lastString == null) {
-			out.writeLuposString(currentString);
-		} else {
-			final int max = Math.min(lastString.length(), currentString
-					.length());
-			int i = 0;
-			for (; i < max && i < 255; i++) {
-				if (lastString.charAt(i) != currentString.charAt(i))
-					break;
-			}
-			if (i >= 255)
-				out.writeLuposInt1Byte(255);
-			else
-				out.writeLuposInt1Byte(i);
-			out.writeLuposString(currentString.substring(i));
-		}
-	}
-
+	@Override
 	public void writeLeafEntry(final K k, final V v,
 			final LuposObjectOutputStream out, final K lastKey,
 			final V lastValue) throws IOException {
-		out.writeLuposByte(MOREENTRIES);
+		OutHelper.writeLuposByte(MOREENTRIES, out.os);
 		if (v instanceof String) {
-			writeDifferenceString((String) lastValue, (String) v, out);
-		} else
+			OutHelper.writeLuposString((String) v, (String) lastValue, out.os);
+		} else {
 			out.writeLuposObject(v);
+		}
 		if (v instanceof Triple && k instanceof String) {
 			final String s = (String) k;
 			final Literal lastSubject = ((Triple) v).getSubject();
@@ -264,40 +241,40 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 			if (s.startsWith(lastSubject.toString())) {
 				if (s.compareTo(lastSubject.toString()
 						+ lastPredicate.toString() + lastObject.toString()) == 0) {
-					out.writeLuposByte((byte) 1);
+					OutHelper.writeLuposByte((byte) 1, out.os);
 					return;
 				} else if (s.compareTo(lastSubject.toString()
 						+ lastObject.toString() + lastPredicate.toString()) == 0) {
-					out.writeLuposByte((byte) 2);
+					OutHelper.writeLuposByte((byte) 2, out.os);
 					return;
 				}
 			} else if (s.startsWith(lastPredicate.toString())) {
 				if (s.compareTo(lastPredicate.toString()
 						+ lastSubject.toString() + lastObject.toString()) == 0) {
-					out.writeLuposByte((byte) 3);
+					OutHelper.writeLuposByte((byte) 3, out.os);
 					return;
 				} else if (s.compareTo(lastPredicate.toString()
 						+ lastObject.toString() + lastSubject.toString()) == 0) {
-					out.writeLuposByte((byte) 4);
+					OutHelper.writeLuposByte((byte) 4, out.os);
 					return;
 				}
 			} else if (s.startsWith(lastObject.toString())) {
 				if (s.compareTo(lastObject.toString() + lastSubject.toString()
 						+ lastPredicate.toString()) == 0) {
-					out.writeLuposByte((byte) 5);
+					OutHelper.writeLuposByte((byte) 5, out.os);
 					return;
 				} else if (s.compareTo(lastObject.toString()
 						+ lastPredicate.toString() + lastSubject.toString()) == 0) {
-					out.writeLuposByte((byte) 6);
+					OutHelper.writeLuposByte((byte) 6, out.os);
 					return;
 				}
 			}
-			out.writeLuposByte((byte) 0);
-			out.writeLuposString(s);
-		} else if (k instanceof String && lastKey != null)
-			writeDifferenceString((String) lastKey, (String) k, out);
-		else
+			OutHelper.writeLuposByte((byte) 0, out.os);
+			OutHelper.writeLuposString(s, out.os);
+		} else if (k instanceof String && lastKey != null) {
+			OutHelper.writeLuposString((String) k, (String) lastKey, out.os);
+		} else {
 			out.writeLuposObject(k);
+		}
 	}
-
 }

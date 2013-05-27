@@ -44,6 +44,7 @@ import lupos.engine.operators.index.Indices.DATA_STRUCT;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.OutHelper;
 import lupos.misc.TimeInterval;
 
 /**
@@ -103,14 +104,14 @@ public class RDF3XEmptyIndexConstruction {
 			indices.constructCompletely();
 			BufferManager.getBufferManager().writeAllModifiedPages();
 
-			out.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID());
+			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out.os);
 
 			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
 			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
-			out.writeLuposInt(1);
-			LiteralFactory.writeLuposLiteral(defaultGraph, out);
+			OutHelper.writeLuposInt(1, out.os);
+			LiteralFactory.writeLuposLiteral(defaultGraph, out.os);
 			indices.writeIndexInfo(out);
-			out.writeLuposInt(0);
+			OutHelper.writeLuposInt(0, out.os);
 			out.close();
 			final Date end = new Date();
 			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);

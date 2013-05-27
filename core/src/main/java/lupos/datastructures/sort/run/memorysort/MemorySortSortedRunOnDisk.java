@@ -24,6 +24,8 @@
 package lupos.datastructures.sort.run.memorysort;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
@@ -31,24 +33,25 @@ import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.memorysort.MemorySortSortedRun.StringWithoutCommonPrefix;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.io.Registration;
 import lupos.io.Registration.DeSerializerExactClass;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
 
 /**
  * This run represents an already sorted run stored on disk.
  * It is saving space as it uses difference encoding
- * in order to avoid storing common prefixes of succeeding elements.  
+ * in order to avoid storing common prefixes of succeeding elements.
  */
 public class MemorySortSortedRunOnDisk extends Run {
-	
+
 	static {
 		/*
 		 * Register a class to de-/serialize a StringWithoutCommonPrefix object
 		 * with the luposdate i/o framework in an optimal way!
 		 */
-		Registration.addDeSerializer(new 
+		Registration.addDeSerializer(new
 				DeSerializerExactClass<StringWithoutCommonPrefix>(){
 
 					@SuppressWarnings("unchecked")
@@ -58,25 +61,26 @@ public class MemorySortSortedRunOnDisk extends Run {
 					}
 
 					@Override
-					public void serialize(StringWithoutCommonPrefix t,
-							LuposObjectOutputStream out) throws IOException {
-						out.writeLuposString(t.content);
-						out.writeLuposInt(t.endCommonPrefix);
+					public int length(final StringWithoutCommonPrefix t) {
+						return LengthHelper.lengthLuposString(t.content) + LengthHelper.lengthLuposInt();
 					}
 
 					@Override
-					public StringWithoutCommonPrefix deserialize(
-							LuposObjectInputStream<StringWithoutCommonPrefix> in)
-							throws IOException, ClassNotFoundException,
-							URISyntaxException {
-						final String content = in.readLuposString();
+					public void serialize(final StringWithoutCommonPrefix t, final OutputStream out) throws IOException {
+						OutHelper.writeLuposString(t.content, out);
+						OutHelper.writeLuposInt(t.endCommonPrefix, out);
+					}
+
+					@Override
+					public StringWithoutCommonPrefix deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+						final String content = InputHelper.readLuposString(in);
 						if(content==null){
 							// end of file reached!
 							return null;
 						}
-						return new StringWithoutCommonPrefix(content, in.readLuposInt());
+						return new StringWithoutCommonPrefix(content, InputHelper.readLuposInt(in));
 					}
-			
+
 		});
 	}
 
@@ -87,7 +91,7 @@ public class MemorySortSortedRunOnDisk extends Run {
 
 	public MemorySortSortedRunOnDisk(final StringWithoutCommonPrefix[] arrayOfStrings) {
 		this.diskCollection = new DiskCollection<StringWithoutCommonPrefix>(StringWithoutCommonPrefix.class);
-		for(StringWithoutCommonPrefix swcp: arrayOfStrings){
+		for(final StringWithoutCommonPrefix swcp: arrayOfStrings){
 			this.diskCollection.add(swcp);
 		}
 		this.diskCollection.close();
@@ -98,7 +102,7 @@ public class MemorySortSortedRunOnDisk extends Run {
 		boolean firstTime = true;
 		String lastString = "";
 		while(emptyDatastructure.hasNext()){
-			String string = emptyDatastructure.next();
+			final String string = emptyDatastructure.next();
 			if(!set || firstTime || string.compareTo(lastString)!=0){
 				firstTime = false;
 				this.diskCollection.add(MemorySortSortedRun.createStringWithoutCommonPrefix(string, lastString));
@@ -112,7 +116,7 @@ public class MemorySortSortedRunOnDisk extends Run {
 	}
 
 	@Override
-	public boolean add(String toBeAdded) {
+	public boolean add(final String toBeAdded) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -134,21 +138,21 @@ public class MemorySortSortedRunOnDisk extends Run {
 	}
 
 	@Override
-	public ParallelIterator<String> iterator() {		
+	public ParallelIterator<String> iterator() {
 		return new ParallelIterator<String>(){
-			
+
 			ParallelIterator<StringWithoutCommonPrefix> it = MemorySortSortedRunOnDisk.this.diskCollection.iterator();
 			String lastString = "";
 
 			@Override
-			public final boolean hasNext() {				
+			public final boolean hasNext() {
 				return this.it.hasNext();
 			}
 
 			@Override
 			public final String next() {
 				if(this.hasNext()){
-					String result = this.it.next().getWholeString(this.lastString);
+					final String result = this.it.next().getWholeString(this.lastString);
 					this.lastString = result;
 					return result;
 				} else {
@@ -165,7 +169,7 @@ public class MemorySortSortedRunOnDisk extends Run {
 			public void close() {
 				this.it.close();
 			}
-			
+
 			@Override
 			public void finalize(){
 				this.close();
@@ -177,7 +181,7 @@ public class MemorySortSortedRunOnDisk extends Run {
 	public int size() {
 		return this.diskCollection.size();
 	}
-	
+
 	@Override
 	public void release() {
 		this.diskCollection.release();

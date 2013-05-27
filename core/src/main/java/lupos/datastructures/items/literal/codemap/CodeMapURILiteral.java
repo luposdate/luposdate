@@ -35,17 +35,17 @@ import java.util.regex.Pattern;
 
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
+import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.datastructures.patriciatrie.ram.RBTrieMap;
 import lupos.datastructures.patriciatrie.util.TrieMapImplementation;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 public class CodeMapURILiteral extends URILiteral implements Externalizable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2826285205704387677L;
 	private final static ReentrantLock lock=new ReentrantLock();
@@ -59,7 +59,7 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 
 	public CodeMapURILiteral(final String content)
 			throws java.net.URISyntaxException {
-		update(content);
+		this.update(content);
 	}
 
 	@Override
@@ -76,8 +76,9 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 			} else {
 				code = v.size() + 1;
 				hm.put(stringPrefix, new Integer(code));
-				if (code == Integer.MAX_VALUE)
+				if (code == Integer.MAX_VALUE) {
 					System.err.println("Literal code overflow! Not good!");
+				}
 				v.put(new Integer(code), stringPrefix);
 			}
 		}finally{
@@ -98,22 +99,24 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 	}
 
 	public Literal getContent() {
-		return content;
+		return this.content;
 	}
 
 	public int getPrefixCode() {
-		return prefix;
+		return this.prefix;
 	}
 
 	public String getPrefixString() {
-		return v.get(prefix);
+		return v.get(this.prefix);
 	}
 
 	private static int max(final int a, final int b, final int c) {
-		if (a > b && a > c)
+		if (a > b && a > c) {
 			return a;
-		if (b > c)
+		}
+		if (b > c) {
 			return b;
+		}
 		return c;
 	}
 
@@ -130,20 +133,23 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 					&& this.prefix == lit.prefix;
 		} else if (obj instanceof URILiteral) {
 			return super.equals(obj);
-		} else
+		}
+		else {
 			return false; // (this.toString().compareTo(obj.toString()) == 0);
+		}
 	}
 
 	@Override
 	public String getString() {
-		return v.get(prefix) + content.toString();
+		return v.get(this.prefix) + this.content.toString();
 	}
 
+	@Override
 	public String printYagoStringWithPrefix() {
 		return ">p"
-				+ prefix
+				+ this.prefix
 				+ ":"
-				+ content.toString().replaceAll(Pattern.quote("<"),
+				+ this.content.toString().replaceAll(Pattern.quote("<"),
 						Matcher.quoteReplacement("&lt;")) + "<";
 	}
 
@@ -185,11 +191,11 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 				v = new IntegerStringMapJava(LiteralFactory.getMapType());
 				break;
 			case TRIEMAP:
-				TrieMapImplementation<Integer> trieMap = new TrieMapImplementation<Integer>(new RBTrieMap<Integer>());
+				final TrieMapImplementation<Integer> trieMap = new TrieMapImplementation<Integer>(new RBTrieMap<Integer>());
 				hm = new StringIntegerMapLock(lock,new StringIntegerMapJava(trieMap));
 				v = new IntegerStringMapLock(lock,new IntegerStringMapArray());
 				break;
-			}			
+			}
 		}
 	}
 
@@ -211,17 +217,19 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 
 	@Override
 	public String[] getUsedStringRepresentations() {
-		return new String[] { content.toString(), getPrefixString() };
+		return new String[] { this.content.toString(), this.getPrefixString() };
 	}
 
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
-		prefix = LuposObjectInputStream.readLuposInt(in);
-		content = LuposObjectInputStream.readLuposLiteral(in);
+		this.prefix = InputHelper.readLuposInt(in);
+		this.content = InputHelper.readLuposLiteral(in);
 	}
 
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
-		LuposObjectOutputStream.writeLuposInt(prefix, out);
-		LuposObjectOutputStream.writeLuposLiteral(content, out);
+		OutHelper.writeLuposInt(this.prefix, out);
+		OutHelper.writeLuposLiteral(this.content, out);
 	}
 }

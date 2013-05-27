@@ -99,7 +99,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	/**
 	 * The buffered pages
 	 */
-	protected Map<PageAddress, Page> bufferedPages = new HashMap<PageAddress, Page>();
+	protected Map<PageAddress, Page> bufferedPages = new HashMap<PageAddress, Page>((int)(BufferManager_RandomAccess.MAXBYTESINBUFFER / PageManager.DEFAULTPAGESIZE));
 
 	/**
 	 * the current number of bytes in the buffer
@@ -107,11 +107,16 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	protected long currentNumberOfBytesInPuffer = 0;
 
 	/**
+	 * holds all modified pages
+	 */
+	protected Map<PageAddress, Page> modifiedPages = new HashMap<PageAddress, Page>();
+
+	/**
 	 * the protected constructor
 	 * @see getBufferManager()
 	 */
 	protected BufferManager_RandomAccess() {
-		this.replacementStrategy = new LeastRecentlyUsed<PageAddress>();
+		this.replacementStrategy = new LeastRecentlyUsed<PageAddress>((int)(BufferManager_RandomAccess.MAXBYTESINBUFFER / PageManager.DEFAULTPAGESIZE));
 	}
 
 	/**
@@ -144,6 +149,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 			// write outside in file
 			this.jumpToPage(page.pagesize, pageaddress).write(page.page);
 			page.modified = false;
+			this.modifiedPages.remove(pageaddress);
 		}
 	}
 
@@ -220,10 +226,12 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 				this.handleFullBuffer();
 				page = new Page(pagesize, pageaddress, pageContent, true);
 				this.bufferedPages.put(pageaddress, page);
+				this.modifiedPages.put(pageaddress, page);
 				this.currentNumberOfBytesInPuffer += pagesize;
 			} else {
 				page.page = pageContent;
 				page.modified = true;
+				this.modifiedPages.put(pageaddress, page);
 			}
 			this.replacementStrategy.accessNow(pageaddress);
 
@@ -244,6 +252,9 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 			this.replacementStrategy.release(pageaddress);
 			final Page page = this.bufferedPages.remove(pageaddress);
 			if(page!=null){
+				if(page.modified){
+					this.modifiedPages.remove(pageaddress);
+				}
 				this.currentNumberOfBytesInPuffer -= page.pagesize;
 			}
 		} finally {
@@ -261,6 +272,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 		try {
 			this.replacementStrategy.releaseAll();
 			this.bufferedPages.clear();
+			this.modifiedPages.clear();
 			this.currentNumberOfBytesInPuffer = 0;
 		} finally {
 			BufferManager_CachedFiles.lock.unlock();
@@ -276,7 +288,9 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	public void writeAllModifiedPages(final String filename) throws IOException {
 		BufferManager_CachedFiles.lock.lock();
 		try {
-			for (final Entry<PageAddress, Page> entry : this.bufferedPages.entrySet()) {
+			for (final Object object : this.modifiedPages.entrySet().toArray()) {
+				@SuppressWarnings("unchecked")
+				final Entry<PageAddress, Page> entry = (Entry<PageAddress, Page>) object;
 				if(entry.getKey().filename.compareTo(filename)==0){
 					this.writeModifiedPage(entry.getValue(), entry.getKey());
 				}
@@ -295,7 +309,9 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	public void writeAllModifiedPages() throws IOException {
 		BufferManager_CachedFiles.lock.lock();
 		try {
-			for (final Entry<PageAddress, Page> entry : this.bufferedPages.entrySet()) {
+			for (final Object object : this.modifiedPages.entrySet().toArray()) {
+				@SuppressWarnings("unchecked")
+				final Entry<PageAddress, Page> entry = (Entry<PageAddress, Page>) object;
 				this.writeModifiedPage(entry.getValue(), entry.getKey());
 			}
 		} finally {
@@ -322,6 +338,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 			}
 			for(final PageAddress pageAddress: pageAddresses){
 				this.bufferedPages.remove(pageAddress);
+				this.modifiedPages.remove(pageAddress);
 				this.replacementStrategy.release(pageAddress);
 			}
 		} finally {

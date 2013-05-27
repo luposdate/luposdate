@@ -24,43 +24,46 @@
 package lupos.datastructures.bindings;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import lupos.datastructures.items.Variable;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
 
 public class BindingsArrayVarMinMax extends BindingsArray {
-	protected int[] minArray = new int[literals.length];
-	protected int[] maxArray = new int[literals.length];
+	protected int[] minArray = new int[this.literals.length];
+	protected int[] maxArray = new int[this.literals.length];
 
 	public BindingsArrayVarMinMax() {
 		super();
-		for (int i = 0; i < literals.length; i++) {
-			minArray[i] = -1;
-			maxArray[i] = -1;
+		for (int i = 0; i < this.literals.length; i++) {
+			this.minArray[i] = -1;
+			this.maxArray[i] = -1;
 		}
 	}
 
 	public void addMinMax(final Variable v, final int min, final int max) {
 		final int pos = posVariables.get(v);
-		minArray[pos] = min;
-		maxArray[pos] = max;
+		this.minArray[pos] = min;
+		this.maxArray[pos] = max;
 	}
 
 	public int getMin(final Variable v) {
-		return minArray[posVariables.get(v)];
+		return this.minArray[posVariables.get(v)];
 	}
 
 	public int getMax(final Variable v) {
-		return maxArray[posVariables.get(v)];
+		return this.maxArray[posVariables.get(v)];
 	}
 
 	public int getMin(final int varCode) {
-		return minArray[varCode];
+		return this.minArray[varCode];
 	}
 
 	public int getMax(final int varCode) {
-		return maxArray[varCode];
+		return this.maxArray[varCode];
 	}
 
 	@Override
@@ -68,23 +71,24 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		final BindingsArrayVarMinMax other = new BindingsArrayVarMinMax();
 		// System.arraycopy(this.literals, 0, other.literals, 0,
 		// this.literals.length);
-		other.cloneLiterals(getLiterals());
-		System.arraycopy(minArray, 0, other.minArray, 0, minArray.length);
-		System.arraycopy(maxArray, 0, other.maxArray, 0, maxArray.length);
+		other.cloneLiterals(this.getLiterals());
+		System.arraycopy(this.minArray, 0, other.minArray, 0, this.minArray.length);
+		System.arraycopy(this.maxArray, 0, other.maxArray, 0, this.maxArray.length);
 
 		return other;
 	}
 
 	@Override
 	public void addAllPresortingNumbers(final Bindings bindings) {
-		if (!(bindings instanceof BindingsArrayVarMinMax))
+		if (!(bindings instanceof BindingsArrayVarMinMax)) {
 			return;
+		}
 		final BindingsArrayVarMinMax bavmm = (BindingsArrayVarMinMax) bindings;
-		for (int i = 0; i < minArray.length; i++) {
+		for (int i = 0; i < this.minArray.length; i++) {
 			if (bavmm.minArray[i] > -1) {
 				// if (minArray[i] < 0) {
-				minArray[i] = bavmm.minArray[i];
-				maxArray[i] = bavmm.maxArray[i];
+				this.minArray[i] = bavmm.minArray[i];
+				this.maxArray[i] = bavmm.maxArray[i];
 				// } else {
 				// minArray[i] = Math.max(minArray[i], bavmm.minArray[i]);
 				// maxArray[i] = Math.min(maxArray[i], bavmm.maxArray[i]);
@@ -93,19 +97,28 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		}
 	}
 
-	public void writePresortingNumbers(final LuposObjectOutputStream out)
+	public void writePresortingNumbers(final OutputStream out)
 			throws IOException {
-		for (int i = 0; i < minArray.length; i++) {
-			out.writeLuposInt(minArray[i]);
-			out.writeLuposInt(maxArray[i]);
+		for (int i = 0; i < this.minArray.length; i++) {
+			OutHelper.writeLuposInt(this.minArray[i], out);
+			OutHelper.writeLuposInt(this.maxArray[i], out);
 		}
 	}
 
-	public void readPresortingNumbers(final LuposObjectInputStream in)
+	public void readPresortingNumbers(final InputStream in)
 			throws IOException {
-		for (int i = 0; i < minArray.length; i++) {
-			minArray[i] = in.readLuposInt();
-			maxArray[i] = in.readLuposInt();
+		for (int i = 0; i < this.minArray.length; i++) {
+			this.minArray[i] = InputHelper.readLuposInt(in);
+			this.maxArray[i] = InputHelper.readLuposInt(in);
 		}
+	}
+
+	public int lengthPresortingNumbers() {
+		int result = 0;
+		for (int i = 0; i < this.minArray.length; i++) {
+			result += 	LengthHelper.lengthLuposInt(this.minArray[i]) +
+						LengthHelper.lengthLuposInt(this.maxArray[i]);
+		}
+		return result;
 	}
 }

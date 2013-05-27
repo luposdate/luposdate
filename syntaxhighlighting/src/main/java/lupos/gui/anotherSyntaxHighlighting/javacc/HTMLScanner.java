@@ -40,23 +40,23 @@ public class HTMLScanner implements PARSER {
 
 	private static TYPE__HTML[] TOKEN_MAP;
 	private final lupos.gui.anotherSyntaxHighlighting.javacc.html.HTMLScanner parser;
-	
+
 	private HTMLScanner(final LuposDocumentReader reader){
 		this.parser = new lupos.gui.anotherSyntaxHighlighting.javacc.html.HTMLScanner(reader);
 	}
-	
+
 	public static ILuposParser createILuposParser(final LuposDocumentReader reader){
 		return new JAVACCParser(reader, new HTMLScanner(reader));
 	}
-	
+
 	@Override
 	public TOKEN getNextToken() {
-		Token token = this.parser.getNextToken();
+		final Token token = this.parser.getNextToken();
 		if(token==null){
 			return null;
 		} else {
 			return new HTMLToken(token);
-		}			
+		}
 	}
 
 	@Override
@@ -64,13 +64,17 @@ public class HTMLScanner implements PARSER {
 		return HTMLScanner.TOKEN_MAP;
 	}
 
+	public static TYPE__HTML[] getStaticTokenMap() {
+		return HTMLScanner.TOKEN_MAP;
+	}
+
 	@Override
-	public void ReInit(Reader reader) {
+	public void ReInit(final Reader reader) {
 		this.parser.ReInit(reader);
 	}
-	
+
 	@Override
-	public void ReInit(InputStream inputstream) {
+	public void ReInit(final InputStream inputstream) {
 		this.parser.ReInit(inputstream);
 	}
 
@@ -78,56 +82,56 @@ public class HTMLScanner implements PARSER {
 	public boolean isStartOfComment(final String content, final int beginChar){
 		if(content.length()>beginChar+4){
 			return content.substring(beginChar, beginChar+4).compareTo("<!--")==0;
-		}		
+		}
 		return false;
 	}
-	
+
 	@Override
 	public ILuposToken handleComment(final String content, final int beginChar){
 		int endOfComment = beginChar+1;
 		while(endOfComment<content.length()+3 && content.substring(endOfComment, endOfComment+3).compareTo("-->")!=0){
 			endOfComment++;
 		}
-		return create(TYPE__HTML.COMMENT, content.substring(beginChar, endOfComment+3), beginChar);
+		return this.create(TYPE__HTML.COMMENT, content.substring(beginChar, endOfComment+3), beginChar);
 	}
-	
+
 	@Override
 	public boolean endOfSearchOfComment(final String content, final int beginChar){
 		if(content.length()>beginChar+3){
 			return content.substring(beginChar, beginChar+3).compareTo("-->")==0;
-		}		
+		}
 		return false;
 	}
-	
+
 	{
 		HTMLScanner.TOKEN_MAP = new TYPE__HTML[HTMLScannerConstants.tokenImage.length];
-		
+
 		insertIntoTokenMap(	new String[]{
 						    "<PN_CHARS_BASE>",
     						"<IDENTIFIER>",
 						    "<TAG>"
 							}, TYPE__HTML.TAG);
-		
+
 		insertIntoTokenMap(	new String[]{
     						"<TEXT>"
 							}, TYPE__HTML.TEXT);
-		
+
 		insertIntoTokenMap(	new String[]{
     						"<token of kind 5>"
 							}, TYPE__HTML.COMMENT);
-		
+
 		insertIntoTokenMap(	new String[]{
     						"<ENDTAG>"
 							}, TYPE__HTML.ENDTAG);
-		
+
 		insertIntoTokenMap(	new String[]{
     						"<STRING>"
 							}, TYPE__HTML.VALUE);
-		
+
 		insertIntoTokenMap(	new String[]{
 							"<ATTRIBUTE>"
 							}, TYPE__HTML.NAME);
-		
+
 		insertIntoTokenMap(	new String[]{
 							"<EOF>",
     						"\" \"",
@@ -135,11 +139,11 @@ public class HTMLScanner implements PARSER {
     						"\"\\n\"",
     						"\"\\r\""
 							}, TYPE__HTML.WHITESPACE);
-		
+
 		// to be checked: some types of TYPE__HTML are not used...
 		checkTopicMap();
 	}
-	
+
 	protected static void insertIntoTokenMap(final String[] imagesToSet, final TYPE__HTML type){
 		JAVACCParser.insertIntoTokenMap(HTMLScannerConstants.tokenImage, HTMLScanner.TOKEN_MAP, imagesToSet, type);
 	}
@@ -147,15 +151,15 @@ public class HTMLScanner implements PARSER {
 	protected static void checkTopicMap(){
 		JAVACCParser.checkTopicMap(HTMLScannerConstants.tokenImage, HTMLScanner.TOKEN_MAP);
 	}
-	
+
 	public static class HTMLToken implements TOKEN {
 
 		private final Token htmltoken;
-		
+
 		public HTMLToken(final Token sparql1_1token){
-			this.htmltoken = sparql1_1token; 
+			this.htmltoken = sparql1_1token;
 		}
-		
+
 		@Override
 		public int getKind() {
 			return this.htmltoken.kind;
@@ -164,7 +168,7 @@ public class HTMLScanner implements PARSER {
 		@Override
 		public String getImage() {
 			return this.htmltoken.image;
-		}		
+		}
 	}
 
 	@Override
@@ -173,7 +177,7 @@ public class HTMLScanner implements PARSER {
 	}
 
 	@Override
-	public ILuposToken createErrorToken(String contents, int beginChar) {
+	public ILuposToken createErrorToken(final String contents, final int beginChar) {
 		return new lupos.gui.anotherSyntaxHighlighting.javacc.HTMLToken(TYPE__HTML.ERROR, contents, beginChar);
 	}
 }

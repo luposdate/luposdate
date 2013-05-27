@@ -34,23 +34,23 @@ import java.util.regex.Pattern;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
+import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.datastructures.patriciatrie.ram.RBTrieMap;
 import lupos.datastructures.patriciatrie.util.TrieMapImplementation;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
 public class CodeMapLiteral extends Literal implements Item,
 		Comparable<Literal>, Externalizable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3118665134140832208L;
 	protected int code;
-	
+
 	private final static ReentrantLock lock=new ReentrantLock();
 
 	public CodeMapLiteral(final int code) {
@@ -62,14 +62,15 @@ public class CodeMapLiteral extends Literal implements Item,
 
 	public CodeMapLiteral(String content) {
 		if (content.length() >= 6 && content.startsWith("\"\"\"")
-				&& content.endsWith("\"\"\""))
+				&& content.endsWith("\"\"\"")) {
 			content = "\"" + content.substring(3, content.length() - 3) + "\"";
-		else if (content.length() >= 6 && content.startsWith("'''")
-				&& content.endsWith("'''"))
+		} else if (content.length() >= 6 && content.startsWith("'''")
+				&& content.endsWith("'''")) {
 			content = "\"" + content.substring(3, content.length() - 3) + "\"";
-		else if (content.length() >= 2 && content.startsWith("'")
-				&& content.endsWith("'"))
+		} else if (content.length() >= 2 && content.startsWith("'")
+				&& content.endsWith("'")) {
 			content = "\"" + content.substring(1, content.length() - 1) + "\"";
+		}
 		lock.lock();
 		try{
 			final Integer codeFromHashMap = hm.get(content);
@@ -78,8 +79,9 @@ public class CodeMapLiteral extends Literal implements Item,
 			} else {
 				this.code = v.size() + 1;
 				hm.put(content, new Integer(this.code));
-				if (code == Integer.MAX_VALUE)
+				if (this.code == Integer.MAX_VALUE) {
 					System.err.println("Literal code overflow! Not good!");
+				}
 				v.put(new Integer(this.code), content);
 			}
 		}finally{
@@ -88,35 +90,37 @@ public class CodeMapLiteral extends Literal implements Item,
 	}
 
 	public boolean valueEquals(final CodeMapLiteral lit) {
-		return (code == lit.code);
+		return (this.code == lit.code);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof CodeMapLiteral) {
 			final CodeMapLiteral lit = (CodeMapLiteral) obj;
-			return valueEquals(lit);
+			return this.valueEquals(lit);
 		} else if (obj instanceof StringLiteral) {
 			return super.equals(obj);
 		} else if (obj instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) obj;
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#string>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#string>") == 0) {
 				return (tl.getContent().compareTo(this.toString()) == 0);
-			else
+			} else {
 				return false;
-		} else
+			}
+		} else {
 			return false;
+		}
 	}
 
 	@Override
 	public int hashCode() {
-		return code;
+		return this.code;
 	}
 
 	@Override
 	public String toString() {
-		return v.get(code);
+		return v.get(this.code);
 	}
 
 	public static String getValue(final int codeParam) {
@@ -124,17 +128,17 @@ public class CodeMapLiteral extends Literal implements Item,
 	}
 
 	public int getCode() {
-		return code;
+		return this.code;
 	}
 
 	private void writeObject(final java.io.ObjectOutputStream out)
 			throws IOException {
-		out.writeInt(code);
+		out.writeInt(this.code);
 	}
 
 	private void readObject(final java.io.ObjectInputStream in)
 			throws IOException, ClassNotFoundException {
-		code = in.readInt();
+		this.code = in.readInt();
 	}
 
 	protected static StringIntegerMap hm = null;
@@ -155,7 +159,7 @@ public class CodeMapLiteral extends Literal implements Item,
 				v = new IntegerStringMapJava(LiteralFactory.getMapType());
 				break;
 			case TRIEMAP:
-				TrieMapImplementation<Integer> trieMap = new TrieMapImplementation<Integer>(new RBTrieMap<Integer>());
+				final TrieMapImplementation<Integer> trieMap = new TrieMapImplementation<Integer>(new RBTrieMap<Integer>());
 				hm = new StringIntegerMapLock(lock,new StringIntegerMapJava(trieMap));
 				v = new IntegerStringMapLock(lock,new IntegerStringMapArray());
 				break;
@@ -184,25 +188,28 @@ public class CodeMapLiteral extends Literal implements Item,
 		return new String[] { this.toString() };
 	}
 
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
-		code = LuposObjectInputStream.readLuposInt(in);
+		this.code = InputHelper.readLuposInt(in);
 	}
 
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
-		LuposObjectOutputStream.writeLuposInt(code, out);
+		OutHelper.writeLuposInt(this.code, out);
 	}
 
 	@Override
 	public String printYagoStringWithPrefix() {
-		final String s = toString();
+		final String s = this.toString();
 		if (s.startsWith("\"") && s.endsWith("\"")) {
 			return "\""
 					+ s.substring(1, s.length() - 1).replaceAll(
 							Pattern.quote("\""),
 							Matcher.quoteReplacement("&quot;")) + "\"";
-		} else
+		} else {
 			return s;
+		}
 	}
 
 	@Override

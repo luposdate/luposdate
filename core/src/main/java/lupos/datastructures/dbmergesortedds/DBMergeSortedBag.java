@@ -65,7 +65,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	static {
 		DBMergeSortedBag.removeBagsFromDisk();
 	}
-	
+
 	public static void removeBagsFromDisk(){
 		for (final String mf : mainFolder) {
 			FileHelper.deleteDirectory(new File(mf));
@@ -78,14 +78,16 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 	public static void setTmpDir(final String[] dir) {
 		if (dir == null || dir.length == 0
-				|| (dir.length == 1 && dir[0].compareTo("") == 0))
+				|| (dir.length == 1 && dir[0].compareTo("") == 0)) {
 			return;
+		}
 		mainFolder = new String[dir.length];
 
 		for (int i = 0; i < dir.length; i++) {
 			if (!(dir[i].endsWith("//") || dir[i].endsWith("/") || dir[i]
-					.endsWith("\"")))
+					.endsWith("\""))) {
 				dir[i] = dir[i] + "//";
+			}
 			mainFolder[i] = dir[i] + "tmp//DBMergeSortedBag//";
 			FileHelper.deleteDirectory(new File(mainFolder[i]));
 		}
@@ -114,13 +116,13 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	protected int size = 0;
 	protected int n = 0;
 	protected Class<? extends E> classOfElements;
-	
+
 	protected final SortConfiguration<Entry<E>> sortConfiguration;
 
 	protected static ReentrantLock lock = new ReentrantLock();
 
 	public Class<? extends E> getClassOfElements() {
-		return classOfElements;
+		return this.classOfElements;
 	}
 
 	/**
@@ -134,7 +136,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 	/**
 	 * Create a new DBMergeSortedBag that sorts using the specified Comparator.
-	 * 
+	 *
 	 * @param heapHeight
 	 *            The height of the heap used to presort the elements in memory.
 	 *            (The maximum number of elements that are held in memory at any
@@ -149,19 +151,20 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		this.sortConfiguration = sortConfiguration;
 		lock.lock();
 		try {
-			if (comp != null)
+			if (comp != null) {
 				this.comp = comp;
-			else
+			} else {
 				this.comp = new StandardComparator();
-			
-			tosort = this.sortConfiguration.createToSort();
-			if (tosort == null) {
-				heap = this.sortConfiguration.createHeap();
-				tosort = heap;
+			}
+
+			this.tosort = this.sortConfiguration.createToSort();
+			if (this.tosort == null) {
+				this.heap = this.sortConfiguration.createHeap();
+				this.tosort = this.heap;
 			}
 			this.classOfElements = classOfElements;
 
-			folder = new String[mainFolder.length];
+			this.folder = new String[mainFolder.length];
 
 			final int currentFolderId = folderId++;
 			final LinkedList<String> lls = new LinkedList<String>();
@@ -174,93 +177,108 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				// distributed
 				// over the different directories...
 				final int index = (int) (Math.floor(Math.random() * lls.size()));
-				folder[i] = lls.remove(index) + (currentFolderId) + "//";
+				this.folder[i] = lls.remove(index) + (currentFolderId) + "//";
 			}
 		} finally {
 			lock.unlock();
 		}
 	}
 
+	@Override
 	public Comparator<? super E> comparator() {
-		return comp;
+		return this.comp;
 	}
 
+	@Override
 	public E first() {
-		sort();
-		if (currentRun == null)
+		this.sort();
+		if (this.currentRun == null) {
 			return null;
-		return currentRun.getIndex(0).e;
+		}
+		return this.currentRun.getIndex(0).e;
 	}
 
+	@Override
 	public DBMergeSortedBag<E> headBag(final E arg0) {
-		final DBMergeSortedBag<E> headBag = new DBMergeSortedBag<E>(this.sortConfiguration, comp, classOfElements);
+		final DBMergeSortedBag<E> headBag = new DBMergeSortedBag<E>(this.sortConfiguration, this.comp, this.classOfElements);
 		for (final E e : this) {
-			if (comp.compare(e, arg0) >= 0)
+			if (this.comp.compare(e, arg0) >= 0) {
 				break;
+			}
 			headBag.add(e);
 		}
 		return headBag;
 	}
 
+	@Override
 	public E last() {
-		sort();
-		if (currentRun == null)
+		this.sort();
+		if (this.currentRun == null) {
 			return null;
+		}
 		E result = null;
-		for (final Entry<E> e : currentRun)
+		for (final Entry<E> e : this.currentRun) {
 			result = e.e;
+		}
 		return result;
 	}
 
+	@Override
 	public DBMergeSortedBag<E> subBag(final E arg0, final E arg1) {
-		final DBMergeSortedBag<E> subBag = new DBMergeSortedBag<E>(this.sortConfiguration, comp, classOfElements);
+		final DBMergeSortedBag<E> subBag = new DBMergeSortedBag<E>(this.sortConfiguration, this.comp, this.classOfElements);
 		for (final E e : this) {
-			if (comp.compare(e, arg1) >= 0)
+			if (this.comp.compare(e, arg1) >= 0) {
 				break;
-			if (comp.compare(e, arg0) >= 0)
+			}
+			if (this.comp.compare(e, arg0) >= 0) {
 				subBag.add(e);
+			}
 		}
 		return subBag;
 	}
 
+	@Override
 	public DBMergeSortedBag<E> tailBag(final E arg0) {
-		final DBMergeSortedBag<E> tailBag = new DBMergeSortedBag<E>(this.sortConfiguration, comp, classOfElements);
+		final DBMergeSortedBag<E> tailBag = new DBMergeSortedBag<E>(this.sortConfiguration, this.comp, this.classOfElements);
 		for (final E e : this) {
-			if (comp.compare(e, arg0) >= 0)
+			if (this.comp.compare(e, arg0) >= 0) {
 				tailBag.add(e);
+			}
 		}
 		return tailBag;
 	}
 
+	@Override
 	public boolean add(final E ele) {
-		if (tosort.isFull()) {
-			popHeap();
+		if (this.tosort.isFull()) {
+			this.popHeap();
 		}
 
-		final Entry<E> e = new Entry<E>(ele, comp, n++);
-		if (currentRun == null)
+		final Entry<E> e = new Entry<E>(ele, this.comp, this.n++);
+		if (this.currentRun == null) {
 			e.run = 1;
-		else if (currentRun.max == null
-				|| comp.compare(e.e, currentRun.max) >= 0) {
-			e.run = currentRun.runID;
-		} else
-			e.run = currentRun.runID + 1;
+		} else if (this.currentRun.max == null
+				|| this.comp.compare(e.e, this.currentRun.max) >= 0) {
+			e.run = this.currentRun.runID;
+		} else {
+			e.run = this.currentRun.runID + 1;
+		}
 
-		tosort.add(e);
-		size++;
+		this.tosort.add(e);
+		this.size++;
 		return true;
 	}
 
 	protected void closeAndNewCurrentRun() {
 		try {
-			currentRun.close();
+			this.currentRun.close();
 		} catch (final IOException e1) {
 			System.out.println(e1);
 			e1.printStackTrace();
 		}
-		currentRun = Run.createInstance(this);
+		this.currentRun = Run.createInstance(this);
 	}
-	
+
 	/**
 	 * This method adds an entry to the current run.
 	 * This method is overridden by DBMergeSortedSet to eliminate duplicates already in the initial runs...
@@ -271,112 +289,120 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	}
 
 	private void popHeap() {
-		if (heap != null) {
+		if (this.heap != null) {
 			int numberPopped = 0;
-			while (!heap.isEmpty()
-					&& (numberPopped == 0 || (numberPopped < this.sortConfiguration.getElementsToPopWhenHeapIsFull() && (currentRun == null || heap.peek().run <= currentRun.runID)))) {
-				final Entry<E> e = heap.pop();
+			while (!this.heap.isEmpty()
+					&& (numberPopped == 0 || (numberPopped < this.sortConfiguration.getElementsToPopWhenHeapIsFull() && (this.currentRun == null || this.heap.peek().run <= this.currentRun.runID)))) {
+				final Entry<E> e = this.heap.pop();
 				e.runMatters = false;
-				if (currentRun == null)
-					currentRun = Run.createInstance(this);
-				else if (e.run > currentRun.runID) {
-					closeAndNewCurrentRun();
+				if (this.currentRun == null) {
+					this.currentRun = Run.createInstance(this);
+				} else if (e.run > this.currentRun.runID) {
+					this.closeAndNewCurrentRun();
 				}
-				e.run = currentRun.runID;
+				e.run = this.currentRun.runID;
 				this.addToRun(e);
 				numberPopped++;
 			}
 		} else {
 			// sort this run completely!
-			if (currentRun == null)
-				currentRun = Run.createInstance(this);
+			if (this.currentRun == null)
+			 {
+				this.currentRun = Run.createInstance(this);
 			// maybe some few elements can be written into the previous run =>
 			// do not close the old run now!
+			}
 
 			// System.out.println("Sorting for " + currentRun.file.toString()
 			// + " " + tosort.isFull());
-			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
+			final Iterator<Entry<E>> it = this.tosort.emptyDatastructure();
 			while (it.hasNext()) {
 				final Entry<E> e = it.next();
-				if (e.run > currentRun.runID) {
+				if (e.run > this.currentRun.runID) {
 					// now no elements must be written to the previous run any
 					// more!
-					closeAndNewCurrentRun();
+					this.closeAndNewCurrentRun();
 				}
-				e.run = currentRun.runID;
+				e.run = this.currentRun.runID;
 				this.addToRun(e);
 			}
-			tosort.clear();
+			this.tosort.clear();
 			// System.out.println("Sorting for " + currentRun.file.toString()
 			// + " " + tosort.isFull());
 		}
 	}
 
+	@Override
 	public boolean addAll(final Collection<? extends E> c) {
 		for (final E e : c) {
-			add(e);
+			this.add(e);
 		}
 		return true;
 	}
 
+	@Override
 	public void clear() {
-		tosort.clear();
+		this.tosort.clear();
 		try {
-			if (currentRun != null)
-				currentRun.close();
+			if (this.currentRun != null) {
+				this.currentRun.close();
+			}
 		} catch (final IOException e1) {
 			e1.printStackTrace();
 		}
 		try {
-			for (final String f : folder) {
+			for (final String f : this.folder) {
 				final File dir = new File(f);
 				FileHelper.deleteDirectory(new File(f));
 				dir.mkdirs();
 			}
-			if (currentRun != null) {
-				currentRun.clear();
+			if (this.currentRun != null) {
+				this.currentRun.clear();
 			}
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		size = 0;
+		this.size = 0;
 	}
 
 	public boolean sorted() {
-		return tosort.isEmpty()
-				&& (currentRun == null || unsortedID == currentRun.runID);
+		return this.tosort.isEmpty()
+				&& (this.currentRun == null || this.unsortedID == this.currentRun.runID);
 	}
 
 	public void sort() {
-		if (sorted() || currentRun == null
-				|| (unsortedID == currentRun.runID && currentRun.size == 0))
+		if (this.sorted() || this.currentRun == null
+				|| (this.unsortedID == this.currentRun.runID && this.currentRun.size == 0)) {
 			return;
-		if (parallelMerging)
-			parallelSort();
-		else
-			sequentialSort();
-		System.out.println("Run ID after sorting:" + currentRun.runID);
+		}
+		if (parallelMerging) {
+			this.parallelSort();
+		} else {
+			this.sequentialSort();
+		}
+		System.out.println("Run ID after sorting:" + this.currentRun.runID);
 	}
 
 	protected void parallelSort() {
-		while (!tosort.isEmpty())
-			popHeap();
+		while (!this.tosort.isEmpty()) {
+			this.popHeap();
+		}
 
-		if (sorted()) {
+		if (this.sorted()) {
 			try {
-				currentRun.flush();
+				this.currentRun.flush();
 			} catch (final IOException e) {
 				System.out.println(e);
 				e.printStackTrace();
 			}
-			size = currentRun.size;
+			this.size = this.currentRun.size;
 			return;
 		}
 
 		try {
-			currentRun.close();
+			this.currentRun.close();
 		} catch (final IOException e1) {
 			System.out.println(e1);
 			e1.printStackTrace();
@@ -384,18 +410,18 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 		try {
 			final BoundedBuffer<Integer> bbi = new BoundedBuffer<Integer>(
-					currentRun.runID - unsortedID + 1);
+					this.currentRun.runID - this.unsortedID + 1);
 
-			for (int i = unsortedID; i <= currentRun.runID; i++) {
+			for (int i = this.unsortedID; i <= this.currentRun.runID; i++) {
 				bbi.put(i);
 			}
 
 			final Thread[] threads = new Thread[numberOfThreads];
 
-			newRuns = new boolean[numberOfThreads];
+			this.newRuns = new boolean[numberOfThreads];
 
 			for (int i = 0; i < numberOfThreads; i++) {
-				newRuns[i] = false;
+				this.newRuns[i] = false;
 			}
 
 			for (int i = 0; i < numberOfThreads; i++) {
@@ -406,13 +432,14 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 			// wait until all is merged:
 			for (final Thread t : threads) {
 				t.join();
-				if (((MergeThread) t).getFinalRun() != null)
-					currentRun = ((MergeThread) t).getFinalRun();
+				if (((MergeThread) t).getFinalRun() != null) {
+					this.currentRun = ((MergeThread) t).getFinalRun();
+				}
 			}
 
-			unsortedID = currentRun.runID;
+			this.unsortedID = this.currentRun.runID;
 
-			size = currentRun.size;
+			this.size = this.currentRun.size;
 
 		} catch (final InterruptedException e) {
 			System.err.println();
@@ -421,24 +448,25 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	}
 
 	protected void sequentialSort() {
-		while (!tosort.isEmpty())
-			popHeap();
+		while (!this.tosort.isEmpty()) {
+			this.popHeap();
+		}
 
 		final Heap<Entry<E>> sequentialMergeHeap = this.sortConfiguration.createMergeHeap();
 		if(sequentialMergeHeap instanceof SortAndMergeHeap){
 			System.err.println("The k-chunks merge heap is not ideal for merging, please set e.g. the SEQUENTIAL heap as type for the merge heap via DBMergeSortedBag.setMegeHeypType(...)");
 		}
-		if (!sorted()) {
+		if (!this.sorted()) {
 
 			// loop until all is sorted!
-			while (unsortedID < currentRun.runID) {
+			while (this.unsortedID < this.currentRun.runID) {
 				this.closeAndNewCurrentRun();
-				n = 0;
+				this.n = 0;
 				final Iterator<Entry<E>>[] iters = new Iterator[Math.min(
 						sequentialMergeHeap.maxLength(),
-						(currentRun.runID - unsortedID))];
+						(this.currentRun.runID - this.unsortedID))];
 				for (int i = 0; i < iters.length; i++) {
-					iters[i] = iteratorFromRun(unsortedID + i);
+					iters[i] = this.iteratorFromRun(this.unsortedID + i);
 				}
 
 				for (final Iterator<Entry<E>> it : iters) {
@@ -451,50 +479,55 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				}
 
 				while (!sequentialMergeHeap.isEmpty()) {
-					final Entry e = getNext(iters, unsortedID, sequentialMergeHeap);
-					e.run = currentRun.runID;
-					e.n = n++;
-					currentRun.add(e);
+					final Entry e = this.getNext(iters, this.unsortedID, sequentialMergeHeap);
+					e.run = this.currentRun.runID;
+					e.n = this.n++;
+					this.currentRun.add(e);
 				}
 
 				// delete previous already merged files
 				for (int i = 0; i < iters.length; i++) {
-					FileHelper.deleteFile(folder[(unsortedID + i)
-							% folder.length]
-							+ (unsortedID + i));
+					FileHelper.deleteFile(this.folder[(this.unsortedID + i)
+							% this.folder.length]
+							+ (this.unsortedID + i));
 				}
 
-				unsortedID += iters.length;
+				this.unsortedID += iters.length;
 			}
 		}
 		sequentialMergeHeap.release();
 		try {
-			currentRun.flush();
+			this.currentRun.flush();
 		} catch (final IOException e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-		size = currentRun.size;
-		if (heap == null)
+		this.size = this.currentRun.size;
+		if (this.heap == null) {
 			sequentialMergeHeap.release();
+		}
 	}
 
 	private Iterator<Entry<E>> iteratorFromRun(final int runID) {
 		try {
-			final File file = new File(folder[runID % folder.length] + runID);
-			if (!file.exists())
+			final File file = new File(this.folder[runID % this.folder.length] + runID);
+			if (!file.exists()) {
 				return new Iterator<Entry<E>>() {
+					@Override
 					public boolean hasNext() {
 						return false;
 					}
 
+					@Override
 					public Entry<E> next() {
 						return null;
 					}
 
+					@Override
 					public void remove() {
 					}
 				};
+			}
 
 			return new Iterator<Entry<E>>() {
 				boolean isClosed = false;
@@ -503,59 +536,63 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				File fileLocal = file;
 				LuposObjectInputStream is = new LuposObjectInputStream<E>(
 						DBMergeSortedBag.this.sortConfiguration.createInputStream(new BufferedInputStream(new FileInputStream(file))),
-						classOfElements);
+						DBMergeSortedBag.this.classOfElements);
 				int n = 0;
 
+				@Override
 				public boolean hasNext() {
-					if (next == null && !isClosed)
-						next = next();
-					return next != null;
+					if (this.next == null && !this.isClosed) {
+						this.next = this.next();
+					}
+					return this.next != null;
 				}
 
+				@Override
 				public Entry<E> next() {
-					if (next != null) {
-						final Entry<E> res = next;
-						next = null;
+					if (this.next != null) {
+						final Entry<E> res = this.next;
+						this.next = null;
 						return res;
 					}
-					if (isClosed)
+					if (this.isClosed) {
 						return null;
+					}
 					try {
 						Entry<E> e = null;
 						try {
-							e = is.readLuposEntry();
+							e = this.is.readLuposEntry();
 						} catch (final EOFException e1) {
 						}
 						if (e == null) {
-							if (fileLocal.length() > Run.STORAGELIMIT) {
-								currentFile++;
-								fileLocal = new File(folder[runID
-										% folder.length]
-										+ runID + "_" + currentFile);
-								if (fileLocal.exists()) {
+							if (this.fileLocal.length() > Run.STORAGELIMIT) {
+								this.currentFile++;
+								this.fileLocal = new File(DBMergeSortedBag.this.folder[runID
+										% DBMergeSortedBag.this.folder.length]
+										+ runID + "_" + this.currentFile);
+								if (this.fileLocal.exists()) {
 									try {
-										is.close();
+										this.is.close();
 									} catch (final IOException ee) {
 									}
-									is = new LuposObjectInputStream<E>(
+									this.is = new LuposObjectInputStream<E>(
 										DBMergeSortedBag.this.sortConfiguration.createInputStream(
 											new BufferedInputStream(
 													new FileInputStream(
-															fileLocal))),
-											classOfElements);
-									e = is.readLuposEntry();
+															this.fileLocal))),
+											DBMergeSortedBag.this.classOfElements);
+									e = this.is.readLuposEntry();
 								}
 							}
 						}
 						if (e != null) {
-							e.comp = comp;
+							e.comp = DBMergeSortedBag.this.comp;
 							e.runMatters = false;
-							e.n = n++;
+							e.n = this.n++;
 							e.run = runID;
 						} else {
 							try {
-								is.close();
-								isClosed = true;
+								this.is.close();
+								this.isClosed = true;
 							} catch (final IOException ee) {
 							}
 						}
@@ -568,13 +605,14 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 						e.printStackTrace();
 					}
 					try {
-						is.close();
-						isClosed = true;
+						this.is.close();
+						this.isClosed = true;
 					} catch (final IOException e) {
 					}
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw (new UnsupportedOperationException());
 				}
@@ -609,59 +647,73 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return res;
 	}
 
+	@Override
 	public boolean contains(final Object o) {
-		sort();
-		if (currentRun == null) {
+		this.sort();
+		if (this.currentRun == null) {
 			final Iterator<E> it = this.iterator();
 			while (it.hasNext()) {
-				if (it.next().equals(o))
+				if (it.next().equals(o)) {
 					return true;
+				}
 			}
 			return false;
 		}
-		if (currentRun.contains((E) o))
+		if (this.currentRun.contains((E) o)) {
 			return true;
+		}
 		return false;
 	}
 
+	@Override
 	public boolean containsAll(final Collection<?> c) {
-		for (final Object o : c)
-			if (!contains(o))
+		for (final Object o : c) {
+			if (!this.contains(o)) {
 				return false;
+			}
+		}
 		return true;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		if (!tosort.isEmpty())
+		if (!this.tosort.isEmpty()) {
 			return false;
-		sort();
-		if (currentRun == null)
+		}
+		this.sort();
+		if (this.currentRun == null) {
 			return true;
-		if (!currentRun.isEmpty())
+		}
+		if (!this.currentRun.isEmpty()) {
 			return false;
+		}
 		return true;
 	}
 
+	@Override
 	public ParallelIterator<E> iterator() {
 		// Do we have a small sorted bag? In other words:
 		// Did we already write entries to disk or is all still stored in main
 		// memory? In the latter case, we do not need to store it on disk and
 		// just "sort" in memory!
-		if (currentRun == null
-				|| (unsortedID == currentRun.runID && currentRun.size == 0)) {
-			final ToSort<Entry<E>> zheap = ToSort.cloneInstance(tosort);
+		if (this.currentRun == null
+				|| (this.unsortedID == this.currentRun.runID && this.currentRun.size == 0)) {
+			final ToSort<Entry<E>> zheap = ToSort.cloneInstance(this.tosort);
 			return new ParallelIterator<E>() {
 				Iterator<Entry<E>> it = zheap.emptyDatastructure();
 
+				@Override
 				public boolean hasNext() {
-					return it.hasNext();
+					return this.it.hasNext();
 				}
 
+				@Override
 				public E next() {
-					final Entry<E> next = it.next();
+					final Entry<E> next = this.it.next();
 					return (next == null) ? null : next.e;
 				}
 
+				@Override
 				public void remove() {
 					throw new UnsupportedOperationException(
 							"This operation is unsupported!");
@@ -669,144 +721,163 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 				@Override
 				public void finalize() {
-					close();
+					this.close();
 				}
 
+				@Override
 				public void close() {
 					zheap.release();
 				}
 			};
 		}
 		// disk based
-		sort();
-		final ParallelIterator<Entry<E>> iter = currentRun.iterator();
+		this.sort();
+		final ParallelIterator<Entry<E>> iter = this.currentRun.iterator();
 		return new ParallelIterator<E>() {
+			@Override
 			public boolean hasNext() {
 				return iter.hasNext();
 			}
 
+			@Override
 			public E next() {
-				if (iter.hasNext())
+				if (iter.hasNext()) {
 					return iter.next().e;
-				else
+				} else {
 					return null;
+				}
 			}
 
+			@Override
 			public void remove() {
 				iter.remove();
 			}
 
+			@Override
 			public void close() {
 				iter.close();
 			}
 		};
 	}
 
+	@Override
 	public boolean remove(final Object arg0) {
-		sort();
-		if (currentRun == null) {
+		this.sort();
+		if (this.currentRun == null) {
 			ToSort<Entry<E>> zheap = this.sortConfiguration.createToSort();
 			if (zheap == null) {
 				zheap = this.sortConfiguration.createHeap();
 			}
-			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
+			final Iterator<Entry<E>> it = this.tosort.emptyDatastructure();
 			boolean flag = false;
 			while (it.hasNext()) {
 				final Entry<E> next = it.next();
-				if (next.e.equals(arg0))
+				if (next.e.equals(arg0)) {
 					flag = true;
-				else
+				} else {
 					zheap.add(next);
+				}
 			}
-			tosort = zheap;
-			if (zheap instanceof Heap)
-				heap = (Heap<Entry<E>>) zheap;
+			this.tosort = zheap;
+			if (zheap instanceof Heap) {
+				this.heap = (Heap<Entry<E>>) zheap;
+			}
 			return flag;
 		}
-		if (currentRun.contains((E) arg0)) {
-			currentRun.remove((E) arg0);
-			size--;
+		if (this.currentRun.contains((E) arg0)) {
+			this.currentRun.remove((E) arg0);
+			this.size--;
 			return true;
 		}
 		return false;
 	}
 
 	public E removeAndReturn(final E e) {
-		sort();
-		if (currentRun == null) {
+		this.sort();
+		if (this.currentRun == null) {
 			ToSort<Entry<E>> zheap = this.sortConfiguration.createToSort();
 			if (zheap == null) {
 				zheap = this.sortConfiguration.createHeap();
 			}
-			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
+			final Iterator<Entry<E>> it = this.tosort.emptyDatastructure();
 			E removedEntry = null;
 			while (it.hasNext()) {
 				final Entry<E> next = it.next();
-				if (removedEntry == null && next.e.equals(e))
+				if (removedEntry == null && next.e.equals(e)) {
 					removedEntry = next.e;
-				else
+				} else {
 					zheap.add(next);
+				}
 			}
-			tosort = zheap;
-			if (zheap instanceof Heap)
-				heap = (Heap<Entry<E>>) zheap;
+			this.tosort = zheap;
+			if (zheap instanceof Heap) {
+				this.heap = (Heap<Entry<E>>) zheap;
+			}
 			return removedEntry;
 		}
-		if (currentRun.contains(e)) {
-			size--;
-			return currentRun.remove(e).e;
+		if (this.currentRun.contains(e)) {
+			this.size--;
+			return this.currentRun.remove(e).e;
 		}
 		return null;
 	}
 
+	@Override
 	public boolean removeAll(final Collection<?> arg0) {
-		sort();
-		if (currentRun == null) {
+		this.sort();
+		if (this.currentRun == null) {
 			ToSort<Entry<E>> zheap = this.sortConfiguration.createToSort();
 			if (zheap == null) {
 				zheap = this.sortConfiguration.createHeap();
 			}
-			final Iterator<Entry<E>> it = tosort.emptyDatastructure();
+			final Iterator<Entry<E>> it = this.tosort.emptyDatastructure();
 			boolean flag = false;
 			while (it.hasNext()) {
 				final Entry<E> next = it.next();
 				boolean flag2 = false;
 				for (final Object o : arg0) {
-					if (next.e.equals(o))
+					if (next.e.equals(o)) {
 						flag2 = true;
+					}
 				}
-				if (flag2)
+				if (flag2) {
 					flag = true;
-				else
+				} else {
 					zheap.add(next);
+				}
 			}
-			tosort = zheap;
-			if (zheap instanceof Heap)
-				heap = (Heap<Entry<E>>) zheap;
+			this.tosort = zheap;
+			if (zheap instanceof Heap) {
+				this.heap = (Heap<Entry<E>>) zheap;
+			}
 			return flag;
 		}
-		if (currentRun.containsAny((Collection<E>) arg0)) {
-			currentRun.removeAll((Collection<E>) arg0);
-			size = currentRun.size;
+		if (this.currentRun.containsAny((Collection<E>) arg0)) {
+			this.currentRun.removeAll((Collection<E>) arg0);
+			this.size = this.currentRun.size;
 			return true;
 		}
 		return false;
 	}
 
+	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		throw (new UnsupportedOperationException(
 				"We don't do that kind of thing around here - a.k.a. ProgrammerWasTooLazyToImplementThisException."));
 	}
 
+	@Override
 	public int size() {
-		return size;
+		return this.size;
 	}
 
+	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 	}
 
+	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
@@ -814,26 +885,27 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 	@Override
 	public String toString() {
-		final Iterator<E> iter = iterator();
+		final Iterator<E> iter = this.iterator();
 		String result = "[";
 		while (iter.hasNext()) {
 			result += iter.next();
-			if (iter.hasNext())
+			if (iter.hasNext()) {
 				result += ", ";
+			}
 		}
 		result += "]";
 		return result;
 	}
 
 	public void release() {
-		tosort.release();
-		if (currentRun != null) {
+		this.tosort.release();
+		if (this.currentRun != null) {
 			try {
-				currentRun.close();
+				this.currentRun.close();
 			} catch (final IOException e) {
 				// e.printStackTrace();
 			}
-			for (final String f : folder) {
+			for (final String f : this.folder) {
 				FileHelper.deleteDirectory(new File(f));
 			}
 		}
@@ -853,7 +925,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 
 		public Run getFinalRun() {
-			return mergeRun;
+			return this.mergeRun;
 		}
 
 		@Override
@@ -864,13 +936,13 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					Object[] o;
 					Heap<Entry<E>> mergeheap;
 					boolean lastRound = false;
-					mergeLock.lock();
+					DBMergeSortedBag.this.mergeLock.lock();
 					try {
 						// other values than 1 as minimum can cause deadlocks!
-						o = bbi.get(1, 1 << DBMergeSortedBag.this.sortConfiguration.getMergeHeapHeight());
+						o = this.bbi.get(1, 1 << DBMergeSortedBag.this.sortConfiguration.getMergeHeapHeight());
 
 						if (o == null) {
-							mergeRun = null;
+							this.mergeRun = null;
 							return;
 						}
 
@@ -879,28 +951,29 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 						if(mergeheap instanceof SortAndMergeHeap){
 							System.err.println("The k-chunks merge heap is not ideal for merging, please set e.g. the SEQUENTIAL heap as type for the merge heap via DBMergeSortedBag.setMegeHeypType(...)");
 						}
-						
-						mergeRun = Run.createInstance(DBMergeSortedBag.this);
+
+						this.mergeRun = Run.createInstance(DBMergeSortedBag.this);
 
 						// check if last merge iteration...
-						newRunsLock.lock();
+						DBMergeSortedBag.this.newRunsLock.lock();
 						try {
-							if (bbi.isCurrentlyEmpty() && noneInPipe()) {
+							if (this.bbi.isCurrentlyEmpty() && this.noneInPipe()) {
 								lastRound = true;
-								bbi.endOfData();
-							} else
-								newRuns[number] = true;
+								this.bbi.endOfData();
+							} else {
+								DBMergeSortedBag.this.newRuns[this.number] = true;
+							}
 						} finally {
-							newRunsLock.unlock();
+							DBMergeSortedBag.this.newRunsLock.unlock();
 						}
 					} finally {
-						mergeLock.unlock();
+						DBMergeSortedBag.this.mergeLock.unlock();
 					}
 
 					final Iterator<Entry<E>>[] iters = new Iterator[o.length];
 					final HashMap<Integer, Integer> hm = new HashMap<Integer, Integer>();
 					for (int i = 0; i < iters.length; i++) {
-						iters[i] = iteratorFromRun((Integer) o[i]);
+						iters[i] = DBMergeSortedBag.this.iteratorFromRun((Integer) o[i]);
 						hm.put((Integer) o[i], i);
 					}
 
@@ -913,23 +986,23 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					}
 					int n_local = 0;
 					while (!mergeheap.isEmpty()) {
-						final Entry e = getNext(iters, hm, mergeheap);
-						e.run = mergeRun.runID;
+						final Entry e = DBMergeSortedBag.this.getNext(iters, hm, mergeheap);
+						e.run = this.mergeRun.runID;
 						e.n = n_local++;
-						mergeRun.add(e);
+						this.mergeRun.add(e);
 					}
 
 					mergeheap.release();
 					// delete previous already merged files
 					for (int i = 0; i < iters.length; i++) {
-						FileHelper.deleteFile(folder[((Integer) o[i])
-								% folder.length]
+						FileHelper.deleteFile(DBMergeSortedBag.this.folder[((Integer) o[i])
+								% DBMergeSortedBag.this.folder.length]
 								+ (o[i]));
 					}
 
 					if (lastRound) {
 						try {
-							mergeRun.flush();
+							this.mergeRun.flush();
 						} catch (final IOException e1) {
 							System.out.println(e1);
 							e1.printStackTrace();
@@ -938,18 +1011,18 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 					}
 
 					try {
-						mergeRun.close();
+						this.mergeRun.close();
 					} catch (final IOException e1) {
 						System.out.println(e1);
 						e1.printStackTrace();
 					}
 
-					newRunsLock.lock();
+					DBMergeSortedBag.this.newRunsLock.lock();
 					try {
-						newRuns[number] = false;
-						bbi.put(mergeRun.runID);
+						DBMergeSortedBag.this.newRuns[this.number] = false;
+						this.bbi.put(this.mergeRun.runID);
 					} finally {
-						newRunsLock.unlock();
+						DBMergeSortedBag.this.newRunsLock.unlock();
 					}
 				}
 
@@ -960,20 +1033,21 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 
 		private boolean noneInPipe() {
-			for (final boolean b : newRuns) {
+			for (final boolean b : DBMergeSortedBag.this.newRuns) {
 				// are the other still generating a new run?
-				if (b)
+				if (b) {
 					return false;
+				}
 			}
 			return true;
 		}
 	}
-	
-	public static void main(String[] arg){
-		SortConfiguration sortConfig = new SortConfiguration();
+
+	public static void main(final String[] arg){
+		final SortConfiguration sortConfig = new SortConfiguration();
 		sortConfig.setHuffmanCompression();
-		DBMergeSortedBag<String> set = new DBMergeSortedBag<String>(sortConfig, String.class);
-		String[] elems = { "aaab", "ab", "aaaaaab", "aaaaaaaaaaaaaaaaz", "aaaaaaajll" };
+		final DBMergeSortedBag<String> set = new DBMergeSortedBag<String>(sortConfig, String.class);
+		final String[] elems = { "aaab", "ab", "aaaaaab", "aaaaaaaaaaaaaaaaz", "aaaaaaajll" };
 		// add to set
 		for(int i=0; i<100000; i++){
 			for(int j=0; j<elems.length; j++){
@@ -981,7 +1055,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 			}
 		}
 		// print out sorted set
-		for(String s: set){
+		for(final String s: set){
 			System.out.println(s);
 		}
 	}

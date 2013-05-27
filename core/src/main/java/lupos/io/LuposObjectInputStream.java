@@ -26,37 +26,25 @@ package lupos.io;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
-import lupos.datastructures.bindings.BindingsArrayReadTriples;
-import lupos.datastructures.bindings.BindingsArrayVarMinMax;
-import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
+import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.Entry;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.items.TripleKey;
-import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.Literal;
-import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.LiteralFactory.MapType;
-import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
-import lupos.datastructures.items.literal.string.StringLiteral;
-import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.optimizations.logical.statistics.VarBucket;
+import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
+import lupos.io.helper.InputHelper;
 
 public class LuposObjectInputStream<E> extends ObjectInputStream {
 
@@ -73,8 +61,10 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 	public static final int LAZYLITERALORIGINALCONTENTMATERIALIZED = 8;
 	public static final int PLAINSTRINGLITERAL = 9;
 
-	protected InputStream is;
+	public InputStream is;
 	protected Class<? extends E> classOfElements;
+
+	private final static int memoryLimit = 10000;
 
 	public LuposObjectInputStream() throws IOException {
 	}
@@ -94,139 +84,85 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return (TT) Registration.deserializeWithoutId(classOfElements, this);
 	}
 
-	public lupos.datastructures.dbmergesortedds.MapEntry<Object, Object> readLuposMapEntry()
-			throws IOException, ClassNotFoundException {
-		final Class type1 = Registration.deserializeId(this)[0];
-		if (type1 == null) {
+	private Bindings previousBindings = null;
+
+	private Triple lastTriple = null;
+
+	// the last stored string as byte array...
+	protected byte[] lastString = null;
+
+	public Triple readLuposTriple() throws IOException, URISyntaxException, ClassNotFoundException {
+		this.lastTriple = InputHelper.readLuposTriple(this.lastTriple, this.is);
+		return this.lastTriple;
+	}
+	public TripleKey readLuposTripleKey() throws IOException, ClassNotFoundException {
+		// it is expected that the triple key contains the key computed from the
+		// last read triple
+		return InputHelper.readLuposTripleKey(this.lastTriple, this.is);
+	}
+
+	public String readLuposDifferenceString() throws IOException {
+		this.lastString = InputHelper.readLuposDifferenceString(this.lastString, this.is);
+		if(this.lastString==null){
 			return null;
+		} else {
+			return new String(this.lastString, LuposObjectInputStream.UTF8);
 		}
-		final Class type2 = Registration.deserializeId(this)[0];
-		final Object key, value;
-		try {
-			if (type1 == String.class
-					&& (type2 == Triple.class
-					)) {
-				value = Registration.deserializeWithoutId(type2, this);
-				final int compressed = this.is.read();
-				switch (compressed) {
-				case 1:
-					key = new String(this.lastSubject.toString()
-							+ this.lastPredicate.toString() + this.lastObject.toString());
-					break;
-				case 2:
-					key = new String(this.lastSubject.toString()
-							+ this.lastObject.toString() + this.lastPredicate.toString());
-					break;
-				case 3:
-					key = new String(this.lastPredicate.toString()
-							+ this.lastSubject.toString() + this.lastObject.toString());
-					break;
-				case 4:
-					key = new String(this.lastPredicate.toString()
-							+ this.lastObject.toString() + this.lastSubject.toString());
-					break;
-				case 5:
-					key = new String(this.lastObject.toString()
-							+ this.lastSubject.toString() + this.lastPredicate.toString());
-					break;
-				case 6:
-					key = new String(this.lastObject.toString()
-							+ this.lastPredicate.toString() + this.lastSubject.toString());
-					break;
-				default:
-					key = Registration.deserializeWithoutId(type1, this);
+	}
+
+	public Bindings readLuposBindings() throws IOException, ClassNotFoundException {
+		this.previousBindings = InputHelper.readLuposBindings(this.previousBindings, this.is);
+		return this.previousBindings;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public DiskCollection readLuposDiskCollection() throws ClassNotFoundException, IOException {
+		return DiskCollection.readAndCreateLuposObject(this);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Collection readLuposCollection() throws IOException, ClassNotFoundException {
+		final int size = this.is.read();
+		if (size == 255) {
+			return DiskCollection.readAndCreateLuposObject(this);
+		} else {
+			final LinkedList ll = new LinkedList();
+			final Class type = Registration.deserializeId(this)[0];
+			for (int i = 0; i < size; i++) {
+				try {
+					ll.add(Registration.deserializeWithoutId(type, this));
+				} catch (final URISyntaxException e) {
+					e.printStackTrace();
+					throw new IOException(e.getMessage());
 				}
-			} else {
-				value = Registration.deserializeWithoutId(type2, this);
-				key = Registration.deserializeWithoutId(type1, this);
 			}
-		} catch (final URISyntaxException e) {
-			throw new IOException(
-					"Expected URI, but did not read URI from InputStream!");
-		}
-		return new lupos.datastructures.dbmergesortedds.MapEntry<Object, Object>(
-				key, value);
-	}
-
-	public VarBucket readLuposVarBucket() throws IOException {
-		final VarBucket vb = new VarBucket();
-		final int size = this.readLuposInt();
-		final byte minMax = this.readLuposByte();
-		if (minMax >= 2) {
-			vb.minimum = LiteralFactory.readLuposLiteral(this);
-		}
-		if (minMax % 2 == 1) {
-			vb.maximum = LiteralFactory.readLuposLiteral(this);
-		}
-		for (int i = 0; i < size; i++) {
-			final lupos.optimizations.logical.statistics.Entry entry = new lupos.optimizations.logical.statistics.Entry();
-			entry.distinctLiterals = Double.longBitsToDouble(this.readLuposLong());
-			entry.selectivity = Double.longBitsToDouble(this.readLuposLong());
-			entry.literal = LiteralFactory.readLuposLiteral(this);
-			vb.selectivityOfInterval.add(entry);
-		}
-		return vb;
-	}
-
-	public E readLuposOptimizedDBBPTreeGeneration() throws IOException,
-			URISyntaxException, ClassNotFoundException {
-		final int type = this.readLuposByte();
-		if (type == 1) {
-			return this.readLuposDBMergeSortedMapBasic();
-		} else {
-			System.err.println("LuposObjectInputStream: Not supported!");
-			return null;
+			return ll;
 		}
 	}
 
-	private final static int memoryLimit = 10000;
-
-	public E readLuposDBMergeSortedMap() throws IOException,
-			ClassNotFoundException {
-		final int type = this.readLuposByte();
-		if (type == 1) {
-			return this.readLuposDBMergeSortedMapBasic();
-		} else {
-			System.err.println("LuposObjectInputStream: Not supported!");
-			return null;
-		}
-	}
-
-	private E readLuposDBMergeSortedMapBasic() throws IOException,
-			ClassNotFoundException {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public E readLuposTreeSet() throws IOException, ClassNotFoundException {
 		final Comparator comparator = (Comparator) this.readObject();
-		final int size = this.readLuposInt();
-		if (size < 0) {
-			return null;
-		}
-
-		final SortConfiguration sortConfiguration = new SortConfiguration();
-		sortConfiguration.useReplacementSelection(2, 2);
-
-		final DBMergeSortedMap ms = new DBMergeSortedMap(sortConfiguration, comparator, null);
+		final int size = InputHelper.readLuposInt(this.is);
 		if (size == 0) {
-			return (E) ms;
+			return (E) new TreeSet(comparator);
 		}
-		final Class typeKey = Registration.deserializeId(this)[0];
-		final Class typeValue = Registration.deserializeId(this)[0];
+		final Class c = Registration.deserializeId(this)[0];
+		final TreeSet ts = new TreeSet(comparator);
 		for (int i = 0; i < size; i++) {
-			Serializable value;
-			Serializable key;
 			try {
-				value = (Serializable) Registration.deserializeWithoutId(typeValue, this);
-				key = (Serializable) Registration.deserializeWithoutId(typeKey, this);
-				ms.put(key, value);
+				ts.add(Registration.deserializeWithoutId(c, this));
 			} catch (final URISyntaxException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				throw new IOException(e.getMessage());
 			}
 		}
-		return (E) ms;
+		return (E) ts;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public E readLuposSortedSet() throws IOException, ClassNotFoundException {
 		final Comparator comparator = (Comparator) this.readObject();
-		final int size = this.readLuposInt();
+		final int size = InputHelper.readLuposInt(this.is);
 		if (size < 0) {
 			return null;
 		}
@@ -263,351 +199,71 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return (E) ms;
 	}
 
-	public E readLuposTreeSet() throws IOException, ClassNotFoundException {
-		final Comparator comparator = (Comparator) this.readObject();
-		final int size = this.readLuposInt();
-		if (size == 0) {
-			return (E) new TreeSet(comparator);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public SetImplementation readLuposSetImplementation() throws IOException, ClassNotFoundException {
+		final int size = InputHelper.readLuposInt(this.is);
+		if (size < 0){
+			return null;
 		}
-		final Class c = Registration.deserializeId(this)[0];
-		final TreeSet ts = new TreeSet(comparator);
+		final SetImplementation set = new SetImplementation();
+		if(size==0){
+			return set;
+		}
+		final Class type = Registration.deserializeId(this)[0];
 		for (int i = 0; i < size; i++) {
 			try {
-				ts.add(Registration.deserializeWithoutId(c, this));
+				set.add(Registration.deserializeWithoutId(type, this));
 			} catch (final URISyntaxException e) {
 				throw new IOException(e.getMessage());
 			}
 		}
-		return (E) ts;
+		return set;
 	}
 
-	public BigInteger readLuposBigInteger(final int numberOfBits) throws IOException {
-		BigInteger result = BigInteger.ZERO;
-		BigInteger factor = BigInteger.ONE;
-		final BigInteger BYTE = BigInteger.valueOf(256);
-		int remainingBits = numberOfBits;
-		while(remainingBits>0){
-			final int currentValueByte = this.is.read();
-			if(currentValueByte<0){
-				// EOF reached!
-				return null;
-			}
-			final BigInteger currentValue = BigInteger.valueOf(currentValueByte);
-			result = result.add(currentValue.multiply(factor));
-			factor = factor.multiply(BYTE);
-			remainingBits-=8;
-		}
-		return result;
-	}
-
-	public Bindings readLuposBindings() throws IOException {
-		if (Bindings.instanceClass == BindingsMap.class) {
-			final Bindings b = Bindings.createNewInstance();
-			final int number = this.readLuposInt();
-			if (number < 0) {
-				return null;
-			}
-			for (int i = 0; i < number; i++) {
-				final String varName = this.readLuposString();
-				final Variable v = new Variable(varName);
-				final Literal l = this.readLiteral();
-				b.add(v, l);
-			}
-			return b;
+	public E readLuposSortedMap() throws IOException, URISyntaxException, ClassNotFoundException {
+		final int type = InputHelper.readLuposByte(this.is);
+		if (type == 1) {
+			return this.readLuposDBMergeSortedMapBasic();
 		} else {
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
-			BigInteger usedVars = this.readLuposBigInteger(hm.size());
-			if (usedVars == null) {
-				return null;
+			System.err.println("LuposObjectInputStream: Not supported!");
+			return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private E readLuposDBMergeSortedMapBasic() throws IOException, ClassNotFoundException {
+		final Comparator comparator = (Comparator) this.readObject();
+		final int size = InputHelper.readLuposInt(this.is);
+		if (size < 0) {
+			return null;
+		}
+
+		final SortConfiguration sortConfiguration = new SortConfiguration();
+		sortConfiguration.useReplacementSelection(2, 2);
+
+		final DBMergeSortedMap ms = new DBMergeSortedMap(sortConfiguration, comparator, null);
+		if (size == 0) {
+			return (E) ms;
+		}
+		final Class typeKey = Registration.deserializeId(this)[0];
+		final Class typeValue = Registration.deserializeId(this)[0];
+		for (int i = 0; i < size; i++) {
+			Serializable value;
+			Serializable key;
+			try {
+				value = (Serializable) Registration.deserializeWithoutId(typeValue, this);
+				key = (Serializable) Registration.deserializeWithoutId(typeKey, this);
+				ms.put(key, value);
+			} catch (final URISyntaxException e) {
+				System.out.println(e);
+				e.printStackTrace();
 			}
-			BigInteger differentFromPreviousBindings = this.readLuposBigInteger(hm.size());
-			final Bindings b = Bindings.createNewInstance();
-			final BigInteger TWO = BigInteger.valueOf(2);
-			for (final Variable v : hm.keySet()) {
-				if (usedVars.mod(TWO).compareTo(BigInteger.ONE)==0) {
-					if (this.previousBindings == null || differentFromPreviousBindings.mod(TWO).compareTo(BigInteger.ONE)==0) {
-						Literal lit;
-						lit = this.readLiteral();
-						b.add(v, lit);
-					} else {
-						b.add(v, this.previousBindings.get(v));
-					}
-				}
-				usedVars = usedVars.shiftRight(1);
-				differentFromPreviousBindings = differentFromPreviousBindings.shiftRight(1);
-			}
-			this.previousBindings = b;
-			if (b instanceof BindingsArrayReadTriples) {
-				final int number = this.readLuposInt();
-				if (number == 0) {
-					return b;
-				}
-				if (number < 0) {
-					return null;
-				}
-				for (int j = 0; j < number; j++) {
-					try {
-						final Triple t = this.readTriple();
-						b.addTriple(t);
-					} catch (final URISyntaxException e) {
-						System.out.println(e);
-						e.printStackTrace();
-						return b;
-					}
-				}
-			}
-			if (b instanceof BindingsArrayVarMinMax) {
-				((BindingsArrayVarMinMax) b).readPresortingNumbers(this);
-			}
-			return b;
 		}
+		return (E) ms;
 	}
 
-	protected static int triplePatternID = 0;
-	protected static HashMap<Integer, TriplePattern> triplePatternHashMap = new HashMap<Integer, TriplePattern>();
-	protected static HashMap<TriplePattern, Integer> triplePatternHashMapID = new HashMap<TriplePattern, Integer>();
-
-	public TriplePattern readLuposTriplePattern() throws IOException {
-		final int id = this.readLuposByte();
-		return triplePatternHashMap.get(id);
-	}
-
-	private Bindings previousBindings = null;
-
-	private Literal 	lastSubject = null,
-						lastPredicate = null,
-						lastObject = null;
-
-	// the last stored string as byte array...
-	protected byte[] lastString = null;
-
-	public Triple readTriple() throws IOException, URISyntaxException {
-		final int diff = this.is.read();
-		if (diff < 0) {
-			return null;
-		}
-		final Literal subject = (diff % 2 == 1) ? this.readLiteral() : this.lastSubject;
-		final Literal predicate = ((diff / 2) % 2 == 1) ? this.readLiteral()
-				: this.lastPredicate;
-		final Literal object = ((diff / 4) % 2 == 1) ? this.readLiteral()
-				: this.lastObject;
-		if (subject == null || predicate == null || object == null) {
-			return null;
-		}
-		this.lastSubject = subject;
-		this.lastPredicate = predicate;
-		this.lastObject = object;
-		return new Triple(subject, predicate, object);
-	}
-
-	public Literal readLiteral() throws IOException {
-		return LiteralFactory.readLuposLiteral(this);
-	}
-
-	public String readLuposDifferenceString() throws IOException {
-		if(this.lastString==null){
-			final String result = this.readLuposString();
-			this.lastString = (result==null)? null : result.getBytes(LuposObjectInputStream.UTF8);
-			return result;
-		}
-		final Integer common = this.readLuposIntVariableBytes();
-		if(common==null){
-			return null;
-		}
-		final Integer length = this.readLuposIntVariableBytes();
-		if(length==null || length<0){
-			return null;
-		}
-		// copy the common prefix with the last stored string!
-		final byte[] bytesOfResult = new byte[common + length];
-		System.arraycopy(this.lastString, 0, bytesOfResult, 0, common);
-
-		// now read only difference string
-		this.is.read(bytesOfResult, common, length);
-		this.lastString = bytesOfResult;
-		return new String(bytesOfResult, LuposObjectInputStream.UTF8);
-	}
-
-	public String readLuposString() throws IOException {
-		final Integer length = this.readLuposIntVariableBytes();
-		if(length==null || length<0){
-			return null;
-		}
-		final byte[] bytesOfResult = new byte[length];
-		this.is.read(bytesOfResult);
-		return new String(bytesOfResult, LuposObjectInputStream.UTF8);
-	}
-
-	public Entry<E> readLuposEntry() throws IOException, ClassNotFoundException {
-		E e = null;
-		try {
-			e = Registration.deserializeWithId(this);
-		} catch (final URISyntaxException e1) {
-			e1.printStackTrace();
-		}
-		if (e == null) {
-			return null;
-		}
-		return new Entry<E>(e);
-	}
-
-	public boolean readLuposBoolean() throws IOException {
-		final int i = this.is.read();
-		return (i == 0);
-	}
-
-	public Integer readLuposInteger1Byte() throws IOException {
-		final int i1 = this.is.read();
-		if (i1 < 0) {
-			return null;
-		}
-		return i1;
-	}
-
-	public Integer readLuposInteger2Bytes() throws IOException {
-		final int i1 = this.is.read();
-		if (i1 < 0) {
-			return null;
-		}
-		final int i2 = this.is.read();
-		if (i2 < 0) {
-			return null;
-		}
-		return (0xFF & i1) | (0xFF & i2) << 8;
-	}
-
-	public Integer readLuposInteger3Bytes() throws IOException {
-		final int i1 = this.is.read();
-		if (i1 < 0) {
-			return null;
-		}
-		final int i2 = this.is.read();
-		if (i2 < 0) {
-			return null;
-		}
-		final int i3 = this.is.read();
-		if (i3 < 0) {
-			return null;
-		}
-		return (0xFF & i1) | ((0xFF & i2) | (0xFF & i3) << 8) << 8;
-	}
-
-	public Integer readLuposInteger() throws IOException {
-		final int i1 = this.is.read();
-		if (i1 < 0) {
-			return null;
-		}
-		final int i2 = this.is.read();
-		if (i2 < 0) {
-			return null;
-		}
-		final int i3 = this.is.read();
-		if (i3 < 0) {
-			return null;
-		}
-		final int i4 = this.is.read();
-		if (i4 < 0) {
-			return null;
-		}
-		return (0xFF & i1) | ((0xFF & i2) | ((0xFF & i3) | (0xFF & i4) << 8) << 8) << 8;
-	}
-
-	public Long readLuposLong() throws IOException {
-		final Integer a = this.readLuposInteger();
-		final Integer b = this.readLuposInteger();
-		if (a == null || b == null) {
-			return null;
-		}
-		return (long) a | ((long) b) << 32;
-	}
-
-	public int readLuposInt() throws IOException {
-		final int i1 = this.is.read();
-		if (i1 < 0) {
-			return i1;
-		}
-		final int i2 = this.is.read();
-		if (i2 < 0) {
-			return i2;
-		}
-		final int i3 = this.is.read();
-		if (i3 < 0) {
-			return i3;
-		}
-		final int i4 = this.is.read();
-		if (i4 < 0) {
-			return i4;
-		}
-		return (0xFF & i1) | ((0xFF & i2) | ((0xFF & i3) | (0xFF & i4) << 8) << 8) << 8;
-	}
-
-	public byte readLuposByte() throws IOException {
-		final int value = this.is.read();
-		if (value < 0) {
-			throw new EOFException();
-		}
-		return (byte) value;
-	}
-
-	public TripleKey readLuposTripleKey() throws IOException {
-		// it is expected that the triple key contains the key computed from the
-		// last read triple
-		final int order = this.is.read();
-		if (order < 0) {
-			return null;
-		}
-		Triple t;
-		if (this.lastSubject == null) {
-			final Literal subject = this.readLiteral();
-			final Literal predicate = this.readLiteral();
-			final Literal object = this.readLiteral();
-			t = new Triple(subject, predicate, object);
-		} else {
-			t = new Triple(this.lastSubject, this.lastPredicate, this.lastObject);
-		}
-		return new TripleKey(t, new TripleComparator((byte) order));
-	}
-
-	public Integer readLuposIntVariableBytes() throws IOException {
-		final Integer i0 = this.readLuposInteger1Byte();
-		if(i0==null){
-			return null;
-		}
-		if (i0 <= 251){
-			return i0;
-		}
-		int result = 251;
-		int offset = 1;
-		for (int i = 1; i <= i0 - 251; i++) {
-			result += this.readLuposInteger1Byte() * offset;
-			offset <<= 8;
-		}
-		return result;
-	}
-
-	public static int readLuposInt(final ObjectInput in) throws IOException {
-		final int i0 = in.read();
-		if (i0 <= 251){
-			return i0;
-		}
-		int result = 251;
-		int offset = 1;
-		for (int i = 1; i <= i0 - 251; i++) {
-			result += in.read() * offset;
-			offset <<= 8;
-		}
-		return result;
-	}
-
-	public static Literal readLuposLiteral(final ObjectInput in)
-			throws IOException, ClassNotFoundException {
-		if (LiteralFactory.getMapType() == MapType.NOCODEMAP
-				|| LiteralFactory.getMapType() == MapType.LAZYLITERAL
-				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
-				|| LiteralFactory.getMapType() == MapType.PREFIXCODEMAP) {
-			return new StringLiteral((String) in.readObject());
-		} else {
-			return new CodeMapLiteral(LuposObjectInputStream.readLuposInt(in));
-		}
+	@SuppressWarnings("rawtypes")
+	public Entry readLuposEntry() throws ClassNotFoundException, IOException {
+		return InputHelper.readLuposEntry(this);
 	}
 }
