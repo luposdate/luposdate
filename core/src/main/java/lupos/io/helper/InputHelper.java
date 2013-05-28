@@ -27,6 +27,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -552,7 +553,7 @@ public final class InputHelper {
 		final Class type = Registration.deserializeId(in)[0];
 		for (int i = 0; i < size; i++) {
 			try {
-				set.add(Registration.deserializeWithoutId(type, in));
+				set.add((Serializable)Registration.deserializeWithoutId(type, in));
 			} catch (final URISyntaxException e) {
 				throw new IOException(e.getMessage());
 			}

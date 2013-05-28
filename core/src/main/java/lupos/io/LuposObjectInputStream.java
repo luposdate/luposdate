@@ -212,7 +212,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		final Class type = Registration.deserializeId(this)[0];
 		for (int i = 0; i < size; i++) {
 			try {
-				set.add(Registration.deserializeWithoutId(type, this));
+				set.add((Serializable)Registration.deserializeWithoutId(type, this));
 			} catch (final URISyntaxException e) {
 				throw new IOException(e.getMessage());
 			}
