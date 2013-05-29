@@ -21,9 +21,10 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.datastructures.paged_dbbptree.node;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,17 +34,14 @@ import java.util.List;
 
 import lupos.datastructures.buffermanager.PageManager;
 import lupos.datastructures.buffermanager.PageOutputStream;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
-import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.io.helper.OutHelper;
 
-public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializable>
-		extends Node<K, V> {
+public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializable> extends Node<K, V> {
 
-	protected List<V> readValues = new LinkedList<V>();
-	protected Integer nextLeafNode = null;
-	protected boolean found;
+	public List<V> readValues = new LinkedList<V>();
+	public Integer nextLeafNode = null;
+	public boolean found;
 	protected final PageManager pageManager;
 	protected final NodeDeSerializer<K, V> nodeDeSerializer;
 
@@ -77,10 +75,8 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 
 	public void writeLeafNode(final boolean overwrite) {
 		try {
-			final OutputStream fos = new PageOutputStream(this.filename,
-					this.pageManager, !overwrite);
-			final LuposObjectOutputStream out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-			OutHelper.writeLuposBoolean(true, out.os);
+			final OutputStream out = new PageOutputStream(this.filename, this.pageManager, !overwrite);
+			OutHelper.writeLuposBoolean(true, out);
 			final Iterator<V> it = this.readValues.iterator();
 			V lastValue = null;
 			K lastKey = null;
@@ -178,13 +174,13 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	}
 
 	protected void writeLeafEntry(final K k, final V v, final K lastKey,
-			final V lastValue, final LuposObjectOutputStream out)
+			final V lastValue, final OutputStream out)
 			throws IOException {
 		this.nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
 	}
 
 	protected DBBPTreeEntry<K, V> getNextLeafEntry(
-			final LuposObjectInputStream<V> in, final K lastKey,
+			final InputStream in, final K lastKey,
 			final V lastValue) {
 		return this.nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
 	}

@@ -95,7 +95,7 @@ public class TurtleParser extends SemanticWebParser {
 		return content.charAt(beginChar)=='\n';
 	}
 
-	{
+	static {
 		TurtleParser.TOKEN_MAP = new TYPE__SemanticWeb[TurtleParserConstants.tokenImage.length];
 
 

@@ -24,6 +24,8 @@
 package lupos.engine.operators.index;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
@@ -56,14 +58,12 @@ import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.items.literal.codemap.TProcedureEntry;
 import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
@@ -115,8 +115,8 @@ public class Dataset {
 
 	public Dataset(final String dataFormat, final ONTOLOGY materialize,
 			final int opt, final IndicesFactory indicesFactory,
-			final LuposObjectInputStream in) throws IOException,
-			ClassNotFoundException {
+			final InputStream in) throws IOException,
+			ClassNotFoundException, URISyntaxException {
 		this.indicesFactory = indicesFactory;
 		this.dataFormat = dataFormat;
 		this.materialize = materialize;
@@ -250,9 +250,7 @@ public class Dataset {
 										simap = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
 												k,
 												k_,
-												new StandardNodeDeSerializer<String, Integer>(
-														String.class,
-														Integer.class));
+												new StringIntegerNodeDeSerializer());
 										simap.setName("Dictionary: String->Integer");
 										simap.generateDBBPTree(smsi);
 										LazyLiteral
@@ -679,20 +677,20 @@ public class Dataset {
 
 	private void readIntegerStringMapAndStringIntegerMap(
 			final IntegerStringMap ism, final StringIntegerMap sim,
-			final LuposObjectInputStream in) throws IOException {
-		final int number = InputHelper.readLuposInt(in.is);
+			final InputStream in) throws IOException {
+		final int number = InputHelper.readLuposInt(in);
 		for (int i = 0; i < number; i++) {
-			final int code = InputHelper.readLuposInt(in.is);
-			final String value = InputHelper.readLuposString(in.is);
+			final int code = InputHelper.readLuposInt(in);
+			final String value = InputHelper.readLuposString(in);
 			ism.put(code, value);
 			sim.put(value, code);
 		}
 	}
 
-	public void readIndexInfo(final LuposObjectInputStream in)
-			throws IOException, ClassNotFoundException {
+	public void readIndexInfo(final InputStream in)
+			throws IOException, ClassNotFoundException, URISyntaxException {
 
-		lupos.datastructures.paged_dbbptree.DBBPTree.setCurrentFileID(InputHelper.readLuposInt(in.is));
+		lupos.datastructures.paged_dbbptree.DBBPTree.setCurrentFileID(InputHelper.readLuposInt(in));
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
 			final lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> dbbptreeSI =lupos.datastructures.paged_dbbptree.DBBPTree.readLuposObject(in);
@@ -719,16 +717,16 @@ public class Dataset {
 						.getV(), CodeMapURILiteral.getHm(), in);
 			}
 		}
-		int number = InputHelper.readLuposInt(in.is);
+		int number = InputHelper.readLuposInt(in);
 		for (int i = 0; i < number; i++) {
-			final URILiteral uri = (URILiteral) LiteralFactory.readLuposLiteral(in.is);
+			final URILiteral uri = (URILiteral) LiteralFactory.readLuposLiteral(in);
 			final Indices indices = this.indicesFactory.createIndices(uri);
 			indices.readIndexInfo(in);
 			this.defaultGraphData.put(uri, indices);
 		}
-		number = InputHelper.readLuposInt(in.is);
+		number = InputHelper.readLuposInt(in);
 		for (int i = 0; i < number; i++) {
-			final URILiteral uri = (URILiteral) LiteralFactory.readLuposLiteral(in.is);
+			final URILiteral uri = (URILiteral) LiteralFactory.readLuposLiteral(in);
 			final Indices indices = this.indicesFactory.createIndices(uri);
 			indices.readIndexInfo(in);
 			this.namedGraphData.put(uri, indices);
@@ -736,14 +734,14 @@ public class Dataset {
 	}
 
 	private void writeIntegerStringMap(final IntegerStringMap ism,
-			final LuposObjectOutputStream out) throws IOException {
-		OutHelper.writeLuposInt(ism.size(), out.os);
+			final OutputStream out) throws IOException {
+		OutHelper.writeLuposInt(ism.size(), out);
 		ism.forEachEntry(new TProcedureEntry<Integer,String>() {
 			@Override
 			public boolean execute(final Integer arg0, final String arg1) {
 				try {
-					OutHelper.writeLuposInt(arg0, out.os);
-					OutHelper.writeLuposString(arg1, out.os);
+					OutHelper.writeLuposInt(arg0, out);
+					OutHelper.writeLuposString(arg1, out);
 				} catch (final IOException e) {
 					System.err.println(e);
 					e.printStackTrace();
@@ -753,13 +751,13 @@ public class Dataset {
 		});
 	}
 
-	public void writeIndexInfo(final LuposObjectOutputStream out, final Integer currentFileID)
+	public void writeIndexInfo(final OutputStream out, final Integer currentFileID)
 			throws IOException {
 		this.buildCompletelyAllIndices();
 		if(currentFileID==null){
-			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out.os);
+			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
 		} else {
-			OutHelper.writeLuposInt(currentFileID, out.os);
+			OutHelper.writeLuposInt(currentFileID, out);
 		}
 
 		if (LiteralFactory.getMapType() == MapType.LAZYLITERAL
@@ -782,12 +780,12 @@ public class Dataset {
 				this.writeIntegerStringMap(CodeMapURILiteral.getV(), out);
 			}
 		}
-		OutHelper.writeLuposInt(this.defaultGraphData.size(), out.os);
+		OutHelper.writeLuposInt(this.defaultGraphData.size(), out);
 		for (final Entry<URILiteral, Indices> entry : this.defaultGraphData.entrySet()) {
 			LiteralFactory.writeLuposLiteral(entry.getKey(), out);
 			entry.getValue().writeIndexInfo(out);
 		}
-		OutHelper.writeLuposInt(this.namedGraphData.size(), out.os);
+		OutHelper.writeLuposInt(this.namedGraphData.size(), out);
 		for (final Entry<URILiteral, Indices> entry : this.namedGraphData.entrySet()) {
 			LiteralFactory.writeLuposLiteral(entry.getKey(), out);
 			entry.getValue().writeIndexInfo(out);

@@ -24,7 +24,10 @@
 package lupos.datastructures.paged_dbbptree;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -35,8 +38,6 @@ import java.util.SortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMapOfCollections;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 
 public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable, V extends Serializable>
 		implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
@@ -249,7 +250,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
-	public void writeLuposObject(final LuposObjectOutputStream loos)
+	public void writeLuposObject(final OutputStream loos)
 			throws IOException {
 		if (this.phase == PhaseEnum.SORTEDMAP) {
 			this.switchPhase();
@@ -265,8 +266,8 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 	}
 
 	public static OptimizedDBBPTreeGeneration readLuposObject(
-			final LuposObjectInputStream lois) throws IOException,
-			ClassNotFoundException {
+			final InputStream lois) throws IOException,
+			ClassNotFoundException, URISyntaxException {
 		final OptimizedDBBPTreeGeneration odtg = new OptimizedDBBPTreeGeneration();
 		odtg.phase = PhaseEnum.DBBPTREE;
 		odtg.dbbptree = DBBPTree.readLuposObject(lois);

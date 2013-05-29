@@ -21,30 +21,59 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.io.serializer;
 
-public class DBBPTreeEntry<K, V> {
-	public K key;
-	public V value;
-	public int filenameOfNextLeafNode;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 
-	public DBBPTreeEntry(final K key, final V value) {
-		this.key = key;
-		this.value = value;
-	}
+import lupos.datastructures.dbmergesortedds.MapEntry;
+import lupos.io.LuposObjectInputStream;
+import lupos.io.LuposObjectOutputStream;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
 
-	public DBBPTreeEntry(final K key, final V value,
-			final int filenameOfNextLeafNode) {
-		this.key = key;
-		this.value = value;
-		this.filenameOfNextLeafNode = filenameOfNextLeafNode;
+@SuppressWarnings("rawtypes")
+public class MAPENTRY extends DeSerializerConsideringSubClasses<lupos.datastructures.dbmergesortedds.MapEntry> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof MapEntry;
 	}
 
 	@Override
-	public String toString() {
-		if (key != null)
-			return key.toString() + " -> " + value.toString();
-		else
-			return "Next leaf node:" + filenameOfNextLeafNode;
+	public MapEntry deserialize(final LuposObjectInputStream<MapEntry> in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return InputHelper.readLuposMapEntry(in);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<MapEntry>[] getRegisteredClasses() {
+		return new Class[] { MapEntry.class };
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void serialize(final MapEntry t, final LuposObjectOutputStream out) throws IOException {
+		OutHelper.writeLuposMapEntry(t, out);
+	}
+
+	@Override
+	public MapEntry deserialize(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return InputHelper.readLuposMapEntry(in);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void serialize(final MapEntry t, final OutputStream out) throws IOException {
+		OutHelper.writeLuposMapEntry(t, out);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public int length(final MapEntry t) {
+		return LengthHelper.lengthLuposMapEntry(t);
 	}
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
 
 public class IntegerStringMapJava implements IntegerStringMap {

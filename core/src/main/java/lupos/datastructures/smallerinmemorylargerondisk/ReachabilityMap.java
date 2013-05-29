@@ -29,17 +29,16 @@ import java.util.Set;
 
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
-import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 
 public class ReachabilityMap<K extends Comparable<K> & Serializable, V extends Set<Literal> & Serializable> extends MapImplementation<K,V> {
-	
+
 	private int elementsInMemory = 0;
 
 	public ReachabilityMap(){
 		super();
 	}
-	
+
 	@Override
 	public void clear() {
 		super.clear();
@@ -57,11 +56,11 @@ public class ReachabilityMap<K extends Comparable<K> & Serializable, V extends S
 			return this.memoryMap.put(arg0,arg1);
 		}
 		if (this.diskMap == null){
-			Entry<K, V> entry=this.memoryMap.entrySet().iterator().next();
+			final Entry<K, V> entry=this.memoryMap.entrySet().iterator().next();
 			try {
 				System.out.println("Writing to disk");
-				this.diskMap = new DBBPTree<K, V>(100000, 100000, new StandardNodeDeSerializer<K, V>((Class<? super K>)entry.getKey().getClass(),(Class<? super V>) entry.getValue().getClass()));
-			} catch (IOException e) {
+				this.diskMap = new DBBPTree<K, V>(100000, 100000, new StandardNodeDeSerializer<K, V>((Class<? extends K>)entry.getKey().getClass(),(Class<? extends V>) entry.getValue().getClass()));
+			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
@@ -71,7 +70,7 @@ public class ReachabilityMap<K extends Comparable<K> & Serializable, V extends S
 
 	@Override
 	public V remove(final Object arg0) {
-		V v = super.remove(arg0);
+		final V v = super.remove(arg0);
 		if(v!=null){
 			this.elementsInMemory -= v.size();
 		}

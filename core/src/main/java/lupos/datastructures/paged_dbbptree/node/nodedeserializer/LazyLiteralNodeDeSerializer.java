@@ -21,11 +21,13 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
@@ -33,9 +35,8 @@ import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.BitVector;
@@ -62,7 +63,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
-			final LuposObjectOutputStream out, final TripleKey lastKey)
+			final OutputStream out, final TripleKey lastKey)
 			throws IOException {
 		final BitVector bits = new BitVector(7);
 		bits.set(0);
@@ -113,8 +114,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 							.ordinal()][i])).getCode()
 							- ((LazyLiteral) lastValue.getPos(map[this.order
 									.ordinal()][i])).getCode();
-					index = determineNumberOfBytesForRepresentation(diff, bits,
-							index, out);
+					index = determineNumberOfBytesForRepresentation(diff, bits, index, out);
 				}
 				for (int j = i + ((value == 3) ? 0 : 1); j < 3; j++) {
 					// deal with the "rest"
@@ -163,8 +163,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 	}
 
 	@Override
-	public void writeInnerNodeEntry(final int fileName,
-			final LuposObjectOutputStream out) throws IOException {
+	public void writeInnerNodeEntry(final int fileName, final OutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
 		bits.clear(0);
 		determineNumberOfBytesForRepresentation(fileName, bits, 0, out);
@@ -174,7 +173,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 
 	@Override
 	public void writeLeafEntry(final TripleKey k, final Triple v,
-			final LuposObjectOutputStream out, final TripleKey lastKey,
+			final OutputStream out, final TripleKey lastKey,
 			final Triple lastValue) throws IOException {
 		final BitVector bits = new BitVector(7);
 		bits.set(0);
@@ -269,8 +268,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 	}
 
 	@Override
-	public void writeLeafEntryNextFileName(final int filename,
-			final LuposObjectOutputStream out) throws IOException {
+	public void writeLeafEntryNextFileName(final int filename, final OutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
 		bits.clear(0);
 		determineNumberOfBytesForRepresentation(filename, bits, 0, out);
@@ -278,28 +276,28 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		writeIntWithoutLeadingZeros(filename, out);
 	}
 
-	protected static void writeIntWithoutLeadingZeros(final int diff,
-			final LuposObjectOutputStream out) throws IOException {
+	public static void writeIntWithoutLeadingZeros(final int diff,
+			final OutputStream out) throws IOException {
 		switch (determineNumberOfBytesForRepresentation(diff)) {
 		case 0:
-			OutHelper.writeLuposInt1Byte(diff, out.os);
+			OutHelper.writeLuposInt1Byte(diff, out);
 			break;
 		case 1:
-			OutHelper.writeLuposInt2Bytes(diff, out.os);
+			OutHelper.writeLuposInt2Bytes(diff, out);
 			break;
 		case 2:
-			OutHelper.writeLuposInt3Bytes(diff, out.os);
+			OutHelper.writeLuposInt3Bytes(diff, out);
 			break;
 		default:
 		case 3:
-			OutHelper.writeLuposInt(diff, out.os);
+			OutHelper.writeLuposInt(diff, out);
 			break;
 		}
 	}
 
-	protected static int determineNumberOfBytesForRepresentation(
+	public static int determineNumberOfBytesForRepresentation(
 			final int diff, final BitVector bits, int index,
-			final LuposObjectOutputStream out) throws IOException {
+			final OutputStream out) throws IOException {
 		final int number = determineNumberOfBytesForRepresentation(diff);
 		index++;
 		if (index == 8) {
@@ -320,7 +318,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return index;
 	}
 
-	protected static int determineNumberOfBytesForRepresentation(int diff) {
+	public static int determineNumberOfBytesForRepresentation(int diff) {
 		if (diff < 0) {
 			diff *= -1;
 		}
@@ -332,26 +330,25 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return number;
 	}
 
-	protected static int readInt(final BitVector bv, final int index,
-			final LuposObjectInputStream<Triple> in) throws IOException {
+	public static int readInt(final BitVector bv, final int index,
+			final InputStream in) throws IOException {
 		if (bv.get(index)) {
 			if (bv.get(index + 1)) {
-				return InputHelper.readLuposInteger(in.is);
+				return InputHelper.readLuposInteger(in);
 			} else {
-				return  InputHelper.readLuposInteger3Bytes(in.is);
+				return  InputHelper.readLuposInteger3Bytes(in);
 			}
 		} else {
 			if (bv.get(index + 1)) {
-				return  InputHelper.readLuposInteger2Bytes(in.is);
+				return  InputHelper.readLuposInteger2Bytes(in);
 
 			} else {
-				return  InputHelper.readLuposInteger1Byte(in.is);
+				return  InputHelper.readLuposInteger1Byte(in);
 			}
 		}
 	}
 
-	protected static int getIntSize(final BitVector bits, int index,
-			final LuposObjectInputStream<Triple> in) throws IOException {
+	public static int getIntSize(final BitVector bits, int index, final InputStream in) throws IOException {
 		index++;
 		if (index == 8) {
 			bits.readWithoutSize(in, 7);
@@ -367,32 +364,32 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return number;
 	}
 
-	protected static int getInt(final int number,
-			final LuposObjectInputStream<Triple> in) throws IOException {
+	public static int getInt(final int number,
+			final InputStream in) throws IOException {
 		switch (number) {
 		case 0:
 			return 0;
 		case 1:
-			return InputHelper.readLuposInteger1Byte(in.is);
+			return InputHelper.readLuposInteger1Byte(in);
 		case 2:
-			return InputHelper.readLuposInteger2Bytes(in.is);
+			return InputHelper.readLuposInteger2Bytes(in);
 		case 3:
-			return InputHelper.readLuposInteger3Bytes(in.is);
+			return InputHelper.readLuposInteger3Bytes(in);
 		default:
 		case 4:
-			return InputHelper.readLuposInteger(in.is);
+			return InputHelper.readLuposInteger(in);
 		}
 	}
 
 	@Override
 	public DBBPTreeEntry<TripleKey, Triple> getNextLeafEntry(
-			final LuposObjectInputStream<Triple> in, final TripleKey lastKey,
+			final InputStream in, final TripleKey lastKey,
 			final Triple lastValue) {
 		return this.getNextLeafEntry(lastValue, in);
 	}
 
 	private synchronized DBBPTreeEntry<TripleKey, Triple> getNextLeafEntry(
-			final Triple lastTriple, final LuposObjectInputStream<Triple> in) {
+			final Triple lastTriple, final InputStream in) {
 		try {
 			BitVector bits;
 			try {
@@ -472,7 +469,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 
 	@Override
 	public synchronized Tuple<TripleKey, Integer> getNextInnerNodeEntry(
-			final TripleKey lastKey, final LuposObjectInputStream<Triple> in) {
+			final TripleKey lastKey, final InputStream in) {
 		try {
 			BitVector bits;
 			try {
@@ -549,13 +546,15 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return null;
 	}
 
-	protected static Literal getLiteral(final int code, final int pos,
-			final int codeForOriginalContent,
-			final boolean objectIsLazyLiteralOriginalContent) {
+	public static Literal getLiteral(final int code, final int pos, final int codeForOriginalContent, final boolean objectIsLazyLiteralOriginalContent) {
 		if (!objectIsLazyLiteralOriginalContent || pos != 2) {
 			return new LazyLiteral(code);
 		} else {
 			return new LazyLiteralOriginalContent(code, codeForOriginalContent);
 		}
+	}
+
+	public RDF3XIndexScan.CollationOrder getCollationOrder(){
+		return this.order;
 	}
 }

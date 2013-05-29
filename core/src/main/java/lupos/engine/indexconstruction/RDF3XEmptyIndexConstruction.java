@@ -26,6 +26,7 @@ package lupos.engine.indexconstruction;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Date;
 
 import lupos.datastructures.buffermanager.BufferManager;
@@ -36,14 +37,13 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.items.literal.string.StringURILiteral;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
 import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Indices.DATA_STRUCT;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
-import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.OutHelper;
 import lupos.misc.TimeInterval;
 
@@ -86,7 +86,7 @@ public class RDF3XEmptyIndexConstruction {
 			lupos.datastructures.paged_dbbptree.DBBPTree.setTmpDir(dir[0], true);
 
 			final lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap =
-					new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(k, k_, new StandardNodeDeSerializer<String, Integer>(String.class, Integer.class));
+					new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(k, k_, new StringIntegerNodeDeSerializer());
 			LazyLiteral.setHm(new StringIntegerMapJava(simap));
 
 			final StringArray ismap = new StringArray();
@@ -100,18 +100,18 @@ public class RDF3XEmptyIndexConstruction {
 
 			// write out index info
 
-			final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(writeindexinfo)));
+			final OutputStream out = new BufferedOutputStream(new FileOutputStream(writeindexinfo));
 			indices.constructCompletely();
 			BufferManager.getBufferManager().writeAllModifiedPages();
 
-			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out.os);
+			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
 
 			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
 			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
-			OutHelper.writeLuposInt(1, out.os);
-			LiteralFactory.writeLuposLiteral(defaultGraph, out.os);
+			OutHelper.writeLuposInt(1, out);
+			LiteralFactory.writeLuposLiteral(defaultGraph, out);
 			indices.writeIndexInfo(out);
-			OutHelper.writeLuposInt(0, out.os);
+			OutHelper.writeLuposInt(0, out);
 			out.close();
 			final Date end = new Date();
 			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);

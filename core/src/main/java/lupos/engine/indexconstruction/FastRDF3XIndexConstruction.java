@@ -32,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -58,7 +60,7 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
 import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.patriciatrie.diskseq.DBSeqTrieSet;
 import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
@@ -72,8 +74,6 @@ import lupos.engine.operators.index.Indices.DATA_STRUCT;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
@@ -85,8 +85,8 @@ import lupos.misc.TimeInterval;
  */
 public class FastRDF3XIndexConstruction {
 	// the parameters are used for the B+-trees
-	private static final int k = 1000;
-	private static final int k_ = 1000;
+	private static final int k = 10;//1000;
+	private static final int k_ = 10;//1000;
 
 	private static final int NUMBER_OF_THREADS = 8;
 
@@ -223,7 +223,7 @@ public class FastRDF3XIndexConstruction {
 			final lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
 						k,
 						k_,
-						new StandardNodeDeSerializer<String, Integer>(String.class, Integer.class));
+						new StringIntegerNodeDeSerializer());
 
 			final Thread thread0 = new Thread() {
 				@Override
@@ -336,18 +336,18 @@ public class FastRDF3XIndexConstruction {
 
 			// write out index info
 
-			final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(writeindexinfo)));
+			final OutputStream out = new BufferedOutputStream(new FileOutputStream(writeindexinfo));
 
 			BufferManager.getBufferManager().writeAllModifiedPages();
 
-			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out.os);
+			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
 
 			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
 			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
-			OutHelper.writeLuposInt(1, out.os);
-			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out.os);
+			OutHelper.writeLuposInt(1, out);
+			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
 			indices.writeIndexInfo(out);
-			OutHelper.writeLuposInt(0, out.os);
+			OutHelper.writeLuposInt(0, out);
 			out.close();
 			final Date end = new Date();
 			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
@@ -625,7 +625,7 @@ public class FastRDF3XIndexConstruction {
 
 			// write out initial run:
 			try {
-				final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(this.fileName)));
+				final OutputStream out = new BufferedOutputStream(new FileOutputStream(this.fileName));
 				// write run in a compressed way:
 				int start = 0;
 				int previousPrimaryCode = 0;
@@ -659,13 +659,13 @@ public class FastRDF3XIndexConstruction {
 	 * @return
 	 * @throws IOException
 	 */
-	private static int writeBlock(final int[][] block, final int start, final int end, final int primaryPos, final int secondaryPos, final int tertiaryPos, final int previousPrimaryCode, final LuposObjectOutputStream out) throws IOException{
+	private static int writeBlock(final int[][] block, final int start, final int end, final int primaryPos, final int secondaryPos, final int tertiaryPos, final int previousPrimaryCode, final OutputStream out) throws IOException{
 		final int primaryCode = block[start][primaryPos];
 		// difference encoding for the primary position
-		OutHelper.writeLuposIntVariableBytes(primaryCode - previousPrimaryCode, out.os);
+		OutHelper.writeLuposIntVariableBytes(primaryCode - previousPrimaryCode, out);
 
 		// how many times this primary code is repeated?
-		OutHelper.writeLuposIntVariableBytes(end-start, out.os);
+		OutHelper.writeLuposIntVariableBytes(end-start, out);
 
 		int previousSecondaryCode = 0;
 		int previousTertiaryCode = 0;
@@ -674,13 +674,13 @@ public class FastRDF3XIndexConstruction {
 			// use difference encoding also for the secondary position
 			final int differenceSecondaryPosition = secondaryCode - previousSecondaryCode;
 
-			OutHelper.writeLuposIntVariableBytes(differenceSecondaryPosition, out.os);
+			OutHelper.writeLuposIntVariableBytes(differenceSecondaryPosition, out);
 			if(differenceSecondaryPosition>0){
 				// difference encoding cannot be used for the tertiary position, as the secondary position changed
 				previousTertiaryCode = 0;
 			}
 			final int tertiaryCode = block[j][tertiaryPos];
-			OutHelper.writeLuposIntVariableBytes(tertiaryCode - previousTertiaryCode, out.os);
+			OutHelper.writeLuposIntVariableBytes(tertiaryCode - previousTertiaryCode, out);
 
 			previousSecondaryCode = secondaryCode;
 			previousTertiaryCode = tertiaryCode;
@@ -779,19 +779,19 @@ public class FastRDF3XIndexConstruction {
 		@Override
 		public void run() {
 			try {
-				final LuposObjectInputStream<Integer> in = new LuposObjectInputStream<Integer>(new BufferedInputStream(new FileInputStream(this.filename)), Integer.class);
-				final LuposObjectOutputStream out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(this.filename + "_mapped")));
+				final InputStream in = new BufferedInputStream(new FileInputStream(this.filename));
+				final OutputStream out = new BufferedOutputStream(new FileOutputStream(this.filename + "_mapped"));
 
 				int previousPrimaryCode = 0;
 				int previousMappedPrimaryCode = 0;
 				Integer primaryCode;
-				while((primaryCode = InputHelper.readLuposIntVariableBytes(in.is)) != null){
+				while((primaryCode = InputHelper.readLuposIntVariableBytes(in)) != null){
 					primaryCode+=previousPrimaryCode;
 					final int primaryMappedCode = this.mapping[primaryCode];
-					OutHelper.writeLuposIntVariableBytes(primaryMappedCode - previousMappedPrimaryCode, out.os);
+					OutHelper.writeLuposIntVariableBytes(primaryMappedCode - previousMappedPrimaryCode, out);
 
-					final int repetitions = InputHelper.readLuposIntVariableBytes(in.is);
-					OutHelper.writeLuposIntVariableBytes(repetitions, out.os);
+					final int repetitions = InputHelper.readLuposIntVariableBytes(in);
+					OutHelper.writeLuposIntVariableBytes(repetitions, out);
 
 					int previousSecondaryCode = 0;
 					int previousMappedSecondaryCode = 0;
@@ -799,17 +799,17 @@ public class FastRDF3XIndexConstruction {
 					int previousMappedTertiaryCode = 0;
 
 					for(int i=0; i<repetitions; i++) {
-						final int secondaryCode = InputHelper.readLuposIntVariableBytes(in.is) + previousSecondaryCode;
+						final int secondaryCode = InputHelper.readLuposIntVariableBytes(in) + previousSecondaryCode;
 						final int secondaryMappedCode = this.mapping[secondaryCode];
-						OutHelper.writeLuposIntVariableBytes(secondaryMappedCode - previousMappedSecondaryCode, out.os);
+						OutHelper.writeLuposIntVariableBytes(secondaryMappedCode - previousMappedSecondaryCode, out);
 						if(secondaryMappedCode != previousMappedSecondaryCode) {
 							previousTertiaryCode = 0;
 							previousMappedTertiaryCode = 0;
 						}
 
-						final int tertiaryCode = InputHelper.readLuposIntVariableBytes(in.is) + previousTertiaryCode;
+						final int tertiaryCode = InputHelper.readLuposIntVariableBytes(in) + previousTertiaryCode;
 						final int tertiaryMappedCode = this.mapping[tertiaryCode];
-						OutHelper.writeLuposIntVariableBytes(tertiaryMappedCode - previousMappedTertiaryCode, out.os);
+						OutHelper.writeLuposIntVariableBytes(tertiaryMappedCode - previousMappedTertiaryCode, out);
 
 						previousMappedSecondaryCode = secondaryMappedCode;
 						previousSecondaryCode = secondaryCode;
@@ -839,7 +839,7 @@ public class FastRDF3XIndexConstruction {
 	 */
 	public static class IteratorFromRun {
 
-		private final LuposObjectInputStream<Integer> in;
+		private final InputStream in;
 
 		int previousPrimaryCode = 0;
 		int previousSecondaryCode = 0;
@@ -847,12 +847,12 @@ public class FastRDF3XIndexConstruction {
 		int leftWithSamePrimaryCode = 0;
 
 		public IteratorFromRun(final String filename) throws EOFException, FileNotFoundException, IOException {
-			this.in = new LuposObjectInputStream<Integer>(new BufferedInputStream(new FileInputStream(filename)), Integer.class);
+			this.in = new BufferedInputStream(new FileInputStream(filename));
 		}
 
 		public int[] next() throws IOException {
 			if(this.leftWithSamePrimaryCode==0) {
-				final Integer code = InputHelper.readLuposIntVariableBytes(this.in.is);
+				final Integer code = InputHelper.readLuposIntVariableBytes(this.in);
 				if(code == null){
 					this.in.close();
 					return null;
@@ -860,14 +860,14 @@ public class FastRDF3XIndexConstruction {
 				this.previousPrimaryCode += code;
 				this.previousSecondaryCode = 0;
 				this.previousTertiaryCode = 0;
-				this.leftWithSamePrimaryCode = InputHelper.readLuposIntVariableBytes(this.in.is);
+				this.leftWithSamePrimaryCode = InputHelper.readLuposIntVariableBytes(this.in);
 			}
-			final int code = InputHelper.readLuposIntVariableBytes(this.in.is);
+			final int code = InputHelper.readLuposIntVariableBytes(this.in);
 			if(code > 0) {
 				this.previousTertiaryCode = 0;
 			}
 			this.previousSecondaryCode += code;
-			this.previousTertiaryCode += InputHelper.readLuposIntVariableBytes(this.in.is);
+			this.previousTertiaryCode += InputHelper.readLuposIntVariableBytes(this.in);
 			this.leftWithSamePrimaryCode--;
 			return new int[] { this.previousPrimaryCode, this.previousSecondaryCode, this.previousTertiaryCode};
 		}
@@ -1025,10 +1025,10 @@ public class FastRDF3XIndexConstruction {
 		private final int[][] block = new int[FinalRunWriter.MAX][];;
 		private int current = 0;
 		private int previousPrimaryCode = 0;
-		private final LuposObjectOutputStream out;
+		private final OutputStream out;
 
 		public FinalRunWriter(final String filename) throws FileNotFoundException, IOException {
-			this.out = new LuposObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)));
+			this.out = new BufferedOutputStream(new FileOutputStream(filename));
 		}
 
 		public void write(final int[] triple) {

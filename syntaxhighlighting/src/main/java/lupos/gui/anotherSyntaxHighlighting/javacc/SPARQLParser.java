@@ -95,7 +95,7 @@ public class SPARQLParser extends SemanticWebParser {
 		return content.charAt(beginChar)=='\n';
 	}
 
-	{
+	static {
 		SPARQLParser.TOKEN_MAP = new TYPE__SemanticWeb[SPARQL1_1ParserConstants.tokenImage.length];
 
 		final String[] reservedWords = {

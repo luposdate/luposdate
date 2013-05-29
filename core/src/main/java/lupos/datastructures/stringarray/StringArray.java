@@ -25,6 +25,8 @@ package lupos.datastructures.stringarray;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -39,7 +41,6 @@ import lupos.datastructures.items.literal.codemap.TProcedureEntry;
 import lupos.datastructures.items.literal.codemap.TProcedureValue;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
@@ -544,17 +545,16 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		this.lastString = getLongFromPage(this.stringsFilename, 0);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static StringArray readLuposStringArray(final LuposObjectInputStream lois) throws IOException{
-		final String pointersFilename = InputHelper.readLuposString(lois.is);
-		final String stringsFilename = InputHelper.readLuposString(lois.is);
+	public static StringArray readLuposStringArray(final InputStream lois) throws IOException{
+		final String pointersFilename = InputHelper.readLuposString(lois);
+		final String stringsFilename = InputHelper.readLuposString(lois);
 		return new StringArray(pointersFilename, stringsFilename);
 	}
 
-	public void writeLuposStringArray(final LuposObjectOutputStream loos) throws IOException{
+	public void writeLuposStringArray(final OutputStream loos) throws IOException{
 		BufferManager.getBufferManager().writeAllModifiedPages();
-		OutHelper.writeLuposString(this.pointersFilename, loos.os);
-		OutHelper.writeLuposString(this.stringsFilename, loos.os);
+		OutHelper.writeLuposString(this.pointersFilename, loos);
+		OutHelper.writeLuposString(this.stringsFilename, loos);
 	}
 
 	public static int getFileID() {

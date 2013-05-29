@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
 import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
 
 public class StringIntegerMapJava implements StringIntegerMap {
@@ -46,8 +46,7 @@ public class StringIntegerMapJava implements StringIntegerMap {
 			try {
 				this.original = new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(
 						300, 300,
-						new StandardNodeDeSerializer<String, Integer>(
-								String.class, Integer.class));
+						new StringIntegerNodeDeSerializer());
 				((lupos.datastructures.paged_dbbptree.DBBPTree)this.original).setName("Dictionary: String->Integer");
 			} catch (final IOException e) {
 				System.err.println(e);
@@ -58,8 +57,9 @@ public class StringIntegerMapJava implements StringIntegerMap {
 			this.original = new MapImplementation<String, Integer>();
 			break;
 		}
-		if (this.original != null)
+		if (this.original != null) {
 			this.m = Collections.synchronizedMap(this.original);
+		}
 	}
 
 	public StringIntegerMapJava(final Map<String, Integer> map) {

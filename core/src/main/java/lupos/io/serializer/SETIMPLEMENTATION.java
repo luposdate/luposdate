@@ -21,26 +21,57 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.io.serializer;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
+import lupos.io.LuposObjectInputStream;
+import lupos.io.LuposObjectOutputStream;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
 
-public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
+@SuppressWarnings("rawtypes")
+public class SETIMPLEMENTATION extends DeSerializerConsideringSubClasses<SetImplementation> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof SetImplementation;
+	}
+
+	@Override
+	public SetImplementation deserialize(final LuposObjectInputStream<SetImplementation> in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return in.readLuposSetImplementation();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init() {
-		this.lba = new DBBPTree[2];
-		try {
-			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
+	public Class<SetImplementation>[] getRegisteredClasses() {
+		return new Class[] { SetImplementation.class };
+	}
+
+	@Override
+	public void serialize(final SetImplementation t, final LuposObjectOutputStream out) throws IOException {
+		out.writeLuposSetImplementation(t);
+	}
+
+	@Override
+	public int length(final SetImplementation t) {
+		return LengthHelper.lengthLuposSet(t);
+	}
+
+	@Override
+	public void serialize(final SetImplementation t, final OutputStream out)
+			throws IOException {
+		OutHelper.writeLuposSet(t, out);
+	}
+
+	@Override
+	public SetImplementation deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+		return InputHelper.readLuposSet(in);
 	}
 }

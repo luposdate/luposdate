@@ -21,26 +21,37 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry;
+import lupos.misc.Tuple;
 
-public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
+public interface NodeDeSerializer<K, V> extends Serializable {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void init() {
-		this.lba = new DBBPTree[2];
-		try {
-			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
-	}
+	public Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2,
+			final InputStream in2);
+
+	public DBBPTreeEntry<K, V> getNextLeafEntry(
+			final InputStream in, final K lastKey,
+			final V lastValue);
+
+	public void writeInnerNodeEntry(final int fileName, final K key,
+			final OutputStream out, final K lastKey)
+			throws IOException;
+
+	public void writeInnerNodeEntry(final int fileName,
+			final OutputStream out) throws IOException;
+
+	public void writeLeafEntry(final K k, final V v,
+			final OutputStream out, final K lastKey,
+			final V lastValue) throws IOException;
+
+	public void writeLeafEntryNextFileName(final int filename,
+			final OutputStream out) throws IOException;
+
 }

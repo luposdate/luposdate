@@ -79,8 +79,7 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return Registration.deserializeWithoutId(this.classOfElements, this);
 	}
 
-	public <TT> TT readLuposObject(final Class classOfElements)
-			throws IOException, ClassNotFoundException, URISyntaxException {
+	public <TT> TT readLuposObject(final Class classOfElements) throws IOException, ClassNotFoundException, URISyntaxException {
 		return (TT) Registration.deserializeWithoutId(classOfElements, this);
 	}
 

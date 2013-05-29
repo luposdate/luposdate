@@ -21,26 +21,30 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.datastructures.paged_dbbptree.node;
 
-import java.io.IOException;
+public class DBBPTreeEntry<K, V> {
+	public K key;
+	public V value;
+	public int filenameOfNextLeafNode;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
+	public DBBPTreeEntry(final K key, final V value) {
+		this.key = key;
+		this.value = value;
+	}
 
-public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
+	public DBBPTreeEntry(final K key, final V value,
+			final int filenameOfNextLeafNode) {
+		this.key = key;
+		this.value = value;
+		this.filenameOfNextLeafNode = filenameOfNextLeafNode;
+	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public void init() {
-		this.lba = new DBBPTree[2];
-		try {
-			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
+	public String toString() {
+		if (key != null)
+			return key.toString() + " -> " + value.toString();
+		else
+			return "Next leaf node:" + filenameOfNextLeafNode;
 	}
 }

@@ -24,6 +24,9 @@
 package lupos.engine.operators.index.adaptedRDF3X;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,11 +49,11 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
-import lupos.datastructures.paged_dbbptree.LazyLiteralNodeDeSerializer;
-import lupos.datastructures.paged_dbbptree.NodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration;
 import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.SIPParallelIterator;
@@ -63,8 +66,6 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 
 public class SixIndices extends Indices {
 
@@ -558,7 +559,7 @@ public class SixIndices extends Indices {
     }
 
     @Override
-    public void readIndexInfo(final LuposObjectInputStream in) throws IOException, ClassNotFoundException {
+    public void readIndexInfo(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
         this.SPO = DBBPTree.readLuposObject(in);
         ((DBBPTree) this.SPO).setName("SPO");
         this.SOP = DBBPTree.readLuposObject(in);
@@ -580,7 +581,7 @@ public class SixIndices extends Indices {
     }
 
     @Override
-    public void writeIndexInfo(final LuposObjectOutputStream out) throws IOException {
+    public void writeIndexInfo(final OutputStream out) throws IOException {
         if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
             if (this.SPO instanceof OptimizedDBBPTreeGeneration) {
                 (((OptimizedDBBPTreeGeneration) this.SPO).getDBBPTree()).writeLuposObject(out);

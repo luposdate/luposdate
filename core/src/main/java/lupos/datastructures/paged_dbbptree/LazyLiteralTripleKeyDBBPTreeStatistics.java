@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -44,21 +45,20 @@ import lupos.datastructures.items.TripleComparator.COMPARE;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
+import lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralDBBPTreeStatisticsNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralNodeDeSerializer;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectInputStreamWithoutReadingHeader;
-import lupos.io.LuposObjectOutputStream;
-import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
+import lupos.io.Registration;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.VarBucket;
 
-public class LazyLiteralTripleKeyDBBPTreeStatistics extends
-		DBBPTree<TripleKey, Triple> {
+public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, Triple> {
 
 	protected final RDF3XIndexScan.CollationOrder order;
 
@@ -66,8 +66,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			final Comparator<? super TripleKey> comparator, final int k,
 			final int k_, final RDF3XIndexScan.CollationOrder order)
 			throws IOException {
-		super(comparator, k, k_,
-				new LazyLiteralDBBPTreeStatisticsNodeDeSerializer(order));
+		super(comparator, k, k_, new LazyLiteralDBBPTreeStatisticsNodeDeSerializer(order));
 		this.order = order;
 	}
 
@@ -80,7 +79,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	};
 
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
-			final LuposObjectOutputStream out, final TripleKey lastKey,
+			final OutputStream out, final TripleKey lastKey,
 			final int numberOfTriples, final int numberDistinctSubjects,
 			final int numberDistinctPredicates,
 			final int numberDistinctObjects,
@@ -236,7 +235,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			final boolean subjectDifferentFromPreviousTriple,
 			final boolean predicateDifferentFromPreviousTriple,
 			final boolean objectDifferentFromPreviousTriple,
-			final LuposObjectOutputStream out) throws IOException {
+			final OutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
 		bits.clear(0);
 		if (subjectDifferentFromPreviousTriple) {
@@ -311,7 +310,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	}
 
 	public InnerNodeEntry getNextInnerNodeEntryStatistics(
-			final TripleKey lastKey, final LuposObjectInputStream<Triple> in) {
+			final TripleKey lastKey, final InputStream in) {
 		try {
 			BitVector bits;
 			try {
@@ -533,8 +532,8 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		protected TripleKey largest = null;
 		protected Triple next = null;
 		final private TripleKey arg0;
-		private final List<Tuple<TripleKey, LuposObjectInputStream<Triple>>> innerNodes;
-		private LuposObjectInputStream<Triple> currentLeafIn;
+		private final List<Tuple<TripleKey, InputStream>> innerNodes;
+		private InputStream currentLeafIn;
 		private Triple lastTriple;
 
 		public PrefixSearchIteratorMaxMinDistanceJump(final TripleKey arg0,
@@ -567,7 +566,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		public PrefixSearchIteratorMaxMinDistanceJump(final TripleKey arg0) {
 			this.arg0 = arg0;
 			this.lastTriple = null;
-			this.innerNodes = new LinkedList<Tuple<TripleKey, LuposObjectInputStream<Triple>>>();
+			this.innerNodes = new LinkedList<Tuple<TripleKey, InputStream>>();
 			this.next = this.getFirst(LazyLiteralTripleKeyDBBPTreeStatistics.this.rootPage);
 		}
 
@@ -575,7 +574,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				final TripleKey smallest) {
 			this.arg0 = arg0;
 			this.lastTriple = null;
-			this.innerNodes = new LinkedList<Tuple<TripleKey, LuposObjectInputStream<Triple>>>();
+			this.innerNodes = new LinkedList<Tuple<TripleKey, InputStream>>();
 			this.next = this.getFirst(LazyLiteralTripleKeyDBBPTreeStatistics.this.rootPage, smallest);
 		}
 
@@ -583,11 +582,10 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			if (filename < 0) {
 				return null;
 			}
-			InputStream fis;
+			final InputStream fis;
 			try {
-				fis = new PageInputStream(filename, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf =  InputHelper.readLuposBoolean(in.is);
+				final InputStream in = new PageInputStream(filename, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
+				final boolean leaf =  InputHelper.readLuposBoolean(in);
 				if (leaf) { // leaf node reached!
 					while (true) {
 						final DBBPTreeEntry<TripleKey, Triple> e = LazyLiteralTripleKeyDBBPTreeStatistics.this.getNextLeafEntry(
@@ -626,16 +624,14 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						}
 						if (nextEntry.getFirst() == null) {
 							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											null, in));
+									.add(new Tuple<TripleKey, InputStream>(null, in));
 							return this.getFirst(nextEntry.getSecond());
 						}
 						final int compare = LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry
 								.getFirst(), this.arg0);
 						if (compare >= 0) {
 							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											nextEntry.getFirst(), in));
+									.add(new Tuple<TripleKey, InputStream>(nextEntry.getFirst(), in));
 							return this.getFirst(nextEntry.getSecond());
 						}
 						lastKey = nextEntry.getFirst();
@@ -656,11 +652,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			if (filename < 0) {
 				return null;
 			}
-			InputStream fis;
 			try {
-				fis = new PageInputStream(filename, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				final InputStream in =  new PageInputStream(filename, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
+				final boolean leaf = InputHelper.readLuposBoolean(in);
 				this.lastTriple = null;
 				if (leaf) { // leaf node reached!
 					while (true) {
@@ -704,17 +698,13 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						}
 						lastKey = nextEntry.getFirst();
 						if (nextEntry.getFirst() == null) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											null, in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(null, in));
 							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
 						final int compare = LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry
 								.getFirst(), triplekey);
 						if (compare >= 0) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											nextEntry.getFirst(), in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(nextEntry.getFirst(), in));
 							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
 					}
@@ -737,8 +727,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				return null;
 			}
 			double countDown = distance;
-			final Tuple<TripleKey, LuposObjectInputStream<Triple>> innerNode = this.innerNodes
-					.get(index);
+			final Tuple<TripleKey, InputStream> innerNode = this.innerNodes.get(index);
 			if (innerNode.getFirst() == null) {
 				try {
 					innerNode.getSecond().close();
@@ -829,11 +818,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			if (fileName < 0) {
 				return null;
 			}
-			InputStream fis;
 			try {
-				fis = new PageInputStream(fileName, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				final InputStream in = new PageInputStream(fileName, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
+				final boolean leaf = InputHelper.readLuposBoolean(in);
 				this.lastTriple = null;
 				if (leaf) { // leaf node reached!
 					this.currentLeafIn = in;
@@ -903,24 +890,17 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						}
 						lastKey = nextEntry.key;
 						if (nextEntry.key == null) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											null, in));
-							return this.useInnerNodesGoDown(countDown, pos, entry,
-									nextEntry.fileName);
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(null, in));
+							return this.useInnerNodesGoDown(countDown, pos, entry, nextEntry.fileName);
 						}
 						if (countDown - nextEntry.numberOfTriples < 0.0) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											nextEntry.key, in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(nextEntry.key, in));
 							return this.useInnerNodesGoDown(countDown, pos, entry,
 									nextEntry.fileName);
 						}
 						if (this.largest == null
 								|| LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry.key, this.largest) > 0) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											nextEntry.key, in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(nextEntry.key, in));
 							return this.useInnerNodesGoDown(countDown, pos, entry,
 									nextEntry.fileName);
 						} else {
@@ -1077,7 +1057,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			if (index < 0) {
 				return null;
 			}
-			final Tuple<TripleKey, LuposObjectInputStream<Triple>> innerNode = this.innerNodes
+			final Tuple<TripleKey, InputStream> innerNode = this.innerNodes
 					.get(index);
 			if (innerNode.getFirst() == null) {
 				try {
@@ -1168,11 +1148,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 			if (fileName < 0) {
 				return null;
 			}
-			InputStream fis;
 			try {
-				fis = new PageInputStream(fileName, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
-				final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				final InputStream in = new PageInputStream(fileName, LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager);
+				final boolean leaf = InputHelper.readLuposBoolean(in);
 				lastTriple = null;
 				if (leaf) { // leaf node reached!
 					this.currentLeafIn = in;
@@ -1196,24 +1174,18 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 						}
 						lastKey = nextEntry.key;
 						if (nextEntry.key == null) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											null, in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(null, in));
 							return this.useInnerNodesGoDownReadOver(entry, pos,
 									lastTriple, nextEntry.fileName);
 						}
 						if (nextEntry.key.compareTo(key) < 0) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											nextEntry.key, in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(nextEntry.key, in));
 							return this.useInnerNodesGoDownReadOver(entry, pos,
 									lastTriple, nextEntry.fileName);
 						}
 						if (this.largest == null
 								|| LazyLiteralTripleKeyDBBPTreeStatistics.this.comparator.compare(nextEntry.key, this.largest) > 0) {
-							this.innerNodes
-									.add(new Tuple<TripleKey, LuposObjectInputStream<Triple>>(
-											nextEntry.key, in));
+							this.innerNodes.add(new Tuple<TripleKey, InputStream>(nextEntry.key, in));
 							return this.useInnerNodesGoDownReadOver(entry, pos,
 									lastTriple, nextEntry.fileName);
 						} else {
@@ -1253,7 +1225,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		}
 
 		public void close() {
-			for (final Tuple<TripleKey, LuposObjectInputStream<Triple>> tuple : this.innerNodes) {
+			for (final Tuple<TripleKey, InputStream> tuple : this.innerNodes) {
 				try {
 					tuple.getSecond().close();
 				} catch (final IOException e) {
@@ -1276,11 +1248,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		if (filename < 0) {
 			return -1;
 		}
-		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, this.pageManager);
-			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-			final boolean leaf = InputHelper.readLuposBoolean(in.is);
+			final InputStream in = new PageInputStream(filename, this.pageManager);
+			final boolean leaf = InputHelper.readLuposBoolean(in);
 			Triple lastTriple = null;
 			if (leaf) { // leaf node reached!
 				while (true) {
@@ -1392,11 +1362,10 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 		if (filename < 0) {
 			return dist;
 		}
-		InputStream fis;
+		final InputStream fis;
 		try {
-			fis = new PageInputStream(filename, this.pageManager);
-			final LuposObjectInputStream<Triple> in = new LuposObjectInputStreamWithoutReadingHeader(fis, null);
-			final boolean leaf = InputHelper.readLuposBoolean(in.is);
+			final InputStream in = new PageInputStream(filename, this.pageManager);
+			final boolean leaf = InputHelper.readLuposBoolean(in);
 			if (leaf) { // leaf node reached!
 				Triple lastTriple = null;
 				while (true) {
@@ -1601,7 +1570,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	}
 
 	protected class Container {
-		private LuposObjectOutputStream out = null;
+		private OutputStream out = null;
 		private int filename;
 		private int currentEntry = 0;
 		private final double factor;
@@ -1636,10 +1605,9 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				if (this.out != null) {
 					this.out.close();
 				}
-				final OutputStream fos = new PageOutputStream(this.filename,
+				this.out = new PageOutputStream(this.filename,
 						LazyLiteralTripleKeyDBBPTreeStatistics.this.pageManager, true);
-				this.out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-				OutHelper.writeLuposBoolean(this.leaf, this.out.os);
+				OutHelper.writeLuposBoolean(this.leaf, this.out);
 				this.lastKey = null;
 				this.lastValue = null;
 				this.numberOfTriples = 0;
@@ -1937,19 +1905,37 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 	}
 
 	@Override
-	public void writeLuposObject(final LuposObjectOutputStream loos)
+	public void writeLuposObject(final OutputStream loos)
 			throws IOException {
 		this.pageManager.writeAllModifiedPages();
-		OutHelper.writeLuposInt(this.currentID, loos.os);
-		OutHelper.writeLuposInt(this.k, loos.os);
-		OutHelper.writeLuposInt(this.k_, loos.os);
-		OutHelper.writeLuposInt(this.size, loos.os);
-		loos.writeObject(this.comparator);
-		OutHelper.writeLuposInt(this.rootPage, loos.os);
-		OutHelper.writeLuposInt(this.firstLeafPage, loos.os);
-		loos.writeObject(this.keyClass);
-		loos.writeObject(this.valueClass);
-		OutHelper.writeLuposByte((byte) this.order.ordinal(), loos.os);
+		OutHelper.writeLuposInt(this.currentID, loos);
+		OutHelper.writeLuposInt(this.k, loos);
+		OutHelper.writeLuposInt(this.k_, loos);
+		OutHelper.writeLuposInt(this.size, loos);
+		Registration.serializeWithoutId(this.comparator, loos);
+		OutHelper.writeLuposInt(this.rootPage, loos);
+		OutHelper.writeLuposInt(this.firstLeafPage, loos);
+		Registration.serializeClass(this.keyClass, loos);
+		Registration.serializeClass(this.valueClass, loos);
+		OutHelper.writeLuposByte((byte) this.order.ordinal(), loos);
+	}
+
+	public static LazyLiteralTripleKeyDBBPTreeStatistics readLuposObject(final InputStream lois) throws IOException, ClassNotFoundException, URISyntaxException {
+		final int currentID = InputHelper.readLuposInt(lois);
+		final int k = InputHelper.readLuposInt(lois);
+		final int k_ = InputHelper.readLuposInt(lois);
+		final int size = InputHelper.readLuposInt(lois);
+		final Comparator comp = Registration.deserializeWithoutId(Comparator.class, lois);
+		final int rootFilename = InputHelper.readLuposInt(lois);
+		final int firstLeafFileName = InputHelper.readLuposInt(lois);
+		final Class keyClass = Registration.deserializeId(lois)[0];
+		final Class valueClass = Registration.deserializeId(lois)[0];
+		final byte b = InputHelper.readLuposByte(lois);
+		final RDF3XIndexScan.CollationOrder order = RDF3XIndexScan.CollationOrder.values()[b];
+		final LazyLiteralTripleKeyDBBPTreeStatistics dbbptree = new LazyLiteralTripleKeyDBBPTreeStatistics(
+				k, k_, size, comp, rootFilename, firstLeafFileName, keyClass,
+				valueClass, order, currentID);
+		return dbbptree;
 	}
 
 	/**
@@ -1976,23 +1962,5 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends
 				valueClass, currentID,
 				new LazyLiteralDBBPTreeStatisticsNodeDeSerializer(order));
 		this.order = order;
-	}
-
-	public static LazyLiteralTripleKeyDBBPTreeStatistics readLuposObject(final LuposObjectInputStream lois) throws IOException, ClassNotFoundException {
-		final int currentID = InputHelper.readLuposInt(lois.is);
-		final int k = InputHelper.readLuposInt(lois.is);
-		final int k_ = InputHelper.readLuposInt(lois.is);
-		final int size = InputHelper.readLuposInt(lois.is);
-		final Comparator comp = (Comparator) lois.readObject();
-		final int rootFilename = InputHelper.readLuposInt(lois.is);
-		final int firstLeafFileName = InputHelper.readLuposInt(lois.is);
-		final Class keyClass = (Class) lois.readObject();
-		final Class valueClass = (Class) lois.readObject();
-		final byte b = InputHelper.readLuposByte(lois.is);
-		final RDF3XIndexScan.CollationOrder order = RDF3XIndexScan.CollationOrder.values()[b];
-		final LazyLiteralTripleKeyDBBPTreeStatistics dbbptree = new LazyLiteralTripleKeyDBBPTreeStatistics(
-				k, k_, size, comp, rootFilename, firstLeafFileName, keyClass,
-				valueClass, order, currentID);
-		return dbbptree;
 	}
 }

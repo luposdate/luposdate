@@ -21,26 +21,60 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.datastructures.paged_dbbptree.node;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
+public abstract class Node<K extends Comparable<K> & Serializable, V extends Serializable> {
+	public InputStream in;
+	public int filename;
+	public List<K> readKeys;
 
-public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
+	protected Class<? super K> keyClass;
+	protected Class<? super V> valueClass;
 
-	@SuppressWarnings("unchecked")
+	protected Node(final Class<? super K> keyClass,
+			final Class<? super V> valueClass, final int size) {
+		this.keyClass = keyClass;
+		this.valueClass = valueClass;
+		this.readKeys = new ArrayList<K>(size);
+	}
+
+	public InputStream getIn() {
+		return this.in;
+	}
+
+	public void setIn(final InputStream in) {
+		this.in = in;
+	}
+
+	public int getFilename() {
+		return this.filename;
+	}
+
+	public void setFilename(final int filename) {
+		this.filename = filename;
+	}
+
+	public List<K> getKeys() {
+		return this.readKeys;
+	}
+
+	public void setKeys(final List<K> readKeys) {
+		this.readKeys = readKeys;
+	}
+
 	@Override
-	public void init() {
-		this.lba = new DBBPTree[2];
+	public void finalize() {
 		try {
-			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
+			if(this.in!=null){
+				this.in.close();
+			}
+		} catch (final IOException e1) {
 		}
 	}
 }

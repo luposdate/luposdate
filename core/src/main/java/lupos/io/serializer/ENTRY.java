@@ -21,36 +21,57 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.io.serializer;
 
 import java.io.IOException;
-import java.io.Serializable;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 
+import lupos.datastructures.dbmergesortedds.Entry;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
-import lupos.misc.Tuple;
+import lupos.io.Registration;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.OutHelper;
 
-public interface NodeDeSerializer<K, V> extends Serializable {
+@SuppressWarnings("rawtypes")
+public class ENTRY extends DeSerializerConsideringSubClasses<lupos.datastructures.dbmergesortedds.Entry> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof lupos.datastructures.dbmergesortedds.Entry;
+	}
 
-	public Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2,
-			final LuposObjectInputStream<V> in2);
+	@Override
+	public void serialize(final Entry t, final LuposObjectOutputStream out) throws IOException {
+		out.writeLuposEntry(t);
+	}
 
-	public DBBPTreeEntry<K, V> getNextLeafEntry(
-			final LuposObjectInputStream<V> in, final K lastKey,
-			final V lastValue);
+	@Override
+	public Entry deserialize(final LuposObjectInputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return in.readLuposEntry();
+	}
 
-	public void writeInnerNodeEntry(final int fileName, final K key,
-			final LuposObjectOutputStream out, final K lastKey)
-			throws IOException;
+	@SuppressWarnings({ "unchecked" })
+	@Override
+	public Class<Entry>[] getRegisteredClasses() {
+		return new Class[] { lupos.datastructures.dbmergesortedds.Entry.class };
+	}
 
-	public void writeInnerNodeEntry(final int fileName,
-			final LuposObjectOutputStream out) throws IOException;
+	@SuppressWarnings({ "unchecked" })
+	@Override
+	public void serialize(final Entry t, final OutputStream out) throws IOException {
+		OutHelper.writeLuposEntry(t, out);
+	}
 
-	public void writeLeafEntry(final K k, final V v,
-			final LuposObjectOutputStream out, final K lastKey,
-			final V lastValue) throws IOException;
+	@Override
+	public Entry deserialize(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return InputHelper.readLuposEntry(in);
+	}
 
-	public void writeLeafEntryNextFileName(final int filename,
-			final LuposObjectOutputStream out) throws IOException;
-
+	@Override
+	public int length(final Entry t) {
+		return Registration.lengthSerializeWithId(t.e);
+	}
 }

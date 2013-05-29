@@ -24,6 +24,9 @@
 package lupos.engine.operators.index;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -58,8 +61,6 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.optimizations.logical.rules.externalontology.ExternalOntologyRuleEngine;
 import lupos.optimizations.logical.rules.rdfs.RDFSRuleEngine0;
 import lupos.optimizations.logical.rules.rdfs.RDFSRuleEngine1;
@@ -444,14 +445,14 @@ public abstract class Indices implements TripleConsumer {
 
 	public abstract void writeOutAllModifiedPages() throws IOException;
 
-	public void writeIndexInfo(final LuposObjectOutputStream out)
+	public void writeIndexInfo(final OutputStream out)
 			throws IOException {
 		System.err
 				.println("Writing index info is not supported by this type of index!");
 	}
 
-	public void readIndexInfo(final LuposObjectInputStream in)
-			throws IOException, ClassNotFoundException {
+	public void readIndexInfo(final InputStream in)
+			throws IOException, ClassNotFoundException, URISyntaxException {
 		System.err
 				.println("Reading index info is not supported by this type of index!");
 	}

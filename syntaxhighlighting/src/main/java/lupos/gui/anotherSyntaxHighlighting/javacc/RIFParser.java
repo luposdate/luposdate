@@ -97,7 +97,7 @@ public class RIFParser extends SemanticWebParser {
 		return content.length()>beginChar+1 && content.charAt(beginChar)=='*' && content.charAt(beginChar+1)==')';
 	}
 
-	{
+	static {
 		RIFParser.TOKEN_MAP = new TYPE__SemanticWeb[RIFParserConstants.tokenImage.length];
 
 		final String[] reservedWords = {

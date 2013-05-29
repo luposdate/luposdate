@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -71,7 +70,7 @@ import xpref.datatypes.IntegerDatatype;
  * start operators and there children. It arranges the operators so they don't
  * overlap. At the end the QueryGraph is a JPanel with JLabels and other JPanels
  * on it.
- * 
+ *
  * @author schleife
  */
 public class OperatorGraph extends JPanel implements IXPref {
@@ -138,9 +137,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * used to lock accesses to the comments list!
 	 */
 	private final ReentrantLock commentsLock = new ReentrantLock();
-	
+
 	public GraphBoxCreator graphBoxCreator = new StandardGraphBoxCreator();
-	
+
 	protected OperatorGraph() {
 		try {
 			this.setLayout(null); // we don't want any LayoutManager
@@ -155,12 +154,21 @@ public class OperatorGraph extends JPanel implements IXPref {
 	}
 
 	/**
+	 * Sets a new root list of GraphWrapper objects to be displayed...
+	 * (Root elements are top elements of graphs, if they are in a cycle, one of them must be the root element.)
+	 * @param newRootList the new root list
+	 */
+    public void setRootList(final LinkedList<GraphWrapper> newRootList) {
+        this.rootList = newRootList;
+    }
+
+	/**
 	 * This is one way to get a OperatorGraph. This method should be used if you
 	 * have one root element.
-	 * 
+	 *
 	 * @param root
 	 *            the root element
-	 * 
+	 *
 	 * @return the JPanel with the QueryGraph on it
 	 */
 	public JPanel createGraph(final GraphWrapper root, final Arrange arrange) {
@@ -174,55 +182,55 @@ public class OperatorGraph extends JPanel implements IXPref {
 	/**
 	 * This is one way to get a OperatorGraph. This method should be used if you
 	 * have a List of root elements.
-	 * 
+	 *
 	 * @param rootList
 	 *            the List of root elements
-	 * 
+	 *
 	 * @return the JPanel with the QueryGraph on it
 	 */
 	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
 			final Arrange arrange) {
 		return this.createGraph(newRootList, arrange, -1.0, null);
 	}
-	
-	
+
+
 	/**
 	 * This is one way to get a OperatorGraph. This method should be used if you
 	 * have a List of root elements.
-	 * 
+	 *
 	 * @param rootList
 	 *            the List of root elements
-	 * 
+	 *
 	 * @return the JPanel with the QueryGraph on it
 	 */
 	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
 			final Arrange arrange, final double factor, final Map<GraphWrapper, GraphBox> oldBoxes) {
-		
+
 		this.rootList = newRootList;
-		
+
 		this.removeAll();
-		
+
 		if(factor<=0){
-			
+
 			this.boxes.clear();
-			
+
 			this.arrange(arrange);
-			
+
 		} else {
-			
-			LinkedHashMap<GraphWrapper, GraphBox> newBoxes = new LinkedHashMap<GraphWrapper, GraphBox>();
-			
-			for(GraphBox box: oldBoxes.values()){
-				GraphBox newBox = this.graphBoxCreator.createGraphBox(this, box.op);
+
+			final LinkedHashMap<GraphWrapper, GraphBox> newBoxes = new LinkedHashMap<GraphWrapper, GraphBox>();
+
+			for(final GraphBox box: oldBoxes.values()){
+				final GraphBox newBox = this.graphBoxCreator.createGraphBox(this, box.op);
 				newBoxes.put(box.op, newBox);
 				newBox.x = (int) (box.x*factor);
 				newBox.y = (int) (box.y*factor);
 			}
-			
+
 			this.boxes = newBoxes;
-			
+
 			GraphHelper.fitToWindow(this);
-			
+
 			for (final GraphBox box : this.boxes.values()) {
 				box.arrangeWithoutUpdatingParentsSize();
 			}
@@ -231,11 +239,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 			this.repaint(); // repaint the panel to trigger G2D redraw
 		}
-		
+
 		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5, this.getPreferredSize().height + 5));
 		return this;
 	}
-	
+
 	public JPanel rotate(final int degree, final LinkedList<GraphWrapper> newRootList, final Map<GraphWrapper, GraphBox> oldBoxes){
 		if(degree==0){
 			return this;
@@ -245,24 +253,24 @@ public class OperatorGraph extends JPanel implements IXPref {
 		final double cos = Math.cos(radians);
 
 		this.rootList = newRootList;
-		
+
 		this.removeAll();
 
-		LinkedHashMap<GraphWrapper, GraphBox> newBoxes = new LinkedHashMap<GraphWrapper, GraphBox>();
-		
-		for(GraphBox box: oldBoxes.values()){
-			GraphBox newBox = this.graphBoxCreator.createGraphBox(this, box.op);
+		final LinkedHashMap<GraphWrapper, GraphBox> newBoxes = new LinkedHashMap<GraphWrapper, GraphBox>();
+
+		for(final GraphBox box: oldBoxes.values()){
+			final GraphBox newBox = this.graphBoxCreator.createGraphBox(this, box.op);
 			newBoxes.put(box.op, newBox);
 			final int x = box.x;
 			final int y = box.y;
 			newBox.x = (int) (x*cos+y*sin);
 			newBox.y = (int) (-x*sin+y*cos);
 		}
-		
+
 		this.boxes = newBoxes;
-		
+
 		GraphHelper.fitToWindow(this);
-		
+
 		for (final GraphBox box : this.boxes.values()) {
 			box.arrangeWithoutUpdatingParentsSize();
 		}
@@ -270,14 +278,14 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.updateSize();
 
 		this.repaint(); // repaint the panel to trigger G2D redraw
-		
+
 		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 5, this.getPreferredSize().height + 5));
-		
+
 		return this;
 	}
 
 	protected void createInternalNewGraph(final Arrange arrange) {
-		this.createGraph(new LinkedList<GraphWrapper>(), arrange); 
+		this.createGraph(new LinkedList<GraphWrapper>(), arrange);
 		// create the QueryGraph and return it
 	}
 
@@ -288,8 +296,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 			final GraphBox graphBox = entry.getValue();
 			final int compare = X ? graphBox.getX() + graphBox.width : graphBox
 					.getY() + graphBox.height;
-			if (compare > max)
+			if (compare > max) {
 				max = compare;
+			}
 		}
 		return max;
 	}
@@ -308,20 +317,21 @@ public class OperatorGraph extends JPanel implements IXPref {
 		// walk trough the children of the current operator and add them
 		// recursively...
 		for (final GraphWrapperIDTuple child : op.getSucceedingElements()) {
-			addNewBoxes(visited, child.getOperator());
+			this.addNewBoxes(visited, child.getOperator());
 		}
 	}
 
 	public void addNewBoxes() {
 		final HashSet<GraphWrapper> visited = new HashSet<GraphWrapper>();
-		for (final GraphWrapper op : this.rootList)
-			addNewBoxes(visited, op);
+		for (final GraphWrapper op : this.rootList) {
+			this.addNewBoxes(visited, op);
+		}
 	}
 
 	public synchronized void arrange(final Arrange arrange) {
 
-		addNewBoxes();
-		
+		this.addNewBoxes();
+
 		for (final GraphBox box : this.boxes.values()) {
 			if (box.getElement() instanceof ContainerArrange) {
 				((ContainerArrange) box.getElement()).arrange(arrange);
@@ -331,7 +341,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 		arrange.arrange(this);
 
 		GraphHelper.fitToWindow(this);
-		
+
 		for (final GraphBox box : this.boxes.values()) {
 			box.arrangeWithoutUpdatingParentsSize();
 		}
@@ -374,7 +384,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	/**
 	 * This returns the boxes.
-	 * 
+	 *
 	 * @return the HashMap GraphWrapper to GraphBox for all boxes
 	 */
 	public HashMap<GraphWrapper, GraphBox> getBoxes() {
@@ -437,11 +447,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 */
 	@Override
 	public void paint(final Graphics g) {
-		commentsLock.lock();
+		this.commentsLock.lock();
 		try {
 			super.paint(g);
 		} finally {
-			commentsLock.unlock();
+			this.commentsLock.unlock();
 		}
 	}
 
@@ -531,10 +541,10 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	/**
 	 * Method to update the zoom factor of the OperatorGraph.
-	 * 
+	 *
 	 * @param zFactor
 	 *            the new zoom factor
-	 * 
+	 *
 	 * @return true, if the zoom factor was different then the previous, false
 	 *         otherwise
 	 */
@@ -570,7 +580,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	/**
 	 * This internal method resets some displacement variables according to the
 	 * given zoomFactor.
-	 * 
+	 *
 	 * @param zoomFactor
 	 *            the zoom factor
 	 */
@@ -605,10 +615,10 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	/**
 	 * Returns the root list of GraphWrappers of the OperatorGraph.
-	 * 
+	 *
 	 * @param clone
 	 *            true if the list should be cloned (needed for zoom update).
-	 * 
+	 *
 	 * @return list of root GraphWrapper elements
 	 */
 	@SuppressWarnings("unchecked")
@@ -640,6 +650,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 		return this.useLineColors;
 	}
 
+	@Override
 	public void preferencesChanged() {
 		try {
 			this.SPACING_X = IntegerDatatype.getFirstValue("viewer_spacing_X") * this.zoomFactor;
@@ -729,7 +740,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	/**
 	 * Method to add a comment to the operator graph.
-	 * 
+	 *
 	 * @param commentPanel
 	 *            the AbstractCommentPanel, that defines the comment
 	 */
@@ -751,7 +762,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	/**
 	 * Method to remove the given comment panel from the operator graph.
-	 * 
+	 *
 	 * @param commentPanel
 	 *            the comment panel to be removed.
 	 */
@@ -772,7 +783,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	/**
 	 * This method sets the given context menu to the operator wrapped in the
 	 * given GraphWrapper.
-	 * 
+	 *
 	 * @param graphWrapper
 	 *            the element to set the context menu of
 	 * @param contextMenu
@@ -791,7 +802,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	/**
 	 * This method unsets the context menu of the operator wrapped in the given
 	 * GraphWrapper.
-	 * 
+	 *
 	 * @param graphWrapperthe
 	 *            element to unset the context menu of
 	 */
@@ -805,35 +816,35 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	/**
 	 * Internal method to save the graph to the given filename.
-	 * 
+	 *
 	 * @param filename
 	 *            filename to save the file to
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void saveGraph(String filename) throws IOException {
 		// add file extension, if necessary...
 		if (!(filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".gif"))) {
 			filename += ".png";
 		}
-		
-		String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
 
-		OutputStream out = new FileOutputStream(new File(filename));
-		
+		final String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
+
+		final OutputStream out = new FileOutputStream(new File(filename));
+
 		this.saveGraph(format, out);
 
 		out.close();
 	}
-	
+
 	/**
 	 * Internal method to save the graph to an outputstream.
-	 * 
+	 *
 	 * @param format
 	 *            the format of the picture (png, jpg or gif)
 	 * @param out
 	 *            the outputstream to save the file to
 	 */
-	public void saveGraph(String format, OutputStream out) {
+	public void saveGraph(String format, final OutputStream out) {
 		// add file extension, if necessary...
 		if (!(format.compareTo("png")==0 || format.compareTo("jpeg")==0 || format.compareTo("jpg")==0 || format.compareTo("gif")==0)) {
 			format = "png";
@@ -854,7 +865,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	public Hashtable<GraphWrapper, LinkedList<GraphWrapper>> getDrawnLineAnnotations() {
 		return this.drawnLineAnnotations;
 	}
-	
+
 	public boolean isEmpty() {
 		return this.boxes.size() == 0;
 	}

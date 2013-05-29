@@ -21,26 +21,54 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.io.serializer;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.TreeSet;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.io.LuposObjectInputStream;
+import lupos.io.LuposObjectOutputStream;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
 
-public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
+@SuppressWarnings("rawtypes")
+public class MEMORYSORTEDSET extends DeSerializerConsideringSubClasses<TreeSet> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof TreeSet;
+	}
+
+	@Override
+	public TreeSet deserialize(final LuposObjectInputStream<TreeSet> in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return in.readLuposTreeSet();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init() {
-		this.lba = new DBBPTree[2];
-		try {
-			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
+	public Class<TreeSet>[] getRegisteredClasses() {
+		return new Class[] { TreeSet.class };
 	}
+
+	@Override
+	public void serialize(final TreeSet t, final LuposObjectOutputStream out) throws IOException {
+		out.writeLuposTreeSet(t);
+	}
+
+	@Override
+	public int length(final TreeSet t) {
+		throw new UnsupportedOperationException("TreeSet cannot be (de-)serialized with lupos i/o because of the comparator!");
+	}
+
+	@Override
+	public void serialize(final TreeSet t, final OutputStream out) throws IOException {
+		throw new UnsupportedOperationException("TreeSet cannot be (de-)serialized with lupos i/o because of the comparator!");
+	}
+
+	@Override
+	public TreeSet deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+		throw new UnsupportedOperationException("TreeSet cannot be (de-)serialized with lupos i/o because of the comparator!");
+	}
+
 }

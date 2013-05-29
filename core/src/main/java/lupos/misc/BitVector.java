@@ -43,6 +43,10 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		this.readWithoutSize(in, n);
 	}
 
+	public BitVector(final InputStream in, final int n) throws IOException {
+		this.readWithoutSize(in, n);
+	}
+
 	/** Constructs a vector for storing n bits */
 	public BitVector(final int n) {
 		this.size = n;
@@ -167,7 +171,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 
 	public final void writeWithoutSize(final OutputStream out) throws IOException {
 		for (int i = 0; i < this.bits.length; i++){
-			out.write(this.bits[i] + 128);
+			OutHelper.writeLuposByte(this.bits[i], out);
 		}
 	}
 
@@ -175,7 +179,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		this.size = n;
 		this.bits = new byte[(this.size >> 3) + 1];
 		for (int i = 0; i < this.bits.length; i++){
-			this.bits[i] = (byte) (in.read() - 128);
+			this.bits[i] = InputHelper.readLuposByte(in);
 		}
 	}
 

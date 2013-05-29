@@ -32,20 +32,20 @@ import java.util.Map;
 import java.util.Set;
 
 import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 
 public class MapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> implements Map<K, V>{
-	
+
 	protected final Map<K,V> memoryMap;
 	protected Map<K,V> diskMap=null;
-	
+
 	protected final static int MAXMEMORYMAPENTRIES = 3000000;
-	
+
 	public MapImplementation(){
 		this(new HashMap<K,V>());
 	}
-	
-	public MapImplementation(Map<K,V> memoryMap){
+
+	public MapImplementation(final Map<K,V> memoryMap){
 		this.memoryMap = memoryMap;
 	}
 
@@ -90,13 +90,13 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			public boolean addAll(final Collection<? extends java.util.Map.Entry<K, V>> c) {
 				boolean flag=false;
 				for(final java.util.Map.Entry<K, V> me:c){
-					flag=flag || add(me);
+					flag=flag || this.add(me);
 				}
 				return flag;
 			}
 			@Override
 			public void clear() {
-				MapImplementation.this.clear();	
+				MapImplementation.this.clear();
 			}
 			@Override
 			public boolean contains(final Object o) {
@@ -105,8 +105,11 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 						@SuppressWarnings("unchecked")
 						final java.util.Map.Entry<K, V> me=(java.util.Map.Entry<K, V>) o;
 						final V v=MapImplementation.this.get(me.getKey());
-						if(v.equals(me.getValue())) return true;
-						else return false;
+						if(v.equals(me.getValue())) {
+							return true;
+						} else {
+							return false;
+						}
 					} catch(final ClassCastException ce){
 						return false;
 					}
@@ -116,17 +119,19 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			@Override
 			public boolean containsAll(final Collection<?> c) {
 				for(final Object o:c){
-					if(!contains(o)) return false;
+					if(!this.contains(o)) {
+						return false;
+					}
 				}
 				return true;
 			}
 			@Override
 			public boolean isEmpty() {
-				return MapImplementation.this.isEmpty();	
+				return MapImplementation.this.isEmpty();
 			}
 			@Override
 			public Iterator<java.util.Map.Entry<K, V>> iterator() {
-				return new Iterator<java.util.Map.Entry<K, V>>(){			
+				return new Iterator<java.util.Map.Entry<K, V>>(){
 					Iterator<java.util.Map.Entry<K, V>> memoryIterator=MapImplementation.this.memoryMap.entrySet().iterator();
 					Iterator<java.util.Map.Entry<K, V>> diskIterator= (MapImplementation.this.diskMap==null)? null:MapImplementation.this.diskMap.entrySet().iterator();
 					@Override
@@ -152,8 +157,8 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 					@Override
 					public void remove() {
 						throw(new UnsupportedOperationException("This iterator does not support remove."));
-					}			
-				};			
+					}
+				};
 			}
 			@Override
 			public boolean remove(final Object o) {
@@ -165,8 +170,9 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 						if(v.equals(me.getValue())) {
 							MapImplementation.this.remove(me.getKey());
 							return true;
+						} else {
+							return false;
 						}
-						else return false;
 					} catch(final ClassCastException ce){
 						return false;
 					}
@@ -177,7 +183,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			public boolean removeAll(final Collection<?> c) {
 				boolean flag=false;
 				for(final Object o:c){
-					flag=flag || remove(o);
+					flag=flag || this.remove(o);
 				}
 				return flag;
 			}
@@ -187,7 +193,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				for(final java.util.Map.Entry<K, V> me:this){
 					if(!c.contains(me)){
 						flag=true;
-						remove(me);
+						this.remove(me);
 					}
 				}
 				return flag;
@@ -210,9 +216,11 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 	@Override
 	public V get(final Object arg0) {
 		final V v=this.memoryMap.get(arg0);
-		if(v!=null) return v;
+		if(v!=null) {
+			return v;
+		}
 		if(this.diskMap!=null) {
-			return this.diskMap.get(arg0); 
+			return this.diskMap.get(arg0);
 		}
 		return null;
 	}
@@ -241,16 +249,16 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			}
 			@Override
 			public void clear() {
-				MapImplementation.this.clear();	
+				MapImplementation.this.clear();
 			}
 			@Override
 			public boolean contains(final Object arg0) {
-				return MapImplementation.this.containsKey(arg0);	
+				return MapImplementation.this.containsKey(arg0);
 			}
 			@Override
 			public boolean containsAll(final Collection<?> arg0) {
 				for(final Object o:arg0){
-					if(!contains(o)) {
+					if(!this.contains(o)) {
 						return false;
 					}
 				}
@@ -258,7 +266,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			}
 			@Override
 			public boolean isEmpty() {
-				return MapImplementation.this.isEmpty();	
+				return MapImplementation.this.isEmpty();
 			}
 			@Override
 			public Iterator<K> iterator() {
@@ -275,18 +283,18 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 					@Override
 					public void remove() {
 						this.entryIt.remove();
-					}					
+					}
 				};
 			}
 			@Override
 			public boolean remove(final Object arg0) {
-				return (MapImplementation.this.remove(arg0)!=null);	
+				return (MapImplementation.this.remove(arg0)!=null);
 			}
 			@Override
 			public boolean removeAll(final Collection<?> arg0) {
 				boolean flag=false;
 				for(final Object o:arg0){
-					flag=flag || remove(o);
+					flag=flag || this.remove(o);
 				}
 				return flag;
 			}
@@ -296,7 +304,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 				for(final K k:this){
 					if(!arg0.contains(k)){
 						flag=true;
-						remove(k);
+						this.remove(k);
 					}
 				}
 				return flag;
@@ -312,7 +320,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			@Override
 			public <T> T[] toArray(final T[] arg0) {
 				throw(new UnsupportedOperationException("This set does not support toArray."));
-			}			
+			}
 		};
 	}
 
@@ -326,10 +334,10 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			return this.memoryMap.put(arg0,arg1);
 		}
 		if (this.diskMap == null){
-			Entry<K, V> entry=this.memoryMap.entrySet().iterator().next();
+			final Entry<K, V> entry=this.memoryMap.entrySet().iterator().next();
 			try {
-				this.diskMap = new DBBPTree<K, V>(100000, 100000, new StandardNodeDeSerializer<K, V>((Class<? super K>)entry.getKey().getClass(),(Class<? super V>) entry.getValue().getClass()));
-			} catch (IOException e) {
+				this.diskMap = new DBBPTree<K, V>(100000, 100000, new StandardNodeDeSerializer<K, V>((Class<? extends K>)entry.getKey().getClass(),(Class<? extends V>) entry.getValue().getClass()));
+			} catch (final IOException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
@@ -340,7 +348,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 	@Override
 	public void putAll(final java.util.Map<? extends K, ? extends V> arg0) {
 		for(final java.util.Map.Entry<? extends K, ? extends V> me:arg0.entrySet()){
-			put(me.getKey(),me.getValue());
+			this.put(me.getKey(),me.getValue());
 		}
 	}
 
@@ -386,7 +394,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			@Override
 			public boolean containsAll(final Collection<?> c) {
 				for(final Object o:c){
-					if(!contains(o)) {
+					if(!this.contains(o)) {
 						return false;
 					}
 				}
@@ -411,7 +419,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 					@Override
 					public void remove() {
 						this.entryIt.remove();
-					}					
+					}
 				};
 			}
 			@Override
@@ -440,7 +448,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			}
 		};
 	}
-	
+
 	@Override
 	public String toString(){
 		String result = "Map in memory: " + this.memoryMap.toString();

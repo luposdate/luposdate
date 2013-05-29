@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.datastructures.paged_dbbptree.node;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,14 +33,13 @@ import java.util.List;
 
 import lupos.datastructures.buffermanager.PageManager;
 import lupos.datastructures.buffermanager.PageOutputStream;
-import lupos.io.LuposObjectOutputStream;
-import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
 
-public class InnerNode<K extends Comparable<K> & Serializable, V extends Serializable>
-		extends Node<K, V> {
-	protected List<Integer> readReferences = new LinkedList<Integer>();
+public class InnerNode<K extends Comparable<K> & Serializable, V extends Serializable> extends Node<K, V> {
+
+	public List<Integer> readReferences = new LinkedList<Integer>();
 	protected final PageManager pageManager;
 	protected final NodeDeSerializer<K, V> nodeDeSerializer;
 
@@ -124,10 +123,8 @@ public class InnerNode<K extends Comparable<K> & Serializable, V extends Seriali
 
 	public void writeInnerNode(final boolean overwrite) {
 		try {
-			final OutputStream fos = new PageOutputStream(this.filename,
-					this.pageManager, !overwrite);
-			final LuposObjectOutputStream out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-			OutHelper.writeLuposBoolean(false, out.os);
+			final OutputStream out = new PageOutputStream(this.filename, this.pageManager, !overwrite);
+			OutHelper.writeLuposBoolean(false, out);
 
 			K lastKey = null;
 			final Iterator<Integer> it = this.readReferences.iterator();

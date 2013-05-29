@@ -133,7 +133,7 @@ public final class OutHelper {
 	}
 
 	public final static void writeLuposString(final String s, final String previousString, final OutputStream os) throws IOException {
-		OutHelper.writeLuposDifferenceString(s, previousString.getBytes(LuposObjectInputStream.UTF8), os);
+		OutHelper.writeLuposDifferenceString(s, (previousString==null)? null: previousString.getBytes(LuposObjectInputStream.UTF8), os);
 	}
 
 	public final static void writeLuposString(final String s, final OutputStream os) throws IOException {

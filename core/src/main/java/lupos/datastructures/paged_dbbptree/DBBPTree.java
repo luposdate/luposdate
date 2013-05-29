@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -45,12 +46,15 @@ import lupos.datastructures.buffermanager.PageManager;
 import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.datastructures.dbmergesortedds.MapEntry;
 import lupos.datastructures.dbmergesortedds.StandardComparator;
+import lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry;
+import lupos.datastructures.paged_dbbptree.node.InnerNode;
+import lupos.datastructures.paged_dbbptree.node.LeafNode;
+import lupos.datastructures.paged_dbbptree.node.Node;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.SIPParallelIterator;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectInputStreamWithoutReadingHeader;
-import lupos.io.LuposObjectOutputStream;
-import lupos.io.LuposObjectOutputStreamWithoutWritingHeader;
+import lupos.io.Registration;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
@@ -249,14 +253,14 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				}
 				try {
 					return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
-						private LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader<V>(
+						private InputStream in =
 								new PageInputStream(DBBPTree.this.firstLeafPage,
-										DBBPTree.this.pageManager), null);
+										DBBPTree.this.pageManager);
 						{
-							this.innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
-							InputHelper.readLuposBoolean(this.in.is);
+							this.innerNodes = new LinkedList<Tuple<K, InputStream>>();
+							InputHelper.readLuposBoolean(this.in);
 						}
-						private List<Tuple<K, LuposObjectInputStream<V>>> innerNodes;
+						private List<Tuple<K, InputStream>> innerNodes;
 						private int entrynumber = 0;
 						private K lastKey = null;
 						private V lastValue = null;
@@ -271,21 +275,16 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 							if (filename < 0) {
 								return null;
 							}
-							InputStream fis;
 							try {
-								fis = new PageInputStream(filename,
-										DBBPTree.this.pageManager);
-								final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
-										fis, null);
-								final boolean leaf = InputHelper.readLuposBoolean(this.in.is);
+								final InputStream in_local = new PageInputStream(filename, DBBPTree.this.pageManager);
+								final boolean leaf = InputHelper.readLuposBoolean(in_local);
 								if (leaf) { // leaf node reached!
 									this.lastKey = null;
 									this.lastValue = null;
 									while (true) {
-										final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(
-												in, this.lastKey, this.lastValue);
+										final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(in_local, this.lastKey, this.lastValue);
 										if (e == null || e.key == null) {
-											in.close();
+											in_local.close();
 											this.close();
 											return null;
 										}
@@ -295,11 +294,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 										final int compare = DBBPTree.this.comparator
 										.compare(key, k);
 										if (compare == 0) {
-											this.in = in;
+											this.in = in_local;
 											return new MapEntry<K, V>(
 													e.key, e.value);
 										} else if (compare > 0) {
-											this.in = in;
+											this.in = in_local;
 											return new MapEntry<K, V>(
 													e.key, e.value);
 										}
@@ -307,19 +306,16 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								} else {
 									K lastKey = null;
 									while (true) {
-										final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
-												lastKey, in);
-										if (nextEntry == null
-												|| nextEntry.getSecond() <= 0) {
-											in.close();
+										final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in_local);
+										if (nextEntry == null || nextEntry.getSecond() <= 0) {
+											in_local.close();
 											this.close();
 											return null;
 										}
 										lastKey = nextEntry.getFirst();
 										if (nextEntry.getFirst() == null) {
 											this.innerNodes
-											.add(new Tuple<K, LuposObjectInputStream<V>>(
-													null, in));
+											.add(new Tuple<K, InputStream>(null, in_local));
 											return this.getFirst(nextEntry
 													.getSecond(), k);
 										}
@@ -328,12 +324,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 												.getFirst(), k);
 										if (compare >= 0) {
 											this.innerNodes
-											.add(new Tuple<K, LuposObjectInputStream<V>>(
-													nextEntry
-													.getFirst(),
-													in));
-											return this.getFirst(nextEntry
-													.getSecond(), k);
+											.add(new Tuple<K, InputStream>(nextEntry.getFirst(), in_local));
+											return this.getFirst(nextEntry.getSecond(), k);
 										}
 									}
 								}
@@ -363,9 +355,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 									// return getFirst(rootFilename,
 									// triplekey);
 								}
-								final Tuple<K, LuposObjectInputStream<V>> current = this.innerNodes
-								.get(index);
-								final LuposObjectInputStream<V> in = current
+								final Tuple<K, InputStream> current = this.innerNodes.get(index);
+								final InputStream in = current
 								.getSecond();
 								K lastKey = current.getFirst();
 								if (lastKey == null
@@ -375,8 +366,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 											kkey);
 								}
 								while (this.innerNodes.size() > index + 1) {
-									final Tuple<K, LuposObjectInputStream<V>> toBeDeleted = this.innerNodes
-									.remove(this.innerNodes.size() - 1);
+									final Tuple<K, InputStream> toBeDeleted = this.innerNodes.remove(this.innerNodes.size() - 1);
 									try {
 										toBeDeleted.getSecond().close();
 									} catch (final IOException e) {
@@ -385,10 +375,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 									}
 								}
 								while (true) {
-									final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
-											lastKey, in);
-									if (nextEntry == null
-											|| nextEntry.getSecond() <= 0) {
+									final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in);
+									if (nextEntry == null || nextEntry.getSecond() <= 0) {
 										in.close();
 										this.close();
 										return null;
@@ -425,19 +413,17 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 								return null;
 							}
 							try {
-								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(
-										this.in, this.lastKey, this.lastValue);
+								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
 								if (e != null) {
 									if (e.key == null) {
 										if (e.filenameOfNextLeafNode >= 0) {
 											this.in.close();
 											try{
-												this.in = new LuposObjectInputStreamWithoutReadingHeader<V>(
+												this.in =
 														new PageInputStream(
 																e.filenameOfNextLeafNode,
-																DBBPTree.this.pageManager),
-																null);
-												InputHelper.readLuposBoolean(this.in.is);
+																DBBPTree.this.pageManager);
+												InputHelper.readLuposBoolean(this.in);
 												this.lastKey = null;
 												this.lastValue = null;
 												return this.next();
@@ -482,7 +468,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 						@Override
 						public void close() {
-							for (final Tuple<K, LuposObjectInputStream<V>> tuple : this.innerNodes) {
+							for (final Tuple<K, InputStream> tuple : this.innerNodes) {
 								try {
 									tuple.getSecond().close();
 								} catch (final IOException e) {
@@ -498,24 +484,20 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 						private java.util.Map.Entry<K, V> getNext(final K k) {
 							try {
-								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(
-										this.in, this.lastKey, this.lastValue);
+								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
 								if (e != null) {
 									if (e.key == null) {
 										if (e.filenameOfNextLeafNode >= 0) {
 											this.in.close();
-											this.in = new LuposObjectInputStreamWithoutReadingHeader<V>(
+											this.in =
 													new PageInputStream(
 															e.filenameOfNextLeafNode,
-															DBBPTree.this.pageManager),
-															null);
-											InputHelper.readLuposBoolean(this.in.is);
+															DBBPTree.this.pageManager);
+											InputHelper.readLuposBoolean(this.in);
 											this.lastKey = null;
 											this.lastValue = null;
 											while (true) {
-												final DBBPTreeEntry<K, V> e1 = DBBPTree.this.getNextLeafEntry(
-														this.in, this.lastKey,
-														this.lastValue);
+												final DBBPTreeEntry<K, V> e1 = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
 												if (e1 != null) {
 													if (e1.key == null) {
 														// read over one
@@ -662,8 +644,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
-	protected Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2,
-			final LuposObjectInputStream<V> in2) {
+	protected Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2, final InputStream in2) {
 		return this.nodeDeSerializer.getNextInnerNodeEntry(lastKey2, in2);
 	}
 
@@ -982,9 +963,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return this.get(arg0, this.rootPage);
 	}
 
-	protected DBBPTreeEntry<K, V> getNextLeafEntry(
-			final LuposObjectInputStream<V> in, final K lastKey,
-			final V lastValue) {
+	protected DBBPTreeEntry<K, V> getNextLeafEntry(final InputStream in, final K lastKey, final V lastValue) {
 		return this.nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
 	}
 
@@ -993,12 +972,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		if (filename < 0 || this.size == 0) {
 			return null;
 		}
-		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, this.pageManager);
-			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader<V>(
-					fis, null);
-			final boolean leaf = InputHelper.readLuposBoolean(in.is);
+			final InputStream in =  new PageInputStream(filename, this.pageManager);
+			final boolean leaf = InputHelper.readLuposBoolean(in);
 			if (leaf) { // leaf node reached!
 				K lastKey = null;
 				V lastValue = null;
@@ -1083,9 +1059,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			this.rootPage = this.newFilename();
 			this.firstLeafPage = this.rootPage;
 			try {
-				final OutputStream fosRoot = new PageOutputStream(this.rootPage, this.pageManager, true);
-				final LuposObjectOutputStreamWithoutWritingHeader outRoot = new LuposObjectOutputStreamWithoutWritingHeader(fosRoot);
-				OutHelper.writeLuposBoolean(true, outRoot.os);
+				final OutputStream outRoot = new PageOutputStream(this.rootPage, this.pageManager, true);
+				OutHelper.writeLuposBoolean(true, outRoot);
 				this.writeLeafEntry(arg0, arg1, outRoot, null, null);
 				this.size = 1;
 				outRoot.close();
@@ -1363,12 +1338,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	public Node<K, V> getNode(final int filename) {
-		InputStream fis;
+		final InputStream fis;
 		try {
-			fis = new PageInputStream(filename, this.pageManager);
-			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader<V>(
-					fis, null);
-			final boolean leaf = InputHelper.readLuposBoolean(in.is);
+			final InputStream in = new PageInputStream(filename, this.pageManager);
+			final boolean leaf = InputHelper.readLuposBoolean(in);
 			if (leaf) {
 				final LeafNode<K, V> leafNode = new LeafNode<K, V>(this.keyClass,
 						this.valueClass, this.k_, this.pageManager, this.nodeDeSerializer);
@@ -1397,7 +1370,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	protected void writeLeafEntry(final K k, final V v,
-			final LuposObjectOutputStream out, final K lastKey,
+			final OutputStream out, final K lastKey,
 			final V lastValue) throws IOException {
 		this.nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
 	}
@@ -1419,12 +1392,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		if (filename < 0) {
 			return null;
 		}
-		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, this.pageManager);
-			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
-					fis, null);
-			final boolean leaf = InputHelper.readLuposBoolean(in.is);
+			final InputStream in = new PageInputStream(filename, this.pageManager);
+			final boolean leaf = InputHelper.readLuposBoolean(in);
 			if (leaf) { // leaf node reached!
 				final LeafNode<K, V> navigateToClassLeafNode = new LeafNode<K, V>(
 						this.keyClass, this.valueClass, this.k_, this.pageManager, this.nodeDeSerializer);
@@ -1874,14 +1844,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return this.size;
 	}
 
-	public void writeInnerNodeEntry(final int fileName, final K key,
-			final LuposObjectOutputStream out, final K lastKey)
-	throws IOException {
+	public void writeInnerNodeEntry(final int fileName, final K key, final OutputStream out, final K lastKey) throws IOException {
 		this.nodeDeSerializer.writeInnerNodeEntry(fileName, key, out, lastKey);
 	}
 
-	public void writeInnerNodeEntry(final int fileName,
-			final LuposObjectOutputStream out) throws IOException {
+	public void writeInnerNodeEntry(final int fileName, final OutputStream out) throws IOException {
 		this.nodeDeSerializer.writeInnerNodeEntry(fileName, out);
 	}
 
@@ -2077,7 +2044,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	protected class Container {
-		private LuposObjectOutputStream out = null;
+		private OutputStream out = null;
 		private int filename;
 		private int currentEntry = 0;
 		private final double factor;
@@ -2104,10 +2071,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				if (this.out != null) {
 					this.out.close();
 				}
-				final OutputStream fos = new PageOutputStream(this.filename,
-						DBBPTree.this.pageManager, true);
-				this.out = new LuposObjectOutputStreamWithoutWritingHeader(fos);
-				OutHelper.writeLuposBoolean(this.leaf,this.out.os);
+				this.out = new PageOutputStream(this.filename, DBBPTree.this.pageManager, true);
+				OutHelper.writeLuposBoolean(this.leaf,this.out);
 				this.lastKey = null;
 				this.lastValue = null;
 			} catch (final FileNotFoundException e) {
@@ -2212,23 +2177,38 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
-	public void writeLuposObject(final LuposObjectOutputStream loos)
+	public void writeLuposObject(final OutputStream loos)
 	throws IOException {
 		this.pageManager.writeAllModifiedPages();
-		OutHelper.writeLuposInt(this.currentID, loos.os);
-		OutHelper.writeLuposInt(this.k, loos.os);
-		OutHelper.writeLuposInt(this.k_, loos.os);
-		OutHelper.writeLuposInt(this.size, loos.os);
-		loos.writeObject(this.comparator);
-		OutHelper.writeLuposInt(this.rootPage, loos.os);
-		OutHelper.writeLuposInt(this.firstLeafPage, loos.os);
-		loos.writeObject(this.keyClass);
-		loos.writeObject(this.valueClass);
-		loos.writeObject(this.nodeDeSerializer);
+		OutHelper.writeLuposInt(this.currentID, loos);
+		OutHelper.writeLuposInt(this.k, loos);
+		OutHelper.writeLuposInt(this.k_, loos);
+		OutHelper.writeLuposInt(this.size, loos);
+		Registration.serializeWithoutId(this.comparator, loos);
+		OutHelper.writeLuposInt(this.rootPage, loos);
+		OutHelper.writeLuposInt(this.firstLeafPage, loos);
+		Registration.serializeClass(this.keyClass, loos);
+		Registration.serializeClass(this.valueClass, loos);
+		Registration.serializeWithoutId(this.nodeDeSerializer, loos);
 	}
 
-	protected void writeLeafEntryNextFileName(final int filename,
-			final LuposObjectOutputStream out) {
+	public static DBBPTree readLuposObject(final InputStream lois) throws IOException, ClassNotFoundException, URISyntaxException {
+		final int currentID = InputHelper.readLuposInt(lois);
+		final int k = InputHelper.readLuposInt(lois);
+		final int k_ = InputHelper.readLuposInt(lois);
+		final int size = InputHelper.readLuposInt(lois);
+		final Comparator comp = Registration.deserializeWithoutId(Comparator.class, lois);
+		final int rootFilename = InputHelper.readLuposInt(lois);
+		final int firstLeafFileName = InputHelper.readLuposInt(lois);
+		final Class keyClass = Registration.deserializeId(lois)[0];
+		final Class valueClass = Registration.deserializeId(lois)[0];
+		final NodeDeSerializer nodeDeSerializer = Registration.deserializeWithoutId(NodeDeSerializer.class, lois);
+		final DBBPTree dbbptree = new DBBPTree(k, k_, size, comp, rootFilename, firstLeafFileName, keyClass, valueClass, currentID, nodeDeSerializer);
+		return dbbptree;
+	}
+
+
+	protected void writeLeafEntryNextFileName(final int filename, final OutputStream out) {
 		try {
 			this.nodeDeSerializer.writeLeafEntryNextFileName(filename, out);
 		} catch (final IOException e) {
@@ -2266,21 +2246,6 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.currentID = currentID;
 		this.nodeDeSerializer = nodeDeSerializer;
 		this.pageManager = new PageManager(DBBPTree.mainFolder + currentID + ".dbbptree", false);
-	}
-
-	public static DBBPTree readLuposObject(final LuposObjectInputStream lois) throws IOException, ClassNotFoundException {
-		final int currentID = InputHelper.readLuposInt(lois.is);
-		final int k = InputHelper.readLuposInt(lois.is);
-		final int k_ = InputHelper.readLuposInt(lois.is);
-		final int size = InputHelper.readLuposInt(lois.is);
-		final Comparator comp = (Comparator) lois.readObject();
-		final int rootFilename = InputHelper.readLuposInt(lois.is);
-		final int firstLeafFileName = InputHelper.readLuposInt(lois.is);
-		final Class keyClass = (Class) lois.readObject();
-		final Class valueClass = (Class) lois.readObject();
-		final NodeDeSerializer nodeDeSerializer = (NodeDeSerializer) lois.readObject();
-		final DBBPTree dbbptree = new DBBPTree(k, k_, size, comp, rootFilename, firstLeafFileName, keyClass, valueClass, currentID, nodeDeSerializer);
-		return dbbptree;
 	}
 
 	private class PrefixSearchIteratorMaxMinWithoutSIP extends
@@ -2369,7 +2334,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			this.arg0 = arg0;
 			this.lastTriple = null;
 			this.lastKey = null;
-			this.innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
+			this.innerNodes = new LinkedList<Tuple<K, InputStream>>();
 			this.next = this.getFirst(DBBPTree.this.rootPage);
 		}
 
@@ -2377,7 +2342,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			this.arg0 = arg0;
 			this.lastTriple = null;
 			this.lastKey = null;
-			this.innerNodes = new LinkedList<Tuple<K, LuposObjectInputStream<V>>>();
+			this.innerNodes = new LinkedList<Tuple<K, InputStream>>();
 			if (smallest != null) {
 				this.next = this.getFirst(DBBPTree.this.rootPage, smallest);
 			} else {
@@ -2385,8 +2350,8 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			}
 		}
 
-		List<Tuple<K, LuposObjectInputStream<V>>> innerNodes;
-		LuposObjectInputStream<V> currentLeafIn;
+		List<Tuple<K, InputStream>> innerNodes;
+		InputStream currentLeafIn;
 		V lastTriple;
 		K lastKey;
 
@@ -2394,12 +2359,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			if (filename < 0) {
 				return null;
 			}
-			InputStream fis;
+			final InputStream fis;
 			try {
-				fis = new PageInputStream(filename, DBBPTree.this.pageManager);
-				final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
-						fis, null);
-				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				final InputStream in = new PageInputStream(filename, DBBPTree.this.pageManager);
+				final boolean leaf = InputHelper.readLuposBoolean(in);
 				if (leaf) { // leaf node reached!
 					while (true) {
 						final DBBPTreeEntry<K, V> e = DBBPTree.this.nodeDeSerializer
@@ -2433,17 +2396,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 							return null;
 						}
 						if (nextEntry.getFirst() == null) {
-							this.innerNodes
-							.add(new Tuple<K, LuposObjectInputStream<V>>(
-									null, in));
+							this.innerNodes.add(new Tuple<K, InputStream>(null, in));
 							return this.getFirst(nextEntry.getSecond());
 						}
 						final int compare = DBBPTree.this.comparator.compare(nextEntry
 								.getFirst(), this.arg0);
 						if (compare >= 0) {
-							this.innerNodes
-							.add(new Tuple<K, LuposObjectInputStream<V>>(
-									nextEntry.getFirst(), in));
+							this.innerNodes.add(new Tuple<K, InputStream>(nextEntry.getFirst(), in));
 							return this.getFirst(nextEntry.getSecond());
 						}
 						lastKey = nextEntry.getFirst();
@@ -2464,12 +2423,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			if (filename < 0) {
 				return null;
 			}
-			InputStream fis;
+			final InputStream fis;
 			try {
-				fis = new PageInputStream(filename, DBBPTree.this.pageManager);
-				final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
-						fis, null);
-				final boolean leaf = InputHelper.readLuposBoolean(in.is);
+				final InputStream in = new PageInputStream(filename, DBBPTree.this.pageManager);
+				final boolean leaf = InputHelper.readLuposBoolean(in);
 				this.lastTriple = null;
 				this.lastKey = null;
 				if (leaf) { // leaf node reached!
@@ -2511,17 +2468,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						}
 						lastKey = nextEntry.getFirst();
 						if (nextEntry.getFirst() == null) {
-							this.innerNodes
-							.add(new Tuple<K, LuposObjectInputStream<V>>(
-									null, in));
+							this.innerNodes.add(new Tuple<K, InputStream>(null, in));
 							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
 						final int compare = DBBPTree.this.comparator.compare(nextEntry
 								.getFirst(), triplekey);
 						if (compare >= 0) {
-							this.innerNodes
-							.add(new Tuple<K, LuposObjectInputStream<V>>(
-									nextEntry.getFirst(), in));
+							this.innerNodes.add(new Tuple<K, InputStream>(nextEntry.getFirst(), in));
 							return this.getFirst(nextEntry.getSecond(), triplekey);
 						}
 					}
@@ -2549,16 +2502,15 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					// innerNodes.clear();
 					// return getFirst(rootFilename, triplekey);
 				}
-				final Tuple<K, LuposObjectInputStream<V>> current = this.innerNodes
-				.get(index);
-				final LuposObjectInputStream<V> in = current.getSecond();
+				final Tuple<K, InputStream> current = this.innerNodes.get(index);
+				final InputStream in = current.getSecond();
 				K lastKey = current.getFirst();
 				if (lastKey == null
 						|| DBBPTree.this.comparator.compare(lastKey, triplekey) >= 0) {
 					return this.getFirstUsingCache(index + 1, triplekey);
 				}
 				while (this.innerNodes.size() > index + 1) {
-					final Tuple<K, LuposObjectInputStream<V>> toBeDeleted = this.innerNodes
+					final Tuple<K, InputStream> toBeDeleted = this.innerNodes
 					.remove(this.innerNodes.size() - 1);
 					try {
 						toBeDeleted.getSecond().close();
@@ -2612,11 +2564,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						this.currentLeafIn.close();
 						this.lastTriple = null;
 						this.lastKey = null;
-						final InputStream fis = new PageInputStream(
-								e.filenameOfNextLeafNode, DBBPTree.this.pageManager);
-						this.currentLeafIn = new LuposObjectInputStreamWithoutReadingHeader<V>(fis, null);
+						this.currentLeafIn = new PageInputStream(e.filenameOfNextLeafNode, DBBPTree.this.pageManager);
 						// read over the leaf flag!
-						InputHelper.readLuposBoolean(this.currentLeafIn.is);
+						InputHelper.readLuposBoolean(this.currentLeafIn);
 						e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(this.currentLeafIn,
 								this.lastKey, this.lastTriple);
 						if (e == null || e.key == null) {
@@ -2666,7 +2616,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 		@Override
 		public void close() {
-			for (final Tuple<K, LuposObjectInputStream<V>> tuple : this.innerNodes) {
+			for (final Tuple<K, InputStream> tuple : this.innerNodes) {
 				try {
 					tuple.getSecond().close();
 				} catch (final IOException e) {
@@ -2705,13 +2655,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						this.currentLeafIn.close();
 						this.lastTriple = null;
 						this.lastKey = null;
-						final InputStream fis = new PageInputStream(
-								e.filenameOfNextLeafNode, DBBPTree.this.pageManager);
-						this.currentLeafIn = new LuposObjectInputStreamWithoutReadingHeader<V>(fis, null);
+						this.currentLeafIn = new PageInputStream(e.filenameOfNextLeafNode, DBBPTree.this.pageManager);
 						// read over the leaf flag!
-						InputHelper.readLuposBoolean(this.currentLeafIn.is);
-						e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(this.currentLeafIn,
-								this.lastKey, this.lastTriple);
+						InputHelper.readLuposBoolean(this.currentLeafIn);
+						e = DBBPTree.this.nodeDeSerializer.getNextLeafEntry(this.currentLeafIn, this.lastKey, this.lastTriple);
 						if (e == null || e.key == null) {
 							// should never happen!
 							this.close();
@@ -2822,12 +2769,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		if (filename < 0) {
 			return null;
 		}
-		InputStream fis;
 		try {
-			fis = new PageInputStream(filename, this.pageManager);
-			final LuposObjectInputStream<V> in = new LuposObjectInputStreamWithoutReadingHeader(
-					fis, null);
-			final boolean leaf = InputHelper.readLuposBoolean(in.is);
+			final InputStream in = new PageInputStream(filename, this.pageManager);
+			final boolean leaf = InputHelper.readLuposBoolean(in);
 			if (leaf) { // leaf node reached!
 				V lastTriple = null;
 				K lastKey = null;

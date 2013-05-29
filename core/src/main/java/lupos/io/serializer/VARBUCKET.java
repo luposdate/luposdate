@@ -21,26 +21,44 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.multiinput.join;
+package lupos.io.serializer;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 
-import lupos.datastructures.paged_dbbptree.DBBPTree;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
+import lupos.io.helper.InputHelper;
+import lupos.io.helper.LengthHelper;
+import lupos.io.helper.OutHelper;
+import lupos.optimizations.logical.statistics.VarBucket;
 
-public class DBBPTreeIndexJoin extends IndexJoinWithoutDuplicateElimination {
+public class VARBUCKET extends DeSerializerConsideringSubClasses<VarBucket> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof VarBucket;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init() {
-		this.lba = new DBBPTree[2];
-		try {
-			this.lba[0] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-			this.lba[1] = new DBBPTree<String, QueryResult>(30, 30, new StandardNodeDeSerializer<String, QueryResult>(String.class, QueryResult.class));
-		} catch (IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
+	public Class<VarBucket>[] getRegisteredClasses() {
+		return new Class[] { VarBucket.class };
 	}
+
+	@Override
+	public int length(final VarBucket t) {
+		return LengthHelper.lengthLuposVarBucket(t);
+	}
+
+	@Override
+	public void serialize(final VarBucket t, final OutputStream out) throws IOException {
+		OutHelper.writeLuposVarBucket(t, out);
+	}
+
+	@Override
+	public VarBucket deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+		return InputHelper.readLuposVarBucket(in);
+	}
+
 }

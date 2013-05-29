@@ -21,61 +21,54 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.io.serializer;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 
+import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.io.LuposObjectInputStream;
+import lupos.io.LuposObjectOutputStream;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
 
-public abstract class Node<K extends Comparable<K> & Serializable, V extends Serializable> {
-	protected LuposObjectInputStream<V> in;
-	protected int filename;
-	protected List<K> readKeys;
-
-	protected Class<? super K> keyClass;
-	protected Class<? super V> valueClass;
-
-	protected Node(final Class<? super K> keyClass,
-			final Class<? super V> valueClass, final int size) {
-		this.keyClass = keyClass;
-		this.valueClass = valueClass;
-		readKeys = new ArrayList<K>(size);
-	}
-
-	public LuposObjectInputStream<V> getIn() {
-		return in;
-	}
-
-	public void setIn(final LuposObjectInputStream<V> in) {
-		this.in = in;
-	}
-
-	public int getFilename() {
-		return filename;
-	}
-
-	public void setFilename(final int filename) {
-		this.filename = filename;
-	}
-
-	public List<K> getKeys() {
-		return readKeys;
-	}
-
-	public void setKeys(final List<K> readKeys) {
-		this.readKeys = readKeys;
+@SuppressWarnings("rawtypes")
+public class DBSORTEDSET extends DeSerializerConsideringSubClasses<DBMergeSortedSet> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof DBMergeSortedSet;
 	}
 
 	@Override
-	public void finalize() {
-		try {
-			if(in!=null){
-				in.close();
-			}
-		} catch (final IOException e1) {
-		}
+	public DBMergeSortedSet deserialize(final LuposObjectInputStream<DBMergeSortedSet> in) throws IOException, ClassNotFoundException, URISyntaxException {
+		return in.readLuposSortedSet();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<DBMergeSortedSet>[] getRegisteredClasses() {
+		return new Class[] { DBMergeSortedSet.class };
+	}
+
+	@Override
+	public void serialize(final DBMergeSortedSet t, final LuposObjectOutputStream out) throws IOException {
+		out.writeLuposSortedSet(t);
+	}
+
+	@Override
+	public int length(final DBMergeSortedSet t) {
+		throw new UnsupportedOperationException("DBSortedSet cannot be (de-)serialized with lupos i/o because of the comparator!");
+	}
+
+	@Override
+	public void serialize(final DBMergeSortedSet t, final OutputStream out) throws IOException {
+		throw new UnsupportedOperationException("DBSortedSet cannot be (de-)serialized with lupos i/o because of the comparator!");
+	}
+
+	@Override
+	public DBMergeSortedSet deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+		throw new UnsupportedOperationException("DBSortedSet cannot be (de-)serialized with lupos i/o because of the comparator!");
+	}
+
 }

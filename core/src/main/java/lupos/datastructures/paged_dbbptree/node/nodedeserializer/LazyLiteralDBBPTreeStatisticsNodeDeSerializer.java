@@ -21,19 +21,19 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.paged_dbbptree;
+package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-import lupos.io.LuposObjectInputStream;
-import lupos.io.LuposObjectOutputStream;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 
@@ -50,7 +50,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 
 	@Override
 	public Tuple<TripleKey, Integer> getNextInnerNodeEntry(
-			final TripleKey lastKey, final LuposObjectInputStream<Triple> in) {
+			final TripleKey lastKey, final InputStream in) {
 		try {
 			BitVector bits;
 			try {
@@ -93,10 +93,12 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 
 			final boolean objectIsLazyLiteralOriginalContent = bits.get(1);
 			int whereDifferentLiteral = 0;
-			if (bits.get(2))
+			if (bits.get(2)) {
 				whereDifferentLiteral = 2;
-			if (bits.get(3))
+			}
+			if (bits.get(3)) {
 				whereDifferentLiteral += 1;
+			}
 			final int numberDifferent = (whereDifferentLiteral == 3) ? 3
 					: 3 - whereDifferentLiteral;
 			final int[] numberBytesForInt = new int[numberDifferent];
@@ -140,23 +142,23 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 			int index2 = 0;
 			for (int i = 0; i < 3; i++) {
 				if (i < whereDifferentLiteral && whereDifferentLiteral != 3) {
-					t.setPos(map[order.ordinal()][i], lastTriple
-							.getPos(map[order.ordinal()][i]));
+					t.setPos(map[this.order.ordinal()][i], lastTriple
+							.getPos(map[this.order.ordinal()][i]));
 				} else {
 					if (whereDifferentLiteral != 3) {
 						final int diff = getInt(
 								numberBytesForInt[index2++] + 1, in);
-						t.setPos(map[order.ordinal()][i], getLiteral(diff
-								+ ((LazyLiteral) lastTriple.getPos(map[order
-										.ordinal()][i])).getCode(), map[order
+						t.setPos(map[this.order.ordinal()][i], getLiteral(diff
+								+ ((LazyLiteral) lastTriple.getPos(map[this.order
+										.ordinal()][i])).getCode(), map[this.order
 								.ordinal()][i], codeForOriginalContent,
 								objectIsLazyLiteralOriginalContent));
 					}
 					for (int j = i + ((whereDifferentLiteral != 3) ? 1 : 0); j < 3; j++) {
 						final int code = getInt(
 								numberBytesForInt[index2++] + 1, in);
-						t.setPos(map[order.ordinal()][j], getLiteral(code,
-								map[order.ordinal()][j],
+						t.setPos(map[this.order.ordinal()][j], getLiteral(code,
+								map[this.order.ordinal()][j],
 								codeForOriginalContent,
 								objectIsLazyLiteralOriginalContent));
 					}
@@ -164,7 +166,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 				}
 			}
 			return new Tuple<TripleKey, Integer>(new TripleKey(t,
-					new TripleComparator(order)), fileName);
+					new TripleComparator(this.order)), fileName);
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println(e);
@@ -175,7 +177,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
-			final LuposObjectOutputStream out, final TripleKey lastKey)
+			final OutputStream out, final TripleKey lastKey)
 			throws IOException {
 		// TODO
 		throw new UnsupportedOperationException(
@@ -184,7 +186,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 
 	@Override
 	public void writeInnerNodeEntry(final int fileName,
-			final LuposObjectOutputStream out) throws IOException {
+			final OutputStream out) throws IOException {
 		// TODO
 		throw new UnsupportedOperationException(
 				UnsupportedOperationExceptionMessage);
