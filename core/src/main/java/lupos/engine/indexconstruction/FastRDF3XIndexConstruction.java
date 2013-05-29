@@ -85,8 +85,8 @@ import lupos.misc.TimeInterval;
  */
 public class FastRDF3XIndexConstruction {
 	// the parameters are used for the B+-trees
-	private static final int k = 10;//1000;
-	private static final int k_ = 10;//1000;
+	private static final int k = 1000;
+	private static final int k_ = 1000;
 
 	private static final int NUMBER_OF_THREADS = 8;
 
