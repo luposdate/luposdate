@@ -209,12 +209,12 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        this.f.removeSucceedingOperator(this.o);
-        this.o.removePrecedingOperator(this.f);
         this.i.removeSucceedingOperator(this.j_begin);
         this.j_begin.removePrecedingOperator(this.i);
         this.j_end.removeSucceedingOperator(this.f);
         this.f.removePrecedingOperator(this.j_end);
+        this.f.removeSucceedingOperator(this.o);
+        this.o.removePrecedingOperator(this.f);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -222,11 +222,11 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
 
 
         // add new connections...
-        b.addSucceedingOperator(this.j_begin);
-        this.j_begin.addPrecedingOperator(b);
-
         this.j_end.addSucceedingOperator(this.o);
         this.o.addPrecedingOperator(this.j_end);
+
+        b.addSucceedingOperator(this.j_begin);
+        this.j_begin.addPrecedingOperator(b);
 
         this.i.addSucceedingOperator(b);
         b.addPrecedingOperator(this.i);
@@ -237,6 +237,7 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
 
 
         // additional replace method code...
+        this.constant = this.constant.createThisLiteralNew();
         this.i.replace(this.var, this.constant);
         this.i.getUnionVariables().remove(this.var);
         this.i.getIntersectionVariables().remove(this.var);

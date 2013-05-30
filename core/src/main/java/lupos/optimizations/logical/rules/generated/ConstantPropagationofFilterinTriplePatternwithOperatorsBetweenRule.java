@@ -219,12 +219,12 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
-        this.f.removeSucceedingOperator(this.o);
-        this.o.removePrecedingOperator(this.f);
-        this.tp.removeSucceedingOperator(this.j_begin);
-        this.j_begin.removePrecedingOperator(this.tp);
         this.j_end.removeSucceedingOperator(this.f);
         this.f.removePrecedingOperator(this.j_end);
+        this.tp.removeSucceedingOperator(this.j_begin);
+        this.j_begin.removePrecedingOperator(this.tp);
+        this.f.removeSucceedingOperator(this.o);
+        this.o.removePrecedingOperator(this.f);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -232,11 +232,11 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
 
         // add new connections...
-        b.addSucceedingOperator(this.j_begin);
-        this.j_begin.addPrecedingOperator(b);
-
         this.j_end.addSucceedingOperator(this.o);
         this.o.addPrecedingOperator(this.j_end);
+
+        b.addSucceedingOperator(this.j_begin);
+        this.j_begin.addPrecedingOperator(b);
 
         this.tp.addSucceedingOperator(b);
         b.addPrecedingOperator(this.tp);
@@ -247,6 +247,7 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
 
         // additional replace method code...
+        this.constant = this.constant.createThisLiteralNew();
         java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);
         this.tp.getIntersectionVariables().removeAll(replacedVars);
         this.tp.getUnionVariables().removeAll(replacedVars);

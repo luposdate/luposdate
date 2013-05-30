@@ -206,9 +206,6 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
 
 
         // add new connections...
-        this.tp.addSucceedingOperator(b);
-        b.addPrecedingOperator(this.tp);
-
         _label_a_count = 0;
 
         for(lupos.engine.operators.BasicOperator _child : this.o) {
@@ -219,12 +216,16 @@ public class ConstantPropagationofFilterinTriplePatternRule extends Rule {
         }
 
 
+        this.tp.addSucceedingOperator(b);
+        b.addPrecedingOperator(this.tp);
+
 
         // delete unreachable operators...
         this.deleteOperatorWithoutParentsRecursive(this.f, _startNodes);
 
 
         // additional replace method code...
+        this.constant = this.constant.createThisLiteralNew();
         java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);
         this.tp.getIntersectionVariables().removeAll(replacedVars);
         this.tp.getUnionVariables().removeAll(replacedVars);

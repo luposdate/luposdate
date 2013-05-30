@@ -60,7 +60,7 @@ public class DebugEndpoint {
 
 	private static int queryNumber = 0;
 	// directory in which the logs are written
-	public static String logDirectory = "d:/luposdate/log/";
+	public static String logDirectory = "c:/luposdate/log/";
 
 	public static void main(final String[] args) throws Exception {
 		Endpoint.init(args);

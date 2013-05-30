@@ -1206,7 +1206,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "this.i.replace(this.var, this.constant);\nthis.i.getUnionVariables().remove(this.var);\nthis.i.getIntersectionVariables().remove(this.var);\n\nb.setVar(this.var);\nb.setLiteral(this.constant);\n\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());\nunionVars.add(this.var);\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\n\nb.setUnionVariables(unionVars);\nb.setIntersectionVariables(intersectionVars);\nthis.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
+          "additional code": "this.constant = this.constant.createThisLiteralNew();\nthis.i.replace(this.var, this.constant);\nthis.i.getUnionVariables().remove(this.var);\nthis.i.getIntersectionVariables().remove(this.var);\n\nb.setVar(this.var);\nb.setLiteral(this.constant);\n\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());\nunionVars.add(this.var);\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\n\nb.setUnionVariables(unionVars);\nb.setIntersectionVariables(intersectionVars);\nthis.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
           "code": "",
           "use generated code": true
         }
@@ -1369,7 +1369,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\r\nthis.tp.getIntersectionVariables().removeAll(replacedVars);\r\nthis.tp.getUnionVariables().removeAll(replacedVars);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);",
+          "additional code": "this.constant = this.constant.createThisLiteralNew();\r\njava.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\r\nthis.tp.getIntersectionVariables().removeAll(replacedVars);\r\nthis.tp.getUnionVariables().removeAll(replacedVars);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);",
           "code": "",
           "use generated code": true
         }
@@ -1496,7 +1496,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "java.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\r\nthis.tp.getIntersectionVariables().removeAll(replacedVars);\r\nthis.tp.getUnionVariables().removeAll(replacedVars);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);\r\nthis.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
+          "additional code": "this.constant = this.constant.createThisLiteralNew();\r\njava.util.Set<lupos.datastructures.items.Variable> replacedVars = this.tp.replace(this.var, this.constant);\r\nthis.tp.getIntersectionVariables().removeAll(replacedVars);\r\nthis.tp.getUnionVariables().removeAll(replacedVars);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.tp.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);\r\nthis.j_end.getOperatorIDTuple(o).setId(this.operandIDOfFilter);",
           "code": "",
           "use generated code": true
         }
@@ -1659,7 +1659,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "this.i.replace(this.var, this.constant);\r\nthis.i.getUnionVariables().remove(this.var);\r\nthis.i.getIntersectionVariables().remove(this.var);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);",
+          "additional code": "this.constant = this.constant.createThisLiteralNew();\r\nthis.i.replace(this.var, this.constant);\r\nthis.i.getUnionVariables().remove(this.var);\r\nthis.i.getIntersectionVariables().remove(this.var);\r\n\r\nb.setVar(this.var);\r\nb.setLiteral(this.constant);\r\n\r\njava.util.LinkedList<lupos.datastructures.items.Variable> unionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(this.i.getUnionVariables());\r\nunionVars.add(this.var);\r\njava.util.LinkedList<lupos.datastructures.items.Variable> intersectionVars=new java.util.LinkedList<lupos.datastructures.items.Variable>(unionVars);\r\n\r\nb.setUnionVariables(unionVars);\r\nb.setIntersectionVariables(intersectionVars);",
           "code": "",
           "use generated code": true
         }

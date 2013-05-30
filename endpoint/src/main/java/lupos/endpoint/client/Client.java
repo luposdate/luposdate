@@ -109,13 +109,9 @@ public class Client {
 				System.err.println(errorMessage);
 				throw new RuntimeException(errorMessage);
 			}
-			System.err.println("Content type "+contentType+" is not supported!");
-			Thread.dumpStack();
-			System.err.println("Just try out application/sparql-results+xml as default...");
-			reader = Client.registeredFormatReaders.get("application/sparql-results+xml");
-			if(reader==null){
-				return null;
-			}
+			final String errorText = "Content type "+contentType+" is not supported!";
+			System.err.println(errorText);
+			throw new IOException(errorText + "Content:\n" + FileHelper.readInputStreamToString(response.getSecond()));
 		}
 		return reader.getQueryResult(response.getSecond(), query);
 	}
