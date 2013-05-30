@@ -62,12 +62,12 @@ public class StartEndpoint {
 	 * @param args see init() for the command line arguments
 	 */
 	public static void main(final String[] args) {
-		final String[] keyTypes = StartEndpoint.init(args);
+		final Tuple<String[], Integer> keyTypes = StartEndpoint.init(args);
 		String base_dir = args[1];
 		if(!base_dir.endsWith("/") && !base_dir.endsWith("\\")){
 			base_dir += "/";
 		}
-		for(final String keyType: keyTypes) {
+		for(final String keyType: keyTypes.getFirst()) {
 			// start for each type of the keys a different context
 			final String directory = base_dir + keyType;
 			final BasicIndexQueryEvaluator evaluator = Endpoint.createQueryEvaluator(directory);
@@ -83,7 +83,7 @@ public class StartEndpoint {
 			Endpoint.registerHandler("/sparql/histogram/" + keyType, new SPARQLHandler(new HistogramExecutionImplementation(evaluator, creator)));
 		}
 		Endpoint.registerStandardFormatter();
-		Endpoint.initAndStartServer();
+		Endpoint.initAndStartServer(keyTypes.getSecond());
 	}
 
 	/**
@@ -91,25 +91,26 @@ public class StartEndpoint {
 	 * @param args command line arguments
 	 * @return the list of possible keys for the specified distribution strategy
 	 */
-	public static String[] init(final String[] args){
-		String[] result = null;
+	public static Tuple<String[], Integer> init(final String[] args){
+		final Tuple<String[], Integer> result = new Tuple<String[], Integer>(new String[]{ "" }, 8080);
 		if (args.length >= 2) {
 			if(args[0].compareTo("0")==0) {
-				result = new String[]{ "" };
+				// already default !
 			} else if(args[0].compareTo("1")==0) {
-				result = OneKeyDistribution.getPossibleKeyTypes();
+				result.setFirst(OneKeyDistribution.getPossibleKeyTypes());
 			} else if(args[0].compareTo("2")==0) {
-				result = TwoKeysDistribution.getPossibleKeyTypes();
+				result.setFirst(TwoKeysDistribution.getPossibleKeyTypes());
 			} else if(args[0].compareTo("3")==0) {
-				result = OneToThreeKeysDistribution.getPossibleKeyTypes();
+				result.setFirst(OneToThreeKeysDistribution.getPossibleKeyTypes());
 			}
 		}
 		if (args.length < 2 || result==null) {
-			System.err.println("Usage:\njava -Xmx768M lupos.distributedendpoints.endpoint.StartEndpoint (0|1|2|3) <directory for indices> [output] [size]");
+			System.err.println("Usage:\njava -Xmx768M lupos.distributedendpoints.endpoint.StartEndpoint (0|1|2|3) <directory for indices> [portX] [output] [size]");
 			System.err.println("0 for no distribution strategy");
 			System.err.println("1 for one key distribution strategy");
 			System.err.println("2 for two keys distribution strategy");
 			System.err.println("3 for one to three keys distribution strategy");
+			System.err.println("If \"portX\" is given, the port X (default 8080) is used, X must be a non-negative number.");
 			System.err.println("If \"output\" is given, the response is written to console.");
 			System.err.println("If \"size\" is given, the size of the received query and the size of the response is written to console.");
 			System.exit(0);
@@ -119,6 +120,8 @@ public class StartEndpoint {
 				Endpoint.log = true;
 			} else if(args[i].compareTo("size")==0){
 				Endpoint.sizelog = true;
+			} else if(args[i].startsWith("port")){
+				result.setSecond(Integer.parseInt(args[i].substring("port".length())));
 			}
 		}
 		return result;

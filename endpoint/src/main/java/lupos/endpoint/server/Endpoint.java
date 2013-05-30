@@ -108,28 +108,33 @@ public class Endpoint {
 	 * PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{?s rdf:type ?o. }
 	 */
 	public static void main(final String[] args) throws Exception {
-		Endpoint.init(args);
+		final int port = Endpoint.init(args);
 		Endpoint.registerStandardFormattersAndContexts(args[0]);
-		Endpoint.initAndStartServer();
+		Endpoint.initAndStartServer(port);
 	}
 
-	public static void init(final String[] args){
+	public static int init(final String[] args){
 		if (args.length < 1) {
-			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [output] [size]");
+			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [portX] [output] [size]");
+			System.err.println("If \"portX\" is given, the port X (default 8080) is used, X must be a non-negative number.");
 			System.err.println("If \"output\" is given, the response is written to console.");
 			System.err.println("If \"size\" is given, the size of the received query and the size of the response is written to console.");
 			System.exit(0);
 		}
+		int port = 8080;
 		for(int i=1; i<args.length; i++){
 			if(args[i].compareTo("output")==0){
 				Endpoint.log = true;
 			} else if(args[i].compareTo("size")==0){
 				Endpoint.sizelog = true;
+			} else if(args[i].startsWith("port")){
+				port = Integer.parseInt(args[i].substring("port".length()));
 			}
 		}
+		return port;
 	}
 
-	public static void initAndStartServer(){
+	public static void initAndStartServer(final int port){
 		try {
 			final String localHost = InetAddress.getLocalHost().getHostName();
 			System.out.println("Starting LUPOSDATE Endpoint on host: "+localHost);
@@ -138,7 +143,7 @@ public class Endpoint {
 				System.out.println("IP: "+ia);
 			}
 
-			Endpoint.startServer();
+			Endpoint.startServer(port);
 			System.out.println("Endpoint ready to receive requests...");
 			System.out.println("_____________________________________");
 		} catch (final Exception e) {
@@ -188,9 +193,9 @@ public class Endpoint {
 		Endpoint.registerHandler("/", new HTMLFormHandler());
 	}
 
-	public static void startServer(){
+	public static void startServer(final int port){
 		try {
-			final HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+			final HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
 			for(final Entry<String, HttpHandler> entry: Endpoint.registeredhandler.entrySet()){
 				server.createContext(entry.getKey(), entry.getValue());

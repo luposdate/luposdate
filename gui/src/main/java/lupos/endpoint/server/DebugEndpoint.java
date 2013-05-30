@@ -63,7 +63,7 @@ public class DebugEndpoint {
 	public static String logDirectory = "c:/luposdate/log/";
 
 	public static void main(final String[] args) throws Exception {
-		Endpoint.init(args);
+		final int port = Endpoint.init(args);
 		final File file = new File(logDirectory);
 		file.mkdirs();
 
@@ -81,7 +81,7 @@ public class DebugEndpoint {
 		Endpoint.registerHandler("/sparqldebug", new SPARQLHandler(new SPARQLExecutionDebugImplementation(evaluator, args[0])));
 		Endpoint.registerStandardFormatter();
 		Endpoint.registerHandler("/", new HTMLFormHandler());
-		Endpoint.initAndStartServer();
+		Endpoint.initAndStartServer(port);
 	}
 
 	public static class SPARQLExecutionDebugImplementation implements SPARQLExecution {

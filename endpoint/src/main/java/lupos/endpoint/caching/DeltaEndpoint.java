@@ -59,12 +59,12 @@ public class DeltaEndpoint {
 
 	public static void main(final String[] args) throws Exception {
 		// init according to command line arguments
-		Endpoint.init(args);
+		final int port = Endpoint.init(args);
 		// register the sparqldelta context
 		Endpoint.registerHandler("/sparqldelta", new SPARQLHandler(new SPARQLExecutionDeltaImplementation(Endpoint.createQueryEvaluator(args[0]), args[0])));
 		Endpoint.registerStandardFormatter();
 		// run the endpoint!
-		Endpoint.initAndStartServer();
+		Endpoint.initAndStartServer(port);
 	}
 
 	public static class SPARQLExecutionDeltaImplementation implements SPARQLExecution {
