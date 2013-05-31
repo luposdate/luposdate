@@ -25,6 +25,11 @@ package lupos.engine.operators.multiinput.optional;
 
 import lupos.engine.operators.multiinput.MultiInputOperator;
 
+// The purpose of this class is having the opportunity to check for Optional operators by using instanceof Optional
 public class Optional extends MultiInputOperator {
-	// just to check for Optional operators by using instanceof Optional
+
+	@Override
+	public String toString() {
+		return super.toString() + " on " + this.intersectionVariables;
+	}
 }

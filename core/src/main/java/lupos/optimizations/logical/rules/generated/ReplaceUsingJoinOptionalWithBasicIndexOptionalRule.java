@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.optimizations.logical.rules.generated.runtime.Rule;
 
 
 
@@ -41,17 +41,17 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
     private lupos.engine.operators.multiinput.optional.UsingJoinOptional optional = null;
     private lupos.engine.operators.index.BasicIndexScan indexScan = null;
 
-    private boolean _checkPrivate0(BasicOperator _op) {
+    private boolean _checkPrivate0(final BasicOperator _op) {
         if(!(_op instanceof lupos.engine.operators.multiinput.optional.UsingJoinOptional)) {
             return false;
         }
 
         this.optional = (lupos.engine.operators.multiinput.optional.UsingJoinOptional) _op;
 
-        List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
+        final List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
 
-        for(BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
+        for(final BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
             if(_precOp_1_0.getOperatorIDTuple(_op).getId() != 0) {
                 continue;
             }
@@ -64,9 +64,9 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
                 continue;
             }
 
-            this.leftOperand = (lupos.engine.operators.BasicOperator) _precOp_1_0;
+            this.leftOperand = _precOp_1_0;
 
-            for(BasicOperator _precOp_1_1 : _precedingOperators_1_0) {
+            for(final BasicOperator _precOp_1_1 : _precedingOperators_1_0) {
                 if(_precOp_1_1.getOperatorIDTuple(_op).getId() != 1) {
                     continue;
                 }
@@ -81,18 +81,18 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
 
                 this.indexScan = (lupos.engine.operators.index.BasicIndexScan) _precOp_1_1;
 
-                List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
+                final List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
                 if(_succedingOperators_1_0.size() != 1) {
                     return false;
                 }
 
-                for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
+                for(final OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
                     if(!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.BasicOperator)) {
                         continue;
                     }
 
-                    this.suc = (lupos.engine.operators.BasicOperator) _sucOpIDTup_1_0.getOperator();
+                    this.suc = _sucOpIDTup_1_0.getOperator();
 
                     return true;
                 }
@@ -108,8 +108,9 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
         this.ruleName = "Replace UsingJoinOptional With BasicIndexOptional";
     }
 
-    protected boolean check(BasicOperator _op) {
-        boolean _result = this._checkPrivate0(_op);
+    @Override
+	protected boolean check(final BasicOperator _op) {
+        final boolean _result = this._checkPrivate0(_op);
 
         if(_result) {
             // additional check method code...
@@ -121,7 +122,8 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
         return _result;
     }
 
-    protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
+    @Override
+	protected void replace(final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
         this.leftOperand.removeSucceedingOperator(new OperatorIDTuple(this.optional, 0));
         this.optional.removePrecedingOperator(this.leftOperand);

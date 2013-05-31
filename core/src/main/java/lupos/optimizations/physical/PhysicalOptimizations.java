@@ -71,7 +71,7 @@ public class PhysicalOptimizations {
 	/**
 	 * Adds a rule that replaces a superclass with its implementation (Both
 	 * classes have to inherit from Operator)
-	 * 
+	 *
 	 * @param from
 	 *            The (unqualified) name of the class to be replaced.
 	 * @param to
@@ -181,6 +181,7 @@ public class PhysicalOptimizations {
 	public static BasicOperator replaceOperators(final BasicOperator op,
 			final BasicOperator root) {
 		final SimpleOperatorGraphVisitor sogv = new SimpleOperatorGraphVisitor() {
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				try {
 					if (!(root instanceof PatternMatcher)
@@ -222,8 +223,9 @@ public class PhysicalOptimizations {
 											basicOperator
 											.getIntersectionVariables());
 								}
-							} else
+							} else {
 								flag = false;
+							}
 							if (flag) {
 								final LinkedList<BasicOperator> llbo = new LinkedList<BasicOperator>();
 								llbo.addAll(basicOperator.getPrecedingOperators());
@@ -273,25 +275,26 @@ public class PhysicalOptimizations {
 									if (minIndex > -1) {
 										final BasicOperator bo = basicOperator.getPrecedingOperators().get(minIndex);
 										if (bo != null && bo.getSucceedingOperators().size()==1) {
-											if (!severalTimesQueryResults(bo, new HashSet<BasicOperator>())) {
+											if (!this.severalTimesQueryResults(bo, new HashSet<BasicOperator>())) {
 												List<TriplePattern> tpsOfOthers = null;
 												for (final BasicOperator others : basicOperator
 														.getPrecedingOperators()) {
 													if (!others.equals(bo)) {
-														if (tpsOfOthers == null)
+														if (tpsOfOthers == null) {
 															tpsOfOthers = determineTriplePatterns(
 																	others,
 																	new LinkedList<TriplePattern>(),
 																	new HashSet<BasicOperator>());
-														else
+														} else {
 															tpsOfOthers
 															.addAll(determineTriplePatterns(
 																	others,
 																	new LinkedList<TriplePattern>(),
 																	new HashSet<BasicOperator>()));
+														}
 													}
 												}
-												tpsOfSucceedingJoins(basicOperator, tpsOfOthers);
+												this.tpsOfSucceedingJoins(basicOperator, tpsOfOthers);
 												if (tpsOfOthers != null) {
 													final SIPFilterOperator sip_op = (replacements
 															.get(Join.class) == HashMapIndexJoin.class) ? new SIPFilterOperatorIterator(
@@ -300,7 +303,7 @@ public class PhysicalOptimizations {
 																	.getIntersectionVariables())
 
 													: new SIPFilterOperator(tpsOfOthers, basicOperator.getIntersectionVariables());
-																	
+
 													final List<Variable> intersectionVariables = new LinkedList<Variable>();
 													final List<Variable> unionVariables = new LinkedList<Variable>();
 													intersectionVariables.addAll(bo.getIntersectionVariables());
@@ -335,15 +338,15 @@ public class PhysicalOptimizations {
 											basicOperator
 											.getIntersectionVariables());
 								}
-							} else
+							} else {
 								flag = false;
+							}
 							if (flag) {
 								final LinkedList<BasicOperator> llbo = new LinkedList<BasicOperator>();
 								llbo.addAll(basicOperator.getPrecedingOperators());
 								for (final BasicOperator bo : llbo) {
 									operatorMustReceiveSortedData(root, bo,
-											basicOperator
-											.getIntersectionVariables());
+											basicOperator.getIntersectionVariables());
 								}
 								final BasicOperator newOperator = new MergeWithoutSortingOptional();
 								newOperator.cloneFrom(basicOperator);
@@ -391,26 +394,27 @@ public class PhysicalOptimizations {
 											&& bo instanceof FastSort
 											&& bo.getPrecedingOperators().size() == 1
 											&& !(bo.getPrecedingOperators().get(0) instanceof SIPFilterOperator)) {
-										if (!severalTimesQueryResults(bo,
+										if (!this.severalTimesQueryResults(bo,
 												new HashSet<BasicOperator>())) {
 											List<TriplePattern> tpsOfOthers = null;
 											for (final BasicOperator others : join
 													.getPrecedingOperators()) {
 												if (!others.equals(bo)) {
-													if (tpsOfOthers == null)
+													if (tpsOfOthers == null) {
 														tpsOfOthers = determineTriplePatterns(
 																others,
 																new LinkedList<TriplePattern>(),
 																new HashSet<BasicOperator>());
-													else
+													} else {
 														tpsOfOthers
 														.addAll(determineTriplePatterns(
 																others,
 																new LinkedList<TriplePattern>(),
 																new HashSet<BasicOperator>()));
+													}
 												}
 											}
-											tpsOfSucceedingJoins(join, tpsOfOthers);
+											this.tpsOfSucceedingJoins(join, tpsOfOthers);
 											final SIPFilterOperator sip_op =
 												// (replacements
 												// .get(Join.class) ==
@@ -456,13 +460,14 @@ public class PhysicalOptimizations {
 							if (basicOperator.getPrecedingOperators().size() == 1) {
 								final BasicOperator prec = basicOperator
 								.getPrecedingOperators().get(0);
-								if (prec instanceof SortLimit)
+								if (prec instanceof SortLimit) {
 									sortlimit = prec;
+								}
 							}
 							final Collection<Variable> sortCriterium = ((Sort) basicOperator)
 							.getSortCriterium();
 							boolean flag;
-							if (sortCriterium != null								
+							if (sortCriterium != null
 									&& (LiteralFactory.getMapType() != LiteralFactory.MapType.LAZYLITERAL)
 									&& (LiteralFactory.getMapType() != LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 								flag = true;
@@ -472,8 +477,9 @@ public class PhysicalOptimizations {
 									&& operatorCanReceiveSortedData(bo,
 											sortCriterium);
 								}
-							} else
+							} else {
 								flag = false;
+							}
 							if (flag) {
 								final LinkedList<BasicOperator> llbo = new LinkedList<BasicOperator>();
 								llbo.addAll(sortlimit.getPrecedingOperators());
@@ -494,7 +500,7 @@ public class PhysicalOptimizations {
 							}
 						}
 					}
-				} catch(CyclesDuringDeterminationofTriplePatternsException e){
+				} catch(final CyclesDuringDeterminationofTriplePatternsException e){
 				}
 
 				final Class<? extends BasicOperator> newClass = replacements
@@ -562,21 +568,22 @@ public class PhysicalOptimizations {
 							for (final BasicOperator op : sbo
 									.getPrecedingOperators()) {
 								if (!op.equals(bo)) {
-									if (tpsOfOthers == null)
+									if (tpsOfOthers == null) {
 										tpsOfOthers = determineTriplePatterns(
 												op,
 												new LinkedList<TriplePattern>(),
 												new HashSet<BasicOperator>());
-									else
+									} else {
 										tpsOfOthers
 										.addAll(determineTriplePatterns(
 												op,
 												new LinkedList<TriplePattern>(),
 												new HashSet<BasicOperator>()));
+									}
 								}
 							}
 						}
-						tpsOfSucceedingJoins(sbo, tpsOfOthers);
+						this.tpsOfSucceedingJoins(sbo, tpsOfOthers);
 					}
 				}
 			}
@@ -584,9 +591,10 @@ public class PhysicalOptimizations {
 			private boolean severalTimesQueryResults(
 					final BasicOperator basicOperator,
 					final Set<BasicOperator> alreadyVisited) {
-				if (alreadyVisited.contains(basicOperator))
+				if (alreadyVisited.contains(basicOperator)) {
 					// loop detected!
 					return true;
+				}
 				alreadyVisited.add(basicOperator);
 				if (basicOperator instanceof Union) {
 					if (!(basicOperator instanceof MergeUnion)) {
@@ -595,13 +603,15 @@ public class PhysicalOptimizations {
 				} else if (basicOperator instanceof BasicIndexScan) {
 					return false;
 				} else {
-					if (basicOperator.getPrecedingOperators() != null)
+					if (basicOperator.getPrecedingOperators() != null) {
 						for (final BasicOperator predecessor : basicOperator
 								.getPrecedingOperators()) {
-							if (severalTimesQueryResults(predecessor,
-									alreadyVisited))
+							if (this.severalTimesQueryResults(predecessor,
+									alreadyVisited)) {
 								return true;
+							}
 						}
+					}
 				}
 				return false;
 			}
@@ -612,6 +622,7 @@ public class PhysicalOptimizations {
 		// parallel versions...
 
 		final SimpleOperatorGraphVisitor sogvMergeJoinsAndOptionals = new SimpleOperatorGraphVisitor() {
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
 				final Class<? extends BasicOperator> newClass = replacementsMergeJoinAndMergeOptional
 				.get(basicOperator.getClass());
@@ -634,16 +645,18 @@ public class PhysicalOptimizations {
 
 	public static boolean operatorCanReceiveSortedData(
 			BasicOperator basicOperator, Collection<Variable> sortCriterium) {
-		if (sortCriterium == null || sortCriterium.size() == 0)
+		if (sortCriterium == null || sortCriterium.size() == 0) {
 			// this case occurs e.g. int the case of computing cartesian
 			// products...
 			return true;
+		}
 		// special cases are considered...
 		// TODO: more general way!
 		while (basicOperator.remainsSortedData(sortCriterium)) {
 			sortCriterium=basicOperator.transformSortCriterium(sortCriterium);
-			if (basicOperator.getPrecedingOperators().size() > 1)
+			if (basicOperator.getPrecedingOperators().size() > 1) {
 				return false;
+			}
 			basicOperator = basicOperator.getPrecedingOperators().get(0);
 		}
 
@@ -654,54 +667,69 @@ public class PhysicalOptimizations {
 						&& !(basicOperator instanceof Optional
 								&& getLeftOperand(basicOperator) != null && getLeftOperand(
 										basicOperator).getUnionVariables().containsAll(
-												sortCriterium)))
+												sortCriterium))) {
 			return false;
+		}
 
 		if (basicOperator instanceof RDF3XIndexScan) {
 			return true;
 		} else if (basicOperator.getClass() == Union.class) {
 			for (final BasicOperator before : basicOperator
 					.getPrecedingOperators()) {
-				if (!operatorCanReceiveSortedData(before, sortCriterium))
+				if (!operatorCanReceiveSortedData(before, sortCriterium)) {
 					return false;
+				}
 			}
 			return true;
 		} else if (basicOperator.getClass() == MergeJoinWithoutSorting.class
 				|| basicOperator.getClass() == MergeWithoutSortingOptional.class
 				|| basicOperator.getClass() == FastSort.class) {
 			// is the input data sorted in the right way?
-			final Iterator<Variable> it_sortCriteriumVars = sortCriterium
-			.iterator();
-			final Iterator<Variable> it_sortCriteriumJoin = (basicOperator
-					.getClass() == FastSort.class) ? ((FastSort) basicOperator)
-							.getSortCriterium().iterator() : basicOperator
-							.getIntersectionVariables().iterator();
-							while (it_sortCriteriumJoin.hasNext()) {
-								if (!it_sortCriteriumVars.hasNext())
-									return false;
-								final Variable v1 = it_sortCriteriumJoin.next();
-								final Variable v2 = it_sortCriteriumVars.next();
-								if (!v1.equals(v2))
-									return false;
-							}
-							if (it_sortCriteriumVars.hasNext())
-								return false;
-							return true;
+			final Iterator<Variable> it_sortCriteriumVars = sortCriterium.iterator();
+			final Iterator<Variable> it_sortCriteriumJoin =
+					(basicOperator.getClass() == FastSort.class) ?
+							((FastSort) basicOperator).getSortCriterium().iterator()
+							: basicOperator.getIntersectionVariables().iterator();
+			while (it_sortCriteriumJoin.hasNext()) {
+				if (!it_sortCriteriumVars.hasNext()) {
+					return false;
+				}
+				final Variable v1 = it_sortCriteriumJoin.next();
+				final Variable v2 = it_sortCriteriumVars.next();
+				if (!v1.equals(v2)) {
+					return false;
+				}
+			}
+			if (it_sortCriteriumVars.hasNext()) {
+				return false;
+			}
+			return true;
 		} else if (basicOperator instanceof Sort) {
 			final Collection<Variable> cv = ((Sort) basicOperator)
-			.getSortCriterium();
-			if (cv == null)
+					.getSortCriterium();
+			if (cv == null) {
 				return false;
+			}
 			final Iterator<Variable> itv = cv.iterator();
 			for (final Variable v : sortCriterium) {
-				if (!itv.hasNext())
+				if (!itv.hasNext()) {
 					return false;
-				if (!v.equals(itv.next()))
+				}
+				if (!v.equals(itv.next())) {
 					return false;
+				}
 			}
-			if (itv.hasNext())
+			if (itv.hasNext()) {
 				return false;
+			}
 			return true;
+		} else if (basicOperator.getClass() == Optional.class) {
+			if(basicOperator.getIntersectionVariables().containsAll(sortCriterium)) {
+				if(basicOperator.getPrecedingOperators().size() == 2) {
+					return 	operatorCanReceiveSortedData(basicOperator.getPrecedingOperators().get(0), sortCriterium) &&
+							operatorCanReceiveSortedData(basicOperator.getPrecedingOperators().get(1), sortCriterium);
+				}
+			}
 		}
 		return false;
 	}
@@ -711,9 +739,10 @@ public class PhysicalOptimizations {
 		for (final BasicOperator boi : bo.getPrecedingOperators()) {
 			final OperatorIDTuple oid = boi.getOperatorIDTuple(bo);
 			if (oid.getId() == 0) {
-				if (result != null)
+				if (result != null) {
 					// several left operands currently not supported here!
 					return null;
+				}
 				result = boi;
 			}
 		}
@@ -723,16 +752,18 @@ public class PhysicalOptimizations {
 	public static boolean operatorMustReceiveSortedData(
 			final BasicOperator root, BasicOperator basicOperator,
 			Collection<Variable> sortCriterium) {
-		if (sortCriterium == null || sortCriterium.size() == 0)
+		if (sortCriterium == null || sortCriterium.size() == 0) {
 			// this case occurs e.g. int the case of computing cartesian
 			// products...
 			return true;
+		}
 		// special cases are considered...
 		// TODO: more general way!
 		while (basicOperator.remainsSortedData(sortCriterium)) {
 			sortCriterium=basicOperator.transformSortCriterium(sortCriterium);
-			if (basicOperator.getPrecedingOperators().size() > 1)
+			if (basicOperator.getPrecedingOperators().size() > 1) {
 				return false;
+			}
 			basicOperator = basicOperator.getPrecedingOperators().get(0);
 		}
 
@@ -756,29 +787,42 @@ public class PhysicalOptimizations {
 			boolean flag = true;
 			final Iterator<Variable> it_sortCriteriumVars = sortCriterium
 			.iterator();
-			final Iterator<Variable> it_sortCriteriumJoin = (basicOperator
-					.getClass() == FastSort.class) ? ((FastSort) basicOperator)
-							.getSortCriterium().iterator() : basicOperator
-							.getIntersectionVariables().iterator();
-							while (it_sortCriteriumJoin.hasNext()) {
-								if (!it_sortCriteriumVars.hasNext()) {
-									flag = false;
-									break;
-								}
-								final Variable v1 = it_sortCriteriumJoin.next();
-								final Variable v2 = it_sortCriteriumVars.next();
-								if (!v1.equals(v2)) {
-									flag = false;
-									break;
-								}
-							}
-							if (it_sortCriteriumVars.hasNext())
-								flag = false;
-							if (flag)
-								return true;			
-		} else if (basicOperator instanceof Sort)
+			final Iterator<Variable> it_sortCriteriumJoin =
+					(basicOperator.getClass() == FastSort.class) ?
+							((FastSort) basicOperator).getSortCriterium().iterator()
+							: basicOperator.getIntersectionVariables().iterator();
+			while (it_sortCriteriumJoin.hasNext()) {
+				if (!it_sortCriteriumVars.hasNext()) {
+					flag = false;
+					break;
+				}
+				final Variable v1 = it_sortCriteriumJoin.next();
+				final Variable v2 = it_sortCriteriumVars.next();
+				if (!v1.equals(v2)) {
+					flag = false;
+					break;
+				}
+			}
+			if (it_sortCriteriumVars.hasNext()) {
+				flag = false;
+			}
+			if (flag) {
+				return true;
+			}
+		} else if (basicOperator instanceof Sort) {
 			// it has already been checked that it is sorted in the right way!
 			return true;
+		} else if (basicOperator.getClass() == Optional.class) {
+			if(basicOperator.getIntersectionVariables().containsAll(sortCriterium)) {
+				if(basicOperator.getPrecedingOperators().size() == 2) {
+					final BasicOperator newOperator = new MergeWithoutSortingOptional();
+					newOperator.cloneFrom(basicOperator);
+					basicOperator.replaceWith(newOperator);
+					return 	operatorMustReceiveSortedData(root, basicOperator.getPrecedingOperators().get(0), sortCriterium) &&
+							operatorMustReceiveSortedData(root, basicOperator.getPrecedingOperators().get(1), sortCriterium);
+				}
+			}
+		}
 		return false;
 	}
 
@@ -793,8 +837,9 @@ public class PhysicalOptimizations {
 					break;
 				}
 			}
-			if (!flag)
+			if (!flag) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -802,31 +847,36 @@ public class PhysicalOptimizations {
 	protected static List<TriplePattern> determineTriplePatterns(
 			final BasicOperator basicOperator, final List<TriplePattern> list,
 			final Set<BasicOperator> alreadyVisited) throws CyclesDuringDeterminationofTriplePatternsException {
-		if(basicOperator.getCycleOperands()!=null && basicOperator.getCycleOperands().size()>0)
+		if(basicOperator.getCycleOperands()!=null && basicOperator.getCycleOperands().size()>0) {
 			throw new CyclesDuringDeterminationofTriplePatternsException();
-		if (alreadyVisited.contains(basicOperator))
+		}
+		if (alreadyVisited.contains(basicOperator)) {
 			return list;
+		}
 		alreadyVisited.add(basicOperator);
 		// exclude operators, which variables are not necessarily bound in the result
-		if(basicOperator instanceof Optional || basicOperator instanceof Minus || basicOperator instanceof Projection || basicOperator instanceof ReplaceVar || basicOperator instanceof EmptyEnv || basicOperator instanceof AddComputedBinding)
+		if(basicOperator instanceof Optional || basicOperator instanceof Minus || basicOperator instanceof Projection || basicOperator instanceof ReplaceVar || basicOperator instanceof EmptyEnv || basicOperator instanceof AddComputedBinding) {
 			return list;
-		if(basicOperator.getSucceedingOperators().size()>1)
+		}
+		if(basicOperator.getSucceedingOperators().size()>1) {
 			return list;
+		}
 		if (basicOperator instanceof BasicIndexScan) {
 			list.addAll(((BasicIndexScan) basicOperator).getTriplePattern());
 		} else if (basicOperator instanceof TriplePattern) {
-			for(BasicOperator prec: basicOperator.getPrecedingOperators()){
+			for(final BasicOperator prec: basicOperator.getPrecedingOperators()){
 				if(prec instanceof Generate) {
 					throw new CyclesDuringDeterminationofTriplePatternsException();
 				}
 			list.add((TriplePattern) basicOperator);
 			}
 		} else {
-			if (basicOperator.getPrecedingOperators() != null)
+			if (basicOperator.getPrecedingOperators() != null) {
 				for (final BasicOperator predecessor : basicOperator
 						.getPrecedingOperators()) {
 					determineTriplePatterns(predecessor, list, alreadyVisited);
 				}
+			}
 		}
 		return list;
 	}
@@ -834,11 +884,13 @@ public class PhysicalOptimizations {
 	public static List<TriplePattern> determineUnionFreeTriplePatterns(
 			final BasicOperator basicOperator, final List<TriplePattern> list,
 			final Set<BasicOperator> alreadyVisited) {
-		if (alreadyVisited.contains(basicOperator))
+		if (alreadyVisited.contains(basicOperator)) {
 			return list;
+		}
 		alreadyVisited.add(basicOperator);
-		if(basicOperator.getSucceedingOperators().size()>1)
+		if(basicOperator.getSucceedingOperators().size()>1) {
 			return list;
+		}
 		if (basicOperator instanceof BasicIndexScan) {
 			list.addAll(((BasicIndexScan) basicOperator).getTriplePattern());
 		} else if (basicOperator instanceof Union
@@ -847,16 +899,17 @@ public class PhysicalOptimizations {
 			// as it might lead to errors in MergeJoinSort!
 			return list;
 		} else {
-			if (basicOperator.getPrecedingOperators() != null)
+			if (basicOperator.getPrecedingOperators() != null) {
 				for (final BasicOperator predecessor : basicOperator
 						.getPrecedingOperators()) {
 					determineUnionFreeTriplePatterns(predecessor, list,
 							alreadyVisited);
 				}
+			}
 		}
 		return list;
 	}
-	
+
 	public static class CyclesDuringDeterminationofTriplePatternsException extends Exception {
 	}
 }

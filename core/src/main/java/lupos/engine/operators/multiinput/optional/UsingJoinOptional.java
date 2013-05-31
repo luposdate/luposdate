@@ -58,8 +58,9 @@ public class UsingJoinOptional extends Optional {
 			return bindings;
 		} else {
 			bindings.materialize();
-			if (bindings.size() == 0)
+			if (bindings.size() == 0) {
 				return null;
+			}
 			this.join.setUnionVariables(this.unionVariables);
 			this.join.setIntersectionVariables(this.intersectionVariables);
 			final OptionalResult or = this.join.processJoin(bindings, operandID);
@@ -68,25 +69,28 @@ public class UsingJoinOptional extends Optional {
 				if (or != null && or.getJoinPartnerFromLeftOperand() != null) {
 					bindings.removeAll(or.getJoinPartnerFromLeftOperand());
 				}
-				if (this.notJoinedFromLeftOperand == null)
+				if (this.notJoinedFromLeftOperand == null) {
 					this.notJoinedFromLeftOperand = new QueryResult();
+				}
 				this.notJoinedFromLeftOperand.addAll(bindings);
 			} else if (or != null && or.getJoinPartnerFromLeftOperand() != null) {
 				if (this.notJoinedFromLeftOperand != null) {
 					this.notJoinedFromLeftOperand.removeAll(or
 							.getJoinPartnerFromLeftOperand());
 				}
-				if (this.joinedFromLeftOperand == null)
+				if (this.joinedFromLeftOperand == null) {
 					this.joinedFromLeftOperand = or.getJoinPartnerFromLeftOperand();
-				else
+				} else {
 					this.joinedFromLeftOperand.addAll(or
 							.getJoinPartnerFromLeftOperand());
+				}
 			}
 			if (or == null || or.getJoinResult() == null
-					|| or.getJoinResult().size() == 0)
+					|| or.getJoinResult().size() == 0) {
 				return null;
-			else
+			} else {
 				return or.getJoinResult();
+			}
 		}
 	}
 
@@ -108,16 +112,18 @@ public class UsingJoinOptional extends Optional {
 					this.notJoinedFromLeftOperand.removeAll(or
 							.getJoinPartnerFromLeftOperand());
 					if (!delete) {
-						if (this.joinedFromLeftOperand == null)
+						if (this.joinedFromLeftOperand == null) {
 							this.joinedFromLeftOperand = QueryResult
 									.createInstance();
+						}
 						this.joinedFromLeftOperand.addAll(or
 								.getJoinPartnerFromLeftOperand());
 					}
 				}
 				if (or.getJoinResult() != null && or.getJoinResult().size() > 0) {
-					if (this.succeedingOperators.size() > 1)
+					if (this.succeedingOperators.size() > 1) {
 						or.getJoinResult().materialize();
+					}
 					for (final OperatorIDTuple opId : this.succeedingOperators) {
 						opId.processAll(or.getJoinResult());
 					}
@@ -132,8 +138,9 @@ public class UsingJoinOptional extends Optional {
 					this.joinedFromLeftOperand = null;
 				}
 			}
-			if (this.succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1) {
 				this.notJoinedFromLeftOperand.materialize();
+			}
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(this.notJoinedFromLeftOperand);
 			}
@@ -147,7 +154,7 @@ public class UsingJoinOptional extends Optional {
 
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
-		return preProcessMessage(new EndOfEvaluationMessage(), false);
+		return this.preProcessMessage(new EndOfEvaluationMessage(), false);
 	}
 
 	@Override
@@ -163,16 +170,19 @@ public class UsingJoinOptional extends Optional {
 			return queryResult;
 		} else {
 			queryResult.materialize();
-			if (queryResult.size() == 0)
+			if (queryResult.size() == 0) {
 				return null;
+			}
 			this.join.setUnionVariables(this.unionVariables);
 			this.join.setIntersectionVariables(this.intersectionVariables);
 			this.join.deleteQueryResult(queryResult, operandID);
 			if (operandID == 0) {
-				if (this.notJoinedFromLeftOperand != null)
+				if (this.notJoinedFromLeftOperand != null) {
 					this.notJoinedFromLeftOperand.removeAll(queryResult);
-				if (this.joinedFromLeftOperand != null)
+				}
+				if (this.joinedFromLeftOperand != null) {
 					this.joinedFromLeftOperand.removeAll(queryResult);
+				}
 			}
 			return null;
 		}
@@ -181,11 +191,6 @@ public class UsingJoinOptional extends Optional {
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return super.toString() + " on " + this.intersectionVariables;
 	}
 
 	public QueryResult getNotJoinedFromLeftOperand() {
@@ -199,15 +204,15 @@ public class UsingJoinOptional extends Optional {
 	public Join getJoin() {
 		return this.join;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
-		return preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep,
+		return this.preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep,
 				false);
 	}
-	
+
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep, final boolean delete) {
 		if (this.join != null) {
@@ -221,16 +226,18 @@ public class UsingJoinOptional extends Optional {
 					this.notJoinedFromLeftOperand.removeAll(or
 							.getJoinPartnerFromLeftOperand());
 					if (!delete) {
-						if (this.joinedFromLeftOperand == null)
+						if (this.joinedFromLeftOperand == null) {
 							this.joinedFromLeftOperand = QueryResult
 									.createInstance();
+						}
 						this.joinedFromLeftOperand.addAll(or
 								.getJoinPartnerFromLeftOperand());
 					}
 				}
 				if (or.getJoinResult() != null && or.getJoinResult().size() > 0) {
-					if (this.succeedingOperators.size() > 1)
+					if (this.succeedingOperators.size() > 1) {
 						or.getJoinResult().materialize();
+					}
 					for (final OperatorIDTuple opId : this.succeedingOperators) {
 						final QueryResultDebug qrDebug = new QueryResultDebug(
 								or.getJoinResult(), debugstep, this, opId
@@ -249,8 +256,9 @@ public class UsingJoinOptional extends Optional {
 					this.joinedFromLeftOperand = null;
 				}
 			}
-			if (this.succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1) {
 				this.notJoinedFromLeftOperand.materialize();
+			}
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				final QueryResultDebug qrDebug = new QueryResultDebug(
 						this.notJoinedFromLeftOperand, debugstep, this, opId
@@ -265,7 +273,7 @@ public class UsingJoinOptional extends Optional {
 		}
 		return msg;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
