@@ -81,16 +81,6 @@ import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.JenaQueryEvaluator;
 import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.evaluators.QueryEvaluator;
-import lupos.gui.DebugViewerCreator.RulesGetter;
-import lupos.gui.anotherSyntaxHighlighting.LANGUAGE;
-import lupos.gui.anotherSyntaxHighlighting.LinePainter;
-import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
-import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-import lupos.gui.anotherSyntaxHighlighting.LuposJTextPane;
-import lupos.gui.anotherSyntaxHighlighting.javacc.RIFParser;
-import lupos.gui.anotherSyntaxHighlighting.javacc.SPARQLParser;
-import lupos.gui.anotherSyntaxHighlighting.javacc.TurtleParser;
-import lupos.gui.debug.ShowResult;
 import lupos.engine.evaluators.QueryEvaluator.DEBUG;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.evaluators.SesameQueryEvaluator;
@@ -102,8 +92,17 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinNonStandardSPARQL;
+import lupos.gui.DebugViewerCreator.RulesGetter;
+import lupos.gui.anotherSyntaxHighlighting.LANGUAGE;
+import lupos.gui.anotherSyntaxHighlighting.LinePainter;
+import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
+import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
+import lupos.gui.anotherSyntaxHighlighting.LuposJTextPane;
+import lupos.gui.anotherSyntaxHighlighting.javacc.RIFParser;
+import lupos.gui.anotherSyntaxHighlighting.javacc.SPARQLParser;
+import lupos.gui.anotherSyntaxHighlighting.javacc.TurtleParser;
 import lupos.gui.debug.EvaluationDemoToolBar;
-import lupos.misc.debug.BasicOperatorByteArray;
+import lupos.gui.debug.ShowResult;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.gui.operatorgraph.viewer.ViewerPrefix;
@@ -115,6 +114,7 @@ import lupos.gui.operatorgraph.visualeditor.queryeditor.AdvancedQueryEditor;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.IQueryEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.misc.FileHelper;
+import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.rif.BasicIndexRuleEvaluator;
 import lupos.rif.datatypes.RuleResult;
@@ -165,7 +165,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private JTextArea ta_rifInputErrors;
 	private JTextArea ta_queryInputErrors;
 	private JTextArea ta_dataInputErrors;
-	private JComboBox cobo_evaluator;
+	protected JComboBox cobo_evaluator;
 	private JPanel resultpanel = null;
 	private String query = "";
 	private String data = "";
@@ -177,7 +177,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private DebugViewerCreator materializationInfo = null;
 	private RuleResult errorsInOntology = null;
 	private String inferenceRules = null;
-	private JPanel masterpanel = null;
+	protected JPanel masterpanel = null;
 	private JTabbedPane tabbedPane_globalMainpane = null;
 	protected boolean isApplet = false;
 	protected JFrame frame = null;
@@ -200,7 +200,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	private JComboBox comboBox_sparqlInferenceGenerated;
 	private JCheckBox checkBox_sparqlInferenceCheckInconsistency;
 	private QueryResult[] resultQueryEvaluator;
-	
+
 	/**
 	 * The following code is just for the possibility to register new query evaluators, which can be also used in this demo...
 	 */
@@ -209,12 +209,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	public static void registerEvaluator(final String evaluatorName, final Class<? extends QueryEvaluator<Node>> evaluatorClass){
 		registeredEvaluators.add(new lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>(evaluatorName, evaluatorClass, new boolean[]{true, true, true, true}));
 	}
-	
+
 
 	public static void registerEvaluator(final String evaluatorName, final Class<? extends QueryEvaluator<Node>> evaluatorClass, final boolean[] enabled){
 		registeredEvaluators.add(new lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>(evaluatorName, evaluatorClass, enabled));
 	}
-	
+
 	{
 		final boolean[] allEnabled = new boolean[]{true, true, true, true};
 		final boolean[] partlyEnabled = new boolean[]{true, false, true, true};
@@ -224,7 +224,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		Demo_Applet.registerEvaluator("Jena", JenaQueryEvaluator.class, partlyEnabled);
 		Demo_Applet.registerEvaluator("Sesame", SesameQueryEvaluator.class, partlyEnabled);
 	}
-	
+
 	private int getCaseIndex(){
 		if (!this.isApplet && this.webdemo != DEMO_ENUM.ECLIPSE) {
 			if (this.webdemo == DEMO_ENUM.LOCALONEJAR) {
@@ -239,12 +239,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private String[] getEvaluators() {
+	protected String[] getEvaluators() {
 		// started with Java Web Start? Java Web start has a more restrictive
 		// rights management, i.e. Jena and Sesame do not work with Java Web Start...
-		int caseIndex = this.getCaseIndex();
-		LinkedList<String> evals = new LinkedList<String>();
-		for(lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]> entry: Demo_Applet.registeredEvaluators){
+		final int caseIndex = this.getCaseIndex();
+		final LinkedList<String> evals = new LinkedList<String>();
+		for(final lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]> entry: Demo_Applet.registeredEvaluators){
 			if(entry.getThird()[caseIndex]){
 				evals.add(entry.getFirst());
 			}
@@ -253,8 +253,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	protected Class<? extends QueryEvaluator<Node>> getEvaluatorClass(final int index) {
-		int caseIndex = this.getCaseIndex();
-		Iterator<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>> entryIt = Demo_Applet.registeredEvaluators.iterator();
+		final int caseIndex = this.getCaseIndex();
+		final Iterator<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>> entryIt = Demo_Applet.registeredEvaluators.iterator();
 		for(int k=0; true; k++){
 			lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]> entry = entryIt.next();
 			while(!entry.getThird()[caseIndex]){
@@ -267,20 +267,19 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	public static void main(final String args[]) {
+		final Demo_Applet applet = new Demo_Applet();
 		if (args.length > 0) {
-			Demo_Applet.startDemoAsApplication(args[0]);
+			Demo_Applet.startDemoAsApplication(args[0], applet);
 		} else {
-			Demo_Applet.startDemoAsApplication();
+			Demo_Applet.startDemoAsApplication(applet);
 		}
 	}
-	
-	public static void startDemoAsApplication(){
-		Demo_Applet.startDemoAsApplication(null);
-	}
-	
-	public static void startDemoAsApplication(String type){
-		final Demo_Applet applet = new Demo_Applet();
 
+	public static void startDemoAsApplication(final Demo_Applet applet){
+		Demo_Applet.startDemoAsApplication(null, applet);
+	}
+
+	public static void startDemoAsApplication(final String type, final Demo_Applet applet){
 		if (type!=null) {
 			applet.setType(type);
 		}
@@ -358,7 +357,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			} else {
 				System.out.println("starting as program...");
 			}
-			
+
 			if (this.webdemo != DEMO_ENUM.ECLIPSE) {
 				this.preferences = XPref.getInstance(Demo_Applet.class.getResource("/preferencesMenu.xml"));
 			} else {
@@ -391,7 +390,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			final JPanel queryInputTab = new JPanel(new BorderLayout());
 
-			final JPanel evalPanel = generateEvalpanel();
+			final JPanel evalPanel = this.generateEvalpanel();
 
 			queryInputTab.add(splitPane_queryInput, BorderLayout.CENTER);
 			queryInputTab.add(evalPanel, BorderLayout.SOUTH);
@@ -404,7 +403,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			final JPanel rifInputTab = new JPanel(new BorderLayout());
 
-			final JPanel rifEvalPanel = generateRifEvalPanel();
+			final JPanel rifEvalPanel = this.generateRifEvalPanel();
 
 			rifInputTab.add(splitPane_rifInput, BorderLayout.CENTER);
 			rifInputTab.add(rifEvalPanel, BorderLayout.SOUTH);
@@ -474,11 +473,10 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff to choose a evaluator.
 	 */
-	private void generateEvaluatorChooseAndPreferences() {
+	protected void generateEvaluatorChooseAndPreferences() {
 		final JPanel rowpanel = new JPanel(new BorderLayout());
 
-		final JPanel leftpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5,
-				0));
+		final JPanel leftpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
 		leftpanel.setBounds(0, 5, 505, 30);
 
 		final JLabel info = new JLabel();
@@ -491,8 +489,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				enableOrDisableButtons(false);
-				enableOrDisableButtons(true);
+				Demo_Applet.this.enableOrDisableButtons(false);
+				Demo_Applet.this.enableOrDisableButtons(true);
 			}
 
 		});
@@ -500,6 +498,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		rowpanel.add(leftpanel, BorderLayout.WEST);
 
+		rowpanel.add(this.generatePreferencesButton(), BorderLayout.EAST);
+
+		this.masterpanel.add(rowpanel, BorderLayout.NORTH);
+	}
+
+	protected JButton generatePreferencesButton(){
 		final JButton preferencesButton = new JButton("Preferences");
 		preferencesButton.addActionListener(new ActionListener() {
 			@Override
@@ -525,46 +529,44 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				}
 			}
 		});
-
-		rowpanel.add(preferencesButton, BorderLayout.EAST);
-
-		this.masterpanel.add(rowpanel, BorderLayout.NORTH);
+		return preferencesButton;
 	}
 
 	private void enableOrDisableEvaluationDemoButtonSPARQL() {
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		if (chosen.compareTo("Jena") == 0 || chosen.compareTo("Sesame") == 0) {
 			this.bt_evalDemo.setEnabled(false);
-		} else
+		} else {
 			this.bt_evalDemo.setEnabled(true);
+		}
 	}
-	
+
 	private boolean isEvaluatorWithSupportOfRIFChosen(){
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		return (chosen.compareTo("Jena") != 0 && chosen.compareTo("Sesame") != 0);
 	}
 
 	private void enableOrDisableEvaluationButtonsRIF() {
-		boolean enable=isEvaluatorWithSupportOfRIFChosen();
+		final boolean enable=this.isEvaluatorWithSupportOfRIFChosen();
 		this.bt_rifEvaluate.setEnabled(enable);
 		this.bt_rifMeasureExecutionTimes.setEnabled(enable);
 	}
 
 	private void enableOrDisableEvaluationDemoButtonRIF() {
-		this.bt_rifEvalDemo.setEnabled(isEvaluatorWithSupportOfRIFChosen());
+		this.bt_rifEvalDemo.setEnabled(this.isEvaluatorWithSupportOfRIFChosen());
 	}
 
 	private void enableOrDisableButtons(final boolean queryOrRif) {
 		if(queryOrRif){
-			enableOrDisableEvaluationDemoButtonSPARQL();
+			this.enableOrDisableEvaluationDemoButtonSPARQL();
 			this.bt_evaluate.setEnabled(true);
 			this.bt_MeasureExecutionTimes.setEnabled(true);
 		} else {
-			enableOrDisableEvaluationDemoButtonRIF();
-			enableOrDisableEvaluationButtonsRIF();
+			this.enableOrDisableEvaluationDemoButtonRIF();
+			this.enableOrDisableEvaluationButtonsRIF();
 		}
 	}
-	
+
 	private class LineNumbers extends JLabel {
 		private static final long serialVersionUID = 1L;
 		private int lWidth = 15;
@@ -646,7 +648,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		this.queryInputSP = new JScrollPane(this.tp_queryInput);
 
-		return generateInputTab(bt_visualEdit, null,
+		return this.generateInputTab(bt_visualEdit, null,
 				"Choose a SPARQL query:\t", this.getQueries(), this.PATH_QUERIES,
 				"Clear query field", this.tp_queryInput, this.queryInputSP);
 	}
@@ -671,7 +673,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		this.rifInputSP = new JScrollPane(this.tp_rifInput);
 
-		return generateInputTab(bt_visualEdit, null, "Choose a RIF query:\t",
+		return this.generateInputTab(bt_visualEdit, null, "Choose a RIF query:\t",
 				this.getRuleFiles(), this.PATH_RULES, "Clear rule field",
 				this.tp_rifInput, this.rifInputSP);
 	}
@@ -681,7 +683,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 */
 	private JPanel generateQueryInputErrorBox() {
 		this.ta_queryInputErrors = new JTextArea();
-		return generateInputErrorBox(this.tp_queryInput,
+		return this.generateInputErrorBox(this.tp_queryInput,
 				this.ta_queryInputErrors);
 	}
 
@@ -690,7 +692,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 */
 	private JPanel generateDataInputErrorBox() {
 		this.ta_dataInputErrors = new JTextArea();
-		return generateInputErrorBox(this.tp_dataInput, this.ta_dataInputErrors);
+		return this.generateInputErrorBox(this.tp_dataInput, this.ta_dataInputErrors);
 	}
 
 	/**
@@ -698,7 +700,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 */
 	private JPanel generateRifInputErrorBox() {
 		this.ta_rifInputErrors = new JTextArea();
-		return generateInputErrorBox(this.tp_rifInput, this.ta_rifInputErrors);
+		return this.generateInputErrorBox(this.tp_rifInput, this.ta_rifInputErrors);
 	}
 
 	/**
@@ -744,7 +746,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for the data input.
 	 */
-	private JPanel generateDataTab() {
+	protected JPanel generateDataTab() {
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
@@ -759,8 +761,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		bt_CondensedView.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if (Demo_Applet.this.prefixInstance == null)
+				if (Demo_Applet.this.prefixInstance == null) {
 					Demo_Applet.this.prefixInstance = new ViewerPrefix(Demo_Applet.this.usePrefixes.isTrue(), null);
+				}
 				final CondensedViewToolBar toolBar = new CondensedViewToolBar(
 						Demo_Applet.this.tp_dataInput.getText(),
 						Demo_Applet.this.prefixInstance);
@@ -768,24 +771,24 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 						Demo_Applet.this.prefixInstance, false, getIcon(Demo_Applet.this.webdemo), toolBar);
 				toolBar.setOperatorGraphViewer(operatorGraphViewer1);
 
-				repaint();
+				Demo_Applet.this.repaint();
 			}
 		});
 
 		final LuposDocument document_data = new LuposDocument();
 		this.tp_dataInput = new LuposJTextPane(document_data);
 		document_data.init(TurtleParser.createILuposParser(new LuposDocumentReader(document_data)), true, 100);
-		
+
 		this.dataInputSP = new JScrollPane(this.tp_dataInput);
 
-		return generateInputTab(bt_visualEdit, bt_CondensedView,
+		return this.generateInputTab(bt_visualEdit, bt_CondensedView,
 				"Choose RDF data:\t", this.getDataFiles(), this.PATH_DATA,
 				"Clear data field", this.tp_dataInput, this.dataInputSP);
 	}
-	
-	public String getResourceAsString(String resource){
+
+	public String getResourceAsString(final String resource){
 		final URL url = Demo_Applet.class.getResource(resource);
-		
+
 		return FileHelper.readFile(resource, new FileHelper.GetReader() {
 
 				@Override
@@ -794,7 +797,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 						InputStream stream = null;
 						stream = this.getClass().getResourceAsStream(filename);
 						return new java.io.InputStreamReader(stream);
-					} catch(Exception e){
+					} catch(final Exception e){
 						return new FileReader(url.getFile());
 					}
 				}
@@ -815,11 +818,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,
 				10, 0));
 
-		if (bt_visualEdit != null)
+		if (bt_visualEdit != null) {
 			buttonPanel.add(bt_visualEdit);
+		}
 
-		if (bt_CondensedView != null)
+		if (bt_CondensedView != null) {
 			buttonPanel.add(bt_CondensedView);
+		}
 
 		rowpanel.add(buttonPanel, BorderLayout.WEST);
 
@@ -870,7 +875,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		return mainpanel;
 	}
-	
+
 	public class RuleSets {
 		public String getRIF(){
 			return Demo_Applet.this.tp_rifInput.getText();
@@ -910,16 +915,16 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		}
 	}
-	
-	private RuleSets rulesets = new RuleSets();
-	
+
+	private final RuleSets rulesets = new RuleSets();
+
 	protected enum SPARQLINFERENCE {
 		NONE(){
 			@Override
 			public String toString(){
 				return "None";
 			}
-			@Override			
+			@Override
 			public boolean isMaterializationChoice() {
 				return false;
 			}
@@ -928,26 +933,26 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				return false;
 			}
 			@Override
-			public String getRuleSet(RuleSets rulesets) {
+			public String getRuleSet(final RuleSets rulesets) {
 				return null;
 			}
 		},
 		RIF(){
-			@Override			
+			@Override
 			public boolean isMaterializationChoice() {
 				return true;
 			}
 			@Override
 			public boolean isGeneratedChoice() {
 				return false;
-			}			
+			}
 			@Override
-			public String getRuleSet(RuleSets rulesets) {
+			public String getRuleSet(final RuleSets rulesets) {
 				return rulesets.getRIF();
 			}
 		},
 		RDFS(){
-			@Override			
+			@Override
 			public boolean isMaterializationChoice() {
 				return true;
 			}
@@ -956,7 +961,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				return true;
 			}
 			@Override
-			public String getRuleSet(RuleSets rulesets) {
+			public String getRuleSet(final RuleSets rulesets) {
 				return rulesets.getRDFS();
 			}
 		},
@@ -965,7 +970,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			public String toString(){
 				return "OWL2 RL";
 			}
-			@Override			
+			@Override
 			public boolean isMaterializationChoice() {
 				return true;
 			}
@@ -974,10 +979,10 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				return true;
 			}
 			@Override
-			public String getRuleSet(RuleSets rulesets) {
+			public String getRuleSet(final RuleSets rulesets) {
 				return rulesets.getOWL2RL();
 			}
-			
+
 			@Override
 			public boolean isCheckInconsistenciesChoice() {
 				return true;
@@ -987,7 +992,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public abstract boolean isMaterializationChoice();
 
 		public abstract boolean isGeneratedChoice();
-		
+
 		public abstract String getRuleSet(RuleSets rulesets);
 
 		public boolean isCheckInconsistenciesChoice() {
@@ -1009,7 +1014,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		}
 	}
-	
+
 	protected static enum GENERATION {
 		GENERATEDOPT(){
 			@Override
@@ -1032,51 +1037,51 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	private JPanel generateEvalpanel() {
-		
+
 		this.comboBox_sparqlInferenceMaterialization = new JComboBox();
-		
+
 		for (int i = 0; i < SPARQLINFERENCEMATERIALIZATION.values().length; i++) {
 			this.comboBox_sparqlInferenceMaterialization.addItem(SPARQLINFERENCEMATERIALIZATION.values()[i]);
 		}
 
 		this.comboBox_sparqlInferenceMaterialization.setSelectedIndex(0);
-		
+
 		this.comboBox_sparqlInferenceGenerated = new JComboBox();
-		for(GENERATION generation: GENERATION.values()){
+		for(final GENERATION generation: GENERATION.values()){
 			this.comboBox_sparqlInferenceGenerated.addItem(generation);
 		}
-		
+
 		this.comboBox_sparqlInference  = new JComboBox();
 
 		for (int i = 0; i < SPARQLINFERENCE.values().length; i++) {
 			this.comboBox_sparqlInference.addItem(SPARQLINFERENCE.values()[i]);
 		}
-		
+
 		this.checkBox_sparqlInferenceCheckInconsistency = new JCheckBox("Check Inconsistencies");
 
 		this.comboBox_sparqlInference.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				SPARQLINFERENCE sparqlinference = (SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem();
+				final SPARQLINFERENCE sparqlinference = (SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem();
 				Demo_Applet.this.comboBox_sparqlInferenceMaterialization.setEnabled(sparqlinference.isMaterializationChoice());
 				Demo_Applet.this.comboBox_sparqlInferenceGenerated.setEnabled(sparqlinference.isGeneratedChoice());
 				Demo_Applet.this.checkBox_sparqlInferenceCheckInconsistency.setEnabled(sparqlinference.isCheckInconsistenciesChoice());
 			}
 		});
-		
+
 		this.comboBox_sparqlInference.setSelectedIndex(0);
-		
+
 		// create evaluate-button, add actionListener and add it to Applet...
 		this.bt_evaluate = new JButton("Evaluate");
 		this.bt_evaluate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
 
-				if (prepareForEvaluation(false)) {
+				if (Demo_Applet.this.prepareForEvaluation(false)) {
 
-					evaluateSPARQLQuery(EvaluationMode.RESULT);
+					Demo_Applet.this.evaluateSPARQLQuery(EvaluationMode.RESULT);
 
-					repaint();
+					Demo_Applet.this.repaint();
 				}
 			}
 		});
@@ -1085,11 +1090,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.bt_evalDemo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if (prepareForEvaluation(false)) {
+				if (Demo_Applet.this.prepareForEvaluation(false)) {
 
-					evaluateSPARQLQuery(EvaluationMode.DEMO);
+					Demo_Applet.this.evaluateSPARQLQuery(EvaluationMode.DEMO);
 
-					repaint();
+					Demo_Applet.this.repaint();
 				}
 			}
 		});
@@ -1098,18 +1103,18 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.bt_MeasureExecutionTimes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if (prepareForEvaluation(false)) {
-					evaluateSPARQLQuery(EvaluationMode.TIMES);
+				if (Demo_Applet.this.prepareForEvaluation(false)) {
+					Demo_Applet.this.evaluateSPARQLQuery(EvaluationMode.TIMES);
 
-					repaint();
+					Demo_Applet.this.repaint();
 				}
 			}
 		});
 
-		JPanel panel1 = generateEvalpanel(new JLabel("Inference:"), this.comboBox_sparqlInference, this.comboBox_sparqlInferenceMaterialization, this.comboBox_sparqlInferenceGenerated, this.checkBox_sparqlInferenceCheckInconsistency); 
-		JPanel panel2 = generateEvalpanel(new JLabel("Evaluation:"), this.bt_evaluate, this.bt_evalDemo, this.bt_MeasureExecutionTimes);
+		final JPanel panel1 = generateEvalpanel(new JLabel("Inference:"), this.comboBox_sparqlInference, this.comboBox_sparqlInferenceMaterialization, this.comboBox_sparqlInferenceGenerated, this.checkBox_sparqlInferenceCheckInconsistency);
+		final JPanel panel2 = generateEvalpanel(new JLabel("Evaluation:"), this.bt_evaluate, this.bt_evalDemo, this.bt_MeasureExecutionTimes);
 
-		JPanel panel = new JPanel(new BorderLayout());
+		final JPanel panel = new JPanel(new BorderLayout());
 		panel.add(panel1, BorderLayout.NORTH);
 		panel.add(panel2, BorderLayout.SOUTH);
 		return panel;
@@ -1122,11 +1127,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
 
-				if (prepareForEvaluation(false)) {
+				if (Demo_Applet.this.prepareForEvaluation(false)) {
 
-					evaluateRIFRule(EvaluationMode.RESULT);
+					Demo_Applet.this.evaluateRIFRule(EvaluationMode.RESULT);
 
-					repaint();
+					Demo_Applet.this.repaint();
 				}
 			}
 		});
@@ -1135,11 +1140,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.bt_rifEvalDemo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if (prepareForEvaluation(false)) {
+				if (Demo_Applet.this.prepareForEvaluation(false)) {
 
-					evaluateRIFRule(EvaluationMode.DEMO);
+					Demo_Applet.this.evaluateRIFRule(EvaluationMode.DEMO);
 
-					repaint();
+					Demo_Applet.this.repaint();
 				}
 			}
 		});
@@ -1148,11 +1153,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.bt_rifMeasureExecutionTimes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if (prepareForEvaluation(false)) {
+				if (Demo_Applet.this.prepareForEvaluation(false)) {
 
-					evaluateRIFRule(EvaluationMode.TIMES);
+					Demo_Applet.this.evaluateRIFRule(EvaluationMode.TIMES);
 
-					repaint();
+					Demo_Applet.this.repaint();
 				}
 			}
 		});
@@ -1163,7 +1168,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	private static JPanel generateEvalpanel(final JComponent... components ) {
 		final JPanel evalpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
-		for(JComponent component: components){
+		for(final JComponent component: components){
 			evalpanel.add(component);
 		}
 		return evalpanel;
@@ -1177,8 +1182,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 							"This operation first closes the existing Evaluation Demo...",
 							"Closing existing Evaluation Demo",
 							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE) != 0)
+							JOptionPane.WARNING_MESSAGE) != 0) {
 				return false;
+			}
 			this.operatorGraphViewer.processWindowEvent(new WindowEvent(
 					this.operatorGraphViewer, WindowEvent.WINDOW_CLOSING));
 		}
@@ -1198,21 +1204,22 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		try {
 			if (BooleanDatatype.getValues("clearErrorField").get(0)
 					.booleanValue()) {
-				displayErrorMessage("", false);
+				this.displayErrorMessage("", false);
 			}
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 
-		if (rif)
+		if (rif) {
 			this.tp_rifInput.disableErrorLine();
-		else
+		} else {
 			this.tp_queryInput.disableErrorLine();
+		}
 		this.tp_dataInput.disableErrorLine();
 
 		if (this.resultpanel != null) {
-			remove(this.resultpanel);
+			this.remove(this.resultpanel);
 		}
 
 		this.data = this.tp_dataInput.getText();
@@ -1258,7 +1265,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		bt_evalDemo_local.setEnabled(enabled);
 		return bt_evalDemo_local;
 	}
-	
+
 	private String[] getFiles(final String path, final String suffix){
 		// create array list for files...
 		final ArrayList<String> tmp = new ArrayList<String>();
@@ -1266,7 +1273,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		// load files...
 		final String[] tmp_lst = new File(Demo_Applet.class.getResource(path).getFile()).list();
 
-		if(tmp_lst!=null)
+		if(tmp_lst!=null) {
 			// walk through files...
 			for (int i = 0; i < tmp_lst.length; i++) {
 				// if file ends with suffix...
@@ -1274,6 +1281,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					tmp.add(tmp_lst[i]); // add file to file array list
 				}
 			}
+		}
 
 		// return list of available queries...
 		return tmp.toArray(new String[tmp.size()]);
@@ -1281,7 +1289,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Get Query Files.
-	 * 
+	 *
 	 * @return string array of available queries
 	 */
 	private String[] getQueries() {
@@ -1339,7 +1347,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					"rule_comparsion.rif", "rule_comparsion.rif",
 					"rule_equality.rif", "rule_exists.rif",
 					"rule_fibonacci.rif", "rule_functional.rif", "rule_Or.rif",
-					"rule_owl2rl.rif", "rule_owl2rlNoInconsistencyRules.rif", 
+					"rule_owl2rl.rif", "rule_owl2rlNoInconsistencyRules.rif",
 					"rule_parent_discount.rif", "rule_predicates.rif",
 					"rule_rdfs.rif" };
 		case TUTORIAL2:
@@ -1351,7 +1359,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Get Data Files.
-	 * 
+	 *
 	 * @return string array of available data files
 	 */
 	private String[] getDataFiles() {
@@ -1381,15 +1389,15 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	public QueryEvaluator<Node> setupEvaluator(final EvaluationMode mode)
 			throws Throwable {
-		ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
-		FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallBitVectorApproach");
+		final ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
+		final FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallBitVectorApproach");
 		bitVectorApproach.setup();
 		serviceApproach.setup();
 		FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
 		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
 		LiteralFactory.semanticInterpretationOfLiterals = xpref.datatypes.BooleanDatatype.getFirstValue("semanticInterpretationOfDatatypes");
 		@SuppressWarnings("unchecked")
-		final QueryEvaluator<Node> evaluator = (QueryEvaluator<Node>) this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex()).newInstance();
+		final QueryEvaluator<Node> evaluator = this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex()).newInstance();
 		evaluator.setupArguments();
 		evaluator.getArgs().set("debug", DEBUG.ALL);
 		evaluator.getArgs().set("result", QueryResult.TYPE.MEMORY);
@@ -1432,23 +1440,23 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			evaluator.init();
 		} catch (final Throwable t) {
 			// can be only rdf data error!
-			dealWithThrowable(t, mode, true);
+			this.dealWithThrowable(t, mode, true);
 			throw t;
 		}
 
 		return evaluator;
 	}
 
-	private static enum EvaluationMode {
+	protected static enum EvaluationMode {
 		RESULT, TIMES, DEMO
 	}
 
-	private abstract class Evaluation {
-		
+	protected abstract class Evaluation {
+
 		public Evaluation(){
 			Demo_Applet.this.errorsInOntology = null;
 		}
-		
+
 		public abstract String getQuery();
 
 		public abstract long compileQuery(String queryParameter) throws Exception;
@@ -1462,29 +1470,29 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public abstract JButton getButtonMeasureExecutionTimes();
 
 		public abstract QueryEvaluator<Node> getEvaluator();
-		
+
 		public void enableButtons(){
-			enableDemoButtonDependingOnEvaluator();
-			enableEvaluateButtonDependingOnEvaluator();
+			this.enableDemoButtonDependingOnEvaluator();
+			this.enableEvaluateButtonDependingOnEvaluator();
 		}
-		
+
 		public void enableDemoButtonDependingOnEvaluator(){
-			this.getButtonEvalDemo().setEnabled(evaluatorSuitableForDemo((String)Demo_Applet.this.cobo_evaluator.getSelectedItem()));
+			this.getButtonEvalDemo().setEnabled(this.evaluatorSuitableForDemo((String)Demo_Applet.this.cobo_evaluator.getSelectedItem()));
 		}
-		
+
 		public abstract boolean evaluatorSuitableForDemo(String s);
 
 		public void enableEvaluateButtonDependingOnEvaluator(){
-			boolean enable = evaluatorSuitableForEvaluation((String)Demo_Applet.this.cobo_evaluator.getSelectedItem());
+			final boolean enable = this.evaluatorSuitableForEvaluation((String)Demo_Applet.this.cobo_evaluator.getSelectedItem());
 			this.getButtonEvaluate().setEnabled(enable);
 			this.getButtonMeasureExecutionTimes().setEnabled(enable);
 		}
-		
+
 		public abstract boolean evaluatorSuitableForEvaluation(String s);
-		
+
 		public abstract long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception;
 	}
-	
+
 	public class SPARQLEvaluation extends Evaluation {
 		private final QueryEvaluator<Node> evaluator;
 		private BasicOperator rootInference;
@@ -1504,21 +1512,21 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public long compileQuery(final String queryParameter) throws Exception {
 			final long a = (new Date()).getTime();
 			this.evaluator.compileQuery(queryParameter);
-			integrateInferenceOperatorgraph();
+			this.integrateInferenceOperatorgraph();
 			return (new Date()).getTime() - a;
 		}
 
 		@Override
 		public DebugViewerCreator compileQueryDebugByteArray(final String queryParameter)
 		throws Exception {
-			DebugViewerCreator result = new SPARQLDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes, 
+			final DebugViewerCreator result = new SPARQLDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
 					new RulesGetter(){
 						@Override
 						public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
 							return Demo_Applet.this.ruleApplications;
 						}
 					}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), this.evaluator.compileQueryDebugByteArray(queryParameter, Demo_Applet.this.prefixInstance));
-			integrateInferenceOperatorgraph();
+			this.integrateInferenceOperatorgraph();
 			return result;
 		}
 
@@ -1544,19 +1552,19 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		@Override
-		public boolean evaluatorSuitableForDemo(String s) {
+		public boolean evaluatorSuitableForDemo(final String s) {
 			return s.compareTo("Jena")!=0 && s.compareTo("Sesame")!=0;
 		}
 
 		@Override
-		public boolean evaluatorSuitableForEvaluation(String s) {
+		public boolean evaluatorSuitableForEvaluation(final String s) {
 			return true;
 		}
-		
+
 		private void setupInference(){
 			final Object chosen=Demo_Applet.this.comboBox_sparqlInference.getSelectedItem();
 			if(chosen != SPARQLINFERENCE.NONE && (this.evaluator instanceof JenaQueryEvaluator || this.evaluator instanceof SesameQueryEvaluator)){
-				if(this.evaluator instanceof JenaQueryEvaluator && (chosen == SPARQLINFERENCE.OWL2RL) 
+				if(this.evaluator instanceof JenaQueryEvaluator && (chosen == SPARQLINFERENCE.OWL2RL)
 				   || chosen == SPARQLINFERENCE.RDFS) {
 					JOptionPane.showMessageDialog(Demo_Applet.this,
 							"Jena and Sesame evaluators do not support different rulesets and materialization strategies!\nUsing their standard inference for "+chosen+"...",
@@ -1565,7 +1573,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					if(this.evaluator instanceof JenaQueryEvaluator){
 						if(chosen == SPARQLINFERENCE.OWL2RL){
 							((JenaQueryEvaluator)this.evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.OWL);
-						} else ((JenaQueryEvaluator)this.evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.RDFS);						
+						} else {
+							((JenaQueryEvaluator)this.evaluator).setOntology(JenaQueryEvaluator.ONTOLOGY.RDFS);
+						}
 						return;
 					} else if(this.evaluator instanceof SesameQueryEvaluator){
 						((SesameQueryEvaluator)this.evaluator).setOntology(SesameQueryEvaluator.ONTOLOGY.RDFS);
@@ -1587,15 +1597,15 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			Demo_Applet.this.materializationInfo = null;
 			Demo_Applet.this.inferenceRules = ((SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem()).getRuleSet(Demo_Applet.this.rulesets);
 			if(Demo_Applet.this.inferenceRules != null){
-				BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)this.evaluator);
+				final BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)this.evaluator);
 				birqe.compileQuery(Demo_Applet.this.inferenceRules);
-				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes, 
+				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
 						new RulesGetter(){
 							@Override
 							public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
 								return Demo_Applet.this.ruleApplications;
 							}
-						}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), birqe.getCompilationUnit(), birqe.getDocument());				
+						}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), birqe.getCompilationUnit(), birqe.getDocument());
 
 				// TODO improve RIF logical optimization such that it is fast enough for large operator graphs!
 				// as workaround here only use the logical optimization of the underlying evaluator!
@@ -1613,30 +1623,30 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				} else {
 					Demo_Applet.this.ruleApplicationsForMaterialization = birqe.physicalOptimizationDebugByteArray(Demo_Applet.this.prefixInstance);
 				}
-								
+
 				if(Demo_Applet.this.comboBox_sparqlInferenceMaterialization.getSelectedItem() == SPARQLINFERENCEMATERIALIZATION.MATERIALIZEALL){
-					Demo_Applet.this.errorsInOntology = birqe.inferTriplesAndStoreInDataset();					
+					Demo_Applet.this.errorsInOntology = birqe.inferTriplesAndStoreInDataset();
 				} else {
 					this.rootInference = birqe.getRootNode();
 					this.resultInference = birqe.getResultOperator();
 				}
 			}
 		}
-		
+
 		private void integrateInferenceOperatorgraph() throws Exception{
 			if(this.evaluator instanceof JenaQueryEvaluator || this.evaluator instanceof SesameQueryEvaluator){
 				return;
 			}
 			if(Demo_Applet.this.comboBox_sparqlInference.getSelectedItem() != SPARQLINFERENCE.NONE &&
 					Demo_Applet.this.comboBox_sparqlInferenceMaterialization.getSelectedItem() == SPARQLINFERENCEMATERIALIZATION.COMBINEDQUERYOPTIMIZATION){
-				CommonCoreQueryEvaluator<Node> commonCoreQueryEvaluator = (CommonCoreQueryEvaluator<Node>)this.evaluator;
+				final CommonCoreQueryEvaluator<Node> commonCoreQueryEvaluator = (CommonCoreQueryEvaluator<Node>)this.evaluator;
 				BasicIndexRuleEvaluator.integrateInferenceOperatorgraphIntoQueryOperatorgraph(this.rootInference, this.resultInference, commonCoreQueryEvaluator.getRootNode(), commonCoreQueryEvaluator.getResultOperator());
 				commonCoreQueryEvaluator.setBindingsVariablesBasedOnOperatorgraph();
-			}			
+			}
 		}
 
 		@Override
-		public long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception {
+		public long prepareInputData(final Collection<URILiteral> defaultGraphsParameter, final LinkedList<URILiteral> namedGraphs) throws Exception {
 			final long a = (new Date()).getTime();
 			this.setupInference();
 			this.evaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
@@ -1673,7 +1683,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public DebugViewerCreator compileQueryDebugByteArray(final String rule)
 				throws Exception {
 			this.ruleEvaluator.compileQuery(rule);
-			return new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes, 
+			return new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
 					new RulesGetter(){
 						@Override
 						public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
@@ -1705,17 +1715,17 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		@Override
-		public boolean evaluatorSuitableForDemo(String s) {
+		public boolean evaluatorSuitableForDemo(final String s) {
 			return s.compareTo("Jena")!=0 && s.compareTo("Sesame")!=0;
 		}
 
 		@Override
-		public boolean evaluatorSuitableForEvaluation(String s) {
-			return evaluatorSuitableForDemo(s);
+		public boolean evaluatorSuitableForEvaluation(final String s) {
+			return this.evaluatorSuitableForDemo(s);
 		}
 
 		@Override
-		public long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception {
+		public long prepareInputData(final Collection<URILiteral> defaultGraphsParameter, final LinkedList<URILiteral> namedGraphs) throws Exception {
 			Demo_Applet.this.materializationInfo = null;
 			return this.ruleEvaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
 		}
@@ -1726,7 +1736,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 */
 	private void evaluateSPARQLQuery(final EvaluationMode mode) {
 		try {
-			evaluate(new SPARQLEvaluation(setupEvaluator(mode)), mode);
+			this.evaluate(new SPARQLEvaluation(this.setupEvaluator(mode)), mode);
 		} catch (final Throwable t) {
 			// ignore forwarded Throwable!
 			this.enableOrDisableButtons(true);
@@ -1735,7 +1745,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	private void evaluateRIFRule(final EvaluationMode mode) {
 		try {
-			evaluate(new RIFEvaluation(setupEvaluator(mode)), mode);
+			this.evaluate(new RIFEvaluation(this.setupEvaluator(mode)), mode);
 		} catch (final Throwable t) {
 			// ignore forwarded Throwable!
 			this.enableOrDisableButtons(false);
@@ -1743,14 +1753,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
-		
+	protected void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
+
 		this.resultpanel = new JPanel(new BorderLayout());
 		// set the empty resultpanel as component for the result tab
 		this.tabbedPane_globalMainpane.setComponentAt(
 				this.tabbedPane_globalMainpane.indexOfTab(this.TAB_TITLE_RESULT),
 				this.resultpanel);
-		
+
 		evaluation.getButtonEvaluate().setEnabled(false);
 		evaluation.getButtonEvalDemo().setEnabled(false);
 		evaluation.getButtonMeasureExecutionTimes().setEnabled(false);
@@ -1758,7 +1768,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.query = evaluation.getQuery(); // get query
 
 		if (this.query.compareTo("") == 0) { // no query given...
-			displayErrorMessage("Error: empty query", true);
+			this.displayErrorMessage("Error: empty query", true);
 			evaluation.enableButtons();
 		} else { // evaluate query...
 			try {
@@ -1788,7 +1798,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 									final EvaluationDemoToolBar bottomToolBar = new EvaluationDemoToolBar(
 											this.webdemo != DEMO_ENUM.ECLIPSE);
 
-									Result result = (evaluator instanceof BasicIndexRuleEvaluator)?
+									final Result result = (evaluator instanceof BasicIndexRuleEvaluator)?
 											((BasicIndexRuleEvaluator)evaluator).getResultOperator()
 											:((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator();
 
@@ -1803,7 +1813,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 													try {
 														evaluator.evaluateQueryDebugSteps(bottomToolBar, sr);
 														bottomToolBar.endOfEvaluation();
-														enableOrDisableButtons(evaluation instanceof SPARQLEvaluation);
+														Demo_Applet.this.enableOrDisableButtons(evaluation instanceof SPARQLEvaluation);
 													} catch (final Exception e) {
 														System.err
 														.println(e);
@@ -1813,8 +1823,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 											};
 											bottomToolBar.setEvaluationThread(thread);
 											thread.start();
-											
-											BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
+
+											final BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
 
 											this.operatorGraphViewer = new Viewer(
 													new GraphWrapperBasicOperator(
@@ -1837,7 +1847,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 									}
 
 									final long evaluateQuery = evaluator.evaluateQuery();
-									int times = xpref.datatypes.IntegerDatatype.getFirstValue("repetitionsOfExecution");
+									final int times = xpref.datatypes.IntegerDatatype.getFirstValue("repetitionsOfExecution");
 									if(times >1){
 										long compileQueryTime = 0;
 										long logicalOptimizationTime = 0;
@@ -1907,23 +1917,23 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 									frame1.setVisible(true);
 								}
 							} catch (final Throwable t) {
-								dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+								this.dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 							}
 						} catch (final Throwable t) {
-							dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+							this.dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 						}
 						evaluation.enableButtons();
 
 					} else {
 
-						try {		
+						try {
 							this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
 							evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
 
 							System.out.println("Compile query...");
 							try {
 								try {
-									
+
 									this.debugViewerCreator = evaluation.compileQueryDebugByteArray(this.query);
 
 									if (this.debugViewerCreator != null) {
@@ -1952,7 +1962,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 									if (evaluator instanceof CommonCoreQueryEvaluator || evaluator instanceof BasicIndexRuleEvaluator) {
 										final CollectRIFResult crr = new CollectRIFResult(false);
-										Result resultOperator = (evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator(): ((BasicIndexRuleEvaluator)evaluator).getResultOperator();
+										final Result resultOperator = (evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator(): ((BasicIndexRuleEvaluator)evaluator).getResultOperator();
 										resultOperator.addApplication(crr);
 										evaluator.evaluateQuery();
 										this.resultQueryEvaluator = crr.getQueryResults();
@@ -1962,16 +1972,17 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 									}
 
 									System.out.println("\nQuery Result:");
-									for (final QueryResult qr : this.resultQueryEvaluator)
+									for (final QueryResult qr : this.resultQueryEvaluator) {
 										System.out.println(qr);
+									}
 									System.out.println("----------------Done.");
 
 									if (this.isApplet) {
-										setSize(800, 905);
-										repaint();
+										this.setSize(800, 905);
+										this.repaint();
 									}
 
-									outputResult();
+									this.outputResult();
 
 									// set resultpanel as component for the result tab and make the tab active
 									this.tabbedPane_globalMainpane.setComponentAt(
@@ -1979,13 +1990,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 											this.resultpanel);
 									this.tabbedPane_globalMainpane.setSelectedComponent(this.resultpanel);
 								} catch (final Throwable t) {
-									dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+									this.dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 								}
 							} catch (final Throwable t) {
-								dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+								this.dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 							}
 						} catch (final Throwable t) {
-							dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+							this.dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 						}
 
 						evaluation.enableButtons();
@@ -1995,20 +2006,20 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					evaluation.enableButtons();
 				}
 			} catch (final Throwable t) {
-				dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
+				this.dealWithThrowable(t, mode, evaluation instanceof SPARQLEvaluation);
 
 				evaluation.enableButtons();
 			}
 			// append an empty string to the error textarea to force the system to flush the System.err
-			displayErrorMessage("", true);
+			this.displayErrorMessage("", true);
 		}
 	}
 
 	private boolean dealWithThrowableFromQueryParser(final Throwable e,
-			final EvaluationMode mode, boolean queryOrRif) {
+			final EvaluationMode mode, final boolean queryOrRif) {
 		if (e instanceof TokenMgrError) {
 			final TokenMgrError tme = (TokenMgrError) e;
-			displayErrorMessage(tme.getMessage(), false, queryOrRif);
+			this.displayErrorMessage(tme.getMessage(), false, queryOrRif);
 
 			// create the pattern to match
 			// and create a matcher against the string
@@ -2022,15 +2033,15 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				final int line = Integer.parseInt(matcher.group(1));
 				final int column = Integer.parseInt(matcher.group(2));
 
-				setErrorPosition(line, column, queryOrRif);
+				this.setErrorPosition(line, column, queryOrRif);
 			}
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 			return true;
 		} else	if (e instanceof lupos.rif.generated.parser.TokenMgrError) {
 			final lupos.rif.generated.parser.TokenMgrError tme = (lupos.rif.generated.parser.TokenMgrError) e;
-			displayErrorMessage(tme.getMessage(), false, queryOrRif);
+			this.displayErrorMessage(tme.getMessage(), false, queryOrRif);
 
 			// create the pattern to match
 			// and create a matcher against the string
@@ -2044,15 +2055,15 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				final int line = Integer.parseInt(matcher.group(1));
 				final int column = Integer.parseInt(matcher.group(2));
 
-				setErrorPosition(line, column, queryOrRif);
+				this.setErrorPosition(line, column, queryOrRif);
 			}
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
-			return true;			
+			return true;
 		} else if (e instanceof ParseException) {
 			final ParseException pe = (ParseException) e;
-			displayErrorMessage(pe.getMessage(), false, queryOrRif);
+			this.displayErrorMessage(pe.getMessage(), false, queryOrRif);
 
 			int line;
 			int column;
@@ -2066,14 +2077,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				column = pe.currentToken.next.beginColumn;
 			}
 
-			setErrorPosition(line, column, queryOrRif);
+			this.setErrorPosition(line, column, queryOrRif);
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 			return true;
 		} else if(e instanceof lupos.rif.generated.parser.ParseException){
 			final lupos.rif.generated.parser.ParseException pe = (lupos.rif.generated.parser.ParseException) e;
-			displayErrorMessage(pe.getMessage(), false, queryOrRif);
+			this.displayErrorMessage(pe.getMessage(), false, queryOrRif);
 
 			int line;
 			int column;
@@ -2087,14 +2098,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				column = pe.currentToken.next.beginColumn;
 			}
 
-			setErrorPosition(line, column, queryOrRif);
+			this.setErrorPosition(line, column, queryOrRif);
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
-			return true;			
+			return true;
 		} else if (e instanceof QueryParseException) {
 			final QueryParseException qpe = (QueryParseException) e;
-			displayErrorMessage(qpe.getMessage(), false, queryOrRif);
+			this.displayErrorMessage(qpe.getMessage(), false, queryOrRif);
 
 			// create the pattern to match
 			// and create a matcher against the string
@@ -2108,15 +2119,15 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				final int line = Integer.parseInt(matcher.group(1));
 				final int column = Integer.parseInt(matcher.group(2));
 
-				setErrorPosition(line, column, queryOrRif);
+				this.setErrorPosition(line, column, queryOrRif);
 			}
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 			return true;
 		} else if (e instanceof MalformedQueryException) {
 			final MalformedQueryException mqe = (MalformedQueryException) e;
-			displayErrorMessage(mqe.getMessage(), false, queryOrRif);
+			this.displayErrorMessage(mqe.getMessage(), false, queryOrRif);
 
 			// create the pattern to match
 			// and create a matcher against the string
@@ -2130,16 +2141,16 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				final int line = Integer.parseInt(matcher.group(1));
 				final int column = Integer.parseInt(matcher.group(2));
 
-				setErrorPosition(line, column, queryOrRif);
+				this.setErrorPosition(line, column, queryOrRif);
 			}
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 			return true;
 		}
 		return false;
 	}
-	
+
 	private void setErrorPosition(final int line, final int column, final boolean queryOrRif){
 		if(queryOrRif){
 			this.tp_queryInput.setErrorPosition(line, column);
@@ -2148,12 +2159,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void dealWithThrowable(final Throwable e, final EvaluationMode mode, boolean queryOrRif) {
-		if (this.dealWithThrowableFromQueryParser(e, mode, queryOrRif))
+	protected void dealWithThrowable(final Throwable e, final EvaluationMode mode, final boolean queryOrRif) {
+		if (this.dealWithThrowableFromQueryParser(e, mode, queryOrRif)) {
 			return;
+		}
 		if (e instanceof TurtleParseException) {
 			final TurtleParseException n3e = (TurtleParseException) e;
-			displayDataErrorMessage(n3e.getMessage(), false);
+			this.displayDataErrorMessage(n3e.getMessage(), false);
 
 			// create the pattern to match
 			// and create a matcher against the string
@@ -2181,11 +2193,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				this.tp_dataInput.setErrorPosition(line, column);
 			}
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 		} else if (e instanceof RDFParseException) {
 			final RDFParseException rdfpe = (RDFParseException) e;
-			displayDataErrorMessage(rdfpe.getMessage(), false);
+			this.displayDataErrorMessage(rdfpe.getMessage(), false);
 
 			// get precise line and column...
 			final int line = rdfpe.getLineNumber();
@@ -2197,7 +2209,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 			this.tp_dataInput.setErrorPosition(line, column);
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 		} else {
 			// do not use System.err.println(...) as Java
@@ -2205,24 +2217,24 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			// Start
 			// forbids to redirect System.err, such that
 			// nor error message would be printed!
-			displayErrorMessage(e.toString(), false, queryOrRif);
+			this.displayErrorMessage(e.toString(), false, queryOrRif);
 			e.printStackTrace();
 			if (mode == EvaluationMode.DEMO) {
-				enableOrDisableButtons(queryOrRif);
+				this.enableOrDisableButtons(queryOrRif);
 			}
 		}
 
 	}
-	
+
 	private void outputResult(){
 		try{
 			final Container contentPane = (this.isApplet) ? this.getContentPane() : this.frame.getContentPane();
-			
+
 			ResultPanelHelper.setupResultPanel(this.resultpanel, this.resultQueryEvaluator, this.debugViewerCreator, this.materializationInfo, this.inferenceRules, this.ruleApplicationsForMaterialization, this.errorsInOntology, this.usePrefixes, this.prefixInstance, contentPane );
-			
+
 		} catch (final Exception ex) {
 			// this.ta_errors.setText(ex.toString());
-			displayErrorMessage(ex.toString(), false);
+			this.displayErrorMessage(ex.toString(), false);
 
 			ex.printStackTrace();
 		}
@@ -2230,9 +2242,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		// append an empty string to the error textarea to get the system to
 		// flush the System.err
 		// this.ta_errors.append("");
-		displayErrorMessage("", true);
+		this.displayErrorMessage("", true);
 	}
-	
+
 
 
 	private void setGlobalFont(final Font font) {
@@ -2425,7 +2437,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private static void removeLinePainter(LinePainter lp, final JTextPane tp) {
+	private static void removeLinePainter(final LinePainter lp, final JTextPane tp) {
 		if (lp != null) {
 			lp.removeLinePainter();
 			tp.revalidate();
@@ -2560,17 +2572,17 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/*
 	 * Display an error message inside both the 'SPARQL query' tab and the 'RDF
 	 * data' tab
-	 * 
+	 *
 	 * @param error message to display
-	 * 
+	 *
 	 * @param append if true, the message will be appended to the current
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
 	private void displayErrorMessage(final String error, final boolean append) {
-		displayDataErrorMessage(error, append);
-		displayRifErrorMessage(error, append);
-		displayQueryErrorMessage(error, append);
+		this.displayDataErrorMessage(error, append);
+		this.displayRifErrorMessage(error, append);
+		this.displayQueryErrorMessage(error, append);
 	}
 
 	private void displayErrorMessage(final String error, final boolean append,
@@ -2582,58 +2594,59 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				ta_inputErrors.setText(error);
 			}
 		}
-		if (error.compareTo("") != 0)
+		if (error.compareTo("") != 0) {
 			this.tabbedPane_globalMainpane.setSelectedIndex(index);
+		}
 	}
 
 	/*
 	 * Display an error message in the error box inside the 'RDF data' tab
-	 * 
+	 *
 	 * @param dataError message to display
-	 * 
+	 *
 	 * @param append if true, the message will be appended to the current
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
-	private void displayDataErrorMessage(final String dataError,
+	protected void displayDataErrorMessage(final String dataError,
 			final boolean append) {
-		displayErrorMessage(dataError, append, this.ta_dataInputErrors, 2);
+		this.displayErrorMessage(dataError, append, this.ta_dataInputErrors, 2);
 	}
-	
+
 	private void displayErrorMessage(final String queryError, final boolean append, final boolean queryOrRif){
 		if(queryOrRif){
-			displayQueryErrorMessage(queryError, append);
+			this.displayQueryErrorMessage(queryError, append);
 		} else {
-			displayRifErrorMessage(queryError, append);
+			this.displayRifErrorMessage(queryError, append);
 		}
 	}
 
 	/*
 	 * Display an error message in the error box inside the 'SPARQL query' tab
-	 * 
+	 *
 	 * @param queryError message to display
-	 * 
+	 *
 	 * @param append if true, the message will be appended to the current
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
 	private void displayQueryErrorMessage(final String queryError,
 			final boolean append) {
-		displayErrorMessage(queryError, append, this.ta_queryInputErrors, 0);
+		this.displayErrorMessage(queryError, append, this.ta_queryInputErrors, 0);
 	}
 
 	/*
 	 * Display an error message in the error box inside the 'RIF rules' tab
-	 * 
+	 *
 	 * @param ruleError message to display
-	 * 
+	 *
 	 * @param append if true, the message will be appended to the current
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
 	private void displayRifErrorMessage(final String rifError,
 			final boolean append) {
-		displayErrorMessage(rifError, append, this.ta_rifInputErrors, 1);
+		this.displayErrorMessage(rifError, append, this.ta_rifInputErrors, 1);
 	}
-	
+
 }
