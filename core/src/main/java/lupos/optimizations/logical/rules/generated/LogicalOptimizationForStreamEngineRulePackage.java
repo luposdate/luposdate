@@ -35,7 +35,8 @@ public class LogicalOptimizationForStreamEngineRulePackage extends RulePackage {
 		        new BinaryJoinRule(),
 		        new ConstantPropagationofFilterinTriplePatternRule(),
 		        new ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule(),
-		        new BoundinFilterUnderAddRule()
+		        new BoundinFilterUnderAddRule(),
+		        new UnnecessaryOptionalBecauseofProjectionRule()
         };
     }
 }

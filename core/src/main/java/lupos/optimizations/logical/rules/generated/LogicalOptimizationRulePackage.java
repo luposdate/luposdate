@@ -41,7 +41,8 @@ public class LogicalOptimizationRulePackage extends RulePackage {
 		        new ProjectionOverSortRule(),
 		        new SortLimitoverSortRule(),
 		        new BinaryJoinRule(),
-		        new BoundinFilterUnderAddRule()
+		        new BoundinFilterUnderAddRule(),
+		        new UnnecessaryOptionalBecauseofProjectionRule()
         };
     }
 }

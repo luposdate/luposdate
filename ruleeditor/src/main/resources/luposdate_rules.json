@@ -22,7 +22,8 @@
       "SortLimit over Sort",
       "Binary Join",
       "Optimizing Join Order",
-      "Bound in Filter Under Add"
+      "Bound in Filter Under Add",
+      "Unnecessary Optional Because of Projection"
     ],
     "Logical Optimization For Stream Engine": [
       "Factor out AND in Filter",
@@ -30,7 +31,8 @@
       "Binary Join",
       "Constant Propagation of Filter in Triple Pattern",
       "Constant Propagation of Filter in Triple Pattern with Operators Between",
-      "Bound in Filter Under Add"
+      "Bound in Filter Under Add",
+      "Unnecessary Optional Because of Projection"
     ],
     "Physical Optimization": ["Physical Optimization Rule"],
     "RIF Rules": [
@@ -3152,7 +3154,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "",
+          "additional code": "this.deleteOperatorWithParentsAndChildren(this.o1, _startNodes);",
           "code": "",
           "use generated code": true
         }
@@ -4681,6 +4683,131 @@
             "position": [
               5,
               236
+            ]
+          }
+        },
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "Unnecessary Optional Because of Projection": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "if(this.opt.getPrecedingOperators().size()>2){\r\n\treturn false;\r\n}\r\nif(this.o0.getUnionVariables().containsAll(this.p.getProjectedVariables())){\r\n\treturn true;\r\n} else {\r\n\treturn false;\r\n}",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "this.deleteOperatorWithParentsAndChildren(this.o1, _startNodes);",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "connections": {
+            "o0": [{
+              "active": true,
+              "id": 0,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "opt"
+            }],
+            "o1": [{
+              "active": true,
+              "id": 1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "opt"
+            }],
+            "opt": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+              "to": "p"
+            }]
+          },
+          "o0": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              0,
+              35
+            ]
+          },
+          "o1": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              571,
+              32
+            ]
+          },
+          "opt": {
+            "also subclasses": true,
+            "class type": "Optional",
+            "op type": "RuleOperator",
+            "position": [
+              253,
+              456
+            ]
+          },
+          "p": {
+            "also subclasses": false,
+            "class type": "Projection",
+            "op type": "RuleOperator",
+            "position": [
+              263,
+              792
+            ],
+            "start node": true
+          }
+        },
+        "right side": {
+          "connections": {"o0": [{
+            "active": false,
+            "id": -1,
+            "id label": "",
+            "mode": "ONLY_PRECEDING_AND_SUCCEEDING",
+            "to": "p"
+          }]},
+          "o0": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              63,
+              45
+            ]
+          },
+          "p": {
+            "also subclasses": false,
+            "class type": "Projection",
+            "op type": "RuleOperator",
+            "position": [
+              62,
+              327
             ]
           }
         },
