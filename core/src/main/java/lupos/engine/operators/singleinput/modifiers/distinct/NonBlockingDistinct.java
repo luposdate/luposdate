@@ -34,7 +34,7 @@ public abstract class NonBlockingDistinct extends Distinct {
 	private static final long serialVersionUID = -5670129779878953225L;
 
 	final protected Set<Bindings> bindings;
-	
+
 	public NonBlockingDistinct(final Set<Bindings> setOfBindings){
 		this.bindings = setOfBindings;
 	}
@@ -42,20 +42,22 @@ public abstract class NonBlockingDistinct extends Distinct {
 	@Override
 	public QueryResult process(final QueryResult _bindings, final int operandID) {
 		final Iterator<Bindings> itb = _bindings.oneTimeIterator();
-		if (!itb.hasNext())
+		if (!itb.hasNext()) {
 			return null;
-		else
+		} else {
 			return QueryResult.createInstance(new Iterator<Bindings>() {
 				Bindings next = null;
 
 				@Override
 				public boolean hasNext() {
-					if (this.next != null)
+					if (this.next != null) {
 						return true;
+					}
 					if (itb.hasNext()) {
-						this.next = next();
-						if (this.next != null)
+						this.next = this.next();
+						if (this.next != null) {
 							return true;
+						}
 					}
 					return false;
 				}
@@ -82,11 +84,11 @@ public abstract class NonBlockingDistinct extends Distinct {
 					throw new UnsupportedOperationException();
 				}
 			});
+		}
 	}
 
 	@Override
-	public QueryResult deleteQueryResult(final QueryResult queryResult,
-			final int operandID) {
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		// problem: it does not count the number of occurrences of a binding
 		// i.e. { ?a=<a> }, { ?a=<a> } and delete { ?a=<a> } will result in
 		// {} instead of { ?a=<a> }!!!!!!
@@ -98,7 +100,7 @@ public abstract class NonBlockingDistinct extends Distinct {
 	}
 
 	@Override
-	public void deleteAll(final int operandID) {
+	public void deleteQueryResult(final int operandID) {
 		this.bindings.clear();
 	}
 

@@ -41,6 +41,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.StreamQueryEvaluator;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
@@ -76,19 +77,20 @@ public class TestStream {
 			groupLayout.setAutoCreateContainerGaps(true);
 
 			// Create the other labels
-			label = new JLabel("Placeholder");
+			this.label = new JLabel("Placeholder");
 
 			// Create tool tips
-			label.setToolTipText("The computed average of the last 10 triples");
+			this.label.setToolTipText("The computed average of the last 10 triples");
 
 			final JLabel textLabel = new JLabel(
 					"The computed average of the last 10 triples: ");
 
 			final JButton okButton = new JButton("Ok");
 			okButton.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent ae) {
-					frame.dispose();
-					loop = false;
+					TestStream.this.frame.dispose();
+					TestStream.this.loop = false;
 				}
 			});
 
@@ -98,17 +100,17 @@ public class TestStream {
 			groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
 					.addGroup(
 							groupLayout.createParallelGroup().addComponent(
-									textLabel).addComponent(label)
+									textLabel).addComponent(this.label)
 									.addComponent(okButton)));
 
 			groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
-					.addComponent(textLabel).addComponent(label).addComponent(
+					.addComponent(textLabel).addComponent(this.label).addComponent(
 							okButton));
 
 		}
 
 		public JLabel getLabel() {
-			return label;
+			return this.label;
 		}
 
 	}
@@ -121,27 +123,28 @@ public class TestStream {
 		// Schedule a job for the event dispatch thread:
 		// creating and showing this application's GUI.
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				// Turn off metal's use of bold fonts
 				UIManager.put("swing.boldMetal", Boolean.FALSE);
 
 				// Create and set up the window.
-				frame = new JFrame("Stream Demo");
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				TestStream.this.frame = new JFrame("Stream Demo");
+				TestStream.this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				// Add content to the window.
-				frame.add(labelDemo);
+				TestStream.this.frame.add(labelDemo);
 
 				// Display the window.
-				frame.pack();
-				frame.setVisible(true);
+				TestStream.this.frame.pack();
+				TestStream.this.frame.setVisible(true);
 			}
 		});
 	}
 
 	/**
 	 * This method generates the data stream and processes the stream query
-	 * 
+	 *
 	 * @param stream
 	 *            the root operator of the stream query
 	 */
@@ -151,7 +154,7 @@ public class TestStream {
 			final Literal s = LiteralFactory.createURILiteral("<s>");
 			final Literal p = LiteralFactory.createURILiteral("<p>");
 			int i = 0;
-			while (loop) {
+			while (this.loop) {
 				final int current = (i >= 100) ? 100 - (i % 100) : i;
 				final Literal o = LiteralFactory.createTypedLiteral("\""
 						+ current + "\"",
@@ -170,7 +173,7 @@ public class TestStream {
 	/**
 	 * This method starts the stream query processing by setting up the
 	 * evaluator and starting the stream
-	 * 
+	 *
 	 * @param query
 	 *            the SPARQL query string
 	 * @param notifyStreamResult
@@ -186,6 +189,7 @@ public class TestStream {
 			evaluator.getArgs().set("result", QueryResult.TYPE.MEMORY);
 			evaluator.getArgs().set("codemap", LiteralFactory.MapType.HASHMAP);
 			evaluator.getArgs().set("datastructure", Indices.DATA_STRUCT.HASHMAP);
+			evaluator.getArgs().set("distinct", CommonCoreQueryEvaluator.DISTINCT.HASHSET);
 			evaluator.init();
 
 			evaluator.compileQuery(query);
@@ -195,8 +199,9 @@ public class TestStream {
 				final Stream stream = (Stream) evaluator.getRootNode();
 				stream.addNotifyStreamResult(notifyStreamResult);
 				return stream;
-			} else
+			} else {
 				System.err.println("No stream query given!");
+			}
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -210,11 +215,12 @@ public class TestStream {
 	public void start() {
 		// create and show the GUI
 		final LabelDemo labelDemo = new LabelDemo();
-		createAndShowGUI(labelDemo);
+		this.createAndShowGUI(labelDemo);
 
 		// use the following object for retrieving the intermediate result of
 		// the stream query
 		final NotifyStreamResult notifyStreamResult = new NotifyStreamResult() {
+			@Override
 			public void notifyStreamResult(final QueryResult result) {
 				labelDemo.getLabel().setText(result.toString());
 			}
@@ -224,18 +230,19 @@ public class TestStream {
 		// triples
 		final String query = 	"SELECT DISTINCT (avg(?o) as ?avg)\n"
 								+ "STREAM INTERMEDIATERESULT DURATION 1000\n" + "WHERE {\n"
-								+ "       WINDOW TYPE SLIDINGTRIPLES 10 {?s ?p ?o.} }";
+								+ "       WINDOW TYPE SLIDINGTRIPLES 1 {?s ?p ?o.} }";
 
 		// now generate the query...
-		final Stream stream = generateQuery(query, notifyStreamResult);
-		if (stream != null)
+		final Stream stream = this.generateQuery(query, notifyStreamResult);
+		if (stream != null) {
 			// ... and process the stream query using a generated data stream
-			generateStream(stream);
+			this.generateStream(stream);
+		}
 	}
 
 	/**
 	 * This method is called when starting this java program
-	 * 
+	 *
 	 * @param args
 	 *            command line arguments
 	 */
