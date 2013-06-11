@@ -29,6 +29,7 @@ import java.util.List;
 
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.Literal;
+import lupos.misc.util.ImmutableIterator;
 
 public class Triple implements Iterable<Literal>, Serializable,
 		Comparable<Triple> {
@@ -54,7 +55,7 @@ public class Triple implements Iterable<Literal>, Serializable,
 		// standard constructor without initialization...
 	}
 
-	public Triple(Literal[] literals) {
+	public Triple(final Literal[] literals) {
 		this(literals[0], literals[1], literals[2]);
 	}
 
@@ -72,7 +73,7 @@ public class Triple implements Iterable<Literal>, Serializable,
 
 	@Override
 	public Iterator<Literal> iterator() {
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int pos = 0;
 
 			@Override
@@ -82,34 +83,31 @@ public class Triple implements Iterable<Literal>, Serializable,
 
 			@Override
 			public Literal next() {
-				return getPos(this.pos++);
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
+				return Triple.this.getPos(this.pos++);
 			}
 		};
 	}
 
 	public Literal getPos(final int i) {
-		if (i == 0)
+		if (i == 0) {
 			return this.subject;
-		else if (i == 1)
+		} else if (i == 1) {
 			return this.predicate;
-		else if (i == 2)
+		} else if (i == 2) {
 			return this.object;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	public void setPos(final int i, final Literal lit) {
-		if (i == 0)
+		if (i == 0) {
 			this.subject = lit;
-		else if (i == 1)
+		} else if (i == 1) {
 			this.predicate = lit;
-		else if (i == 2)
+		} else if (i == 2) {
 			this.object = lit;
+		}
 	}
 
 	@Override
@@ -135,7 +133,7 @@ public class Triple implements Iterable<Literal>, Serializable,
 
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return this.toString().hashCode();
 	}
 
 	@Override
@@ -153,15 +151,16 @@ public class Triple implements Iterable<Literal>, Serializable,
 					&& (this.predicate == null || t.getPredicate() == null || this.predicate
 							.equals(t.getPredicate())) && (this.object == null
 					|| t.getObject() == null || this.object.equals(t.getObject())));
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	public boolean equivalentExceptAnonymousLiterals(final Triple t) {
 		return ((this.subject == null || t.getSubject() == null
 				|| this.subject.equals(t.getSubject()) || (this.subject instanceof AnonymousLiteral && t.subject instanceof AnonymousLiteral))
 				&& (this.predicate == null || t.getPredicate() == null
-						|| this.predicate.equals(t.getPredicate()) || (this.predicate instanceof AnonymousLiteral && t.predicate instanceof AnonymousLiteral)) && 
+						|| this.predicate.equals(t.getPredicate()) || (this.predicate instanceof AnonymousLiteral && t.predicate instanceof AnonymousLiteral)) &&
 						(this.object == null || t.getObject() == null || this.object.equals(t.getObject()) || (this.object instanceof AnonymousLiteral && t.object instanceof AnonymousLiteral)));
 	}
 
@@ -171,8 +170,9 @@ public class Triple implements Iterable<Literal>, Serializable,
 			final int compare = this.getPos(pos)
 					.compareToNotNecessarilySPARQLSpecificationConform(
 							arg0.getPos(pos));
-			if (compare != 0)
+			if (compare != 0) {
 				return compare;
+			}
 		}
 		return 0;
 	}

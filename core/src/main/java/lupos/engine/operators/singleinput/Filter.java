@@ -48,6 +48,7 @@ import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor
 import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitorImplementation;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.misc.debug.DebugStep;
+import lupos.misc.util.ImmutableIterator;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumperShort;
 import lupos.sparql1_1.ASTAggregation;
@@ -94,26 +95,27 @@ public class Filter extends SingleInputOperator {
 	private static EvaluationVisitor<Map<Node, Object>, Object> getEvaluationVisitor() {
 		try {
 			return evaluationVisitorClass.newInstance();
-		} catch (InstantiationException e) {
+		} catch (final InstantiationException e) {
 			System.err.println(e);
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 		return new EvaluationVisitorImplementation();
 	}
 
-	public void setNodePointer(lupos.sparql1_1.Node node) {
+	public void setNodePointer(final lupos.sparql1_1.Node node) {
 		this.np = node;
 		this.usedVariables.clear();
-		computeUsedVariables(this.np);
-		this.aggregationFunctions = computeAggegrationFunctions(this.np);
+		this.computeUsedVariables(this.np);
+		this.aggregationFunctions = this.computeAggegrationFunctions(this.np);
 	}
 
 	private void computeUsedVariables(final lupos.sparql1_1.Node n) {
-		if (n == null)
+		if (n == null) {
 			return;
+		}
 		if (n instanceof lupos.sparql1_1.ASTVar) {
 			try {
 				this.usedVariables.add(new Variable(((lupos.sparql1_1.ASTVar) n)
@@ -125,22 +127,23 @@ public class Filter extends SingleInputOperator {
 
 		}
 		for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-			computeUsedVariables(n.jjtGetChild(i));
+			this.computeUsedVariables(n.jjtGetChild(i));
 		}
 	}
 
 	private List<List<lupos.sparql1_1.Node>> computeAggegrationFunctions(
 			final lupos.sparql1_1.Node n) {
-		if (n == null)
+		if (n == null) {
 			return null;
+		}
 		List<List<lupos.sparql1_1.Node>> result = null;
 		for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-			final List<List<lupos.sparql1_1.Node>> interResult = computeAggegrationFunctions(n
+			final List<List<lupos.sparql1_1.Node>> interResult = this.computeAggegrationFunctions(n
 					.jjtGetChild(i));
 			if (interResult != null) {
-				if (result == null)
+				if (result == null) {
 					result = interResult;
-				else {
+				} else {
 					if (result.size() > interResult.size()) {
 						final Iterator<List<lupos.sparql1_1.Node>> resultElemIt = result
 								.iterator();
@@ -159,8 +162,9 @@ public class Filter extends SingleInputOperator {
 			}
 		}
 		if (isAggregationFunction(n)) {
-			if (result == null)
+			if (result == null) {
 				result = new LinkedList<List<lupos.sparql1_1.Node>>();
+			}
 			final List<lupos.sparql1_1.Node> currentLevel = new LinkedList<lupos.sparql1_1.Node>();
 			currentLevel.add(n);
 			result.add(currentLevel);
@@ -173,7 +177,7 @@ public class Filter extends SingleInputOperator {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return ASTFilterConstraint: the node this instance belongs to
 	 */
 	public lupos.sparql1_1.Node getNodePointer() {
@@ -183,7 +187,7 @@ public class Filter extends SingleInputOperator {
 	/**
 	 * This Method processes the incoming Bindings-sequence and forwards the
 	 * Bindings which meet the demands
-	 * 
+	 *
 	 * @param List
 	 *            : Bindings to evaluate.
 	 * @return List: Bindings which fitted. If there is no such binding NULL
@@ -193,10 +197,10 @@ public class Filter extends SingleInputOperator {
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (this.aggregationFunctions == null) {
-			final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
+			final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
 				final Iterator<Bindings> bindIt = bindings.oneTimeIterator();
 				int number = 0;
-				Bindings next = computeNext();
+				Bindings next = this.computeNext();
 
 				@Override
 				public boolean hasNext() {
@@ -206,7 +210,7 @@ public class Filter extends SingleInputOperator {
 				@Override
 				public Bindings next() {
 					final Bindings zNext = this.next;
-					this.next = computeNext();
+					this.next = this.computeNext();
 					return zNext;
 				}
 
@@ -215,7 +219,7 @@ public class Filter extends SingleInputOperator {
 						final Bindings bind = this.bindIt.next();
 						try {
 							if (bind != null) {
-								final Object o = evalTree(bind, Filter.this.np
+								final Object o = Filter.this.evalTree(bind, Filter.this.np
 										.jjtGetChild(0),
 										null);
 								if (Helper.booleanEffectiveValue(o)) {
@@ -234,38 +238,40 @@ public class Filter extends SingleInputOperator {
 					Filter.this.cardinality = this.number;
 					return null;
 				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
 			};
 
-			if (resultIterator.hasNext())
+			if (resultIterator.hasNext()) {
 				return QueryResult.createInstance(resultIterator);
-			else
+			}
+			else {
 				return null;
 			// forwarded bindings, return value
+			}
 		} else {
 			if (this.queryResult == null) {
 				bindings.materialize();
 				this.queryResult = bindings;
-			} else
+			} else {
 				this.queryResult.add(bindings);
+			}
 			return null;
 		}
 	}
 
 	private static boolean isConstant(final lupos.sparql1_1.Node n) {
-		if (n == null)
+		if (n == null) {
 			return true;
-		if (n instanceof ASTVar)
+		}
+		if (n instanceof ASTVar) {
 			return false;
-		if (n.getChildren() == null)
+		}
+		if (n.getChildren() == null) {
 			return true;
+		}
 		for (final lupos.sparql1_1.Node node : n.getChildren()) {
-			if (!isAggregationFunction(node) && !isConstant(node))
+			if (!isAggregationFunction(node) && !isConstant(node)) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -275,11 +281,11 @@ public class Filter extends SingleInputOperator {
 	}
 
 	private static void processAggregationFunction(final QueryResult queryResult, final lupos.sparql1_1.Node n, final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions, final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor) {
-		boolean childAdded = false;
+		final boolean childAdded = false;
 		if (isAggregationFunction(n)) {
-			ASTAggregation aggregation = (ASTAggregation) n;
+			final ASTAggregation aggregation = (ASTAggregation) n;
 			Object result = null;
-			
+
 			if (n.jjtGetNumChildren()>0 && isConstant(n.jjtGetChild(0))) {
 				try {
 					final lupos.sparql1_1.Node node=n.jjtGetChild(0);
@@ -288,7 +294,7 @@ public class Filter extends SingleInputOperator {
 					if (childAdded) {
 						n.clearChildren();
 					}
-					Iterator<Object> values = new Iterator<Object>() {
+					final Iterator<Object> values = new ImmutableIterator<Object>() {
 						Object next = operand;
 
 						@Override
@@ -298,14 +304,9 @@ public class Filter extends SingleInputOperator {
 
 						@Override
 						public Object next() {
-							Object znext = this.next;
+							final Object znext = this.next;
 							this.next = null;
 							return znext;
-						}
-
-						@Override
-						public void remove() {
-							throw new UnsupportedOperationException();
 						}
 					};
 					result = aggregation.applyAggregation(
@@ -318,43 +319,39 @@ public class Filter extends SingleInputOperator {
 					e.printStackTrace();
 				}
 			} else {
-				
-				Iterator<? extends Object> values = (n.jjtGetNumChildren()==0)?queryResult.iterator():new Iterator<Object>() {
+
+				Iterator<? extends Object> values = (n.jjtGetNumChildren()==0)?queryResult.iterator():new ImmutableIterator<Object>() {
 					final lupos.sparql1_1.Node node=n.jjtGetChild(0);
 					Iterator<Bindings> iterator = queryResult.iterator();
 					Object next = null;
 
 					@Override
 					public boolean hasNext() {
-						if (this.next != null)
+						if (this.next != null) {
 							return true;
-						this.next = next();
+						}
+						this.next = this.next();
 						return (this.next != null);
 					}
 
 					@Override
 					public Object next() {
 						if (this.next != null) {
-							Object znext = this.next;
+							final Object znext = this.next;
 							this.next = null;
 							return znext;
 						}
 						while (this.iterator.hasNext()) {
-							Bindings b = this.iterator.next();
+							final Bindings b = this.iterator.next();
 							try {
 								return Filter.staticEvalTree(b, this.node,
 										resultsOfAggregationFunctions, evaluationVisitor);
 
-							} catch (Exception e) {
+							} catch (final Exception e) {
 								// just ignore bindings with error!
 							}
 						}
 						return null;
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
 					}
 				};
 				if (aggregation.isDistinct()) {
@@ -362,39 +359,35 @@ public class Filter extends SingleInputOperator {
 					// TODO implement also disk-based duplicate elimination
 					// (just like physical operators for DISTINCT)
 					final Iterator<? extends Object> oldIterator = values;
-					values = new Iterator<Object>() {
+					values = new ImmutableIterator<Object>() {
 
 						HashSet<Object> alreadyUsedObjects = new HashSet<Object>();
 						Object next = null;
 
 						@Override
 						public boolean hasNext() {
-							if (this.next != null)
+							if (this.next != null) {
 								return true;
-							this.next = next();
+							}
+							this.next = this.next();
 							return (this.next != null);
 						}
 
 						@Override
 						public Object next() {
 							if (this.next != null) {
-								Object znext = this.next;
+								final Object znext = this.next;
 								this.next = null;
 								return znext;
 							}
 							while (oldIterator.hasNext()) {
-								Object o = oldIterator.next();
+								final Object o = oldIterator.next();
 								if (!this.alreadyUsedObjects.contains(o)) {
 									this.alreadyUsedObjects.add(o);
 									return o;
 								}
 							}
 							return null;
-						}
-
-						@Override
-						public void remove() {
-							throw new UnsupportedOperationException();
 						}
 					};
 				}
@@ -409,23 +402,24 @@ public class Filter extends SingleInputOperator {
 	}
 
 	public static void computeAggregationFunctions(final QueryResult queryResult, final List<List<lupos.sparql1_1.Node>> aggregationFunctions, final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions, final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor) {
-		if (aggregationFunctions != null)
+		if (aggregationFunctions != null) {
 			for (final List<lupos.sparql1_1.Node> list : aggregationFunctions) {
 				for (final lupos.sparql1_1.Node n : list) {
 					processAggregationFunction(queryResult, n, resultsOfAggregationFunctions, evaluationVisitor);
 				}
 			}
+		}
 	}
 
 	protected static QueryResult getQueryResultForAggregatedFilter(final Node np, final QueryResult queryResult, final List<List<lupos.sparql1_1.Node>> aggregationFunctions, final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor) {
 		if (queryResult != null) {
-			final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>(); 
+			final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>();
 			if (aggregationFunctions != null) {
 				computeAggregationFunctions(queryResult, aggregationFunctions, resultsOfAggregationFunctions, evaluationVisitor);
-				final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
+				final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
 					final Iterator<Bindings> bindIt = queryResult
 							.oneTimeIterator();
-					Bindings next = computeNext();
+					Bindings next = this.computeNext();
 
 					@Override
 					public boolean hasNext() {
@@ -435,7 +429,7 @@ public class Filter extends SingleInputOperator {
 					@Override
 					public Bindings next() {
 						final Bindings zNext = this.next;
-						this.next = computeNext();
+						this.next = this.computeNext();
 						return zNext;
 					}
 
@@ -462,11 +456,6 @@ public class Filter extends SingleInputOperator {
 						}
 						return null;
 					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
 				};
 				if (resultIterator.hasNext()) {
 					return QueryResult.createInstance(resultIterator);
@@ -486,8 +475,9 @@ public class Filter extends SingleInputOperator {
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		final QueryResult qr = getQueryResultForAggregatedFilter(this.np, this.queryResult, this.aggregationFunctions, this.evaluationVisitor);
 		if (qr != null) {
-			if (this.succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1) {
 				qr.materialize();
+			}
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(qr);
 			}
@@ -498,14 +488,15 @@ public class Filter extends SingleInputOperator {
 
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
-		return preProcessMessage(new EndOfEvaluationMessage());
+		return this.preProcessMessage(new EndOfEvaluationMessage());
 	}
 
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete,
 			final int operandID) {
-		if (this.queryResult != null)
+		if (this.queryResult != null) {
 			this.queryResult.removeAll(queryResultToDelete);
+		}
 		return queryResultToDelete;
 	}
 
@@ -525,7 +516,7 @@ public class Filter extends SingleInputOperator {
 			throws NotBoundException, TypeErrorException {
 		return n.accept(this.evaluationVisitor, b, resultsOfAggregationFunctions);
 	}
-	
+
 	/**
 	 * @param b
 	 *            : List of Bindings which are tested
@@ -600,12 +591,12 @@ public class Filter extends SingleInputOperator {
 			final DebugStep debugstep) {
 		return this.preProcessMessage(msg);
 	}
-		
+
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
-		return preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
+		return this.preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
 	}
 
 	@Override
@@ -613,8 +604,9 @@ public class Filter extends SingleInputOperator {
 			final DebugStep debugstep) {
 		final QueryResult qr = getQueryResultForAggregatedFilter(this.np, this.queryResult, this.aggregationFunctions, this.evaluationVisitor);
 		if (qr != null) {
-			if (this.succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1) {
 				qr.materialize();
+			}
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 						debugstep, this, opId.getOperator(), true);
@@ -626,16 +618,16 @@ public class Filter extends SingleInputOperator {
 	}
 
 	@Override
-	public boolean remainsSortedData(Collection<Variable> sortCriterium) {
+	public boolean remainsSortedData(final Collection<Variable> sortCriterium) {
 		return true;
 	}
 
 	public void setEvaluator(
-			lupos.engine.evaluators.CommonCoreQueryEvaluator<Node> evaluator) {
+			final lupos.engine.evaluators.CommonCoreQueryEvaluator<Node> evaluator) {
 		this.evaluationVisitor.setEvaluator(evaluator);
 	}
 
-	public void setCollectionForExistNodes(Map<SimpleNode, Root> root) {
+	public void setCollectionForExistNodes(final Map<SimpleNode, Root> root) {
 		this.evaluationVisitor.setCollectionForExistNodes(root);
 	}
 

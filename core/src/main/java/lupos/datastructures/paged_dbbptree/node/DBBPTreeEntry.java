@@ -33,18 +33,22 @@ public class DBBPTreeEntry<K, V> {
 		this.value = value;
 	}
 
-	public DBBPTreeEntry(final K key, final V value,
-			final int filenameOfNextLeafNode) {
+	public DBBPTreeEntry(final K key, final V value, final int filenameOfNextLeafNode) {
 		this.key = key;
 		this.value = value;
 		this.filenameOfNextLeafNode = filenameOfNextLeafNode;
 	}
 
+	public DBBPTreeEntry(final int filenameOfNextLeafNode) {
+		this(null, null, filenameOfNextLeafNode);
+	}
+
 	@Override
 	public String toString() {
-		if (key != null)
-			return key.toString() + " -> " + value.toString();
-		else
-			return "Next leaf node:" + filenameOfNextLeafNode;
+		if (this.key != null) {
+			return this.key.toString() + " -> " + this.value.toString();
+		} else {
+			return "Next leaf node:" + this.filenameOfNextLeafNode;
+		}
 	}
 }

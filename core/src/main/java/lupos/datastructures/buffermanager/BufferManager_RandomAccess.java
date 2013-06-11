@@ -104,7 +104,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	/**
 	 * the current number of bytes in the buffer
 	 */
-	protected long currentNumberOfBytesInPuffer = 0;
+	protected long currentNumberOfBytesInBuffer = 0;
 
 	/**
 	 * holds all modified pages
@@ -162,13 +162,13 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	 * @throws IOException
 	 */
 	private void handleFullBuffer() throws IOException {
-		while (this.currentNumberOfBytesInPuffer >= BufferManager_RandomAccess.MAXBYTESINBUFFER) {
+		while (this.currentNumberOfBytesInBuffer >= BufferManager_RandomAccess.MAXBYTESINBUFFER) {
 			final PageAddress toBeReplaced = this.replacementStrategy.getToBeReplaced();
 			final Page pageToBeReplaced = this.bufferedPages.get(toBeReplaced);
 			if (pageToBeReplaced != null) {
 				this.writeModifiedPage(pageToBeReplaced, toBeReplaced);
 				this.bufferedPages.remove(toBeReplaced);
-				this.currentNumberOfBytesInPuffer -= pageToBeReplaced.pagesize;
+				this.currentNumberOfBytesInBuffer -= pageToBeReplaced.pagesize;
 			}
 		}
 	}
@@ -196,7 +196,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 				this.jumpToPage(pagesize, pageaddress).read(pageContent);
 				page = new Page(pagesize, pageaddress, pageContent);
 				this.bufferedPages.put(pageaddress, page);
-				this.currentNumberOfBytesInPuffer += pagesize;
+				this.currentNumberOfBytesInBuffer += pagesize;
 			}
 			this.replacementStrategy.accessNow(pageaddress);
 			return page.page;
@@ -227,7 +227,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 				page = new Page(pagesize, pageaddress, pageContent, true);
 				this.bufferedPages.put(pageaddress, page);
 				this.modifiedPages.put(pageaddress, page);
-				this.currentNumberOfBytesInPuffer += pagesize;
+				this.currentNumberOfBytesInBuffer += pagesize;
 			} else {
 				page.page = pageContent;
 				page.modified = true;
@@ -255,7 +255,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 				if(page.modified){
 					this.modifiedPages.remove(pageaddress);
 				}
-				this.currentNumberOfBytesInPuffer -= page.pagesize;
+				this.currentNumberOfBytesInBuffer -= page.pagesize;
 			}
 		} finally {
 			BufferManager_CachedFiles.lock.unlock();
@@ -273,7 +273,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 			this.replacementStrategy.releaseAll();
 			this.bufferedPages.clear();
 			this.modifiedPages.clear();
-			this.currentNumberOfBytesInPuffer = 0;
+			this.currentNumberOfBytesInBuffer = 0;
 		} finally {
 			BufferManager_CachedFiles.lock.unlock();
 		}
@@ -333,7 +333,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 			for(final Entry<PageAddress, Page> entry: this.bufferedPages.entrySet()){
 				if(entry.getKey().filename.compareTo(filename)==0){
 					pageAddresses.add(entry.getKey());
-					this.currentNumberOfBytesInPuffer -= entry.getValue().pagesize;
+					this.currentNumberOfBytesInBuffer -= entry.getValue().pagesize;
 				}
 			}
 			for(final PageAddress pageAddress: pageAddresses){

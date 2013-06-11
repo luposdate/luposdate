@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
 import lupos.datastructures.dbmergesortedds.StandardComparator;
+import lupos.misc.util.ImmutableIterator;
 
 public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 
@@ -69,30 +70,29 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 
 	@Override
 	public void sort() {
-		elements = sortAndReturn();
+		this.elements = this.sortAndReturn();
 	}
 
 	@Override
 	public Iterator<E> emptyDatastructure() {
-		final int lengthSorted = length;
-		final Object[] sorted = sortAndReturn();
+		final int lengthSorted = this.length;
+		final Object[] sorted = this.sortAndReturn();
 		// System.out.println(lengthSorted + "<->" + sorted.length);
-		return new Iterator<E>() {
+		return new ImmutableIterator<E>() {
 			private int index = 0;
 
+			@Override
 			public boolean hasNext() {
-				return index < lengthSorted;
+				return this.index < lengthSorted;
 			}
 
+			@Override
 			public E next() {
-				if (index < lengthSorted)
-					return (E) sorted[index++];
-				else
+				if (this.index < lengthSorted) {
+					return (E) sorted[this.index++];
+				} else {
 					return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
+				}
 			}
 		};
 	}
@@ -100,8 +100,8 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 	public static int M = 25; // length of start sequences sorted with insertion
 
 	public Object[] sortAndReturn() {
-		threadsPoolRemaining = new Semaphore(NUMBEROFTHREADS);
-		final Sorter sorter = new Sorter(elements, 0, length);
+		this.threadsPoolRemaining = new Semaphore(NUMBEROFTHREADS);
+		final Sorter sorter = new Sorter(this.elements, 0, this.length);
 		sorter.run();
 		return sorter.getSorted();
 	}
@@ -121,20 +121,21 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 
 		@Override
 		public void run() {
-			if (length <= M)
-				sorted = getSorted(tosort, start, length);
-			else {
-				final int m = length / 2;
-				final Sorter sorter1 = new Sorter(tosort, start, m);
-				if (threadsPoolRemaining.tryAcquire())
+			if (this.length <= M) {
+				this.sorted = this.getSorted(this.tosort, this.start, this.length);
+			} else {
+				final int m = this.length / 2;
+				final Sorter sorter1 = new Sorter(this.tosort, this.start, m);
+				if (ParallelMergeSort.this.threadsPoolRemaining.tryAcquire()) {
 					sorter1.start();
-				else
+				} else {
 					sorter1.run();
-				final Sorter sorter2 = new Sorter(tosort, start + m, length - m);
+				}
+				final Sorter sorter2 = new Sorter(this.tosort, this.start + m, this.length - m);
 				sorter2.run();
 				try {
 					sorter1.join();
-					sorted = merge(sorter1.getSorted(), sorter2.getSorted());
+					this.sorted = this.merge(sorter1.getSorted(), sorter2.getSorted());
 				} catch (final InterruptedException e) {
 					System.err.println(e);
 					e.printStackTrace();
@@ -152,8 +153,9 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 				final E tmp2 = (E) alreadySorted[i];
 				int j;
 				for (j = i - 1; j >= 0
-						&& comparator.compare(tmp2, (E) alreadySorted[j]) < 0; --j)
+						&& ParallelMergeSort.this.comparator.compare(tmp2, (E) alreadySorted[j]) < 0; --j) {
 					alreadySorted[j + 1] = alreadySorted[j];
+				}
 				alreadySorted[j + 1] = tmp2;
 			}
 			return alreadySorted;
@@ -180,7 +182,7 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 					// s[index_s++] = a[index_a++];
 					return s;
 				} else {
-					s[index_s++] = (comparator.compare((E) a[index_a],
+					s[index_s++] = (ParallelMergeSort.this.comparator.compare((E) a[index_a],
 							(E) b[index_b]) <= 0) ? a[index_a++] : b[index_b++];
 				}
 			}
@@ -188,7 +190,7 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 		}
 
 		public Object[] getSorted() {
-			return sorted;
+			return this.sorted;
 		}
 	}
 

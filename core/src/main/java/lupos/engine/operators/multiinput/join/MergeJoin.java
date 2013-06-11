@@ -32,7 +32,6 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
@@ -44,12 +43,13 @@ import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
 import lupos.misc.debug.DebugStep;
+import lupos.misc.util.ImmutableIterator;
 
 public class MergeJoin extends Join {
 
 	protected SortedBag<Bindings> left = null;
 	protected SortedBag<Bindings> right = null;
-	
+
 	protected BindingsComparator comp = new BindingsComparator();
 
 	public void init(final SortedBag<Bindings> left, final SortedBag<Bindings> right) {
@@ -62,15 +62,18 @@ public class MergeJoin extends Join {
 		this.comp.setVariables(this.intersectionVariables);
 		if (operandID == 0) {
 			final Iterator<Bindings> itb = bindings.oneTimeIterator();
-			while (itb.hasNext())
+			while (itb.hasNext()) {
 				this.left.add(itb.next());
+			}
 		} else if (operandID == 1) {
 			final Iterator<Bindings> itb = bindings.oneTimeIterator();
-			while (itb.hasNext())
+			while (itb.hasNext()) {
 				this.right.add(itb.next());
-		} else
+			}
+		} else {
 			System.err.println("MergeJoin is a binary operator, but received the operand number "
 							+ operandID);
+		}
 		return null;
 	}
 
@@ -82,9 +85,10 @@ public class MergeJoin extends Join {
 			this.left.addAll(bindings.getCollection());
 		} else if (operandID == 1) {
 			this.right.addAll(bindings.getCollection());
-		} else
+		} else {
 			System.err.println("Embedded MergeJoin operator in Optional is a binary operator, but received the operand number "
 							+ operandID);
+		}
 		return null;
 	}
 
@@ -92,12 +96,13 @@ public class MergeJoin extends Join {
 	public OptionalResult joinBeforeEndOfStream() {
 		if (this.left != null && this.right != null) {
 			this.comp.setVariables(this.intersectionVariables);
-			final OptionalResult or = mergeJoinOptionalResult(this.left, this.right, this.comp);
+			final OptionalResult or = this.mergeJoinOptionalResult(this.left, this.right, this.comp);
 			this.left.clear();
 			this.right.clear();
 			return or;
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
@@ -126,7 +131,7 @@ public class MergeJoin extends Join {
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
 									MergeJoin.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return currentResult.hasNext();
 							}
@@ -136,10 +141,11 @@ public class MergeJoin extends Join {
 								final Bindings b = currentResult.next();
 								if (!currentResult.hasNext()) {
 									MergeJoin.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
-								if (b != null)
+								if (b != null) {
 									this.number++;
+								}
 								return b;
 							}
 
@@ -150,20 +156,23 @@ public class MergeJoin extends Join {
 
 							@Override
 							public void finalize() {
-								close();
+								this.close();
 							}
 						});
 
-				if (this.succeedingOperators.size() > 1)
+				if (this.succeedingOperators.size() > 1) {
 					result.materialize();
+				}
 				for (final OperatorIDTuple opId : this.succeedingOperators) {
 					opId.processAll(result);
 				}
 			} else {
-				if (this.left instanceof DBMergeSortedBag)
-					((DBMergeSortedBag) left).release();
-				if (this.right instanceof DBMergeSortedBag)
-					((DBMergeSortedBag) right).release();
+				if (this.left instanceof DBMergeSortedBag) {
+					((DBMergeSortedBag) this.left).release();
+				}
+				if (this.right instanceof DBMergeSortedBag) {
+					((DBMergeSortedBag) this.right).release();
+				}
 			}
 
 		}
@@ -213,7 +222,7 @@ public class MergeJoin extends Join {
 					}
 					b2 = ssb2it.next();
 				} while (comp.compare(b2, bindings) == 0);
-				for (final Bindings zb1 : bindings1)
+				for (final Bindings zb1 : bindings1) {
 					for (final Bindings zb2 : bindings2) {
 						final Bindings bnew = zb1.clone();
 						bnew.addAll(zb2);
@@ -221,22 +230,26 @@ public class MergeJoin extends Join {
 						bnew.addAllPresortingNumbers(zb2);
 						result.add(bnew);
 					}
+				}
 			} else if (compare < 0) {
 				if (ssb1it.hasNext()) {
 					b1 = ssb1it.next();
-				} else
+				} else {
 					processFurther = false;
+				}
 			} else if (compare > 0) {
 				if (ssb2it.hasNext()) {
 					b2 = ssb2it.next();
-				} else
+				} else {
 					processFurther = false;
+				}
 			}
 		} while (processFurther == true);
-		if (result.size() > 0)
+		if (result.size() > 0) {
 			return result;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	public static ParallelIterator<Bindings> mergeJoinIterator(
@@ -277,32 +290,38 @@ public class MergeJoin extends Join {
 
 			@Override
 			public boolean hasNext() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return true;
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return true;
+					}
 				}
 				return false;
 			}
 
 			@Override
 			public void close() {
-				if (ssb1it instanceof ParallelIterator)
+				if (ssb1it instanceof ParallelIterator) {
 					((ParallelIterator<Bindings>) ssb1it).close();
-				if (ssb2it instanceof ParallelIterator)
+				}
+				if (ssb2it instanceof ParallelIterator) {
 					((ParallelIterator<Bindings>) ssb2it).close();
+				}
 			}
 
 			@Override
 			public Bindings next() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -346,8 +365,9 @@ public class MergeJoin extends Join {
 
 							@Override
 							public Bindings next() {
-								if (!hasNext())
+								if (!this.hasNext()) {
 									return null;
+								}
 								if (!this.itb2.hasNext()) {
 									this.zb1 = this.itb1.next();
 									this.itb2 = bindings2.iterator();
@@ -379,12 +399,15 @@ public class MergeJoin extends Join {
 											.next(projected);
 								} while (this.b1 != null
 										&& comp.compare(this.b1, projected) < 0);
-								if (this.b1 == null)
+								if (this.b1 == null) {
 									this.processFurther = false;
-							} else
+								}
+							} else {
 								this.b1 = ssb1it.next();
-						} else
+							}
+						} else {
 							this.processFurther = false;
+						}
 					} else if (compare > 0) {
 						if (ssb2it.hasNext()) {
 							if (ssb2it instanceof SIPParallelIterator) {
@@ -398,12 +421,15 @@ public class MergeJoin extends Join {
 											.next(projected);
 								} while (this.b2 != null
 										&& comp.compare(this.b2, projected) < 0);
-								if (this.b2 == null)
+								if (this.b2 == null) {
 									this.processFurther = false;
-							} else
+								}
+							} else {
 								this.b2 = ssb2it.next();
-						} else
+							}
+						} else {
 							this.processFurther = false;
+						}
 					}
 				}
 			}
@@ -415,29 +441,37 @@ public class MergeJoin extends Join {
 
 			@Override
 			public Bindings next(final Bindings k) {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
 					if (ssb1it instanceof SIPParallelIterator) {
-						while (comp.compare(this.b1, k) < 0)
+						while (comp.compare(this.b1, k) < 0) {
 							this.b1 = ((SIPParallelIterator<Bindings, Bindings>) ssb1it)
 									.next(k);
-					} else
-						while (comp.compare(this.b1, k) < 0)
+						}
+					} else {
+						while (comp.compare(this.b1, k) < 0) {
 							this.b1 = ssb1it.next();
+						}
+					}
 					if (ssb2it instanceof SIPParallelIterator) {
-						while (comp.compare(this.b2, k) < 0)
+						while (comp.compare(this.b2, k) < 0) {
 							this.b2 = ((SIPParallelIterator<Bindings, Bindings>) ssb1it).next(k);
-					} else
-						while (comp.compare(this.b2, k) < 0)
+						}
+					} else {
+						while (comp.compare(this.b2, k) < 0) {
 							this.b2 = ssb1it.next();
+						}
+					}
 					if (this.b1 == null || this.b2 == null) {
 						this.processFurther = false;
 						return null;
 					}
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -474,8 +508,9 @@ public class MergeJoin extends Join {
 		}
 
 		final Bindings[] b = new Bindings[ssbit.length];
-		for (int i = 0; i < b.length; i++)
+		for (int i = 0; i < b.length; i++) {
 			b[i] = ssbit[i].next();
+		}
 		final Collection<Bindings>[] bindings = new Collection[b.length];
 
 		return new SIPParallelIterator<Bindings, Bindings>() {
@@ -484,12 +519,14 @@ public class MergeJoin extends Join {
 
 			@Override
 			public boolean hasNext() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return true;
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return true;
+					}
 				}
 				return false;
 			}
@@ -497,19 +534,22 @@ public class MergeJoin extends Join {
 			@Override
 			public void close() {
 				for (final Iterator<Bindings> it : ssbit) {
-					if (it instanceof ParallelIterator)
+					if (it instanceof ParallelIterator) {
 						((ParallelIterator<Bindings>) it).close();
+					}
 				}
 			}
 
 			@Override
 			public Bindings next() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -555,22 +595,26 @@ public class MergeJoin extends Join {
 
 							@Override
 							public boolean hasNext() {
-								for (final Iterator<Bindings> it : itb)
-									if (it.hasNext())
+								for (final Iterator<Bindings> it : itb) {
+									if (it.hasNext()) {
 										return true;
+									}
+								}
 								return false;
 							}
 
 							@Override
 							public Bindings next() {
-								if (!hasNext())
+								if (!this.hasNext()) {
 									return null;
+								}
 								int i = b.length - 1;
 								for (; i >= 0 && !itb[i].hasNext(); i--) {
 									itb[i] = bindings[i].iterator();
 								}
-								if (i < b.length - 1)
+								if (i < b.length - 1) {
 									zb[i] = itb[i].next();
+								}
 								final Bindings bnew = zb[0].clone();
 								for (int j = 1; j < zb.length; j++) {
 									bnew.addAll(zb[j]);
@@ -606,12 +650,15 @@ public class MergeJoin extends Join {
 												&& comp
 														.compare(b[i],
 																projected) < 0);
-										if (b[i] == null)
+										if (b[i] == null) {
 											this.processFurther = false;
-									} else
+										}
+									} else {
 										b[i] = ssbit[i].next();
-								} else
+									}
+								} else {
 									this.processFurther = false;
+								}
 							}
 						}
 					}
@@ -625,25 +672,30 @@ public class MergeJoin extends Join {
 
 			@Override
 			public Bindings next(final Bindings k) {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
 					for (int i = 0; i < b.length; i++) {
 						if (ssbit[i] instanceof SIPParallelIterator) {
-							while (comp.compare(b[i], k) < 0)
+							while (comp.compare(b[i], k) < 0) {
 								b[i] = ((SIPParallelIterator<Bindings, Bindings>) ssbit[i])
 										.next(k);
-						} else
-							while (comp.compare(b[i], k) < 0)
+							}
+						} else {
+							while (comp.compare(b[i], k) < 0) {
 								b[i] = ssbit[i].next();
+							}
+						}
 						if (b[i] == null) {
 							this.processFurther = false;
 							return null;
 						}
 					}
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -682,10 +734,11 @@ public class MergeJoin extends Join {
 
 		final Bindings[] b = new Bindings[ssbit.length];
 		for (int i = 0; i < b.length; i++) {
-			if (ssbit[i] instanceof SIPParallelIterator)
+			if (ssbit[i] instanceof SIPParallelIterator) {
 				b[i] = ((SIPParallelIterator<Bindings, Bindings>) ssbit[i]).next(minimum);
-			else
+			} else {
 				b[i] = ssbit[i].next();
+			}
 		}
 		final Collection<Bindings>[] bindings = new Collection[b.length];
 
@@ -693,13 +746,16 @@ public class MergeJoin extends Join {
 			boolean processFurther = true;
 			Iterator<Bindings> currentBinding = null;
 
+			@Override
 			public boolean hasNext() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return true;
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return true;
+					}
 				}
 				return false;
 			}
@@ -707,19 +763,22 @@ public class MergeJoin extends Join {
 			@Override
 			public void close() {
 				for (final Iterator<Bindings> it : ssbit) {
-					if (it instanceof ParallelIterator)
+					if (it instanceof ParallelIterator) {
 						((ParallelIterator<Bindings>) it).close();
+					}
 				}
 			}
 
 			@Override
 			public Bindings next() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -769,21 +828,25 @@ public class MergeJoin extends Join {
 
 							@Override
 							public boolean hasNext() {
-								for (final Iterator<Bindings> it : itb)
-									if (it.hasNext())
+								for (final Iterator<Bindings> it : itb) {
+									if (it.hasNext()) {
 										return true;
+									}
+								}
 								return false;
 							}
 
 							@Override
 							public Bindings next() {
-								if (!hasNext())
+								if (!this.hasNext()) {
 									return null;
+								}
 								int i = b.length - 1;
 								for (; i >= 0 && !itb[i].hasNext(); i--) {
 									itb[i] = bindings[i].iterator();
-									if (i != b.length - 1)
+									if (i != b.length - 1) {
 										zb[i] = itb[i].next();
+									}
 								}
 								if (i < b.length - 1) {
 									zb[i] = itb[i].next();
@@ -822,12 +885,15 @@ public class MergeJoin extends Join {
 												&& comp
 														.compare(b[i],
 																projected) < 0);
-										if (b[i] == null)
+										if (b[i] == null) {
 											this.processFurther = false;
-									} else
+										}
+									} else {
 										b[i] = ssbit[i].next();
-								} else
+									}
+								} else {
 									this.processFurther = false;
+								}
 							}
 						}
 					}
@@ -845,8 +911,9 @@ public class MergeJoin extends Join {
 					this.processFurther = false;
 					return null;
 				}
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
 					for (int i = 0; i < b.length; i++) {
 						if (ssbit[i] instanceof SIPParallelIterator) {
@@ -871,9 +938,10 @@ public class MergeJoin extends Join {
 							return null;
 						}
 					}
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -886,7 +954,7 @@ public class MergeJoin extends Join {
 
 		if ((ssb1it == null) || (ssb2it == null) || !ssb1it.hasNext()
 				|| !ssb2it.hasNext()) {
-			return new Iterator<Bindings>() {
+			return new ImmutableIterator<Bindings>() {
 				@Override
 				public boolean hasNext() {
 					return false;
@@ -896,15 +964,10 @@ public class MergeJoin extends Join {
 				public Bindings next() {
 					return null;
 				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
 			};
 		}
 
-		return new Iterator<Bindings>() {
+		return new ImmutableIterator<Bindings>() {
 			Bindings b1 = ssb1it.next();
 			Bindings b2 = ssb2it.next();
 			boolean processFurther = true;
@@ -914,24 +977,28 @@ public class MergeJoin extends Join {
 
 			@Override
 			public boolean hasNext() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return true;
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return true;
+					}
 				}
 				return false;
 			}
 
 			@Override
 			public Bindings next() {
-				if (this.currentBinding != null && this.currentBinding.hasNext())
+				if (this.currentBinding != null && this.currentBinding.hasNext()) {
 					return this.currentBinding.next();
+				}
 				if (this.processFurther) {
-					computeNextResults();
-					if (this.currentBinding != null && this.currentBinding.hasNext())
+					this.computeNextResults();
+					if (this.currentBinding != null && this.currentBinding.hasNext()) {
 						return this.currentBinding.next();
+					}
 				}
 				return null;
 			}
@@ -1005,8 +1072,9 @@ public class MergeJoin extends Join {
 
 							@Override
 							public Bindings next() {
-								if (!hasNext())
+								if (!this.hasNext()) {
 									return null;
+								}
 								if (!(this.itb1.hasNext() || this.itb2.hasNext())) {
 									if (this.restFrom1 != null
 											&& this.restFrom1.hasNext()) {
@@ -1041,12 +1109,14 @@ public class MergeJoin extends Join {
 
 								@Override
 								public Bindings next() {
-									if (comp.compare(b1, b2) >= 0)
+									if (comp.compare(b1, b2) >= 0) {
 										return null;
+									}
 									final Bindings zb1 = b1;
 									b1 = ssb1it.next();
-									if (b1 == null)
+									if (b1 == null) {
 										processFurther = false;
+									}
 									return zb1;
 								}
 
@@ -1056,8 +1126,9 @@ public class MergeJoin extends Join {
 								}
 							};
 							return;
-						} else
+						} else {
 							this.processFurther = false;
+						}
 					} else if (compare > 0) {
 						if (ssb2it.hasNext()) {
 							this.b2 = ssb2it.next();
@@ -1091,11 +1162,6 @@ public class MergeJoin extends Join {
 					}
 				}
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
 		};
 	}
 
@@ -1103,8 +1169,9 @@ public class MergeJoin extends Join {
 			final SortedBag<Bindings> ssb2, final Comparator<Bindings> comp,
 			final Collection<Variable> vars) {
 		if (ssb1 == null || ssb2 == null || ssb1.size() == 0
-				|| ssb2.size() == 0)
+				|| ssb2.size() == 0) {
 			return null;
+		}
 		return QueryResult.createInstance(MergeJoin.mergeJoinIterator(ssb1
 				.iterator(), ssb2.iterator(), comp, vars));
 		// return mergeJoin(ssb1.iterator(), ssb2.iterator(), comp);
@@ -1114,8 +1181,9 @@ public class MergeJoin extends Join {
 			final SortedBag<Bindings> ssb1, final SortedBag<Bindings> ssb2,
 			final Comparator<Bindings> comp) {
 		if (ssb1 == null || ssb2 == null || ssb1.size() == 0
-				|| ssb2.size() == 0)
+				|| ssb2.size() == 0) {
 			return null;
+		}
 
 		// different from mergeJoin:
 		final OptionalResult or = new OptionalResult();
@@ -1160,7 +1228,7 @@ public class MergeJoin extends Join {
 					}
 					b2 = ssb2it.next();
 				}
-				for (final Bindings zb1 : bindings1)
+				for (final Bindings zb1 : bindings1) {
 					for (final Bindings zb2 : bindings2) {
 						final Bindings bnew = zb1.clone();
 						bnew.addAll(zb2);
@@ -1168,16 +1236,19 @@ public class MergeJoin extends Join {
 						bnew.addAllPresortingNumbers(zb2);
 						result.add(bnew);
 					}
+				}
 			} else if (compare < 0) {
 				if (ssb1it.hasNext()) {
 					b1 = ssb1it.next();
-				} else
+				} else {
 					processFurther = false;
+				}
 			} else if (compare > 0) {
 				if (ssb2it.hasNext()) {
 					b2 = ssb2it.next();
-				} else
+				} else {
 					processFurther = false;
+				}
 			}
 		} while (processFurther == true);
 
@@ -1189,8 +1260,9 @@ public class MergeJoin extends Join {
 
 	public static ParallelIterator<Bindings> cartesianProductIterator(
 			final QueryResult left, final QueryResult right) {
-		if (left == null || right == null)
+		if (left == null || right == null) {
 			return null;
+		}
 		final QueryResult smaller;
 		final QueryResult larger;
 		// if (left.size() < right.size()) {
@@ -1209,8 +1281,9 @@ public class MergeJoin extends Join {
 
 	public static ParallelIterator<Bindings> cartesianProductIterator(
 			final Iterator<Bindings> left, final QueryResult right) {
-		if (left == null || right == null)
+		if (left == null || right == null) {
 			return null;
+		}
 		return new ParallelIterator<Bindings>() {
 			Iterator<Bindings> outer = left;
 			Iterator<Bindings> inner = right.iterator();
@@ -1218,21 +1291,25 @@ public class MergeJoin extends Join {
 
 			@Override
 			public boolean hasNext() {
-				if (this.currentOuterElement == null)
+				if (this.currentOuterElement == null) {
 					return false;
+				}
 				if (this.outer.hasNext()) {
 					if (!this.inner.hasNext()) {
 						this.currentOuterElement = this.outer.next();
-						if (this.inner instanceof ParallelIterator)
+						if (this.inner instanceof ParallelIterator) {
 							((ParallelIterator<Bindings>) this.inner).close();
+						}
 						this.inner = right.iterator();
-						if (!this.inner.hasNext())
+						if (!this.inner.hasNext()) {
 							return false;
+						}
 					}
 					return true;
 				}
-				if (this.inner.hasNext())
+				if (this.inner.hasNext()) {
 					return true;
+				}
 				return false;
 			}
 
@@ -1241,16 +1318,20 @@ public class MergeJoin extends Join {
 				if (!this.inner.hasNext()) {
 					if (this.outer.hasNext()) {
 						this.currentOuterElement = this.outer.next();
-						if (this.inner instanceof ParallelIterator)
+						if (this.inner instanceof ParallelIterator) {
 							((ParallelIterator<Bindings>) this.inner).close();
+						}
 						this.inner = right.iterator();
-						if (!this.inner.hasNext())
+						if (!this.inner.hasNext()) {
 							return null;
-					} else
+						}
+					} else {
 						return null;
+					}
 				}
-				if (this.currentOuterElement == null)
+				if (this.currentOuterElement == null) {
 					return null;
+				}
 				final Bindings innerElement = this.inner.next();
 				final Bindings bnew = this.currentOuterElement.clone();
 				bnew.addAll(innerElement);
@@ -1267,24 +1348,28 @@ public class MergeJoin extends Join {
 
 			@Override
 			public void close() {
-				if (this.inner instanceof ParallelIterator)
+				if (this.inner instanceof ParallelIterator) {
 					((ParallelIterator<Bindings>) this.inner).close();
-				if (this.outer instanceof ParallelIterator)
+				}
+				if (this.outer instanceof ParallelIterator) {
 					((ParallelIterator<Bindings>) this.outer).close();
+				}
 			}
 
 			@Override
 			public void finalize() {
-				close();
+				this.close();
 			}
 		};
 	}
 
 	public static ParallelIterator<Bindings> cartesianProductIterator(
 			final QueryResult[] operands) {
-		for (int i = 0; i < operands.length; i++)
-			if (operands[i] == null)
+		for (int i = 0; i < operands.length; i++) {
+			if (operands[i] == null) {
 				return null;
+			}
+		}
 		final Iterator<Bindings>[] itb = new Iterator[operands.length];
 		itb[0] = operands[0].oneTimeIterator();
 		for (int i = 1; i < operands.length; i++) {
@@ -1298,30 +1383,37 @@ public class MergeJoin extends Join {
 
 			@Override
 			public boolean hasNext() {
-				for (int i = 0; i < currentOuterElements.length; i++)
-					if (currentOuterElements[i] == null)
+				for (int i = 0; i < currentOuterElements.length; i++) {
+					if (currentOuterElements[i] == null) {
 						return false;
-				for (int i = 0; i < itb.length; i++)
-					if (itb[i].hasNext())
+					}
+				}
+				for (int i = 0; i < itb.length; i++) {
+					if (itb[i].hasNext()) {
 						return true;
+					}
+				}
 				return false;
 			}
 
 			@Override
 			public Bindings next() {
-				if (!hasNext())
+				if (!this.hasNext()) {
 					return null;
+				}
 				int i = itb.length - 1;
 				for (; i >= 0 && !itb[i].hasNext(); i--) {
 					itb[i] = operands[i].iterator();
-					if (i != itb.length - 1)
+					if (i != itb.length - 1) {
 						currentOuterElements[i] = itb[i].next();
+					}
 				}
 				if (i < itb.length - 1) {
 					currentOuterElements[i] = itb[i].next();
 				}
-				if (!itb[itb.length - 1].hasNext())
+				if (!itb[itb.length - 1].hasNext()) {
 					itb[itb.length - 1] = operands[itb.length - 1].iterator();
+				}
 				final Bindings bnew = itb[itb.length - 1].next().clone();
 				for (int j = 0; j < currentOuterElements.length; j++) {
 					bnew.addAll(currentOuterElements[j]);
@@ -1339,14 +1431,15 @@ public class MergeJoin extends Join {
 			@Override
 			public void close() {
 				for (int i = 0; i < itb.length; i++) {
-					if (itb[i] instanceof ParallelIterator)
+					if (itb[i] instanceof ParallelIterator) {
 						((ParallelIterator<Bindings>) itb[i]).close();
+					}
 				}
 			}
 
 			@Override
 			public void finalize() {
-				close();
+				this.close();
 			}
 		};
 	}
@@ -1355,12 +1448,15 @@ public class MergeJoin extends Join {
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
-		if (operandID == 0)
-			while (itb.hasNext())
+		if (operandID == 0) {
+			while (itb.hasNext()) {
 				this.left.remove(itb.next());
-		else
-			while (itb.hasNext())
+			}
+		} else {
+			while (itb.hasNext()) {
 				this.right.remove(itb.next());
+			}
+		}
 		return null;
 	}
 
@@ -1377,7 +1473,7 @@ public class MergeJoin extends Join {
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
@@ -1403,7 +1499,7 @@ public class MergeJoin extends Join {
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
 									MergeJoin.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return currentResult.hasNext();
 							}
@@ -1413,10 +1509,11 @@ public class MergeJoin extends Join {
 								final Bindings b = currentResult.next();
 								if (!currentResult.hasNext()) {
 									MergeJoin.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
-								if (b != null)
+								if (b != null) {
 									this.number++;
+								}
 								return b;
 							}
 
@@ -1427,12 +1524,13 @@ public class MergeJoin extends Join {
 
 							@Override
 							public void finalize() {
-								close();
+								this.close();
 							}
 						});
 
-				if (this.succeedingOperators.size() > 1)
+				if (this.succeedingOperators.size() > 1) {
 					result.materialize();
+				}
 				for (final OperatorIDTuple opId : this.succeedingOperators) {
 					final QueryResultDebug qrDebug = new QueryResultDebug(
 							result, debugstep, this, opId.getOperator(), true);
@@ -1440,10 +1538,12 @@ public class MergeJoin extends Join {
 							opId.getId(), debugstep);
 				}
 			} else {
-				if (this.left instanceof DBMergeSortedBag)
+				if (this.left instanceof DBMergeSortedBag) {
 					((DBMergeSortedBag<Bindings>) this.left).release();
-				if (this.right instanceof DBMergeSortedBag)
+				}
+				if (this.right instanceof DBMergeSortedBag) {
 					((DBMergeSortedBag<Bindings>) this.right).release();
+				}
 			}
 
 		}

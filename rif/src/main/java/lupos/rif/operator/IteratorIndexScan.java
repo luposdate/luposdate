@@ -36,7 +36,6 @@ import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
@@ -44,6 +43,7 @@ import lupos.engine.operators.stream.TripleDeleter;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
+import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.builtin.RIFBuiltinFactory;
 import lupos.rif.model.Constant;
@@ -56,57 +56,59 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 
 	public IteratorIndexScan(final External iteratorPredicate) {
 		super(null);
-		external = iteratorPredicate;
+		this.external = iteratorPredicate;
 	}
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
 		result.getVariables().add(
-				((RuleVariable) external.termParams.get(0)).getVariable());
+				((RuleVariable) this.external.termParams.get(0)).getVariable());
 		return result;
 	}
 
 	private Iterator<Bindings> newBindingIterator() {
-		final Iterator<Literal> litIt = getLiteralIterator();
+		final Iterator<Literal> litIt = this.getLiteralIterator();
 		// Variable steht an erster Stelle des Pr�dikats
-		final Variable varToBind = (Variable) external.termParams.get(0)
+		final Variable varToBind = (Variable) this.external.termParams.get(0)
 		.evaluate(Bindings.createNewInstance());
-		return new Iterator<Bindings>() {
+		return new ImmutableIterator<Bindings>() {
+			@Override
 			public boolean hasNext() {
 				return litIt.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
 				final Bindings bind = Bindings.createNewInstance();
 				bind.add(varToBind, litIt.next());
 				return bind;
 			}
-
-			public void remove() {}
 		};
 	}
 
 	private Iterator<Literal> getLiteralIterator() {
 		// External in IteratorPredicates suchen und dann Parameter 1-x
 		// (evaluiert) �bergeben
-		Literal[] args = new Literal[external.termParams.size() - 1];
-		for (int i = 1; i < external.termParams.size(); i++)
-			args[i - 1] = (Literal) external.termParams.get(i).evaluate(
+		final Literal[] args = new Literal[this.external.termParams.size() - 1];
+		for (int i = 1; i < this.external.termParams.size(); i++) {
+			args[i - 1] = (Literal) this.external.termParams.get(i).evaluate(
 					Bindings.createNewInstance());
+		}
 		return RIFBuiltinFactory.getIterator(
-				(URILiteral) ((Constant) external.termName).getLiteral(), args);
+				(URILiteral) ((Constant) this.external.termName).getLiteral(), args);
 	}
 
 	@Override
-	public QueryResult process(Dataset dataset) {
-		final Iterator<Bindings> bindIt = newBindingIterator();
+	public QueryResult process(final Dataset dataset) {
+		final Iterator<Bindings> bindIt = this.newBindingIterator();
 		while (bindIt.hasNext()) {
 			final Bindings bind = bindIt.next();
-			for (final OperatorIDTuple oid : getSucceedingOperators())
+			for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
 				((Operator) oid.getOperator()).processAll(QueryResult
 						.createInstance(Arrays.asList(bind).iterator()), oid
 						.getId());
+			}
 		}
 		return null;
 	}
@@ -115,7 +117,7 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 	public String toString() {
 		final StringBuffer str = new StringBuffer("IteratorIndex On")
 		.append("\n");
-		str.append(external.toString());
+		str.append(this.external.toString());
 		return str.toString();
 	}
 
@@ -123,38 +125,38 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer("IteratorIndex On")
 		.append("\n");
-		str.append(external.toString(prefixInstance));
+		str.append(this.external.toString(prefixInstance));
 		return str.toString();
 	}
 
 	@Override
-	public QueryResult join(Indices indices, Bindings bindings) {
+	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
-	
+
 	private boolean firstTime = true;
 
 	@Override
-	public void deleteTriple(Triple triple) {
+	public void deleteTriple(final Triple triple) {
 	}
 
 	@Override
-	public void deleteTripleDebug(Triple triple, DebugStep debugstep) {
+	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 	}
 
 	@Override
-	public void consume(Triple triple) {
-		if(firstTime){
-			process(null);
-			firstTime = false;
+	public void consume(final Triple triple) {
+		if(this.firstTime){
+			this.process(null);
+			this.firstTime = false;
 		}
 	}
 
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
-		if(firstTime){
-			startProcessingDebug(null, debugstep);
-			firstTime = false;
+		if(this.firstTime){
+			this.startProcessingDebug(null, debugstep);
+			this.firstTime = false;
 		}
 	}
 }

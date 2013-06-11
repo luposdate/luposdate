@@ -33,6 +33,7 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
+import lupos.misc.util.ImmutableIterator;
 
 public final class BitVector implements Comparable<BitVector>, Iterable<Boolean> {
 
@@ -251,7 +252,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 
 	@Override
 	public Iterator<Boolean> iterator() {
-		return new Iterator<Boolean>() {
+		return new ImmutableIterator<Boolean>() {
 			int index = 0;
 
 			@Override
@@ -266,11 +267,6 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 				} else {
 					return null;
 				}
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
 			}
 		};
 	}

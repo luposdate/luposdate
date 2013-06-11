@@ -39,6 +39,7 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Indices.MAP_PATTERN;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * Instances of this class are used to process queries by using a special index
@@ -104,7 +105,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 
 				final QueryResult zQueryResult = queryResult;
 
-				final Iterator<Bindings> itb = new Iterator<Bindings>() {
+				final Iterator<Bindings> itb = new ImmutableIterator<Bindings>() {
 					Iterator<Bindings> oldBindings = zQueryResult
 					.oneTimeIterator();
 					Bindings currentBindings = null;
@@ -156,11 +157,6 @@ public class MemoryIndexScan extends BasicIndexScan {
 						}
 						cB.addTriple(triple);
 						return cB;
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
 					}
 
 					private void retrieveNewTriples() {

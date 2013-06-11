@@ -44,6 +44,7 @@ import lupos.io.serializer.MAPENTRY;
 import lupos.io.serializer.MEMORYSORTEDSET;
 import lupos.io.serializer.NODEDESERIALIZER;
 import lupos.io.serializer.NODEINPARTITIONTREE;
+import lupos.io.serializer.PAGEDCOLLECTION;
 import lupos.io.serializer.SETIMPLEMENTATION;
 import lupos.io.serializer.SORTEDMAP;
 import lupos.io.serializer.STRING;
@@ -896,13 +897,26 @@ public class Registration {
 	 * Register the standard LUPOSDATE classes for serialization...
 	 */
 	static {
-		addDeSerializer(new TRIPLE(),
-				new SUPERLITERAL(), new ENTRY(), new STRING(), new MAPENTRY(),
-				new BINDINGS(), new TRIPLEKEY(), new DISKCOLLECTION(),
-				new COLLECTION(), new INT(), new LONG(), new BOOLEAN(),
-				new MEMORYSORTEDSET(), new DBSORTEDSET(), new SETIMPLEMENTATION(),
+		addDeSerializer(
+				new TRIPLE(),
+				new SUPERLITERAL(),
+				new ENTRY(),
+				new STRING(),
+				new MAPENTRY(),
+				new BINDINGS(),
+				new TRIPLEKEY(),
+				new DISKCOLLECTION(),
+				new PAGEDCOLLECTION(),
+				new COLLECTION(),
+				new INT(),
+				new LONG(),
+				new BOOLEAN(),
+				new MEMORYSORTEDSET(),
+				new DBSORTEDSET(),
+				new SETIMPLEMENTATION(),
 				new SORTEDMAP(),
-				new NODEINPARTITIONTREE(), new VARBUCKET(),
+				new NODEINPARTITIONTREE(),
+				new VARBUCKET(),
 				new VARBUCKETARRAY(),
 				new COMPARATOR(),
 				new NODEDESERIALIZER());

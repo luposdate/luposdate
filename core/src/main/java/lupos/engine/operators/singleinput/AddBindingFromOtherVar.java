@@ -35,6 +35,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
+import lupos.misc.util.ImmutableIterator;
 
 public class AddBindingFromOtherVar extends SingleInputOperator {
 	private Variable var;
@@ -58,70 +59,71 @@ public class AddBindingFromOtherVar extends SingleInputOperator {
 	}
 
 	public Variable getVar() {
-		return var;
+		return this.var;
 	}
 
 	public Variable getOtherVar() {
-		return valueFromVar;
+		return this.valueFromVar;
 	}
 
 	// bindings should contain exactly one element!
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
-		return QueryResult.createInstance(new Iterator<Bindings>() {
+		return QueryResult.createInstance(new ImmutableIterator<Bindings>() {
 			Iterator<Bindings> itb = oldBindings.oneTimeIterator();
 
+			@Override
 			public boolean hasNext() {
-				return itb.hasNext();
+				return this.itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
-				if (!itb.hasNext())
+				if (!this.itb.hasNext()) {
 					return null;
-				final Bindings oldBinding = itb.next();
-				final Literal literal = oldBinding.get(var);
+				}
+				final Bindings oldBinding = this.itb.next();
+				final Literal literal = oldBinding.get(AddBindingFromOtherVar.this.var);
 				if (literal == null) {
-					oldBinding.add(var, oldBinding.get(valueFromVar));
+					oldBinding.add(AddBindingFromOtherVar.this.var, oldBinding.get(AddBindingFromOtherVar.this.valueFromVar));
 				}
 				// if the item is a variable which is already bound
 				// and the value differs from the value of the triple
 				// which would be used as binding, a conflict was
 				// detected
-				else if (!literal.valueEquals(oldBinding.get(valueFromVar))) {
+				else if (!literal.valueEquals(oldBinding.get(AddBindingFromOtherVar.this.valueFromVar))) {
 					System.out
 							.println("AddBindingFromOtherVar: Error: Variable "
-									+ var + " was already bound!");
+									+ AddBindingFromOtherVar.this.var + " was already bound!");
 					return null;
 				}
 				return oldBinding;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
 			}
 		});
 	}
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		msg.getVariables().add(var);
-		intersectionVariables = new LinkedList<Variable>();
-		intersectionVariables.addAll(msg.getVariables());
-		unionVariables = intersectionVariables;
+		msg.getVariables().add(this.var);
+		this.intersectionVariables = new LinkedList<Variable>();
+		this.intersectionVariables.addAll(msg.getVariables());
+		this.unionVariables = this.intersectionVariables;
 		return msg;
 	}
 
 	@Override
 	public String toString() {
-		return "Add (" + var.toString() + "=" + valueFromVar.toString() + ")";
+		return "Add (" + this.var.toString() + "=" + this.valueFromVar.toString() + ")";
 	}
-	
-	public boolean remainsSortedData(Collection<Variable> sortCriterium){
+
+	@Override
+	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return true;
 	}
-	
-	public Collection<Variable> transformSortCriterium(Collection<Variable> sortCriterium){
+
+	@Override
+	public Collection<Variable> transformSortCriterium(final Collection<Variable> sortCriterium){
 		if (sortCriterium
 				.contains(this.getVar())) {
 			final Set<Variable> sortCriterium2 = new HashSet<Variable>();
@@ -129,7 +131,8 @@ public class AddBindingFromOtherVar extends SingleInputOperator {
 			sortCriterium2.remove(this.getVar());
 			sortCriterium2.add(this.getOtherVar());
 			return sortCriterium2;
+		} else {
+			return sortCriterium;
 		}
-		else return sortCriterium;
 	}
 }

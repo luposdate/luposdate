@@ -44,6 +44,7 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This class implements an array of strings on disk.
@@ -416,7 +417,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 
 	@Override
 	public Iterator<Entry<Integer, String>> iterator() {
-		return new Iterator<Entry<Integer, String>>(){
+		return new ImmutableIterator<Entry<Integer, String>>(){
 
 			private int current = 0;
 
@@ -435,12 +436,6 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 				}
 				return null;
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
 		};
 	}
 

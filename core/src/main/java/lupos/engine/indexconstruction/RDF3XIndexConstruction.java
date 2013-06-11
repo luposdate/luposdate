@@ -63,6 +63,7 @@ import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.helper.OutHelper;
 import lupos.misc.TimeInterval;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
@@ -181,7 +182,7 @@ public class RDF3XIndexConstruction {
 
 							@Override
 							public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
-								return new Iterator<java.util.Map.Entry<String, Integer>>() {
+								return new ImmutableIterator<java.util.Map.Entry<String, Integer>>() {
 									Iterator<String> it = rdftermsRepresentations.iterator();
 									int index = 1;
 
@@ -218,12 +219,6 @@ public class RDF3XIndexConstruction {
 											};
 										}
 									}
-
-									@Override
-									public void remove() {
-										throw new UnsupportedOperationException();
-									}
-
 								};
 							}
 

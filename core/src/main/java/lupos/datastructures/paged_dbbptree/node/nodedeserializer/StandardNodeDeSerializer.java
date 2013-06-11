@@ -94,7 +94,7 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 				}
 				if (type == FILENAMEOFNEXTLEAFNODE) {
 					final int filenameOfNextLeafNode = InputHelper.readLuposInt(in);
-					return new DBBPTreeEntry<K, V>(null, null, filenameOfNextLeafNode);
+					return new DBBPTreeEntry<K, V>(filenameOfNextLeafNode);
 				}
 				final int filenameOfNextLeafNode = -1;
 				final V nextValue = Registration.deserializeWithoutId(this.valueClass, lastValue, in);

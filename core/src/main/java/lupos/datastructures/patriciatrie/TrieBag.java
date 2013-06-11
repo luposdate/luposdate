@@ -34,6 +34,7 @@ import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
 import lupos.datastructures.patriciatrie.ram.RBTrieBag;
+import lupos.misc.util.ImmutableIterator;
 
 public abstract class TrieBag extends TrieWithValue<Integer> {
 
@@ -44,10 +45,10 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	public static RBTrieBag createRamBasedTrieBag(){
 		return new RBTrieBag();
 	}
-	
+
 	/**
 	 * Creates a new disk based trie with the default buffer size
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @return the newly created disk based trie set
@@ -56,10 +57,10 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	public static DBTrieBag createDiskBasedTrieBag(final String fileName) throws IOException {
 		return new DBTrieBag(fileName);
 	}
-	
+
 	/**
 	 * Creates a new trie
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @param bufferSize
@@ -71,11 +72,11 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 */
 	public static DBTrieBag createDiskBasedTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		return new DBTrieBag(fileName, bufferSize, pageSize);
-	}	
-	
+	}
+
 	/**
 	 * Adds a key to the trie.
-	 * 
+	 *
 	 * @param key
 	 *            Key to add
 	 * @return <strong>false</strong> if the key could not be added (if the trie already contained that key),
@@ -83,17 +84,17 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean add(final String key) {
-		
+
 		if (this.getRootNode() == null) {
-			this.setRootNode(createNodeInstance());
+			this.setRootNode(this.createNodeInstance());
 		}
-		
+
 		return NodeHelper.addToBag((NodeWithValue<Integer>)this.getRootNode(), key);
 	}
-	
+
 	/**
 	 * Merges a list of tries into this trie.
-	 * 
+	 *
 	 * @param tries
 	 *            List of tries
 	 * @param checkMetadata
@@ -104,7 +105,7 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	@SuppressWarnings("unchecked")
 	protected void merge(final List<TrieBag> tries, final boolean checkMetadata) throws TrieNotMergeableException {
 		final List<NodeWithValue<Integer>> nodesToMerge = new ArrayList<NodeWithValue<Integer>>(tries.size());
-		
+
 		// Only add valid root nodes
 		for (final TrieBag t : tries) {
 			if (checkMetadata && !t.hasCompleteMetadata()){
@@ -116,36 +117,36 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 				}
 			}
 		}
-		
+
 		// Only do something, if anything mergeable is available
 		if (nodesToMerge.size() > 0) {
-			
+
 			// Add our own root node
 			if (this.getRootNode() != null){
 				nodesToMerge.add((NodeWithValue<Integer>)this.getRootNode());
 			}
-			
+
 			// If there is only one valid root node to merge, skip merging and use
 			// this as result
 			if (nodesToMerge.size() == 1) {
-				// 
+				//
 				if (nodesToMerge.get(0) != this.getRootNode()) {
 					System.err.println("Please do not use merge for one trie, use copy instead!");
 					this.setRootNode(nodesToMerge.get(0)); // TODO Hier muss kopiert werden, nicht einfach der rootNode uebernommen
 				}
 			}
-			
+
 			// Only merge if there are at least 2 valid root nodes
 			else if (nodesToMerge.size() > 1) {
 				final NodeWithValue<Integer> root = this.createNodeInstance();
-	
+
 				this.mergeAfterCheck(root, nodesToMerge);
-				
+
 				this.changeRootNode(root);
 			}
 		}
 	}
-	
+
 	/**
 	 * This method is overwritten by DBSeqTrieBag
 	 * @param root the new root
@@ -154,10 +155,10 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	protected void mergeAfterCheck(final NodeWithValue<Integer> root, final List<NodeWithValue<Integer>> nodesToMerge){
 		NodeHelper.mergeBag(root, nodesToMerge);
 	}
-	
+
 	/**
 	 * Merges a list of tries into this trie.
-	 * 
+	 *
 	 * @param tries
 	 *            List of tries
 	 * @throws TrieNotMergeableException
@@ -165,40 +166,35 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	public void merge(final List<TrieBag> tries) throws TrieNotMergeableException {
 		this.merge(tries, true);
 	}
-	
+
 	/**
 	 * @return an iterator to iterate trough the keys inside the patricia trie (returning also duplicates)
 	 */
 	public Iterator<String> keyIterator() {
 		final Iterator<Entry<String, Integer>> entryIterator = this.iterator();
-		return new Iterator<String>(){
-			
+		return new ImmutableIterator<String>(){
+
 			int duplicatesLeft = 0;
 			String currentKey = null;
 
 			@Override
-			public boolean hasNext() {				
+			public boolean hasNext() {
 				return this.duplicatesLeft>0 || entryIterator.hasNext();
 			}
 
 			@Override
 			public String next() {
 				if(this.duplicatesLeft==0){
-					Entry<String, Integer> entry = entryIterator.next();
+					final Entry<String, Integer> entry = entryIterator.next();
 					if(entry==null){
 						return null;
 					}
 					this.currentKey = entry.getKey();
 					this.duplicatesLeft = entry.getValue();
-				}				
+				}
 				this.duplicatesLeft--;
 				return this.currentKey;
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}			
 		};
 	}
 

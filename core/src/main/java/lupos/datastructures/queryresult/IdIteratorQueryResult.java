@@ -23,11 +23,10 @@
  */
 package lupos.datastructures.queryresult;
 
-import java.util.Iterator;
-
 import lupos.datastructures.bindings.Bindings;
 import lupos.engine.operators.index.adaptedRDF3X.MergeIndicesTripleIterator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.util.ImmutableIterator;
 
 public class IdIteratorQueryResult extends IteratorQueryResult {
 
@@ -38,20 +37,23 @@ public class IdIteratorQueryResult extends IteratorQueryResult {
 			final TriplePattern tp) {
 		super(null);
 		this.itt = itt;
-		this.itb = new Iterator<Bindings>() {
-			Bindings next = computeNext();
+		this.itb = new ImmutableIterator<Bindings>() {
+			Bindings next = this.computeNext();
 			int idOfLastElementIterator;
 
+			@Override
 			public boolean hasNext() {
-				return (next != null);
+				return (this.next != null);
 			}
 
+			@Override
 			public Bindings next() {
-				if (next == null)
+				if (this.next == null) {
 					return null;
-				final Bindings znext = next;
-				idOfLastElement = idOfLastElementIterator;
-				next = computeNext();
+				}
+				final Bindings znext = this.next;
+				IdIteratorQueryResult.this.idOfLastElement = this.idOfLastElementIterator;
+				this.next = this.computeNext();
 				return znext;
 			}
 
@@ -62,15 +64,11 @@ public class IdIteratorQueryResult extends IteratorQueryResult {
 					final Bindings znext = tp.process(itt.next(), false, itt
 							.getIdOfLastElement());
 					if (znext != null) {
-						idOfLastElementIterator = itt.getIdOfLastElement();
+						this.idOfLastElementIterator = itt.getIdOfLastElement();
 						return znext;
 					}
 				}
 				return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
 			}
 		};
 	}
@@ -78,10 +76,10 @@ public class IdIteratorQueryResult extends IteratorQueryResult {
 	// return the id of the indices used in the case e.g. that there are
 	// several default graphs...
 	public int getIDOfLastBinding() {
-		return idOfLastElement;
+		return this.idOfLastElement;
 	}
 
 	public int getMaxId() {
-		return itt.getMaxId();
+		return this.itt.getMaxId();
 	}
 }

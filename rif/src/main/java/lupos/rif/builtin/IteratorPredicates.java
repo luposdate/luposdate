@@ -27,24 +27,24 @@ import java.util.Iterator;
 
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.TypedLiteral;
+import lupos.misc.util.ImmutableIterator;
 
 public class IteratorPredicates {
 
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-less-than")
 	public static Iterator<Literal> numeric_less_than(final Literal start) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int value = startValue;
 
+			@Override
 			public boolean hasNext() {
 				return true;
 			}
 
+			@Override
 			public Literal next() {
-				return BuiltinHelper.createXSLiteral(--value, "integer");
-			}
-
-			public void remove() {
+				return BuiltinHelper.createXSLiteral(--this.value, "integer");
 			}
 		};
 	}
@@ -53,18 +53,17 @@ public class IteratorPredicates {
 	public static Iterator<Literal> numeric_less_than_or_equal(
 			final Literal start) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int value = startValue;
 
+			@Override
 			public boolean hasNext() {
 				return true;
 			}
 
+			@Override
 			public Literal next() {
-				return BuiltinHelper.createXSLiteral(value--, "integer");
-			}
-
-			public void remove() {
+				return BuiltinHelper.createXSLiteral(this.value--, "integer");
 			}
 		};
 	}
@@ -72,18 +71,17 @@ public class IteratorPredicates {
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-greater-than")
 	public static Iterator<Literal> numeric_greater_than(final Literal start) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int value = startValue;
 
+			@Override
 			public boolean hasNext() {
 				return true;
 			}
 
+			@Override
 			public Literal next() {
-				return BuiltinHelper.createXSLiteral(++value, "integer");
-			}
-
-			public void remove() {
+				return BuiltinHelper.createXSLiteral(++this.value, "integer");
 			}
 		};
 	}
@@ -92,18 +90,17 @@ public class IteratorPredicates {
 	public static Iterator<Literal> numeric_greater_than_or_equal(
 			final Literal start) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int value = startValue;
 
+			@Override
 			public boolean hasNext() {
 				return true;
 			}
 
+			@Override
 			public Literal next() {
-				return BuiltinHelper.createXSLiteral(value++, "integer");
-			}
-
-			public void remove() {
+				return BuiltinHelper.createXSLiteral(this.value++, "integer");
 			}
 		};
 	}
@@ -113,21 +110,20 @@ public class IteratorPredicates {
 			final Literal stop) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
 		final int endValue = BuiltinHelper.getInteger((TypedLiteral) stop);
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int value = startValue;
 			final boolean direction = endValue > startValue;
 
+			@Override
 			public boolean hasNext() {
-				return direction ? value < (endValue - 1)
-						: endValue < (value - 1);
+				return this.direction ? this.value < (endValue - 1)
+						: endValue < (this.value - 1);
 			}
 
+			@Override
 			public Literal next() {
-				return BuiltinHelper.createXSLiteral(direction ? ++value
-						: --value, "integer");
-			}
-
-			public void remove() {
+				return BuiltinHelper.createXSLiteral(this.direction ? ++this.value
+						: --this.value, "integer");
 			}
 		};
 	}
@@ -137,20 +133,19 @@ public class IteratorPredicates {
 			final Literal start, final Literal stop) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
 		final int endValue = BuiltinHelper.getInteger((TypedLiteral) stop);
-		return new Iterator<Literal>() {
+		return new ImmutableIterator<Literal>() {
 			int value = startValue;
 			final boolean direction = endValue > startValue;
 
+			@Override
 			public boolean hasNext() {
-				return direction ? value <= endValue : value >= endValue;
+				return this.direction ? this.value <= endValue : this.value >= endValue;
 			}
 
+			@Override
 			public Literal next() {
-				return BuiltinHelper.createXSLiteral(direction ? value++
-						: value--, "integer");
-			}
-
-			public void remove() {
+				return BuiltinHelper.createXSLiteral(this.direction ? this.value++
+						: this.value--, "integer");
 			}
 		};
 	}

@@ -33,10 +33,10 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
 import lupos.rif.RIFException;
@@ -53,18 +53,18 @@ public class RuleFilter extends SingleInputOperator {
 	protected final Set<Variable> assignVariables = new HashSet<Variable>();
 	protected int cardinality = -1;
 
-	public RuleFilter(IExpression expression,
-			Multimap<IExpression, IExpression> eqMap) {
+	public RuleFilter(final IExpression expression,
+			final Multimap<IExpression, IExpression> eqMap) {
 		super();
 		this.setExpression(expression);
-		equalityMap = eqMap;
+		this.equalityMap = eqMap;
 	}
 
 	public RuleFilter() {
-		expression = null;
-		equalityMap = null;
+		this.expression = null;
+		this.equalityMap = null;
 	}
-	
+
 	public void setExpression(IExpression expression) {
 		if (expression instanceof Conjunction) {
 			if (((Conjunction) expression).exprs.size() == 1) {
@@ -75,83 +75,84 @@ public class RuleFilter extends SingleInputOperator {
 	}
 
 	public IExpression getExpression() {
-		return expression;
+		return this.expression;
 	}
-	
-	public boolean equalFilterExpression(RuleFilter r) {
+
+	public boolean equalFilterExpression(final RuleFilter r) {
 		return (this.expression.equals(r.expression));
 	}
 
 	public boolean isAssignment() {
-		return !assignVariables.isEmpty();
+		return !this.assignVariables.isEmpty();
 	}
 
 	public Set<Variable> getAssignedVariables() {
-		return assignVariables;
+		return this.assignVariables;
 	}
 
 	public Set<Variable> getVariablesInExpression() {
 		final Set<Variable> vars = new HashSet<Variable>();
-		for (final RuleVariable var : expression.getVariables())
+		for (final RuleVariable var : this.expression.getVariables()) {
 			vars.add(var.getVariable());
+		}
 		return vars;
 	}
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
+		final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
 			final Iterator<Bindings> bindIt = bindings.oneTimeIterator();
 			int number = 0;
-			Bindings next = computeNext();
+			Bindings next = this.computeNext();
 
+			@Override
 			public boolean hasNext() {
-				return (next != null);
+				return (this.next != null);
 			}
 
+			@Override
 			public Bindings next() {
-				final Bindings zNext = next;
-				next = computeNext();
+				final Bindings zNext = this.next;
+				this.next = this.computeNext();
 				return zNext;
 			}
 
 			private Bindings computeNext() {
-				while (bindIt.hasNext()) {
-					final Bindings bind = bindIt.next();
+				while (this.bindIt.hasNext()) {
+					final Bindings bind = this.bindIt.next();
 					if (bind != null) {
 						try{
-							final boolean result = filter(bind);
+							final boolean result = RuleFilter.this.filter(bind);
 							if (result) {
-								number++;
-								onAccepted(bind);
+								this.number++;
+								RuleFilter.this.onAccepted(bind);
 								return bind;
-							} else
-								onFilteredOut(bind);
-						} catch(Exception e){
-							onFilteredOut(bind);
-						} catch(Error e){
-							onFilteredOut(bind);
+							} else {
+								RuleFilter.this.onFilteredOut(bind);
+							}
+						} catch(final Exception e){
+							RuleFilter.this.onFilteredOut(bind);
+						} catch(final Error e){
+							RuleFilter.this.onFilteredOut(bind);
 						}
 					}
 				}
-				cardinality = number;
+				RuleFilter.this.cardinality = this.number;
 				return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
 			}
 		};
 
-		if (resultIterator.hasNext())
+		if (resultIterator.hasNext()) {
 			return QueryResult.createInstance(resultIterator);
-		else
+		} else {
 			return null;
+		}
 	}
 
-	protected boolean filter(Bindings bind) {
+	protected boolean filter(final Bindings bind) {
 		try {
-			return Helper.booleanEffectiveValue(expression.evaluate(bind, null, equalityMap));
-		} catch (TypeErrorException e) {
+			return Helper.booleanEffectiveValue(this.expression.evaluate(bind, null, this.equalityMap));
+		} catch (final TypeErrorException e) {
 			throw new RIFException(e.getMessage());
 		}
 	}
@@ -165,19 +166,21 @@ public class RuleFilter extends SingleInputOperator {
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
-		unionVariables = new HashSet<Variable>(msg.getVariables());
-		for (final RuleVariable var : expression.getVariables())
-			if (!unionVariables.contains(var.getVariable())) {
-				unionVariables.add(var.getVariable());
-				assignVariables.add(var.getVariable());
+		this.unionVariables = new HashSet<Variable>(msg.getVariables());
+		for (final RuleVariable var : this.expression.getVariables()) {
+			if (!this.unionVariables.contains(var.getVariable())) {
+				this.unionVariables.add(var.getVariable());
+				this.assignVariables.add(var.getVariable());
 			}
-		intersectionVariables = new HashSet<Variable>(unionVariables);
-		result.getVariables().addAll(intersectionVariables);
+		}
+		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
+		result.getVariables().addAll(this.intersectionVariables);
 		return result;
 	}
 
+	@Override
 	public String toString() {
-		String result = "Rulefilter\n" + expression.toString();
+		String result = "Rulefilter\n" + this.expression.toString();
 
 		if (this.cardinality >= 0) {
 			result += "\nCardinality: " + this.cardinality;
@@ -186,8 +189,9 @@ public class RuleFilter extends SingleInputOperator {
 		return result;
 	}
 
+	@Override
 	public String toString(final Prefix prefixInstance) {
-		String result = "Rulefilter\n" + expression.toString(prefixInstance);
+		String result = "Rulefilter\n" + this.expression.toString(prefixInstance);
 
 		if (this.cardinality >= 0) {
 			result += "\nCardinality: " + this.cardinality;
@@ -197,7 +201,7 @@ public class RuleFilter extends SingleInputOperator {
 	}
 
 	public Multimap<IExpression, IExpression> getEqualities() {
-		return equalityMap;
+		return this.equalityMap;
 	}
 
 	// @Override
@@ -211,9 +215,10 @@ public class RuleFilter extends SingleInputOperator {
 	// public int hashCode() {
 	// return expression.hashCode();
 	// }
-	
-	public boolean remainsSortedData(Collection<Variable> sortCriterium){
-		if (this.getExpression() instanceof Equality)
+
+	@Override
+	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
+		if (this.getExpression() instanceof Equality) {
 			if (((Equality) this.getExpression()).leftExpr instanceof RuleVariable) {
 				final Variable assignVar = ((RuleVariable) ((Equality) this
 						.getExpression()).leftExpr).getVariable();
@@ -221,6 +226,7 @@ public class RuleFilter extends SingleInputOperator {
 					return false;
 				}
 			}
+		}
 		return true;
 	}
 }

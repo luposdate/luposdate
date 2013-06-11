@@ -30,6 +30,7 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
+import lupos.misc.util.ImmutableIterator;
 
 public class SortLimit extends SingleInputOperator {
 
@@ -40,73 +41,75 @@ public class SortLimit extends SingleInputOperator {
 	private int pos = 0;
 
 	public SortLimit(final ComparatorBindings comparator, final int limit) {
-		setComparator(comparator);
-		setLimit(limit);
+		this.setComparator(comparator);
+		this.setLimit(limit);
 	}
 
 	public SortLimit() {
-		comparator=null;
-		smallestBindings=null;
+		this.comparator=null;
+		this.smallestBindings=null;
 	}
 
-	
+
 	public void setComparator(final ComparatorBindings comp){
 		this.comparator=comp;
 	}
-	
+
 	public void setLimit(final int limit){
-		smallestBindings = new Bindings[limit];
+		this.smallestBindings = new Bindings[limit];
 	}
 
+	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
-		while (pos < smallestBindings.length && itb.hasNext()) {
+		while (this.pos < this.smallestBindings.length && itb.hasNext()) {
 			final Bindings b = itb.next();
-			if (max == null || comparator.compare(b, max) > 0) {
-				posMax = pos;
-				max = b;
+			if (this.max == null || this.comparator.compare(b, this.max) > 0) {
+				this.posMax = this.pos;
+				this.max = b;
 			}
-			smallestBindings[pos++] = b;
+			this.smallestBindings[this.pos++] = b;
 		}
 		if (itb.hasNext()) {
 			while (itb.hasNext()) {
 				final Bindings b = itb.next();
-				if (comparator.compare(b, max) < 0) {
-					smallestBindings[posMax] = b;
-					max = b;
+				if (this.comparator.compare(b, this.max) < 0) {
+					this.smallestBindings[this.posMax] = b;
+					this.max = b;
 					// find new maximum
-					for (int i = 0; i < smallestBindings.length; i++) {
-						if (comparator.compare(smallestBindings[i], max) > 0) {
-							max = smallestBindings[i];
-							posMax = i;
+					for (int i = 0; i < this.smallestBindings.length; i++) {
+						if (this.comparator.compare(this.smallestBindings[i], this.max) > 0) {
+							this.max = this.smallestBindings[i];
+							this.posMax = i;
 						}
 					}
 				}
 			}
 		}
-		if (itb instanceof ParallelIterator)
+		if (itb instanceof ParallelIterator) {
 			((ParallelIterator) itb).close();
-		return QueryResult.createInstance(new Iterator<Bindings>() {
+		}
+		return QueryResult.createInstance(new ImmutableIterator<Bindings>() {
 			int i = 0;
 
+			@Override
 			public boolean hasNext() {
-				return i < pos;
+				return this.i < SortLimit.this.pos;
 			}
 
+			@Override
 			public Bindings next() {
-				if (hasNext())
-					return smallestBindings[i++];
-				else
+				if (this.hasNext()) {
+					return SortLimit.this.smallestBindings[this.i++];
+				} else {
 					return null;
-			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
+				}
 			}
 		});
 	}
 
+	@Override
 	public String toString() {
-		return super.toString()+" " + smallestBindings.length;
+		return super.toString()+" " + this.smallestBindings.length;
 	}
 }

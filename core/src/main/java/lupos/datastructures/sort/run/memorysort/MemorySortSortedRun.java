@@ -28,34 +28,35 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import lupos.datastructures.sort.run.Run;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This run represents an already sorted run in main memory.
  * It is saving main memory as it uses difference encoding
- * in order to avoid storing common prefixes of succeeding elements.  
+ * in order to avoid storing common prefixes of succeeding elements.
  */
 public class MemorySortSortedRun extends Run {
-	
+
 	/**
 	 * Class to store a string without the common prefix with the previous string.
-	 * This class is used to implement difference encoding in order to save space. 
+	 * This class is used to implement difference encoding in order to save space.
 	 */
 	public final static class StringWithoutCommonPrefix implements Serializable {
-		
+
 		public final String content;
-		
+
 		public final int endCommonPrefix;
-		
+
 		public StringWithoutCommonPrefix(final String content, final int endCommonPrefix){
 			this.content = content;
 			this.endCommonPrefix = endCommonPrefix;
 		}
-		
-		public final String getWholeString(String lastString){
+
+		public final String getWholeString(final String lastString){
 			return lastString.substring(0, this.endCommonPrefix) + this.content;
 		}
 	}
-	
+
 	/**
 	 * This method computes a difference encoded string
 	 * @param content the string to be encoded with difference encoding
@@ -63,28 +64,28 @@ public class MemorySortSortedRun extends Run {
 	 * @return the difference encoded string equivalent to content
 	 */
 	public static StringWithoutCommonPrefix createStringWithoutCommonPrefix(final String content, final String lastString){
-		final int max = Math.min(content.length(), lastString.length()); 
-		
+		final int max = Math.min(content.length(), lastString.length());
+
 		int end = max;
-		
+
 		for(int i=0; i<max; i++){
 			if(content.charAt(i) != lastString.charAt(i)){
 				end = i;
 				break;
 			}
 		}
-		
+
 		return new StringWithoutCommonPrefix(content.substring(end), end);
 	}
-	
+
 	protected final StringWithoutCommonPrefix[] runContent;
-	
+
 	public MemorySortSortedRun(final Iterator<String> emptyDatastructure, final int maxsize, final boolean set) {
 		if(set){
-			ArrayList<String> contents = new ArrayList<String>(maxsize);
+			final ArrayList<String> contents = new ArrayList<String>(maxsize);
 			String lastString = null;
 			while(emptyDatastructure.hasNext()){
-				String nextString = emptyDatastructure.next();
+				final String nextString = emptyDatastructure.next();
 				if(lastString==null || lastString.compareTo(nextString)!=0){
 					contents.add(nextString);
 				}
@@ -96,7 +97,7 @@ public class MemorySortSortedRun extends Run {
 			this.runContent = new StringWithoutCommonPrefix[contents.size()];
 			lastString = "";
 			int id = 0;
-			for(String string: contents){
+			for(final String string: contents){
 				this.runContent[id] = MemorySortSortedRun.createStringWithoutCommonPrefix(string, lastString);
 				id++;
 				lastString = string;
@@ -106,16 +107,16 @@ public class MemorySortSortedRun extends Run {
 			String lastString = "";
 			int id = 0;
 			while(emptyDatastructure.hasNext()){
-				String nextString = emptyDatastructure.next();
+				final String nextString = emptyDatastructure.next();
 				this.runContent[id] = MemorySortSortedRun.createStringWithoutCommonPrefix(nextString, lastString);
 				id++;
 				lastString = nextString;
-			}			
+			}
 		}
 	}
 
 	@Override
-	public boolean add(String toBeAdded) {
+	public boolean add(final String toBeAdded) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -136,21 +137,21 @@ public class MemorySortSortedRun extends Run {
 	}
 
 	@Override
-	public Iterator<String> iterator() {		
-		return new Iterator<String>(){
-			
+	public Iterator<String> iterator() {
+		return new ImmutableIterator<String>(){
+
 			int index = 0;
 			String lastString = "";
 
 			@Override
-			public boolean hasNext() {				
+			public boolean hasNext() {
 				return (this.index < MemorySortSortedRun.this.runContent.length);
 			}
 
 			@Override
 			public String next() {
 				if(this.hasNext()){
-					String result = MemorySortSortedRun.this.runContent[this.index].getWholeString(this.lastString);
+					final String result = MemorySortSortedRun.this.runContent[this.index].getWholeString(this.lastString);
 					this.index++;
 					this.lastString = result;
 					return result;
@@ -158,16 +159,11 @@ public class MemorySortSortedRun extends Run {
 					return null;
 				}
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}			
 		};
 	}
 
 	@Override
-	public int size() {		
+	public int size() {
 		return this.runContent.length;
 	}
 }

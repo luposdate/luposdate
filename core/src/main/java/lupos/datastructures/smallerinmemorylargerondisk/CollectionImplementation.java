@@ -23,25 +23,26 @@
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import lupos.datastructures.dbmergesortedds.DiskCollection;
+import lupos.misc.util.ImmutableIterator;
 
-public class CollectionImplementation<E extends Serializable> implements
+public class CollectionImplementation<E> implements
 		Collection<E>, Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5226267348532809078L;
 
 	private int memoryLimit = 20000;
 
 	private final Collection<E> memoryCollection = new LinkedList<E>();
-	private DiskCollection<E> diskCollection = null;
+	private PagedCollection<E> diskCollection = null;
 
 	public CollectionImplementation() {
 
@@ -51,116 +52,146 @@ public class CollectionImplementation<E extends Serializable> implements
 		this.memoryLimit = memoryLimit;
 	}
 
+	@Override
 	public boolean add(final E arg0) {
-		if (memoryCollection.size() + 1 < memoryLimit)
-			return memoryCollection.add(arg0);
-		else {
-			if (diskCollection == null)
-				diskCollection = new DiskCollection<E>((Class<E>) arg0
-						.getClass());
-			return diskCollection.add(arg0);
+		if (this.memoryCollection.size() + 1 < this.memoryLimit) {
+			return this.memoryCollection.add(arg0);
+		} else {
+			if (this.diskCollection == null) {
+				try {
+					this.diskCollection = new PagedCollection<E>((Class<E>) arg0.getClass());
+				} catch (final IOException e) {
+					System.err.println(e);
+					e.printStackTrace();
+				}
+			}
+			return this.diskCollection.add(arg0);
 		}
 	}
 
+	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag = true;
 		for (final E e : arg0) {
-			flag = flag && add(e);
+			flag = flag && this.add(e);
 		}
 		return flag;
 	}
 
+	@Override
 	public void clear() {
-		memoryCollection.clear();
-		if (diskCollection != null) {
-			diskCollection.release();
-			diskCollection = null;
+		this.memoryCollection.clear();
+		if (this.diskCollection != null) {
+			try {
+				this.diskCollection.release();
+			} catch (final IOException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+			this.diskCollection = null;
 		}
 	}
 
+	@Override
 	public boolean contains(final Object arg0) {
-		if (memoryCollection.contains(arg0))
+		if (this.memoryCollection.contains(arg0)) {
 			return true;
-		if (diskCollection != null)
-			return diskCollection.contains(arg0);
+		}
+		if (this.diskCollection != null) {
+			return this.diskCollection.contains(arg0);
+		}
 		return false;
 	}
 
+	@Override
 	public boolean containsAll(final Collection<?> arg0) {
 		for (final Object o : arg0) {
-			if (!contains(o))
+			if (!this.contains(o)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return (memoryCollection.size() == 0);
+		return (this.memoryCollection.size() == 0);
 	}
 
+	@Override
 	public Iterator<E> iterator() {
-		return new Iterator<E>() {
-			Iterator<E> memoryIterator = memoryCollection.iterator();
-			Iterator<E> diskIterator = (diskCollection == null) ? null
-					: diskCollection.iterator();
+		return new ImmutableIterator<E>() {
+			Iterator<E> memoryIterator = CollectionImplementation.this.memoryCollection.iterator();
+			Iterator<E> diskIterator = (CollectionImplementation.this.diskCollection == null) ? null
+					: CollectionImplementation.this.diskCollection.iterator();
 
+			@Override
 			public boolean hasNext() {
-				if (memoryIterator.hasNext())
+				if (this.memoryIterator.hasNext()) {
 					return true;
-				if (diskIterator != null)
-					return diskIterator.hasNext();
+				}
+				if (this.diskIterator != null) {
+					return this.diskIterator.hasNext();
+				}
 				return false;
 			}
 
+			@Override
 			public E next() {
-				if (memoryIterator.hasNext())
-					return memoryIterator.next();
-				if (diskIterator != null)
-					return diskIterator.next();
+				if (this.memoryIterator.hasNext()) {
+					return this.memoryIterator.next();
+				}
+				if (this.diskIterator != null) {
+					return this.diskIterator.next();
+				}
 				return null;
-			}
-
-			public void remove() {
-				throw (new UnsupportedOperationException(
-						"This iterator does not support remove."));
 			}
 		};
 	}
 
+	@Override
 	public boolean remove(final Object arg0) {
-		boolean flag = memoryCollection.remove(arg0);
-		if (diskCollection != null)
-			flag = flag || diskCollection.remove(arg0);
-		return flag;
-	}
-
-	public boolean removeAll(final Collection<?> arg0) {
-		boolean flag = true;
-		for (final Object o : arg0) {
-			flag = flag && remove(o);
+		boolean flag = this.memoryCollection.remove(arg0);
+		if (this.diskCollection != null) {
+			flag = flag || this.diskCollection.remove(arg0);
 		}
 		return flag;
 	}
 
-	public boolean retainAll(final Collection<?> arg0) {
-		final boolean flag = memoryCollection.retainAll(arg0);
-		if (diskCollection != null)
-			return flag || diskCollection.retainAll(arg0);
+	@Override
+	public boolean removeAll(final Collection<?> arg0) {
+		boolean flag = true;
+		for (final Object o : arg0) {
+			flag = flag && this.remove(o);
+		}
 		return flag;
 	}
 
-	public int size() {
-		if (diskCollection != null)
-			return memoryCollection.size() + diskCollection.size();
-		else
-			return memoryCollection.size();
+	@Override
+	public boolean retainAll(final Collection<?> arg0) {
+		final boolean flag = this.memoryCollection.retainAll(arg0);
+		if (this.diskCollection != null) {
+			return flag || this.diskCollection.retainAll(arg0);
+		}
+		return flag;
 	}
 
+	@Override
+	public int size() {
+		if (this.diskCollection != null) {
+			return this.memoryCollection.size() + this.diskCollection.size();
+		} else {
+			return this.memoryCollection.size();
+		}
+	}
+
+	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
 	}
 
+	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
@@ -170,18 +201,17 @@ public class CollectionImplementation<E extends Serializable> implements
 	public String toString() {
 		String s = "";
 		for (final E e : this) {
-			if (s.compareTo("") != 0)
+			if (s.compareTo("") != 0) {
 				s += ", ";
-			if (e != null)
+			}
+			if (e != null) {
 				s += e.toString();
+			}
 		}
 		return "[ " + s + " ]";
 	}
 
 	public void release() {
-		if (diskCollection != null) {
-			((DiskCollection) diskCollection).release();
-			diskCollection = null;
-		}
+		this.clear();
 	}
 }

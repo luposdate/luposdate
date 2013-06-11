@@ -52,6 +52,7 @@ import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.singleinput.modifiers.distinct.Distinct;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.util.ImmutableIterator;
 import lupos.rif.IExpression;
 import lupos.rif.RIFException;
 import lupos.rif.builtin.RIFBuiltinFactory;
@@ -87,7 +88,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	protected final Map<KEY, Set<BasicOperator>> tripleConsumer = new LinkedHashMap<KEY, Set<BasicOperator>>();
 	protected Multimap<IExpression, IExpression> equalityMap;
 	protected boolean usesEqualities = false;
-	
+
 	public static abstract class KEY implements Iterable<KEY>{
 		// used as unifying superclass for the keys of triple patterns, predicates and equality!
 		protected abstract int getNumberOfPossibleMatchingKeys();
@@ -95,7 +96,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		@Override
 		public Iterator<KEY> iterator(){
 			// consider all possible combinations!
-			return new Iterator<KEY>(){
+			return new ImmutableIterator<KEY>(){
 				final int max = 1 << KEY.this.getNumberOfPossibleMatchingKeys();
 				int current = 0;
 				@Override
@@ -105,25 +106,21 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				@Override
 				public KEY next() {
 					if(this.hasNext()){
-						KEY result = KEY.this.getKey(this.current);
+						final KEY result = KEY.this.getKey(this.current);
 						this.current++;
 						return result;
 					} else {
 						return null;
 					}
 				}
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}				
 			};
 		}
 
 		protected abstract KEY getKey(int current);
-		
+
 		protected static Variable dummyVariable = new Variable("d");
 	}
-	
+
 	public static class KeyEquality extends KEY {
 		private final static int hashValue = 157639892; // just take arbitrary number for hash vale
 		@Override
@@ -131,7 +128,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return KeyEquality.hashValue;
 		}
 		@Override
-		public boolean equals(Object other){
+		public boolean equals(final Object other){
 			return (other instanceof KeyEquality);
 		}
 		@Override
@@ -139,13 +136,13 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return 1;
 		}
 		@Override
-		protected KEY getKey(int current) {
+		protected KEY getKey(final int current) {
 			return this;
 		}
 	}
-	
+
 	private final static KeyEquality keyEquality = new KeyEquality();
-	
+
 	public static class KeyTriplePattern extends KEY {
 		private final TriplePattern triplePattern;
 		public KeyTriplePattern(final TriplePattern triplePattern){
@@ -154,7 +151,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		@Override
 		public int hashCode(){
 			int result =0;
-			for(Item item: this.triplePattern){
+			for(final Item item: this.triplePattern){
 				if(!item.isVariable()){
 					result = (int)((long) result + item.hashCode()) % Integer.MAX_VALUE;
 				}
@@ -162,12 +159,12 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return result;
 		}
 		@Override
-		public boolean equals(Object object){
+		public boolean equals(final Object object){
 			if(object instanceof KeyTriplePattern){
-				KeyTriplePattern other = (KeyTriplePattern) object;
+				final KeyTriplePattern other = (KeyTriplePattern) object;
 				for(int i=0; i<3; i++){
-					Item thisItem = this.triplePattern.getPos(i);
-					Item otherItem = other.triplePattern.getPos(i);  
+					final Item thisItem = this.triplePattern.getPos(i);
+					final Item otherItem = other.triplePattern.getPos(i);
 					if(!(thisItem.isVariable() == otherItem.isVariable() && (thisItem.isVariable()
 							&& otherItem.isVariable() || thisItem.equals(otherItem)))){
 						return false;
@@ -178,13 +175,13 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				return false;
 			}
 		}
-		
-		public boolean mayConsume(KeyTriplePattern other){
-			Iterator<Item> thisIterator = this.triplePattern.iterator();
-			Iterator<Item> otherIterator = other.triplePattern.iterator();
+
+		public boolean mayConsume(final KeyTriplePattern other){
+			final Iterator<Item> thisIterator = this.triplePattern.iterator();
+			final Iterator<Item> otherIterator = other.triplePattern.iterator();
 			while(thisIterator.hasNext()){
-				Item thisItem = thisIterator.next();					
-				Item otherItem = otherIterator.next();  
+				final Item thisItem = thisIterator.next();
+				final Item otherItem = otherIterator.next();
 				if(!(otherItem.isVariable() || thisItem.isVariable() || thisItem.equals(otherItem))){
 					return false;
 				}
@@ -195,22 +192,23 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		@Override
 		protected int getNumberOfPossibleMatchingKeys() {
 			int number=0;
-			for(Item item: this.triplePattern){
-				if(!item.isVariable())
+			for(final Item item: this.triplePattern){
+				if(!item.isVariable()) {
 					number++;
+				}
 			}
 			return number;
 		}
 		@Override
-		protected KEY getKey(int current) {
-			Item[] items = new Item[3];
+		protected KEY getKey(final int current) {
+			final Item[] items = new Item[3];
 			int bitValue = 1;
 			int index = 0;
-			for(Item item: this.triplePattern){
+			for(final Item item: this.triplePattern){
 				if(item.isVariable()){
 					items[index] = KEY.dummyVariable;
 				} else {
-					items[index] = ((current / bitValue) % 2 == 0)? KEY.dummyVariable : item; 
+					items[index] = ((current / bitValue) % 2 == 0)? KEY.dummyVariable : item;
 					bitValue*=2;
 				}
 				index++;
@@ -218,7 +216,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return new KeyTriplePattern(new TriplePattern(items));
 		}
 	}
-	
+
 	public static class KeyPredicatePattern extends KEY {
 		private final PredicatePattern predicatePattern;
 		public KeyPredicatePattern(final PredicatePattern predicatePattern){
@@ -227,7 +225,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		@Override
 		public int hashCode(){
 			int result =0;
-			for(Item item: this.predicatePattern){
+			for(final Item item: this.predicatePattern){
 				if(!item.isVariable()){
 					result = (int)((long) result + item.hashCode()) % Integer.MAX_VALUE;
 				}
@@ -235,14 +233,14 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return result;
 		}
 		@Override
-		public boolean equals(Object object){
+		public boolean equals(final Object object){
 			if(object instanceof KeyPredicatePattern){
-				KeyPredicatePattern other = (KeyPredicatePattern) object;
-				Iterator<Item> thisIterator = this.predicatePattern.iterator();
-				Iterator<Item> otherIterator = other.predicatePattern.iterator();
+				final KeyPredicatePattern other = (KeyPredicatePattern) object;
+				final Iterator<Item> thisIterator = this.predicatePattern.iterator();
+				final Iterator<Item> otherIterator = other.predicatePattern.iterator();
 				while(thisIterator.hasNext()){
-					Item thisItem = thisIterator.next();					
-					Item otherItem = otherIterator.next();  
+					final Item thisItem = thisIterator.next();
+					final Item otherItem = otherIterator.next();
 					if(!(thisItem.isVariable() == otherItem.isVariable() && (thisItem.isVariable()
 							&& otherItem.isVariable() || thisItem.equals(otherItem)))){
 						return false;
@@ -256,23 +254,24 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		@Override
 		protected int getNumberOfPossibleMatchingKeys() {
 			int number=-1;
-			for(Item item: this.predicatePattern){
-				if(!item.isVariable())
+			for(final Item item: this.predicatePattern){
+				if(!item.isVariable()) {
 					number++;
+				}
 			}
 			return number;
 		}
-		
+
 		@Override
-		protected KEY getKey(int current) {
-			Item[] items = new Item[this.predicatePattern.getPatternItems().size()];
+		protected KEY getKey(final int current) {
+			final Item[] items = new Item[this.predicatePattern.getPatternItems().size()];
 			int bitValue = 1;
 			int index = 0;
-			for(Item item: this.predicatePattern.getPatternItems()){
+			for(final Item item: this.predicatePattern.getPatternItems()){
 				if(item.isVariable()){
 					items[index] = KEY.dummyVariable;
 				} else {
-					items[index] = ((current / bitValue) % 2 == 0)? KEY.dummyVariable : item; 
+					items[index] = ((current / bitValue) % 2 == 0)? KEY.dummyVariable : item;
 					bitValue*=2;
 				}
 				index++;
@@ -280,14 +279,14 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return new KeyPredicatePattern(new PredicatePattern(this.predicatePattern.getPredicateName(), items));
 		}
 	}
-	
+
 	public BuildOperatorGraphRuleVisitor(final IndexScanCreatorInterface indexScanCreator) {
 		super(indexScanCreator);
 	}
 
 
 	@Override
-	public Object visit(Document obj, Object arg) throws RIFException {
+	public Object visit(final Document obj, final Object arg) throws RIFException {
 		this.tripleProducer.clear();
 		this.tripleConsumer.clear();
 		this.equalityMap = HashMultimap.create();
@@ -296,7 +295,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		// Operatorbaeumen beruecksichtigt werden.
 		this.predicateIndex = null;
 		InsertTripleIndexScan insertTripleIndex = null;
-		for (IExpression fact : obj.getFacts())
+		for (final IExpression fact : obj.getFacts()) {
 			if (fact instanceof Equality) {
 				final Equality eq = (Equality) fact;
 				this.equalityMap.put(eq.leftExpr, eq.rightExpr);
@@ -312,6 +311,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 					this.predicateIndex.addPredicateFact((Predicate) item);
 				}
 			}
+		}
 		if (insertTripleIndex != null){
 			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(insertTripleIndex, 0));
 			insertTripleIndex.addPrecedingOperator(this.indexScanCreator.getRoot());
@@ -324,14 +324,14 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		// 2. ueber alle Regeln gehen und mitschreiben, welche
 		// Tripel-Praedikate
 		// produziert werden, Externals koennen nicht vorkommen
-		for (Rule rule : obj.getRules())
+		for (final Rule rule : obj.getRules()) {
 			if (rule.isImplication()) {
-				for (IExpression expr : rule.getHeadExpressions())
+				for (final IExpression expr : rule.getHeadExpressions()) {
 					// Tripel mit variablen Praedikat wird generiert
 					if (expr instanceof RulePredicate) {
 						final RulePredicate pred = (RulePredicate) expr;
-						BasicOperator pattern = this.generatePattern(pred, arg);
-						KEY key = (pattern instanceof TriplePattern)?
+						final BasicOperator pattern = this.generatePattern(pred, arg);
+						final KEY key = (pattern instanceof TriplePattern)?
 								new KeyTriplePattern((TriplePattern)pattern):
 								new KeyPredicatePattern((PredicatePattern)pattern);
 						this.tripleProducer.put(key, new LinkedHashSet<BasicOperator>());
@@ -339,27 +339,30 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 						this.tripleProducer.put(BuildOperatorGraphRuleVisitor.keyEquality, new LinkedHashSet<BasicOperator>());
 						this.usesEqualities = true;
 					}
+				}
 			}
+		}
 
 		// 3. Operatorgraphen fuer einzelne Regeln berechnen
-		List<BasicOperator> subOperators = new ArrayList<BasicOperator>();
-		for (Rule rule : obj.getRules())
+		final List<BasicOperator> subOperators = new ArrayList<BasicOperator>();
+		for (final Rule rule : obj.getRules()) {
 			if (rule.isImplication()) {
-				BasicOperator result = (BasicOperator) rule.accept(this, arg);
+				final BasicOperator result = (BasicOperator) rule.accept(this, arg);
 				subOperators.add(result);
 			}
+		}
 
 		// 4. Rekursive Verbindungen aufloesen
-		for (Entry<KEY, Set<BasicOperator>> entry : this.tripleProducer.entrySet()) {
+		for (final Entry<KEY, Set<BasicOperator>> entry : this.tripleProducer.entrySet()) {
 			boolean consumerExists = false;
 			// find all matching consumers by just getting the previous determined tripleConsumers...
-			Set<BasicOperator> consumers = this.tripleConsumer.get(entry.getKey());
+			final Set<BasicOperator> consumers = this.tripleConsumer.get(entry.getKey());
 			if(consumers!=null){
 				consumerExists = true;
 				// Kreuzverbindungen zwischen Produzenten und Konsumenten
 				// herstellen
-				for (BasicOperator producer : entry.getValue())
-					for (BasicOperator consumer : consumers) {
+				for (final BasicOperator producer : entry.getValue()) {
+					for (final BasicOperator consumer : consumers) {
 						producer.addSucceedingOperator(new OperatorIDTuple(consumer, producer.getSucceedingOperators().size()));
 						consumer.addPrecedingOperator(producer);
 						// Sonderfall: Falls PredicatePattern ->
@@ -373,19 +376,22 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 //									distinctFound = true;
 //							if (!distinctFound) {
 //								final Distinct distinct = new Distinct();
-//								for(OperatorIDTuple opID: consumer.getSucceedingOperators()){										
+//								for(OperatorIDTuple opID: consumer.getSucceedingOperators()){
 //									distinct.getSucceedingOperators().add(new OperatorIDTuple(opID));
 //								}
 //								consumer.setSucceedingOperator(new OperatorIDTuple(distinct, 0));
 //							}
 //						}
 					}
+				}
 			}
 			// Wenn keine Konsumenten, dann Produzenten entfernen
 			if (!consumerExists) {
-				for (BasicOperator producer : entry.getValue())
-					if (producer instanceof Generate)
+				for (final BasicOperator producer : entry.getValue()) {
+					if (producer instanceof Generate) {
 						producer.removeFromOperatorGraph();
+					}
+				}
 			}
 		}
 
@@ -393,15 +399,16 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		BasicOperator finalResult = null;
 		if (obj.getConclusion() == null) {
 			finalResult = new Result();
-		} else
-			finalResult = patternFromConclusion(obj.getConclusion());
+		} else {
+			finalResult = this.patternFromConclusion(obj.getConclusion());
+		}
 
 		// Verbindungen zum Endergebniss herstellen
-		for (BasicOperator subOperator : subOperators) {
+		for (final BasicOperator subOperator : subOperators) {
 			// Result immer auf linker Seite, damit keine Linksrekursion
 			// auftreten kann
 			if (!subOperator.getSucceedingOperators().isEmpty()) {
-				OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
+				final OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
 				subOperator.getSucceedingOperators().set(0,new OperatorIDTuple(finalResult, 0));
 				finalResult.addPrecedingOperator(subOperator);
 				subOperator.addSucceedingOperator(temp);
@@ -421,8 +428,9 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 					: new OperatorIDTuple(finalResult, 0));
 			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(empty, this.indexScanCreator.getRoot().getSucceedingOperators().size()));
 			empty.addPrecedingOperator(this.indexScanCreator.getRoot());
-			if (finalResult == null)
+			if (finalResult == null) {
 				finalResult = empty;
+			}
 		}
 
 		if (this.booleanIndex != null
@@ -452,16 +460,16 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 	}
 
-	private BasicOperator patternFromConclusion(IExpression conclusion) {
+	private BasicOperator patternFromConclusion(final IExpression conclusion) {
 		// Annahme, Conclusion ist Praedikat
 		final RulePredicate pred = (RulePredicate) conclusion;
-		if (pred.isTriple())
-			return unitermToTriplePattern(pred);
-		else {
+		if (pred.isTriple()) {
+			return this.unitermToTriplePattern(pred);
+		} else {
 			final URILiteral predName = (URILiteral) pred.termName.accept(this,
 					null);
 			final List<Item> predItems = new ArrayList<Item>();
-			for (IExpression expr : pred.termParams) {
+			for (final IExpression expr : pred.termParams) {
 				final Item item = (Item) expr.accept(this, null);
 				predItems.add(item);
 			}
@@ -471,27 +479,29 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	}
 
 	@Override
-	public Object visit(Rule obj, Object arg) throws RIFException {
+	public Object visit(final Rule obj, final Object arg) throws RIFException {
 		// Besimmen, ob Triple, Predicates oder Equalities erstellt werden sollen
 		final List<BasicOperator> resultOps = new ArrayList<BasicOperator>();
 		final List<Equality> equalities = new ArrayList<Equality>();
 		boolean generateTriples = false;
 		boolean generatePredicates = false;
 		boolean generateEqualities = false;
-		for (IExpression expr : obj.getHeadExpressions())
-			if (expr instanceof RulePredicate)
-				if (((RulePredicate) expr).isTriple())
+		for (final IExpression expr : obj.getHeadExpressions()) {
+			if (expr instanceof RulePredicate) {
+				if (((RulePredicate) expr).isTriple()) {
 					generateTriples = true;
-				else
+				} else {
 					generatePredicates = true;
-			else if (expr instanceof Equality) {
+				}
+			} else if (expr instanceof Equality) {
 				generateEqualities = true;
 				equalities.add((Equality) expr);
 			}
+		}
 
 		// 1. Unteroperatorgraph berechnen
 		BasicOperator subOperator = (BasicOperator) obj.getBody().accept(this, null);
-		for(OperatorIDTuple opID: subOperator.getSucceedingOperators()){
+		for(final OperatorIDTuple opID: subOperator.getSucceedingOperators()){
 			opID.getOperator().removePrecedingOperator(subOperator);
 		}
 		subOperator.getSucceedingOperators().clear();
@@ -509,57 +519,57 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				current = current.getPrecedingOperators().get(0);
 			}
 		} while(!foundJoin);
-		
+
 		if(!foundJoin){
 			// add DISTINCT operator in order to avoid infinity loops
-			Distinct distinct = new Distinct();
+			final Distinct distinct = new Distinct();
 			subOperator.addSucceedingOperator(distinct);
 			distinct.addPrecedingOperator(subOperator);
 			subOperator = distinct;
 		}
-		
-		// add nots under subOperator 
-		for(IExpression not: obj.getNots()){
+
+		// add nots under subOperator
+		for(final IExpression not: obj.getNots()){
 			// TODO check for recursion in not expression and throw error in that case
-			// (In the current implementation, negation in rules retrieves reasonable results only for non-recursive rules) 
+			// (In the current implementation, negation in rules retrieves reasonable results only for non-recursive rules)
 			// first determine operator graph for the not expression:
-			BasicOperator notOperator = (BasicOperator) not.accept(this, null);
-			for(OperatorIDTuple opID: notOperator.getSucceedingOperators()){
+			final BasicOperator notOperator = (BasicOperator) not.accept(this, null);
+			for(final OperatorIDTuple opID: notOperator.getSucceedingOperators()){
 				opID.getOperator().removePrecedingOperator(notOperator);
 			}
 			notOperator.getSucceedingOperators().clear();
 			// now add a not operator below subOperator and notOperator!
-			// Luckily, the semantics of the not operator is exactly the same as of the minus operator! 
-			Minus minus = new Minus(false);
+			// Luckily, the semantics of the not operator is exactly the same as of the minus operator!
+			final Minus minus = new Minus(false);
 			subOperator.addSucceedingOperator(minus, 0);
 			notOperator.addSucceedingOperator(minus, 1);
 			minus.addPrecedingOperator(subOperator);
 			minus.addPrecedingOperator(notOperator);
 			subOperator = minus;
 		}
-		
+
 		// 1. Construct erstellen
 		if (generateTriples) {
 			final Construct construct = new Construct();
 			subOperator.addSucceedingOperator(construct);
 			construct.addPrecedingOperator(subOperator);
-			List<TriplePattern> patterns = new ArrayList<TriplePattern>();
-			for (Uniterm term : obj.getHead().getPredicates()) {
+			final List<TriplePattern> patterns = new ArrayList<TriplePattern>();
+			for (final Uniterm term : obj.getHead().getPredicates()) {
 				if (((RulePredicate) term).isTriple()) {
-					TriplePattern pattern = unitermToTriplePattern(term);
+					final TriplePattern pattern = this.unitermToTriplePattern(term);
 					patterns.add(pattern);
 				}
 			}
 			construct.setTemplates(patterns);
 			// Fuer jedes Triplepattern in Construct ein Generate fuer Inferenz erstellen
 			// wird, falls es keinen Consumer gibt, spaeter wieder entfernt
-			for (TriplePattern pattern : construct.getTemplates()) {
-				Generate generateTriplesOp = new Generate(pattern.getItems());
+			for (final TriplePattern pattern : construct.getTemplates()) {
+				final Generate generateTriplesOp = new Generate(pattern.getItems());
 				generateTriplesOp.addPrecedingOperator(subOperator);
 				subOperator.addSucceedingOperator(new OperatorIDTuple(generateTriplesOp, subOperator.getSucceedingOperators().size()));
 				generateTriplesOp.addPrecedingOperator(subOperator);
 				// TripleProduzenten registrieren
-				add(this.tripleProducer, new KeyTriplePattern(pattern), generateTriplesOp);
+				this.add(this.tripleProducer, new KeyTriplePattern(pattern), generateTriplesOp);
 			}
 			resultOps.add(construct);
 		}
@@ -569,18 +579,18 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			final ConstructPredicate generate = new ConstructPredicate();
 			subOperator.addSucceedingOperator(generate);
 			generate.addPrecedingOperator(subOperator);
-			for (Uniterm term : obj.getHead().getPredicates()) {
+			for (final Uniterm term : obj.getHead().getPredicates()) {
 				if (!((RulePredicate) term).isTriple()) {
 					final URILiteral name = (URILiteral) term.termName.accept(this, arg);
 					final List<Item> params = new ArrayList<Item>();
-					for (IExpression expr : term.termParams) {
+					for (final IExpression expr : term.termParams) {
 						final Item item = (Item) expr.accept(this, arg);
 						params.add(item);
 					}
-					Item[] paramsArray = params.toArray(new Item[] {});
+					final Item[] paramsArray = params.toArray(new Item[] {});
 					generate.addPattern(name, paramsArray);
 					// Produzenten registrieren
-					add(this.tripleProducer, new KeyPredicatePattern(new PredicatePattern(name, paramsArray)), generate);
+					this.add(this.tripleProducer, new KeyPredicatePattern(new PredicatePattern(name, paramsArray)), generate);
 				}
 			}
 			resultOps.add(generate);
@@ -593,11 +603,11 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			subOperator.addSucceedingOperator(constructEq);
 			constructEq.addPrecedingOperator(subOperator);
 			resultOps.add(constructEq);
-			add(this.tripleProducer, BuildOperatorGraphRuleVisitor.keyEquality, constructEq);
+			this.add(this.tripleProducer, BuildOperatorGraphRuleVisitor.keyEquality, constructEq);
 		}
-		if (resultOps.size() == 1)
+		if (resultOps.size() == 1) {
 			return resultOps.iterator().next();
-		else {
+		} else {
 			final Union union = new Union();
 			for (final BasicOperator op : resultOps){
 				union.addSucceedingOperator(op);
@@ -606,43 +616,44 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return union;
 		}
 	}
-	
+
 	private void add(final Map<KEY, Set<BasicOperator>> map, final KEY key, final BasicOperator toAdd){
 		Set<BasicOperator> set = map.get(key);
 		if(set==null){
 			set = new LinkedHashSet<BasicOperator>();
 			map.put(key, set);
 		}
-		set.add(toAdd);		
+		set.add(toAdd);
 	}
 
 	@Override
-	public Object visit(Conjunction obj, Object arg) throws RIFException {
+	public Object visit(final Conjunction obj, final Object arg) throws RIFException {
 		// Vorgehensweise: erstmal alle Sub-Operatoren sammeln -> Danach:
-		Set<BasicOperator> operands = new LinkedHashSet<BasicOperator>();
-		Set<BasicIndexScan> indexes = new LinkedHashSet<BasicIndexScan>();
-		List<RuleFilter> predicates = new ArrayList<RuleFilter>();
+		final Set<BasicOperator> operands = new LinkedHashSet<BasicOperator>();
+		final Set<BasicIndexScan> indexes = new LinkedHashSet<BasicIndexScan>();
+		final List<RuleFilter> predicates = new ArrayList<RuleFilter>();
 
-		for (IExpression expr : obj.exprs) {
-			BasicOperator op = (BasicOperator) expr.accept(this, arg);
+		for (final IExpression expr : obj.exprs) {
+			final BasicOperator op = (BasicOperator) expr.accept(this, arg);
 			if (op instanceof RuleFilter) {
 				predicates.add((RuleFilter) op);
 				continue;
 			}
 			operands.add(op);
-			if (op instanceof BasicIndexScan && !(op instanceof IteratorIndexScan))
+			if (op instanceof BasicIndexScan && !(op instanceof IteratorIndexScan)) {
 				indexes.add((BasicIndexScan) op);
+			}
 		}
 		// 1. Mergen von Indexen
 		BasicIndexScan mainIndex = null;
 
 		if (indexes.size() > 1) {
-			Iterator<BasicIndexScan> it = indexes.iterator();
+			final Iterator<BasicIndexScan> it = indexes.iterator();
 			mainIndex = it.next();
 			while (it.hasNext()) {
-				BasicIndexScan mergeIndex = it.next();
+				final BasicIndexScan mergeIndex = it.next();
 				mainIndex.getTriplePattern().addAll(mergeIndex.getTriplePattern());
-				for(OperatorIDTuple opID: mergeIndex.getSucceedingOperators()){
+				for(final OperatorIDTuple opID: mergeIndex.getSucceedingOperators()){
 					opID.getOperator().removePrecedingOperator(mergeIndex);
 				}
 				mergeIndex.getSucceedingOperators().clear();
@@ -656,18 +667,18 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 		// 2. Joins erstellen
 		BasicOperator headOperator = null;
-		Iterator<BasicOperator> opIt = operands.iterator();
+		final Iterator<BasicOperator> opIt = operands.iterator();
 		if (operands.size() > 1) {
 			Join bottomJoin = new IndexJoinWithDuplicateElimination();
-			BasicOperator op1 = opIt.next();
-			for(OperatorIDTuple opID: op1.getSucceedingOperators()){
+			final BasicOperator op1 = opIt.next();
+			for(final OperatorIDTuple opID: op1.getSucceedingOperators()){
 				opID.getOperator().removePrecedingOperator(op1);
 			}
 			op1.getSucceedingOperators().clear();
 			op1.addSucceedingOperator(new OperatorIDTuple(bottomJoin, 0));
 			bottomJoin.addPrecedingOperator(op1);
-			BasicOperator op2 = opIt.next();
-			for(OperatorIDTuple opID: op2.getSucceedingOperators()){
+			final BasicOperator op2 = opIt.next();
+			for(final OperatorIDTuple opID: op2.getSucceedingOperators()){
 				opID.getOperator().removePrecedingOperator(op2);
 			}
 			op2.getSucceedingOperators().clear();
@@ -678,15 +689,15 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				((OperatorIDTuple) arg).getOperator().addPrecedingOperator(bottomJoin);
 			}
 			while (opIt.hasNext()) {
-				Join tempJoin = new IndexJoinWithDuplicateElimination();
-				BasicOperator operand = opIt.next();
-				for(OperatorIDTuple opID: operand.getSucceedingOperators()){
+				final Join tempJoin = new IndexJoinWithDuplicateElimination();
+				final BasicOperator operand = opIt.next();
+				for(final OperatorIDTuple opID: operand.getSucceedingOperators()){
 					opID.getOperator().removePrecedingOperator(operand);
 				}
 				operand.getSucceedingOperators().clear();
 				operand.setSucceedingOperator(new OperatorIDTuple(tempJoin, 0));
 				tempJoin.addPrecedingOperator(operand);
-				for(OperatorIDTuple opID: bottomJoin.getSucceedingOperators()){
+				for(final OperatorIDTuple opID: bottomJoin.getSucceedingOperators()){
 					opID.getOperator().removePrecedingOperator(bottomJoin);
 				}
 				bottomJoin.getSucceedingOperators().clear();
@@ -699,20 +710,21 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				bottomJoin = tempJoin;
 			}
 			headOperator = bottomJoin;
-		} else if (operands.size() == 1)
+		} else if (operands.size() == 1) {
 			headOperator = opIt.next();
+		}
 
 		// 3. Predicates davorschalten
 		if (!predicates.isEmpty()) {
 			// 3.1 Predicates sortieren, alle m�glichen Assignments nach vorn
 			if (predicates.size() > 1) {
 				int i = 0;
-				Set<RuleFilter> visited = new LinkedHashSet<RuleFilter>();
+				final Set<RuleFilter> visited = new LinkedHashSet<RuleFilter>();
 				while (i < predicates.size()) {
 					if (!predicates.get(i).getExpression()
 							.isPossibleAssignment()
 							&& !visited.contains(predicates.get(i))) {
-						RuleFilter temp = predicates.get(i);
+						final RuleFilter temp = predicates.get(i);
 						predicates.remove(temp);
 						predicates.add(temp);
 						visited.add(temp);
@@ -725,18 +737,18 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			// Sonderfall: Kein HeadOperator sondern nur RuleFilter
 			if (headOperator == null) {
 				headOperator = this.booleanIndex;
-				for (RuleFilter filter : predicates){
+				for (final RuleFilter filter : predicates){
 					headOperator.removeSucceedingOperator(filter);
 					filter.removePrecedingOperator(headOperator);
 				}
 			} else {
-				for(OperatorIDTuple opID: headOperator.getSucceedingOperators()){
+				for(final OperatorIDTuple opID: headOperator.getSucceedingOperators()){
 					opID.getOperator().removePrecedingOperator(headOperator);
 				}
 				headOperator.getSucceedingOperators().clear();
 			}
 			// Filter einbauen
-			for (BasicOperator pred : predicates) {
+			for (final BasicOperator pred : predicates) {
 				headOperator.setSucceedingOperator(new OperatorIDTuple(pred, 0));
 				pred.addPrecedingOperator(headOperator);
 				if (headOperator != this.booleanIndex){
@@ -745,7 +757,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				}
 				headOperator = pred;
 			}
-			if(arg!=null){			
+			if(arg!=null){
 				headOperator.setSucceedingOperator((OperatorIDTuple) arg);
 				((OperatorIDTuple) arg).getOperator().addPrecedingOperator(headOperator);
 			}
@@ -754,7 +766,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	}
 
 	@Override
-	public Object visit(Disjunction obj, Object arg) throws RIFException {
+	public Object visit(final Disjunction obj, final Object arg) throws RIFException {
 		// Einf�hrung eines Union Operators, der alle Untergeordneten
 		// Operatoren
 		// zusammenf�hrt
@@ -762,7 +774,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 //		final Distinct distinct = new Distinct();
 //		distinct.setSucceedingOperator((OperatorIDTuple) arg);
 //		union.addSucceedingOperator(distinct);
-		for (IExpression expr : obj.exprs){
+		for (final IExpression expr : obj.exprs){
 			expr.accept(this, new OperatorIDTuple(union, union.getSucceedingOperators().size()));
 		}
 
@@ -771,10 +783,10 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	}
 
 	@Override
-	public Object visit(ExistExpression obj, Object arg) throws RIFException {
+	public Object visit(final ExistExpression obj, final Object arg) throws RIFException {
 		if (obj.getVariables().isEmpty()) {
 			// keine Variablen zum joinen bzw. vereinen -> BooleanResult
-			MakeBooleanResult mbr = new MakeBooleanResult();
+			final MakeBooleanResult mbr = new MakeBooleanResult();
 			if(arg!=null){
 				mbr.setSucceedingOperator((OperatorIDTuple) arg);
 				((OperatorIDTuple) arg).getOperator().addPrecedingOperator(mbr);
@@ -786,26 +798,26 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return obj.expr.accept(this, arg);
 		}
 	}
-	
-	public BasicOperator generatePattern(RulePredicate obj, Object arg){
+
+	public BasicOperator generatePattern(final RulePredicate obj, final Object arg){
 		// Unterscheidung:
 		// Wenn Pr�dikat, also kein Tripel
 		if (!obj.isTriple()) {
 			// PredicatePattern erstellen
 			final URILiteral predName = (URILiteral) obj.termName.accept(this, arg);
 			final List<Item> predItems = new ArrayList<Item>();
-			for (IExpression expr : obj.termParams) {
+			for (final IExpression expr : obj.termParams) {
 				final Item item = (Item) expr.accept(this, arg);
 				predItems.add(item);
 			}
 			return new PredicatePattern(predName, predItems.toArray(new Item[] {}));
 		}
-		return unitermToTriplePattern(obj);
+		return this.unitermToTriplePattern(obj);
 	}
 
 	@Override
-	public Object visit(RulePredicate obj, Object arg) throws RIFException {
-		BasicOperator zpattern = generatePattern(obj, arg);
+	public Object visit(final RulePredicate obj, final Object arg) throws RIFException {
+		final BasicOperator zpattern = this.generatePattern(obj, arg);
 		if (zpattern instanceof PredicatePattern) {
 			final PredicatePattern predPat = (PredicatePattern) zpattern;
 			if (this.predicateIndex == null) {
@@ -820,26 +832,26 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				((OperatorIDTuple) arg).getOperator().addPrecedingOperator(predPat);
 			}
 			// Pr�dikatkonsumenten anmelden
-			add(this.tripleConsumer, new KeyPredicatePattern(predPat), predPat);
+			this.add(this.tripleConsumer, new KeyPredicatePattern(predPat), predPat);
 			return predPat;
 		}
 		// Normale TripleBearbeitung
 		// 1. TriplePattern erstellen
-		TriplePattern pattern = (TriplePattern) zpattern;
+		final TriplePattern pattern = (TriplePattern) zpattern;
 
-		// 2. Index erstellen, noch ohne succeding operator		
-		BasicOperator index = this.indexScanCreator.createIndexScanAndConnectWithRoot(null, new ArrayList<TriplePattern>(Arrays.asList(pattern)), null);
+		// 2. Index erstellen, noch ohne succeding operator
+		final BasicOperator index = this.indexScanCreator.createIndexScanAndConnectWithRoot(null, new ArrayList<TriplePattern>(Arrays.asList(pattern)), null);
 		index.setPrecedingOperator(this.indexScanCreator.getRoot());
 
 		// 3. Pr�fen ob Triple-Pr�dikat an anderer Stelle erzeugt wird
-		KeyTriplePattern keyPattern = new KeyTriplePattern(pattern);
+		final KeyTriplePattern keyPattern = new KeyTriplePattern(pattern);
 		boolean flag = false;
-		
-		HashSet<KeyTriplePattern> possibleMatchingKeysOfProducers = new LinkedHashSet<KeyTriplePattern>(); 
-		
-		for(KEY mainkey: this.tripleProducer.keySet()){
+
+		final HashSet<KeyTriplePattern> possibleMatchingKeysOfProducers = new LinkedHashSet<KeyTriplePattern>();
+
+		for(final KEY mainkey: this.tripleProducer.keySet()){
 			if(mainkey instanceof KeyTriplePattern){
-				KeyTriplePattern mainkeyTP = (KeyTriplePattern) mainkey;
+				final KeyTriplePattern mainkeyTP = (KeyTriplePattern) mainkey;
 				if(keyPattern.mayConsume(mainkeyTP)){
 					possibleMatchingKeysOfProducers.add(mainkeyTP);
 					flag = true;
@@ -849,15 +861,15 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		if (flag) {
 			// index -> (union -> distinct) <- triplepattern : return union
 //			Distinct distinct = new Distinct();
-			Union union = new Union();
+			final Union union = new Union();
 //			union.setSucceedingOperator(new OperatorIDTuple(distinct, 0));
 			index.setSucceedingOperator(new OperatorIDTuple(union, 0));
 			union.addPrecedingOperator(index);
 //			distinct.setSucceedingOperator((OperatorIDTuple) arg);
 			pattern.setSucceedingOperator(new OperatorIDTuple(union, 1));
 			union.addPrecedingOperator(pattern);
-			for(KeyTriplePattern keyTP: possibleMatchingKeysOfProducers){
-				add(this.tripleConsumer, keyTP, pattern);
+			for(final KeyTriplePattern keyTP: possibleMatchingKeysOfProducers){
+				this.add(this.tripleConsumer, keyTP, pattern);
 			}
 //			return distinct;
 			if(arg!=null){
@@ -873,9 +885,9 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return index;
 		}
 	}
-	
+
 	@Override
-	public Object visit(External obj, Object arg) throws RIFException {
+	public Object visit(final External obj, final Object arg) throws RIFException {
 		// Wenn iterierbar, dann Index erstellen
 		// TODO: pr�fen ob Variable nicht anderweitig gebunden, in Validate,
 		// dann irgendwie verf�gbar machen das genau hier
@@ -888,23 +900,23 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			index.addPrecedingOperator(this.indexScanCreator.getRoot());
 			return index;
 		} else {
-			return buildRuleFilter(obj, arg);
+			return this.buildRuleFilter(obj, arg);
 		}
 	}
 
 	@Override
-	protected RuleFilter buildRuleFilter(IExpression expr, Object arg) {
+	protected RuleFilter buildRuleFilter(final IExpression expr, final Object arg) {
 		if (this.booleanIndex == null) {
-			this.booleanIndex = new BooleanIndexScan();			
+			this.booleanIndex = new BooleanIndexScan();
 			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(this.booleanIndex, 0));
 			this.booleanIndex.addPrecedingOperator(this.indexScanCreator.getRoot());
 		}
 		RuleFilter filter = null;
-		if (!this.usesEqualities || !(expr instanceof Equality))
+		if (!this.usesEqualities || !(expr instanceof Equality)) {
 			filter = new RuleFilter(expr, this.equalityMap);
-		else {
+		} else {
 			filter = new EqualityFilter(expr, this.equalityMap);
-			add(this.tripleConsumer, BuildOperatorGraphRuleVisitor.keyEquality, filter);
+			this.add(this.tripleConsumer, BuildOperatorGraphRuleVisitor.keyEquality, filter);
 		}
 		this.booleanIndex.addSucceedingOperator(filter);
 		filter.addPrecedingOperator(this.booleanIndex);

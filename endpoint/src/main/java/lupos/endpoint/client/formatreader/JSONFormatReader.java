@@ -28,11 +28,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
@@ -40,18 +35,24 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.misc.util.ImmutableIterator;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class JSONFormatReader extends DefaultMIMEFormatReader {
 
 	public final static String MIMETYPE = "application/sparql-results+json";
-	
+
 	private final boolean writeQueryTriples;
 
 	public JSONFormatReader(final boolean writeQueryTriples) {
 		super("JSON", JSONFormatReader.MIMETYPE+(writeQueryTriples?"+querytriples":""));
 		this.writeQueryTriples = writeQueryTriples;
 	}
-	
+
 	public JSONFormatReader(){
 		this(false);
 	}
@@ -66,15 +67,15 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		try {
 			final JSONObject object = new JSONObject(new JSONTokener(new InputStreamReader(inputStream)));
 			if(object.has("boolean")){
-				boolean b=object.getBoolean("boolean");
-				BooleanResult br = new BooleanResult();
+				final boolean b=object.getBoolean("boolean");
+				final BooleanResult br = new BooleanResult();
 				if(b){
 					br.add(Bindings.createNewInstance());
 				}
 				return br;
 			} else {
-				return QueryResult.createInstance(new Iterator<Bindings>(){
-					
+				return QueryResult.createInstance(new ImmutableIterator<Bindings>(){
+
 					protected int index = 0;
 					protected JSONArray bindings = object.getJSONObject("results").getJSONArray("bindings");
 
@@ -85,12 +86,12 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 
 					@Override
 					public Bindings next() {
-						if(hasNext()){							
+						if(this.hasNext()){
 							try {
-								Bindings result = getBindings(this.bindings.getJSONObject(this.index));
+								final Bindings result = getBindings(this.bindings.getJSONObject(this.index));
 								this.index++;
 								return result;
-							} catch (JSONException e) {
+							} catch (final JSONException e) {
 								System.err.println(e);
 								e.printStackTrace();
 								return null;
@@ -99,25 +100,20 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 							return null;
 						}
 					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}					
-				}); 				
+				});
 			}
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			System.err.println(e);
 			e.printStackTrace();
-		}		
+		}
 		return null;
 	}
 
-	public static Bindings getBindings(JSONObject oneResult) throws JSONException{
-		Bindings luposResult = Bindings.createNewInstance();
-		Iterator<String> keysIt = oneResult.keys();
+	public static Bindings getBindings(final JSONObject oneResult) throws JSONException{
+		final Bindings luposResult = Bindings.createNewInstance();
+		final Iterator<String> keysIt = oneResult.keys();
 		while(keysIt.hasNext()){
-			String var = keysIt.next();
+			final String var = keysIt.next();
 			if(var.compareTo("<Query-Triples>")!=0){
 				luposResult.add(new Variable(var), getLiteral(oneResult.getJSONObject(var)));
 			} else {
@@ -133,12 +129,12 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		return luposResult;
 	}
 
-	public static Literal getLiteral(JSONObject literal) throws JSONException {
-		String type = literal.getString("type");
+	public static Literal getLiteral(final JSONObject literal) throws JSONException {
+		final String type = literal.getString("type");
 		if(type.compareTo("uri")==0){
 			try {
 				return LiteralFactory.createURILiteral("<"+literal.getString("value")+">");
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
@@ -147,7 +143,7 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		} else if(type.compareTo("typed-literal")==0){
 			try {
 				return LiteralFactory.createTypedLiteral("\""+literal.getString("value")+"\"", "<"+literal.getString("datatype")+">");
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
@@ -162,5 +158,5 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		}
 		return null;
 	}
-	
+
 }

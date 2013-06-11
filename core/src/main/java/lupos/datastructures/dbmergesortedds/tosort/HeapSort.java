@@ -26,6 +26,7 @@ package lupos.datastructures.dbmergesortedds.tosort;
 import java.util.Iterator;
 
 import lupos.datastructures.dbmergesortedds.heap.Heap;
+import lupos.misc.util.ImmutableIterator;
 
 public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
 
@@ -52,7 +53,7 @@ public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
 	@Override
 	public Iterator<E> emptyDatastructure() {
 		// return heap.emptyDatastructure();
-		return new Iterator<E>() {
+		return new ImmutableIterator<E>() {
 
 			@Override
 			public boolean hasNext() {
@@ -61,17 +62,12 @@ public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
 
 			@Override
 			public E next() {
-				if (!HeapSort.this.heap.isEmpty())
+				if (!HeapSort.this.heap.isEmpty()) {
 					return HeapSort.this.heap.pop();
-				else
+				} else {
 					return null;
+				}
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
 		};
 	}
 

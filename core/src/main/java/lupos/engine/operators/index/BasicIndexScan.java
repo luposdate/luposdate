@@ -52,7 +52,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringVarBucketArrayNodeDeSerializer;
 import lupos.datastructures.queryresult.IdIteratorQueryResult;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
@@ -489,9 +489,8 @@ public abstract class BasicIndexScan extends RootChild {
 					: Collections
 							.synchronizedMap(new lupos.datastructures.paged_dbbptree.DBBPTree<String, VarBucket[]>(
 									1000,
-									1,
-									new StandardNodeDeSerializer<String, VarBucket[]>(
-											String.class, VarBucket[].class)));
+									1000,
+									new StringVarBucketArrayNodeDeSerializer()));
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();

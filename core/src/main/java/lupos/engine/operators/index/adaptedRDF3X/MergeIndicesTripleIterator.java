@@ -25,14 +25,14 @@ package lupos.engine.operators.index.adaptedRDF3X;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Iterator;
 
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.heap.SequentialHeap;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
+import lupos.misc.util.ImmutableIterator;
 
-public class MergeIndicesTripleIterator implements Iterator<Triple> {
+public class MergeIndicesTripleIterator extends ImmutableIterator<Triple> {
 
 	private final Comparator<Triple> comparator;
 	private final Heap<HeapEntry> heap;
@@ -40,42 +40,42 @@ public class MergeIndicesTripleIterator implements Iterator<Triple> {
 
 	public MergeIndicesTripleIterator(final IndicesTripleIterator[] itia,
 			final RDF3XIndexScan.CollationOrder collationOrder) {
-		comparator = new TripleComparator(collationOrder);
-		heap = new SequentialHeap<HeapEntry>(itia.length, true);
+		this.comparator = new TripleComparator(collationOrder);
+		this.heap = new SequentialHeap<HeapEntry>(itia.length, true);
 		for (int i = 0; i < itia.length; i++) {
 			if (itia[i] != null) {
 				final Triple t = itia[i].next();
 				if (t != null) {
-					heap.add(new HeapEntry(t, itia[i]));
+					this.heap.add(new HeapEntry(t, itia[i]));
 				}
 			}
 		}
 	}
 
+	@Override
 	public boolean hasNext() {
-		return !(heap.isEmpty());
+		return !(this.heap.isEmpty());
 	}
 
+	@Override
 	public Triple next() {
-		if (heap.isEmpty())
+		if (this.heap.isEmpty()) {
 			return null;
-		final HeapEntry next = heap.pop();
+		}
+		final HeapEntry next = this.heap.pop();
 		if (next != null) {
 			final Triple t = next.itt.next();
-			if (t != null)
-				heap.add(new HeapEntry(t, next.itt));
-			idOfLastElement = next.itt.getId();
+			if (t != null) {
+				this.heap.add(new HeapEntry(t, next.itt));
+			}
+			this.idOfLastElement = next.itt.getId();
 			return next.t;
 		}
 		return null;
 	}
 
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
 	public int getIdOfLastElement() {
-		return idOfLastElement;
+		return this.idOfLastElement;
 	}
 
 	private class HeapEntry implements Comparable<HeapEntry>, Serializable {
@@ -93,12 +93,13 @@ public class MergeIndicesTripleIterator implements Iterator<Triple> {
 			this.t = itt.next();
 		}
 
+		@Override
 		public int compareTo(final HeapEntry arg0) {
-			return comparator.compare(this.t, arg0.t);
+			return MergeIndicesTripleIterator.this.comparator.compare(this.t, arg0.t);
 		}
 	}
 
 	public int getMaxId() {
-		return heap.maxLength();
+		return this.heap.maxLength();
 	}
 }

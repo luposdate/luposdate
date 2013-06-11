@@ -37,6 +37,7 @@ import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
+import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
@@ -47,8 +48,8 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 
 	public PredicatePattern() {
 		this(null, (Item[]) null);
-	}	
-	
+	}
+
 	@SuppressWarnings("unchecked")
 	public PredicatePattern(final URILiteral name, final Item... params) {
 		this.patternName = name;
@@ -59,17 +60,19 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		return this.patternArgs;
 	}
 
-	public void setPatternItems(List<Item> items) {
+	public void setPatternItems(final List<Item> items) {
 		this.patternArgs = items;
 	}
-	
+
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
 		this.unionVariables = new HashSet<Variable>(msg.getVariables());
-		for (final Item item : this.patternArgs)
-			if (item.isVariable())
+		for (final Item item : this.patternArgs) {
+			if (item.isVariable()) {
 				this.unionVariables.add((Variable) item);
+			}
+		}
 		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
 		result.getVariables().addAll(this.intersectionVariables);
 		return result;
@@ -92,17 +95,19 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 					&& pred.getName().equals(this.patternName)) {
 				final Bindings bind = Bindings.createNewInstance();
 				boolean matched = true;
-				for (int idx = 0; idx < pred.getParameters().size(); idx++)
-					if (this.patternArgs.get(idx).isVariable())
+				for (int idx = 0; idx < pred.getParameters().size(); idx++) {
+					if (this.patternArgs.get(idx).isVariable()) {
 						bind.add((Variable) this.patternArgs.get(idx), pred
 								.getParameters().get(idx));
-					else if (!this.patternArgs.get(idx).equals(
+					} else if (!this.patternArgs.get(idx).equals(
 							pred.getParameters().get(idx))) {
 						matched = false;
 						break;
 					}
-				if (matched)
+				}
+				if (matched) {
 					result.add(bind);
+				}
 			}
 		}
 		return result;
@@ -115,10 +120,11 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 				.append(this.patternName.toString()).append("(");
 		for (int idx = 0; idx < this.patternArgs.size(); idx++) {
 			str.append(this.patternArgs.get(idx).toString());
-			if (idx < this.patternArgs.size() - 1)
+			if (idx < this.patternArgs.size() - 1) {
 				str.append(", ");
-			else
+			} else {
 				str.append(")");
+			}
 		}
 		return str.toString();
 	}
@@ -141,39 +147,34 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 	public URILiteral getPredicateName() {
 		return this.patternName;
 	}
-	
-	public void setPredicateName(URILiteral name) {
+
+	public void setPredicateName(final URILiteral name) {
 		this.patternName = name;
 	}
 
 	@Override
 	public Iterator<Item> iterator() {
-		return new Iterator<Item>(){
+		return new ImmutableIterator<Item>(){
 			private Item next = PredicatePattern.this.patternName;
-			private Iterator<Item> iterator = PredicatePattern.this.patternArgs.iterator();
+			private final Iterator<Item> iterator = PredicatePattern.this.patternArgs.iterator();
 
 			@Override
 			public boolean hasNext() {
 				if(this.next!=null){
 					return true;
-				}				
+				}
 				return this.iterator.hasNext();
 			}
 
 			@Override
 			public Item next() {
 				if(this.next!=null){
-					Item zNext = this.next;
+					final Item zNext = this.next;
 					this.next = null;
 					return zNext;
-				}				
+				}
 				return this.iterator.next();
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}			
 		};
 	}
 }

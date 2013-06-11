@@ -28,6 +28,7 @@ import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.misc.util.ImmutableIterator;
 
 public abstract class NonBlockingDistinct extends Distinct {
 
@@ -45,7 +46,7 @@ public abstract class NonBlockingDistinct extends Distinct {
 		if (!itb.hasNext()) {
 			return null;
 		} else {
-			return QueryResult.createInstance(new Iterator<Bindings>() {
+			return QueryResult.createInstance(new ImmutableIterator<Bindings>() {
 				Bindings next = null;
 
 				@Override
@@ -77,11 +78,6 @@ public abstract class NonBlockingDistinct extends Distinct {
 						}
 					}
 					return null;
-				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
 				}
 			});
 		}

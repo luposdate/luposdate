@@ -26,6 +26,7 @@ package lupos.datastructures.dbmergesortedds.heap;
 import java.util.Iterator;
 
 import lupos.datastructures.parallel.BoundedBuffer;
+import lupos.misc.util.ImmutableIterator;
 
 public class ParallelHeap<E extends Comparable<E>> extends
 		OptimizedSequentialHeap<E> {
@@ -36,21 +37,21 @@ public class ParallelHeap<E extends Comparable<E>> extends
 	public ParallelHeap(final int height) {
 		super(firstHeapHeight);
 		this.height = height;
-		initParallelHeaps();
+		this.initParallelHeaps();
 	}
 
 	public ParallelHeap(final int height, final int localFirstHeapHeight) {
 		super(localFirstHeapHeight);
 		this.localFirstHeapHeight = localFirstHeapHeight;
 		this.height = height;
-		initParallelHeaps();
+		this.initParallelHeaps();
 	}
 
 	public ParallelHeap(final Object[] content, final int size) {
 		super(content, size);
 		this.length = (content[0] == null && size > 0) ? size + 1 : size;
-		cloneParallelHeaps(content);
-		determineHeight(maxLength());
+		this.cloneParallelHeaps(content);
+		this.determineHeight(this.maxLength());
 	}
 
 	public ParallelHeap(final Object[] content, final int size,
@@ -58,43 +59,43 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		super(content, size);
 		this.localFirstHeapHeight = localFirstHeapHeight;
 		this.length = (content[0] == null && size > 0) ? size + 1 : size;
-		cloneParallelHeaps(content);
-		determineHeight(maxLength());
+		this.cloneParallelHeaps(content);
+		this.determineHeight(this.maxLength());
 	}
 
 	public ParallelHeap(final int length_or_height, final boolean length) {
 		super(firstHeapHeight);
-		if (length)
-			determineHeight(length_or_height);
-		else {
+		if (length) {
+			this.determineHeight(length_or_height);
+		} else {
 			this.height = length_or_height < 3 ? 3 : length_or_height;
 		}
-		initParallelHeaps();
+		this.initParallelHeaps();
 	}
 
 	public ParallelHeap(final int length_or_height, final boolean length,
 			final int localFirstHeapHeight) {
 		super(localFirstHeapHeight);
 		this.localFirstHeapHeight = localFirstHeapHeight;
-		if (length)
-			determineHeight(length_or_height);
-		else {
+		if (length) {
+			this.determineHeight(length_or_height);
+		} else {
 			this.height = length_or_height < 3 ? 3 : length_or_height;
 		}
-		initParallelHeaps();
+		this.initParallelHeaps();
 	}
 
 	protected void initParallelHeaps() {
-		for (int i = (1 << localFirstHeapHeight) - 1; i < arr.length; i++) {
+		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			final InnerParallelHeap<E> ihe_new = new InnerParallelHeap<E>(
-					new SequentialHeap<E>(this.height - localFirstHeapHeight));
+					new SequentialHeap<E>(this.height - this.localFirstHeapHeight));
 			this.arr[i] = ihe_new;
 			ihe_new.start();
 		}
 	}
 
 	protected void cloneParallelHeaps(final Object[] content) {
-		for (int i = (1 << localFirstHeapHeight) - 1; i < arr.length; i++) {
+		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			final InnerParallelHeap<E> ihe = ((InnerParallelHeap<E>) content[i]);
 			// force ihe to finish all its instructions of its instruction
 			// queue...
@@ -108,7 +109,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 
 	@Override
 	public void release() {
-		for (int i = (1 << localFirstHeapHeight) - 1; i < arr.length; i++) {
+		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			final InnerParallelHeap<E> ihe = ((InnerParallelHeap<E>) this.arr[i]);
 			ihe.stopIt();
 		}
@@ -116,13 +117,13 @@ public class ParallelHeap<E extends Comparable<E>> extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#maxLength()
 	 */
 	@Override
 	public int maxLength() {
-		int maxLength = (1 << localFirstHeapHeight) - 1;
-		for (int i = (1 << localFirstHeapHeight) - 1; i < arr.length; i++) {
+		int maxLength = (1 << this.localFirstHeapHeight) - 1;
+		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			maxLength += ((InnerParallelHeap) this.arr[i]).sh.maxLength();
 		}
 		return maxLength;
@@ -131,7 +132,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 	@Override
 	public void clear() {
 		super.clear();
-		for (int i = (1 << localFirstHeapHeight) - 1; i < arr.length; i++) {
+		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			((InnerParallelHeap) this.arr[i]).waitForEmptyInstructionQueue();
 			((InnerParallelHeap) this.arr[i]).sh.clear();
 		}
@@ -139,40 +140,44 @@ public class ParallelHeap<E extends Comparable<E>> extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#isFull()
 	 */
 	@Override
 	public boolean isFull() {
-		return arr[0] != null && size() >= (1 << (height + 1)) - 1;
+		return this.arr[0] != null && this.size() >= (1 << (this.height + 1)) - 1;
 	}
 
 	@Override
 	protected boolean contains(final E ele, final int i) {
-		if (ele.equals(get(i))) {
+		if (ele.equals(this.get(i))) {
 			return true;
-		} else if (ele.compareTo(get(i)) < 0) {
+		} else if (ele.compareTo(this.get(i)) < 0) {
 			return false;
 		} else {
-			if (leftChild(i) > -1) {
-				if (arr[leftChild(i)] instanceof InnerParallelHeap) {
-					((InnerParallelHeap) arr[leftChild(i)])
+			if (this.leftChild(i) > -1) {
+				if (this.arr[this.leftChild(i)] instanceof InnerParallelHeap) {
+					((InnerParallelHeap) this.arr[this.leftChild(i)])
 							.waitForEmptyInstructionQueue();
-					if (((InnerParallelHeap) arr[leftChild(i)]).sh
-							.contains(ele))
+					if (((InnerParallelHeap) this.arr[this.leftChild(i)]).sh
+							.contains(ele)) {
 						return true;
-				} else if (contains(ele, leftChild(i)))
+					}
+				} else if (this.contains(ele, this.leftChild(i))) {
 					return true;
+				}
 			}
-			if (rightChild(i) > -1) {
-				if (arr[rightChild(i)] instanceof InnerParallelHeap) {
-					((InnerParallelHeap) arr[rightChild(i)])
+			if (this.rightChild(i) > -1) {
+				if (this.arr[this.rightChild(i)] instanceof InnerParallelHeap) {
+					((InnerParallelHeap) this.arr[this.rightChild(i)])
 							.waitForEmptyInstructionQueue();
-					if (((InnerParallelHeap) arr[rightChild(i)]).sh
-							.contains(ele))
+					if (((InnerParallelHeap) this.arr[this.rightChild(i)]).sh
+							.contains(ele)) {
 						return true;
-				} else if (contains(ele, rightChild(i)))
+					}
+				} else if (this.contains(ele, this.rightChild(i))) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -181,70 +186,74 @@ public class ParallelHeap<E extends Comparable<E>> extends
 	@Override
 	protected void bubbleDown(int i) {
 		while (true) {
-			final int left = leftChild(i);
-			final int right = rightChild(i);
+			final int left = this.leftChild(i);
+			final int right = this.rightChild(i);
 			int minchild;
 			if (right > -1) {
-				minchild = get(left).compareTo(get(right)) < 0 ? left : right;
+				minchild = this.get(left).compareTo(this.get(right)) < 0 ? left : right;
 			} else if (left > -1) {
 				minchild = left;
-			} else
+			} else {
 				return;
-			final E ie = get(i);
-			if (ie.compareTo(get(minchild)) > 0) {
-				if (arr[minchild] instanceof InnerParallelHeap) {
-					arr[i] = ((InnerParallelHeap<E>) arr[minchild]).peek();
-					((InnerParallelHeap<E>) arr[minchild]).bubbledown(ie);
+			}
+			final E ie = this.get(i);
+			if (ie.compareTo(this.get(minchild)) > 0) {
+				if (this.arr[minchild] instanceof InnerParallelHeap) {
+					this.arr[i] = ((InnerParallelHeap<E>) this.arr[minchild]).peek();
+					((InnerParallelHeap<E>) this.arr[minchild]).bubbledown(ie);
 					return;
 				} else {
-					swap(i, minchild);
+					this.swap(i, minchild);
 					i = minchild;
 				}
-			} else
+			} else {
 				return;
+			}
 		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected E get(final int i) {
-		if (arr[i] instanceof InnerParallelHeap)
-			return ((InnerParallelHeap<E>) arr[i]).peek();
-		else
-			return (E) arr[i];
+		if (this.arr[i] instanceof InnerParallelHeap) {
+			return ((InnerParallelHeap<E>) this.arr[i]).peek();
+		} else {
+			return (E) this.arr[i];
+		}
 	}
 
 	@Override
 	protected void addByUpdating(E elem) {
-		final int[] ia = getPathToFreeSpace();
+		final int[] ia = this.getPathToFreeSpace();
 		for (int index = ia[0]; index > 0; index--) {
 			final int i = ia[index];
-			if (arr[i] == null)
+			if (this.arr[i] == null) {
 				break;
-			else if (arr[i] instanceof InnerParallelHeap) {
-				((InnerParallelHeap<E>) arr[i]).addByUpdating(elem);
-				length++;
+			} else if (this.arr[i] instanceof InnerParallelHeap) {
+				((InnerParallelHeap<E>) this.arr[i]).addByUpdating(elem);
+				this.length++;
 				return;
 			} else {
-				final E zelem = get(i);
+				final E zelem = this.get(i);
 				if (elem.compareTo(zelem) < 0) {
-					arr[i] = elem;
+					this.arr[i] = elem;
 					elem = zelem;
 				}
 			}
 		}
-		arr[length++] = elem;
+		this.arr[this.length++] = elem;
 	}
 
 	@Override
 	public void add(final E elem) {
-		if (arr[0] == null) {
-			if (length == 0)
-				length++;
-			arr[0] = elem;
-			bubbleDown(0);
+		if (this.arr[0] == null) {
+			if (this.length == 0) {
+				this.length++;
+			}
+			this.arr[0] = elem;
+			this.bubbleDown(0);
 		} else {
-			addByUpdating(elem);
+			this.addByUpdating(elem);
 		}
 	}
 
@@ -257,8 +266,9 @@ public class ParallelHeap<E extends Comparable<E>> extends
 			this.bbe = bbe;
 		}
 
+		@Override
 		public int compareTo(final Entry o) {
-			return e.compareTo(o.e);
+			return this.e.compareTo(o.e);
 		}
 
 	}
@@ -280,36 +290,36 @@ public class ParallelHeap<E extends Comparable<E>> extends
 			if (HEAPREPLACEMENTS) {
 				final SequentialHeap<E> tmpHeapReplacements = new SequentialHeap<E>(
 						1024, true);
-				while (she.size() > 2 * 1024) {
+				while (this.she.size() > 2 * 1024) {
 					for (int i = 0; i < 1024; i++) {
-						tmpHeapReplacements.add((E) she.arr[--she.length]);
-						she.arr[she.length] = null;
+						tmpHeapReplacements.add((E) this.she.arr[--this.she.length]);
+						this.she.arr[this.she.length] = null;
 					}
 					while (!tmpHeapReplacements.isEmpty()) {
 						final E replacement = tmpHeapReplacements.pop();
-						final E e = (E) she.arr[0];
+						final E e = (E) this.she.arr[0];
 						try {
-							bbe.put(e);
+							this.bbe.put(e);
 						} catch (final InterruptedException e1) {
 							System.err.println(e1);
 							e1.printStackTrace();
 						}
-						she.arr[0] = replacement;
-						she.bubbleDown(0);
+						this.she.arr[0] = replacement;
+						this.she.bubbleDown(0);
 					}
 				}
 			}
-			E e = she.pop();
+			E e = this.she.pop();
 			while (e != null) {
 				try {
-					bbe.put(e);
+					this.bbe.put(e);
 				} catch (final InterruptedException e1) {
 					System.err.println(e1);
 					e1.printStackTrace();
 				}
-				e = she.pop();
+				e = this.she.pop();
 			}
-			bbe.endOfData();
+			this.bbe.endOfData();
 		}
 
 	}
@@ -318,55 +328,55 @@ public class ParallelHeap<E extends Comparable<E>> extends
 
 	@Override
 	public Iterator<E> emptyDatastructure() {
-		if (length <= (1 << localFirstHeapHeight) - 1) {
-			return new Iterator<E>() {
+		if (this.length <= (1 << this.localFirstHeapHeight) - 1) {
+			return new ImmutableIterator<E>() {
 
+				@Override
 				public boolean hasNext() {
-					return size() > 0;
+					return ParallelHeap.this.size() > 0;
 				}
 
+				@Override
 				public E next() {
-					return pop();
+					return ParallelHeap.this.pop();
 				}
-
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-
 			};
 		}
 
-		final int startInnerHeaps = (1 << localFirstHeapHeight) - 1;
-		final int size = Math.min(arr.length - startInnerHeaps, length
+		final int startInnerHeaps = (1 << this.localFirstHeapHeight) - 1;
+		final int size = Math.min(this.arr.length - startInnerHeaps, this.length
 				- startInnerHeaps);
 		final SequentialHeap<Entry> she = new SequentialHeap<Entry>(size, true);
 		final Thread[] threads = new Thread[size];
 		for (int i = 0; i < size; i++) {
 			final BoundedBuffer<E> bbe = new BoundedBuffer<E>(MAXBUFFER);
 			threads[i] = new MakeEmptyRunner(
-					((InnerParallelHeap<E>) arr[startInnerHeaps + i]).sh, bbe);
+					((InnerParallelHeap<E>) this.arr[startInnerHeaps + i]).sh, bbe);
 			threads[i].start();
 			try {
-				if (bbe.hasNext())
+				if (bbe.hasNext()) {
 					she.add(new Entry(bbe.get(), bbe));
+				}
 			} catch (final InterruptedException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
 		}
 
-		length = startInnerHeaps;
+		this.length = startInnerHeaps;
 
-		return new Iterator<E>() {
+		return new ImmutableIterator<E>() {
 
+			@Override
 			public boolean hasNext() {
-				return size() > 0 || she.length > 0;
+				return ParallelHeap.this.size() > 0 || she.length > 0;
 			}
 
+			@Override
 			public E next() {
-				if (size() > 0)
-					return pop();
-				else {
+				if (ParallelHeap.this.size() > 0) {
+					return ParallelHeap.this.pop();
+				} else {
 					if (she.length > 0) {
 						final Entry entry = she.pop();
 						final E e = entry.e;
@@ -380,47 +390,44 @@ public class ParallelHeap<E extends Comparable<E>> extends
 							e1.printStackTrace();
 						}
 						return e;
-					} else
+					} else {
 						return null;
+					}
 				}
 			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
 		};
 	}
 
 	@Override
 	public E pop() {
-		if (arr[0] == null) {
-			if (length == 0 || length == 1) {
-				length = 0;
+		if (this.arr[0] == null) {
+			if (this.length == 0 || this.length == 1) {
+				this.length = 0;
 				return null;
 			}
-			arr[0] = getLastElement();
-			bubbleDown(0);
+			this.arr[0] = this.getLastElement();
+			this.bubbleDown(0);
 		}
-		final E e = get(0);
-		arr[0] = null;
-		if (length == 1)
-			length = 0;
+		final E e = this.get(0);
+		this.arr[0] = null;
+		if (this.length == 1) {
+			this.length = 0;
+		}
 		return e;
 	}
 
 	private Object getLastElement() {
-		if (length - 1 < (1 << localFirstHeapHeight) - 1) {
-			final Object o = arr[--length];
-			arr[length] = null;
+		if (this.length - 1 < (1 << this.localFirstHeapHeight) - 1) {
+			final Object o = this.arr[--this.length];
+			this.arr[this.length] = null;
 			return o;
 		} else {
-			final int[] ia = getPathToElement(length - 1);
+			final int[] ia = this.getPathToElement(this.length - 1);
 			for (int index = ia[0]; index > 0; index--) {
 				final int i = ia[index];
-				if (arr[i] instanceof InnerParallelHeap) {
-					length--;
-					return ((InnerParallelHeap<E>) arr[i]).getLastElement();
+				if (this.arr[i] instanceof InnerParallelHeap) {
+					this.length--;
+					return ((InnerParallelHeap<E>) this.arr[i]).getLastElement();
 				}
 			}
 			return null;

@@ -78,6 +78,7 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.TimeInterval;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
@@ -191,7 +192,7 @@ public class FastRDF3XIndexConstruction {
 
 				@Override
 				public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
-					return new Iterator<java.util.Map.Entry<String, Integer>>() {
+					return new ImmutableIterator<java.util.Map.Entry<String, Integer>>() {
 
 						Iterator<String> it = final_trie.iterator();
 						int index = 1;
@@ -205,12 +206,6 @@ public class FastRDF3XIndexConstruction {
 						public Entry<String, Integer> next() {
 							return new MapEntry<String, Integer>(this.it.next(), this.index++);
 						}
-
-						@Override
-						public void remove() {
-							throw new UnsupportedOperationException();
-						}
-
 					};
 				}
 
@@ -935,7 +930,7 @@ public class FastRDF3XIndexConstruction {
 		@Override
 		public Iterator<Entry<TripleKey, Triple>> iterator() {
 			try {
-				return new Iterator<Entry<TripleKey, Triple>>(){
+				return new ImmutableIterator<Entry<TripleKey, Triple>>(){
 
 					IteratorFromRun it = new IteratorFromRun(GeneratorFromFinalRun.this.filename);
 					int[] triple = this.it.next();
@@ -967,12 +962,6 @@ public class FastRDF3XIndexConstruction {
 
 						return new MapEntry<TripleKey, Triple>(key, t);
 					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-
 				};
 			} catch (final IOException e) {
 				System.err.println(e);

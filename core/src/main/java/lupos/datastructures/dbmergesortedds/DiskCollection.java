@@ -276,8 +276,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		deleteAllFiles(this.filename, this.numberFiles);
 	}
 
-	private static void deleteAllFiles(final String baseFilename,
-			final int numberFiles) {
+	private static void deleteAllFiles(final String baseFilename, final int numberFiles) {
 		for (int i = 0; i <= numberFiles; i++) {
 			FileHelper.deleteFile(baseFilename + i);
 		}
@@ -294,14 +293,8 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
-	// protected boolean released = false;
-	// protected String traceString = "";
 
 	public void release() {
-		// released = true;
-		// for (final StackTraceElement trace : new Throwable().getStackTrace())
-		// traceString += trace + "\n";
-
 		if (this.out != null) {
 			try {
 				this.out.close();

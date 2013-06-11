@@ -34,6 +34,7 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.Client;
+import lupos.misc.util.ImmutableIterator;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.sparql1_1.ASTSelectQuery;
 import lupos.sparql1_1.ASTVar;
@@ -41,72 +42,67 @@ import lupos.sparql1_1.Node;
 
 public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceedingJoin {
 
-	public FederatedQueryFetchAsNeeded(Node federatedQuery) {
+	public FederatedQueryFetchAsNeeded(final Node federatedQuery) {
 		super(federatedQuery);
 	}
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		return QueryResult.createInstance(new Iterator<Bindings>(){
+		return QueryResult.createInstance(new ImmutableIterator<Bindings>(){
 
-			private Iterator<Bindings> bindingsIterator = bindings.iterator();
-			private Iterator<Bindings> currentIteratorQueryResult = nextIteratorQueryResult();
-			
+			private final Iterator<Bindings> bindingsIterator = bindings.iterator();
+			private Iterator<Bindings> currentIteratorQueryResult = this.nextIteratorQueryResult();
+
 			@Override
 			public boolean hasNext() {
 				if(this.currentIteratorQueryResult==null){
 					return false;
 				}
 				while(!this.currentIteratorQueryResult.hasNext()){
-					this.currentIteratorQueryResult = nextIteratorQueryResult();
+					this.currentIteratorQueryResult = this.nextIteratorQueryResult();
 					if(this.currentIteratorQueryResult==null){
 						return false;
 					}
 				}
-				return true;					
+				return true;
 			}
 
 			@Override
 			public Bindings next() {
-				if(hasNext()){
+				if(this.hasNext()){
 					return this.currentIteratorQueryResult.next();
 				} else {
 					return null;
 				}
 			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-			
 			private Iterator<Bindings> nextIteratorQueryResult(){
 				try {
 					if(!this.bindingsIterator.hasNext()){
 						return null;
 					}
-					Bindings bindingsTemp = this.bindingsIterator.next();
-					final String fQuery = toStringQuery(bindingsTemp);
+					final Bindings bindingsTemp = this.bindingsIterator.next();
+					final String fQuery = FederatedQueryFetchAsNeeded.this.toStringQuery(bindingsTemp);
 					if (!FederatedQueryFetchAsNeeded.this.endpoint.isVariable()) {
 						return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeeded.this.endpoint).getString(), fQuery), bindingsTemp);
 					} else {
 						Literal endpointURI = bindingsTemp.get((Variable) FederatedQueryFetchAsNeeded.this.endpoint);
-						if (endpointURI instanceof LazyLiteral)
+						if (endpointURI instanceof LazyLiteral) {
 							endpointURI = ((LazyLiteral) endpointURI).getLiteral();
+						}
 						if (endpointURI instanceof URILiteral) {
 							return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp);
 						} else {
 							// ignore or error message?
 						}
 					}
-				} catch(IOException e){
+				} catch(final IOException e){
 					System.err.println(e);
 					e.printStackTrace();
 				}
 				// in case of error try next one:
-				return nextIteratorQueryResult();
+				return this.nextIteratorQueryResult();
 			}
-		});	
+		});
 	}
 
 	public String toStringQuery(final Bindings bindings) {
@@ -128,37 +124,38 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 							&& node.jjtGetChild(i) instanceof ASTVar) {
 						// the only difference to its method in the super class:
 						// just ignore the variable if it is in the current bindings...
-						Variable var = new Variable(((ASTVar)node.jjtGetChild(i)).getName());
+						final Variable var = new Variable(((ASTVar)node.jjtGetChild(i)).getName());
 						if ((bindings.get(var) == null)){
-							ret += visitChild(node, i) + " ";
+							ret += this.visitChild(node, i) + " ";
 						}
 						i++;
 					}
 				}
 				ret += "\n";
 				while (i < node.jjtGetNumChildren()) {
-					ret += visitChild(node, i++);
+					ret += this.visitChild(node, i++);
 				}
 				return ret;
 			}
 			@Override
 			public String visit(final ASTVar node) {
-				Variable var = new Variable(node.getName());
+				final Variable var = new Variable(node.getName());
 				if ((bindings.get(var) != null)) {
 					return bindings.get(var).toString();
-				} else
+				} else {
 					return "?" + node.getName();
+				}
 			}
 		};
 
 		return "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
 	}
-	
+
 	public static class IteratorQueryResultAndOneBindings implements ParallelIterator<Bindings>{
-		
+
 		private final Iterator<Bindings> it;
 		private final Bindings bindings;
-		
+
 		public IteratorQueryResultAndOneBindings(final QueryResult queryResult, final Bindings bindings){
 			this.it = queryResult.oneTimeIterator();
 			this.bindings = bindings;
@@ -171,10 +168,10 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 
 		@Override
 		public Bindings next() {
-			if(!hasNext()){
+			if(!this.hasNext()){
 				return null;
 			}
-			Bindings result = this.it.next();
+			final Bindings result = this.it.next();
 			result.addAll(this.bindings);
 			return result;
 		}
@@ -190,6 +187,6 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 				((ParallelIterator<Bindings>)this.it).close();
 			}
 		}
-		
+
 	}
 }

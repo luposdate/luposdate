@@ -38,6 +38,7 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This class represents an index scan operator for the distributed query evaluators...
@@ -82,7 +83,7 @@ public class QueryClientIndexScan extends BasicIndexScan {
 	 * @return the query result each bindings of which is added with the given bindings
 	 */
 	private IteratorQueryResult addBindings(final Bindings bindings, final QueryResult queryResult) {
-		return new IteratorQueryResult(new Iterator<Bindings>(){
+		return new IteratorQueryResult(new ImmutableIterator<Bindings>(){
 
 			Iterator<Bindings> it = queryResult.oneTimeIterator();
 
@@ -100,11 +101,6 @@ public class QueryClientIndexScan extends BasicIndexScan {
 				} else {
 					return null;
 				}
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
 			}
 		});
 	}

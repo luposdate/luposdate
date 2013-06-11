@@ -33,6 +33,7 @@ import java.util.Set;
 
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
+import lupos.misc.util.ImmutableIterator;
 
 public class MapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> implements Map<K, V>{
 
@@ -131,7 +132,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			}
 			@Override
 			public Iterator<java.util.Map.Entry<K, V>> iterator() {
-				return new Iterator<java.util.Map.Entry<K, V>>(){
+				return new ImmutableIterator<java.util.Map.Entry<K, V>>(){
 					Iterator<java.util.Map.Entry<K, V>> memoryIterator=MapImplementation.this.memoryMap.entrySet().iterator();
 					Iterator<java.util.Map.Entry<K, V>> diskIterator= (MapImplementation.this.diskMap==null)? null:MapImplementation.this.diskMap.entrySet().iterator();
 					@Override
@@ -153,10 +154,6 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 							return this.diskIterator.next();
 						}
 						return null;
-					}
-					@Override
-					public void remove() {
-						throw(new UnsupportedOperationException("This iterator does not support remove."));
 					}
 				};
 			}
@@ -270,7 +267,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 			}
 			@Override
 			public Iterator<K> iterator() {
-				return new Iterator<K>(){
+				return new ImmutableIterator<K>(){
 					final Iterator<java.util.Map.Entry<K, V>> entryIt=MapImplementation.this.entrySet().iterator();
 					@Override
 					public boolean hasNext() {
@@ -279,10 +276,6 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 					@Override
 					public K next() {
 						return this.entryIt.next().getKey();
-					}
-					@Override
-					public void remove() {
-						this.entryIt.remove();
 					}
 				};
 			}

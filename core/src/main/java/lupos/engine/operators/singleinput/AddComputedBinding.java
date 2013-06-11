@@ -41,15 +41,16 @@ import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
 import lupos.misc.debug.DebugStep;
+import lupos.misc.util.ImmutableIterator;
 import lupos.sparql1_1.Node;
 
 public class AddComputedBinding extends SingleInputOperator {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7826058701554340200L;
-	
+
 	public final Map<Variable, Filter> projections = new HashMap<Variable, Filter>();
 	protected QueryResult queryResult = null;
 	private boolean pipelineBreaker = false;
@@ -57,8 +58,9 @@ public class AddComputedBinding extends SingleInputOperator {
 	public void addProjectionElement(final Variable var, final Node constraint) {
 		final Filter filter = new Filter(constraint);
 		this.projections.put(var, filter);
-		if (filter.isPipelineBreaker())
+		if (filter.isPipelineBreaker()) {
 			this.pipelineBreaker = true;
+		}
 	}
 
 	@Override
@@ -83,9 +85,9 @@ public class AddComputedBinding extends SingleInputOperator {
 			}
 		}
 		if (!aggregationFunctions) {
-			final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
+			final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
 				final Iterator<Bindings> bindIt = bindings.oneTimeIterator();
-				Bindings next = computeNext();
+				Bindings next = this.computeNext();
 
 				@Override
 				public boolean hasNext() {
@@ -95,7 +97,7 @@ public class AddComputedBinding extends SingleInputOperator {
 				@Override
 				public Bindings next() {
 					final Bindings zNext = this.next;
-					this.next = computeNext();
+					this.next = this.computeNext();
 					return zNext;
 				}
 
@@ -121,40 +123,37 @@ public class AddComputedBinding extends SingleInputOperator {
 					}
 					return null;
 				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
 			};
 
-			if (resultIterator.hasNext())
+			if (resultIterator.hasNext()) {
 				return QueryResult.createInstance(resultIterator);
-			else
+			} else {
 				return null;
+			}
 		} else {
 			if (this.queryResult == null) {
 				bindings.materialize();
 				this.queryResult = bindings;
-			} else
+			} else {
 				this.queryResult.addAll(bindings);
+			}
 			return null;
 		}
 	}
 
 	protected QueryResult getQueryResultForAggregatedFilter(final QueryResult queryResultParameter) {
 		if (queryResultParameter != null) {
-			final List<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsList = new LinkedList<HashMap<lupos.sparql1_1.Node, Object>>(); 
+			final List<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsList = new LinkedList<HashMap<lupos.sparql1_1.Node, Object>>();
 			for (final Map.Entry<Variable, Filter> entry: this.projections
 					.entrySet()) {
 				final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>();
 				Filter.computeAggregationFunctions(queryResultParameter, entry.getValue().aggregationFunctions, resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor());
 				resultsOfAggregationFunctionsList.add(resultsOfAggregationFunctions);
 			}
-			final Iterator<Bindings> resultIterator = new Iterator<Bindings>() {
+			final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
 				final Iterator<Bindings> bindIt = queryResultParameter.oneTimeIterator();
 
-				Bindings next = computeNext();
+				Bindings next = this.computeNext();
 
 				@Override
 				public boolean hasNext() {
@@ -164,7 +163,7 @@ public class AddComputedBinding extends SingleInputOperator {
 				@Override
 				public Bindings next() {
 					final Bindings zNext = this.next;
-					this.next = computeNext();
+					this.next = this.computeNext();
 					return zNext;
 				}
 
@@ -174,10 +173,10 @@ public class AddComputedBinding extends SingleInputOperator {
 						try {
 							if (bind != null) {
 								final Bindings bindNew = bind.clone();
-								Iterator<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsIterator = resultsOfAggregationFunctionsList.iterator();
+								final Iterator<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsIterator = resultsOfAggregationFunctionsList.iterator();
 								for (final Map.Entry<Variable, Filter> entry: AddComputedBinding.this.projections
 										.entrySet()) {
-									HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = resultsOfAggregationFunctionsIterator.next();
+									final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = resultsOfAggregationFunctionsIterator.next();
 									bindNew.add(entry.getKey(),
 												Helper.getLiteral(Filter.staticEvalTree(
 																			bind,
@@ -194,25 +193,22 @@ public class AddComputedBinding extends SingleInputOperator {
 					}
 					return null;
 				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
 			};
 
-			if (resultIterator.hasNext())
+			if (resultIterator.hasNext()) {
 				return QueryResult.createInstance(resultIterator);
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		final QueryResult qr = getQueryResultForAggregatedFilter(this.queryResult);
+		final QueryResult qr = this.getQueryResultForAggregatedFilter(this.queryResult);
 		if (qr != null) {
-			if (this.succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1) {
 				qr.materialize();
+			}
 			for (final OperatorIDTuple opId: this.succeedingOperators) {
 				opId.processAll(qr);
 			}
@@ -223,21 +219,23 @@ public class AddComputedBinding extends SingleInputOperator {
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.deleteAllAtSucceedingOperators();
-		preProcessMessage(new EndOfEvaluationMessage());
+		this.preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
 	}
 
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete, final int operandID) {
-		if (this.queryResult != null)
+		if (this.queryResult != null) {
 			this.queryResult.removeAll(queryResultToDelete);
+		}
 		return queryResultToDelete;
 	}
 
 	@Override
 	public void deleteQueryResult(final int operandID) {
-		if (this.queryResult != null)
+		if (this.queryResult != null) {
 			this.queryResult.release();
+		}
 		this.queryResult = null;
 	}
 
@@ -246,8 +244,9 @@ public class AddComputedBinding extends SingleInputOperator {
 		String s = super.toString();
 		boolean comma = false;
 		for (final Map.Entry<Variable, Filter> entry: this.projections.entrySet()) {
-			if (comma)
+			if (comma) {
 				s += ",";
+			}
 			comma = true;
 			s += " " + entry.getKey() + "=" + entry.getValue().toString();
 		}
@@ -259,8 +258,9 @@ public class AddComputedBinding extends SingleInputOperator {
 		String s = super.toString();
 		boolean comma = false;
 		for (final Map.Entry<Variable, Filter> entry: this.projections.entrySet()) {
-			if (comma)
+			if (comma) {
 				s += ",";
+			}
 			comma = true;
 			s += " " + entry.getKey() + "="
 					+ entry.getValue().toString(prefixInstance);
@@ -282,17 +282,18 @@ public class AddComputedBinding extends SingleInputOperator {
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
 		this.deleteAllDebugAtSucceedingOperators(debugstep);
-		preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
+		this.preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
 		return msg;
 	}
 
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		final QueryResult qr = getQueryResultForAggregatedFilter(this.queryResult);
+		final QueryResult qr = this.getQueryResultForAggregatedFilter(this.queryResult);
 		if (qr != null) {
-			if (this.succeedingOperators.size() > 1)
+			if (this.succeedingOperators.size() > 1) {
 				qr.materialize();
+			}
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 						debugstep, this, opId.getOperator(), true);

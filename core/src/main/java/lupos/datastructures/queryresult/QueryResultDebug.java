@@ -30,8 +30,8 @@ import java.util.LinkedList;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
 import lupos.engine.operators.BasicOperator;
-import lupos.engine.operators.Operator;
 import lupos.misc.debug.DebugStep;
+import lupos.misc.util.ImmutableIterator;
 
 public class QueryResultDebug extends QueryResult {
 
@@ -50,74 +50,91 @@ public class QueryResultDebug extends QueryResult {
 		this.process = process;
 	}
 
+	@Override
 	public void reset() {
-		if (opp != null)
-			opp.reset();
+		if (this.opp != null) {
+			this.opp.reset();
+		}
 	}
 
+	@Override
 	public Collection<Bindings> getCollection() {
-		return opp.getCollection();
+		return this.opp.getCollection();
 	}
 
+	@Override
 	public boolean contains(final Bindings b) {
-		return opp.contains(b);
+		return this.opp.contains(b);
 	}
 
+	@Override
 	public boolean add(final Bindings b) {
-		return opp.add(b);
+		return this.opp.add(b);
 	}
 
+	@Override
 	public boolean add(final QueryResult qr) {
-		return opp.add(qr);
+		return this.opp.add(qr);
 	}
 
+	@Override
 	public boolean containsAll(final QueryResult qr) {
-		return opp.containsAll(qr);
+		return this.opp.containsAll(qr);
 	}
 
+	@Override
 	public boolean containsAllExceptAnonymousLiterals(final QueryResult qr) {
-		return opp.containsAllExceptAnonymousLiterals(qr);
+		return this.opp.containsAllExceptAnonymousLiterals(qr);
 	}
 
+	@Override
 	public boolean remove(final Bindings b) {
-		return opp.remove(b);
+		return this.opp.remove(b);
 	}
 
+	@Override
 	public boolean removeAll(final QueryResult res) {
-		return opp.removeAll(res);
+		return this.opp.removeAll(res);
 	}
 
+	@Override
 	public boolean addFirst(final Bindings b) {
-		return opp.addFirst(b);
+		return this.opp.addFirst(b);
 	}
 
+	@Override
 	public boolean addLast(final Bindings b) {
-		return opp.addLast(b);
+		return this.opp.addLast(b);
 	}
 
+	@Override
 	public boolean add(final int pos, final Bindings b) {
-		return opp.add(pos, b);
+		return this.opp.add(pos, b);
 	}
 
+	@Override
 	public Bindings getFirst() {
-		return opp.getFirst();
+		return this.opp.getFirst();
 	}
 
+	@Override
 	public Bindings getLast() {
-		return opp.getLast();
+		return this.opp.getLast();
 	}
 
+	@Override
 	public Bindings get(final int pos) {
-		return opp.get(pos);
+		return this.opp.get(pos);
 	}
 
 	@Override
 	public QueryResult clone() {
-		final QueryResult ret = new QueryResultDebug(opp, debugstep, from, to,
-				process);
+		final QueryResult ret = new QueryResultDebug(this.opp, this.debugstep, this.from, this.to,
+				this.process);
 		return ret;
 	}
 
+	@Override
 	public int oneTimeSize() {
 		int size = 0;
 		final Iterator<Bindings> itb = this.oneTimeIterator();
@@ -133,143 +150,165 @@ public class QueryResultDebug extends QueryResult {
 		return size;
 	}
 
+	@Override
 	public int size() {
-		return opp.size();
+		return this.opp.size();
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return opp.isEmpty();
+		return this.opp.isEmpty();
 	}
 
+	@Override
 	public boolean addAll(final QueryResult res) {
-		return opp.addAll(res);
+		return this.opp.addAll(res);
 	}
 
 	@Override
 	public String toString() {
-		return opp.toString();
+		return this.opp.toString();
 	}
 
 	@Override
 	public boolean equals(final Object o) {
-		return opp.equals(o);
+		return this.opp.equals(o);
 	}
 
+	@Override
 	public boolean sameOrder(final QueryResult qr) {
-		return opp.sameOrder(qr);
+		return this.opp.sameOrder(qr);
 	}
 
+	@Override
 	public boolean sameOrderExceptAnonymousLiterals(final QueryResult qr) {
-		return opp.sameOrderExceptAnonymousLiterals(qr);
+		return this.opp.sameOrderExceptAnonymousLiterals(qr);
 	}
 
+	@Override
 	public Collection<Collection<Triple>> getTriples(
 			final LinkedList<Collection<Triple>> lct) {
-		return opp.getTriples(lct);
+		return this.opp.getTriples(lct);
 	}
 
+	@Override
 	public void release() {
-		opp.release();
+		this.opp.release();
 	}
 
+	@Override
 	public void materialize() {
-		opp.materialize();
+		this.opp.materialize();
 	}
 
+	@Override
 	public Iterator<Bindings> oneTimeIterator() {
-		return generateDebugIterator(opp.oneTimeIterator());
+		return this.generateDebugIterator(this.opp.oneTimeIterator());
 	}
 
+	@Override
 	public Iterator<Bindings> iterator() {
-		return generateDebugIterator(opp.iterator());
+		return this.generateDebugIterator(this.opp.iterator());
 	}
 
 	private void step(final BasicOperator from, final BasicOperator to,
 			final Bindings bindings) {
-		if (process)
-			debugstep.step(from, to, bindings);
-		else
-			debugstep.stepDelete(from, to, bindings);
+		if (this.process) {
+			this.debugstep.step(from, to, bindings);
+		} else {
+			this.debugstep.stepDelete(from, to, bindings);
+		}
 	}
 
 	private Iterator<Bindings> generateDebugIterator(
 			final Iterator<Bindings> itb) {
-		if (itb instanceof SIPParallelIterator)
+		if (itb instanceof SIPParallelIterator) {
 			return new SIPParallelIterator<Bindings, Bindings>() {
 
+				@Override
 				public Bindings next(final Bindings k) {
 					final Bindings next = ((SIPParallelIterator<Bindings, Bindings>) itb)
 							.next(k);
-					if (next != null)
-						step(from, to, next);
+					if (next != null) {
+						QueryResultDebug.this.step(QueryResultDebug.this.from, QueryResultDebug.this.to, next);
+					}
 					return next;
 				}
 
+				@Override
 				public void close() {
 					((SIPParallelIterator<Bindings, Bindings>) itb).close();
 
 				}
 
+				@Override
 				public boolean hasNext() {
 					return itb.hasNext();
 				}
 
+				@Override
 				public Bindings next() {
 					final Bindings next = itb.next();
 					if (next != null) {
-						step(from, to, next);
+						QueryResultDebug.this.step(QueryResultDebug.this.from, QueryResultDebug.this.to, next);
 					}
 					return next;
 				}
 
+				@Override
 				public void remove() {
 					itb.remove();
 				}
 			};
-		else if (itb instanceof ParallelIterator)
+		} else if (itb instanceof ParallelIterator) {
 			return new ParallelIterator<Bindings>() {
 
+				@Override
 				public void close() {
 					((ParallelIterator<Bindings>) itb).close();
 
 				}
 
+				@Override
 				public boolean hasNext() {
 					return itb.hasNext();
 				}
 
+				@Override
 				public Bindings next() {
 					final Bindings next = itb.next();
-					if (next != null)
-						step(from, to, next);
+					if (next != null) {
+						QueryResultDebug.this.step(QueryResultDebug.this.from, QueryResultDebug.this.to, next);
+					}
 					return next;
 				}
 
+				@Override
 				public void remove() {
 					itb.remove();
 				}
 			};
-		else
-			return new Iterator<Bindings>() {
+		} else {
+			return new ImmutableIterator<Bindings>() {
 
+				@Override
 				public boolean hasNext() {
 					return itb.hasNext();
 				}
 
+				@Override
 				public Bindings next() {
 					final Bindings next = itb.next();
-					if (next != null)
-						step(from, to, next);
+					if (next != null) {
+						QueryResultDebug.this.step(QueryResultDebug.this.from, QueryResultDebug.this.to, next);
+					}
 					return next;
 				}
-
-				public void remove() {
-					itb.remove();
-				}
 			};
+		}
 	}
 
 	public QueryResult getOriginalQueryResult() {
-		return opp;
+		return this.opp;
 	}
 }

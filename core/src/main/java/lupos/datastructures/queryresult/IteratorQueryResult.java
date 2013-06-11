@@ -34,6 +34,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.singleinput.SIPFilterOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.util.ImmutableIterator;
 
 public class IteratorQueryResult extends QueryResult {
 
@@ -56,22 +57,25 @@ public class IteratorQueryResult extends QueryResult {
 			final TriplePattern tp,
 			final RDF3XIndexScan.CollationOrder order,
 			final boolean considerBloomFilters) {
-		if (!considerBloomFilters)
-			createIterator(itt, tp, order);
-		else
+		if (!considerBloomFilters) {
+			this.createIterator(itt, tp, order);
+		} else {
 			this.itb = new SIPParallelIterator<Bindings, Bindings>() {
 				Triple lastTriple = null;
-				Bindings next = computeNext();
+				Bindings next = this.computeNext();
 
+				@Override
 				public boolean hasNext() {
-					return (next != null);
+					return (this.next != null);
 				}
 
+				@Override
 				public Bindings next() {
-					if (next == null)
+					if (this.next == null) {
 						return null;
-					final Bindings znext = next;
-					next = computeNext();
+					}
+					final Bindings znext = this.next;
+					this.next = this.computeNext();
 					return znext;
 				}
 
@@ -85,18 +89,19 @@ public class IteratorQueryResult extends QueryResult {
 										.getBloomFilters()[2] != null)) {
 							do {
 								boolean considerLastTriple;
-								if (lastTriple == null) {
-									lastTriple = itt.next();
+								if (this.lastTriple == null) {
+									this.lastTriple = itt.next();
 									considerLastTriple = true;
-								} else
+								} else {
 									considerLastTriple = false;
+								}
 								final Literal[] keyTriple = new Literal[3];
 								boolean useKey = false;
 								for (int j = 0; j < 3; j++) {
 									final int i = positions[order.ordinal()][j];
 									if (!useKey
 											&& tp.getBloomFilters()[i] != null) {
-										int index = (Math.abs(lastTriple
+										int index = (Math.abs(this.lastTriple
 												.getPos(i).hashCode()) % SIPFilterOperator.NUMBEROFBITSFORBLOOMFILTER);
 										if (!tp.getBloomFilters()[i].get(index)) {
 											final int startIndex = index;
@@ -115,10 +120,11 @@ public class IteratorQueryResult extends QueryResult {
 											// bloom filter?
 											if (index
 													% tp.getBloomFilters()[i]
-															.size() == startIndex)
+															.size() == startIndex) {
 												return null;
+											}
 											// calculate distancepreserving jump over the gap!
-											final int code = ((LazyLiteral) lastTriple
+											final int code = ((LazyLiteral) this.lastTriple
 													.getPos(i)).getCode()
 													+ (index - startIndex);
 											// if (code >=
@@ -129,38 +135,43 @@ public class IteratorQueryResult extends QueryResult {
 											keyTriple[i] = new LazyLiteral(code);
 											useKey = true;
 											// }
-										} else
+										} else {
 											keyTriple[i] = null;
-									} else
+										}
+									} else {
 										keyTriple[i] = null;
+									}
 								}
 								if (useKey) {
 									// do distancepreserving jump over the gap!
 									final TripleKey key = tp.getKey(keyTriple,
 											order);
 									t = itt.next(key);
-								} else
-									t = (considerLastTriple) ? lastTriple : itt
+								} else {
+									t = (considerLastTriple) ? this.lastTriple : itt
 											.next();
-								lastTriple = t;
-								if (t == null)
+								}
+								this.lastTriple = t;
+								if (t == null) {
 									return null;
+								}
 							} while ((tp.getBloomFilters()[0] != null && !tp
 									.getBloomFilters()[0]
-									.get((Math.abs(lastTriple.getPos(0)
+									.get((Math.abs(this.lastTriple.getPos(0)
 											.hashCode()) % SIPFilterOperator.NUMBEROFBITSFORBLOOMFILTER)))
 									|| (tp.getBloomFilters()[1] != null && !tp
 											.getBloomFilters()[1]
-											.get((Math.abs(lastTriple.getPos(1)
+											.get((Math.abs(this.lastTriple.getPos(1)
 													.hashCode()) % SIPFilterOperator.NUMBEROFBITSFORBLOOMFILTER)))
 									|| (tp.getBloomFilters()[2] != null && !tp
 											.getBloomFilters()[2]
-											.get((Math.abs(lastTriple.getPos(2)
+											.get((Math.abs(this.lastTriple.getPos(2)
 													.hashCode()) % SIPFilterOperator.NUMBEROFBITSFORBLOOMFILTER))));
-						} else
+						} else {
 							t = itt.next();
+						}
 						if (t != null) {
-							lastTriple = t;
+							this.lastTriple = t;
 							final Bindings znext = tp.process(t, false);
 							if (znext != null) {
 								return znext;
@@ -171,8 +182,9 @@ public class IteratorQueryResult extends QueryResult {
 				}
 
 				private Bindings computeNext(final Bindings k) {
-					if (!(itt instanceof SIPParallelIterator))
-						return computeNext();
+					if (!(itt instanceof SIPParallelIterator)) {
+						return this.computeNext();
+					}
 					final TripleKey key = tp.getKey(k, order);
 					while (itt.hasNext()) {
 						// also consider inner joins in triple patterns like
@@ -194,15 +206,17 @@ public class IteratorQueryResult extends QueryResult {
 														.get(index
 																% tp
 																		.getBloomFilters()[i]
-																		.size()))
+																		.size())) {
 											index++;
+										}
 										// all bits in the bloom filter are
 										// set
 										// to 0?
 										if (index
 												% tp.getBloomFilters()[i]
-														.size() == startIndex)
+														.size() == startIndex) {
 											return null;
+										}
 										// distancepreserving jump over the
 										// gap!
 										final int code = ((LazyLiteral) key
@@ -218,53 +232,62 @@ public class IteratorQueryResult extends QueryResult {
 						}
 						final Triple t = itt.next(key);
 						if (t != null) {
-							lastTriple = t;
+							this.lastTriple = t;
 							final Bindings znext = tp.process(t, false);
-							if (znext != null)
+							if (znext != null) {
 								return znext;
+							}
 						}
 					}
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
 
+				@Override
 				public Bindings next(final Bindings k) {
-					if (next == null)
+					if (this.next == null) {
 						return null;
-					final Bindings znext = next;
-					next = computeNext(k);
+					}
+					final Bindings znext = this.next;
+					this.next = this.computeNext(k);
 					return znext;
 				}
 
+				@Override
 				public void close() {
 				}
 			};
+		}
 	}
 
 	public IteratorQueryResult(final Iterator<Triple> itt,
 			final TriplePattern tp,
 			final RDF3XIndexScan.CollationOrder order) {
-		createIterator(itt, tp, order);
+		this.createIterator(itt, tp, order);
 	}
 
 	private void createIterator(final Iterator<Triple> itt,
 			final TriplePattern tp,
 			final RDF3XIndexScan.CollationOrder order) {
 		this.itb = new SIPParallelIterator<Bindings, Bindings>() {
-			Bindings next = computeNext();
+			Bindings next = this.computeNext();
 
+			@Override
 			public boolean hasNext() {
-				return (next != null);
+				return (this.next != null);
 			}
 
+			@Override
 			public Bindings next() {
-				if (next == null)
+				if (this.next == null) {
 					return null;
-				final Bindings znext = next;
-				next = computeNext();
+				}
+				final Bindings znext = this.next;
+				this.next = this.computeNext();
 				return znext;
 			}
 
@@ -275,16 +298,18 @@ public class IteratorQueryResult extends QueryResult {
 					final Triple t = itt.next();
 					if (t != null) {
 						final Bindings znext = tp.process(t, false);
-						if (znext != null)
+						if (znext != null) {
 							return znext;
+						}
 					}
 				}
 				return null;
 			}
 
 			private Bindings computeNext(final Bindings k) {
-				if (!(itt instanceof SIPParallelIterator))
-					return computeNext();
+				if (!(itt instanceof SIPParallelIterator)) {
+					return this.computeNext();
+				}
 				final TripleKey key = tp.getKey(k, order);
 				while (itt.hasNext()) {
 					// also consider inner joins in triple patterns like ?a ?a
@@ -293,115 +318,131 @@ public class IteratorQueryResult extends QueryResult {
 							.next(key);
 					if (t != null) {
 						final Bindings znext = tp.process(t, false);
-						if (znext != null)
+						if (znext != null) {
 							return znext;
+						}
 					}
 				}
 				return null;
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
 
+			@Override
 			public Bindings next(final Bindings k) {
-				if (next == null)
+				if (this.next == null) {
 					return null;
-				final Bindings znext = next;
-				next = computeNext(k);
+				}
+				final Bindings znext = this.next;
+				this.next = this.computeNext(k);
 				return znext;
 			}
 
+			@Override
 			public void close() {
 			}
 		};
 	}
 
 	protected void addRemainingFromIterator() {
-		if (itb != null) {
-			while (itb.hasNext()) {
-				add(itb.next());
+		if (this.itb != null) {
+			while (this.itb.hasNext()) {
+				this.add(this.itb.next());
 			}
-			if (itb instanceof ParallelIterator) {
-				((ParallelIterator) itb).close();
+			if (this.itb instanceof ParallelIterator) {
+				((ParallelIterator) this.itb).close();
 			}
 		}
 	}
 
 	@Override
 	public Collection<Bindings> getCollection() {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
-		return bindings;
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
+		return this.bindings;
 	}
 
 	@Override
 	public boolean contains(final Bindings b) {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.contains(b);
 	}
 
 	@Override
 	public boolean remove(final Bindings b) {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.remove(b);
 	}
 
 	@Override
 	public boolean addFirst(final Bindings b) {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.addFirst(b);
 	}
 
 	@Override
 	public boolean addLast(final Bindings b) {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.addLast(b);
 	}
 
 	@Override
 	public boolean add(final int pos, final Bindings b) {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.add(pos, b);
 	}
 
 	@Override
 	public Bindings getFirst() {
-		if (bindings.isEmpty()) {
-			if (itb == null)
+		if (this.bindings.isEmpty()) {
+			if (this.itb == null) {
 				return null;
-			if (itb.hasNext()) {
-				final Bindings b = itb.next();
-				if (!itb.hasNext()) {
-					if (itb instanceof ParallelIterator) {
-						((ParallelIterator) itb).close();
+			}
+			if (this.itb.hasNext()) {
+				final Bindings b = this.itb.next();
+				if (!this.itb.hasNext()) {
+					if (this.itb instanceof ParallelIterator) {
+						((ParallelIterator) this.itb).close();
 					}
 				}
 				super.add(b);
 				return b;
-			} else
+			} else {
 				return null;
-		} else
+			}
+		} else {
 			return super.getFirst();
+		}
 
 	}
 
 	@Override
 	public Bindings getLast() {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.getLast();
 	}
 
 	@Override
 	public Bindings get(final int pos) {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.get(pos);
 	}
 
@@ -413,13 +454,13 @@ public class IteratorQueryResult extends QueryResult {
 	@Override
 	public int oneTimeSize() {
 		int size = super.size();
-		if (itb != null) {
-			while (itb.hasNext()) {
+		if (this.itb != null) {
+			while (this.itb.hasNext()) {
 				size++;
-				itb.next();
+				this.itb.next();
 			}
-			if (itb instanceof ParallelIterator) {
-				((ParallelIterator) itb).close();
+			if (this.itb instanceof ParallelIterator) {
+				((ParallelIterator) this.itb).close();
 			}
 		}
 		return size;
@@ -427,15 +468,17 @@ public class IteratorQueryResult extends QueryResult {
 
 	@Override
 	public int size() {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.size();
 	}
 
 	@Override
 	public Iterator<Bindings> iterator() {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.iterator();
 	}
 
@@ -446,59 +489,61 @@ public class IteratorQueryResult extends QueryResult {
 	 */
 	@Override
 	public Iterator<Bindings> oneTimeIterator() {
-		if (bindings == null || bindings.size() == 0) {
-			if (itb == null)
-				return new Iterator<Bindings>() {
+		if (this.bindings == null || this.bindings.size() == 0) {
+			if (this.itb == null) {
+				return new ImmutableIterator<Bindings>() {
+					@Override
 					public boolean hasNext() {
 						return false;
 					}
 
+					@Override
 					public Bindings next() {
 						return null;
 					}
-
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
 				};
-
-			else if (itb instanceof SIPParallelIterator) {
+			} else if (this.itb instanceof SIPParallelIterator) {
 				return new SIPParallelIterator<Bindings, Bindings>() {
-					final SIPParallelIterator<Bindings, Bindings> itb_local = (SIPParallelIterator<Bindings, Bindings>) itb;
+					final SIPParallelIterator<Bindings, Bindings> itb_local = (SIPParallelIterator<Bindings, Bindings>) IteratorQueryResult.this.itb;
 
+					@Override
 					public boolean hasNext() {
-						return itb_local.hasNext();
+						return this.itb_local.hasNext();
 					}
 
+					@Override
 					public Bindings next() {
-						if (itb_local.hasNext()) {
-							final Bindings b = itb_local.next();
-							if (!(itb_local.hasNext())) {
-								itb_local.close();
+						if (this.itb_local.hasNext()) {
+							final Bindings b = this.itb_local.next();
+							if (!(this.itb_local.hasNext())) {
+								this.itb_local.close();
 							}
 							return b;
 						}
 						return null;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
 
 					@Override
 					public void finalize() {
-						close();
+						this.close();
 					}
 
+					@Override
 					public void close() {
-						itb_local.close();
+						this.itb_local.close();
 					}
 
+					@Override
 					public Bindings next(final Bindings k) {
-						if (itb_local.hasNext()) {
-							final Bindings b = itb_local.next(k);
-							if (!(itb_local.hasNext())) {
-								itb_local.close();
+						if (this.itb_local.hasNext()) {
+							final Bindings b = this.itb_local.next(k);
+							if (!(this.itb_local.hasNext())) {
+								this.itb_local.close();
 							}
 							return b;
 						}
@@ -506,18 +551,20 @@ public class IteratorQueryResult extends QueryResult {
 					}
 				};
 
-			} else
+			} else {
 				return new ParallelIterator<Bindings>() {
+					@Override
 					public boolean hasNext() {
-						return itb.hasNext();
+						return IteratorQueryResult.this.itb.hasNext();
 					}
 
+					@Override
 					public Bindings next() {
-						if (itb.hasNext()) {
-							final Bindings b = itb.next();
-							if (!(itb.hasNext())) {
-								if (itb instanceof ParallelIterator) {
-									((ParallelIterator) itb).close();
+						if (IteratorQueryResult.this.itb.hasNext()) {
+							final Bindings b = IteratorQueryResult.this.itb.next();
+							if (!(IteratorQueryResult.this.itb.hasNext())) {
+								if (IteratorQueryResult.this.itb instanceof ParallelIterator) {
+									((ParallelIterator) IteratorQueryResult.this.itb).close();
 								}
 							}
 							return b;
@@ -525,41 +572,48 @@ public class IteratorQueryResult extends QueryResult {
 						return null;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
 
 					@Override
 					public void finalize() {
-						close();
+						this.close();
 					}
 
+					@Override
 					public void close() {
-						if (itb instanceof ParallelIterator) {
-							((ParallelIterator) itb).close();
+						if (IteratorQueryResult.this.itb instanceof ParallelIterator) {
+							((ParallelIterator) IteratorQueryResult.this.itb).close();
 						}
 					}
 				};
+			}
 		}
 
-		if (itb == null)
-			return bindings.iterator();
+		if (this.itb == null) {
+			return this.bindings.iterator();
+		}
 
 		return new ParallelIterator<Bindings>() {
-			Iterator<Bindings> it1 = bindings.iterator();
+			Iterator<Bindings> it1 = IteratorQueryResult.this.bindings.iterator();
 
+			@Override
 			public boolean hasNext() {
-				return it1.hasNext() || itb.hasNext();
+				return this.it1.hasNext() || IteratorQueryResult.this.itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
-				if (it1.hasNext())
-					return it1.next();
-				if (itb.hasNext()) {
-					final Bindings b = itb.next();
-					if (!(itb.hasNext())) {
-						if (itb instanceof ParallelIterator) {
-							((ParallelIterator) itb).close();
+				if (this.it1.hasNext()) {
+					return this.it1.next();
+				}
+				if (IteratorQueryResult.this.itb.hasNext()) {
+					final Bindings b = IteratorQueryResult.this.itb.next();
+					if (!(IteratorQueryResult.this.itb.hasNext())) {
+						if (IteratorQueryResult.this.itb instanceof ParallelIterator) {
+							((ParallelIterator) IteratorQueryResult.this.itb).close();
 						}
 					}
 					return b;
@@ -567,18 +621,20 @@ public class IteratorQueryResult extends QueryResult {
 				return null;
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
 			public void finalize() {
-				close();
+				this.close();
 			}
 
+			@Override
 			public void close() {
-				if (itb instanceof ParallelIterator) {
-					((ParallelIterator) itb).close();
+				if (IteratorQueryResult.this.itb instanceof ParallelIterator) {
+					((ParallelIterator) IteratorQueryResult.this.itb).close();
 				}
 			}
 		};
@@ -586,27 +642,29 @@ public class IteratorQueryResult extends QueryResult {
 
 	@Override
 	public void release() {
-		if (itb instanceof ParallelIterator) {
-			((ParallelIterator) itb).close();
+		if (this.itb instanceof ParallelIterator) {
+			((ParallelIterator) this.itb).close();
 		}
 		super.release();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return (bindings.isEmpty() && (itb == null || !itb.hasNext()));
+		return (this.bindings.isEmpty() && (this.itb == null || !this.itb.hasNext()));
 	}
 
 	@Override
 	public void materialize() {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 	}
 
 	@Override
 	public String toString() {
-		if (itb != null && itb.hasNext())
-			addRemainingFromIterator();
+		if (this.itb != null && this.itb.hasNext()) {
+			this.addRemainingFromIterator();
+		}
 		return super.toString();
 	}
 }

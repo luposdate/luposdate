@@ -21,35 +21,21 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.misc.util;
 
 import java.util.Iterator;
 
-import lupos.misc.util.ImmutableIterator;
-
-public abstract class InPlaceSort<E extends Comparable<E>> extends ArraySort<E> {
-
-	public InPlaceSort(final int length) {
-		super(length);
-	}
+/**
+ * This class just allows simple development of immutable iterators.
+ * It just implements the remove() method of Iterator in order to
+ * throw UnsupportedOperationException.
+ *
+ * @param <T> the type of the elements to be returned by this iterator
+ */
+public abstract class ImmutableIterator<T> implements Iterator<T>{
 
 	@Override
-	public Iterator<E> emptyDatastructure() {
-		this.sort(0, this.length - 1);
-		return new ImmutableIterator<E>() {
-			private int index = 0;
-
-			@Override
-			public boolean hasNext() {
-				return this.index < InPlaceSort.this.length;
-			}
-
-			@Override
-			public E next() {
-				return (E) InPlaceSort.this.elements[this.index++];
-			}
-		};
+	public void remove() {
+		throw new UnsupportedOperationException();
 	}
-
-	public abstract void sort(final int unten, final int oben);
 }

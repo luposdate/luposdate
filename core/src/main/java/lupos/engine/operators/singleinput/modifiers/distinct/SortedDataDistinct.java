@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.misc.util.ImmutableIterator;
 
 public class SortedDataDistinct extends Distinct {
 
@@ -34,16 +35,17 @@ public class SortedDataDistinct extends Distinct {
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
 
-		return QueryResult.createInstance(new Iterator<Bindings>() {
+		return QueryResult.createInstance(new ImmutableIterator<Bindings>() {
 			Iterator<Bindings> itb = queryResult.oneTimeIterator();
 			Bindings next = null;
 			Bindings previous = null;
 
 			@Override
 			public boolean hasNext() {
-				if (this.next != null)
+				if (this.next != null) {
 					return true;
-				this.next = next();
+				}
+				this.next = this.next();
 				return (this.next != null);
 			}
 
@@ -62,15 +64,11 @@ public class SortedDataDistinct extends Distinct {
 					this.previous = b;
 					return b;
 				}
-				while (b != null && b.equals(this.previous))
+				while (b != null && b.equals(this.previous)) {
 					b = this.itb.next();
+				}
 				this.previous = b;
 				return b;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
 			}
 		});
 	}

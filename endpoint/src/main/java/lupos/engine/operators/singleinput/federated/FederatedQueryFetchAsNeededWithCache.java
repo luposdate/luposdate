@@ -35,83 +35,80 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.Client;
+import lupos.misc.util.ImmutableIterator;
 import lupos.sparql1_1.Node;
 
 public class FederatedQueryFetchAsNeededWithCache extends FederatedQueryFetchAsNeeded {
 
-	public HashMap<Bindings, QueryResult> cache = new HashMap<Bindings, QueryResult>(); 
-	
-	public FederatedQueryFetchAsNeededWithCache(Node federatedQuery) {
+	public HashMap<Bindings, QueryResult> cache = new HashMap<Bindings, QueryResult>();
+
+	public FederatedQueryFetchAsNeededWithCache(final Node federatedQuery) {
 		super(federatedQuery);
 	}
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		return QueryResult.createInstance(new Iterator<Bindings>(){
+		return QueryResult.createInstance(new ImmutableIterator<Bindings>(){
 
-			private Iterator<Bindings> bindingsIterator = bindings.iterator();
-			private Iterator<Bindings> currentIteratorQueryResult = nextIteratorQueryResult();
-			
+			private final Iterator<Bindings> bindingsIterator = bindings.iterator();
+			private Iterator<Bindings> currentIteratorQueryResult = this.nextIteratorQueryResult();
+
 			@Override
 			public boolean hasNext() {
 				if(this.currentIteratorQueryResult==null){
 					return false;
 				}
 				while(!this.currentIteratorQueryResult.hasNext()){
-					this.currentIteratorQueryResult = nextIteratorQueryResult();
+					this.currentIteratorQueryResult = this.nextIteratorQueryResult();
 					if(this.currentIteratorQueryResult==null){
 						return false;
 					}
 				}
-				return true;					
+				return true;
 			}
 
 			@Override
 			public Bindings next() {
-				if(hasNext()){
+				if(this.hasNext()){
 					return this.currentIteratorQueryResult.next();
 				} else {
 					return null;
 				}
 			}
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-			
 			private Iterator<Bindings> nextIteratorQueryResult(){
 				try {
 					if(!this.bindingsIterator.hasNext()){
 						return null;
-					}					
-					Bindings bindingsTemp = this.bindingsIterator.next();
-					
-					Bindings bindingsKey = bindingsTemp.clone();
-					Set<Variable> otherVars = bindingsKey.getVariableSet();
+					}
+					final Bindings bindingsTemp = this.bindingsIterator.next();
+
+					final Bindings bindingsKey = bindingsTemp.clone();
+					final Set<Variable> otherVars = bindingsKey.getVariableSet();
 					otherVars.removeAll(FederatedQueryFetchAsNeededWithCache.this.variablesInServiceCall);
 					otherVars.remove(FederatedQueryFetchAsNeededWithCache.this.endpoint);
-					for(Variable var: otherVars){
+					for(final Variable var: otherVars){
 						bindingsKey.add(var, null);
 					}
-					
-					QueryResult cached = FederatedQueryFetchAsNeededWithCache.this.cache.get(bindingsKey);
+
+					final QueryResult cached = FederatedQueryFetchAsNeededWithCache.this.cache.get(bindingsKey);
 					if(cached!=null){
 						return cached.iterator();
 					}
-					
-					final String fQuery = toStringQuery(bindingsTemp);
+
+					final String fQuery = FederatedQueryFetchAsNeededWithCache.this.toStringQuery(bindingsTemp);
 					if (!FederatedQueryFetchAsNeededWithCache.this.endpoint.isVariable()) {
-						QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeededWithCache.this.endpoint).getString(), fQuery), bindingsTemp));
+						final QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeededWithCache.this.endpoint).getString(), fQuery), bindingsTemp));
 						queryResult.materialize();
 						FederatedQueryFetchAsNeededWithCache.this.cache.put(bindingsKey, queryResult);
 						return queryResult.iterator();
 					} else {
 						Literal endpointURI = bindingsTemp.get((Variable) FederatedQueryFetchAsNeededWithCache.this.endpoint);
-						if (endpointURI instanceof LazyLiteral)
+						if (endpointURI instanceof LazyLiteral) {
 							endpointURI = ((LazyLiteral) endpointURI).getLiteral();
+						}
 						if (endpointURI instanceof URILiteral) {
-							QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp));
+							final QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp));
 							queryResult.materialize();
 							FederatedQueryFetchAsNeededWithCache.this.cache.put(bindingsKey, queryResult);
 							return queryResult.iterator();
@@ -119,14 +116,14 @@ public class FederatedQueryFetchAsNeededWithCache extends FederatedQueryFetchAsN
 							// ignore or error message?
 						}
 					}
-				} catch(IOException e){
+				} catch(final IOException e){
 					System.err.println(e);
 					e.printStackTrace();
 				}
 				// in case of error try next one:
-				return nextIteratorQueryResult();
+				return this.nextIteratorQueryResult();
 			}
-		});	
+		});
 	}
 
 

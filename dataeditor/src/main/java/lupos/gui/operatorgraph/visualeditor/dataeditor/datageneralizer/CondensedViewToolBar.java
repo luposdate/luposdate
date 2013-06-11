@@ -58,8 +58,9 @@ import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
-import lupos.misc.util.OperatorIDTuple;
 import lupos.misc.Tuple;
+import lupos.misc.util.ImmutableIterator;
+import lupos.misc.util.OperatorIDTuple;
 import lupos.rdf.JenaTurtleTripleConsumerPipe;
 
 @SuppressWarnings("unchecked")
@@ -80,7 +81,7 @@ public class CondensedViewToolBar extends JPanel {
 
 	private int numberOfTriples = 0;
 	private Collection<HyperTriple> originalresultlevel0 = null;
-	private final Collection<HyperTriple>[] result = new Collection[maxLevel + 1];
+	private final Collection<HyperTriple>[] result = new Collection[this.maxLevel + 1];
 
 	public CondensedViewToolBar(final String text, final Prefix viewerPrefix) {
 		this.prefix = viewerPrefix;
@@ -123,17 +124,20 @@ public class CondensedViewToolBar extends JPanel {
 			CommonCoreQueryEvaluator.readTriples("N3",
 					new ByteArrayInputStream(text.getBytes()),
 					new TripleConsumer() {
+						@Override
 						public void consume(final Triple triple) {
-							Set<Triple> st = subjects.get(triple.getSubject());
-							if (st == null)
+							Set<Triple> st = CondensedViewToolBar.this.subjects.get(triple.getSubject());
+							if (st == null) {
 								st = new HashSet<Triple>();
+							}
 							st.add(triple);
-							subjects.put(triple.getSubject(), st);
-							Set<Triple> st2 = objects.get(triple.getObject());
-							if (st2 == null)
+							CondensedViewToolBar.this.subjects.put(triple.getSubject(), st);
+							Set<Triple> st2 = CondensedViewToolBar.this.objects.get(triple.getObject());
+							if (st2 == null) {
 								st2 = new HashSet<Triple>();
+							}
 							st2.add(triple);
-							objects.put(triple.getObject(), st);
+							CondensedViewToolBar.this.objects.put(triple.getObject(), st);
 						}
 					});
 		} catch (final Exception e) {
@@ -144,7 +148,7 @@ public class CondensedViewToolBar extends JPanel {
 		// }
 		this.generateStepButtons();
 		// how to determine maxLevel???
-		level = 0;
+		this.level = 0;
 	}
 
 	private void generateStepButtons() {
@@ -154,58 +158,62 @@ public class CondensedViewToolBar extends JPanel {
 		final JButton stepButtonStart = new JButton("<<");
 		stepButtonForward.setToolTipText("condense more...");
 		stepButtonForward.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				if (level < maxLevel) {
-					level++;
+				if (CondensedViewToolBar.this.level < CondensedViewToolBar.this.maxLevel) {
+					CondensedViewToolBar.this.level++;
 					stepButtonBackward.setEnabled(true);
 					stepButtonStart.setEnabled(true);
-					if (level == maxLevel) {
+					if (CondensedViewToolBar.this.level == CondensedViewToolBar.this.maxLevel) {
 						stepButtonForward.setEnabled(false);
 						stepButtonLast.setEnabled(false);
 					}
-					drawNewCondensedView();
-					repaint();
+					CondensedViewToolBar.this.drawNewCondensedView();
+					CondensedViewToolBar.this.repaint();
 				}
 			}
 		});
 		stepButtonBackward.setToolTipText("condense less...");
 		stepButtonBackward.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				if (level > 0) {
-					level--;
+				if (CondensedViewToolBar.this.level > 0) {
+					CondensedViewToolBar.this.level--;
 					stepButtonForward.setEnabled(true);
 					stepButtonLast.setEnabled(true);
-					if (level == 0) {
+					if (CondensedViewToolBar.this.level == 0) {
 						stepButtonBackward.setEnabled(false);
 						stepButtonStart.setEnabled(false);
 					}
-					drawNewCondensedView();
-					repaint();
+					CondensedViewToolBar.this.drawNewCondensedView();
+					CondensedViewToolBar.this.repaint();
 				}
 			}
 		});
 		stepButtonLast.setToolTipText("condense most...");
 		stepButtonLast.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				level = maxLevel;
+				CondensedViewToolBar.this.level = CondensedViewToolBar.this.maxLevel;
 				stepButtonBackward.setEnabled(true);
 				stepButtonStart.setEnabled(true);
 				stepButtonForward.setEnabled(false);
 				stepButtonLast.setEnabled(false);
-				drawNewCondensedView();
-				repaint();
+				CondensedViewToolBar.this.drawNewCondensedView();
+				CondensedViewToolBar.this.repaint();
 			}
 		});
 		stepButtonStart.setToolTipText("condense least...");
 		stepButtonStart.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
-				level = 0;
+				CondensedViewToolBar.this.level = 0;
 				stepButtonForward.setEnabled(true);
 				stepButtonLast.setEnabled(true);
 				stepButtonBackward.setEnabled(false);
 				stepButtonStart.setEnabled(false);
-				drawNewCondensedView();
-				repaint();
+				CondensedViewToolBar.this.drawNewCondensedView();
+				CondensedViewToolBar.this.repaint();
 			}
 		});
 
@@ -220,46 +228,47 @@ public class CondensedViewToolBar extends JPanel {
 	}
 
 	private void drawNewCondensedView() {
-		displayHyperNodes(getRootList());
+		this.displayHyperNodes(this.getRootList());
 	}
 
 	public LinkedList<GraphWrapper> getRootList() {
-		if (result[0] == null) {
+		if (this.result[0] == null) {
 			// Level 0: put all objects ?o of (s, ?p, ?o) into one node, which
 			// do
 			// not have any succeeding nodes and no objects being URIs or blank
 			// nodes,
 			// which have several (>1) incoming edges!
-			result[0] = new LinkedList<HyperTriple>();
-			for (final Literal key : subjects.keySet()) {
-				final Set<Triple> set = subjects.get(key);
+			this.result[0] = new LinkedList<HyperTriple>();
+			for (final Literal key : this.subjects.keySet()) {
+				final Set<Triple> set = this.subjects.get(key);
 				final LinkedList<Triple> hypernode = new LinkedList<Triple>();
 				final LinkedList<Triple> remaining = new LinkedList<Triple>();
 				for (final Triple triple : set) {
-					numberOfTriples++;
-					if (subjects.get(triple) != null) {
+					this.numberOfTriples++;
+					if (this.subjects.get(triple) != null) {
 						remaining.add(triple);
 					} else {
 						if (((triple.getObject() instanceof AnonymousLiteral || triple
-								.getObject() instanceof URILiteral) && objects
-								.get(triple.getObject()).size() > 1))
+								.getObject() instanceof URILiteral) && this.objects
+								.get(triple.getObject()).size() > 1)) {
 							remaining.add(triple);
-						else
+						} else {
 							hypernode.add(triple);
+						}
 					}
 				}
 				if (hypernode.size() > 0) {
 					System.out.println("Level 0: Combine " + hypernode.size());
-					result[0].add(new HyperTriple(hypernode));
+					this.result[0].add(new HyperTriple(hypernode));
 				}
 				for (final Triple triple : remaining) {
-					result[0].add(new HyperTriple(triple));
+					this.result[0].add(new HyperTriple(triple));
 				}
 			}
-			this.originalresultlevel0 = result[0];
-			result[0] = combineHyperNodes(result[0]);
+			this.originalresultlevel0 = this.result[0];
+			this.result[0] = this.combineHyperNodes(this.result[0]);
 		}
-		if (level > 0 && result[1] == null) {
+		if (this.level > 0 && this.result[1] == null) {
 			// now condense all hypernodes with the same predicates into one
 			// node
 			// plus level 0 restrictions!
@@ -272,68 +281,73 @@ public class CondensedViewToolBar extends JPanel {
 							(Literal) ht.getPos(0).items.iterator().next(),
 							(Literal) ht.getPos(1).items.iterator().next(),
 							(Literal) ht.getPos(2).items.iterator().next());
-					if (subjects.get(triple) != null) {
+					if (this.subjects.get(triple) != null) {
 						result2.add(ht);
 					} else {
 						if (((triple.getObject() instanceof AnonymousLiteral || triple
-								.getObject() instanceof URILiteral) && objects
-								.get(triple.getObject()).size() > 1))
+								.getObject() instanceof URILiteral) && this.objects
+								.get(triple.getObject()).size() > 1)) {
 							result2.add(ht);
-						else {
+						} else {
 							List<HyperTriple> lht = predicatesMap.get(ht
 									.getPos(1));
-							if (lht == null)
+							if (lht == null) {
 								lht = new LinkedList<HyperTriple>();
+							}
 							lht.add(ht);
 							predicatesMap.put(ht.getPos(1), lht);
 						}
 					}
 				} else {
 					List<HyperTriple> lht = predicatesMap.get(ht.getPos(1));
-					if (lht == null)
+					if (lht == null) {
 						lht = new LinkedList<HyperTriple>();
+					}
 					lht.add(ht);
 					predicatesMap.put(ht.getPos(1), lht);
 				}
 			}
 			for (final Entry<HyperNode, List<HyperTriple>> entry : predicatesMap
 					.entrySet()) {
-				if (entry.getValue().size() > 1)
+				if (entry.getValue().size() > 1) {
 					System.out.println("Level 1: Condense "
 							+ entry.getValue().size() + " hypertriples!");
+				}
 				// + entry.getValue());
 				result2.add(new HyperTriple(entry.getValue()));
 			}
-			result[1] = combineHyperNodes(result2);
+			this.result[1] = this.combineHyperNodes(result2);
 		}
-		if (level > 1 && result[2] == null) {
+		if (this.level > 1 && this.result[2] == null) {
 			// level 1 plus condense all those, which have the same predicate
 			// and object in a triple
 			final Collection<HyperTriple> result2 = new LinkedList<HyperTriple>();
 			final HashMap<Tuple<HyperNode, HyperNode>, List<HyperTriple>> predicatesObjectsMap = new HashMap<Tuple<HyperNode, HyperNode>, List<HyperTriple>>(
-					numberOfTriples * 2);
-			for (final HyperTriple ht : result[1]) {
+					this.numberOfTriples * 2);
+			for (final HyperTriple ht : this.result[1]) {
 				final Tuple<HyperNode, HyperNode> predicateObjectTuple = new Tuple<HyperNode, HyperNode>(
 						ht.getPos(1), ht.getPos(2));
 				List<HyperTriple> lht = predicatesObjectsMap
 						.get(predicateObjectTuple);
-				if (lht == null)
+				if (lht == null) {
 					lht = new LinkedList<HyperTriple>();
+				}
 				lht.add(ht);
 				predicatesObjectsMap.put(predicateObjectTuple, lht);
 			}
 			for (final Entry<Tuple<HyperNode, HyperNode>, List<HyperTriple>> entry : predicatesObjectsMap
 					.entrySet()) {
-				if (entry.getValue().size() > 1)
+				if (entry.getValue().size() > 1) {
 					System.out.println("Level 2: Condense "
 							+ entry.getValue().size() + " hypertriples!");
+				}
 				// + entry.getValue());
 				final HyperTriple ht = new HyperTriple(entry.getValue());
 				result2.add(ht);
 			}
-			result[2] = combineHyperNodes(result2);
+			this.result[2] = this.combineHyperNodes(result2);
 		}
-		if (level > 2 && result[3] == null) {
+		if (this.level > 2 && this.result[3] == null) {
 			// now do the same as in level 0 with the result of level 2, but
 			// only combine those with common subjects and predicates
 			final Collection<HyperTriple> result2 = new LinkedList<HyperTriple>();
@@ -342,22 +356,24 @@ public class CondensedViewToolBar extends JPanel {
 				final Tuple<HyperNode, HyperNode> tuple = new Tuple<HyperNode, HyperNode>(
 						ht.getPos(0), ht.getPos(1));
 				List<HyperTriple> lht = predicatesMap.get(tuple);
-				if (lht == null)
+				if (lht == null) {
 					lht = new LinkedList<HyperTriple>();
+				}
 				lht.add(ht);
 				predicatesMap.put(tuple, lht);
 			}
 			for (final Entry<Tuple<HyperNode, HyperNode>, List<HyperTriple>> entry : predicatesMap
 					.entrySet()) {
-				if (entry.getValue().size() > 1)
+				if (entry.getValue().size() > 1) {
 					System.out.println("Level 3: Condense "
 							+ entry.getValue().size() + " hypertriples!");
+				}
 				// + entry.getValue());
 				result2.add(new HyperTriple(entry.getValue()));
 			}
-			result[3] = combineHyperNodes(result2);
+			this.result[3] = this.combineHyperNodes(result2);
 		}
-		if (level > 3 && result[4] == null) {
+		if (this.level > 3 && this.result[4] == null) {
 			// combine those with common subject and predicates, which have at
 			// least one predicate in common...
 			final Collection<HyperTriple> result2 = new HashSet<HyperTriple>();
@@ -368,8 +384,9 @@ public class CondensedViewToolBar extends JPanel {
 					final Tuple<HyperNode, Item> tuple = new Tuple<HyperNode, Item>(
 							ht.getPos(0), item);
 					final Set<HyperTriple> sht = predicatesMap.get(tuple);
-					if (sht != null)
+					if (sht != null) {
 						hsht.addAll(sht);
+					}
 				}
 				hsht.add(ht);
 				for (final HyperTriple ht2 : hsht) {
@@ -382,37 +399,40 @@ public class CondensedViewToolBar extends JPanel {
 			}
 			for (final Entry<Tuple<HyperNode, Item>, Set<HyperTriple>> entry : predicatesMap
 					.entrySet()) {
-				if (entry.getValue().size() > 1)
+				if (entry.getValue().size() > 1) {
 					System.out.println("Level 4: Condense "
 							+ entry.getValue().size() + " hypertriples!");
+				}
 				// + entry.getValue());
 				result2.add(new HyperTriple(entry.getValue()));
 			}
-			result[4] = combineHyperNodes(result2);
+			this.result[4] = this.combineHyperNodes(result2);
 		}
-		if (level > 4 && result[5] == null) {
+		if (this.level > 4 && this.result[5] == null) {
 			// level 2 plus condense all those hypertriples, which have the same
 			// predicates
 			final Collection<HyperTriple> result2 = new LinkedList<HyperTriple>();
 			final HashMap<HyperNode, List<HyperTriple>> predicatesMap = new HashMap<HyperNode, List<HyperTriple>>();
-			for (final HyperTriple ht : result[2]) {
+			for (final HyperTriple ht : this.result[2]) {
 				List<HyperTriple> lht = predicatesMap.get(ht.getPos(1));
-				if (lht == null)
+				if (lht == null) {
 					lht = new LinkedList<HyperTriple>();
+				}
 				lht.add(ht);
 				predicatesMap.put(ht.getPos(1), lht);
 			}
 			for (final Entry<HyperNode, List<HyperTriple>> entry : predicatesMap
 					.entrySet()) {
-				if (entry.getValue().size() > 1)
+				if (entry.getValue().size() > 1) {
 					System.out.println("Level 5: Condense "
 							+ entry.getValue().size() + " hypertriples!");
+				}
 				// + entry.getValue());
 				result2.add(new HyperTriple(entry.getValue()));
 			}
-			result[5] = combineHyperNodes(result2);
+			this.result[5] = this.combineHyperNodes(result2);
 		}
-		return getRootList(result[level]);
+		return this.getRootList(this.result[this.level]);
 	}
 
 	private HashMap<Item, HyperNode> getItemMap(
@@ -420,14 +440,16 @@ public class CondensedViewToolBar extends JPanel {
 		final HashMap<Item, HyperNode> map = new HashMap<Item, HyperNode>();
 		for (final HyperTriple ht : cht) {
 			for (int i = 0; i < 3; i++) {
-				if (i == 1)
+				if (i == 1) {
 					continue;
+				}
 				final HashSet<HyperNode> toMerge = new HashSet<HyperNode>();
 				for (final Item item : ht.getPos(i)) {
 					if (!item.isVariable()) {
 						final HyperNode hn = map.get(item);
-						if (hn != null)
+						if (hn != null) {
 							toMerge.add(hn);
+						}
 					}
 				}
 				toMerge.add(ht.getPos(i));
@@ -452,7 +474,7 @@ public class CondensedViewToolBar extends JPanel {
 	private Collection<HyperTriple> combineHyperNodes(
 			final Collection<HyperTriple> cht) {
 		final Collection<HyperTriple> result = new HashSet<HyperTriple>();
-		final HashMap<Item, HyperNode> map = getItemMap(cht);
+		final HashMap<Item, HyperNode> map = this.getItemMap(cht);
 
 		for (final HyperTriple ht : cht) {
 			final HyperNode[] hns = new HyperNode[3];
@@ -464,8 +486,9 @@ public class CondensedViewToolBar extends JPanel {
 				for (final Item item : ht.getPos(i)) {
 					if (!item.isVariable()) {
 						hns[i] = map.get(item);
-						if (hns[i] != null)
+						if (hns[i] != null) {
 							break;
+						}
 					}
 				}
 			}
@@ -503,8 +526,9 @@ public class CondensedViewToolBar extends JPanel {
 			final LinkedList<Item> lli = rdfTermSubject
 					.getPredicates(rdfTermObject);
 			for (final Item predicate : hypertriple.getPos(1)) {
-				if (lli == null || !lli.contains(predicate))
+				if (lli == null || !lli.contains(predicate)) {
 					rdfTermSubject.addPredicate(rdfTermObject, predicate);
+				}
 			}
 			final OperatorIDTuple<Operator> opIDT = new OperatorIDTuple<Operator>(
 					rdfTermObject, 0);
@@ -530,30 +554,30 @@ public class CondensedViewToolBar extends JPanel {
 
 		System.out.println("Displaying data...");
 
-		if (condensedViewViewer != null) {
-			condensedViewViewer.getVisualGraphs().get(0).updateMainPanel(
-					condensedViewViewer.getVisualGraphs().get(0).createGraph(
-											gws,											
+		if (this.condensedViewViewer != null) {
+			this.condensedViewViewer.getVisualGraphs().get(0).updateMainPanel(
+					this.condensedViewViewer.getVisualGraphs().get(0).createGraph(
+											gws,
 											lupos.gui.operatorgraph.arrange.Arrange
 													.values()[0]));
 		}
 	}
 
 	public CondensedViewViewer getOperatorGraphViewer() {
-		return condensedViewViewer;
+		return this.condensedViewViewer;
 	}
 
 	public void setOperatorGraphViewer(
 			final CondensedViewViewer operatorGraphViewer) {
 		this.condensedViewViewer = operatorGraphViewer;
-		drawNewCondensedView();
+		this.drawNewCondensedView();
 	}
 
 	public Variable getVariable(final HyperNode hypernode) {
-		Variable var = variableMap.get(hypernode);
+		Variable var = this.variableMap.get(hypernode);
 		if (var == null) {
-			var = new Variable("x" + variableCount++);
-			variableMap.put(hypernode, var);
+			var = new Variable("x" + this.variableCount++);
+			this.variableMap.put(hypernode, var);
 		}
 		return var;
 	}
@@ -562,25 +586,22 @@ public class CondensedViewToolBar extends JPanel {
 		private final HyperNode[] hypernodes = new HyperNode[3];
 
 		public HyperTriple(final Triple triple) {
-			this(new Iterator<Triple>() {
+			this(new ImmutableIterator<Triple>() {
 				boolean already = false;
 
+				@Override
 				public boolean hasNext() {
-					return !already;
+					return !this.already;
 				}
 
+				@Override
 				public Triple next() {
-					if (!already) {
-						already = true;
+					if (!this.already) {
+						this.already = true;
 						return triple;
 					}
 					return null;
 				}
-
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-
 			});
 		}
 
@@ -590,19 +611,20 @@ public class CondensedViewToolBar extends JPanel {
 
 		public HyperTriple(final Collection<Triple> triples,
 				final HyperNode subject) {
-			hypernodes[0] = subject;
+			this.hypernodes[0] = subject;
 			for (int i = 1; i < 3; i++) {
-				hypernodes[i] = new HyperNode();
+				this.hypernodes[i] = new HyperNode();
 			}
 			for (final Triple t : triples) {
 				for (int i = 1; i < 3; i++) {
-					if (!hypernodes[i].contains(t.getPos(i)))
-						hypernodes[i].add(t.getPos(i));
+					if (!this.hypernodes[i].contains(t.getPos(i))) {
+						this.hypernodes[i].add(t.getPos(i));
+					}
 				}
 			}
-			if (hypernodes[2].size() > 1) {
-				final Variable varO = getVariable(hypernodes[2]);
-				hypernodes[2].addFirst(varO);
+			if (this.hypernodes[2].size() > 1) {
+				final Variable varO = CondensedViewToolBar.this.getVariable(this.hypernodes[2]);
+				this.hypernodes[2].addFirst(varO);
 			}
 		}
 
@@ -614,30 +636,31 @@ public class CondensedViewToolBar extends JPanel {
 
 		public HyperTriple(final HyperNode subject, final Literal predicate,
 				final HyperNode object) {
-			hypernodes[0] = subject;
-			hypernodes[2] = object;
-			hypernodes[1] = new HyperNode();
-			hypernodes[1].add(predicate);
+			this.hypernodes[0] = subject;
+			this.hypernodes[2] = object;
+			this.hypernodes[1] = new HyperNode();
+			this.hypernodes[1].add(predicate);
 		}
 
 		public HyperTriple(final Iterator<Triple> iterator) {
 			for (int i = 0; i < 3; i++) {
-				hypernodes[i] = new HyperNode();
+				this.hypernodes[i] = new HyperNode();
 			}
 			while (iterator.hasNext()) {
 				final Triple t = iterator.next();
 				for (int i = 0; i < 3; i++) {
-					if (!hypernodes[i].contains(t.getPos(i)))
-						hypernodes[i].add(t.getPos(i));
+					if (!this.hypernodes[i].contains(t.getPos(i))) {
+						this.hypernodes[i].add(t.getPos(i));
+					}
 				}
 			}
-			if (hypernodes[0].size() > 1) {
-				final Variable varS = getVariable(hypernodes[0]);
-				hypernodes[0].addFirst(varS);
+			if (this.hypernodes[0].size() > 1) {
+				final Variable varS = CondensedViewToolBar.this.getVariable(this.hypernodes[0]);
+				this.hypernodes[0].addFirst(varS);
 			}
-			if (hypernodes[2].size() > 1) {
-				final Variable varO = getVariable(hypernodes[2]);
-				hypernodes[2].addFirst(varO);
+			if (this.hypernodes[2].size() > 1) {
+				final Variable varO = CondensedViewToolBar.this.getVariable(this.hypernodes[2]);
+				this.hypernodes[2].addFirst(varO);
 			}
 		}
 
@@ -647,22 +670,23 @@ public class CondensedViewToolBar extends JPanel {
 				for (final HyperTriple ht : listOfHyperTriples) {
 					initialCapacity += ht.getPos(i).size();
 				}
-				hypernodes[i] = new HyperNode((int) (initialCapacity * 1.25));
+				this.hypernodes[i] = new HyperNode((int) (initialCapacity * 1.25));
 
 				for (final HyperTriple ht : listOfHyperTriples) {
 					for (final Item item : ht.getPos(i)) {
-						if (!item.isVariable())
-							hypernodes[i].add(item);
+						if (!item.isVariable()) {
+							this.hypernodes[i].add(item);
+						}
 					}
 				}
 			}
-			if (hypernodes[0].size() > 1) {
-				final Variable varS = getVariable(hypernodes[0]);
-				hypernodes[0].addFirst(varS);
+			if (this.hypernodes[0].size() > 1) {
+				final Variable varS = CondensedViewToolBar.this.getVariable(this.hypernodes[0]);
+				this.hypernodes[0].addFirst(varS);
 			}
-			if (hypernodes[2].size() > 1) {
-				final Variable varO = getVariable(hypernodes[2]);
-				hypernodes[2].addFirst(varO);
+			if (this.hypernodes[2].size() > 1) {
+				final Variable varO = CondensedViewToolBar.this.getVariable(this.hypernodes[2]);
+				this.hypernodes[2].addFirst(varO);
 			}
 		}
 
@@ -672,33 +696,34 @@ public class CondensedViewToolBar extends JPanel {
 				for (final HyperTriple ht : listOfHyperTriples) {
 					initialCapacity += ht.getPos(i).size();
 				}
-				hypernodes[i] = new HyperNode((int) (initialCapacity * 1.25));
+				this.hypernodes[i] = new HyperNode((int) (initialCapacity * 1.25));
 
 				for (final HyperTriple ht : listOfHyperTriples) {
 					for (final Item item : ht.getPos(i)) {
-						if (!item.isVariable())
-							hypernodes[i].add(item);
+						if (!item.isVariable()) {
+							this.hypernodes[i].add(item);
+						}
 					}
 				}
 			}
-			if (hypernodes[0].size() > 1) {
-				final Variable varS = getVariable(hypernodes[0]);
-				hypernodes[0].addFirst(varS);
+			if (this.hypernodes[0].size() > 1) {
+				final Variable varS = CondensedViewToolBar.this.getVariable(this.hypernodes[0]);
+				this.hypernodes[0].addFirst(varS);
 			}
-			if (hypernodes[2].size() > 1) {
-				final Variable varO = getVariable(hypernodes[2]);
-				hypernodes[2].addFirst(varO);
+			if (this.hypernodes[2].size() > 1) {
+				final Variable varO = CondensedViewToolBar.this.getVariable(this.hypernodes[2]);
+				this.hypernodes[2].addFirst(varO);
 			}
 		}
 
 		public HyperNode getPos(final int i) {
-			return hypernodes[i];
+			return this.hypernodes[i];
 		}
 
 		@Override
 		public String toString() {
-			return "(" + hypernodes[0] + ", " + hypernodes[1] + ", "
-					+ hypernodes[2] + ")";
+			return "(" + this.hypernodes[0] + ", " + this.hypernodes[1] + ", "
+					+ this.hypernodes[2] + ")";
 		}
 	}
 
@@ -707,23 +732,25 @@ public class CondensedViewToolBar extends JPanel {
 		private LinkedHashSet<Item> items;
 
 		public HyperNode() {
-			items = new LinkedHashSet<Item>();
+			this.items = new LinkedHashSet<Item>();
 		}
 
 		public HyperNode(final int initialCapacity) {
-			items = new LinkedHashSet<Item>(initialCapacity);
+			this.items = new LinkedHashSet<Item>(initialCapacity);
 		}
 
 		public HyperNode(final HyperNode hyperNode,
 				final boolean removeVariables) {
 			if (removeVariables) {
-				items = new LinkedHashSet<Item>();
+				this.items = new LinkedHashSet<Item>();
 				for (final Item item : hyperNode) {
-					if (!item.isVariable())
+					if (!item.isVariable()) {
 						this.add(item);
+					}
 				}
-			} else
-				items = hyperNode.items;
+			} else {
+				this.items = hyperNode.items;
+			}
 		}
 
 		public HyperNode(final Item item) {
@@ -739,60 +766,65 @@ public class CondensedViewToolBar extends JPanel {
 			this();
 			for (final HyperNode hn : toMerge) {
 				for (final Item item : hn) {
-					if (!item.isVariable())
+					if (!item.isVariable()) {
 						this.add(item);
+					}
 				}
 			}
 			if (this.size() > 1) {
-				final Variable var = getVariable(this);
+				final Variable var = CondensedViewToolBar.this.getVariable(this);
 				this.addFirst(var);
 			}
 		}
 
 		public void add(final Item item) {
-			items.add(item);
+			this.items.add(item);
 		}
 
 		public int size() {
-			return items.size();
+			return this.items.size();
 		}
 
 		public void addFirst(final Item item) {
 			final LinkedHashSet<Item> zitems = new LinkedHashSet<Item>();
 			zitems.add(item);
-			zitems.addAll(items);
-			items = zitems;
+			zitems.addAll(this.items);
+			this.items = zitems;
 		}
 
 		public boolean contains(final Item item) {
-			return items.contains(item);
+			return this.items.contains(item);
 		}
 
+		@Override
 		public Iterator<Item> iterator() {
-			return items.iterator();
+			return this.items.iterator();
 		}
 
 		@Override
 		public boolean equals(final Object o) {
 			if (o instanceof HyperNode) {
 				final HyperNode hn = (HyperNode) o;
-				for (final Item item : items) {
-					if (!item.isVariable() && !hn.items.contains(item))
+				for (final Item item : this.items) {
+					if (!item.isVariable() && !hn.items.contains(item)) {
 						return false;
+					}
 				}
 				for (final Item item : hn.items) {
-					if (!item.isVariable() && !items.contains(item))
+					if (!item.isVariable() && !this.items.contains(item)) {
 						return false;
+					}
 				}
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		}
 
 		@Override
 		public int hashCode() {
 			long hash = 0;
-			for (final Item item : items) {
+			for (final Item item : this.items) {
 				if (!item.isVariable()) {
 					hash = (hash + item.hashCode()) % Integer.MAX_VALUE;
 				}
@@ -802,7 +834,7 @@ public class CondensedViewToolBar extends JPanel {
 
 		@Override
 		public String toString() {
-			return items.toString();
+			return this.items.toString();
 		}
 
 		public LinkedHashSet<Item> getItems() {

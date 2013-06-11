@@ -405,4 +405,11 @@ public class PageManager {
 	public final static void setDefaultPageSize(final int defaultpagesize) {
 		PageManager.DEFAULTPAGESIZE = defaultpagesize;
 	}
+
+	/**
+	 * @return the current page size of all pages of this page manager
+	 */
+	public int getPageSize() {
+		return this.pagesize;
+	}
 }

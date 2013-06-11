@@ -36,6 +36,7 @@ import lupos.datastructures.patriciatrie.node.Node;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.ram.RBTrieSet;
 import lupos.misc.Tuple;
+import lupos.misc.util.ImmutableIterator;
 
 public abstract class TrieSet extends Trie implements Iterable<String> {
 
@@ -206,7 +207,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	public final Iterator<String> iterator() {
 		this.prepareForReading();
 		if (this.getRootNode() == null) {
-			return new Iterator<String>() {
+			return new ImmutableIterator<String>() {
 
 				@Override
 				public boolean hasNext() {
@@ -217,15 +218,10 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 				public String next() {
 					return null;
 				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
 			};
 		}
 		else {
-			return new Iterator<String>() {
+			return new ImmutableIterator<String>() {
 
 				private Stack<Tuple<Node, Integer>> nodeIndexStack;
 				private String currentPrefix;
@@ -281,12 +277,6 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 						return null;
 					}
 				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-
 			};
 		}
 	}

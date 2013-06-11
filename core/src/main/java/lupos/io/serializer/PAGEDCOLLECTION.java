@@ -21,35 +21,41 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.datastructures.dbmergesortedds.tosort;
+package lupos.io.serializer;
 
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 
-import lupos.misc.util.ImmutableIterator;
+import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
 
-public abstract class InPlaceSort<E extends Comparable<E>> extends ArraySort<E> {
+@SuppressWarnings("rawtypes")
+public class PAGEDCOLLECTION extends DeSerializerConsideringSubClasses<PagedCollection> {
+	@Override
+	public boolean instanceofTest(final Object o) {
+		return o instanceof PagedCollection;
+	}
 
-	public InPlaceSort(final int length) {
-		super(length);
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<PagedCollection>[] getRegisteredClasses() {
+		return new Class[] { PagedCollection.class };
 	}
 
 	@Override
-	public Iterator<E> emptyDatastructure() {
-		this.sort(0, this.length - 1);
-		return new ImmutableIterator<E>() {
-			private int index = 0;
-
-			@Override
-			public boolean hasNext() {
-				return this.index < InPlaceSort.this.length;
-			}
-
-			@Override
-			public E next() {
-				return (E) InPlaceSort.this.elements[this.index++];
-			}
-		};
+	public int length(final PagedCollection t) {
+		return t.lengthLuposObject();
 	}
 
-	public abstract void sort(final int unten, final int oben);
+	@Override
+	public void serialize(final PagedCollection t, final OutputStream out) throws IOException {
+		t.writeLuposObject(out);
+	}
+
+	@Override
+	public PagedCollection deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+		return PagedCollection.readAndCreateLuposObject(in);
+	}
 }

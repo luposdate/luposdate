@@ -34,6 +34,7 @@ import java.util.TreeMap;
 
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
+import lupos.misc.util.ImmutableIterator;
 
 public class SortedMapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> extends MapImplementation<K,V> implements SortedMap<K, V>{
 
@@ -96,7 +97,7 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 			}
 			@Override
 			public Iterator<java.util.Map.Entry<K, V>> iterator() {
-				return new Iterator<java.util.Map.Entry<K, V>>(){
+				return new ImmutableIterator<java.util.Map.Entry<K, V>>(){
 					Iterator<java.util.Map.Entry<K, V>> memoryIterator=SortedMapImplementation.this.memoryMap.entrySet().iterator();
 					Iterator<java.util.Map.Entry<K, V>> diskIterator= (SortedMapImplementation.this.diskMap==null)? null:SortedMapImplementation.this.diskMap.entrySet().iterator();
 					java.util.Map.Entry<K, V> nextMemory=null;
@@ -140,10 +141,6 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 							this.nextDisk=null;
 							return result;
 						}
-					}
-					@Override
-					public void remove() {
-						throw(new UnsupportedOperationException("This iterator does not support remove."));
 					}
 				};
 			}

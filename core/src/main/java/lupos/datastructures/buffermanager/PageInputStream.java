@@ -28,17 +28,26 @@ import java.io.InputStream;
 
 public class PageInputStream extends InputStream {
 
+	public final static int DEFAULTSTARTINDEX = 6;
+
 	protected final PageManager pageManager;
 
 	protected byte[] currentPage;
-	protected int index = 6;
+	protected int index;
 	protected int maxOnThisPage;
+	protected int currentPageNumber;
 
-	public PageInputStream(final int pagenumber, final PageManager pageManager)
-			throws IOException {
+	public PageInputStream(final int pagenumber, final PageManager pageManager) throws IOException {
+		this(pagenumber, pageManager, PageInputStream.DEFAULTSTARTINDEX);
+	}
+
+
+	public PageInputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
+		this.currentPageNumber = pagenumber;
 		this.pageManager = pageManager;
 		this.currentPage = pageManager.getPage(pagenumber);
 		this.setMaxOnThisPage();
+		this.index = index;
 	}
 
 	private final void setMaxOnThisPage() {
@@ -52,10 +61,21 @@ public class PageInputStream extends InputStream {
 			if (nextPage == 0) {
 				return -1;
 			}
+			this.currentPageNumber = nextPage;
 			this.currentPage = this.pageManager.getPage(nextPage);
-			this.index = 6;
+			this.index = PageInputStream.DEFAULTSTARTINDEX;
 			this.setMaxOnThisPage();
 		}
 		return (0xFF & this.currentPage[this.index++]);
+	}
+
+
+	public int getIndex() {
+		return this.index;
+	}
+
+
+	public int getCurrentPageNumber() {
+		return this.currentPageNumber;
 	}
 }

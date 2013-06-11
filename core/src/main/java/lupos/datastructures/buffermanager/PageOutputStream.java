@@ -31,12 +31,22 @@ public class PageOutputStream extends OutputStream {
 	protected final PageManager pageManager;
 
 	protected byte[] currentPage;
-	protected int index = 6;
+	protected int index;
 	protected int currentPageNumber;
 
-	public PageOutputStream(final int pagenumber,
-			final PageManager pageManager, final boolean emptyPage)
-			throws IOException {
+	public PageOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage, final boolean append) throws IOException {
+		this(pagenumber, pageManager, emptyPage, PageInputStream.DEFAULTSTARTINDEX);
+		if(append){
+			this.index = this.getMaxOnThisPage();
+		}
+	}
+
+	public PageOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage) throws IOException {
+		this(pagenumber, pageManager, emptyPage, PageInputStream.DEFAULTSTARTINDEX);
+	}
+
+	public PageOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage, final int index) throws IOException {
+		this.index = index;
 		this.pageManager = pageManager;
 		this.currentPageNumber = pagenumber;
 		if (emptyPage) {
@@ -46,12 +56,21 @@ public class PageOutputStream extends OutputStream {
 		}
 	}
 
-	public PageOutputStream(final int pagenumber, final PageManager pageManager)
-			throws IOException {
-		this(pagenumber, pageManager, false);
+	public PageOutputStream(final int pagenumber, final PageManager pageManager) throws IOException {
+		this(pagenumber, pageManager, PageInputStream.DEFAULTSTARTINDEX);
+	}
+
+	public PageOutputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
+		this(pagenumber, pageManager, false, index);
 	}
 
 	public PageOutputStream(final PageManager pageManager) {
+		this(pageManager, PageInputStream.DEFAULTSTARTINDEX);
+	}
+
+
+	public PageOutputStream(final PageManager pageManager, final int index) {
+		this.index = index;
 		this.pageManager = pageManager;
 		this.emptyPage();
 		this.currentPageNumber = pageManager.getNumberOfNewPage();
@@ -73,6 +92,14 @@ public class PageOutputStream extends OutputStream {
 		final int intermediate = (this.index > this.currentPage.length) ? this.currentPage.length : this.index;
 		this.currentPage[5] = (byte) intermediate;
 		this.currentPage[4] = (byte) (intermediate >>> 8);
+	}
+
+	private final int getMaxOnThisPage() {
+		return (0xFF & this.currentPage[4]) << 8 | (0xFF & this.currentPage[5]);
+	}
+
+	public int getCurrentPageNumber() {
+		return this.currentPageNumber;
 	}
 
 	@Override
@@ -98,7 +125,7 @@ public class PageOutputStream extends OutputStream {
 				this.currentPage = this.pageManager.getPage(nextPageNumber);
 			}
 			this.currentPageNumber = nextPageNumber;
-			this.index = 6;
+			this.index = PageInputStream.DEFAULTSTARTINDEX;
 		}
 		this.currentPage[this.index++] = (byte) b;
 	}

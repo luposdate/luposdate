@@ -39,20 +39,21 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This join operator creates an index on the left operand and
- * iterates one time through the results of the right operand 
+ * iterates one time through the results of the right operand
  * using the previously created index to find join partners.
- *  
+ *
  * Thus, the operand with less intermediate results should be the left operand.
- *  
- * This operator is not suitable for recursive queries and rule processing, where cycles in the operatorgraph can occur.  
+ *
+ * This operator is not suitable for recursive queries and rule processing, where cycles in the operatorgraph can occur.
  */
 public abstract class IndexOnLeftOperandJoin extends Join {
 	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
 																	new ParallelIteratorMultipleQueryResults()};
-	
+
 	public IndexOnLeftOperandJoin() {
 		super();
 	}
@@ -63,70 +64,70 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 	}
 
 	public abstract Map<String, QueryResult> createDatastructure();
-	
+
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
 		//bindings.materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
 		this.operands[operandID].addQueryResult(bindings); // just store the queryresult!
-		return null; // wait for EndOfStreamMessage...		
+		return null; // wait for EndOfStreamMessage...
 	}
-	
+
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
-			Map<String, QueryResult> leftOperandsData = this.createDatastructure();
-			QueryResult cartesianProduct = QueryResult.createInstance();
-		
+			final Map<String, QueryResult> leftOperandsData = this.createDatastructure();
+			final QueryResult cartesianProduct = QueryResult.createInstance();
+
 			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0].getQueryResult(), this.intersectionVariables, leftOperandsData, cartesianProduct);
-	
-			QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
-	
+
+			final QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
+
 			if(this.succeedingOperators.size()>1){
 				result.materialize();
 			}
-	
+
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(result);
 			}
 		}
 		return msg;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
-			Map<String, QueryResult> leftOperandsData = this.createDatastructure();
-			QueryResult cartesianProduct = QueryResult.createInstance();
-	
+			final Map<String, QueryResult> leftOperandsData = this.createDatastructure();
+			final QueryResult cartesianProduct = QueryResult.createInstance();
+
 			IndexOnLeftOperandJoin.indexQueryResult(this.operands[0].getQueryResult(), this.intersectionVariables, leftOperandsData, cartesianProduct);
-	
-			QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
-	
+
+			final QueryResult result = QueryResult.createInstance(new JoinIterator(this.intersectionVariables, this.operands[1].getQueryResult(), leftOperandsData, cartesianProduct));
+
 			if(this.succeedingOperators.size()>1){
 				result.materialize();
 			}
-	
+
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAllDebug(new QueryResultDebug(result, debugstep, this, opId.getOperator(), true), debugstep);
 			}
 		}
 		return msg;
-	}	
+	}
 
-	
+
 	public static void indexQueryResult(final QueryResult toIndex, final Collection<Variable> joinVariables, final Map<String, QueryResult> index, final QueryResult cartesianProduct){
 		final Iterator<Bindings> itbindings = toIndex.oneTimeIterator();
 		while (itbindings.hasNext()) {
 
 			final Bindings bindings = itbindings.next();
-			
+
 			final String keyJoin = IndexOnLeftOperandJoin.getKey(bindings, joinVariables);
-			
+
 			if (keyJoin == null){
 				cartesianProduct.add(bindings);
 				continue;
 			}
-			
+
 			QueryResult lb = index.get(keyJoin);
 			if (lb == null){
 				lb = QueryResult.createInstance();
@@ -138,13 +139,13 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			((ParallelIterator<Bindings>)itbindings).close();
 		}
 	}
-	
+
 	public static String getKey(final Bindings bindings, final Collection<Variable> joinVariables){
 		String keyJoin = "";
 		final Iterator<Variable> it = joinVariables.iterator();
 		while (it.hasNext()) {
 			final Literal literal = bindings.get(it.next());
-			if (literal == null) {					
+			if (literal == null) {
 				keyJoin = null;
 				break;
 			}
@@ -152,12 +153,12 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 		}
 		return keyJoin;
 	}
-	
+
 	public static class DebugIterator implements Iterator<Bindings>{
-		
+
 		private final Iterator<Bindings> innerIterator;
 		private final String id;
-		
+
 		public DebugIterator(final String id, final Iterator<Bindings> innerIterator){
 			this.innerIterator = innerIterator;
 			this.id = id;
@@ -165,14 +166,14 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 
 		@Override
 		public boolean hasNext() {
-			boolean result = this.innerIterator.hasNext();
+			final boolean result = this.innerIterator.hasNext();
 			System.out.println(this.id+".hasNext():"+result);
 			return result;
 		}
 
 		@Override
 		public Bindings next() {
-			Bindings result = this.innerIterator.next();
+			final Bindings result = this.innerIterator.next();
 			System.out.println(this.id+".next():"+result);
 			return result;
 		}
@@ -180,17 +181,17 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 		@Override
 		public void remove() {
 			this.innerIterator.remove();
-		}		
+		}
 	}
 
 	public static class JoinIterator implements ParallelIterator<Bindings>{
-		
+
 		protected final Map<String, QueryResult> leftOperandsData;
 		protected final QueryResult cartesianProduct;
 		protected final Iterator<Bindings> rightOperandIt;
 		protected Iterator<Bindings> currentBindingsOfRightOperandIt;
-		protected final Collection<Variable> joinVariables; 
-		
+		protected final Collection<Variable> joinVariables;
+
 		public JoinIterator(final Collection<Variable> joinVariables, final QueryResult rightOperand, final Map<String, QueryResult> leftOperandsData, final QueryResult cartesianProduct){
 			this(joinVariables, rightOperand.oneTimeIterator(), leftOperandsData, cartesianProduct);
 		}
@@ -199,7 +200,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			this.joinVariables = joinVariables;
 			this.rightOperandIt = rightOperandIt;
 			this.leftOperandsData = leftOperandsData;
-			this.cartesianProduct = cartesianProduct; 
+			this.cartesianProduct = cartesianProduct;
 		}
 
 		@Override
@@ -207,11 +208,11 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			if(this.currentBindingsOfRightOperandIt!=null && this.currentBindingsOfRightOperandIt.hasNext()){
 				return true;
 			} else {
-				this.currentBindingsOfRightOperandIt = nextIterator();
+				this.currentBindingsOfRightOperandIt = this.nextIterator();
 				if(this.currentBindingsOfRightOperandIt!=null){
 					return true;
-				}					
-			}			
+				}
+			}
 			return false;
 		}
 
@@ -219,7 +220,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			while(this.rightOperandIt.hasNext()){
 				Iterator<Bindings> result = null;
 				final Bindings bindings = this.rightOperandIt.next();
-				String keyJoin = IndexOnLeftOperandJoin.getKey(bindings, this.joinVariables);
+				final String keyJoin = IndexOnLeftOperandJoin.getKey(bindings, this.joinVariables);
 				final QueryResult fromLeft;
 				if(keyJoin != null){
 					fromLeft = this.leftOperandsData.get(keyJoin);
@@ -231,7 +232,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 					}
 				}
 				if(fromLeft!=null){
-					result = new Iterator<Bindings>(){
+					result = new ImmutableIterator<Bindings>(){
 						final Iterator<Bindings> it = fromLeft.oneTimeIterator();
 						Bindings next = null;
 						@Override
@@ -256,21 +257,16 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 							Bindings bnew;
 							do {
 								bnew = bindings.clone();
-								Bindings bindings2 = this.it.next();
+								final Bindings bindings2 = this.it.next();
 								bnew = Join.joinBindingsAndReturnBindings(bnew, bindings2);
 							} while(bnew==null && this.it.hasNext());
 							return bnew;
 						}
-
-						@Override
-						public void remove() {
-							throw new UnsupportedOperationException();
-						}						
 					};
-				}				
+				}
 				if(result!=null && result.hasNext()){
 					return result;
-				}					
+				}
 			}
 			return null;
 		}
@@ -294,6 +290,6 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 			if(this.rightOperandIt instanceof ParallelIterator){
 				((ParallelIterator<Bindings>)this.rightOperandIt).close();
 			}
-		}		
+		}
 	}
 }

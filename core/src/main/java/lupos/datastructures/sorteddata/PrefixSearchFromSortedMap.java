@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
+import lupos.misc.util.ImmutableIterator;
 
 public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 		PrefixSearchMinMax<K, V> {
@@ -42,72 +43,74 @@ public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 		this.sm = Collections.synchronizedSortedMap(sm);
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
-		return new Iterator<V>() {
+		return new ImmutableIterator<V>() {
 
-			Object[] entries = sm.entrySet().toArray();
-			int index = (entries.length == 0) ? 0 : search(0,
-					entries.length - 1, arg0, entries);
+			Object[] entries = PrefixSearchFromSortedMap.this.sm.entrySet().toArray();
+			int index = (this.entries.length == 0) ? 0 : PrefixSearchFromSortedMap.this.search(0,
+					this.entries.length - 1, arg0, this.entries);
 			V next = null;
 
+			@Override
 			public boolean hasNext() {
-				if (next != null)
+				if (this.next != null) {
 					return true;
-				next = computeNext();
-				return (next != null);
+				}
+				this.next = this.computeNext();
+				return (this.next != null);
 			}
 
+			@Override
 			public V next() {
-				if (next != null) {
-					final V znext = next;
-					next = null;
+				if (this.next != null) {
+					final V znext = this.next;
+					this.next = null;
 					return znext;
 				}
-				return computeNext();
+				return this.computeNext();
 			}
 
 			private V computeNext() {
-				if (index < 0 || index >= entries.length)
+				if (this.index < 0 || this.index >= this.entries.length) {
 					return null;
-				if (arg0.compareTo(((Entry<K, V>) entries[index]).getKey()) == 0) {
-					return ((Entry<K, V>) entries[index++]).getValue();
 				}
-				index = -1;
+				if (arg0.compareTo(((Entry<K, V>) this.entries[this.index]).getKey()) == 0) {
+					return ((Entry<K, V>) this.entries[this.index++]).getValue();
+				}
+				this.index = -1;
 				return null;
 			}
-
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
 		};
 	}
 
 	private int search(final int i1, final int i2, final K arg0,
 			final Object[] entries) {
 		if (i2 == i1) {
-			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0)
-				return searchLeft(i1, arg0, entries);
-			else
+			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0) {
+				return this.searchLeft(i1, arg0, entries);
+			} else {
 				return -1;
+			}
 		} else if (i2 - i1 == 1) {
-			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0)
-				return searchLeft(i1, arg0, entries);
-			else if (arg0.compareTo(((Entry<K, V>) entries[i2]).getKey()) == 0)
-				return searchLeft(i2, arg0, entries);
-			else
+			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0) {
+				return this.searchLeft(i1, arg0, entries);
+			} else if (arg0.compareTo(((Entry<K, V>) entries[i2]).getKey()) == 0) {
+				return this.searchLeft(i2, arg0, entries);
+			} else {
 				return -1;
+			}
 
 		} else {
 			final int middle = (i1 + i2) / 2;
 			final int compare = arg0.compareTo(((Entry<K, V>) entries[middle])
 					.getKey());
-			if (compare == 0)
-				return searchLeft(middle, arg0, entries);
-			else if (compare < 0) {
-				return search(i1, middle, arg0, entries);
+			if (compare == 0) {
+				return this.searchLeft(middle, arg0, entries);
+			} else if (compare < 0) {
+				return this.search(i1, middle, arg0, entries);
 			} else {
-				return search(middle, i2, arg0, entries);
+				return this.search(middle, i2, arg0, entries);
 			}
 		}
 	}
@@ -115,28 +118,30 @@ public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 	private int searchClosest(final int i1, final int i2, final K arg0,
 			final Object[] entries) {
 		if (i2 == i1) {
-			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0)
-				return searchLeft(i1, arg0, entries);
-			else
+			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0) {
+				return this.searchLeft(i1, arg0, entries);
+			} else {
 				return i2;
+			}
 		} else if (i2 - i1 == 1) {
-			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0)
-				return searchLeft(i1, arg0, entries);
-			else if (arg0.compareTo(((Entry<K, V>) entries[i2]).getKey()) == 0)
-				return searchLeft(i2, arg0, entries);
-			else
+			if (arg0.compareTo(((Entry<K, V>) entries[i1]).getKey()) == 0) {
+				return this.searchLeft(i1, arg0, entries);
+			} else if (arg0.compareTo(((Entry<K, V>) entries[i2]).getKey()) == 0) {
+				return this.searchLeft(i2, arg0, entries);
+			} else {
 				return i1;
+			}
 
 		} else {
 			final int middle = (i1 + i2) / 2;
 			final int compare = arg0.compareTo(((Entry<K, V>) entries[middle])
 					.getKey());
-			if (compare == 0)
-				return searchLeft(middle, arg0, entries);
-			else if (compare < 0) {
-				return search(i1, middle, arg0, entries);
+			if (compare == 0) {
+				return this.searchLeft(middle, arg0, entries);
+			} else if (compare < 0) {
+				return this.search(i1, middle, arg0, entries);
 			} else {
-				return search(middle, i2, arg0, entries);
+				return this.search(middle, i2, arg0, entries);
 			}
 		}
 	}
@@ -165,115 +170,140 @@ public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 		return i1;
 	}
 
+	@Override
 	public Comparator<? super K> comparator() {
-		return sm.comparator();
+		return this.sm.comparator();
 	}
 
+	@Override
 	public K firstKey() {
-		return sm.firstKey();
+		return this.sm.firstKey();
 	}
 
+	@Override
 	public SortedMap<K, V> headMap(final K arg0) {
-		return sm.headMap(arg0);
+		return this.sm.headMap(arg0);
 	}
 
+	@Override
 	public K lastKey() {
-		return sm.lastKey();
+		return this.sm.lastKey();
 	}
 
+	@Override
 	public SortedMap<K, V> subMap(final K arg0, final K arg1) {
-		return sm.subMap(arg0, arg1);
+		return this.sm.subMap(arg0, arg1);
 	}
 
+	@Override
 	public SortedMap<K, V> tailMap(final K arg0) {
-		return sm.tailMap(arg0);
+		return this.sm.tailMap(arg0);
 	}
 
+	@Override
 	public void clear() {
-		sm.clear();
+		this.sm.clear();
 	}
 
+	@Override
 	public boolean containsKey(final Object arg0) {
-		return sm.containsKey(arg0);
+		return this.sm.containsKey(arg0);
 	}
 
+	@Override
 	public boolean containsValue(final Object arg0) {
-		return sm.containsValue(arg0);
+		return this.sm.containsValue(arg0);
 	}
 
+	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
-		return sm.entrySet();
+		return this.sm.entrySet();
 	}
 
+	@Override
 	public V get(final Object arg0) {
-		return sm.get(arg0);
+		return this.sm.get(arg0);
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return sm.isEmpty();
+		return this.sm.isEmpty();
 	}
 
+	@Override
 	public Set<K> keySet() {
-		return sm.keySet();
+		return this.sm.keySet();
 	}
 
+	@Override
 	public V put(final K arg0, final V arg1) {
-		return sm.put(arg0, arg1);
+		return this.sm.put(arg0, arg1);
 	}
 
+	@Override
 	public void putAll(final Map<? extends K, ? extends V> arg0) {
-		sm.putAll(arg0);
+		this.sm.putAll(arg0);
 	}
 
+	@Override
 	public V remove(final Object arg0) {
-		return sm.remove(arg0);
+		return this.sm.remove(arg0);
 	}
 
+	@Override
 	public int size() {
-		return sm.size();
+		return this.sm.size();
 	}
 
+	@Override
 	public Collection<V> values() {
-		return sm.values();
+		return this.sm.values();
 	}
 
+	@Override
 	public Object[] getClosestElements(final K arg0) {
-		final Object[] entries = sm.entrySet().toArray();
+		final Object[] entries = this.sm.entrySet().toArray();
 		final Object[] closestElements = new Object[2];
-		if (entries.length == 0)
+		if (entries.length == 0) {
 			return null;
-		final int index = (entries.length == 0) ? 0 : searchClosest(0,
+		}
+		final int index = (entries.length == 0) ? 0 : this.searchClosest(0,
 				entries.length - 1, arg0, entries);
-		final int indexLeft = searchLeftClosest(index, arg0, entries);
-		final int indexRight = searchRightClosest(index, arg0, entries);
+		final int indexLeft = this.searchLeftClosest(index, arg0, entries);
+		final int indexRight = this.searchRightClosest(index, arg0, entries);
 		if (indexLeft < 0
 				|| arg0.compareTo(((Entry<K, V>) entries[indexLeft]).getKey()) == 0) {
 			// no element is smaller!
 			closestElements[0] = null;
-		} else
+		} else {
 			closestElements[0] = entries[indexLeft];
+		}
 		if (indexRight < 0
 				|| indexRight >= entries.length
 				|| arg0.compareTo(((Entry<K, V>) entries[indexRight]).getKey()) == 0) {
 			// no element is bigger!
 			closestElements[1] = null;
-		} else
+		} else {
 			closestElements[1] = entries[indexRight];
+		}
 		return closestElements;
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
 		// TODO consider min argument really
-		return prefixSearch(arg0);
+		return this.prefixSearch(arg0);
 	}
 
+	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min, final K max) {
 		// TODO consider min and max arguments really
-		return prefixSearch(arg0);
+		return this.prefixSearch(arg0);
 	}
 
+	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K max) {
 		// TODO consider max argument really
-		return prefixSearch(arg0);
+		return this.prefixSearch(arg0);
 	}
 }

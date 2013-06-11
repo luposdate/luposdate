@@ -35,25 +35,26 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * This class is developed to reduce the space consumption of NonBlockingDistinct operators in cycles below an index scan operator.
- * 
+ *
  * This class first let all bindings pass which are generated from the index scan operator (operands with ID 0, the operator graph should be prepared in this way before using this operator).
- * 
+ *
  * If a bindings is retrieved from within the cycle (ID>0):
  * This class first looks into a given index if a bindings is generated from the mentioned index scan operator.
- * If yes, then it does not pass this operator, otherwise it is checked whether or not it has already passed by using the functionality of the NonBlockingDistinct operator.   
+ * If yes, then it does not pass this operator, otherwise it is checked whether or not it has already passed by using the functionality of the NonBlockingDistinct operator.
  */
 public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDistinct {
-	
+
 	protected BasicIndexScan basicIndex;
 
 	public NonBlockingDistinctWithIndexAccess(final Set<Bindings> setOfBindings, final BasicIndexScan basicIndex) {
 		super(setOfBindings);
 		this.basicIndex = basicIndex;
 	}
-	
+
 	public NonBlockingDistinctWithIndexAccess(final Set<Bindings> setOfBindings) {
 		super(setOfBindings);
 	}
@@ -62,7 +63,7 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 		return this.basicIndex;
 	}
 
-	public void setBasicIndex(BasicIndexScan basicIndex) {
+	public void setBasicIndex(final BasicIndexScan basicIndex) {
 		this.basicIndex = basicIndex;
 	}
 
@@ -72,22 +73,24 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 			return _bindings;
 		}
 		final Set<Variable> vars = this.basicIndex.getVarsInTriplePatterns();
-		
+
 		final Iterator<Bindings> itb = _bindings.oneTimeIterator();
-		if (!itb.hasNext())
+		if (!itb.hasNext()) {
 			return null;
-		else
-			return QueryResult.createInstance(new Iterator<Bindings>() {
+		} else {
+			return QueryResult.createInstance(new ImmutableIterator<Bindings>() {
 				Bindings next = null;
 
 				@Override
 				public boolean hasNext() {
-					if (this.next != null)
+					if (this.next != null) {
 						return true;
+					}
 					if (itb.hasNext()) {
-						this.next = next();
-						if (this.next != null)
+						this.next = this.next();
+						if (this.next != null) {
 							return true;
+						}
 					}
 					return false;
 				}
@@ -103,9 +106,9 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 						final Bindings b = itb.next();
 
 						// first check if the same variables are bound in bindings and in the index scan operator!
-						Set<Variable> varsInBindings = b.getVariableSet();
+						final Set<Variable> varsInBindings = b.getVariableSet();
 						if(varsInBindings.containsAll(vars) && vars.containsAll(varsInBindings)){
-							if(!isGeneratedFromIndexScanOperator(b)){						
+							if(!NonBlockingDistinctWithIndexAccess.this.isGeneratedFromIndexScanOperator(b)){
 								if (!NonBlockingDistinctWithIndexAccess.this.bindings.contains(b)) {
 									NonBlockingDistinctWithIndexAccess.this.bindings.add(b);
 									return b;
@@ -126,27 +129,28 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 					throw new UnsupportedOperationException();
 				}
 			});
+		}
 	}
-	
+
 	protected boolean isGeneratedFromIndexScanOperator(final Bindings bindingsToCheck){
-		for(TriplePattern tp: this.basicIndex.getTriplePattern()){
-			Literal[] literals = new Literal[3];
+		for(final TriplePattern tp: this.basicIndex.getTriplePattern()){
+			final Literal[] literals = new Literal[3];
 			for(int i=0; i<3; i++){
-				Item item = tp.getPos(i);
+				final Item item = tp.getPos(i);
 				if(item.isVariable()){
-					Variable var = (Variable) item;
-					Literal literal = bindingsToCheck.get(var);
+					final Variable var = (Variable) item;
+					final Literal literal = bindingsToCheck.get(var);
 					if(literal == null){
 						return false;
 					}
 					literals[i] = literal;
 				} else {
-					literals[i] = (Literal) item; 
+					literals[i] = (Literal) item;
 				}
 			}
-			Triple t = new Triple(literals);
+			final Triple t = new Triple(literals);
 			boolean flag = false;
-			for(Indices indices: this.basicIndex.getRoot().dataset.getDefaultGraphIndices()){
+			for(final Indices indices: this.basicIndex.getRoot().dataset.getDefaultGraphIndices()){
 				flag = indices.contains(t);
 				if(flag){
 					break;
@@ -157,5 +161,5 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 			}
 		}
 		return true;
-	}	
+	}
 }

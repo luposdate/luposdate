@@ -28,6 +28,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -36,6 +37,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
+import lupos.datastructures.buffermanager.BufferManager;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.evaluators.QueryEvaluator;
@@ -127,6 +129,12 @@ public class RDF3X_Client extends Demo_Applet {
 	@Override
 	protected void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
 		super.evaluate(new Evaluation_DisablePrepareInputData(evaluation), mode);
+		try {
+			BufferManager.getBufferManager().writeAllModifiedPages();
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
 	}
 
 	protected class Evaluation_DisablePrepareInputData extends Evaluation {

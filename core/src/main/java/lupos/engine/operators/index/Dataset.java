@@ -67,6 +67,7 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
+import lupos.misc.util.ImmutableIterator;
 
 public class Dataset {
 
@@ -185,7 +186,7 @@ public class Dataset {
 
 								@Override
 								public Iterator<java.util.Map.Entry<String, Integer>> iterator() {
-									return new Iterator<java.util.Map.Entry<String, Integer>>() {
+									return new ImmutableIterator<java.util.Map.Entry<String, Integer>>() {
 										Iterator<String> it = rdftermsRepresentations
 										.iterator();
 										int index = 1;
@@ -223,12 +224,6 @@ public class Dataset {
 												};
 											}
 										}
-
-										@Override
-										public void remove() {
-											throw new UnsupportedOperationException();
-										}
-
 									};
 								}
 
