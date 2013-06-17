@@ -81,7 +81,8 @@
         <option id="syntaxHighlighting_reservedword" name="Reserved word" datatype="syntaxStyleSequence" value="true | false | #7C007C | #FFFFFF | 0" />
         <option id="syntaxHighlighting_identifier" name="Identifier" datatype="syntaxStyleSequence" value="false | false | #7C007C | #FFFFFF | 0" />
         <option id="syntaxHighlighting_literal" name="Literal" datatype="syntaxStyleSequence" value="false | false | #0000FF | #FFFFFF | 0" />
-        <option id="syntaxHighlighting_number" name="Number" datatype="syntaxStyleSequence" value="false | false | #000080 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_integer" name="Integer" datatype="syntaxStyleSequence" value="false | false | #000080 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_decimal" name="Decimal" datatype="syntaxStyleSequence" value="false | false | #005573 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_separator" name="Separator" datatype="syntaxStyleSequence" value="false | false | #B03060 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_operator" name="Operator" datatype="syntaxStyleSequence" value="false | false | #000000 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_comment" name="Comment" datatype="syntaxStyleSequence" value="false | true | #4D4D4D | #FFFFFF | 0" />
@@ -90,6 +91,7 @@
         <option id="syntaxHighlighting_variable" name="Variable" datatype="syntaxStyleSequence" value="false | false | #7016A8 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_uri" name="URI" datatype="syntaxStyleSequence" value="false | false | #00B200 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_qualifieduri" name="QualifiedURI" datatype="syntaxStyleSequence" value="false | false | #007C00 | #FFFFFF | 0" />
+        <option id="syntaxHighlighting_prefixlabel" name="Prefix" datatype="syntaxStyleSequence" value="false | false | #005700 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_langtag" name="Langtag" datatype="syntaxStyleSequence" value="false | false | #8080FF | #FFFFFF | 0" />
         <option id="syntaxHighlighting_blanknode" name="Blanknode" datatype="syntaxStyleSequence" value="false | false | #6F6F25 | #FFFFFF | 0" />
         <option id="syntaxHighlighting_boolean" name="Boolean" datatype="syntaxStyleSequence" value="true | true | #B03060 | #FFFFFF | 0" />

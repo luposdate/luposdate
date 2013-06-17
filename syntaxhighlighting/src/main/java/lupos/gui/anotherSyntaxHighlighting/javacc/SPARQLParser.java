@@ -243,11 +243,15 @@ public class SPARQLParser extends SemanticWebParser {
 
 		insertIntoTokenMap(new String[]{ "\"true\"", "\"false\""}, TYPE__SemanticWeb.BOOLEAN);
 
-		insertIntoTokenMap(new String[]{ "<INTEGER>", "<DECIMAL>", "<DOUBLE>", "<EXPONENT>"}, TYPE__SemanticWeb.NUMBER);
+		insertIntoTokenMap(new String[]{ "<INTEGER>"}, TYPE__SemanticWeb.INTEGER);
+
+		insertIntoTokenMap(new String[]{ "<DECIMAL>", "<DOUBLE>", "<EXPONENT>"}, TYPE__SemanticWeb.DECIMAL);
 
 		insertIntoTokenMap(new String[]{ "<LANGTAG>"}, TYPE__SemanticWeb.LANGTAG);
 
-		insertIntoTokenMap(new String[]{ "<PNAME_NS>", "<PNAME_LN>", "<PN_CHARS_BASE>", "<PN_CHARS_U>", "<PN_CHARS>", "<PN_PREFIX>", "<PN_LOCAL>", "<PLX>", "<PERCENT>", "<HEX>", "<PN_LOCAL_ESC>"}, TYPE__SemanticWeb.QUALIFIEDURI);
+		insertIntoTokenMap(new String[]{ "<PNAME_LN>"}, TYPE__SemanticWeb.QUALIFIEDURI);
+
+		insertIntoTokenMap(new String[]{ "<PNAME_NS>", "<PN_CHARS_BASE>", "<PN_CHARS_U>", "<PN_CHARS>", "<PN_PREFIX>", "<PN_LOCAL>", "<PLX>", "<PERCENT>", "<HEX>", "<PN_LOCAL_ESC>"}, TYPE__SemanticWeb.PREFIXLABEL);
 
 		insertIntoTokenMap(new String[]{ "<IRI_REF>"}, TYPE__SemanticWeb.URI);
 

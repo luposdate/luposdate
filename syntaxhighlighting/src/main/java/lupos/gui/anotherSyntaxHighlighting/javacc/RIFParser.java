@@ -128,11 +128,15 @@ public class RIFParser extends SemanticWebParser {
 
 		insertIntoTokenMap(new String[]{ "\"?\""}, TYPE__SemanticWeb.VARIABLE);
 
-		insertIntoTokenMap(new String[]{ "<INTEGER_10>", "<FLOATING_POINT>", "<DIGITS>"}, TYPE__SemanticWeb.NUMBER);
+		insertIntoTokenMap(new String[]{ "<INTEGER_10>", "<DIGITS>"}, TYPE__SemanticWeb.INTEGER);
+
+		insertIntoTokenMap(new String[]{ "<FLOATING_POINT>"}, TYPE__SemanticWeb.DECIMAL);
 
 		insertIntoTokenMap(new String[]{ "<LANGTAG>", "\"@\""}, TYPE__SemanticWeb.LANGTAG);
 
-		insertIntoTokenMap(new String[]{ "<QNAME_NS>", "<QNAME>"}, TYPE__SemanticWeb.QUALIFIEDURI);
+		insertIntoTokenMap(new String[]{ "<QNAME>"}, TYPE__SemanticWeb.QUALIFIEDURI);
+
+		insertIntoTokenMap(new String[]{ "<QNAME_NS>"}, TYPE__SemanticWeb.PREFIXLABEL);
 
 		insertIntoTokenMap(new String[]{ "<Q_URIref>"}, TYPE__SemanticWeb.URI);
 

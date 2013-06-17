@@ -35,14 +35,13 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import lupos.gui.anotherSyntaxHighlighting.javacc.SemanticWebToken;
-
 import xpref.datatypes.BooleanDatatype;
 import xpref.datatypes.ColorDatatype;
 import xpref.datatypes.FontDatatype;
 import xpref.datatypes.IntegerDatatype;
 
 /**
- * Enumeration with all colors for different highlighting. 
+ * Enumeration with all colors for different highlighting.
  *
  */
 public enum LANGUAGE {
@@ -56,21 +55,21 @@ public enum LANGUAGE {
 		public void setStyles() {
 			initStylesArray(this);
 
-			for(TYPE__SemanticWeb t : TYPE__SemanticWeb.values()) {
+			for(final TYPE__SemanticWeb t : TYPE__SemanticWeb.values()) {
 				try {
-					String typeName = t.toString().toLowerCase();
+					final String typeName = t.toString().toLowerCase();
 
-					int alpha = IntegerDatatype.getValues("syntaxHighlighting_" + typeName + ".backgroundTransparency").get(0).intValue();
-					Color tmp = ColorDatatype.getValues("syntaxHighlighting_" + typeName + ".backgroundColor").get(0);
-					Color background = new Color(tmp.getRed(), tmp.getGreen(), tmp.getBlue(), alpha);
-					Color foreground = ColorDatatype.getValues("syntaxHighlighting_" + typeName + ".foregroundColor").get(0);
+					final int alpha = IntegerDatatype.getValues("syntaxHighlighting_" + typeName + ".backgroundTransparency").get(0).intValue();
+					final Color tmp = ColorDatatype.getValues("syntaxHighlighting_" + typeName + ".backgroundColor").get(0);
+					final Color background = new Color(tmp.getRed(), tmp.getGreen(), tmp.getBlue(), alpha);
+					final Color foreground = ColorDatatype.getValues("syntaxHighlighting_" + typeName + ".foregroundColor").get(0);
 
-					boolean bold = BooleanDatatype.getValues("syntaxHighlighting_" + typeName + ".bold").get(0).booleanValue();
-					boolean italic = BooleanDatatype.getValues("syntaxHighlighting_" + typeName + ".italic").get(0).booleanValue();
+					final boolean bold = BooleanDatatype.getValues("syntaxHighlighting_" + typeName + ".bold").get(0).booleanValue();
+					final boolean italic = BooleanDatatype.getValues("syntaxHighlighting_" + typeName + ".italic").get(0).booleanValue();
 
 					addStyle(t, background, foreground, bold, italic);
 				}
-				catch(Exception e) {
+				catch(final Exception e) {
 					System.err.println(e);
 					e.printStackTrace();
 				}
@@ -78,24 +77,25 @@ public enum LANGUAGE {
 		}
 
 		@Override
-		public void setDefaultStyles(Font tfFont) {
+		public void setDefaultStyles(final Font tfFont) {
 			initStylesArray(this);
 
-			Color maroon = new Color(0xB03060);
-			Color darkBlue = new Color(0x000080);
-			Color darkGreen = Color.GREEN.darker();
-			Color darkerGreen = darkGreen.darker();
-			Color darkYellow = Color.YELLOW.darker().darker().darker();
-			Color brightBlue = Color.BLUE.brighter();
-			Color brighterBlue = new Color(0x8080FF);
-			Color darkPurple = new Color(0xA020F0).darker();
-			Color darkRed = Color.MAGENTA.darker().darker();
-			Color bg = new Color(0, 0, 0, 0);
+			final Color maroon = new Color(0xB03060);
+			final Color darkBlue = new Color(0x000080);
+			final Color darkGreen = Color.GREEN.darker();
+			final Color darkerGreen = darkGreen.darker();
+			final Color darkYellow = Color.YELLOW.darker().darker().darker();
+			final Color brightBlue = Color.BLUE.brighter();
+			final Color brighterBlue = new Color(0x8080FF);
+			final Color darkPurple = new Color(0xA020F0).darker();
+			final Color darkRed = Color.MAGENTA.darker().darker();
+			final Color bg = new Color(0, 0, 0, 0);
 
 			addStyle(TYPE__SemanticWeb.RESERVEDWORD, bg, darkRed, true, false, tfFont);
 			addStyle(TYPE__SemanticWeb.IDENTIFIER, bg, Color.BLACK, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.LITERAL, bg, brightBlue, false, false, tfFont);
-			addStyle(TYPE__SemanticWeb.NUMBER, bg, darkBlue, false, false, tfFont);
+			addStyle(TYPE__SemanticWeb.INTEGER, bg, darkBlue, false, false, tfFont);
+			addStyle(TYPE__SemanticWeb.DECIMAL, bg, darkBlue.darker(), false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.SEPARATOR, bg, maroon, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.OPERATOR, bg, Color.BLACK, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.COMMENT, bg, Color.DARK_GRAY, false, true, tfFont);
@@ -104,6 +104,7 @@ public enum LANGUAGE {
 			addStyle(TYPE__SemanticWeb.VARIABLE, bg, darkPurple, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.URI, bg, darkGreen, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.QUALIFIEDURI, bg, darkerGreen, false, false, tfFont);
+			addStyle(TYPE__SemanticWeb.PREFIXLABEL, bg, darkerGreen.darker(), false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.LANGTAG, bg, brighterBlue, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.BLANKNODE, bg, darkYellow, false, false, tfFont);
 			addStyle(TYPE__SemanticWeb.BOOLEAN, bg, maroon, true, true, tfFont);
@@ -121,15 +122,15 @@ public enum LANGUAGE {
 		}
 
 		@Override
-		public void setDefaultStyles(Font tfFont) {
+		public void setDefaultStyles(final Font tfFont) {
 			initStylesArray(this);
 
-			Color maroon = new Color(0xB03060);
-			Color darkGreen = Color.GREEN.darker();
-			Color darkerGreen = darkGreen.darker();
-			Color brightBlue = Color.BLUE.brighter();
-			Color darkRed = Color.MAGENTA.darker().darker();
-			Color bg = new Color(0, 0, 0, 0);
+			final Color maroon = new Color(0xB03060);
+			final Color darkGreen = Color.GREEN.darker();
+			final Color darkerGreen = darkGreen.darker();
+			final Color brightBlue = Color.BLUE.brighter();
+			final Color darkRed = Color.MAGENTA.darker().darker();
+			final Color bg = new Color(0, 0, 0, 0);
 
 			addStyle(TYPE__HTML.ERROR, bg, Color.RED, false, false, tfFont);
 			addStyle(TYPE__HTML.SEPARATOR, bg, maroon, false, false, tfFont);
@@ -159,8 +160,8 @@ public enum LANGUAGE {
 		public void setDefaultStyles(final Font tfFont) {
 			initStylesArray(this);
 
-			Color darkRed = Color.MAGENTA.darker().darker();
-			Color bg = new Color(0, 0, 0, 0);
+			final Color darkRed = Color.MAGENTA.darker().darker();
+			final Color bg = new Color(0, 0, 0, 0);
 
 			addStyle(TYPE__JAVA.ERROR, bg, Color.RED, false, false, tfFont);
 			addStyle(TYPE__JAVA.SEPARATOR, bg, Color.BLACK, false, false, tfFont);
@@ -180,24 +181,24 @@ public enum LANGUAGE {
 
 	public void setBlankStyles() {
 		initStylesArray(this);
-		Color foreGround = UIManager.getColor("TextPane.foreground");
+		final Color foreGround = UIManager.getColor("TextPane.foreground");
 
-		Font tfFont = getTextFieldFont();
+		final Font tfFont = getTextFieldFont();
 
-		boolean bold = tfFont.isBold();
-		boolean italic = tfFont.isItalic();
+		final boolean bold = tfFont.isBold();
+		final boolean italic = tfFont.isItalic();
 
-		for(TYPE_ENUM t : getValues()) {
+		for(final TYPE_ENUM t : this.getValues()) {
 			addStyle(t, new Color(0, 0, 0, 0), foreGround, bold, italic);
 		}
 	}
 
-	private static void initStylesArray(LANGUAGE l) {
+	private static void initStylesArray(final LANGUAGE l) {
 		styles[l.ordinal()] = new SimpleAttributeSet[l.getValues().length];
 	}
 
-	private static void addStyle(TYPE_ENUM type, Color bg, Color fg, boolean bold, boolean italic, Font tfFont) {
-		SimpleAttributeSet style = new SimpleAttributeSet();
+	private static void addStyle(final TYPE_ENUM type, final Color bg, final Color fg, final boolean bold, final boolean italic, final Font tfFont) {
+		final SimpleAttributeSet style = new SimpleAttributeSet();
 		StyleConstants.setFontFamily(style, tfFont.getFamily());
 		StyleConstants.setFontSize(style, tfFont.getSize());
 		StyleConstants.setBackground(style, bg);
@@ -208,7 +209,7 @@ public enum LANGUAGE {
 		styles[type.getLanguage().ordinal()][type.ordinal()] = style;
 	}
 
-	private static void addStyle(TYPE_ENUM type, Color bg, Color fg, boolean bold, boolean italic) {
+	private static void addStyle(final TYPE_ENUM type, final Color bg, final Color fg, final boolean bold, final boolean italic) {
 		addStyle(type, bg, fg, bold, italic, getTextFieldFont());
 	}
 
@@ -218,7 +219,7 @@ public enum LANGUAGE {
 	 */
 	private static SimpleAttributeSet[][] styles = new SimpleAttributeSet[LANGUAGE.values().length][];
 
-	public static AttributeSet getAttributeSet(TYPE_ENUM type) {
+	public static AttributeSet getAttributeSet(final TYPE_ENUM type) {
 		return styles[type.getLanguage().ordinal()][type.ordinal()];
 	}
 
@@ -226,28 +227,28 @@ public enum LANGUAGE {
 		public LANGUAGE getLanguage();
 
 		public int ordinal();
-		
+
 		public TYPE_ENUM getErrorEnum();
 
 		public boolean isError();
-		
+
 		public boolean errorWhenDirectlyFollowingToken(TYPE_ENUM type);
-		
+
 		// to allow to combine two tokens to one (if used scanner is not perfect)
 		public TYPE_ENUM combineWith(String thisImage);
-		
+
 		// to allow some kind of context-sensitive syntax highlighting
 		public Set<ILuposToken> expectedNextTokens();
 	}
 
 	public static enum TYPE__SemanticWeb implements TYPE_ENUM {
-		ERROR, RESERVEDWORD, IDENTIFIER, LITERAL, NUMBER, SEPARATOR, OPERATOR, COMMENT, WHITESPACE,  VARIABLE, URI, QUALIFIEDURI, LANGTAG, BLANKNODE, BOOLEAN;
+		ERROR, RESERVEDWORD, IDENTIFIER, LITERAL, INTEGER, DECIMAL, SEPARATOR, OPERATOR, COMMENT, WHITESPACE,  VARIABLE, URI, QUALIFIEDURI, PREFIXLABEL, LANGTAG, BLANKNODE, BOOLEAN;
 
 		@Override
 		public LANGUAGE getLanguage() {
 			return LANGUAGE.SEMANTIC_WEB;
 		}
-		
+
 		@Override
 		public TYPE__SemanticWeb getErrorEnum(){
 			return ERROR;
@@ -257,22 +258,22 @@ public enum LANGUAGE {
 		public boolean isError() {
 			return this == ERROR;
 		}
-		
+
 		public boolean isSeperating(){
 			return this == SEPARATOR || this == OPERATOR || this == LITERAL;
 		}
-		
+
 		public boolean isNonSeparating(){
-			return this == RESERVEDWORD || this == IDENTIFIER || this == NUMBER || this == VARIABLE || this == QUALIFIEDURI || this == BLANKNODE || this == BOOLEAN;
+			return this == RESERVEDWORD || this == IDENTIFIER || this == INTEGER || this == DECIMAL || this == VARIABLE || this == QUALIFIEDURI || this == PREFIXLABEL || this == BLANKNODE || this == BOOLEAN;
 		}
 
 		@Override
-		public boolean errorWhenDirectlyFollowingToken(TYPE_ENUM type) {
+		public boolean errorWhenDirectlyFollowingToken(final TYPE_ENUM type) {
 			if(this.isError() || type.isError()){
 				return true;
 			}
 			if(this == IDENTIFIER){
-				// only the RIFParser uses IDENTIFIER 
+				// only the RIFParser uses IDENTIFIER
 				// these cases maybe could be fixed in another better way!
 				if(type == VARIABLE){
 					// Because the RIFParser parses ?var as <QUESTION> <NCNAME> instead of one <varname> or similar (should be changed in the future!)
@@ -280,7 +281,7 @@ public enum LANGUAGE {
 				}
 			}
 			if(type instanceof TYPE__SemanticWeb){
-				TYPE__SemanticWeb typeSW = (TYPE__SemanticWeb) type;
+				final TYPE__SemanticWeb typeSW = (TYPE__SemanticWeb) type;
 				if(this.isSeperating() && typeSW.isNonSeparating() || this.isNonSeparating() && typeSW.isSeperating()){
 					return false;
 				} else if(this.isNonSeparating() && typeSW.isNonSeparating()){
@@ -294,17 +295,19 @@ public enum LANGUAGE {
 		}
 
 		@Override
-		public TYPE_ENUM combineWith(String thisImage) {
+		public TYPE_ENUM combineWith(final String thisImage) {
 			// Because the RIFParser parses ?var as <QUESTION> <NCNAME> instead of one <varname> or similar (should be changed in the future!)
 			if(this == VARIABLE && thisImage.compareTo("?")==0){
 				return IDENTIFIER;
-			} else return null;
+			} else {
+				return null;
+			}
 		}
 
 		@Override
 		public Set<ILuposToken> expectedNextTokens() {
 			if(this == IDENTIFIER){
-				HashSet<ILuposToken> result = new HashSet<ILuposToken>();
+				final HashSet<ILuposToken> result = new HashSet<ILuposToken>();
 				result.add(new SemanticWebToken(OPERATOR, "->", 0));
 				result.add(new SemanticWebToken(URI, "", 0));
 				return result;
@@ -320,19 +323,19 @@ public enum LANGUAGE {
 		public LANGUAGE getLanguage() {
 			return LANGUAGE.HTML;
 		}
-		
+
 		@Override
 		public TYPE__HTML getErrorEnum(){
 			return ERROR;
 		}
-		
+
 		@Override
 		public boolean isError() {
 			return this == ERROR;
 		}
-		
+
 		@Override
-		public boolean errorWhenDirectlyFollowingToken(TYPE_ENUM type) {
+		public boolean errorWhenDirectlyFollowingToken(final TYPE_ENUM type) {
 			if(this.isError() && type.isError()){
 				return true;
 			} else {
@@ -341,7 +344,7 @@ public enum LANGUAGE {
 		}
 
 		@Override
-		public TYPE_ENUM combineWith(String thisImage) {
+		public TYPE_ENUM combineWith(final String thisImage) {
 			return null;
 		}
 
@@ -358,19 +361,19 @@ public enum LANGUAGE {
 		public LANGUAGE getLanguage() {
 			return LANGUAGE.JAVA;
 		}
-		
+
 		@Override
 		public TYPE__JAVA getErrorEnum(){
 			return ERROR;
 		}
-		
+
 		@Override
 		public boolean isError() {
 			return this == ERROR;
 		}
-		
+
 		@Override
-		public boolean errorWhenDirectlyFollowingToken(TYPE_ENUM type) {
+		public boolean errorWhenDirectlyFollowingToken(final TYPE_ENUM type) {
 			if(this.equals(RESERVEDWORD) && type.equals(RESERVEDWORD)){
 				return true;
 			}
@@ -384,7 +387,7 @@ public enum LANGUAGE {
 		}
 
 		@Override
-		public TYPE_ENUM combineWith(String thisImage) {
+		public TYPE_ENUM combineWith(final String thisImage) {
 			return null;
 		}
 
@@ -400,7 +403,7 @@ public enum LANGUAGE {
 				return FontDatatype.getValues("textFieldFont.font").get(0);
 			}
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
