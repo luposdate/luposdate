@@ -145,7 +145,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		this.getArgs().set("debug", DEBUG.NONE);
 		this.getArgs().set("result", QueryResult.TYPE.MEMORY);
 		this.getArgs().set("codemap", LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
-		this.getArgs().set("distinct", CommonCoreQueryEvaluator.DISTINCT.DBSETBLOCKING);
+		this.getArgs().set("distinct", CommonCoreQueryEvaluator.DISTINCT.FASTPAGEDHASHSET);
 		this.getArgs().set("optional", CommonCoreQueryEvaluator.JOIN.HASH);
 		this.getArgs().set("join", CommonCoreQueryEvaluator.JOIN.HASH);
 		this.getArgs().set("datastructure", Indices.DATA_STRUCT.DBBPTREE);

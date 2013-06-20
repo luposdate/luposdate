@@ -116,10 +116,8 @@ public class PhysicalOptimizations {
 	 * Call this to add replacement specific to the stream engine
 	 */
 	public static void streamReplacements() {
-		addReplacement("tripleoperator.patternmatcher.", "PatternMatcher",
-				"SimplePatternMatcher");
-		addReplacement("singleinput.modifiers.distinct.", "Distinct",
-				"LazyBlockingDistinct");
+		addReplacement("tripleoperator.patternmatcher.", "PatternMatcher", "SimplePatternMatcher");
+		addReplacement("singleinput.modifiers.distinct.", "Distinct", "LazyBlockingDistinct");
 		// addReplacement("tripleoperator.patternmatcher.","PatternMatcher",
 		// "HashPatternMatcher");
 	}
@@ -128,10 +126,8 @@ public class PhysicalOptimizations {
 	 * Call this to add replacement rules to support RDFS
 	 */
 	public static void rdfsReplacements() {
-		addReplacement("tripleoperator.patternmatcher.", "PatternMatcher",
-				"RDFSSimplePatternMatcher");
-		addReplacement("singleinput.readtriplesdistinct.",
-				"ReadTriplesDistinct", "DBSetBlockingDistinct");
+		addReplacement("tripleoperator.patternmatcher.", "PatternMatcher", "RDFSSimplePatternMatcher");
+		addReplacement("singleinput.readtriplesdistinct.", "ReadTriplesDistinct", "DBSetBlockingDistinct");
 	}
 
 	/**
@@ -143,8 +139,7 @@ public class PhysicalOptimizations {
 		// addReplacement("multiinput.optional.","Optional",
 		// "DBMergeSortedBagOptional");
 		addReplacement("multiinput.optional.", "Optional", "HashOptional");
-		addReplacement("singleinput.modifiers.distinct.", "Distinct",
-				"DBSetBlockingDistinct");
+		addReplacement("singleinput.modifiers.distinct.", "Distinct", "NonBlockingFastDistinct");
 		addReplacement("singleinput.sort.", "Sort", "DBMergeSortedBagSort");
 	}
 
@@ -156,10 +151,8 @@ public class PhysicalOptimizations {
 		addReplacement("multiinput.join.", "Join", "HashMapIndexJoin");
 		//addReplacement("multiinput.optional.","Optional","HashMapIndexOptional"
 		// );
-		addReplacement("multiinput.optional.", "Optional",
-				"HashMapIndexOptional");
-		addReplacement("singleinput.modifiers.distinct.", "Distinct",
-				"DBSetBlockingDistinct");
+		addReplacement("multiinput.optional.", "Optional", "HashMapIndexOptional");
+		addReplacement("singleinput.modifiers.distinct.", "Distinct", "NonBlockingFastDistinct");
 		addReplacement("singleinput.sort.", "Sort", "TreeMapSort");
 	}
 
@@ -173,8 +166,7 @@ public class PhysicalOptimizations {
 		//addReplacement("multiinput.optional.","Optional","HybridIndexOptional"
 		// );
 		addReplacement("multiinput.optional.", "Optional", "HashOptional");
-		addReplacement("singleinput.modifiers.distinct.", "Distinct",
-				"DBSetBlockingDistinct");
+		addReplacement("singleinput.modifiers.distinct.", "Distinct", "NonBlockingFastDistinct");
 		addReplacement("singleinput.sort.", "Sort", "HybridSortedBagSort");
 	}
 

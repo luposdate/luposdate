@@ -24,15 +24,8 @@
 package lupos.datastructures.buffermanager;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
-public class PageOutputStream extends OutputStream {
-
-	protected final PageManager pageManager;
-
-	protected byte[] currentPage;
-	protected int index;
-	protected int currentPageNumber;
+public class PageOutputStream extends ContinousPagesOutputStream {
 
 	public PageOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage, final boolean append) throws IOException {
 		this(pagenumber, pageManager, emptyPage, PageInputStream.DEFAULTSTARTINDEX);
@@ -46,14 +39,7 @@ public class PageOutputStream extends OutputStream {
 	}
 
 	public PageOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage, final int index) throws IOException {
-		this.index = index;
-		this.pageManager = pageManager;
-		this.currentPageNumber = pagenumber;
-		if (emptyPage) {
-			this.emptyPage();
-		} else {
-			this.currentPage = pageManager.getPage(pagenumber);
-		}
+		super(pagenumber, pageManager, emptyPage,index);
 	}
 
 	public PageOutputStream(final int pagenumber, final PageManager pageManager) throws IOException {
@@ -68,16 +54,13 @@ public class PageOutputStream extends OutputStream {
 		this(pageManager, PageInputStream.DEFAULTSTARTINDEX);
 	}
 
-
 	public PageOutputStream(final PageManager pageManager, final int index) {
-		this.index = index;
-		this.pageManager = pageManager;
-		this.emptyPage();
-		this.currentPageNumber = pageManager.getNumberOfNewPage();
+		super(pageManager, index);
 	}
 
-	private void emptyPage() {
-		this.currentPage = this.pageManager.getEmptyPage();
+	@Override
+	protected void emptyPage() {
+		super.emptyPage();
 		this.currentPage[0] = 0;
 		this.currentPage[1] = 0;
 		this.currentPage[2] = 0;
@@ -98,6 +81,7 @@ public class PageOutputStream extends OutputStream {
 		return (0xFF & this.currentPage[4]) << 8 | (0xFF & this.currentPage[5]);
 	}
 
+	@Override
 	public int getCurrentPageNumber() {
 		return this.currentPageNumber;
 	}

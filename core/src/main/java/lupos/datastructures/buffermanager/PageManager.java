@@ -89,7 +89,7 @@ public class PageManager {
 	*/
 	public static PageManager createPageManager(final String name, final int pagesize) throws IOException{
 		final File f = new File(name + "_0");
-		return new PageManager(name, !f.exists(), pagesize);
+		return new PageManager(name, !f.exists(), true, pagesize);
 	}
 
 	public PageManager(final String name) throws IOException {
@@ -97,14 +97,18 @@ public class PageManager {
 	}
 
 	public PageManager(final String name, final int pagesize) throws IOException {
-		this(name, true, pagesize);
+		this(name, true, true, pagesize);
 	}
 
 	public PageManager(final String name, final boolean overwriteExistingFile) throws IOException {
-		this(name, overwriteExistingFile, PageManager.DEFAULTPAGESIZE);
+		this(name, overwriteExistingFile, true, PageManager.DEFAULTPAGESIZE);
 	}
 
-	public PageManager(final String name, final boolean overwriteExistingFile, final int pagesize) throws IOException {
+	public PageManager(final String name, final boolean overwriteExistingFile, final boolean init) throws IOException {
+		this(name, overwriteExistingFile, init, PageManager.DEFAULTPAGESIZE);
+	}
+
+	public PageManager(final String name, final boolean overwriteExistingFile, final boolean init, final int pagesize) throws IOException {
 		this.bufferManager = BufferManager.getBufferManager();
 		this.filename = name;
 		this.pagesize = pagesize;
@@ -112,7 +116,9 @@ public class PageManager {
 			// initialize page for storing released pages...
 			this.bufferManager.modifyPage(this.pagesize, new PageAddress(0, this.filename), this.getEmptyPage0());
 		} else {
-			this.initAfterLoading();
+			if(init){
+				this.initAfterLoading();
+			}
 		}
 	}
 

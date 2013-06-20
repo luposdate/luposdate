@@ -24,39 +24,44 @@
 package lupos.datastructures.buffermanager;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-public class PageInputStream extends ContinousPagesInputStream {
+public class ContinousPagesInputStream extends InputStream {
 
-	public final static int DEFAULTSTARTINDEX = 6;
+	protected final PageManager pageManager;
 
-	protected int maxOnThisPage;
+	protected byte[] currentPage;
+	protected int index;
+	protected int currentPageNumber;
 
-	public PageInputStream(final int pagenumber, final PageManager pageManager) throws IOException {
-		this(pagenumber, pageManager, PageInputStream.DEFAULTSTARTINDEX);
+	public ContinousPagesInputStream(final int pagenumber, final PageManager pageManager) throws IOException {
+		this(pagenumber, pageManager, 0);
 	}
 
 
-	public PageInputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
-		super(pagenumber, pageManager, index);
-		this.setMaxOnThisPage();
-	}
-
-	private final void setMaxOnThisPage() {
-		this.maxOnThisPage = ((0xFF & this.currentPage[4]) << 8) | (0xFF & this.currentPage[5]);
+	public ContinousPagesInputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
+		this.currentPageNumber = pagenumber;
+		this.pageManager = pageManager;
+		this.currentPage = pageManager.getPage(pagenumber);
+		this.index = index;
 	}
 
 	@Override
 	public int read() throws IOException {
-		if (this.index >= this.maxOnThisPage) {
-			final int nextPage = (((0xFF & this.currentPage[0]) << 8 | (0xFF & this.currentPage[1])) << 8 | (0xFF & this.currentPage[2])) << 8 | (0xFF & this.currentPage[3]);
-			if (nextPage == 0) {
-				return -1;
-			}
-			this.currentPageNumber = nextPage;
-			this.currentPage = this.pageManager.getPage(nextPage);
-			this.index = PageInputStream.DEFAULTSTARTINDEX;
-			this.setMaxOnThisPage();
+		if (this.index >= this.currentPage.length) {
+			this.currentPageNumber++;
+			this.currentPage = this.pageManager.getPage(this.currentPageNumber);
+			this.index = 0;
 		}
 		return (0xFF & this.currentPage[this.index++]);
+	}
+
+
+	public int getIndex() {
+		return this.index;
+	}
+
+	public int getCurrentPageNumber() {
+		return this.currentPageNumber;
 	}
 }

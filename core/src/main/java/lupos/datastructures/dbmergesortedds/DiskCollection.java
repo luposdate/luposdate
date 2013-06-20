@@ -120,6 +120,10 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
+	public static String[] getTmpDir() {
+		return folder;
+	}
+
 	public static void removeCollectionsFromDisk() {
 		lock.lock();
 		try {

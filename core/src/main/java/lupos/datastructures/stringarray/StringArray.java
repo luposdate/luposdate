@@ -87,11 +87,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			final String mainFolder = DBBPTree.getMainFolder();
 			final File f = new File(mainFolder);
 			f.mkdirs();
-			if(currentID==0){
-				// only the first instance removes old pointers and strings files from disk!
-				FileHelper.deleteFilesStartingWithPattern(mainFolder,currentID+ ".pointers_");
-				FileHelper.deleteFilesStartingWithPattern(mainFolder,currentID+ ".strings_");
-			}
+			// remove old pointers and strings files from disk!
+			FileHelper.deleteFilesStartingWithPattern(mainFolder, currentID + ".pointers_");
+			FileHelper.deleteFilesStartingWithPattern(mainFolder, currentID + ".strings_");
 			this.pointersFilename = mainFolder + currentID + ".pointers";
 			this.stringsFilename = mainFolder + currentID + ".strings";
 		} finally {

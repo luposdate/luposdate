@@ -54,8 +54,8 @@ import lupos.engine.operators.application.Application;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
-import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
@@ -75,14 +75,14 @@ import lupos.optimizations.physical.PhysicalOptimizations;
 import lupos.optimizations.sparql2core_sparql.SPARQL2CoreSPARQLParserVisitorImplementationDumper;
 import lupos.rdf.Prefix;
 import lupos.sparql1_1.ASTPrefixDecl;
-import lupos.sparql1_1.ASTQuotedURIRef;
-import lupos.sparql1_1.operatorgraph.IndexOperatorGraphGenerator;
-import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
-import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
 import lupos.sparql1_1.ASTQuery;
+import lupos.sparql1_1.ASTQuotedURIRef;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
+import lupos.sparql1_1.operatorgraph.IndexOperatorGraphGenerator;
+import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
+import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
 
 public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
@@ -98,8 +98,8 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	public BasicIndexQueryEvaluator(final String[] args) throws Exception {
 		super(args);
 	}
-	
-	public BasicIndexQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset,
+
+	public BasicIndexQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
 			final LiteralFactory.MapType codemap, final String[] tmpDirs,
@@ -123,7 +123,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
 				resulttype, storage, join, optional, sort, distinct,
 				merge_join_optional, encoding);
-		init(datastructure, datasetsort);
+		this.init(datastructure, datasetsort);
 	}
 
 	private void init(
@@ -136,14 +136,14 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 	@Override
 	public void setupArguments() {
-		defaultRDFS = RDFS.NONE;
+		this.defaultRDFS = RDFS.NONE;
 		super.setupArguments();
-		args
+		this.args
 		.addEnumOption(
 				"datastructure",
 				"Decides whether to use a Hashmap, B+-Tree in memory, or on harddrive as the internal data structure",
 				lupos.engine.operators.index.Indices.DATA_STRUCT.DEFAULT);
-		args
+		this.args
 		.addEnumOption(
 				"sortduringindexconstruction",
 				"specifies whether distributed sorting should be used, normal sorting or a string search tree!",
@@ -153,11 +153,11 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public void init() throws Exception {
 		super.init();
-		init((lupos.engine.operators.index.Indices.DATA_STRUCT) args
-				.getEnum("datastructure"), (Dataset.SORT) args
+		this.init((lupos.engine.operators.index.Indices.DATA_STRUCT) this.args
+				.getEnum("datastructure"), (Dataset.SORT) this.args
 				.getEnum("sortduringindexconstruction"));
 	}
-	
+
 	public void writeOutAllModifiedPagesInRDFDataIndices(final String dir) throws IOException {
 		this.dataset.writeOutAllModifiedPages();
 		if(dir!=null){
@@ -166,7 +166,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			}
 		}
 	}
-	
+
 	public void buildCompletelyAllIndices() {
 		this.dataset.buildCompletelyAllIndices();
 	}
@@ -219,23 +219,23 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 	private String[] getArguments() {
-		if (externalontology.compareTo("") == 0) {
+		if (this.externalontology.compareTo("") == 0) {
 			return new String[] {
 					"--rdfs",
-					rdfs.toString(),
+					this.rdfs.toString(),
 					"--debug",
-					debug.toString(),
-					inmemoryexternalontologyinference ? "--inmemoryexternalontologyinference"
+					this.debug.toString(),
+					this.inmemoryexternalontologyinference ? "--inmemoryexternalontologyinference"
 							: "--no-inmemoryexternalontologyinference" };
 		} else {
 			return new String[] {
 					"--rdfs",
-					rdfs.toString(),
+					this.rdfs.toString(),
 					"--externalontology",
-					externalontology,
+					this.externalontology,
 					"--debug",
-					debug.toString(),
-					inmemoryexternalontologyinference ? "--inmemoryexternalontologyinference"
+					this.debug.toString(),
+					this.inmemoryexternalontologyinference ? "--inmemoryexternalontologyinference"
 							: "--no-inmemoryexternalontologyinference" };
 		}
 	}
@@ -243,27 +243,27 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	private void rdfsStreamQueryToIndexQuery(final String query,
 			final Root ic) throws Exception {
 		final StreamQueryEvaluator sqe = new StreamQueryEvaluator(
-				getArguments());
+				this.getArguments());
 
 		sqe.compileQuery(query);
 		sqe.logicalOptimization();
 
-		transformStreamToIndexOperatorGraph(sqe, ic);
+		this.transformStreamToIndexOperatorGraph(sqe, ic);
 	}
-	
+
 	private DebugContainerQuery<BasicOperatorByteArray, Node> rdfsStreamQueryToIndexQueryDebugByteArray(
 			final String query, final Root ic,
 			final Prefix prefixInstance)
 			throws Exception {
 		final StreamQueryEvaluator sqe = new StreamQueryEvaluator(
-				getArguments());
+				this.getArguments());
 
 		final DebugContainerQuery<BasicOperatorByteArray, Node> dcq = sqe
 		.compileQueryDebugByteArray(query, prefixInstance);
 		dcq.getCorrectOperatorGraphRules().addAll(
 				sqe.logicalOptimizationDebugByteArray(prefixInstance));
 
-		transformStreamToIndexOperatorGraph(sqe, ic);
+		this.transformStreamToIndexOperatorGraph(sqe, ic);
 
 		dcq
 		.getCorrectOperatorGraphRules()
@@ -281,7 +281,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	private void transformStreamToIndexOperatorGraph(
 			final StreamQueryEvaluator sqe, final Root ic) {
 		Bindings.instanceClass = BindingsArrayReadTriples.class;
-		result = sqe.getResultOperator();
+		this.result = sqe.getResultOperator();
 		transformStreamToIndexOperatorGraph((PatternMatcher) sqe.getRootNode(),
 				ic);
 	}
@@ -324,10 +324,10 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 							idx.setIntersectionVariables(hsv);
 							idx.setUnionVariables(hsv);
 
-							if (complete)
+							if (complete) {
 								idx.setSucceedingOperators(tj
 										.getSucceedingOperators());
-							else {
+							} else {
 								for (final BasicOperator prec : tj
 										.getPrecedingOperators()) {
 									if (collectPredTPs(prec,
@@ -348,8 +348,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 										.getOperator();
 										if (bo instanceof Join) {
 											bo.removePrecedingOperator(tp2);
-											if (!bo.equals(tj))
+											if (!bo.equals(tj)) {
 												bo.removeFromOperatorGraph();
+											}
 										}
 									}
 								}
@@ -453,8 +454,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				complete = complete && zComplete;
 			}
 			return complete;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	// private static List<TriplePattern> collectPredTPs(final Join tj,
@@ -492,7 +494,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		this.rootNode = root_param;
 		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
 				|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
-			rdfsStreamQueryToIndexQuery(query, root_param);
+			this.rdfsStreamQueryToIndexQuery(query, root_param);
 		} else {
 			SimpleNode root = SPARQL1_1Parser.parse(query);
 
@@ -501,13 +503,13 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 			root = SPARQL1_1Parser.parse(corequery);
 
-			if(root==null){			
+			if(root==null){
 				this.result = new Result();
-				root_param.setSucceedingOperator(new OperatorIDTuple(result,0));
+				root_param.setSucceedingOperator(new OperatorIDTuple(this.result,0));
 			} else {
 				final IndexOperatorGraphGenerator spvi = IndexOperatorGraphGenerator.createOperatorGraphGenerator(root_param, this);
 				spvi.visit((ASTQuery)root);
-	
+
 				this.result = spvi.getResult();
 			}
 
@@ -521,14 +523,14 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		this.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());
 	}
-	
+
 	@Override
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
 			final String query, final Prefix prefixInstance) throws Exception {
-		return compileQueryDebugByteArray(query, createRoot(),
+		return this.compileQueryDebugByteArray(query, this.createRoot(),
 				prefixInstance);
 	}
-	
+
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
 			final String query, final Root root_param,
 			final Prefix prefixInstance)
@@ -539,7 +541,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 		final DebugContainerQuery<BasicOperatorByteArray, Node> dcq;
 		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS || this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
-			dcq = rdfsStreamQueryToIndexQueryDebugByteArray(query, root_param, prefixInstance);
+			dcq = this.rdfsStreamQueryToIndexQueryDebugByteArray(query, root_param, prefixInstance);
 		} else {
 			final SimpleNode root = SPARQL1_1Parser.parse(query);
 
@@ -568,18 +570,18 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			}
 
 			final SPARQL2CoreSPARQLParserVisitorImplementationDumper spvid = SPARQL2CoreSPARQLParserVisitorImplementationDumper.createInstance();
-			
+
 			final String corequery = (root==null)?"":(String) spvid.visit(root);
 
 			final SimpleNode root_CoreSPARQL = SPARQL1_1Parser.parse(corequery);
 
-			if(root_CoreSPARQL==null){			
+			if(root_CoreSPARQL==null){
 				this.result = new Result();
 				root_param.setSucceedingOperator(new OperatorIDTuple(this.result,0));
 			} else {
 				final IndexOperatorGraphGenerator spvi = IndexOperatorGraphGenerator.createOperatorGraphGenerator(root_param, this);
 				spvi.visit((ASTQuery)root_CoreSPARQL);
-	
+
 				this.result = spvi.getResult();
 			}
 
@@ -620,21 +622,24 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			final SimpleOperatorGraphVisitor sogv = new SimpleOperatorGraphVisitor() {
 				public boolean found = false;
 
+				@Override
 				public Object visit(final BasicOperator basicOperator) {
-					if (basicOperator instanceof FastSort)
-						found = true;
+					if (basicOperator instanceof FastSort) {
+						this.found = true;
+					}
 					return null;
 				}
 
 				@Override
 				public boolean equals(final Object o) {
 					if (o instanceof Boolean) {
-						return found == (Boolean) o;
-					} else
+						return this.found == (Boolean) o;
+					} else {
 						return super.equals(o);
+					}
 				}
 			};
-			root.visit(sogv);
+			this.root.visit(sogv);
 			if (sogv.equals(false)) {
 				instanceClass = Bindings.instanceClass;
 				Bindings.instanceClass = BindingsArray.class;
@@ -642,9 +647,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		}
 
 		final Date a = new Date();
-		root.sendMessage(new StartOfEvaluationMessage());
-		root.startProcessing();
-		root.sendMessage(new EndOfEvaluationMessage());
+		this.root.sendMessage(new StartOfEvaluationMessage());
+		this.root.startProcessing();
+		this.root.sendMessage(new EndOfEvaluationMessage());
 		final long time = ((new Date()).getTime() - a.getTime());
 
 //		System.out.println("Number of results:" + cr.getNumberResults());
@@ -654,7 +659,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		this.buildCompletelyAllIndices();
 		return time;
 	}
-	
+
 	@Override
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application)
 	throws Exception {
@@ -662,7 +667,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		// new OperatorGraphNew(root.deepClone(), -1, false)
 		// .displayOperatorGraph("lala", null);
 
-		result.addApplication(application);
+		this.result.addApplication(application);
 		Class<? extends Bindings> instanceClass = null;
 		if (Bindings.instanceClass == BindingsArrayVarMinMax.class
 				|| Bindings.instanceClass == BindingsArrayPresortingNumbers.class) {
@@ -672,21 +677,24 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			final SimpleOperatorGraphVisitor sogv = new SimpleOperatorGraphVisitor() {
 				public boolean found = false;
 
+				@Override
 				public Object visit(final BasicOperator basicOperator) {
-					if (basicOperator instanceof FastSort)
-						found = true;
+					if (basicOperator instanceof FastSort) {
+						this.found = true;
+					}
 					return null;
 				}
 
 				@Override
 				public boolean equals(final Object o) {
 					if (o instanceof Boolean) {
-						return found == (Boolean) o;
-					} else
+						return this.found == (Boolean) o;
+					} else {
 						return super.equals(o);
+					}
 				}
 			};
-			root.visit(sogv);
+			this.root.visit(sogv);
 			if (sogv.equals(false)) {
 				instanceClass = Bindings.instanceClass;
 				Bindings.instanceClass = BindingsArray.class;
@@ -694,10 +702,10 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		}
 
 		final Date a = new Date();
-		root.sendMessageDebug(new StartOfEvaluationMessage(),
+		this.root.sendMessageDebug(new StartOfEvaluationMessage(),
 				debugstep);
-		root.startProcessingDebug(debugstep);
-		root.sendMessageDebug(new EndOfEvaluationMessage(),
+		this.root.startProcessingDebug(debugstep);
+		this.root.sendMessageDebug(new EndOfEvaluationMessage(),
 				debugstep);
 		final long time = ((new Date()).getTime() - a.getTime());
 
@@ -710,17 +718,18 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 
+	@Override
 	public long logicalOptimization() {
 		final Date a = new Date();
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
-		refie.applyRules(root);
-		root.optimizeJoinOrder(opt);
+		refie.applyRules(this.root);
+		this.root.optimizeJoinOrder(this.opt);
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
-		refie2.applyRules(root);
-		parallelOperator(root);
+		refie2.applyRules(this.root);
+		this.parallelOperator(this.root);
 		return ((new Date()).getTime() - a.getTime());
 	}
-	
+
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
@@ -728,25 +737,26 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"Before logical optimization...",
 				"logicaloptimizationPackageDescription", BasicOperatorByteArray
-				.getBasicOperatorByteArray(root.deepClone(),
+				.getBasicOperatorByteArray(this.root.deepClone(),
 						prefixInstance)));
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
-		result.addAll(refie.applyRulesDebugByteArray(root,
+		result.addAll(refie.applyRulesDebugByteArray(this.root,
 				prefixInstance));
 
-		root.optimizeJoinOrder(opt);
+		this.root.optimizeJoinOrder(this.opt);
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"After optimizing the join order...",
 				"optimizingjoinorderRule", BasicOperatorByteArray
-				.getBasicOperatorByteArray(root.deepClone(),
+				.getBasicOperatorByteArray(this.root.deepClone(),
 						prefixInstance)));
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
-		result.addAll(refie2.applyRulesDebugByteArray(root,
+		result.addAll(refie2.applyRulesDebugByteArray(this.root,
 				prefixInstance));
-		final List<DebugContainer<BasicOperatorByteArray>> ldc = parallelOperatorDebugByteArray(
-				root, prefixInstance);
-		if (ldc != null)
+		final List<DebugContainer<BasicOperatorByteArray>> ldc = this.parallelOperatorDebugByteArray(
+				this.root, prefixInstance);
+		if (ldc != null) {
 			result.addAll(ldc);
+		}
 		return result;
 	}
 
@@ -754,21 +764,22 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public long physicalOptimization() {
 		final Date a = new Date();
-		if (rdfs != RDFS.NONE)
+		if (this.rdfs != RDFS.NONE) {
 			PhysicalOptimizations.rdfsReplacements();
-		if (storage == STORAGE.DISK) {
+		}
+		if (this.storage == STORAGE.DISK) {
 			PhysicalOptimizations.diskbasedReplacements();
-		} else if (storage == STORAGE.MEMORY) {
+		} else if (this.storage == STORAGE.MEMORY) {
 			PhysicalOptimizations.memoryReplacements();
-		} else if (storage == STORAGE.HYBRID) {
+		} else if (this.storage == STORAGE.HYBRID) {
 			PhysicalOptimizations.hybridReplacements();
 		}
-		if (datastructure != Indices.DATA_STRUCT.DEFAULT) {
-			Indices.usedDatastructure = datastructure;
+		if (this.datastructure != Indices.DATA_STRUCT.DEFAULT) {
+			Indices.usedDatastructure = this.datastructure;
 		}
-		if (join != JOIN.DEFAULT) {
+		if (this.join != JOIN.DEFAULT) {
 			String to = "";
-			switch (join) {
+			switch (this.join) {
 			case NESTEDLOOP:
 				to = "NestedLoopJoin";
 				break;
@@ -818,9 +829,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			PhysicalOptimizations
 			.addReplacement("multiinput.join.", "Join", to);
 		}
-		if (optional != JOIN.DEFAULT) {
+		if (this.optional != JOIN.DEFAULT) {
 			String to = "";
-			switch (optional) {
+			switch (this.optional) {
 			case NESTEDLOOP:
 				to = "NaiveOptional";
 				break;
@@ -868,9 +879,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			PhysicalOptimizations.addReplacement("multiinput.optional.",
 					"Optional", to);
 		}
-		if (sort != SORT.DEFAULT) {
+		if (this.sort != SORT.DEFAULT) {
 			String to = "";
-			switch (sort) {
+			switch (this.sort) {
 			case QUICKSORT:
 				to = "QuickSort";
 				break;
@@ -890,9 +901,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			PhysicalOptimizations.addReplacement("singleinput.sort.", "Sort",
 					to);
 		}
-		if (distinct != DISTINCT.DEFAULT) {
+		if (this.distinct != DISTINCT.DEFAULT) {
 			String to = "";
-			switch (distinct) {
+			switch (this.distinct) {
 			case DBSETBLOCKING:
 				to = "DBSetBlockingDistinct";
 				break;
@@ -908,18 +919,21 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			case SMALLERINHASHSETLARGERINDBSET:
 				to = "HybridBlockingDistinct";
 				break;
+			case FASTPAGEDHASHSET:
+				to = "NonBlockingFastDistinct";
+				break;
 			}
 			PhysicalOptimizations.addReplacement(
 					"singleinput.modifiers.distinct.", "Distinct", to);
 		}
-		if (merge_join_optional != MERGE_JOIN_OPTIONAL.SEQUENTIAL) {
+		if (this.merge_join_optional != MERGE_JOIN_OPTIONAL.SEQUENTIAL) {
 			PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 					"multiinput.join.", "MergeJoinWithoutSorting",
 			"parallel.MergeParallelJoinWithoutSorting");
 			PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 					"multiinput.optional.", "MergeWithoutSortingOptional",
 			"parallel.MergeWithoutSortingParallelOptional");
-			switch (merge_join_optional) {
+			switch (this.merge_join_optional) {
 			case PARALLEL:
 				PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 						"multiinput.join.", "MergeJoinSort",
@@ -930,12 +944,12 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			}
 		}
 
-		root.physicalOptimization();
-		root.deleteParents();
-		root.setParents();
-		root.detectCycles();
+		this.root.physicalOptimization();
+		this.root.deleteParents();
+		this.root.setParents();
+		this.root.detectCycles();
 		final AfterPhysicalOptimizationRulePackage refie = new AfterPhysicalOptimizationRulePackage();
-		refie.applyRules(root);
+		refie.applyRules(this.root);
 
 		return ((new Date()).getTime() - a.getTime());
 	}
@@ -943,19 +957,20 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
-		Date a=new Date();
+		final Date a=new Date();
 		// there should be at least one default graphs (especially for update operations...)
-		if(defaultGraphs.size()==0)
+		if(defaultGraphs.size()==0) {
 			defaultGraphs.add(new StringURILiteral("<inlinedata:>"));
+		}
 		return (new Date().getTime())-a.getTime();
 	}
-	
+
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
-			Collection<URILiteral> defaultGraphs,
-			Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
+			final Collection<URILiteral> defaultGraphs,
+			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
 			throws Exception {
-		Date a=new Date();
+		final Date a=new Date();
 		// there should be at least one default graphs (especially for update operations...)
 		if(defaultGraphs.size()==0){
 			defaultGraphs.add(new StringURILiteral("<inlinedata:>"));
@@ -968,83 +983,87 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 	@Override
 	public long compileQuery(final String query) throws Exception {
-		return compileQuery(query, createRoot());
+		return this.compileQuery(query, this.createRoot());
 	}
 
 	public void setRoot(final Root root_param) {
 		this.root = root_param;
 		this.rootNode = root_param;
 	}
-	
+
 	@Override
-	public void setRootNode(BasicOperator rootNode) {
+	public void setRootNode(final BasicOperator rootNode) {
 		this.setRoot((Root)rootNode);
 	}
 
 	public Dataset getDataset() {
-		return dataset;
+		return this.dataset;
 	}
-	
+
 	/**
 	 * Processes a database dump of the default graph by storing all its content into
 	 * one or several files.
-	 * 
+	 *
 	 * @param filename The basic filename (will be extended with X.n3, where X is a run number)
 	 * @param triplesInOneFile The maximum number of triples to be stored in one file (<=0 for all triples in one file)
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public void dump(String filename, int triplesInOneFile) throws Exception{
+	public void dump(final String filename, final int triplesInOneFile) throws Exception{
 		int currentRunNumber=0;
-		PrintStream printer = new PrintStream(new 
+		PrintStream printer = new PrintStream(new
 				BufferedOutputStream(
 						new FileOutputStream(
 								filename+((triplesInOneFile<=0)?"":currentRunNumber)+".n3")));
-		QueryResult queryResult=this.getResult("SELECT * WHERE {?s ?p ?o.}");
-		
+		final QueryResult queryResult=this.getResult("SELECT * WHERE {?s ?p ?o.}");
+
 		final Variable s=new Variable("s");
 		final Variable p=new Variable("p");
 		final Variable o=new Variable("o");
-		
+
 		int tripleNumber=0;
-		
-		Iterator<Bindings> it=queryResult.oneTimeIterator();
+
+		final Iterator<Bindings> it=queryResult.oneTimeIterator();
 		Bindings lastBindings=null;
 		while(it.hasNext()){
-			Bindings b=it.next();
-			
+			final Bindings b=it.next();
+
 			if(triplesInOneFile>0 && tripleNumber>=triplesInOneFile){
 				printer.print(".");
 				printer.close();
 				currentRunNumber++;
-				printer = new PrintStream(new 
+				printer = new PrintStream(new
 						BufferedOutputStream(
 								new FileOutputStream(filename+currentRunNumber+".n3")));
 				tripleNumber=1;
 				lastBindings=null;
-			} else tripleNumber++;
-			
+			} else {
+				tripleNumber++;
+			}
+
 			if(lastBindings==null || lastBindings.get(s).compareToNotNecessarilySPARQLSpecificationConform(b.get(s))!=0){
-				if(lastBindings!=null)
+				if(lastBindings!=null) {
 					printer.println(".");
+				}
 				printer.print(b.get(s)+" "+b.get(p)+" "+b.get(o));
 			} else if(lastBindings.get(p).compareToNotNecessarilySPARQLSpecificationConform(b.get(p))!=0){
 				printer.println(";");
-				printer.print("  "+b.get(p)+" "+b.get(o));				
+				printer.print("  "+b.get(p)+" "+b.get(o));
 			} else if(lastBindings.get(o).compareToNotNecessarilySPARQLSpecificationConform(b.get(o))!=0){
 				printer.println(",");
-				printer.print("    "+b.get(o));				
+				printer.print("    "+b.get(o));
 			} else {
 				System.err.println("Duplicate triple in index. Should never occur! Triple: "+b);
 			}
 			lastBindings=b;
 		}
-		if(lastBindings!=null)
+		if(lastBindings!=null) {
 			printer.print(".");
+		}
 		printer.close();
 	}
-	
+
 	@Override
-	public IndexScanCreatorInterface createIndexScanCreator() {		
+	public IndexScanCreatorInterface createIndexScanCreator() {
 		return new IndexScanCreator_BasicIndex(this.createRoot());
 	}
 }

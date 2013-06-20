@@ -49,8 +49,8 @@ import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.CountResult;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
+import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
@@ -99,8 +99,8 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	protected enum MATCHER {
 		DEFAULT, SIMPLE, HASH, RDFSSIMPLE;
 	}
-	
-	public StreamQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset,
+
+	public StreamQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
 			final LiteralFactory.MapType codemap, final String[] tmpDirs,
@@ -119,19 +119,19 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		super(debug, multiplequeries, compare, compareoptions, times, dataset,
 				type, externalontology,inmemoryexternalontologyinference, rdfs, codemap, tmpDirs, loadindexinfo,
 				parallelOperands,blockwise,
-				limit,jointhreads,joinbuffer,				
+				limit,jointhreads,joinbuffer,
 				heap, tosort, indexheap, mergeheapheight, mergeheaptype, chunk, mergethreads, yagomax,
 				resulttype, storage, join, optional, sort, distinct,
 				merge_join_optional, encoding);
-		init(matcher);
+		this.init(matcher);
 	}
 
 	@Override
 	public void setupArguments() {
-		defaultOptimization = Optimizations.NONE;
-		defaultRDFS = RDFS.NONE;
+		this.defaultOptimization = Optimizations.NONE;
+		this.defaultRDFS = RDFS.NONE;
 		super.setupArguments();
-		args.addEnumOption("matcher",
+		this.args.addEnumOption("matcher",
 				"Specify the pattern matcher algorithm to be used",
 				MATCHER.DEFAULT);
 	}
@@ -161,24 +161,25 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
 	private void init(final MATCHER matcher) throws Exception {
 		this.matcher = matcher;
-		if (externalontology != null && externalontology.compareTo("") != 0) {
+		if (this.externalontology != null && this.externalontology.compareTo("") != 0) {
 			final String[] inp = new String[2];
-			final int index = externalontology.indexOf(',');
+			final int index = this.externalontology.indexOf(',');
 			if (index < 0) {
 				System.err
 						.println("Usage: '--externalOntology Format,File', where Format can be e.g. N3...");
 			} else {
-				inp[0] = externalontology.substring(0, index);
-				inp[1] = externalontology.substring(index + 1);
+				inp[0] = this.externalontology.substring(0, index);
+				inp[1] = this.externalontology.substring(index + 1);
 				final Collection<URILiteral> defaultGraphs = new LinkedList<URILiteral>();
 				try {
 					if (inp[1].startsWith("<")) {
 						defaultGraphs.add(LiteralFactory
 								.createURILiteralWithoutLazyLiteral(inp[1]));
-					} else
+					} else {
 						defaultGraphs.add(LiteralFactory
 								.createURILiteralWithoutLazyLiteral("<file:"
 										+ inp[1] + ">"));
+					}
 				} catch (final URISyntaxException e1) {
 					System.err.println(e1);
 					e1.printStackTrace();
@@ -187,32 +188,35 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 						defaultGraphs,
 						new LinkedList<URILiteral>(),
 						inp[0],
-						getONTOLOGYRDFS(rdfs),
+						this.getONTOLOGYRDFS(this.rdfs),
 						BasicIndexScan.MERGEJOIN,
 						new Dataset.IndicesFactory() {
+							@Override
 							public Indices createIndices(
 									final URILiteral uriLiteral) {
 								return new SixIndices(uriLiteral);
 							}
 
+							@Override
 							public lupos.engine.operators.index.Root createRoot() {
 								return new lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot();
 							}
-						}, debug == DEBUG.ALL || debug == DEBUG.WITHOUTRESULT,
-						inmemoryexternalontologyinference);
+						}, this.debug == DEBUG.ALL || this.debug == DEBUG.WITHOUTRESULT,
+						this.inmemoryexternalontologyinference);
 				// get now the data plus inferred triples of the external
 				// ontology...
-				externalOntology = (SixIndices) dataset
+				this.externalOntology = (SixIndices) dataset
 						.getDefaultGraphIndices().iterator().next();
 			}
-		} else
-			externalOntology = null;
+		} else {
+			this.externalOntology = null;
+		}
 	}
 
 	@Override
 	public void init() throws Exception {
 		super.init();
-		init((MATCHER) args.getEnum("matcher"));
+		this.init((MATCHER) this.args.getEnum("matcher"));
 	}
 
 	private Collection<PatternMatcher> patternMatchers;
@@ -226,11 +230,11 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	}
 
 	private void determinePatternMatchers() {
-		if (rootNode instanceof PatternMatcher) {
-			patternMatchers = new LinkedList<PatternMatcher>();
-			patternMatchers.add((PatternMatcher) rootNode);
-		} else if (rootNode instanceof Stream) {
-			patternMatchers = ((Stream) rootNode).getPatternMatchers();
+		if (this.rootNode instanceof PatternMatcher) {
+			this.patternMatchers = new LinkedList<PatternMatcher>();
+			this.patternMatchers.add((PatternMatcher) this.rootNode);
+		} else if (this.rootNode instanceof Stream) {
+			this.patternMatchers = ((Stream) this.rootNode).getPatternMatchers();
 		}
 	}
 
@@ -240,10 +244,12 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		//		} else {
 		final Node[] na = root.getChildren();
 		if (na != null)
+		 {
 			for (final Node sn : na) {
-				checkForTimeFunc(sn);
+				this.checkForTimeFunc(sn);
 			}
 		//		}
+		}
 	}
 
 	@Override
@@ -255,9 +261,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			final String corequery = (root==null)?"":(String) spvid.visit(root);
 			root = StreamSPARQL1_1Parser.parse(corequery);
 			// checkForTimeFunc(root);
-			StreamOperatorGraphGenerator spvi = StreamOperatorGraphGenerator.createOperatorGraphGenerator(this);
+			final StreamOperatorGraphGenerator spvi = StreamOperatorGraphGenerator.createOperatorGraphGenerator(this);
 			spvi.visit((ASTQuery)root);
-			this.rootNode = spvi.getOperatorgraphRoot();			
+			this.rootNode = spvi.getOperatorgraphRoot();
 			this.result = spvi.getResult();
 			this.determinePatternMatchers();
 			this.rootNode.deleteParents();
@@ -270,27 +276,30 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				for (final PatternMatcher zpm : this.patternMatchers) {
 					final RDFSRoot ic = new RDFSRoot();
 					if (this.rdfs == RDFS.RDFS || this.rdfs == RDFS.OPTIMIZEDRDFS) {
-						if (this.externalOntology != null)
+						if (this.externalOntology != null) {
 							RDFSchemaInference.addInferenceRulesForInstanceData(ic,
 									zpm);
-						else
+						} else {
 							RDFSchemaInference.addInferenceRules(ic, zpm);
+						}
 					} else if (this.rdfs == RDFS.RUDIMENTARYRDFS
 							|| this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS) {
-						if (this.externalOntology != null)
+						if (this.externalOntology != null) {
 							RudimentaryRDFSchemaInference
 							.addInferenceRulesForInstanceData(ic, zpm);
-						else
+						} else {
 							RudimentaryRDFSchemaInference
 							.addInferenceRules(ic, zpm);
+						}
 					} else if (this.rdfs == RDFS.ALTERNATIVERDFS
 							|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
-						if (this.externalOntology != null)
+						if (this.externalOntology != null) {
 							AlternativeRDFSchemaInference
 							.addInferenceRulesForInstanceData(ic, zpm);
-						else
+						} else {
 							AlternativeRDFSchemaInference
 							.addInferenceRules(ic, zpm);
+						}
 					}
 					ic.addToPatternMatcher(zpm);
 					zpm.deleteParents();
@@ -309,10 +318,10 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				}
 			}
 			this.setBindingsVariablesBasedOnOperatorgraph();
-		} catch (InstantiationException e) {
+		} catch (final InstantiationException e) {
 			System.err.println(e);
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -356,9 +365,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
 			// checkForTimeFunc(rootCoreSPARQL);
 
-			StreamOperatorGraphGenerator spvi = StreamOperatorGraphGenerator.createOperatorGraphGenerator(this);
+			final StreamOperatorGraphGenerator spvi = StreamOperatorGraphGenerator.createOperatorGraphGenerator(this);
 			spvi.visit((ASTQuery)rootCoreSPARQL);
-			this.rootNode = spvi.getOperatorgraphRoot();			
+			this.rootNode = spvi.getOperatorgraphRoot();
 			this.determinePatternMatchers();
 			this.result = spvi.getResult();
 
@@ -378,27 +387,30 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				for (final PatternMatcher zpm : this.patternMatchers) {
 					final RDFSRoot ic = new RDFSRoot();
 					if (this.rdfs == RDFS.RDFS || this.rdfs == RDFS.OPTIMIZEDRDFS) {
-						if (this.externalOntology != null)
+						if (this.externalOntology != null) {
 							RDFSchemaInference.addInferenceRulesForInstanceData(ic,
 									zpm);
-						else
+						} else {
 							RDFSchemaInference.addInferenceRules(ic, zpm);
+						}
 					} else if (this.rdfs == RDFS.RUDIMENTARYRDFS
 							|| this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS) {
-						if (this.externalOntology != null)
+						if (this.externalOntology != null) {
 							RudimentaryRDFSchemaInference
 							.addInferenceRulesForInstanceData(ic, zpm);
-						else
+						} else {
 							RudimentaryRDFSchemaInference
 							.addInferenceRules(ic, zpm);
+						}
 					} else if (this.rdfs == RDFS.ALTERNATIVERDFS
 							|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
-						if (this.externalOntology != null)
+						if (this.externalOntology != null) {
 							AlternativeRDFSchemaInference
 							.addInferenceRulesForInstanceData(ic, zpm);
-						else
+						} else {
 							AlternativeRDFSchemaInference
 							.addInferenceRules(ic, zpm);
+						}
 					}
 					ic.addToPatternMatcher(zpm);
 					zpm.deleteParents();
@@ -433,53 +445,54 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			return new DebugContainerQuery<BasicOperatorByteArray, Node>(
 					StreamSPARQL1_1Parser.parse(query), corequery, rootCoreSPARQL,
 					correctOperatorGraphRules);
-		} catch (InstantiationException e) {
+		} catch (final InstantiationException e) {
 			System.err.println(e);
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
-		rootNode.deleteParents();
-		rootNode.setParents();
+		this.rootNode.deleteParents();
+		this.rootNode.setParents();
 		final List<DebugContainer<BasicOperatorByteArray>> debug = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 		debug.add(new DebugContainer<BasicOperatorByteArray>(
 				"Before logical optimization...",
 				"logicaloptimizationPackageDescription", BasicOperatorByteArray
-				.getBasicOperatorByteArray(rootNode.deepClone(),
+				.getBasicOperatorByteArray(this.rootNode.deepClone(),
 						prefixInstance)));
 		final LogicalOptimizationForStreamEngineRulePackage refse = new LogicalOptimizationForStreamEngineRulePackage();
-		rootNode.detectCycles();
-		rootNode.sendMessage(new BoundVariablesMessage());
-		debug.addAll(refse.applyRulesDebugByteArray(rootNode, prefixInstance));
-		if (rdfs == RDFS.OPTIMIZEDRDFS || rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
-				|| rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
+		this.rootNode.detectCycles();
+		this.rootNode.sendMessage(new BoundVariablesMessage());
+		debug.addAll(refse.applyRulesDebugByteArray(this.rootNode, prefixInstance));
+		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
+				|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
 			// should have been done before
 			// rootNode.deleteParents();
 			// rootNode.setParents();
 			// rootNode.detectCycles();
 			// rootNode.sendMessage(new BoundVariablesMessage());
 			final RDFSRuleEngine0 rdfsRuleEngine0 = new RDFSRuleEngine0(
-					externalOntology != null);
-			debug.addAll(rdfsRuleEngine0.applyRulesDebugByteArray(rootNode,
+					this.externalOntology != null);
+			debug.addAll(rdfsRuleEngine0.applyRulesDebugByteArray(this.rootNode,
 					prefixInstance));
 			final RDFSRuleEngine1 rdfsRuleEngine1 = new RDFSRuleEngine1();
-			debug.addAll(rdfsRuleEngine1.applyRulesDebugByteArray(rootNode,
+			debug.addAll(rdfsRuleEngine1.applyRulesDebugByteArray(this.rootNode,
 					prefixInstance));
 			final RDFSRuleEngine2 rdfsRuleEngine2 = new RDFSRuleEngine2();
-			debug.addAll(rdfsRuleEngine2.applyRulesDebugByteArray(rootNode,
+			debug.addAll(rdfsRuleEngine2.applyRulesDebugByteArray(this.rootNode,
 					prefixInstance));
-		}		
-		final List<DebugContainer<BasicOperatorByteArray>> ldc = parallelOperatorDebugByteArray(
-				rootNode, prefixInstance);
-		if (ldc != null)
+		}
+		final List<DebugContainer<BasicOperatorByteArray>> ldc = this.parallelOperatorDebugByteArray(
+				this.rootNode, prefixInstance);
+		if (ldc != null) {
 			debug.addAll(ldc);
+		}
 		return debug;
 	}
 
@@ -487,48 +500,48 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	@Override
 	public long logicalOptimization() {
 		final Date a = new Date();
-		rootNode.deleteParents();
-		rootNode.setParents();
+		this.rootNode.deleteParents();
+		this.rootNode.setParents();
 		final LogicalOptimizationForStreamEngineRulePackage refse = new LogicalOptimizationForStreamEngineRulePackage();
-		rootNode.detectCycles();
-		rootNode.sendMessage(new BoundVariablesMessage());
-		refse.applyRules(rootNode);
-		if (rdfs == RDFS.OPTIMIZEDRDFS || rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
-				|| rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
+		this.rootNode.detectCycles();
+		this.rootNode.sendMessage(new BoundVariablesMessage());
+		refse.applyRules(this.rootNode);
+		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
+				|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
 			// should have been done before
 			// rootNode.deleteParents();
 			// rootNode.setParents();
 			// rootNode.detectCycles();
 			// rootNode.sendMessage(new BoundVariablesMessage());
 			final RDFSRuleEngine0 rdfsRuleEngine0 = new RDFSRuleEngine0(
-					externalOntology != null);
-			rdfsRuleEngine0.applyRules(rootNode);
+					this.externalOntology != null);
+			rdfsRuleEngine0.applyRules(this.rootNode);
 			final RDFSRuleEngine1 rdfsRuleEngine1 = new RDFSRuleEngine1();
-			rdfsRuleEngine1.applyRules(rootNode);
+			rdfsRuleEngine1.applyRules(this.rootNode);
 			final RDFSRuleEngine2 rdfsRuleEngine2 = new RDFSRuleEngine2();
-			rdfsRuleEngine2.applyRules(rootNode);
+			rdfsRuleEngine2.applyRules(this.rootNode);
 		}
-		parallelOperator(rootNode);
+		this.parallelOperator(this.rootNode);
 		return ((new Date()).getTime() - a.getTime());
 	}
 
 	@Override
 	public long physicalOptimization() {
 		final Date a = new Date();
-		if (storage == STORAGE.DISK) {
+		if (this.storage == STORAGE.DISK) {
 			PhysicalOptimizations.diskbasedReplacements();
-		} else if (storage == STORAGE.MEMORY) {
+		} else if (this.storage == STORAGE.MEMORY) {
 			PhysicalOptimizations.memoryReplacements();
-		} else if (storage == STORAGE.HYBRID) {
+		} else if (this.storage == STORAGE.HYBRID) {
 			PhysicalOptimizations.hybridReplacements();
 		}
 		PhysicalOptimizations.streamReplacements();
-		if (rdfs != RDFS.NONE) {
+		if (this.rdfs != RDFS.NONE) {
 			PhysicalOptimizations.rdfsReplacements();
 		}
-		if (join != JOIN.DEFAULT) {
+		if (this.join != JOIN.DEFAULT) {
 			String to = "";
-			switch (join) {
+			switch (this.join) {
 			case NESTEDLOOP:
 				to = "NestedLoopJoin";
 				break;
@@ -578,9 +591,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			PhysicalOptimizations
 					.addReplacement("multiinput.join.", "Join", to);
 		}
-		if (optional != JOIN.DEFAULT) {
+		if (this.optional != JOIN.DEFAULT) {
 			String to = "";
-			switch (optional) {
+			switch (this.optional) {
 			case NESTEDLOOP:
 				to = "NaiveOptional";
 				break;
@@ -628,9 +641,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			PhysicalOptimizations.addReplacement("multiinput.optional.",
 					"Optional", to);
 		}
-		if (sort != SORT.DEFAULT) {
+		if (this.sort != SORT.DEFAULT) {
 			String to = "";
-			switch (sort) {
+			switch (this.sort) {
 			case QUICKSORT:
 				to = "QuickSort";
 				break;
@@ -650,9 +663,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			PhysicalOptimizations.addReplacement("singleinput.sort.", "Sort",
 					to);
 		}
-		if (matcher != MATCHER.DEFAULT) {
+		if (this.matcher != MATCHER.DEFAULT) {
 			String to = "";
-			switch (matcher) {
+			switch (this.matcher) {
 			case SIMPLE:
 				to = "SimplePatternMatcher";
 				break;
@@ -665,9 +678,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			PhysicalOptimizations.addReplacement(
 					"tripleoperator.patternmatcher.", "PatternMatcher", to);
 		}
-		if (distinct != DISTINCT.DEFAULT) {
+		if (this.distinct != DISTINCT.DEFAULT) {
 			String to = "";
-			switch (distinct) {
+			switch (this.distinct) {
 			case DBSETBLOCKING:
 				to = "DBSetBlockingDistinct";
 				break;
@@ -683,18 +696,21 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			case SMALLERINHASHSETLARGERINDBSET:
 				to = "HybridBlockingDistinct";
 				break;
+			case FASTPAGEDHASHSET:
+				to = "NonBlockingFastDistinct";
+				break;
 			}
 			PhysicalOptimizations.addReplacement(
 					"singleinput.modifiers.distinct.", "Distinct", to);
 		}
-		if (merge_join_optional != MERGE_JOIN_OPTIONAL.SEQUENTIAL) {
+		if (this.merge_join_optional != MERGE_JOIN_OPTIONAL.SEQUENTIAL) {
 			PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 					"multiinput.join.", "MergeJoinWithoutSorting",
 					"parallel.MergeParallelJoinWithoutSorting");
 			PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 					"multiinput.optional.", "MergeWithoutSortingOptional",
 					"parallel.MergeWithoutSortingParallelOptional");
-			switch (merge_join_optional) {
+			switch (this.merge_join_optional) {
 			case PARALLEL:
 				PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 						"multiinput.join.", "MergeJoinSort",
@@ -705,14 +721,16 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			}
 		}
 
-		rootNode = PhysicalOptimizations.replaceOperators(rootNode, rootNode);
-		patternMatchers.clear();
+		this.rootNode = PhysicalOptimizations.replaceOperators(this.rootNode, this.rootNode);
+		this.patternMatchers.clear();
 		this.determinePatternMatchers();
 		final Set<Variable> maxVariables = new TreeSet<Variable>();
 		this.rootNode.visit(new SimpleOperatorGraphVisitor() {
+			@Override
 			public Object visit(final BasicOperator basicOperator) {
-				if (basicOperator.getUnionVariables() != null)
+				if (basicOperator.getUnionVariables() != null) {
 					maxVariables.addAll(basicOperator.getUnionVariables());
+				}
 				return null;
 			}
 
@@ -726,75 +744,77 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			final Collection<URILiteral> namedGraphs) throws Exception {
 		if (defaultGraphs.size() > 0 && namedGraphs.size() == 0) {
 			this.defaultGraphs = defaultGraphs;
-		} else
+		} else {
 			throw new Exception(
 					"The StreamQueryEvaluator currently supports only one default graph and no named graphs!");
+		}
 		return 0;
 	}
-	
+
 	public void addToDefaultGraphs(final URILiteral in){
 		if(this.defaultGraphs == null){
 			this.defaultGraphs = new LinkedList<URILiteral>();
 		}
 		this.defaultGraphs.add(in);
 	}
-	
+
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
-			Collection<URILiteral> defaultGraphs,
-			Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
+			final Collection<URILiteral> defaultGraphs,
+			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
 			throws Exception {
 		if (defaultGraphs.size() > 0 && namedGraphs.size() == 0) {
 			this.defaultGraphs = defaultGraphs;
-		} else
+		} else {
 			throw new Exception(
 					"The StreamQueryEvaluator currently supports only one default graph and no named graphs!");
+		}
 		return 0;
 	}
 
 	@Override
 	public long evaluateQuery() throws Exception {
 		final CountResult cr = new CountResult();
-		result.addApplication(cr);
+		this.result.addApplication(cr);
 		final Date a = new Date();
-		rootNode.sendMessage(new StartOfEvaluationMessage());
-		for(URILiteral in: this.defaultGraphs) {
-			CommonCoreQueryEvaluator.readTriples(type, in.openStream(), (TripleConsumer) rootNode);
+		this.rootNode.sendMessage(new StartOfEvaluationMessage());
+		for(final URILiteral in: this.defaultGraphs) {
+			CommonCoreQueryEvaluator.readTriples(this.type, in.openStream(), (TripleConsumer) this.rootNode);
 		}
-		rootNode.sendMessage(new EndOfEvaluationMessage());
+		this.rootNode.sendMessage(new EndOfEvaluationMessage());
 		return ((new Date()).getTime() - a.getTime());
 	}
-	
+
 	@Override
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 		super.prepareForQueryDebugSteps(debugstep);
-		if (rootNode instanceof PatternMatcher) {
+		if (this.rootNode instanceof PatternMatcher) {
 			final PatternMatcher new_pm = PatternMatcher.createDebugInstance(
-					(PatternMatcher) rootNode, debugstep);
-			rootNode.replaceWith(new_pm);
-			rootNode = new_pm;
+					(PatternMatcher) this.rootNode, debugstep);
+			this.rootNode.replaceWith(new_pm);
+			this.rootNode = new_pm;
 		} else {
-			for (final PatternMatcher zpm : patternMatchers) {
+			for (final PatternMatcher zpm : this.patternMatchers) {
 				zpm.replaceWith(PatternMatcher.createDebugInstance(zpm,
 						debugstep));
 			}
 			final Stream new_stream = Stream.createDebugInstance(
-					(Stream) rootNode, debugstep);
-			rootNode.replaceWith(new_stream);
-			rootNode = new_stream;
+					(Stream) this.rootNode, debugstep);
+			this.rootNode.replaceWith(new_stream);
+			this.rootNode = new_stream;
 		}
 	}
 
 	@Override
-	public long evaluateQueryDebugSteps(final DebugStep debugstep, Application application)
+	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application)
 	throws Exception {
-		result.addApplication(application);
+		this.result.addApplication(application);
 		final Date a = new Date();
-		rootNode.sendMessageDebug(new StartOfEvaluationMessage(), debugstep);
-		for(URILiteral in: this.defaultGraphs) {
-			CommonCoreQueryEvaluator.readTriples(type, in.openStream(), (TripleConsumer) rootNode);
+		this.rootNode.sendMessageDebug(new StartOfEvaluationMessage(), debugstep);
+		for(final URILiteral in: this.defaultGraphs) {
+			CommonCoreQueryEvaluator.readTriples(this.type, in.openStream(), (TripleConsumer) this.rootNode);
 		}
-		rootNode.sendMessageDebug(new EndOfEvaluationMessage(), debugstep);
+		this.rootNode.sendMessageDebug(new EndOfEvaluationMessage(), debugstep);
 		return ((new Date()).getTime() - a.getTime());
 	}
 
@@ -803,17 +823,17 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	}
 
 	protected void precompileExternalOntology(final PatternMatcher zpm) {
-		if (externalOntology != null) {
+		if (this.externalOntology != null) {
 			boolean change = true;
 			while (change) {
 				change = false;
 				for (final TriplePattern tp : zpm.getTriplePatterns()) {
 
 					final ISONTOLOGYTRIPLEPATTERN isOntologyTriplePattern = isOntologyTriplePattern(
-							tp.getItems(), rdfs);
+							tp.getItems(), this.rdfs);
 					if (isOntologyTriplePattern != ISONTOLOGYTRIPLEPATTERN.NO) {
 						// yeah, is an rdfs triple pattern!
-						final Iterator<Triple> it = externalOntology
+						final Iterator<Triple> it = this.externalOntology
 								.evaluateTriplePattern(tp);
 
 						// first generate the Add(...)-operators for
@@ -905,38 +925,46 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
 	public static ISONTOLOGYTRIPLEPATTERN isOntologyTriplePattern(
 			final Item[] items, final RDFS rdfs) {
-		if (rdfs == RDFS.NONE)
+		if (rdfs == RDFS.NONE) {
 			return ISONTOLOGYTRIPLEPATTERN.NO;
-		if (items[1].isVariable())
+		}
+		if (items[1].isVariable()) {
 			// TODO: make again to GENERALTRIPLEPATTERN and inprve logical
 			// optimization!
 			// return ISONTOLOGYTRIPLEPATTERN.GENERALTRIPLEPATTERN;
 			return ISONTOLOGYTRIPLEPATTERN.NO;
+		}
 		final String predicate = items[1].toString();
 		if (predicate
 				.compareTo("<http://www.w3.org/2000/01/rdf-schema#subPropertyOf>") == 0
 				|| predicate
-						.compareTo("<http://www.w3.org/2000/01/rdf-schema#subClassOf>") == 0)
+						.compareTo("<http://www.w3.org/2000/01/rdf-schema#subClassOf>") == 0) {
 			return ISONTOLOGYTRIPLEPATTERN.YES;
+		}
 		if (rdfs == RDFS.RUDIMENTARYRDFS
-				|| rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS)
+				|| rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS) {
 			return ISONTOLOGYTRIPLEPATTERN.NO;
+		}
 		if (predicate
 				.compareTo("<http://www.w3.org/2000/01/rdf-schema#domain>") == 0
 				|| predicate
-						.compareTo("<http://www.w3.org/2000/01/rdf-schema#range>") == 0)
+						.compareTo("<http://www.w3.org/2000/01/rdf-schema#range>") == 0) {
 			return ISONTOLOGYTRIPLEPATTERN.YES;
+		}
 		if (rdfs == RDFS.ALTERNATIVERDFS
-				|| rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS)
+				|| rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
 			return ISONTOLOGYTRIPLEPATTERN.NO;
+		}
 		if (predicate
-				.compareTo("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") != 0)
+				.compareTo("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") != 0) {
 			return ISONTOLOGYTRIPLEPATTERN.NO;
-		if (items[2].isVariable())
+		}
+		if (items[2].isVariable()) {
 			// TODO: make again to GENERALTRIPLEPATTERN and inprve logical
 			// optimization!
 			// return ISONTOLOGYTRIPLEPATTERN.GENERALTRIPLEPATTERN;
 			return ISONTOLOGYTRIPLEPATTERN.NO;
+		}
 		final String object = items[2].toString();
 		if (object
 				.compareTo("<http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>") == 0
@@ -945,19 +973,20 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				|| object
 						.compareTo("<http://www.w3.org/2000/01/rdf-schema#ContainerMembershipProperty>") == 0
 				|| object
-						.compareTo("<http://www.w3.org/2000/01/rdf-schema#Datatype>") == 0)
+						.compareTo("<http://www.w3.org/2000/01/rdf-schema#Datatype>") == 0) {
 			return ISONTOLOGYTRIPLEPATTERN.YES;
+		}
 		return ISONTOLOGYTRIPLEPATTERN.NO;
 	}
-	
+
 	@Override
-	public void setRootNode(BasicOperator rootNode) {
+	public void setRootNode(final BasicOperator rootNode) {
 		super.setRootNode(rootNode);
 		this.determinePatternMatchers();
 	}
 
 	@Override
-	public IndexScanCreatorInterface createIndexScanCreator() {		
+	public IndexScanCreatorInterface createIndexScanCreator() {
 		return new IndexScanCreator_Stream();
 	}
 }
