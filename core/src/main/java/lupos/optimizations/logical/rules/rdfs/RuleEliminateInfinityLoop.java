@@ -34,7 +34,7 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;

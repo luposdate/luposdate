@@ -63,7 +63,7 @@ import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.memoryindex.MemoryIndexScan;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.TriplePattern.BooleanAndUnknown;
 import lupos.misc.Tuple;

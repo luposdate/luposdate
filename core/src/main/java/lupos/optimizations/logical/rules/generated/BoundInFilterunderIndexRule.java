@@ -36,7 +36,7 @@ import lupos.engine.operators.OperatorIDTuple;
 
 public class BoundInFilterunderIndexRule extends Rule {
     private boolean deleteAll;
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator[] o = null;
     private lupos.engine.operators.BasicOperator f2_begin = null;
     private lupos.engine.operators.BasicOperator f2_end = null;
@@ -44,11 +44,11 @@ public class BoundInFilterunderIndexRule extends Rule {
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+        if(_op.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
             return false;
         }
 
-        this.f = (lupos.engine.operators.singleinput.Filter) _op;
+        this.f = (lupos.engine.operators.singleinput.filter.Filter) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -67,7 +67,7 @@ public class BoundInFilterunderIndexRule extends Rule {
             boolean _continueFlag_1_0 = false;
 
             while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndexScan))) {
-                if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+                if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                     _continueFlag_1_0 = true;
                     break;
                 }
@@ -140,7 +140,7 @@ public class BoundInFilterunderIndexRule extends Rule {
 
 
     public BoundInFilterunderIndexRule() {
-        this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
+        this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "Bound In Filter under Index";
     }
 

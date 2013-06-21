@@ -36,7 +36,7 @@ import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 
 public class XMLFormatter extends HeadBodyFormatter {
 	

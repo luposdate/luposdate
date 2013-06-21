@@ -36,7 +36,7 @@ import lupos.engine.operators.OperatorIDTuple;
 
 public class BoundVariableinUnionRule extends Rule {
 
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator o2 = null;
     private lupos.engine.operators.multiinput.Union u = null;
     private lupos.engine.operators.BasicOperator o3 = null;
@@ -57,11 +57,11 @@ public class BoundVariableinUnionRule extends Rule {
 
 
         for(BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
-            if(_precOp_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+            if(_precOp_1_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                 continue;
             }
 
-            this.f = (lupos.engine.operators.singleinput.Filter) _precOp_1_0;
+            this.f = (lupos.engine.operators.singleinput.filter.Filter) _precOp_1_0;
 
             List<BasicOperator> _precedingOperators_2_0 = _precOp_1_0.getPrecedingOperators();
 
@@ -80,7 +80,7 @@ public class BoundVariableinUnionRule extends Rule {
                 boolean _continueFlag_2_0 = false;
 
                 while(_searchIndex_2_0 != null && (_searchIndex_2_0.getClass() != lupos.engine.operators.BasicOperator.class)) {
-                    if(_searchIndex_2_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+                    if(_searchIndex_2_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                         _continueFlag_2_0 = true;
                         break;
                     }
@@ -193,7 +193,7 @@ public class BoundVariableinUnionRule extends Rule {
             	return false;
             }
             
-            lupos.engine.operators.singleinput.Filter filterOutestFilter = this.f;
+            lupos.engine.operators.singleinput.filter.Filter filterOutestFilter = this.f;
             java.util.Collection<lupos.datastructures.items.Variable> variablesInnerUnion = this.o2.getIntersectionVariables();
             java.util.Collection<lupos.datastructures.items.Variable> variablesOuterUnion = this.o3.getUnionVariables();
             boolean checkFurther = true;
@@ -213,7 +213,7 @@ public class BoundVariableinUnionRule extends Rule {
                     checkFurther = false;
                 }
                 else {
-                    filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;
+                    filterOutestFilter = (lupos.engine.operators.singleinput.filter.Filter) nextOp;
                 }
             }
             return false;
@@ -278,7 +278,7 @@ public class BoundVariableinUnionRule extends Rule {
             if(!precOp.equals(this.f)) {
                 BasicOperator tmpOp = precOp;
         
-                while(tmpOp instanceof lupos.engine.operators.singleinput.Filter) {
+                while(tmpOp instanceof lupos.engine.operators.singleinput.filter.Filter) {
                     tmpOp = tmpOp.getPrecedingOperators().get(0);
                 }
         

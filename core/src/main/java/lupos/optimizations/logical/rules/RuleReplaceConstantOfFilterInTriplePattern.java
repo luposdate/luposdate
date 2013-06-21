@@ -39,8 +39,8 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.singleinput.AddBinding;
-import lupos.engine.operators.singleinput.Filter;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.Filter;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 

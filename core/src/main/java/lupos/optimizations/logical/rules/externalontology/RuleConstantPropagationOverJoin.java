@@ -34,7 +34,7 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.AddBinding;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
 import lupos.sparql1_1.ParseException;

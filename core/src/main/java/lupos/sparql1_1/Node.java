@@ -31,7 +31,7 @@ import lupos.datastructures.items.Variable;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
 import lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserPathVisitorStringGenerator;
 import lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;

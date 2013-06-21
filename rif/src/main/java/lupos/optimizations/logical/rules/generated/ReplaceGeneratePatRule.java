@@ -79,7 +79,7 @@ public class ReplaceGeneratePatRule extends Rule {
         final lupos.datastructures.items.Item[] patItems = this.t.getItems();
         		final lupos.datastructures.items.Item[] generateItems = this.g.getValueOrVariable();
         
-        		lupos.engine.operators.singleinput.Filter filter = null;
+        		lupos.engine.operators.singleinput.filter.Filter filter = null;
         		final lupos.engine.operators.singleinput.ReplaceVar replaceVar = new lupos.engine.operators.singleinput.ReplaceVar();
         		replaceVar.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>());
         		replaceVar.setUnionVariables(replaceVar.getIntersectionVariables());
@@ -131,7 +131,7 @@ public class ReplaceGeneratePatRule extends Rule {
         			try {
         				final lupos.sparql1_1.ASTFilterConstraint ASTfilter = (lupos.sparql1_1.ASTFilterConstraint) lupos.sparql1_1.SPARQL1_1Parser
         						.parseFilter(filterConstraint);
-        				filter = new lupos.engine.operators.singleinput.Filter(ASTfilter);
+        				filter = new lupos.engine.operators.singleinput.filter.Filter(ASTfilter);
         			} catch (final Exception e) {
         				System.err
         						.println("This should never happen in RuleReplaceGenPat!");

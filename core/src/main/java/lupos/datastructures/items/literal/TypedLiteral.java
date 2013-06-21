@@ -32,7 +32,7 @@ import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapURILiteral;
 import lupos.datastructures.items.literal.string.StringURILiteral;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 

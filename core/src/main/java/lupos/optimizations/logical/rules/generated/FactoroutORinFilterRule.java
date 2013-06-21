@@ -36,7 +36,7 @@ import lupos.datastructures.items.Variable;
 
 public class FactoroutORinFilterRule extends Rule {
     int operandID;
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator op = null;
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.BasicOperator j_begin = null;
@@ -44,11 +44,11 @@ public class FactoroutORinFilterRule extends Rule {
     private lupos.engine.operators.index.BasicIndexScan i = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+        if(_op.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
             return false;
         }
 
-        this.f = (lupos.engine.operators.singleinput.Filter) _op;
+        this.f = (lupos.engine.operators.singleinput.filter.Filter) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -67,7 +67,7 @@ public class FactoroutORinFilterRule extends Rule {
             boolean _continueFlag_1_0 = false;
 
             while(_searchIndex_1_0 != null && (!(_searchIndex_1_0 instanceof lupos.engine.operators.index.BasicIndexScan))) {
-                if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+                if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                     _continueFlag_1_0 = true;
                     break;
                 }
@@ -141,7 +141,7 @@ public class FactoroutORinFilterRule extends Rule {
 
 
     public FactoroutORinFilterRule() {
-        this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
+        this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "Factor out OR in Filter";
     }
 
@@ -175,8 +175,8 @@ public class FactoroutORinFilterRule extends Rule {
         // add new operators...
         lupos.engine.operators.multiinput.Union u = null;
         u = new lupos.engine.operators.multiinput.Union();
-        lupos.engine.operators.singleinput.Filter f2 = null;
-        f2 = new lupos.engine.operators.singleinput.Filter();
+        lupos.engine.operators.singleinput.filter.Filter f2 = null;
+        f2 = new lupos.engine.operators.singleinput.filter.Filter();
 
 
         // add new connections...

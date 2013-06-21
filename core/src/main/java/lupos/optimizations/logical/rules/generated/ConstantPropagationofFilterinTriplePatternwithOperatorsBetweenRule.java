@@ -38,18 +38,18 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
     private lupos.datastructures.items.Variable var = null;
     private lupos.datastructures.items.literal.Literal constant = null;
     private int operandIDOfFilter;
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.tripleoperator.TriplePattern tp = null;
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.BasicOperator j_begin = null;
     private lupos.engine.operators.BasicOperator j_end = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+        if(_op.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
             return false;
         }
 
-        this.f = (lupos.engine.operators.singleinput.Filter) _op;
+        this.f = (lupos.engine.operators.singleinput.filter.Filter) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -131,7 +131,7 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
 
     public ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule() {
-        this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
+        this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "Constant Propagation of Filter in Triple Pattern with Operators Between";
     }
 
@@ -186,7 +186,7 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
                                 	return false;
                             }
                             else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {
-                                if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) constant).getType())) {
+                                if(lupos.engine.operators.singleinput.filter.expressionevaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) constant).getType())) {
                                     return false;
                                 }
                                 else {

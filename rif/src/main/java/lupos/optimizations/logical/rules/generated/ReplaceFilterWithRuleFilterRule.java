@@ -36,17 +36,17 @@ import lupos.engine.operators.OperatorIDTuple;
 
 public class ReplaceFilterWithRuleFilterRule extends Rule {
 
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator[] o2 = null;
     private lupos.engine.operators.BasicOperator[] o1 = null;
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+        if(_op.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
             return false;
         }
 
-        this.f = (lupos.engine.operators.singleinput.Filter) _op;
+        this.f = (lupos.engine.operators.singleinput.filter.Filter) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -101,7 +101,7 @@ public class ReplaceFilterWithRuleFilterRule extends Rule {
 
 
     public ReplaceFilterWithRuleFilterRule() {
-        this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
+        this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "Replace Filter With RuleFilter";
     }
 

@@ -35,7 +35,7 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.engine.operators.singleinput.TypeErrorException;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.IExpression;

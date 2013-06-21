@@ -35,7 +35,7 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.join.Join;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;

@@ -96,7 +96,7 @@ public class HashSetNonBlockingDistinctWithIndexAccessAndFilterRule extends Rule
             if(this.d instanceof HashSetNonBlockingDistinctWithIndexAccess){
             	return false;
             }
-            if(!(this.f instanceof lupos.engine.operators.singleinput.Filter || this.f instanceof lupos.rif.operator.RuleFilter)){
+            if(!(this.f instanceof lupos.engine.operators.singleinput.filter.Filter || this.f instanceof lupos.rif.operator.RuleFilter)){
             	return false;
             }
             for(BasicOperator prec: this.d.getPrecedingOperators()){

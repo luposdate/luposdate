@@ -38,7 +38,7 @@ public class VariablePropagationRule extends Rule {
     private lupos.datastructures.items.Variable var = null;
     private lupos.datastructures.items.Variable otherVar = null;
     private int operandIDOfFilter;
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.BasicOperator j_begin = null;
     private lupos.engine.operators.BasicOperator j_end = null;
@@ -67,8 +67,8 @@ public class VariablePropagationRule extends Rule {
             BasicOperator _searchIndex_1_0 = _sucOpIDTup_1_0.getOperator();
             boolean _continueFlag_1_0 = false;
 
-            while(_searchIndex_1_0 != null && (_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class)) {
-                if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+            while(_searchIndex_1_0 != null && (_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class)) {
+                if(_searchIndex_1_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                     _continueFlag_1_0 = true;
                     break;
                 }
@@ -100,11 +100,11 @@ public class VariablePropagationRule extends Rule {
                     break;
                 }
 
-                if(_sucOpIDTup_2_0.getOperator().getClass() != lupos.engine.operators.singleinput.Filter.class) {
+                if(_sucOpIDTup_2_0.getOperator().getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                     continue;
                 }
 
-                this.f = (lupos.engine.operators.singleinput.Filter) _sucOpIDTup_2_0.getOperator();
+                this.f = (lupos.engine.operators.singleinput.filter.Filter) _sucOpIDTup_2_0.getOperator();
 
                 List<OperatorIDTuple> _succedingOperators_3_0 = _sucOpIDTup_2_0.getOperator().getSucceedingOperators();
 

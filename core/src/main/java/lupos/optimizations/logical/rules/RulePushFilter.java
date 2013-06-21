@@ -35,7 +35,7 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.multiinput.optional.Optional;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 

@@ -42,8 +42,8 @@ import lupos.engine.operators.application.Application;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Root;
-import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.singleinput.Result;
+import lupos.engine.operators.singleinput.filter.Filter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

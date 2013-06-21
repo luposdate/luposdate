@@ -30,7 +30,7 @@ import java.util.Map;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.misc.Tuple;
 
 /**

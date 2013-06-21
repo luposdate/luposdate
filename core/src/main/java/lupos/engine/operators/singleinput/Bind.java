@@ -35,7 +35,8 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.Message;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.Filter;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
 

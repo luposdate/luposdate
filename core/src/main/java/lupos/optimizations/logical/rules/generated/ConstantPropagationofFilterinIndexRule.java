@@ -37,17 +37,17 @@ import lupos.engine.operators.OperatorIDTuple;
 public class ConstantPropagationofFilterinIndexRule extends Rule {
     private lupos.datastructures.items.Variable var = null;
     private lupos.datastructures.items.literal.Literal constant = null;
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator[] o = null;
     private lupos.engine.operators.index.BasicIndexScan i = null;
     private int _dim_0 = -1;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+        if(_op.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
             return false;
         }
 
-        this.f = (lupos.engine.operators.singleinput.Filter) _op;
+        this.f = (lupos.engine.operators.singleinput.filter.Filter) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -98,7 +98,7 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
 
 
     public ConstantPropagationofFilterinIndexRule() {
-        this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
+        this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "ConstantPropagation of Filter in Index";
     }
 
@@ -143,7 +143,7 @@ public class ConstantPropagationofFilterinIndexRule extends Rule {
                                 return false;
                             }
                             else if(this.constant instanceof lupos.datastructures.items.literal.TypedLiteral) {
-                                if(lupos.engine.operators.singleinput.ExpressionEvaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) this.constant).getType())) {
+                                if(lupos.engine.operators.singleinput.filter.expressionevaluation.Helper.isNumeric(((lupos.datastructures.items.literal.TypedLiteral) this.constant).getType())) {
                                     return false;
                                 } else {
                                     return true;

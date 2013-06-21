@@ -30,7 +30,7 @@ import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
 
 public
 class ASTStringLiteral extends SimpleNode {

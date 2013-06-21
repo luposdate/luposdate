@@ -24,6 +24,7 @@
 package lupos.engine.operators.singleinput;
 
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.sparql1_1.ASTFilterConstraint;
 
 public class Having extends Filter {

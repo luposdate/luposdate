@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.engine.operators.singleinput;
+package lupos.engine.operators.singleinput.filter;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +34,8 @@ import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.BasicOperator;
@@ -44,9 +46,12 @@ import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitorImplementation;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.NotBoundException;
+import lupos.engine.operators.singleinput.SingleInputOperator;
+import lupos.engine.operators.singleinput.TypeErrorException;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
@@ -69,7 +74,7 @@ public class Filter extends SingleInputOperator {
 	private lupos.sparql1_1.Node np;
 	private Set<Variable> usedVariables = new HashSet<Variable>();
 
-	protected List<List<lupos.sparql1_1.Node>> aggregationFunctions = null;
+	public List<List<lupos.sparql1_1.Node>> aggregationFunctions = null;
 	protected QueryResult queryResult = null;
 
 	public static Class<? extends EvaluationVisitor<Map<Node, Object>, Object>> evaluationVisitorClass = EvaluationVisitorImplementation.class;
@@ -577,7 +582,7 @@ public class Filter extends SingleInputOperator {
 	}
 
 	@Override
-	protected boolean isPipelineBreaker() {
+	public boolean isPipelineBreaker() {
 		return this.aggregationFunctions != null;
 	}
 
@@ -616,6 +621,19 @@ public class Filter extends SingleInputOperator {
 		}
 		return msg;
 	}
+
+
+	public boolean materializationOfLazyLiteralsNeeded(){
+		if(LiteralFactory.getMapType() == MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP){
+			final Object result = this.np.jjtAccept(new MaterializationNeededVisitor(), null);
+			if(result != null && result instanceof Boolean){
+				return (Boolean) result;
+			}
+		}
+		return false;
+	}
+
+
 
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium) {

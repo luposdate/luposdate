@@ -36,7 +36,7 @@ import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.AddBinding;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;

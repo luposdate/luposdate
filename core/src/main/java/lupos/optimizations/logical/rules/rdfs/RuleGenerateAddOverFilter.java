@@ -32,7 +32,7 @@ import lupos.datastructures.items.Variable;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.BoundVariablesMessage;
-import lupos.engine.operators.singleinput.Filter;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.singleinput.generate.GenerateAddEnv;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;

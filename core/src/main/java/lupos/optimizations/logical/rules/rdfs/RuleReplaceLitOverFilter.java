@@ -33,8 +33,8 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.singleinput.Filter;
 import lupos.engine.operators.singleinput.ReplaceLit;
+import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
 

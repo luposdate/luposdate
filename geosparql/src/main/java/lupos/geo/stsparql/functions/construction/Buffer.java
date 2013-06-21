@@ -25,9 +25,9 @@ package lupos.geo.stsparql.functions.construction;
 
 import com.vividsolutions.jts.geom.Geometry;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitorImplementation;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.ExternalFunction;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.ExternalFunction;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.geo.GeoHelper;
 import lupos.geo.serializer.StSPARQLSerializer;

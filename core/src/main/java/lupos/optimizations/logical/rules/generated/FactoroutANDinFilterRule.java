@@ -36,16 +36,16 @@ import lupos.engine.operators.OperatorIDTuple;
 
 public class FactoroutANDinFilterRule extends Rule {
     private int operandIDOfFilter;
-    private lupos.engine.operators.singleinput.Filter b = null;
+    private lupos.engine.operators.singleinput.filter.Filter b = null;
     private lupos.engine.operators.BasicOperator c = null;
     private lupos.engine.operators.BasicOperator a = null;
 
     private boolean _checkPrivate0(BasicOperator _op) {
-        if(_op.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+        if(_op.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
             return false;
         }
 
-        this.b = (lupos.engine.operators.singleinput.Filter) _op;
+        this.b = (lupos.engine.operators.singleinput.filter.Filter) _op;
 
         List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
@@ -79,7 +79,7 @@ public class FactoroutANDinFilterRule extends Rule {
 
 
     public FactoroutANDinFilterRule() {
-        this.startOpClass = lupos.engine.operators.singleinput.Filter.class;
+        this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "Factor out AND in Filter";
     }
 
@@ -107,8 +107,8 @@ public class FactoroutANDinFilterRule extends Rule {
         this.c.removePrecedingOperator(this.b);
 
         // add new operators...
-        lupos.engine.operators.singleinput.Filter b2 = null;
-        b2 = new lupos.engine.operators.singleinput.Filter();
+        lupos.engine.operators.singleinput.filter.Filter b2 = null;
+        b2 = new lupos.engine.operators.singleinput.filter.Filter();
 
 
         // add new connections...

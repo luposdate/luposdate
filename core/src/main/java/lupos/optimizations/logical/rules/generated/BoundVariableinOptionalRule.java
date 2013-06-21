@@ -36,7 +36,7 @@ import lupos.engine.operators.OperatorIDTuple;
 
 public class BoundVariableinOptionalRule extends Rule {
 
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.BasicOperator o2 = null;
     private lupos.engine.operators.BasicOperator o1 = null;
     private lupos.engine.operators.BasicOperator jump_filter_end = null;
@@ -58,11 +58,11 @@ public class BoundVariableinOptionalRule extends Rule {
                 continue;
             }
 
-            if(_precOp_1_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+            if(_precOp_1_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                 continue;
             }
 
-            this.f = (lupos.engine.operators.singleinput.Filter) _precOp_1_0;
+            this.f = (lupos.engine.operators.singleinput.filter.Filter) _precOp_1_0;
 
             List<BasicOperator> _precedingOperators_2_0 = _precOp_1_0.getPrecedingOperators();
 
@@ -80,8 +80,8 @@ public class BoundVariableinOptionalRule extends Rule {
                 BasicOperator _searchIndex_2_0 = _precOp_2_0;
                 boolean _continueFlag_2_0 = false;
 
-                while(_searchIndex_2_0 != null && (_searchIndex_2_0.getClass() == lupos.engine.operators.singleinput.Filter.class)) {
-                    if(_searchIndex_2_0.getClass() != lupos.engine.operators.singleinput.Filter.class) {
+                while(_searchIndex_2_0 != null && (_searchIndex_2_0.getClass() == lupos.engine.operators.singleinput.filter.Filter.class)) {
+                    if(_searchIndex_2_0.getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                         _continueFlag_2_0 = true;
                         break;
                     }
@@ -160,7 +160,7 @@ public class BoundVariableinOptionalRule extends Rule {
                 return false;
             }
             
-            lupos.engine.operators.singleinput.Filter filterOutestFilter = this.f;
+            lupos.engine.operators.singleinput.filter.Filter filterOutestFilter = this.f;
             java.util.Collection<lupos.datastructures.items.Variable> variablesInnerUnion = this.o1.getIntersectionVariables();
             java.util.Collection<lupos.datastructures.items.Variable> variablesOuterUnion = this.o2.getUnionVariables();
             boolean checkFurther = true;
@@ -180,7 +180,7 @@ public class BoundVariableinOptionalRule extends Rule {
                     checkFurther = false;
                 }
                 else {
-                    filterOutestFilter = (lupos.engine.operators.singleinput.Filter) nextOp;
+                    filterOutestFilter = (lupos.engine.operators.singleinput.filter.Filter) nextOp;
                 }
             }
             return false;

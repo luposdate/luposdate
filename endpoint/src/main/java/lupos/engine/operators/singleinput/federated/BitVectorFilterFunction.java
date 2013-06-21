@@ -27,9 +27,9 @@ import java.math.BigInteger;
 
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.singleinput.TypeErrorException;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitorImplementation;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.ExternalFunction;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.Helper;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.ExternalFunction;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.misc.BitVector;
 
 public class BitVectorFilterFunction implements ExternalFunction {

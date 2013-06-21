@@ -28,7 +28,7 @@ package lupos.sparql1_1;
 import lupos.datastructures.bindings.Bindings;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
 
 public
 class ASTContainsFuncNode extends SimpleNode {

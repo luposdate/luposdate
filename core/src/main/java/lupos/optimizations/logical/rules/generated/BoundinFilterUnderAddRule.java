@@ -36,7 +36,7 @@ import lupos.engine.operators.OperatorIDTuple;
 
 public class BoundinFilterUnderAddRule extends Rule {
     private boolean deleteAll = false;
-    private lupos.engine.operators.singleinput.Filter f = null;
+    private lupos.engine.operators.singleinput.filter.Filter f = null;
     private lupos.engine.operators.singleinput.AddBinding a = null;
     private lupos.engine.operators.BasicOperator[] o = null;
     private int _dim_0 = -1;
@@ -59,11 +59,11 @@ public class BoundinFilterUnderAddRule extends Rule {
                 break;
             }
 
-            if(_sucOpIDTup_1_0.getOperator().getClass() != lupos.engine.operators.singleinput.Filter.class) {
+            if(_sucOpIDTup_1_0.getOperator().getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {
                 continue;
             }
 
-            this.f = (lupos.engine.operators.singleinput.Filter) _sucOpIDTup_1_0.getOperator();
+            this.f = (lupos.engine.operators.singleinput.filter.Filter) _sucOpIDTup_1_0.getOperator();
 
             List<OperatorIDTuple> _succedingOperators_2_0 = _sucOpIDTup_1_0.getOperator().getSucceedingOperators();
 

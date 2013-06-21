@@ -30,7 +30,7 @@ import java.util.Iterator;
 import lupos.datastructures.bindings.Bindings;
 import lupos.engine.operators.singleinput.NotBoundException;
 import lupos.engine.operators.singleinput.TypeErrorException;
-import lupos.engine.operators.singleinput.ExpressionEvaluation.EvaluationVisitor;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
 
 public
 class ASTAggregation extends SimpleNode {
