@@ -47,14 +47,14 @@ public abstract class Parser {
 	private BufferedReader reader = null;
 
 	public int getTripleNumber() {
-		return counter - 1;
+		return this.counter - 1;
 	}
 
 	public void parse(final InputStream in, final TripleConsumer tc,
 			final String encoding) throws UnsupportedEncodingException {
 		try {
-			reader = new BufferedReader(new InputStreamReader(in, encoding));
-			Triple t = nextTriple();
+			this.reader = new BufferedReader(new InputStreamReader(in, encoding));
+			Triple t = this.nextTriple();
 			// System.out.println(t);
 			// Triple last=t;
 			// String lastLine=line;
@@ -65,7 +65,7 @@ public abstract class Parser {
 				// lastPos=pos;
 				// System.out.println(t);
 				tc.consume(t);
-				t = nextTriple();
+				t = this.nextTriple();
 				// if (YagoParser.maxTriples > 0
 				// && counter > YagoParser.maxTriples - 1)
 				// System.out.println("Last triple:" + t);
@@ -73,15 +73,15 @@ public abstract class Parser {
 						&& (t.getSubject() == null || t.getPredicate() == null || t
 								.getSubject() == null)) {
 					System.out.println("Triple:" + t);
-					System.out.println("Line:" + line + "###############pos:"
-							+ pos);
+					System.out.println("Line:" + this.line + "###############pos:"
+							+ this.pos);
 				}
 
 				// System.out.println(t);
 			}
-			prefixe = null;
+			this.prefixe = null;
 			System.out
-					.println("Line:" + line + "###############pos:" + pos/*
+					.println("Line:" + this.line + "###############pos:" + this.pos/*
 																		 * +"\nlast triple:"
 																		 * +
 																		 * last+
@@ -94,11 +94,11 @@ public abstract class Parser {
 																		 * lastPos
 																		 */);
 		} catch (final EOFException e) {
-			prefixe = null;
+			this.prefixe = null;
 		} finally {
 			try {
-				if (reader != null) {
-					reader.close();
+				if (this.reader != null) {
+					this.reader.close();
 				}
 			} catch (final IOException ioe) {
 				ioe.printStackTrace();
@@ -110,29 +110,33 @@ public abstract class Parser {
 	private Literal predicate = null;
 
 	private Triple nextTriple() throws EOFException {
-		counter++;
-		if (counter % 1000000 == 0)
-			System.err.println("#Triples:" + counter); // in order to display,
+		this.counter++;
+		if (this.counter % 1000000 == 0)
+		 {
+			System.err.println("#Triples:" + this.counter); // in order to display,
+		}
 		// but not be logged
-		if (Parser.maxTriples > 0 && counter > Parser.maxTriples)
+		if (Parser.maxTriples > 0 && this.counter > Parser.maxTriples) {
 			return null;
+		}
 		Literal nextLiteral;
-		nextLiteral = nextLiteral();
-		if (nextLiteral == null)
+		nextLiteral = this.nextLiteral();
+		if (nextLiteral == null) {
 			return null;
-		if (predicate != null) {
-			return new Triple(subject, predicate, nextLiteral);
+		}
+		if (this.predicate != null) {
+			return new Triple(this.subject, this.predicate, nextLiteral);
 		}
 		Literal nextLiteral2;
-		nextLiteral2 = nextLiteral();
-		if (subject != null) {
-			predicate = nextLiteral;
-			return new Triple(subject, nextLiteral, nextLiteral2);
+		nextLiteral2 = this.nextLiteral();
+		if (this.subject != null) {
+			this.predicate = nextLiteral;
+			return new Triple(this.subject, nextLiteral, nextLiteral2);
 		}
-		subject = nextLiteral;
-		predicate = nextLiteral2;
+		this.subject = nextLiteral;
+		this.predicate = nextLiteral2;
 		Literal object;
-		object = nextLiteral();
+		object = this.nextLiteral();
 		return new Triple(nextLiteral, nextLiteral2, object);
 	}
 
@@ -141,57 +145,60 @@ public abstract class Parser {
 	private int linenumber = 0;
 
 	protected char nextCharacter() throws EOFException {
-		if (backFlag) {
-			backFlag = false;
-			return back;
+		if (this.backFlag) {
+			this.backFlag = false;
+			return this.back;
 		}
-		if (line == null)
+		if (this.line == null) {
 			try {
-				line = reader.readLine();
-				linenumber++;
+				this.line = this.reader.readLine();
+				this.linenumber++;
 			} catch (final IOException e) {
 				System.out.println(e);
 				e.printStackTrace();
 			}
-		pos++;
-		if (line != null && pos >= line.length())
+		}
+		this.pos++;
+		if (this.line != null && this.pos >= this.line.length()) {
 			try {
-				line = reader.readLine();
-				linenumber++;
-				pos = -1;
+				this.line = this.reader.readLine();
+				this.linenumber++;
+				this.pos = -1;
 				return '\n';
 			} catch (final IOException e) {
 				System.out.println(e);
 				e.printStackTrace();
 			}
-		if (line == null)
+		}
+		if (this.line == null) {
 			throw new EOFException();
-		return line.charAt(pos);
+		}
+		return this.line.charAt(this.pos);
 	}
 
 	protected HashMap<String, String> prefixe = new HashMap<String, String>();
 
 	private char back;
 	private boolean backFlag = false;
-	
+
 	protected abstract char handlePrefix() throws EOFException;
 
 	private Literal nextLiteral() throws EOFException {
-		char next = jumpOverBlanks();
+		char next = this.jumpOverBlanks();
 		while (next == '@') {
-			next = handlePrefix();
+			next = this.handlePrefix();
 		}
 		if (next == '.') {
-			subject = null;
-			predicate = null;
-			next = jumpOverBlanks();
+			this.subject = null;
+			this.predicate = null;
+			next = this.jumpOverBlanks();
 		}
 		if (next == ';') {
-			predicate = null;
-			next = jumpOverBlanks();
+			this.predicate = null;
+			next = this.jumpOverBlanks();
 		}
 		if (next == ',') {
-			next = jumpOverBlanks();
+			next = this.jumpOverBlanks();
 		}
 		if (next == '\"') {
 			// String!
@@ -199,18 +206,18 @@ public abstract class Parser {
 			boolean marked = false;
 			do {
 				marked = (!marked && next == '\\');
-				next = nextCharacter();
+				next = this.nextCharacter();
 				s += next;
 			} while (next != '\"' || marked);
-			next = jumpOverBlanks();
+			next = this.jumpOverBlanks();
 			if (next == '^') {
 				// typed literal!
-				next = nextCharacter();
+				next = this.nextCharacter();
 				if (next != '^') {
 					System.err.println("Typed literal not recognized!");
 					return null;
 				}
-				final Literal datatype = nextLiteral();
+				final Literal datatype = this.nextLiteral();
 				try {
 					return LiteralFactory.createTypedLiteralWithoutLazyLiteral(
 							s, (URILiteral) datatype);
@@ -223,26 +230,45 @@ public abstract class Parser {
 				String lang = "";
 				while (!Parser.isSeparator(next)) {
 					lang += next;
-					next = nextCharacter();
+					next = this.nextCharacter();
 				}
 				return LiteralFactory.createLanguageTaggedLiteralWithoutLazyLiteral(s, lang);
 			} else {
-				back = next;
-				backFlag = true;
+				this.back = next;
+				this.backFlag = true;
 				return LiteralFactory.createLiteralWithoutLazyLiteral(s);
 			}
 		}
 		if (next == '<') {
-			// URI!
-			String s = "" + next;
+			// IRI!
+			final StringBuilder s = new StringBuilder("<");
 			boolean marked = false;
 			do {
 				marked = (!marked && next == '\\');
-				next = nextCharacter();
-				s += next;
+				next = this.nextCharacter();
+				// Provide escaping for some characters the SPARQL parser will not like in IRIs!
+				// This is an automatic escaping which may confuse some users.
+				// However, it is the only way such that LazyLiterals will work properly for iris with spaces and other (forbidden) characters which occur in real-world data
+				switch(next){
+					case ' ':
+						s.append("%20");
+						break;
+					case '\n':
+						s.append("%0A");
+						break;
+					case '\r':
+						s.append("%0D");
+						break;
+					case '<':
+						s.append("%3C");
+						break;
+					default:
+						s.append(next);
+						break;
+				}
 			} while (next != '>' || marked);
 			try {
-				return LiteralFactory.createURILiteralWithoutLazyLiteral(s);
+				return LiteralFactory.createURILiteralWithoutLazyLiteral(s.toString());
 			} catch (final URISyntaxException e) {
 				System.out.println(e);
 				e.printStackTrace();
@@ -251,66 +277,67 @@ public abstract class Parser {
 		}
 		if (next == '_') {
 			String s = "" + next;
-			next = nextCharacter();
+			next = this.nextCharacter();
 			if (next == ':') {
 				while (!Parser.isSeparator(next)) {
 					s += next;
-					next = nextCharacter();
+					next = this.nextCharacter();
 				}
-				
-				checkLists(next);				
-				
-				back = next;
-				backFlag = true;
+
+				this.checkLists(next);
+
+				this.back = next;
+				this.backFlag = true;
 				return LiteralFactory
 						.createAnonymousLiteralWithoutLazyLiteral(s);
-			} else
+			} else {
 				return null;
+			}
 		}
 		// qualified uri!
 		String namespace = "";
 		String postfix = "";
 		if (next == '>') {
 			// qualified uri in the format >prefix:postfix<!
-			next = nextCharacter();
+			next = this.nextCharacter();
 			while (next != ':') {
 				namespace += next;
-				next = nextCharacter();
+				next = this.nextCharacter();
 			}
-			next = nextCharacter();
+			next = this.nextCharacter();
 			while (next != '<' && next != '\n') {
 				postfix += next;
-				next = nextCharacter();
+				next = this.nextCharacter();
 			}
 		} else {
 			// is it rdf:type???
 			if(next=='a'){
 				namespace += next;
-				next = nextCharacter();
+				next = this.nextCharacter();
 				if(Parser.isSeparator(next)){
 					// rdf:type recognized!
 					try {
 						return LiteralFactory.createURILiteralWithoutLazyLiteral("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>");
-					} catch (URISyntaxException e) {
+					} catch (final URISyntaxException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			// qualified uri in the format prefix:postfix!
 			while (next != ':') {
 				namespace += next;
-				next = nextCharacter();
+				next = this.nextCharacter();
 			}
-			next = nextCharacter();
+			next = this.nextCharacter();
 			while (!Parser.isSeparator(next)) {
 				postfix += next;
-				next = nextCharacter();
+				next = this.nextCharacter();
 			}
 		}
-		
-		checkLists(next);
+
+		this.checkLists(next);
 
 		// if (next != ' ') {
 		// back = next;
@@ -318,45 +345,45 @@ public abstract class Parser {
 		// }
 		try {
 			// System.out.println(">>"+prefixe.get(namespace)+postfix+"<<");
-			if (prefixe.get(namespace) == null) {
+			if (this.prefixe.get(namespace) == null) {
 				System.out.println("Prefix:" + namespace);
 				System.out.println("Postfix:" + postfix);
-				System.out.println("Position in line:" + pos);
-				System.out.println("Line Number:" + linenumber + " Line:" + line);
+				System.out.println("Position in line:" + this.pos);
+				System.out.println("Line Number:" + this.linenumber + " Line:" + this.line);
 			}
 			return LiteralFactory.createURILiteralWithoutLazyLiteral("<"
-					+ prefixe.get(namespace) + postfix + ">");
+					+ this.prefixe.get(namespace) + postfix + ">");
 		} catch (final URISyntaxException e) {
 			System.err.println(e);
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
-	private void checkLists(char next){
+
+	private void checkLists(final char next){
 		if (next == '.') {
-			subject = null;
-			predicate = null;
+			this.subject = null;
+			this.predicate = null;
 		}
 		if (next == ';') {
-			predicate = null;
-		}		
+			this.predicate = null;
+		}
 	}
-	
-	protected final static boolean isSeparator(char next){
+
+	protected final static boolean isSeparator(final char next){
 		return (next == ' ' || next == '.' || next == ',' || next == ';' || next == '"' || next == '<' || next == '\n' || next == '\t');
 	}
 
 	protected char jumpOverBlanks() throws EOFException {
-		char next = nextCharacter();
+		char next = this.nextCharacter();
 		while (next == ' ' || next == '\n' || next == '\t'){
-			next = nextCharacter();
+			next = this.nextCharacter();
 		}
 		if(next == '#'){ // jump over comments
 			while(next!='\n'){
-				next = nextCharacter();
+				next = this.nextCharacter();
 			}
-			return jumpOverBlanks();
+			return this.jumpOverBlanks();
 		}
 		return next;
 	}
