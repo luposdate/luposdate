@@ -1,6 +1,7 @@
 {
   "associations": {
     "After Physical Optimization": [
+      "CartesianProductAsLateAsPossible",
       "Replace UsingJoinOptional With BasicIndexOptional",
       "Replace HashMapIndexJoin with HashMapIndexJoinOnLeftOperand",
       "Push Filter"
@@ -1063,6 +1064,196 @@
               5,
               235
             ]
+          }
+        },
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "CartesianProductAsLateAsPossible": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "int id1;\r\nint id3;",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "if(this.Join1.getIntersectionVariables().size()>0 ||\r\n\t\tthis.Join1.getPrecedingOperators().size()!=2 ||\r\n   \t\tthis.Join2.getPrecedingOperators().size()!=2 ||\r\n\t\tthis.Op2.equals(this.Op3) ||\r\n\t\t!(this.Join1.getClass()==lupos.engine.operators.multiinput.join.HashJoin.class || this.Join1.getClass()==lupos.engine.operators.multiinput.join.HashMapIndexJoin.class) ||\r\n\t\t!(this.Join2.getClass()==lupos.engine.operators.multiinput.join.HashJoin.class || this.Join2.getClass()==lupos.engine.operators.multiinput.join.HashMapIndexJoin.class) ){\r\n\treturn false;\r\n}\r\nfinal HashSet<lupos.datastructures.items.Variable> vars = new HashSet<lupos.datastructures.items.Variable>(this.Op1.getUnionVariables());\r\nvars.retainAll(this.Op2.getUnionVariables());\r\nif(vars.size()==0){\r\n\treturn false;\r\n}\r\nthis.id1 = this.Op1.getSucceedingOperators().get(0).getId();\r\nthis.id3 = this.Op3.getSucceedingOperators().get(0).getId();\r\n",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "this.Op3.getSucceedingOperators().get(0).setId(this.id1);\r\nthis.Op1.getSucceedingOperators().get(0).setId(this.id3);\r\n        \r\nHashSet<lupos.datastructures.items.Variable> union1 = new HashSet<lupos.datastructures.items.Variable>(this.Op1.getUnionVariables());\r\nunion1.addAll(this.Op2.getUnionVariables());\r\nHashSet<lupos.datastructures.items.Variable> intersection1 = new HashSet<lupos.datastructures.items.Variable>(this.Op1.getUnionVariables());\r\nintersection1.retainAll(this.Op2.getUnionVariables());\r\n       \r\nthis.Join1.setUnionVariables(union1);\r\nthis.Join1.setIntersectionVariables(intersection1);\r\n       \r\nHashSet<lupos.datastructures.items.Variable> union2 = new HashSet<lupos.datastructures.items.Variable>(this.Op3.getUnionVariables());\r\nunion1.addAll(union1);\r\nHashSet<lupos.datastructures.items.Variable> intersection2 = new HashSet<lupos.datastructures.items.Variable>(this.Op3.getUnionVariables());\r\nintersection1.retainAll(union1);\r\n   \r\nthis.Join2.setUnionVariables(union2);\r\nthis.Join2.setIntersectionVariables(intersection2);",
+          "code": "",
+          "use generated code": true
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "Join1": {
+            "also subclasses": true,
+            "class type": "Join",
+            "op type": "RuleOperator",
+            "position": [
+              844,
+              342
+            ]
+          },
+          "Join2": {
+            "also subclasses": true,
+            "class type": "Join",
+            "op type": "RuleOperator",
+            "position": [
+              457,
+              702
+            ]
+          },
+          "Op1": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              2,
+              229
+            ]
+          },
+          "Op2": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              446,
+              3
+            ]
+          },
+          "Op3": {
+            "also subclasses": true,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              1167,
+              6
+            ]
+          },
+          "connections": {
+            "Join1": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join2"
+            }],
+            "Op1": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join2"
+            }],
+            "Op2": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join1"
+            }],
+            "Op3": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join1"
+            }]
+          }
+        },
+        "right side": {
+          "Join1": {
+            "also subclasses": false,
+            "class type": "Join",
+            "op type": "RuleOperator",
+            "position": [
+              814,
+              252
+            ]
+          },
+          "Join2": {
+            "also subclasses": false,
+            "class type": "Join",
+            "op type": "RuleOperator",
+            "position": [
+              528,
+              557
+            ]
+          },
+          "Op1": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              932,
+              6
+            ]
+          },
+          "Op2": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              246,
+              8
+            ]
+          },
+          "Op3": {
+            "also subclasses": false,
+            "class type": "Operator",
+            "op type": "RuleOperator",
+            "position": [
+              20,
+              245
+            ]
+          },
+          "connections": {
+            "Join1": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join2"
+            }],
+            "Op1": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join1"
+            }],
+            "Op2": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join1"
+            }],
+            "Op3": [{
+              "active": false,
+              "id": -1,
+              "id label": "",
+              "mode": "ONLY_SUCCEEDING",
+              "to": "Join2"
+            }]
           }
         },
         "top toolbar": {
