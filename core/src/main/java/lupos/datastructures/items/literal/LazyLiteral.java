@@ -323,8 +323,8 @@ public class LazyLiteral extends Literal {
 			if (n.jjtGetNumChildren() != 2) {
 				System.err.println(n + " is expected to have 2 children!");
 			} else {
-				final String content = getLiteral(n.jjtGetChild(0)).toString();
-				final String type = getLiteral(n.jjtGetChild(1)).toString();
+				final String content = getLiteral(n.jjtGetChild(0), false).toString();
+				final String type = getLiteral(n.jjtGetChild(1), false).toString();
 
 				try {
 					literal = (allowLazyLiteral) ? LiteralFactory
@@ -340,7 +340,7 @@ public class LazyLiteral extends Literal {
 				}
 			}
 		} else if (n instanceof ASTLangTag) {
-			final String content = getLiteral(n.jjtGetChild(0)).toString();
+			final String content = getLiteral(n.jjtGetChild(0), false).toString();
 			final String lang = ((ASTLangTag) n).getLangTag();
 			literal = (allowLazyLiteral) ? LiteralFactory
 					.createLanguageTaggedLiteral(content, lang)
@@ -371,7 +371,7 @@ public class LazyLiteral extends Literal {
 						.createLiteralWithoutLazyLiteral("<" + name + ">");
 			}
 		} else if(n instanceof ASTObjectList){
-			literal = getLiteral(n.jjtGetChild(0));
+			literal = getLiteral(n.jjtGetChild(0), allowLazyLiteral);
 		} else {
 			System.err.println("Unexpected type! "
 					+ n.getClass().getSimpleName());

@@ -41,40 +41,40 @@ import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
 public
 class ASTQuotedURIRef extends SimpleNode {
 	private String qRef;
-	private Literal literal;
-  public ASTQuotedURIRef(int id) {
+	private Literal literal = null;
+  public ASTQuotedURIRef(final int id) {
     super(id);
   }
 
-  public ASTQuotedURIRef(SPARQL1_1Parser p, int id) {
+  public ASTQuotedURIRef(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
 
   /** Accept the visitor. **/
   @Override
-  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+  public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
     @Override
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
 
   @Override
-  public String accept(SPARQL1_1ParserPathVisitorStringGenerator visitor, String subject, String object){
+  public String accept(final SPARQL1_1ParserPathVisitorStringGenerator visitor, final String subject, final String object){
 	    return visitor.visit(this, subject, object);
   }
-  
+
   @Override
-  public BasicOperator accept(SPARQL1_1OperatorgraphGeneratorVisitor visitor, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode) {
+  public BasicOperator accept(final SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection, final Item graphConstraint, final Variable subject, final Variable object, final Node subjectNode, final Node objectNode) {
 	    return visitor.visit(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
   }
 
   @Override
 @SuppressWarnings({ "rawtypes", "unchecked" })
-  public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+  public Object accept(final EvaluationVisitor visitor, final Bindings b, final Object data) throws NotBoundException, TypeErrorException {
 	  return visitor.evaluate(this, b, data);
   }
 
@@ -82,12 +82,14 @@ class ASTQuotedURIRef extends SimpleNode {
 	  return this.qRef;
   }
 
-  public void setQRef(String qRef) {
+  public void setQRef(final String qRef) {
 	  this.qRef = qRef;
-	  this.literal = LazyLiteral.getLiteral(this, true);
   }
-  
-  public Literal getLiteral(){
+
+  public Literal getLiteral(final boolean allowLazyLiteral){
+	  if(this.literal == null){
+		  this.literal = LazyLiteral.getLiteral(this, allowLazyLiteral);
+	  }
 	  return this.literal;
   }
 
@@ -99,7 +101,7 @@ class ASTQuotedURIRef extends SimpleNode {
   public String toString() {
 	  return this.qRef;
   }
-  
+
 	@Override
 	public void init(final SimpleNode node){
 		this.setQRef(((ASTQuotedURIRef)node).getQRef());

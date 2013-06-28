@@ -35,13 +35,13 @@ import lupos.engine.operators.singleinput.filter.expressionevaluation.Evaluation
 public class ASTFloatingPoint extends SimpleNode {
 
   private String valueFloatingPoint;
-  private Literal literal;
+  private Literal literal = null;
 
-  public ASTFloatingPoint(int id) {
+  public ASTFloatingPoint(final int id) {
     super(id);
   }
 
-  public ASTFloatingPoint(SPARQL1_1Parser p, int id) {
+  public ASTFloatingPoint(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
@@ -50,9 +50,8 @@ public class ASTFloatingPoint extends SimpleNode {
 	return this.valueFloatingPoint;
   }
 
-  public void setValue(String value) {
+  public void setValue(final String value) {
 	this.valueFloatingPoint = value;
-	this.literal = LazyLiteral.getLiteral(this, true);
   }
 
   public String getValueWithoutLeadingPlus(){
@@ -62,16 +61,19 @@ public class ASTFloatingPoint extends SimpleNode {
 	  }
 	  return zValue;
   }
-  
-  public Literal getLiteral(){
+
+  public Literal getLiteral(final boolean allowLazyLiteral){
+	  if(this.literal==null){
+		  this.literal = LazyLiteral.getLiteral(this, allowLazyLiteral);
+	  }
 	  return this.literal;
   }
-  
+
   @Override
   public String toString() {
 	return super.toString() + "  " + this.valueFloatingPoint;
   }
-  
+
 	@Override
 	public void init(final SimpleNode node){
 		this.setValue(((ASTFloatingPoint)node).getValue());
@@ -80,18 +82,18 @@ public class ASTFloatingPoint extends SimpleNode {
 
   /** Accept the visitor. **/
   @Override
-    public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+    public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
     @Override
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
-  
+
   @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+  public Object accept(final EvaluationVisitor visitor, final Bindings b, final Object data) throws NotBoundException, TypeErrorException {
 	    return visitor.evaluate(this, b, data);
   }
 }

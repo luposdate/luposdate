@@ -29,7 +29,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -159,7 +158,7 @@ import lupos.sparql1_1.SimpleNode;
 public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<Node, Object>, Object> {
 
 	protected static HashMap<URILiteral, ExternalFunction> externalFunctions = new HashMap<URILiteral, ExternalFunction>();
-	
+
 	/**
 	 * call this function to register an external function
 	 * @param name name of the external function
@@ -168,19 +167,19 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	public static void registerExternalFunction(final URILiteral name, final ExternalFunction externalFunction){
 		externalFunctions.put(name, externalFunction);
 	}
-	
+
 	// for each ASTExists and ASTNotExists an Root and Result is
 	// stored by the Filter
 	// Additionally we hand over the evaluator in the filter
 	// this is needed to process the actual subquery for each node
 	private Map<SimpleNode, Root> collectionForExistNodes = new HashMap<SimpleNode, Root>();
-	private Map<SimpleNode, Boolean> simpleExistNodes = new HashMap<SimpleNode, Boolean>();
+	private final Map<SimpleNode, Boolean> simpleExistNodes = new HashMap<SimpleNode, Boolean>();
 	protected Map<SimpleNode, QueryResult> queryResultsForExistNodes = new HashMap<SimpleNode, QueryResult>();
 	private CommonCoreQueryEvaluator<Node> evaluator;
 
 	@Override
 	public void setCollectionForExistNodes(
-			Map<SimpleNode, Root> collectionForExistNodes) {
+			final Map<SimpleNode, Root> collectionForExistNodes) {
 		this.collectionForExistNodes = collectionForExistNodes;
 	}
 
@@ -195,36 +194,38 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public void setEvaluator(CommonCoreQueryEvaluator<Node> evaluator) {
+	public void setEvaluator(final CommonCoreQueryEvaluator<Node> evaluator) {
 		this.evaluator = evaluator;
 	}
-	
+
 	@Override
 	public void init() {
 		EvaluationVisitorImplementation.resetNowDate();
-		this.queryResultsForExistNodes.clear();		
+		this.queryResultsForExistNodes.clear();
 	}
-	
+
 	@Override
 	public void release() {
 		// nothing to release...
 	}
-	
+
 	@Override
-	public Object evaluate(ASTOrNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTOrNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		NotBoundException _exceptionNB = null;
 		TypeErrorException _exceptionTE = null;
 		try {
-			if (Helper.booleanEffectiveValue(node.jjtGetChild(0).accept(this, b, d)))
+			if (Helper.booleanEffectiveValue(node.jjtGetChild(0).accept(this, b, d))) {
 				return true;
+			}
 		} catch (final NotBoundException nbe) {
 			_exceptionNB = nbe;
 		} catch (final TypeErrorException tee) {
 			_exceptionTE = tee;
 		}
 		try {
-			if (Helper.booleanEffectiveValue(node.jjtGetChild(1).accept(this, b, d)))
+			if (Helper.booleanEffectiveValue(node.jjtGetChild(1).accept(this, b, d))) {
 				return true;
+			}
 		} catch (final NotBoundException nbe) {
 			_exceptionNB = nbe;
 		} catch (final TypeErrorException tee) {
@@ -234,14 +235,15 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 			throw _exceptionNB;
 		} else if (_exceptionTE != null) {
 			throw _exceptionTE;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
-	public Object evaluate(ASTAndNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTAndNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		try {
-			return (Helper.booleanEffectiveValue(node.jjtGetChild(0).accept(this, b, d)) && 
+			return (Helper.booleanEffectiveValue(node.jjtGetChild(0).accept(this, b, d)) &&
 					Helper.booleanEffectiveValue(node.jjtGetChild(1).accept(this, b, d)));
 		} catch (final NotBoundException nbe) {
 			throw (nbe);
@@ -254,109 +256,111 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTEqualsNode node, Bindings b, Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTEqualsNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.equals(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTNotEqualsNode node, Bindings b,
-			Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTNotEqualsNode node, final Bindings b,
+			final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.NOTequals(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTLessThanNode node, Bindings b, Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTLessThanNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.less(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTLessThanEqualsNode node, Bindings b, Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTLessThanEqualsNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.le(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTGreaterThanNode node, Bindings b,
-			Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTGreaterThanNode node, final Bindings b,
+			final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.greater(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTGreaterThanEqualsNode node, Bindings b,
-			Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTGreaterThanEqualsNode node, final Bindings b,
+			final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.ge(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
-	
+
 	@Override
-	public Object evaluate(ASTDivisionNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTDivisionNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.divideNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTAdditionNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTAdditionNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.addNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
-	
-	protected Object resultOfChildZero(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+
+	protected Object resultOfChildZero(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(0).accept(this, b, d);
 	}
 
-	protected Object resultOfChildOne(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	protected Object resultOfChildOne(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(1).accept(this, b, d);
 	}
 
-	protected Object resultOfChildTwo(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	protected Object resultOfChildTwo(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(2).accept(this, b, d);
 	}
 
 	@Override
-	public Object evaluate(ASTRDFLiteral node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return resultOfChildZero(node, b, d);
+	public Object evaluate(final ASTRDFLiteral node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.resultOfChildZero(node, b, d);
 	}
-	
-	protected Object[] getOperand(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object[] result = new Object[2];
-		result[0] = resultOfChildZero(node, b, d);
+
+	protected Object[] getOperand(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object[] result = new Object[2];
+		result[0] = this.resultOfChildZero(node, b, d);
 		result[1] = Helper.getType(result[0]);
 		return result;
 	}
 
 	@Override
-	public Object evaluate(ASTMinusNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object[] operand = getOperand(node, b, d);
-		if (operand[1] == BigInteger.class)
+	public Object evaluate(final ASTMinusNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object[] operand = this.getOperand(node, b, d);
+		if (operand[1] == BigInteger.class) {
 			return Helper.getInteger(operand[0]).negate();
-		else if (operand[1] == Float.class)
+		} else if (operand[1] == Float.class) {
 			return -1 * Helper.getFloat(operand[0]);
-		else if (operand[1] == Double.class)
+		} else if (operand[1] == Double.class) {
 			return -1 * Helper.getDouble(operand[0]);
-		else if (operand[1] == BigDecimal.class)
+		} else if (operand[1] == BigDecimal.class) {
 			return Helper.getBigDecimal(operand[0]).negate();
+		}
 		throw new TypeErrorException();
 	}
 
 	@Override
-	public Object evaluate(ASTMultiplicationNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTMultiplicationNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.multiplyNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
 
 	@Override
-	public Object evaluate(ASTNotNode node, Bindings b, Map<Node, Object> d) throws TypeErrorException, NotBoundException {
-		return !Helper.booleanEffectiveValue(resultOfChildZero(node, b, d));
+	public Object evaluate(final ASTNotNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+		return !Helper.booleanEffectiveValue(this.resultOfChildZero(node, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTPlusNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return resultOfChildZero(node, b, d);
+	public Object evaluate(final ASTPlusNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.resultOfChildZero(node, b, d);
 	}
 
 	@Override
-	public Object evaluate(ASTRegexFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		if (o instanceof URILiteral || o instanceof AnonymousLiteral)
+	public Object evaluate(final ASTRegexFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		if (o instanceof URILiteral || o instanceof AnonymousLiteral) {
 			return false;
+		}
 		final String cmp = Helper.getString(o);
-		String pattern = Helper.getString(Helper.unlazy(resultOfChildOne(node, b, d)));
+		String pattern = Helper.getString(Helper.unlazy(this.resultOfChildOne(node, b, d)));
 		String oldPattern;
 		do {
 			oldPattern = pattern;
@@ -364,45 +368,47 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		} while (oldPattern.compareTo(pattern) != 0);
 		String flags = "";
 		if (node.jjtGetNumChildren() > 2){
-			flags = Helper.getString(Helper.unlazy(resultOfChildTwo(node, b, d)));
+			flags = Helper.getString(Helper.unlazy(this.resultOfChildTwo(node, b, d)));
 		}
 		// return match(cmp,pattern,flags); // does not support flag x!!!
 		return Helper.matchXerces(cmp, pattern, flags);
 	}
 
 	@Override
-	public Object evaluate(ASTStringLiteral node, Bindings b, Map<Node, Object> d) {
-		return node.getLiteral();
+	public Object evaluate(final ASTStringLiteral node, final Bindings b, final Map<Node, Object> d) {
+		return node.getLiteral(true);
 	}
 
 	@Override
-	public Object evaluate(ASTBooleanLiteral node, Bindings b,
-			Map<Node, Object> d) {
+	public Object evaluate(final ASTBooleanLiteral node, final Bindings b,
+			final Map<Node, Object> d) {
 		return node.getState();
 	}
 
 	@Override
-	public Object evaluate(ASTSubtractionNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTSubtractionNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.subtractNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
 	@Override
-	public Object evaluate(ASTVar node, Bindings b, Map<Node, Object> d) throws NotBoundException {
+	public Object evaluate(final ASTVar node, final Bindings b, final Map<Node, Object> d) throws NotBoundException {
 		Literal l = b.get(new Variable(node.getName()));
-		if (l == null)
+		if (l == null) {
 			l = b.get(new VariableInInferenceRule(node.getName()));
-		if (l == null)
+		}
+		if (l == null) {
 			throw new NotBoundException("Variable "
 					+ node.getName()
 					+ " is not bound!");
-		else
+		} else {
 			return l;
+		}
 	}
 
 	@Override
-	public Object evaluate(ASTBoundFuncNode node, Bindings b, Map<Node, Object> d) throws TypeErrorException {
+	public Object evaluate(final ASTBoundFuncNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException {
 		try {
-			resultOfChildZero(node, b, d);
+			this.resultOfChildZero(node, b, d);
 			return true;
 		} catch (final NotBoundException nbe) {
 			return false;
@@ -410,140 +416,150 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTLangFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+	public Object evaluate(final ASTLangFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if (o instanceof LanguageTaggedLiteral) {
 			return "\"" + ((LanguageTaggedLiteral) o).getOriginalLanguage() + "\"";
 		} else if (o instanceof TypedLiteral || o instanceof CodeMapLiteral || o instanceof StringLiteral) {
 			return "\"\"";
-		} else
+		} else {
 			throw new TypeErrorException();
+		}
 	}
 
 	@Override
-	public Object evaluate(ASTLangMatchesFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o1 = resultOfChildZero(node, b, d);
-		final Object o2 = resultOfChildOne(node, b, d);
+	public Object evaluate(final ASTLangMatchesFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o1 = this.resultOfChildZero(node, b, d);
+		final Object o2 = this.resultOfChildOne(node, b, d);
 		final String s1 = o1.toString().toUpperCase();
 		final String s2 = o2.toString().toUpperCase();
 		if (s2.compareTo("\"*\"") == 0) {
-			if (s1.compareTo("\"\"") == 0)
+			if (s1.compareTo("\"\"") == 0) {
 				return false;
-			else
+			} else {
 				return true;
+			}
 		}
 		if (s2.length() < s1.length()) {
-			if (s2.compareTo("\"\"") == 0)
+			if (s2.compareTo("\"\"") == 0) {
 				return false;
-			else
+			} else {
 				return s1.substring(1, s1.length() - 1).startsWith(
 						s2.substring(1, s2.length() - 1));
+			}
 		}
 		return (Helper.unquote(s1).compareTo(Helper.unquote(s2)) == 0);
 	}
 
 	@Override
-	public Object evaluate(ASTDataTypeFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+	public Object evaluate(final ASTDataTypeFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if (o instanceof TypedLiteral) {
 			return ((TypedLiteral) o).getTypeLiteral();
 		} else {
 			try {
-				if (o instanceof BigInteger)
+				if (o instanceof BigInteger) {
 					return LiteralFactory
 					.createURILiteral("<http://www.w3.org/2001/XMLSchema#integer>");
-				else if (o instanceof Float)
+				} else if (o instanceof Float) {
 					return LiteralFactory
 					.createURILiteral("<http://www.w3.org/2001/XMLSchema#float>");
-				else if (o instanceof Double)
+				} else if (o instanceof Double) {
 					return LiteralFactory
 					.createURILiteral("<http://www.w3.org/2001/XMLSchema#double>");
-				else if (o instanceof BigDecimal)
+				} else if (o instanceof BigDecimal) {
 					return LiteralFactory
 					.createURILiteral("<http://www.w3.org/2001/XMLSchema#decimal>");
-				else if (o instanceof String)
+				} else if (o instanceof String) {
 					return LiteralFactory
 					.createURILiteral("<http://www.w3.org/2001/XMLSchema#string>");
+				}
 			} catch (final URISyntaxException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
 		}
-		if (o instanceof CodeMapLiteral || o instanceof StringLiteral)
+		if (o instanceof CodeMapLiteral || o instanceof StringLiteral) {
 			try {
 				return LiteralFactory.createURILiteral("<http://www.w3.org/2001/XMLSchema#string>");
 			} catch (final URISyntaxException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
+		}
 			throw new TypeErrorException();
 	}
 
 	@Override
-	public Object evaluate(ASTSameTermFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final String a = Helper.getOriginalValueString(resultOfChildZero(node, b, d));
-		final String bs = Helper.getOriginalValueString(resultOfChildOne(node, b, d));
+	public Object evaluate(final ASTSameTermFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final String a = Helper.getOriginalValueString(this.resultOfChildZero(node, b, d));
+		final String bs = Helper.getOriginalValueString(this.resultOfChildOne(node, b, d));
 		return a.compareTo(bs) == 0;
 	}
-	
-	public Object createURI_IRI(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+
+	public Object createURI_IRI(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if(o instanceof URILiteral){
 			return o;
 		}
 		if(o instanceof TypedLiteral){
-			TypedLiteral tl = (TypedLiteral) o;
-			if(tl.getType().compareTo("<http://www.w3.org/2001/XMLSchema#string>")==0)
+			final TypedLiteral tl = (TypedLiteral) o;
+			if(tl.getType().compareTo("<http://www.w3.org/2001/XMLSchema#string>")==0) {
 				o = tl.getContent();
-			else throw new TypeErrorException();
+			} else {
+				throw new TypeErrorException();
+			}
 		}
 		if(o instanceof String || o instanceof StringLiteral || o instanceof CodeMapLiteral){
 			try {
 				String s = Helper.trim(o.toString());
-				if(s.startsWith("'") || s.startsWith("\""))
+				if(s.startsWith("'") || s.startsWith("\"")) {
 					s=s.substring(1, s.length()-1);
+				}
 				return LiteralFactory.createURILiteral("<"+s+">");
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				throw new TypeErrorException();
 			}
 		}
 		throw new TypeErrorException();
 	}
-	
+
 	@Override
-	public Object evaluate(ASTUriFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return createURI_IRI(node, b, d);
+	public Object evaluate(final ASTUriFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.createURI_IRI(node, b, d);
 	}
 
 	@Override
-	public Object evaluate(ASTIriFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return createURI_IRI(node, b, d);
+	public Object evaluate(final ASTIriFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.createURI_IRI(node, b, d);
 	}
-	
+
 	protected static final String prefixInternalBlankNodes = "_:internal!";
 	protected int id = 0;
 	protected final HashMap<Object, Integer> mapForBlankNodeGeneration = new HashMap<Object, Integer>();
 
 	@Override
-	public Object evaluate(ASTBnodeFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTBnodeFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		Integer id_for_o;
 		if(node.jjtGetNumChildren()>0){
-			Object o = resultOfChildZero(node, b, d);
+			final Object o = this.resultOfChildZero(node, b, d);
 			id_for_o = this.mapForBlankNodeGeneration.get(o);
 			if(id_for_o == null){
 				id_for_o = this.id++;
 				this.mapForBlankNodeGeneration.put(o, id_for_o);
 			}
-		} else id_for_o = this.id++;
+		} else {
+			id_for_o = this.id++;
+		}
 		return LiteralFactory.createAnonymousLiteral(prefixInternalBlankNodes+(id_for_o));
 	}
 
 	@Override
-	public Object evaluate(ASTisLiteralFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+	public Object evaluate(final ASTisLiteralFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if (!(o instanceof AnonymousLiteral || o instanceof URILiteral)) {
 			if (o instanceof Literal){
 				return true;
@@ -551,95 +567,98 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 		return false;
 	}
-	
+
 	@Override
-	public Object evaluate(ASTFunctionCall node, Bindings b, Map<Node, Object> d) throws TypeErrorException, NotBoundException {
+	public Object evaluate(final ASTFunctionCall node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		final Literal name = LazyLiteral.getLiteral(node.jjtGetChild(0));
-		ExternalFunction externalFunction = EvaluationVisitorImplementation.externalFunctions.get(name);
+		final ExternalFunction externalFunction = EvaluationVisitorImplementation.externalFunctions.get(name);
 		if(externalFunction!=null){
-			Node child1 = node.jjtGetChild(1);
-			int number = child1.jjtGetNumChildren();
-			Object[] args = new Object[number];
+			final Node child1 = node.jjtGetChild(1);
+			final int number = child1.jjtGetNumChildren();
+			final Object[] args = new Object[number];
 			for(int i=0; i<number; i++){
 				args[i] = child1.jjtGetChild(i).accept(this, b, d);
 			}
 			return externalFunction.evaluate(args);
 		}
 		if (name.toString().startsWith("<http://www.w3.org/2001/XMLSchema#")) {
-			return Helper.cast(name.toString(), resultOfChildZero(node.jjtGetChild(1), b, d));
+			return Helper.cast(name.toString(), this.resultOfChildZero(node.jjtGetChild(1), b, d));
 		}
 		System.err.println("Filter Error: unknown function "+ name.toString());
 		return false;
 	}
 
 	@Override
-	public Object evaluate(ASTQuotedURIRef node, Bindings b, Map<Node, Object> d) {
-		return node.getLiteral();
+	public Object evaluate(final ASTQuotedURIRef node, final Bindings b, final Map<Node, Object> d) {
+		return node.getLiteral(true);
 	}
 
 	@Override
-	public Object evaluate(ASTDoubleCircumflex node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return node.getLiteral();
+	public Object evaluate(final ASTDoubleCircumflex node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return node.getLiteral(true);
 	}
 
 	@Override
-	public Object evaluate(ASTFloatingPoint node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return node.getLiteral();
+	public Object evaluate(final ASTFloatingPoint node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return node.getLiteral(true);
 	}
-	
+
 	@Override
-	public Object evaluate(ASTisBlankFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object parameter = Helper.unlazy(resultOfChildZero(node, b, d));
+	public Object evaluate(final ASTisBlankFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object parameter = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if(parameter instanceof AnonymousLiteral) {
 			return true;
+		} else {
+			return false;
 		}
-		else return false;
 	}
 
-	protected boolean isURI_IRI(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+	protected boolean isURI_IRI(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if (o instanceof URILiteral) {
 			return true;
 		}
 		final String text = o.toString();
-		if (URILiteral.isURI(text))
+		if (URILiteral.isURI(text)) {
 			return true;
-		else
-			return false;	
-	}	
-	
-	@Override
-	public Object evaluate(ASTisURIFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return isURI_IRI(node, b, d);
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public Object evaluate(ASTisIRIFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return isURI_IRI(node, b, d);
+	public Object evaluate(final ASTisURIFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.isURI_IRI(node, b, d);
 	}
 
 	@Override
-	public Object evaluate(ASTInteger node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return node.getLiteral();
+	public Object evaluate(final ASTisIRIFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.isURI_IRI(node, b, d);
 	}
 
 	@Override
-	public Object evaluate(ASTLangTag node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return node.getLiteral();
+	public Object evaluate(final ASTInteger node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return node.getLiteral(true);
 	}
 
 	@Override
-	public Object evaluate(ASTFilterConstraint node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		return resultOfChildZero(node, b, d);
+	public Object evaluate(final ASTLangTag node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return node.getLiteral(true);
+	}
+
+	@Override
+	public Object evaluate(final ASTFilterConstraint node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		return this.resultOfChildZero(node, b, d);
 	}
 
 
 	@Override
-	public Object evaluate(ASTisNumericFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTisNumericFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		// TODO check the domain!!!
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		if(o instanceof BigInteger || o instanceof Float || o instanceof Double || o instanceof BigDecimal)
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		if(o instanceof BigInteger || o instanceof Float || o instanceof Double || o instanceof BigDecimal) {
 			return true;
+		}
 		if(o instanceof TypedLiteral){
 			return Helper.isNumeric(((TypedLiteral)o).getType());
 		}
@@ -647,13 +666,13 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTAggregation node, Bindings b, Map<Node, Object> d) {
+	public Object evaluate(final ASTAggregation node, final Bindings b, final Map<Node, Object> d) {
 		// the result of the aggregation function has already been previously computed...
 		return d.get(node);
 	}
 
 	@Override
-	public Object applyAggregationCOUNT(Iterator<Object> values) {
+	public Object applyAggregationCOUNT(final Iterator<Object> values) {
 		long l=0;
 		while(values.hasNext()){
 			values.next();
@@ -663,13 +682,13 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object applyAggregationSUM(Iterator<Object> values) {
+	public Object applyAggregationSUM(final Iterator<Object> values) {
 		Object result=BigInteger.ZERO;
 		while(values.hasNext()){
-			Object next = values.next();
+			final Object next = values.next();
 			try {
 				result = Helper.addNumericValues(result, next);
-			} catch (TypeErrorException e) {
+			} catch (final TypeErrorException e) {
 				// ignore...
 			}
 		}
@@ -677,14 +696,15 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object applyAggregationMIN(Iterator<Object> values) {
+	public Object applyAggregationMIN(final Iterator<Object> values) {
 		Object result = null;
 		while(values.hasNext()){
-			Object next = values.next();
+			final Object next = values.next();
 			try {
-				if(result == null || Helper.less(next, result))
+				if(result == null || Helper.less(next, result)) {
 					result = next;
-			} catch (TypeErrorException e) {
+				}
+			} catch (final TypeErrorException e) {
 				// ignore...
 			}
 		}
@@ -692,32 +712,33 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object applyAggregationMAX(Iterator<Object> values) {
+	public Object applyAggregationMAX(final Iterator<Object> values) {
 		Object result = null;
 		while(values.hasNext()){
-			Object next = values.next();
+			final Object next = values.next();
 			try {
-				if(result == null || Helper.greater(next, result))
+				if(result == null || Helper.greater(next, result)) {
 					result = next;
-			} catch (TypeErrorException e) {
+				}
+			} catch (final TypeErrorException e) {
 				// ignore...
 			}
 		}
 		return result;
 	}
 
-	
+
 	@Override
-	public Object evaluate(ASTExists node, final Bindings bindings,
-			Map<Node, Object> d) {
-		return processSubquery(node, bindings, d, this.collectionForExistNodes.get(node), this.evaluator);
+	public Object evaluate(final ASTExists node, final Bindings bindings,
+			final Map<Node, Object> d) {
+		return this.processSubquery(node, bindings, d, this.collectionForExistNodes.get(node), this.evaluator);
 
 	}
 
 	@Override
-	public Object evaluate(ASTNotExists node, final Bindings bindings,
-			Map<Node, Object> d) {
-		return !processSubquery(node, bindings, d, this.collectionForExistNodes.get(node), this.evaluator);
+	public Object evaluate(final ASTNotExists node, final Bindings bindings,
+			final Map<Node, Object> d) {
+		return !this.processSubquery(node, bindings, d, this.collectionForExistNodes.get(node), this.evaluator);
 
 	}
 
@@ -725,7 +746,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * Checks whether the subquery represented by the {@link Root}
 	 * and {@link Result} has a non-empty result. Used for processing Exists and
 	 * Not Exists.
-	 * 
+	 *
 	 * @param node
 	 *            the node associated with this query, usually an instance of
 	 *            {@link ASTExists} or {@link ASTNotExists}
@@ -743,21 +764,21 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 *            the {@link Result} for the subquery
 	 */
 	public boolean processSubquery(final SimpleNode node, final Bindings bindings,
-			Map<Node, Object> d, Root collection,
-			CommonCoreQueryEvaluator<Node> evaluator_param) {
+			final Map<Node, Object> d, final Root collection,
+			final CommonCoreQueryEvaluator<Node> evaluator_param) {
 		Boolean simple = this.simpleExistNodes.get(node);
 		if(simple==null){
 			collection.visit(new SimpleOperatorGraphVisitor() {
 
 				@Override
-				public Object visit(BasicOperator basicOperator) {
+				public Object visit(final BasicOperator basicOperator) {
 					// exclude more complicated cases, which might lead to errors...
 					// maybe too strict, must be checked again to allow more...
-					if (!(basicOperator instanceof BasicIndexScan || 
-							basicOperator instanceof Join || 
+					if (!(basicOperator instanceof BasicIndexScan ||
+							basicOperator instanceof Join ||
 							basicOperator instanceof Result)){
 						EvaluationVisitorImplementation.this.simpleExistNodes.put(node, false);
-					}						
+					}
 					return null;
 				}
 			});
@@ -768,12 +789,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 			}
 		}
 		if(simple) {
-			return processSimpleSubquery(node, bindings, d, collection, evaluator_param);			
+			return processSimpleSubquery(node, bindings, d, collection, evaluator_param);
 		} else {
-			return processSubqueryAndGetWholeResult(node, bindings, d, collection, evaluator_param);
+			return this.processSubqueryAndGetWholeResult(node, bindings, d, collection, evaluator_param);
 		}
 	}
-	
+
 	/**
 	 * Checks whether the subquery represented by the {@link Root}
 	 * and {@link Result} has a non-empty result. Used for processing Exists and
@@ -781,7 +802,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * Implementation note: Contrary to {@link EvaluationVisitorImplementation}
 	 * the subquery is processed once per {@link ASTExists}/{@link ASTNotExists}
 	 * node and the evaluation is done by iterating over the result set.
-	 * 
+	 *
 	 * @param node
 	 *            the node associated with this query, usually an instance of
 	 *            {@link ASTExists} or {@link ASTNotExists}
@@ -798,24 +819,24 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param result
 	 *            the {@link Result} for the subquery
 	 */
-	public boolean processSubqueryAndGetWholeResult(SimpleNode node, Bindings bindings,
-			Map<Node, Object> d, Root collection,
-			CommonCoreQueryEvaluator<Node> evaluator_param) {
+	public boolean processSubqueryAndGetWholeResult(final SimpleNode node, final Bindings bindings,
+			final Map<Node, Object> d, final Root collection,
+			final CommonCoreQueryEvaluator<Node> evaluator_param) {
 
 		if (!this.queryResultsForExistNodes.containsKey(node)) {
-			performSubQueryAndGetWholeResult(node, collection, evaluator_param);
+			this.performSubQueryAndGetWholeResult(node, collection, evaluator_param);
 		}
 
-		Iterator<Bindings> bindingsSet = this.queryResultsForExistNodes.get(node)
+		final Iterator<Bindings> bindingsSet = this.queryResultsForExistNodes.get(node)
 				.iterator();
 
 		while (bindingsSet.hasNext()) {
-			Bindings bindings2 = bindingsSet.next();
-			Set<Variable> vars = bindings.getVariableSet();
+			final Bindings bindings2 = bindingsSet.next();
+			final Set<Variable> vars = bindings.getVariableSet();
 			vars.retainAll(bindings2.getVariableSet());
 
 			boolean isEqual = true;
-			for (Variable variable : vars) {
+			for (final Variable variable : vars) {
 				if (bindings.get(variable)
 						.compareToNotNecessarilySPARQLSpecificationConform(
 								bindings2.get(variable)) != 0) {
@@ -830,41 +851,43 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 		return false;
 	}
-	
+
 	public static class GetResult implements SimpleOperatorGraphVisitor {
-		
+
 		protected Result result = null;
-		
+
 		public Result getResult() {
 			return this.result;
 		}
 
 		@Override
-		public Object visit(BasicOperator basicOperator) {
-			if(basicOperator instanceof Result)
+		public Object visit(final BasicOperator basicOperator) {
+			if(basicOperator instanceof Result) {
 				this.result = (Result) basicOperator;
+			}
 			return null;
-		}		
+		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	public static void setMaxVariables(BasicOperator root){
+	public static void setMaxVariables(final BasicOperator root){
 		// save all variables of the subquery in the bindingsarray
 		final Set<Variable> maxVariables = new TreeSet<Variable>();
 		root.visit(new SimpleOperatorGraphVisitor() {
 			@Override
 			public Object visit(final BasicOperator basicOperator) {
-				if (basicOperator.getUnionVariables() != null)
+				if (basicOperator.getUnionVariables() != null) {
 					maxVariables.addAll(basicOperator.getUnionVariables());
+				}
 				return null;
 			}
 
 		});
-		
+
 		BindingsArray.forceVariables(maxVariables);
 	}
-	
-	public static Result setupEvaluator(CommonCoreQueryEvaluator<Node> evaluator, Root collection){
+
+	public static Result setupEvaluator(final CommonCoreQueryEvaluator<Node> evaluator, final Root collection){
 		evaluator.setRootNode(collection);
 		collection.deleteParents();
 		collection.setParents();
@@ -872,14 +895,14 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		collection.sendMessage(new BoundVariablesMessage());
 
 		setMaxVariables(collection);
-		
-		GetResult getResult = new GetResult();
+
+		final GetResult getResult = new GetResult();
 		collection.visit(getResult);
-		Result result = getResult.getResult();
+		final Result result = getResult.getResult();
 
 		evaluator.setResult(result);
 		result.clearApplications();
-		
+
 		return result;
 	}
 
@@ -887,7 +910,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * Computes the {@link QueryResult} for the subquery with the given node and
 	 * stores it in a {@link HashMap} in this class, so it can be used for
 	 * further processing.
-	 * 
+	 *
 	 * @param node
 	 *            the node associated with this query, usually an instance of
 	 *            {@link ASTExists} or {@link ASTNotExists}
@@ -901,79 +924,80 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 */
 	@SuppressWarnings("deprecation")
 	protected void performSubQueryAndGetWholeResult(final SimpleNode node,
-			Root collection,
-			CommonCoreQueryEvaluator<Node> evaluator_param) {
-		BasicOperator oldRoot = evaluator_param.getRootNode();
-		Result oldResult = evaluator_param.getResultOperator();
+			final Root collection,
+			final CommonCoreQueryEvaluator<Node> evaluator_param) {
+		final BasicOperator oldRoot = evaluator_param.getRootNode();
+		final Result oldResult = evaluator_param.getResultOperator();
 
 		// the static bindingsarray is saved and restored after the subquery
-		Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
+		final Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
 
-		Result result = setupEvaluator(evaluator_param, (Root) collection.deepClone());
-		
-		CollectResult cr = new CollectResult(false);
+		final Result result = setupEvaluator(evaluator_param, (Root) collection.deepClone());
+
+		final CollectResult cr = new CollectResult(false);
 		result.addApplication(cr);
 
 		evaluator_param.logicalOptimization();
 		evaluator_param.physicalOptimization();
 		try {
 			evaluator_param.evaluateQuery();
-		} catch (Exception e1) {
+		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
-		QueryResult queryResult = cr.getResult();
-		this.queryResultsForExistNodes.put(node, transformQueryResult(queryResult));
+		final QueryResult queryResult = cr.getResult();
+		this.queryResultsForExistNodes.put(node, this.transformQueryResult(queryResult));
 		BindingsArray.forceVariables(oldVarsTmp);
 		evaluator_param.setRootNode(oldRoot);
 		evaluator_param.setResult(oldResult);
 	}
 
-	protected QueryResult transformQueryResult(QueryResult queryResult) {
-		QueryResult result = QueryResult.createInstance();
+	protected QueryResult transformQueryResult(final QueryResult queryResult) {
+		final QueryResult result = QueryResult.createInstance();
 		if (queryResult == null) {
 			return result; // empty result
 		} else {
 
-			Iterator<Bindings> it = queryResult.oneTimeIterator();
+			final Iterator<Bindings> it = queryResult.oneTimeIterator();
 			while (it.hasNext()) {
-				Bindings b = new BindingsMap();
-				Bindings bindings = it.next();
+				final Bindings b = new BindingsMap();
+				final Bindings bindings = it.next();
 				b.addAll(bindings);
 				result.add(b);
 			}
 			return result;
 		}
 	}
-	
+
 	@SuppressWarnings({ "unused", "deprecation" })
-	public static boolean processSimpleSubquery(SimpleNode node, final Bindings bindings,
-			Map<Node, Object> d, Root collection,
-			CommonCoreQueryEvaluator<Node> evaluator) {
+	public static boolean processSimpleSubquery(final SimpleNode node, final Bindings bindings,
+			final Map<Node, Object> d, final Root collection,
+			final CommonCoreQueryEvaluator<Node> evaluator) {
 
-		BasicOperator oldRoot = evaluator.getRootNode();
-		Result oldResult = evaluator.getResultOperator();
+		final BasicOperator oldRoot = evaluator.getRootNode();
+		final Result oldResult = evaluator.getResultOperator();
 		// the static bindingsarray is saved and restored after the subquery
-		Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
+		final Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
 
-		Root collectionClone = (Root) collection.deepClone();
+		final Root collectionClone = (Root) collection.deepClone();
 		collectionClone.visit(new SimpleOperatorGraphVisitor() {
 
 			@Override
-			public Object visit(BasicOperator basicOperator) {
+			public Object visit(final BasicOperator basicOperator) {
 
 				if (basicOperator instanceof BasicIndexScan) {
-					BasicIndexScan basicIndex = (BasicIndexScan) basicOperator;
-					Collection<TriplePattern> triplePatterns = basicIndex
+					final BasicIndexScan basicIndex = (BasicIndexScan) basicOperator;
+					final Collection<TriplePattern> triplePatterns = basicIndex
 							.getTriplePattern();
-					Collection<TriplePattern> newTriplePatterns = new LinkedList<TriplePattern>();
-					for (TriplePattern t : triplePatterns) {
-						Item[] itemArray = t.getItems().clone();
+					final Collection<TriplePattern> newTriplePatterns = new LinkedList<TriplePattern>();
+					for (final TriplePattern t : triplePatterns) {
+						final Item[] itemArray = t.getItems().clone();
 						for (int i = 0; i < 3; i++) {
 							if (itemArray[i].isVariable()) {
-								Literal literal = bindings
+								final Literal literal = bindings
 										.get((Variable) itemArray[i]);
-								if (literal != null)
+								if (literal != null) {
 									itemArray[i] = literal;
+								}
 							}
 						}
 						newTriplePatterns.add(new TriplePattern(itemArray));
@@ -987,17 +1011,17 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 			}
 		});
 
-		Result result = setupEvaluator(evaluator, collectionClone);
+		final Result result = setupEvaluator(evaluator, collectionClone);
 
 		result.clearApplications();
-		NonEmptyApplication application = new NonEmptyApplication();
+		final NonEmptyApplication application = new NonEmptyApplication();
 		result.addApplication(application);
-		
+
 		evaluator.logicalOptimization();
 		evaluator.physicalOptimization();
 		try {
 			evaluator.evaluateQuery();
-		} catch (Exception e1) {
+		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
 		BindingsArray.forceVariables(oldVarsTmp);
@@ -1005,17 +1029,17 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		evaluator.setResult(oldResult);
 		return !application.getResultIsEmpty();
 	}
-	
+
 	public static class NonEmptyApplication implements Application {
-		
+
 		protected boolean resultIsEmpty=true;
-		
+
 		public boolean getResultIsEmpty(){
 			return this.resultIsEmpty;
 		}
-		
+
 		@Override
-		public void call(QueryResult res) {
+		public void call(final QueryResult res) {
 			if (res.oneTimeIterator().hasNext()) {
 				this.resultIsEmpty = false;
 			}
@@ -1027,12 +1051,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 
 		@Override
-		public void deleteResult(QueryResult res) {
+		public void deleteResult(final QueryResult res) {
 			// not used...
 		}
 
 		@Override
-		public void start(Type type) {
+		public void start(final Type type) {
 			// not used...
 		}
 
@@ -1045,34 +1069,34 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	/**
 	 * Method for computing the SAMPLE-statement by returning a random value of
 	 * the given values
-	 * 
+	 *
 	 * @param Iterator
 	 *            <Object>
 	 * @return Object
 	 */
 	@Override
-	public Object applyAggregationSAMPLE(Iterator<Object> values) {
-		double r = Math.random();
-		LinkedList<Object> valueList = new LinkedList<Object>();
+	public Object applyAggregationSAMPLE(final Iterator<Object> values) {
+		final double r = Math.random();
+		final LinkedList<Object> valueList = new LinkedList<Object>();
 		while (values.hasNext()) {
 			valueList.add(values.next());
 		}
-		double randomValue = (valueList.size() - 1) * r;
+		final double randomValue = (valueList.size() - 1) * r;
 		return valueList.get((int) Math.round(randomValue));
 	}
 
 	/**
 	 * Concatenates the values of a group and inserts between the values a separator
 	 * if given
-	 * 
+	 *
 	 * @param Iterator
 	 *            <Object> values
 	 * @param String
 	 *            separator
 	 */
 	@Override
-	public Object applyAggregationGROUP_CONCAT(Iterator<Object> values,
-			String separator) {
+	public Object applyAggregationGROUP_CONCAT(final Iterator<Object> values,
+			final String separator) {
 		boolean firstTime = true;
 		String concat = "";
 		while (values.hasNext()) {
@@ -1088,42 +1112,42 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object applyAggregationAVG(Iterator<Object> values) {
+	public Object applyAggregationAVG(final Iterator<Object> values) {
 		long count = 0;
 		Object result = BigInteger.ZERO;
 		while (values.hasNext()) {
-			Object next = values.next();
+			final Object next = values.next();
 			try {
 				result = Helper.addNumericValues(result, next);
 				count++;
-			} catch (TypeErrorException e) {
+			} catch (final TypeErrorException e) {
 				return null;
 			}
 		}
 		try {
 			return Helper.divideNumericValues(result, BigInteger.valueOf(count));
-		} catch (TypeErrorException e) {
+		} catch (final TypeErrorException e) {
 			return null;
 		}
 	}
 
 	@Override
-	public Object evaluate(ASTStrdtFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object arg0 = Helper.unlazy(this.resultOfChildZero(node, b, d));
-		Object arg1 = Helper.unlazy(this.resultOfChildOne(node, b, d));
+	public Object evaluate(final ASTStrdtFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object arg0 = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		final Object arg1 = Helper.unlazy(this.resultOfChildOne(node, b, d));
 		try {
 			return LiteralFactory.createTypedLiteral("\""
 					+ Helper.getSimpleString(arg0) + "\"", Helper.getString(arg1));
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			throw new TypeErrorException();
 		}
 	}
 
 	@Override
-	public Object evaluate(ASTStrFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTStrFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if (o instanceof TypedLiteral) {
 			return ((TypedLiteral) o).getOriginalContent();
 		} else if (o instanceof LanguageTaggedLiteral) {
@@ -1133,106 +1157,122 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTStrLangFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final String content = Helper.quote(Helper.getSimpleString(Helper.unlazy(resultOfChildZero(
+	public Object evaluate(final ASTStrLangFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final String content = Helper.quote(Helper.getSimpleString(Helper.unlazy(this.resultOfChildZero(
 				node, b, d))));
-		final String language = Helper.getSimpleString(Helper.unlazy(resultOfChildOne(node,
+		final String language = Helper.getSimpleString(Helper.unlazy(this.resultOfChildOne(node,
 				b, d)));
 		return LiteralFactory.createLanguageTaggedLiteral(content, language);
 	}
 
 	@Override
-	public Object evaluate(ASTABSFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTABSFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		Object type = Helper.getType(o);
-		if (type == BigInteger.class)
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		final Object type = Helper.getType(o);
+		if (type == BigInteger.class) {
 			return Helper.getInteger(o).abs();
-		if (type == Double.class)
+		}
+		if (type == Double.class) {
 			return Math.abs(Helper.getDouble(o));
-		if (type == Float.class)
+		}
+		if (type == Float.class) {
 			return Math.abs(Helper.getFloat(o));
-		if (type == BigDecimal.class)
+		}
+		if (type == BigDecimal.class) {
 			return Helper.getBigDecimal(o).abs();
+		}
 		throw new TypeErrorException();
 	}
 
 	@Override
-	public Object evaluate(ASTCeilFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTCeilFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		Object type = Helper.getType(o);
-		if (type == BigInteger.class)
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		final Object type = Helper.getType(o);
+		if (type == BigInteger.class) {
 			return Helper.getInteger(o);
-		if (type == Double.class)
+		}
+		if (type == Double.class) {
 			return Math.ceil(Helper.getDouble(o));
-		if (type == Float.class)
+		}
+		if (type == Float.class) {
 			return Math.ceil(Helper.getFloat(o));
+		}
 		if (type == BigDecimal.class) {
-			BigDecimal bd = Helper.getBigDecimal(o);
+			final BigDecimal bd = Helper.getBigDecimal(o);
 			return bd.setScale(0, RoundingMode.CEILING);
 		}
 		throw new TypeErrorException();
 	}
 
 	@Override
-	public Object evaluate(ASTFloorFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		Object type = Helper.getType(o);
-		if (type == BigInteger.class)
+	public Object evaluate(final ASTFloorFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		final Object type = Helper.getType(o);
+		if (type == BigInteger.class) {
 			return Helper.getInteger(o);
-		if (type == Double.class)
+		}
+		if (type == Double.class) {
 			return Math.floor(Helper.getDouble(o));
-		if (type == Float.class)
+		}
+		if (type == Float.class) {
 			return Math.floor(Helper.getFloat(o));
+		}
 		if (type == BigDecimal.class) {
-			BigDecimal bd = Helper.getBigDecimal(o);
+			final BigDecimal bd = Helper.getBigDecimal(o);
 			return bd.setScale(0, RoundingMode.FLOOR);
 		}
 		throw new TypeErrorException();
 	}
 
 	@Override
-	public Object evaluate(ASTRoundFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		Object type = Helper.getType(o);
-		if (type == BigInteger.class)
+	public Object evaluate(final ASTRoundFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		final Object type = Helper.getType(o);
+		if (type == BigInteger.class) {
 			return Helper.getInteger(o);
-		if (type == Double.class)
+		}
+		if (type == Double.class) {
 			return Math.round(Helper.getDouble(o));
-		if (type == Float.class)
+		}
+		if (type == Float.class) {
 			return Math.round(Helper.getFloat(o));
+		}
 		if (type == BigDecimal.class) {
-			BigDecimal bd = Helper.getBigDecimal(o);
+			final BigDecimal bd = Helper.getBigDecimal(o);
 			return bd.setScale(0, RoundingMode.HALF_UP);
 		}
 		throw new TypeErrorException();
 	}
 
 	@Override
-	public Object evaluate(ASTConcatFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		if (node.jjtGetNumChildren() == 0)
+	public Object evaluate(final ASTConcatFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		if (node.jjtGetNumChildren() == 0) {
 			return "";
+		}
 		// jump over ASTExpressionList!
-		Node child0 = node.jjtGetChild(0);
+		final Node child0 = node.jjtGetChild(0);
 		if (child0 instanceof ASTNIL || child0.jjtGetNumChildren() == 0) {
 			return "";
 		}
 		Object result = Helper.unlazy(child0.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(result))
+		if (Helper.isNumeric(result)) {
 			return null;
+		}
 		for (int i = 1; i < child0.jjtGetNumChildren(); i++) {
 
-			Object child = Helper.unlazy(child0.jjtGetChild(i).accept(this, b, d));
+			final Object child = Helper.unlazy(child0.jjtGetChild(i).accept(this, b, d));
 
-			if (Helper.isNumeric(child))
+			if (Helper.isNumeric(child)) {
 				return null;
+			}
 
-			String concatenatedContent = "\"" + Helper.unquote(Helper.getContent(result))
+			final String concatenatedContent = "\"" + Helper.unquote(Helper.getContent(result))
 					+ Helper.unquote(Helper.getContent(child)) + "\"";
 
 			if (result instanceof TypedLiteral
@@ -1243,7 +1283,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 					result = LiteralFactory.createTypedLiteral(
 							concatenatedContent, ((TypedLiteral) result)
 									.getTypeLiteral());
-				} catch (URISyntaxException e) {
+				} catch (final URISyntaxException e) {
 					throw new TypeErrorException();
 				}
 			} else if (result instanceof LanguageTaggedLiteral
@@ -1263,11 +1303,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTSubstringFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTSubstringFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
+		}
 		final int start = Helper.getInteger(
 				Helper.unlazy(node.jjtGetChild(1).accept(this, b, d))).intValue() - 1;
 		final String content = Helper.unquote(Helper.getContent(wholeString));
@@ -1275,7 +1316,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		if (node.jjtGetNumChildren() == 2) {
 			resultantContent = content.substring(start);
 		} else {
-			int end = Helper.getInteger(
+			final int end = Helper.getInteger(
 					Helper.unlazy(node.jjtGetChild(2).accept(this, b, d))).intValue();
 			resultantContent = content.substring(start, start + end);
 		}
@@ -1283,99 +1324,111 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTStrlenFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTStrlenFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
+		}
 		final String content = Helper.unquote(Helper.getContent(wholeString));
 		return BigInteger.valueOf(content.length());
 	}
 
 	@Override
-	public Object evaluate(ASTUcaseFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTUcaseFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
+		}
 		return Helper.createWithSameType(Helper.unquote(Helper.getContent(wholeString))
 				.toUpperCase(), wholeString);
 	}
 
 	@Override
-	public Object evaluate(ASTLcaseFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTLcaseFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
+		}
 		return Helper.createWithSameType(Helper.unquote(Helper.getContent(wholeString))
 				.toLowerCase(), wholeString);
 	}
 
 	// @SuppressWarnings("deprecation")
 	@Override
-	public Object evaluate(ASTEncodeForUriFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTEncodeForUriFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
+		}
 		try {
 			return Helper.quote(URLEncoder.encode(Helper.unquote(Helper.getContent(wholeString)), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {			
+		} catch (final UnsupportedEncodingException e) {
 			throw new TypeErrorException(e.getMessage());
 		}
 	}
 
 	@Override
-	public Object evaluate(ASTContainsFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTContainsFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
-		Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
-		if (Helper.isNumeric(containsString))
+		}
+		final Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
+		if (Helper.isNumeric(containsString)) {
 			return null;
+		}
 		return (Helper.unquote(Helper.getContent(wholeString))
 				.contains(Helper.unquote(Helper.getContent(containsString))));
 	}
 
 	@Override
-	public Object evaluate(ASTStrstartsFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTStrstartsFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
-		Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
-		if (Helper.isNumeric(containsString))
+		}
+		final Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
+		if (Helper.isNumeric(containsString)) {
 			return null;
+		}
 		return (Helper.unquote(Helper.getContent(wholeString))
 				.startsWith(Helper.unquote(Helper.getContent(containsString))));
 	}
 
 	@Override
-	public Object evaluate(ASTStrEndsFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTStrEndsFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
-		Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
-		if (Helper.isNumeric(containsString))
+		}
+		final Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
+		if (Helper.isNumeric(containsString)) {
 			return null;
+		}
 		return (Helper.unquote(Helper.getContent(wholeString))
 				.endsWith(Helper.unquote(Helper.getContent(containsString))));
 	}
 
 	@Override
-	public Object evaluate(ASTStrBeforeFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTStrBeforeFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
-		Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
-		if (Helper.isNumeric(containsString))
+		}
+		final Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
+		if (Helper.isNumeric(containsString)) {
 			return null;
-		String stringOfWholeString = Helper.unquote(Helper.getContent(wholeString));
-		int index = stringOfWholeString
+		}
+		final String stringOfWholeString = Helper.unquote(Helper.getContent(wholeString));
+		final int index = stringOfWholeString
 				.indexOf(Helper.unquote(Helper.getContent(containsString)));
 		if (index > 0) {
 			return Helper.createWithSameType(stringOfWholeString.substring(0, index),
@@ -1386,16 +1439,18 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTStrAfterFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
-		if (Helper.isNumeric(wholeString))
+	public Object evaluate(final ASTStrAfterFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object wholeString = Helper.unlazy(node.jjtGetChild(0).accept(this, b, d));
+		if (Helper.isNumeric(wholeString)) {
 			return null;
-		Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
-		if (Helper.isNumeric(containsString))
+		}
+		final Object containsString = Helper.unlazy(node.jjtGetChild(1).accept(this, b, d));
+		if (Helper.isNumeric(containsString)) {
 			return null;
-		String stringOfWholeString = Helper.unquote(Helper.getContent(wholeString));
-		int index = stringOfWholeString
+		}
+		final String stringOfWholeString = Helper.unquote(Helper.getContent(wholeString));
+		final int index = stringOfWholeString
 				.indexOf(Helper.unquote(Helper.getContent(containsString)));
 		if (index > 0) {
 			return Helper.createWithSameType(stringOfWholeString.substring(index),
@@ -1406,159 +1461,160 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTMD5FuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTMD5FuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return Helper.applyHashFunction("MD5", Helper.unquote(Helper.getContent(Helper.unlazy(node
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
 	@Override
-	public Object evaluate(ASTSHA1FuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTSHA1FuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return Helper.applyHashFunction("SHA1", Helper.unquote(Helper.getContent(Helper.unlazy(node
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
 	@Override
-	public Object evaluate(ASTSHA256FuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTSHA256FuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.applyHashFunction("SHA-256", Helper.unquote(Helper.getContent(Helper.unlazy(node
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
 	@Override
-	public Object evaluate(ASTSHA384FuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTSHA384FuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.applyHashFunction("SHA-384", Helper.unquote(Helper.getContent(Helper.unlazy(node
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
 	@Override
-	public Object evaluate(ASTSHA512FuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTSHA512FuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.applyHashFunction("SHA-512", Helper.unquote(Helper.getContent(Helper.unlazy(node
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
 	@Override
-	public Object evaluate(ASTYearFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTYearFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return Helper.getDateAndTypeCheck(
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getYear() + 1900;
 	}
 
 	@Override
-	public Object evaluate(ASTMonthFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTMonthFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.getDateAndTypeCheck(
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getMonth() + 1;
 	}
 
 	@Override
-	public Object evaluate(ASTDayFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTDayFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return Helper.getDateAndTypeCheck(
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getDate();
 	}
 
 	@Override
-	public Object evaluate(ASTHoursFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTHoursFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.getDateAndTypeCheck(
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getHours();
 	}
 
 	@Override
-	public Object evaluate(ASTMinutesFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTMinutesFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.getDateAndTypeCheck(
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getMinutes();
 	}
 
 	@Override
-	public Object evaluate(ASTSecondsFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTSecondsFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return BigDecimal.valueOf(Helper.getDateAndTypeCheck(
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getSeconds());
 	}
 
 	@Override
-	public Object evaluate(ASTTimeZoneFuncNode node, Bindings b,
-			Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTTimeZoneFuncNode node, final Bindings b,
+			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		try {
 			return LiteralFactory.createTypedLiteral(Helper
 					.getTimezoneAndTypeCheck(Helper.unlazy(node.jjtGetChild(0).accept(
 							this, b, d))),
 					"<http://www.w3.org/2001/XMLSchema#dayTimeDuration>");
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			throw new TypeErrorException();
 		}
 	}
 
 	@Override
-	public Object evaluate(ASTTzFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTTzFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return Helper.getTzAndTypeCheck(Helper.unlazy(node.jjtGetChild(0).accept(this,
 				b, d)));
 	}
 
 	private static Date now = new Date();
-	
+
 	public static void resetNowDate(){
 		now = new Date();
 	}
 
 	@Override
-	public Object evaluate(ASTNowFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTNowFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return now;
 	}
-	
+
 	@Override
-	public Object evaluate(ASTUUIDFuncNode node, Bindings b, Map<Node, Object> d)
-			throws NotBoundException, TypeErrorException {		
+	public Object evaluate(final ASTUUIDFuncNode node, final Bindings b, final Map<Node, Object> d)
+			throws NotBoundException, TypeErrorException {
 		try {
 			return LiteralFactory.createURILiteral("<urn:uuid:"+ UUID.randomUUID().toString() + ">");
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			throw new TypeErrorException(e.getMessage());
 		}
 	}
-	
+
 	@Override
-	public Object evaluate(ASTSTRUUIDFuncNode node, Bindings b, Map<Node, Object> d)
+	public Object evaluate(final ASTSTRUUIDFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return "\"" + UUID.randomUUID().toString() + "\"";
 	}
-	
+
 	@Override
-	public Object evaluate(ASTInNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTInNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 	    return this.handleInAndNotIn(node, b, d);
 	}
 
 	@Override
-	public Object evaluate(ASTNotInNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTNotInNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 	    return !this.handleInAndNotIn(node, b, d);
 	}
 
-	protected boolean handleInAndNotIn(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object arg1 = Helper.unlazy(this.resultOfChildZero(node, b, d));
-		Node child1 = node.jjtGetChild(1);
+	protected boolean handleInAndNotIn(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object arg1 = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		final Node child1 = node.jjtGetChild(1);
 		for(int i=0; i<child1.jjtGetNumChildren(); i++) {
-			Object arg2 = Helper.unlazy(child1.jjtGetChild(i).accept(this, b, d));
-			if(Helper.equals(arg1, arg2))
+			final Object arg2 = Helper.unlazy(child1.jjtGetChild(i).accept(this, b, d));
+			if(Helper.equals(arg1, arg2)) {
 				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	@Override
-	public Object evaluate(ASTRandFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+	public Object evaluate(final ASTRandFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 	    return new Double(Math.random());
 	}
 
 	@Override
-	public Object evaluate(ASTIfFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Object arg0 = Helper.unlazy(this.resultOfChildZero(node, b, d));
+	public Object evaluate(final ASTIfFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object arg0 = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if(Helper.booleanEffectiveValue(arg0)){
 			return this.resultOfChildOne(node, b, d);
 		} else {
@@ -1567,41 +1623,43 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	@Override
-	public Object evaluate(ASTCoalesceFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		Node child0 = node.jjtGetChild(0);
+	public Object evaluate(final ASTCoalesceFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Node child0 = node.jjtGetChild(0);
 		for(int i=0; i<child0.jjtGetNumChildren(); i++){
 			try {
 				return Helper.unlazy(child0.jjtGetChild(i).accept(this, b, d));
-			} catch(Error e){
+			} catch(final Error e){
 				// ignore...
-			} catch(Exception e){
+			} catch(final Exception e){
 				// ignore...
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
-	public Object evaluate(ASTStrReplaceFuncNode node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object o = Helper.unlazy(resultOfChildZero(node, b, d));
-		if (o instanceof URILiteral || o instanceof AnonymousLiteral || Helper.isNumeric(o))
+	public Object evaluate(final ASTStrReplaceFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
+		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		if (o instanceof URILiteral || o instanceof AnonymousLiteral || Helper.isNumeric(o)) {
 			throw new TypeErrorException();
+		}
 		final String cmp = Helper.unquote(Helper.getContent(o));
-		String pattern = Helper.getString(resultOfChildOne(node, b, d));
-		String replacement = Helper.getString(resultOfChildTwo(node, b, d));
+		String pattern = Helper.getString(this.resultOfChildOne(node, b, d));
+		final String replacement = Helper.getString(this.resultOfChildTwo(node, b, d));
 		String oldPattern;
 		do {
 			oldPattern = pattern;
 			pattern = pattern.replace("\\\\", "\\");
 		} while (oldPattern.compareTo(pattern) != 0);
 		String flags = "";
-		if (node.jjtGetNumChildren() > 3)
-			flags = Helper.getString(resultOfChildThree(node, b, d));
+		if (node.jjtGetNumChildren() > 3) {
+			flags = Helper.getString(this.resultOfChildThree(node, b, d));
+		}
 		// return match(cmp,pattern,flags); // does not support flag x!!!
 		return Helper.createWithSameType(Helper.replaceXerces(cmp, pattern, flags, replacement), o);
 	}
 
-	protected Object resultOfChildThree(Node node, Bindings b, Map<Node, Object> d) throws NotBoundException, TypeErrorException {		
+	protected Object resultOfChildThree(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(3).accept(this, b, d);
 	}
 }

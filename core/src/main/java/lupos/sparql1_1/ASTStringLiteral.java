@@ -35,43 +35,45 @@ import lupos.engine.operators.singleinput.filter.expressionevaluation.Evaluation
 public
 class ASTStringLiteral extends SimpleNode {
 	private String stringLiteral;
-	private Literal literal;
-	public ASTStringLiteral(int id) {
+	private Literal literal = null;
+	public ASTStringLiteral(final int id) {
 		super(id);
 	}
 
-	public ASTStringLiteral(SPARQL1_1Parser p, int id) {
+	public ASTStringLiteral(final SPARQL1_1Parser p, final int id) {
 		super(p, id);
 	}
 
 
 	/** Accept the visitor. **/
 	  @Override
-  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+  public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
 	  @Override
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
 		return visitor.visit(this, data);
 	}
 
 	  @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+  public Object accept(final EvaluationVisitor visitor, final Bindings b, final Object data) throws NotBoundException, TypeErrorException {
 	  return visitor.evaluate(this, b, data);
   }
 
   public String getStringLiteral() {
-	  return this.stringLiteral;	  
+	  return this.stringLiteral;
   }
 
-  public void setStringLiteral(String stringLiteral) {
+  public void setStringLiteral(final String stringLiteral) {
 	  this.stringLiteral = stringLiteral;
-	  this.literal = LazyLiteral.getLiteral(this, true);
   }
-  
-  public Literal getLiteral(){
+
+  public Literal getLiteral(final boolean allowLazyLiteral){
+	  if(this.literal == null){
+		  this.literal = LazyLiteral.getLiteral(this, allowLazyLiteral);
+	  }
 	  return this.literal;
   }
 
@@ -79,7 +81,7 @@ class ASTStringLiteral extends SimpleNode {
   public String toString() {
 	  return super.toString()+" "+this.stringLiteral;
   }
-  
+
 	@Override
 	public void init(final SimpleNode node){
 		this.setStringLiteral(((ASTStringLiteral) node).getStringLiteral());

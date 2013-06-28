@@ -35,22 +35,22 @@ import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
 
 public class ASTInteger extends SimpleNode {
-  
-  private String valueInteger;
-  private Literal literal;
 
-  public ASTInteger(int id) {
+  private String valueInteger;
+  private Literal literal = null;
+
+  public ASTInteger(final int id) {
     super(id);
   }
 
-  public ASTInteger(SPARQL1_1Parser p, int id) {
+  public ASTInteger(final SPARQL1_1Parser p, final int id) {
     super(p, id);
   }
 
   public String getValue() {
 	return this.valueInteger;
   }
-  
+
   public String getValueWithoutLeadingPlus(){
 	  String zValue = this.valueInteger;
 	  while(zValue.startsWith("+")){
@@ -58,17 +58,19 @@ public class ASTInteger extends SimpleNode {
 	  }
 	  return zValue;
   }
-  
+
   public BigInteger getBigInteger(){
 	  return new BigInteger(this.getValueWithoutLeadingPlus());
   }
 
   public void setValue(final String value) {
 	this.valueInteger = value;
-	this.literal = LazyLiteral.getLiteral(this, true);
   }
-  
-  public Literal getLiteral(){
+
+  public Literal getLiteral(final boolean allowLazyLiteral){
+	  if(this.literal == null){
+		  this.literal = LazyLiteral.getLiteral(this, allowLazyLiteral);
+	  }
 	  return this.literal;
   }
 
@@ -76,26 +78,26 @@ public class ASTInteger extends SimpleNode {
   public String toString() {
 	return super.toString() + "  " + this.valueInteger;
   }
-  
+
 	@Override
 	public void init(final SimpleNode node){
 		this.setValue(((ASTInteger)node).getValue());
 	}
-	
+
   /** Accept the visitor. **/
   @Override
-  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+  public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
     return visitor.visit(this);
   }
 
   @Override
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+  public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
     return visitor.visit(this, data);
   }
 
   @Override
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+  public Object accept(final EvaluationVisitor visitor, final Bindings b, final Object data) throws NotBoundException, TypeErrorException {
 	    return visitor.evaluate(this, b, data);
   }
 }

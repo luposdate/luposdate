@@ -33,58 +33,58 @@ import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor;
 
 public class ASTLangTag extends SimpleNode {
-	
+
 	private String langTag;
 	private Literal literal = null;
-	
-	public ASTLangTag(int id) {
+
+	public ASTLangTag(final int id) {
 		super(id);
 	}
 
-	public ASTLangTag(SPARQL1_1Parser p, int id) {
+	public ASTLangTag(final SPARQL1_1Parser p, final int id) {
 		super(p, id);
 	}
 
 
 	/** Accept the visitor. **/
 	@Override
-	public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
+	public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor) {
 		return visitor.visit(this);
 	}
 
 	@Override
-	public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data) {
+	public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data) {
 		return visitor.visit(this, data);
 	}
 
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+	public Object accept(final EvaluationVisitor visitor, final Bindings b, final Object data) throws NotBoundException, TypeErrorException {
 		return visitor.evaluate(this, b, data);
-	}  
+	}
 
 	public String getLangTag() {
 		return this.langTag;
 	}
 
-	public void setLangTag(String langTag) {
+	public void setLangTag(final String langTag) {
 		this.langTag = langTag;
 	}
-	
+
 	@Override
 	public void init(final SimpleNode node){
 		this.setLangTag(((ASTLangTag)node).getLangTag());
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return super.toString()+" "+this.langTag;
 	}
-	
-	public Literal getLiteral(){
+
+	public Literal getLiteral(final boolean allowLazyLiteral){
 		if(this.literal==null){
-			this.literal = LazyLiteral.getLiteral(this, true);
+			this.literal = LazyLiteral.getLiteral(this, allowLazyLiteral);
 		}
 		return this.literal;
 	}
