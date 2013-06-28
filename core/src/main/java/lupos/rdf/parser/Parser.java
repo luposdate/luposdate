@@ -36,6 +36,7 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
+import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 
 public abstract class Parser {
@@ -111,7 +112,7 @@ public abstract class Parser {
 
 	private Triple nextTriple() throws EOFException {
 		this.counter++;
-		if (this.counter % 1000000 == 0)
+		if (CommonCoreQueryEvaluator.printNumberOfTriples && this.counter % 1000000 == 0)
 		 {
 			System.err.println("#Triples:" + this.counter); // in order to display,
 		}

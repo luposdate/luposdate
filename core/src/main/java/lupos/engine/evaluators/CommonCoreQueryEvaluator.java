@@ -106,6 +106,8 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	public static String encoding = "UTF-8";
 
+	public static boolean printNumberOfTriples = true;
+
 	protected Result result;
 	protected STORAGE storage;
 	public JOIN join;
@@ -711,7 +713,9 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				final Class<?> c = Class.forName("lupos.rdf.parser."+className);
 				final Method m = c.getMethod("parseRDFData", InputStream.class, TripleConsumer.class, String.class);
 				final int number= (Integer) m.invoke(c, input, tc, encoding);
-				System.out.println("Number of read triples:"+ number);
+				if(CommonCoreQueryEvaluator.printNumberOfTriples){
+					System.out.println("Number of read triples:"+ number);
+				}
 			} catch (final ClassNotFoundException e) {
 				System.err.println("No parser for RDF data format "+type+" found!");
 			} catch (final SecurityException e) {

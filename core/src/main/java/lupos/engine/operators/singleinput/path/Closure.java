@@ -25,205 +25,229 @@ package lupos.engine.operators.singleinput.path;
 
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
-import lupos.datastructures.smallerinmemorylargerondisk.ReachabilityMap;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsCollection;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.queryresult.QueryResultDebug;
+import lupos.datastructures.smallerinmemorylargerondisk.ReachabilityMap;
 import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
+import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SingleInputOperator;
+import lupos.misc.Tuple;
+import lupos.misc.debug.DebugStep;
 
 /**
- * This operator determines the transitive closure (applied in property paths for * and +) 
+ * This operator determines the transitive closure (applied in property paths for * and +)
  */
 public class Closure extends SingleInputOperator{
-	
+
 	private static final long serialVersionUID = 1L;
-	private Variable subject;
-	private Variable object;
-	private Set<Bindings> closure;
-	private ReachabilityMap<Literal,SetImplementation<Literal>> reachabilityMap;
+	private final Variable subject;
+	private final Variable object;
 	private Set<Literal> allowedSubjects;
 	private Set<Literal> allowedObjects;
-	
-	public Closure(Variable subject, Variable object){
+	private QueryResult operand = null;
+
+	public Closure(final Variable subject, final Variable object){
 		this.subject = subject;
 		this.object = object;
 	}
-	
-	public Closure(Variable subject, Variable object, Set<Literal> allowedSubjects, Set<Literal> allowedObjects){
+
+	public Closure(final Variable subject, final Variable object, final Set<Literal> allowedSubjects, final Set<Literal> allowedObjects){
 		this.subject = subject;
 		this.object = object;
 		this.allowedSubjects = allowedSubjects;
 		this.allowedObjects = allowedObjects;
 	}
-	
+
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		if(shouldBeLeftCalculation()){
-			calculateFromLeft();
-		}
-		else{
-			calculateFromRight();
-		}
-		QueryResult result = createQueryResult();
-		if (result != null) {
-			for (final OperatorIDTuple opId : this.succeedingOperators) {
-				opId.processAll(result);
-			}
-			result.release();
-		}		
-		this.closure = null;
-		this.reachabilityMap = null;
+		this.computeResult();
 		return msg;
 	}
-	
-	private QueryResult createQueryResult(){
-		QueryResult result = QueryResult.createInstance();
-		Iterator<Bindings> itb = this.closure.iterator();
-		while(itb.hasNext()){
-			Bindings bind = itb.next();
-			result.add(bind);
-		}
-		return result;
-	}
-	
-	@Override
-	public String toString(){		
-		String result = "Closure of "+this.subject+" -> "+this.object;
-		if(this.reachabilityMap!=null){
-			result += "\n";
-			Iterator<Map.Entry<Literal,SetImplementation<Literal>>> it= this.reachabilityMap.entrySet().iterator();
-			while(it.hasNext()){
-				Map.Entry<Literal, SetImplementation<Literal>> entry = it.next();
-				result+="Map for " + entry.getKey() + ": ";
-				Iterator<Literal> it2 = entry.getValue().iterator();
-				while(it2.hasNext()){
-					result+=it2.next() + " ";
+
+	public void computeResult(){
+		if(this.operand!=null){
+			final QueryResult result = this.getClosure(this.operand);
+			if(result!=null){
+				for (final OperatorIDTuple opId : this.succeedingOperators) {
+					opId.processAll(result);
 				}
-				result+="\n";
+				result.release();
 			}
 		}
+	}
+
+	public QueryResult getClosure(final QueryResult input){
+		final Tuple<SetImplementation<Bindings>, ReachabilityMap<Literal, SetImplementation<Literal>>> closureAndReachabilityMap = this.generateClosureAndMap(input);
+		final SetImplementation<Bindings> closure = closureAndReachabilityMap.getFirst();
+		if(this.shouldBeLeftCalculation()){
+			this.calculateFromLeft(closure, closureAndReachabilityMap.getSecond());
+		} else {
+			this.calculateFromRight(closure, closureAndReachabilityMap.getSecond());
+		}
+		if (closure != null) {
+			return QueryResult.createInstance(closure.iterator());
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public String toString(){
+		final String result = "Closure of "+this.subject+" -> "+this.object;
 		return result;
 	}
-	
+
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
-		updateClosureAndMap(bindings);
-		// bindings.release();
+		if(this.operand!=null){
+			final Iterator<Bindings> it = bindings.oneTimeIterator();
+			while(it.hasNext()){
+				this.operand.add(it.next());
+			}
+			if(it instanceof ParallelIterator){
+				((ParallelIterator<Bindings>) it).close();
+			}
+		} else {
+			this.operand = bindings;
+		}
 		return null;
 	}
-	
-	private void calculateFromLeft(){
-		SetImplementation<Bindings> lastIteration = new SetImplementation<Bindings>();
-		lastIteration.addAll(this.closure);
-		while(!lastIteration.isEmpty()){
-			SetImplementation<Bindings> thisIteration = new SetImplementation<Bindings>();
-			Iterator<Bindings> itsubject = lastIteration.iterator();
-			while (itsubject.hasNext()){
-				Bindings closureElement = itsubject.next();
-				if(this.allowedSubjects==null || this.allowedSubjects.contains(closureElement.get(this.subject))){
-					Set<Literal> potentialNewBindings = this.reachabilityMap.get(closureElement.get(this.object));
-	
-					if (potentialNewBindings != null){	
-						SetImplementation<Literal> updatedMapEntry= new SetImplementation<Literal>(this.reachabilityMap.get(closureElement.get(this.subject)));
-						Iterator<Literal> itobject = potentialNewBindings.iterator();
-						while(itobject.hasNext()){
-							Literal tempObject = itobject.next();
-							Bindings newBind = new BindingsCollection();
-							newBind.add(this.subject, closureElement.get(this.subject));
-							newBind.add(this.object, tempObject);
-							if(this.closure.add(newBind)){
-								thisIteration.add(newBind);
-								updatedMapEntry.add(tempObject);
+
+	private void calculateFromLeft(final SetImplementation<Bindings> closure, final ReachabilityMap<Literal, SetImplementation<Literal>> reachabilityMap){
+		if(closure!=null){
+			SetImplementation<Bindings> lastIteration = new SetImplementation<Bindings>();
+			lastIteration.addAll(closure);
+			while(!lastIteration.isEmpty()){
+				final SetImplementation<Bindings> thisIteration = new SetImplementation<Bindings>();
+				final Iterator<Bindings> itsubject = lastIteration.iterator();
+				while (itsubject.hasNext()){
+					final Bindings closureElement = itsubject.next();
+					if(this.allowedSubjects==null || this.allowedSubjects.contains(closureElement.get(this.subject))){
+						Set<Literal> potentialNewBindings = reachabilityMap.get(closureElement.get(this.object));
+
+						if (potentialNewBindings != null){
+							final SetImplementation<Literal> updatedMapEntry= new SetImplementation<Literal>(reachabilityMap.get(closureElement.get(this.subject)));
+							final Iterator<Literal> itobject = potentialNewBindings.iterator();
+							while(itobject.hasNext()){
+								final Literal tempObject = itobject.next();
+								final Bindings newBind = new BindingsCollection();
+								newBind.add(this.subject, closureElement.get(this.subject));
+								newBind.add(this.object, tempObject);
+								if(closure.add(newBind)){
+									thisIteration.add(newBind);
+									updatedMapEntry.add(tempObject);
+								}
 							}
+							potentialNewBindings=null;
+							reachabilityMap.put(closureElement.get(this.subject), updatedMapEntry);
 						}
-						potentialNewBindings=null;
-						this.reachabilityMap.put(closureElement.get(this.subject), updatedMapEntry);
 					}
 				}
+				lastIteration = thisIteration;
 			}
-			lastIteration = thisIteration;
 		}
 	}
-	
-	private void calculateFromRight(){
-		SetImplementation<Bindings> lastIteration = new SetImplementation<Bindings>();
-		lastIteration.addAll(this.closure);
-		while(!lastIteration.isEmpty()){
-			SetImplementation<Bindings> thisIteration = new SetImplementation<Bindings>();
-			Iterator<Bindings> itobject = lastIteration.iterator();
-			while (itobject.hasNext()){
-				Bindings closureElement = itobject.next();
-				if(this.allowedObjects==null || this.allowedObjects.contains(closureElement.get(this.object))){
-					Set<Literal> potentialNewBindings = this.reachabilityMap.get(closureElement.get(this.subject));
-					if (potentialNewBindings != null){	
-						SetImplementation<Literal> updatedMapEntry= new SetImplementation<Literal>(this.reachabilityMap.get(closureElement.get(this.object)));
-						Iterator<Literal> itsubject = potentialNewBindings.iterator();
-						while(itsubject.hasNext()){
-							Literal tempSubject = itsubject.next();
-							Bindings newBind = new BindingsCollection();
-							newBind.add(this.subject, tempSubject);
-							newBind.add(this.object, closureElement.get(this.object));
-							if (this.closure.add(newBind)){
-								thisIteration.add(newBind);
-								updatedMapEntry.add(tempSubject);
+
+	private void calculateFromRight(final SetImplementation<Bindings> closure, final ReachabilityMap<Literal, SetImplementation<Literal>> reachabilityMap){
+		if(closure!=null){
+			SetImplementation<Bindings> lastIteration = new SetImplementation<Bindings>();
+			lastIteration.addAll(closure);
+			while(!lastIteration.isEmpty()){
+				final SetImplementation<Bindings> thisIteration = new SetImplementation<Bindings>();
+				final Iterator<Bindings> itobject = lastIteration.iterator();
+				while (itobject.hasNext()){
+					final Bindings closureElement = itobject.next();
+					if(this.allowedObjects==null || this.allowedObjects.contains(closureElement.get(this.object))){
+						Set<Literal> potentialNewBindings = reachabilityMap.get(closureElement.get(this.subject));
+						if (potentialNewBindings != null){
+							final SetImplementation<Literal> updatedMapEntry= new SetImplementation<Literal>(reachabilityMap.get(closureElement.get(this.object)));
+							final Iterator<Literal> itsubject = potentialNewBindings.iterator();
+							while(itsubject.hasNext()){
+								final Literal tempSubject = itsubject.next();
+								final Bindings newBind = new BindingsCollection();
+								newBind.add(this.subject, tempSubject);
+								newBind.add(this.object, closureElement.get(this.object));
+								if (closure.add(newBind)){
+									thisIteration.add(newBind);
+									updatedMapEntry.add(tempSubject);
+								}
 							}
+							potentialNewBindings=null;
+							reachabilityMap.put(closureElement.get(this.object), updatedMapEntry);
 						}
-						potentialNewBindings=null;
-						this.reachabilityMap.put(closureElement.get(this.object), updatedMapEntry);
 					}
 				}
+				lastIteration = thisIteration;
 			}
-			lastIteration = thisIteration;
 		}
 	}
-	
-	private void updateClosureAndMap(QueryResult bindings){
-		if(this.closure==null){
-			this.closure = new SetImplementation<Bindings>();
-		}
-		if(this.reachabilityMap == null){
-			this.reachabilityMap = new ReachabilityMap<Literal, SetImplementation<Literal>>();
-		}
-	
+
+	private Tuple<SetImplementation<Bindings>, ReachabilityMap<Literal, SetImplementation<Literal>>> generateClosureAndMap(final QueryResult bindings){
+		final SetImplementation<Bindings> closure = new SetImplementation<Bindings>();
+		final ReachabilityMap<Literal, SetImplementation<Literal>> reachabilityMap = new ReachabilityMap<Literal, SetImplementation<Literal>>();
+
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
 		while(itb.hasNext()){
-			Bindings closureElement = itb.next();
-			if(shouldBeLeftCalculation()){	
-				SetImplementation<Literal> newEntry = this.reachabilityMap.get(closureElement.get(this.subject));
+			final Bindings closureElement = itb.next();
+			if(this.shouldBeLeftCalculation()){
+				SetImplementation<Literal> newEntry = reachabilityMap.get(closureElement.get(this.subject));
 				if(newEntry==null){
 					newEntry = new SetImplementation<Literal>();
 				}
 				newEntry.add(closureElement.get(this.object));
-				this.reachabilityMap.put(closureElement.get(this.subject), newEntry);
+				reachabilityMap.put(closureElement.get(this.subject), newEntry);
 			}
 			else{
-				SetImplementation<Literal> newEntry = this.reachabilityMap.get(closureElement.get(this.object));
+				SetImplementation<Literal> newEntry = reachabilityMap.get(closureElement.get(this.object));
 				if(newEntry==null){
 					newEntry = new SetImplementation<Literal>();
 				}
 				newEntry.add(closureElement.get(this.subject));
-				this.reachabilityMap.put(closureElement.get(this.object), newEntry);
+				reachabilityMap.put(closureElement.get(this.object), newEntry);
 			}
-			this.closure.add(closureElement);
+			closure.add(closureElement);
 		}
+		return new Tuple<SetImplementation<Bindings>, ReachabilityMap<Literal, SetImplementation<Literal>>>(closure, reachabilityMap);
 	}
-	
+
 	private boolean shouldBeLeftCalculation(){
 		return this.allowedObjects==null || (this.allowedSubjects!=null && this.allowedSubjects.size()<=this.allowedObjects.size());
 	}
 
 	protected ParallelIterator<Bindings> getIterator() {
-		final Iterator<Bindings> itb = this.closure.iterator();
+		if(this.operand == null){
+			return new ParallelIterator<Bindings>() {
+				@Override
+				public boolean hasNext() {
+					return false;
+				}
+				@Override
+				public Bindings next() {
+					return null;
+				}
+				@Override
+				public void remove() {
+				}
+				@Override
+				public void close() {
+				}
+			};
+		}
+
+		final QueryResult result = this.getClosure(this.operand);
+
+		final Iterator<Bindings> itb = result.iterator();
 		return new ParallelIterator<Bindings>() {
 
 			@Override
@@ -249,9 +273,54 @@ public class Closure extends SingleInputOperator{
 
 		};
 	}
-	
+
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
+	}
+
+	@Override
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
+		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
+		while (itb.hasNext()){
+			this.operand.remove(itb.next());
+		}
+		return null;
+	}
+
+	@Override
+	public void deleteQueryResult(final int operandID) {
+		this.operand.release();
+		this.operand = null;
+	}
+
+	@Override
+	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
+		this.computeResult();
+		return msg;
+	}
+
+
+	@Override
+	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
+		this.computeDebugStep(debugstep);
+		return msg;
+	}
+
+	@Override
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
+		this.computeDebugStep(debugstep);
+		return msg;
+	}
+
+	public void computeDebugStep(final DebugStep debugstep){
+		final QueryResult qr = QueryResult.createInstance(this.getIterator());
+		if (this.succeedingOperators.size() > 1){
+			qr.materialize();
+		}
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
+			final QueryResultDebug qrDebug = new QueryResultDebug(qr, debugstep, this, opId.getOperator(), true);
+			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
+		}
 	}
 }

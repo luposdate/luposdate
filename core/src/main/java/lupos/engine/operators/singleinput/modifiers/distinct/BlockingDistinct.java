@@ -85,24 +85,29 @@ public class BlockingDistinct extends Distinct {
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		final QueryResult qr = QueryResult.createInstance(getIterator());
-		if (this.succeedingOperators.size() > 1)
+		this.computeResult();
+		return msg;
+	}
+
+	protected void computeResult(){
+		final QueryResult qr = QueryResult.createInstance(this.getIterator());
+		if (this.succeedingOperators.size() > 1) {
 			qr.materialize();
+		}
 		// final QueryResult qr = QueryResult.createInstance();
 		// for (final Bindings b : bindings)
 		// qr.add(b);
 		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			opId.processAll(qr);
 		}
-		return msg;
 	}
 
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
-		preProcessMessage(new EndOfEvaluationMessage());
+		this.computeResult();
 		return msg;
 	}
-	
+
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
@@ -110,8 +115,9 @@ public class BlockingDistinct extends Distinct {
 		// i.e. { ?a=<a> }, { ?a=<a> } and delete { ?a=<a> } will result in
 		// {} instead of { ?a=<a> }!!!!!!
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
-		while (itb.hasNext())
+		while (itb.hasNext()) {
 			this.bindings.remove(itb.next());
+		}
 		return null;
 	}
 
@@ -124,21 +130,24 @@ public class BlockingDistinct extends Distinct {
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
-	
+
 	@Override
-	public Message preProcessMessageDebug(
-			final ComputeIntermediateResultMessage msg,
-			final DebugStep debugstep) {
-		preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
+	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
+		this.computeDebugStep(debugstep);
 		return msg;
 	}
 
 	@Override
-	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
-			final DebugStep debugstep) {
-		final QueryResult qr = QueryResult.createInstance(getIterator());
-		if (this.succeedingOperators.size() > 1)
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
+		this.computeDebugStep(debugstep);
+		return msg;
+	}
+
+	protected void computeDebugStep(final DebugStep debugstep){
+		final QueryResult qr = QueryResult.createInstance(this.getIterator());
+		if (this.succeedingOperators.size() > 1) {
 			qr.materialize();
+		}
 		// final QueryResult qr = QueryResult.createInstance();
 		// for (final Bindings b : bindings)
 		// qr.add(b);
@@ -148,6 +157,5 @@ public class BlockingDistinct extends Distinct {
 			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
 					.getId(), debugstep);
 		}
-		return msg;
 	}
 }
