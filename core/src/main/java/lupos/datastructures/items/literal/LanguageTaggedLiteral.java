@@ -51,9 +51,8 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 		if (language.startsWith("@")) {
 			language = language.substring(1);
 		}
-		final String languageUniqueRepresentation = language.toUpperCase();
-		this.lang = LiteralFactory
-				.createLiteralWithoutLazyLiteral(languageUniqueRepresentation);
+		final String languageUniqueRepresentation = (LiteralFactory.semanticInterpretationOfLiterals)?language.toUpperCase():language;
+		this.lang = LiteralFactory.createLiteralWithoutLazyLiteral(languageUniqueRepresentation);
 	}
 
 	protected LanguageTaggedLiteral(final int codeContent, final int codeLang) {

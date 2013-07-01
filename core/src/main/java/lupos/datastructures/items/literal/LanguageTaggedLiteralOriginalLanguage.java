@@ -52,9 +52,8 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 		if (language.startsWith("@")) {
 			language = language.substring(1);
 		}
-		final String languageUniqueRepresentation = language.toUpperCase();
-		this.originalLang = LiteralFactory
-				.createLiteralWithoutLazyLiteral(language);
+		final String languageUniqueRepresentation = (LiteralFactory.semanticInterpretationOfLiterals)?language.toUpperCase():language;
+		this.originalLang = LiteralFactory.createLiteralWithoutLazyLiteral(language);
 		this.lang = (languageUniqueRepresentation.compareTo(language) != 0) ? LiteralFactory
 				.createLiteralWithoutLazyLiteral(languageUniqueRepresentation)
 				: this.originalLang;
@@ -64,11 +63,9 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 			final int codeLang) {
 		super(codeContent, codeLang);
 		this.originalLang = this.lang;
-		final String languageUniqueRepresentation = this.originalLang.toString()
-				.toUpperCase();
-		this.lang = (languageUniqueRepresentation.compareTo(this.originalLang
-				.toString()) != 0) ? LiteralFactory
-				.createLiteralWithoutLazyLiteral(languageUniqueRepresentation)
+		final String languageUniqueRepresentation = (LiteralFactory.semanticInterpretationOfLiterals)?this.originalLang.toString().toUpperCase():this.originalLang.toString();
+		this.lang = (languageUniqueRepresentation.compareTo(this.originalLang.toString()) != 0) ?
+				LiteralFactory.createLiteralWithoutLazyLiteral(languageUniqueRepresentation)
 				: this.originalLang;
 	}
 
