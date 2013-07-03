@@ -44,17 +44,18 @@ public enum RuleEnum {
 	ConstructPredicate(lupos.rif.operator.ConstructPredicate.class),
 	Generate(lupos.engine.operators.singleinput.generate.Generate.class),
 	Distinct(lupos.engine.operators.singleinput.modifiers.distinct.Distinct.class),
-	HashSetNonBlockingDistinctWithIndexAccess(lupos.engine.operators.singleinput.modifiers.distinct.HashSetNonBlockingDistinctWithIndexAccess.class), 
+	HashSetNonBlockingDistinctWithIndexAccess(lupos.engine.operators.singleinput.modifiers.distinct.HashSetNonBlockingDistinctWithIndexAccess.class),
 	ReplaceVar(lupos.engine.operators.singleinput.ReplaceVar.class),
 	Projection(lupos.engine.operators.singleinput.Projection.class),
 	Sort(lupos.engine.operators.singleinput.sort.Sort.class),
 	Limit(lupos.engine.operators.singleinput.modifiers.Limit.class),
 	Offset(lupos.engine.operators.singleinput.modifiers.Offset.class),
-	SortLimit(lupos.engine.operators.singleinput.modifiers.SortLimit.class);
+	SortLimit(lupos.engine.operators.singleinput.modifiers.SortLimit.class),
+	SubgraphContainer(lupos.distributed.operator.SubgraphContainer.class);
 
 	private Class<? extends lupos.engine.operators.BasicOperator> clazz;
 
-	private RuleEnum(Class<? extends lupos.engine.operators.BasicOperator> clazz) {
+	private RuleEnum(final Class<? extends lupos.engine.operators.BasicOperator> clazz) {
 		this.clazz = clazz;
 	}
 

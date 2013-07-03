@@ -101,6 +101,7 @@ public class NonBlockingFastDistinct extends Distinct {
 
 				@Override
 				public void close() {
+					feeder.stopIt();
 					distinctElements.stopIt();
 					toBeChecked.stopIt();
 					toBeAddedToSet.stopIt();
@@ -138,6 +139,7 @@ public class NonBlockingFastDistinct extends Distinct {
 
 		protected final QueryResult queryResult;
 		protected final BoundedBuffer<Bindings> toBeChecked;
+		protected volatile boolean stopped = false;
 
 		public Feeder(final QueryResult queryResult, final BoundedBuffer<Bindings> toBeChecked){
 			this.queryResult = queryResult;
@@ -148,7 +150,7 @@ public class NonBlockingFastDistinct extends Distinct {
 		public void run(){
 			try {
 				final Iterator<Bindings> itb = this.queryResult.oneTimeIterator();
-				while (itb.hasNext()){
+				while (!this.stopped && itb.hasNext()){
 					this.toBeChecked.put(itb.next());
 				}
 				this.toBeChecked.endOfData();
@@ -156,6 +158,10 @@ public class NonBlockingFastDistinct extends Distinct {
 				System.err.println(e);
 				e.printStackTrace();
 			}
+		}
+
+		public void stopIt(){
+			this.stopped = true;
 		}
 	}
 
@@ -183,6 +189,9 @@ public class NonBlockingFastDistinct extends Distinct {
 			try {
 				while(this.toBeChecked.hasNext()){
 					final Bindings next = this.toBeChecked.get();
+					if(next==null){
+						break;
+					}
 					final int hashCode = next.hashCode() % NonBlockingFastDistinct.BITVECTORSIZE;
 					if(this.bitVector.get(hashCode)){
 						// Collision found, check if it is really a duplicate.
@@ -221,6 +230,9 @@ public class NonBlockingFastDistinct extends Distinct {
 			try {
 				while(this.toBeAddedToSet.hasNext()){
 					final Tuple<Bindings, Boolean> next = this.toBeAddedToSet.get();
+					if(next==null){
+						break;
+					}
 					final boolean result = this.bindings.add(next.getFirst());
 					if(result && next.getSecond()){
 						this.distinctElements.put(next.getFirst());
