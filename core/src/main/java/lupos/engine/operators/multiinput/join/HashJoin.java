@@ -65,11 +65,11 @@ public class HashJoin extends Join {
 	@Override
 	public OptionalResult joinBeforeEndOfStream() {
 		if (!this.operands[0].isEmpty()) {
-			if (!this.operands[1].isEmpty())
-				return joinOptionalResult(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
-			else {
+			if (!this.operands[1].isEmpty()) {
+				return this.joinOptionalResult(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
+			} else {
 				final OptionalResult or = new OptionalResult();
-				QueryResult left = this.operands[0].getQueryResult();
+				final QueryResult left = this.operands[0].getQueryResult();
 				left.materialize();
 				or.setJoinPartnerFromLeftOperand(left);
 				or.setJoinResult(left);
@@ -81,7 +81,7 @@ public class HashJoin extends Join {
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
-			final QueryResult qr = join(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
+			final QueryResult qr = this.join(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
 			if (qr != null) {
 				this.realCardinality = qr.size();
 				for (final OperatorIDTuple opId : this.succeedingOperators) {
@@ -109,35 +109,32 @@ public class HashJoin extends Join {
 		// I) building phase
 		// Ia) now build partitions of the smaller bag
 		final LinkedList<HashFunction> hashFunctions = new LinkedList<HashFunction>();
-		final NodeInPartitionTree rootSmaller = buildPartitionsOfSmallerBag(
-				smaller, hashFunctions, 0);
+		final NodeInPartitionTree rootSmaller = this.buildPartitionsOfSmallerBag(smaller, hashFunctions, 0);
 		// Ib) now build partitions of the larger bag in the same way as the
 		// smaller bag
-		final NodeInPartitionTree rootLarger = buildPartitionsOfLargerBag(
-				larger, rootSmaller, hashFunctions, 0);
+		final NodeInPartitionTree rootLarger = this.buildPartitionsOfLargerBag(larger, rootSmaller, hashFunctions, 0);
 		// II) Probing phase: now join the corresponding partitions of the
 		// smaller with the larger bag...
 		final QueryResult result = new QueryResult(0);
-		probe(rootSmaller, rootLarger, result);
+		this.probe(rootSmaller, rootLarger, result);
 		// System.out.println("HashJoin: Result sizes: Left:"+left.size()+
 		// " Right:"+right.size()+" Result:"+result.size());
-		if (result.size() > 0)
+		if (result.size() > 0) {
 			return result;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	protected NodeInPartitionTree buildPartitionsOfSmallerBag(
 			final QueryResult smaller, final List<HashFunction> hashFunctions,
 			final int position) {
-		if (smaller.size() <= LeafNodeInPartitionTree.maxNumberEntries)
+		if (smaller.size() <= LeafNodeInPartitionTree.maxNumberEntries) {
 			return new LeafNodeInPartitionTree(smaller);
+		}
 		final QueryResult[] partitions = new QueryResult[InnerNodeInPartitionTree.numberChildren];
 		for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-			partitions[i] = QueryResult.createInstance(0 /*
-														 * LeafNodeInPartitionTree.
-														 * maxNumberEntries
-														 */);
+			partitions[i] = QueryResult.createInstance(0);
 		}
 		while (hashFunctions.size() <= position) {
 			hashFunctions.add(new HashFunction());
@@ -147,8 +144,7 @@ public class HashJoin extends Join {
 			final Collection<Literal> key = HashFunction.getKey(b,
 					this.intersectionVariables);
 			if (key != null) {
-				partitions[(int) h.hash(key)
-						% InnerNodeInPartitionTree.numberChildren].add(b);
+				partitions[(int) h.hash(key) % InnerNodeInPartitionTree.numberChildren].add(b);
 			} else {
 				for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
 					partitions[i].add(b);
@@ -160,12 +156,13 @@ public class HashJoin extends Join {
 		for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
 			// System.out.println(i + ":" + partitions[i].size() + " <-> "
 			// + smaller.size());
-			if (partitions[i].size() == smaller.size())
+			if (partitions[i].size() == smaller.size()) {
 				return new LeafNodeInPartitionTree(smaller);
+			}
 		}
 		final InnerNodeInPartitionTree innerNode = new InnerNodeInPartitionTree();
 		for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-			final NodeInPartitionTree node = buildPartitionsOfSmallerBag(
+			final NodeInPartitionTree node = this.buildPartitionsOfSmallerBag(
 					partitions[i], hashFunctions, position + 1);
 			if (node instanceof InnerNodeInPartitionTree) {
 				partitions[i].release();
@@ -179,22 +176,19 @@ public class HashJoin extends Join {
 	protected NodeInPartitionTree buildPartitionsOfLargerBag(
 			final QueryResult larger, final NodeInPartitionTree rootSmaller,
 			final List<HashFunction> hashFunctions, final int position) {
-		if (rootSmaller instanceof LeafNodeInPartitionTree)
+		if (rootSmaller instanceof LeafNodeInPartitionTree) {
 			return new LeafNodeInPartitionTree(larger);
+		}
 		final InnerNodeInPartitionTree innerNodeOfSmallerBag = (InnerNodeInPartitionTree) rootSmaller;
 		final QueryResult[] partitions = new QueryResult[InnerNodeInPartitionTree.numberChildren];
 		for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-			partitions[i] = QueryResult.createInstance(0 // LeafNodeInPartitionTree
-					// .maxNumberEntries
-					);
+			partitions[i] = QueryResult.createInstance(0);
 		}
 		final HashFunction h = hashFunctions.get(position);
 		for (final Bindings b : larger) {
-			final Collection<Literal> key = HashFunction.getKey(b,
-					this.intersectionVariables);
+			final Collection<Literal> key = HashFunction.getKey(b, this.intersectionVariables);
 			if (key != null) {
-				partitions[(int) h.hash(key)
-						% InnerNodeInPartitionTree.numberChildren].add(b);
+				partitions[(int) h.hash(key) % InnerNodeInPartitionTree.numberChildren].add(b);
 			} else {
 				for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
 					partitions[i].add(b);
@@ -202,10 +196,9 @@ public class HashJoin extends Join {
 			}
 		}
 		final InnerNodeInPartitionTree innerNode = new InnerNodeInPartitionTree();
-		final Iterator<NodeInPartitionTree> it_smallerbag = innerNodeOfSmallerBag.nodes
-				.iterator();
+		final Iterator<NodeInPartitionTree> it_smallerbag = innerNodeOfSmallerBag.nodes.iterator();
 		for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-			final NodeInPartitionTree node = buildPartitionsOfLargerBag(
+			final NodeInPartitionTree node = this.buildPartitionsOfLargerBag(
 					partitions[i], it_smallerbag.next(), hashFunctions,
 					position + 1);
 			if (node instanceof InnerNodeInPartitionTree) {
@@ -232,8 +225,9 @@ public class HashJoin extends Join {
 				for (final Bindings b : smaller.partition) {
 					cb.add(b);
 				}
-			} else
+			} else {
 				cb = smaller.partition.getCollection();
+			}
 
 			for (final Bindings b1 : ((LeafNodeInPartitionTree) rootLarger).partition) {
 				// join with smaller partition, which is already in main memory!
@@ -246,12 +240,10 @@ public class HashJoin extends Join {
 			((LeafNodeInPartitionTree) rootLarger).partition.release();
 			((LeafNodeInPartitionTree) rootLarger).partition = null;
 		} else {
-			final Iterator<NodeInPartitionTree> first_it = ((InnerNodeInPartitionTree) rootSmaller).nodes
-					.iterator();
-			final Iterator<NodeInPartitionTree> second_it = ((InnerNodeInPartitionTree) rootLarger).nodes
-					.iterator();
+			final Iterator<NodeInPartitionTree> first_it = ((InnerNodeInPartitionTree) rootSmaller).nodes.iterator();
+			final Iterator<NodeInPartitionTree> second_it = ((InnerNodeInPartitionTree) rootLarger).nodes.iterator();
 			for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-				probe(first_it.next(), second_it.next(), result);
+				this.probe(first_it.next(), second_it.next(), result);
 			}
 		}
 	}
@@ -277,10 +269,11 @@ public class HashJoin extends Join {
 					final int size = or.getJoinResult().size();
 					Join.joinBindings(or.getJoinResult(), b1.clone(), b2);
 					if (or.getJoinResult().size() > size) {
-						if (smallerIsLeftOperand)
+						if (smallerIsLeftOperand) {
 							or.getJoinPartnerFromLeftOperand().add(b2);
-						else
+						} else {
 							or.getJoinPartnerFromLeftOperand().add(b1);
+						}
 					}
 				}
 			}
@@ -294,7 +287,7 @@ public class HashJoin extends Join {
 			final Iterator<NodeInPartitionTree> second_it = ((InnerNodeInPartitionTree) rootLarger).nodes
 					.iterator();
 			for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-				probeOptional(first_it.next(), second_it.next(),
+				this.probeOptional(first_it.next(), second_it.next(),
 						smallerIsLeftOperand, or);
 			}
 		}
@@ -302,8 +295,9 @@ public class HashJoin extends Join {
 
 	private OptionalResult joinOptionalResult(final QueryResult left,
 			final QueryResult right) {
-		if (left == null || right == null)
+		if (left == null || right == null) {
 			return null;
+		}
 		final QueryResult smaller;
 		final QueryResult larger;
 		if (left.size() < right.size()) {
@@ -316,17 +310,17 @@ public class HashJoin extends Join {
 		// I) building phase
 		// Ia) now build partitions of the smaller bag
 		final LinkedList<HashFunction> hashFunctions = new LinkedList<HashFunction>();
-		final NodeInPartitionTree rootSmaller = buildPartitionsOfSmallerBag(
+		final NodeInPartitionTree rootSmaller = this.buildPartitionsOfSmallerBag(
 				smaller, hashFunctions, 0);
 		// Ib) now build partitions of the larger bag in the same way as the
 		// smaller bag
-		final NodeInPartitionTree rootLarger = buildPartitionsOfLargerBag(
+		final NodeInPartitionTree rootLarger = this.buildPartitionsOfLargerBag(
 				larger, rootSmaller, hashFunctions, 0);
 		// II) Probing phase: now join the corresponding partitions of the
 		// smaller with the larger bag...
 		final OptionalResult or = new OptionalResult(new QueryResult(0),
 				new QueryResult(0));
-		probeOptional(rootSmaller, rootLarger, left.size() < right.size(), or);
+		this.probeOptional(rootSmaller, rootLarger, left.size() < right.size(), or);
 		return or;
 	}
 
@@ -339,19 +333,19 @@ public class HashJoin extends Join {
 	@Override
 	public void deleteAll(final int operandID) {
 		this.operands[operandID].release();
-		this.operands[operandID]= new ParallelIteratorMultipleQueryResults();		
+		this.operands[operandID]= new ParallelIteratorMultipleQueryResults();
 	}
 
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
-			final QueryResult qr = join(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
+			final QueryResult qr = this.join(this.operands[0].getQueryResult(), this.operands[1].getQueryResult());
 			if (qr != null) {
 				this.realCardinality = qr.size();
 				for (final OperatorIDTuple opId : this.succeedingOperators) {

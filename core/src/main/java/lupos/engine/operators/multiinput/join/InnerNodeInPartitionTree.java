@@ -23,23 +23,28 @@
  */
 package lupos.engine.operators.multiinput.join;
 
-import lupos.datastructures.dbmergesortedds.DiskCollection;
+import java.io.IOException;
+
+import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
 
 public class InnerNodeInPartitionTree extends NodeInPartitionTree {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4123052907267333958L;
 	protected static final int numberChildren = 100;
-	public DiskCollection<NodeInPartitionTree> nodes;
+	public PagedCollection<NodeInPartitionTree> nodes;
 
 	public InnerNodeInPartitionTree() {
-		this.nodes = new DiskCollection<NodeInPartitionTree>(
-				NodeInPartitionTree.class);
+		try {
+			this.nodes = new PagedCollection<NodeInPartitionTree>(NodeInPartitionTree.class);
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
 	}
 
-	public InnerNodeInPartitionTree(
-			final DiskCollection<NodeInPartitionTree> nodes) {
+	public InnerNodeInPartitionTree(final PagedCollection<NodeInPartitionTree> nodes) {
 		this.nodes = nodes;
 	}
 }

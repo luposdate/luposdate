@@ -45,7 +45,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	private final static int percentageOfHeapSpace = 50;
 
 	/**
-	 * The max. number of bytes in the buffer
+	 * The max. number of bytes in the buffer TODO change back
 	 */
 	protected static long MAXBYTESINBUFFER = (Runtime.getRuntime().maxMemory() * BufferManager_RandomAccess.percentageOfHeapSpace) / 100; // for 100 pages with default page size: 100 * 8 * 1024;
 
@@ -58,6 +58,9 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	 * This class contains the content of a single page plus a flag for storing whether or not the page has been modified...
 	 */
 	public static class Page {
+
+		public final static int MAXOUTPUT = 5;
+
 		public byte[] page;
 		public boolean modified;
 		public PageAddress pageaddress;
@@ -87,9 +90,12 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 			}
 			sb.append('[');
 			sb.append((0xFF & this.page[0]));
-			for(int i=1;i<this.page.length;i++){
+			for(int i=1; i<Math.min(this.page.length, Page.MAXOUTPUT); i++){
 				sb.append(',');
 				sb.append((0xFF & this.page[i]));
+			}
+			if(this.page.length>Page.MAXOUTPUT){
+				sb.append("...");
 			}
 			sb.append(']');
 			return sb.toString();

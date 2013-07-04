@@ -46,7 +46,7 @@ public abstract class BufferManager {
 		public boolean equals(final Object o){
 			if(o instanceof PageAddress){
 				final PageAddress other = (PageAddress)o;
-				return other.pagenumber == this.pagenumber && other.filename.compareTo(this.filename)==0;
+				return (other.pagenumber == this.pagenumber) && (other.filename.compareTo(this.filename)==0);
 			} else {
 				return false;
 			}

@@ -386,7 +386,6 @@ public class PageManager {
 	 * This method sets some internal states after loading...
 	 */
 	public void initAfterLoading(){
-		this.bufferManager.releaseAllPages();
 		try {
 			final byte[] page0 = this.bufferManager.getPage(this.pagesize, new PageAddress(0, this.filename));
 			this.maxNumberPages = (((0xFF & page0[6]) << 8 | (0xFF & page0[7])) << 8 | (0xFF & page0[8])) << 8 | (0xFF & page0[9]);

@@ -51,6 +51,7 @@ import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
 import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
 import lupos.engine.operators.multiinput.join.InnerNodeInPartitionTree;
 import lupos.engine.operators.multiinput.join.LeafNodeInPartitionTree;
@@ -561,15 +562,16 @@ public final class InputHelper {
 		return set;
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static NodeInPartitionTree readLuposNodeInPartitionTree(final InputStream in) throws IOException, ClassNotFoundException {
 		final byte type = InputHelper.readLuposByte(in);
 		switch (type) {
 		case 1:
-			return new LeafNodeInPartitionTree(new QueryResult(DiskCollection.readAndCreateLuposObject(in)));
+			final Collection<Bindings> coll = PagedCollection.readAndCreateLuposObject(in);
+			return new LeafNodeInPartitionTree(new QueryResult(coll));
 		default:
 		case 2:
-			return new InnerNodeInPartitionTree(DiskCollection.readAndCreateLuposObject(in));
+			final PagedCollection<NodeInPartitionTree> pcoll = PagedCollection.readAndCreateLuposObject(in);
+			return new InnerNodeInPartitionTree(pcoll);
 		}
 	}
 
