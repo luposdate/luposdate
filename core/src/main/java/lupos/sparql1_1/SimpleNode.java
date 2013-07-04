@@ -47,82 +47,96 @@ class SimpleNode implements Node {
   protected Object value;
   protected SPARQL1_1Parser parser;
 
-  public SimpleNode(int i) {
-    id = i;
+  public SimpleNode(final int i) {
+    this.id = i;
   }
 
-  public SimpleNode(SPARQL1_1Parser p, int i) {
+  public SimpleNode(final SPARQL1_1Parser p, final int i) {
     this(i);
-    parser = p;
+    this.parser = p;
   }
 
-  public void jjtOpen() {
+  @Override
+public void jjtOpen() {
   }
 
-  public void jjtClose() {
+  @Override
+public void jjtClose() {
   }
 
-  public void jjtSetParent(Node n) { parent = n; }
-  public Node jjtGetParent() { return parent; }
+  @Override
+public void jjtSetParent(final Node n) { this.parent = n; }
+  @Override
+public Node jjtGetParent() { return this.parent; }
 
-  public void jjtAddChild(Node n, int i) {
-    if (children == null) {
-      children = new Node[i + 1];
-    } else if (i >= children.length) {
-      Node c[] = new Node[i + 1];
-      System.arraycopy(children, 0, c, 0, children.length);
-      children = c;
+  @Override
+public void jjtAddChild(final Node n, final int i) {
+    if (this.children == null) {
+      this.children = new Node[i + 1];
+    } else if (i >= this.children.length) {
+      final Node c[] = new Node[i + 1];
+      System.arraycopy(this.children, 0, c, 0, this.children.length);
+      this.children = c;
     }
-    children[i] = n;
+    this.children[i] = n;
   }
 
-  public Node jjtGetChild(int i) {
-    return children[i];
+  @Override
+public Node jjtGetChild(final int i) {
+    return this.children[i];
   }
 
-  public int jjtGetNumChildren() {
-    return (children == null) ? 0 : children.length;
+  @Override
+public int jjtGetNumChildren() {
+    return (this.children == null) ? 0 : this.children.length;
   }
 
-  public void jjtSetValue(Object value) { this.value = value; }
-  public Object jjtGetValue() { return value; }
+  public void jjtSetValue(final Object value) { this.value = value; }
+  public Object jjtGetValue() { return this.value; }
 
   /** Accept the visitor. **/
-  public String accept(lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor){
+  @Override
+public String accept(final lupos.optimizations.sparql2core_sparql.SPARQL1_1ParserVisitorStringGenerator visitor){
 	    return visitor.visit(this);
   }
-    
-  public void accept(lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor visitor, OperatorConnection connection){
+
+  @Override
+public void accept(final lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection){
 	    throw new UnsupportedOperationException("This node of type "+this.getClass()+" of the abstract syntax tree does not support an SPARQL1_1OperatorgraphGeneratorVisitor!");
   }
-  
-  public void accept(lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor visitor, OperatorConnection connection, Item graphConstraint){
+
+  @Override
+public void accept(final lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection, final Item graphConstraint){
 	    throw new UnsupportedOperationException("This node of type "+this.getClass()+" of the abstract syntax tree does not support an SPARQL1_1OperatorgraphGeneratorVisitor with graphConstraint as additional parameter!");
   }
-  
-  public BasicOperator accept(lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor visitor, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode){
+
+  @Override
+public BasicOperator accept(final lupos.sparql1_1.operatorgraph.SPARQL1_1OperatorgraphGeneratorVisitor visitor, final OperatorConnection connection, final Item graphConstraint, final Variable subject, final Variable object, final Node subjectNode, final Node objectNode){
 	    throw new UnsupportedOperationException("This node of type "+this.getClass()+" of the abstract syntax tree does not support an SPARQL1_1OperatorgraphGeneratorVisitor with parameters SPARQL1_1OperatorgraphGeneratorVisitor visitor, OperatorConnection connection, Item graphConstraint, Variable subject, Variable object, Node subjectNode, Node objectNode!");
 }
-	
-  public String accept(SPARQL1_1ParserPathVisitorStringGenerator visitor, String subject, String object){
+
+  @Override
+public String accept(final SPARQL1_1ParserPathVisitorStringGenerator visitor, final String subject, final String object){
 	    throw new UnsupportedOperationException("This node of type "+this.getClass()+" of the abstract syntax tree does not support an SPARQL1_1ParserPathVisitorStringGenerator!");
-  } 
-    
-  public Object jjtAccept(SPARQL1_1ParserVisitor visitor, Object data){
+  }
+
+  @Override
+public Object jjtAccept(final SPARQL1_1ParserVisitor visitor, final Object data){
 	    return visitor.visit(this, data);
   }
 
-  @SuppressWarnings({ "rawtypes" })
-  public Object accept(EvaluationVisitor visitor, Bindings b, Object data) throws NotBoundException, TypeErrorException {
+  @Override
+@SuppressWarnings({ "rawtypes" })
+  public Object accept(final EvaluationVisitor visitor, final Bindings b, final Object data) throws NotBoundException, TypeErrorException {
 	    throw new UnsupportedOperationException("This node of type "+this.getClass()+" of the abstract syntax tree does not support an EvaluationVisitor!");
   }
-  
+
   /** Accept the visitor. **/
-  public Object childrenAccept(SPARQL1_1ParserVisitor visitor, Object data)
+  public Object childrenAccept(final SPARQL1_1ParserVisitor visitor, final Object data)
 {
-    if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-        children[i].jjtAccept(visitor, data);
+    if (this.children != null) {
+      for (int i = 0; i < this.children.length; ++i) {
+        this.children[i].jjtAccept(visitor, data);
       }
     }
     return data;
@@ -134,82 +148,88 @@ class SimpleNode implements Node {
      toString(String), otherwise overriding toString() is probably all
      you need to do. */
 
-  public String toString() { return SPARQL1_1ParserTreeConstants.jjtNodeName[id]; }
-  public String toString(String prefix) { return prefix + toString(); }
+  @Override
+public String toString() { return this.getClass().getSimpleName().substring(3); }
+  public String toString(final String prefix) { return prefix + this.toString(); }
 
   /* Override this method if you want to customize how the node dumps
      out its children. */
 
-  public void dump(String prefix) {
-    System.out.println(toString(prefix));
-    if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-        SimpleNode n = (SimpleNode)children[i];
+  public void dump(final String prefix) {
+    System.out.println(this.toString(prefix));
+    if (this.children != null) {
+      for (int i = 0; i < this.children.length; ++i) {
+        final SimpleNode n = (SimpleNode)this.children[i];
         if (n != null) {
           n.dump(prefix + " ");
         }
       }
     }
   }
-  
+
+	@Override
 	public void clearChildren() {
-		children = null;
-	}
-	
-	public Node[] getChildren() {
-		return children;
+		this.children = null;
 	}
 
+	@Override
+	public Node[] getChildren() {
+		return this.children;
+	}
+
+	@Override
 	public boolean replaceChild2(final Node replace, final Node by) {
-		for (int i = 0; i < children.length; i++) {
-			if (children[i].equals(replace)) {
-				children[i] = by;
+		for (int i = 0; i < this.children.length; i++) {
+			if (this.children[i].equals(replace)) {
+				this.children[i] = by;
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
+	@Override
 	public void addChild(final Node n) {
 		if (n != null) {
 			final Node parent = n.jjtGetParent();
 			if (parent != null && !parent.equals(this)) {
 				parent.removeChild(n);
 			}
-			if (children == null) {
-				jjtAddChild(n, 0);
+			if (this.children == null) {
+				this.jjtAddChild(n, 0);
 			} else {
-				jjtAddChild(n, children.length);
+				this.jjtAddChild(n, this.children.length);
 			}
 			n.jjtSetParent(this);
 		}
 	}
-	
+
 	/**
 	 * Adds a node in children list at position i. If i>children.length the node
 	 * will not be appended
 	 */
+	@Override
 	public void addChild(final Node n, final int i) {
 		final Node parent = n.jjtGetParent();
 		if (parent != null && !parent.equals(this)) {
 			parent.removeChild(n);
 		}
-		if (children == null) {
-			jjtAddChild(n, 0);
-		} else if (i <= children.length) {
-			final Node c[] = new Node[children.length + 1];
+		if (this.children == null) {
+			this.jjtAddChild(n, 0);
+		} else if (i <= this.children.length) {
+			final Node c[] = new Node[this.children.length + 1];
 			for (int j = 0; j < c.length; j++) {
 				if (j < i) {
-					c[j] = children[j];
+					c[j] = this.children[j];
 				} else if (j == i) {
 					c[j] = n;
 				} else {
-					c[j] = children[j - 1];
+					c[j] = this.children[j - 1];
 				}
 			}
-			children = c;
+			this.children = c;
 		} else {
-			jjtAddChild(n, children.length);
+			this.jjtAddChild(n, this.children.length);
 		}
 		n.jjtSetParent(this);
 	}
@@ -218,17 +238,18 @@ class SimpleNode implements Node {
 	 * This method must be overridden by all abstract syntax tree nodes, which store additional information...
 	 * @param node The node from which the initialization should be taken over!
 	 */
-	public void init(final SimpleNode node){		
+	public void init(final SimpleNode node){
 	}
-	
+
+	@Override
 	public SimpleNode clone(final boolean clean) {
 		SimpleNode ret = null;
 		try {
 			ret = this.getClass().getConstructor(Integer.TYPE).newInstance(
 					new Random().nextInt(Integer.MAX_VALUE));
-			if (!clean && children != null) {
-				for (int i = 0; i < children.length; i++) {
-					ret.addChild(children[i].clone(false), i);
+			if (!clean && this.children != null) {
+				for (int i = 0; i < this.children.length; i++) {
+					ret.addChild(this.children[i].clone(false), i);
 				}
 			}
 			ret.init(this);
@@ -248,51 +269,56 @@ class SimpleNode implements Node {
 		return ret;
 	}
 
+	@Override
 	public SimpleNode cloneStillChild(final boolean clean) {
-		final SimpleNode ret = clone(clean);
-		this.parent.addChild(ret, parent.getChildNumber(this) + 1);
+		final SimpleNode ret = this.clone(clean);
+		this.parent.addChild(ret, this.parent.getChildNumber(this) + 1);
 		return ret;
 	}
-	
+
+	@Override
 	public void removeChild(final int i) {
-		if (children.length - 1 != 0) {
-			final Node[] newChildren = new Node[children.length - 1];
-			if (i > 0 && i < children.length - 1) {
-				System.arraycopy(children, 0, newChildren, 0, i);
-				System.arraycopy(children, i + 1, newChildren, i,
-						children.length - i - 1);
+		if (this.children.length - 1 != 0) {
+			final Node[] newChildren = new Node[this.children.length - 1];
+			if (i > 0 && i < this.children.length - 1) {
+				System.arraycopy(this.children, 0, newChildren, 0, i);
+				System.arraycopy(this.children, i + 1, newChildren, i,
+						this.children.length - i - 1);
 			} else {
 				if (i == 0) {
-					if (children.length > 0)
-						System.arraycopy(children, 1, newChildren, 0,
-								children.length - 1);
-					else
-						children = null;
+					if (this.children.length > 0) {
+						System.arraycopy(this.children, 1, newChildren, 0,
+								this.children.length - 1);
+					} else {
+						this.children = null;
+					}
 				} else {
-					System.arraycopy(children, 0, newChildren, 0,
-							children.length - 1);
+					System.arraycopy(this.children, 0, newChildren, 0,
+							this.children.length - 1);
 				}
 			}
-			children[i].jjtSetParent(null);
-			children = newChildren;
+			this.children[i].jjtSetParent(null);
+			this.children = newChildren;
 		} else {
-			children[0].jjtSetParent(null);
-			children = null;
+			this.children[0].jjtSetParent(null);
+			this.children = null;
 		}
 	}
 
+	@Override
 	public void removeChild(final Node n) {
-		for (int i = 0; i < children.length; i++) {
-			if (n.equals(children[i])) {
-				removeChild(i);
+		for (int i = 0; i < this.children.length; i++) {
+			if (n.equals(this.children[i])) {
+				this.removeChild(i);
 				break;
 			}
 		}
 	}
-	
+
+	@Override
 	public int getChildNumber(final Node node) {
-		for (int i = 0; i < children.length; i++) {
-			if (node.equals(children[i])) {
+		for (int i = 0; i < this.children.length; i++) {
+			if (node.equals(this.children[i])) {
 				return i;
 			}
 		}

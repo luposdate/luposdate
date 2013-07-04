@@ -40,21 +40,21 @@ import lupos.misc.debug.DebugStep;
 
 public class Group extends SingleInputOperator {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -3636219378615890918L;
 
-	private ComparatorBindings comp;
+	private final ComparatorBindings comp;
 
 	/**
 	 * Constructor sets the node, the parent and the comparator
-	 * 
+	 *
 	 * @param node
 	 */
 	public Group(final lupos.sparql1_1.Node node) {
 		this.comp = new ComparatorAST(node);
 	}
-	
+
 	public Group(final ComparatorBindings comp) {
 		this.comp = comp;
 	}
@@ -63,7 +63,7 @@ public class Group extends SingleInputOperator {
 
 	/**
 	 * saving the QueryResult
-	 * 
+	 *
 	 * @param QueryResult
 	 * @param int
 	 * @return QueryResult
@@ -73,7 +73,7 @@ public class Group extends SingleInputOperator {
 		this.queryResults.addQueryResult(queryResult);
 		return null;
 	}
-	
+
 	/**
 	 * Bindings are compared and split in separate QueryResults
 	 *
@@ -81,13 +81,13 @@ public class Group extends SingleInputOperator {
 	private void computeResult(){
 		if (!this.queryResults.isEmpty()) {
 			QueryResult newQueryResult = QueryResult.createInstance();
-			Iterator<Bindings> it = this.queryResults.getQueryResult().oneTimeIterator();
+			final Iterator<Bindings> it = this.queryResults.getQueryResult().oneTimeIterator();
 			Bindings oldBinding = null;
 			boolean firstRun = true;
 			while (it.hasNext()) {
-				Bindings b = it.next();
+				final Bindings b = it.next();
 				if (!firstRun) {
-					int compareValue = this.comp.compare(oldBinding, b);
+					final int compareValue = this.comp.compare(oldBinding, b);
 					if (compareValue == 0) {
 						newQueryResult.add(b);
 					} else {
@@ -113,38 +113,40 @@ public class Group extends SingleInputOperator {
 
 	/**
 	 * Bindings are compared and split in separate QueryResults
-	 * 
+	 *
 	 * @param EndOfEvaluationMessage
 	 * @return Message
 	 */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		computeResult();
+		this.computeResult();
 		return msg;
 	}
 
 	/**
 	 * Bindings are compared and split in separate QueryResults
-	 * 
+	 *
 	 * @param ComputeIntermediateResultMessage
 	 * @return Message
 	 */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
-		computeResult();
+		this.deleteAllAtSucceedingOperators();
+		this.computeResult();
+		this.queryResults.reset();
 		return msg;
 	}
-	
+
 	private void computeResultDebug(final DebugStep debugstep){
 		if (!this.queryResults.isEmpty()) {
 			QueryResult newQueryResult = QueryResult.createInstance();
-			Iterator<Bindings> it = this.queryResults.getQueryResult().oneTimeIterator();
+			final Iterator<Bindings> it = this.queryResults.getQueryResult().oneTimeIterator();
 			Bindings oldBinding = null;
 			boolean firstRun = true;
 			while (it.hasNext()) {
-				Bindings b = it.next();
+				final Bindings b = it.next();
 				if (!firstRun) {
-					int compareValue = this.comp.compare(oldBinding, b);
+					final int compareValue = this.comp.compare(oldBinding, b);
 					if (compareValue == 0) {
 						newQueryResult.add(b);
 					} else {
@@ -170,16 +172,27 @@ public class Group extends SingleInputOperator {
 		}
 	}
 
-	
+
 	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
-		computeResultDebug(debugstep);
+		this.computeResultDebug(debugstep);
 		return msg;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
-		computeResultDebug(debugstep);
+		this.computeResultDebug(debugstep);
 		return msg;
+	}
+
+	@Override
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
+		this.queryResults.removeAll(queryResult);
+		return null;
+	}
+
+	@Override
+	public void deleteQueryResult(final int operandID) {
+		this.queryResults.removeAll();
 	}
 }

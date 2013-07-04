@@ -56,79 +56,89 @@ public abstract class SortedBagSort extends Sort {
 			final int operandID) {
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
 		while (itb.hasNext()) {
-			sswd.add(itb.next());
+			this.sswd.add(itb.next());
 		}
 		return null;
 	}
 
 	protected ParallelIterator<Bindings> getIterator() {
-		final Iterator<Bindings> itb = sswd.iterator();
+		final Iterator<Bindings> itb = this.sswd.iterator();
 		return new ParallelIterator<Bindings>() {
 
+			@Override
 			public void close() {
 				// derived classes may override the above method in order to
 				// release some resources here!
 			}
 
+			@Override
 			public boolean hasNext() {
 				return itb.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
 				return itb.next();
 			}
 
+			@Override
 			public void remove() {
 				itb.remove();
 			}
 
 		};
 	}
-	
+
 	private void computeResult(){
-		final QueryResult qr = QueryResult.createInstance(getIterator());
-		if (succeedingOperators.size() > 1)
+		final QueryResult qr = QueryResult.createInstance(this.getIterator());
+		if (this.succeedingOperators.size() > 1) {
 			qr.materialize();
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		}
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			opId.processAll(qr);
 		}
 	}
 
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		computeResult();
+		this.computeResult();
 		return msg;
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
-		computeResult();
+		this.computeResult();
 		return msg;
 	}
 
-	public QueryResult deleteQueryResult(final QueryResult queryResult,
-			final int operandID) {
+	@Override
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		// problem: it does not count the number of occurences of a binding
 		// i.e. { ?a=<a> }, { ?a=<a> } and delete { ?a=<a> } will result in
 		// {} instead of { ?a=<a> }!!!!!!
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
-		while (itb.hasNext())
-			sswd.remove(itb.next());
+		while (itb.hasNext()) {
+			this.sswd.remove(itb.next());
+		}
 		return null;
 	}
 
+	@Override
 	public void deleteAll(final int operandID) {
-		sswd.clear();
+		this.sswd.clear();
 	}
 
+	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
-	
+
 	private void computeResultDebug(final DebugStep debugstep){
-		final QueryResult qr = QueryResult.createInstance(getIterator());
-		if (succeedingOperators.size() > 1)
+		final QueryResult qr = QueryResult.createInstance(this.getIterator());
+		if (this.succeedingOperators.size() > 1) {
 			qr.materialize();
-		for (final OperatorIDTuple opId : succeedingOperators) {
+		}
+		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			final QueryResultDebug qrDebug = new QueryResultDebug(qr,
 					debugstep, this, opId.getOperator(), true);
 			((Operator) opId.getOperator()).processAllDebug(qrDebug, opId
@@ -136,16 +146,18 @@ public abstract class SortedBagSort extends Sort {
 		}
 	}
 
+	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
 			final DebugStep debugstep) {
-		computeResultDebug(debugstep);
+		this.computeResultDebug(debugstep);
 		return msg;
 	}
-	
+
+	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		computeResultDebug(debugstep);
+		this.computeResultDebug(debugstep);
 		return msg;
 	}
 }

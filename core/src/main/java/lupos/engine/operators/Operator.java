@@ -35,7 +35,7 @@ import lupos.misc.debug.DebugStep;
 public class Operator extends BasicOperator {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -8701923927442894567L;
 
@@ -48,7 +48,7 @@ public class Operator extends BasicOperator {
 	 * operand and C is the right operand of B. Then a succeeding operator of C
 	 * is B with operand number 1 (A has a succeeding operator B with operand
 	 * number 0).
-	 * 
+	 *
 	 * @param queryResult
 	 *            The received QueryResult
 	 * @param operandID
@@ -57,20 +57,17 @@ public class Operator extends BasicOperator {
 	 */
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
-		throw (new UnsupportedOperationException("This Operator(" + this
-				+ ") should have been replaced before being used."));
+		throw (new UnsupportedOperationException("This Operator(" + this + ") should have been replaced before being used."));
 	}
 
-	public QueryResult deleteQueryResult(final QueryResult queryResult,
-			final int operandID) {
+	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		// in the typical case, just apply the normal process method
 		// this works well e.g. for filter operators, but does not work well
 		// for those operators, which intermediately save the query results
 		// as well as pipeline breakers...
-		return process(queryResult, operandID);
+		return this.process(queryResult, operandID);
 	}
 
-	@SuppressWarnings("unused")
 	public void deleteQueryResult(final int operandID) {
 		// to be overriden if an operator intermediately stores a QueryResult (e.g. pipeline-breakers) and a QueryResult must be deleted...
 	}
@@ -84,7 +81,7 @@ public class Operator extends BasicOperator {
 
 	/**
 	 * The constructor, which sets the succeeding operators
-	 * 
+	 *
 	 * @param succeedingOperators
 	 *            the succeeding operators
 	 */
@@ -94,7 +91,7 @@ public class Operator extends BasicOperator {
 
 	/**
 	 * This constructor can be used to set only one succeeding operator
-	 * 
+	 *
 	 * @param succeedingOperator
 	 *            the one and only succeeding operator
 	 */
@@ -105,16 +102,17 @@ public class Operator extends BasicOperator {
 	/**
 	 * This method processes a received QueryResult with operand number and
 	 * forwards the result to the succeeding operators.
-	 * 
+	 *
 	 * @param queryResult
 	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
 	 */
 	public void processAll(final QueryResult queryResult, final int operandID) {
-		final QueryResult opp = process(queryResult, operandID);
-		if (opp == null)
+		final QueryResult opp = this.process(queryResult, operandID);
+		if (opp == null) {
 			return;
+		}
 		if (this.succeedingOperators.size() > 1) {
 			opp.materialize();
 		}
@@ -126,17 +124,18 @@ public class Operator extends BasicOperator {
 	/**
 	 * This method processes a received QueryResult with operand number and
 	 * forwards the result to the succeeding operators.
-	 * 
+	 *
 	 * @param queryResult
 	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
 	 */
 	public void deleteAll(final QueryResult queryResult, final int operandID) {
-		final QueryResult opp = deleteQueryResult(queryResult, operandID);
+		final QueryResult opp = this.deleteQueryResult(queryResult, operandID);
 		if (!this.isPipelineBreaker()) {
-			if (opp == null)
+			if (opp == null) {
 				return;
+			}
 			if (this.succeedingOperators.size() > 1) {
 				opp.materialize();
 			}
@@ -144,14 +143,15 @@ public class Operator extends BasicOperator {
 		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			if (this.isPipelineBreaker()) {
 				((Operator) opId.getOperator()).deleteAll(opId.getId());
-			} else
+			} else {
 				((Operator) opId.getOperator()).deleteAll(opp, opId.getId());
+			}
 		}
 	}
 
 	public void deleteAll(final int operandID) {
-		deleteQueryResult(operandID);
-		deleteAllAtSucceedingOperators();
+		this.deleteQueryResult(operandID);
+		this.deleteAllAtSucceedingOperators();
 	}
 
 	public void deleteAllAtSucceedingOperators() {
@@ -163,27 +163,27 @@ public class Operator extends BasicOperator {
 	protected boolean isPipelineBreaker() {
 		return false;
 	}
-	
+
 	/**
 	 * This method processes a received QueryResult with operand number and
 	 * forwards the result to the succeeding operators. It further sends debug
 	 * messages for stepwise debugging!
-	 * 
+	 *
 	 * @param queryResult
 	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
 	 */
 	public void deleteAllDebug(final int operandID, final DebugStep debugstep) {
-		deleteQueryResult(operandID);
-		deleteAllDebugAtSucceedingOperators(debugstep);
+		this.deleteQueryResult(operandID);
+		this.deleteAllDebugAtSucceedingOperators(debugstep);
 	}
 
 	/**
 	 * This method processes a received QueryResult with operand number and
 	 * forwards the result to the succeeding operators. It further sends debug
 	 * messages for stepwise debugging!
-	 * 
+	 *
 	 * @param queryResult
 	 *            the received QueryResult
 	 * @param operandID
@@ -191,10 +191,11 @@ public class Operator extends BasicOperator {
 	 */
 	public void deleteAllDebug(final QueryResult queryResult,
 			final int operandID, final DebugStep debugstep) {
-		final QueryResult opp = deleteQueryResult(queryResult, operandID);
+		final QueryResult opp = this.deleteQueryResult(queryResult, operandID);
 		if (!this.isPipelineBreaker()) {
-			if (opp == null)
+			if (opp == null) {
 				return;
+			}
 			if (this.succeedingOperators.size() > 1) {
 				opp.materialize();
 			}
@@ -212,7 +213,7 @@ public class Operator extends BasicOperator {
 			}
 		}
 	}
-	
+
 	public void deleteAllDebugAtSucceedingOperators(final DebugStep debugstep) {
 		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			debugstep.stepDeleteAll(this, opId.getOperator());
@@ -220,19 +221,19 @@ public class Operator extends BasicOperator {
 					debugstep);
 		}
 	}
-	
+
 	/**
 	 * This method processes a received QueryResult with operand number and
 	 * forwards the result to the succeeding operators. It further sends debug
 	 * messages for stepwise debugging!
-	 * 
+	 *
 	 * @param queryResult
 	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
 	 */
 	public void processAllDebug(final QueryResult queryResult, final int operandID, final DebugStep debugstep) {
-		final QueryResult opp = process(queryResult, operandID);
+		final QueryResult opp = this.process(queryResult, operandID);
 		if (opp == null){
 			return;
 		}

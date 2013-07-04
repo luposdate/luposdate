@@ -35,18 +35,18 @@ import lupos.datastructures.bindings.Bindings;
  * It can be used to instantiate an IteratorQueryResult (and therefore serve as basis for a new QueryResult integrating all collected QueryResult, but iterating through them only once via oneTimeIterator())
  */
 public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bindings>{
-	
+
 	protected List<QueryResult> queryResults = new LinkedList<QueryResult>();
 	protected Iterator<QueryResult> currentQueryResult = null;
 	protected Iterator<Bindings> currentIterator = null;
-	
+
 	public void addQueryResult(final QueryResult queryResult){
 		if(this.currentQueryResult!=null){
 			throw new RuntimeException("Adding a queryresult, but ParallelIteratorMultipleQueryResults is already used for iterating...");
 		}
 		this.queryResults.add(queryResult);
 	}
-	
+
 	@Override
 	public boolean hasNext() {
 		if(this.currentIterator==null){
@@ -56,15 +56,15 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 			if(!this.currentQueryResult.hasNext()){
 				return false;
 			}
-			this.currentIterator = this.currentQueryResult.next().oneTimeIterator(); 
-		}		
+			this.currentIterator = this.currentQueryResult.next().oneTimeIterator();
+		}
 		while(!this.currentIterator.hasNext()){
 			if(!this.currentQueryResult.hasNext()){
 				return false;
 			}
 			this.close(); // only closes the current iterator (which is at the end...)
 			this.currentIterator = this.currentQueryResult.next().oneTimeIterator();
-		} 
+		}
 		return true;
 	}
 
@@ -87,19 +87,20 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 	@Override
 	public void close() {
 		if(this.currentIterator!=null){
-			if(this.currentIterator instanceof ParallelIterator)
+			if(this.currentIterator instanceof ParallelIterator) {
 				((ParallelIterator<Bindings>)this.currentIterator).close();
+			}
 		}
 	}
-	
+
 	public boolean isEmpty(){
 		return this.queryResults.isEmpty();
 	}
-	
+
 	/**
 	 * This method returns a queryresult integrating all collected queryresults.
 	 * If only one queryresult has been collected, only this is returned.
-	 * 
+	 *
 	 * @return a queryresult integrating all collected queryresults
 	 */
 	public QueryResult getQueryResult(){
@@ -108,21 +109,31 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		}
 		return QueryResult.createInstance(this);
 	}
-	
+
 	public void release(){
-		for(QueryResult qr: this.queryResults){
+		for(final QueryResult qr: this.queryResults){
 			qr.release();
 		}
 	}
-	
-	public void removeAll(QueryResult queryResult){
-		for(QueryResult qr: this.queryResults){
+
+	public void removeAll(final QueryResult queryResult){
+		for(final QueryResult qr: this.queryResults){
 			qr.removeAll(queryResult);
 		}
 	}
-	
+
+	public void reset(){
+		this.currentQueryResult = null;
+		this.currentIterator = null;
+	}
+
+	public void removeAll(){
+		this.reset();
+		this.queryResults.clear();
+	}
+
 	public void materialize(){
-		for(QueryResult qr: this.queryResults){
+		for(final QueryResult qr: this.queryResults){
 			qr.materialize();
 		}
 	}
