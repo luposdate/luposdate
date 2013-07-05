@@ -126,7 +126,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 			final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
 			final byte[] page = BufferManager.getBufferManager().getPage(this.TABLEPAGESIZE, pageAddress);
 
-			final int hashAddress = element.hashCode() % this.TABLESIZE;
+			final int hashAddress = Math.abs(element.hashCode() % this.TABLESIZE);
 
 			long pointer = InputHelper.readLuposLong(new ByteArrayInputStream(page, hashAddress * 8, 8));
 
@@ -176,7 +176,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 			final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
 			final byte[] page = BufferManager.getBufferManager().getPage(this.TABLEPAGESIZE, pageAddress);
 
-			final int hashAddress = element.hashCode() % this.TABLESIZE;
+			final int hashAddress = Math.abs(element.hashCode() % this.TABLESIZE);
 
 			long pointer = InputHelper.readLuposLong(new ByteArrayInputStream(page, hashAddress * 8, 8));
 
@@ -216,7 +216,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 			final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
 			final byte[] page = BufferManager.getBufferManager().getPage(this.TABLEPAGESIZE, pageAddress);
 
-			final int hashAddress = element.hashCode() % this.TABLESIZE;
+			final int hashAddress = Math.abs(element.hashCode() % this.TABLESIZE);
 
 			long pointer = InputHelper.readLuposLong(new ByteArrayInputStream(page, hashAddress * 8, 8));
 
@@ -256,7 +256,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 			final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
 			final byte[] page = BufferManager.getBufferManager().getPage(this.TABLEPAGESIZE, pageAddress);
 
-			final int hashAddress = element.hashCode() % this.TABLESIZE;
+			final int hashAddress = Math.abs(element.hashCode() % this.TABLESIZE);
 
 			long pointer = InputHelper.readLuposLong(new ByteArrayInputStream(page, hashAddress * 8, 8));
 
