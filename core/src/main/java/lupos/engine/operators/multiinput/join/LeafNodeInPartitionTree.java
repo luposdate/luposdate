@@ -27,7 +27,7 @@ import lupos.datastructures.queryresult.QueryResult;
 
 public class LeafNodeInPartitionTree extends NodeInPartitionTree {
 
-	protected static final int maxNumberEntries = 100;
+	protected static final int maxNumberEntries = 10000;
 	public QueryResult partition;
 
 	public LeafNodeInPartitionTree(final QueryResult partition) {

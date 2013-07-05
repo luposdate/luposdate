@@ -77,6 +77,10 @@ public class ContinousPagesOutputStream extends OutputStream {
 		return this.currentPageNumber;
 	}
 
+	public int getPosInCurrentPage() {
+		return this.index;
+	}
+
 	@Override
 	public void write(final int b) throws IOException {
 		if (this.index >= this.currentPage.length) {

@@ -29,7 +29,7 @@ import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
 
 public class InnerNodeInPartitionTree extends NodeInPartitionTree {
 
-	protected static final int numberChildren = 1000;
+	protected static final int numberChildren = 100;
 	public PagedCollection<NodeInPartitionTree> nodes;
 
 	public InnerNodeInPartitionTree() {

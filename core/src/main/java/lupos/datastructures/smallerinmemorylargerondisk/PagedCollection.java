@@ -32,9 +32,9 @@ import java.net.URISyntaxException;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 
-import lupos.datastructures.buffermanager.PageInputStream;
+import lupos.datastructures.buffermanager.ContinousPagesInputStream;
+import lupos.datastructures.buffermanager.ContinousPagesOutputStream;
 import lupos.datastructures.buffermanager.PageManager;
-import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.io.ExistingByteArrayOutputStream;
 import lupos.io.Registration;
@@ -66,9 +66,9 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	protected int size;
 	protected final String filename;
 	protected final PageManager pageManager;
-	protected int lastPage;
+	protected long endOfCollection;
 	protected final Class<? extends E> classname;
-	protected PageOutputStream out = null;
+	protected ContinousPagesOutputStream out = null;
 
 	protected final static byte NOTREMOVED = 0;
 
@@ -81,7 +81,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.filename = DiskCollection.newBaseFilename();
 		this.size=0;
 		this.pageManager = new PageManager(this.filename);
-		this.lastPage = 1;
+		this.endOfCollection = 12;
 		this.classname = classname;
 		this.initFirstPage();
 	}
@@ -93,13 +93,12 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	 * @throws IOException
 	 */
 	public PagedCollection(final String filename, final Class<? extends E> classname) throws IOException {
-		DiskCollection.makeFolders();
 		this.filename = filename;
 		this.pageManager = new PageManager(this.filename, false);
-		final byte[] page = this.pageManager.getPage(1);
-		final InputStream in = new ByteArrayInputStream(page, PageInputStream.DEFAULTSTARTINDEX, 8);
+		final byte[] page = this.pageManager.getPage(0);
+		final InputStream in = new ByteArrayInputStream(page, 0, 12);
 		this.size = InputHelper.readLuposInteger(in);
-		this.lastPage = InputHelper.readLuposInteger(in);
+		this.endOfCollection = InputHelper.readLuposLong(in);
 		in.close();
 		this.classname = classname;
 	}
@@ -111,7 +110,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		}
 		this.pageManager.release();
 		this.size = 0;
-		this.lastPage = 1;
+		this.endOfCollection = 12;
 	}
 
 	@Override
@@ -125,7 +124,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 			this.closeOutputStream();
 			return new Iterator<E>(){
 
-				final PageInputStream in = new PageInputStream(1, PagedCollection.this.pageManager, PageInputStream.DEFAULTSTARTINDEX + 8);
+				final ContinousPagesInputStream in = new ContinousPagesInputStream(0, PagedCollection.this.pageManager, 12);
 				E next = null;
 				int currentPageNumber;
 				int currentIndexInPage;
@@ -151,11 +150,17 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 							this.currentPageNumber = this.in.getCurrentPageNumber();
 							this.currentIndexInPage = this.in.getIndex();
 
+							if((long)this.currentPageNumber * PageManager.getDefaultPageSize() + this.currentIndexInPage>=PagedCollection.this.endOfCollection){
+								return null;
+							}
 							byte flag;
 							while((flag = InputHelper.readLuposByte(this.in))!=PagedCollection.NOTREMOVED){
 								for(int i=0; i<flag; i++){
 									InputHelper.readLuposByte(this.in); // just read over removed entry!
 								}
+							}
+							if((long)this.currentPageNumber * PageManager.getDefaultPageSize() + this.currentIndexInPage>=PagedCollection.this.endOfCollection){
+								return null;
 							}
 							return Registration.deserializeWithoutId(PagedCollection.this.classname, this.in);
 						} catch (final EOFException e) {
@@ -198,7 +203,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 
 							final int nextPage = (((0xFF & page[0]) << 8 | (0xFF & page[1])) << 8 | (0xFF & page[2])) << 8 | (0xFF & page[3]);
 							page = PagedCollection.this.pageManager.getPage(nextPage);
-							this.currentIndexInPage = PageInputStream.DEFAULTSTARTINDEX;
+							this.currentIndexInPage = 0;
 							this.currentPageNumber = nextPage;
 						}
 						while(endIndex-this.currentIndexInPage>127){
@@ -213,7 +218,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 						this.currentPageNumber = endPage;
 
 						PagedCollection.this.size--;
-						PagedCollection.this.storeSizeAndLastPage();
+						PagedCollection.this.storeSizeAndEndOfCollection();
 					} catch (final IOException e) {
 						System.err.println(e);
 						e.printStackTrace();
@@ -245,37 +250,43 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 
 	protected final void openOutputStream() throws IOException {
 		if(this.out==null){
-			this.out = new PageOutputStream(this.lastPage, this.pageManager, false, true);
+			this.out = new ContinousPagesOutputStream((int)(this.endOfCollection / PageManager.getDefaultPageSize()), this.pageManager, false, (int)(this.endOfCollection % PageManager.getDefaultPageSize()));
 		}
 	}
 
 	protected final void closeOutputStream() throws IOException {
 		if(this.out!=null){
 			this.out.close();
-			this.lastPage = this.out.getCurrentPageNumber();
+			this.endOfCollection = this.out.getCurrentPageNumber() * PageManager.getDefaultPageSize() + this.out.getPosInCurrentPage();
 			this.out = null;
-			this.storeSizeAndLastPage();
+			this.storeSizeAndEndOfCollection();
 		}
 	}
 
-	protected final void storeSizeAndLastPage() throws IOException {
-		final byte[] page = this.pageManager.getPage(1);
-		final ExistingByteArrayOutputStream out1 = new ExistingByteArrayOutputStream(page, PageInputStream.DEFAULTSTARTINDEX);
+	protected final void storeSizeAndEndOfCollection() throws IOException {
+		final byte[] page = this.pageManager.getPage(0);
+		final ExistingByteArrayOutputStream out1 = new ExistingByteArrayOutputStream(page, 0);
 		OutHelper.writeLuposInt(this.size, out1);
-		OutHelper.writeLuposInt(this.lastPage, out1);
+		OutHelper.writeLuposLong(this.endOfCollection, out1);
 		out1.close();
-		this.pageManager.modifyPage(1, page);
+		this.pageManager.modifyPage(0, page);
 	}
 
 	protected final void initFirstPage() throws IOException {
-		final int newPageNumber = this.pageManager.getNumberOfNewPage();
-		if(newPageNumber!=1){
-			System.err.println("lupos.datastructures.smallerinmemorylargerondisk.PagedCollection: Something went wrong, new page from Page Manager should be 1, but is " + newPageNumber);
-		}
 		final byte[] page = this.pageManager.getEmptyPage();
+		page[0] = (byte) 0;
+		page[1] = (byte) 0;
+		page[2] = (byte) 0;
+		page[3] = (byte) 0;
 		page[4] = (byte) 0;
-		page[5] = (byte) (PageInputStream.DEFAULTSTARTINDEX + 8);
-		this.pageManager.modifyPage(1, page);
+		page[5] = (byte) 0;
+		page[6] = (byte) 0;
+		page[7] = (byte) 0;
+		page[8] = (byte) 0;
+		page[9] = (byte) 0;
+		page[10] = (byte) 0;
+		page[11] = (byte) 12;
+		this.pageManager.modifyPage(0, page);
 	}
 
 	public void writeLuposObject(final OutputStream out) throws IOException {
@@ -291,5 +302,12 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 
 	public int lengthLuposObject() {
 		return LengthHelper.lengthLuposString(this.filename) + Registration.lengthSerializeId();
+	}
+
+	public static void main(final String[] args) throws IOException{
+		final PagedCollection<String> c = new PagedCollection<String>(String.class);
+		c.add("hallo");
+		c.add("hello");
+		System.out.println(c);
 	}
 }
