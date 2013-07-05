@@ -112,7 +112,6 @@ public class NonBlockingFastDistinct extends Distinct {
 				public void finalize(){
 					this.close();
 				}
-
 			});
 
 	}

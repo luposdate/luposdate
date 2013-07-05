@@ -87,7 +87,7 @@ public class SortLimit extends SingleInputOperator {
 			}
 		}
 		if (itb instanceof ParallelIterator) {
-			((ParallelIterator) itb).close();
+			((ParallelIterator<Bindings>) itb).close();
 		}
 		return QueryResult.createInstance(new ImmutableIterator<Bindings>() {
 			int i = 0;

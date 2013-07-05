@@ -69,6 +69,8 @@ public class Limit extends SingleInputOperator {
 		return QueryResult.createInstance(
 				new ParallelIterator<Bindings>(){
 
+					boolean closed = false;
+
 					@Override
 					public boolean hasNext() {
 						return (Limit.this.pos<Limit.this.limit) && itb.hasNext();
@@ -91,9 +93,17 @@ public class Limit extends SingleInputOperator {
 
 					@Override
 					public void close() {
-						if(itb instanceof ParallelIterator){
-							((ParallelIterator<Bindings>)itb).close();
+						if(!this.closed){
+							if(itb instanceof ParallelIterator){
+								((ParallelIterator<Bindings>)itb).close();
+							}
+							this.closed = true;
 						}
+					}
+
+					@Override
+					public void finalize(){
+						this.close();
 					}
 
 		});
