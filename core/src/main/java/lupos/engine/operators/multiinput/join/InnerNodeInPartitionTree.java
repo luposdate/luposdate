@@ -28,11 +28,8 @@ import java.io.IOException;
 import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
 
 public class InnerNodeInPartitionTree extends NodeInPartitionTree {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -4123052907267333958L;
-	protected static final int numberChildren = 100;
+
+	protected static final int numberChildren = 1000;
 	public PagedCollection<NodeInPartitionTree> nodes;
 
 	public InnerNodeInPartitionTree() {
@@ -46,5 +43,21 @@ public class InnerNodeInPartitionTree extends NodeInPartitionTree {
 
 	public InnerNodeInPartitionTree(final PagedCollection<NodeInPartitionTree> nodes) {
 		this.nodes = nodes;
+	}
+
+	@Override
+	public void release() {
+		if(this.nodes!=null){
+			for(final NodeInPartitionTree nipt: this.nodes){
+				nipt.release();
+			}
+			try {
+				this.nodes.release();
+			} catch (final IOException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+			this.nodes = null;
+		}
 	}
 }

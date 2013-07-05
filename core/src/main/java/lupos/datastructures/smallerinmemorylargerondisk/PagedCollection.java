@@ -109,7 +109,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 			this.out.close();
 			this.out = null;
 		}
-		this.pageManager.reset();
+		this.pageManager.release();
 		this.size = 0;
 		this.lastPage = 1;
 	}

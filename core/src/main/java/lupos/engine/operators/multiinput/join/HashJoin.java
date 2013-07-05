@@ -115,6 +115,7 @@ public class HashJoin extends Join {
 		final NodeInPartitionTree rootLarger = this.buildPartitionsOfLargerBag(larger, rootSmaller, hashFunctions, 0);
 		// II) Probing phase: now join the corresponding partitions of the
 		// smaller with the larger bag...
+		// Resources are released during probing...
 		final QueryResult result = new QueryResult(0);
 		this.probe(rootSmaller, rootLarger, result);
 		// System.out.println("HashJoin: Result sizes: Left:"+left.size()+
@@ -235,16 +236,16 @@ public class HashJoin extends Join {
 					Join.joinBindings(result, b1.clone(), b2);
 				}
 			}
-			smaller.partition.release();
-			smaller.partition = null;
-			((LeafNodeInPartitionTree) rootLarger).partition.release();
-			((LeafNodeInPartitionTree) rootLarger).partition = null;
+			smaller.release();
+			rootLarger.release();
 		} else {
 			final Iterator<NodeInPartitionTree> first_it = ((InnerNodeInPartitionTree) rootSmaller).nodes.iterator();
 			final Iterator<NodeInPartitionTree> second_it = ((InnerNodeInPartitionTree) rootLarger).nodes.iterator();
 			for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
 				this.probe(first_it.next(), second_it.next(), result);
 			}
+			rootSmaller.release();
+			rootLarger.release();
 		}
 	}
 
@@ -277,19 +278,16 @@ public class HashJoin extends Join {
 					}
 				}
 			}
-			smaller.partition.release();
-			smaller.partition = null;
-			((LeafNodeInPartitionTree) rootLarger).partition.release();
-			((LeafNodeInPartitionTree) rootLarger).partition = null;
+			smaller.release();
+			rootLarger.release();
 		} else {
-			final Iterator<NodeInPartitionTree> first_it = ((InnerNodeInPartitionTree) rootSmaller).nodes
-					.iterator();
-			final Iterator<NodeInPartitionTree> second_it = ((InnerNodeInPartitionTree) rootLarger).nodes
-					.iterator();
+			final Iterator<NodeInPartitionTree> first_it = ((InnerNodeInPartitionTree) rootSmaller).nodes.iterator();
+			final Iterator<NodeInPartitionTree> second_it = ((InnerNodeInPartitionTree) rootLarger).nodes.iterator();
 			for (int i = 0; i < InnerNodeInPartitionTree.numberChildren; i++) {
-				this.probeOptional(first_it.next(), second_it.next(),
-						smallerIsLeftOperand, or);
+				this.probeOptional(first_it.next(), second_it.next(), smallerIsLeftOperand, or);
 			}
+			rootSmaller.release();
+			rootLarger.release();
 		}
 	}
 
@@ -310,16 +308,14 @@ public class HashJoin extends Join {
 		// I) building phase
 		// Ia) now build partitions of the smaller bag
 		final LinkedList<HashFunction> hashFunctions = new LinkedList<HashFunction>();
-		final NodeInPartitionTree rootSmaller = this.buildPartitionsOfSmallerBag(
-				smaller, hashFunctions, 0);
+		final NodeInPartitionTree rootSmaller = this.buildPartitionsOfSmallerBag(smaller, hashFunctions, 0);
 		// Ib) now build partitions of the larger bag in the same way as the
 		// smaller bag
-		final NodeInPartitionTree rootLarger = this.buildPartitionsOfLargerBag(
-				larger, rootSmaller, hashFunctions, 0);
+		final NodeInPartitionTree rootLarger = this.buildPartitionsOfLargerBag(larger, rootSmaller, hashFunctions, 0);
 		// II) Probing phase: now join the corresponding partitions of the
 		// smaller with the larger bag...
-		final OptionalResult or = new OptionalResult(new QueryResult(0),
-				new QueryResult(0));
+		// Resources are released during probing...
+		final OptionalResult or = new OptionalResult(new QueryResult(0), new QueryResult(0));
 		this.probeOptional(rootSmaller, rootLarger, left.size() < right.size(), or);
 		return or;
 	}

@@ -211,6 +211,15 @@ public class PageManager {
 	}
 
 	/**
+	 * This method releases all pages and deletes the buffered file from disk.
+	 * @throws IOException
+	 */
+	public void release() throws IOException {
+		this.bufferManager.releaseAllPages(this.filename);
+		this.bufferManager.close(this.filename);
+	}
+
+	/**
 	 * This method determines the page number of a free page by first
 	 * considering the free pages before the end of the file.
 	 *
