@@ -26,7 +26,6 @@ package lupos.engine.operators.multiinput.join;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
@@ -36,6 +35,7 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.datastructures.queryresult.SIPParallelIterator;
+import lupos.datastructures.smallerinmemorylargerondisk.CollectionImplementation;
 import lupos.datastructures.sorteddata.SortedBag;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
@@ -51,6 +51,8 @@ public class MergeJoin extends Join {
 	protected SortedBag<Bindings> right = null;
 
 	protected BindingsComparator comp = new BindingsComparator();
+
+	public static int MEMORYLIMIT = 1000;
 
 	public void init(final SortedBag<Bindings> left, final SortedBag<Bindings> right) {
 		this.left = left;
@@ -198,8 +200,8 @@ public class MergeJoin extends Join {
 			// System.out.println("compare:"+compare+" b1:"+b1+" b2:"+b2);
 			if (compare == 0) {
 
-				final Collection<Bindings> bindings1 = new LinkedList<Bindings>();
-				final Collection<Bindings> bindings2 = new LinkedList<Bindings>();
+				final Collection<Bindings> bindings1 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
+				final Collection<Bindings> bindings2 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
 
 				final Bindings bindings = b1;
 				int left = 0;
@@ -333,8 +335,8 @@ public class MergeJoin extends Join {
 					// ;
 					if (compare == 0) {
 
-						this.bindings1 = new LinkedList<Bindings>();
-						this.bindings2 = new LinkedList<Bindings>();
+						this.bindings1 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
+						this.bindings2 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
 
 						final Bindings bindings = this.b1;
 						do {
@@ -389,16 +391,13 @@ public class MergeJoin extends Join {
 					} else if (compare < 0) {
 						if (ssb1it.hasNext()) {
 							if (ssb1it instanceof SIPParallelIterator) {
-								final Bindings projected = Bindings
-										.createNewInstance();
+								final Bindings projected = Bindings.createNewInstance();
 								for (final Variable v : vars) {
 									projected.add(v, this.b2.get(v));
 								}
 								do {
-									this.b1 = ((SIPParallelIterator<Bindings, Bindings>) ssb1it)
-											.next(projected);
-								} while (this.b1 != null
-										&& comp.compare(this.b1, projected) < 0);
+									this.b1 = ((SIPParallelIterator<Bindings, Bindings>) ssb1it).next(projected);
+								} while (this.b1 != null && comp.compare(this.b1, projected) < 0);
 								if (this.b1 == null) {
 									this.processFurther = false;
 								}
@@ -411,16 +410,13 @@ public class MergeJoin extends Join {
 					} else if (compare > 0) {
 						if (ssb2it.hasNext()) {
 							if (ssb2it instanceof SIPParallelIterator) {
-								final Bindings projected = Bindings
-										.createNewInstance();
+								final Bindings projected = Bindings.createNewInstance();
 								for (final Variable v : vars) {
 									projected.add(v, this.b1.get(v));
 								}
 								do {
-									this.b2 = ((SIPParallelIterator<Bindings, Bindings>) ssb2it)
-											.next(projected);
-								} while (this.b2 != null
-										&& comp.compare(this.b2, projected) < 0);
+									this.b2 = ((SIPParallelIterator<Bindings, Bindings>) ssb2it).next(projected);
+								} while (this.b2 != null && comp.compare(this.b2, projected) < 0);
 								if (this.b2 == null) {
 									this.processFurther = false;
 								}
@@ -447,8 +443,7 @@ public class MergeJoin extends Join {
 				if (this.processFurther) {
 					if (ssb1it instanceof SIPParallelIterator) {
 						while (comp.compare(this.b1, k) < 0) {
-							this.b1 = ((SIPParallelIterator<Bindings, Bindings>) ssb1it)
-									.next(k);
+							this.b1 = ((SIPParallelIterator<Bindings, Bindings>) ssb1it).next(k);
 						}
 					} else {
 						while (comp.compare(this.b1, k) < 0) {
@@ -570,7 +565,7 @@ public class MergeJoin extends Join {
 
 					if (equal) {
 						for (int i = 0; i < b.length; i++) {
-							bindings[i] = new LinkedList<Bindings>();
+							bindings[i] = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
 							final Bindings bindingsCurrent = b[i];
 							while (comp.compare(b[i], bindingsCurrent) == 0) {
 								bindings[i].add(b[i]);
@@ -639,17 +634,13 @@ public class MergeJoin extends Join {
 							if (comp.compare(maximum, b[i]) != 0) {
 								if (ssbit[i].hasNext()) {
 									if (ssbit[i] instanceof SIPParallelIterator) {
-										final Bindings projected = Bindings
-												.createNewInstance();
+										final Bindings projected = Bindings.createNewInstance();
 										for (final Variable v : vars) {
 											projected.add(v, maximum.get(v));
 										}
 										do {
 											b[i] = ((SIPParallelIterator<Bindings, Bindings>) ssbit[i]).next(projected);
-										} while (b[i] != null
-												&& comp
-														.compare(b[i],
-																projected) < 0);
+										} while (b[i] != null && comp.compare(b[i], projected) < 0);
 										if (b[i] == null) {
 											this.processFurther = false;
 										}
@@ -679,8 +670,7 @@ public class MergeJoin extends Join {
 					for (int i = 0; i < b.length; i++) {
 						if (ssbit[i] instanceof SIPParallelIterator) {
 							while (comp.compare(b[i], k) < 0) {
-								b[i] = ((SIPParallelIterator<Bindings, Bindings>) ssbit[i])
-										.next(k);
+								b[i] = ((SIPParallelIterator<Bindings, Bindings>) ssbit[i]).next(k);
 							}
 						} else {
 							while (comp.compare(b[i], k) < 0) {
@@ -803,7 +793,7 @@ public class MergeJoin extends Join {
 
 					if (equal) {
 						for (int i = 0; i < b.length; i++) {
-							bindings[i] = new LinkedList<Bindings>();
+							bindings[i] = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
 							final Bindings bindingsCurrent = b[i];
 							do {
 								bindings[i].add(b[i]);
@@ -881,10 +871,7 @@ public class MergeJoin extends Join {
 									if (ssbit[i] instanceof SIPParallelIterator) {
 										do {
 											b[i] = ((SIPParallelIterator<Bindings, Bindings>) ssbit[i]).next(projected);
-										} while (b[i] != null
-												&& comp
-														.compare(b[i],
-																projected) < 0);
+										} while (b[i] != null && comp.compare(b[i], projected) < 0);
 										if (b[i] == null) {
 											this.processFurther = false;
 										}
@@ -1009,8 +996,8 @@ public class MergeJoin extends Join {
 					final int compare = comp.compare(this.b1, this.b2);
 					if (compare == 0) {
 
-						this.bindings1 = new LinkedList<Bindings>();
-						this.bindings2 = new LinkedList<Bindings>();
+						this.bindings1 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
+						this.bindings2 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
 						Iterator<Bindings> currentBinding2 = null;
 
 						final Bindings bindings = this.b1;
@@ -1022,7 +1009,7 @@ public class MergeJoin extends Join {
 								break;
 							}
 							this.b1 = ssb1it.next();
-						} while (comp.compare(this.b1, bindings) == 0);
+						} while(comp.compare(this.b1, bindings) == 0);
 						do {
 							this.bindings2.add(this.b2);
 							if (!ssb2it.hasNext()) {
@@ -1076,8 +1063,7 @@ public class MergeJoin extends Join {
 									return null;
 								}
 								if (!(this.itb1.hasNext() || this.itb2.hasNext())) {
-									if (this.restFrom1 != null
-											&& this.restFrom1.hasNext()) {
+									if (this.restFrom1 != null && this.restFrom1.hasNext()) {
 										return this.restFrom1.next();
 									}
 								}
@@ -1200,8 +1186,8 @@ public class MergeJoin extends Join {
 			final int compare = comp.compare(b1, b2);
 			if (compare == 0) {
 
-				final Collection<Bindings> bindings1 = new LinkedList<Bindings>();
-				final Collection<Bindings> bindings2 = new LinkedList<Bindings>();
+				final Collection<Bindings> bindings1 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
+				final Collection<Bindings> bindings2 = new CollectionImplementation<Bindings>(MergeJoin.MEMORYLIMIT);
 
 				final Bindings bindings = b1;
 				int left = 0;
@@ -1480,13 +1466,11 @@ public class MergeJoin extends Join {
 		if (this.left != null && this.right != null && this.left.size() > 0
 				&& this.right.size() > 0) {
 			this.comp.setVariables(this.intersectionVariables);
-			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.size() == 0) ? MergeJoin.cartesianProductIterator(
-					QueryResult.createInstance(this.left.iterator()), QueryResult
-							.createInstance(this.right.iterator())) : MergeJoin
-					.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp, this.intersectionVariables);
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.size() == 0) ?
+					MergeJoin.cartesianProductIterator(QueryResult.createInstance(this.left.iterator()), QueryResult.createInstance(this.right.iterator())) :
+						MergeJoin.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp, this.intersectionVariables);
 			if (currentResult != null && currentResult.hasNext()) {
-				final QueryResult result = QueryResult
-						.createInstance(new ParallelIterator<Bindings>() {
+				final QueryResult result = QueryResult.createInstance(new ParallelIterator<Bindings>() {
 
 							int number = 0;
 
@@ -1532,10 +1516,8 @@ public class MergeJoin extends Join {
 					result.materialize();
 				}
 				for (final OperatorIDTuple opId : this.succeedingOperators) {
-					final QueryResultDebug qrDebug = new QueryResultDebug(
-							result, debugstep, this, opId.getOperator(), true);
-					((Operator) opId.getOperator()).processAllDebug(qrDebug,
-							opId.getId(), debugstep);
+					final QueryResultDebug qrDebug = new QueryResultDebug(result, debugstep, this, opId.getOperator(), true);
+					((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 				}
 			} else {
 				if (this.left instanceof DBMergeSortedBag) {

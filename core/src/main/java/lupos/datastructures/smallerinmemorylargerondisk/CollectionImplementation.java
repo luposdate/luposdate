@@ -25,9 +25,9 @@ package lupos.datastructures.smallerinmemorylargerondisk;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import lupos.misc.util.ImmutableIterator;
 
@@ -39,17 +39,20 @@ public class CollectionImplementation<E> implements
 	 */
 	private static final long serialVersionUID = 5226267348532809078L;
 
-	private int memoryLimit = 20000;
+	private final int memoryLimit;
 
-	private final Collection<E> memoryCollection = new LinkedList<E>();
+	public static int DEFAULTMEMORYLIMIT = 20000;
+
+	private final Collection<E> memoryCollection;
 	private PagedCollection<E> diskCollection = null;
 
 	public CollectionImplementation() {
-
+		this(CollectionImplementation.DEFAULTMEMORYLIMIT);
 	}
 
 	public CollectionImplementation(final int memoryLimit) {
 		this.memoryLimit = memoryLimit;
+		this.memoryCollection = new ArrayList<E>(this.memoryLimit);
 	}
 
 	@Override
