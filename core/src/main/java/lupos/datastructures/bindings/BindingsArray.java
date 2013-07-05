@@ -27,13 +27,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
-
+import lupos.misc.util.ImmutableIterator;
 
 /**
  * Instances of this class store bindings in arrays.<br>
@@ -44,13 +45,13 @@ import lupos.datastructures.items.literal.Literal;
  * position'i' in the variables' array is associated to the literal at position
  * 'i' in the literals' array.<br>
  * <br>
- * 
+ *
  * The available variables have to be processed previously since it is no good
  * idea to use variable size when using arrays. The variables have to be
  * provided when initializing a new instance of this class for the first time.
  * These variables are stored statically and in the same order they have been
  * provided.
- * 
+ *
  */
 public class BindingsArray extends Bindings {
 
@@ -65,7 +66,7 @@ public class BindingsArray extends Bindings {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @throws UnsupportedOperationException
 	 *             will be thrown if this constructor is used and the variables
 	 *             have not been initialized previously
@@ -75,12 +76,12 @@ public class BindingsArray extends Bindings {
 			throw new UnsupportedOperationException(
 					"When using Bindings with arrays, the variables have to be known");
 		}
-		init();
+		this.init();
 	}
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param variables
 	 *            the variables to be set
 	 * @throws UnsupportedOperationException
@@ -91,16 +92,16 @@ public class BindingsArray extends Bindings {
 	public BindingsArray(final Variable[] variables)
 			throws UnsupportedOperationException {
 		if (posVariables != null
-				&& !isMatchVariablePosition(Arrays.asList(variables))) {
+				&& !this.isMatchVariablePosition(Arrays.asList(variables))) {
 			throw new UnsupportedOperationException(
 					"The array of variables has already been initialized");
 		}
-		setVariables(variables);
+		this.setVariables(variables);
 	}
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param variables
 	 *            the variables to be set
 	 * @throws UnsupportedOperationException
@@ -110,23 +111,23 @@ public class BindingsArray extends Bindings {
 	 */
 	public BindingsArray(final Set<Variable> variables)
 			throws UnsupportedOperationException {
-		if (posVariables != null && !isMatchVariablePosition(variables)) {
+		if (posVariables != null && !this.isMatchVariablePosition(variables)) {
 			throw new UnsupportedOperationException(
 					"The array of variables has already been initialized");
 		}
-		setVariables(variables);
+		this.setVariables(variables);
 	}
 
 	private void setVariables(final Variable[] variables) {
 		initPosVars(variables);
-		init();
+		this.init();
 	}
 
 	/**
 	 * @return the literals
 	 */
 	public Literal[] getLiterals() {
-		return literals;
+		return this.literals;
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class BindingsArray extends Bindings {
 	 * {@link System#arraycopy(Object, int, Object, int, int)} call with the
 	 * array of literals from this class as target and the provided array as
 	 * source.
-	 * 
+	 *
 	 * @param literals
 	 *            the literals to set
 	 */
@@ -149,7 +150,7 @@ public class BindingsArray extends Bindings {
 	 * been initialized previously.<br>
 	 * If the order of the new variables does not match the previous ones,
 	 * inconsistency errors may occur!
-	 * 
+	 *
 	 * @param variables
 	 *            the variables to be set
 	 * @deprecated if the variables have been initialized previously,
@@ -173,7 +174,7 @@ public class BindingsArray extends Bindings {
 	 * been initialized previously.<br>
 	 * If the order of the new variables does not match the previous ones,
 	 * inconsistency errors may occur!
-	 * 
+	 *
 	 * @param variables
 	 *            the variables to be set
 	 * @deprecated if the variables have been initialized previously,
@@ -188,11 +189,11 @@ public class BindingsArray extends Bindings {
 			lock.unlock();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets the variables maintained by this data structure
-	 * 
+	 *
 	 * @param variables
 	 *            the variables to be set
 	 */
@@ -202,13 +203,13 @@ public class BindingsArray extends Bindings {
 		for (final Variable var : variables) {
 			variables2[i++] = var;
 		}
-		setVariables(variables2);
+		this.setVariables(variables2);
 	}
 
 	/**
 	 * Returns a map providing information about variables and their positions
 	 * in this data structure
-	 * 
+	 *
 	 * @return a map providing information about variables and their positions
 	 *         in this data structure
 	 */
@@ -231,7 +232,7 @@ public class BindingsArray extends Bindings {
 	/**
 	 * Returns if the order of the provided variables equals the order of a
 	 * collection of variables which are currently stored
-	 * 
+	 *
 	 * @param variables
 	 *            the collection of variables
 	 * @return <code>true</code> if the order of the variables matches
@@ -249,7 +250,7 @@ public class BindingsArray extends Bindings {
 	@Override
 	public BindingsArray clone() {
 		final BindingsArray other = new BindingsArray();
-		other.cloneLiterals(getLiterals());
+		other.cloneLiterals(this.getLiterals());
 		return other;
 	}
 
@@ -258,7 +259,7 @@ public class BindingsArray extends Bindings {
 	 * If the variable is already bound, the old value will be dismissed. If the
 	 * old value is still needed, the collection of bindings has to be cloned
 	 * previously.
-	 * 
+	 *
 	 * @param varname
 	 *            the variable's name
 	 * @param literal
@@ -267,13 +268,14 @@ public class BindingsArray extends Bindings {
 	@Override
 	public void add(final Variable var, final Literal literal) {
 		final Integer i = posVariables.get(var);
-		if (i != null)
-			literals[i] = literal;
+		if (i != null) {
+			this.literals[i] = literal;
+		}
 	}
 
 	/**
 	 * Returns the literal a variable is bound to.
-	 * 
+	 *
 	 * @param varname
 	 *            the variable's name
 	 * @return the literal a variable is bound to
@@ -281,31 +283,67 @@ public class BindingsArray extends Bindings {
 	@Override
 	public Literal get(final Variable var) {
 		final Integer i = posVariables.get(var);
-		if (i != null)
-			return literals[i];
+		if (i != null) {
+			return this.literals[i];
+		}
 		return null;
 	}
 
 	/**
 	 * Returns the set of bound variables
-	 * 
+	 *
 	 * @return the set of bound variables
 	 */
 	@Override
 	public Set<Variable> getVariableSet() {
 		final HashSet<Variable> hs = new HashSet<Variable>();
-		for (final Variable var : posVariables.keySet()) {
-			if (get(var) != null)
+		for (final Variable var : BindingsArray.posVariables.keySet()) {
+			if(this.get(var) != null){
 				hs.add(var);
+			}
 		}
 		return hs;
+	}
+
+	@Override
+	public Iterator<Variable> getVariables() {
+		// this method is overridden because of performance issues...
+		final Iterator<Variable> it_var = BindingsArray.posVariables.keySet().iterator();
+		return new ImmutableIterator<Variable>(){
+
+			Variable var = null;
+
+			@Override
+			public boolean hasNext() {
+				if(this.var == null){
+					this.var = this.next();
+				}
+				return (this.var!=null);
+			}
+
+			@Override
+			public Variable next() {
+				if(this.var != null){
+					final Variable result = this.var;
+					this.var = null;
+					return result;
+				}
+				while(it_var.hasNext()){
+					final Variable result = it_var.next();
+					if(BindingsArray.this.literals[BindingsArray.posVariables.get(result)] != null){
+						return result;
+					}
+				}
+				return null;
+			}
+		};
 	}
 
 	/**
 	 * Adds all bindings of another collection to this one.<br>
 	 * If the bindings of the other collections conflict with the bindings of
 	 * this collection, the old bindings of this one will be dismissed.
-	 * 
+	 *
 	 * @param other
 	 */
 	public void addAll(final BindingsArray other) {
@@ -323,7 +361,7 @@ public class BindingsArray extends Bindings {
 	public void init() {
 		lock.lock();
 		try {
-			literals = new Literal[posVariables.size()];
+			this.literals = new Literal[posVariables.size()];
 		} finally {
 			lock.unlock();
 		}

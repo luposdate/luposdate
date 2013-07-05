@@ -563,8 +563,25 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 
 	@Override
 	public void clear() {
+		final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
+		try {
+			// delete content of pointers page...
+			final byte[] page = BufferManager.getBufferManager().getPage(this.TABLEPAGESIZE, pageAddress);
+			for(int i=0; i<page.length; i++){
+				page[i]=0;
+			}
+			BufferManager.getBufferManager().modifyPage(this.TABLEPAGESIZE, pageAddress, page);
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
 		this.size=0;
 		this.lastValue = 0;
+	}
+
+	public void release() throws IOException {
+		BufferManager.getBufferManager().releaseAllPages(this.pointersFilename);
+		BufferManager.getBufferManager().close(this.pointersFilename);
 	}
 
 	@Override

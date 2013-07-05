@@ -23,6 +23,7 @@
  */
 package lupos.engine.operators.singleinput.modifiers.distinct;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -133,6 +134,18 @@ public class NonBlockingFastDistinct extends Distinct {
 	@Override
 	protected boolean isPipelineBreaker() {
 		return false;
+	}
+
+	@Override
+	public void finalize(){
+		if(this.bindings instanceof PagedHashMultiSet){
+			try {
+				((PagedHashMultiSet<Bindings>)this.bindings).release();
+			} catch (final IOException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static class Feeder extends Thread {
