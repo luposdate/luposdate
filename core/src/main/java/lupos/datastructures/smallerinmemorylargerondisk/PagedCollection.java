@@ -124,27 +124,21 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 			this.closeOutputStream();
 			return new Iterator<E>(){
 
+				int index = 0;
+
 				final ContinousPagesInputStream in = new ContinousPagesInputStream(0, PagedCollection.this.pageManager, 12);
-				E next = null;
 				int currentPageNumber;
 				int currentIndexInPage;
 
 				@Override
 				public boolean hasNext() {
-					this.next = this.next();
-					if(this.next!=null){
-						return true;
-					} else {
-						return false;
-					}
+					return (this.index < PagedCollection.this.size);
 				}
 
 				@Override
 				public E next() {
-					if(this.next!=null){
-						final E iNext = this.next;
-						this.next = null;
-						return iNext;
+					if(!this.hasNext()){
+						return null;
 					} else {
 						try {
 							this.currentPageNumber = this.in.getCurrentPageNumber();
@@ -162,6 +156,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 							if((long)this.currentPageNumber * PageManager.getDefaultPageSize() + this.currentIndexInPage>=PagedCollection.this.endOfCollection){
 								return null;
 							}
+							this.index++;
 							return Registration.deserializeWithoutId(PagedCollection.this.classname, this.in);
 						} catch (final EOFException e) {
 							return null;
@@ -219,6 +214,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 
 						PagedCollection.this.size--;
 						PagedCollection.this.storeSizeAndEndOfCollection();
+						this.index--;
 					} catch (final IOException e) {
 						System.err.println(e);
 						e.printStackTrace();
