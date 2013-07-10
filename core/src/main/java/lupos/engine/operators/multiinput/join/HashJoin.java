@@ -23,7 +23,6 @@
  */
 package lupos.engine.operators.multiinput.join;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -221,15 +220,15 @@ public class HashJoin extends Join {
 			}
 			final LeafNodeInPartitionTree smaller = (LeafNodeInPartitionTree) rootSmaller;
 			final Collection<Bindings> cb;
-			if (smaller.partition.size() <= LeafNodeInPartitionTree.maxNumberEntries) {
-				cb = new ArrayList<Bindings>(smaller.partition.size());
-				// load smaller partition into main memory!
-				for (final Bindings b : smaller.partition) {
-					cb.add(b);
-				}
-			} else {
+//			if (smaller.partition.size() <= LeafNodeInPartitionTree.maxNumberEntries) {
+//				cb = new ArrayList<Bindings>(smaller.partition.size());
+//				// load smaller partition into main memory!
+//				for (final Bindings b : smaller.partition) {
+//					cb.add(b);
+//				}
+//			} else {
 				cb = smaller.partition.getCollection();
-			}
+//			}
 
 			for (final Bindings b1 : ((LeafNodeInPartitionTree) rootLarger).partition) {
 				// join with smaller partition, which is already in main memory!
@@ -261,15 +260,15 @@ public class HashJoin extends Join {
 
 			final LeafNodeInPartitionTree smaller = (LeafNodeInPartitionTree) rootSmaller;
 			final Collection<Bindings> cb;
-			if (smaller.partition.size() <= LeafNodeInPartitionTree.maxNumberEntries) {
-				cb = new ArrayList<Bindings>(smaller.partition.size());
-				// load smaller partition into main memory!
-				for (final Bindings b : smaller.partition) {
-					cb.add(b);
-				}
-			} else {
+//			if (smaller.partition.size() <= LeafNodeInPartitionTree.maxNumberEntries) {
+//				cb = new ArrayList<Bindings>(smaller.partition.size());
+//				// load smaller partition into main memory!
+//				for (final Bindings b : smaller.partition) {
+//					cb.add(b);
+//				}
+//			} else {
 				cb = smaller.partition.getCollection();
-			}
+//			}
 
 			for (final Bindings b1 : ((LeafNodeInPartitionTree) rootLarger).partition) {
 				for (final Bindings b2 : cb) {

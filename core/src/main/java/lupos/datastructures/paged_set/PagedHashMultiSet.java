@@ -611,6 +611,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		BufferManager.getBufferManager().writeAllModifiedPages();
 		OutHelper.writeLuposString(this.pointersFilename, loos);
 		OutHelper.writeLuposString(this.valuesFilename, loos);
+		Registration.serializeClass(this.classOfValues, loos);
 		OutHelper.writeLuposLong(this.size, loos);
 		OutHelper.writeLuposLong(this.lastValue, loos);
 	}
