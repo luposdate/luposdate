@@ -73,8 +73,14 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		if(this.hasNext()){
 			return this.currentIterator.next();
 		} else {
+			this.clear();
 			return null;
 		}
+	}
+
+	public void clear(){
+		this.reset();
+		this.queryResults.clear();
 	}
 
 	@Override

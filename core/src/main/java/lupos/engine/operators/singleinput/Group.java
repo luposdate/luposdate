@@ -108,6 +108,7 @@ public class Group extends SingleInputOperator {
 			for (final OperatorIDTuple opId: this.succeedingOperators) {
 				opId.processAll(newQueryResult);
 			}
+			this.queryResults.clear();
 		}
 	}
 
@@ -169,6 +170,7 @@ public class Group extends SingleInputOperator {
 				final QueryResultDebug qrDebug = new QueryResultDebug(newQueryResult, debugstep, this, opId.getOperator(), true);
 				((Operator) opId.getOperator()).processAllDebug(qrDebug, opId.getId(), debugstep);
 			}
+			this.queryResults.clear();
 		}
 	}
 

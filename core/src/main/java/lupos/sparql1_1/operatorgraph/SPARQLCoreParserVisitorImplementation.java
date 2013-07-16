@@ -705,7 +705,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				predicateNode = predicateNode.jjtGetChild(0);
 			}
 			final BasicOperator startingOperator = predicateNode.accept(this, connection, graphConstraint, subject, object, subjectNode, objectNode);
-			System.out.println(startingOperator);
+			// System.out.println(startingOperator);
 
 			Set<Literal> allowedObjects = null;
 			Set<Literal> allowedSubjects = null;
@@ -1136,7 +1136,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 					 * and additional variables are not bound by a GROUP BY
 					 * statement
 					 */
-					this.prooveBoundedGroup(node.jjtGetChild(i));
+					// this.prooveBoundedGroup(node.jjtGetChild(i));
 
 					if (!(constraint instanceof ASTAggregation)) {
 						onlyAggregations = false;
