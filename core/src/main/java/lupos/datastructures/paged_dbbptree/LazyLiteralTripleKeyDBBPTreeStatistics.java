@@ -66,7 +66,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 			final Comparator<? super TripleKey> comparator, final int k,
 			final int k_, final RDF3XIndexScan.CollationOrder order)
 			throws IOException {
-		super(comparator, k, k_, new LazyLiteralDBBPTreeStatisticsNodeDeSerializer(order));
+		super(comparator, k, k_, new LazyLiteralDBBPTreeStatisticsNodeDeSerializer(order), TripleKey.class, Triple.class);
 		this.order = order;
 	}
 

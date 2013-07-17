@@ -86,7 +86,7 @@ public class RDF3XEmptyIndexConstruction {
 			lupos.datastructures.paged_dbbptree.DBBPTree.setTmpDir(dir[0], true);
 
 			final lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap =
-					new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(k, k_, new StringIntegerNodeDeSerializer());
+					new lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer>(k, k_, new StringIntegerNodeDeSerializer(), String.class, Integer.class);
 			LazyLiteral.setHm(new StringIntegerMapJava(simap));
 
 			final StringArray ismap = new StringArray();

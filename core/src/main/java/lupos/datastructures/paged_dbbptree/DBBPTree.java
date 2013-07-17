@@ -119,10 +119,23 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
+	public DBBPTree(final Comparator<? super K> comparator, final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer, final Class<? super K> keyClass, final Class<? super V> valueClass) throws IOException {
+		this(comparator, k, k_, nodeDeSerializer);
+		this.keyClass = keyClass;
+		this.valueClass = valueClass;
+	}
+
 	public DBBPTree(final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
 		this.init(null, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
+
+	public DBBPTree(final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer, final Class<? super K> keyClass, final Class<? super V> valueClass) throws IOException {
+		this(k, k_, nodeDeSerializer);
+		this.keyClass = keyClass;
+		this.valueClass = valueClass;
+	}
+
 
 	public void setName(final String name){
 		this.name=name;

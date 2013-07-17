@@ -49,11 +49,11 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
+import lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration;
+import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-import lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration;
-import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.SIPParallelIterator;
@@ -95,7 +95,7 @@ public class SixIndices extends Indices {
 
                 final NodeDeSerializer<TripleKey, Triple> nodeDeSerializer = (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) ? new LazyLiteralNodeDeSerializer(order) : new StandardNodeDeSerializer<TripleKey, Triple>(TripleKey.class, Triple.class);
 
-                final DBBPTree<TripleKey, Triple> dbbptree = new DBBPTree<TripleKey, Triple>(null, k, k_, nodeDeSerializer);
+                final DBBPTree<TripleKey, Triple> dbbptree = new DBBPTree<TripleKey, Triple>(k, k_, nodeDeSerializer, TripleKey.class, Triple.class);
 
                 dbbptree.setName(order.toString());
 
@@ -122,7 +122,7 @@ public class SixIndices extends Indices {
         	tree = (DBBPTree<TripleKey, Triple>) psmm;
         } else {
         	final NodeDeSerializer<TripleKey, Triple> nodeDeSerializer = (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) ? new LazyLiteralNodeDeSerializer(order) : new StandardNodeDeSerializer<TripleKey, Triple>(TripleKey.class, Triple.class);
-            tree = new DBBPTree<TripleKey, Triple>(null, k, k_, nodeDeSerializer);
+            tree = new DBBPTree<TripleKey, Triple>(k, k_, nodeDeSerializer, TripleKey.class, Triple.class);
         }
 		tree.generateDBBPTree(generator);
     	switch(order){

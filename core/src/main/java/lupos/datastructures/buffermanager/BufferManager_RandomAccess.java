@@ -42,7 +42,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	/**
 	 * The percentage of space from the maximum heap space the buffer manager will use
 	 */
-	private final static int percentageOfHeapSpace = 30;
+	private final static int percentageOfHeapSpace = 50;
 
 	/**
 	 * The max. number of bytes in the buffer TODO change back
