@@ -93,7 +93,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	}
 
 	public enum STORAGE {
-		MEMORY, DISK, HYBRID
+		MEMORY, DISK, HYBRID, DEFAULT
 	}
 
 	protected enum MERGE_JOIN_OPTIONAL {
