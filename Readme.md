@@ -1,6 +1,6 @@
 # LUPOSDATE Semantic Web Database Management System
 
-This is a [repository of LUPOSDATE](https://github.com/luposdate/luposdate), a Semantic Web Database Management System developed by [IFIS](http://www.ifis.uni-luebeck.de/) at the [University of L�beck](http://www.uni-luebeck.de/).
+This is a [repository of LUPOSDATE](https://github.com/luposdate/luposdate), a Semantic Web Database Management System developed by [IFIS](http://www.ifis.uni-luebeck.de/) at the [University of Lübeck](http://www.uni-luebeck.de/).
 
 LUPOSDATE is a Semantic Web database supporting
 

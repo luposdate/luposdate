@@ -191,7 +191,7 @@ public class NonBlockingFastDistinct extends Distinct {
 			this.toBeAddedToSet = toBeAddedToSet;
 			// first just for initialization purposes set up bit vector with existing elements of our set of bindings
 			for(final Bindings b: bindings){
-				final int hashCode = b.hashCode() % NonBlockingFastDistinct.BITVECTORSIZE;
+				final int hashCode = Math.abs(b.hashCode() % NonBlockingFastDistinct.BITVECTORSIZE);
 				this.bitVector.set(hashCode);
 			}
 		}
@@ -204,7 +204,7 @@ public class NonBlockingFastDistinct extends Distinct {
 					if(next==null){
 						break;
 					}
-					final int hashCode = next.hashCode() % NonBlockingFastDistinct.BITVECTORSIZE;
+					final int hashCode = Math.abs(next.hashCode() % NonBlockingFastDistinct.BITVECTORSIZE);
 					if(this.bitVector.get(hashCode)){
 						// Collision found, check if it is really a duplicate.
 						// This is done in parallel by another thread.
