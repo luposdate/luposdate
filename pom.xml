@@ -38,6 +38,7 @@
 	    <module>distributionotherparsersandevaluators</module>
 	    <module>distributionall</module>
 		<module>geosparql</module>
+		<module>autocomplete</module>
 	</modules>
 
 	<dependencyManagement>
@@ -166,6 +167,12 @@
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.geosparql</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.autocomplete</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

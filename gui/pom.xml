@@ -84,6 +84,11 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.autocomplete</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>xpref</artifactId>
 		</dependency>
 	

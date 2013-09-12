@@ -23,6 +23,7 @@
  */
 package lupos.gui;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -74,6 +75,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.FontUIResource;
 
+import lupos.autocomplete.gui.JTextPanePreparer;
+import lupos.autocomplete.strategies.StrategyManager;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
@@ -635,7 +638,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
-			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				new AdvancedQueryEditor(Demo_Applet.this.tp_queryInput.getText(), Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
@@ -645,6 +647,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		final LuposDocument document = new LuposDocument();
 		this.tp_queryInput = new LuposJTextPane(document);
 		document.init(SPARQLParser.createILuposParser(new LuposDocumentReader(document)), true, 100);
+		new JTextPanePreparer(this.tp_queryInput, StrategyManager.LANGUAGE.SPARQL, document);
 
 		this.queryInputSP = new JScrollPane(this.tp_queryInput);
 
@@ -660,7 +663,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
-			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				new VisualRifEditor(Demo_Applet.this.tp_rifInput.getText(), Demo_Applet.getIcon(Demo_Applet.this.webdemo));
@@ -670,6 +672,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		final LuposDocument document = new LuposDocument();
 		this.tp_rifInput = new LuposJTextPane(document);
 		document.init(RIFParser.createILuposParser(new LuposDocumentReader(document)), true, 100);
+		new JTextPanePreparer(this.tp_rifInput, StrategyManager.LANGUAGE.RIF, document);
 
 		this.rifInputSP = new JScrollPane(this.tp_rifInput);
 
@@ -750,7 +753,6 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
-			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				new DataEditor(Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
@@ -778,6 +780,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		final LuposDocument document_data = new LuposDocument();
 		this.tp_dataInput = new LuposJTextPane(document_data);
 		document_data.init(TurtleParser.createILuposParser(new LuposDocumentReader(document_data)), true, 100);
+		new JTextPanePreparer(this.tp_dataInput, StrategyManager.LANGUAGE.RDF, document_data);
 
 		this.dataInputSP = new JScrollPane(this.tp_dataInput);
 
