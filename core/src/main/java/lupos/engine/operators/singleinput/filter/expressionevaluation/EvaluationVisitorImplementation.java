@@ -165,7 +165,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param externalFunction the external function
 	 */
 	public static void registerExternalFunction(final URILiteral name, final ExternalFunction externalFunction){
-		externalFunctions.put(name, externalFunction);
+		EvaluationVisitorImplementation.externalFunctions.put(name, externalFunction);
 	}
 
 	// for each ASTExists and ASTNotExists an Root and Result is

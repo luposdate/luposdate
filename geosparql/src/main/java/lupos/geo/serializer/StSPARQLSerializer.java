@@ -23,11 +23,12 @@
  */
 package lupos.geo.serializer;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTWriter;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.geo.GeoHelper;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKTWriter;
 
 /**
  * Richard Mietz
@@ -36,10 +37,8 @@ import lupos.geo.GeoHelper;
 public class StSPARQLSerializer extends AbstractSerializer
 {
     @Override
-    public TypedLiteral toLiteral(Geometry geo)
-    {
-        WKTWriter writer = new WKTWriter();
-        TypedLiteral literal = (TypedLiteral) LiteralFactory.createTypedLiteralWithoutException(writer.write(geo), "<" + GeoHelper.stWktDataTypeURI + ">");
-        return literal;
+    public TypedLiteral toLiteral(final Geometry geo) {
+        final WKTWriter writer = new WKTWriter();
+        return LiteralFactory.createTypedLiteralWithoutLazyLiteralWithoutException(writer.write(geo), "<" + GeoHelper.stWktDataTypeURI + ">");
     }
 }

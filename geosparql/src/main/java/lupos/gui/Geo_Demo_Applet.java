@@ -41,5 +41,4 @@ public class Geo_Demo_Applet {
 
 		Demo_Applet.main(args);
 	}
-
 }

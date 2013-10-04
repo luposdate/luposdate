@@ -23,31 +23,26 @@
  */
 package lupos.geo.geosparql;
 
-import lupos.engine.operators.singleinput.TypeErrorException;
-
 import java.util.HashMap;
+
+import lupos.engine.operators.singleinput.TypeErrorException;
 
 /**
  * Richard Mietz
  * Date: 21.02.13
  */
-public class UnitOfMeasurement
-{
+public class UnitOfMeasurement {
     public static final HashMap<String,Double> conversionRate = new HashMap<String, Double>();
 
-    static
-    {
+    static {
         conversionRate.put("<http://www.opengis.net/def/uom/OGC/1.0/metre>", 1.0);
     }
 
-    public static double convert(String url, double valueToConvert) throws TypeErrorException
-    {
-        if(conversionRate.containsKey(url))
-        {
+    public static double convert(final String url, final double valueToConvert) throws TypeErrorException {
+        if(conversionRate.containsKey(url)) {
             return valueToConvert * conversionRate.get(url);
         }
-        else
-        {
+        else {
             throw new TypeErrorException("URL for measurement unit not known.");
         }
     }

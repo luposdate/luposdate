@@ -23,12 +23,27 @@
  */
 package lupos.geo.geosparql;
 
-import lupos.geo.geosparql.functions.*;
+import lupos.geo.geosparql.functions.GeofBoundary;
+import lupos.geo.geosparql.functions.GeofConvexHull;
+import lupos.geo.geosparql.functions.GeofDifference;
+import lupos.geo.geosparql.functions.GeofDistance;
+import lupos.geo.geosparql.functions.GeofEnvelope;
+import lupos.geo.geosparql.functions.GeofGetSRID;
+import lupos.geo.geosparql.functions.GeofIntersection;
+import lupos.geo.geosparql.functions.GeofRelate;
+import lupos.geo.geosparql.functions.GeofSymDifference;
+import lupos.geo.geosparql.functions.GeofUnion;
 import lupos.geo.geosparql.functions.eh.GeofEhContains;
 import lupos.geo.geosparql.functions.eh.GeofEhCoveredBy;
 import lupos.geo.geosparql.functions.eh.GeofEhCovers;
 import lupos.geo.geosparql.functions.eh.GeofEhInside;
-import lupos.geo.geosparql.functions.rcc8.*;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8dc;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8ec;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8ntpp;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8ntppi;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8po;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8tpp;
+import lupos.geo.geosparql.functions.rcc8.GeofRcc8tppi;
 import lupos.geo.geosparql.functions.sf.GeofSfContains;
 import lupos.geo.geosparql.functions.sf.GeofSfCrosses;
 import lupos.geo.geosparql.functions.sf.GeofSfIntersects;
@@ -41,11 +56,9 @@ import lupos.geo.geosparql.functions.sf_eh.GeofSfTouchesEhMeet;
  * Richard Mietz
  * Date: 21.02.13
  */
-public class GeoFunctionRegisterer
-{
+public class GeoFunctionRegisterer {
 
-    public static void registerGeoFunctions()
-    {
+    public static void registerGeoFunctions() {
         GeofBoundary.register();
         GeofConvexHull.register();
         GeofDifference.register();

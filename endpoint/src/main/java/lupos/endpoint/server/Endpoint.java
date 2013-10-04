@@ -116,6 +116,7 @@ public class Endpoint {
 	public static int init(final String[] args){
 		if (args.length < 1) {
 			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [portX] [output] [size]");
+			System.err.println("(The indices can be constructed using lupos.engine.indexconstruction.FastRDF3XIndexConstruction)");
 			System.err.println("If \"portX\" is given, the port X (default 8080) is used, X must be a non-negative number.");
 			System.err.println("If \"output\" is given, the response is written to console.");
 			System.err.println("If \"size\" is given, the size of the received query and the size of the response is written to console.");

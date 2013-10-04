@@ -125,7 +125,7 @@ public abstract class Parser {
 		if (nextLiteral == null) {
 			return null;
 		}
-		if (this.predicate != null) {
+		if(this.predicate != null) {
 			return new Triple(this.subject, this.predicate, nextLiteral);
 		}
 		Literal nextLiteral2;
@@ -285,8 +285,6 @@ public abstract class Parser {
 					next = this.nextCharacter();
 				}
 
-				this.checkLists(next);
-
 				this.back = next;
 				this.backFlag = true;
 				return LiteralFactory
@@ -338,12 +336,9 @@ public abstract class Parser {
 			}
 		}
 
-		this.checkLists(next);
+		this.back = next;
+		this.backFlag = true;
 
-		// if (next != ' ') {
-		// back = next;
-		// backFlag = true;
-		// }
 		try {
 			// System.out.println(">>"+prefixe.get(namespace)+postfix+"<<");
 			if (this.prefixe.get(namespace) == null) {
@@ -358,16 +353,6 @@ public abstract class Parser {
 			System.err.println(e);
 			e.printStackTrace();
 			return null;
-		}
-	}
-
-	private void checkLists(final char next){
-		if (next == '.') {
-			this.subject = null;
-			this.predicate = null;
-		}
-		if (next == ';') {
-			this.predicate = null;
 		}
 	}
 

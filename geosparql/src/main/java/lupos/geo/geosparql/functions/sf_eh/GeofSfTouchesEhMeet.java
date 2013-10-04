@@ -23,42 +23,38 @@
  */
 package lupos.geo.geosparql.functions.sf_eh;
 
-import com.vividsolutions.jts.geom.Geometry;
 import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.ExternalFunction;
-import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.geo.GeoHelper;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Richard Mietz
  * Date: 20.02.13
  */
-public class GeofSfTouchesEhMeet implements ExternalFunction
-{
+public class GeofSfTouchesEhMeet implements ExternalFunction {
     @Override
-    public Object evaluate(Object[] args) throws TypeErrorException
-    {
-        if(args.length==2)
-        {
+    public Object evaluate(final Object[] args) throws TypeErrorException {
+        if(args.length==2) {
             try {
-                Geometry geo1 = GeoHelper.getGeoSPARQLGeometry(args[0]);
-                Geometry geo2 = GeoHelper.getGeoSPARQLGeometry(args[1]);
+                final Geometry geo1 = GeoHelper.getGeoSPARQLGeometry(args[0]);
+                final Geometry geo2 = GeoHelper.getGeoSPARQLGeometry(args[1]);
                 return new Boolean(geo1.touches(geo2));
             }
-            catch(Exception e)
-            {
+            catch(final Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
-        else
-        {
+        else {
             throw new TypeErrorException("Intersection Function expects exactly 2 arguments: two geometry objects.");
         }
     }
 
-    public static void register(){
+    public static void register() {
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "sfTouches>"), new GeofSfTouchesEhMeet());
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "ehMeet>"), new GeofSfTouchesEhMeet());
     }

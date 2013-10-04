@@ -23,13 +23,14 @@
  */
 package lupos.geo.geosparql.functions;
 
-import com.vividsolutions.jts.geom.Geometry;
 import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.ExternalFunction;
-import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.geo.GeoHelper;
 import lupos.geo.serializer.GeoSPARQLWktSerializer;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Richard Mietz
@@ -38,22 +39,19 @@ import lupos.geo.serializer.GeoSPARQLWktSerializer;
 public class GeofBoundary implements ExternalFunction
 {
     @Override
-    public Object evaluate(Object[] args) throws TypeErrorException
-    {
-        if(args.length==1)
-        {
-            Geometry geo = GeoHelper.getGeoSPARQLGeometry(args[0]);
-            Geometry boundary = geo.getBoundary();
+    public Object evaluate(final Object[] args) throws TypeErrorException {
+        if(args.length==1){
+            final Geometry geo = GeoHelper.getGeoSPARQLGeometry(args[0]);
+            final Geometry boundary = geo.getBoundary();
             return new GeoSPARQLWktSerializer().toLiteral(boundary);
         }
-        else
-        {
+        else {
             throw new TypeErrorException("Boundary Function expects exactly 1 arguments: one geometry object.");
         }
     }
 
 
-    public static void register(){
+    public static void register() {
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "boundary>"), new GeofBoundary());
     }
 }

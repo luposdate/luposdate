@@ -296,10 +296,19 @@ public class LiteralFactory {
 		}
 	}
 
-	public static TypedLiteral createTypedLiteralWithoutLazyLiteral(
-			final String content, final String type)
+	public static TypedLiteral createTypedLiteralWithoutLazyLiteral(final String content, final String type)
 			throws java.net.URISyntaxException {
 		return TypedLiteralOriginalContent.createTypedLiteral(content, type);
+	}
+
+	public static TypedLiteral createTypedLiteralWithoutLazyLiteralWithoutException(final String content, final String type) {
+		try {
+			return TypedLiteralOriginalContent.createTypedLiteral(content, type);
+		} catch (final URISyntaxException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static TypedLiteral createTypedLiteralWithoutLazyLiteral(
@@ -364,8 +373,7 @@ public class LiteralFactory {
 	}
 
 	public static Literal createTypedLiteral(final String content, final String type) throws java.net.URISyntaxException {
-		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(
-				content, type);
+		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(content, type);
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
 			if (typedLiteral.originalStringDiffers()) {

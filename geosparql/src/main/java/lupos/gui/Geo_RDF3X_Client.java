@@ -21,21 +21,19 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.geo;
+package lupos.gui;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
+import lupos.geo.geosparql.GeoFunctionRegisterer;
+import lupos.geo.stsparql.functions.StFunctionRegisterer;
 
-/**
- * Richard Mietz
- * Date: 21.02.13
- */
-public class GeoFactory
-{
-    /**
-     * The default JTS factory for creating geometries.
-     */
-    public static GeometryFactory getDefaultGeometryFactory()
-    {
-        return new GeometryFactory();
-    }
+public class Geo_RDF3X_Client {
+
+	public static void main(final String[] args) {
+		// register geo functions
+		GeoFunctionRegisterer.registerGeoFunctions();
+		StFunctionRegisterer.registerStFunctions();
+
+		RDF3X_Client.main(args);
+	}
+
 }

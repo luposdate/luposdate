@@ -23,12 +23,14 @@
  */
 package lupos.geo;
 
-import com.vividsolutions.jts.geom.Geometry;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.engine.operators.singleinput.TypeErrorException;
+import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.geo.deserializer.GeoSPARQLWktDeserializer;
 import lupos.geo.deserializer.GmlDeserializer;
 import lupos.geo.deserializer.StSPARQLWktDeserializer;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Richard Mietz
@@ -48,20 +50,18 @@ public class GeoHelper
 
     public static Geometry getGeoSPARQLGeometry(Object a) throws TypeErrorException
     {
+    	a = Helper.unlazy(a);
         if (a instanceof TypedLiteral) {
             final TypedLiteral tl = (TypedLiteral) a;
             String content = tl.getContent();
-            if(content.startsWith("\""))
-            {
+            if(content.startsWith("\"")){
                 content = tl.getContent().substring(1, tl.getContent().length() - 1);
             }
 
-            if (tl.getType().compareTo("<" + geoSPARQLwktDataTypeURI + ">") == 0)
-            {
+            if (tl.getType().compareTo("<" + geoSPARQLwktDataTypeURI + ">") == 0){
                 return new GeoSPARQLWktDeserializer().toGeometry(content);
             }
-            else if(tl.getType().compareTo("<" + geoSPARQLgmlDataTypeURI + ">") == 0)
-            {
+            else if(tl.getType().compareTo("<" + geoSPARQLgmlDataTypeURI + ">") == 0){
                 return new GmlDeserializer().toGeometry(content);
             }
             throw new TypeErrorException();
@@ -69,22 +69,18 @@ public class GeoHelper
         throw new TypeErrorException();
     }
 
-    public static Geometry getStSPARQLGeometry(Object a) throws TypeErrorException
-    {
+    public static Geometry getStSPARQLGeometry(Object a) throws TypeErrorException {
+    	a = Helper.unlazy(a);
         if (a instanceof TypedLiteral) {
             final TypedLiteral tl = (TypedLiteral) a;
             String content = tl.getContent();
-            if(content.startsWith("\""))
-            {
+            if(content.startsWith("\"")){
                 content = tl.getContent().substring(1, tl.getContent().length() - 1);
             }
-
-            if (tl.getType().compareTo("<" + stWktDataTypeURI + ">") == 0 || tl.getType().compareTo("<" + stGeometryDataTypeURI + ">") == 0)
-            {
+            if (tl.getType().compareTo("<" + stWktDataTypeURI + ">") == 0 || tl.getType().compareTo("<" + stGeometryDataTypeURI + ">") == 0){
                 return new StSPARQLWktDeserializer().toGeometry(content);
             }
-            else if(tl.getType().compareTo("<" + stGmlDataTypeURI + ">") == 0)
-            {
+            else if(tl.getType().compareTo("<" + stGmlDataTypeURI + ">") == 0){
                 return new GmlDeserializer().toGeometry(content);
             }
             throw new TypeErrorException();

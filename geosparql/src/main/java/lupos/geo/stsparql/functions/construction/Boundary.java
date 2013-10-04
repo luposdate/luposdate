@@ -23,13 +23,14 @@
  */
 package lupos.geo.stsparql.functions.construction;
 
-import com.vividsolutions.jts.geom.Geometry;
 import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.ExternalFunction;
-import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.geo.GeoHelper;
 import lupos.geo.serializer.StSPARQLSerializer;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Richard Mietz
@@ -38,16 +39,13 @@ import lupos.geo.serializer.StSPARQLSerializer;
 public class Boundary implements ExternalFunction
 {
     @Override
-    public Object evaluate(Object[] args) throws TypeErrorException
-    {
-        if(args.length==1)
-        {
-            Geometry geo = GeoHelper.getStSPARQLGeometry(args[0]);
-            Geometry boundary = geo.getBoundary();
+    public Object evaluate(final Object[] args) throws TypeErrorException {
+        if(args.length==1) {
+            final Geometry geo = GeoHelper.getStSPARQLGeometry(args[0]);
+            final Geometry boundary = geo.getBoundary();
             return new StSPARQLSerializer().toLiteral(boundary);
         }
-        else
-        {
+        else {
             throw new TypeErrorException("Boundary Function expects exactly 1 arguments: one geometry object.");
         }
     }
