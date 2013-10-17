@@ -42,11 +42,14 @@
 			    <finalName>lupos</finalName>
 			    <appendAssemblyId>false</appendAssemblyId>
 			    <archive>
-				<manifest>
-					<addClasspath>true</addClasspath>
-					<mainClass>lupos.gui.Demo_Applet</mainClass>
-				</manifest>
-                	    </archive>
+					<manifest>
+						<addClasspath>true</addClasspath>
+						<mainClass>lupos.gui.Demo_Applet</mainClass>
+					</manifest>
+					<manifestEntries>
+						<Permissions>all-permissions</Permissions>
+					</manifestEntries>
+                </archive>
 			    <descriptors>
 				<descriptor>../distributioncore/src/etc/jar-with-dependencies.xml</descriptor>
 			    </descriptors>
