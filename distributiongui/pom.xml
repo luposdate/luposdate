@@ -53,7 +53,13 @@
 			  </configuration>
 			</execution>
 		      </executions>
-		    </plugin>		    
+		    </plugin>
+
+	  <plugin>
+		<!--
+		 Afterwards run signGuiJar.bat in the main folder for signing the jar with the applet for web deployment
+		-->
+	  
 		</plugins>
   	</build>
 

@@ -7,7 +7,7 @@ target
 *.log
 *.ipr
 *.iws
-*.bat
+copyToUSB.bat
 **/.classpath
 **/*.log
 **/target
