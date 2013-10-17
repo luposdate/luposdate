@@ -55,7 +55,6 @@
 		      </executions>
 		    </plugin>
 
-	  <plugin>
 		<!--
 		 Afterwards run signGuiJar.bat in the main folder for signing the jar with the applet for web deployment
 		-->
