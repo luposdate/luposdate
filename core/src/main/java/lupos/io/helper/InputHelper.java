@@ -464,7 +464,7 @@ public final class InputHelper {
 	private final static BindingsMap readLuposBindingsMap(final InputStream in) throws IOException, ClassNotFoundException {
 		if (Bindings.instanceClass == BindingsMap.class) {
 			final Bindings b = Bindings.createNewInstance();
-			final int number = InputHelper.readLuposInt(in);
+			final int number = InputHelper.readLuposIntVariableBytes(in);
 			if (number < 0) {
 				return null;
 			}
@@ -481,7 +481,7 @@ public final class InputHelper {
 
 	private final static void addSpecialInformationToBindings(final Bindings b, final InputStream in) throws IOException, ClassNotFoundException {
 		if (b instanceof BindingsArrayReadTriples) {
-			final int number = InputHelper.readLuposInt(in);
+			final int number = InputHelper.readLuposIntVariableBytes(in);
 			if (number == 0) {
 				return;
 			}
