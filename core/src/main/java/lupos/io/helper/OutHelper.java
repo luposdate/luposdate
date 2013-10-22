@@ -425,7 +425,7 @@ public final class OutHelper {
 
 	private final static void writeOtherBindingsTypes(final Bindings t, final OutputStream os) throws IOException {
 		final Set<Variable> vars = t.getVariableSet();
-		OutHelper.writeLuposInt(vars.size(), os);
+		OutHelper.writeLuposIntVariableBytes(vars.size(), os);
 		for (final Variable v : vars) {
 			OutHelper.writeLuposString(v.getName(), os);
 			Registration.serializeWithoutId(t.get(v), os);
@@ -434,7 +434,7 @@ public final class OutHelper {
 
 	private final static void writeAdditionalInformationOfBindings(final Bindings ba, final OutputStream os) throws IOException {
 		if (ba instanceof BindingsArrayReadTriples) {
-			OutHelper.writeLuposInt(ba.getTriples().size(), os);
+			OutHelper.writeLuposIntVariableBytes(ba.getTriples().size(), os);
 			for (final Triple tt : ba.getTriples()) {
 				Registration.serializeWithoutId(tt, os);
 			}
@@ -503,7 +503,7 @@ public final class OutHelper {
 	}
 
 	public final static void writeLuposVarBucket(final VarBucket vb, final OutputStream os) throws IOException {
-		OutHelper.writeLuposInt(vb.selectivityOfInterval.size(), os);
+		OutHelper.writeLuposIntVariableBytes(vb.selectivityOfInterval.size(), os);
 		if (vb.minimum == null) {
 			if (vb.maximum == null) {
 				OutHelper.writeLuposByte((byte) 0, os);
