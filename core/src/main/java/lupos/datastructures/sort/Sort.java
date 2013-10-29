@@ -24,7 +24,6 @@
 package lupos.datastructures.sort;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,7 +38,6 @@ import lupos.datastructures.sort.sorter.ExternalSorter;
 import lupos.datastructures.sort.sorter.ReplacementSelectionSorter;
 import lupos.datastructures.sort.sorter.Sorter;
 import lupos.engine.evaluators.QueryEvaluator;
-import lupos.misc.FileHelper;
 import lupos.misc.TimeInterval;
 
 public class Sort {
@@ -47,14 +45,14 @@ public class Sort {
 		PARALLEL {
 
 			@Override
-			public Sorter createInstance(String[] args, int pos) {
+			public Sorter createInstance(final String[] args, final int pos) {
 				if(args.length==pos){
 					return new ExternalParallelSorter();
 				} else if(args.length==pos+6){
 					final int NUMBER_ELEMENTS_IN_INITIAL_RUNS = Integer.parseInt(args[pos+3]);
 					final String detPar = args[pos+1].toUpperCase();
-					final boolean isDeterministic = 	detPar.compareTo("D")==0 				|| 
-														detPar.compareTo("DET")==0 				|| 
+					final boolean isDeterministic = 	detPar.compareTo("D")==0 				||
+														detPar.compareTo("DET")==0 				||
 														detPar.compareTo("DETERMINISTIC")==0;
 					return new ExternalParallelSorter(Integer.parseInt(args[pos+2]), NUMBER_ELEMENTS_IN_INITIAL_RUNS, Integer.parseInt(args[pos+4]), Long.parseLong(args[pos+5]), SORTTYPE.valueOf(args[pos]).createRuns(NUMBER_ELEMENTS_IN_INITIAL_RUNS), isDeterministic);
 				} else {
@@ -63,7 +61,7 @@ public class Sort {
 			}
 
 			@Override
-			public String getHelpText(final String indent) {				
+			public String getHelpText(final String indent) {
 				return "[SORTTYPE (D|F) NUMBER_INITIAL_RUN_GENERATION_THREADS NUMBER_ELEMENTS_IN_INITIAL_RUNS NUMBER_OF_RUNS_TO_JOIN PARAMETER_FOR_SWAPPING]\n" + indent + "SORTTYPE can be "+Arrays.toString(SORTTYPE.values());
 			}
 
@@ -71,12 +69,12 @@ public class Sort {
 			public String getExampleText() {
 				return "D BAG 8 10000 2 10";
 			}
-			
+
 		},
 		ASYNCHRONOUS {
 
 			@Override
-			public Sorter createInstance(String[] args, int pos) {
+			public Sorter createInstance(final String[] args, final int pos) {
 				if(args.length==pos){
 					return new ExternalSorter();
 				} else if(args.length==pos+2){
@@ -96,12 +94,12 @@ public class Sort {
 			public String getExampleText() {
 				return "BAG 10000";
 			}
-			
+
 		},
 		REPLACEMENTSELECTION{
 
 			@Override
-			public Sorter createInstance(String[] args, int pos) {
+			public Sorter createInstance(final String[] args, final int pos) {
 				if(args.length==pos+3){
 					return new ReplacementSelectionSorter(args[pos].toUpperCase().compareTo("SET")==0, Integer.parseInt(args[pos+1]), Integer.parseInt(args[pos+2]));
 				} else {
@@ -118,14 +116,14 @@ public class Sort {
 			public String getExampleText() {
 				return "BAG 12 5";
 			}
-			
+
 		};
-		
+
 		public abstract Sorter createInstance(final String[] args, final int pos);
 		public abstract String getHelpText(final String indent);
 		public abstract String getExampleText();
 	}
-	
+
 	/**
 	 * Main method to measure the execution time for different external sorting algorithms.
 	 * @param args command line arguments
@@ -147,16 +145,16 @@ public class Sort {
 			System.out.println(Sort.getHelpText());
 			return;
 		}
-		
+
 		final int times = Integer.parseInt(args[3]);
 
-		// just to use for deleting temporary files...  
-		File file = new File("");
-		String absolutePath = file.getAbsolutePath() + File.separator;
+		// just to use for deleting temporary files...
+		// final File file = new File("");
+		// final String absolutePath = file.getAbsolutePath() + File.separator;
 
 		System.out.println("\nParameters:\n-----------\nMain Strategy:" + sorter.name() + "\n" + algo.parametersToString() + "\n");
-		
-		long[] execution_times = new long[times];
+
+		final long[] execution_times = new long[times];
 		long total_time = 0;
 		for(int t=0; t<times; t++){
 			sorter = SORTER.valueOf(args[0]);
@@ -169,41 +167,41 @@ public class Sort {
 				System.out.println(Sort.getHelpText());
 				return;
 			}
-			
-			Date start = new Date();
+
+			final Date start = new Date();
 			System.out.println("\n"+t+": Start processing:"+start+"\n");
-			
-			Run result = algo.sort(new BufferedInputStream(new FileInputStream(args[1])), args[2]);
-			
+
+			final Run result = algo.sort(new BufferedInputStream(new FileInputStream(args[1])), args[2]);
+
 			// just access all elements in the bag by iterating one time through
-			Iterator<String> it = result.iterator();
-			int i=0;
+			final Iterator<String> it = result.iterator();
+			long i=0;
 			while(it.hasNext()){
 				it.next();
 				i++;
 				// System.out.println((++i)+":"+it.next());
 			}
 			result.release();
-			Date end = new Date();
-			
-			System.out.println("\n"+t+": End processing:"+end);		
+			final Date end = new Date();
+
+			System.out.println("\n"+t+": End processing:"+end);
 			System.out.println("\nNumber of sorted RDF terms/Strings:"+i);
 			System.out.println("Number of runs swapped to disk:" + algo.getNumberOfRunsOnDisk());
-			
+
 			execution_times[t] = end.getTime()-start.getTime();
 			total_time += execution_times[t];
-			
+
 			DiskCollection.removeCollectionsFromDisk();
 			DBMergeSortedBag.removeBagsFromDisk();
 		}
-		
-		long avg = total_time / times; 
-			
+
+		final long avg = total_time / times;
+
 		System.out.println("\nDuration:   " + QueryEvaluator.toString(execution_times) + " = " + (((double) total_time / times) / 1000) + " seconds\n          = " + new TimeInterval(avg));
 		System.out.println("Sample Standard Deviation: " + (QueryEvaluator.computeSampleStandardDeviation(execution_times) / 1000) + " seconds");
 		System.out.println("Standard Deviation of the Sample: " + (QueryEvaluator.computeStandardDeviationOfTheSample(execution_times) / 1000) + " seconds");
 	}
-	
+
 	public static String getHelpText(){
 		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT TIMES SORTARGS\n\n";
 		result += "ALGO can be one of " + Arrays.toString(SORTER.values()) + "\n";
@@ -212,18 +210,18 @@ public class Sort {
 		result += "TIMES is the number of repetitions to calculate an average execution time\n\n";
 		result += "ALGO                   | SORTARGS\n";
 		result += "--------------------------------------------------------------------------------------------------------------------------------------------------\n";
-		for(SORTER sorter: SORTER.values()){
+		for(final SORTER sorter: SORTER.values()){
 			result += sorter.name() + spaces(23-sorter.name().length()) + "| " + sorter.getHelpText("                       | ")+"\n";
 		}
 		result += "\nExamples:\n";
-		for(SORTER sorter: SORTER.values()){
+		for(final SORTER sorter: SORTER.values()){
 			result +="java -server -XX:+UseParallelGC -XX:+AggressiveOpts -Xms60G -Xmx60G lupos.datastructures.sort.sorter.Sort " + sorter.name() + " SomeFiles.txt MULTIPLEN3 10 " +sorter.getExampleText() + "\n";
 		}
 		return result;
 	}
-	
+
 	private static String spaces(final int number){
-		StringBuilder s=new StringBuilder();
+		final StringBuilder s=new StringBuilder();
 		for(int i=0; i<number; i++){
 			s.append(" ");
 		}

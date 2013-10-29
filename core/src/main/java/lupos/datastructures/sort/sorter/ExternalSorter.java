@@ -38,7 +38,7 @@ import lupos.datastructures.sort.run.trie.TrieBagRuns;
  * Initial runs (up to a certain size) are generated in main memory and swapped to disk.
  * Reading in and parsing the data as well as swapping to disk is done in an asynchronous way.
  * Finally all swapped runs are merged into one run...
- * 
+ *
  * Runs can be trie sets, bags (using trie merge), or arrays (using normal merge or with duplicate elimination)
  */
 public class ExternalSorter implements Sorter {
@@ -46,59 +46,59 @@ public class ExternalSorter implements Sorter {
 	private final LinkedList<Run> runsOnDisk = new LinkedList<Run>();
 	private final Runs runs;
 	private final static int NUMBER_OF_RUNS_IN_BUFFER_FOR_SWAPPING = 3;
-	
+
 	public ExternalSorter(final Runs runs, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 		this.NUMBER_ELEMENTS_IN_INITIAL_RUNS = NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 		this.runs = runs;
 	}
-	
+
 	public ExternalSorter(){
 		this(new TrieBagRuns(), 1000);
 	}
-	
+
 	@Override
-	public Run sort(final InputStream dataFiles, String format) throws Exception {
+	public Run sort(final InputStream dataFiles, final String format) throws Exception {
 		final BoundedBuffer<String> buffer = new BoundedBuffer<String>();
-		
+
 		// initialize threads for generating initial runs
 		final BoundedBuffer<Run> initialRunsLevel0 = new BoundedBuffer<Run>(NUMBER_OF_RUNS_IN_BUFFER_FOR_SWAPPING);
-		
-		InitialRunGenerator initialRunGenerationThread = new InitialRunGenerator(buffer, initialRunsLevel0, this.NUMBER_ELEMENTS_IN_INITIAL_RUNS, this.runs);
-		
+
+		final InitialRunGenerator initialRunGenerationThread = new InitialRunGenerator(buffer, initialRunsLevel0, this.NUMBER_ELEMENTS_IN_INITIAL_RUNS, this.runs);
+
 		initialRunGenerationThread.start();
-		
+
 		// start the swap thread...
-		Swapper swapper = new Swapper(initialRunsLevel0);
+		final Swapper swapper = new Swapper(initialRunsLevel0);
 		swapper.start();
 
 		// read in and parse the data...
 		DataToBoundedBuffer.dataToBoundedBuffer(dataFiles, format, buffer);
-		
-		// signal that the all data is parsed (and nothing will be put into the buffer any more) 
+
+		// signal that all the data is parsed (and nothing will be put into the buffer any more)
 		buffer.endOfData();
-		
-		// wait for threads to finish generating initial runs...  
+
+		// wait for threads to finish generating initial runs...
 			try {
 				initialRunGenerationThread.join();
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
-		
+
 		// start remaining merging phase...
 		// signal no initial run will be generated any more
 		initialRunsLevel0.endOfData();
-		
+
 		// wait for swapper thread!
 		try {
 			swapper.join();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		
+
 		// final merge phase: merge all runs (which are stored on disk)
-		Run result; 
+		Run result;
 		if(this.runsOnDisk.size()==0){
 			System.err.println("No runs there to be merged!");
 			return null;
@@ -107,34 +107,34 @@ public class ExternalSorter implements Sorter {
 			result = this.runsOnDisk.get(0);
 		} else {
 			result = this.runs.merge(this.runsOnDisk, false);
-			for(Run run: this.runsOnDisk){
+			for(final Run run: this.runsOnDisk){
 				run.release();
 			}
-		}		
+		}
 		return result;
 	}
-	
+
 	@Override
 	public int getNumberOfRunsOnDisk(){
 		return this.runsOnDisk.size();
 	}
-	
+
 	@Override
 	public String parametersToString(){
-		return "Run-/Merging-Strategy:" + this.runs + "\nNUMBER_ELEMENTS_IN_INITIAL_RUNS      :" + this.NUMBER_ELEMENTS_IN_INITIAL_RUNS;			
+		return "Run-/Merging-Strategy:" + this.runs + "\nNUMBER_ELEMENTS_IN_INITIAL_RUNS      :" + this.NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 	}
 
 	/**
-	 * This class is just to asynchronously swap runs to disk... 
+	 * This class is just to asynchronously swap runs to disk...
 	 */
 	public final class Swapper extends Thread {
 
 		private final BoundedBuffer<Run> initialRunsLevel0;
-		
+
 		public Swapper(final BoundedBuffer<Run> initialRunsLevel0) {
-			this.initialRunsLevel0 = initialRunsLevel0; 
+			this.initialRunsLevel0 = initialRunsLevel0;
 		}
-		
+
 		@Override
 		public void run(){
 			try {
@@ -143,12 +143,12 @@ public class ExternalSorter implements Sorter {
 					if(runToBeSwapped==null){
 						break;
 					}
-					Run runOnDisk = runToBeSwapped.swapRun();
+					final Run runOnDisk = runToBeSwapped.swapRun();
 					runToBeSwapped = null;
 					System.gc();
 					ExternalSorter.this.runsOnDisk.add(runOnDisk);
 				}
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
