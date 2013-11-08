@@ -171,13 +171,17 @@ public class PushFilterRule extends Rule {
             }
 
             if(this.op instanceof lupos.engine.operators.multiinput.Union) {
+            	boolean flag = false;
                 for(final BasicOperator o : this.op.getPrecedingOperators()) {
                     if(o.getSucceedingOperators().size() > 1 || (o instanceof lupos.engine.operators.singleinput.filter.Filter && this.f.equalFilterExpression((lupos.engine.operators.singleinput.filter.Filter) o))) {
                         return false;
                     }
+                    if(o.getUnionVariables().containsAll(this.f.getUsedVariables())){
+                    	flag = true;
+                    }
                 }
 
-                return true;
+                return flag;
             }
 
             if(this.op instanceof lupos.engine.operators.multiinput.optional.Optional || this.op instanceof lupos.engine.operators.multiinput.optional.parallel.ParallelOptional || this.op instanceof lupos.engine.operators.multiinput.optional.parallel.MergeParallelOptional) {
