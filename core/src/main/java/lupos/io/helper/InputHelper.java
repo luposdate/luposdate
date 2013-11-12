@@ -577,7 +577,7 @@ public final class InputHelper {
 
 	public final static VarBucket readLuposVarBucket(final InputStream is) throws IOException {
 		final VarBucket vb = new VarBucket();
-		final int size = InputHelper.readLuposInt(is);
+		final int size = InputHelper.readLuposIntVariableBytes(is);
 		final byte minMax = InputHelper.readLuposByte(is);
 		if (minMax >= 2) {
 			vb.minimum = LiteralFactory.readLuposLiteral(is);
