@@ -162,11 +162,11 @@ public class PushFilterRule extends Rule {
 
         if(_result) {
             // additional check method code...
-        	if(this.f.materializationOfLazyLiteralsNeeded()){
-        		  return false;
-        	}
+//        	if(this.f.materializationOfLazyLiteralsNeeded()){
+//        		  return false;
+//        	}
 
-        	if(this.op instanceof lupos.engine.operators.tripleoperator.TriplePattern || this.op instanceof lupos.engine.operators.index.BasicIndexScan || this.op instanceof lupos.engine.operators.index.Root) {
+        	if(this.op instanceof lupos.engine.operators.tripleoperator.TriplePattern || this.op instanceof lupos.engine.operators.index.BasicIndexScan || this.op instanceof lupos.engine.operators.index.Root || this.op instanceof lupos.engine.operators.singleinput.path.Closure || this.op instanceof lupos.engine.operators.singleinput.path.PathLengthZero) {
                 return false;
             }
 

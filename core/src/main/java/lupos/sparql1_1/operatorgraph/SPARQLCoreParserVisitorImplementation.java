@@ -1024,13 +1024,20 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	@Override
 	public BasicOperator visit(final ASTPathSequence node, final OperatorConnection connection,
 			final Item graphConstraint, final Variable subject, final Variable object, final Node subjectNode, final Node objectNode) {
-		final Item[] items = {subject, getItem(node.jjtGetChild(0)), this.getVariable(subject.toString(),object.toString(), "b")};
-		final TriplePattern tp = new TriplePattern(items);
-		final LinkedList<TriplePattern> temp = new LinkedList<TriplePattern>();
-		temp.add(tp);
 		final Join join = new Join();
-		this.indexScanCreator.createIndexScanAndConnectWithRoot(new OperatorIDTuple(join, 0), temp, graphConstraint);
-		final BasicOperator startingOperator = node.jjtGetChild(1).accept(this, connection, graphConstraint, (Variable)items[2], object, subjectNode, objectNode);
+		final Variable v = this.getVariable(subject.toString(), object.toString(), "b");
+//		final Node n0 = node.jjtGetChild(0);
+//		if(n0 instanceof ASTQuotedURIRef){
+//			final Item[] items = {subject, getItem(node.jjtGetChild(0)), v};
+//			final TriplePattern tp = new TriplePattern(items);
+//			final LinkedList<TriplePattern> temp = new LinkedList<TriplePattern>();
+//			temp.add(tp);
+//			this.indexScanCreator.createIndexScanAndConnectWithRoot(new OperatorIDTuple(join, 0), temp, graphConstraint);
+//		} else {
+			final BasicOperator startingOperator2 = node.jjtGetChild(0).accept(this, connection, graphConstraint, subject, v, subjectNode, objectNode);
+			startingOperator2.addSucceedingOperator(new OperatorIDTuple(join, 0));
+//		}
+		final BasicOperator startingOperator = node.jjtGetChild(1).accept(this, connection, graphConstraint, v, object, subjectNode, objectNode);
 		startingOperator.addSucceedingOperator(new OperatorIDTuple(join,1));
 		final Projection projection = new Projection();
 		projection.addProjectionElement(subject);

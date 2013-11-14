@@ -44,6 +44,7 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.misc.Tuple;
 import lupos.misc.debug.DebugStep;
+import lupos.rdf.Prefix;
 
 /**
  * This operator determines the transitive closure (applied in property paths for * and +)
@@ -104,8 +105,42 @@ public class Closure extends SingleInputOperator{
 
 	@Override
 	public String toString(){
-		final String result = "Closure of "+this.subject+" -> "+this.object;
+		String result = "Closure of "+this.subject+" -> "+this.object;
+		if(this.allowedSubjects!=null){
+			result+="\nAllowed Subjects: "+this.allowedSubjects;
+		}
+		if(this.allowedObjects!=null){
+			result+="\nAllowed Objects: "+this.allowedObjects;
+		}
 		return result;
+	}
+
+	@Override
+	public String toString(final Prefix prefix){
+		String result = "Closure of "+this.subject+" -> "+this.object;
+		if(this.allowedSubjects!=null){
+			result+="\nAllowed Subjects: " + Closure.setWitPrefix(this.allowedSubjects, prefix);
+		}
+		if(this.allowedObjects!=null){
+			result+="\nAllowed Objects: " + Closure.setWitPrefix(this.allowedObjects, prefix);
+		}
+		return result;
+	}
+
+	public static String setWitPrefix(final Set<Literal> literals, final Prefix prefix){
+		final StringBuilder result = new StringBuilder();
+		result.append("[");
+		boolean firstTime = true;
+		for(final Literal literal: literals){
+			if(firstTime){
+				firstTime=false;
+			} else {
+				result.append(", ");
+			}
+			result.append(literal.toString(prefix));
+		}
+		result.append("]");
+		return result.toString();
 	}
 
 	@Override
