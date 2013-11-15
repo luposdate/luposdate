@@ -50,16 +50,6 @@ public abstract class BindableIndexScan extends BasicIndexScan {
 		return null;
 	}
 
-//	@Override
-//	public QueryResult process(QueryResult queryResult, int operandID) {
-//		final QueryResult result = QueryResult.createInstance();
-//		final Iterator<Bindings> bit = queryResult.oneTimeIterator();
-//		while (bit.hasNext()) {
-//			processIndexScan(result, bit.next());
-//		}
-//		return result;
-//	}
-
 	protected abstract void processIndexScan(final QueryResult result, final Bindings bind);
 
 	@Override
@@ -69,17 +59,22 @@ public abstract class BindableIndexScan extends BasicIndexScan {
 	public abstract Message preProcessMessage(BoundVariablesMessage msg);
 
 	@Override
-	public QueryResult join(Indices indices, Bindings bindings) {
+	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
 
 	@Override
 	public String toString() {
-		return "Bindable - " + index.toString();
+		return "Bindable - " + this.index.toString();
 	}
 
 	@Override
 	public String toString(final Prefix prefixInstance) {
-		return "Bindable - " + index.toString(prefixInstance);
+		return "Bindable - " + this.index.toString(prefixInstance);
+	}
+
+	@Override
+	public boolean joinOrderToBeOptimized(){
+		return false;
 	}
 }

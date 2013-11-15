@@ -27,8 +27,8 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.stream.TripleDeleter;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
@@ -36,7 +36,7 @@ import lupos.misc.debug.DebugStep;
 
 public abstract class InsertIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
-	public InsertIndexScan(Root root) {
+	public InsertIndexScan(final Root root) {
 		super(root);
 	}
 
@@ -48,17 +48,17 @@ public abstract class InsertIndexScan extends BasicIndexScan implements TripleCo
 	private boolean firstTime = true;
 
 	@Override
-	public void deleteTriple(Triple triple) {
+	public void deleteTriple(final Triple triple) {
 		// no triple to delete as fixed triples or facts are only submitted
 	}
 
 	@Override
-	public void deleteTripleDebug(Triple triple, DebugStep debugstep) {
+	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 		// no triple to delete as fixed triples or facts are only submitted
 	}
 
 	@Override
-	public void consume(Triple triple) {
+	public void consume(final Triple triple) {
 		if(this.firstTime){
 			this.consumeOnce();
 			this.firstTime = false;
@@ -72,7 +72,12 @@ public abstract class InsertIndexScan extends BasicIndexScan implements TripleCo
 			this.firstTime = false;
 		}
 	}
-	
+
+	@Override
+	public boolean joinOrderToBeOptimized(){
+		return false;
+	}
+
 	protected abstract void consumeOnce();
-	protected abstract void consumeDebugOnce(final DebugStep debugstep);	
+	protected abstract void consumeDebugOnce(final DebugStep debugstep);
 }

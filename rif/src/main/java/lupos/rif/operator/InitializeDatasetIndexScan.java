@@ -31,43 +31,45 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
-import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.Root;
 import lupos.misc.debug.DebugStep;
 
 public class InitializeDatasetIndexScan extends BasicIndexScan {
 	private final Collection<BindableIndexScan> listenerIndexes = new ArrayList<BindableIndexScan>();
 
-	public InitializeDatasetIndexScan(Root root) {
+	public InitializeDatasetIndexScan(final Root root) {
 		super(root);
-		triplePatterns = Arrays.asList();
+		this.triplePatterns = Arrays.asList();
 	}
 
 	public void addBindableIndex(final BindableIndexScan index) {
-		listenerIndexes.add(index);
+		this.listenerIndexes.add(index);
 	}
 
 	public boolean isEmpty() {
-		return listenerIndexes.isEmpty();
+		return this.listenerIndexes.isEmpty();
 	}
 
 	@Override
-	public QueryResult process(Dataset dataset) {
-		for (final BindableIndexScan index : this.listenerIndexes)
+	public QueryResult process(final Dataset dataset) {
+		for (final BindableIndexScan index : this.listenerIndexes) {
 			index.process(dataset);
+		}
 		return null;
 	}
-	
+
 	public QueryResult processDebug(final int opt, final Dataset dataset,
 			final DebugStep debugstep) {
-		for (final BindableIndexScan index : listenerIndexes)
+		for (final BindableIndexScan index : this.listenerIndexes) {
 			index.startProcessingDebug(dataset, debugstep);
-		return null;		
+		}
+		return null;
 	}
 
 
 	@Override
-	public QueryResult join(Indices indices, Bindings bindings) {
+	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
 
@@ -76,4 +78,8 @@ public class InitializeDatasetIndexScan extends BasicIndexScan {
 		return "DataSetIndex";
 	}
 
+	@Override
+	public boolean joinOrderToBeOptimized(){
+		return false;
+	}
 }

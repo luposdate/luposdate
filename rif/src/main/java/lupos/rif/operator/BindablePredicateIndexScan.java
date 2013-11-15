@@ -39,40 +39,40 @@ import lupos.rif.datatypes.RuleResult;
 public class BindablePredicateIndexScan extends BindableIndexScan {
 	private final PredicatePattern predicatePattern;
 
-	public BindablePredicateIndexScan(final PredicateIndexScan index,
-			final PredicatePattern pattern) {
+	public BindablePredicateIndexScan(final PredicateIndexScan index, final PredicatePattern pattern) {
 		super(index);
 		this.predicatePattern = pattern;
 	}
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		final BoundVariablesMessage result = (BoundVariablesMessage) predicatePattern
+		final BoundVariablesMessage result = (BoundVariablesMessage) this.predicatePattern
 				.preProcessMessage(msg);
 		result.getVariables().removeAll(msg.getVariables());
-		unionVariables = new HashSet<Variable>(result.getVariables());
-		intersectionVariables = new HashSet<Variable>(unionVariables);
+		this.unionVariables = new HashSet<Variable>(result.getVariables());
+		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
 		return result;
 	}
 
 	@Override
-	protected void processIndexScan(QueryResult result, Bindings bind) {
-		final Item[] newItems = new Item[predicatePattern.getPatternItems()
+	protected void processIndexScan(final QueryResult result, final Bindings bind) {
+		final Item[] newItems = new Item[this.predicatePattern.getPatternItems()
 				.size()];
 		int i = 0;
-		for (final Item item : predicatePattern.getPatternItems()) {
+		for (final Item item : this.predicatePattern.getPatternItems()) {
 			Item toSet = null;
-			if (item.isVariable() && bind.getVariableSet().contains(item))
+			if (item.isVariable() && bind.getVariableSet().contains(item)) {
 				toSet = item.getLiteral(bind);
-			else
+			} else {
 				toSet = item;
+			}
 			newItems[i++] = toSet;
 		}
 		final PredicatePattern newPattern = new PredicatePattern(
-				predicatePattern.getPredicateName(), newItems);
+				this.predicatePattern.getPredicateName(), newItems);
 		// Scan durchf�hren
-		RuleResult ruleResult = (RuleResult) index.process(dataSet);
-		QueryResult tempResult = newPattern.process(ruleResult, 0);
+		final RuleResult ruleResult = (RuleResult) this.index.process(this.dataSet);
+		final QueryResult tempResult = newPattern.process(ruleResult, 0);
 		result.add(tempResult);
 	}
 

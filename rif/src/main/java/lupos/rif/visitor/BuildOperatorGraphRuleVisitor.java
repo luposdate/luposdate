@@ -896,7 +896,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		final URILiteral name = (URILiteral) ((Constant) obj.termName)
 				.getLiteral();
 		if (RIFBuiltinFactory.isIterable(name)) {
-			final IteratorIndexScan index = new IteratorIndexScan(obj);
+			final BasicOperator root = this.indexScanCreator.getRoot();
+			final IteratorIndexScan index = new IteratorIndexScan((root instanceof Root)? (Root) root : null, obj);
 			this.indexScanCreator.getRoot().addSucceedingOperator(index);
 			index.addPrecedingOperator(this.indexScanCreator.getRoot());
 			return index;

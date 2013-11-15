@@ -37,6 +37,7 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.stream.TripleDeleter;
@@ -54,8 +55,8 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 	private static final long serialVersionUID = -2452758087959813203L;
 	private final External external;
 
-	public IteratorIndexScan(final External iteratorPredicate) {
-		super(null);
+	public IteratorIndexScan(final Root root, final External iteratorPredicate) {
+		super(root);
 		this.external = iteratorPredicate;
 	}
 
@@ -115,7 +116,7 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 
 	@Override
 	public String toString() {
-		final StringBuffer str = new StringBuffer("IteratorIndex On")
+		final StringBuffer str = new StringBuffer("Iterator On")
 		.append("\n");
 		str.append(this.external.toString());
 		return str.toString();
@@ -123,7 +124,7 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 
 	@Override
 	public String toString(final Prefix prefixInstance) {
-		final StringBuffer str = new StringBuffer("IteratorIndex On")
+		final StringBuffer str = new StringBuffer("Iterator On")
 		.append("\n");
 		str.append(this.external.toString(prefixInstance));
 		return str.toString();
@@ -158,5 +159,10 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 			this.startProcessingDebug(null, debugstep);
 			this.firstTime = false;
 		}
+	}
+
+	@Override
+	public boolean joinOrderToBeOptimized(){
+		return false;
 	}
 }

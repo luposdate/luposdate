@@ -113,4 +113,9 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 			this.firstTime = false;
 		}
 	}
+
+	@Override
+	public boolean joinOrderToBeOptimized(){
+		return false;
+	}
 }
