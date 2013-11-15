@@ -42,6 +42,7 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.EmptyIndexScan;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.multiinput.join.IndexJoinWithDuplicateElimination;
 import lupos.engine.operators.multiinput.join.Join;
@@ -907,7 +908,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	@Override
 	protected RuleFilter buildRuleFilter(final IExpression expr, final Object arg) {
 		if (this.booleanIndex == null) {
-			this.booleanIndex = new BooleanIndexScan();
+			final BasicOperator root = this.indexScanCreator.getRoot();
+			this.booleanIndex = new BooleanIndexScan((root instanceof Root)? (Root) root : null);
 			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(this.booleanIndex, 0));
 			this.booleanIndex.addPrecedingOperator(this.indexScanCreator.getRoot());
 		}

@@ -36,34 +36,34 @@ import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
-	
+
 	protected final Root root;
-	
+
 	public IndexScanCreator_BasicIndex(final Root root_param){
 		this.root = root_param;
 	}
-	
+
 	@Override
-	public BasicOperator getRoot() {
+	public Root getRoot() {
 		return this.root;
 	}
 
 	@Override
 	public BasicOperator createIndexScanAndConnectWithRoot(
-			OperatorIDTuple opID, Collection<TriplePattern> triplePatterns,
-			Item graphConstraint) {
+			final OperatorIDTuple opID, final Collection<TriplePattern> triplePatterns,
+			final Item graphConstraint) {
 		final lupos.engine.operators.index.BasicIndexScan index = this.root.newIndexScan(opID, triplePatterns, graphConstraint);
 		this.root.getSucceedingOperators().add(new OperatorIDTuple(index, 0));
 		return index;
 	}
 
 	@Override
-	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(OperatorIDTuple opID, Item graphConstraint) {
+	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(final OperatorIDTuple opID, final Item graphConstraint) {
 		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(opID, graphConstraint, this.root), 0));
 	}
 
 	@Override
-	public void createEmptyIndexScanAndConnectWithRoot(OperatorIDTuple opID) {
+	public void createEmptyIndexScanAndConnectWithRoot(final OperatorIDTuple opID) {
 		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScan(opID), 0));
 	}
 
@@ -73,16 +73,18 @@ public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 	}
 
 	@Override
-	public void addDefaultGraph(String defaultgraph) {
-		if (this.root.defaultGraphs == null)
+	public void addDefaultGraph(final String defaultgraph) {
+		if (this.root.defaultGraphs == null) {
 			this.root.defaultGraphs = new LinkedList<String>();
-		this.root.defaultGraphs.add(defaultgraph);					
+		}
+		this.root.defaultGraphs.add(defaultgraph);
 	}
 
 	@Override
-	public void addNamedGraph(String namedgraph) {
-		if (this.root.namedGraphs == null)
+	public void addNamedGraph(final String namedgraph) {
+		if (this.root.namedGraphs == null) {
 			this.root.namedGraphs = new LinkedList<String>();
-		this.root.namedGraphs.add(namedgraph);					
+		}
+		this.root.namedGraphs.add(namedgraph);
 	}
 }

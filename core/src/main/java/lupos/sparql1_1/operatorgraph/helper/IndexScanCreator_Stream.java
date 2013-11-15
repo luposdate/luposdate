@@ -36,74 +36,83 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 
 public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
-	
+
 	protected PatternMatcher currentPatternMatcher = new PatternMatcher();
 	protected Stream stream = null;
-	
+
 	public IndexScanCreator_Stream(){
 	}
 
 	@Override
 	public BasicOperator getRoot() {
-		if(stream != null)
-			return stream;
-		else return this.currentPatternMatcher;
+		if(this.stream != null) {
+			return this.stream;
+		} else {
+			return this.currentPatternMatcher;
+		}
 	}
-	
-	public void setStream(Stream stream){
+
+	public void setStream(final Stream stream){
 		this.stream = stream;
 	}
-	
+
 	public Stream getStream(){
-		return stream;
+		return this.stream;
 	}
 
 	public PatternMatcher getCurrentPatternMatcher() {
-		return currentPatternMatcher;
+		return this.currentPatternMatcher;
 	}
 
-	public void setCurrentPatternMatcher(PatternMatcher currentPatternMatcher) {
+	public void setCurrentPatternMatcher(final PatternMatcher currentPatternMatcher) {
 		this.currentPatternMatcher = currentPatternMatcher;
 	}
 
 	@Override
-	public BasicOperator createIndexScanAndConnectWithRoot(OperatorIDTuple opID, Collection<TriplePattern> triplePatterns, Item graphConstraint) {
+	public BasicOperator createIndexScanAndConnectWithRoot(final OperatorIDTuple opID, final Collection<TriplePattern> triplePatterns, final Item graphConstraint) {
 		if(triplePatterns.size()>1){
-			Join join = new Join();
+			final Join join = new Join();
 			int i=0;
-			for(TriplePattern tp : triplePatterns){
-				currentPatternMatcher.add(tp);
+			for(final TriplePattern tp : triplePatterns){
+				this.currentPatternMatcher.add(tp);
 				tp.addSucceedingOperator(new OperatorIDTuple(join, i));
 				i++;
 			}
-			if(opID!=null)
+			if(opID!=null) {
 				join.addSucceedingOperator(opID);
+			}
 			return join;
 		} else if(triplePatterns.size()==1){
-			TriplePattern tp = triplePatterns.iterator().next();
-			if(opID!=null)
+			final TriplePattern tp = triplePatterns.iterator().next();
+			if(opID!=null) {
 				tp.addSucceedingOperator(opID);
-			currentPatternMatcher.add(tp);
+			}
+			this.currentPatternMatcher.add(tp);
 			return tp;
-		} else throw new Error("There should be at least one Triple Pattern given!");
+		} else {
+			throw new Error("There should be at least one Triple Pattern given!");
+		}
 	}
 
 	@Override
-	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(OperatorIDTuple opID, Item graphConstraint) {
-		if(graphConstraint!=null)
+	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(final OperatorIDTuple opID, final Item graphConstraint) {
+		if(graphConstraint!=null) {
 			throw new Error("This evaluator does not support named graphs!");
-		TriggerOneTime trigger = new TriggerOneTime(true);
-		currentPatternMatcher.addSucceedingOperator(trigger);
-		if(opID!=null)
+		}
+		final TriggerOneTime trigger = new TriggerOneTime(true);
+		this.currentPatternMatcher.addSucceedingOperator(trigger);
+		if(opID!=null) {
 			trigger.addSucceedingOperator(opID);
+		}
 	}
 
 	@Override
-	public void createEmptyIndexScanAndConnectWithRoot(OperatorIDTuple opID) {
-		TriggerOneTime trigger = new TriggerOneTime(false);
-		currentPatternMatcher.addSucceedingOperator(trigger);
-		if(opID!=null)
+	public void createEmptyIndexScanAndConnectWithRoot(final OperatorIDTuple opID) {
+		final TriggerOneTime trigger = new TriggerOneTime(false);
+		this.currentPatternMatcher.addSucceedingOperator(trigger);
+		if(opID!=null) {
 			trigger.addSucceedingOperator(opID);
+		}
 	}
 
 	@Override
@@ -112,12 +121,12 @@ public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
 	}
 
 	@Override
-	public void addDefaultGraph(String defaultgraph) {
+	public void addDefaultGraph(final String defaultgraph) {
 		throw new UnsupportedOperationException("This evaluator does not support different default graphs!");
 	}
 
 	@Override
-	public void addNamedGraph(String namedgraph) {
+	public void addNamedGraph(final String namedgraph) {
 		throw new UnsupportedOperationException("This evaluator does not support named graphs!");
 	}
 }

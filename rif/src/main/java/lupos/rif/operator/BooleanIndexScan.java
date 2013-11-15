@@ -31,12 +31,10 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.queryresult.QueryResultDebug;
-import lupos.engine.operators.Operator;
-import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.stream.TripleDeleter;
@@ -47,20 +45,20 @@ import lupos.rdf.Prefix;
 
 public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
-	public BooleanIndexScan() {
-		super(null);
-		triplePatterns = Arrays.asList();
+	public BooleanIndexScan(final Root root) {
+		super(root);
+		this.triplePatterns = Arrays.asList();
 	}
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
 		result.getVariables().add(new Variable("@boolean"));
-		intersectionVariables = new HashSet<Variable>(result.getVariables());
-		unionVariables = intersectionVariables;
+		this.intersectionVariables = new HashSet<Variable>(result.getVariables());
+		this.unionVariables = this.intersectionVariables;
 		return result;
 	}
-	
+
 	private QueryResult createQueryResult(){
 		final QueryResult result = QueryResult.createInstance();
 		final Bindings bind = Bindings.createNewInstance();
@@ -72,32 +70,11 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		// leitet ein QueryResult mit einem Binding weiter
-		final QueryResult result = this.createQueryResult();
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
-			((Operator) succOperator.getOperator()).processAll(result,
-					succOperator.getId());
-		}
-		return result;
-	}
-
-	public QueryResult processDebug(final int opt, final Dataset dataset,
-			final DebugStep debugstep) {
-		// leitet ein QueryResult mit einem Binding weiter
-		final QueryResult result = this.createQueryResult();
-		Bindings bind = result.getFirst();
-		for (final OperatorIDTuple succOperator : succeedingOperators) {
-			if (result.size() > 0)
-				debugstep.step(this, succOperator.getOperator(), bind);
-			final QueryResultDebug debug = new QueryResultDebug(result,
-					debugstep, this, succOperator.getOperator(), true);
-			((Operator) succOperator.getOperator()).processAll(debug,
-					succOperator.getId());
-		}
-		return result;
+		return this.createQueryResult();
 	}
 
 	@Override
-	public QueryResult join(Indices indices, Bindings bindings) {
+	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
 
@@ -108,32 +85,32 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 
 	@Override
 	public String toString(final Prefix prefixInstance) {
-		return toString();
+		return this.toString();
 	}
-	
+
 	private boolean firstTime = true;
 
 	@Override
-	public void deleteTriple(Triple triple) {
+	public void deleteTriple(final Triple triple) {
 	}
 
 	@Override
-	public void deleteTripleDebug(Triple triple, DebugStep debugstep) {
+	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 	}
 
 	@Override
-	public void consume(Triple triple) {
-		if(firstTime){
-			process(null);
-			firstTime = false;
+	public void consume(final Triple triple) {
+		if(this.firstTime){
+			this.processAtSucceedingOperators(this.createQueryResult());
+			this.firstTime = false;
 		}
 	}
 
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
-		if(firstTime){
-			processDebug(0, null, debugstep);
-			firstTime = false;
+		if(this.firstTime){
+			this.processAtSucceedingOperatorsDebug(this.createQueryResult(), debugstep);
+			this.firstTime = false;
 		}
 	}
 }

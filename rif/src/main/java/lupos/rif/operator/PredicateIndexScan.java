@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.Operator;
-import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.Dataset;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
@@ -48,22 +46,24 @@ public class PredicateIndexScan extends InsertIndexScan {
 		this.predFacts.add(fact);
 	}
 
-	@Override
-	public QueryResult process(final Dataset dataset) {
+	private final QueryResult createQueryResult(){
 		final RuleResult gr = new RuleResult();
 		gr.getPredicateResults().addAll(this.predFacts);
-//		for (final OperatorIDTuple succOperator : this.succeedingOperators)
-//			((Operator) succOperator.getOperator()).processAll(gr,
-//					succOperator.getId());
 		return gr;
+	}
+
+	@Override
+	public QueryResult process(final Dataset dataset) {
+		return this.createQueryResult();
 	}
 
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer("PredicateFacts")
 				.append("\n");
-		for (final Predicate pr : this.predFacts)
+		for (final Predicate pr : this.predFacts) {
 			str.append(pr.toString()).append("\n");
+		}
 		return str.toString();
 	}
 
@@ -71,21 +71,22 @@ public class PredicateIndexScan extends InsertIndexScan {
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer("PredicateFacts")
 				.append("\n");
-		for (final Predicate pr : this.predFacts)
+		for (final Predicate pr : this.predFacts) {
 			str.append(pr.toString(prefixInstance)).append("\n");
+		}
 		return str.toString();
 	}
 
 	@Override
 	public void consumeOnce() {
-		process(null);
+		this.processAtSucceedingOperators(this.createQueryResult());
 	}
 
 	@Override
 	public void consumeDebugOnce(final DebugStep debugstep) {
-		startProcessingDebug(null, debugstep);
+		this.processAtSucceedingOperatorsDebug(this.createQueryResult(), debugstep);
 	}
-	
+
 	@Override
 	public boolean joinOrderToBeOptimized(){
 		return false;

@@ -36,7 +36,7 @@ public interface IndexScanCreatorInterface {
 	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(OperatorIDTuple opID, Item graphConstraint);
 	public void createEmptyIndexScanAndConnectWithRoot(OperatorIDTuple opID);
 	public BasicOperator getRoot();
-	
+
 	// not supported by every evaluator!
 	public Dataset getDataset();
 	public void addDefaultGraph(String defaultgraph);
