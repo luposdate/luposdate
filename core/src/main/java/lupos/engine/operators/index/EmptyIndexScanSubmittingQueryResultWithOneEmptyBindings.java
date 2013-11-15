@@ -28,20 +28,20 @@ import java.util.Collection;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Item;
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.rdf.Prefix;
 
 public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends EmptyIndexScan {
-	
+
 	protected final Root root;
 	protected final Item rdfGraph;
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6813056199050211285L;
 
@@ -56,14 +56,14 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	/**
 	 * Creating a new query result with an empty binding to handle an empty BIND
 	 * statement
-	 * 
+	 *
 	 * @param Dataset
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		final QueryResult queryResult = QueryResult.createInstance();
 		if(this.rdfGraph!=null && this.rdfGraph.isVariable()){
-			Variable graphConstraint = (Variable) this.rdfGraph;
+			final Variable graphConstraint = (Variable) this.rdfGraph;
 			if (this.root.namedGraphs != null && this.root.namedGraphs.size() > 0) {
 				// Convert the named graphs' names into URILiterals
 				// to be applicable later on
@@ -71,7 +71,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 					final Bindings graphConstraintBindings = Bindings.createNewInstance();
 					try {
 						graphConstraintBindings.add(graphConstraint, LiteralFactory.createURILiteralWithoutLazyLiteral(name));
-					} catch (URISyntaxException e) {
+					} catch (final URISyntaxException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
@@ -91,11 +91,6 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 			queryResult.add(Bindings.createNewInstance());
 		}
 
-		for (final OperatorIDTuple succOperator : this.succeedingOperators) {
-
-			((Operator) succOperator.getOperator()).processAll(queryResult,
-					succOperator.getId());
-		}
 		return queryResult;
 	}
 
@@ -105,7 +100,18 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	}
 
 	@Override
-	public String toString(Prefix prefix) {
+	public String toString(final Prefix prefix) {
 		return super.toString(prefix)+"\nReturning queryResult with one empty bindings";
-	}	
+	}
+
+	// just for using this also for the stream engine
+	protected boolean firstTime = true;
+
+	@Override
+	public void consume(final Triple triple) {
+		if(this.firstTime){
+			this.firstTime = false;
+			this.processAtSucceedingOperators(QueryResult.createInstance(Bindings.createNewInstance()));
+		}
+	}
 }

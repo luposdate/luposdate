@@ -23,15 +23,15 @@
  */
 package lupos.engine.operators.index;
 
-import java.util.Collection;
 import java.util.LinkedList;
 
+import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.RootChild;
-import lupos.engine.operators.tripleoperator.TriplePattern;
+import lupos.engine.operators.tripleoperator.TripleConsumer;
 
-public class EmptyIndexScan extends RootChild {
+public class EmptyIndexScan extends RootChild implements TripleConsumer {
 
 	public EmptyIndexScan(final OperatorIDTuple succeedingOperator) {
 		super();
@@ -44,5 +44,16 @@ public class EmptyIndexScan extends RootChild {
 	@Override
 	protected QueryResult process(final Dataset dataset) {
 		return QueryResult.createInstance();
+	}
+
+	// just for using this also for the stream engine
+	protected boolean firstTime = true;
+
+	@Override
+	public void consume(final Triple triple) {
+		if(this.firstTime){
+			this.firstTime = false;
+			this.processAtSucceedingOperators(QueryResult.createInstance());
+		}
 	}
 }

@@ -61,6 +61,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 			return new QueryResult(type);
 	}
 
+	public static QueryResult createInstance(final Bindings bindings){
+		final QueryResult result = QueryResult.createInstance();
+		result.add(bindings);
+		return result;
+	}
+
 	public static QueryResult createInstance(final Collection<Bindings> bindings){
 		return new QueryResult(bindings);
 	}

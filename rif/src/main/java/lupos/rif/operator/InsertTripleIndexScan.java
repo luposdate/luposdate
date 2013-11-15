@@ -47,14 +47,14 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
 public class InsertTripleIndexScan extends InsertIndexScan {
 	final protected Set<Triple> facts = new HashSet<Triple>();
 
-	public InsertTripleIndexScan(IndexScanCreatorInterface indexScanCreator) {
-		super((Root)indexScanCreator.getRoot());		
+	public InsertTripleIndexScan(final IndexScanCreatorInterface indexScanCreator) {
+		super((indexScanCreator.getRoot() instanceof Root)?(Root)indexScanCreator.getRoot() : null);
 		this.triplePatterns = Arrays.asList();
 		if(indexScanCreator instanceof IndexScanCreator_BasicIndex){
-			Insert insert = new Insert(new ArrayList<URILiteral>(), indexScanCreator.getDataset());
-			addSucceedingOperator(insert);
+			final Insert insert = new Insert(new ArrayList<URILiteral>(), indexScanCreator.getDataset());
+			this.addSucceedingOperator(insert);
 		} else {
-			addSucceedingOperator(indexScanCreator.getRoot());
+			this.addSucceedingOperator(indexScanCreator.getRoot());
 		}
 	}
 
@@ -66,8 +66,9 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 	public QueryResult process(final Dataset dataset) {
 		// Leitet ein GraphResult mit den Triple-Fakten weiter
 		final GraphResult result = new GraphResult();
-		for (final Triple triple : this.facts)
+		for (final Triple triple : this.facts) {
 			result.addGraphResultTriple(triple);
+		}
 //		for (final OperatorIDTuple oid : this.succeedingOperators)
 //			((Operator) oid.getOperator()).processAll(result, oid.getId());
 		return result;
@@ -76,16 +77,18 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer("TripleFacts").append("\n");
-		for (final Triple tr : this.facts)
+		for (final Triple tr : this.facts) {
 			str.append(tr.toString()).append("\n");
+		}
 		return str.toString();
 	}
 
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer("TripleFacts").append("\n");
-		for (final Triple tr : this.facts)
+		for (final Triple tr : this.facts) {
 			str.append(tr.toString(prefixInstance)).append("\n");
+		}
 		return str.toString();
 	}
 
@@ -93,20 +96,20 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 	@Override
 	public void consumeOnce() {
 		for (final Triple t : this.facts){
-			for(OperatorIDTuple opID: this.getSucceedingOperators()){
+			for(final OperatorIDTuple opID: this.getSucceedingOperators()){
 				((TripleConsumer)opID.getOperator()).consume(t);
 			}
-		}			
+		}
 	}
 
 	@Override
 	public void consumeDebugOnce(final DebugStep debugstep) {
 		for (final Triple t : this.facts){
-			for(OperatorIDTuple opID: this.getSucceedingOperators()){
-				BasicOperator to = opID.getOperator();
+			for(final OperatorIDTuple opID: this.getSucceedingOperators()){
+				final BasicOperator to = opID.getOperator();
 				debugstep.step(this, to, t);
 				((TripleConsumerDebug)to).consumeDebug(t, debugstep);
 			}
-		}			
+		}
 	}
 }

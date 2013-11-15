@@ -60,16 +60,16 @@ public abstract class InsertIndexScan extends BasicIndexScan implements TripleCo
 	@Override
 	public void consume(final Triple triple) {
 		if(this.firstTime){
-			this.consumeOnce();
 			this.firstTime = false;
+			this.consumeOnce();
 		}
 	}
 
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		if(this.firstTime){
-			this.consumeDebugOnce(debugstep);
 			this.firstTime = false;
+			this.consumeDebugOnce(debugstep);
 		}
 	}
 
