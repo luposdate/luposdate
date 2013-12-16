@@ -47,6 +47,9 @@ import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinN
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
+/**
+ * A client for RDF3X with permanent data
+ */
 public class RDF3X_Client extends Demo_Applet {
 
 	protected final JFileChooser fc;
@@ -64,6 +67,26 @@ public class RDF3X_Client extends Demo_Applet {
 		 this.fc = new JFileChooser();
 		 this.fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		 this.fc.setMultiSelectionEnabled(false);
+	}
+
+	/**
+	 * Constructor for setting a default directory for the index directory
+	 *
+	 * @param directory the index directory of the RDF3X query evaluator
+	 */
+	public RDF3X_Client(final File directory){
+		this();
+		this.fc.setCurrentDirectory(directory);
+		this.fc.setSelectedFile(directory);
+	}
+
+	/**
+	 * Constructor for setting a default directory for the index directory
+	 *
+	 * @param directory the index directory of the RDF3X query evaluator
+	 */
+	public RDF3X_Client(final String directory){
+		this(new File(directory));
 	}
 
 

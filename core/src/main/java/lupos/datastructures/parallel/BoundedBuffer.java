@@ -31,6 +31,7 @@ public class BoundedBuffer<E> {
 	final Lock lock = new ReentrantLock();
 	final Condition notFull = this.lock.newCondition();
 	final Condition notEmpty = this.lock.newCondition();
+	final Condition empty = this.lock.newCondition();
 
 	private static int maxBuffer = 1000;
 	private final int maxBufferLocal;
@@ -55,11 +56,13 @@ public class BoundedBuffer<E> {
 			while (this.count == this.maxBufferLocal && !this.stop) {
 				this.notFull.await();
 			}
-			if (this.count == this.maxBufferLocal && this.stop)
+			if (this.count == this.maxBufferLocal && this.stop) {
 				return;
+			}
 			this.buffer[this.putptr] = bindings;
-			if (++this.putptr == this.maxBufferLocal)
+			if (++this.putptr == this.maxBufferLocal) {
 				this.putptr = 0;
+			}
 			++this.count;
 			this.notEmpty.signalAll();
 		} finally {
@@ -74,11 +77,13 @@ public class BoundedBuffer<E> {
 			while (this.count >= this.maxBufferLocal - freeSpace && !this.stop) {
 				this.notFull.await();
 			}
-			if (this.count == this.maxBufferLocal && this.stop)
+			if (this.count == this.maxBufferLocal && this.stop) {
 				return;
+			}
 			this.buffer[this.putptr] = bindings;
-			if (++this.putptr == this.maxBufferLocal)
+			if (++this.putptr == this.maxBufferLocal) {
 				this.putptr = 0;
+			}
 			++this.count;
 			this.notEmpty.signalAll();
 		} finally {
@@ -92,10 +97,12 @@ public class BoundedBuffer<E> {
 			while (this.count == this.maxBufferLocal && !this.stop) {
 				this.notFull.await();
 			}
-			if (this.count == this.maxBufferLocal && this.stop)
+			if (this.count == this.maxBufferLocal && this.stop) {
 				return;
-			if (--this.takeptr < 0)
+			}
+			if (--this.takeptr < 0) {
 				this.takeptr = this.maxBufferLocal - 1;
+			}
 			this.buffer[this.takeptr] = bindings;
 			++this.count;
 			this.notEmpty.signalAll();
@@ -110,9 +117,13 @@ public class BoundedBuffer<E> {
 			while (this.count == 0 && !this.endOfData && !this.stop) {
 				this.notEmpty.await();
 			}
-			if ((this.count == 0 && this.endOfData) || this.stop)
+			if(this.count == 0){
+				this.empty.signalAll();
+			}
+			if ((this.count == 0 && this.endOfData) || this.stop) {
 				return null;
-			final E bindings = getUnsynchronized();
+			}
+			final E bindings = this.getUnsynchronized();
 			this.notFull.signalAll();
 			return bindings;
 		} finally {
@@ -127,13 +138,21 @@ public class BoundedBuffer<E> {
 			while (this.count < min && !this.endOfData && !this.stop) {
 				this.notEmpty.await();
 			}
-			if ((this.count == 0 && this.endOfData) || this.stop)
+			if(this.count == 0){
+				this.empty.signalAll();
+			}
+			if ((this.count == 0 && this.endOfData) || this.stop) {
 				return null;
+			}
 			final int take = Math.min(max, this.count);
 			final Object[] ea = new Object[take];
-			for (int i = 0; i < take; i++)
-				ea[i] = getUnsynchronized();
+			for (int i = 0; i < take; i++) {
+				ea[i] = this.getUnsynchronized();
+			}
 			this.notFull.signalAll();
+			if(this.count == 0){
+				this.empty.signalAll();
+			}
 			return ea;
 		} finally {
 			this.lock.unlock();
@@ -142,8 +161,9 @@ public class BoundedBuffer<E> {
 
 	private E getUnsynchronized() {
 		final E bindings = (E) this.buffer[this.takeptr];
-		if (++this.takeptr == this.maxBufferLocal)
+		if (++this.takeptr == this.maxBufferLocal) {
 			this.takeptr = 0;
+		}
 		--this.count;
 		return bindings;
 	}
@@ -151,8 +171,9 @@ public class BoundedBuffer<E> {
 	public boolean hasNext() throws InterruptedException {
 		this.lock.lock();
 		try {
-			if (this.count > 0)
+			if (this.count > 0) {
 				return true;
+			}
 			while (this.count == 0 && !this.endOfData && !this.stop) {
 				this.notEmpty.await();
 			}
@@ -207,10 +228,11 @@ public class BoundedBuffer<E> {
 	public boolean isEmpty() {
 		this.lock.lock();
 		try {
-			if (this.count == 0 && this.endOfData)
+			if (this.count == 0 && this.endOfData) {
 				return true;
-			else
+			} else {
 				return false;
+			}
 		} finally {
 			this.lock.unlock();
 		}
@@ -219,10 +241,11 @@ public class BoundedBuffer<E> {
 	public boolean isCurrentlyEmpty() {
 		this.lock.lock();
 		try {
-			if (this.count == 0)
+			if (this.count == 0) {
 				return true;
-			else
+			} else {
 				return false;
+			}
 		} finally {
 			this.lock.unlock();
 		}
@@ -232,6 +255,18 @@ public class BoundedBuffer<E> {
 		this.lock.lock();
 		try {
 			return this.count == this.maxBufferLocal;
+		} finally {
+			this.lock.unlock();
+		}
+	}
+
+	public boolean awaitEmpty() throws InterruptedException{
+		this.lock.lock();
+		try {
+			while (this.count > 0 && !this.endOfData && !this.stop) {
+				this.empty.await();
+			}
+			return (this.count == 0);
 		} finally {
 			this.lock.unlock();
 		}
