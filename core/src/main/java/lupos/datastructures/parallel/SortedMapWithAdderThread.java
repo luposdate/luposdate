@@ -212,6 +212,13 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/**
+	 * releases all resources and stops the adder thread...
+	 */
+	public void release(){
+		this.toInsert.endOfData();
+	}
+
 	public static class AdderThread<K, V> extends Thread {
 
 		final protected BoundedBuffer<Tuple<K,V>> toInsert;
