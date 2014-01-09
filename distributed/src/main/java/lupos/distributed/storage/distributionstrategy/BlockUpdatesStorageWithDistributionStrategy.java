@@ -35,6 +35,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.storage.IStorage;
@@ -74,11 +75,17 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	protected int currentNumberOfTriples = 0;
 
 	/**
+	 * for creating bindings...
+	 */
+	protected BindingsFactory bindingsFactory;
+
+	/**
 	 * Constructor for the storage module
 	 * @param distribution The distribution strategy to be used in this storage
 	 */
-	public BlockUpdatesStorageWithDistributionStrategy(final IDistribution<K> distribution){
+	public BlockUpdatesStorageWithDistributionStrategy(final IDistribution<K> distribution, final BindingsFactory bindingsFactory){
 		this.distribution = distribution;
+		this.bindingsFactory = bindingsFactory;
 	}
 
 	@Override
@@ -385,5 +392,9 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 			}
 			return this.result;
 		}
+	}
+
+	public void setBindingsFactory(final BindingsFactory bindingsFactory){
+		this.bindingsFactory = bindingsFactory;
 	}
 }

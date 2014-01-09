@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.items.Variable;
@@ -39,6 +40,7 @@ import lupos.datastructures.smallerinmemorylargerondisk.CollectionImplementation
 import lupos.datastructures.sorteddata.SortedBag;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
@@ -49,6 +51,7 @@ public class MergeJoin extends Join {
 
 	protected SortedBag<Bindings> left = null;
 	protected SortedBag<Bindings> right = null;
+	protected BindingsFactory bindingsFactory;
 
 	protected BindingsComparator comp = new BindingsComparator();
 
@@ -108,6 +111,12 @@ public class MergeJoin extends Join {
 	}
 
 	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
+	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (this.left != null && this.right != null && this.left.size() > 0
 				&& this.right.size() > 0) {
@@ -117,7 +126,7 @@ public class MergeJoin extends Join {
 					QueryResult.createInstance(this.left.iterator()), QueryResult
 							.createInstance(this.right.iterator())) : MergeJoin
 					.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp,
-							this.intersectionVariables);
+							this.intersectionVariables, this.bindingsFactory);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult
 						.createInstance(new ParallelIterator<Bindings>() {
@@ -256,7 +265,7 @@ public class MergeJoin extends Join {
 
 	public static ParallelIterator<Bindings> mergeJoinIterator(
 			final Iterator<Bindings> ssb1it, final Iterator<Bindings> ssb2it,
-			final Comparator<Bindings> comp, final Collection<Variable> vars) {
+			final Comparator<Bindings> comp, final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
 
 		if ((ssb1it == null) || (ssb2it == null) || !ssb1it.hasNext()
 				|| !ssb2it.hasNext()) {
@@ -391,7 +400,7 @@ public class MergeJoin extends Join {
 					} else if (compare < 0) {
 						if (ssb1it.hasNext()) {
 							if (ssb1it instanceof SIPParallelIterator) {
-								final Bindings projected = Bindings.createNewInstance();
+								final Bindings projected = bindingsFactory.createInstance();
 								for (final Variable v : vars) {
 									projected.add(v, this.b2.get(v));
 								}
@@ -410,7 +419,7 @@ public class MergeJoin extends Join {
 					} else if (compare > 0) {
 						if (ssb2it.hasNext()) {
 							if (ssb2it instanceof SIPParallelIterator) {
-								final Bindings projected = Bindings.createNewInstance();
+								final Bindings projected = bindingsFactory.createInstance();
 								for (final Variable v : vars) {
 									projected.add(v, this.b1.get(v));
 								}
@@ -475,7 +484,7 @@ public class MergeJoin extends Join {
 
 	public static ParallelIterator<Bindings> mergeJoinIterator(
 			final Iterator<Bindings>[] ssbit, final Comparator<Bindings> comp,
-			final Collection<Variable> vars) {
+			final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
 
 		for (final Iterator<Bindings> it : ssbit) {
 			if (it == null || !it.hasNext()) {
@@ -634,7 +643,7 @@ public class MergeJoin extends Join {
 							if (comp.compare(maximum, b[i]) != 0) {
 								if (ssbit[i].hasNext()) {
 									if (ssbit[i] instanceof SIPParallelIterator) {
-										final Bindings projected = Bindings.createNewInstance();
+										final Bindings projected = bindingsFactory.createInstance();
 										for (final Variable v : vars) {
 											projected.add(v, maximum.get(v));
 										}
@@ -695,7 +704,7 @@ public class MergeJoin extends Join {
 	public static ParallelIterator<Bindings> mergeJoinIterator(
 			final Iterator<Bindings>[] ssbit, final Comparator<Bindings> comp,
 			final Collection<Variable> vars, final Bindings minimum,
-			final Bindings maximum2) {
+			final Bindings maximum2, final BindingsFactory bindingsFactory) {
 
 		for (final Iterator<Bindings> it : ssbit) {
 			if (it == null || !it.hasNext()) {
@@ -861,7 +870,7 @@ public class MergeJoin extends Join {
 						};
 						return;
 					} else {
-						final Bindings projected = Bindings.createNewInstance();
+						final Bindings projected = bindingsFactory.createInstance();
 						for (final Variable v : vars) {
 							projected.add(v, maximum.get(v));
 						}
@@ -1153,13 +1162,13 @@ public class MergeJoin extends Join {
 
 	public static QueryResult mergeJoin(final SortedBag<Bindings> ssb1,
 			final SortedBag<Bindings> ssb2, final Comparator<Bindings> comp,
-			final Collection<Variable> vars) {
+			final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
 		if (ssb1 == null || ssb2 == null || ssb1.size() == 0
 				|| ssb2.size() == 0) {
 			return null;
 		}
 		return QueryResult.createInstance(MergeJoin.mergeJoinIterator(ssb1
-				.iterator(), ssb2.iterator(), comp, vars));
+				.iterator(), ssb2.iterator(), comp, vars, bindingsFactory));
 		// return mergeJoin(ssb1.iterator(), ssb2.iterator(), comp);
 	}
 
@@ -1468,7 +1477,7 @@ public class MergeJoin extends Join {
 			this.comp.setVariables(this.intersectionVariables);
 			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.size() == 0) ?
 					MergeJoin.cartesianProductIterator(QueryResult.createInstance(this.left.iterator()), QueryResult.createInstance(this.right.iterator())) :
-						MergeJoin.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp, this.intersectionVariables);
+						MergeJoin.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp, this.intersectionVariables, this.bindingsFactory);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult.createInstance(new ParallelIterator<Bindings>() {
 

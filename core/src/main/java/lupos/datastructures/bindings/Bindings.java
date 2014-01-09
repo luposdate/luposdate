@@ -23,7 +23,6 @@
  */
 package lupos.datastructures.bindings;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,30 +31,18 @@ import java.util.Set;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
-import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 
 public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5710553016507627379L;
 
 	/** The subclass extending Bindings to be actually used */
 	public static Class<? extends Bindings> instanceClass = BindingsArray.class;
-
-	public static Bindings createNewInstance() {
-		try {
-			return instanceClass.newInstance();
-		} catch (final InstantiationException e) {
-			System.err.println(e);
-		} catch (final IllegalAccessException e) {
-			System.err.println(e);
-		}
-		return new BindingsArray();
-	}
 
 	@Override
 	public abstract Bindings clone();
@@ -64,37 +51,40 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 
 	public abstract Literal get(final Variable var);
 
+	public abstract Bindings createInstance();
+
 	/**
 	 * Returns the set of bound variables
-	 * 
+	 *
 	 * @return the set of bound variables
 	 */
 	public abstract Set<Variable> getVariableSet();
 
 	public Iterator<Variable> getVariables() {
-		return getVariableSet().iterator();
+		return this.getVariableSet().iterator();
 	}
 
 	public void addAll(final Bindings other) {
-		for (final Variable v : other.getVariableSet())
-			add(v, other.get(v));
+		for (final Variable v : other.getVariableSet()) {
+			this.add(v, other.get(v));
+		}
 	}
 
 	@Override
 	public String toString() {
-		return toStringOnlyBindings();
+		return this.toStringOnlyBindings();
 	}
-	
-	public String toString(Prefix prefix) {
-		return toStringOnlyBindings(prefix);
+
+	public String toString(final Prefix prefix) {
+		return this.toStringOnlyBindings(prefix);
 	}
 
 	public String toStringOnlyBindings() {
 		String s = "{";
-		final Iterator<Variable> it = getVariables();
+		final Iterator<Variable> it = this.getVariables();
 		while (it.hasNext()) {
 			final Variable var = it.next();
-			s += var + "=" + get(var).originalString();
+			s += var + "=" + this.get(var).originalString();
 			if (it.hasNext()) {
 				s += ", ";
 			}
@@ -102,16 +92,18 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		s += "}";
 		return s;
 	}
-	
-	public String toStringOnlyBindings(Prefix prefix) {
+
+	public String toStringOnlyBindings(final Prefix prefix) {
 		String s = "{";
-		final Iterator<Variable> it = getVariables();
+		final Iterator<Variable> it = this.getVariables();
 		while (it.hasNext()) {
 			final Variable var = it.next();
 			s += var + "=";
-			if(get(var).originalStringDiffers())
-				 s += get(var).originalString();
-			else s += get(var).toString(prefix);
+			if(this.get(var).originalStringDiffers()) {
+				s += this.get(var).originalString();
+			} else {
+				s += this.get(var).toString(prefix);
+			}
 			if (it.hasNext()) {
 				s += ", ";
 			}
@@ -125,10 +117,11 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		final Set<Variable> sv = this.getVariableSet();
 		final Set<Variable> svb = b.getVariableSet();
 		// different number of variables?
-		if (sv.size() > svb.size())
+		if (sv.size() > svb.size()) {
 			return 1;
-		else if (svb.size() > sv.size())
+		} else if (svb.size() > sv.size()) {
 			return -1;
+		}
 		sv.removeAll(svb);
 		// different variables?
 		if (sv.size() > 0) {
@@ -137,24 +130,27 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 			// smaller!
 			Variable min1 = null;
 			for (final Variable v : sv) {
-				if (min1 == null || min1.compareTo(v) > 0)
+				if (min1 == null || min1.compareTo(v) > 0) {
 					min1 = v;
+				}
 			}
 			Variable min2 = null;
 			for (final Variable v : svb) {
-				if (min2 == null || min2.compareTo(v) > 0)
+				if (min2 == null || min2.compareTo(v) > 0) {
 					min2 = v;
+				}
 			}
 			return min1.compareTo(min2);
 		}
-		final Iterator<Variable> it = getVariables();
+		final Iterator<Variable> it = this.getVariables();
 		while (it.hasNext()) {
 			final Variable var = it.next();
-			final int compare = get(var)
+			final int compare = this.get(var)
 					.compareToNotNecessarilySPARQLSpecificationConform(
 							b.get(var));
-			if (compare != 0)
+			if (compare != 0) {
 				return compare;
+			}
 		}
 		return 0;
 	}
@@ -162,10 +158,10 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	@Override
 	public int hashCode() {
 		int hashCode = 0;
-		final Iterator<Variable> it = getVariables();
+		final Iterator<Variable> it = this.getVariables();
 		while (it.hasNext()) {
 			final Variable var = it.next();
-			hashCode += var.hashCode() + get(var).hashCode();
+			hashCode += var.hashCode() + this.get(var).hashCode();
 		}
 		return hashCode;
 	}
@@ -181,23 +177,24 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 			if (this.getVariableSet().equals(otherBindings.getVariableSet())) {
 
 				// and check the equality of the actual bindings afterwards
-				for (final Variable var : getVariableSet()) {
-					if (!bindingsEqualComparison.equals(get(var), otherBindings.get(var))){
+				for (final Variable var : this.getVariableSet()) {
+					if (!bindingsEqualComparison.equals(this.get(var), otherBindings.get(var))){
 						return false;
 					}
 				}
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean equals(final Object other) {
 		return this.equals(other, Bindings.bindingsValueEqualComparison);
 	}
-	
+
 	public boolean semanticallyEquals(final Object other) {
 		return this.equals(other, Bindings.bindingsEqualComparisonSemanticInterpretation);
 	}
@@ -209,7 +206,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	public boolean equalsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
 		return this.equals(other, new Iris(new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation)));
 	}
-	
+
 	public boolean semanticallyEqualsExceptAnonymousLiterals(final Object other) {
 		return this.equals(other, new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation));
 	}
@@ -217,27 +214,27 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	public boolean semanticallyEqualsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
 		return this.equals(other, new Iris(new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation)));
 	}
-	
+
 	private static interface BindingsEqualComparison{
 		public boolean equals(final Literal first, final Literal second);
 	}
-	
+
 	private static class BindingsValueEqualComparison implements BindingsEqualComparison{
 		@Override
 		public boolean equals(final Literal first, final Literal second){
 			return first.valueEquals(second);
 		}
 	}
-	
+
 	private static BindingsValueEqualComparison bindingsValueEqualComparison = new BindingsValueEqualComparison();
-	
+
 	private static class BindingsEqualComparisonSemanticInterpretation implements BindingsEqualComparison{
 		@Override
 		public boolean equals(final Literal first, final Literal second){
 			return first.compareToNotNecessarilySPARQLSpecificationConform(second)==0;
 		}
 	}
-	
+
 	private static BindingsEqualComparisonSemanticInterpretation bindingsEqualComparisonSemanticInterpretation = new BindingsEqualComparisonSemanticInterpretation();
 
 	private static class Blanks implements BindingsEqualComparison{
@@ -301,7 +298,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 
 	/**
 	 * adds a presorting number
-	 * 
+	 *
 	 * @param tp
 	 *            the triple pattern from which this presorting number is
 	 * @param orderPattern
@@ -322,40 +319,4 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	}
 
 	public abstract void init();
-
-	private void writeObject(final java.io.ObjectOutputStream out)
-			throws IOException {
-		final Set<Variable> sv = getVariableSet();
-		out.writeInt(sv.size());
-		for (final Variable v : sv) {
-			out.writeObject(v);
-			out.writeObject(get(v));
-		}
-		final Collection<Triple> ct = getTriples();
-		if (ct == null || ct.size() == 0)
-			out.writeBoolean(false);
-		else {
-			out.writeBoolean(true);
-			out.writeInt(ct.size());
-			for (final Triple t : ct) {
-				out.writeObject(t);
-			}
-		}
-	}
-
-	private void readObject(final java.io.ObjectInputStream in)
-			throws IOException, ClassNotFoundException {
-		init();
-		final int size = in.readInt();
-		for (int i = 0; i < size; i++) {
-			add((Variable) in.readObject(), (Literal) in.readObject());
-		}
-		final boolean triples = in.readBoolean();
-		if (triples) {
-			final int sizeTriples = in.readInt();
-			for (int j = 0; j < sizeTriples; j++) {
-				addTriple((Triple) in.readObject());
-			}
-		}
-	}
 }

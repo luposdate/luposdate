@@ -335,7 +335,10 @@ public final class OutHelper {
 	public final static void writeLuposBindings(final Bindings t, final Bindings previousBindings, final OutputStream os) throws IOException {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			if(previousBindings==null){
+				writeLuposBindingsFactory(ba, os);
+			}
+			final Map<Variable, Integer> hm = ba.getBindingsFactory().getPosVariables();
 			BigInteger usedVars = BigInteger.ZERO;
 			BigInteger differentFromPreviousBindings = BigInteger.ZERO;
 			BigInteger i = BigInteger.ONE;
@@ -401,7 +404,8 @@ public final class OutHelper {
 	public final static void writeLuposBindings(final Bindings t, final OutputStream os) throws IOException {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			writeLuposBindingsFactory(ba, os);
+			final Map<Variable, Integer> hm = ba.getBindingsFactory().getPosVariables();
 			BigInteger usedVars = BigInteger.ZERO;
 			BigInteger i = BigInteger.ONE;
 			final BigInteger TWO = BigInteger.valueOf(2);
@@ -420,6 +424,14 @@ public final class OutHelper {
 			OutHelper.writeAdditionalInformationOfBindings(ba, os);
 		} else {
 			OutHelper.writeOtherBindingsTypes(t, os);
+		}
+	}
+
+	private final static void writeLuposBindingsFactory(final BindingsArray t, final OutputStream os) throws IOException{
+		final Set<Variable> vars = t.getBindingsFactory().getPosVariables().keySet();
+		writeLuposIntVariableBytes(vars.size(), os);
+		for(final Variable v: vars){
+			writeLuposString(v.getName(), os);
 		}
 	}
 

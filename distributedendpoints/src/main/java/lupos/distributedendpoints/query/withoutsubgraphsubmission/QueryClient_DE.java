@@ -42,12 +42,14 @@ import lupos.distributedendpoints.storage.Storage_DE;
 public class QueryClient_DE extends QueryClient {
 
 	public QueryClient_DE() throws Exception {
-		super(new Storage_DE());
+		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
+		super(new Storage_DE(null));
 		this.askForHistogramRequests();
 	}
 
 	public QueryClient_DE(final String[] args) throws Exception {
-		super(new Storage_DE(), args);
+		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
+		super(new Storage_DE(null), args);
 		this.askForHistogramRequests();
 	}
 

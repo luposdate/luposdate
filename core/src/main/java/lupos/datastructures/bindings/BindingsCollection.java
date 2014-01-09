@@ -46,7 +46,7 @@ import lupos.datastructures.items.literal.Literal;
 public class BindingsCollection extends Bindings{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8695527841805068857L;
 
@@ -55,16 +55,16 @@ public class BindingsCollection extends Bindings{
 
 	/** The collection storing the literals */
 	private Vector<Literal> literals;
-	
+
 	@Override
 	public void init(){
-		variables = new Vector<Variable>();
-		literals = new Vector<Literal>();		
+		this.variables = new Vector<Variable>();
+		this.literals = new Vector<Literal>();
 	}
 
 	/** Constructor	 */
 	public BindingsCollection(){
-		init();
+		this.init();
 	}
 
 	@Override
@@ -85,12 +85,12 @@ public class BindingsCollection extends Bindings{
 	 */
 	@Override
 	public void add(final Variable var, final Literal literal){
-		final int index = variables.indexOf(var);
+		final int index = this.variables.indexOf(var);
 		if (index != -1){
-			literals.setElementAt(literal, index);
+			this.literals.setElementAt(literal, index);
 		}else{
-			variables.add(var);
-			literals.add(literal);
+			this.variables.add(var);
+			this.literals.add(literal);
 		}
 	}
 
@@ -101,9 +101,9 @@ public class BindingsCollection extends Bindings{
 	 */
 	@Override
 	public Literal get(final Variable var){
-		final int i = variables.indexOf(var);
+		final int i = this.variables.indexOf(var);
 		if (i != -1){
-			return literals.get(i);
+			return this.literals.get(i);
 		}
 		return null;
 	}
@@ -115,8 +115,11 @@ public class BindingsCollection extends Bindings{
 	@Override
 	public Set<Variable> getVariableSet(){
 		final Set<Variable> keySet=new HashSet<Variable>();
-		for(final Variable var: variables)
-			if(get(var)!=null) keySet.add(var);
+		for(final Variable var: this.variables) {
+			if(this.get(var)!=null) {
+				keySet.add(var);
+			}
+		}
 		return keySet;
 	}
 
@@ -129,7 +132,7 @@ public class BindingsCollection extends Bindings{
 	 */
 	public void addAll(final BindingsCollection other){
 		for (final Variable variable : other.variables) {
-			add(variable,other.get(variable));
+			this.add(variable,other.get(variable));
 		}
 	}
 
@@ -140,6 +143,13 @@ public class BindingsCollection extends Bindings{
 		if (other instanceof BindingsCollection){
 			final BindingsCollection otherBC = (BindingsCollection)other;
 			return this.variables.equals(otherBC.variables) && this.literals.equals(otherBC.literals);
-		} else return super.equals(other);
+		} else {
+			return super.equals(other);
+		}
+	}
+
+	@Override
+	public BindingsCollection createInstance(){
+		return new BindingsCollection();
 	}
 }

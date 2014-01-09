@@ -21,22 +21,28 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator;
+package lupos.engine.operators.multiinput.join;
 
-import lupos.datastructures.bindings.BindingsFactory;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.paged_map.PagedHashMultiMap;
+import lupos.datastructures.paged_map.PagedQueryResultMapValues;
 
 /**
- * This interface declares the methods to submit a subgraph and retrieve its result
- * @param <K> the type of the key which addresses the node where the subgraph is submitted to
+ * PagedMapIndexJoin uses {@link PagedQueryResultMapValues} with {@link PagedHashMultiMap} for initialization
+ *
+ * @author K. Knof
+ *
  */
-public interface ISubgraphExecutor<K> {
+@SuppressWarnings("serial")
+public class PagedMapIndexJoin extends IndexJoinWithoutDuplicateElimination{
 
-	/**
-	 * This method submits a given subgraph and returns the result of the evaluated subgraph
-	 * @param key the key to address the node to which the subgraph is submitted to
-	 * @param subgraphSeriliazedAsJSON the subgraph serialized as JSON string
-	 * @return the retrieved query result
+	/*
+	 * @see lupos.engine.operators.multiinput.join.IndexJoin#init()
 	 */
-	public QueryResult evaluate(K key, String subgraphSerializedAsJSON, BindingsFactory bindingsFactory);
+	@SuppressWarnings("unchecked")
+	@Override
+	public void init() {
+		this.lba = new PagedQueryResultMapValues[2];
+		this.lba[0] = new PagedQueryResultMapValues<String>(String.class);
+		this.lba[1] = new PagedQueryResultMapValues<String>(String.class);
+	}
 }

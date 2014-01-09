@@ -23,6 +23,7 @@
  */
 package lupos.distributed.storage;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
@@ -41,7 +42,7 @@ public interface IStorage {
 	 */
 	public void addTriple(Triple triple);
 	/**
-	 * Checks whether or not a triple is contained in the distributed indices 
+	 * Checks whether or not a triple is contained in the distributed indices
 	 * @param triple the triple to be checked
 	 * @return true, if the triple is contained, false otherwise
 	 */
@@ -57,4 +58,9 @@ public interface IStorage {
 	 * @return the query result of the triple pattern
 	 */
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception;
+
+	/**
+	 * for setting the BindingsFactory
+	 */
+	public void setBindingsFactory(final BindingsFactory bindingsFactory);
 }

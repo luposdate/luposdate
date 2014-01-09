@@ -25,6 +25,7 @@ package lupos.endpoint.client.formatreader;
 
 import java.io.InputStream;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
@@ -34,10 +35,10 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 public class TripleFormatReader extends DefaultMIMEFormatReader {
 
 	protected final String formatParameter;
-	
+
 	public TripleFormatReader(final String formatName, final String mimetype, final String formatParameter) {
 		super(formatName, mimetype);
-		this.formatParameter = formatParameter; 
+		this.formatParameter = formatParameter;
 	}
 
 	@Override
@@ -46,23 +47,23 @@ public class TripleFormatReader extends DefaultMIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream) {
-		
+	public QueryResult getQueryResult(final InputStream inputStream, final BindingsFactory bindingsFactory) {
+
 		final GraphResult result = new GraphResult();
-		
+
 		try {
-			CommonCoreQueryEvaluator.readTriples(this.formatParameter, inputStream, 
+			CommonCoreQueryEvaluator.readTriples(this.formatParameter, inputStream,
 					new TripleConsumer(){
 						@Override
-						public void consume(Triple triple) {
+						public void consume(final Triple triple) {
 							result.addGraphResultTriple(triple);
-						}			
+						}
 			});
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
 

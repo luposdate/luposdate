@@ -23,13 +23,21 @@
  */
 package lupos.event.communication;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Set;
 
+import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
+import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.endpoint.client.formatreader.*;
-import lupos.endpoint.server.format.*;
+import lupos.endpoint.client.formatreader.DefaultMIMEFormatReader;
+import lupos.endpoint.client.formatreader.XMLFormatReader;
+import lupos.endpoint.server.format.Formatter;
+import lupos.endpoint.server.format.XMLFormatter;
 
 /**
  * This class can be used to serialize a {@ Triple}
@@ -37,28 +45,32 @@ import lupos.endpoint.server.format.*;
 public class SerializedQueryResult implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Formatter formatter = new XMLFormatter();
 	private static final DefaultMIMEFormatReader formatReader = new XMLFormatReader();
-	
-	private String id;
-	private final byte[] serialized;	
-	
-	
-	public SerializedQueryResult(Set<Variable> vars, QueryResult result, String id) throws IOException {
+
+	private final String id;
+	private final byte[] serialized;
+
+
+	public SerializedQueryResult(final Set<Variable> vars, final QueryResult result, final String id) throws IOException {
 		this.id = id;
 		// serialize query result
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		SerializedQueryResult.formatter.writeResult(baos, vars, result);
 		this.serialized = baos.toByteArray();
 	}
-	
+
 	public QueryResult getQueryResult() {
-		ByteArrayInputStream bais = new ByteArrayInputStream(this.serialized);
-		return SerializedQueryResult.formatReader.getQueryResult(bais);
+		if(Bindings.instanceClass!=BindingsMap.class){
+			throw new RuntimeException("The configuration shouldbe set to BindingsMap, but found "+Bindings.instanceClass);
+		}
+		final BindingsFactory bindingsFactory = BindingsFactory.createBindingsFactory();
+		final ByteArrayInputStream bais = new ByteArrayInputStream(this.serialized);
+		return SerializedQueryResult.formatReader.getQueryResult(bais, bindingsFactory);
 	}
-	
-	public String getId() { 
-		return this.id; 
+
+	public String getId() {
+		return this.id;
 	}
 }

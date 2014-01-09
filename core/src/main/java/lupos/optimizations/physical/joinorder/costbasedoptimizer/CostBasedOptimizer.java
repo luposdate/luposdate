@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
@@ -351,6 +352,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 		// TODO check if we still need to use BindingsArrayReadTriples!
 		final Class<? extends Bindings> classBindings = Bindings.instanceClass;
 		Bindings.instanceClass = BindingsArrayReadTriples.class;
+		final BindingsFactory bindingsFactoryOld = indexScan.getBindingsFactory();
 		// determine all join partners of the triple partners
 		// afterwards only generate histograms for the join partners
 		// For this purpose, first count the occurrences of the variables in the triple patterns
@@ -365,6 +367,8 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 				}
 			}
 		}
+
+		indexScan.setBindingsFactory(BindingsFactory.createBindingsFactory(countVarOccurence.keySet()));
 
 		// now add those variables, which appear more than one time to the list of join partners!
 		final List<Variable> joinPartners = new LinkedList<Variable>();
@@ -407,7 +411,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 		for (final TriplePattern tp : triplePatterns) {
 			final Thread thread = new Thread() {
 				final TriplePattern tp2 = tp;
-				final BasicIndexScan index2 = (BasicIndexScan) indexScan.clone();
+				final BasicIndexScan index2 = indexScan.clone();
 
 				@Override
 				public void run() {
@@ -442,6 +446,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 			}
 		}
 		Bindings.instanceClass = classBindings;
+		indexScan.setBindingsFactory(bindingsFactoryOld);
 		return new Triple<List<LeafNodePlan>, HashMap<Variable, Literal>, HashMap<Variable, Literal>>(initialPlans, minima, maxima);
 	}
 

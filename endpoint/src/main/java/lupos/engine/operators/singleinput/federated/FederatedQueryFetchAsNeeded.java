@@ -83,14 +83,14 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 					final Bindings bindingsTemp = this.bindingsIterator.next();
 					final String fQuery = FederatedQueryFetchAsNeeded.this.toStringQuery(bindingsTemp);
 					if (!FederatedQueryFetchAsNeeded.this.endpoint.isVariable()) {
-						return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeeded.this.endpoint).getString(), fQuery), bindingsTemp);
+						return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeeded.this.endpoint).getString(), fQuery, FederatedQueryFetchAsNeeded.this.bindingsFactory), bindingsTemp);
 					} else {
 						Literal endpointURI = bindingsTemp.get((Variable) FederatedQueryFetchAsNeeded.this.endpoint);
 						if (endpointURI instanceof LazyLiteral) {
 							endpointURI = ((LazyLiteral) endpointURI).getLiteral();
 						}
 						if (endpointURI instanceof URILiteral) {
-							return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp);
+							return new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery, FederatedQueryFetchAsNeeded.this.bindingsFactory), bindingsTemp);
 						} else {
 							// ignore or error message?
 						}

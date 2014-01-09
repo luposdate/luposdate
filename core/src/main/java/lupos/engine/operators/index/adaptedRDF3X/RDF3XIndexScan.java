@@ -258,10 +258,10 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	}
 
 	@Override
-	public BasicOperator clone() {
-		final RDF3XIndexScan clone = new RDF3XIndexScan(this.succeedingOperators,
-				this.triplePatterns, this.rdfGraph, this.root);
+	public RDF3XIndexScan clone() {
+		final RDF3XIndexScan clone = new RDF3XIndexScan(this.succeedingOperators, this.triplePatterns, this.rdfGraph, this.root);
 		clone.collationOrder = this.collationOrder;
+		clone.bindingsFactory = this.bindingsFactory;
 		return clone;
 	}
 

@@ -27,18 +27,22 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
+import lupos.engine.operators.messages.Message;
 import lupos.rdf.Prefix;
 
 public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends EmptyIndexScan {
 
 	protected final Root root;
 	protected final Item rdfGraph;
+	protected BindingsFactory bindingsFactory;
 
 	/**
 	 *
@@ -51,6 +55,12 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 		super(succeedingOperator);
 		this.root = root_param;
 		this.rdfGraph = graphConstraint;
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
 	}
 
 	/**
@@ -68,7 +78,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 				// Convert the named graphs' names into URILiterals
 				// to be applicable later on
 				for (final String name : this.root.namedGraphs) {
-					final Bindings graphConstraintBindings = Bindings.createNewInstance();
+					final Bindings graphConstraintBindings = this.bindingsFactory.createInstance();
 					try {
 						graphConstraintBindings.add(graphConstraint, LiteralFactory.createURILiteralWithoutLazyLiteral(name));
 					} catch (final URISyntaxException e) {
@@ -81,14 +91,14 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 					final Collection<Indices> dataSetIndices = dataset.getNamedGraphIndices();
 					if (dataSetIndices != null) {
 						for (final Indices indices : dataSetIndices) {
-							final Bindings graphConstraintBindings = Bindings.createNewInstance();
+							final Bindings graphConstraintBindings = this.bindingsFactory.createInstance();
 							graphConstraintBindings.add(graphConstraint, indices.getRdfName());
 							queryResult.add(graphConstraintBindings);
 						}
 					}
 				}
 		} else {
-			queryResult.add(Bindings.createNewInstance());
+			queryResult.add(this.bindingsFactory.createInstance());
 		}
 
 		return queryResult;
@@ -111,7 +121,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	public void consume(final Triple triple) {
 		if(this.firstTime){
 			this.firstTime = false;
-			this.processAtSucceedingOperators(QueryResult.createInstance(Bindings.createNewInstance()));
+			this.processAtSucceedingOperators(QueryResult.createInstance(this.bindingsFactory.createInstance()));
 		}
 	}
 }

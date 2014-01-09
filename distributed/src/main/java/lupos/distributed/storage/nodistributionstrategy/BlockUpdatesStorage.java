@@ -25,6 +25,7 @@ package lupos.distributed.storage.nodistributionstrategy;
 
 import java.util.HashSet;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.storage.IStorage;
@@ -45,6 +46,15 @@ public abstract class BlockUpdatesStorage implements IStorage {
 	 * specifies how many triples are inserted at one time
 	 */
 	protected int blocksize = 1000;
+
+	/**
+	 * for creating Bindings
+	 */
+	protected BindingsFactory bindingsFactory;
+
+	public BlockUpdatesStorage(final BindingsFactory bindingsFactory){
+		this.bindingsFactory = bindingsFactory;
+	}
 
 	@Override
 	public void endImportData() {
@@ -85,6 +95,11 @@ public abstract class BlockUpdatesStorage implements IStorage {
 		// first add remaining triples
 		this.endImportData();
 		return this.evaluateTriplePatternAfterAdding(triplePattern);
+	}
+
+	@Override
+	public void setBindingsFactory(final BindingsFactory bindingsFactory) {
+		this.bindingsFactory = bindingsFactory;
 	}
 
 	/**

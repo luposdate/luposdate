@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 import lupos.endpoint.client.Client;
@@ -79,9 +80,9 @@ public class EndpointManagement {
 	 * submits a SPARUL query to all registered SPARQL endpoints
 	 * @param query the query to be submitted
 	 */
-	public void submitSPARULQuery(final String query){
+	public void submitSPARULQuery(final String query, final BindingsFactory bindingsFactory){
 		for(int i=0; i<this.urlsOfEndpoints.length; i++){
-			this.submitSPARULQuery(query, i);
+			this.submitSPARULQuery(query, i, bindingsFactory);
 		}
 	}
 
@@ -89,9 +90,9 @@ public class EndpointManagement {
 	 * submits asynchronously a SPARUL query to an arbitrary of the registered SPARQL endpoints
 	 * @param query the query to be submitted
 	 */
-	public void submitSPARULQueryToArbitraryEndpoint(final String query){
+	public void submitSPARULQueryToArbitraryEndpoint(final String query, final BindingsFactory bindingsFactory){
 		// choose randomly one endpoint to which the sparul request is submitted to
-		this.submitSPARULQuery(query, (int)(Math.random()*this.urlsOfEndpoints.length));
+		this.submitSPARULQuery(query, (int)(Math.random()*this.urlsOfEndpoints.length), bindingsFactory);
 	}
 
 	/**
@@ -99,8 +100,8 @@ public class EndpointManagement {
 	 * @param query the query to be submitted
 	 * @param number the number of the endpoint to which the query is sent to
 	 */
-	public void submitSPARULQuery(final String query, final int number){
-		this.submitSPARULQuery(query, this.urlsOfEndpoints[number]);
+	public void submitSPARULQuery(final String query, final int number, final BindingsFactory bindingsFactory){
+		this.submitSPARULQuery(query, this.urlsOfEndpoints[number], bindingsFactory);
 	}
 
 	/**
@@ -108,8 +109,8 @@ public class EndpointManagement {
 	 * @param query the query to be submitted
 	 * @param key the key container containing the number of the endpoint to which the query is sent to
 	 */
-	public void submitSPARULQuery(final String query, final KeyContainer<Integer> key){
-		this.submitSPARULQuery(query, EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key));
+	public void submitSPARULQuery(final String query, final KeyContainer<Integer> key, final BindingsFactory bindingsFactory){
+		this.submitSPARULQuery(query, EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key), bindingsFactory);
 	}
 
 
@@ -118,12 +119,12 @@ public class EndpointManagement {
 	 * @param query the query to be submitted
 	 * @param url the url of the endpoint to which the query is sent to
 	 */
-	protected void submitSPARULQuery(final String query, final String url){
+	protected void submitSPARULQuery(final String query, final String url, final BindingsFactory bindingsFactory){
 		final Thread thread = new Thread(){
 			@Override
 			public void run() {
 				try {
-					EndpointManagement.submitSPARQLQuery(url, query);
+					EndpointManagement.submitSPARQLQuery(url, query, bindingsFactory);
 				} catch (final IOException e) {
 					System.err.println(e);
 					e.printStackTrace();
@@ -155,10 +156,10 @@ public class EndpointManagement {
 	 * @param number the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted query
 	 */
-	public QueryResult submitSPARQLQuery(final String query, final int number){
+	public QueryResult submitSPARQLQuery(final String query, final int number, final BindingsFactory bindingsFactory){
 		final String url = this.urlsOfEndpoints[number];
 		try {
-			return EndpointManagement.submitSPARQLQuery(url, query);
+			return EndpointManagement.submitSPARQLQuery(url, query, bindingsFactory);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -172,10 +173,10 @@ public class EndpointManagement {
 	 * @param key the key container containing the the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted query
 	 */
-	public QueryResult submitSPARQLQuery(final String query, final KeyContainer<Integer> key){
+	public QueryResult submitSPARQLQuery(final String query, final KeyContainer<Integer> key, final BindingsFactory bindingsFactory){
 		final String url = EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key);
 		try {
-			return EndpointManagement.submitSPARQLQuery(url, query);
+			return EndpointManagement.submitSPARQLQuery(url, query, bindingsFactory);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -189,10 +190,10 @@ public class EndpointManagement {
 	 * @param key the key container containing the the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted subgraph
 	 */
-	public QueryResult submitSubgraphQuery(final String subgraph, final KeyContainer<Integer> key){
+	public QueryResult submitSubgraphQuery(final String subgraph, final KeyContainer<Integer> key, final BindingsFactory bindingsFactory){
 		final String url = EndpointManagement.addContext(EndpointManagement.addContext(this.urlsOfEndpoints[key.key], "subgraph/"), key);
 		try {
-			return EndpointManagement.submitSPARQLQuery(url, subgraph);
+			return EndpointManagement.submitSPARQLQuery(url, subgraph, bindingsFactory);
 		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -254,8 +255,8 @@ public class EndpointManagement {
 	 * @param query the query to be submitted
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
 	 */
-	public QueryResult submitSPARQLQuery(final String query){
-		return EndpointManagement.submitSPARQLQuery(query, this.urlsOfEndpoints);
+	public QueryResult submitSPARQLQuery(final String query, final BindingsFactory bindingsFactory){
+		return EndpointManagement.submitSPARQLQuery(query, this.urlsOfEndpoints, bindingsFactory);
 	}
 
 	/**
@@ -264,7 +265,7 @@ public class EndpointManagement {
 	 * @param urlsOfEndpoints the urls of the endpoints to which the query will be submitted
 	 * @return the query result containing the result of all given endpoints (collected in an asynchronous way)
 	 */
-	protected static QueryResult submitSPARQLQuery(final String query, final String[] urlsOfEndpoints){
+	protected static QueryResult submitSPARQLQuery(final String query, final String[] urlsOfEndpoints, final BindingsFactory bindingsFactory){
 		final ResultCollector resultCollector = new ResultCollector();
 		resultCollector.setNumberOfThreads(urlsOfEndpoints.length);
 		for(final String url: urlsOfEndpoints){
@@ -272,7 +273,7 @@ public class EndpointManagement {
 				@Override
 				public void run() {
 					try {
-						resultCollector.process(EndpointManagement.submitSPARQLQuery(url, query) ,0);
+						resultCollector.process(EndpointManagement.submitSPARQLQuery(url, query, bindingsFactory) ,0);
 					} catch (final IOException e) {
 						System.err.println(e);
 						e.printStackTrace();
@@ -355,12 +356,12 @@ public class EndpointManagement {
 	 * @param keyType the key type to be used
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
 	 */
-	public QueryResult submitSPARQLQueryWithKeyType(final String query, final String keyType){
+	public QueryResult submitSPARQLQueryWithKeyType(final String query, final String keyType, final BindingsFactory bindingsFactory){
 		final String[] urls = new String[this.urlsOfEndpoints.length];
 		for(int i=0; i<this.urlsOfEndpoints.length; i++){
 			urls[i] = EndpointManagement.addContext(this.urlsOfEndpoints[i], keyType);
 		}
-		return EndpointManagement.submitSPARQLQuery(query, urls);
+		return EndpointManagement.submitSPARQLQuery(query, urls, bindingsFactory);
 	}
 
 	/**
@@ -370,8 +371,8 @@ public class EndpointManagement {
 	 * @return the retrieved query result
 	 * @throws IOException in case of any errors
 	 */
-	private final static QueryResult submitSPARQLQuery(final String url, final String query) throws IOException {
-		return Client.submitQuery(url, query);
+	private final static QueryResult submitSPARQLQuery(final String url, final String query, final BindingsFactory bindingsFactory) throws IOException {
+		return Client.submitQuery(url, query, bindingsFactory);
 	}
 
 	/**

@@ -74,9 +74,10 @@ public class MemoryIndexScan extends BasicIndexScan {
 	}
 
 	@Override
-	public BasicIndexScan clone() {
-		return new MemoryIndexScan(this.succeedingOperators,
-				this.triplePatterns, this.rdfGraph, this.root);
+	public MemoryIndexScan clone() {
+		final MemoryIndexScan clone = new MemoryIndexScan(this.succeedingOperators, this.triplePatterns, this.rdfGraph, this.root);
+		clone.bindingsFactory = this.bindingsFactory;
+		return clone;
 	}
 
 	@Override

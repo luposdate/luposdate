@@ -36,6 +36,7 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsArrayPresortingNumbers;
 import lupos.datastructures.bindings.BindingsArrayVarMinMax;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
@@ -54,6 +55,7 @@ import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
@@ -135,7 +137,6 @@ public class LocalExecutor {
 	 * @return the query result and the set of variables of the query result of the evaluated operator graph
 	 * @throws JSONException in case of any parse exceptions
 	 */
-	@SuppressWarnings("deprecation")
 	public static Tuple<QueryResult, Set<Variable>> evaluateSubgraph(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		final CollectResult collectResult = new CollectResult(true);
 		final SubgraphContainerFormatter formatter = new SubgraphContainerFormatter(dataset, operatorCreator, collectResult);
@@ -146,8 +147,6 @@ public class LocalExecutor {
 		root.setParents();
 		root.detectCycles();
 		root.sendMessage(new BoundVariablesMessage());
-
-		BindingsArray.forceVariables(CommonCoreQueryEvaluator.getAllVariablesOfQuery(root));
 
 		Class<? extends Bindings> instanceClass = null;
 		if (Bindings.instanceClass == BindingsArrayVarMinMax.class
@@ -181,6 +180,9 @@ public class LocalExecutor {
 				Bindings.instanceClass = BindingsArray.class;
 			}
 		}
+
+		final BindingsFactory bindingsFactory= BindingsFactory.createBindingsFactory(CommonCoreQueryEvaluator.getAllVariablesOfQuery(root));
+		root.sendMessage(new BindingsFactoryMessage(bindingsFactory));
 
 		// evaluate subgraph!
 		root.sendMessage(new StartOfEvaluationMessage());
@@ -262,6 +264,9 @@ public class LocalExecutor {
 		final Collection<TriplePattern> tps = new LinkedList<TriplePattern>();
 		tps.add(tp);
 		final BasicIndexScan indexScan = operatorCreator.createIndexScan(operatorCreator.createRoot(dataset), tps);
+		final BindingsFactory bindingsFactory = BindingsFactory.createBindingsFactory(tp.getVariables());
+		indexScan.setBindingsFactory(bindingsFactory);
+		tp.setBindingsFactory(bindingsFactory);
 
 		return indexScan.getMinMax(tp, vars);
 	}
@@ -310,6 +315,10 @@ public class LocalExecutor {
 		final Collection<TriplePattern> tps = new LinkedList<TriplePattern>();
 		tps.add(tp);
 		final BasicIndexScan indexScan = operatorCreator.createIndexScan(operatorCreator.createRoot(dataset), tps);
+		final BindingsFactory bindingsFactory = BindingsFactory.createBindingsFactory(tp.getVariables());
+		indexScan.setBindingsFactory(bindingsFactory);
+		tp.setBindingsFactory(bindingsFactory);
+
 		return indexScan.getVarBuckets(tp, Bindings.instanceClass, vars, minima, maxima);
 	}
 

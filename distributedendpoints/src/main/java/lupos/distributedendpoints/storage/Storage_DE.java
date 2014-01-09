@@ -23,6 +23,7 @@
  */
 package lupos.distributedendpoints.storage;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.query.operator.histogramsubmission.AbstractHistogramExecutor;
@@ -55,30 +56,31 @@ public class Storage_DE extends BlockUpdatesStorage {
 	/**
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
 	 */
-	public Storage_DE(){
+	public Storage_DE(final BindingsFactory bindingsFactory){
+		super(bindingsFactory);
 		this.endpointManagement = new EndpointManagement();
 	}
 
 	@Override
 	public void blockInsert(){
-		this.endpointManagement.submitSPARULQueryToArbitraryEndpoint(QueryBuilder.buildInsertQuery(this.toBeAdded));
+		this.endpointManagement.submitSPARULQueryToArbitraryEndpoint(QueryBuilder.buildInsertQuery(this.toBeAdded), this.bindingsFactory);
 		this.insertedData = true;
 	}
 
 	@Override
 	public boolean containsTripleAfterAdding(final Triple triple) {
-		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple)).isEmpty();
+		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), this.bindingsFactory).isEmpty();
 	}
 
 	@Override
 	public void removeAfterAdding(final Triple triple) {
-		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple));
+		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), this.bindingsFactory);
 		this.endpointManagement.waitForThreadPool();
 	}
 
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
-		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern));
+		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), this.bindingsFactory);
 	}
 
 	@Override

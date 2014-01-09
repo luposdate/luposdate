@@ -24,10 +24,12 @@
 package lupos.engine.operators.multiinput.join;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.SIPParallelIterator;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 
@@ -40,22 +42,32 @@ public class MergeJoinWithoutSorting extends Join {
 
 	protected BindingsComparator comp = new BindingsComparator();
 
+	protected BindingsFactory bindingsFactory;
+
 	/**
 	 * This method pre-processes the StartOfStreamMessage
-	 * 
+	 *
 	 * @param msg
 	 *            the message to be pre-processed
 	 * @return the pre-processed message
 	 */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
-		if (this.left != null)
+		if (this.left != null) {
 			this.left.release();
-		if (this.right != null)
+		}
+		if (this.right != null) {
 			this.right.release();
+		}
 		this.left = null;
 		this.right = null;
 		return super.preProcessMessage(msg);
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
 	}
 
 	@Override
@@ -64,15 +76,16 @@ public class MergeJoinWithoutSorting extends Join {
 			this.left = bindings;
 		} else if (operandID == 1) {
 			this.right = bindings;
-		} else
+		} else {
 			System.err.println("MergeJoin is a binary operator, but received the operand number "
 							+ operandID);
+		}
 		if (this.left != null && this.right != null) {
 
 			this.comp.setVariables(this.intersectionVariables);
 			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
-					.size() == 0) ? MergeJoin.cartesianProductIterator(this.left, this.right) : 
-						MergeJoin.mergeJoinIterator(this.left.oneTimeIterator(), this.right.oneTimeIterator(), this.comp, this.intersectionVariables);
+					.size() == 0) ? MergeJoin.cartesianProductIterator(this.left, this.right) :
+						MergeJoin.mergeJoinIterator(this.left.oneTimeIterator(), this.right.oneTimeIterator(), this.comp, this.intersectionVariables, this.bindingsFactory);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult
 						.createInstance(new SIPParallelIterator<Bindings, Bindings>() {
@@ -88,7 +101,7 @@ public class MergeJoinWithoutSorting extends Join {
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
 									MergeJoinWithoutSorting.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return currentResult.hasNext();
 							}
@@ -96,11 +109,12 @@ public class MergeJoinWithoutSorting extends Join {
 							@Override
 							public Bindings next() {
 								final Bindings b = currentResult.next();
-								if (b != null)
+								if (b != null) {
 									this.number++;
+								}
 								if (!currentResult.hasNext()) {
 									MergeJoinWithoutSorting.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return b;
 							}
@@ -109,11 +123,12 @@ public class MergeJoinWithoutSorting extends Join {
 								@SuppressWarnings("unchecked")
 								final Bindings b = ((SIPParallelIterator<Bindings, Bindings>) currentResult)
 										.next(k);
-								if (b != null)
+								if (b != null) {
 									this.number++;
+								}
 								if (!currentResult.hasNext()) {
 									MergeJoinWithoutSorting.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return b;
 							}
@@ -125,15 +140,16 @@ public class MergeJoinWithoutSorting extends Join {
 
 							@Override
 							public void finalize() {
-								close();
+								this.close();
 							}
 
 							@Override
 							public Bindings next(final Bindings k) {
-								if (currentResult instanceof SIPParallelIterator)
-									return getNext(k);
-								else
-									return next();
+								if (currentResult instanceof SIPParallelIterator) {
+									return this.getNext(k);
+								} else {
+									return this.next();
+								}
 							}
 						});
 				return result;

@@ -269,6 +269,8 @@ public class PushFilterRule extends Rule {
                     f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));
                     f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));
                     f_new[i].setNodePointer(this.f.getNodePointer());
+                    f_new[i].setCollectionForExistNodes(this.f.getCollectionForExistNodes());
+                    f_new[i].getUsedEvaluationVisitor().setEvaluator(this.f.getUsedEvaluationVisitor().getEvaluator());
                 } else {
                     if(deleteFilter) {
                         for(final lupos.datastructures.items.Variable v : o2.getUnionVariables()) {

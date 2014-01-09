@@ -40,12 +40,14 @@ import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
 
 	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
-		super(Storage_DE_DistributionStrategy.createInstance(distribution));
+		// BindingsFactory in Storage_DE_DistributionStrategy is set in the constructor of QueryClient
+		super(Storage_DE_DistributionStrategy.createInstance(distribution, null));
 		this.askForHistogramRequests();
 	}
 
 	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
-		super(Storage_DE_DistributionStrategy.createInstance(distribution), args);
+		// BindingsFactory in Storage_DE_DistributionStrategy is set in the constructor of QueryClient
+		super(Storage_DE_DistributionStrategy.createInstance(distribution, null), args);
 		this.askForHistogramRequests();
 	}
 

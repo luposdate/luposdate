@@ -38,12 +38,11 @@ import java.util.Map;
 import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsArrayVarMinMax;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Item;
-import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LanguageTaggedLiteral;
 import lupos.datastructures.items.literal.LazyLiteral;
@@ -61,6 +60,7 @@ import lupos.engine.operators.RootChild;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.memoryindex.MemoryIndexScan;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
@@ -90,6 +90,8 @@ public abstract class BasicIndexScan extends RootChild {
 	public final static int BINARYSTATICANALYSIS = 8;
 
 	protected final Root root;
+
+	protected BindingsFactory bindingsFactory;
 
 	// Item is Var or Literal (URILiteral)
 	protected Item rdfGraph;
@@ -127,6 +129,23 @@ public abstract class BasicIndexScan extends RootChild {
 
 	public Root getRoot(){
 		return this.root;
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		for(final TriplePattern triplePattern : this.triplePatterns){
+			triplePattern.setBindingsFactory(this.bindingsFactory);
+		}
+		return msg;
+	}
+
+	public void setBindingsFactory(final BindingsFactory bindingsFactory){
+		this.bindingsFactory= bindingsFactory;
+	}
+
+	public BindingsFactory getBindingsFactory(){
+		return this.bindingsFactory;
 	}
 
 	public void recomputeVariables(){
@@ -210,8 +229,7 @@ public abstract class BasicIndexScan extends RootChild {
 								.getNamedGraphIndices(LiteralFactory
 										.createURILiteralWithoutLazyLiteral(name));
 
-								final Bindings graphConstraintBindings = Bindings
-								.createNewInstance();
+								final Bindings graphConstraintBindings = this.bindingsFactory.createInstance();
 								final URILiteral rdfName = indices.getRdfName();
 								graphConstraintBindings.add(
 										graphConstraint, rdfName);
@@ -238,8 +256,7 @@ public abstract class BasicIndexScan extends RootChild {
 							if (dataSetIndices != null) {
 
 								for (final Indices indices : dataSetIndices) {
-									final Bindings graphConstraintBindings = Bindings
-									.createNewInstance();
+									final Bindings graphConstraintBindings = this.bindingsFactory.createInstance();
 									graphConstraintBindings.add(
 											graphConstraint, indices
 											.getRdfName());
@@ -263,11 +280,9 @@ public abstract class BasicIndexScan extends RootChild {
 						for (final Indices indices : indicesC) {
 
 							if (queryResult == null) {
-								queryResult = this.join(indices, Bindings
-										.createNewInstance());
+								queryResult = this.join(indices, this.bindingsFactory.createInstance());
 							} else {
-								queryResult.addAll(this.join(indices, Bindings
-										.createNewInstance()));
+								queryResult.addAll(this.join(indices, this.bindingsFactory.createInstance()));
 							}
 						}
 					}
@@ -277,11 +292,9 @@ public abstract class BasicIndexScan extends RootChild {
 				else {
 					for (final Indices indices : indicesC) {
 						if (queryResult == null) {
-							queryResult = this.join(indices, Bindings
-									.createNewInstance());
+							queryResult = this.join(indices, this.bindingsFactory.createInstance());
 						} else {
-							queryResult.addAll(this.join(indices, Bindings
-									.createNewInstance()));
+							queryResult.addAll(this.join(indices, this.bindingsFactory.createInstance()));
 						}
 					}
 				}
@@ -479,8 +492,6 @@ public abstract class BasicIndexScan extends RootChild {
 
 	protected static final int MaxNumberBuckets = 500;
 
-	private final static int HEAPHEIGHT = 10;
-
 	protected final static Map<String, VarBucket[]> histograms = createHistogramMap();
 
 	protected static Map<String, VarBucket[]> createHistogramMap() {
@@ -641,7 +652,7 @@ public abstract class BasicIndexScan extends RootChild {
 		int size = 0;
 
 		if (classBindings == BindingsArrayVarMinMax.class) {
-			final Map<Variable, Integer> hmvi = BindingsArray.getPosVariables();
+			final Map<Variable, Integer> hmvi = this.bindingsFactory.getPosVariables();
 			final Integer[] minArray = new Integer[hmvi.size()];
 			final Integer[] maxArray = new Integer[hmvi.size()];
 
@@ -675,16 +686,8 @@ public abstract class BasicIndexScan extends RootChild {
 			final int[][] min = new int[maxId][];
 			final int[][] max = new int[maxId][];
 
-			final Iterator<Bindings> itbSize = qrSize.oneTimeIterator();
-			while (itbSize.hasNext()) {
-				final Bindings b = itbSize.next();
-				final Triple t = b.getTriples().iterator().next();
-				int id = 0;
-				if (qrSize instanceof IdIteratorQueryResult) {
-					id = ((IdIteratorQueryResult) qrSize).getIDOfLastBinding();
-				}
-				size++;
-			}
+			size = qrSize.oneTimeSize();
+
 			for (int id = 0; id < maxId; id++) {
 				if (min[id] != null) {
 					for (int i = 0; i < min[id].length; i++) {
@@ -914,4 +917,12 @@ public abstract class BasicIndexScan extends RootChild {
 			this.originalIterator.remove();
 		}
 	}
+
+	@Override
+	public BasicIndexScan clone() {
+		final BasicIndexScan bis = (BasicIndexScan) super.clone();
+		bis.bindingsFactory = this.bindingsFactory;
+		return bis;
+	}
+
 }

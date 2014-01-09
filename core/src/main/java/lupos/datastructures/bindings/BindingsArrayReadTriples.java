@@ -36,8 +36,12 @@ import lupos.rdf.Prefix;
 
 public class BindingsArrayReadTriples extends BindingsArray {
 
+	public BindingsArrayReadTriples(final BindingsFactory bindingsFactory) {
+		super(bindingsFactory);
+	}
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5634651341313907266L;
 
@@ -45,11 +49,11 @@ public class BindingsArrayReadTriples extends BindingsArray {
 
 	@Override
 	public BindingsArrayReadTriples clone() {
-		final BindingsArrayReadTriples other = new BindingsArrayReadTriples();
+		final BindingsArrayReadTriples other = new BindingsArrayReadTriples(this.bindingsFactory);
 		// System.arraycopy(this.literals, 0, other.literals, 0,
 		// this.literals.length);
-		other.cloneLiterals(getLiterals());
-		other.readTriples.addAll(readTriples);
+		other.cloneLiterals(this.getLiterals());
+		other.readTriples.addAll(this.readTriples);
 
 		return other;
 	}
@@ -60,7 +64,7 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	 */
 	@Override
 	public void addTriple(final Triple triple) {
-		readTriples.add(triple);
+		this.readTriples.add(triple);
 	}
 
 	/**
@@ -70,8 +74,9 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	 */
 	@Override
 	public void addAllTriples(final Collection<Triple> triples) {
-		if (triples != null)
-			readTriples.addAll(triples);
+		if (triples != null) {
+			this.readTriples.addAll(triples);
+		}
 	}
 
 	/**
@@ -82,7 +87,7 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	 */
 	@Override
 	public void addAllTriples(final Bindings bindings) {
-		addAllTriples(bindings.getTriples());
+		this.addAllTriples(bindings.getTriples());
 	}
 
 	/**
@@ -90,22 +95,24 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	 */
 	@Override
 	public List<Triple> getTriples() {
-		return readTriples;
+		return this.readTriples;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " read triples:" + readTriples + "\n";
+		return super.toString() + " read triples:" + this.readTriples + "\n";
 	}
-	
+
 	@Override
-	public String toString(Prefix prefix) {
+	public String toString(final Prefix prefix) {
 		String result = super.toString(prefix) + " read triples: [";
 		boolean firstTime=true;
-		for(Triple t: readTriples){
-			if(firstTime)
+		for(final Triple t: this.readTriples){
+			if(firstTime) {
 				firstTime=false;
-			else result+=", ";
+			} else {
+				result+=", ";
+			}
 			result+=t.toString(prefix);
 		}
 		return result+"]";
@@ -115,14 +122,19 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	@Override
 	public void init() {
 		super.init();
-		readTriples = new LinkedList<Triple>();
+		this.readTriples = new LinkedList<Triple>();
 	}
 
 	public void sortReadTriples() {
 		final SortedSet<Triple> sst = new TreeSet<Triple>(new TripleComparator(
 				RDF3XIndexScan.CollationOrder.SPO));
-		sst.addAll(readTriples);
-		readTriples.clear();
-		readTriples.addAll(sst);
+		sst.addAll(this.readTriples);
+		this.readTriples.clear();
+		this.readTriples.addAll(sst);
+	}
+
+	@Override
+	public BindingsArrayReadTriples createInstance(){
+		return new BindingsArrayReadTriples(this.bindingsFactory);
 	}
 }

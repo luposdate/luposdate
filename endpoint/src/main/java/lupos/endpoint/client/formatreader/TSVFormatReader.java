@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.formatreader.tsv.ASTOneResult;
@@ -53,44 +54,44 @@ public class TSVFormatReader extends DefaultMIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream) {
-		QueryResult result = QueryResult.createInstance();
-		
+	public QueryResult getQueryResult(final InputStream inputStream, final BindingsFactory bindingsFactory) {
+		final QueryResult result = QueryResult.createInstance();
+
 		try {
-			SimpleNode root = TSVParser.parse(inputStream);
-			LinkedList<Variable> vars = new LinkedList<Variable>();
+			final SimpleNode root = TSVParser.parse(inputStream);
+			final LinkedList<Variable> vars = new LinkedList<Variable>();
 			for(int i=0; i<root.jjtGetNumChildren(); i++){
-				Node child = root.jjtGetChild(i);
+				final Node child = root.jjtGetChild(i);
 				if(child instanceof ASTVars){
 					for(int j=0; j<child.jjtGetNumChildren(); j++){
-						Node childchild = child.jjtGetChild(j);
+						final Node childchild = child.jjtGetChild(j);
 						if(childchild instanceof ASTVar){
 							vars.add(new Variable(((ASTVar)childchild).getName()));
-						}						
-					}					
+						}
+					}
 				}
 			}
 			for(int i=0; i<root.jjtGetNumChildren(); i++){
-				Node child = root.jjtGetChild(i);
+				final Node child = root.jjtGetChild(i);
 				if(child instanceof ASTOneResult){
-					Bindings bindings = Bindings.createNewInstance();
-					Iterator<Variable> varIt = vars.iterator();
+					final Bindings bindings = bindingsFactory.createInstance();
+					final Iterator<Variable> varIt = vars.iterator();
 					for(int j=0; j<child.jjtGetNumChildren() && varIt.hasNext(); j++){
-						Variable var = varIt.next();
-						Node childchild = child.jjtGetChild(j);
+						final Variable var = varIt.next();
+						final Node childchild = child.jjtGetChild(j);
 						if(childchild instanceof ASTValue && childchild.jjtGetNumChildren()>0){
 							bindings.add(var, TSVParser.getLiteral(childchild.jjtGetChild(0)));
 						}
 					}
 					result.add(bindings);
 				}
-			}			
-		} catch (ParseException e) {
+			}
+		} catch (final ParseException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		
-		return result;	
+
+		return result;
 	}
 
 }

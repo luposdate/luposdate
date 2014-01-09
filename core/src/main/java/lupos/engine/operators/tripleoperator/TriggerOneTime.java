@@ -25,12 +25,13 @@ package lupos.engine.operators.tripleoperator;
 
 import java.util.HashSet;
 
-import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 
@@ -38,46 +39,56 @@ public class TriggerOneTime extends TripleOperator implements TripleConsumer {
 
 	protected boolean firstTime = true;
 	protected final boolean addEmptyBindings;
+	protected BindingsFactory bindingsFactory;
 
 	public TriggerOneTime() {
 		this(true);
 	}
 
-	public TriggerOneTime(boolean addEmptyBindings) {
-		unionVariables = new HashSet<Variable>();
-		intersectionVariables = unionVariables;
+	public TriggerOneTime(final boolean addEmptyBindings) {
+		this.unionVariables = new HashSet<Variable>();
+		this.intersectionVariables = this.unionVariables;
 		this.addEmptyBindings = addEmptyBindings;
 	}
 
 	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
+	@Override
 	public void consume(final Triple triple) {
-		trigger();
+		this.trigger();
 	}
-	
+
+	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
-		firstTime=true;
+		this.firstTime=true;
 		return msg;
 	}
-	
+
+	@Override
 	public Message postProcessMessage(final StartOfEvaluationMessage msg) {
-		trigger();
+		this.trigger();
 		return msg;
 	}
-	
+
 	public void trigger(){
-		if (firstTime) {
+		if (this.firstTime) {
 			final QueryResult ll = QueryResult.createInstance();
-			if(addEmptyBindings)
-				ll.add(Bindings.createNewInstance());
-			for (final OperatorIDTuple op : getSucceedingOperators()) {
+			if(this.addEmptyBindings) {
+				ll.add(this.bindingsFactory.createInstance());
+			}
+			for (final OperatorIDTuple op : this.getSucceedingOperators()) {
 				((Operator) op.getOperator()).processAll(ll, op.getId());
 			}
-			firstTime = false;
+			this.firstTime = false;
 		}
 	}
 
 	@Override
 	public String toString(){
-		return super.toString()+" "+((addEmptyBindings)?"1 empty bindings":"1 empty queryresult");
+		return super.toString()+" "+((this.addEmptyBindings)?"1 empty bindings":"1 empty queryresult");
 	}
 }

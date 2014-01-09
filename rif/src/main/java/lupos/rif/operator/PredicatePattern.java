@@ -29,12 +29,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.util.ImmutableIterator;
@@ -45,6 +47,7 @@ import lupos.rif.datatypes.RuleResult;
 public class PredicatePattern extends Operator implements Iterable<Item> {
 	private URILiteral patternName;
 	private List<Item> patternArgs;
+	protected BindingsFactory bindingsFactory;
 
 	public PredicatePattern() {
 		this(null, (Item[]) null);
@@ -79,6 +82,12 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 	}
 
 	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
+	@Override
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
 		final QueryResult result = QueryResult.createInstance();
@@ -93,7 +102,7 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 			// ueberhaut betrachten
 			if (pred.getParameters().size() == this.patternArgs.size()
 					&& pred.getName().equals(this.patternName)) {
-				final Bindings bind = Bindings.createNewInstance();
+				final Bindings bind = this.bindingsFactory.createInstance();
 				boolean matched = true;
 				for (int idx = 0; idx < pred.getParameters().size(); idx++) {
 					if (this.patternArgs.get(idx).isVariable()) {

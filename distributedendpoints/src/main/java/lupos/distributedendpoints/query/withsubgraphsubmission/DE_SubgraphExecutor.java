@@ -23,6 +23,7 @@
  */
 package lupos.distributedendpoints.query.withsubgraphsubmission;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.operator.ISubgraphExecutor;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
@@ -37,7 +38,7 @@ public class DE_SubgraphExecutor implements ISubgraphExecutor<KeyContainer<Integ
 	}
 
 	@Override
-	public QueryResult evaluate(final KeyContainer<Integer> key, final String subgraphSerializedAsJSON) {
-		return this.endpointManagement.submitSubgraphQuery(subgraphSerializedAsJSON, key);
+	public QueryResult evaluate(final KeyContainer<Integer> key, final String subgraphSerializedAsJSON, final BindingsFactory bindingsFactory) {
+		return this.endpointManagement.submitSubgraphQuery(subgraphSerializedAsJSON, key, bindingsFactory);
 	}
 }

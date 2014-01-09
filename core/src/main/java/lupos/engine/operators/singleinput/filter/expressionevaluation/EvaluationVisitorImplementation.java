@@ -36,11 +36,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
@@ -869,23 +867,6 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void setMaxVariables(final BasicOperator root){
-		// save all variables of the subquery in the bindingsarray
-		final Set<Variable> maxVariables = new TreeSet<Variable>();
-		root.visit(new SimpleOperatorGraphVisitor() {
-			@Override
-			public Object visit(final BasicOperator basicOperator) {
-				if (basicOperator.getUnionVariables() != null) {
-					maxVariables.addAll(basicOperator.getUnionVariables());
-				}
-				return null;
-			}
-
-		});
-
-		BindingsArray.forceVariables(maxVariables);
-	}
 
 	public static Result setupEvaluator(final CommonCoreQueryEvaluator<Node> evaluator, final Root collection){
 		evaluator.setRootNode(collection);
@@ -894,7 +875,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		collection.detectCycles();
 		collection.sendMessage(new BoundVariablesMessage());
 
-		setMaxVariables(collection);
+		evaluator.setBindingsVariablesBasedOnOperatorgraph();
 
 		final GetResult getResult = new GetResult();
 		collection.visit(getResult);
@@ -922,15 +903,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param result
 	 *            the {@link Result} for the subquery
 	 */
-	@SuppressWarnings("deprecation")
 	protected void performSubQueryAndGetWholeResult(final SimpleNode node,
 			final Root collection,
 			final CommonCoreQueryEvaluator<Node> evaluator_param) {
 		final BasicOperator oldRoot = evaluator_param.getRootNode();
 		final Result oldResult = evaluator_param.getResultOperator();
-
-		// the static bindingsarray is saved and restored after the subquery
-		final Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
+		final Map<Variable, Integer> oldBindingsFactory = evaluator_param.getBindingsFactory().getPosVariables();
 
 		final Result result = setupEvaluator(evaluator_param, (Root) collection.deepClone());
 
@@ -946,9 +924,9 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 		final QueryResult queryResult = cr.getResult();
 		this.queryResultsForExistNodes.put(node, this.transformQueryResult(queryResult));
-		BindingsArray.forceVariables(oldVarsTmp);
 		evaluator_param.setRootNode(oldRoot);
 		evaluator_param.setResult(oldResult);
+		evaluator_param.getBindingsFactory().setPosVariables(oldBindingsFactory);
 	}
 
 	protected QueryResult transformQueryResult(final QueryResult queryResult) {
@@ -968,19 +946,18 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
-	@SuppressWarnings({ "unused", "deprecation" })
+	@SuppressWarnings("serial")
 	public static boolean processSimpleSubquery(final SimpleNode node, final Bindings bindings,
 			final Map<Node, Object> d, final Root collection,
 			final CommonCoreQueryEvaluator<Node> evaluator) {
 
 		final BasicOperator oldRoot = evaluator.getRootNode();
 		final Result oldResult = evaluator.getResultOperator();
-		// the static bindingsarray is saved and restored after the subquery
-		final Map<Variable, Integer> oldVarsTmp = BindingsArray.getPosVariables();
+		final Map<Variable, Integer> oldBindingsFactory = evaluator.getBindingsFactory().getPosVariables();
 
 		final Root collectionClone = (Root) collection.deepClone();
 		collectionClone.visit(new SimpleOperatorGraphVisitor() {
-
+;
 			@Override
 			public Object visit(final BasicOperator basicOperator) {
 
@@ -1024,9 +1001,9 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
-		BindingsArray.forceVariables(oldVarsTmp);
 		evaluator.setRootNode(oldRoot);
 		evaluator.setResult(oldResult);
+		evaluator.getBindingsFactory().setPosVariables(oldBindingsFactory);
 		return !application.getResultIsEmpty();
 	}
 

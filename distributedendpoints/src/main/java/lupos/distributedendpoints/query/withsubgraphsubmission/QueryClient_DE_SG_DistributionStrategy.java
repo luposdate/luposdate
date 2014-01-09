@@ -42,7 +42,8 @@ import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
 public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSubgraphTransmission<KeyContainer<Integer>> {
 
 	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
-		this(Storage_DE_DistributionStrategy.createInstance(distribution));
+		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
+		this(Storage_DE_DistributionStrategy.createInstance(distribution, null));
 	}
 
 	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage) throws Exception {
@@ -51,7 +52,8 @@ public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSu
 	}
 
 	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
-		this(Storage_DE_DistributionStrategy.createInstance(distribution), args);
+		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
+		this(Storage_DE_DistributionStrategy.createInstance(distribution, null), args);
 	}
 
 	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage, final String[] args) throws Exception {

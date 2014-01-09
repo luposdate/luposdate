@@ -28,32 +28,35 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 
 public class Projection extends SingleInputOperator {
 	private final HashSet<Variable> s = new HashSet<Variable>();
+	protected BindingsFactory bindingsFactory;
 
 	public Projection() {
 	}
 
 	public void addProjectionElement(final Variable var) {
-		if (!s.contains(var)) {
-			s.add(var);
+		if (!this.s.contains(var)) {
+			this.s.add(var);
 		}
 	}
 
 	public HashSet<Variable> getProjectedVariables() {
-		return s;
+		return this.s;
 	}
 
 	/**
 	 * Handles the BoundVariablesMessage by removing all variables from it that
 	 * are not projected to.
-	 * 
+	 *
 	 * @param msg
 	 *            The BoundVariablesMessage
 	 * @return The modified message
@@ -62,13 +65,19 @@ public class Projection extends SingleInputOperator {
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
 		for (final Variable v : msg.getVariables()) {
-			if (s.contains(v)) {
+			if (this.s.contains(v)) {
 				result.getVariables().add(v);
 			}
 		}
-		unionVariables = result.getVariables();
-		intersectionVariables = result.getVariables();
+		this.unionVariables = result.getVariables();
+		this.intersectionVariables = result.getVariables();
 		return result;
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
 	}
 
 	@Override
@@ -76,22 +85,25 @@ public class Projection extends SingleInputOperator {
 		final Iterator<Bindings> itb = new ParallelIterator<Bindings>() {
 			final Iterator<Bindings> itbold = bindings.oneTimeIterator();
 
+			@Override
 			public boolean hasNext() {
-				return itbold.hasNext();
+				return this.itbold.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
-				if (!itbold.hasNext())
+				if (!this.itbold.hasNext()) {
 					return null;
-				final Bindings bind1 = itbold.next();
-				if (!itbold.hasNext()) {
-					if (itbold instanceof ParallelIterator) {
-						((ParallelIterator) itbold).close();
+				}
+				final Bindings bind1 = this.itbold.next();
+				if (!this.itbold.hasNext()) {
+					if (this.itbold instanceof ParallelIterator) {
+						((ParallelIterator) this.itbold).close();
 					}
 				}
-				final Bindings bnew = Bindings.createNewInstance();
+				final Bindings bnew = Projection.this.bindingsFactory.createInstance();
 
-				final Iterator<Variable> it = s.iterator();
+				final Iterator<Variable> it = Projection.this.s.iterator();
 				while (it.hasNext()) {
 					final Variable elem = it.next();
 					bnew.add(elem, bind1.get(elem));
@@ -101,18 +113,20 @@ public class Projection extends SingleInputOperator {
 				return bnew;
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
 			public void finalize() {
-				close();
+				this.close();
 			}
 
+			@Override
 			public void close() {
-				if (itbold instanceof ParallelIterator) {
-					((ParallelIterator) itbold).close();
+				if (this.itbold instanceof ParallelIterator) {
+					((ParallelIterator) this.itbold).close();
 				}
 			}
 		};
@@ -122,10 +136,11 @@ public class Projection extends SingleInputOperator {
 
 	@Override
 	public String toString() {
-		return super.toString()+" to " + s;
+		return super.toString()+" to " + this.s;
 	}
-	
-	public boolean remainsSortedData(Collection<Variable> sortCriterium){
+
+	@Override
+	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return true;
 	}
 }

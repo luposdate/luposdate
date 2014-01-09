@@ -35,6 +35,7 @@ import java.util.Set;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
@@ -544,6 +545,41 @@ public class BasicOperator implements Cloneable, Serializable {
 		return this.postProcessMessage(msg);
 	}
 
+	/**
+	 * This method is for merging the BindingsFactoryMessage
+	 *
+	 * @param messagesParameter
+	 *            the messages received from the operands of this operator
+	 * @param msg
+	 *            the last received message
+	 * @return the merged message
+	 */
+	public Message mergeMessages(final Collection<Message> messagesParameter, final BindingsFactoryMessage msg) {
+		return msg;
+	}
+
+	/**
+	 * This method pre-processes the BindingsFactoryMessage
+	 * Some operates override this method just to save the BindingsFactory in a local variable for later usage.
+	 *
+	 * @param msg
+	 *            the message to be pre-processed
+	 * @return the pre-processed message
+	 */
+	public Message preProcessMessage(final BindingsFactoryMessage msg) {
+		return msg;
+	}
+
+	/**
+	 * This method post-processes the BindingsFactoryMessage
+	 *
+	 * @param msg
+	 *            the message to be post-processed
+	 * @return the post-processed message
+	 */
+	public Message postProcessMessage(final BindingsFactoryMessage msg) {
+		return msg;
+	}
 
 	/**
 	 * This method computes the intersection and union of used variables. Note

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
@@ -41,83 +42,93 @@ import com.google.common.collect.Multimap;
 public class RulePredicate extends Uniterm {
 	private boolean isRecursive = false;
 	private final boolean triple;
-	
+
 	public RulePredicate(final boolean triple) {
 		super();
 		this.triple=triple;
 	}
 
-	public RulePredicate(IExpression subject, IExpression predicate,
-			IExpression object) throws RIFException {
+	public RulePredicate(final IExpression subject, final IExpression predicate,
+			final IExpression object) throws RIFException {
 		this(true);
-		termParams.add(subject);
-		termName = predicate;
-		termParams.add(object);
+		this.termParams.add(subject);
+		this.termName = predicate;
+		this.termParams.add(object);
 	}
 
-	public RulePredicate(IExpression predName, IExpression... predParams) {
+	public RulePredicate(final IExpression predName, final IExpression... predParams) {
 		this(false);
-		termName = predName;
-		termParams = Arrays.asList(predParams);
+		this.termName = predName;
+		this.termParams = Arrays.asList(predParams);
 	}
 
 	public boolean isTriple() {
-		return triple;
+		return this.triple;
 		// return termParams.size() == 2;
 	}
 
-	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException {
+	@Override
+	public <R, A> R accept(final IRuleVisitor<R, A> visitor, final A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
-	public Object evaluate(Bindings binding) {
-		return evaluate(binding, null);
+	@Override
+	public Object evaluate(final Bindings binding) {
+		return this.evaluate(binding, null);
 	}
 
-	public Object evaluate(Bindings binding, Object optionalResult) {
-		return evaluate(binding, optionalResult, null);
+	@Override
+	public Object evaluate(final Bindings binding, final Object optionalResult) {
+		return this.evaluate(binding, optionalResult, null);
 	}
 
-	public Object evaluate(Bindings binding, Object optionalResult, Multimap<IExpression, IExpression> equalities) {
+	@Override
+	public Object evaluate(final Bindings binding, final Object optionalResult, final Multimap<IExpression, IExpression> equalities) {
 		if (equalities != null) {
 			// RulePredicate evluieren und neubauen
 			final RulePredicate pred = new RulePredicate(this.triple);
-			pred.termName = new Constant((Literal) termName.evaluate(binding),
+			pred.termName = new Constant((Literal) this.termName.evaluate(binding),
 					pred);
-			for (final IExpression expr : termParams) {
+			for (final IExpression expr : this.termParams) {
 				final Object obj = expr.evaluate(binding);
-				if (obj instanceof Variable)
+				if (obj instanceof Variable) {
 					throw new RIFException("Unbound Variable " + obj
-							+ " while evaluating " + toString());
-				else if (obj instanceof Literal)
+							+ " while evaluating " + this.toString());
+				} else if (obj instanceof Literal) {
 					pred.termParams.add(new Constant((Literal) obj, pred));
-				else
+				} else {
 					pred.termParams.add((IExpression) obj);
+				}
 			}
-			if (equalities.containsKey(pred))
+			if (equalities.containsKey(pred)) {
 				// Immer nur den ersten eintrag nehmen, der ein Literal
 				// zur�ckgibt
 				for (final IExpression expr : equalities.get(pred)) {
-					if (expr instanceof Constant)
+					if (expr instanceof Constant) {
 						return ((Constant) expr).getLiteral();
+					}
 				}
+			}
 		}
 		return null;
 	}
 
-	public boolean isBound(RuleVariable var, Collection<RuleVariable> boundVars) {
-		boundVars.addAll(getVariables());
-		if (getVariables().contains(var)) {
+	@Override
+	public boolean isBound(final RuleVariable var, final Collection<RuleVariable> boundVars) {
+		boundVars.addAll(this.getVariables());
+		if (this.getVariables().contains(var)) {
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
+	@Override
 	public boolean isPossibleAssignment() {
 		return false;
 	}
 
-	public void setRecursive(boolean isRecursive) {
+	public void setRecursive(final boolean isRecursive) {
 		this.isRecursive = isRecursive;
 	}
 
@@ -126,27 +137,27 @@ public class RulePredicate extends Uniterm {
 	}
 
 	public Object toDataStructure() {
-		if (isTriple()){
-			Literal subject = (this.termParams.get(0) instanceof Constant)?
+		if (this.isTriple()){
+			final Literal subject = (this.termParams.get(0) instanceof Constant)?
 					((Constant) this.termParams.get(0)).getLiteral():
-					(Literal)((External) this.termParams.get(0)).evaluate(Bindings.createNewInstance());
+					(Literal)((External) this.termParams.get(0)).evaluate(new BindingsMap());
 
-			Literal predicate = (this.termName instanceof Constant)?
+			final Literal predicate = (this.termName instanceof Constant)?
 					((Constant) this.termName).getLiteral():
-					(Literal)((External) this.termName).evaluate(Bindings.createNewInstance());
+					(Literal)((External) this.termName).evaluate(new BindingsMap());
 
-			Literal object = (this.termParams.get(1) instanceof Constant)?
+			final Literal object = (this.termParams.get(1) instanceof Constant)?
 					((Constant) this.termParams.get(1)).getLiteral():
-					(Literal)((External) this.termParams.get(1)).evaluate(Bindings.createNewInstance());
-					
+					(Literal)((External) this.termParams.get(1)).evaluate(new BindingsMap());
+
 			return new Triple(subject, predicate, object);
 		} else {
 			final Predicate pred = new Predicate();
 			pred.setName(((Constant) this.termName).getLiteral());
-			for (IExpression expr : this.termParams) {
+			for (final IExpression expr : this.termParams) {
 				pred.getParameters().add(	(expr instanceof Constant)?
 											((Constant) expr).getLiteral():
-											(Literal)((External) expr).evaluate(Bindings.createNewInstance()));
+											(Literal)((External) expr).evaluate(new BindingsMap()));
 			}
 			return pred;
 		}
@@ -154,53 +165,64 @@ public class RulePredicate extends Uniterm {
 
 	@Override
 	public boolean equalsDataStructure(final Object obj) {
-		if (isTriple() && obj instanceof Triple) {
-			return toDataStructure().equals(obj);
-		} else if (!isTriple() && obj instanceof Predicate)
-			return toDataStructure().equals(obj);
-		else
+		if (this.isTriple() && obj instanceof Triple) {
+			return this.toDataStructure().equals(obj);
+		} else if (!this.isTriple() && obj instanceof Predicate) {
+			return this.toDataStructure().equals(obj);
+		} else {
 			return false;
+		}
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj != null && obj instanceof RulePredicate) {
 			final RulePredicate pred = (RulePredicate) obj;
-			if (!pred.termName.equals(termName))
+			if (!pred.termName.equals(this.termName)) {
 				return false;
-			if (pred.termParams.size() != termParams.size())
+			}
+			if (pred.termParams.size() != this.termParams.size()) {
 				return false;
-			for (int i = 0; i < termParams.size(); i++) {
-				if (!termParams.get(i).equals(pred.termParams.get(i)))
+			}
+			for (int i = 0; i < this.termParams.size(); i++) {
+				if (!this.termParams.get(i).equals(pred.termParams.get(i))) {
 					return false;
+				}
 			}
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
-	}
-	
-	public String getLabel() {
-		if(isTriple()){
-			final StringBuffer str = new StringBuffer();
-			str.append(termParams.get(0).toString()).append("[");
-			str.append(termName.toString()).append("->");
-			str.append(termParams.get(1).toString()).append("]");
-			return str.toString();
-		} else return super.getLabel();
+		return this.toString().hashCode();
 	}
 
-	public String toString(Prefix prefixInstance) {
-		if(isTriple()){
+	@Override
+	public String getLabel() {
+		if(this.isTriple()){
 			final StringBuffer str = new StringBuffer();
-			str.append(termParams.get(0).toString(prefixInstance)).append("[");
-			str.append(termName.toString(prefixInstance)).append("->");
-			str.append(termParams.get(1).toString(prefixInstance)).append("]");
+			str.append(this.termParams.get(0).toString()).append("[");
+			str.append(this.termName.toString()).append("->");
+			str.append(this.termParams.get(1).toString()).append("]");
 			return str.toString();
-		} else return super.toString(prefixInstance);
+		} else {
+			return super.getLabel();
+		}
+	}
+
+	@Override
+	public String toString(final Prefix prefixInstance) {
+		if(this.isTriple()){
+			final StringBuffer str = new StringBuffer();
+			str.append(this.termParams.get(0).toString(prefixInstance)).append("[");
+			str.append(this.termName.toString(prefixInstance)).append("->");
+			str.append(this.termParams.get(1).toString(prefixInstance)).append("]");
+			return str.toString();
+		} else {
+			return super.toString(prefixInstance);
+		}
 	}
 }

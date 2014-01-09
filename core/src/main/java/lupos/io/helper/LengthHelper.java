@@ -253,7 +253,8 @@ public final class LengthHelper {
 	public final static int lengthLuposBindings(final Bindings t, final Bindings previousBindings) {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			int result = (ba==null)? lengthLuposBindingsFactory(ba) : 0;
+			final Map<Variable, Integer> hm = ba.getBindingsFactory().getPosVariables();
 			BigInteger usedVars = BigInteger.ZERO;
 			BigInteger differentFromPreviousBindings = BigInteger.ZERO;
 			BigInteger i = BigInteger.ONE;
@@ -284,7 +285,7 @@ public final class LengthHelper {
 				}
 				i = i.multiply(TWO);
 			}
-			int result = 2 * LengthHelper.lengthLuposBigInteger(hm.size());
+			result += 2 * LengthHelper.lengthLuposBigInteger(hm.size());
 			for (final Variable v : hm.keySet()) {
 				if (ba.get(v) != null) {
 					if (previousBindings == null
@@ -318,7 +319,8 @@ public final class LengthHelper {
 	public final static int lengthLuposBindings(final Bindings t) {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			int result = lengthLuposBindingsFactory(ba);
+			final Map<Variable, Integer> hm = ba.getBindingsFactory().getPosVariables();
 			BigInteger usedVars = BigInteger.ZERO;
 			BigInteger i = BigInteger.ONE;
 			final BigInteger TWO = BigInteger.valueOf(2);
@@ -328,7 +330,7 @@ public final class LengthHelper {
 				}
 				i = i.multiply(TWO);
 			}
-			int result = LengthHelper.lengthLuposBigInteger(hm.size());
+			result += LengthHelper.lengthLuposBigInteger(hm.size());
 
 			for (final Variable v : hm.keySet()) {
 				if (ba.get(v) != null) {
@@ -339,6 +341,15 @@ public final class LengthHelper {
 		} else {
 			return LengthHelper.lengthOtherBindingsTypes(t);
 		}
+	}
+
+	private final static int lengthLuposBindingsFactory(final BindingsArray t){
+		final Set<Variable> vars = t.getBindingsFactory().getPosVariables().keySet();
+		int result = lengthLuposIntVariableBytes(vars.size());
+		for(final Variable v: vars){
+			result += lengthLuposString(v.getName());
+		}
+		return result;
 	}
 
 	private final static int lengthOtherBindingsTypes(final Bindings t) {

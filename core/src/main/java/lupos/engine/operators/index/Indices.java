@@ -27,45 +27,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
-import lupos.engine.operators.BasicOperator;
-import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.application.Application;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
-import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-import lupos.engine.operators.messages.BoundVariablesMessage;
-import lupos.engine.operators.messages.EndOfEvaluationMessage;
-import lupos.engine.operators.messages.StartOfEvaluationMessage;
-import lupos.engine.operators.multiinput.join.Join;
-import lupos.engine.operators.rdfs.AlternativeRDFSchemaInference;
-import lupos.engine.operators.rdfs.RDFSchemaInference;
-import lupos.engine.operators.rdfs.RudimentaryRDFSchemaInference;
-import lupos.engine.operators.rdfs.index.RDFSPutIntoIndices;
-import lupos.engine.operators.rdfs.index.RDFSPutIntoIndicesCyclicComputation;
-import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-import lupos.engine.operators.tripleoperator.TripleOperator;
-import lupos.engine.operators.tripleoperator.TriplePattern;
-import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
-import lupos.optimizations.logical.rules.externalontology.ExternalOntologyRuleEngine;
-import lupos.optimizations.logical.rules.rdfs.RDFSRuleEngine0;
-import lupos.optimizations.logical.rules.rdfs.RDFSRuleEngine1;
-import lupos.optimizations.logical.rules.rdfs.RDFSRuleEngine2;
-import lupos.optimizations.physical.PhysicalOptimizations;
 
 /**
  * Instances of this class are used as data structure for storing triples
@@ -222,213 +189,214 @@ public abstract class Indices implements TripleConsumer {
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
 		this.loadDataWithoutConsideringOntoloy(graphURI, dataFormat, dataset);
 		if (materialize != ONTOLOGY.NONE) {
-			final Map<Variable, Integer> vars = BindingsArray.getPosVariables();
-			final Root ic = indicesFactory.createRoot();
-			final HashSet<Triple> newTriples = new HashSet<Triple>();
-			final TripleOperator rpiim = inMemoryExternalOntologyComputation ? new RDFSPutIntoIndicesCyclicComputation(
-					newTriples, this)
-					: new RDFSPutIntoIndices(this);
-			RDFSchemaInference.evaluateAxiomaticAndRDFSValidTriples(this);
-			switch (materialize) {
-			case RDFS:
-				RDFSchemaInference.addInferenceRules(ic, rpiim, graphURI);
-				break;
-			case RUDIMENTARYRDFS:
-				RudimentaryRDFSchemaInference.addInferenceRules(ic, rpiim,
-						graphURI);
-				break;
-			case ALTERNATIVERDFS:
-				AlternativeRDFSchemaInference.addInferenceRules(ic, rpiim,
-						graphURI);
-				break;
-			case ONTOLOGYRDFS:
-				RDFSchemaInference.addInferenceRulesForExternalOntology(ic,
-						rpiim, graphURI);
-				break;
-			case ONTOLOGYALTERNATIVERDFS:
-				AlternativeRDFSchemaInference
-						.addInferenceRulesForExternalOntology(ic, rpiim,
-								graphURI);
-				break;
-			case ONTOLOGYRUDIMENTARYRDFS:
-				RudimentaryRDFSchemaInference
-						.addInferenceRulesForExternalOntology(ic, rpiim,
-								graphURI);
-				break;
-			}
-			ic.deleteParents();
-			ic.setParents();
-			ic.detectCycles();
-			ic.sendMessage(new BoundVariablesMessage());
-			final Set<Variable> maxVariables = new TreeSet<Variable>();
-			for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
-				final BasicOperator op = oit.getOperator();
-				for (final Variable v : op.getUnionVariables()) {
-					maxVariables.add(v);
-				}
-			}
-			if (inMemoryExternalOntologyComputation) {
-				BindingsArray.forceVariables(maxVariables);
-				ic.optimizeJoinOrder(opt);
-				PhysicalOptimizations.memoryReplacements();
-				ic.physicalOptimization();
-									do {
-						for (final Triple t : newTriples) {
-							if (debug) {
-								System.out
-										.println(">>>>>>>>>>>>>> Inferred Triple in memory:"
-												+ t);
-							}
-							this.add(t);
-						}
-						this.build();
-						((RDFSPutIntoIndicesCyclicComputation) rpiim)
-								.newTripleProcessing();
-						ic.sendMessage(new StartOfEvaluationMessage());
-						ic.startProcessing();
-						ic.sendMessage(new EndOfEvaluationMessage());
-					} while (((RDFSPutIntoIndicesCyclicComputation) rpiim)
-							.getNewTriples());
-					this.build();
-			} else {
-				maxVariables.add(new Variable("s"));
-				maxVariables.add(new Variable("p"));
-				maxVariables.add(new Variable("o"));
-				BindingsArray.forceVariables(maxVariables);
-				int size = 0;
-				for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
-					final BasicOperator op = oit.getOperator();
-					size += ((BasicIndexScan) op).triplePatterns.size();
-				}
-				// first transform into StreamQueryEvaluator graph!
-				final TripleOperator[] to = new TripleOperator[size];
-				int i = 0;
-				for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
-					final BasicOperator op = oit.getOperator();
-					if (((BasicIndexScan) op).triplePatterns.size() == 1) {
-						to[i] = ((BasicIndexScan) op).triplePatterns.iterator()
-								.next();
-						to[i].setSucceedingOperators(op
-								.getSucceedingOperators());
-						for (final OperatorIDTuple oit2 : op
-								.getSucceedingOperators()) {
-							oit2.getOperator().removePrecedingOperator(op);
-							oit2.getOperator().addPrecedingOperator(to[i]);
-						}
-						i++;
-					} else {
-						// insert join!
-						final Join join = new Join();
-						join
-								.setSucceedingOperators(op
-										.getSucceedingOperators());
-						for (final OperatorIDTuple oit2 : op
-								.getSucceedingOperators()) {
-							oit2.getOperator().removePrecedingOperator(op);
-							oit2.getOperator().addPrecedingOperator(join);
-						}
-						int j = 0;
-						for (final TriplePattern tp : ((BasicIndexScan) op).triplePatterns) {
-							to[i] = tp;
-							tp.setSucceedingOperator(new OperatorIDTuple(join,
-									j));
-							join.addPrecedingOperator(tp);
-							i++;
-							j++;
-						}
-					}
-				}
-				final PatternMatcher pm = new PatternMatcher(to);
-				for (final TripleOperator top : to) {
-					top.setPrecedingOperator(pm);
-				}
-				// connect all generate operators to the pattern matcher and
-				// disconnect to RDFSPutIntoIndices!
-				for (final BasicOperator bo : rpiim.getPrecedingOperators()) {
-					bo.setSucceedingOperator(new OperatorIDTuple(pm, 0));
-					pm.addPrecedingOperator(bo);
-				}
-				// create new TriplePattern ?s ?p ?o. for getting the results!
-				final Result result = new Result();
-				result.addApplication(new Application() {
-
-					@Override
-					public void call(final QueryResult res) {
-						final Iterator<Bindings> itb = res.oneTimeIterator();
-						while (itb.hasNext()) {
-							final Bindings b = itb.next();
-							final Triple t = new Triple(b
-									.get(new Variable("s")), b
-									.get(new Variable("p")), b
-									.get(new Variable("o")));
-							if (debug) {
-								System.out
-										.println(">>>>>>>>>>>>>> Inferred Triple using disk-based approach:"
-												+ t);
-							}
-							rpiim.consume(t);
-						}
-					}
-
-					@Override
-					public void start(final Type type) {
-					}
-
-					@Override
-					public void stop() {
-					}
-
-					@Override
-					public void deleteResult(final QueryResult res) {
-					}
-
-					@Override
-					public void deleteResult() {
-					}
-
-				});
-				final TriplePattern tp = new TriplePattern(new Variable("s"),
-						new Variable("p"), new Variable("o"));
-				tp.addSucceedingOperator(new OperatorIDTuple(result, 0));
-				result.addPrecedingOperator(tp);
-				tp.addPrecedingOperator(pm);
-				pm.add(tp);
-					final ExternalOntologyRuleEngine eore = new ExternalOntologyRuleEngine();
-					eore.applyRules(pm);
-					final RDFSRuleEngine0 rdfsRuleEngine0 = new RDFSRuleEngine0(
-							false);
-					rdfsRuleEngine0.applyRules(pm);
-					final RDFSRuleEngine1 rdfsRuleEngine1 = new RDFSRuleEngine1();
-					rdfsRuleEngine1.applyRules(pm);
-					final RDFSRuleEngine2 rdfsRuleEngine2 = new RDFSRuleEngine2();
-					rdfsRuleEngine2.applyRules(pm);
-					// remove tp=?s ?p ?o. from the pattern matcher such that
-					// not all data is retrieved and only new inferred triples
-					tp.removePrecedingOperator(pm);
-					pm.removeSucceedingOperator(tp);
-					ic
-							.setSucceedingOperators(new LinkedList<OperatorIDTuple>());
-					BasicIndexQueryEvaluator
-							.transformStreamToIndexOperatorGraph(pm, ic);
-					for (final OperatorIDTuple oit : ic
-							.getSucceedingOperators()) {
-						if (oit.getOperator() instanceof RDF3XIndexScan) {
-							((RDF3XIndexScan) oit.getOperator())
-									.setCollationOrder(new LinkedList<Variable>());
-						}
-					}
-					PhysicalOptimizations.addReplacement("multiinput.join.",
-							"Join", "MergeJoinWithoutSortingSeveralIterations");
-					ic.physicalOptimization();
-				this.build();
-					ic.startProcessing();
-					ic.sendMessage(new EndOfEvaluationMessage());
-					this.build();
-			}
-			if (vars != null) {
-				BindingsArray.forceVariables(vars.keySet());
-			}
-			return;
+			throw new RuntimeException("Deprecated!");
+//			final Map<Variable, Integer> vars = BindingsArray.getPosVariables();
+//			final Root ic = indicesFactory.createRoot();
+//			final HashSet<Triple> newTriples = new HashSet<Triple>();
+//			final TripleOperator rpiim = inMemoryExternalOntologyComputation ? new RDFSPutIntoIndicesCyclicComputation(
+//					newTriples, this)
+//					: new RDFSPutIntoIndices(this);
+//			RDFSchemaInference.evaluateAxiomaticAndRDFSValidTriples(this);
+//			switch (materialize) {
+//			case RDFS:
+//				RDFSchemaInference.addInferenceRules(ic, rpiim, graphURI);
+//				break;
+//			case RUDIMENTARYRDFS:
+//				RudimentaryRDFSchemaInference.addInferenceRules(ic, rpiim,
+//						graphURI);
+//				break;
+//			case ALTERNATIVERDFS:
+//				AlternativeRDFSchemaInference.addInferenceRules(ic, rpiim,
+//						graphURI);
+//				break;
+//			case ONTOLOGYRDFS:
+//				RDFSchemaInference.addInferenceRulesForExternalOntology(ic,
+//						rpiim, graphURI);
+//				break;
+//			case ONTOLOGYALTERNATIVERDFS:
+//				AlternativeRDFSchemaInference
+//						.addInferenceRulesForExternalOntology(ic, rpiim,
+//								graphURI);
+//				break;
+//			case ONTOLOGYRUDIMENTARYRDFS:
+//				RudimentaryRDFSchemaInference
+//						.addInferenceRulesForExternalOntology(ic, rpiim,
+//								graphURI);
+//				break;
+//			}
+//			ic.deleteParents();
+//			ic.setParents();
+//			ic.detectCycles();
+//			ic.sendMessage(new BoundVariablesMessage());
+//			final Set<Variable> maxVariables = new TreeSet<Variable>();
+//			for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
+//				final BasicOperator op = oit.getOperator();
+//				for (final Variable v : op.getUnionVariables()) {
+//					maxVariables.add(v);
+//				}
+//			}
+//			if (inMemoryExternalOntologyComputation) {
+//				BindingsArray.forceVariables(maxVariables);
+//				ic.optimizeJoinOrder(opt);
+//				PhysicalOptimizations.memoryReplacements();
+//				ic.physicalOptimization();
+//									do {
+//						for (final Triple t : newTriples) {
+//							if (debug) {
+//								System.out
+//										.println(">>>>>>>>>>>>>> Inferred Triple in memory:"
+//												+ t);
+//							}
+//							this.add(t);
+//						}
+//						this.build();
+//						((RDFSPutIntoIndicesCyclicComputation) rpiim)
+//								.newTripleProcessing();
+//						ic.sendMessage(new StartOfEvaluationMessage());
+//						ic.startProcessing();
+//						ic.sendMessage(new EndOfEvaluationMessage());
+//					} while (((RDFSPutIntoIndicesCyclicComputation) rpiim)
+//							.getNewTriples());
+//					this.build();
+//			} else {
+//				maxVariables.add(new Variable("s"));
+//				maxVariables.add(new Variable("p"));
+//				maxVariables.add(new Variable("o"));
+//				BindingsArray.forceVariables(maxVariables);
+//				int size = 0;
+//				for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
+//					final BasicOperator op = oit.getOperator();
+//					size += ((BasicIndexScan) op).triplePatterns.size();
+//				}
+//				// first transform into StreamQueryEvaluator graph!
+//				final TripleOperator[] to = new TripleOperator[size];
+//				int i = 0;
+//				for (final OperatorIDTuple oit : ic.getSucceedingOperators()) {
+//					final BasicOperator op = oit.getOperator();
+//					if (((BasicIndexScan) op).triplePatterns.size() == 1) {
+//						to[i] = ((BasicIndexScan) op).triplePatterns.iterator()
+//								.next();
+//						to[i].setSucceedingOperators(op
+//								.getSucceedingOperators());
+//						for (final OperatorIDTuple oit2 : op
+//								.getSucceedingOperators()) {
+//							oit2.getOperator().removePrecedingOperator(op);
+//							oit2.getOperator().addPrecedingOperator(to[i]);
+//						}
+//						i++;
+//					} else {
+//						// insert join!
+//						final Join join = new Join();
+//						join
+//								.setSucceedingOperators(op
+//										.getSucceedingOperators());
+//						for (final OperatorIDTuple oit2 : op
+//								.getSucceedingOperators()) {
+//							oit2.getOperator().removePrecedingOperator(op);
+//							oit2.getOperator().addPrecedingOperator(join);
+//						}
+//						int j = 0;
+//						for (final TriplePattern tp : ((BasicIndexScan) op).triplePatterns) {
+//							to[i] = tp;
+//							tp.setSucceedingOperator(new OperatorIDTuple(join,
+//									j));
+//							join.addPrecedingOperator(tp);
+//							i++;
+//							j++;
+//						}
+//					}
+//				}
+//				final PatternMatcher pm = new PatternMatcher(to);
+//				for (final TripleOperator top : to) {
+//					top.setPrecedingOperator(pm);
+//				}
+//				// connect all generate operators to the pattern matcher and
+//				// disconnect to RDFSPutIntoIndices!
+//				for (final BasicOperator bo : rpiim.getPrecedingOperators()) {
+//					bo.setSucceedingOperator(new OperatorIDTuple(pm, 0));
+//					pm.addPrecedingOperator(bo);
+//				}
+//				// create new TriplePattern ?s ?p ?o. for getting the results!
+//				final Result result = new Result();
+//				result.addApplication(new Application() {
+//
+//					@Override
+//					public void call(final QueryResult res) {
+//						final Iterator<Bindings> itb = res.oneTimeIterator();
+//						while (itb.hasNext()) {
+//							final Bindings b = itb.next();
+//							final Triple t = new Triple(b
+//									.get(new Variable("s")), b
+//									.get(new Variable("p")), b
+//									.get(new Variable("o")));
+//							if (debug) {
+//								System.out
+//										.println(">>>>>>>>>>>>>> Inferred Triple using disk-based approach:"
+//												+ t);
+//							}
+//							rpiim.consume(t);
+//						}
+//					}
+//
+//					@Override
+//					public void start(final Type type) {
+//					}
+//
+//					@Override
+//					public void stop() {
+//					}
+//
+//					@Override
+//					public void deleteResult(final QueryResult res) {
+//					}
+//
+//					@Override
+//					public void deleteResult() {
+//					}
+//
+//				});
+//				final TriplePattern tp = new TriplePattern(new Variable("s"),
+//						new Variable("p"), new Variable("o"));
+//				tp.addSucceedingOperator(new OperatorIDTuple(result, 0));
+//				result.addPrecedingOperator(tp);
+//				tp.addPrecedingOperator(pm);
+//				pm.add(tp);
+//					final ExternalOntologyRuleEngine eore = new ExternalOntologyRuleEngine();
+//					eore.applyRules(pm);
+//					final RDFSRuleEngine0 rdfsRuleEngine0 = new RDFSRuleEngine0(
+//							false);
+//					rdfsRuleEngine0.applyRules(pm);
+//					final RDFSRuleEngine1 rdfsRuleEngine1 = new RDFSRuleEngine1();
+//					rdfsRuleEngine1.applyRules(pm);
+//					final RDFSRuleEngine2 rdfsRuleEngine2 = new RDFSRuleEngine2();
+//					rdfsRuleEngine2.applyRules(pm);
+//					// remove tp=?s ?p ?o. from the pattern matcher such that
+//					// not all data is retrieved and only new inferred triples
+//					tp.removePrecedingOperator(pm);
+//					pm.removeSucceedingOperator(tp);
+//					ic
+//							.setSucceedingOperators(new LinkedList<OperatorIDTuple>());
+//					BasicIndexQueryEvaluator
+//							.transformStreamToIndexOperatorGraph(pm, ic);
+//					for (final OperatorIDTuple oit : ic
+//							.getSucceedingOperators()) {
+//						if (oit.getOperator() instanceof RDF3XIndexScan) {
+//							((RDF3XIndexScan) oit.getOperator())
+//									.setCollationOrder(new LinkedList<Variable>());
+//						}
+//					}
+//					PhysicalOptimizations.addReplacement("multiinput.join.",
+//							"Join", "MergeJoinWithoutSortingSeveralIterations");
+//					ic.physicalOptimization();
+//				this.build();
+//					ic.startProcessing();
+//					ic.sendMessage(new EndOfEvaluationMessage());
+//					this.build();
+//			}
+//			if (vars != null) {
+//				BindingsArray.forceVariables(vars.keySet());
+//			}
+//			return;
 		}
 		this.build();
 	}

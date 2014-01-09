@@ -35,17 +35,17 @@ import lupos.datastructures.items.literal.Literal;
 public class BindingsMap extends Bindings
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2283705193034764491L;
-	
+
 	protected HashMap<Variable, Literal> hashMap=new HashMap<Variable, Literal>();
 
 	@Override
 	public void init(){
-		hashMap=new HashMap<Variable, Literal>();
+		this.hashMap=new HashMap<Variable, Literal>();
 	}
-	
+
 	public BindingsMap(){
 	}
 
@@ -54,20 +54,20 @@ public class BindingsMap extends Bindings
 	public Bindings clone()
 	{
 		final BindingsMap bnew=new BindingsMap();
-		bnew.hashMap=(HashMap<Variable, Literal>)hashMap.clone();
+		bnew.hashMap=(HashMap<Variable, Literal>)this.hashMap.clone();
 		return bnew;
 	}
 
 	@Override
 	public void add(final Variable var, final Literal lit)
 	{
-		hashMap.put(var, lit);
+		this.hashMap.put(var, lit);
 	}
 
 	@Override
 	public Literal get(final Variable var)
 	{
-		return hashMap.get(var);
+		return this.hashMap.get(var);
 	}
 
 	/**
@@ -77,9 +77,16 @@ public class BindingsMap extends Bindings
 	@Override
 	public Set<Variable> getVariableSet(){
 		final Set<Variable> keySet=new HashSet<Variable>();
-		for(final Variable var: hashMap.keySet())
-			if(hashMap.get(var)!=null) keySet.add(var);
+		for(final Variable var: this.hashMap.keySet()) {
+			if(this.hashMap.get(var)!=null) {
+				keySet.add(var);
+			}
+		}
 		return keySet;
 	}
 
+	@Override
+	public BindingsMap createInstance(){
+		return new BindingsMap();
+	}
 }

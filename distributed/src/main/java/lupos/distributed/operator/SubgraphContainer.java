@@ -23,11 +23,13 @@
  */
 package lupos.distributed.operator;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.operator.format.SubgraphContainerFormatter;
 import lupos.engine.operators.RootChild;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Root;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.rdf.Prefix;
@@ -58,6 +60,11 @@ public class SubgraphContainer<K> extends RootChild {
 	private final ISubgraphExecutor<K> subgraphExecutor;
 
 	/**
+	 * for creating Bindings...
+	 */
+	private BindingsFactory bindingsFactory;
+
+	/**
 	 * Instantiates a new sub graph container.
 	 *
 	 * @param rootNodeOfSubGraph
@@ -69,6 +76,12 @@ public class SubgraphContainer<K> extends RootChild {
 		this.key = key;
 		this.rootNodeOfSubGraph = rootNodeOfSubGraph;
 		this.subgraphExecutor = subgraphExecutor;
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
 	}
 
 	/**
@@ -85,7 +98,7 @@ public class SubgraphContainer<K> extends RootChild {
 		final SubgraphContainerFormatter serializer = new SubgraphContainerFormatter();
 		try {
 			final JSONObject serializedGraph = serializer.serialize(this.rootNodeOfSubGraph, 0);
-			final QueryResult result = this.subgraphExecutor.evaluate(this.key,  serializedGraph.toString());
+			final QueryResult result = this.subgraphExecutor.evaluate(this.key,  serializedGraph.toString(), this.bindingsFactory);
 			result.materialize(); // just for now read all from the stream sent by the endpoint, otherwise it may be blocked! (may be removed if each endpoint can work completely in parallel!)
 			return result;
 		} catch (final JSONException e) {

@@ -36,8 +36,8 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 	protected int[] minArray = new int[this.literals.length];
 	protected int[] maxArray = new int[this.literals.length];
 
-	public BindingsArrayVarMinMax() {
-		super();
+	public BindingsArrayVarMinMax(final BindingsFactory bindingsFactory) {
+		super(bindingsFactory);
 		for (int i = 0; i < this.literals.length; i++) {
 			this.minArray[i] = -1;
 			this.maxArray[i] = -1;
@@ -45,17 +45,17 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 	}
 
 	public void addMinMax(final Variable v, final int min, final int max) {
-		final int pos = posVariables.get(v);
+		final int pos = this.bindingsFactory.posVariables.get(v);
 		this.minArray[pos] = min;
 		this.maxArray[pos] = max;
 	}
 
 	public int getMin(final Variable v) {
-		return this.minArray[posVariables.get(v)];
+		return this.minArray[this.bindingsFactory.posVariables.get(v)];
 	}
 
 	public int getMax(final Variable v) {
-		return this.maxArray[posVariables.get(v)];
+		return this.maxArray[this.bindingsFactory.posVariables.get(v)];
 	}
 
 	public int getMin(final int varCode) {
@@ -68,7 +68,7 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 
 	@Override
 	public BindingsArrayVarMinMax clone() {
-		final BindingsArrayVarMinMax other = new BindingsArrayVarMinMax();
+		final BindingsArrayVarMinMax other = new BindingsArrayVarMinMax(this.bindingsFactory);
 		// System.arraycopy(this.literals, 0, other.literals, 0,
 		// this.literals.length);
 		other.cloneLiterals(this.getLiterals());
@@ -120,5 +120,10 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 						LengthHelper.lengthLuposInt(this.maxArray[i]);
 		}
 		return result;
+	}
+
+	@Override
+	public BindingsArrayVarMinMax createInstance(){
+		return new BindingsArrayVarMinMax(this.bindingsFactory);
 	}
 }

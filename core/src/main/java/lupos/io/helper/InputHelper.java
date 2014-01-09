@@ -38,6 +38,7 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.bindings.BindingsArrayVarMinMax;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.Entry;
@@ -412,13 +413,14 @@ public final class InputHelper {
 		if (Bindings.instanceClass == BindingsMap.class) {
 			return InputHelper.readLuposBindingsMap(in);
 		} else {
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			final BindingsFactory bindingsFactory = (previousBindings==null) ? readLuposBindingsFactory(in) : ((BindingsArray) previousBindings).getBindingsFactory();
+			final Map<Variable, Integer> hm = bindingsFactory.getPosVariables();
 			BigInteger usedVars = InputHelper.readLuposBigInteger(hm.size(), in);
 			if (usedVars == null) {
 				return null;
 			}
 			BigInteger differentFromPreviousBindings = InputHelper.readLuposBigInteger(hm.size(), in);
-			final Bindings b = Bindings.createNewInstance();
+			final Bindings b = bindingsFactory.createInstance();
 			final BigInteger TWO = BigInteger.valueOf(2);
 			for (final Variable v : hm.keySet()) {
 				if (usedVars.mod(TWO).compareTo(BigInteger.ONE)==0) {
@@ -442,12 +444,13 @@ public final class InputHelper {
 		if (Bindings.instanceClass == BindingsMap.class) {
 			return InputHelper.readLuposBindingsMap(in);
 		} else {
-			final Map<Variable, Integer> hm = BindingsArray.getPosVariables();
+			final BindingsFactory bindingsFactory = readLuposBindingsFactory(in);
+			final Map<Variable, Integer> hm = bindingsFactory.getPosVariables();
 			BigInteger usedVars = InputHelper.readLuposBigInteger(hm.size(), in);
 			if (usedVars == null) {
 				return null;
 			}
-			final Bindings b = Bindings.createNewInstance();
+			final Bindings b = bindingsFactory.createInstance();
 			final BigInteger TWO = BigInteger.valueOf(2);
 			for (final Variable v : hm.keySet()) {
 				if (usedVars.mod(TWO).compareTo(BigInteger.ONE)==0) {
@@ -463,7 +466,7 @@ public final class InputHelper {
 
 	private final static BindingsMap readLuposBindingsMap(final InputStream in) throws IOException, ClassNotFoundException {
 		if (Bindings.instanceClass == BindingsMap.class) {
-			final Bindings b = Bindings.createNewInstance();
+			final Bindings b = new BindingsMap();
 			final int number = InputHelper.readLuposIntVariableBytes(in);
 			if (number < 0) {
 				return null;
@@ -477,6 +480,27 @@ public final class InputHelper {
 			return (BindingsMap) b;
 		}
 		return null;
+	}
+
+	private final static BindingsFactory readLuposBindingsFactory(final InputStream in) throws IOException {
+		final int number = InputHelper.readLuposIntVariableBytes(in);
+		if (number < 0) {
+			return null;
+		}
+		final Variable[] vars = new Variable[number];
+		for(int i=0; i<number; i++){
+			vars[i] = InputHelper.readLuposVariable(in);
+		}
+		return BindingsFactory.createBindingsFactory(vars);
+	}
+
+	private final static Variable readLuposVariable(final InputStream in) throws IOException {
+		final String name = readLuposString(in);
+		if(name==null){
+			return null;
+		} else {
+			return new Variable(name);
+		}
 	}
 
 	private final static void addSpecialInformationToBindings(final Bindings b, final InputStream in) throws IOException, ClassNotFoundException {

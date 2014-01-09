@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
@@ -38,6 +39,7 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.stream.TripleDeleter;
@@ -54,6 +56,7 @@ import lupos.rif.model.RuleVariable;
 public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 	private static final long serialVersionUID = -2452758087959813203L;
 	private final External external;
+	protected BindingsFactory bindingsFactory;
 
 	public IteratorIndexScan(final Root root, final External iteratorPredicate) {
 		super(root);
@@ -68,11 +71,17 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 		return result;
 	}
 
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
 	private Iterator<Bindings> newBindingIterator() {
 		final Iterator<Literal> litIt = this.getLiteralIterator();
 		// Variable steht an erster Stelle des Pr�dikats
 		final Variable varToBind = (Variable) this.external.termParams.get(0)
-		.evaluate(Bindings.createNewInstance());
+		.evaluate(this.bindingsFactory.createInstance());
 		return new ImmutableIterator<Bindings>() {
 			@Override
 			public boolean hasNext() {
@@ -81,7 +90,7 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 
 			@Override
 			public Bindings next() {
-				final Bindings bind = Bindings.createNewInstance();
+				final Bindings bind = IteratorIndexScan.this.bindingsFactory.createInstance();
 				bind.add(varToBind, litIt.next());
 				return bind;
 			}
@@ -94,7 +103,7 @@ public class IteratorIndexScan extends BasicIndexScan implements TripleConsumer,
 		final Literal[] args = new Literal[this.external.termParams.size() - 1];
 		for (int i = 1; i < this.external.termParams.size(); i++) {
 			args[i - 1] = (Literal) this.external.termParams.get(i).evaluate(
-					Bindings.createNewInstance());
+					this.bindingsFactory.createInstance());
 		}
 		return RIFBuiltinFactory.getIterator(
 				(URILiteral) ((Constant) this.external.termName).getLiteral(), args);

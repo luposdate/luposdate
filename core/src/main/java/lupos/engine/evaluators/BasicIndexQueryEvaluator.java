@@ -40,6 +40,7 @@ import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsArrayPresortingNumbers;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
 import lupos.datastructures.bindings.BindingsArrayVarMinMax;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.items.Variable;
@@ -282,8 +283,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			final StreamQueryEvaluator sqe, final Root ic) {
 		Bindings.instanceClass = BindingsArrayReadTriples.class;
 		this.result = sqe.getResultOperator();
-		transformStreamToIndexOperatorGraph((PatternMatcher) sqe.getRootNode(),
-				ic);
+		transformStreamToIndexOperatorGraph((PatternMatcher) sqe.getRootNode(), ic);
 	}
 
 	public static Root transformStreamToIndexOperatorGraph(
@@ -520,7 +520,6 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			root_param.sendMessage(new BoundVariablesMessage());
 			recog.applyRules(root_param);
 		}
-		this.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());
 	}
 
@@ -603,7 +602,6 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 					SPARQL1_1Parser.parse(query), corequery, root_CoreSPARQL,
 					ldc);
 		}
-		this.setBindingsVariablesBasedOnOperatorgraph();
 		return dcq;
 	}
 
@@ -643,6 +641,8 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			if (sogv.equals(false)) {
 				instanceClass = Bindings.instanceClass;
 				Bindings.instanceClass = BindingsArray.class;
+				this.bindingsFactory = BindingsFactory.createBindingsFactory();
+				this.setBindingsVariablesBasedOnOperatorgraph();
 			}
 		}
 
@@ -698,6 +698,8 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			if (sogv.equals(false)) {
 				instanceClass = Bindings.instanceClass;
 				Bindings.instanceClass = BindingsArray.class;
+				this.bindingsFactory = BindingsFactory.createBindingsFactory();
+				this.setBindingsVariablesBasedOnOperatorgraph();
 			}
 		}
 
@@ -721,6 +723,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public long logicalOptimization() {
 		final Date a = new Date();
+		this.setBindingsVariablesBasedOnOperatorgraph();
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
 		refie.applyRules(this.root);
 		this.root.optimizeJoinOrder(this.opt);
@@ -734,6 +737,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
 		final List<DebugContainer<BasicOperatorByteArray>> result = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
+		this.setBindingsVariablesBasedOnOperatorgraph();
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"Before logical optimization...",
 				"logicaloptimizationPackageDescription", BasicOperatorByteArray
@@ -742,11 +746,10 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
 		result.addAll(refie.applyRulesDebugByteArray(this.root,
 				prefixInstance));
-
 		this.root.optimizeJoinOrder(this.opt);
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"After optimizing the join order...",
-				"optimizingjoinorderRule", BasicOperatorByteArray
+				"optimizingjoinord;erRule", BasicOperatorByteArray
 				.getBasicOperatorByteArray(this.root.deepClone(),
 						prefixInstance)));
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
@@ -785,6 +788,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				break;
 			case HASHMAPINDEX:
 				to = "HashMapIndexJoin";
+				break;
+			case PAGEDMAPINDEX:
+				to = "PagedMapIndexJoin";
 				break;
 			case DBBPTREEINDEX:
 				to = "DBBPTreeIndexJoin";
@@ -837,6 +843,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				break;
 			case HASHMAPINDEX:
 				to = "HashMapIndexOptional";
+				break;
+			case PAGEDMAPINDEX:
+				to = "PagedMapIndexOptional";
 				break;
 			case DBBPTREEINDEX:
 				to = "DBBPTreeIndexOptional";
@@ -950,7 +959,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		this.root.detectCycles();
 		final AfterPhysicalOptimizationRulePackage refie = new AfterPhysicalOptimizationRulePackage();
 		refie.applyRules(this.root);
-
+		this.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());
 	}
 

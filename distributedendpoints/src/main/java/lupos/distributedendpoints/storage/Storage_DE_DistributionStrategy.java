@@ -25,6 +25,7 @@ package lupos.distributedendpoints.storage;
 
 import java.util.List;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.query.operator.histogramsubmission.AbstractHistogramExecutor;
@@ -62,8 +63,8 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 *
 	 * @param distribution The distribution strategy to be used
 	 */
-	public Storage_DE_DistributionStrategy(final IDistributionKeyContainer<Integer> distribution) {
-		this(new EndpointManagement(), distribution);
+	public Storage_DE_DistributionStrategy(final IDistributionKeyContainer<Integer> distribution, final BindingsFactory bindingsFactory) {
+		this(new EndpointManagement(), distribution, bindingsFactory);
 	}
 
 	/**
@@ -72,8 +73,8 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * @param endpointManagement the endpoint management to be used
 	 * @param distribution the distribution strategy to be used
 	 */
-	private Storage_DE_DistributionStrategy(final EndpointManagement endpointManagement, final IDistributionKeyContainer<Integer> distribution) {
-		super(distribution);
+	private Storage_DE_DistributionStrategy(final EndpointManagement endpointManagement, final IDistributionKeyContainer<Integer> distribution, final BindingsFactory bindingsFactory) {
+		super(distribution, bindingsFactory);
 		this.endpointManagement = endpointManagement;
 	}
 
@@ -83,10 +84,10 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * @param distribution the distribution strategy
 	 * @return an instance of Storage_DE_DistributionStrategy
 	 */
-	public static<K> Storage_DE_DistributionStrategy createInstance(final IDistributionKeyContainer<K> distribution){
+	public static<K> Storage_DE_DistributionStrategy createInstance(final IDistributionKeyContainer<K> distribution, final BindingsFactory bindingsFactory){
 		final EndpointManagement endpointManagement = new EndpointManagement();
 		final IDistributionKeyContainer<Integer> outer_distribution = new HashingDistributionPipe<K>(distribution, endpointManagement.numberOfEndpoints());
-		return new Storage_DE_DistributionStrategy(endpointManagement, outer_distribution);
+		return new Storage_DE_DistributionStrategy(endpointManagement, outer_distribution, bindingsFactory);
 	}
 
 	/**
@@ -94,37 +95,37 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * @param strategy the distribution strategy to be used
 	 * @return an instance of Storage_DE_DistributionStrategy
 	 */
-	public static Storage_DE_DistributionStrategy createInstance(final TriplePropertiesDistributionStrategyEnum strategy){
-		return Storage_DE_DistributionStrategy.createInstance(strategy.createInstance());
+	public static Storage_DE_DistributionStrategy createInstance(final TriplePropertiesDistributionStrategyEnum strategy, final BindingsFactory bindingsFactory){
+		return Storage_DE_DistributionStrategy.createInstance(strategy.createInstance(), bindingsFactory);
 	}
 
 	@Override
 	public void storeBlock(final KeyContainer<Integer> key, final List<Triple> triples) {
-		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildInsertQuery(triples), key);
+		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildInsertQuery(triples), key, this.bindingsFactory);
 		this.insertedData = true;
 	}
 
 	@Override
 	public boolean containsTripleAfterAdding(final KeyContainer<Integer> key, final Triple triple) {
-		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), key).isEmpty();
+		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), key, this.bindingsFactory).isEmpty();
 	}
 
 	@Override
 	public void removeAfterAdding(final KeyContainer<Integer> key, final Triple triple) {
-		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), key);
+		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), key, this.bindingsFactory);
 		this.endpointManagement.waitForThreadPool();
 	}
 
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final KeyContainer<Integer> key, final TriplePattern triplePattern) {
-		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), key);
+		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), key, this.bindingsFactory);
 	}
 
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
 		// in case of non-supported triple patterns ask all endpoints for their results!
 		final String[] possibleKeys = ((IDistributionKeyContainer<Integer>) this.distribution).getKeyTypes();
-		return this.endpointManagement.submitSPARQLQueryWithKeyType(QueryBuilder.buildQuery(triplePattern), possibleKeys[0]);
+		return this.endpointManagement.submitSPARQLQueryWithKeyType(QueryBuilder.buildQuery(triplePattern), possibleKeys[0], this.bindingsFactory);
 	}
 
 	@Override

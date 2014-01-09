@@ -31,16 +31,20 @@ import lupos.rdf.Prefix;
 
 public class BindingsArrayPresortingNumbers extends BindingsArray {
 
+	public BindingsArrayPresortingNumbers(final BindingsFactory bindingsFactory) {
+		super(bindingsFactory);
+	}
+
 	protected HashMap<TriplePattern, HashMap<Object, Container>> presortingnumbers = null;
 
 	@Override
 	public String toString() {
-		return super.toString() + " presorting numbers:" + presortingnumbers + "\n";
+		return super.toString() + " presorting numbers:" + this.presortingnumbers + "\n";
 	}
-	
+
 	@Override
-	public String toString(Prefix prefix) {
-		return super.toString(prefix) + " presorting numbers:" + presortingnumbers + "\n";
+	public String toString(final Prefix prefix) {
+		return super.toString(prefix) + " presorting numbers:" + this.presortingnumbers + "\n";
 	}
 
 
@@ -53,19 +57,22 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 	public void addPresortingNumber(final TriplePattern tp,
 			final Object orderPattern, final int pos, final int max,
 			final int id) {
-		if (presortingnumbers == null)
-			presortingnumbers = new HashMap<TriplePattern, HashMap<Object, Container>>();
-		HashMap<Object, Container> hm = presortingnumbers.get(tp);
-		if (hm == null)
+		if (this.presortingnumbers == null) {
+			this.presortingnumbers = new HashMap<TriplePattern, HashMap<Object, Container>>();
+		}
+		HashMap<Object, Container> hm = this.presortingnumbers.get(tp);
+		if (hm == null) {
 			hm = new HashMap<Object, Container>();
+		}
 		hm.put(orderPattern, new Container(pos, max, id));
-		presortingnumbers.put(tp, hm);
+		this.presortingnumbers.put(tp, hm);
 	}
 
 	public int getPos(final TriplePattern tp, final Object orderPattern) {
-		if (presortingnumbers == null)
+		if (this.presortingnumbers == null) {
 			return -1;
-		final HashMap<Object, Container> hm = presortingnumbers.get(tp);
+		}
+		final HashMap<Object, Container> hm = this.presortingnumbers.get(tp);
 		if (hm == null) {
 			// System.out
 			// .println(
@@ -78,16 +85,18 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 				// .println(
 				// "Error: Asked presorting number is not available in Binding:"
 				// + tp + "," + orderPattern);
-			} else
+			} else {
 				return c.pos;
+			}
 		}
 		return -1;
 	}
 
 	public int getMax(final TriplePattern tp, final Object orderPattern) {
-		if (presortingnumbers == null)
+		if (this.presortingnumbers == null) {
 			return -1;
-		final HashMap<Object, Container> hm = presortingnumbers.get(tp);
+		}
+		final HashMap<Object, Container> hm = this.presortingnumbers.get(tp);
 		if (hm == null) {
 			// System.out
 			// .println(
@@ -100,16 +109,18 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 				// .println(
 				// "Error: Asked presorting number is not available in Binding:"
 				// + tp + "," + orderPattern);
-			} else
+			} else {
 				return c.max;
+			}
 		}
 		return -1;
 	}
 
 	public int getId(final TriplePattern tp, final Object orderPattern) {
-		if (presortingnumbers == null)
+		if (this.presortingnumbers == null) {
 			return -1;
-		final HashMap<Object, Container> hm = presortingnumbers.get(tp);
+		}
+		final HashMap<Object, Container> hm = this.presortingnumbers.get(tp);
 		if (hm == null) {
 			// System.out
 			// .println(
@@ -122,8 +133,9 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 				// .println(
 				// "Error: Asked presorting number is not available in Binding:"
 				// + tp + "," + orderPattern);
-			} else
+			} else {
 				return c.id;
+			}
 		}
 		return -1;
 	}
@@ -141,19 +153,19 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 
 		@Override
 		public String toString() {
-			return "(pos:" + pos + ", max:" + max + ", id:" + id + ")";
+			return "(pos:" + this.pos + ", max:" + this.max + ", id:" + this.id + ")";
 		}
 	}
 
 	@Override
 	public BindingsArrayPresortingNumbers clone() {
-		final BindingsArrayPresortingNumbers other = new BindingsArrayPresortingNumbers();
+		final BindingsArrayPresortingNumbers other = new BindingsArrayPresortingNumbers(this.bindingsFactory);
 		// System.arraycopy(this.literals, 0, other.literals, 0,
 		// this.literals.length);
-		other.cloneLiterals(getLiterals());
+		other.cloneLiterals(this.getLiterals());
 
-		if (presortingnumbers != null)
-			for (final Entry<TriplePattern, HashMap<Object, Container>> entry : presortingnumbers
+		if (this.presortingnumbers != null) {
+			for (final Entry<TriplePattern, HashMap<Object, Container>> entry : this.presortingnumbers
 					.entrySet()) {
 				for (final Entry<Object, Container> innerEntry : entry
 						.getValue().entrySet()) {
@@ -162,24 +174,32 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 							.getValue().max, innerEntry.getValue().id);
 				}
 			}
+		}
 
 		return other;
 	}
 
 	@Override
 	public void addAllPresortingNumbers(final Bindings bindings) {
-		if (!(bindings instanceof BindingsArrayPresortingNumbers))
+		if (!(bindings instanceof BindingsArrayPresortingNumbers)) {
 			return;
-		if (((BindingsArrayPresortingNumbers) bindings).presortingnumbers == null)
+		}
+		if (((BindingsArrayPresortingNumbers) bindings).presortingnumbers == null) {
 			return;
+		}
 		for (final Entry<TriplePattern, HashMap<Object, Container>> entry : ((BindingsArrayPresortingNumbers) bindings).presortingnumbers
 				.entrySet()) {
 			for (final Entry<Object, Container> innerEntry : entry.getValue()
 					.entrySet()) {
-				addPresortingNumber(entry.getKey(), innerEntry.getKey(),
+				this.addPresortingNumber(entry.getKey(), innerEntry.getKey(),
 						innerEntry.getValue().pos, innerEntry.getValue().max,
 						innerEntry.getValue().id);
 			}
 		}
+	}
+
+	@Override
+	public BindingsArrayPresortingNumbers createInstance(){
+		return new BindingsArrayPresortingNumbers(this.bindingsFactory);
 	}
 }

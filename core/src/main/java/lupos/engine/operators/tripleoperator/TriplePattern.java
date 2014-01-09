@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.bindings.BindingsArrayVarMinMax;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleKey;
@@ -43,6 +43,7 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SIPFilterOperator;
@@ -59,6 +60,8 @@ TripleDeleter, Iterable<Item> {
 	protected long cardinality = -1;
 
 	protected BitVector[] bloomFilters = null;
+
+	protected BindingsFactory bindingsFactory;
 
 	public BitVector[] getBloomFilters() {
 		return this.bloomFilters;
@@ -259,10 +262,20 @@ TripleDeleter, Iterable<Item> {
 		return this.process(triple, failOnBlank, 0);
 	}
 
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
+	public void setBindingsFactory(final BindingsFactory bindingsFactory){
+		this.bindingsFactory = bindingsFactory;
+	}
+
 	public Bindings process(final Triple triple, final boolean failOnBlank,
 			final int id) {
 
-		final Bindings bindings = Bindings.createNewInstance();
+		final Bindings bindings = this.bindingsFactory.createInstance();
 		Literal literal = null;
 
 		// process all items of this triple pattern
@@ -351,7 +364,7 @@ TripleDeleter, Iterable<Item> {
 				&& this.minMaxPresortingNumbers != null) {
 			// this can only be reached for --optimization
 			// MergeJoinSortLazyLiteral --codemap LazyLiteral
-			final Map<Variable, Integer> hmvi = BindingsArray.getPosVariables();
+			final Map<Variable, Integer> hmvi = this.bindingsFactory.getPosVariables();
 			for (final Variable v : bindings.getVariableSet()) {
 				final Container container = this.minMaxPresortingNumbers.get(hmvi
 						.get(v));
@@ -402,7 +415,7 @@ TripleDeleter, Iterable<Item> {
 		final Container container = new Container();
 		container.min = min;
 		container.max = max;
-		this.minMaxPresortingNumbers.put(BindingsArray.getPosVariables().get(v),
+		this.minMaxPresortingNumbers.put(this.bindingsFactory.getPosVariables().get(v),
 				container);
 	}
 

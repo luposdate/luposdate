@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import lupos.compression.Compression;
-import lupos.datastructures.bindings.BindingsArray;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
@@ -50,6 +50,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.CollectAllResults;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.multiinput.join.parallel.ParallelJoin;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.parallel.ParallelOperand;
@@ -72,6 +73,11 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	protected BasicOperator rootNode;
 
 	/**
+	 * The used BindingsFactory for creating Bindings
+	 */
+	protected BindingsFactory bindingsFactory = BindingsFactory.createBindingsFactory();
+
+	/**
 	 * Set this to specify which optimizations should be applied if none are
 	 * specified on the command line. This should be an instance of an enum type
 	 * defining all the optimizations possible with the given QueryEvaluator and
@@ -81,7 +87,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	protected Enum defaultOptimization;
 
 	public enum JOIN {
-		DEFAULT, NESTEDLOOP, HASHMAPINDEX, DBBPTREEINDEX, SMALLERINHASHMAPLARGERINDBBPTREEINDEX, MERGE, DBMERGE, DBMERGEITERATIONS, HASH, PARALLELNESTEDLOOP, PARALLELHASHMAPINDEX, PARALLELDBBPTREEINDEX, PARALLELSMALLERINHASHMAPLARGERINDBBPTREEINDEX, PARALLELMERGE, PARALLELDBMERGE, PARALLELHASH;
+		DEFAULT, NESTEDLOOP, HASHMAPINDEX, PAGEDMAPINDEX, DBBPTREEINDEX, SMALLERINHASHMAPLARGERINDBBPTREEINDEX, MERGE, DBMERGE, DBMERGEITERATIONS, HASH, PARALLELNESTEDLOOP, PARALLELHASHMAPINDEX, PARALLELDBBPTREEINDEX, PARALLELSMALLERINHASHMAPLARGERINDBBPTREEINDEX, PARALLELMERGE, PARALLELDBMERGE, PARALLELHASH;
 	}
 
 	protected enum SORT {
@@ -417,9 +423,17 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	public abstract IndexScanCreatorInterface createIndexScanCreator();
 
-	@SuppressWarnings("deprecation")
 	public void setBindingsVariablesBasedOnOperatorgraph(){
-		BindingsArray.forceVariables(this.getAllVariablesOfQuery());
+		this.bindingsFactory.setVariables(this.getAllVariablesOfQuery());
+		this.rootNode.sendMessage(new BindingsFactoryMessage(this.bindingsFactory));
+	}
+
+	public BindingsFactory getBindingsFactory(){
+		return this.bindingsFactory;
+	}
+
+	public void setBindingsFactory(final BindingsFactory bindingsFactory){
+		this.bindingsFactory = bindingsFactory;
 	}
 
 	/**
@@ -427,12 +441,12 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	 * @return all used variables in the current query (also those, which are not projected)
 	 * @see getVariablesOfQuery()
 	 */
-	@SuppressWarnings("serial")
 	public Set<Variable> getAllVariablesOfQuery(){
 		return CommonCoreQueryEvaluator.getAllVariablesOfQuery(this.rootNode);
 	}
 
-	public static  Set<Variable> getAllVariablesOfQuery(final BasicOperator rootNode) {
+	@SuppressWarnings("serial")
+	public static Set<Variable> getAllVariablesOfQuery(final BasicOperator rootNode) {
 		final Set<Variable> maxVariables = new TreeSet<Variable>();
 		rootNode.visit(new SimpleOperatorGraphVisitor() {
 			@Override

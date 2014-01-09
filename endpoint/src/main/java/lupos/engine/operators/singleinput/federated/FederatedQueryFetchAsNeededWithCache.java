@@ -98,7 +98,7 @@ public class FederatedQueryFetchAsNeededWithCache extends FederatedQueryFetchAsN
 
 					final String fQuery = FederatedQueryFetchAsNeededWithCache.this.toStringQuery(bindingsTemp);
 					if (!FederatedQueryFetchAsNeededWithCache.this.endpoint.isVariable()) {
-						final QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeededWithCache.this.endpoint).getString(), fQuery), bindingsTemp));
+						final QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral)FederatedQueryFetchAsNeededWithCache.this.endpoint).getString(), fQuery, FederatedQueryFetchAsNeededWithCache.this.bindingsFactory), bindingsTemp));
 						queryResult.materialize();
 						FederatedQueryFetchAsNeededWithCache.this.cache.put(bindingsKey, queryResult);
 						return queryResult.iterator();
@@ -108,7 +108,7 @@ public class FederatedQueryFetchAsNeededWithCache extends FederatedQueryFetchAsN
 							endpointURI = ((LazyLiteral) endpointURI).getLiteral();
 						}
 						if (endpointURI instanceof URILiteral) {
-							final QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery), bindingsTemp));
+							final QueryResult queryResult = QueryResult.createInstance(new IteratorQueryResultAndOneBindings(Client.submitQuery(((URILiteral) endpointURI).getString(), fQuery, FederatedQueryFetchAsNeededWithCache.this.bindingsFactory), bindingsTemp));
 							queryResult.materialize();
 							FederatedQueryFetchAsNeededWithCache.this.cache.put(bindingsKey, queryResult);
 							return queryResult.iterator();

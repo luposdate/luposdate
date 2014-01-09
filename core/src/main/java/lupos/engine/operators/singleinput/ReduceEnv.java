@@ -28,9 +28,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 
@@ -43,24 +45,25 @@ public class ReduceEnv extends SingleInputOperator {
 	private List<Literal> substitutionsLiteralRight = new LinkedList<Literal>();
 	private List<Literal> filterLeft = new LinkedList<Literal>();
 	private final List<Variable> filterRight = new LinkedList<Variable>();
+	protected BindingsFactory bindingsFactory;
 
 	// Simulate
 	// private Item[] valueOrVariable;
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		intersectionVariables = new HashSet<Variable>();
-		unionVariables = new HashSet<Variable>();
+		this.intersectionVariables = new HashSet<Variable>();
+		this.unionVariables = new HashSet<Variable>();
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
-		for (final Variable i : substitutionsVariableLeft) {
+		for (final Variable i : this.substitutionsVariableLeft) {
 			result.getVariables().add(i);
-			intersectionVariables.add(i);
-			unionVariables.add(i);
+			this.intersectionVariables.add(i);
+			this.unionVariables.add(i);
 		}
-		for (final Variable i : substitutionsLiteralLeft) {
+		for (final Variable i : this.substitutionsLiteralLeft) {
 			result.getVariables().add(i);
-			intersectionVariables.add(i);
-			unionVariables.add(i);
+			this.intersectionVariables.add(i);
+			this.unionVariables.add(i);
 		}
 		return result;
 	}
@@ -78,7 +81,7 @@ public class ReduceEnv extends SingleInputOperator {
 	 */
 
 	public List<Literal> getFilterLeft() {
-		return filterLeft;
+		return this.filterLeft;
 	}
 
 	public void setFilterLeft(final List<Literal> filterLeft) {
@@ -86,7 +89,7 @@ public class ReduceEnv extends SingleInputOperator {
 	}
 
 	public List<Variable> getSubstitutionsLiteralLeft() {
-		return substitutionsLiteralLeft;
+		return this.substitutionsLiteralLeft;
 	}
 
 	public void setSubstitutionsLiteralLeft(
@@ -95,7 +98,7 @@ public class ReduceEnv extends SingleInputOperator {
 	}
 
 	public List<Literal> getSubstitutionsLiteralRight() {
-		return substitutionsLiteralRight;
+		return this.substitutionsLiteralRight;
 	}
 
 	public void setSubstitutionsLiteralRight(
@@ -104,7 +107,7 @@ public class ReduceEnv extends SingleInputOperator {
 	}
 
 	public List<Variable> getLetThrough() {
-		return letThrough;
+		return this.letThrough;
 	}
 
 	public void setLetThrough(final List<Variable> letThrough) {
@@ -112,26 +115,32 @@ public class ReduceEnv extends SingleInputOperator {
 	}
 
 	public List<Variable> getSubstitutionsVariableLeft() {
-		return substitutionsVariableLeft;
+		return this.substitutionsVariableLeft;
 	}
 
 	public List<Variable> getSubstitutionsVariableRight() {
-		return substitutionsVariableRight;
+		return this.substitutionsVariableRight;
 	}
 
 	public void addSubstitution(final Variable variable, final Variable content) {
-		substitutionsVariableLeft.add(variable);
-		substitutionsVariableRight.add(content);
+		this.substitutionsVariableLeft.add(variable);
+		this.substitutionsVariableRight.add(content);
 	}
 
 	public void addSubstitution(final Variable variable, final Literal content) {
-		substitutionsLiteralLeft.add(variable);
-		substitutionsLiteralRight.add(content);
+		this.substitutionsLiteralLeft.add(variable);
+		this.substitutionsLiteralRight.add(content);
 	}
 
 	public void addFilter(final Literal content, final Variable variable) {
-		filterLeft.add(content);
-		filterRight.add(variable);
+		this.filterLeft.add(content);
+		this.filterRight.add(variable);
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
 	}
 
 	@Override
@@ -142,48 +151,48 @@ public class ReduceEnv extends SingleInputOperator {
 		for (final Bindings oldBinding : oldBindings) {
 			// Triple triple = getTriple();
 
-			final Bindings bindings = Bindings.createNewInstance();
+			final Bindings bindings = this.bindingsFactory.createInstance();
 			Literal literal = null;
 
-			for (int i = 0; i < filterLeft.size(); i++) {
+			for (int i = 0; i < this.filterLeft.size(); i++) {
 				// its value has to be equal to the corresponding value of
 				// the triple pattern
-				if (!filterLeft.get(i).getLiteral(null).valueEquals(
-						oldBinding.get(filterRight.get(i)))) {
+				if (!this.filterLeft.get(i).getLiteral(null).valueEquals(
+						oldBinding.get(this.filterRight.get(i)))) {
 					return null;
 				}
 			}
 
 			// process all items
 			// for(int i = 0; i < 3; i++){
-			for (int i = 0; i < substitutionsLiteralLeft.size(); i++) {
+			for (int i = 0; i < this.substitutionsLiteralLeft.size(); i++) {
 				// if the item is an unbound variable
-				final Variable item = substitutionsLiteralLeft.get(i);
+				final Variable item = this.substitutionsLiteralLeft.get(i);
 				if ((literal = bindings.get(item)) == null) {
-					bindings.add(item, substitutionsLiteralRight.get(i));
+					bindings.add(item, this.substitutionsLiteralRight.get(i));
 				}
 				// if the item is a variable which is already bound
 				// and the value differs from the value of the triple
 				// which would be used as binding, a conflict was
 				// detected
-				else if (!literal.valueEquals(substitutionsLiteralRight.get(i))) {
+				else if (!literal.valueEquals(this.substitutionsLiteralRight.get(i))) {
 					return null; // join within triple pattern!
 				}
 			}
 
-			for (int i = 0; i < substitutionsVariableLeft.size(); i++) {
+			for (int i = 0; i < this.substitutionsVariableLeft.size(); i++) {
 				// if the item is an unbound variable
-				final Variable item = substitutionsVariableLeft.get(i);
+				final Variable item = this.substitutionsVariableLeft.get(i);
 				if ((literal = bindings.get(item)) == null) {
 					bindings.add(item, oldBinding
-							.get(substitutionsVariableRight.get(i)));
+							.get(this.substitutionsVariableRight.get(i)));
 				}
 				// if the item is a variable which is already bound
 				// and the value differs from the value of the triple
 				// which would be used as binding, a conflict was
 				// detected
 				else if (!literal.valueEquals(oldBinding
-						.get(substitutionsVariableRight.get(i)))) {
+						.get(this.substitutionsVariableRight.get(i)))) {
 					return null; // join within triple pattern!
 				}
 			}
@@ -207,8 +216,8 @@ public class ReduceEnv extends SingleInputOperator {
 
 	@Override
 	public String toString() {
-		final String text = "Reduce to (" + substitutionsVariableLeft + ","
-				+ substitutionsVariableRight + ")";
+		final String text = "Reduce to (" + this.substitutionsVariableLeft + ","
+				+ this.substitutionsVariableRight + ")";
 		// if(substitutionsLiteralLeft.size()>0) text +=
 		// "\n "+substitutionsLiteralLeft;
 		return text;

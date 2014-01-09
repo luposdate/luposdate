@@ -25,6 +25,7 @@ package lupos.endpoint.client.formatreader;
 
 import java.io.InputStream;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.queryresult.QueryResult;
 
 /**
@@ -33,18 +34,18 @@ import lupos.datastructures.queryresult.QueryResult;
  */
 public abstract class DefaultMIMEFormatReader extends MIMEFormatReader{
 
-	public DefaultMIMEFormatReader(String formatName, String key) {
+	public DefaultMIMEFormatReader(final String formatName, final String key) {
 		super(formatName, key);
 	}
 
-	public DefaultMIMEFormatReader(String formatName) {
+	public DefaultMIMEFormatReader(final String formatName) {
 		super(formatName);
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream, final String query){
-		return this.getQueryResult(inputStream);
+	public QueryResult getQueryResult(final InputStream inputStream, final String query, final BindingsFactory bindingsFactory){
+		return this.getQueryResult(inputStream, bindingsFactory);
 	}
-	
-	public abstract QueryResult getQueryResult(final InputStream inputStream);
+
+	public abstract QueryResult getQueryResult(final InputStream inputStream, BindingsFactory bindingsFactory);
 }

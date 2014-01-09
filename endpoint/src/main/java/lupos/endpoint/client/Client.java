@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.client.formatreader.CSVFormatReader;
 import lupos.endpoint.client.formatreader.JSONFormatReader;
@@ -83,11 +84,11 @@ public class Client {
 		Client.registeredFormatReaders.put(formatReader.getMIMEType(), formatReader);
 	}
 
-	public static QueryResult submitQuery(final String url, final String query) throws IOException {
-		return Client.submitQuery(url, query, DEFAULT_FORMAT);
+	public static QueryResult submitQuery(final String url, final String query, final BindingsFactory bindingsFactory) throws IOException {
+		return Client.submitQuery(url, query, DEFAULT_FORMAT, bindingsFactory);
 	}
 
-	public static QueryResult submitQuery(final String url, final String query, final String formatKey) throws IOException {
+	public static QueryResult submitQuery(final String url, final String query, final String formatKey, final BindingsFactory bindingsFactory) throws IOException {
 		final Tuple<String, InputStream> response = submitQueryAndRetrieveStream(url, query, formatKey);
 		final String contentType = response.getFirst();
 		if(contentType==null){
@@ -101,7 +102,7 @@ public class Client {
 			for(final String contentTypeSecondTry: contentTypeParts){
 				reader = Client.registeredFormatReaders.get(contentTypeSecondTry);
 				if(reader!=null){
-					return reader.getQueryResult(response.getSecond(), query);
+					return reader.getQueryResult(response.getSecond(), query, bindingsFactory);
 				}
 			}
 			if(contentType.compareTo("text/plain")==0){
@@ -113,7 +114,7 @@ public class Client {
 			System.err.println(errorText);
 			throw new IOException(errorText + "Content:\n" + FileHelper.readInputStreamToString(response.getSecond()));
 		}
-		return reader.getQueryResult(response.getSecond(), query);
+		return reader.getQueryResult(response.getSecond(), query, bindingsFactory);
 	}
 
 	public static Tuple<String, InputStream> submitQueryAndRetrieveStream(final String url, final String query, final String formatKey) throws IOException {

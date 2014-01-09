@@ -26,17 +26,19 @@ package lupos.engine.operators.multiinput.join;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.BindingsComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.SIPParallelIterator;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 
 public class NAryMergeJoinWithoutSorting extends Join {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5051512203278340771L;
 
@@ -44,7 +46,9 @@ public class NAryMergeJoinWithoutSorting extends Join {
 	protected final Bindings minimum;
 	protected final Bindings maximum;
 
-	public NAryMergeJoinWithoutSorting(@SuppressWarnings("unused") final int numberOfOperands, final Bindings minimum, final Bindings maximum) {
+	protected BindingsFactory bindingsFactory;
+
+	public NAryMergeJoinWithoutSorting(final int numberOfOperands, final Bindings minimum, final Bindings maximum) {
 		super();
 		this.operandResults = new QueryResult[this.getNumberOfOperands()];
 		this.minimum = minimum;
@@ -55,7 +59,7 @@ public class NAryMergeJoinWithoutSorting extends Join {
 
 	/**
 	 * This method pre-processes the StartOfStreamMessage
-	 * 
+	 *
 	 * @param msg
 	 *            the message to be pre-processed
 	 * @return the pre-processed message
@@ -72,13 +76,20 @@ public class NAryMergeJoinWithoutSorting extends Join {
 	}
 
 	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
+	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (operandID < this.operandResults.length) {
 			this.operandResults[operandID] = bindings;
-		} else
+		} else {
 			System.err.println("NAryMergeJoin is a " + this.operandResults.length
 					+ "-ary operator, but received the operand number "
 					+ operandID);
+		}
 		boolean go = true;
 		for (int i = 0; i < this.operandResults.length; i++) {
 			if (this.operandResults[i] == null) {
@@ -89,9 +100,10 @@ public class NAryMergeJoinWithoutSorting extends Join {
 		if (go) {
 
 			this.comp.setVariables(this.intersectionVariables);
-			
-			if (this.minimum == null)
+
+			if (this.minimum == null) {
 				return null;
+			}
 
 			@SuppressWarnings("unchecked")
 			final Iterator<Bindings>[] itb = new Iterator[this.operandResults.length];
@@ -103,7 +115,7 @@ public class NAryMergeJoinWithoutSorting extends Join {
 					.size() == 0) ? MergeJoin
 					.cartesianProductIterator(this.operandResults) : MergeJoin
 					.mergeJoinIterator(itb, this.comp, this.intersectionVariables,
-							this.minimum, this.maximum);
+							this.minimum, this.maximum, this.bindingsFactory);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult
 						.createInstance(new SIPParallelIterator<Bindings, Bindings>() {
@@ -119,7 +131,7 @@ public class NAryMergeJoinWithoutSorting extends Join {
 							public boolean hasNext() {
 								if (!currentResult.hasNext()) {
 									NAryMergeJoinWithoutSorting.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return currentResult.hasNext();
 							}
@@ -127,11 +139,12 @@ public class NAryMergeJoinWithoutSorting extends Join {
 							@Override
 							public Bindings next() {
 								final Bindings b = currentResult.next();
-								if (b != null)
+								if (b != null) {
 									this.number++;
+								}
 								if (!currentResult.hasNext()) {
 									NAryMergeJoinWithoutSorting.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return b;
 							}
@@ -140,11 +153,12 @@ public class NAryMergeJoinWithoutSorting extends Join {
 								@SuppressWarnings("unchecked")
 								final Bindings b = ((SIPParallelIterator<Bindings, Bindings>) currentResult)
 										.next(k);
-								if (b != null)
+								if (b != null) {
 									this.number++;
+								}
 								if (!currentResult.hasNext()) {
 									NAryMergeJoinWithoutSorting.this.realCardinality = this.number;
-									close();
+									this.close();
 								}
 								return b;
 							}
@@ -156,15 +170,16 @@ public class NAryMergeJoinWithoutSorting extends Join {
 
 							@Override
 							public void finalize() {
-								close();
+								this.close();
 							}
 
 							@Override
 							public Bindings next(final Bindings k) {
-								if (currentResult instanceof SIPParallelIterator)
-									return getNext(k);
-								else
-									return next();
+								if (currentResult instanceof SIPParallelIterator) {
+									return this.getNext(k);
+								} else {
+									return this.next();
+								}
 							}
 						});
 

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LazyLiteral;
@@ -41,14 +42,14 @@ import lupos.engine.operators.messages.Message;
 import lupos.sparql1_1.Node;
 
 /**
- * For all those approaches, which must join the result of the sparql endpoint afterwards with the original queryresult (computed from the local data (and/or other service calls)) 
+ * For all those approaches, which must join the result of the sparql endpoint afterwards with the original queryresult (computed from the local data (and/or other service calls))
  */
 public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 
-	public FederatedQueryWithSucceedingJoin(Node federatedQuery) {
+	public FederatedQueryWithSucceedingJoin(final Node federatedQuery) {
 		super(federatedQuery);
 	}
-	
+
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.intersectionVariables = new HashSet<Variable>();
@@ -62,14 +63,14 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		return FederatedQueryWithSucceedingJoin.process(bindings, this.endpoint, toStringQuery(bindings));
+		return FederatedQueryWithSucceedingJoin.process(bindings, this.endpoint, this.toStringQuery(bindings), this.bindingsFactory);
 	}
-	
-	public static QueryResult process(final QueryResult bindings, final Item endpoint, final String fQuery){
+
+	public static QueryResult process(final QueryResult bindings, final Item endpoint, final String fQuery, final BindingsFactory bindingsFactory){
 		if (!endpoint.isVariable()) {
 			try {
-				return Client.submitQuery(((URILiteral)endpoint).getString(), fQuery);
-			} catch (Exception e) {
+				return Client.submitQuery(((URILiteral)endpoint).getString(), fQuery, bindingsFactory);
+			} catch (final Exception e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
@@ -78,10 +79,10 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 			// it could be that several endpoints are asked, which we succeedingly ask for results...
 			// the same endpoints are not asked again!
 			return QueryResult.createInstance(new ParallelIterator<Bindings>(){
-				
-				private Iterator<Bindings> it = bindings.oneTimeIterator();
-				private HashSet<URILiteral> alreadyAskedEndpoints = new HashSet<URILiteral>();
-				private Iterator<Bindings> currentIteratorQueryResult = this.getNextIteratorQueryResult(); 
+
+				private final Iterator<Bindings> it = bindings.oneTimeIterator();
+				private final HashSet<URILiteral> alreadyAskedEndpoints = new HashSet<URILiteral>();
+				private Iterator<Bindings> currentIteratorQueryResult = this.getNextIteratorQueryResult();
 
 				@Override
 				public boolean hasNext() {
@@ -117,30 +118,31 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 						((ParallelIterator<Bindings>)this.it).close();
 					}
 				}
-				
+
 				private Iterator<Bindings> getNextIteratorQueryResult(){
-					URILiteral endpointURI = this.nextEndpoint();
+					final URILiteral endpointURI = this.nextEndpoint();
 					if(endpointURI==null){
 						return null;
 					}
-					String uri = endpointURI.getString();
+					final String uri = endpointURI.getString();
 					try {
-						return FederatedQueryWithSucceedingJoin.addEndpointVariable((Variable)endpoint, endpointURI, Client.submitQuery(uri, fQuery)).oneTimeIterator();
-					} catch (IOException e) {
+						return FederatedQueryWithSucceedingJoin.addEndpointVariable((Variable)endpoint, endpointURI, Client.submitQuery(uri, fQuery, bindingsFactory)).oneTimeIterator();
+					} catch (final IOException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
 					return null;
 				}
-				
+
 				private URILiteral nextEndpoint(){
 					while(this.it.hasNext()){
-						Bindings service = this.it.next();
+						final Bindings service = this.it.next();
 						Literal endpointURI = service.get((Variable) endpoint);
-						if (endpointURI instanceof LazyLiteral)
+						if (endpointURI instanceof LazyLiteral) {
 							endpointURI = ((LazyLiteral) endpointURI).getLiteral();
+						}
 						if (endpointURI instanceof URILiteral) {
-							URILiteral result = (URILiteral) endpointURI;
+							final URILiteral result = (URILiteral) endpointURI;
 							if(!this.alreadyAskedEndpoints.contains(result)){ // do not ask endpoints several times!
 								this.alreadyAskedEndpoints.add(result);
 								return result;
@@ -151,17 +153,17 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 					}
 					return null;
 				}
-			});	
+			});
 		}
 		return null;
 	}
 
 	protected abstract String toStringQuery(QueryResult bindings);
-	
+
 	public static QueryResult addEndpointVariable(final Variable endpointVariable, final Literal endpointURI, final QueryResult resultSetToBindingsList) {
 		return QueryResult.createInstance(new ParallelIterator<Bindings>(){
-			
-			private Iterator<Bindings> it = resultSetToBindingsList.oneTimeIterator();
+
+			private final Iterator<Bindings> it = resultSetToBindingsList.oneTimeIterator();
 
 			@Override
 			public boolean hasNext() {
@@ -170,7 +172,7 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 
 			@Override
 			public Bindings next() {
-				Bindings bindings = this.it.next();
+				final Bindings bindings = this.it.next();
 				if(bindings==null){
 					return null;
 				}
@@ -188,7 +190,7 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 				if(this.it instanceof ParallelIterator){
 					((ParallelIterator<Bindings>)this.it).close();
 				}
-			}			
-		});		
+			}
+		});
 	}
 }

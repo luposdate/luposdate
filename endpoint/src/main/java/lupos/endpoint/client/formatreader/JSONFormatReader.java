@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
@@ -63,14 +64,14 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 	}
 
 	@Override
-	public QueryResult getQueryResult(final InputStream inputStream) {
+	public QueryResult getQueryResult(final InputStream inputStream, final BindingsFactory bindingsFactory) {
 		try {
 			final JSONObject object = new JSONObject(new JSONTokener(new InputStreamReader(inputStream)));
 			if(object.has("boolean")){
 				final boolean b=object.getBoolean("boolean");
 				final BooleanResult br = new BooleanResult();
 				if(b){
-					br.add(Bindings.createNewInstance());
+					br.add(bindingsFactory.createInstance());
 				}
 				return br;
 			} else {
@@ -88,7 +89,7 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 					public Bindings next() {
 						if(this.hasNext()){
 							try {
-								final Bindings result = getBindings(this.bindings.getJSONObject(this.index));
+								final Bindings result = getBindings(this.bindings.getJSONObject(this.index), bindingsFactory);
 								this.index++;
 								return result;
 							} catch (final JSONException e) {
@@ -109,8 +110,8 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		return null;
 	}
 
-	public static Bindings getBindings(final JSONObject oneResult) throws JSONException{
-		final Bindings luposResult = Bindings.createNewInstance();
+	public static Bindings getBindings(final JSONObject oneResult, final BindingsFactory bindingsFactory) throws JSONException{
+		final Bindings luposResult = bindingsFactory.createInstance();
 		final Iterator<String> keysIt = oneResult.keys();
 		while(keysIt.hasNext()){
 			final String var = keysIt.next();

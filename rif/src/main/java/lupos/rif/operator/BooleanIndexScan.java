@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
@@ -35,6 +36,7 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.stream.TripleDeleter;
@@ -44,6 +46,8 @@ import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 
 public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
+
+	protected BindingsFactory bindingsFactory;
 
 	public BooleanIndexScan(final Root root) {
 		super(root);
@@ -59,9 +63,15 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 		return result;
 	}
 
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
+	}
+
 	private QueryResult createQueryResult(){
 		final QueryResult result = QueryResult.createInstance();
-		final Bindings bind = Bindings.createNewInstance();
+		final Bindings bind = this.bindingsFactory.createInstance();
 		bind.add(new Variable("@boolean"), LiteralFactory.createLiteral("true"));
 		result.add(bind);
 		return result;

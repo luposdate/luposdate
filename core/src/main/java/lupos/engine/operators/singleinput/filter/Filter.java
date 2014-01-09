@@ -555,6 +555,7 @@ public class Filter extends SingleInputOperator {
 		this.np = filter.np;
 		this.usedVariables = filter.usedVariables;
 		this.aggregationFunctions = filter.aggregationFunctions;
+		this.setCollectionForExistNodes(filter.getCollectionForExistNodes());
 	}
 
 	public boolean equalFilterExpression(final Filter f) {

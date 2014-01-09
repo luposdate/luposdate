@@ -30,10 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
-import lupos.datastructures.bindings.BindingsArray;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.items.Item;
@@ -44,7 +41,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.CountResult;
 import lupos.engine.operators.index.BasicIndexScan;
@@ -317,7 +313,6 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 					}
 				}
 			}
-			this.setBindingsVariablesBasedOnOperatorgraph();
 		} catch (final InstantiationException e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -441,7 +436,6 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 					}
 				}
 			}
-			this.setBindingsVariablesBasedOnOperatorgraph();
 			return new DebugContainerQuery<BasicOperatorByteArray, Node>(
 					StreamSPARQL1_1Parser.parse(query), corequery, rootCoreSPARQL,
 					correctOperatorGraphRules);
@@ -469,6 +463,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		final LogicalOptimizationForStreamEngineRulePackage refse = new LogicalOptimizationForStreamEngineRulePackage();
 		this.rootNode.detectCycles();
 		this.rootNode.sendMessage(new BoundVariablesMessage());
+		this.setBindingsVariablesBasedOnOperatorgraph();
 		debug.addAll(refse.applyRulesDebugByteArray(this.rootNode, prefixInstance));
 		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
 				|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
@@ -505,6 +500,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		final LogicalOptimizationForStreamEngineRulePackage refse = new LogicalOptimizationForStreamEngineRulePackage();
 		this.rootNode.detectCycles();
 		this.rootNode.sendMessage(new BoundVariablesMessage());
+		this.setBindingsVariablesBasedOnOperatorgraph();
 		refse.applyRules(this.rootNode);
 		if (this.rdfs == RDFS.OPTIMIZEDRDFS || this.rdfs == RDFS.OPTIMIZEDRUDIMENTARYRDFS
 				|| this.rdfs == RDFS.OPTIMIZEDALTERNATIVERDFS) {
@@ -547,6 +543,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				break;
 			case HASHMAPINDEX:
 				to = "HashMapIndexJoin";
+				break;
+			case PAGEDMAPINDEX:
+				to = "PagedMapIndexJoin";
 				break;
 			case DBBPTREEINDEX:
 				to = "DBBPTreeIndexJoin";
@@ -599,6 +598,9 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 				break;
 			case HASHMAPINDEX:
 				to = "HashMapIndexOptional";
+				break;
+			case PAGEDMAPINDEX:
+				to = "PagedMapIndexOptional";
 				break;
 			case DBBPTREEINDEX:
 				to = "DBBPTreeIndexOptional";
@@ -724,18 +726,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		this.rootNode = PhysicalOptimizations.replaceOperators(this.rootNode, this.rootNode);
 		this.patternMatchers.clear();
 		this.determinePatternMatchers();
-		final Set<Variable> maxVariables = new TreeSet<Variable>();
-		this.rootNode.visit(new SimpleOperatorGraphVisitor() {
-			@Override
-			public Object visit(final BasicOperator basicOperator) {
-				if (basicOperator.getUnionVariables() != null) {
-					maxVariables.addAll(basicOperator.getUnionVariables());
-				}
-				return null;
-			}
-
-		});
-		BindingsArray.forceVariables(maxVariables);
+		this.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());
 	}
 

@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
@@ -40,10 +41,10 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 
 /**
  * This class sets up the client to use the delta approach for caching query triples...
- * @seealso lupos.endpoint.caching.DeltaEndpoint 
+ * @seealso lupos.endpoint.caching.DeltaEndpoint
  */
 public class DeltaClient {
-	
+
 	private final static String textn3 = "text/n3";
 
 	static {
@@ -54,29 +55,29 @@ public class DeltaClient {
 			Client.registerFormatReader(new MIMEFormatReader("delta", DeltaClient.textn3){
 
 				@Override
-				public String getMIMEType() {				
+				public String getMIMEType() {
 					return DeltaClient.textn3;
 				}
 
 				@Override
-				public QueryResult getQueryResult(final InputStream inputStream, final String query) {
+				public QueryResult getQueryResult(final InputStream inputStream, final String query, final BindingsFactory bindingsFactory) {
 					try {
-						CommonCoreQueryEvaluator.readTriples("N3", inputStream, 
+						CommonCoreQueryEvaluator.readTriples("N3", inputStream,
 								new TripleConsumer(){
 							@Override
-							public void consume(Triple triple) {
+							public void consume(final Triple triple) {
 								// add the received triples to the index
 								final Collection<Indices> ci = evaluator.getDataset().getDefaultGraphIndices();
 								for (final Indices indices : ci) {
 									indices.add(triple);
 								}
 							}
-						}); 
-						// wait for completing adding... 
+						});
+						// wait for completing adding...
 						evaluator.getDataset().buildCompletelyAllIndices();
 						// evaluate the query on the current index...
 						return evaluator.getResult(query);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
@@ -85,20 +86,20 @@ public class DeltaClient {
 
 			});
 			// use delta approach!
-			Client.DEFAULT_FORMAT = DeltaClient.textn3;		
-		} catch (Exception e1) {
+			Client.DEFAULT_FORMAT = DeltaClient.textn3;
+		} catch (final Exception e1) {
 			System.err.println(e1);
 			e1.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * This main method calls the main method of CommandLineEvaluator (after the DeltaClient has been initialized).
 	 * The delta approach for caching and reusing query triples is used for any communication with an endpoint
 	 * (which must be DeltaEndpoint, otherwise the approach will not work).
 	 * @param args Command line arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		CommandLineEvaluator.main(args);
 	}
 }

@@ -56,6 +56,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 			this.histogramExecutor = histogramExecutor;
 		} // else ignore if histogramExecutor is already set in init()
 		this.initOptimization();
+		this.storage.setBindingsFactory(this.bindingsFactory);
 	}
 
 	public QueryClient(final IStorage storage, final String[] args) throws Exception {
@@ -69,6 +70,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 			this.histogramExecutor = histogramExecutor;
 		} // else ignore if histogramExecutor is already set in init()
 		this.initOptimization();
+		this.storage.setBindingsFactory(this.bindingsFactory);
 	}
 
 	protected void initOptimization() {

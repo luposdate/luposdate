@@ -21,22 +21,56 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator;
+package lupos.engine.operators.messages;
+
+import java.util.Collection;
 
 import lupos.datastructures.bindings.BindingsFactory;
-import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.operators.BasicOperator;
 
 /**
- * This interface declares the methods to submit a subgraph and retrieve its result
- * @param <K> the type of the key which addresses the node where the subgraph is submitted to
+ * This message is used to inform the operators about the BindingsFactory to be used...
  */
-public interface ISubgraphExecutor<K> {
+@SuppressWarnings("serial")
+public class BindingsFactoryMessage extends Message {
 
-	/**
-	 * This method submits a given subgraph and returns the result of the evaluated subgraph
-	 * @param key the key to address the node to which the subgraph is submitted to
-	 * @param subgraphSeriliazedAsJSON the subgraph serialized as JSON string
-	 * @return the retrieved query result
-	 */
-	public QueryResult evaluate(K key, String subgraphSerializedAsJSON, BindingsFactory bindingsFactory);
+	protected final BindingsFactory bindingsFactory;
+
+	public BindingsFactoryMessage(final BindingsFactory bindingsFactory){
+		super();
+		this.bindingsFactory = bindingsFactory;
+	}
+
+	public BindingsFactoryMessage(final Message msg){
+		super(msg);
+		if(msg instanceof BindingsFactoryMessage){
+			this.bindingsFactory = ((BindingsFactoryMessage)msg).bindingsFactory;
+		} else {
+			throw new RuntimeException("BindingsFactoryMessage expected, but got "+msg.getClass());
+		}
+	}
+
+	@Override
+	public Message postProcess(final BasicOperator op) {
+		return op.postProcessMessage(this);
+	}
+
+	@Override
+	public Message preProcess(final BasicOperator op) {
+		return op.preProcessMessage(this);
+	}
+
+	@Override
+	public Message merge(final Collection<Message> msgs, final BasicOperator op) {
+		return op.mergeMessages(msgs, this);
+	}
+
+	@Override
+	public Message clone() {
+		return new BindingsFactoryMessage(this);
+	}
+
+	public BindingsFactory getBindingsFactory(){
+		return this.bindingsFactory;
+	}
 }

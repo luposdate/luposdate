@@ -29,34 +29,38 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 
 public class ReplaceVar extends SingleInputOperator {
 	private LinkedList<Variable> substitutionsVariableLeft = new LinkedList<Variable>();
 	private LinkedList<Variable> substitutionsVariableRight = new LinkedList<Variable>();
+	protected BindingsFactory bindingsFactory;
 
 	public Variable getReplacement(final Variable v) {
-		for (int i = 0; i < substitutionsVariableLeft.size(); i++) {
-			if (substitutionsVariableRight.get(i).equals(v))
-				return substitutionsVariableLeft.get(i);
+		for (int i = 0; i < this.substitutionsVariableLeft.size(); i++) {
+			if (this.substitutionsVariableRight.get(i).equals(v)) {
+				return this.substitutionsVariableLeft.get(i);
+			}
 		}
 		return null;
 	}
 
 	public void removeSubstitution(final Variable left, final Variable right) {
-		final LinkedList<Integer> pos = getPositions(substitutionsVariableLeft,
+		final LinkedList<Integer> pos = this.getPositions(this.substitutionsVariableLeft,
 				left);
 		int index;
 		for (int i = 0; i < pos.size(); i++) {
 			index = pos.get(i);
-			if (substitutionsVariableRight.get(index).equals(right)) {
-				substitutionsVariableLeft.remove(index);
-				substitutionsVariableRight.remove(index);
+			if (this.substitutionsVariableRight.get(index).equals(right)) {
+				this.substitutionsVariableLeft.remove(index);
+				this.substitutionsVariableRight.remove(index);
 				break;
 			}
 		}
@@ -73,20 +77,20 @@ public class ReplaceVar extends SingleInputOperator {
 	}
 
 	public LinkedList<Variable> getSubstitutionsVariableLeft() {
-		return substitutionsVariableLeft;
+		return this.substitutionsVariableLeft;
 	}
 
 	public LinkedList<Variable> getSubstitutionsVariableRight() {
-		return substitutionsVariableRight;
+		return this.substitutionsVariableRight;
 	}
 
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		intersectionVariables = new LinkedList<Variable>();
-		intersectionVariables.addAll(substitutionsVariableLeft);
-		unionVariables = intersectionVariables;
+		this.intersectionVariables = new LinkedList<Variable>();
+		this.intersectionVariables.addAll(this.substitutionsVariableLeft);
+		this.unionVariables = this.intersectionVariables;
 		msg.getVariables().clear();
-		msg.getVariables().addAll(intersectionVariables);
+		msg.getVariables().addAll(this.intersectionVariables);
 		return msg;
 	}
 
@@ -102,11 +106,11 @@ public class ReplaceVar extends SingleInputOperator {
 	}
 
 	private boolean contains(final Item left, final Item right) {
-		final LinkedList<Integer> indices = getPositions(
-				substitutionsVariableLeft, left);
+		final LinkedList<Integer> indices = this.getPositions(
+				this.substitutionsVariableLeft, left);
 		if (indices.size() != 0) {
 			for (int i = 0; i < indices.size(); i++) {
-				if (substitutionsVariableRight.get(indices.get(i))
+				if (this.substitutionsVariableRight.get(indices.get(i))
 						.equals(right)) {
 					return true;
 				}
@@ -116,15 +120,21 @@ public class ReplaceVar extends SingleInputOperator {
 	}
 
 	public void addSubstitution(final Variable variable, final Variable content) {
-		if (!contains(variable, content)) {
-			substitutionsVariableLeft.add(variable);
-			substitutionsVariableRight.add(content);
+		if (!this.contains(variable, content)) {
+			this.substitutionsVariableLeft.add(variable);
+			this.substitutionsVariableRight.add(content);
 		}
 	}
 
 	public void removeSubstitutionVars(final int index) {
-		substitutionsVariableLeft.remove(index);
-		substitutionsVariableRight.remove(index);
+		this.substitutionsVariableLeft.remove(index);
+		this.substitutionsVariableRight.remove(index);
+	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg){
+		this.bindingsFactory = msg.getBindingsFactory();
+		return msg;
 	}
 
 	@Override
@@ -134,27 +144,32 @@ public class ReplaceVar extends SingleInputOperator {
 
 			Iterator<Bindings> oldIt = oldBindings.oneTimeIterator();
 
+			@Override
 			public boolean hasNext() {
-				return oldIt.hasNext();
+				return this.oldIt.hasNext();
 			}
 
+			@Override
 			public Bindings next() {
-				if (!hasNext())
+				if (!this.hasNext()) {
 					return null;
-				final Bindings oldBinding = oldIt.next();
-				if (oldBindings == null)
+				}
+				final Bindings oldBinding = this.oldIt.next();
+				if (oldBindings == null) {
 					return null;
-				final Bindings newBinding = Bindings.createNewInstance();
-				for (int i = 0; i < substitutionsVariableLeft.size(); i++) {
+				}
+				final Bindings newBinding = ReplaceVar.this.bindingsFactory.createInstance();
+				for (int i = 0; i < ReplaceVar.this.substitutionsVariableLeft.size(); i++) {
 
-					final Variable itemName = substitutionsVariableLeft.get(i);
+					final Variable itemName = ReplaceVar.this.substitutionsVariableLeft.get(i);
 					// always do like this!
 					newBinding.add(itemName, oldBinding
-							.get(substitutionsVariableRight.get(i)));
+							.get(ReplaceVar.this.substitutionsVariableRight.get(i)));
 				}
 				return newBinding;
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
@@ -177,25 +192,29 @@ public class ReplaceVar extends SingleInputOperator {
 	@Override
 	public String toString() {
 		String result = super.toString() + "(";
-		for (int i = 0; i < substitutionsVariableLeft.size(); i++) {
-			if (i > 0)
+		for (int i = 0; i < this.substitutionsVariableLeft.size(); i++) {
+			if (i > 0) {
 				result += ", ";
-			result += substitutionsVariableLeft.get(i) + "="
-					+ substitutionsVariableRight.get(i);
+			}
+			result += this.substitutionsVariableLeft.get(i) + "="
+					+ this.substitutionsVariableRight.get(i);
 		}
 		return result + ")";
 	}
-	
-	public boolean remainsSortedData(Collection<Variable> sortCriterium){
+
+	@Override
+	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return true;
 	}
-	
-	public Collection<Variable> transformSortCriterium(Collection<Variable> sortCriterium){
-		for (Variable var : new ArrayList<Variable>(sortCriterium))
+
+	@Override
+	public Collection<Variable> transformSortCriterium(final Collection<Variable> sortCriterium){
+		for (final Variable var : new ArrayList<Variable>(sortCriterium)) {
 			if (this.getSubstitutionsVariableRight().contains(var)) {
 				sortCriterium.remove(var);
 				sortCriterium.add(this.getSubstitutionsVariableLeft().get(this.getSubstitutionsVariableRight().indexOf(var)));
 			}
+		}
 		return sortCriterium;
 	}
 }

@@ -627,18 +627,18 @@
             }],
             "o2": [
               {
-                "active": false,
-                "id": -1,
-                "id label": "",
-                "mode": "EXISTS",
-                "to": "j"
-              },
-              {
                 "active": true,
                 "id": 0,
                 "id label": "",
                 "mode": "EXISTS",
                 "to": "opt"
+              },
+              {
+                "active": false,
+                "id": -1,
+                "id label": "",
+                "mode": "EXISTS",
+                "to": "j"
               }
             ]
           },
@@ -2923,7 +2923,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.engine.operators.singleinput.Filter && this.f.equalFilterExpression((lupos.engine.operators.singleinput.Filter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getUsedVariables())) {\n            f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setNodePointer(this.f.getNodePointer());\n        } else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getUsedVariables().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
+          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.engine.operators.singleinput.Filter && this.f.equalFilterExpression((lupos.engine.operators.singleinput.Filter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getUsedVariables())) {\n            f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setNodePointer(this.f.getNodePointer());\n                     f_new[i].setCollectionForExistNodes(this.f.getCollectionForExistNodes());\n                    f_new[i].getUsedEvaluationVisitor().setEvaluator(this.f.getUsedEvaluationVisitor().getEvaluator());                   \n       } else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getUsedVariables().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
           "code": "",
           "use generated code": true
         }
@@ -3134,7 +3134,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getVariablesInExpression())) {\n            f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setExpression(this.f.getExpression());\n        } else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getVariablesInExpression().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
+          "additional code": "boolean deleteFilter = true;\n\nfor(int i = 0; i < this.o.length; i += 1) {\n    BasicOperator o2 = this.o[i];\n\n    if(!(o2 instanceof lupos.rif.operator.RuleFilter && this.f.equalFilterExpression((lupos.rif.operator.RuleFilter) o2))) {\n        if(o2.getUnionVariables().containsAll(this.f.getVariablesInExpression())) {\n            f_new[i].setIntersectionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setUnionVariables(new HashSet<lupos.datastructures.items.Variable>(o2.getUnionVariables()));\n            f_new[i].setExpression(this.f.getExpression());\n       } else {\n            if(deleteFilter) {\n                for(lupos.datastructures.items.Variable v : o2.getUnionVariables()) {\n                    if(this.f.getVariablesInExpression().contains(v)) {\n                        deleteFilter = false;\n\n                        break;\n                    }\n                }\n            }\n\n            this.deleteOperator(f_new[i], _startNodes);\n        }\n    }\n}\n\nif(deleteFilter || this.op instanceof lupos.engine.operators.multiinput.join.Join) {\n    this.deleteOperator(this.f, _startNodes);\n}",
           "code": "",
           "use generated code": true
         }

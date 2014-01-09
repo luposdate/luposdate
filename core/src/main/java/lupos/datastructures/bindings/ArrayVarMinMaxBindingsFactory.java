@@ -21,22 +21,34 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributed.operator;
+package lupos.datastructures.bindings;
 
-import lupos.datastructures.bindings.BindingsFactory;
-import lupos.datastructures.queryresult.QueryResult;
+import java.util.Collection;
+import java.util.Map;
 
-/**
- * This interface declares the methods to submit a subgraph and retrieve its result
- * @param <K> the type of the key which addresses the node where the subgraph is submitted to
- */
-public interface ISubgraphExecutor<K> {
+import lupos.datastructures.items.Variable;
 
-	/**
-	 * This method submits a given subgraph and returns the result of the evaluated subgraph
-	 * @param key the key to address the node to which the subgraph is submitted to
-	 * @param subgraphSeriliazedAsJSON the subgraph serialized as JSON string
-	 * @return the retrieved query result
-	 */
-	public QueryResult evaluate(K key, String subgraphSerializedAsJSON, BindingsFactory bindingsFactory);
+public class ArrayVarMinMaxBindingsFactory extends BindingsFactory {
+
+	protected ArrayVarMinMaxBindingsFactory(){
+		super();
+	}
+
+	protected ArrayVarMinMaxBindingsFactory(final Collection<Variable> variables){
+		super(variables);
+	}
+
+
+	protected ArrayVarMinMaxBindingsFactory(final Variable[] variables){
+		super(variables);
+	}
+
+	protected ArrayVarMinMaxBindingsFactory(final Map<Variable, Integer> posVariables){
+		super(posVariables);
+	}
+
+	@Override
+	public Bindings createInstance(){
+		return new BindingsArrayVarMinMax(this);
+	}
 }
