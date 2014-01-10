@@ -50,8 +50,8 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.CollectRIFResult;
 import lupos.engine.operators.index.BasicIndexScan;
-import lupos.engine.operators.index.Root;
 import lupos.engine.operators.index.Indices;
+import lupos.engine.operators.index.Root;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.Construct;
@@ -67,6 +67,11 @@ import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.misc.debug.DebugStep;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.optimizations.logical.rules.generated.RIFRules0RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules10RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules11RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules12RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules13RulePackage;
+import lupos.optimizations.logical.rules.generated.RIFRules14RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules15RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules16RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules1RulePackage;
@@ -78,11 +83,6 @@ import lupos.optimizations.logical.rules.generated.RIFRules6RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules7RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules8RulePackage;
 import lupos.optimizations.logical.rules.generated.RIFRules9RulePackage;
-import lupos.optimizations.logical.rules.generated.RIFRules10RulePackage;
-import lupos.optimizations.logical.rules.generated.RIFRules11RulePackage;
-import lupos.optimizations.logical.rules.generated.RIFRules12RulePackage;
-import lupos.optimizations.logical.rules.generated.RIFRules13RulePackage;
-import lupos.optimizations.logical.rules.generated.RIFRules14RulePackage;
 import lupos.optimizations.physical.PhysicalOptimizations;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
@@ -118,23 +118,23 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		super();
 		this.evaluator = evaluator;
 	}
-	
+
 	/**
 	 * this constructor setups a rule evaluator, which works in main memory
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public BasicIndexRuleEvaluator() throws Exception{
 		this(false);
 	}
-	
+
 	/**
 	 * this constructor setups a rule evaluator, which works in main memory
 	 * @param stream if stream is true the rule evaluator for streams is used, otherwise the main memory evaluator
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public BasicIndexRuleEvaluator(boolean stream) throws Exception{
+	public BasicIndexRuleEvaluator(final boolean stream) throws Exception{
 		super();
-		this.evaluator = (stream)? new StreamQueryEvaluator(): new MemoryIndexQueryEvaluator(); 
+		this.evaluator = (stream)? new StreamQueryEvaluator(): new MemoryIndexQueryEvaluator();
 		this.evaluator.setupArguments();
 		this.evaluator.getArgs().set("debug", DEBUG.ALL);
 		this.evaluator.getArgs().set("result", QueryResult.TYPE.MEMORY);
@@ -143,30 +143,30 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.evaluator.getArgs().set("optional", CommonCoreQueryEvaluator.JOIN.HASHMAPINDEX);
 		this.evaluator.getArgs().set("type", "Turtle");
 		this.evaluator.getArgs().set("datastructure", Indices.DATA_STRUCT.HASHMAP);
-		this.evaluator.init();	
+		this.evaluator.init();
 	}
-	
+
 	/**
 	 * this constructor setups a rule evaluator, which uses disk-based indices
 	 * (it uses a RDF3XQueryEvaluator as underlying query evaluator)
 	 * @param directoryOfIndices the directory, in which the indices have been constructed
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public BasicIndexRuleEvaluator(String directoryOfIndices) throws Exception{
+	public BasicIndexRuleEvaluator(final String directoryOfIndices) throws Exception{
 		super();
-		RDF3XQueryEvaluator rdf3xEvaluator = new RDF3XQueryEvaluator();
+		final RDF3XQueryEvaluator rdf3xEvaluator = new RDF3XQueryEvaluator();
 		rdf3xEvaluator.loadLargeScaleIndices(directoryOfIndices);
 		this.evaluator = rdf3xEvaluator;
 	}
 
 	@Override
-	public long compileQuery(String query) throws Exception {
-		return compileQuery(query, this.evaluator.createIndexScanCreator());
+	public long compileQuery(final String query) throws Exception {
+		return this.compileQuery(query, this.evaluator.createIndexScanCreator());
 	}
 
 	public long compileQuery(
-			String query, IndexScanCreatorInterface indexScanCreator) throws Exception {
-		Date start = new Date();
+			final String query, final IndexScanCreatorInterface indexScanCreator) throws Exception {
+		final Date start = new Date();
 
 		final RIFParser parser = new RIFParser(new StringReader(query));
 		this.compilationUnit = parser.CompilationUnit();
@@ -186,7 +186,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.rifDocument.accept(dependencyVisitor, null);
 		this.rifDocument.accept(filteringVisitor, null);
 
-		Class<? extends Bindings> clazz = Bindings.instanceClass;
+		final Class<? extends Bindings> clazz = Bindings.instanceClass;
 		Bindings.instanceClass = BindingsMap.class;
 		final Result res = (Result) this.rifDocument.accept(forward, null);
 		this.evaluator.setResult(res);
@@ -194,7 +194,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 		final BasicOperator root = indexScanCreator.getRoot();
 		this.evaluator.setRootNode(root);
-		
+
 		root.setParents();
 		root.detectCycles();
 		root.sendMessage(new BoundVariablesMessage());
@@ -202,11 +202,12 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 		return new Date().getTime() - start.getTime();
 	}
-	
+
 	@Override
 	public long logicalOptimization() {
-		Date start = new Date();
+		final Date start = new Date();
 		this.evaluator.logicalOptimization();
+		this.evaluator.setBindingsVariablesBasedOnOperatorgraph();
 		final RIFRules0RulePackage rules0 = new RIFRules0RulePackage();
 		rules0.applyRules(this.evaluator.getRootNode());
 		final RIFRules1RulePackage rules1 = new RIFRules1RulePackage();
@@ -241,7 +242,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.evaluator.logicalOptimization();
 		return new Date().getTime() - start.getTime();
 	}
-	
+
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
@@ -252,6 +253,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				.getBasicOperatorByteArray(this.evaluator.getRootNode().deepClone(),
 						prefixInstance)));
 		result.addAll(this.evaluator.logicalOptimizationDebugByteArray(prefixInstance));
+		this.evaluator.setBindingsVariablesBasedOnOperatorgraph();
 		final RIFRules0RulePackage rules0 = new RIFRules0RulePackage();
 		result.addAll(rules0.applyRulesDebugByteArray(this.evaluator.getRootNode(), prefixInstance));
 		final RIFRules1RulePackage rules1 = new RIFRules1RulePackage();
@@ -286,10 +288,10 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		result.addAll(this.evaluator.logicalOptimizationDebugByteArray(prefixInstance));
 		return result;
 	}
-	
+
 	@Override
 	public long physicalOptimization() {
-		long start = (new Date()).getTime();
+		final long start = (new Date()).getTime();
 		PhysicalOptimizations.addReplacement("multiinput.join.", "IndexJoinWithDuplicateElimination", "HashMapIndexJoinWithDuplicateElimination");
 		this.evaluator.physicalOptimization();
 		final RIFRules15RulePackage rules15 = new RIFRules15RulePackage();
@@ -299,13 +301,13 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.getRootNode().deleteParents();
 		this.getRootNode().setParents();
 		this.getRootNode().detectCycles();
-//		this.getRootNode().sendMessage(new BoundVariablesMessage());		
+//		this.getRootNode().sendMessage(new BoundVariablesMessage());
 		return (new Date()).getTime() - start;
 	}
 
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
-		physicalOptimization();
+		this.physicalOptimization();
 		final LinkedList<DebugContainer<BasicOperatorByteArray>> debugResult = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 		debugResult.add(new DebugContainer<BasicOperatorByteArray>(
 				"After physical optimization...", "physicaloptimizationRule",
@@ -318,9 +320,9 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public long evaluateQuery() throws Exception {
 		return this.evaluator.evaluateQuery();
 	}
-	
+
 	@Override
-	public long evaluateQueryDebugSteps(final DebugStep debugstep, Application application) throws Exception {
+	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application) throws Exception {
 		return this.evaluator.evaluateQueryDebugSteps(debugstep, application);
 	}
 
@@ -328,7 +330,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public QueryResult getResult() throws Exception {
 		return this.getResult(false);
 	}
-	
+
 	public QueryResult getResult(final boolean oneTime) throws Exception {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
@@ -339,14 +341,14 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public QueryResult[] getResults() throws Exception {
 		return this.getResults(false);
 	}
-	
+
 	public QueryResult[] getResults(final boolean oneTime) throws Exception {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
 		this.evaluator.evaluateQuery();
-		return cr.getQueryResults();	
+		return cr.getQueryResults();
 	}
-	
+
 	public CollectRIFResult getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
@@ -357,7 +359,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public Result getResultOperator(){
 		return this.evaluator.getResultOperator();
 	}
-	
+
 	public BasicOperator getRootNode(){
 		return this.evaluator.getRootNode();
 	}
@@ -373,15 +375,15 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	}
 
 	@Override
-	public long prepareInputData(Collection<URILiteral> defaultGraphs,
-			Collection<URILiteral> namedGraphs) throws Exception {
+	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
+			final Collection<URILiteral> namedGraphs) throws Exception {
 		return this.evaluator.prepareInputData(defaultGraphs, namedGraphs);
 	}
-	
+
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
-			Collection<URILiteral> defaultGraphs,
-			Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
+			final Collection<URILiteral> defaultGraphs,
+			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
 			throws Exception {
 		return this.evaluator.prepareInputDataWithSourcesOfNamedGraphs(defaultGraphs, namedGraphs);
 	}
@@ -393,7 +395,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	public Document getDocument() {
 		return this.rifDocument;
 	}
-	
+
 	public Root getRoot() {
 		return (Root) this.evaluator.getRootNode();
 	}
@@ -411,37 +413,37 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			this.evaluator.init();
 		}
 	}
-	
+
 	@Override
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 		if(this.evaluator != null) {
 			this.evaluator.prepareForQueryDebugSteps(debugstep);
 		}
 	}
-	
+
 	private final static URILiteral rif_error = LiteralFactory.createStringURILiteralWithoutException("<http://www.w3.org/2007/rif#error>");
-	
+
 	/**
-	 * 
+	 *
 	 * @return return a rule result with all predicates rif:error, which are detected errors in the ontology!
 	 * @throws Exception
 	 */
 	public RuleResult inferTriplesAndStoreInDataset() throws Exception {
-		CollectRIFResult cr = this.getCollectedResults(true);
-		RuleResult result = new RuleResult();
+		final CollectRIFResult cr = this.getCollectedResults(true);
+		final RuleResult result = new RuleResult();
 		if(this.evaluator instanceof BasicIndexQueryEvaluator){
-			for(QueryResult qr: cr.getQueryResults()){
+			for(final QueryResult qr: cr.getQueryResults()){
 				if(qr instanceof GraphResult){
-					GraphResult gr = (GraphResult) qr;
-					for(Triple t: gr.getGraphResultTriples()){
+					final GraphResult gr = (GraphResult) qr;
+					for(final Triple t: gr.getGraphResultTriples()){
 						final Collection<Indices> ci = ((BasicIndexQueryEvaluator)this.evaluator).getDataset().getDefaultGraphIndices();
 						for (final Indices indices : ci) {
 							indices.add(t);
 						}
 					}
 				} else if(qr instanceof RuleResult){
-					RuleResult rr = (RuleResult) qr;
-					for(Predicate predicate: rr.getPredicateResults()){
+					final RuleResult rr = (RuleResult) qr;
+					for(final Predicate predicate: rr.getPredicateResults()){
 						if(rif_error.equals(predicate.getName())){
 							result.getPredicateResults().add(predicate);
 						}
@@ -450,11 +452,11 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			}
 		} else if (this.evaluator instanceof StreamQueryEvaluator) {
 			String s = "";
-			for(QueryResult qr: cr.getQueryResults()){
+			for(final QueryResult qr: cr.getQueryResults()){
 				if(qr instanceof GraphResult){
-					GraphResult gr = (GraphResult) qr;
+					final GraphResult gr = (GraphResult) qr;
 					// TODO duplicated triple elimination!
-					for(Triple t: gr.getGraphResultTriples()){
+					for(final Triple t: gr.getGraphResultTriples()){
 						if(!t.getSubject().isBlank() && !t.getSubject().isURI()){
 							System.out.println("Warning: The subject of the inferred triple "+t+" is neither an uri nor a blank node and thus the triple will be ignored!");
 						} else if(!t.getPredicate().isURI()){
@@ -464,31 +466,33 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 						}
 					}
 				} else if(qr instanceof RuleResult){
-					RuleResult rr = (RuleResult) qr;
-					for(Predicate predicate: rr.getPredicateResults()){
+					final RuleResult rr = (RuleResult) qr;
+					for(final Predicate predicate: rr.getPredicateResults()){
 						if(rif_error.equals(predicate.getName())){
 							result.getPredicateResults().add(predicate);
 						}
 					}
 				}
 			}
-			URILiteral in = LiteralFactory.createStringURILiteral("<inlinedata:"+s+">");
+			final URILiteral in = LiteralFactory.createStringURILiteral("<inlinedata:"+s+">");
 			((StreamQueryEvaluator)this.evaluator).addToDefaultGraphs(in);
-		} else throw new Exception("Unkwon QueryEvaluator Type: " + this.evaluator.getClass());
+		} else {
+			throw new Exception("Unkwon QueryEvaluator Type: " + this.evaluator.getClass());
+		}
 		if(result.getPredicateResults().size()==0){
 			return null;
 		} else {
 			return result;
 		}
 	}
-	
-	public QueryResult materializeInferredTriplesOfRifEngineAndGetResultOfSPARQLQuery(String query) throws Exception {
+
+	public QueryResult materializeInferredTriplesOfRifEngineAndGetResultOfSPARQLQuery(final String query) throws Exception {
 			this.inferTriplesAndStoreInDataset();
 			return this.evaluator.getResult(query);
 	}
-	
+
 	public long compileQueryAndInferenceIntoOneOperatorgraph(final String inferenceRuleset, final String query) throws Exception {
-		Date a = new Date();
+		final Date a = new Date();
 		this.compileQuery(inferenceRuleset);
 		final BasicOperator rootInference = this.getRootNode();
 		final Result resultInference = this.getResultOperator();
@@ -497,34 +501,34 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.evaluator.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());
 	}
-	
+
 	public static void integrateInferenceOperatorgraphIntoQueryOperatorgraph(final BasicOperator rootInference, final Result resultInference, final BasicOperator rootQuery, final Result resultQuery){
 		// first determine those operations, which generate triples of the result (and delete the other ones (and their preceding operators...))
 		// also replace Construct operators with Generate operators!
-		LinkedList<Generate> listOfConstructedTripel = new LinkedList<Generate>();
-		for(BasicOperator bo: new LinkedList<BasicOperator>(resultInference.getPrecedingOperators())){
+		final LinkedList<Generate> listOfConstructedTripel = new LinkedList<Generate>();
+		for(final BasicOperator bo: new LinkedList<BasicOperator>(resultInference.getPrecedingOperators())){
 			if(bo instanceof Construct){
-				Construct construct = (Construct)bo;
+				final Construct construct = (Construct)bo;
 				// split construct and replace them with Generate operators!
-				for(TriplePattern tp: construct.getTemplates()){
-					Generate generate = new Generate(tp);
-					for(BasicOperator father: construct.getPrecedingOperators()){
+				for(final TriplePattern tp: construct.getTemplates()){
+					final Generate generate = new Generate(tp);
+					for(final BasicOperator father: construct.getPrecedingOperators()){
 						father.addSucceedingOperator(generate);
 						generate.addPrecedingOperator(father);
 					}
 					listOfConstructedTripel.add(generate);
 					// remove old construct
-					for(BasicOperator father: new HashSet<BasicOperator>(construct.getPrecedingOperators())){
+					for(final BasicOperator father: new HashSet<BasicOperator>(construct.getPrecedingOperators())){
 						father.removeSucceedingOperator(construct);
 						construct.removePrecedingOperator(father);
 					}
-				} 				
+				}
 			} else if(bo instanceof ConstructPredicate){
-				ConstructPredicate cp = (ConstructPredicate) bo;
+				final ConstructPredicate cp = (ConstructPredicate) bo;
 				boolean toDelete = true;
-				for(Tuple<URILiteral, List<Item>> tuple: cp.getPredicatePattern()){
+				for(final Tuple<URILiteral, List<Item>> tuple: cp.getPredicatePattern()){
 					if(BasicIndexRuleEvaluator.rif_error.equals(tuple.getFirst())){
-						// predicates as result of detecting errors in the ontology should remain! 
+						// predicates as result of detecting errors in the ontology should remain!
 						toDelete = false;
 						break;
 					}
@@ -538,23 +542,23 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			} else {
 				deletePrecedingOperators(bo);
 			}
-		}		
+		}
 		// now connect generate operations with triple patterns/index scans of the query operator graph
-		LinkedList<BasicOperator> toBeConnectedTo = determine1stLevelTriplePatternOrIndexScans(rootQuery);
-		for(Generate generate: listOfConstructedTripel){
-			generate.getSucceedingOperators().clear();			
-			Item[] generateItems = generate.getValueOrVariable();
-			for(BasicOperator tpOrIndexScan: new LinkedList<BasicOperator>(toBeConnectedTo)){
+		final LinkedList<BasicOperator> toBeConnectedTo = determine1stLevelTriplePatternOrIndexScans(rootQuery);
+		for(final Generate generate: listOfConstructedTripel){
+			generate.getSucceedingOperators().clear();
+			final Item[] generateItems = generate.getValueOrVariable();
+			for(final BasicOperator tpOrIndexScan: new LinkedList<BasicOperator>(toBeConnectedTo)){
 				if(tpOrIndexScan instanceof TriplePattern){
-					TriplePattern tpi = (TriplePattern) tpOrIndexScan;
+					final TriplePattern tpi = (TriplePattern) tpOrIndexScan;
 					if(BasicIndexRuleEvaluator.isMatching(tpi, generateItems)){
 						generate.addSucceedingOperator(tpOrIndexScan);
 					}
 				} else {
-					BasicIndexScan bi = (BasicIndexScan) tpOrIndexScan;
+					final BasicIndexScan bi = (BasicIndexScan) tpOrIndexScan;
 					if(bi.getTriplePattern()!=null && bi.getTriplePattern().size()>0){
-						LinkedList<TriplePattern> matchingTPs = new LinkedList<TriplePattern>();
-						for(TriplePattern inIndexScan: bi.getTriplePattern()){
+						final LinkedList<TriplePattern> matchingTPs = new LinkedList<TriplePattern>();
+						for(final TriplePattern inIndexScan: bi.getTriplePattern()){
 							if(BasicIndexRuleEvaluator.isMatching(inIndexScan, generateItems)){
 								matchingTPs.add(inIndexScan);
 								break;
@@ -562,28 +566,28 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 						}
 						if(matchingTPs.size()>0){
 							// modify BasicIndex in toBeConnectedTo! (delete tp in current bi, add new BasicIndex with tp, join both operators and additionally add tp for generate operator!)
-							for(TriplePattern tp: matchingTPs){
-								TriplePattern newTP = new TriplePattern(tp.getPos(0), tp.getPos(1), tp.getPos(2));
+							for(final TriplePattern tp: matchingTPs){
+								final TriplePattern newTP = new TriplePattern(tp.getPos(0), tp.getPos(1), tp.getPos(2));
 								newTP.recomputeVariables();
 								generate.addSucceedingOperator(newTP);
 								newTP.addPrecedingOperator(generate);
 
 								if(bi.getTriplePattern().size()==1){
 									newTP.addSucceedingOperators(new LinkedList<OperatorIDTuple>(bi.getSucceedingOperators()));
-									for(OperatorIDTuple opID: bi.getSucceedingOperators()){
+									for(final OperatorIDTuple opID: bi.getSucceedingOperators()){
 										opID.getOperator().addPrecedingOperator(newTP);
 									}
 								} else {
 									bi.getTriplePattern().remove(tp);
-									Join join = new Join();
+									final Join join = new Join();
 									join.setUnionVariables(bi.getUnionVariables());
 									bi.recomputeVariables();
 									tp.recomputeVariables();
-									HashSet<Variable> joinVars = new HashSet<Variable>(tp.getUnionVariables());
+									final HashSet<Variable> joinVars = new HashSet<Variable>(tp.getUnionVariables());
 									joinVars.retainAll(bi.getUnionVariables());
 									join.setIntersectionVariables(joinVars);
-									for(OperatorIDTuple opID: bi.getSucceedingOperators()){
-										BasicOperator suc = opID.getOperator();
+									for(final OperatorIDTuple opID: bi.getSucceedingOperators()){
+										final BasicOperator suc = opID.getOperator();
 										suc.removePrecedingOperator(bi);
 										suc.addPrecedingOperator(join);
 									}
@@ -591,16 +595,16 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 									bi.setSucceedingOperator(new OperatorIDTuple(join, 0));
 									join.addPrecedingOperator(bi);
 
-									LinkedList<TriplePattern> tpList = new LinkedList<TriplePattern>();
+									final LinkedList<TriplePattern> tpList = new LinkedList<TriplePattern>();
 									tpList.add(tp);
-									BasicIndexScan newIndex = ((Root)rootQuery).newIndexScan(new OperatorIDTuple(join, 1), tpList, bi.getGraphConstraint());
+									final BasicIndexScan newIndex = ((Root)rootQuery).newIndexScan(new OperatorIDTuple(join, 1), tpList, bi.getGraphConstraint());
 									newIndex.recomputeVariables();
 									join.addPrecedingOperator(newIndex);
 									rootQuery.addSucceedingOperator(newIndex);
 									newIndex.addPrecedingOperator(rootQuery);
 									newTP.addSucceedingOperator(new OperatorIDTuple(join, 1));
 									join.addPrecedingOperator(newTP);
-									
+
 									toBeConnectedTo.add(newIndex);
 								}
 							}
@@ -613,32 +617,32 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				deletePrecedingOperators(generate);
 			}
 		}
-		
+
 		rootInference.deleteParents();
 		rootInference.setParents();
 		rootInference.detectCycles();
 		// determine those operators, which are not connected to the result operator (or an insert operator), and delete them
-		HashSet<BasicOperator> visited = new HashSet<BasicOperator>();
-		HashSet<BasicOperator> connectedOperators = new HashSet<BasicOperator>();
-		LinkedList<BasicOperator> path = new LinkedList<BasicOperator>();
+		final HashSet<BasicOperator> visited = new HashSet<BasicOperator>();
+		final HashSet<BasicOperator> connectedOperators = new HashSet<BasicOperator>();
+		final LinkedList<BasicOperator> path = new LinkedList<BasicOperator>();
 		path.add(rootInference);
 		BasicIndexRuleEvaluator.determineOperatorsConnectedWithResultOrInsert(rootInference, path, visited, connectedOperators);
-		
-		for(BasicOperator bo: visited){
+
+		for(final BasicOperator bo: visited){
 			if(!connectedOperators.contains(bo)){
 				bo.removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators();
 			}
 		}
-		
-		// add the first operations of the inference operator graph to the operator graph of the query 
-		for(OperatorIDTuple rootChild: new LinkedList<OperatorIDTuple>(rootInference.getSucceedingOperators())){
+
+		// add the first operations of the inference operator graph to the operator graph of the query
+		for(final OperatorIDTuple rootChild: new LinkedList<OperatorIDTuple>(rootInference.getSucceedingOperators())){
 			rootInference.removeSucceedingOperator(rootChild);
-			BasicOperator rootChildOperator = rootChild.getOperator();
+			final BasicOperator rootChildOperator = rootChild.getOperator();
 			rootChildOperator.removePrecedingOperator(rootInference);
 			rootChildOperator.addPrecedingOperator(rootQuery);
 			if(rootChildOperator instanceof InsertIndexScan) {
 				// these operators are used to insert facts/triples => should occur as leftmost operators after the root such that they are evaluated first!
-				LinkedList<OperatorIDTuple> list = new LinkedList<OperatorIDTuple>(rootQuery.getSucceedingOperators());
+				final LinkedList<OperatorIDTuple> list = new LinkedList<OperatorIDTuple>(rootQuery.getSucceedingOperators());
 				list.addFirst(rootChild);
 				rootQuery.setSucceedingOperators(list);
 			} else {
@@ -649,7 +653,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		rootQuery.setParents();
 		rootQuery.detectCycles();
 	}
-	
+
 	public static void determineOperatorsConnectedWithResultOrInsert(final BasicOperator currentOperator, final LinkedList<BasicOperator> currentPath, final HashSet<BasicOperator> visited, final HashSet<BasicOperator> connectedOperators){
 		if(currentOperator instanceof Result || currentOperator instanceof Insert){
 			BasicIndexRuleEvaluator.addToConnectedOperators(currentPath, connectedOperators);
@@ -661,8 +665,8 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 				return;
 			} else {
 				visited.add(currentOperator);
-				for(OperatorIDTuple opIDTuple: currentOperator.getSucceedingOperators()){
-					BasicOperator suc = opIDTuple.getOperator();
+				for(final OperatorIDTuple opIDTuple: currentOperator.getSucceedingOperators()){
+					final BasicOperator suc = opIDTuple.getOperator();
 					currentPath.addLast(suc);
 					BasicIndexRuleEvaluator.determineOperatorsConnectedWithResultOrInsert(suc, currentPath, visited, connectedOperators);
 					currentPath.removeLast();
@@ -670,9 +674,9 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			}
 		}
 	}
-	
+
 	private static void addToConnectedOperators(final Collection<BasicOperator> toBeAdded, final HashSet<BasicOperator> connectedOperators){
-		for(BasicOperator inPath: toBeAdded){
+		for(final BasicOperator inPath: toBeAdded){
 			if(!connectedOperators.contains(inPath)){
 				connectedOperators.add(inPath);
 				BasicIndexRuleEvaluator.addToConnectedOperators(inPath.getCycleOperands(), connectedOperators);
@@ -681,12 +685,12 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 			}
 		}
 	}
-	
+
 	private static boolean isMatching(final TriplePattern tp, final Item[] generateItems){
 		boolean flag=true;
 		for(int i=0; i<3; i++){
-			Item a = generateItems[i];
-			Item b = tp.getPos(i);
+			final Item a = generateItems[i];
+			final Item b = tp.getPos(i);
 			if(!a.isVariable() && !b.isVariable() && !a.equals(b)){
 				flag=false;
 				break;
@@ -694,28 +698,28 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		}
 		return flag;
 	}
-	
-	public static void deletePrecedingOperators(BasicOperator toDelete){
+
+	public static void deletePrecedingOperators(final BasicOperator toDelete){
 		if(toDelete.getSucceedingOperators().size()>0){
 			// maybe result of this operation is somewhere else used => end of recursion
 			return;
 		}
-		for(BasicOperator parent: new LinkedList<BasicOperator>(toDelete.getPrecedingOperators())){
+		for(final BasicOperator parent: new LinkedList<BasicOperator>(toDelete.getPrecedingOperators())){
 			parent.removeSucceedingOperator(toDelete);
 			toDelete.removePrecedingOperator(parent);
 			deletePrecedingOperators(parent);
 		}
 	}
-	
-	public static LinkedList<BasicOperator> determine1stLevelTriplePatternOrIndexScans(BasicOperator rootQuery){
-		LinkedList<BasicOperator> resultlist = new LinkedList<BasicOperator>();
+
+	public static LinkedList<BasicOperator> determine1stLevelTriplePatternOrIndexScans(final BasicOperator rootQuery){
+		final LinkedList<BasicOperator> resultlist = new LinkedList<BasicOperator>();
 		determine1stLevelTriplePatternOrIndexScans(rootQuery, resultlist);
 		return resultlist;
 	}
-	
-	private static void determine1stLevelTriplePatternOrIndexScans(BasicOperator rootQuery, LinkedList<BasicOperator> resultlist) {
-		for(OperatorIDTuple child: rootQuery.getSucceedingOperators()){
-			BasicOperator childOperator = child.getOperator();
+
+	private static void determine1stLevelTriplePatternOrIndexScans(final BasicOperator rootQuery, final LinkedList<BasicOperator> resultlist) {
+		for(final OperatorIDTuple child: rootQuery.getSucceedingOperators()){
+			final BasicOperator childOperator = child.getOperator();
 			if(childOperator instanceof TriplePattern || childOperator instanceof BasicIndexScan){
 				resultlist.add(childOperator);
 			} else if(childOperator instanceof PatternMatcher || childOperator instanceof Window){

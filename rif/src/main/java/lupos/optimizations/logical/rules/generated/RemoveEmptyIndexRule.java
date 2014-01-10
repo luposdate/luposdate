@@ -27,9 +27,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.engine.operators.BasicOperator;
-import lupos.engine.operators.OperatorIDTuple;
+import lupos.optimizations.logical.rules.generated.runtime.Rule;
 
 
 
@@ -39,25 +38,25 @@ public class RemoveEmptyIndexRule extends Rule {
     private lupos.engine.operators.BasicOperator o = null;
     private lupos.engine.operators.index.BasicIndexScan i = null;
 
-    private boolean _checkPrivate0(BasicOperator _op) {
+    private boolean _checkPrivate0(final BasicOperator _op) {
         if(!(_op instanceof lupos.engine.operators.index.BasicIndexScan)) {
             return false;
         }
 
         this.i = (lupos.engine.operators.index.BasicIndexScan) _op;
 
-        List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
+        final List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
         if(_precedingOperators_1_0.size() != 1) {
             return false;
         }
 
-        for(BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
+        for(final BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
             if(!(_precOp_1_0 instanceof lupos.engine.operators.BasicOperator)) {
                 continue;
             }
 
-            this.o = (lupos.engine.operators.BasicOperator) _precOp_1_0;
+            this.o = _precOp_1_0;
 
             return true;
         }
@@ -71,8 +70,9 @@ public class RemoveEmptyIndexRule extends Rule {
         this.ruleName = "Remove Empty Index";
     }
 
-    protected boolean check(BasicOperator _op) {
-        boolean _result = this._checkPrivate0(_op);
+    @Override
+	protected boolean check(final BasicOperator _op) {
+        final boolean _result = this._checkPrivate0(_op);
 
         if(_result) {
             // additional check method code...
@@ -84,14 +84,15 @@ public class RemoveEmptyIndexRule extends Rule {
                     && this.i.getPrecedingOperators().get(0).getSucceedingOperators().get(0).getOperator() instanceof lupos.rif.operator.InsertTripleIndexScan)) {
             					return false;
             }
-            
+
             lupos.datastructures.queryresult.QueryResult qr = null;
             				if (this.i instanceof lupos.engine.operators.index.memoryindex.MemoryIndexScan) {
             					final lupos.engine.operators.index.memoryindex.MemoryIndexScan temp = new lupos.engine.operators.index.memoryindex.MemoryIndexScan(this.i.getRoot());
+            					temp.setBindingsFactory(this.i.getBindingsFactory());
             					boolean found = false;
-            					for (lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndexScan) this.i).getTriplePattern()) {
+            					for (final lupos.engine.operators.tripleoperator.TriplePattern pat : ((lupos.engine.operators.index.memoryindex.MemoryIndexScan) this.i).getTriplePattern()) {
             						temp.setTriplePatterns(java.util.Arrays.asList(pat));
-            						lupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getRoot().dataset);
+            						final lupos.datastructures.queryresult.QueryResult qrtemp = temp.join(this.i.getRoot().dataset);
             						if (qrtemp != null && qrtemp.oneTimeIterator().hasNext()) {
             							found = true;
             						}
@@ -123,7 +124,8 @@ public class RemoveEmptyIndexRule extends Rule {
         return _result;
     }
 
-    protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
+    @Override
+	protected void replace(final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
         this.o.removeSucceedingOperator(this.i);
         this.i.removePrecedingOperator(this.o);
