@@ -1,0 +1,287 @@
+{
+  "associations": {"HierachialDistribution": [
+    "PartitionSubgraph",
+    "MultiInput",
+    "AsynchronSubgraphContainer"
+  ]},
+  "rule packages": {"HierachialDistribution": {"documentation": {
+    "long description": "",
+    "see also": {
+      "rule packages": [],
+      "rules": []
+    },
+    "short description": ""
+  }}},
+  "rules": {
+    "AsynchronSubgraphContainer": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "\tprivate BasicOperator subgraph;\r\n\tprivate Root globalRoot;",
+        "additional import declarations": "import java.util.HashMap;\r\nimport java.util.HashSet;\r\nimport lupos.distributed.operator.AsynchronSubgraphContainer;\r\nimport lupos.distributed.operator.SubgraphContainer;\r\nimport lupos.engine.operators.BasicOperator;\r\nimport lupos.engine.operators.OperatorIDTuple;\r\nimport lupos.engine.operators.index.Root;",
+        "check method": {
+          "additional code": "",
+          "code": "\t\t/*\r\n\t\t * store the root, if it is given the first time (necessary for subgraph container\r\n\t\t * that don't have a preceding operator)\r\n\t\t */\r\n\t\tif (_op instanceof Root && globalRoot == null)\r\n\t\t\tglobalRoot = (Root) _op;\r\n\t\t/*\r\n\t\t * check whether it is an SubgraphContainer that is not replaced yet!\r\n\t\t */\r\n\t\tthis.subgraph = _op;\r\n\t\treturn (_op != null && _op instanceof SubgraphContainer && _op\r\n\t\t\t\t.getClass() != AsynchronSubgraphContainer.class);",
+          "start node": "SubgraphContainer",
+          "use generated code": false
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "/*\r\n\t\t * for better processing, rename the container\r\n\t\t */\r\n\t\tSubgraphContainer<?> sg = (SubgraphContainer<?>) this.subgraph;\r\n\t\tSubgraphContainer<?> newSG = AsynchronSubgraphContainer.cloneFrom(sg);\r\n\t\t\r\n\t\r\n\t\t/*\r\n\t\t * if the old subgraph container has no parent, maybe the root is its\r\n\t\t * parent?\r\n\t\t */\r\n\t\tif (sg.getPrecedingOperators().size() == 0) {\r\n\t\t\tfor (OperatorIDTuple op : globalRoot.getSucceedingOperators()) {\r\n\t\t\t\tif (op.getOperator().equals(sg)) {\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * we have found our root as parent, so temporarily add it!\r\n\t\t\t\t\t */\r\n\t\t\t\t\tsg.addPrecedingOperator(globalRoot);\r\n\t\t\t\t\tbreak;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\t/*\r\n\t\t * get the preceding operator's of the SG ( ? -> SG and replace with ?\r\n\t\t * -> NEW SG)\r\n\t\t */\r\n\t\tfor (BasicOperator bo : sg.getPrecedingOperators()) {\r\n\t\t\tbo.removeSucceedingOperator(sg);\r\n\t\t\tbo.addSucceedingOperator(newSG);\r\n\t\t\tnewSG.addPrecedingOperator(bo);\r\n\t\t}\r\n\t\t/*\r\n\t\t * now remove all preceding's of the old SG\r\n\t\t */\r\n\t\tfor (BasicOperator bo : sg.getPrecedingOperators()) {\r\n\t\t\tsg.removePrecedingOperator(bo);\r\n\t\t}\r\n\t\t/*\r\n\t\t * get the list of succeeding operator's from the old SG ( SG->? and\r\n\t\t * replace with NEW SG -> ?)\r\n\t\t */\r\n\t\tfor (OperatorIDTuple op : sg.getSucceedingOperators()) {\r\n\t\t\top.getOperator().removePrecedingOperator(sg);\r\n\t\t\tnewSG.addSucceedingOperator(op);\r\n\t\t\top.getOperator().addPrecedingOperator(newSG);\r\n\t\t}\r\n\t\t/*\r\n\t\t * now remove all succeeding's of the old SG\r\n\t\t */\r\n\t\tfor (OperatorIDTuple op : sg.getSucceedingOperators()) {\r\n\t\t\tsg.removeSucceedingOperator(op);\r\n\t\t}\r\n\r\n\t\tsg.removeFromOperatorGraph();\r\n\t\t\r\n\t\t// now check the internal subgraph container ....\r\n\t\tAsynchronSubgraphContainerRule rule = new AsynchronSubgraphContainerRule();\r\n\t\t// ... until there is no SubgraphContainer left, that is not replaced!\r\n\t\twhile (rule.apply(newSG.getRootOfSubgraph())) {\r\n\t\t};",
+          "use generated code": false
+        }
+      },
+      "visual representation": {
+        "left side": {},
+        "right side": {},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "Check": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private BasicOperator root;\r\nprivate Set<BasicOperator> alreadyVisited = new HashSet<BasicOperator>();\r\n\t\r\n\tprivate void checkSucceeding(BasicOperator root) {\r\n\t\tif (alreadyVisited.contains(root)) return;\r\n\t\talreadyVisited.add(root);\r\n\t\tList<OperatorIDTuple> succs = root.getSucceedingOperators();\r\n\t\tfirstLoop:\r\n\t\tfor (OperatorIDTuple op : succs) {\r\n\t\t\tfor (BasicOperator pred : op.getOperator().getPrecedingOperators()) {\r\n\t\t\t\tif (root.equals(pred)) {\r\n\t\t\t\t\tcontinue firstLoop;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\top.getOperator().addPrecedingOperator(root);\r\n\t\t}\r\n\t\tfor (OperatorIDTuple op : root.getSucceedingOperators()) checkSucceeding(op.getOperator());\r\n\t}\r\n",
+        "additional import declarations": "import java.util.HashMap;\r\nimport java.util.HashSet;\r\nimport java.util.List;\r\n\r\nimport lupos.optimizations.logical.rules.generated.runtime.Rule;\r\nimport lupos.engine.operators.BasicOperator;\r\nimport lupos.engine.operators.OperatorIDTuple;\r\n\r\nimport java.util.Set;\r\nimport lupos.engine.operators.index.Root;",
+        "check method": {
+          "additional code": "",
+          "code": "if (root == null && _op instanceof Root) {\r\n\t\t\tthis.root = _op;\r\n\t\t\treturn true;\r\n\t\t}\r\n\t\treturn false;\r\n\t",
+          "start node": "Operator",
+          "use generated code": false
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "for (OperatorIDTuple o : this.root.getSucceedingOperators()) checkSucceeding(o.getOperator());",
+          "use generated code": false
+        }
+      },
+      "visual representation": {
+        "left side": {},
+        "right side": {},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "JoinSG": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private lupos.engine.operators.multiinput.Union u2 = null;\r\n\tprivate lupos.engine.operators.multiinput.Union u1 = null;\r\n\t@SuppressWarnings(\"rawtypes\")\r\n\tprivate lupos.distributed.operator.SubgraphContainer sg1 = null;\r\n\t@SuppressWarnings(\"rawtypes\")\r\n\tprivate lupos.distributed.operator.SubgraphContainer sg2 = null;\r\n\tprivate lupos.engine.operators.multiinput.join.Join join = null;\r\n\tprivate Object keySg1 = null;\r\n\tprivate Object keySg2 = null;\r\n\r\npublic static ISubgraphExecutor<?> subgraphExecutor;\r\n\r\n\r\nprivate Result getResult(final BasicOperator root) {\r\n\t\t//We could do with SimpleOperatorGraphVisitor, too:\r\n\t\tSimpleOperatorGraphVisitor sov = new SimpleOperatorGraphVisitor() {\r\n\t\t\t@Override\r\n\t\t\tpublic Object visit(BasicOperator basicOperator) {\r\n\t\t\t\tif (basicOperator instanceof Result) return basicOperator;\r\n\t\t\t\treturn null;\r\n\t\t\t}\r\n\t\t};\r\n\t\treturn (Result) root.visit(sov);\r\n}\r\n\r\n\t/*\r\n\t * returns the first found BasicIndexScan in succeeding's list of root\r\n\t */\r\n\tprivate BasicIndexScan getIndexScan(final BasicOperator root) {\r\n\t\tfinal List<OperatorIDTuple> succs = root.getSucceedingOperators();\r\n\t\tif (succs == null | succs.size() == 0)\r\n\t\t\treturn null;\r\n\t\tfor (final OperatorIDTuple succ : succs) {\r\n\t\t\tfinal BasicOperator op = succ.getOperator();\r\n\t\t\tif (op instanceof BasicIndexScan) {\r\n\t\t\t\treturn (BasicIndexScan) op;\r\n\t\t\t} else {\r\n\t\t\t\tBasicIndexScan res = null;\r\n\t\t\t\t/*\r\n\t\t\t\t * recursive call\r\n\t\t\t\t */\r\n\t\t\t\tif ((res = getIndexScan(op)) != null)\r\n\t\t\t\t\treturn res;\r\n\t\t\t}\r\n\t\t}\r\n\t\treturn null;\r\n\t}",
+        "additional import declarations": "import java.util.Collection;\r\nimport java.util.HashMap;\r\nimport java.util.HashSet;\r\nimport java.util.LinkedList;\r\nimport java.util.List;\r\nimport java.util.ListIterator;\r\n\r\nimport lupos.distributed.operator.ISubgraphExecutor;\r\nimport lupos.distributed.operator.SubgraphContainer;\r\nimport lupos.engine.operators.BasicOperator;\r\nimport lupos.engine.operators.OperatorIDTuple;\r\nimport lupos.engine.operators.SimpleOperatorGraphVisitor;\r\nimport lupos.engine.operators.index.BasicIndexScan;\r\nimport lupos.engine.operators.index.Root;\r\nimport lupos.engine.operators.singleinput.Result;\r\nimport lupos.engine.operators.tripleoperator.TriplePattern;\r\nimport lupos.optimizations.logical.rules.generated.runtime.Rule;\r\nimport org.json.JSONException;",
+        "check method": {
+          "additional code": "",
+          "code": "/*\r\n\t\t * Only process on SubgraphContainer\r\n\t\t */\r\n\t\tif (_op.getClass() != lupos.distributed.operator.SubgraphContainer.class) {\r\n\t\t\treturn false;\r\n\t\t}\r\n\t\t/* store the first subgraphContainer and its distribution key */\r\n\t\tthis.sg1 = (lupos.distributed.operator.SubgraphContainer<?>) _op;\r\n\t\tthis.keySg1 = this.sg1.getKey();\r\n\r\n\t\t/*\r\n\t\t * now search for an \"union\" operator\r\n\t\t */\r\n\t\tList<OperatorIDTuple> _succOfFirstSGContainer = _op\r\n\t\t\t\t.getSucceedingOperators();\r\n\t\tfor (OperatorIDTuple _eachSucceedingOfFirstSGContainer : _succOfFirstSGContainer) {\r\n\t\t\tif (!(_eachSucceedingOfFirstSGContainer.getOperator() instanceof lupos.engine.operators.multiinput.Union)) {\r\n\t\t\t\tcontinue;\r\n\t\t\t}\r\n\t\t\t/*\r\n\t\t\t * store \"union\"\r\n\t\t\t */\r\n\t\t\tthis.u1 = (lupos.engine.operators.multiinput.Union) _eachSucceedingOfFirstSGContainer\r\n\t\t\t\t\t.getOperator();\r\n\t\t\t/*\r\n\t\t\t * get succeeding operators of this \"union\" and search for a \"join\"\r\n\t\t\t */\r\n\t\t\tList<OperatorIDTuple> _succeedingsOfUnion = new LinkedList<>();\r\n\t\t\t_succeedingsOfUnion.addAll(this.u1.getSucceedingOperators());\r\n\t\t\t/*\r\n\t\t\t * we iterate throug a ListIterator because , if this \"level\" of the operator graph\r\n\t\t\t * has no join found, the next \"level\" will be added to this iterator!\r\n\t\t\t */\r\n\t\t\tListIterator<OperatorIDTuple> _succeedingsOfUnionIt = _succeedingsOfUnion.listIterator();\r\n\t\t\twhile (true) {\r\n\t\t\t\tif (!_succeedingsOfUnionIt.hasNext()) break;\r\n\t\t\t\tOperatorIDTuple _eachSucceedingsOfUnion = _succeedingsOfUnionIt.next();\r\n\t\t\t\t/*\r\n\t\t\t\t * Search for a join as succeding of \"union\"\r\n\t\t\t\t */\r\n\t\t\t\tif (!(_eachSucceedingsOfUnion.getOperator() instanceof lupos.engine.operators.multiinput.join.Join)) {\r\n\t\t\t\t\tcontinue;\r\n\t\t\t\t}\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\tthis.join = (lupos.engine.operators.multiinput.join.Join) _eachSucceedingsOfUnion\r\n\t\t\t\t\t\t.getOperator();\r\n\r\n\t\t\t\t\r\n\t\t\t\t/*\r\n\t\t\t\t * Now search in join's preceding operators for a new \"union\" operator (so ignore\r\n\t\t\t\t * the same way back to the already stored union)\r\n\t\t\t\t */\r\n\t\t\t\tList<BasicOperator> _precedingsOfJoin = this.join.getPrecedingOperators();\r\n\t\t\t\tfor (BasicOperator _eachPrecedingsOfJoin : _precedingsOfJoin) {\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * search for an union\r\n\t\t\t\t\t */\r\n\t\t\t\t\tif (!(_eachPrecedingsOfJoin instanceof lupos.engine.operators.multiinput.Union)) {\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t}\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * that is not equal to our already stored \"union\", because if, we walk the tree back\r\n\t\t\t\t\t */\r\n\t\t\t\t\tif (((lupos.engine.operators.multiinput.Union) _eachPrecedingsOfJoin)\r\n\t\t\t\t\t\t\t.equals(this.u1))\r\n\t\t\t\t\t\tcontinue;\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * store the found second union, as 2nd union\r\n\t\t\t\t\t */\r\n\t\t\t\t\tthis.u2 = (lupos.engine.operators.multiinput.Union) _eachPrecedingsOfJoin;\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * Now search for a SubgraphContainer with the same key, as our already \r\n\t\t\t\t\t * stored SubgraphContainer, in the precedings of the 2nd \"union\"-operator.\r\n\t\t\t\t\t */\r\n\t\t\t\t\tList<BasicOperator> _precedingOf2ndUnion = this.u2.getPrecedingOperators();\r\n\t\t\t\t\tfor (BasicOperator _eachPrecedingOf2ndUnion : _precedingOf2ndUnion) {\r\n\t\t\t\t\t\tif (_eachPrecedingOf2ndUnion.getClass() != lupos.distributed.operator.SubgraphContainer.class) {\r\n\t\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * we have to avoid, that the two SubgraphContainer are equal (so we walked back in tree)\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tif (((lupos.distributed.operator.SubgraphContainer<?>) _eachPrecedingOf2ndUnion)\r\n\t\t\t\t\t\t\t\t.equals(this.sg1)) {\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * store the key of the 2nd SubgraphContainer\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tkeySg2 = ((lupos.distributed.operator.SubgraphContainer<?>) _eachPrecedingOf2ndUnion)\r\n\t\t\t\t\t\t\t\t.getKey();\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * now: both keys have to be same!\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tif (!keySg1.equals(keySg2)) {\r\n\t\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t\t * we didn't found any useful \"join\" at this level of the operator graph,\r\n\t\t\t\t\t\t\t * so we add next level to the iterator (deep-search-algorithm)\r\n\t\t\t\t\t\t\t */\r\n\t\t\t\t\t\t\tfor (OperatorIDTuple nextDeep :  _eachSucceedingsOfUnion.getOperator().getSucceedingOperators()) {\r\n\t\t\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t\t\t * add and rewind, so that this would be the next item in iterator\r\n\t\t\t\t\t\t\t\t */\r\n\t\t\t\t\t\t\t\t_succeedingsOfUnionIt.add(nextDeep);\r\n\t\t\t\t\t\t\t\t_succeedingsOfUnionIt.previous();\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\tthis.sg2 = (lupos.distributed.operator.SubgraphContainer<?>) _eachPrecedingOf2ndUnion;\r\n\t\t\t\t\t\treturn true;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\treturn false;",
+          "start node": "SubgraphContainer",
+          "use generated code": false
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "\t/*\r\n\t\t * Get the root of the first SubgraphContainer\r\n\t\t */\r\n\t\tRoot root = sg1.getRootOfSubgraph();\r\n\t\ttry {\r\n\t\t\t/*\r\n\t\t\t * get the both BasicIndexScan's\r\n\t\t\t */\r\n\t\t\tBasicIndexScan bis1 = getIndexScan(sg1.getRootOfSubgraph());\r\n\t\t\tBasicIndexScan bis2 = getIndexScan(sg2.getRootOfSubgraph());\r\n\t\t\tif (bis1 == null | bis2==null) return;\r\n\t\t\t\r\n\t\t\t/*\r\n\t\t\t * Join both TriplePattern and store them in the first SubgraphContainer\r\n\t\t\t */\r\n\t\t\tCollection<TriplePattern> patterns = bis1.getTriplePattern();\r\n\t\t\tpatterns.addAll(bis2.getTriplePattern());\r\n\t\t\tbis1.setTriplePatterns(patterns);\r\n\t\t\t/*\r\n\t\t\t * remove the 2nd SubgraphContainer\r\n\t\t\t */\r\n\t\t\troot.removeSucceedingOperator(sg2);\r\n\t\t\tsg2.removeFromOperatorGraph();\r\n\t\t\tRoot r = bis1.getRoot();\r\n\t\t\tr.removeSucceedingOperator(sg2);\r\n\t\t\t\t\r\n\t\t\t//remove the second sg-container\r\n\t\t\tu2.removePrecedingOperator(sg2);\r\n\t\t\t\r\n\t\t} catch (Exception e) {\r\n\t\t\te.printStackTrace();\r\n\t\t}\r\n\t\t// delete unreachable operators...\r\n\t\t this.deleteOperatorWithoutParentsRecursive(this.sg2, _startNodes);",
+          "use generated code": false
+        }
+      },
+      "visual representation": {
+        "left side": {},
+        "right side": {},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "MultiInput": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "if (!(_op instanceof lupos.engine.operators.multiinput.MultiInputOperator)) {\r\n\t\t\treturn false;\r\n\t\t}\r\n\t\tmi = (lupos.engine.operators.multiinput.MultiInputOperator) _op;\r\n\t\treturn (mi.getPrecedingOperators().size() <= 1);",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "this.mi.removeFromOperatorGraph();\r\nthis.deleteOperatorWithoutParentsRecursive(this.mi, _startNodes);",
+          "use generated code": false
+        }
+      },
+      "visual representation": {
+        "left side": {"mi": {
+          "also subclasses": true,
+          "class type": "Operator",
+          "op type": "RuleOperator",
+          "position": [
+            10,
+            42
+          ]
+        }},
+        "right side": {},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "PartitionSubgraph": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "private lupos.engine.operators.multiinput.join.Join join1 = null;\r\n\tprivate lupos.engine.operators.multiinput.Union union1 = null;\r\n\tprivate lupos.engine.operators.multiinput.Union union2 = null;\r\n\tprivate lupos.distributed.operator.SubgraphContainer<?> sg1 = null;\r\n\tprivate Root root;\r\n\r\n/*\r\n\t * Gets the key representation of any KeyContainer\r\n\t */\r\n\tprivate static String getKey(KeyContainer<?> keyContainer) {\r\n\t\treturn String.format(\"%s%s\", keyContainer.type, keyContainer.key);\r\n\t}\r\n\r\n\t/*\r\n\t * Gets the partition of an KeyContainer\r\n\t */\r\n\tprivate String getPartition(KeyContainer<?> keyContainer) {\r\n\t\tString key = getKey(keyContainer);\r\n\t\tPattern p = Pattern.compile(\"[SPO]\\\\d+$\");\r\n\t\tMatcher m = p.matcher(key);\r\n\t\twhile (m.find())\r\n\t\t\treturn m.group();\r\n\t\treturn null;\r\n\t}\r\n\r\n\t/*\r\n\t * Compares an partition and two given subgraphs whether they match for\r\n\t * parallel joining\r\n\t */\r\n\tprivate boolean compareTripplePatternVariable(String keyToCheck,\r\n\t\t\tSubgraphContainer<?> sg1, SubgraphContainer<?> sg2) {\r\n\t\t/*\r\n\t\t * get the index scan's and their triple pattern\r\n\t\t */\r\n\t\tBasicIndexScan bis1 = this.getIndexScan(sg1.getRootOfSubgraph());\r\n\t\tBasicIndexScan bis2 = this.getIndexScan(sg2.getRootOfSubgraph());\r\n\t\t/*\r\n\t\t * should never be null, but avoid faults by default :D\r\n\t\t */\r\n\t\tif (bis1 == null || bis2 == null || keyToCheck.length() < 1)\r\n\t\t\treturn false;\r\n\r\n\t\t/*\r\n\t\t * get the triple pattern of both subgraph containers, iterate through\r\n\t\t * the variables used in the first subgraph, then check whether the\r\n\t\t * variables in the 2nd subgraph are used in first subgraph (so in key\r\n\t\t * S0 the variable in subject of sg1 and sg2 have to be the same, in P1\r\n\t\t * the predicate and so on)\r\n\t\t */\r\n\t\tCollection<TriplePattern> tripple1 = bis1.getTriplePattern();\r\n\t\tCollection<TriplePattern> tripple2 = bis2.getTriplePattern();\r\n\t\tSet<Variable> boundVariabled = new HashSet<Variable>();\r\n\r\n\t\t/*\r\n\t\t * just from textual representation into position in triple (S = subject\r\n\t\t * = position:0)\r\n\t\t */\r\n\t\tchar keyCode = keyToCheck.charAt(0);\r\n\t\tint position = 0;\r\n\t\tswitch (keyCode) {\r\n\t\tcase 's':\r\n\t\tcase 'S':\r\n\t\t\tposition = 0;\r\n\t\t\tbreak;\r\n\t\tcase 'p':\r\n\t\tcase 'P':\r\n\t\t\tposition = 1;\r\n\t\t\tbreak;\r\n\t\tcase 'o':\r\n\t\tcase 'O':\r\n\t\t\tposition = 2;\r\n\t\t\tbreak;\r\n\t\t}\r\n\r\n\t\t/*\r\n\t\t * get the variables on given position and store them temp.\r\n\t\t */\r\n\t\tfor (TriplePattern pattern : tripple1) {\r\n\t\t\tItem i = pattern.getPos(position);\r\n\t\t\tif (i instanceof Variable) {\r\n\t\t\t\tboundVariabled.add((Variable) i);\r\n\t\t\t}\r\n\t\t}\r\n\t\t/* now check 2nd triple patterns, whether the same variable is used */\r\n\t\tfor (TriplePattern pattern : tripple2) {\r\n\t\t\tItem i = pattern.getPos(position);\r\n\t\t\tif (i instanceof Variable) {\r\n\t\t\t\tif (boundVariabled.contains(i)) {\r\n\t\t\t\t\treturn true;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\t/*\r\n\t\t * the given subgraphs does not match for local joining of partitions\r\n\t\t * because their keys and tripple patterns are too different! ;(\r\n\t\t */\r\n\t\treturn false;\r\n\t}\r\n\r\n\t/*\r\n\t * compares two subgraphs whether they match for local joining\r\n\t */\r\n\t@SuppressWarnings({ \"rawtypes\", \"unchecked\" })\r\n\tprivate boolean compareBothSubgraphContainer(SubgraphContainer sg1,\r\n\t\t\tSubgraphContainer sg2) {\r\n\t\t// if the keys are KeyContainer\r\n\t\tif (sg1.getKey() instanceof KeyContainer<?>\r\n\t\t\t\t&& sg2.getKey() instanceof KeyContainer<?>) {\r\n\t\t\t/*\r\n\t\t\t * get their keys and compare its partitions, whether local join can\r\n\t\t\t * be processed\r\n\t\t\t */\r\n\t\t\tKeyContainer<?> keyVal1 = (KeyContainer<?>) sg1.getKey();\r\n\t\t\tKeyContainer<?> keyVal2 = (KeyContainer<?>) sg2.getKey();\r\n\t\t\tString partitionKey1 = getPartition(keyVal1);\r\n\t\t\tString partitionKey2 = getPartition(keyVal2);\r\n\t\t\tif (partitionKey1 == null || partitionKey2 == null)\r\n\t\t\t\treturn false;\r\n\t\t\t/*\r\n\t\t\t * if the partition is the same (e.g. O0 and O0 or S1 and S1), and\r\n\t\t\t * the triple pattern variable on the partition key is the same (so\r\n\t\t\t * O0 and O0 have to be the same variable e.g ?o)\r\n\t\t\t */\r\n\t\t\tif (partitionKey1.equals(partitionKey2)\r\n\t\t\t\t\t&& compareTripplePatternVariable(partitionKey1, sg1, sg2)) {\r\n\t\t\t\t/*\r\n\t\t\t\t * remove the alternatives, because we do now join these\r\n\t\t\t\t * subgraphs, and key-exchange afterwards would fail, because\r\n\t\t\t\t * inserted subgraph has the original key\r\n\t\t\t\t */\r\n\t\t\t\tif (keyVal1 instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t((AlternativeKeyContainer<?>) keyVal1).removeAlternatives();\r\n\t\t\t\tif (keyVal2 instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t((AlternativeKeyContainer<?>) keyVal1).removeAlternatives();\r\n\t\t\t\treturn true;\r\n\t\t\t}\r\n\r\n\t\t\t/*\r\n\t\t\t * the 2nd subgraph has alternative keys, so check each alternative,\r\n\t\t\t * whether it fit to the key of the first subgraph\r\n\t\t\t */\r\n\t\t\tif (sg2.getKey() instanceof AlternativeKeyContainer<?>) {\r\n\t\t\t\tAlternativeKeyContainer<?> k2 = (AlternativeKeyContainer<?>) sg2\r\n\t\t\t\t\t\t.getKey();\r\n\t\t\t\tfor (KeyContainer<?> key2 : k2.getAlternatives()) {\r\n\t\t\t\t\tString partitionKey2alt = getPartition(key2);\r\n\t\t\t\t\tif (partitionKey2alt == null)\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\tif (partitionKey1.equals(partitionKey2alt)\r\n\t\t\t\t\t\t\t&& compareTripplePatternVariable(partitionKey2alt,\r\n\t\t\t\t\t\t\t\t\tsg1, sg2)) {\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * now change this key, and remove the alternatives, so\r\n\t\t\t\t\t\t * that this subgraph-key is not changed later again\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tsg2.changeKey(key2);\r\n\t\t\t\t\t\tif (k2 instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t\t\t((AlternativeKeyContainer<?>) k2)\r\n\t\t\t\t\t\t\t\t\t.removeAlternatives();\r\n\t\t\t\t\t\tif (sg1.getKey() instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t\t\t((AlternativeKeyContainer<?>) sg1.getKey())\r\n\t\t\t\t\t\t\t\t\t.removeAlternatives();\r\n\t\t\t\t\t\treturn true;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\t/*\r\n\t\t\t * the 1st subgraph has alternative keys, so check each alternative,\r\n\t\t\t * whether it fit to the key of the second subgraph\r\n\t\t\t */\r\n\t\t\tif (sg1.getKey() instanceof AlternativeKeyContainer<?>) {\r\n\t\t\t\tAlternativeKeyContainer<?> k1 = (AlternativeKeyContainer<?>) sg1\r\n\t\t\t\t\t\t.getKey();\r\n\t\t\t\tfor (KeyContainer<?> key1 : k1.getAlternatives()) {\r\n\t\t\t\t\tString partitionKey1alt = getPartition(key1);\r\n\t\t\t\t\tif (partitionKey1alt == null)\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\tif (partitionKey1alt.equals(partitionKey2)\r\n\t\t\t\t\t\t\t&& compareTripplePatternVariable(partitionKey2,\r\n\t\t\t\t\t\t\t\t\tsg1, sg2)) {\r\n\t\t\t\t\t\tsg1.changeKey(key1);\r\n\t\t\t\t\t\tif (sg1.getKey() instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t\t\t((AlternativeKeyContainer<?>) sg1.getKey())\r\n\t\t\t\t\t\t\t\t\t.removeAlternatives();\r\n\t\t\t\t\t\tif (k1 instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t\t\t((AlternativeKeyContainer<?>) k1)\r\n\t\t\t\t\t\t\t\t\t.removeAlternatives();\r\n\t\t\t\t\t\treturn true;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\t/*\r\n\t\t\t * the last case: both (key 1 and key 2) have alternative keys, so\r\n\t\t\t * check all combinations\r\n\t\t\t */\r\n\t\t\tif (sg1.getKey() instanceof AlternativeKeyContainer<?>\r\n\t\t\t\t\t&& sg2.getKey() instanceof AlternativeKeyContainer<?>) {\r\n\t\t\t\tAlternativeKeyContainer<?> k1 = (AlternativeKeyContainer<?>) sg1\r\n\t\t\t\t\t\t.getKey();\r\n\t\t\t\tAlternativeKeyContainer<?> k2 = (AlternativeKeyContainer<?>) sg2\r\n\t\t\t\t\t\t.getKey();\r\n\t\t\t\t/*\r\n\t\t\t\t * iterate through all alternatives in first subgraph\r\n\t\t\t\t */\r\n\t\t\t\tfor (KeyContainer<?> key1 : k1.getAlternatives()) {\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * get the partition\r\n\t\t\t\t\t */\r\n\t\t\t\t\tfinal String partitionKey1alt = getPartition(key1);\r\n\t\t\t\t\tif (partitionKey1alt == null)\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * iterate though all alternatives in seconds subgraph\r\n\t\t\t\t\t */\r\n\t\t\t\t\tfor (KeyContainer<?> key2 : k2.getAlternatives()) {\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * get the partition\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tfinal String partitionKey2alt = getPartition(key2);\r\n\t\t\t\t\t\tif (partitionKey2alt == null)\r\n\t\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * check same as above\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tif (partitionKey1alt.equals(partitionKey2alt)\r\n\t\t\t\t\t\t\t\t&& compareTripplePatternVariable(\r\n\t\t\t\t\t\t\t\t\t\tpartitionKey1alt, sg1, sg2)) {\r\n\t\t\t\t\t\t\tsg1.changeKey(key1);\r\n\t\t\t\t\t\t\tsg2.changeKey(key2);\r\n\t\t\t\t\t\t\tif (sg1.getKey() instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t\t\t\t((AlternativeKeyContainer<?>) sg1.getKey())\r\n\t\t\t\t\t\t\t\t\t\t.removeAlternatives();\r\n\t\t\t\t\t\t\tif (sg2.getKey() instanceof AlternativeKeyContainer)\r\n\t\t\t\t\t\t\t\t((AlternativeKeyContainer<?>) sg2.getKey())\r\n\t\t\t\t\t\t\t\t\t\t.removeAlternatives();\r\n\t\t\t\t\t\t\treturn true;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\treturn false;\r\n\t}\r\n\r\n/*\r\n\t * returns the first found basic index scan in the operators succeeding list\r\n\t */\r\n\tprivate BasicIndexScan getIndexScan(final BasicOperator root) {\r\n\t\t SimpleOperatorGraphVisitor sov = new SimpleOperatorGraphVisitor() {\r\n\t\t @Override\r\n\t\t public Object visit(BasicOperator basicOperator) {\r\n\t\t if (basicOperator instanceof BasicIndexScan) return basicOperator;\r\n\t\t return null;\r\n\t\t }\r\n\t\t };\r\n\t\t return (BasicIndexScan) root.visit(sov);\r\n\t}",
+        "additional import declarations": "import java.util.ArrayList;\r\nimport java.util.Collection;\r\nimport java.util.HashMap;\r\nimport java.util.HashSet;\r\nimport java.util.List;\r\nimport java.util.Set;\r\nimport java.util.regex.Matcher;\r\nimport java.util.regex.Pattern;\r\n\r\nimport lupos.datastructures.items.Item;\r\nimport lupos.datastructures.items.Variable;\r\nimport lupos.distributed.p2p.distributionstrategy.AlternativeKeyContainer;\r\nimport lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;\r\nimport lupos.engine.operators.BasicOperator;\r\nimport lupos.engine.operators.OperatorIDTuple;\r\nimport lupos.engine.operators.index.BasicIndexScan;\r\nimport lupos.engine.operators.index.Root;\r\nimport lupos.engine.operators.multiinput.Union;\r\nimport lupos.engine.operators.multiinput.join.Join;\r\nimport lupos.distributed.operator.SubgraphContainer;\r\nimport lupos.engine.operators.tripleoperator.TriplePattern;\r\nimport lupos.engine.operators.SimpleOperatorGraphVisitor;",
+        "check method": {
+          "additional code": "",
+          "code": "//Store global Root of the subgraph\r\nif (_op instanceof Root)\r\n\t\t\tthis.root = (Root) _op;\r\n/*\r\n\t\t * we only check on Subgraphs\r\n\t\t */\r\n\t\tif (!(_op instanceof lupos.distributed.operator.SubgraphContainer)) {\r\n\t\t\treturn false;\r\n\t\t}\r\n\r\n\t\t/*\r\n\t\t * store the subgraph and search for an union in succeding-list\r\n\t\t */\r\n\t\tthis.sg1 = (lupos.distributed.operator.SubgraphContainer<?>) _op;\r\n\t\tList<OperatorIDTuple> _succedingOperators_1_0 = _op\r\n\t\t\t\t.getSucceedingOperators();\r\n\t\tfor (OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {\r\n\t\t\tif (!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.multiinput.Union)) {\r\n\t\t\t\tcontinue;\r\n\t\t\t}\r\n\t\t\t/*\r\n\t\t\t * found an union, now search for a join in succeding-list of the\r\n\t\t\t * union operator\r\n\t\t\t */\r\n\t\t\tthis.union1 = (lupos.engine.operators.multiinput.Union) _sucOpIDTup_1_0\r\n\t\t\t\t\t.getOperator();\r\n\t\t\tList<OperatorIDTuple> _succedingOperators_2_0 = _sucOpIDTup_1_0\r\n\t\t\t\t\t.getOperator().getSucceedingOperators();\r\n\t\t\tfor (OperatorIDTuple _sucOpIDTup_2_0 : _succedingOperators_2_0) {\r\n\t\t\t\tif (!(_sucOpIDTup_2_0.getOperator() instanceof lupos.engine.operators.multiinput.join.Join)) {\r\n\t\t\t\t\tcontinue;\r\n\t\t\t\t}\r\n\t\t\t\t/*\r\n\t\t\t\t * found the join! now go backwards and search for an union in\r\n\t\t\t\t * precedings-list of the join operator, but do not use the\r\n\t\t\t\t * union, we just came from (union1)\r\n\t\t\t\t */\r\n\t\t\t\tthis.join1 = (lupos.engine.operators.multiinput.join.Join) _sucOpIDTup_2_0\r\n\t\t\t\t\t\t.getOperator();\r\n\t\t\t\tList<BasicOperator> _precedingOperators_3_1 = _sucOpIDTup_2_0\r\n\t\t\t\t\t\t.getOperator().getPrecedingOperators();\r\n\t\t\t\tfor (BasicOperator _precOp_3_1 : _precedingOperators_3_1) {\r\n\t\t\t\t\tif (!(_precOp_3_1 instanceof lupos.engine.operators.multiinput.Union)) {\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t}\r\n\t\t\t\t\t// prevent the same way back in operator graph, so that\r\n\t\t\t\t\t// union1 != union2\r\n\t\t\t\t\tif (((lupos.engine.operators.multiinput.Union) _precOp_3_1)\r\n\t\t\t\t\t\t\t.equals(this.union1)) {\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t}\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * we just found thus union we searched for! Now get its\r\n\t\t\t\t\t * preceedings and get any subgraph container (if we found\r\n\t\t\t\t\t * any subgraph container, we just found the building we\r\n\t\t\t\t\t * searched for. We do not need the 2nd sg container.\r\n\t\t\t\t\t */\r\n\t\t\t\t\tthis.union2 = (lupos.engine.operators.multiinput.Union) _precOp_3_1;\r\n\t\t\t\t\tList<BasicOperator> _precedingOperators_4_0 = _precOp_3_1\r\n\t\t\t\t\t\t\t.getPrecedingOperators();\r\n\t\t\t\t\tfor (BasicOperator _precOp_4_0 : _precedingOperators_4_0) {\r\n\t\t\t\t\t\tif (!(_precOp_4_0 instanceof lupos.distributed.operator.SubgraphContainer)) {\r\n\t\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * check whether the both subgraph-container fits for\r\n\t\t\t\t\t\t * partition joining!\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\tif (!compareBothSubgraphContainer(\r\n\t\t\t\t\t\t\t\tthis.sg1,\r\n\t\t\t\t\t\t\t\t(lupos.distributed.operator.SubgraphContainer) _precOp_4_0)) {\r\n\t\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t\t/*\r\n\t\t\t\t\t\t * all went good, we have this needed structure of\r\n\t\t\t\t\t\t * partitions\r\n\t\t\t\t\t\t */\r\n\t\t\t\t\t\treturn true;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\t/*\r\n\t\t * no matching with this subgraph container\r\n\t\t */\r\n\t\treturn false;",
+          "start node": "SubgraphContainer",
+          "use generated code": false
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "/*\r\n\t\t * just make sure, that the formation in operator graph is right!\r\n\t\t */\r\n\t\tBasicOperator opp = sg1.getPrecedingOperators().size() > 0 ? sg1\r\n\t\t\t\t.getPrecedingOperators().get(0) : null;\r\n\r\n\t\t/*\r\n\t\t * we just accept subgraphs which succeeding operator is the union\r\n\t\t * operator\r\n\t\t */\r\n\t\tfor (BasicOperator prec : union1.getPrecedingOperators()) {\r\n\t\t\tif (!(prec instanceof SubgraphContainer))\r\n\t\t\t\treturn;\r\n\t\t}\r\n\t\tfor (BasicOperator prec : union2.getPrecedingOperators()) {\r\n\t\t\tif (!(prec instanceof SubgraphContainer))\r\n\t\t\t\treturn;\r\n\t\t}\r\n\t\t/*\r\n\t\t * the size of partitions should be the same!\r\n\t\t */\r\n\t\tif (union1.getPrecedingOperators().size() != union2\r\n\t\t\t\t.getPrecedingOperators().size())\r\n\t\t\treturn;\r\n\r\n\t\t// add new operators...\r\n\t\tJoin join_new = new lupos.engine.operators.multiinput.join.Join();\r\n\t\tjoin_new.setIntersectionVariables(join1.getIntersectionVariables());\r\n\t\tjoin_new.setUnionVariables(union1.getUnionVariables());\r\n\r\n\t\tUnion union_new = new lupos.engine.operators.multiinput.Union();\r\n\t\tunion_new.setIntersectionVariables(union1.getIntersectionVariables());\r\n\t\tunion_new.setUnionVariables(union1.getUnionVariables());\r\n\r\n\t\tint countingUnions = 0;\r\n\t\tfirstLoop: for (;;) {\r\n\t\t\t// for each 1st sg container\r\n\t\t\tfor (BasicOperator prec : union1.getPrecedingOperators()) {\r\n\t\t\t\tboolean match = false;\r\n\t\t\t\t// find the matching second one\r\n\t\t\t\tfor (BasicOperator prec2 : union2.getPrecedingOperators()) {\r\n\t\t\t\t\tif (!compareBothSubgraphContainer((SubgraphContainer) prec,\r\n\t\t\t\t\t\t\t(SubgraphContainer) prec2))\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\tmatch = true;\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * store with better variable name\r\n\t\t\t\t\t */\r\n\t\t\t\t\tSubgraphContainer sg1 = (SubgraphContainer) prec;\r\n\t\t\t\t\tSubgraphContainer sg2 = (SubgraphContainer) prec2;\r\n\r\n\t\t\t\t\t// remove succedding UNION-operator for both subgraphs\r\n\t\t\t\t\tfor (OperatorIDTuple eachSucc : prec\r\n\t\t\t\t\t\t\t.getSucceedingOperators()) {\r\n\t\t\t\t\t\tprec.removeSucceedingOperator(eachSucc);\r\n\t\t\t\t\t\teachSucc.getOperator().removePrecedingOperator(prec);\r\n\t\t\t\t\t}\r\n\t\t\t\t\tfor (OperatorIDTuple eachSucc : prec2\r\n\t\t\t\t\t\t\t.getSucceedingOperators()) {\r\n\t\t\t\t\t\tprec2.removeSucceedingOperator(eachSucc);\r\n\t\t\t\t\t\teachSucc.getOperator().removePrecedingOperator(prec2);\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\t// remove 2nd sg\r\n\t\t\t\t\tfor (BasicOperator bo : sg2.getPrecedingOperators()) {\r\n\t\t\t\t\t\tbo.removeSucceedingOperator(sg2);\r\n\t\t\t\t\t\tsg2.removePrecedingOperator(bo);\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * join with is to be included into the subgraph container\r\n\t\t\t\t\t */\r\n\t\t\t\t\tJoin smallJoin = new Join();\r\n\t\t\t\t\tsmallJoin.cloneFrom(join_new);\r\n\r\n\t\t\t\t\t// remove so that the for-loop will end!\r\n\t\t\t\t\tunion1.removePrecedingOperator(prec);\r\n\t\t\t\t\tunion2.removePrecedingOperator(prec2);\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * get the index scan in first subgraph\r\n\t\t\t\t\t */\r\n\t\t\t\t\tBasicIndexScan bis = getIndexScan(sg1.getRootOfSubgraph());\r\n\t\t\t\t\tif (bis == null)\r\n\t\t\t\t\t\tcontinue;\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * you have to clone this list, because if changing\r\n\t\t\t\t\t * something, the list is updated immediately, but we want\r\n\t\t\t\t\t * to access the removed items later!\r\n\t\t\t\t\t */\r\n\t\t\t\t\tList<OperatorIDTuple> _bisSucc = bis\r\n\t\t\t\t\t\t\t.getSucceedingOperators();\r\n\t\t\t\t\tList<OperatorIDTuple> bisSucc = new ArrayList<>(\r\n\t\t\t\t\t\t\t_bisSucc.size());\r\n\t\t\t\t\tfor (OperatorIDTuple toClone : _bisSucc) {\r\n\t\t\t\t\t\tbisSucc.add(toClone);\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * now add the 2nd subgraph container in the first subgraph\r\n\t\t\t\t\t * container\r\n\t\t\t\t\t */\r\n\t\t\t\t\tsg1.getRootOfSubgraph().addSucceedingOperator(sg2);\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * remove old connections of the 2nd subgraph (because it\r\n\t\t\t\t\t * should be included into the subgraph)\r\n\t\t\t\t\t */\r\n\t\t\t\t\tfor (OperatorIDTuple op : bisSucc) {\r\n\t\t\t\t\t\tbis.removeSucceedingOperator(op);\r\n\t\t\t\t\t\top.getOperator().removePrecedingOperator(bis);\r\n\t\t\t\t\t}\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * connect the basic index scan and the 2nd subgraph\r\n\t\t\t\t\t * container in the join-operator in the 1st subgraph\r\n\t\t\t\t\t * container\r\n\t\t\t\t\t */\r\n\t\t\t\t\tbis.addSucceedingOperator(smallJoin, 0);\r\n\t\t\t\t\tsmallJoin.addPrecedingOperator(sg2);\r\n\t\t\t\t\tsg2.addSucceedingOperator(smallJoin, 1);\r\n\t\t\t\t\tsmallJoin.addPrecedingOperator(bis);\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * now connect the join with the succeeding operators of the\r\n\t\t\t\t\t * old basic index scan (here we use the hack, to clone the\r\n\t\t\t\t\t * succeeding list of the index scan, because when we\r\n\t\t\t\t\t * removed the connection and added the join, the list would\r\n\t\t\t\t\t * have no content)\r\n\t\t\t\t\t */\r\n\t\t\t\t\tfor (OperatorIDTuple op : bisSucc) {\r\n\t\t\t\t\t\tsmallJoin.addSucceedingOperator(op);\r\n\t\t\t\t\t\top.getOperator().addPrecedingOperator(smallJoin);\r\n\t\t\t\t\t}\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * now connect the UNION with the result of the 1st subgraph\r\n\t\t\t\t\t * container. In this UNION all partitions are to be\r\n\t\t\t\t\t * combined.\r\n\t\t\t\t\t */\r\n\t\t\t\t\tunion_new.addPrecedingOperator(sg1);\r\n\t\t\t\t\tOperatorIDTuple unionIDOperator = new OperatorIDTuple(\r\n\t\t\t\t\t\t\tunion_new, countingUnions++);\r\n\t\t\t\t\tsg1.addSucceedingOperator(unionIDOperator);\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * this is to be executed, if the 2nd subgraph is directly\r\n\t\t\t\t\t * added as succeeding of the root, because in this case,\r\n\t\t\t\t\t * the 2nd subgraph container has no preceding (i don't know\r\n\t\t\t\t\t * why this is done this way)\r\n\t\t\t\t\t */\r\n\t\t\t\t\tif (this.root != null) {\r\n\t\t\t\t\t\tthis.root.removeSucceedingOperator(sg2);\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * add the intersections variables of the 2nd sg to the\r\n\t\t\t\t\t * first one\r\n\t\t\t\t\t */\r\n\t\t\t\t\tCollection<Variable> sg1interSection = sg1\r\n\t\t\t\t\t\t\t.getIntersectionVariables();\r\n\t\t\t\t\tCollection<Variable> sg2interSection = sg2\r\n\t\t\t\t\t\t\t.getIntersectionVariables();\r\n\t\t\t\t\tif (sg1interSection == null)\r\n\t\t\t\t\t\tsg1interSection = new HashSet<>();\r\n\t\t\t\t\tif (sg2interSection != null)\r\n\t\t\t\t\t\tsg1interSection.addAll(sg2interSection);\r\n\t\t\t\t\tsg1.setIntersectionVariables(sg1interSection);\r\n\t\t\t\t\t/*\r\n\t\t\t\t\t * add the union variables of the 2nd sg to the first one\r\n\t\t\t\t\t */\r\n\t\t\t\t\tCollection<Variable> sg1union = sg1.getUnionVariables();\r\n\t\t\t\t\tCollection<Variable> sg2union = sg2.getUnionVariables();\r\n\t\t\t\t\tif (sg1union == null)\r\n\t\t\t\t\t\tsg1union = new HashSet<>();\r\n\t\t\t\t\tif (sg2union != null)\r\n\t\t\t\t\t\tsg1union.addAll(sg2union);\r\n\t\t\t\t\tsg1.setUnionVariables(sg1union);\r\n\r\n\t\t\t\t\tcontinue firstLoop;\r\n\t\t\t\t}\r\n\t\t\t\t/*\r\n\t\t\t\t * we have no match -> no partitions which can be used for local\r\n\t\t\t\t * join -> exit!\r\n\t\t\t\t */\r\n\t\t\t\tif (!match)\r\n\t\t\t\t\treturn;\r\n\t\t\t}\r\n\t\t\tbreak;\r\n\t\t}\r\n\r\n\t\t/*\r\n\t\t * stuff from the rule builder ...\r\n\t\t */\r\n\r\n\t\t// remove obsolete connections...\r\n\t\tthis.union1.removeSucceedingOperator(this.join1);\r\n\t\tthis.join1.removePrecedingOperator(this.union1);\r\n\r\n\t\t// remove all connections to the follower of our processing tree\r\n\t\t// and add the new union\r\n\t\tList<OperatorIDTuple> succeddingsOfAll = this.join1\r\n\t\t\t\t.getSucceedingOperators();\r\n\t\tfor (OperatorIDTuple _child : succeddingsOfAll) {\r\n\t\t\t_child.getOperator().removePrecedingOperator(this.join1);\r\n\t\t\tunion_new.addSucceedingOperator(_child);\r\n\t\t\t_child.getOperator().addPrecedingOperator(union_new);\r\n\t\t}\r\n\t\t// delete unreachable operators...\r\n\t\tthis.deleteOperatorWithoutParentsRecursive(this.join1, _startNodes);\r\n\t\tthis.deleteOperatorWithoutParentsRecursive(this.union1, _startNodes);\r\n\t\tthis.deleteOperatorWithoutParentsRecursive(this.union2, _startNodes);\r\n\t\tthis.join1.removeFromOperatorGraph();\r\n\t\tthis.union1.removeFromOperatorGraph();\r\n\t\tthis.union2.removeFromOperatorGraph();",
+          "use generated code": false
+        }
+      },
+      "visual representation": {
+        "left side": {},
+        "right side": {},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": 100
+        }
+      }
+    },
+    "Union": {
+      "documentation": {
+        "left image": "",
+        "long description": "",
+        "right image": "",
+        "see also": {
+          "rule packages": [],
+          "rules": []
+        },
+        "short description": "",
+        "show visual representation": true,
+        "transition text": "",
+        "use generated visual representation": true
+      },
+      "implementation": {
+        "additional global java code": "",
+        "additional import declarations": "",
+        "check method": {
+          "additional code": "return (this.u.getPrecedingOperators().size() <= 1);",
+          "code": "",
+          "start node": "Operator",
+          "use generated code": true
+        },
+        "replace method": {
+          "additional code": "",
+          "code": "\t\tthis.u.removeFromOperatorGraph();\r\n\t\tthis.sgc.removeSucceedingOperator(this.u);\r\n\t\tfor (OperatorIDTuple operator : this.u.getSucceedingOperators()) {\r\n\t\t\toperator.getOperator().removePrecedingOperator(this.u);\r\n\t\t\toperator.getOperator().addPrecedingOperator(this.sgc);\r\n\t\t}",
+          "use generated code": false
+        }
+      },
+      "visual representation": {
+        "left side": {
+          "connections": {"sgc": [{
+            "active": false,
+            "id": -1,
+            "id label": "",
+            "mode": "EXISTS",
+            "to": "u"
+          }]},
+          "sgc": {
+            "also subclasses": true,
+            "class type": "SubgraphContainer",
+            "op type": "RuleOperator",
+            "position": [
+              0,
+              13
+            ]
+          },
+          "u": {
+            "also subclasses": true,
+            "class type": "Union",
+            "op type": "RuleOperator",
+            "position": [
+              0,
+              321
+            ]
+          }
+        },
+        "right side": {"sgc": {
+          "also subclasses": false,
+          "class type": "SubgraphContainer",
+          "op type": "RuleOperator",
+          "position": [
+            30,
+            53
+          ]
+        }},
+        "top toolbar": {
+          "use colored arrows": false,
+          "zoom": "100Sub"
+        }
+      }
+    }
+  }
+}

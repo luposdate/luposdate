@@ -50,6 +50,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -161,6 +162,34 @@ public class Client {
 		final HttpResponse response = httpclient.execute(httpurirequest);
 		final HttpEntity entity = response.getEntity();
 		InputStream in = entity.getContent();
+		if(Client.log){
+			in = new InputStreamLogger(in);
+		}
+		return new Tuple<String, InputStream>(entity.getContentType().getValue(), new BufferedInputStream(in));
+	}
+
+	/**
+	 * Sends an {@link InputStream} to a Endpoint-URL
+	 * @param url the url
+	 * @param stream the stream to be sent
+	 * @param requestHeader the header for the request
+	 * @return Tuple with content type and the answer as stream
+	 * @throws IOException
+	 */
+	public static Tuple<String, InputStream> doSubmitStream(final String url, final InputStream stream, final String requestHeader) throws IOException {
+		final HttpClient httpclient = new DefaultHttpClient();
+		final HttpUriRequest httpurirequest;
+
+		final HttpPost httppost = new HttpPost(url);
+		httppost.setHeader("Accept", requestHeader);
+		final InputStreamEntity ise = new InputStreamEntity(stream,-1);
+		httppost.setEntity(ise);
+		httpurirequest = httppost;
+
+		final HttpResponse response = httpclient.execute(httpurirequest);
+		final HttpEntity entity = response.getEntity();
+		InputStream in = entity.getContent();
+
 		if(Client.log){
 			in = new InputStreamLogger(in);
 		}

@@ -25,6 +25,9 @@ package lupos.distributed.storage.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -40,6 +43,7 @@ import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.distributed.operator.ISubgraphExecutor;
 import lupos.distributed.operator.format.Helper;
 import lupos.distributed.operator.format.SubgraphContainerFormatter;
 import lupos.distributed.operator.format.operatorcreator.IOperatorCreator;
@@ -62,6 +66,7 @@ import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.engine.operators.singleinput.sort.fastsort.FastSort;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
+import lupos.optimizations.logical.rules.generated.AfterPhysicalOptimizationDistributedRulePackage;
 import lupos.optimizations.logical.statistics.VarBucket;
 
 import org.json.JSONArray;
@@ -370,4 +375,164 @@ public class LocalExecutor {
 			}
 		}
 	}
+
+
+	/**
+	 * This methods transforms a subgraph given as serialized JSON string into an operator graph,
+	 * which is executed and its result is returned serialized as string...
+	 *
+	 * @param subgraphSerializedAsJSONString the serialized JSON string for the subgraph
+	 * @param dataset the dataset on which the subgraph must be evaluated
+	 * @param operatorCreator the creator for the operators of the subgraph
+	 * @param formatter the formatter according to which the query result is serialized
+	 * @param sgExecuter the subgraph executer which is to be used if the subgraph contains included subgraphs
+	 * @return a tuple with the mime type of the serialized query result as well as the serialized query result
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	private static Tuple<QueryResult, Set<Variable>> evaluateSubgraph(
+			final String subgraphSerializedAsJSONString, final Dataset dataset,
+			final IOperatorCreator operatorCreator, final ISubgraphExecutor<?> sgExecuter) throws JSONException {
+		final CollectResult collectResult = new CollectResult(true);
+		final SubgraphContainerFormatter formatter = new SubgraphContainerFormatter(dataset, operatorCreator, collectResult,sgExecuter);
+		final Root root = formatter.deserialize(new JSONObject(subgraphSerializedAsJSONString));
+
+		// some initializations
+		root.deleteParents();
+		root.setParents();
+		root.detectCycles();
+		root.sendMessage(new BoundVariablesMessage());
+
+
+		Class<? extends Bindings> instanceClass = null;
+		if (Bindings.instanceClass == BindingsArrayVarMinMax.class
+				|| Bindings.instanceClass == BindingsArrayPresortingNumbers.class) {
+			// is BindingsArrayVarMinMax or BindingsArrayPresortingNumbers
+			// necessary? Or is only BindingsArray sufficient?
+			@SuppressWarnings("serial")
+			final SimpleOperatorGraphVisitor sogv = new SimpleOperatorGraphVisitor() {
+				public boolean found = false;
+
+				@Override
+				public Object visit(final BasicOperator basicOperator) {
+					if (basicOperator instanceof FastSort) {
+						this.found = true;
+					}
+					return null;
+				}
+
+				@Override
+				public boolean equals(final Object o) {
+					if (o instanceof Boolean) {
+						return this.found == (Boolean) o;
+					} else {
+						return super.equals(o);
+					}
+				}
+			};
+			root.visit(sogv);
+			if (sogv.equals(false)) {
+				instanceClass = Bindings.instanceClass;
+				Bindings.instanceClass = BindingsArray.class;
+			}
+		}
+
+
+		root.physicalOptimization();
+		root.deleteParents();
+		root.setParents();
+		root.detectCycles();
+		//MoveFilter to SubgraphContainer rule
+		final AfterPhysicalOptimizationDistributedRulePackage refie = new AfterPhysicalOptimizationDistributedRulePackage();
+		refie.applyRules(root);
+
+		// evaluate subgraph!
+		final BindingsFactory bindingsFactory= BindingsFactory.createBindingsFactory(CommonCoreQueryEvaluator.getAllVariablesOfQuery(root));
+		root.sendMessage(new BindingsFactoryMessage(bindingsFactory));
+
+		root.sendMessage(new StartOfEvaluationMessage());
+		root.startProcessing();
+		root.sendMessage(new EndOfEvaluationMessage());
+
+		if (instanceClass != null) {
+			Bindings.instanceClass = instanceClass;
+		}
+		//Result is back ..
+		return new Tuple<QueryResult, Set<Variable>>(collectResult.getResult(), new HashSet<Variable>(LocalExecutor.getVariables(root)));
+	}
+
+	/**
+	 * This methods transforms a subgraph given as serialized JSON string into an operator graph,
+	 * which is executed and its result is returned as InputStream...
+	 *
+	 * @param subgraphSerializedAsJSONString the serialized JSON string for the subgraph
+	 * @param dataset the dataset on which the subgraph must be evaluated
+	 * @param operatorCreator the creator for the operators of the subgraph
+	 * @param formatter the formatter according to which the query result is serialized
+	 * @param sgExecuter the subgraph executer which is to be used if the subgraph contains included subgraphs
+	 * @return head Header-bytes that are put into the InputStream as header, before data is put into
+	 * @throws JSONException error
+	 * @throws IOException error
+	 */
+	public static InputStream evaluateSubgraphAndGetStream(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator, final Formatter formatter, final ISubgraphExecutor<?> sgExecuter, final byte[] head) throws JSONException, IOException {
+		//Get result
+		final Tuple<QueryResult, Set<Variable>> result = LocalExecutor.evaluateSubgraph(subgraphSerializedAsJSONString, dataset, operatorCreator,sgExecuter);
+
+		final PipedInputStream in = new PipedInputStream();
+		final PipedOutputStream out = new PipedOutputStream(in);
+		  //Write header (bytes, if set)
+		  if (head != null) {
+			out.write(head);
+		}
+		  /*
+		   * New thread, that serializes the QueryResult
+		   */
+		  final Thread t = new Thread(
+		    new Runnable(){
+		      @Override
+			public void run(){
+		    	  try {
+		    		 //serialize into XML / JSON ...
+					 formatter.writeResult(out, result.getSecond(), result.getFirst());
+				} catch (final IOException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						out.close();
+					} catch (final IOException e) {
+						e.printStackTrace();
+					}
+				}
+		      }
+		    }
+		  );
+		  t.setName("Streaming QueryResult");
+		  t.setPriority(Thread.MAX_PRIORITY);
+		  t.start();
+		  //Return as steam, so that it can be transmitted before full serialization has been finished
+		return in;
+	}
+
+	/**
+	 * This methods transforms a subgraph given as serialized JSON string into an operator graph,
+	 * which is executed and its result is returned serialized as string...
+	 *
+	 * @param subgraphSerializedAsJSONString the serialized JSON string for the subgraph
+	 * @param dataset the dataset on which the subgraph must be evaluated
+	 * @param operatorCreator the creator for the operators of the subgraph
+	 * @param formatter the formatter according to which the query result is serialized
+	 * @param sgExecuter the subgraph executer which is to be used if the subgraph contains included subgraphs
+	 * @return a tuple with the mime type of the serialized query result as well as the serialized query result
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public static Tuple<String, String> evaluateSubgraphAndReturnSerializedResult(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator, final Formatter formatter, final ISubgraphExecutor<?> sgExecuter) throws JSONException, IOException {
+		final Tuple<QueryResult, Set<Variable>> result = LocalExecutor.evaluateSubgraph(subgraphSerializedAsJSONString, dataset, operatorCreator,sgExecuter);
+		final ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+		final String mimeType = formatter.getMIMEType(result.getFirst());
+		formatter.writeResult(arrayOutputStream, result.getSecond(), result.getFirst());
+		arrayOutputStream.close();
+		return new Tuple<String, String>(new String(arrayOutputStream.toByteArray()), mimeType);
+	}
+
 }

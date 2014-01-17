@@ -1,0 +1,75 @@
+{
+  "associations": {"AfterPhysicalOptimizationDistributionRulePackage": ["MoveFilterToSubgraph"]},
+  "rule packages": {"AfterPhysicalOptimizationDistributionRulePackage": {"documentation": {
+    "long description": "",
+    "see also": {
+      "rule packages": [],
+      "rules": []
+    },
+    "short description": ""
+  }}},
+  "rules": {"MoveFilterToSubgraph": {
+    "documentation": {
+      "left image": "",
+      "long description": "",
+      "right image": "",
+      "see also": {
+        "rule packages": [],
+        "rules": []
+      },
+      "short description": "",
+      "show visual representation": true,
+      "transition text": "",
+      "use generated visual representation": true
+    },
+    "implementation": {
+      "additional global java code": " private lupos.distributed.operator.SubgraphContainer<?> sg1 = null;\r\n private lupos.engine.operators.singleinput.filter.Filter filter = null;\r\n\r\nprivate Result getResult(final BasicOperator root) {\r\n\t\tSimpleOperatorGraphVisitor sov = new SimpleOperatorGraphVisitor() {\r\n\t\t\t@Override\r\n\t\t\tpublic Object visit(BasicOperator basicOperator) {\r\n\t\t\t\tif (basicOperator instanceof Result) return basicOperator;\r\n\t\t\t\treturn null;\r\n\t\t\t}\r\n\t\t};\r\n\t\treturn (Result) root.visit(sov);\r\n}",
+      "additional import declarations": "import java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport lupos.optimizations.logical.rules.generated.PushFilterRule;\nimport lupos.optimizations.logical.rules.generated.runtime.Rule;\nimport lupos.distributed.operator.format.Helper;\nimport lupos.engine.operators.BasicOperator;\nimport lupos.engine.operators.OperatorIDTuple;\nimport lupos.engine.operators.SimpleOperatorGraphVisitor;\nimport lupos.engine.operators.singleinput.Result;",
+      "check method": {
+        "additional code": "",
+        "code": "/*\r\n    \t * search for an Subgraph Container with the only succeeding operator \"Filter\"\r\n    \t */\r\n        if(!(_op instanceof lupos.distributed.operator.SubgraphContainer)) {\r\n            return false;\r\n        }\r\n\r\n        if (sg1 != null && sg1.equals((lupos.distributed.operator.SubgraphContainer<?>) _op)) \r\n        \treturn false;\r\n        this.sg1 = (lupos.distributed.operator.SubgraphContainer<?>) _op;\r\n\r\n        List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();\r\n        if(_succedingOperators_1_0.size() != 1) {\r\n            return false;\r\n        }\r\n\r\n        for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {\r\n            if(_sucOpIDTup_1_0.getOperator().getClass() != lupos.engine.operators.singleinput.filter.Filter.class) {\r\n                continue;\r\n            }\r\n            this.filter = (lupos.engine.operators.singleinput.filter.Filter) _sucOpIDTup_1_0.getOperator();\r\n            return true;\r\n        }\r\n        return false;",
+        "start node": "SubgraphContainer",
+        "use generated code": false
+      },
+      "replace method": {
+        "additional code": "",
+        "code": "/* search for a result in subgraph container, if not found, cancel the task!  \t */\r\n         Result r = getResult(this.sg1.getRootOfSubgraph());\r\n         if (r == null) return;\r\n    \t\r\n        // add new operators...\r\n\r\n       //deepCopy of succeedings and precedings\r\n        List<OperatorIDTuple> succs =  Helper.cloneList(this.filter.getSucceedingOperators());\r\n        List<BasicOperator> preds =  Helper.cloneList(this.filter.getPrecedingOperators());\r\n        \r\n        for (OperatorIDTuple op : succs) {\r\n        \top.getOperator().removePrecedingOperator(this.filter);\r\n        \top.getOperator().addPrecedingOperator(this.sg1);\r\n        \tthis.sg1.addSucceedingOperator(op);\r\n        }\r\n        for (OperatorIDTuple op : succs) {\r\n        \tthis.filter.removeSucceedingOperator(op);\r\n        }\r\n        for (BasicOperator op : preds) {\r\n        \tthis.filter.removePrecedingOperator(op);\r\n        \top.removeSucceedingOperator(this.filter);\r\n        }\r\n      \r\n        // now move to subgraph\r\n        \r\n        preds = Helper.cloneList(r.getPrecedingOperators());\r\n        for (BasicOperator bo : preds) {\r\n        \t//remove ? -> Result\r\n        \tbo.removeSucceedingOperator(r);\r\n        \tr.removePrecedingOperator(bo);\r\n        \t//add ? -> Filter\r\n        \tbo.addSucceedingOperator(this.filter);\r\n        \tthis.filter.addPrecedingOperator(bo);\r\n        }\r\n        \r\n        //add Filter before -> Result in SG\r\n        this.filter.addSucceedingOperator(r);\r\n        r.addPrecedingOperator(this.filter);\r\n \r\n        // delete unreachable operators...\r\n        this.sg1.removeSucceedingOperator(this.filter);\r\n        this.filter.removePrecedingOperator(this.sg1);",
+        "use generated code": false
+      }
+    },
+    "visual representation": {
+      "left side": {
+        "connections": {"sg1": [{
+          "active": false,
+          "id": -1,
+          "id label": "",
+          "mode": "EXISTS",
+          "to": "filter"
+        }]},
+        "filter": {
+          "also subclasses": false,
+          "class type": "Filter",
+          "op type": "RuleOperator",
+          "position": [
+            19,
+            377
+          ]
+        },
+        "sg1": {
+          "also subclasses": true,
+          "class type": "SubgraphContainer",
+          "op type": "RuleOperator",
+          "position": [
+            19,
+            20
+          ]
+        }
+      },
+      "right side": {},
+      "top toolbar": {
+        "use colored arrows": false,
+        "zoom": 100
+      }
+    }
+  }}
+}

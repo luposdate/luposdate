@@ -42,6 +42,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1390,6 +1392,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public QueryEvaluator<Node> setupEvaluator(final EvaluationMode mode)
 			throws Throwable {
 		final ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
@@ -1399,8 +1402,20 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		FederatedQueryBitVectorJoin.substringSize = xpref.datatypes.IntegerDatatype.getFirstValue("serviceCallBitVectorSize");
 		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = FederatedQueryBitVectorJoin.substringSize;
 		LiteralFactory.semanticInterpretationOfLiterals = xpref.datatypes.BooleanDatatype.getFirstValue("semanticInterpretationOfDatatypes");
-		@SuppressWarnings("unchecked")
-		final QueryEvaluator<Node> evaluator = this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex()).newInstance();
+		// use static method "newInstance()" for instantiation if available
+		QueryEvaluator<Node> evaluator = null;
+		final Class<? extends QueryEvaluator<Node>> evalClass = this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex());
+		Method m;
+		if ((m  = evalClass.getDeclaredMethod("newInstance")) != null && (m.getModifiers() & Modifier.STATIC) != 0) {
+			final Object instance = m.invoke(evalClass);
+			if (instance instanceof QueryEvaluator) {
+				evaluator = (QueryEvaluator<Node>) instance;
+			}
+		}
+		if (evaluator == null) {
+			// otherwise use standard constructor
+			evaluator = evalClass.newInstance();
+		}
 		evaluator.setupArguments();
 		evaluator.getArgs().set("debug", DEBUG.ALL);
 		evaluator.getArgs().set("result", QueryResult.TYPE.MEMORY);

@@ -30,10 +30,14 @@
 			<artifactId>luposdate.gui</artifactId>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
+		</dependency>
+
+		<dependency>
+	 		<groupId>com.cedarsoftware</groupId>
+			<artifactId>json-io</artifactId>
 		</dependency>
 		
 	</dependencies>
