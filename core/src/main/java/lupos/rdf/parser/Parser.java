@@ -23,23 +23,22 @@
  */
 package lupos.rdf.parser;
 
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 
 public abstract class Parser {
+
+	private static final Logger log = LoggerFactory.getLogger(Parser.class);
 
 	private int counter = 0;
 
@@ -73,16 +72,15 @@ public abstract class Parser {
 				if (t != null
 						&& (t.getSubject() == null || t.getPredicate() == null || t
 								.getSubject() == null)) {
-					System.out.println("Triple:" + t);
-					System.out.println("Line:" + this.line + "###############pos:"
+					log.debug("Triple:" + t);
+					log.debug("Line:" + this.line + "###############pos:"
 							+ this.pos);
 				}
 
 				// System.out.println(t);
 			}
 			this.prefixe = null;
-			System.out
-					.println("Line:" + this.line + "###############pos:" + this.pos/*
+			log.debug("Line:" + this.line + "###############pos:" + this.pos/*
 																		 * +"\nlast triple:"
 																		 * +
 																		 * last+
@@ -114,7 +112,7 @@ public abstract class Parser {
 		this.counter++;
 		if (CommonCoreQueryEvaluator.printNumberOfTriples && this.counter % 1000000 == 0)
 		 {
-			System.err.println("#Triples:" + this.counter); // in order to display,
+			log.error("#Triples:" + this.counter); // in order to display,
 		}
 		// but not be logged
 		if (Parser.maxTriples > 0 && this.counter > Parser.maxTriples) {
@@ -155,7 +153,7 @@ public abstract class Parser {
 				this.line = this.reader.readLine();
 				this.linenumber++;
 			} catch (final IOException e) {
-				System.out.println(e);
+				log.error(e.toString(),e);
 				e.printStackTrace();
 			}
 		}
@@ -167,8 +165,7 @@ public abstract class Parser {
 				this.pos = -1;
 				return '\n';
 			} catch (final IOException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				log.error(e.toString(),e);
 			}
 		}
 		if (this.line == null) {
@@ -215,7 +212,7 @@ public abstract class Parser {
 				// typed literal!
 				next = this.nextCharacter();
 				if (next != '^') {
-					System.err.println("Typed literal not recognized!");
+					log.error("Typed literal not recognized!");
 					return null;
 				}
 				final Literal datatype = this.nextLiteral();
@@ -223,8 +220,7 @@ public abstract class Parser {
 					return LiteralFactory.createTypedLiteralWithoutLazyLiteral(
 							s, (URILiteral) datatype);
 				} catch (final URISyntaxException e) {
-					System.err.println(e);
-					e.printStackTrace();
+					log.error(e.toString(),e);
 					return null;
 				}
 			} if(next =='@') { // language-tagged literal
@@ -271,8 +267,7 @@ public abstract class Parser {
 			try {
 				return LiteralFactory.createURILiteralWithoutLazyLiteral(s.toString());
 			} catch (final URISyntaxException e) {
-				System.out.println(e);
-				e.printStackTrace();
+				log.error(e.toString(),e);
 				return null;
 			}
 		}
@@ -318,8 +313,7 @@ public abstract class Parser {
 					try {
 						return LiteralFactory.createURILiteralWithoutLazyLiteral("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>");
 					} catch (final URISyntaxException e) {
-						System.err.println(e);
-						e.printStackTrace();
+						log.error(e.toString(),e);
 					}
 				}
 			}
@@ -342,16 +336,15 @@ public abstract class Parser {
 		try {
 			// System.out.println(">>"+prefixe.get(namespace)+postfix+"<<");
 			if (this.prefixe.get(namespace) == null) {
-				System.out.println("Prefix:" + namespace);
-				System.out.println("Postfix:" + postfix);
-				System.out.println("Position in line:" + this.pos);
-				System.out.println("Line Number:" + this.linenumber + " Line:" + this.line);
+				log.debug("Prefix:" + namespace);
+				log.debug("Postfix:" + postfix);
+				log.debug("Position in line:" + this.pos);
+				log.debug("Line Number:" + this.linenumber + " Line:" + this.line);
 			}
 			return LiteralFactory.createURILiteralWithoutLazyLiteral("<"
 					+ this.prefixe.get(namespace) + postfix + ">");
 		} catch (final URISyntaxException e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.toString(),e);
 			return null;
 		}
 	}

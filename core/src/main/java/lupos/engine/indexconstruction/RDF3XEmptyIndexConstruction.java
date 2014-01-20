@@ -23,12 +23,6 @@
  */
 package lupos.engine.indexconstruction;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Date;
-
 import lupos.datastructures.buffermanager.BufferManager;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
@@ -46,11 +40,21 @@ import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.io.helper.OutHelper;
 import lupos.misc.TimeInterval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * This class is for creating an empty index on disk for the RDF3X query evaluator
  */
 public class RDF3XEmptyIndexConstruction {
+
+	private static final Logger log = LoggerFactory.getLogger(RDF3XEmptyIndexConstruction.class);
 
 	// the constants for the B+-tree
 	private static final int k = 1000;
@@ -63,9 +67,9 @@ public class RDF3XEmptyIndexConstruction {
 	public static void main(final String[] args) {
 		try {
 
-			System.out.println("Program to construct an empty RDF3X Index for LUPOSDATE...");
-			System.out.println("[help is printed when using less than 1 command line argument]");
-			System.out.println("_______________________________________________________________");
+			log.info("Starting program to construct an empty RDF3X Index for LUPOSDATE...");
+			log.debug("[help is printed when using less than 1 command line argument]");
+			log.debug("_______________________________________________________________");
 
 			if (args.length < 1) {
 				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XEmptyIndexConstruction <directory for indices>");
@@ -74,7 +78,7 @@ public class RDF3XEmptyIndexConstruction {
 			}
 
 			final Date start = new Date();
-			System.out.println("Starting time: "+start);
+			log.debug("Starting time: {}", start);
 
 			LiteralFactory.setType(LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
@@ -114,11 +118,12 @@ public class RDF3XEmptyIndexConstruction {
 			OutHelper.writeLuposInt(0, out);
 			out.close();
 			final Date end = new Date();
-			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
+			log.debug("_______________________________________________________________");
+			log.info("Done, RDF3X index constructed!");
+			log.debug("End time: {}", end);
 
-			final TimeInterval interval = new TimeInterval(start, end);
-			System.out.println("Used time: " + interval);
-			System.out.println("Number of imported triples: "+((SixIndices)indices).getIndex(CollationOrder.SPO).size());
+			log.debug("Used time: {}", new TimeInterval(start, end));
+			log.debug("Number of imported triples: {}", ((SixIndices)indices).getIndex(CollationOrder.SPO).size());
 
 
 		} catch(final Exception e) {
