@@ -23,18 +23,6 @@
  */
 package lupos.engine.evaluators;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import lupos.compression.Compression;
 import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
@@ -64,8 +52,20 @@ import lupos.rdf.Prefix;
 import lupos.rdf.parser.Parser;
 import lupos.rdf.parser.YagoParser;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.util.*;
 
 public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
+
+	private static final Logger log = LoggerFactory.getLogger(CommonCoreQueryEvaluator.class);
+
 	/**
 	 * Set this to the root node of the operator graph. Used by
 	 * CommonCoreQueryEvaluator.getOperatorGraph()
@@ -392,10 +392,8 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 			try {
 				limit = Integer.parseInt(s);
 			} catch (final NumberFormatException nfe) {
-				System.err
-						.println("An integer was expected as parameter of --paralleloperands instead of "
-								+ s + "!");
-				System.err.println("The parameter will be ignored...");
+				log.error("An integer was expected as parameter of --paralleloperands instead of {}", s);
+				log.error("The parameter will be ignored...");
 			}
 		}
 
@@ -439,7 +437,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	/**
 	 *
 	 * @return all used variables in the current query (also those, which are not projected)
-	 * @see getVariablesOfQuery()
+	 * @see CommonCoreQueryEvaluator#getVariablesOfQuery()
 	 */
 	public Set<Variable> getAllVariablesOfQuery(){
 		return CommonCoreQueryEvaluator.getAllVariablesOfQuery(this.rootNode);
@@ -464,7 +462,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	/**
 	 *
 	 * @return the variables which may occur in the result of the current query, but not all used variables in the query (e.g., variables are left away, which are projected)
-	 * @see getAllVariablesOfQuery()
+	 * @see CommonCoreQueryEvaluator#getAllVariablesOfQuery()
 	 */
 	public Set<Variable> getVariablesOfQuery(){
 		return new HashSet<Variable>(this.getResultOperator().getUnionVariables());
@@ -566,15 +564,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 					public void run() {
 						for (final String filename : FileHelper
 								.readInputStreamToCollection(input)) {
-							System.out.println("Reading data from file: "
+							log.debug("Reading data from file: "
 									+ filename);
 							try {
 								String type2;
 								if (typeWithoutMultiple.compareTo("DETECT") == 0) {
 									final int index = filename.lastIndexOf('.');
 									if (index == -1) {
-										System.err
-												.println("Type of "
+										log.error("Type of "
 														+ filename
 														+ " could not be automatically detected!");
 									}
@@ -592,14 +589,12 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 												try {
 													bbTriples.put(triple);
 												} catch (final InterruptedException e) {
-													System.err.println(e);
-													e.printStackTrace();
+													log.error(e.getMessage(), e);
 												}
 											}
 										});
 							} catch (final Throwable e) {
-								System.err.println(e);
-								e.printStackTrace();
+								log.error(e.getMessage(), e);
 							}
 						}
 						bbTriples.endOfData();
@@ -612,8 +607,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 						tc.consume(t);
 					}
 				} catch (final InterruptedException e) {
-					System.err.println(e);
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			} else {
 				final TripleConsumer synchronizedTC = new TripleConsumer() {
@@ -631,8 +625,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 					try {
 						filenamesBB.put(filename);
 					} catch (final InterruptedException e) {
-						System.err.println(e);
-						e.printStackTrace();
+						log.error(e.getMessage(), e);
 					}
 				}
 				filenamesBB.endOfData();
@@ -647,18 +640,13 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 									if (filename == null) {
 										break;
 									}
-									System.out
-											.println("Reading data from file: "
-													+ filename);
+									log.debug("Reading data from file: {}", filename);
 									String type2;
 									if (typeWithoutMultiple.compareTo("DETECT") == 0) {
 										final int index = filename
 												.lastIndexOf('.');
 										if (index == -1) {
-											System.err
-													.println("Type of "
-															+ filename
-															+ " could not be automatically detected!");
+											log.error("Type of {} ould not be automatically detected! ",filename);
 										}
 										type2 = filename.substring(index + 1)
 												.toUpperCase();
@@ -670,13 +658,11 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 												new FileInputStream(filename),
 												synchronizedTC);
 									} catch (final Throwable e) {
-										System.err.println(e);
-										e.printStackTrace();
+										log.error(e.getMessage(), e);
 									}
 								}
 							} catch (final InterruptedException e) {
-								System.err.println(e);
-								e.printStackTrace();
+								log.error(e.getMessage(), e);
 							}
 						}
 					};
@@ -686,8 +672,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 					try {
 						threads[i].join();
 					} catch (final InterruptedException e) {
-						System.err.println(e);
-						e.printStackTrace();
+						log.error(e.getMessage(), e);
 					}
 				}
 			}
@@ -728,18 +713,18 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				final Method m = c.getMethod("parseRDFData", InputStream.class, TripleConsumer.class, String.class);
 				final int number= (Integer) m.invoke(c, input, tc, encoding);
 				if(CommonCoreQueryEvaluator.printNumberOfTriples){
-					System.out.println("Number of read triples:"+ number);
+					log.debug("Number of read triples: {}", number);
 				}
 			} catch (final ClassNotFoundException e) {
-				System.err.println("No parser for RDF data format "+type+" found!");
+				log.error("No parser for RDF data format {} found!", type);
 			} catch (final SecurityException e) {
-				System.err.println("No parser for RDF data format "+type+" found!");
+				log.error("No parser for RDF data format {} found!", type);
 			} catch (final NoSuchMethodException e) {
-				System.err.println("No parser for RDF data format "+type+" found!");
+				log.error("No parser for RDF data format {} found!", type);
 			} catch (final IllegalArgumentException e) {
-				System.err.println("No parser for RDF data format "+type+" found!");
+				log.error("No parser for RDF data format {} found!", type);
 			} catch (final IllegalAccessException e) {
-				System.err.println("No parser for RDF data format "+type+" found!");
+				log.error("No parser for RDF data format {} found!", type);
 			} catch (final InvocationTargetException e) {
 				final Throwable t=e.getCause();
 				if(t!=null && t instanceof Exception) {
@@ -748,10 +733,10 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				if(t!=null && t instanceof Error) {
 					throw (Error)t;
 				}
-				System.err.println("No parser for RDF data format "+type+" found!");
+				log.error("No parser for RDF data format {} found!", type);
 			}
 		} else {
-			System.err.println("No input type for RDF data given!");
+			log.error("No input type for RDF data given!");
 		}
 	}
 }

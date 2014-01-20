@@ -23,25 +23,19 @@
  */
 package lupos.misc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FileHelper {
+
+	private static final Logger log = LoggerFactory.getLogger(FileHelper.class);
+
 	static public boolean deleteDirectory(final File path) {
 		try {
 			if (path.exists()) {
@@ -56,8 +50,7 @@ public class FileHelper {
 			}
 			return (path.delete());
 		} catch (final Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -68,8 +61,7 @@ public class FileHelper {
 				return path.delete();
 			}
 		} catch (final Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -151,7 +143,7 @@ public class FileHelper {
 	
 	public static String readFile(final String filename,
 			final GetReader getReader) {
-		System.out.println("read file:" + filename);
+		log.debug("read file: {}", filename);
 		try {
 			// read one time to determine the size, then a
 			// StringBuffer can be initialized already with the final size!
@@ -179,8 +171,7 @@ public class FileHelper {
 			in.close();
 			return b.toString();
 		} catch (final Exception e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 
 		return null;
@@ -206,9 +197,9 @@ public class FileHelper {
 
 			fc.close();
 		} catch (final FileNotFoundException fnfx) {
-			System.err.println("File not found: " + fnfx);
+			log.error("File not found: {}", fnfx);
 		} catch (final IOException iox) {
-			System.err.println("I/O problems: " + iox);
+			log.error("I/O problems: {}", iox);
 		} finally {
 			if (fc != null) {
 				try {
@@ -239,7 +230,7 @@ public class FileHelper {
 					content.add(line);
 			}
 		} catch (final IOException ioe) {
-			ioe.printStackTrace();
+			log.error(ioe.getMessage(), ioe);
 			return null;
 		} finally {
 			try {
@@ -247,7 +238,7 @@ public class FileHelper {
 					reader.close();
 				}
 			} catch (final IOException ioe) {
-				ioe.printStackTrace();
+				log.error(ioe.getMessage(), ioe);
 			}
 		}
 		return content;
@@ -265,7 +256,7 @@ public class FileHelper {
 				content.append(line);
 			}
 		} catch (final IOException ioe) {
-			ioe.printStackTrace();
+			log.error(ioe.getMessage(), ioe);
 			return null;
 		} finally {
 			try {
@@ -273,7 +264,7 @@ public class FileHelper {
 					reader.close();
 				}
 			} catch (final IOException ioe) {
-				ioe.printStackTrace();
+				log.error(ioe.getMessage(), ioe);
 			}
 		}
 		return content.toString();
@@ -292,10 +283,10 @@ public class FileHelper {
 					content.add(line);
 			}
 		} catch (final FileNotFoundException fnfe) {
-			System.out.println("File " + filename + " not found, exiting.");
+			log.error("File {} not found, exiting.", filename);
 			return null;
 		} catch (final IOException ioe) {
-			ioe.printStackTrace();
+			log.error(ioe.getMessage(), ioe);
 			return null;
 		} finally {
 			try {
@@ -303,7 +294,7 @@ public class FileHelper {
 					reader.close();
 				}
 			} catch (final IOException ioe) {
-				ioe.printStackTrace();
+				log.error(ioe.getMessage(), ioe);
 			}
 		}
 		return content;
@@ -318,26 +309,26 @@ public class FileHelper {
 			while ((line = reader.readLine()) != null) {
 				if (removeLine) {
 					if (i != lineNumber)
-						System.out.println(line);
+						log.info(line);
 				} else {
 					if (i >= lineNumber - 5 && i <= lineNumber + 5)
-						System.out.println(i + ":" + line);
+						log.info(i + ":" + line);
 					else if (i > lineNumber + 5)
 						break;
 				}
 				i++;
 			}
 		} catch (final FileNotFoundException fnfe) {
-			System.out.println("File " + filename + " not found, exiting.");
+			log.error("File {} not found, exiting.",filename);
 		} catch (final IOException ioe) {
-			ioe.printStackTrace();
+			log.error(ioe.getMessage(), ioe);
 		} finally {
 			try {
 				if (reader != null) {
 					reader.close();
 				}
 			} catch (final IOException ioe) {
-				ioe.printStackTrace();
+				log.error(ioe.getMessage(), ioe);
 			}
 		}
 	}
@@ -350,21 +341,21 @@ public class FileHelper {
 			int i = 0;
 			while ((line = reader.readLine()) != null) {
 					if(line.contains(searchText)){
-						System.out.println(i+":"+line);
+						log.info(i + ":" + line);
 					}
 				i++;
 			}
 		} catch (final FileNotFoundException fnfe) {
-			System.out.println("File " + filename + " not found, exiting.");
+			log.error("File {} not found, exiting.", filename);
 		} catch (final IOException ioe) {
-			ioe.printStackTrace();
+			log.error(ioe.getMessage(), ioe);
 		} finally {
 			try {
 				if (reader != null) {
 					reader.close();
 				}
 			} catch (final IOException ioe) {
-				ioe.printStackTrace();
+				log.error(ioe.getMessage(),ioe);
 			}
 		}
 	}
@@ -375,17 +366,16 @@ public class FileHelper {
 			writer.write(content);
 			writer.close();
 		} catch (final IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 
 	public static void main(final String args[]) {
 		if (args.length < 2){
-			System.out.println("Usage: java lupos.misc.FileHelper command commandoptions[-r] Filename linenumber");
-			System.out.println("       command: print commandoptions: [-r] Filename linenumber");
-			System.out.println("       command: replace commandoptions: infile toBeReplaced replacement outfile");			
-			System.out.println("       command: contains commandoptions: Filename searchText");			
+			log.error("Usage: java lupos.misc.FileHelper command commandoptions[-r] Filename linenumber");
+			log.error("       command: print commandoptions: [-r] Filename linenumber");
+			log.error("       command: replace commandoptions: infile toBeReplaced replacement outfile");
+			log.error("       command: contains commandoptions: Filename searchTe");
 		} else {
 			if(args[0].compareTo("print") == 0){
 				if (args[1].compareTo("-r") == 0) {
