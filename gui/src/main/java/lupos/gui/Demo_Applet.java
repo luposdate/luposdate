@@ -1405,12 +1405,16 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		// use static method "newInstance()" for instantiation if available
 		QueryEvaluator<Node> evaluator = null;
 		final Class<? extends QueryEvaluator<Node>> evalClass = this.getEvaluatorClass(this.cobo_evaluator.getSelectedIndex());
-		Method m;
-		if ((m  = evalClass.getDeclaredMethod("newInstance")) != null && (m.getModifiers() & Modifier.STATIC) != 0) {
-			final Object instance = m.invoke(evalClass);
-			if (instance instanceof QueryEvaluator) {
-				evaluator = (QueryEvaluator<Node>) instance;
+		try {
+			Method m;
+			if ((m  = evalClass.getDeclaredMethod("newInstance")) != null && (m.getModifiers() & Modifier.STATIC) != 0) {
+				final Object instance = m.invoke(evalClass);
+				if (instance instanceof QueryEvaluator) {
+					evaluator = (QueryEvaluator<Node>) instance;
+				}
 			}
+		} catch (NoSuchMethodException | SecurityException e) {
+			evaluator = null;
 		}
 		if (evaluator == null) {
 			// otherwise use standard constructor

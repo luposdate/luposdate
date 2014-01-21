@@ -23,361 +23,210 @@
  */
 package lupos.distributed.p2p.query.withsubgraph;
 
-import static com.google.common.base.Throwables.propagate;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.Logger;
-import lupos.datastructures.bindings.Bindings;
-import lupos.datastructures.bindings.BindingsFactory;
-import lupos.datastructures.bindings.BindingsMap;
-import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.items.literal.LiteralFactory.MapType;
-import lupos.distributed.p2p.distributionstrategy.SimplePartitionDistribution;
-import lupos.distributed.p2p.network.AbstractP2PNetwork;
 import lupos.distributed.p2p.network.P2PNetworkCreator;
-import lupos.distributed.p2p.storage.StorageWithDistributionStrategy;
 import lupos.distributed.query.QueryClient;
-import lupos.distributed.query.QueryClientWithSubgraphTransmission;
-import lupos.distributed.storage.IStorage;
 import lupos.distributed.storage.distributionstrategy.IDistribution;
-import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
-import lupos.engine.evaluators.QueryEvaluator;
-import lupos.optimizations.physical.PhysicalOptimizations;
+import lupos.distributedendpoints.gui.P2PConfigFrame;
+import lupos.distributedendpoints.gui.P2PConfigFrame.PeerItem;
 
 /**
- * This is the query client to be configured in a static way. So for configuration
- * use {@link #lock()} and finally {@link #unlock()} to block and set the configuration.
- * With {@link #newInstance()} or {@link #newInstance(String[])} you can create the query client instance
- * that can be used.
+ * This class is to be used, to get an evaluator for a p2p network.
+ * Furthermore a UI will present the network to be connected to, or will
+ * give possibility to choose an already started evaluator.
  */
-public abstract class P2P_QueryClient_Creator extends QueryEvaluator<lupos.sparql1_1.Node>{
-
-	/**
-	 * new instance (not allowed to call)
-	 * @throws Exception throws always a RuntimeException
-	 */
-	@Deprecated
-	public P2P_QueryClient_Creator() throws Exception {
-		throw new RuntimeException("Please use instanciating via P2P_QueryClient.newInstace(). This is only a QueryClient to be used in visual lupos query editor.");
-	}
-
-	/*
-	 * do we need subgraph submission?
-	 */
-	private static boolean useSubgraphSubmission = true;
-	@SuppressWarnings("rawtypes")
-	private static IConfigurator<? super StorageWithDistributionStrategy> storageConfiguration;
-	
-	
-	
-	
-	/**
-	 * Sets the configuration for the storage
-	 * @param cfg the configuration
-	 */
-	@SuppressWarnings("rawtypes")
-	public static void setStorageConfiguration(IConfigurator<? super StorageWithDistributionStrategy> cfg) {
-		storageConfiguration = cfg;
-	}
-	
-	/**
-	 * This interface is to be used to manually configure an instance, for example for {@link StorageWithDistributionStrategy}. 
-	 * Because the settings have to be applied on a real existing instance, that is created in a hidden way,
-	 * here is the possibility to configure the instance before using, but after instantiating.
-	 * @author Bjoern
-	 *
-	 * @param <T> the type of instance to configure
-	 */
-	public static interface IConfigurator<T> {
-		public void doConfiguration(T storage);
-	}
+public class P2P_QueryClient_Creator {
 	
 	/*
-	 * Invoke the constructor for creating the subgraph container with the given
-	 * parameters.
+	 * information about the network to be used
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static StorageWithDistributionStrategy invoke(String className, AbstractP2PNetwork r, IDistribution key,
-			BindingsFactory bf) {
+	private final String NETWORK; 
+	/*
+	 * information about the selected distribution strategy (will be improved soon)
+	 */
+	private final IDistribution DISTRIBUTION;
+	
+	/*
+	 * use Subgraph submission
+	 */
+	private final boolean withSubgraphSubmission;
+	
+	/**
+	 * Net P2P-Query-Client creater with the given p2p-network and the given
+	 * distribution strategy
+	 * @param p2pNetwork the P2P network identifier
+	 * @param distributionStrategy the strategy for distribution to be used
+	 * @param sgSubmission use subgraph submission?
+	 */
+	public P2P_QueryClient_Creator(String p2pNetwork, IDistribution distributionStrategy,
+			boolean sgSubmission) {
+		this.NETWORK = p2pNetwork;
+		this.DISTRIBUTION = distributionStrategy;
+		withSubgraphSubmission = sgSubmission;
+	}
+	
+
+	/**
+	 * Net P2P-Query-Client creater with the given p2p-network and the given
+	 * distribution strategy
+	 * @param p2pNetwork the P2P network identifier
+	 * @param distributionStrategy the strategy for distribution to be used
+	 */
+	public P2P_QueryClient_Creator(String p2pNetwork, IDistribution distributionStrategy) {
+		this.NETWORK = p2pNetwork;
+		this.DISTRIBUTION = distributionStrategy;
+		withSubgraphSubmission = true;
+	}
+	
+	/**
+	 * Dialog to choose the evaluator which is to be used.
+	 */
+	private P2PConfigFrame configurationUI = new P2PConfigFrame() {
 		
+		private QueryClient createInstance() {
+			return P2P_QueryClient_Instanciator.newInstance();
+		}
+		
+		@Override
+		public PeerItem onQueryEvaluator(PeerItem evaluator) throws Exception {
+			//Here you should throw an exception, if the selected QueryEvaluator is not 
+			//allowed, because wrong network or different distribution strategy ...
+			if (evaluator.queryEvaluator == null) throw new NullPointerException("Evaluator is not existing anymore.");
+			if (!evaluator.networkName.equals(NETWORK)) {
+				throw new IllegalArgumentException("Only same P2P network can be used.");
+			}
+			if (!evaluator.distributionStrategy.equals(DISTRIBUTION.toString())) {
+				throw new IllegalArgumentException("Only same distribution strategy can be used.");
+			}
+			
+			
+			if (evaluator.useSubgraphSubmission != withSubgraphSubmission) {
+				QueryClient evalInstance = evaluator.queryEvaluator;
+				/*
+				 * try to change the submission type, if special instance
+				 */
+				if (evalInstance instanceof P2P_SG_QueryClient_WithSubgraph) {
+					//update the queryclient and the table row
+					evaluator.useSubgraphSubmission = withSubgraphSubmission;
+					((P2P_SG_QueryClient_WithSubgraph)evalInstance).setUseSubgraphSubmission(withSubgraphSubmission);
+				} else throw new IllegalArgumentException("Evaluator does not support changing the behavior of sending subgraphs");
+			}
+			
+			return evaluator;
+			
+		}
+		
+		@Override
+		public PeerItem onMasterInstance(int localPort, int masterPort,
+				String masterAddress) {
+			//store information 
+			PeerItem item = new PeerItem();
+			item.networkName = NETWORK;
+			item.isMaster = false;
+			item.masterName= masterAddress;
+			item.masterPort = masterPort;
+			item.distributionStrategy = DISTRIBUTION.toString();
+			item.port = localPort;
+			item.useSubgraphSubmission = withSubgraphSubmission;
+			
+			//set ports and master
+			Map<String,Object> cfg = P2P_QueryClient_Instanciator.getP2PImplementationConfiguration();
+			cfg.put(P2PNetworkCreator.P2PConfigurationConstants.cPORT, localPort);
+			cfg.put(P2PNetworkCreator.P2PConfigurationConstants.cMASTER_IP,
+					masterAddress);
+			cfg.put(P2PNetworkCreator.P2PConfigurationConstants.cMASTER_PORT,
+					masterPort);
+			P2P_QueryClient_Instanciator.setP2PImplementationConfiguration(cfg);
+			P2P_QueryClient_Instanciator.setSubgraphSubmission(withSubgraphSubmission);
+			// create instance and store instance
+			QueryClient qC = createInstance();
+			item.queryEvaluator = qC;
+			return item;
+		}
+		
+		@Override
+		public PeerItem onLocalInstance(int localPort) {
+			/*
+			 * store information
+			 */
+			PeerItem item = new PeerItem();
+			item.networkName = NETWORK;
+			item.isMaster = true;
+			item.distributionStrategy = DISTRIBUTION.toString();
+			item.port = localPort;
+			item.useSubgraphSubmission = withSubgraphSubmission;
+			/*
+			 * store configuration
+			 */
+			Map<String,Object> cfg = P2P_QueryClient_Instanciator.getP2PImplementationConfiguration();
+			cfg.put(P2PNetworkCreator.P2PConfigurationConstants.cPORT, localPort);
+			cfg.remove(P2PNetworkCreator.P2PConfigurationConstants.cMASTER_IP);
+			cfg.remove(P2PNetworkCreator.P2PConfigurationConstants.cMASTER_PORT);
+			P2P_QueryClient_Instanciator.setP2PImplementationConfiguration(cfg);
+			P2P_QueryClient_Instanciator.setSubgraphSubmission(withSubgraphSubmission);
+			// create instance and store instance
+			QueryClient qC = createInstance();
+			item.queryEvaluator = qC;
+			return item;
+		}
+		
+		@Override
+		public void onCancel() {
+		}
+	};
+	
+	
+
+	/**
+	 * Returns an already running queryClient or starts a new one
+	 * @return a new evaluator which can be used in LuposDate UI
+	 */
+	public QueryClient newInstance() {
 		try {
+			P2P_QueryClient_Instanciator.lock();
+			P2P_QueryClient_Instanciator
+					.setP2PImplementationConstant(NETWORK);
+			/*should be configured before via UI? */
+			P2P_QueryClient_Instanciator
+					.setP2PDistributionStrategy(DISTRIBUTION);
+			P2P_QueryClient_Instanciator.setSubgraphSubmission(withSubgraphSubmission);
+			
 			/*
-			 * get the class, which has to be a subclass of SubgraphContainer
+			 * ask which instance is to be used
 			 */
-			Class<?> c = Class.forName(className);
-			if (!StorageWithDistributionStrategy.class.isAssignableFrom(c)) {
-				throw new RuntimeException(
-						String.format(
-								"The type \"%s\" is not a class extended from %s",
-								className,StorageWithDistributionStrategy.class));
-			} else {
-				Class<? extends StorageWithDistributionStrategy> c1 = (Class<? extends StorageWithDistributionStrategy>) c;
-				try {
-					Constructor<? extends StorageWithDistributionStrategy> construct = c1
-							.getConstructor(AbstractP2PNetwork.class, IDistribution.class,BindingsFactory.class);
-					return construct.newInstance(r, key,bf);
-				} catch (NoSuchMethodException e) {
-					throw new RuntimeException(
-							String.format(
-									"The class \"%s\" has no valid constructor.",
-									className));
-				} catch (SecurityException e) {
-					propagate(e);
-				} catch (InstantiationException e) {
-					propagate(e);
-				} catch (IllegalAccessException e) {
-					propagate(e);
-				} catch (IllegalArgumentException e) {
-					throw new RuntimeException(
-							String.format(
-									"The type \"%s\" of subgraph-container has no valid constructor.",
-									className));
-				} catch (InvocationTargetException e) {
-					propagate(e);
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(
-					String.format(
-							"The class \"%s\" of subgraph-container is not known in actual class path. Cannot deserialize this subgraph container.",
-							className));
+			PeerItem instance = configurationUI.showDialog();
+			if (instance != null && instance.queryEvaluator != null) return instance.queryEvaluator;
+			return null; 
+		} finally {
+			P2P_QueryClient_Instanciator.unlock();
 		}
-		/*
-		 * if not possible or error occurred.
-		 */
-		return null;
 	}
-	
-	public static QueryClient newInstance() {
-		return newInstance(new String[0]);
-	}
-	
-	private static Logger log = Logger.getLogger(P2P_QueryClient_Creator.class);
-	
+
 	/**
-	 * Creates a new instance of a query client
-	 * @return a new instance
+	 * Returns an already running queryClient or starts a new one
+	 * @param config the configuration to be used
+	 * @return a new evaluator which can be used in LuposDate UI
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static QueryClient newInstance(String[] args) {
+	public QueryClient newInstance(Map<String, Object> config) {
 		try {
-			final int instance = instanceCounter.incrementAndGet();
-			if (bindings != null) Bindings.instanceClass = bindings;
-			BindingsFactory bf = BindingsFactory.createBindingsFactory();
+			P2P_QueryClient_Instanciator.lock();
+			P2P_QueryClient_Instanciator
+					.setP2PImplementationConstant(NETWORK);
+			P2P_QueryClient_Instanciator
+					.setP2PDistributionStrategy(DISTRIBUTION);
+			P2P_QueryClient_Instanciator.setSubgraphSubmission(withSubgraphSubmission);
+			P2P_QueryClient_Instanciator.setP2PImplementationConfiguration(config);
 			
-			
-			String debugString = "\n";
-			debugString += (String.format("Creating new P2P query client instance: %d \n",instance));
-			AbstractP2PNetwork p2pInstance = networkInstance != null ? networkInstance : getP2PNetworkImplementation();
-			if (networkInstance == null) {
-				debugString += (String.format("P2P network: %s \nP2P configuration: %s \nP2P instance: %s \nhas local storage %s \n",p2pImplementationConstant,
-							(p2pImplementationConfiguration != null) ? getP2PConfig(p2pImplementationConfiguration) : "{}",p2pInstance,
-									p2pInstance.hasLocalStorage()));
-			} else {
-				debugString += (String.format("P2P network: %s \nP2P instance: %s \nhas local storage: %s \n",p2pInstance.getClass(),
-						p2pInstance,p2pInstance.hasLocalStorage()));				
-			}
-			IDistribution distribution = getDistribution();
-			debugString += (String.format("DistributionStrategy: %s [%s] \n",distribution,distribution.getClass()));	
-			
-			P2P_SubgraphExecuter sgExecuter = new P2P_SubgraphExecuter() {
-				@Override
-				public String toString() {
-					return String.format("SubgraphExecuter for query client instance %s on node: %s \n",instance, p2p);
-				}
-			};
-			
-			StorageWithDistributionStrategy storageInstance = invoke(storageClass.getName(),p2pInstance,distribution,bf);
-			if (storageConfiguration != null) {
-				storageConfiguration.doConfiguration(storageInstance);
-				debugString += (String.format("Storage: %s [%s] with manual configuration: %s \n",storageInstance,storageInstance.getClass(),storageConfiguration));	
-				
-			} else {
-				debugString += (String.format("Storage: %s [%s] \n",storageInstance,storageInstance.getClass()));
-			}
-			
-			P2P_SG_QueryClient_WithSubgraph queryClientInstance = new P2P_SG_QueryClient_WithSubgraph(storageInstance,sgExecuter) {
-				@Override
-				public String toString() {
-					return String.format("QueryClient [%s]",instance);
-				}
-			};
-			if (useSubgraphSubmission)
-				debugString += (String.format("Query Client: %s with subgraph submission \n",queryClientInstance));
-			else
-				debugString += (String.format("Query Client: %s without subgraph submission \n",queryClientInstance));
-			queryClientInstance.setUseSubgraphSubmission(useSubgraphSubmission);
 			/*
-			 * if a local storage is supported, use this for subgraph executer
+			 * ask which instance is to be used
 			 */
-			IStorage localStorage = (p2pInstance.hasLocalStorage()) ? p2pInstance.getLocalStorage(distribution) : storageInstance;
-			sgExecuter.setStorage(localStorage);
-			sgExecuter.setP2PNetwork(p2pInstance);
-			/*
-			 * create an query evaluator for the local storage, which is evaluated in local storage
-			 */
-			QueryEvaluator localEvaluator = new QueryClientWithSubgraphTransmission(localStorage,distribution,sgExecuter) {
-				@Override
-				public String toString() {
-					return "LocalQueryExecuter for instance " + instance;
-				}
-			};
-			Collection<URILiteral> defaultGraphs = new LinkedList<URILiteral>();
-			// init with empty dataset ...
-			LiteralFactory.setType(MapType.NOCODEMAP);
-			defaultGraphs.add(LiteralFactory
-					.createURILiteralWithoutLazyLiteral("<inlinedata:>"));
-			Collection<URILiteral> namedGraphs = new LinkedList<URILiteral>();
-			localEvaluator.prepareInputData(defaultGraphs, namedGraphs);
-			queryClientInstance.prepareInputData(defaultGraphs, namedGraphs);
-			try {
-				PhysicalOptimizations.memoryReplacements();
-			} catch (Exception e) {
-				//ignore
-			}
-			//connect local storage evaluater in subgraph executer
-			sgExecuter.setEvaluator(localEvaluator);
-			log.info(debugString);
-			return queryClientInstance;
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot instanciate class:" + e.getMessage() );
-		}
-	}
-	
-	private static String getP2PConfig(
-			Map<String, Object> p2pImplementationConfiguration2) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		for (Entry<String, Object> e : p2pImplementationConfiguration2.entrySet()) {
-			sb.append("\n\t").append(e.getKey()).append(" = ").append(e.getValue());
-		}
-		sb.append("\n}");
-		return sb.toString();
-	}
-
-	@SuppressWarnings({ "rawtypes", "unused" })
-	private P2P_SubgraphExecuter sg;
-	@SuppressWarnings("rawtypes")
-	private static AbstractP2PNetwork p2p;
-	
-	private static AbstractP2PNetwork<?> getP2PNetworkImplementation() {
-		try {
-			/*
-			 * Instantiating the P2P network, specified via static setter
-			 */
-			if (p2pImplementationConfiguration != null) {
-				return  P2PNetworkCreator.get(p2pImplementationConstant,p2pImplementationConfiguration);
-			}else {
-				return  P2PNetworkCreator.get(p2pImplementationConstant);
-			}
-		} catch (RuntimeException e) {
-			Logger.getLogger(P2P_QueryClient_Creator.class).error("Error getting P2P network instance.",e);
-			return null;
+			PeerItem instance = configurationUI.showDialog();
+			if (instance != null && instance.queryEvaluator != null) return instance.queryEvaluator;
+			return null; 
+		} finally {
+			P2P_QueryClient_Instanciator.unlock();
 		}
 	}
 
-	/*
-	 * returns the used distribution strategy
-	 */
-	private static IDistribution<KeyContainer<String>> getDistribution() {
-		return p2pDistribution;
-	}
-
-	private static Map<String,Object> p2pImplementationConfiguration = new HashMap<String,Object>();
-	private static String p2pImplementationConstant = P2PNetworkCreator.TOM_P2P;
-	private static IDistribution<KeyContainer<String>> p2pDistribution = new SimplePartitionDistribution();
-	/*
-	 * Lock to be used if changing static parameters during instantiating query client
-	 */
-	private static Lock l = new ReentrantLock();
-	@SuppressWarnings("rawtypes")
-	private static Class<? extends StorageWithDistributionStrategy> storageClass = StorageWithDistributionStrategy.class;
-	
-	/**
-	 * Creates a lock, so that constants could be set for instantiation
-	 */
-	public static void lock() {
-		l.lock();
-	}
-	
-	/**
-	 * Sets, whether subgraph submission is to be used or without 
-	 * @param enabled subgraph submission enabled
-	 */
-	public static void setSubgraphSubmission(boolean enabled) {
-		useSubgraphSubmission = enabled;
-	}
-	
-	/**
-	 * Sets the P2P implementation constant
-	 * @param p2pNetworkConstant the unique P2P key to be used in {@link P2PNetworkCreator#get(String)}
-	 */
-	public static void setP2PImplementationConstant(String p2pNetworkConstant) {
-		p2pImplementationConstant = p2pNetworkConstant;
-	}
-	
-	/**
-	 * Sets the P2P configuration for the network
-	 * @param cfg the configuration to set!
-	 */
-	public static void setP2PImplementationConfiguration(Map<String,Object> cfg) {
-		p2pImplementationConfiguration = cfg;
-	}
-	
-	/**
-	 * Sets the distribution used in this query client.
-	 * @param p2pDistributionType the distribution strategy
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void setP2PDistributionStrategy(IDistribution p2pDistributionType) {
-		p2pDistribution = p2pDistributionType;
-	}
-	
-	
-	@SuppressWarnings("rawtypes")
-	public static void setStorageType(Class<? extends StorageWithDistributionStrategy> storage) {
-		if (storage != null)
-			storageClass = storage;
-	}
-	
-	
-	/**
-	 * Removes the lock set in {@link #lock()}
-	 */
-	public static void unlock() {
-		l.unlock();
-	}
-	
-	
-	/*
-	 * static counter incrementing if creating new instance
-	 */
-	private static AtomicInteger instanceCounter = new AtomicInteger();
-	private static AbstractP2PNetwork<?> networkInstance;
-	private static Class<? extends Bindings> bindings;
-
-	/**
-	 * Sets the network implementation to be used
-	 * @param p2pNetwork the p2p network
-	 */
-	public static void setP2PNetwork(AbstractP2PNetwork<?> p2pNetwork) {
-		networkInstance = p2pNetwork;
-	}
-
-	
-	public static void setBindings(Class<? extends Bindings> b) {
-		bindings = b;
-	}
-	
 }

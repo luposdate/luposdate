@@ -23,8 +23,6 @@
  */
 package lupos.distributedendpoints.gui;
 
-import lupos.distributed.p2p.query.withsubgraph.Chord_WithHierarchyDistribution;
-import lupos.distributed.p2p.query.withsubgraph.TomP2P_WithHierarchyDistribution;
 import lupos.gui.Demo_Applet;
 
 /**
@@ -35,26 +33,108 @@ public class Start_Demo_Applet_DE {
 
 	public static void main(final String[] args) throws ClassNotFoundException {
 
+		/*
+		 * if the distribution strategy is choosen in UI seperatly, this can be used:
+		 * now the default distribution strategy is NinefoldInsertion
+		 */
 		Demo_Applet
-				.registerEvaluator(
-						"TomP2P with Hierachial Distribution",
-						lupos.distributed.p2p.query.TomP2P_WithHierarchyDistribution.class);
-		Demo_Applet.registerEvaluator(
-				"TomP2P with Hierachial Distribution and subgraph submission",
-				TomP2P_WithHierarchyDistribution.class);
-
+		.registerEvaluator(
+				"TomP2P",
+				lupos.distributed.p2p.query.withsubgraph.TomP2P_QueryClient.class);
+		
 		Demo_Applet
-				.registerEvaluator(
-						"Chord with Hierachial Distribution",
-						lupos.distributed.p2p.query.Chord_WithHierarchyDistribution.class);
-		Demo_Applet.registerEvaluator(
-				"Chord with Hierachial Distribution and subgraph submission",
-				Chord_WithHierarchyDistribution.class);
+		.registerEvaluator(
+				"Chordless",
+				lupos.distributed.p2p.query.withsubgraph.Chordless_QueryClient.class);
 
-		PeerCreator.getTomP2PNetwork(5000).start();
-		PeerCreator.getTomP2PNetwork(5001).start();
-		PeerCreator.getTomP2PNetwork(5002).start();
-
+		/* the old ones */
+		
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P without SubgraphSubmission / SimplePartitionDistribution",
+				lupos.distributed.p2p.query.TomP2P_WithSimplePartitionDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P without SubgraphSubmission / TwoKeysDistribution",
+				lupos.distributed.p2p.query.TomP2P_WithTwoKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P without SubgraphSubmission / OneToThreeKeysDistribution",
+				lupos.distributed.p2p.query.TomP2P_WithOneToThreeKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P without SubgraphSubmission / OneKeyDistribution",
+				lupos.distributed.p2p.query.TomP2P_WithOneKeyDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P without SubgraphSubmission / NinefoldDistribution",
+				lupos.distributed.p2p.query.TomP2P_NinefoldInsertionDistribution.class);
+		
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless without SubgraphSubmission / SimplePartitionDistribution",
+				lupos.distributed.p2p.query.Chordless_WithSimplePartitionDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless without SubgraphSubmission / TwoKeysDistribution",
+				lupos.distributed.p2p.query.Chordless_WithTwoKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless without SubgraphSubmission / OneToThreeKeysDistribution",
+				lupos.distributed.p2p.query.Chordless_WithOneToThreeKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless without SubgraphSubmission / OneKeyDistribution",
+				lupos.distributed.p2p.query.Chordless_WithOneKeyDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless without SubgraphSubmission / NinefoldDistribution",
+				lupos.distributed.p2p.query.Chordless_NinefoldInsertionDistribution.class);
+		
+		
+		
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P with SubgraphSubmission / SimplePartitionDistribution",
+				lupos.distributed.p2p.query.withsubgraph.TomP2P_WithSimplePartitionDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P with SubgraphSubmission / TwoKeysDistribution",
+				lupos.distributed.p2p.query.withsubgraph.TomP2P_WithTwoKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P with SubgraphSubmission / OneToThreeKeysDistribution",
+				lupos.distributed.p2p.query.withsubgraph.TomP2P_WithOneToThreeKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P with SubgraphSubmission / OneKeyDistribution",
+				lupos.distributed.p2p.query.withsubgraph.TomP2P_WithOneKeyDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"TomP2P with SubgraphSubmission / NinefoldDistribution",
+				lupos.distributed.p2p.query.withsubgraph.TomP2P_NinefoldInsertionDistribution.class);
+		
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless with SubgraphSubmission / SimplePartitionDistribution",
+				lupos.distributed.p2p.query.withsubgraph.Chordless_WithSimplePartitionDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless with SubgraphSubmission / TwoKeysDistribution",
+				lupos.distributed.p2p.query.withsubgraph.Chordless_WithTwoKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless with SubgraphSubmission / OneToThreeKeysDistribution",
+				lupos.distributed.p2p.query.withsubgraph.Chordless_WithOneToThreeKeysDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless with SubgraphSubmission / OneKeyDistribution",
+				lupos.distributed.p2p.query.withsubgraph.Chordless_WithOneKeyDistribution.class);
+		Demo_Applet
+		.registerEvaluator(
+				"Chordless with SubgraphSubmission / NinefoldDistribution",
+				lupos.distributed.p2p.query.withsubgraph.Chordless_NinefoldInsertionDistribution.class);
+		
 		Demo_Applet.main(args);
 	}
 

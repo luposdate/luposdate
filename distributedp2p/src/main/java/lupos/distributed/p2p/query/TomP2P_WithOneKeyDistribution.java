@@ -28,6 +28,7 @@ import java.util.Map;
 import lupos.distributed.p2p.network.P2PNetworkCreator;
 import lupos.distributed.p2p.query.withsubgraph.P2P_QueryClient_Creator;
 import lupos.distributed.query.QueryClient;
+import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneKeyDistribution;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.sparql1_1.Node;
@@ -37,36 +38,53 @@ import lupos.sparql1_1.Node;
 	 *
 	 */
 public abstract class TomP2P_WithOneKeyDistribution  extends QueryEvaluator<Node> {
+	/*
+	 * information about the network to be used
+	 */
+	private static final String NETWORK = P2PNetworkCreator.TOM_P2P;
+	@SuppressWarnings("rawtypes")
+	/*
+	 * information about the selected distribution strategy (will be improved
+	 * soon)
+	 */
+	protected static final IDistribution DISTRIBUTION = new OneKeyDistribution();
 
-		public TomP2P_WithOneKeyDistribution() throws Exception {
-			super();
-			throw new RuntimeException("Please use static newInstance-method!");
-		}
-		
-		public static QueryClient newInstance() {
-			try {
-				P2P_QueryClient_Creator.lock();
-				P2P_QueryClient_Creator.setP2PImplementationConstant(P2PNetworkCreator.TOM_P2P);
-				P2P_QueryClient_Creator.setP2PDistributionStrategy(new OneKeyDistribution());
-				P2P_QueryClient_Creator.setSubgraphSubmission(false);
-				return P2P_QueryClient_Creator.newInstance();
-			} finally {
-				P2P_QueryClient_Creator.unlock();
-			}
-		}
-		
-		public static QueryClient newInstance(Map<String,Object> config) {
-			try {
-				P2P_QueryClient_Creator.lock();
-				P2P_QueryClient_Creator.setP2PImplementationConstant(P2PNetworkCreator.TOM_P2P);
-				P2P_QueryClient_Creator.setP2PDistributionStrategy(new OneKeyDistribution());
-				P2P_QueryClient_Creator.setSubgraphSubmission(false);
-				P2P_QueryClient_Creator.setP2PImplementationConfiguration(config);
-				return P2P_QueryClient_Creator.newInstance();
-			} finally {
-				P2P_QueryClient_Creator.unlock();
-			}
-		}
-		
+	/**
+	 * don't use
+	 */
+	@Deprecated
+	public TomP2P_WithOneKeyDistribution() throws Exception {
+		super();
+		throw new RuntimeException("Please use static newInstance()-method!");
 	}
 
+	/**
+	 * Returns an already running queryClient or starts a new one
+	 */
+	public static QueryClient newInstance() {
+		try {
+			P2P_QueryClient_Creator creator = new P2P_QueryClient_Creator(
+					NETWORK, DISTRIBUTION, false);
+			QueryClient instance = creator.newInstance();
+			return instance;
+		} finally {
+		}
+	}
+
+	/**
+	 * Returns an already running queryClient or starts a new one
+	 * 
+	 * @param config
+	 *            the configuration to be used
+	 */
+	public static QueryClient newInstance(Map<String, Object> config) {
+		try {
+			P2P_QueryClient_Creator creator = new P2P_QueryClient_Creator(
+					NETWORK, DISTRIBUTION, false);
+			QueryClient instance = creator.newInstance(config);
+			return instance;
+		} finally {
+
+		}
+	}
+}

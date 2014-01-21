@@ -31,8 +31,8 @@ import lupos.distributed.p2p.distributionstrategy.SimplePartitionDistribution;
 import lupos.distributed.p2p.network.AbstractP2PNetwork;
 import lupos.distributed.p2p.network.P2PNetworkCreator;
 
-import lupos.distributed.p2p.query.withsubgraph.P2P_QueryClient_Creator;
-import lupos.distributed.p2p.query.withsubgraph.P2P_QueryClient_Creator.IConfigurator;
+import lupos.distributed.p2p.query.withsubgraph.P2P_QueryClient_Instanciator;
+import lupos.distributed.p2p.query.withsubgraph.P2P_QueryClient_Instanciator.IConfigurator;
 import lupos.distributed.p2p.storage.StorageWithDistributionStrategy;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
@@ -238,19 +238,19 @@ public class PeerCreator {
 			 * creates the client
 			 */
 			try {
-				P2P_QueryClient_Creator.lock();
-				P2P_QueryClient_Creator
+				P2P_QueryClient_Instanciator.lock();
+				P2P_QueryClient_Instanciator
 						.setP2PDistributionStrategy(distribution);
-				P2P_QueryClient_Creator.setP2PNetwork(p2p);
-				P2P_QueryClient_Creator.setStorageType(storage);
-				P2P_QueryClient_Creator.setSubgraphSubmission(useSG);
-				P2P_QueryClient_Creator.setBindings(bindings);
+				P2P_QueryClient_Instanciator.setP2PNetwork(p2p);
+				P2P_QueryClient_Instanciator.setStorageType(storage);
+				P2P_QueryClient_Instanciator.setSubgraphSubmission(useSG);
+				P2P_QueryClient_Instanciator.setBindings(bindings);
 				if (storageConfiguration != null)
-					P2P_QueryClient_Creator
+					P2P_QueryClient_Instanciator
 							.setStorageConfiguration(storageConfiguration);
-				client = P2P_QueryClient_Creator.newInstance();
+				client = P2P_QueryClient_Instanciator.newInstance();
 			} finally {
-				P2P_QueryClient_Creator.unlock();
+				P2P_QueryClient_Instanciator.unlock();
 			}
 		} catch (Exception e) {
 			RuntimeException re = new RuntimeException(

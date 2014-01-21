@@ -620,7 +620,7 @@ public class P2P_SubgraphExecuter<T> implements
 		} else
 			throw new RuntimeException("Error in " + this + " - no entry: "
 					+ id);
-		displayMap.run();
+		if (SHOW_DEBUG_PROCESSINGS_LIST)displayMap.run();
 	}
 
 	/*
@@ -648,7 +648,7 @@ public class P2P_SubgraphExecuter<T> implements
 		} else
 			throw new RuntimeException("Error in " + this + " - no entry: "
 					+ id);
-		displayMap.run();
+		if (SHOW_DEBUG_PROCESSINGS_LIST) displayMap.run();
 	}
 
 	@Override

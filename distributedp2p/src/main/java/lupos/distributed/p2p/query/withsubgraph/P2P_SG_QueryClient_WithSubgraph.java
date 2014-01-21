@@ -66,15 +66,25 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 	
 	@Override
 	public void init() throws Exception {
+		super.init();
 		LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
 		Bindings.instanceClass = BindingsMap.class;
-		super.init();
 	}
 	
 	@Override
 	public long logicalOptimization() {
 		//do no use DistributedRulePackage if not using Subgraph Submission ...
-		if (!useSG) return super.logicalOptimization();
+		if (!useSG) {
+			final Date a = new Date();
+			this.setBindingsVariablesBasedOnOperatorgraph();
+			final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
+			refie.applyRules(this.root);
+			this.root.optimizeJoinOrder(this.opt);
+			final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
+			refie2.applyRules(this.root);
+			this.parallelOperator(this.root);
+			return ((new Date()).getTime() - a.getTime());
+		}
 		//else use optimization for SG rules
 		final Date a = new Date();
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
@@ -98,7 +108,33 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
-		if (!useSG) return super.logicalOptimizationDebugByteArray(prefixInstance);
+		if (!useSG) {
+			final List<DebugContainer<BasicOperatorByteArray>> result = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
+			this.setBindingsVariablesBasedOnOperatorgraph();
+			result.add(new DebugContainer<BasicOperatorByteArray>(
+					"Before logical optimization...",
+					"logicaloptimizationPackageDescription", BasicOperatorByteArray
+					.getBasicOperatorByteArray(this.root.deepClone(),
+							prefixInstance)));
+			final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
+			result.addAll(refie.applyRulesDebugByteArray(this.root,
+					prefixInstance));
+			this.root.optimizeJoinOrder(this.opt);
+			result.add(new DebugContainer<BasicOperatorByteArray>(
+					"After optimizing the join order...",
+					"optimizingjoinord;erRule", BasicOperatorByteArray
+					.getBasicOperatorByteArray(this.root.deepClone(),
+							prefixInstance)));
+			final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
+			result.addAll(refie2.applyRulesDebugByteArray(this.root,
+					prefixInstance));
+			final List<DebugContainer<BasicOperatorByteArray>> ldc = this.parallelOperatorDebugByteArray(
+					this.root, prefixInstance);
+			if (ldc != null) {
+				result.addAll(ldc);
+			}
+			return result;
+		}
 		final List<DebugContainer<BasicOperatorByteArray>> result = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"Before logical optimization...",
