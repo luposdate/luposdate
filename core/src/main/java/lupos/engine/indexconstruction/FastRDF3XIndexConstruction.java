@@ -24,26 +24,6 @@
 
 package lupos.engine.indexconstruction;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import lupos.compression.Compression;
 import lupos.datastructures.buffermanager.BufferManager;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
@@ -79,12 +59,24 @@ import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.TimeInterval;
 import lupos.misc.util.ImmutableIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
  * also constructed on disk...
  */
 public class FastRDF3XIndexConstruction {
+
+	private static final Logger log = LoggerFactory.getLogger(FastRDF3XIndexConstruction.class);
+
 	// the parameters are used for the B+-trees
 	private static final int k = 1000;
 	private static final int k_ = 1000;
@@ -110,19 +102,19 @@ public class FastRDF3XIndexConstruction {
 	public static void main(final String[] args) {
 		try {
 
-			System.out.println("Program to construct an RDF3X Index for LUPOSDATE...");
-			System.out.println("[help is printed when using less than 5 command line arguments]");
-			System.out.println("_______________________________________________________________");
+			log.info("Starting program to construct an RDF3X Index for LUPOSDATE...");
+			log.debug("[help is printed when using less than 5 command line arguments]");
+			log.debug("_______________________________________________________________");
 
 			if (args.length < 5) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
-				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
+				log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
+				log.error("Example: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
 				return;
 			}
 
 			// analyze command line parameters
 			final Date start = new Date();
-			System.out.println("Starting time: "+start);
+			log.debug("Starting time: {}", start);
 
 			LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
@@ -172,8 +164,7 @@ public class FastRDF3XIndexConstruction {
 				try {
 					CommonCoreQueryEvaluator.readTriples(dataFormat, uri.openStream(), runGenerator);
 				} catch (final Exception e) {
-					System.err.println(e);
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
 			runGenerator.endOfBlock();
@@ -228,8 +219,7 @@ public class FastRDF3XIndexConstruction {
 						simap.generateDBBPTree(smsi);
 						LazyLiteral.setHm(new StringIntegerMapJava(simap));
 					} catch (final IOException e) {
-						System.err.println(e);
-						e.printStackTrace();
+						log.error(e.getMessage(), e);
 					}
 				}
 			};
@@ -242,8 +232,7 @@ public class FastRDF3XIndexConstruction {
 						ismap.generate(final_trie.iterator());
 						LazyLiteral.setV(ismap);
 					} catch (final IOException e) {
-						System.err.println(e);
-						e.printStackTrace();
+						log.error(e.getMessage(), e);
 					}
 				}
 			};
@@ -255,8 +244,7 @@ public class FastRDF3XIndexConstruction {
 				thread0.join();
 				thread1.join();
 			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			final_trie.release();
 
@@ -271,7 +259,7 @@ public class FastRDF3XIndexConstruction {
 				for(final String key: trie){
 					final java.util.Map.Entry<String, Integer> entry = iterator.next(key);
 					if(entry.getKey().compareTo(key)!=0){
-						System.err.println("Local string not in global dictionary! Cannot be without any other error => Abort!");
+						log.error("Local string not in global dictionary! Cannot be without any other error => Abort!");
 						System.exit(0);
 					}
 					mapping[local_id] = entry.getValue();
@@ -345,14 +333,14 @@ public class FastRDF3XIndexConstruction {
 			OutHelper.writeLuposInt(0, out);
 			out.close();
 			final Date end = new Date();
-			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
+			log.debug("_______________________________________________________________");
+			log.info("Done, RDF3X index constructed!");
+			log.debug("End time: {}", end);
 
-			final TimeInterval interval = new TimeInterval(start, end);
-			System.out.println("Used time: " + interval);
-			System.out.println("Number of imported triples: "+indices.getIndex(CollationOrder.SPO).size());
+			log.debug("Used time: {}", new TimeInterval(start, end));
+			log.debug("Number of imported triples: {}", indices.getIndex(CollationOrder.SPO).size());
 		} catch (final Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -473,8 +461,7 @@ public class FastRDF3XIndexConstruction {
 				disk_set.copy(this.map);
 				this.listOfTries.add(disk_set);
 			} catch (final TrieNotCopyableException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			// free resources of map in main memory
 			this.map.clear();
@@ -492,8 +479,7 @@ public class FastRDF3XIndexConstruction {
 				threadP.join();
 				threadO.join();
 			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 
 			this.runNumber++;
@@ -573,8 +559,7 @@ public class FastRDF3XIndexConstruction {
 				thread1.join();
 				thread2.join();
 			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -614,8 +599,7 @@ public class FastRDF3XIndexConstruction {
 			try {
 				executor.awaitTermination(10, TimeUnit.DAYS);
 			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			};
 
 			// write out initial run:
@@ -631,11 +615,9 @@ public class FastRDF3XIndexConstruction {
 				}
 				out.close();
 			} catch (final FileNotFoundException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			} catch (final IOException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -820,11 +802,9 @@ public class FastRDF3XIndexConstruction {
 				in.close();
 				FileHelper.deleteFile(this.filename);
 			} catch (final FileNotFoundException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			} catch (final IOException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -955,8 +935,7 @@ public class FastRDF3XIndexConstruction {
 							this.triple = this.it.next();
 
 						} catch (final IOException e) {
-							System.err.println(e);
-							e.printStackTrace();
+							log.error(e.getMessage(), e);
 							this.triple = null;
 						}
 
@@ -964,8 +943,7 @@ public class FastRDF3XIndexConstruction {
 					}
 				};
 			} catch (final IOException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			return null;
 		}
@@ -1033,8 +1011,7 @@ public class FastRDF3XIndexConstruction {
 				try {
 					this.previousPrimaryCode = FastRDF3XIndexConstruction.writeBlock(this.block, 0, this.current, 0, 1, 2, this.previousPrimaryCode, this.out);
 				} catch (final IOException e) {
-					System.err.println(e);
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 				this.current = 0;
 			}

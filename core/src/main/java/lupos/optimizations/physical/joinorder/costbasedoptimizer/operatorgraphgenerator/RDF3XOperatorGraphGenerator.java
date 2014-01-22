@@ -23,10 +23,6 @@
  */
 package lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
@@ -45,11 +41,19 @@ import lupos.optimizations.logical.statistics.VarBucket;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.InnerNodePlan;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.JoinType;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * This class generated an operator graph for the RDF3X query evaluator
  */
 public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
+
+	private static final Logger log = LoggerFactory.getLogger(RDF3XOperatorGraphGenerator.class);
 
 	/**
 	 * This flag specifies whether or not n-ary merge joins (true) or only binary merge joins (false) are used
@@ -340,20 +344,16 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 				|| (inp.getRight() instanceof LeafNodePlan && inp.getLeft() instanceof InnerNodePlan)) {
 			this.moveToLeft(inp.getLeft().getTriplePatterns(), root);
 		} else if (inp.getLeft().getCost() > inp.getRight().getCost()) {
-			System.out
-					.println("Card. of joins with estimated lower cost vs. est. higher cost:"
-							+ inp.getRight().getCardinality() + "<->" + inp.getLeft().getCardinality());
-			System.out
-					.println("Cost of joins with estimated lower cost vs. est. higher cost:"
-							+ inp.getRight().getCost() + "<->" + inp.getLeft().getCost());
+			log.debug("Card. of joins with estimated lower cost vs. est. higher cost: {} <-> {}",
+					inp.getRight().getCardinality(), inp.getLeft().getCardinality());
+			log.debug("Cost of joins with estimated lower cost vs. est. higher cost: {} <-> {}",
+					inp.getRight().getCost(), inp.getLeft().getCost());
 			this.moveToLeft(inp.getRight().getTriplePatterns(), root);
 		} else {
-			System.out
-					.println("Card. of joins with estimated lower cost vs. est. higher cost:"
-							+ inp.getLeft().getCardinality() + "<->" + inp.getRight().getCardinality());
-			System.out
-					.println("Cost of joins with estimated lower cost vs. est. higher cost:"
-							+ inp.getLeft().getCost() + "<->" + inp.getRight().getCost());
+			log.debug("Card. of joins with estimated lower cost vs. est. higher cost: {} <-> {}",
+					inp.getLeft().getCardinality(), inp.getRight().getCardinality());
+			log.debug("Cost of joins with estimated lower cost vs. est. higher cost: {} <-> {}",
+					inp.getLeft().getCost(), inp.getRight().getCost());
 			this.moveToLeft(inp.getLeft().getTriplePatterns(), root);
 		}
 

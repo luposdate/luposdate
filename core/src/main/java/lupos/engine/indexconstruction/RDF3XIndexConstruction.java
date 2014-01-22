@@ -26,28 +26,13 @@
  */
 package lupos.engine.indexconstruction;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.SortedSet;
-
 import lupos.compression.Compression;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingTrie;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.literal.LazyLiteral;
-import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
-import lupos.datastructures.items.literal.Literal;
-import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.URILiteral;
+import lupos.datastructures.items.literal.*;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
@@ -64,12 +49,20 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.helper.OutHelper;
 import lupos.misc.TimeInterval;
 import lupos.misc.util.ImmutableIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
  * also constructed on disk...
  */
 public class RDF3XIndexConstruction {
+
+	private static final Logger log = LoggerFactory.getLogger(RDF3XIndexConstruction.class);
+
 	private static final int k = 1000;
 	private static final int k_ = 1000;
 
@@ -83,8 +76,7 @@ public class RDF3XIndexConstruction {
 		try {
 			CommonCoreQueryEvaluator.readTriples(dataFormat, u.openStream(), tc);
 		} catch (final Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -100,18 +92,18 @@ public class RDF3XIndexConstruction {
 	public static void main(final String[] args) {
 		try {
 
-			System.out.println("Program to construct an RDF3X Index for LUPOSDATE...");
-			System.out.println("[help is printed when using less than 5 command line arguments]");
-			System.out.println("_______________________________________________________________");
+			log.info("Starting program to construct an RDF3X Index for LUPOSDATE...");
+			log.debug("[help is printed when using less than 5 command line arguments]");
+			log.debug("_______________________________________________________________");
 
 			if (args.length < 5) {
-				System.out.println("Usage:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
-				System.out.println("Example:\njava -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
+				log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
+				log.error("Example: java -Xmx768M lupos.engine.indexconstruction.RDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
 				return;
 			}
 
 			final Date start = new Date();
-			System.out.println("Starting time: "+start);
+			log.debug("Starting time: {}", start);
 
 			LiteralFactory.setType(LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
@@ -244,8 +236,7 @@ public class RDF3XIndexConstruction {
 									LazyLiteral.setHm(new StringIntegerMapJava(
 											simap));
 								} catch (final IOException e) {
-									System.err.println(e);
-									e.printStackTrace();
+									log.error(e.getMessage(), e);
 								}
 							}
 						};
@@ -258,8 +249,7 @@ public class RDF3XIndexConstruction {
 									ismap.generate(rdftermsRepresentations.iterator());
 									LazyLiteral.setV(ismap);
 								} catch (final IOException e) {
-									System.err.println(e);
-									e.printStackTrace();
+									log.error(e.getMessage(), e);
 								}
 							}
 						};
@@ -269,8 +259,7 @@ public class RDF3XIndexConstruction {
 							thread0.join();
 							thread1.join();
 						} catch (final InterruptedException e) {
-							System.err.println(e);
-							e.printStackTrace();
+							log.error(e.getMessage(), e);
 						}
 						rdftermsRepresentations.release();
 
@@ -281,14 +270,13 @@ public class RDF3XIndexConstruction {
 			try {
 				codeMapConstructionThread.join();
 			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 
 			final Date intermediate = new Date();
 			final TimeInterval codemapInterval = new TimeInterval(start, intermediate);
-			System.out.println("Codemap constructed in: " + codemapInterval);
-			System.out.println("Codemap contains "+LazyLiteral.getHm().size()+" entries!");
+			log.info("Codemap constructed in: {}", codemapInterval);
+			log.info("Codemap contains {} entries!", LazyLiteral.getHm().size());
 
 			// for debugging purposes:
 //			final TripleConsumer interTripleConsumer = new TripleConsumer() {
@@ -325,14 +313,14 @@ public class RDF3XIndexConstruction {
 			OutHelper.writeLuposInt(0, out);
 			out.close();
 			final Date end = new Date();
-			System.out.println("_______________________________________________________________\nDone, RDF3X index constructed!\nEnd time: "+end);
+			log.debug("_______________________________________________________________");
+			log.info("Done, RDF3X index constructed!");
+			log.debug("End time: {}", end);
 
-			final TimeInterval interval = new TimeInterval(start, end);
-			System.out.println("Used time: " + interval);
-			System.out.println("Number of imported triples: "+((SixIndices)indices).getIndex(CollationOrder.SPO).size());
+			log.debug("Used time: {}", new TimeInterval(start, end));
+			log.debug("Number of imported triples: {}", ((SixIndices)indices).getIndex(CollationOrder.SPO).size());
 		} catch (final Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -389,8 +377,7 @@ public class RDF3XIndexConstruction {
 					triples.release();
 				}
 			} catch (final IOException e) {
-				System.err.println(e);
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 
