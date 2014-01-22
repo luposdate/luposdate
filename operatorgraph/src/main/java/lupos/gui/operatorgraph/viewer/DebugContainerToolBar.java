@@ -55,7 +55,7 @@ public class DebugContainerToolBar<T> extends JPanel {
 	private JButton nextButton;
 	private JButton lastButton;
 
-	public DebugContainerToolBar(Viewer operatorGraphViewer, List<DebugContainer<T>> debugContainerList, boolean fromJar) {
+	public DebugContainerToolBar(final Viewer operatorGraphViewer, final List<DebugContainer<T>> debugContainerList, final boolean fromJar) {
 		super();
 
 		this.operatorGraphViewer = operatorGraphViewer;
@@ -76,10 +76,11 @@ public class DebugContainerToolBar<T> extends JPanel {
 		this.firstButton = new JButton("<<");
 		this.firstButton.setToolTipText("first graph");
 		this.firstButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				that.curContainerPos = 0;
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				DebugContainerToolBar.this.that.curContainerPos = 0;
 
-				that.reloadGraphViewer();
+				DebugContainerToolBar.this.that.reloadGraphViewer();
 			}
 		});
 
@@ -90,10 +91,11 @@ public class DebugContainerToolBar<T> extends JPanel {
 		this.prevButton = new JButton("<");
 		this.prevButton.setToolTipText("previous graph");
 		this.prevButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				that.curContainerPos -= 1;
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				DebugContainerToolBar.this.that.curContainerPos -= 1;
 
-				that.reloadGraphViewer();
+				DebugContainerToolBar.this.that.reloadGraphViewer();
 			}
 		});
 
@@ -110,10 +112,11 @@ public class DebugContainerToolBar<T> extends JPanel {
 		this.ruleCombo = new JComboBox(ruleNames);
 		this.ruleCombo.setSelectedIndex(this.curContainerPos);
 		this.ruleCombo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				that.curContainerPos = ((JComboBox) e.getSource()).getSelectedIndex();
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				DebugContainerToolBar.this.that.curContainerPos = ((JComboBox) e.getSource()).getSelectedIndex();
 
-				that.reloadGraphViewer();
+				DebugContainerToolBar.this.that.reloadGraphViewer();
 			}
 		});
 
@@ -124,14 +127,15 @@ public class DebugContainerToolBar<T> extends JPanel {
 		this.infoButton = new JButton("?");
 		this.infoButton.setToolTipText("additional information about this rule...");
 		this.infoButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DebugContainer<T> dc = debugContainerList.get(curContainerPos);
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				final DebugContainer<T> dc = DebugContainerToolBar.this.debugContainerList.get(DebugContainerToolBar.this.curContainerPos);
 
 				if(dc == null || dc.getDescription() == null) {
-					JOptionPane.showMessageDialog(that, "No information about this rule available!", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(DebugContainerToolBar.this.that, "No information about this rule available!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
-					JFrame browserFrame = new Browser("http://www.ifis.uni-luebeck.de/~groppe/tutorial_demo/ruledoc/" + dc.getDescription() + ".html", "Rule information", false);
+					final JFrame browserFrame = new Browser("http://www.ifis.uni-luebeck.de/~groppe/tutorial_demo/ruledoc/" + dc.getDescription() + ".html", "Rule information", false);
 
 					if(fromJar) {
 						browserFrame.setIconImage(new ImageIcon(DebugContainerToolBar.class.getResource("/demo.gif")).getImage());
@@ -150,10 +154,11 @@ public class DebugContainerToolBar<T> extends JPanel {
 		this.nextButton = new JButton(">");
 		this.nextButton.setToolTipText("next graph");
 		this.nextButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				that.curContainerPos += 1;
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				DebugContainerToolBar.this.that.curContainerPos += 1;
 
-				that.reloadGraphViewer();
+				DebugContainerToolBar.this.that.reloadGraphViewer();
 			}
 		});
 
@@ -164,10 +169,11 @@ public class DebugContainerToolBar<T> extends JPanel {
 		this.lastButton = new JButton(">>");
 		this.lastButton.setToolTipText("last graph");
 		this.lastButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				that.curContainerPos = debugContainerList.size() - 1;
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				DebugContainerToolBar.this.that.curContainerPos = DebugContainerToolBar.this.debugContainerList.size() - 1;
 
-				that.reloadGraphViewer();
+				DebugContainerToolBar.this.that.reloadGraphViewer();
 			}
 		});
 
@@ -175,7 +181,7 @@ public class DebugContainerToolBar<T> extends JPanel {
 	}
 
 	private void reloadGraphViewer() {
-		T root = this.debugContainerList.get(this.curContainerPos).getRoot();
+		final T root = this.debugContainerList.get(this.curContainerPos).getRoot();
 
 		if(root instanceof BasicOperator) {
 			this.operatorGraphViewer.createGraphElement(new GraphWrapperBasicOperator((BasicOperator) root));
@@ -207,5 +213,8 @@ public class DebugContainerToolBar<T> extends JPanel {
 			this.nextButton.setEnabled(true);
 			this.lastButton.setEnabled(true);
 		}
+
+		// deal with context menus
+		this.operatorGraphViewer.setupContextMenus();
 	}
 }

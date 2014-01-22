@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.gui;
+package lupos.distributed.p2p.gui;
 
 import lupos.gui.Demo_Applet;
 
@@ -41,14 +41,14 @@ public class Start_Demo_Applet_DE {
 		.registerEvaluator(
 				"TomP2P",
 				lupos.distributed.p2p.query.withsubgraph.TomP2P_QueryClient.class);
-		
+
 		Demo_Applet
 		.registerEvaluator(
 				"Chordless",
 				lupos.distributed.p2p.query.withsubgraph.Chordless_QueryClient.class);
 
 		/* the old ones */
-		
+
 		Demo_Applet
 		.registerEvaluator(
 				"TomP2P without SubgraphSubmission / SimplePartitionDistribution",
@@ -69,7 +69,7 @@ public class Start_Demo_Applet_DE {
 		.registerEvaluator(
 				"TomP2P without SubgraphSubmission / NinefoldDistribution",
 				lupos.distributed.p2p.query.TomP2P_NinefoldInsertionDistribution.class);
-		
+
 		Demo_Applet
 		.registerEvaluator(
 				"Chordless without SubgraphSubmission / SimplePartitionDistribution",
@@ -90,9 +90,9 @@ public class Start_Demo_Applet_DE {
 		.registerEvaluator(
 				"Chordless without SubgraphSubmission / NinefoldDistribution",
 				lupos.distributed.p2p.query.Chordless_NinefoldInsertionDistribution.class);
-		
-		
-		
+
+
+
 		Demo_Applet
 		.registerEvaluator(
 				"TomP2P with SubgraphSubmission / SimplePartitionDistribution",
@@ -113,7 +113,7 @@ public class Start_Demo_Applet_DE {
 		.registerEvaluator(
 				"TomP2P with SubgraphSubmission / NinefoldDistribution",
 				lupos.distributed.p2p.query.withsubgraph.TomP2P_NinefoldInsertionDistribution.class);
-		
+
 		Demo_Applet
 		.registerEvaluator(
 				"Chordless with SubgraphSubmission / SimplePartitionDistribution",
@@ -134,7 +134,7 @@ public class Start_Demo_Applet_DE {
 		.registerEvaluator(
 				"Chordless with SubgraphSubmission / NinefoldDistribution",
 				lupos.distributed.p2p.query.withsubgraph.Chordless_NinefoldInsertionDistribution.class);
-		
+
 		Demo_Applet.main(args);
 	}
 

@@ -184,4 +184,9 @@ public class SubgraphContainer<K> extends RootChild {
 			this.key  = newKey;
 		}
 	}
+
+	@Override
+	public BasicOperator getContainedGraph(){
+		return this.rootNodeOfSubGraph;
+	}
 }

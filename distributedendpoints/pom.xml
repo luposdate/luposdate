@@ -27,7 +27,7 @@
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>luposdate.endpoint</artifactId>
+			<artifactId>luposdate.gui</artifactId>
 		</dependency>
 
 	</dependencies>

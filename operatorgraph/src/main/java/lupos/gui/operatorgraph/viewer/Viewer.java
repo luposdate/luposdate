@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,20 +51,24 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import lupos.distributed.operator.SubgraphContainer;
 import lupos.engine.operators.BasicOperator;
 import lupos.gui.operatorgraph.GraphBox;
+import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.arrange.Arrange;
 import lupos.gui.operatorgraph.arrange.LayoutTest;
-import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperatorByteArray;
+import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.optimizations.logical.rules.DebugContainer;
 import xpref.IXPref;
 import xpref.XPref;
@@ -87,15 +92,15 @@ public class Viewer extends JFrame implements IXPref {
 	private final Viewer that = this;
 
 	private JCheckBox lcCheckBox = null;
-		
-	// from toolbar: 
+
+	// from toolbar:
 	private JComboBox comboBox;
 
 	/**
 	 * Constructor to show a tree with the viewer. The tree is given by the
 	 * first node which is provides as a GraphWrapper object. This constructor
 	 * also can take a title for the window.
-	 * 
+	 *
 	 * @param startGW
 	 *            the start node of the tree to be shown
 	 * @param title
@@ -129,7 +134,7 @@ public class Viewer extends JFrame implements IXPref {
 	 * first node which is provides as a GraphWrapper object. This constructor
 	 * also can take a title for the window. This constructor takes a list of
 	 * DebugContainers and shows the tree in the last entry of that list.
-	 * 
+	 *
 	 * @param debugContainerList
 	 *            list of Debug containers
 	 * @param title
@@ -159,7 +164,7 @@ public class Viewer extends JFrame implements IXPref {
 	 * first node which is provides as a GraphWrapper object. This constructor
 	 * also can take a title for the window. This constructor takes a list of
 	 * DebugContainers and shows the tree in the last entry of that list.
-	 * 
+	 *
 	 * @param debugContainerList
 	 *            list of Debug containers
 	 * @param prefix
@@ -178,19 +183,15 @@ public class Viewer extends JFrame implements IXPref {
 		super();
 
 		this.startGWs = new LinkedList<GraphWrapper>();
-		this.startGWs.add(new GraphWrapperBasicOperator(debugContainerList.get(
-				debugContainerList.size() - 1).getRoot()));
-		this.operatorGraph = new OperatorGraphWithPrefix(prefix); // initiate
-		// OperatorGraph
-		// class
+		this.startGWs.add(new GraphWrapperBasicOperator(debugContainerList.get(debugContainerList.size() - 1).getRoot()));
+		this.operatorGraph = new OperatorGraphWithPrefix(prefix); // initiate OperatorGraph class
 
 		this.constructFrame(title, standAlone, fromJar);
 
 		final JPanel topToolBar = this.createTopToolBar(standAlone, fromJar);
 		this.getContentPane().add(topToolBar, BorderLayout.NORTH);
 
-		final JPanel bottomToolBar = new DebugContainerToolBar<BasicOperator>(
-				this, debugContainerList, fromJar);
+		final JPanel bottomToolBar = new DebugContainerToolBar<BasicOperator>(this, debugContainerList, fromJar);
 		this.getContentPane().add(bottomToolBar, BorderLayout.SOUTH);
 
 		this.finalizeFrame(topToolBar, bottomToolBar);
@@ -203,20 +204,16 @@ public class Viewer extends JFrame implements IXPref {
 		super();
 
 		this.startGWs = new LinkedList<GraphWrapper>();
-		this.startGWs
-		.add(new GraphWrapperBasicOperatorByteArray(debugContainerList
-				.get(debugContainerList.size() - 1).getRoot()));
-		this.operatorGraph = new OperatorGraphWithPrefix(prefix); // initiate
-		// OperatorGraph
-		// class
+		this.startGWs.add(new GraphWrapperBasicOperatorByteArray(debugContainerList.get(debugContainerList.size() - 1).getRoot()));
+
+		this.operatorGraph = new OperatorGraphWithPrefix(prefix); // initiate OperatorGraph class
 
 		this.constructFrame(title, standAlone, fromJar);
 
 		final JPanel topToolBar = this.createTopToolBar(standAlone, fromJar);
 		this.getContentPane().add(topToolBar, BorderLayout.NORTH);
 
-		final JPanel bottomToolBar = new DebugContainerToolBar<BasicOperatorByteArray>(
-				this, debugContainerList, fromJar);
+		final JPanel bottomToolBar = new DebugContainerToolBar<BasicOperatorByteArray>(this, debugContainerList, fromJar);
 		this.getContentPane().add(bottomToolBar, BorderLayout.SOUTH);
 
 		this.finalizeFrame(topToolBar, bottomToolBar);
@@ -228,18 +225,19 @@ public class Viewer extends JFrame implements IXPref {
 		super();
 		this.startGWs = new LinkedList<GraphWrapper>();
 		this.startGWs.add(startGW);
-		this.operatorGraph = new OperatorGraphWithPrefix(prefix); // initiate
-		// OperatorGraph
-		// class
+		this.operatorGraph = new OperatorGraphWithPrefix(prefix); // initiate OperatorGraph class
 
 		this.constructFrame(title, standAlone, fromJar);
 
 		final JPanel topToolBar = this.createTopToolBar(standAlone, fromJar);
 		this.getContentPane().add(topToolBar, BorderLayout.NORTH);
 
-		this.getContentPane().add(toolbar, BorderLayout.SOUTH);
-
-		this.finalizeFrame(topToolBar, toolbar);
+		if(toolbar!=null){
+			this.getContentPane().add(toolbar, BorderLayout.SOUTH);
+			this.finalizeFrame(topToolBar, toolbar);
+		} else {
+			this.finalizeFrame(topToolBar);
+		}
 	}
 
 	public Viewer(final LinkedList<GraphWrapper> startGW,
@@ -266,12 +264,12 @@ public class Viewer extends JFrame implements IXPref {
 	/**
 	 * This constructor generates the graph for the given filename and saves it
 	 * as image to the given filename.
-	 * 
+	 *
 	 * @param startGW
 	 *            the first node of the graph
 	 * @param filename
 	 *            the filename to save the graph as image to
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public Viewer(final GraphWrapper startGW, String filename) throws IOException {
 		super();
@@ -279,25 +277,25 @@ public class Viewer extends JFrame implements IXPref {
 		if (!(filename.endsWith(".png") || filename.endsWith(".jpeg") || filename.endsWith(".gif"))) {
 			filename += ".png";
 		}
-		
-		String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
 
-		OutputStream out = new FileOutputStream(new File(filename));
-		
+		final String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
+
+		final OutputStream out = new FileOutputStream(new File(filename));
+
 		this.saveGraph(startGW, format, out);
 
 		out.close();
 	}
-	
+
 	/**
 	 * This constructor generates the graph for the given filename and saves it
 	 * as image to the given filename.
-	 * 
+	 *
 	 * @param startGWs
 	 *            the root nodes of the graph
 	 * @param filename
 	 *            the filename to save the graph as image to
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public Viewer(final LinkedList<GraphWrapper> startGWs, String filename) throws IOException {
 		super();
@@ -305,11 +303,11 @@ public class Viewer extends JFrame implements IXPref {
 		if (!(filename.endsWith(".png") || filename.endsWith(".jpeg") || filename.endsWith(".gif"))) {
 			filename += ".png";
 		}
-		
-		String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
 
-		OutputStream out = new FileOutputStream(new File(filename));
-		
+		final String format = filename.endsWith(".jpeg")?"jpeg":filename.substring(filename.length()-3);
+
+		final OutputStream out = new FileOutputStream(new File(filename));
+
 		this.saveGraph(startGWs, format, out);
 
 		out.close();
@@ -318,7 +316,7 @@ public class Viewer extends JFrame implements IXPref {
 	/**
 	 * This constructor generates the graph for the given filename and saves it
 	 * as image to an outputstream.
-	 * 
+	 *
 	 * @param startGW
 	 *            the first node of the graph
 	 * @param format
@@ -331,11 +329,11 @@ public class Viewer extends JFrame implements IXPref {
 
 		this.saveGraph(startGW, format, out);
 	}
-	
+
 	/**
 	 * This constructor generates the graph for the given filename and saves it
 	 * as image to an outputstream.
-	 * 
+	 *
 	 * @param startGW
 	 *            the first node of the graph
 	 * @param format
@@ -348,8 +346,82 @@ public class Viewer extends JFrame implements IXPref {
 
 		this.saveGraph(startGWs, format, out);
 	}
-	
-	private void saveGraph(final GraphWrapper startGW, final String format, final OutputStream out) {		
+
+	/**
+	 * This method sets a context menu for the given GraphWrappers and all their
+	 * children.
+	 *
+	 * @param operatorGraph
+	 *            instance of the OperatorGraph
+	 * @param graphWrappers
+	 *            list of GraphWrappers to set context menus to
+	 * @param visited
+	 *            set of already visited GraphWrappers, used to detect cycles
+	 */
+	private void addContextMenusToGraphWrappers(final GraphWrapper graphWrapper,
+			final HashSet<GraphWrapper> visited) {
+		// in case of cycles: has this GraphWrapper already been visited?
+		if (visited.contains(graphWrapper)) {
+			return;
+		}
+
+		visited.add(graphWrapper);
+
+		// add context menu to the current GraphWrapper...
+		final JPopupMenu popupMenu = this.createContextMenu(graphWrapper);
+		if(popupMenu!=null){
+			this.operatorGraph.setContextMenuOfOperator(graphWrapper, popupMenu);
+		}
+
+		// walk through children of current GraphWrapper...
+		for (final GraphWrapperIDTuple gwIDT : graphWrapper.getSucceedingElements()) {
+			// add context menus to the child GraphWrapper and its children...
+			this.addContextMenusToGraphWrappers(gwIDT.getOperator(), visited);
+		}
+	}
+
+	/**
+	 * This method creates a context menu to a specific GraphWrapper
+	 *
+	 * @param graphWrapper
+	 *            The GraphWrapper to which the context menu is attached to
+	 * @return the context menu
+	 */
+	private JPopupMenu createContextMenu(final GraphWrapper graphWrapper) {
+		if(graphWrapper.getElement() instanceof SubgraphContainer ||
+				(graphWrapper.getElement() instanceof BasicOperatorByteArray
+						&& ((BasicOperatorByteArray) graphWrapper.getElement()).getContainedGraph()!=null)){
+			final JMenuItem menuItem = new JMenuItem("Show Subgraph");
+			final JPopupMenu contextMenu = new JPopupMenu();
+			contextMenu.add(menuItem);
+			if(graphWrapper.getElement() instanceof SubgraphContainer){
+				menuItem.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						new Viewer(
+								new GraphWrapperBasicOperator(((SubgraphContainer)graphWrapper.getElement()).getRootOfSubgraph()),
+								new ViewerPrefix(true, Viewer.this.getOperatorGraph().getPrefix()),
+								"Contained Subgraph", false, true, (JPanel) null);
+					}});
+			} else {
+				menuItem.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						new Viewer(
+								new GraphWrapperBasicOperatorByteArray(((BasicOperatorByteArray)graphWrapper.getElement()).getContainedGraph()),
+								new ViewerPrefix(true, Viewer.this.getOperatorGraph().getPrefix()),
+								"Contained Subgraph", false, true, (JPanel) null);
+					}});
+			}
+			return contextMenu;
+		} else {
+			return null;
+		}
+	}
+
+	private void saveGraph(final GraphWrapper startGW, final String format, final OutputStream out) {
 		this.startGWs = new LinkedList<GraphWrapper>();
 		this.startGWs.add(startGW);
 		this.saveGraph(this.startGWs, format, out);
@@ -357,8 +429,8 @@ public class Viewer extends JFrame implements IXPref {
 
 	private void saveGraph(final LinkedList<GraphWrapper> listOfStartGWs, final String format, final OutputStream out) {
 		this.startGWs = listOfStartGWs;
-		ViewerPrefix prefix = new ViewerPrefix(true);
-		this.operatorGraph = new OperatorGraphWithPrefix(prefix);		
+		final ViewerPrefix prefix = new ViewerPrefix(true);
+		this.operatorGraph = new OperatorGraphWithPrefix(prefix);
 		prefix.setStatus(true);
 		this.constructFrame("Intermediate frame for saving graph", true, false);
 
@@ -368,10 +440,10 @@ public class Viewer extends JFrame implements IXPref {
 
 		this.setVisible(false);
 	}
-	
+
 	/**
 	 * Internal method to create the main Frame.
-	 * 
+	 *
 	 * @param title
 	 *            the title of the frame
 	 * @param standAlone
@@ -379,13 +451,11 @@ public class Viewer extends JFrame implements IXPref {
 	 * @param fromJar
 	 *            should be true, if the viewer is loaded from a jar file
 	 */
-	private void constructFrame(final String title, final boolean standAlone,
-			final boolean fromJar) {
+	private void constructFrame(final String title, final boolean standAlone, final boolean fromJar) {
 		if (standAlone) {
 			// try to set look and feel...
 			try {
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
@@ -427,6 +497,16 @@ public class Viewer extends JFrame implements IXPref {
 		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+
+		this.setupContextMenus();
+	}
+
+	public void setupContextMenus(){
+		// deal with context menus
+		final HashSet<GraphWrapper> visited = new HashSet<GraphWrapper>();
+		for (final GraphWrapper rootGW : this.getOperatorGraph().getRootList(false)) {
+			this.addContextMenusToGraphWrappers(rootGW, visited);
+		}
 	}
 
 	@Override
@@ -436,12 +516,12 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Internal method to create the top tool bar.
-	 * 
+	 *
 	 * @param fromJar
 	 *            should be true, if the viewer is loaded from a jar file
 	 * @param standAlone
 	 *            true, if this GUI component is the only active one
-	 * 
+	 *
 	 * @return a JToolBar with the elements for the top tool bar in it
 	 */
 	private JPanel createTopToolBar(final boolean standAlone,
@@ -466,7 +546,7 @@ public class Viewer extends JFrame implements IXPref {
 			toolBar.add(Box.createRigidArea(new Dimension(20, 0))); // add
 			// separator
 		}
-		
+
 		toolBar.add(this.createRotateButton());
 
 		toolBar.add(this.createColorCheckBox()); // add CheckBox for line colors
@@ -511,7 +591,7 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Internal method to create the ComboBox box for the zoom.
-	 * 
+	 *
 	 * @return zoom ComboBox
 	 */
 	private JComboBox createZoomComboBox() {
@@ -534,6 +614,7 @@ public class Viewer extends JFrame implements IXPref {
 			zoomDropDown.setSelectedItem(zoomFactor);
 			zoomDropDown.setEditable(true);
 			zoomDropDown.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent ae) {
 					int zoom = 0;
 
@@ -546,17 +627,17 @@ public class Viewer extends JFrame implements IXPref {
 
 					final double zFactor = ((double) zoom) / 100; // calculate zoom factor
 
-					double factor = zFactor / operatorGraph.getZoomFactor();
-					if(operatorGraph.updateZoomFactor(zFactor)) {
-						final LinkedList<GraphWrapper> rootList = operatorGraph.getRootList(true);
-						
-						Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) operatorGraph.getBoxes().clone();
+					final double factor = zFactor / Viewer.this.operatorGraph.getZoomFactor();
+					if(Viewer.this.operatorGraph.updateZoomFactor(zFactor)) {
+						final LinkedList<GraphWrapper> rootList = Viewer.this.operatorGraph.getRootList(true);
 
-						operatorGraph.clearAll();
-						operatorGraph.updateMainPanel(operatorGraph
-								.createGraph(rootList, 
-										(comboBox!=null)?(Arrange) comboBox.getSelectedItem():Arrange.LAYERED, 
-										factor, 
+						final Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) Viewer.this.operatorGraph.getBoxes().clone();
+
+						Viewer.this.operatorGraph.clearAll();
+						Viewer.this.operatorGraph.updateMainPanel(Viewer.this.operatorGraph
+								.createGraph(rootList,
+										(Viewer.this.comboBox!=null)?(Arrange) Viewer.this.comboBox.getSelectedItem():Arrange.LAYERED,
+										factor,
 										oldBoxes));
 					}
 				}
@@ -576,7 +657,7 @@ public class Viewer extends JFrame implements IXPref {
 		}
 		return null;
 	}
-	
+
 	private JPanel createRotateButton(){
 		final Vector<Integer> rotateFactors = new Vector<Integer>();
 		rotateFactors.add(new Integer(0));
@@ -589,11 +670,11 @@ public class Viewer extends JFrame implements IXPref {
 		rotateFactors.add(new Integer(215));
 		final JComboBox rotateDropDown = new JComboBox(rotateFactors);
 		rotateDropDown.setEditable(true);
-		
-		final JButton button = new JButton("rotate"); 
+
+		final JButton button = new JButton("rotate");
 		button.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				int rotate = 0;
 				try {
 					rotate = (Integer) rotateDropDown.getSelectedItem();
@@ -601,17 +682,17 @@ public class Viewer extends JFrame implements IXPref {
 					return;
 				}
 				rotate %= 360;
-				
-				final LinkedList<GraphWrapper> rootList = operatorGraph.getRootList(true);
-				
-				Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) operatorGraph.getBoxes().clone();
 
-				operatorGraph.clearAll();
-				
-				operatorGraph.updateMainPanel(operatorGraph.rotate(rotate, rootList, oldBoxes));
-			}			
+				final LinkedList<GraphWrapper> rootList = Viewer.this.operatorGraph.getRootList(true);
+
+				final Map<GraphWrapper, GraphBox> oldBoxes = (Map<GraphWrapper, GraphBox>) Viewer.this.operatorGraph.getBoxes().clone();
+
+				Viewer.this.operatorGraph.clearAll();
+
+				Viewer.this.operatorGraph.updateMainPanel(Viewer.this.operatorGraph.rotate(rotate, rootList, oldBoxes));
+			}
 		});
-		JPanel result = new JPanel(new FlowLayout());
+		final JPanel result = new JPanel(new FlowLayout());
 		result.add(rotateDropDown);
 		result.add(button);
 		return result;
@@ -619,21 +700,22 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Internal method to create the check box to enable the usage of prefixes.
-	 * 
+	 *
 	 * @return the prefix check box
 	 */
 	private JCheckBox createPrefixCheckBox() {
 		final JCheckBox prefixCheckBox = new JCheckBox("Use prefixes",
 				this.operatorGraph.getPrefix().isActive());
 		prefixCheckBox.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(final ItemEvent ie) {
 				final boolean status = (ie.getStateChange() == ItemEvent.SELECTED) ? true
 						: false;
 
-				operatorGraph.setPrefixStatus(status);
-				operatorGraph.clearAll();
+				Viewer.this.operatorGraph.setPrefixStatus(status);
+				Viewer.this.operatorGraph.clearAll();
 
-				createGraphElement();
+				Viewer.this.createGraphElement();
 			}
 		});
 
@@ -642,41 +724,43 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Internal method to create the check box to enable colored arrows.
-	 * 
+	 *
 	 * @return the line color check box
 	 */
 	private JCheckBox createColorCheckBox() {
 		this.lcCheckBox = new JCheckBox("use colored arrows", false);
 		this.lcCheckBox.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(final ItemEvent ie) {
-				operatorGraph
+				Viewer.this.operatorGraph
 				.setLineColorStatus((ie.getStateChange() == ItemEvent.SELECTED) ? true
 						: false);
 
-				operatorGraph.repaint(); // update the graph
+				Viewer.this.operatorGraph.repaint(); // update the graph
 			}
 		});
 
 		return this.lcCheckBox;
 	}
-	
+
 
 	/**
 	 * Internal method to create the button to arrange the current graph.
-	 * 
+	 *
 	 * @return the arrange button
 	 */
 	private JPanel createArrangeButton() {
 		final JPanel panel = new JPanel();
 
-		comboBox = new JComboBox(Arrange.values());
-		panel.add(comboBox);
+		this.comboBox = new JComboBox(Arrange.values());
+		panel.add(this.comboBox);
 
 		final JButton arrangeButton = new JButton("arrange");
 		arrangeButton.setToolTipText("arrange the shown graph");
 		arrangeButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				operatorGraph.arrange((Arrange) comboBox.getSelectedItem());
+				Viewer.this.operatorGraph.arrange((Arrange) Viewer.this.comboBox.getSelectedItem());
 			}
 		});
 
@@ -685,34 +769,35 @@ public class Viewer extends JFrame implements IXPref {
 		final JButton qButton = new JButton("Graph quality");
 		qButton.setToolTipText("determines quality of current graph...");
 		qButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				showString(LayoutTest.test(operatorGraph), "Result of Graph Test");
+				showString(LayoutTest.test(Viewer.this.operatorGraph), "Result of Graph Test");
 			}
 		});
 
 		panel.add(qButton);
-		
+
 		return panel;
 	}
-	
+
 	/**
 	 * Displays a window with the given String.
 	 * @param content the string to be displayed
 	 * @param title the title of the window
 	 */
-	public static void showString(String content, String title){
-		
+	public static void showString(final String content, final String title){
+
 		final JTextPane tp_dataInput = new JTextPane();
-		
+
 		tp_dataInput.setEditable(false);
 		tp_dataInput.setText(content);
 
-		JScrollPane dataInputSP = new JScrollPane(tp_dataInput);	
-		
+		final JScrollPane dataInputSP = new JScrollPane(tp_dataInput);
+
 		final JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(dataInputSP);
-		
+
 		final JFrame frame = new JFrame(title);
 		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		frame.getContentPane().add(panel);
@@ -723,7 +808,7 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Internal method to create the button to save the current graph as image.
-	 * 
+	 *
 	 * @return the save button
 	 */
 	private JButton createSaveButton() {
@@ -747,16 +832,17 @@ public class Viewer extends JFrame implements IXPref {
 		.setToolTipText("save the current operator gmainPanelraph as image");
 		saveButton.setMnemonic(KeyEvent.VK_S);
 		saveButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				final int returnValue = chooser.showDialog(that, "Save"); // show the file chooser...
+				final int returnValue = chooser.showDialog(Viewer.this.that, "Save"); // show the file chooser...
 
 				if (returnValue == JFileChooser.APPROVE_OPTION) { // get filename...
 					final String filename = chooser.getSelectedFile()
 					.getAbsolutePath();
 
 					try {
-						that.operatorGraph.saveGraph(filename);
-					} catch (IOException e) {
+						Viewer.this.that.operatorGraph.saveGraph(filename);
+					} catch (final IOException e) {
 						System.err.println(e);
 						e.printStackTrace();
 					}
@@ -769,16 +855,17 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Internal method to create the button to show the preferences dialog.
-	 * 
+	 *
 	 * @return the preferences button
 	 */
 	private JButton createPreferencesButton() {
 		final JButton preferencesButton = new JButton("Preferences");
 		preferencesButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
 				final LinkedList<String> idList = new LinkedList<String>();
 
-				for (final GraphWrapper gw : startGWs) {
+				for (final GraphWrapper gw : Viewer.this.startGWs) {
 					idList.add(gw.getWantedPreferencesID());
 				}
 
@@ -794,6 +881,7 @@ public class Viewer extends JFrame implements IXPref {
 		return preferencesButton;
 	}
 
+	@Override
 	public void preferencesChanged() {
 		try {
 			this.lcCheckBox.setSelected(BooleanDatatype.getValues(
@@ -805,6 +893,6 @@ public class Viewer extends JFrame implements IXPref {
 	}
 
 	public OperatorGraphWithPrefix getOperatorGraph() {
-		return operatorGraph;
+		return this.operatorGraph;
 	}
 }

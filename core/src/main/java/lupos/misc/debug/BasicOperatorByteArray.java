@@ -40,8 +40,8 @@ import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.singleinput.modifiers.Limit;
 import lupos.engine.operators.singleinput.modifiers.Offset;
 import lupos.engine.operators.singleinput.sort.Sort;
-import lupos.rdf.Prefix;
 import lupos.misc.util.OperatorIDTuple;
+import lupos.rdf.Prefix;
 
 public class BasicOperatorByteArray {
 
@@ -55,28 +55,30 @@ public class BasicOperatorByteArray {
 	private final int index;
 	/**
 	 * The graph of operators. Each node has the following format:
-	 * 
+	 *
 	 * Byte 0: Type of operator according to enum OPERATORTYPE
-	 * 
+	 *
 	 * Bytes 1+2: Length ls of String
-	 * 
+	 *
 	 * Bytes 3 to 3+ls: String
-	 * 
+	 *
 	 * Bytes 4+ls and 5+ls: Length lp of prefixed String
-	 * 
+	 *
 	 * Bytes 6+ls to 6+ls+lp: prefixed String
-	 * 
+	 *
 	 * Bytes 7+ls+lp and 8+ls+lp: number npo of preceding operators
-	 * 
+	 *
 	 * Bytes 9+ls+lp to 9+ls+lp+ npo*2: preceding operators as index in
 	 * indexOperators
-	 * 
+	 *
 	 * Bytes 10+ls+lp+ npo*2 and 11+ls+lp+npo*2: number nso of succeeding
 	 * operators
-	 * 
+	 *
 	 * Bytes 12+ls+lp+ npo*2 to 12+ls+lp+ npo*2 +nso*3: succeeding operators
 	 * with the information of the id (first byte) and index in indexOperators
 	 * (second and third byte)
+	 *
+	 * Bytes 13+ls+lp+ npo*2 +nso*3 and 14+ls+lp+ npo*2 +nso*3: root operator of contained graph (e.g. in case of a SubgraphContainer) as index in indexOperators (both are 0 if there is no contained graph)
 	 */
 	private final byte[] graph;
 	/**
@@ -84,30 +86,30 @@ public class BasicOperatorByteArray {
 	 */
 	private final int[] indexOperators;
 
-	public BasicOperatorByteArray(final int index, final byte[] graph,
-			final int[] indexOperators) {
+	public BasicOperatorByteArray(final int index, final byte[] graph, final int[] indexOperators) {
 		this.index = index;
 		this.graph = graph;
 		this.indexOperators = indexOperators;
 	}
 
 	public OPERATORTYPE getType() {
-		return OPERATORTYPE.values()[graph[index]];
+		return OPERATORTYPE.values()[this.graph[this.index]];
 	}
 
 	public byte getTypeASByte() {
-		return graph[index];
+		return this.graph[this.index];
 	}
 
 	public List<OperatorIDTuple<BasicOperatorByteArray>> getSucceedingOperators() {
-		final int indexSO = getIndexSucceedingOperator();
-		final int number = get2Bytes(indexSO);
+		final int indexSO = this.getIndexSucceedingOperators();
+		final int number = this.get2Bytes(indexSO);
 		final List<OperatorIDTuple<BasicOperatorByteArray>> result = new LinkedList<OperatorIDTuple<BasicOperatorByteArray>>();
 		for (int i = 0; i < number; i++) {
-			int currentID = graph[indexSO + 2 + i * 3];
-			if (currentID < 0)
+			int currentID = this.graph[indexSO + 2 + i * 3];
+			if (currentID < 0) {
 				currentID = 256 - currentID;
-			final int currentOp = get2Bytes(indexSO + 3 + i * 3);
+			}
+			final int currentOp = this.get2Bytes(indexSO + 3 + i * 3);
 			result.add(new OperatorIDTuple<BasicOperatorByteArray>(
 					new BasicOperatorByteArray(this.indexOperators[currentOp],
 							this.graph, this.indexOperators), currentID));
@@ -115,23 +117,29 @@ public class BasicOperatorByteArray {
 		return result;
 	}
 
-	private int getIndexSucceedingOperator() {
-		final int indexPO = getIndexPreceedingOperators();
-		return indexPO + 2 + get2Bytes(indexPO) * 2;
+	private int getIndexSucceedingOperators() {
+		final int indexPO = this.getIndexPreceedingOperators();
+		return indexPO + 2 + this.get2Bytes(indexPO) * 2;
 	}
 
+	private int getIndexContainedGraph() {
+		final int indexSO = this.getIndexSucceedingOperators();
+		return indexSO + 2 + this.get2Bytes(indexSO) * 3;
+	}
+
+
 	private int getIndexPreceedingOperators() {
-		final int indexPS = getIndexPrefixedString();
-		return indexPS + 2 + get2Bytes(indexPS);
+		final int indexPS = this.getIndexPrefixedString();
+		return indexPS + 2 + this.get2Bytes(indexPS);
 	}
 
 	private int getIndexPrefixedString() {
-		return index + 3 + get2Bytes(index + 1);
+		return this.index + 3 + this.get2Bytes(this.index + 1);
 	}
 
 	private int get2Bytes(final int index2) {
-		final byte hb = graph[index2];
-		final byte lb = graph[index2 + 1];
+		final byte hb = this.graph[index2];
+		final byte lb = this.graph[index2 + 1];
 		if (hb < 0) {
 			if (lb < 0) {
 				return (256 + hb) * 256 + (256 + lb);
@@ -149,21 +157,21 @@ public class BasicOperatorByteArray {
 
 	public boolean isMultiInputOperator() {
 		for (final BasicOperatorByteArray prec : this.getPrecedingOperators()) {
-			for (final OperatorIDTuple<BasicOperatorByteArray> opIDt : prec
-					.getSucceedingOperators()) {
-				if (opIDt.getOperator().equals(this) && opIDt.getId() > 0)
+			for (final OperatorIDTuple<BasicOperatorByteArray> opIDt : prec.getSucceedingOperators()) {
+				if (opIDt.getOperator().equals(this) && opIDt.getId() > 0) {
 					return true;
+				}
 			}
 		}
 		return false;
 	}
 
 	public List<BasicOperatorByteArray> getPrecedingOperators() {
-		final int indexPO = getIndexPreceedingOperators();
-		final int number = get2Bytes(indexPO);
+		final int indexPO = this.getIndexPreceedingOperators();
+		final int number = this.get2Bytes(indexPO);
 		final List<BasicOperatorByteArray> result = new LinkedList<BasicOperatorByteArray>();
 		for (int i = 0; i < number; i++) {
-			final int currentOp = get2Bytes(indexPO + 2 + i * 2);
+			final int currentOp = this.get2Bytes(indexPO + 2 + i * 2);
 			result.add(new BasicOperatorByteArray(
 					this.indexOperators[currentOp], this.graph,
 					this.indexOperators));
@@ -171,24 +179,38 @@ public class BasicOperatorByteArray {
 		return result;
 	}
 
+	public BasicOperatorByteArray getContainedGraph(){
+		final int indexCG = this.getIndexContainedGraph();
+		final int reference = this.get2Bytes(indexCG);
+		if(reference==0){
+			return null;
+		} else {
+			return new BasicOperatorByteArray(this.indexOperators[reference], this.graph, this.indexOperators);
+		}
+	}
+
+	@Override
 	public String toString() {
-		final int length = get2Bytes(index + 1);
-		return new String(graph, index + 3, length);
+		final int length = this.get2Bytes(this.index + 1);
+		return new String(this.graph, this.index + 3, length);
 	}
 
 	public String toString(final Prefix prefixInstance) {
 		if (prefixInstance.isActive()) {
-			final int indexPS = getIndexPrefixedString();
-			final int length = get2Bytes(indexPS);
-			return new String(graph, indexPS + 2, length);
-		} else
-			return toString();
+			final int indexPS = this.getIndexPrefixedString();
+			final int length = this.get2Bytes(indexPS);
+			return new String(this.graph, indexPS + 2, length);
+		} else {
+			return this.toString();
+		}
 	}
 
+	@Override
 	public int hashCode() {
-		return index;
+		return this.index;
 	}
 
+	@Override
 	public boolean equals(final Object element) {
 		if (element instanceof BasicOperatorByteArray) {
 			final BasicOperatorByteArray theOther = (BasicOperatorByteArray) element;
@@ -198,20 +220,35 @@ public class BasicOperatorByteArray {
 		return false;
 	}
 
+	@SuppressWarnings("serial")
+	private static class Visitor implements SimpleOperatorGraphVisitor {
+
+		final LinkedList<BasicOperator> indexOperatorsList;
+
+		public Visitor(final LinkedList<BasicOperator> indexOperatorsList){
+			this.indexOperatorsList = indexOperatorsList;
+		}
+
+		@Override
+		public Object visit(final BasicOperator basicOperator) {
+			this.indexOperatorsList.add(basicOperator);
+			if(basicOperator.getContainedGraph()!=null){
+				basicOperator.getContainedGraph().visit(this);
+			}
+			return null;
+		}
+	}
+
+
 	public static BasicOperatorByteArray getBasicOperatorByteArray(
 			final BasicOperator root, final Prefix prefixInstance) {
 		final LinkedList<BasicOperator> indexOperatorsList = new LinkedList<BasicOperator>();
-		root.visit(new SimpleOperatorGraphVisitor() {
-			public Object visit(final BasicOperator basicOperator) {
-				indexOperatorsList.add(basicOperator);
-				return null;
-			}
-		});
+		root.visit(new Visitor(indexOperatorsList));
 		final HashMap<BasicOperator, Integer> mapBO_to_indexOperators = new HashMap<BasicOperator, Integer>();
 		int size = 0;
 		int index = 0;
 		for (final BasicOperator bo : indexOperatorsList) {
-			size += 9 + bo.toString().getBytes().length
+			size += 11 + bo.toString().getBytes().length
 					+ bo.toString(prefixInstance).getBytes().length
 					+ bo.getPrecedingOperators().size() * 2
 					+ bo.getSucceedingOperators().size() * 3;
@@ -226,14 +263,11 @@ public class BasicOperatorByteArray {
 			indexOperators[indexOperatorsIndex] = currentIndex;
 			graph[currentIndex] = getType(bo);
 			currentIndex++;
-			currentIndex = storeString(bo.toString().getBytes(), graph,
-					currentIndex);
-			currentIndex = storeString(bo.toString(prefixInstance).getBytes(),
-					graph, currentIndex);
-			currentIndex = storePrecedingOperators(bo, graph, currentIndex,
-					mapBO_to_indexOperators);
-			currentIndex = storeSucceedingOperators(bo, graph, currentIndex,
-					mapBO_to_indexOperators);
+			currentIndex = storeString(bo.toString().getBytes(), graph, currentIndex);
+			currentIndex = storeString(bo.toString(prefixInstance).getBytes(), graph, currentIndex);
+			currentIndex = storePrecedingOperators(bo, graph, currentIndex, mapBO_to_indexOperators);
+			currentIndex = storeSucceedingOperators(bo, graph, currentIndex, mapBO_to_indexOperators);
+			currentIndex = storeContainedOperator(bo, graph, currentIndex, mapBO_to_indexOperators);
 			indexOperatorsIndex++;
 		}
 		return new BasicOperatorByteArray(0, graph, indexOperators);
@@ -242,14 +276,11 @@ public class BasicOperatorByteArray {
 	private static int storeSucceedingOperators(final BasicOperator bo,
 			final byte[] graph, int currentIndex,
 			final HashMap<BasicOperator, Integer> mapBO_to_indexOperators) {
-		currentIndex = storeInt(bo.getSucceedingOperators().size(), graph,
-				currentIndex);
-		for (final OperatorIDTuple<BasicOperator> succ : bo
-				.getSucceedingOperators()) {
+		currentIndex = storeInt(bo.getSucceedingOperators().size(), graph, currentIndex);
+		for (final OperatorIDTuple<BasicOperator> succ : bo.getSucceedingOperators()) {
 			graph[currentIndex] = (byte) succ.getId();
 			currentIndex++;
-			currentIndex = storeInt(mapBO_to_indexOperators.get(succ
-					.getOperator()), graph, currentIndex);
+			currentIndex = storeInt(mapBO_to_indexOperators.get(succ.getOperator()), graph, currentIndex);
 		}
 		return currentIndex;
 	}
@@ -257,11 +288,20 @@ public class BasicOperatorByteArray {
 	private static int storePrecedingOperators(final BasicOperator bo,
 			final byte[] graph, int currentIndex,
 			final HashMap<BasicOperator, Integer> mapBO_to_indexOperators) {
-		currentIndex = storeInt(bo.getPrecedingOperators().size(), graph,
-				currentIndex);
+		currentIndex = storeInt(bo.getPrecedingOperators().size(), graph, currentIndex);
 		for (final BasicOperator prec_bo : bo.getPrecedingOperators()) {
-			currentIndex = storeInt(mapBO_to_indexOperators.get(prec_bo),
-					graph, currentIndex);
+			currentIndex = storeInt(mapBO_to_indexOperators.get(prec_bo), graph, currentIndex);
+		}
+		return currentIndex;
+	}
+
+	private static int storeContainedOperator(final BasicOperator bo,
+			final byte[] graph, int currentIndex,
+			final HashMap<BasicOperator, Integer> mapBO_to_indexOperators) {
+		if(bo.getContainedGraph()!=null){
+			currentIndex = storeInt(mapBO_to_indexOperators.get(bo.getContainedGraph()), graph, currentIndex);
+		} else {
+			currentIndex = storeInt(0, graph, currentIndex);
 		}
 		return currentIndex;
 	}
@@ -273,8 +313,7 @@ public class BasicOperatorByteArray {
 		return currentIndex + bytes.length;
 	}
 
-	private static int storeInt(final int length, final byte[] bytes,
-			final int currentIndex) {
+	private static int storeInt(final int length, final byte[] bytes, final int currentIndex) {
 		bytes[currentIndex] = (byte) (length / 256);
 		bytes[currentIndex + 1] = (byte) (length % 256);
 		return currentIndex + 2;
@@ -303,7 +342,8 @@ public class BasicOperatorByteArray {
 			return (byte) OPERATORTYPE.LIMIT.ordinal();
 		} else if (bo instanceof Offset) {
 			return (byte) OPERATORTYPE.OFFSET.ordinal();
-		} else
+		} else {
 			return (byte) OPERATORTYPE.DEFAULT.ordinal();
+		}
 	}
 }

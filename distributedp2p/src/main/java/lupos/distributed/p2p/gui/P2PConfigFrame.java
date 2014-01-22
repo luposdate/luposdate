@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package lupos.distributedendpoints.gui;
+package lupos.distributed.p2p.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -59,7 +59,7 @@ import lupos.distributed.query.QueryClient;
 /**
  * This class asks when instanciating a p2p network, how to configure or uses an
  * already created evaluator.
- * 
+ *
  */
 public abstract class P2PConfigFrame {
 
@@ -78,7 +78,7 @@ public abstract class P2PConfigFrame {
 	/*
 	 * Adds a new evaluator to the stored list
 	 */
-	private static void addRunningEvaluator(PeerItem item) {
+	private static void addRunningEvaluator(final PeerItem item) {
 		getTableModel().addRow(item);
 	}
 
@@ -110,64 +110,66 @@ public abstract class P2PConfigFrame {
 		 */
 		private final String[] tableHeaders = { "", "Network", "Distribution", "SubgraphSubm.",
 				"Port", "Connected with", "Creation Time" };
-		private List<PeerItem> items = new ArrayList<PeerItem>();
-		private AtomicInteger counter = new AtomicInteger(0);
+		private final List<PeerItem> items = new ArrayList<PeerItem>();
+		private final AtomicInteger counter = new AtomicInteger(0);
 
 		/**
 		 * Returns the item on the given row
-		 * 
+		 *
 		 * @param row
 		 *            the row
 		 * @return the item which is in the given row
 		 */
-		public PeerItem getItem(int row) {
-			if (row >= getRowCount())
+		public PeerItem getItem(final int row) {
+			if (row >= this.getRowCount()) {
 				return null;
-			return items.get(row);
+			}
+			return this.items.get(row);
 		}
 
 		/**
 		 * Adds a new item to the row
-		 * 
+		 *
 		 * @param pc
 		 *            the item to be added
-		 * 
+		 *
 		 */
-		public void addRow(PeerItem pc) {
-			if (items.contains(pc))
+		public void addRow(final PeerItem pc) {
+			if (this.items.contains(pc)) {
 				return;
+			}
 			/*
 			 * just use a counter to numberate the evaluators
 			 */
-			pc.instanceCount = counter.incrementAndGet();
+			pc.instanceCount = this.counter.incrementAndGet();
 			pc.instanciationTime = new Date();
-			items.add(pc);
-			fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
+			this.items.add(pc);
+			this.fireTableRowsInserted(this.getRowCount() - 1, this.getRowCount() - 1);
 		}
 
 		/**
 		 * Removes an item out of the row
-		 * 
+		 *
 		 * @param item
 		 *            the item to be removed
 		 */
-		public void deleteRow(PeerItem item) {
-			for (int rowIndex = items.size() - 1; rowIndex >= 0; rowIndex--) {
-				if (items.get(rowIndex).equals(item)) {
+		public void deleteRow(final PeerItem item) {
+			for (int rowIndex = this.items.size() - 1; rowIndex >= 0; rowIndex--) {
+				if (this.items.get(rowIndex).equals(item)) {
 					// kill item
 					if (item.network != null) {
 						item.network.shutdown();
 					}
 					item.queryEvaluator = null;
-					items.remove(rowIndex);
+					this.items.remove(rowIndex);
 				}
 			}
-			fireTableDataChanged();
+			this.fireTableDataChanged();
 		}
 
 		@Override
-		public String getColumnName(int columnIndex) {
-			return tableHeaders[columnIndex];
+		public String getColumnName(final int columnIndex) {
+			return this.tableHeaders[columnIndex];
 		}
 
 		@Override
@@ -177,15 +179,15 @@ public abstract class P2PConfigFrame {
 
 		@Override
 		public int getRowCount() {
-			return items.size();
+			return this.items.size();
 		}
 
 		@Override
-		public Object getValueAt(int row, int column) {
-			if (row < getRowCount()) {
+		public Object getValueAt(final int row, final int column) {
+			if (row < this.getRowCount()) {
 				// return the information of the selected item and column of the
 				// table
-				PeerItem pc = items.get(row);
+				final PeerItem pc = this.items.get(row);
 				switch (column) {
 				case 0:
 					return pc.instanceCount;
@@ -202,8 +204,7 @@ public abstract class P2PConfigFrame {
 						return "";
 					} else {
 						/* display master-ip and port the peer is connected to */
-						return String.format("%s:%d", pc.masterName,
-								pc.masterPort);
+						return String.format("%s:%d", pc.masterName, pc.masterPort);
 					}
 				case 6:
 					return pc.instanciationTime;
@@ -225,7 +226,7 @@ public abstract class P2PConfigFrame {
 	 * <br>
 	 * <B>Note:</B>If evaluator can be used, the returned item is the given
 	 * argument, otherwise an error is to throw.<br>
-	 * 
+	 *
 	 * @param evaluator
 	 *            the item to be clicked on
 	 * @return the peer item to be used
@@ -240,7 +241,7 @@ public abstract class P2PConfigFrame {
 	/**
 	 * a new instance of an evaluator and p2p-network is to be instantiated by
 	 * the implementation and a new {@link PeerItem} is to return
-	 * 
+	 *
 	 * @param port
 	 *            the port, the network should listen to
 	 */
@@ -249,7 +250,7 @@ public abstract class P2PConfigFrame {
 	/**
 	 * a new instance of an evaluator and p2p-network is to be instantiated by
 	 * the implementation and a new {@link PeerItem} is to return
-	 * 
+	 *
 	 * @param localPort
 	 *            the port, the network should listen to
 	 * @param masterPort
@@ -278,13 +279,13 @@ public abstract class P2PConfigFrame {
 		frame.setLayout(new BorderLayout());
 
 		/* Panel on top */
-		Border borderTop = new TitledBorder(BorderFactory.createEtchedBorder(),
+		final Border borderTop = new TitledBorder(BorderFactory.createEtchedBorder(),
 				"Create new evalator", TitledBorder.LEADING, TitledBorder.TOP);
-		JPanel createEvalatorPanel = new JPanel();
+		final JPanel createEvalatorPanel = new JPanel();
 		createEvalatorPanel.setBorder(borderTop);
 		createEvalatorPanel.setLayout(new BoxLayout(createEvalatorPanel,
 				BoxLayout.PAGE_AXIS));
-		JPanel pnlLocalPeer = new JPanel();
+		final JPanel pnlLocalPeer = new JPanel();
 		pnlLocalPeer
 				.setLayout(new BoxLayout(pnlLocalPeer, BoxLayout.PAGE_AXIS));
 		pnlLocalPeer.add(new JLabel("Select port where to start peer:"));
@@ -292,7 +293,7 @@ public abstract class P2PConfigFrame {
 				new NumberFormatter());
 		localPort.setValue(11111);
 		pnlLocalPeer.add(localPort);
-		JPanel pnlMasterPeer = new JPanel();
+		final JPanel pnlMasterPeer = new JPanel();
 		pnlMasterPeer.setLayout(new BoxLayout(pnlMasterPeer,
 				BoxLayout.PAGE_AXIS));
 		final JCheckBox connectMaster = new JCheckBox(
@@ -305,7 +306,7 @@ public abstract class P2PConfigFrame {
 		pnlMasterPeer.add(masterConfiguration);
 		connectMaster.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				//show master-configuration only if is to be connected to master peer
 				masterConfiguration.setVisible(connectMaster.isSelected());
 			}
@@ -325,11 +326,11 @@ public abstract class P2PConfigFrame {
 		createEvalatorPanel.add(pnlMasterPeer);
 
 		/* Panel with JTable in the center */
-		JTable tbl = new JTable(model);
-		Border border = new TitledBorder(BorderFactory.createEtchedBorder(),
+		final JTable tbl = new JTable(model);
+		final Border border = new TitledBorder(BorderFactory.createEtchedBorder(),
 				"Select allready running evaluators", TitledBorder.LEADING,
 				TitledBorder.TOP);
-		JPanel tablePanel = new JPanel();
+		final JPanel tablePanel = new JPanel();
 		tablePanel.setLayout(new BorderLayout());
 		tablePanel.setBorder(border);
 		tablePanel.add(new JScrollPane(tbl), BorderLayout.CENTER);
@@ -338,11 +339,11 @@ public abstract class P2PConfigFrame {
 				BorderLayout.SOUTH);
 
 		/* Panel on southern */
-		JPanel pnlControls = new JPanel();
+		final JPanel pnlControls = new JPanel();
 		pnlControls.setLayout(new BoxLayout(pnlControls, BoxLayout.LINE_AXIS));
 		pnlControls.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		JButton ok = new JButton("OK");
-		JButton cancel = new JButton("Cancel");
+		final JButton ok = new JButton("OK");
+		final JButton cancel = new JButton("Cancel");
 		final JLabel label = new JLabel();
 		label.setVisible(false);
 
@@ -351,23 +352,22 @@ public abstract class P2PConfigFrame {
 		 */
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mousePressed(MouseEvent me) {
-				JTable table = (JTable) me.getSource();
-				Point p = me.getPoint();
-				int row = table.rowAtPoint(p);
+			public void mousePressed(final MouseEvent me) {
+				final JTable table = (JTable) me.getSource();
+				final Point p = me.getPoint();
+				final int row = table.rowAtPoint(p);
 				/*
 				 * On double-click of the table item ...
 				 */
 				if (me.getClickCount() == 2) {
-					PeerItem eval = model.getItem(row);
+					final PeerItem eval = model.getItem(row);
 					try {
 						/*
 						 * ask whether this evaluator can be used
 						 */
 						result[0] = P2PConfigFrame.this.onQueryEvaluator(eval);
-					} catch (Exception exception) {
-						label.setText("Error: "
-								+ exception.getLocalizedMessage());
+					} catch (final Exception exception) {
+						label.setText("Error: " + exception.getLocalizedMessage());
 						label.setVisible(true);
 						return;
 					}
@@ -378,7 +378,7 @@ public abstract class P2PConfigFrame {
 		});
 		cancel.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				/*
 				 * inform and close dialog
 				 */
@@ -388,7 +388,7 @@ public abstract class P2PConfigFrame {
 		});
 		ok.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				int _localPort;
 				int _masterPort;
 				String _masterAddress;
@@ -396,17 +396,17 @@ public abstract class P2PConfigFrame {
 				/* is input integer? */
 				Object val = localPort.getValue();
 				try {
-					if (val instanceof Long)
+					if (val instanceof Long) {
 						_localPort = ((Long) val).intValue();
-					else if (val instanceof Integer) {
+					} else if (val instanceof Integer) {
 						_localPort = (Integer) val;
 					} else {
 						_localPort = Integer.parseInt((String) val);
 					}
-					if (_localPort > 65535 || _localPort < 0)
-						throw new NumberFormatException(
-								"Ports must be in [0,65535]");
-				} catch (NumberFormatException exception) {
+					if (_localPort > 65535 || _localPort < 0) {
+						throw new NumberFormatException("Ports must be in [0,65535]");
+					}
+				} catch (final NumberFormatException exception) {
 					label.setText("Error: " + exception.getLocalizedMessage());
 					label.setVisible(true);
 					return;
@@ -415,19 +415,18 @@ public abstract class P2PConfigFrame {
 					/* is input integer? */
 					val = masterPort.getValue();
 					try {
-						if (val instanceof Long)
+						if (val instanceof Long) {
 							_masterPort = ((Long) val).intValue();
-						else if (val instanceof Integer) {
+						} else if (val instanceof Integer) {
 							_masterPort = (Integer) val;
 						} else {
 							_masterPort = Integer.parseInt((String) val);
 						}
-						if (_localPort > 65535 || _localPort < 0)
-							throw new NumberFormatException(
-									"Ports must be in [0,65535]");
-					} catch (NumberFormatException exception) {
-						label.setText("Error: "
-								+ exception.getLocalizedMessage());
+						if (_localPort > 65535 || _localPort < 0) {
+							throw new NumberFormatException("Ports must be in [0,65535]");
+						}
+					} catch (final NumberFormatException exception) {
+						label.setText("Error: " + exception.getLocalizedMessage());
 						label.setVisible(true);
 						return;
 					}
@@ -463,8 +462,9 @@ public abstract class P2PConfigFrame {
 		 */
 		if (result[0] != null) {
 			/* store new evaluator in our list */
-			if (result[0].queryEvaluator != null)
+			if (result[0].queryEvaluator != null) {
 				P2PConfigFrame.addRunningEvaluator(result[0]);
+			}
 		}
 		return result[0];
 	}

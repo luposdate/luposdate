@@ -25,11 +25,11 @@ package lupos.distributed.p2p.query.withsubgraph;
 
 import java.util.Map;
 
+import lupos.distributed.p2p.gui.P2PConfigFrame;
+import lupos.distributed.p2p.gui.P2PConfigFrame.PeerItem;
 import lupos.distributed.p2p.network.P2PNetworkCreator;
 import lupos.distributed.query.QueryClient;
 import lupos.distributed.storage.distributionstrategy.IDistribution;
-import lupos.distributedendpoints.gui.P2PConfigFrame;
-import lupos.distributedendpoints.gui.P2PConfigFrame.PeerItem;
 
 /**
  * This class is to be used, to get an evaluator for a p2p network.

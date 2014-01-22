@@ -51,48 +51,49 @@ public class SimplePartitionDistribution implements
 	 * the size of bags for distribution, so for: 4, the keys are hashed modulo
 	 * 4.
 	 */
-	private int bagSize = 2;
+	private final int bagSize = 2;
 
 	/**
 	 * Returns the bag size
-	 * 
+	 *
 	 * @return the bag size
 	 */
 	public int getBagsize() {
-		return bagSize;
+		return this.bagSize;
 	}
 
 	/*
 	 * hashes the {index}-component of triple with the hash function
 	 */
-	private int getHashedComponent(int component, TriplePattern t) {
-		if (component < 3 && component >= 0)
+	private int getHashedComponent(final int component, final TriplePattern t) {
+		if (component < 3 && component >= 0) {
 			return Math.abs(((Literal) t.getPos(component)).originalString()
-					.hashCode()) % getBagsize();
-		else
+					.hashCode()) % this.getBagsize();
+		} else {
 			throw new RuntimeException(String.format(
 					"Component %d not found in %s", component, t));
+		}
 	}
 
 	/*
 	 * hashes the {index}-component of triple with the hash function
 	 */
-	private int getHashedComponent(int component, Triple t) {
-		if (component < 3 && component >= 0)
-			return Math.abs(t.getPos(component).originalString().hashCode())
-					% getBagsize();
-		else
-			throw new RuntimeException(String.format(
-					"Component %d not found in %s", component, t));
+	private int getHashedComponent(final int component, final Triple t) {
+		if (component < 3 && component >= 0) {
+			return Math.abs(t.getPos(component).originalString().hashCode()) % this.getBagsize();
+		} else {
+			throw new RuntimeException(String.format("Component %d not found in %s", component, t));
+		}
 	}
 
 	/*
 	 * returns the first char of the string, because for hashing this is used in
 	 * front of the new key used.
 	 */
-	private String f(String s) {
-		if (s == null || s.length() == 0)
+	private String f(final String s) {
+		if (s == null || s.length() == 0){
 			return "";
+		}
 		return s.charAt(0) + "";
 	}
 
@@ -100,9 +101,10 @@ public class SimplePartitionDistribution implements
 	 * returns the second char of the string, because for hashing this is used
 	 * in front of the new key used.
 	 */
-	private String s(String s) {
-		if (s == null || s.length() == 0 || s.length() < 2)
+	private String s(final String s) {
+		if (s == null || s.length() == 0 || s.length() < 2){
 			return "";
+		}
 		return s.charAt(1) + "";
 	}
 
@@ -115,28 +117,28 @@ public class SimplePartitionDistribution implements
 		 * for example: S<subject>P1 where 1 =: hash(<predicate>)
 		 */
 		return new KeyContainer[] {
-				new KeyContainer<String>(f(TYPE_OS), triple.getObject()
+				new KeyContainer<String>(this.f(TYPE_OS), triple.getObject()
 						.originalString()
-						+ s(TYPE_OS)
-						+ getHashedComponent(0, triple)),
+						+ this.s(TYPE_OS)
+						+ this.getHashedComponent(0, triple)),
 				/*
 				 * new KeyContainer<String>(f(TYPE_OP),
 				 * triple.getObject().originalString() + s(TYPE_OP) +
 				 * getHashedComponent(1,triple)),
 				 */
-				new KeyContainer<String>(f(TYPE_PO), triple.getPredicate()
+				new KeyContainer<String>(this.f(TYPE_PO), triple.getPredicate()
 						.originalString()
-						+ s(TYPE_PO)
-						+ getHashedComponent(2, triple)),
+						+ this.s(TYPE_PO)
+						+ this.getHashedComponent(2, triple)),
 				/*
 				 * new KeyContainer<String>(f(TYPE_PS),
 				 * triple.getPredicate().originalString() + s(TYPE_PS) +
 				 * getHashedComponent(0,triple)),
 				 */
-				new KeyContainer<String>(f(TYPE_SP), triple.getSubject()
+				new KeyContainer<String>(this.f(TYPE_SP), triple.getSubject()
 						.originalString()
-						+ s(TYPE_SP)
-						+ getHashedComponent(1, triple))
+						+ this.s(TYPE_SP)
+						+ this.getHashedComponent(1, triple))
 		/*
 		 * , new KeyContainer<String>(f(TYPE_SO),
 		 * triple.getSubject().originalString() + s(TYPE_SO) +
@@ -149,15 +151,16 @@ public class SimplePartitionDistribution implements
 
 	/*
 	 * Returns an random element of array
-	 * 
+	 *
 	 * @param o the array
-	 * 
+	 *
 	 * @return the item in array, choosen randomly
 	 */
-	private Object getRandomItem(Object... o) {
+	private Object getRandomItem(final Object... o) {
 		// see documentation: we need deterministic here, so return first
-		if (o.length == 0)
+		if (o.length == 0) {
 			return null;
+		}
 		return o[0];
 		/*
 		 * for later implementation with no need of deterministic calculation
@@ -165,8 +168,8 @@ public class SimplePartitionDistribution implements
 		 */
 	}
 
-	
-	
+
+
 	/*
 	 * this is the old method, which was not deterministic in its resulting
 	 * keycontainer
@@ -186,32 +189,32 @@ public class SimplePartitionDistribution implements
 				&& !triplePattern.getPredicate().isVariable()
 				&& !triplePattern.getObject().isVariable()) {
 			// here we can decide between 6 methods:
-			KeyContainer[] choices = new KeyContainer[] {
-					new KeyContainer<String>(f(TYPE_SP),
+			final KeyContainer[] choices = new KeyContainer[] {
+					new KeyContainer<String>(this.f(TYPE_SP),
 							(triplePattern.getSubject()).toString()
-									+ s(TYPE_SP)
-									+ getHashedComponent(1, triplePattern)),
-					new KeyContainer<String>(f(TYPE_PO),
+									+ this.s(TYPE_SP)
+									+ this.getHashedComponent(1, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_PO),
 							(triplePattern.getPredicate()).toString()
-									+ s(TYPE_PO)
-									+ getHashedComponent(2, triplePattern)),
-					new KeyContainer<String>(f(TYPE_PS),
+									+ this.s(TYPE_PO)
+									+ this.getHashedComponent(2, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_PS),
 							(triplePattern.getPredicate()).toString()
-									+ s(TYPE_PS)
-									+ getHashedComponent(0, triplePattern)),
-					new KeyContainer<String>(f(TYPE_SO),
+									+ this.s(TYPE_PS)
+									+ this.getHashedComponent(0, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_SO),
 							(triplePattern.getSubject()).toString()
-									+ s(TYPE_SO)
-									+ getHashedComponent(2, triplePattern)),
-					new KeyContainer<String>(f(TYPE_OS),
-							(triplePattern.getObject()).toString() + s(TYPE_OS)
-									+ getHashedComponent(0, triplePattern)),
-					new KeyContainer<String>(f(TYPE_OP),
-							(triplePattern.getObject()).toString() + s(TYPE_OP)
-									+ getHashedComponent(1, triplePattern)) };
+									+ this.s(TYPE_SO)
+									+ this.getHashedComponent(2, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_OS),
+							(triplePattern.getObject()).toString() + this.s(TYPE_OS)
+									+ this.getHashedComponent(0, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_OP),
+							(triplePattern.getObject()).toString() + this.s(TYPE_OP)
+									+ this.getHashedComponent(1, triplePattern)) };
 			//with use of non-deterministic we could choose the best
 			//key here, or use static analysis via histrogram support
-			KeyContainer type = (KeyContainer) getRandomItem(choices);
+			final KeyContainer type = (KeyContainer) this.getRandomItem(choices);
 			return new KeyContainer[] { type };
 		}
 
@@ -220,18 +223,18 @@ public class SimplePartitionDistribution implements
 			if (!triplePattern.getPredicate().isVariable()
 					&& !triplePattern.getObject().isVariable()) {
 				return new KeyContainer[] { new KeyContainer<String>(
-						f(TYPE_PO), (triplePattern.getPredicate()).toString()
-								+ s(TYPE_PO)
-								+ getHashedComponent(2, triplePattern)) };
+						this.f(TYPE_PO), (triplePattern.getPredicate()).toString()
+								+ this.s(TYPE_PO)
+								+ this.getHashedComponent(2, triplePattern)) };
 			} // <?><?><O>
 			else if (triplePattern.getPredicate().isVariable()) {
 				// choices: all in OP or all in OS
-				String type = (String) getRandomItem(new String[] { TYPE_OS,
+				final String type = (String) this.getRandomItem(new String[] { TYPE_OS,
 						TYPE_OP });
-				KeyContainer[] result = new KeyContainer[getBagsize()];
-				for (int i = 0; i < getBagsize(); i++) {
-					result[i] = new KeyContainer<String>(f(type),
-							(triplePattern.getObject()).toString() + s(type)
+				final KeyContainer[] result = new KeyContainer[this.getBagsize()];
+				for (int i = 0; i < this.getBagsize(); i++) {
+					result[i] = new KeyContainer<String>(this.f(type),
+							(triplePattern.getObject()).toString() + this.s(type)
 									+ i);
 				}
 				return result;
@@ -239,12 +242,12 @@ public class SimplePartitionDistribution implements
 			} // <?><P><?>
 			else if (triplePattern.getObject().isVariable()) {
 				// choices: all in PS or all in PO
-				String type = (String) getRandomItem(new String[] { TYPE_PO,
+				final String type = (String) this.getRandomItem(new String[] { TYPE_PO,
 						TYPE_PS });
-				KeyContainer[] result = new KeyContainer[getBagsize()];
-				for (int i = 0; i < getBagsize(); i++) {
-					result[i] = new KeyContainer<String>(f(type),
-							(triplePattern.getPredicate()).toString() + s(type)
+				final KeyContainer[] result = new KeyContainer[this.getBagsize()];
+				for (int i = 0; i < this.getBagsize(); i++) {
+					result[i] = new KeyContainer<String>(this.f(type),
+							(triplePattern.getPredicate()).toString() + this.s(type)
 									+ i);
 				}
 				return result;
@@ -255,12 +258,12 @@ public class SimplePartitionDistribution implements
 			if (triplePattern.getPredicate().isVariable()
 					&& triplePattern.getObject().isVariable()) {
 				// choices: all in SP or all in SO
-				String type = (String) getRandomItem(new String[] { TYPE_SP,
+				final String type = (String) this.getRandomItem(new String[] { TYPE_SP,
 						TYPE_SO });
-				KeyContainer[] result = new KeyContainer[getBagsize()];
-				for (int i = 0; i < getBagsize(); i++) {
-					result[i] = new KeyContainer<String>(f(type),
-							(triplePattern.getSubject()).toString() + s(type)
+				final KeyContainer[] result = new KeyContainer[this.getBagsize()];
+				for (int i = 0; i < this.getBagsize(); i++) {
+					result[i] = new KeyContainer<String>(this.f(type),
+							(triplePattern.getSubject()).toString() + this.s(type)
 									+ i);
 				}
 				return result;
@@ -268,15 +271,15 @@ public class SimplePartitionDistribution implements
 			// <S><P><?>
 			else if (!triplePattern.getPredicate().isVariable()) {
 				return new KeyContainer[] { new KeyContainer<String>(
-						f(TYPE_SP), (triplePattern.getSubject()).toString()
-								+ s(TYPE_SP)
-								+ getHashedComponent(1, triplePattern)) };
+						this.f(TYPE_SP), (triplePattern.getSubject()).toString()
+								+ this.s(TYPE_SP)
+								+ this.getHashedComponent(1, triplePattern)) };
 			} // <S><?><O>
 			else if (!triplePattern.getObject().isVariable()) {
 				return new KeyContainer[] { new KeyContainer<String>(
-						f(TYPE_OS), (triplePattern.getObject()).toString()
-								+ s(TYPE_OS)
-								+ getHashedComponent(0, triplePattern)) };
+						this.f(TYPE_OS), (triplePattern.getObject()).toString()
+								+ this.s(TYPE_OS)
+								+ this.getHashedComponent(0, triplePattern)) };
 			}
 		}
 		throw new TriplePatternNotSupportedError(this, triplePattern);
@@ -294,47 +297,48 @@ public class SimplePartitionDistribution implements
 
 		if (triplePattern.getSubject().isVariable()
 				&& triplePattern.getPredicate().isVariable()
-				&& triplePattern.getObject().isVariable())
+				&& triplePattern.getObject().isVariable()) {
 			throw new RuntimeException(String.format(
 					"Triple %s is only containings variables.", triplePattern));
+		}
 
 		// <S><P><O>
 		if (!triplePattern.getSubject().isVariable()
 				&& !triplePattern.getPredicate().isVariable()
 				&& !triplePattern.getObject().isVariable()) {
 			// here we can decide between 6 methods:
-			KeyContainer[] choices = new KeyContainer[] {
-					new KeyContainer<String>(f(TYPE_SP),
+			final KeyContainer[] choices = new KeyContainer[] {
+					new KeyContainer<String>(this.f(TYPE_SP),
 							((Literal) triplePattern.getSubject())
 									.originalString()
-									+ s(TYPE_SP)
-									+ getHashedComponent(1, triplePattern)),
-					new KeyContainer<String>(f(TYPE_PO),
+									+ this.s(TYPE_SP)
+									+ this.getHashedComponent(1, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_PO),
 							((Literal) triplePattern.getPredicate())
 									.originalString()
-									+ s(TYPE_PO)
-									+ getHashedComponent(2, triplePattern)),
-					new KeyContainer<String>(f(TYPE_PS),
+									+ this.s(TYPE_PO)
+									+ this.getHashedComponent(2, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_PS),
 							((Literal) triplePattern.getPredicate())
 									.originalString()
-									+ s(TYPE_PS)
-									+ getHashedComponent(0, triplePattern)),
-					new KeyContainer<String>(f(TYPE_SO),
+									+ this.s(TYPE_PS)
+									+ this.getHashedComponent(0, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_SO),
 							((Literal) triplePattern.getSubject())
 									.originalString()
-									+ s(TYPE_SO)
-									+ getHashedComponent(2, triplePattern)),
-					new KeyContainer<String>(f(TYPE_OS),
+									+ this.s(TYPE_SO)
+									+ this.getHashedComponent(2, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_OS),
 							((Literal) triplePattern.getObject())
 									.originalString()
-									+ s(TYPE_OS)
-									+ getHashedComponent(0, triplePattern)),
-					new KeyContainer<String>(f(TYPE_OP),
+									+ this.s(TYPE_OS)
+									+ this.getHashedComponent(0, triplePattern)),
+					new KeyContainer<String>(this.f(TYPE_OP),
 							((Literal) triplePattern.getObject())
 									.originalString()
-									+ s(TYPE_OP)
-									+ getHashedComponent(1, triplePattern)) };
-			KeyContainer type = (KeyContainer) getRandomItem(choices);
+									+ this.s(TYPE_OP)
+									+ this.getHashedComponent(1, triplePattern)) };
+			final KeyContainer type = (KeyContainer) this.getRandomItem(choices);
 			return new KeyContainer[] { type };
 		}
 
@@ -343,34 +347,34 @@ public class SimplePartitionDistribution implements
 			if (!triplePattern.getPredicate().isVariable()
 					&& !triplePattern.getObject().isVariable()) {
 				return new KeyContainer[] { new KeyContainer<String>(
-						f(TYPE_PO),
+						this.f(TYPE_PO),
 						((Literal) triplePattern.getPredicate())
 								.originalString()
-								+ s(TYPE_PO)
-								+ getHashedComponent(2, triplePattern)) };
+								+ this.s(TYPE_PO)
+								+ this.getHashedComponent(2, triplePattern)) };
 			} // <?><?><O>
 			else if (triplePattern.getPredicate().isVariable()) {
 				// choices: all in OP or all in OS
-				String type = (String) getRandomItem(new String[] { TYPE_OS,
+				final String type = (String) this.getRandomItem(new String[] { TYPE_OS,
 						TYPE_OP });
-				KeyContainer[] result = new KeyContainer[getBagsize()];
-				for (int i = 0; i < getBagsize(); i++) {
-					result[i] = new KeyContainer<String>(f(type),
+				final KeyContainer[] result = new KeyContainer[this.getBagsize()];
+				for (int i = 0; i < this.getBagsize(); i++) {
+					result[i] = new KeyContainer<String>(this.f(type),
 							((Literal) triplePattern.getObject())
-									.originalString() + s(type) + i);
+									.originalString() + this.s(type) + i);
 				}
 				return result;
 
 			} // <?><P><?>
 			else if (triplePattern.getObject().isVariable()) {
 				// choices: all in PS or all in PO
-				String type = (String) getRandomItem(new String[] { TYPE_PO,
+				final String type = (String) this.getRandomItem(new String[] { TYPE_PO,
 						TYPE_PS });
-				KeyContainer[] result = new KeyContainer[getBagsize()];
-				for (int i = 0; i < getBagsize(); i++) {
-					result[i] = new KeyContainer<String>(f(type),
+				final KeyContainer[] result = new KeyContainer[this.getBagsize()];
+				for (int i = 0; i < this.getBagsize(); i++) {
+					result[i] = new KeyContainer<String>(this.f(type),
 							((Literal) triplePattern.getPredicate())
-									.originalString() + s(type) + i);
+									.originalString() + this.s(type) + i);
 				}
 				return result;
 			}
@@ -380,30 +384,30 @@ public class SimplePartitionDistribution implements
 			if (triplePattern.getPredicate().isVariable()
 					&& triplePattern.getObject().isVariable()) {
 				// choices: all in SP or all in SO
-				String type = (String) getRandomItem(new String[] { TYPE_SP,
+				final String type = (String) this.getRandomItem(new String[] { TYPE_SP,
 						TYPE_SO });
-				KeyContainer[] result = new KeyContainer[getBagsize()];
-				for (int i = 0; i < getBagsize(); i++) {
-					result[i] = new KeyContainer<String>(f(type),
+				final KeyContainer[] result = new KeyContainer[this.getBagsize()];
+				for (int i = 0; i < this.getBagsize(); i++) {
+					result[i] = new KeyContainer<String>(this.f(type),
 							((Literal) triplePattern.getSubject())
-									.originalString() + s(type) + i);
+									.originalString() + this.s(type) + i);
 				}
 				return result;
 			}
 			// <S><P><?>
 			else if (!triplePattern.getPredicate().isVariable()) {
 				return new KeyContainer[] { new KeyContainer<String>(
-						f(TYPE_SP),
+						this.f(TYPE_SP),
 						((Literal) triplePattern.getSubject()).originalString()
-								+ s(TYPE_SP)
-								+ getHashedComponent(1, triplePattern)) };
+								+ this.s(TYPE_SP)
+								+ this.getHashedComponent(1, triplePattern)) };
 			} // <S><?><O>
 			else if (!triplePattern.getObject().isVariable()) {
 				return new KeyContainer[] { new KeyContainer<String>(
-						f(TYPE_OS),
+						this.f(TYPE_OS),
 						((Literal) triplePattern.getObject()).originalString()
-								+ s(TYPE_OS)
-								+ getHashedComponent(0, triplePattern)) };
+								+ this.s(TYPE_OS)
+								+ this.getHashedComponent(0, triplePattern)) };
 			}
 		}
 		throw new TriplePatternNotSupportedError(this, triplePattern);

@@ -28,6 +28,7 @@ import lupos.sparql1_1.Node;
 
 /**
  * This class is for starting the Demo_Applet with a distributed query evaluator.
+ * It is not in the module distributed in order to solve a cycle in the module dependencies...
  */
 public class Start_Demo_Applet {
 
@@ -38,7 +39,7 @@ public class Start_Demo_Applet {
 	 * @throws ClassNotFoundException
 	 */
 	public static void start(final String[] args) throws ClassNotFoundException {
-		String[] argsWithoutFirst = new String[args.length-1];
+		final String[] argsWithoutFirst = new String[args.length-1];
 		System.arraycopy(args, 1, argsWithoutFirst, 0, args.length-1);
 		Start_Demo_Applet.start(args[0], argsWithoutFirst);
 	}
@@ -51,10 +52,11 @@ public class Start_Demo_Applet {
 	 */
 	public static void start(final String evaluator, final String[] args) throws ClassNotFoundException {
 		@SuppressWarnings("unchecked")
+		final
 		Class<? extends QueryEvaluator<Node>> evaluatorClass = (Class<? extends QueryEvaluator<Node>>) Class.forName(evaluator);
 		Start_Demo_Applet.start(evaluatorClass, args);
 	}
-	
+
 	/**
 	 * This method starts the Demo_Applet.
 	 * @param evaluator the distributed query evaluator class
@@ -71,7 +73,7 @@ public class Start_Demo_Applet {
 	 * @param args command line arguments
 	 * @throws ClassNotFoundException
 	 */
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(final String[] args) throws ClassNotFoundException {
 		Start_Demo_Applet.start(args);
 	}
 }

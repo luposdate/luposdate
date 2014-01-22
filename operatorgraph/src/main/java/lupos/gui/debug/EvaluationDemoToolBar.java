@@ -607,8 +607,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	public void setUpContextMenus() {
 		// --- context menu example - begin ---
 		// get the OperatorGraph...
-		final OperatorGraph operatorGraph = this.operatorGraphViewer
-		.getOperatorGraph();
+		final OperatorGraph operatorGraph = this.operatorGraphViewer.getOperatorGraph();
 
 		this.menuItems = new LinkedList<JMenuItem>();
 

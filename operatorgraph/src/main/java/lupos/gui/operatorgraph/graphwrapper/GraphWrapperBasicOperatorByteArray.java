@@ -36,8 +36,8 @@ import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.viewer.AnnotationPanel;
 import lupos.gui.operatorgraph.viewer.ElementPanel;
-import lupos.misc.util.OperatorIDTuple;
 import lupos.misc.debug.BasicOperatorByteArray;
+import lupos.misc.util.OperatorIDTuple;
 import xpref.datatypes.BooleanDatatype;
 
 public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
@@ -47,8 +47,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 			"sort", "result", "filter", "projection", "limit", "offset",
 			"basicoperator" };
 
-	public GraphWrapperBasicOperatorByteArray(
-			final BasicOperatorByteArray element) {
+	public GraphWrapperBasicOperatorByteArray(final BasicOperatorByteArray element) {
 		super(element);
 	}
 
@@ -58,16 +57,12 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 	}
 
 	@Override
-	public void drawAnnotationsBackground(final Graphics2D g2d,
-			final Dimension size) {
+	public void drawAnnotationsBackground(final Graphics2D g2d, final Dimension size) {
 		try {
-			if (!BooleanDatatype.getValues("operatorGraph_useStyledBoxes").get(
-					0).booleanValue()) {
-				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1,
-						size.height - 1, Color.WHITE, Color.BLACK);
+			if (!BooleanDatatype.getValues("operatorGraph_useStyledBoxes").get(0).booleanValue()) {
+				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1, size.height - 1, Color.WHITE, Color.BLACK);
 			} else {
-				final DrawObject drawObject = this
-						.getOperatorStyle("operatorGraph_style_annotations");
+				final DrawObject drawObject = this.getOperatorStyle("operatorGraph_style_annotations");
 				drawObject.draw(g2d, 0, 0, size.width, size.height);
 			}
 		} catch (final Exception e) {
@@ -79,10 +74,8 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
-			if (!BooleanDatatype.getValues("operatorGraph_useStyledBoxes").get(
-					0).booleanValue()) {
-				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1,
-						size.height - 1, Color.WHITE, Color.BLACK);
+			if (!BooleanDatatype.getValues("operatorGraph_useStyledBoxes").get(0).booleanValue()) {
+				DrawObject.drawSimpleBoxOuterLines(g2d, 0, 0, size.width - 1, size.height - 1, Color.WHITE, Color.BLACK);
 			} else {
 				DrawObject drawObject = null;
 
@@ -90,8 +83,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 
 				final byte type = operator.getTypeASByte();
 
-				drawObject = this.getOperatorStyle("operatorGraph_style_"
-						+ MAPPING_OPERATORTYPE_TO_PREFERENCES[type]);
+				drawObject = this.getOperatorStyle("operatorGraph_style_" + MAPPING_OPERATORTYPE_TO_PREFERENCES[type]);
 
 				if (drawObject != null) {
 					drawObject.draw(g2d, 0, 0, size.width, size.height);
@@ -116,11 +108,9 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 			final BasicOperatorByteArray op = opIDt.getOperator();
 
 			if (op.isMultiInputOperator()) {
-				final GraphWrapperBasicOperatorByteArray gw = new GraphWrapperBasicOperatorByteArray(
-						op);
+				final GraphWrapperBasicOperatorByteArray gw = new GraphWrapperBasicOperatorByteArray(op);
 
-				final AbstractSuperGuiComponent annotation = new AnnotationPanel(
-						parent, gw, Integer.toString(opIDt.getId()));
+				final AbstractSuperGuiComponent annotation = new AnnotationPanel(parent, gw, Integer.toString(opIDt.getId()));
 
 				annotations.put(gw, annotation);
 			}
@@ -137,7 +127,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 	/**
 	 * Returns a list of GraphWrapper elements which are the preceding elements
 	 * of the current element.
-	 * 
+	 *
 	 * @return List of preceding elements
 	 */
 	@Override
@@ -148,8 +138,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 		// walk through preceding BasicOperators...
 		// put current BasicOperator in GraphWrapper class
 		// and add it to list of preceding elements...
-		for (final BasicOperatorByteArray bo : ((BasicOperatorByteArray) this.element)
-				.getPrecedingOperators()) {
+		for (final BasicOperatorByteArray bo : ((BasicOperatorByteArray) this.element).getPrecedingOperators()) {
 			precedingElements.add(new GraphWrapperBasicOperatorByteArray(bo));
 		}
 
@@ -159,7 +148,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 	/**
 	 * Returns a list of GraphWrapperIdTuple elements which are the succeeding
 	 * elements of the current element.
-	 * 
+	 *
 	 * @return List of succeeding elements
 	 */
 	@Override
@@ -168,16 +157,14 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 		final LinkedList<GraphWrapperIDTuple> succedingElements = new LinkedList<GraphWrapperIDTuple>();
 
 		// walk through succeeding BasicOperators...
-		for (final OperatorIDTuple<BasicOperatorByteArray> oit : ((BasicOperatorByteArray) this.element)
-				.getSucceedingOperators()) {
+		for (final OperatorIDTuple<BasicOperatorByteArray> oit : ((BasicOperatorByteArray) this.element).getSucceedingOperators()) {
 			// put BasicOperator in GraphWrapper class...
 			final GraphWrapperBasicOperatorByteArray element = new GraphWrapperBasicOperatorByteArray(
 					oit.getOperator());
 
 			// add GraphWrapperIDTuple with current BasicOperator to list of
 			// succeeding elements...
-			succedingElements
-					.add(new GraphWrapperIDTuple(element, oit.getId()));
+			succedingElements.add(new GraphWrapperIDTuple(element, oit.getId()));
 		}
 
 		return succedingElements; // return succeeding elements

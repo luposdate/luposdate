@@ -1173,4 +1173,13 @@ public class BasicOperator implements Cloneable, Serializable {
 	public Collection<Variable> transformSortCriterium(final Collection<Variable> sortCriterium){
 		return sortCriterium;
 	}
+
+	/**
+	 * just to enable access to the root node in a SubgraphContainer in module distributed for BasicOperatorByteArray...
+	 *
+	 * @return the root node of the contained graph
+	 */
+	public BasicOperator getContainedGraph(){
+		return null;
+	}
 }

@@ -43,6 +43,7 @@ import lupos.distributed.p2p.commandline.MenuSelector.MenuItem;
 import lupos.distributed.p2p.distributionstrategy.NinefoldInsertionDistribution;
 import lupos.distributed.p2p.distributionstrategy.SimplePartitionDistribution;
 import lupos.distributed.p2p.distributionstrategy.TwoPartitionsDistribution;
+import lupos.distributed.p2p.gui.PeerCreator;
 import lupos.distributed.p2p.network.P2PNetworkCreator;
 import lupos.distributed.p2p.query.withsubgraph.P2P_QueryClient_Instanciator.IConfigurator;
 import lupos.distributed.p2p.storage.BlockStorageWithDistributionStrategy;
@@ -53,7 +54,6 @@ import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistribu
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneKeyDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneToThreeKeysDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.TwoKeysDistribution;
-import lupos.distributedendpoints.gui.PeerCreator;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.gui.Demo_Applet;
 import lupos.gui.GUI;
