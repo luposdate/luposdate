@@ -25,4 +25,5 @@ copyToUSB.bat
 **/**/*.ipr
 **/**/*.iws
 integrationNxParser/src/main/java/org
+distributedp2p/tomP2P.txt
 
