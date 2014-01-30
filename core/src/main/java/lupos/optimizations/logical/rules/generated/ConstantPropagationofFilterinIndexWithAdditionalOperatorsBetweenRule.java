@@ -73,6 +73,13 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
                     break;
                 }
 
+                lupos.engine.operators.BasicOperator j = (lupos.engine.operators.BasicOperator) _searchIndex_1_0;
+
+                if(j instanceof lupos.engine.operators.singleinput.path.Closure) {
+  _continueFlag_1_0 = true;
+  break;
+}
+
                 if(_searchIndex_1_0.getSucceedingOperators().size() != 1 || _searchIndex_1_0.getPrecedingOperators().size() != 1) {
                     _continueFlag_1_0 = true;
                     break;
@@ -222,14 +229,14 @@ public class ConstantPropagationofFilterinIndexWithAdditionalOperatorsBetweenRul
 
 
         // add new connections...
-        this.j_end.addSucceedingOperator(this.o);
-        this.o.addPrecedingOperator(this.j_end);
-
         b.addSucceedingOperator(this.j_begin);
         this.j_begin.addPrecedingOperator(b);
 
         this.i.addSucceedingOperator(b);
         b.addPrecedingOperator(this.i);
+
+        this.j_end.addSucceedingOperator(this.o);
+        this.o.addPrecedingOperator(this.j_end);
 
 
         // delete unreachable operators...

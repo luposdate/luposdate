@@ -73,6 +73,13 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
                     break;
                 }
 
+                lupos.engine.operators.BasicOperator j = (lupos.engine.operators.BasicOperator) _searchIndex_1_0;
+
+                if(j instanceof lupos.engine.operators.singleinput.path.Closure) {
+  _continueFlag_1_0 = true;
+  break;
+}
+
                 if(_searchIndex_1_0.getSucceedingOperators().size() != 1 || _searchIndex_1_0.getPrecedingOperators().size() != 1) {
                     _continueFlag_1_0 = true;
                     break;
@@ -221,10 +228,10 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
         // remove obsolete connections...
         this.j_end.removeSucceedingOperator(this.f);
         this.f.removePrecedingOperator(this.j_end);
-        this.tp.removeSucceedingOperator(this.j_begin);
-        this.j_begin.removePrecedingOperator(this.tp);
         this.f.removeSucceedingOperator(this.o);
         this.o.removePrecedingOperator(this.f);
+        this.tp.removeSucceedingOperator(this.j_begin);
+        this.j_begin.removePrecedingOperator(this.tp);
 
         // add new operators...
         lupos.engine.operators.singleinput.AddBinding b = null;
@@ -232,14 +239,14 @@ public class ConstantPropagationofFilterinTriplePatternwithOperatorsBetweenRule 
 
 
         // add new connections...
-        this.j_end.addSucceedingOperator(this.o);
-        this.o.addPrecedingOperator(this.j_end);
-
         b.addSucceedingOperator(this.j_begin);
         this.j_begin.addPrecedingOperator(b);
 
         this.tp.addSucceedingOperator(b);
         b.addPrecedingOperator(this.tp);
+
+        this.j_end.addSucceedingOperator(this.o);
+        this.o.addPrecedingOperator(this.j_end);
 
 
         // delete unreachable operators...

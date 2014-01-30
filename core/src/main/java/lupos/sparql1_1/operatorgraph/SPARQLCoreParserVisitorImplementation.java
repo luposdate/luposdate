@@ -888,7 +888,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				allowedObjects = this.getSetOfLiterals(objectNode);
 			}
 
-			final Closure closure = new Closure(subject, object, allowedObjects, allowedSubjects);
+			final Closure closure = new Closure(subject, object, allowedSubjects, allowedObjects);
 			startingOperator.addSucceedingOperator(new OperatorIDTuple(closure,0));
 
 			return closure;

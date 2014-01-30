@@ -37,30 +37,35 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JumpOverOperator extends AbstractRuleOperator {
-	private String cardinality = "*";
-	private String conditions = "";
+	private String cardinality;
+	private String conditions;
 
 	public JumpOverOperator() {
 		super();
+		this.cardinality = "*";
+		this.conditions = "";
 	}
 
-	public JumpOverOperator(String name, JSONObject loadObject) throws JSONException {
+	public JumpOverOperator(final String name, final JSONObject loadObject) throws JSONException {
 		super(name, loadObject);
 	}
 
-	protected void fromJSON(JSONObject loadObject) throws JSONException {
+	@Override
+	protected void fromJSON(final JSONObject loadObject) throws JSONException {
 		this.cardinality = loadObject.getString("cardinality");
 		this.conditions = loadObject.getString("conditions");
 	}
 
-	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
+	@Override
+	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw, final VisualGraph<Operator> parent) {
 		this.panel = new JumpOverOperatorPanel(parent, gw, this, this.classType, this.determineNameForDrawing(), this.alsoSubClasses, this.cardinality);
 
 		return this.panel;
 	}
 
-	public JSONObject toJSON(JSONObject connectionsObject) throws JSONException {
-		JSONObject saveObject = this.internalToJSON(connectionsObject);
+	@Override
+	public JSONObject toJSON(final JSONObject connectionsObject) throws JSONException {
+		final JSONObject saveObject = this.internalToJSON(connectionsObject);
 
 		saveObject.put("cardinality", this.cardinality);
 		saveObject.put("conditions", this.conditions);
@@ -68,7 +73,7 @@ public class JumpOverOperator extends AbstractRuleOperator {
 		return saveObject;
 	}
 
-	public void setCardinality(String cardinality) {
+	public void setCardinality(final String cardinality) {
 		this.cardinality = cardinality;
 	}
 
@@ -80,12 +85,13 @@ public class JumpOverOperator extends AbstractRuleOperator {
 		return this.conditions;
 	}
 
-	public void setConditions(String conditions) {
+	public void setConditions(final String conditions) {
 		this.conditions = conditions;
 	}
 
-	public boolean validateOperator(boolean showErrors, HashSet<Operator> visited, Object data) {
-		boolean ret = super.validateOperator(showErrors, visited, data);
+	@Override
+	public boolean validateOperator(final boolean showErrors, final HashSet<Operator> visited, final Object data) {
+		final boolean ret = super.validateOperator(showErrors, visited, data);
 
 		if(!ret) {
 			return ret;
@@ -101,7 +107,8 @@ public class JumpOverOperator extends AbstractRuleOperator {
 
 		return true;
 	}
-	
+
+	@Override
 	public String getXPrefID(){
 		return "ruleEditorPane_style_jumpoveroperator";
 	}
