@@ -337,6 +337,10 @@ public class Registration {
 	}
 
 	public static void serializeWithoutId(final Object o, final Object previousValue, final OutputStream out) throws IOException {
+		if(previousValue==null){
+			serializeWithoutId(o, out);
+			return;
+		}
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
 			for (final int id : considerSubClasses) {
@@ -373,6 +377,9 @@ public class Registration {
 	}
 
 	public static int serializeWithoutId(final Object o, final Object previousValue, final byte[] page, final int offset) throws IOException {
+		if(previousValue==null){
+			return serializeWithoutId(o, page, offset);
+		}
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
 			for (final int id : considerSubClasses) {
@@ -406,6 +413,9 @@ public class Registration {
 	}
 
 	public static int lengthSerializeWithoutId(final Object o, final Object previousValue) {
+		if(previousValue==null){
+			return lengthSerializeWithoutId(o);
+		}
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
 			for (final int id : considerSubClasses) {
@@ -464,7 +474,11 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
-	public static void serializeWithId(final Object o, final Object previousValue,final OutputStream out) throws IOException {
+	public static void serializeWithId(final Object o, final Object previousValue, final OutputStream out) throws IOException {
+		if(previousValue==null){
+			serializeWithId(o, out);
+			return;
+		}
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
 			for (final int id : considerSubClasses) {
@@ -505,6 +519,9 @@ public class Registration {
 	}
 
 	public static int serializeWithId(final Object o, final Object previousValue, final byte[] page, int offset) throws IOException {
+		if(previousValue==null){
+			return serializeWithId(o, page, offset);
+		}
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
 			for (final int id : considerSubClasses) {
@@ -541,6 +558,9 @@ public class Registration {
 
 
 	public static int lengthSerializeWithId(final Object o, final Object previousValue){
+		if(previousValue==null){
+			return lengthSerializeWithId(o);
+		}
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
 			for (final int id : considerSubClasses) {
@@ -728,6 +748,9 @@ public class Registration {
 			final Class<? extends T> registeredClass, final T previousValue,
 			final InputStream in) throws IOException,
 			ClassNotFoundException, URISyntaxException {
+		if(previousValue==null){
+			return deserializeWithoutId(registeredClass, in);
+		}
 		final Container<T> container = deSerializerForClass.get(registeredClass);
 		if (container != null) {
 			return container.deserializer.deserialize(previousValue, in);
@@ -756,6 +779,9 @@ public class Registration {
 			final Class<? extends T> registeredClass, final T previousValue,
 			final byte[] page, final int offset) throws IOException,
 			ClassNotFoundException, URISyntaxException {
+		if(previousValue==null){
+			return deserializeWithoutId(registeredClass, page, offset);
+		}
 		final Container<T> container = deSerializerForClass.get(registeredClass);
 		if (container != null) {
 			return container.deserializer.deserialize(previousValue, page, offset);
@@ -784,6 +810,9 @@ public class Registration {
 			final Class<? extends T> registeredClass, final T previousValue,
 			final byte[] page, final int offset) throws IOException,
 			ClassNotFoundException, URISyntaxException {
+		if(previousValue==null){
+			return deserializeWithoutIdAndNewOffset(registeredClass, page, offset);
+		}
 		final Container<T> container = deSerializerForClass.get(registeredClass);
 		if (container != null) {
 			return container.deserializer.deserializeAndNewOffset(previousValue, page, offset);
@@ -823,6 +852,9 @@ public class Registration {
 	}
 
 	public static<T> T deserializeWithId(final T previousValue, final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
+		if(previousValue==null){
+			return deserializeWithId(in);
+		}
 		final int index = in.read();
 		if (index == -1) {
 			return null;
@@ -852,6 +884,9 @@ public class Registration {
 
 
 	public static<T> T deserializeWithId(final T previousValue, final byte[] page, int offset) throws IOException, ClassNotFoundException, URISyntaxException {
+		if(previousValue==null){
+			return deserializeWithId(page, offset);
+		}
 		final int index = 0xFF & page[offset];
 		offset++;
 		if (index == -1) {
@@ -880,6 +915,9 @@ public class Registration {
 	}
 
 	public static<T> Tuple<T, Integer> deserializeWithIdAndNewOffset(final T previousValue, final byte[] page, int offset) throws IOException, ClassNotFoundException, URISyntaxException {
+		if(previousValue==null){
+			return deserializeWithIdAndNewOffset(page, offset);
+		}
 		final int index = 0xFF & page[offset];
 		offset++;
 		if (index == -1) {
