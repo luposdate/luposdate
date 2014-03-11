@@ -35,7 +35,7 @@ public class BasicIndexRuleEvaluatorTest extends TestCase {
 		memoryIndexQueryEvaluator.getArgs().set("datastructure", Indices.DATA_STRUCT.HASHMAP);
 
 		BasicIndexRuleEvaluator basicIndexRuleEvaluator = new BasicIndexRuleEvaluator(memoryIndexQueryEvaluator);
-		basicIndexRuleEvaluator.prepareInputData("gui/src/main/resources/data/sp2b_demo.n3");
+		basicIndexRuleEvaluator.prepareInputData("../gui/src/main/resources/data/sp2b_demo.n3");
 		evaluator = basicIndexRuleEvaluator.getEvaluator();
 
 	}
