@@ -25,7 +25,7 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Set;
+import java.util.Collection;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
@@ -45,7 +45,7 @@ public class OperatorgraphFormatter extends Formatter {
 		}
 
 		@Override
-		public void writeResult(final OutputStream os, final Set<Variable> variables, final QueryResult queryResult) throws IOException {
+		public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 			new Viewer(new GraphWrapperBasicOperator(this.evaluator.getRootNode()), this.format, os);
 		}
 

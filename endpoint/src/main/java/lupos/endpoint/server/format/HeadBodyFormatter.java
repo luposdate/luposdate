@@ -25,9 +25,9 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
@@ -205,7 +205,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 
 	public abstract void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException;
 
-	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Set<Variable> variables, final Bindings bindings){
+	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Collection<Variable> variables, final Bindings bindings){
 		return new Iterator<Variable>(){
 
 			Iterator<Variable> it = variables.iterator();
@@ -245,7 +245,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 	}
 
 	@Override
-	public void writeResult(final OutputStream os, final Set<Variable> variables, final QueryResult queryResult) throws IOException {
+	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
 			super.writeResult(os, variables, queryResult);
 		} else if(queryResult instanceof BooleanResult){

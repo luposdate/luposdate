@@ -25,8 +25,8 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
@@ -128,7 +128,7 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 	}
 
 	@Override
-	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Set<Variable> variables, final Bindings bindings){
+	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Collection<Variable> variables, final Bindings bindings){
 		return variables.iterator();
 	}
 }

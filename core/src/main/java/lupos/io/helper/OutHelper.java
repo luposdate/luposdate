@@ -428,8 +428,8 @@ public final class OutHelper {
 	}
 
 	private final static void writeLuposBindingsFactory(final BindingsArray t, final OutputStream os) throws IOException{
-		final Set<Variable> vars = t.getBindingsFactory().getPosVariables().keySet();
-		writeLuposIntVariableBytes(vars.size(), os);
+		final Variable[] vars = t.getBindingsFactory().getVariablesInOrder();
+		writeLuposIntVariableBytes(vars.length, os);
 		for(final Variable v: vars){
 			writeLuposString(v.getName(), os);
 		}

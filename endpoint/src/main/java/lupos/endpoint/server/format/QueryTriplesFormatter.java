@@ -25,9 +25,9 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
@@ -35,37 +35,37 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 
 /**
- * This class is for returning the query-triples of a query 
+ * This class is for returning the query-triples of a query
  */
 public class QueryTriplesFormatter extends Formatter {
 
 	public QueryTriplesFormatter() {
 		super("Query-Triples", "text/n3");
 	}
-	
+
 	@Override
-	public String getMIMEType(QueryResult queryResult){
+	public String getMIMEType(final QueryResult queryResult){
 		return "text/n3";
 	}
 
-	
+
 	@Override
-	public void writeResult(final OutputStream os, Set<Variable> variables, final QueryResult queryResult) throws IOException {
-		byte[] carriageReturn = "\n".getBytes();
-		
+	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
+		final byte[] carriageReturn = "\n".getBytes();
+
 		// use HashSet for eliminating duplicates!
-		HashSet<Triple> triples = new HashSet<Triple>(); 
-		
+		final HashSet<Triple> triples = new HashSet<Triple>();
+
 		// collect all query-triples!
-		Iterator<Bindings> it = queryResult.oneTimeIterator();
+		final Iterator<Bindings> it = queryResult.oneTimeIterator();
 		while(it.hasNext()){
-			Bindings bindings = it.next();
-			for(Triple triple: bindings.getTriples()){
+			final Bindings bindings = it.next();
+			for(final Triple triple: bindings.getTriples()){
 				triples.add(triple);
 			}
 		}
 		// now write out all triples without any duplicates
-		for(Triple triple: triples){
+		for(final Triple triple: triples){
 			os.write(triple.toN3String().getBytes());
 			os.write(carriageReturn);
 		}

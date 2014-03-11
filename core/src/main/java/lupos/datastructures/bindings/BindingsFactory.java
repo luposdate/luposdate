@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import lupos.datastructures.items.Variable;
@@ -146,5 +147,13 @@ public class BindingsFactory {
 
 	public Set<Variable> getVariables(){
 		return this.posVariables.keySet();
+	}
+
+	public Variable[] getVariablesInOrder(){
+		final Variable[] vars = new Variable[this.posVariables.size()];
+		for(final Entry<Variable, Integer> entry: this.posVariables.entrySet()){
+			vars[entry.getValue()] = entry.getKey();
+		}
+		return vars;
 	}
 }

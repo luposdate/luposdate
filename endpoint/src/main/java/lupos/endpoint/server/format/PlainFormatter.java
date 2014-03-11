@@ -25,7 +25,7 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Set;
+import java.util.Collection;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
@@ -37,12 +37,12 @@ public class PlainFormatter extends Formatter {
 	}
 
 	@Override
-	public void writeResult(OutputStream os, Set<Variable> variables, QueryResult queryResult) throws IOException {
+	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		os.write(queryResult.toString().getBytes());
 	}
 
 	@Override
-	public String getMIMEType(QueryResult queryResult) {
+	public String getMIMEType(final QueryResult queryResult) {
 		return "text/plain";
-	}		
+	}
 }
