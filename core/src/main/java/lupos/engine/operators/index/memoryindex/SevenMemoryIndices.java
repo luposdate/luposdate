@@ -91,24 +91,24 @@ public class SevenMemoryIndices extends Indices {
 	 * (default is HashMap)
 	 */
 	public SevenMemoryIndices() {
-		init(usedDatastructure);
+		this.init(usedDatastructure);
 	}
 
 	public SevenMemoryIndices(final URILiteral rdf) {
-		rdfName = rdf;
-		init(usedDatastructure);
+		this.rdfName = rdf;
+		this.init(usedDatastructure);
 	}
 
 	/**
 	 * Constructor initializing the Maps in either in the main memory or on the
 	 * local hard disk
-	 * 
+	 *
 	 * @param memorybased
 	 *            indicates whether the maps should be initialized in the main
 	 *            memory (<code>true</code>) or not (<code>false</code>)
 	 */
 	public SevenMemoryIndices(final DATA_STRUCT ds) {
-		init(ds);
+		this.init(ds);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class SevenMemoryIndices extends Indices {
 		switch (usedDatastructure) {
 		case DEFAULT:
 		case HASHMAP:
-			initMapsInMainMemory();
+			this.initMapsInMainMemory();
 			break;
 		}
 	}
@@ -125,7 +125,7 @@ public class SevenMemoryIndices extends Indices {
 	/**
 	 * Initializes the maps to store the triple elements.<br>
 	 * These maps will be stored and queried in the main memory.
-	 * 
+	 *
 	 * @see DiskBasedHashMap
 	 */
 	private void initMapsInMainMemory() {
@@ -154,7 +154,7 @@ public class SevenMemoryIndices extends Indices {
 	/**
 	 * Inserts an Element into the map which keys are the subject of the triples
 	 * which are stored in a collection
-	 * 
+	 *
 	 * @param e
 	 *            the {@link Triple}
 	 * @return indicates if the operation was performed successfully
@@ -163,7 +163,7 @@ public class SevenMemoryIndices extends Indices {
 	@Override
 	public void add(final Triple e) {
 		try {
-			
+
 			if(this.contains(e)) {
 				// already inside => do not need to insert!
 				return;
@@ -177,31 +177,31 @@ public class SevenMemoryIndices extends Indices {
 					.toString());
 
 			String key = subject.toString();
-			subjectMap.putToCollection(key, e);
+			this.subjectMap.putToCollection(key, e);
 
 			key = predicate.toString();
-			predicateMap.putToCollection(key, e);
+			this.predicateMap.putToCollection(key, e);
 
 			key = object.toString();
-			objectMap.putToCollection(key, e);
+			this.objectMap.putToCollection(key, e);
 
 			// subject object
 			key = subject.append(object).toString();
-			subjectObjectMap.putToCollection(key, e);
+			this.subjectObjectMap.putToCollection(key, e);
 
 			// subject predicate
 			final StringBuffer subjectPredicate = new StringBuffer(e
 					.getSubject().toString()).append(predicate);
 			key = subjectPredicate.toString();
-			subjectPredicateMap.putToCollection(key, e);
+			this.subjectPredicateMap.putToCollection(key, e);
 
 			// predicate object
 			key = predicate.append(object).toString();
-			predicateObjectMap.putToCollection(key, e);
+			this.predicateObjectMap.putToCollection(key, e);
 
 			// subject predicate object
 			key = subjectPredicate.append(object).toString();
-			subjectPredicateObjectMap.putToCollection(key, e);
+			this.subjectPredicateObjectMap.putToCollection(key, e);
 
 		} catch (final Exception ex) {
 			ex.printStackTrace();
@@ -214,51 +214,59 @@ public class SevenMemoryIndices extends Indices {
 
 		switch (mapPattern) {
 		case SMAP:
-			return subjectMap.get(keyString);
+			return this.subjectMap.get(keyString);
 		case PMAP:
-			return predicateMap.get(keyString);
+			return this.predicateMap.get(keyString);
 		case OMAP:
-			return objectMap.get(keyString);
+			return this.objectMap.get(keyString);
 		case SPMAP:
-			return subjectPredicateMap.get(keyString);
+			return this.subjectPredicateMap.get(keyString);
 		case SOMAP:
-			return subjectObjectMap.get(keyString);
+			return this.subjectObjectMap.get(keyString);
 		case POMAP:
-			return predicateObjectMap.get(keyString);
+			return this.predicateObjectMap.get(keyString);
 		case SPOMAP:
-			return subjectPredicateObjectMap.get(keyString);
+			return this.subjectPredicateObjectMap.get(keyString);
 		default:
-			return subjectPredicateObjectMap.valuesInCollections();
+			return this.subjectPredicateObjectMap.valuesInCollections();
 
 		}
 	}
 
 	/**
 	 * Debugging method which "prints" the size of each map
-	 * 
+	 *
 	 * @see LuposLogger
 	 */
 	public void printMapSizes() {
-		System.err.println("subjectMap: " + subjectMap.size());
-		System.err.println("predicateMap: " + predicateMap.size());
-		System.err.println("objectMap: " + objectMap.size());
-		System.err.println("subjectPredicateMap: " + subjectPredicateMap.size());
-		System.err.println("subjectObjectMap: " + subjectObjectMap.size());
-		System.err.println("predicateObjectMap: " + predicateObjectMap.size());
+		System.err.println("subjectMap: " + this.subjectMap.size());
+		System.err.println("predicateMap: " + this.predicateMap.size());
+		System.err.println("objectMap: " + this.objectMap.size());
+		System.err.println("subjectPredicateMap: " + this.subjectPredicateMap.size());
+		System.err.println("subjectObjectMap: " + this.subjectObjectMap.size());
+		System.err.println("predicateObjectMap: " + this.predicateObjectMap.size());
 		System.err.println("subjectPredicateObjectMap: "
-				+ subjectPredicateObjectMap.size());
+				+ this.subjectPredicateObjectMap.size());
 	}
 
 	@Override
 	public boolean contains(final Triple t) {
-		return subjectPredicateObjectMap.containsKey(t.getSubject().toString()
+		return this.subjectPredicateObjectMap.containsKey(t.getSubject().toString()
 				+ t.getPredicate().toString() + t.getObject().toString());
+	}
+
+	private final void removeTriple(final String key, final Triple t, final MapOfCollections<String, Triple, Collection<Triple>> map){
+		if(map.removeFromCollection(key, t)){
+			if(map.get(key).size()==0){ // there must be a collection, otherwise removeFromCollection(...) would not have returned true!
+				map.remove(key);
+			}
+		}
 	}
 
 	@Override
 	public void remove(final Triple t) {
 		try {
-			
+
 			if(!this.contains(t)) {
 				// triple to be removed not inside => do not need to remove!
 				return;
@@ -272,31 +280,31 @@ public class SevenMemoryIndices extends Indices {
 					.toString());
 
 			String key = subject.toString();
-			subjectMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.subjectMap);
 
 			key = predicate.toString();
-			predicateMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.predicateMap);
 
 			key = object.toString();
-			objectMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.objectMap);
 
 			// subject object
 			key = subject.append(object).toString();
-			subjectObjectMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.subjectObjectMap);
 
 			// subject predicate
 			final StringBuffer subjectPredicate = new StringBuffer(t
 					.getSubject().toString()).append(predicate);
 			key = subjectPredicate.toString();
-			subjectPredicateMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.subjectPredicateMap);
 
 			// predicate object
 			key = predicate.append(object).toString();
-			predicateObjectMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.predicateObjectMap);
 
 			// subject predicate object
 			key = subjectPredicate.append(object).toString();
-			subjectPredicateObjectMap.removeFromCollection(key, t);
+			this.removeTriple(key, t, this.subjectPredicateObjectMap);
 
 		} catch (final Exception ex) {
 			ex.printStackTrace();
@@ -307,7 +315,8 @@ public class SevenMemoryIndices extends Indices {
 	@Override
 	public void constructCompletely() {
 	}
-	
+
+	@Override
 	public void writeOutAllModifiedPages() throws IOException {
 	}
 }
