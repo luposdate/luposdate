@@ -209,7 +209,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 		return new Iterator<Variable>(){
 
 			Iterator<Variable> it = variables.iterator();
-			Variable next= this.next();
+			Variable next = this.computeNext();
 
 			@Override
 			public boolean hasNext() {
@@ -222,16 +222,19 @@ public abstract class HeadBodyFormatter extends Formatter {
 					return null;
 				} else {
 					final Variable znext = this.next;
-					this.next = null;
-					while(this.it.hasNext()){
-						final Variable v = this.it.next();
-						if(bindings.getVariableSet().contains(v)){
-							this.next = v;
-							break;
-						}
-					}
+					this.next = this.computeNext();
 					return znext;
 				}
+			}
+
+			public Variable computeNext() {
+				while(this.it.hasNext()){
+					final Variable v = this.it.next();
+					if(bindings.getVariableSet().contains(v)){
+						return v;
+					}
+				}
+				return null;
 			}
 
 			@Override
