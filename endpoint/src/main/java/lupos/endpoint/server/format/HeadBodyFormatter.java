@@ -25,7 +25,6 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -45,23 +44,23 @@ import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 
 public abstract class HeadBodyFormatter extends Formatter {
-	
+
 	/**
 	 * Whether or not query triples should be also written by the formatter...
 	 * Note that writing query triples is in no way standard!
-	 * This is a proprietary feature, which is useful in some application scenarios! 
+	 * This is a proprietary feature, which is useful in some application scenarios!
 	 */
 	protected final boolean writeQueryTriples;
-	
+
 	public HeadBodyFormatter(final String formatName, final boolean writeQueryTriples){
 		super(formatName);
 		this.writeQueryTriples = writeQueryTriples;
 	}
-	
+
 	public HeadBodyFormatter(final String formatName){
 		this(formatName, false);
 	}
-	
+
 	public HeadBodyFormatter(final String formatName, final String key, final boolean writeQueryTriples){
 		super(formatName, key);
 		this.writeQueryTriples = writeQueryTriples;
@@ -72,40 +71,39 @@ public abstract class HeadBodyFormatter extends Formatter {
 	}
 
 	public abstract void writeBooleanResult(final OutputStream os, final boolean result) throws IOException;
-	
+
 	public abstract void writeStartHead(final OutputStream os) throws IOException;
-	
+
 	public void writeFirstVariableInHead(final OutputStream os, final Variable v) throws IOException{
 		this.writeVariableInHead(os, v);
 	}
 
 	public abstract void writeVariableInHead(final OutputStream os, final Variable v) throws IOException;
-	
-	@SuppressWarnings("unused")
+
 	public void writeQueryTriplesHead(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature! 
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
-	
+
 	public abstract void writeEndHead(final OutputStream os) throws IOException;
-	
+
 	public void writeFirstStartResult(final OutputStream os) throws IOException{
 		this.writeStartResult(os);
 	}
-	
+
 	public abstract void writeStartResult(final OutputStream os) throws IOException;
 
 	public abstract void writeEndResult(final OutputStream os) throws IOException;
-	
-	public void writeQueryTriples(final OutputStream os, List<Triple> queryTriples) throws IOException {
+
+	public void writeQueryTriples(final OutputStream os, final List<Triple> queryTriples) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTriplesStart(os);
 		boolean firstTime = true;
-		for(Triple triple: queryTriples){
+		for(final Triple triple: queryTriples){
 			if(firstTime){
 				firstTime = false;
 				this.writeQueryFirstTriple(os, triple);
-				
+
 			} else {
 				this.writeQueryTriple(os, triple);
 			}
@@ -113,68 +111,62 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTriplesEnd(os);
 	}
 
-	@SuppressWarnings("unused")
 	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
-	}
-	
-	@SuppressWarnings("unused")
-	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
-		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
-	@SuppressWarnings("unused")
+	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
+		// Override method if the formatter supports to submit also the annotated triples!
+		// This is in no way standard and a LUPOSDATE proprietary feature!
+	}
+
 	public void writeQueryTripleStart(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
-	
-	public void writeQueryTripleFirstStart(final OutputStream os) throws IOException {		
+
+	public void writeQueryTripleFirstStart(final OutputStream os) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStart(os);
 	}
-	
-	@SuppressWarnings("unused")
+
 	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
-	@SuppressWarnings("unused")
 	public void writeQueryTripleStartComponent(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
-	
-	@SuppressWarnings("unused")
+
 	public void writeQueryTripleEndComponent(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
-	
-	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {		
+
+	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStartComponent(os);
 		this.writeLiteral(os, literal);
 		this.writeQueryTripleEndComponent(os);
 	}
-	
+
 	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStartComponent(os);
 		this.writeLiteral(os, literal);
 		this.writeQueryTripleEndComponent(os);
 	}
-	
+
 	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
-		// This is in no way standard and a LUPOSDATE proprietary feature!		
+		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStartComponent(os);
 		this.writeLiteral(os, literal);
 		this.writeQueryTripleEndComponent(os);
 	}
-	
+
 	public void writeQueryTriple(final OutputStream os, final Triple triple) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStart(os);
@@ -194,32 +186,63 @@ public abstract class HeadBodyFormatter extends Formatter {
 	}
 
 	public abstract void writeEpilogue(final OutputStream os) throws IOException;
-	
+
 	public void writeFirstStartBinding(final OutputStream os, final Variable v) throws IOException{
 		this.writeStartBinding(os, v);
 	}
-	
+
 	public abstract void writeStartBinding(final OutputStream os, final Variable v) throws IOException;
-	
+
 	public abstract void writeEndBinding(final OutputStream os) throws IOException;
-	
+
 	public abstract void writeBlankNode(final OutputStream os, AnonymousLiteral blankNode) throws IOException;
-	
+
 	public abstract void writeURI(final OutputStream os, URILiteral uri) throws IOException;
-	
+
 	public abstract void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException;
-	
+
 	public abstract void writeTypedLiteral(final OutputStream os, TypedLiteral literal) throws IOException;
-	
+
 	public abstract void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException;
-	
-	@SuppressWarnings("unused")
-	public Collection<Variable> getVariablesToIterateOnForOneBindings(Set<Variable> variables, Bindings bindings){
-		return bindings.getVariableSet();
+
+	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Set<Variable> variables, final Bindings bindings){
+		return new Iterator<Variable>(){
+
+			Iterator<Variable> it = variables.iterator();
+			Variable next= this.next();
+
+			@Override
+			public boolean hasNext() {
+				return this.next!=null;
+			}
+
+			@Override
+			public Variable next() {
+				if(this.next==null){
+					return null;
+				} else {
+					final Variable znext = this.next;
+					this.next = null;
+					while(this.it.hasNext()){
+						final Variable v = this.it.next();
+						if(bindings.getVariableSet().contains(v)){
+							this.next = v;
+							break;
+						}
+					}
+					return znext;
+				}
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
-	
+
 	@Override
-	public void writeResult(OutputStream os, Set<Variable> variables, QueryResult queryResult) throws IOException {
+	public void writeResult(final OutputStream os, final Set<Variable> variables, final QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
 			super.writeResult(os, variables, queryResult);
 		} else if(queryResult instanceof BooleanResult){
@@ -227,7 +250,9 @@ public abstract class HeadBodyFormatter extends Formatter {
 		} else {
 			this.writeStartHead(os);
 			boolean firstTime = true;
-			for(Variable v: variables){
+			final Iterator<Variable> it_v = variables.iterator();
+			while(it_v.hasNext()){
+				final Variable v = it_v.next();
 				if(firstTime){
 					this.writeFirstVariableInHead(os, v);
 					firstTime = false;
@@ -240,7 +265,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 			}
 			this.writeEndHead(os);
 			firstTime = true;
-			Iterator<Bindings> it = queryResult.oneTimeIterator();
+			final Iterator<Bindings> it = queryResult.oneTimeIterator();
 			while(it.hasNext()){
 				if(firstTime){
 					this.writeFirstStartResult(os);
@@ -248,34 +273,36 @@ public abstract class HeadBodyFormatter extends Formatter {
 				} else {
 					this.writeStartResult(os);
 				}
-				Bindings bindings = it.next();
+				final Bindings bindings = it.next();
 				boolean firstTimeBinding = true;
-				for(Variable v: this.getVariablesToIterateOnForOneBindings(variables, bindings)){
+				final Iterator<Variable> it_v2 = this.getVariablesToIterateOnForOneBindings(variables, bindings);
+				while(it_v2.hasNext()){
+					final Variable v = it_v2.next();
 					if(firstTimeBinding){
 						this.writeFirstStartBinding(os, v);
 						firstTimeBinding = false;
 					} else {
 						this.writeStartBinding(os, v);
 					}
-					
-					this.writeLiteral(os, bindings.get(v));					
-					
+
+					this.writeLiteral(os, bindings.get(v));
+
 					this.writeEndBinding(os);
 				}
-				
+
 				if(this.writeQueryTriples && bindings instanceof BindingsArrayReadTriples){
 					this.writeQueryTriples(os, bindings.getTriples());
 				}
-				
+
 				this.writeEndResult(os);
 			}
-			this.writeEpilogue(os);		
+			this.writeEpilogue(os);
 		}
 	}
-	
-	protected void writeLiteral(final OutputStream os, Literal literal) throws IOException{
+
+	protected void writeLiteral(final OutputStream os, final Literal literal) throws IOException{
 		if(literal!=null){
-			Literal materializedLiteral = (literal instanceof LazyLiteral)?((LazyLiteral)literal).getLiteral(): literal; 
+			final Literal materializedLiteral = (literal instanceof LazyLiteral)?((LazyLiteral)literal).getLiteral(): literal;
 			if (materializedLiteral.isBlank()){
 				this.writeBlankNode(os, (AnonymousLiteral) materializedLiteral);
 			} else if(materializedLiteral.isURI()){
@@ -284,7 +311,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 				// literal => <literal>
 				if(materializedLiteral instanceof TypedLiteral){
 					this.writeTypedLiteral(os, (TypedLiteral)materializedLiteral);
-				} else 
+				} else
 					if(materializedLiteral instanceof LanguageTaggedLiteral){
 						this.writeLanguageTaggedLiteral(os, (LanguageTaggedLiteral)materializedLiteral);
 					} else {
