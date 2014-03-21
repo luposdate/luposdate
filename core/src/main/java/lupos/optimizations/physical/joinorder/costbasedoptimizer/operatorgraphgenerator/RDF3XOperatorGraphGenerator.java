@@ -23,6 +23,11 @@
  */
 package lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.BasicOperator;
@@ -41,12 +46,9 @@ import lupos.optimizations.logical.statistics.VarBucket;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.InnerNodePlan;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.JoinType;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * This class generated an operator graph for the RDF3X query evaluator
@@ -98,8 +100,6 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 			final Map<Variable, Literal> minima,
 			final Map<Variable, Literal> maxima) {
 		final RDF3XIndexScan index1 = new RDF3XIndexScan((OperatorIDTuple) null, plan.getTriplePatterns(), indexScan.getGraphConstraint(), minima, maxima, indexScan.getRoot());
-		index1.setIntersectionVariables(plan.getVariables());
-		index1.setUnionVariables(plan.getVariables());
 
 		// determine the collation order to be used to access the index during an index scan
 		int[] collationOrder1 = { -1, -1, -1 };
@@ -358,7 +358,11 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 		}
 
 		join.setIntersectionVariables(inp.getJoinPartner());
-		join.setUnionVariables(inp.getVariables());
+		final HashSet<Variable> unionVars = new HashSet<Variable>();
+		for(final TriplePattern tp: inp.getTriplePatterns()){
+			unionVars.addAll(tp.getVariables());
+		}
+		join.setUnionVariables(unionVars);
 		if (!last.equals(join)) {
 			final LinkedList<Variable> llv = new LinkedList<Variable>();
 			llv.addAll(join.getUnionVariables());
