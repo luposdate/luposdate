@@ -1297,7 +1297,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 *
 	 * @return string array of available queries
 	 */
-	private String[] getQueries() {
+	protected String[] getQueries() {
 		switch (this.webdemo) {
 		case LOCALONEJAR:
 		case PROJECT_DEMO:
@@ -1345,7 +1345,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private String[] getRuleFiles() {
+	protected String[] getRuleFiles() {
 		switch (this.webdemo) {
 		default:
 			return new String[] { "rule_And.rif", "rule_assignment.rif",
@@ -1367,7 +1367,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 *
 	 * @return string array of available data files
 	 */
-	private String[] getDataFiles() {
+	protected String[] getDataFiles() {
 		switch (this.webdemo) {
 		case LOCALONEJAR:
 		case PROJECT_DEMO:
