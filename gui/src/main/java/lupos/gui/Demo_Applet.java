@@ -151,60 +151,60 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	private static final long serialVersionUID = -2726848841473438879L;
 
-	private final String TAB_TITLE_RULES = "RIF rules";
-	private final String TAB_TITLE_QUERY = "SPARQL query";
-	private final String TAB_TITLE_DATA = "RDF data";
-	private final String TAB_TITLE_RESULT = "Evaluation result";
+	protected final String TAB_TITLE_RULES = "RIF rules";
+	protected final String TAB_TITLE_QUERY = "SPARQL query";
+	protected final String TAB_TITLE_DATA = "RDF data";
+	protected final String TAB_TITLE_RESULT = "Evaluation result";
 
 	protected DEMO_ENUM webdemo = DEMO_ENUM.ECLIPSE;
-	private String PATH_QUERIES;
-	private String PATH_RULES;
-	private String PATH_DATA;
-	private LuposJTextPane tp_queryInput;
-	private LuposJTextPane tp_rifInput;
-	private LuposJTextPane tp_dataInput;
-	private LinePainter lp_queryInput;
-	private LinePainter lp_rifInput;
-	private LinePainter lp_dataInput;
-	private Color lp_color;
-	private JTextArea ta_rifInputErrors;
-	private JTextArea ta_queryInputErrors;
-	private JTextArea ta_dataInputErrors;
+	protected String PATH_QUERIES;
+	protected String PATH_RULES;
+	protected String PATH_DATA;
+	protected LuposJTextPane tp_queryInput;
+	protected LuposJTextPane tp_rifInput;
+	protected LuposJTextPane tp_dataInput;
+	protected LinePainter lp_queryInput;
+	protected LinePainter lp_rifInput;
+	protected LinePainter lp_dataInput;
+	protected Color lp_color;
+	protected JTextArea ta_rifInputErrors;
+	protected JTextArea ta_queryInputErrors;
+	protected JTextArea ta_dataInputErrors;
 	protected JComboBox cobo_evaluator;
-	private JPanel resultpanel = null;
-	private String query = "";
-	private String data = "";
-	private ViewerPrefix prefixInstance = null;
-	private BooleanReference usePrefixes = new BooleanReference(true);
-	private DebugViewerCreator debugViewerCreator = null;
-	private List<DebugContainer<BasicOperatorByteArray>> ruleApplications = null;
-	private List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsForMaterialization = null;
-	private DebugViewerCreator materializationInfo = null;
-	private RuleResult errorsInOntology = null;
-	private String inferenceRules = null;
+	protected JPanel resultpanel = null;
+	protected String query = "";
+	protected String data = "";
+	protected ViewerPrefix prefixInstance = null;
+	protected BooleanReference usePrefixes = new BooleanReference(true);
+	protected DebugViewerCreator debugViewerCreator = null;
+	protected List<DebugContainer<BasicOperatorByteArray>> ruleApplications = null;
+	protected List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsForMaterialization = null;
+	protected DebugViewerCreator materializationInfo = null;
+	protected RuleResult errorsInOntology = null;
+	protected String inferenceRules = null;
 	protected JPanel masterpanel = null;
-	private JTabbedPane tabbedPane_globalMainpane = null;
+	protected JTabbedPane tabbedPane_globalMainpane = null;
 	protected boolean isApplet = false;
 	protected JFrame frame = null;
-	private XPref preferences;
-	private JScrollPane rifInputSP;
-	private JScrollPane queryInputSP;
-	private JScrollPane dataInputSP;
-	private Font defaultFont = null;
-	private Collection<URILiteral> defaultGraphs;
-	private Demo_Applet myself;
-	private JButton bt_evalDemo;
-	private JButton bt_evaluate;
-	private JButton bt_MeasureExecutionTimes;
-	private JButton bt_rifEvalDemo;
-	private JButton bt_rifEvaluate;
-	private JButton bt_rifMeasureExecutionTimes;
-	private Viewer operatorGraphViewer = null;
-	private JComboBox comboBox_sparqlInference;
-	private JComboBox comboBox_sparqlInferenceMaterialization;
-	private JComboBox comboBox_sparqlInferenceGenerated;
-	private JCheckBox checkBox_sparqlInferenceCheckInconsistency;
-	private QueryResult[] resultQueryEvaluator;
+	protected XPref preferences;
+	protected JScrollPane rifInputSP;
+	protected JScrollPane queryInputSP;
+	protected JScrollPane dataInputSP;
+	protected Font defaultFont = null;
+	protected Collection<URILiteral> defaultGraphs;
+	protected Demo_Applet myself;
+	protected JButton bt_evalDemo;
+	protected JButton bt_evaluate;
+	protected JButton bt_MeasureExecutionTimes;
+	protected JButton bt_rifEvalDemo;
+	protected JButton bt_rifEvaluate;
+	protected JButton bt_rifMeasureExecutionTimes;
+	protected Viewer operatorGraphViewer = null;
+	protected JComboBox comboBox_sparqlInference;
+	protected JComboBox comboBox_sparqlInferenceMaterialization;
+	protected JComboBox comboBox_sparqlInferenceGenerated;
+	protected JCheckBox checkBox_sparqlInferenceCheckInconsistency;
+	protected QueryResult[] resultQueryEvaluator;
 
 	/**
 	 * The following code is just for the possibility to register new query evaluators, which can be also used in this demo...
@@ -537,7 +537,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return preferencesButton;
 	}
 
-	private void enableOrDisableEvaluationDemoButtonSPARQL() {
+	protected void enableOrDisableEvaluationDemoButtonSPARQL() {
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		if (chosen.compareTo("Jena") == 0 || chosen.compareTo("Sesame") == 0) {
 			this.bt_evalDemo.setEnabled(false);
@@ -546,22 +546,22 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private boolean isEvaluatorWithSupportOfRIFChosen(){
+	protected boolean isEvaluatorWithSupportOfRIFChosen(){
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		return (chosen.compareTo("Jena") != 0 && chosen.compareTo("Sesame") != 0);
 	}
 
-	private void enableOrDisableEvaluationButtonsRIF() {
+	protected void enableOrDisableEvaluationButtonsRIF() {
 		final boolean enable=this.isEvaluatorWithSupportOfRIFChosen();
 		this.bt_rifEvaluate.setEnabled(enable);
 		this.bt_rifMeasureExecutionTimes.setEnabled(enable);
 	}
 
-	private void enableOrDisableEvaluationDemoButtonRIF() {
+	protected void enableOrDisableEvaluationDemoButtonRIF() {
 		this.bt_rifEvalDemo.setEnabled(this.isEvaluatorWithSupportOfRIFChosen());
 	}
 
-	private void enableOrDisableButtons(final boolean queryOrRif) {
+	protected void enableOrDisableButtons(final boolean queryOrRif) {
 		if(queryOrRif){
 			this.enableOrDisableEvaluationDemoButtonSPARQL();
 			this.bt_evaluate.setEnabled(true);
@@ -572,7 +572,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private class LineNumbers extends JLabel {
+	protected class LineNumbers extends JLabel {
 		private static final long serialVersionUID = 1L;
 		private int lWidth = 15;
 		private final JTextPane pane;
@@ -636,7 +636,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for the query input.
 	 */
-	private JPanel generateQueryTab() {
+	protected JPanel generateQueryTab() {
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
@@ -661,7 +661,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for the query input.
 	 */
-	private JPanel generateRifTab() {
+	protected JPanel generateRifTab() {
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
 		bt_visualEdit.addActionListener(new ActionListener() {
@@ -686,7 +686,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for error output on the SPARQL query tab.
 	 */
-	private JPanel generateQueryInputErrorBox() {
+	protected JPanel generateQueryInputErrorBox() {
 		this.ta_queryInputErrors = new JTextArea();
 		return this.generateInputErrorBox(this.tp_queryInput,
 				this.ta_queryInputErrors);
@@ -695,7 +695,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for error output on the RDF Data tab.
 	 */
-	private JPanel generateDataInputErrorBox() {
+	protected JPanel generateDataInputErrorBox() {
 		this.ta_dataInputErrors = new JTextArea();
 		return this.generateInputErrorBox(this.tp_dataInput, this.ta_dataInputErrors);
 	}
@@ -703,7 +703,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for error output on the RIF tab.
 	 */
-	private JPanel generateRifInputErrorBox() {
+	protected JPanel generateRifInputErrorBox() {
 		this.ta_rifInputErrors = new JTextArea();
 		return this.generateInputErrorBox(this.tp_rifInput, this.ta_rifInputErrors);
 	}
@@ -711,7 +711,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Generate the stuff for error output on the RDF Data tab.
 	 */
-	private JPanel generateInputErrorBox(
+	protected JPanel generateInputErrorBox(
 			final LuposJTextPane input, final JTextArea inputErrors) {
 		final JPanel rowpanel = new JPanel(new BorderLayout());
 
@@ -809,7 +809,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			});
 	}
 
-	private JPanel generateInputTab(final JButton bt_visualEdit,
+	protected JPanel generateInputTab(final JButton bt_visualEdit,
 			final JButton bt_CondensedView, final String chooseText,
 			final String[] toChoose, final String PATH, final String clearText,
 			final LuposJTextPane tp_input,
@@ -921,7 +921,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private final RuleSets rulesets = new RuleSets();
+	protected final RuleSets rulesets = new RuleSets();
 
 	protected enum SPARQLINFERENCE {
 		NONE(){
@@ -1041,7 +1041,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private JPanel generateEvalpanel() {
+	protected JPanel generateEvalpanel() {
 
 		this.comboBox_sparqlInferenceMaterialization = new JComboBox();
 
@@ -1125,7 +1125,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return panel;
 	}
 
-	private JPanel generateRifEvalPanel() {
+	protected JPanel generateRifEvalPanel() {
 		// create evaluate-button, add actionListener and add it to Applet...
 		this.bt_rifEvaluate = new JButton("Evaluate");
 		this.bt_rifEvaluate.addActionListener(new ActionListener() {
@@ -1171,7 +1171,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				this.bt_rifMeasureExecutionTimes);
 	}
 
-	private static JPanel generateEvalpanel(final JComponent... components ) {
+	protected static JPanel generateEvalpanel(final JComponent... components ) {
 		final JPanel evalpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
 		for(final JComponent component: components){
 			evalpanel.add(component);
@@ -1179,7 +1179,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return evalpanel;
 	}
 
-	private boolean prepareForEvaluation(final boolean rif) {
+	protected boolean prepareForEvaluation(final boolean rif) {
 		if (this.operatorGraphViewer != null && this.operatorGraphViewer.isVisible()) {
 			if (JOptionPane
 					.showConfirmDialog(
@@ -1236,7 +1236,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * Create Button to display RDFS Materialization when using an external
 	 * Ontology file
 	 */
-//	private JButton createRDFSMaterializationButton() {
+//	protected JButton createRDFSMaterializationButton() {
 //		final JButton bt_RDFSMat = new JButton("Show RDFS Materialization");
 //
 //		bt_RDFSMat.setMargin(new Insets(0, 0, 0, 0));
@@ -1263,7 +1263,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * create the button to show the operator graph.
 	 */
-	private JButton createEvaluationDemoButton(final Boolean enabled) {
+	protected JButton createEvaluationDemoButton(final Boolean enabled) {
 		// create OperatorGraph-button, add actionListener and add it to
 		// Applet...
 		final JButton bt_evalDemo_local = new JButton("Eval. Demo");
@@ -1271,7 +1271,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return bt_evalDemo_local;
 	}
 
-	private String[] getFiles(final String path, final String suffix){
+	protected String[] getFiles(final String path, final String suffix){
 		// create array list for files...
 		final ArrayList<String> tmp = new ArrayList<String>();
 
@@ -1756,7 +1756,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	/**
 	 * Evaluates the given query on the given data.
 	 */
-	private void evaluateSPARQLQuery(final EvaluationMode mode) {
+	protected void evaluateSPARQLQuery(final EvaluationMode mode) {
 		try {
 			this.evaluate(new SPARQLEvaluation(this.setupEvaluator(mode)), mode);
 		} catch (final Throwable t) {
@@ -1765,7 +1765,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void evaluateRIFRule(final EvaluationMode mode) {
+	protected void evaluateRIFRule(final EvaluationMode mode) {
 		try {
 			this.evaluate(new RIFEvaluation(this.setupEvaluator(mode)), mode);
 		} catch (final Throwable t) {
@@ -2037,7 +2037,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private boolean dealWithThrowableFromQueryParser(final Throwable e,
+	protected boolean dealWithThrowableFromQueryParser(final Throwable e,
 			final EvaluationMode mode, final boolean queryOrRif) {
 		if (e instanceof TokenMgrError) {
 			final TokenMgrError tme = (TokenMgrError) e;
@@ -2173,7 +2173,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return false;
 	}
 
-	private void setErrorPosition(final int line, final int column, final boolean queryOrRif){
+	protected void setErrorPosition(final int line, final int column, final boolean queryOrRif){
 		if(queryOrRif){
 			this.tp_queryInput.setErrorPosition(line, column);
 		} else {
@@ -2248,7 +2248,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	}
 
-	private void outputResult(){
+	protected void outputResult(){
 		try{
 			final Container contentPane = (this.isApplet) ? this.getContentPane() : this.frame.getContentPane();
 
@@ -2269,7 +2269,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 
 
-	private void setGlobalFont(final Font font) {
+	protected void setGlobalFont(final Font font) {
 		final Enumeration<Object> keys = UIManager.getDefaults().keys();
 
 		while (keys.hasMoreElements()) {
@@ -2309,7 +2309,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.loadErrorLineColor();
 	}
 
-	private void loadMainFont() {
+	protected void loadMainFont() {
 		try {
 			if (BooleanDatatype.getValues("standardFont.fontEnable").get(0)
 					.booleanValue()) {
@@ -2322,7 +2322,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void loadLookAndFeel() {
+	protected void loadLookAndFeel() {
 		if (this.defaultFont != null) {
 			this.setGlobalFont(this.defaultFont);
 		}
@@ -2419,7 +2419,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void removeLinePainterAndErrorLinePainter() {
+	protected void removeLinePainterAndErrorLinePainter() {
 		removeLinePainter(this.lp_queryInput, this.tp_queryInput);
 		removeLinePainter(this.lp_rifInput, this.tp_rifInput);
 		removeLinePainter(this.lp_dataInput, this.tp_dataInput);
@@ -2428,7 +2428,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.tp_dataInput.disableErrorLine();
 	}
 
-	private void loadCurrentLineColor() {
+	protected void loadCurrentLineColor() {
 		try {
 			if (BooleanDatatype.getValues("currentLineColor.colorEnable")
 					.get(0).booleanValue()) {
@@ -2459,7 +2459,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private static void removeLinePainter(final LinePainter lp, final JTextPane tp) {
+	protected static void removeLinePainter(final LinePainter lp, final JTextPane tp) {
 		if (lp != null) {
 			lp.removeLinePainter();
 			tp.revalidate();
@@ -2467,7 +2467,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void loadErrorLineColor() {
+	protected void loadErrorLineColor() {
 		try {
 			if (BooleanDatatype.getValues("errorLine.colorEnable").get(0)
 					.booleanValue()) {
@@ -2496,7 +2496,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void loadTextFieldFont() {
+	protected void loadTextFieldFont() {
 		try {
 			Font tfFont;
 
@@ -2520,7 +2520,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void loadLineNumbers() {
+	protected void loadLineNumbers() {
 		try {
 			if (BooleanDatatype.getValues("lineCount").get(0).booleanValue()) {
 				this.queryInputSP.setRowHeaderView(new LineNumbers(
@@ -2540,7 +2540,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
-	private void loadSyntaxHighlighting() {
+	protected void loadSyntaxHighlighting() {
 		try {
 			final boolean highlighterStatus = BooleanDatatype
 					.getValues("syntaxHighlighting").get(0).booleanValue();
@@ -2601,13 +2601,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
-	private void displayErrorMessage(final String error, final boolean append) {
+	protected void displayErrorMessage(final String error, final boolean append) {
 		this.displayDataErrorMessage(error, append);
 		this.displayRifErrorMessage(error, append);
 		this.displayQueryErrorMessage(error, append);
 	}
 
-	private void displayErrorMessage(final String error, final boolean append,
+	protected void displayErrorMessage(final String error, final boolean append,
 			final JTextArea ta_inputErrors, final int index) {
 		if (ta_inputErrors != null) {
 			if (append) {
@@ -2635,7 +2635,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.displayErrorMessage(dataError, append, this.ta_dataInputErrors, 2);
 	}
 
-	private void displayErrorMessage(final String queryError, final boolean append, final boolean queryOrRif){
+	protected void displayErrorMessage(final String queryError, final boolean append, final boolean queryOrRif){
 		if(queryOrRif){
 			this.displayQueryErrorMessage(queryError, append);
 		} else {
@@ -2652,7 +2652,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
-	private void displayQueryErrorMessage(final String queryError,
+	protected void displayQueryErrorMessage(final String queryError,
 			final boolean append) {
 		this.displayErrorMessage(queryError, append, this.ta_queryInputErrors, 0);
 	}
@@ -2666,7 +2666,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
-	private void displayRifErrorMessage(final String rifError,
+	protected void displayRifErrorMessage(final String rifError,
 			final boolean append) {
 		this.displayErrorMessage(rifError, append, this.ta_rifInputErrors, 1);
 	}
