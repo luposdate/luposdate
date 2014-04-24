@@ -59,6 +59,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.join.IndexJoin;
+import lupos.gui.debug.ShowResult.GetOperatorGraphViewer;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
@@ -71,7 +72,7 @@ import lupos.rif.datatypes.RuleResult;
 import xpref.datatypes.BooleanDatatype;
 import xpref.datatypes.FontDatatype;
 
-public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
+public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOperatorGraphViewer {
 	private static final long serialVersionUID = 2228126871144675159L;
 	/**
 	 * The operatorGraphViewer is the frame, which displays the operator graph
@@ -571,6 +572,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF {
 	/**
 	 * @return the OperatorGraphViewer
 	 */
+	@Override
 	public Viewer getOperatorGraphViewer() {
 		return this.operatorGraphViewer;
 	}

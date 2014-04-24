@@ -1817,46 +1817,43 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 								final long physicalOptimization = evaluator.physicalOptimization();
 
 								if (mode == EvaluationMode.DEMO) {
-									final EvaluationDemoToolBar bottomToolBar = new EvaluationDemoToolBar(
-											this.webdemo != DEMO_ENUM.ECLIPSE);
+									final EvaluationDemoToolBar bottomToolBar = new EvaluationDemoToolBar(this.webdemo != DEMO_ENUM.ECLIPSE);
 
-									final Result result = (evaluator instanceof BasicIndexRuleEvaluator)?
-											((BasicIndexRuleEvaluator)evaluator).getResultOperator()
-											:((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator();
+									final Result result = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getResultOperator() : ((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator();
 
-											final ShowResult sr = new ShowResult(bottomToolBar, result);
+									final ShowResult sr = new ShowResult(bottomToolBar, result);
 
-											evaluator.prepareForQueryDebugSteps(bottomToolBar);
+									evaluator.prepareForQueryDebugSteps(bottomToolBar);
 
-											System.out.println("Evaluate query ...");
-											final Thread thread = new Thread() {
-												@Override
-												public void run() {
-													try {
-														evaluator.evaluateQueryDebugSteps(bottomToolBar, sr);
-														bottomToolBar.endOfEvaluation();
-														Demo_Applet.this.enableOrDisableButtons(evaluation instanceof SPARQLEvaluation);
-													} catch (final Exception e) {
-														System.err
-														.println(e);
-														e.printStackTrace();
-													}
-												}
-											};
-											bottomToolBar.setEvaluationThread(thread);
-											thread.start();
+									System.out.println("Evaluate query ...");
+									final Thread thread = new Thread() {
+										@Override
+										public void run() {
+											try {
+												evaluator.evaluateQueryDebugSteps(bottomToolBar, sr);
+												bottomToolBar.endOfEvaluation();
+												Demo_Applet.this.enableOrDisableButtons(evaluation instanceof SPARQLEvaluation);
+											} catch (final Exception e) {
+												System.err
+												.println(e);
+												e.printStackTrace();
+											}
+										}
+									};
+									bottomToolBar.setEvaluationThread(thread);
+									thread.start();
 
-											final BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
+									final BasicOperator root = (evaluator instanceof BasicIndexRuleEvaluator)? ((BasicIndexRuleEvaluator)evaluator).getRootNode() :((CommonCoreQueryEvaluator<Node>) evaluator).getRootNode();
 
-											this.operatorGraphViewer = new Viewer(
-													new GraphWrapperBasicOperator(
-															root),
-															this.prefixInstance,
-															"Evaluation Demo",
-															false,
-															this.webdemo != DEMO_ENUM.ECLIPSE,
-															bottomToolBar);
-											bottomToolBar.setOperatorGraphViewer(this.operatorGraphViewer);
+									this.operatorGraphViewer = new Viewer(
+											new GraphWrapperBasicOperator(
+													root),
+													this.prefixInstance,
+													"Evaluation Demo",
+													false,
+													this.webdemo != DEMO_ENUM.ECLIPSE,
+													bottomToolBar);
+									bottomToolBar.setOperatorGraphViewer(this.operatorGraphViewer);
 								} else {
 
 									final JTextArea ta_prefixes = new JTextArea();
@@ -1920,13 +1917,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 												+ "\n\nTotal time query processing: " + ((double) (compileQuery + logicalOptimization + physicalOptimization + evaluateQuery) / 1000)
 												+ ((evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator) ? ""
 														: "\n    - Compile query        : "
-															+ ((double) compileQuery / 1000)
-															+ "\n    - Logical optimization : "
-															+ ((double) logicalOptimization / 1000)
-															+ "\n    - Physical optimization: "
-															+ ((double) physicalOptimization / 1000)
-															+ "\n    - Evaluation           : "
-															+ ((double) evaluateQuery / 1000)));
+														+ ((double) compileQuery / 1000)
+														+ "\n    - Logical optimization : "
+														+ ((double) logicalOptimization / 1000)
+														+ "\n    - Physical optimization: "
+														+ ((double) physicalOptimization / 1000)
+														+ "\n    - Evaluation           : "
+														+ ((double) evaluateQuery / 1000)));
 									}
 									final JFrame frame1 = new JFrame("Execution times in seconds");
 									frame1.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);

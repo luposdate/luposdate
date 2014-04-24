@@ -59,6 +59,7 @@ import lupos.gui.anotherSyntaxHighlighting.javacc.TurtleParser;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.util.ButtonEditor;
 import lupos.gui.operatorgraph.util.JTableButtonRenderer;
+import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.rif.datatypes.EqualityResult;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
@@ -66,15 +67,19 @@ import lupos.rif.model.Equality;
 
 public class ShowResult extends CollectRIFResult {
 
-	private final EvaluationDemoToolBar evaluationDemoToolbar;
+	public interface GetOperatorGraphViewer{
+		public Viewer getOperatorGraphViewer();
+	}
+
+	private final GetOperatorGraphViewer getOperatorGraphViewer;
 	private CommentLabelElement lastCommentLabelElement = null;
 	private final Result result;
 	private static final int MAXIMUM_ROW_WIDTH = 400;
 
-	public ShowResult(final EvaluationDemoToolBar evaluationDemoToolbar,
+	public ShowResult(final GetOperatorGraphViewer getOperatorGraphViewer,
 			final Result result) {
 		super(false);
-		this.evaluationDemoToolbar = evaluationDemoToolbar;
+		this.getOperatorGraphViewer = getOperatorGraphViewer;
 		this.result = result;
 	}
 
@@ -84,45 +89,50 @@ public class ShowResult extends CollectRIFResult {
 			final QueryResult resQueryResult = (res instanceof QueryResultDebug) ? ((QueryResultDebug) res)
 					.getOriginalQueryResult() : res;
 			if (resQueryResult instanceof RuleResult) {
-				if (rr == null)
-					rr = new RuleResult();
-				rr.getPredicateResults().addAll(
-						((RuleResult) resQueryResult).getPredicateResults());
-				updateCommentPanel();
-			} else if (resQueryResult instanceof EqualityResult) {
-				if(er==null){
-					er = new EqualityResult();
+				if (this.rr == null) {
+					this.rr = new RuleResult();
 				}
-				er.getEqualityResult().addAll(((EqualityResult)resQueryResult).getEqualityResult());
-				updateCommentPanel();
+				this.rr.getPredicateResults().addAll(
+						((RuleResult) resQueryResult).getPredicateResults());
+				this.updateCommentPanel();
+			} else if (resQueryResult instanceof EqualityResult) {
+				if(this.er==null){
+					this.er = new EqualityResult();
+				}
+				this.er.getEqualityResult().addAll(((EqualityResult)resQueryResult).getEqualityResult());
+				this.updateCommentPanel();
 			} else if (resQueryResult instanceof GraphResult) {
-				if (gr == null)
-					gr = new GraphResult(
+				if (this.gr == null) {
+					this.gr = new GraphResult(
 							((GraphResult) resQueryResult).getTemplate());
-				handleGraphResult(res, (GraphResult) resQueryResult);
+				}
+				this.handleGraphResult(res, (GraphResult) resQueryResult);
 			} else if (resQueryResult instanceof BooleanResult) {
-				if (br_list == null)
-					br_list = new LinkedList<BooleanResult>();
+				if (this.br_list == null) {
+					this.br_list = new LinkedList<BooleanResult>();
+				}
 				final BooleanResult br = new BooleanResult();
-				br_list.add(br);
+				this.br_list.add(br);
 				final Iterator<Bindings> itb = res.oneTimeIterator();
-				if (!itb.hasNext())
-					updateCommentPanel();
-				else {
+				if (!itb.hasNext()) {
+					this.updateCommentPanel();
+				} else {
 					final Bindings b = itb.next();
-					qr.add(b);
-					updateCommentPanel();
+					this.qr.add(b);
+					this.updateCommentPanel();
 				}
 			} else {
-				if (qr == null)
-					qr = QueryResult.createInstance();
+				if (this.qr == null) {
+					this.qr = QueryResult.createInstance();
+				}
 				final Iterator<Bindings> itb = res.oneTimeIterator();
-				if (!itb.hasNext())
-					updateCommentPanel();
+				if (!itb.hasNext()) {
+					this.updateCommentPanel();
+				}
 				while (itb.hasNext()) {
 					final Bindings b = itb.next();
-					qr.add(b);
-					updateCommentPanel();
+					this.qr.add(b);
+					this.updateCommentPanel();
 				}
 			}
 		}
@@ -130,50 +140,49 @@ public class ShowResult extends CollectRIFResult {
 
 	private void handleGraphResult(final QueryResult res, final GraphResult gr2) {
 		final Iterator<Bindings> itb = res.oneTimeIterator();
-		if (!itb.hasNext())
-			updateCommentPanel();
+		if (!itb.hasNext()) {
+			this.updateCommentPanel();
+		}
 		int tripleToAddIndex = 0;
 		while (itb.hasNext()) {
 			itb.next();
 			int i = 0;
 			for (final Triple t : gr2.getGraphResultTriples()) {
-				if (i >= tripleToAddIndex)
-					gr.addGraphResultTriple(t);
+				if (i >= tripleToAddIndex) {
+					this.gr.addGraphResultTriple(t);
+				}
 				i++;
 			}
 			tripleToAddIndex = gr2.getGraphResultTriples().size();
-			updateCommentPanel();
+			this.updateCommentPanel();
 		}
 	}
 
 	@Override
 	public void deleteResult(final QueryResult res) {
 		super.deleteResult(res);
-		updateCommentPanel();
+		this.updateCommentPanel();
 	}
 
 	@Override
 	public void deleteResult() {
 		super.deleteResult();
-		updateCommentPanel();
+		this.updateCommentPanel();
 	}
 
 	public void updateCommentPanel() {
 		try {
-		lastCommentLabelElement = new CommentLabelElement(
-				this.evaluationDemoToolbar.getOperatorGraphViewer()
-						.getOperatorGraph(), lastCommentLabelElement, result,
-				ShowResult.getResultPanel(false, this.getQueryResults(),this.evaluationDemoToolbar
-							.getOperatorGraphViewer().getOperatorGraph()
-							.getPrefix(), null, this.evaluationDemoToolbar
-							.getOperatorGraphViewer().getOperatorGraph()));
+		this.lastCommentLabelElement = new CommentLabelElement(
+				this.getOperatorGraphViewer.getOperatorGraphViewer().getOperatorGraph(), this.lastCommentLabelElement, this.result,
+				ShowResult.getResultPanel(false, this.getQueryResults(),this.getOperatorGraphViewer.getOperatorGraphViewer().getOperatorGraph()
+							.getPrefix(), null, this.getOperatorGraphViewer.getOperatorGraphViewer().getOperatorGraph()));
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	public static JPanel getResultPanel(final boolean errorsInOntology,
 			final QueryResult[] resultQueryEvaluator,
 			final lupos.gui.operatorgraph.prefix.Prefix prefixInstance,
@@ -183,17 +192,18 @@ public class ShowResult extends CollectRIFResult {
 		int tables = 0;
 		int booleanResults = 0;
 		for (final QueryResult qr : resultQueryEvaluator) {
-			if (qr instanceof BooleanResult)
+			if (qr instanceof BooleanResult) {
 				booleanResults++;
-			else if (((qr == null || qr.isEmpty()) && !(qr instanceof GraphResult))
+			} else if (((qr == null || qr.isEmpty()) && !(qr instanceof GraphResult))
 					|| (qr instanceof RuleResult && ((RuleResult) qr).isEmpty())
 					|| (!(qr instanceof RuleResult)
 							&& (qr instanceof GraphResult) && (((GraphResult) qr)
 							.getGraphResultTriples() == null || ((GraphResult) qr)
-							.getGraphResultTriples().size() == 0)))
+							.getGraphResultTriples().size() == 0))) {
 				booleanResults++;
-			else
+			} else {
 				tables++;
+			}
 		}
 
 		final JLabel[] booleanResultsLabels = new JLabel[booleanResults];
@@ -232,10 +242,11 @@ public class ShowResult extends CollectRIFResult {
 				final String[] tableHead = new String[] { "", "", "" };
 				final Object[][] rows = new Object[er.size()][];
 				int i = 0;
-				for (final Equality eq : er.getEqualityResult())
+				for (final Equality eq : er.getEqualityResult()) {
 					rows[i++] = new Object[] {
 							eq.leftExpr.toString(prefixInstance), "=",
 							eq.rightExpr.toString(prefixInstance) };
+				}
 				tablesJTable[indexJTables++] = generateTable(rows, tableHead,
 						operatorGraph);
 			} else if (qr instanceof RuleResult) {
@@ -248,8 +259,9 @@ public class ShowResult extends CollectRIFResult {
 
 				final String[] tableHead = new String[max + 1];
 				tableHead[0] = "Predicate";
-				for (int i = 1; i < max + 1; i++)
+				for (int i = 1; i < max + 1; i++) {
 					tableHead[i] = "Arg. " + i;
+				}
 
 				final Object[][] rows = new Object[gr.getPredicateResults()
 						.size()][];
@@ -267,8 +279,9 @@ public class ShowResult extends CollectRIFResult {
 						textPane.setText(p.getName().toString(prefixInstance));
 						textPane.setEditable(false);
 						row[0] = textPane;
-					} else
+					} else {
 						row[0] = p.getName().toString(prefixInstance);
+					}
 
 					int index = 1;
 					for (final Literal l : p.getParameters()) {
@@ -280,12 +293,14 @@ public class ShowResult extends CollectRIFResult {
 							textPane.setEditable(false);
 
 							row[index++] = textPane;
-						} else
+						} else {
 							row[index++] = l.toString(prefixInstance);
+						}
 					}
 
-					for (int i2 = index; i2 < max + 1; i2++)
+					for (int i2 = index; i2 < max + 1; i2++) {
 						row[i2] = "";
+					}
 
 					rows[i++] = row;
 				}
@@ -325,11 +340,12 @@ public class ShowResult extends CollectRIFResult {
 
 						rows[i++] = new Object[] { textPaneSubject,
 								textPanePredicate, textPaneObject };
-					} else
+					} else {
 						rows[i++] = new String[] {
 								t.getSubject().toString(prefixInstance),
 								t.getPredicate().toString(prefixInstance),
 								t.getObject().toString(prefixInstance) };
+					}
 				}
 
 				tablesJTable[indexJTables++] = generateTable(rows, tableHead,
@@ -391,8 +407,9 @@ public class ShowResult extends CollectRIFResult {
 									textPane.setEditable(false);
 
 									row[j++] = textPane;
-								} else
+								} else {
 									row[j++] = value;
+								}
 							}
 						}
 					} else { // result order is not defined...
@@ -412,8 +429,9 @@ public class ShowResult extends CollectRIFResult {
 								textPane.setEditable(false);
 
 								row[j++] = textPane;
-							} else
+							} else {
 								row[j++] = value;
+							}
 						}
 					}
 
@@ -429,7 +447,7 @@ public class ShowResult extends CollectRIFResult {
 				operatorGraph == null);
 	}
 
-	public static JPanel outputTableResult(boolean errorsInOntology, final JTable[] tables,
+	public static JPanel outputTableResult(final boolean errorsInOntology, final JTable[] tables,
 			final JLabel[] labels, final boolean transparentColorJTables) {
 
 		final Color transparentColor = new Color(0, 0, 0, 0);
@@ -438,7 +456,7 @@ public class ShowResult extends CollectRIFResult {
 		tPanel.setLayout(new BoxLayout(tPanel, BoxLayout.Y_AXIS));
 		tPanel.setBackground(transparentColor);
 
-		
+
 		if(errorsInOntology){
 			final JPanel errorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			errorPanel.setBackground(transparentColor);
@@ -448,7 +466,7 @@ public class ShowResult extends CollectRIFResult {
 			tPanel.add(errorPanel);
 			addTable(tables[0], transparentColorJTables, transparentColor, tPanel);
 		}
-		
+
 		final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		infoPanel.setBackground(transparentColor);
 		final JLabel info = new JLabel("Result:");
@@ -472,14 +490,15 @@ public class ShowResult extends CollectRIFResult {
 
 		return tPanel;
 	}
-	
+
 	private static void addTable(final JTable table, final boolean transparentColorJTables, final Color transparentColor, final JPanel tPanel){
 		final JPanel tPanel2 = new JPanel(new BorderLayout());
 		if (transparentColorJTables) {
 			tPanel2.setBackground(transparentColor);
 			table.setBackground(transparentColor);
-		} else
+		} else {
 			tPanel2.setBackground(Color.WHITE);
+		}
 
 		tPanel2.add(table.getTableHeader(), BorderLayout.NORTH);
 		tPanel2.add(table);
@@ -499,38 +518,47 @@ public class ShowResult extends CollectRIFResult {
 				private final String[] columns = tableHead;
 				private final Object[][] data = rows;
 
+				@Override
 				public void addTableModelListener(final TableModelListener tml) {
 				}
 
+				@Override
 				public void removeTableModelListener(
 						final TableModelListener tml) {
 				}
 
+				@Override
 				public void setValueAt(final Object value, final int row,
 						final int col) {
 				}
 
+				@Override
 				public Class<?> getColumnClass(final int col) {
 					// return this.getValueAt(0, col).getClass();
 					return JPanel.class;
 				}
 
+				@Override
 				public int getColumnCount() {
 					return this.columns.length;
 				}
 
+				@Override
 				public String getColumnName(final int col) {
 					return this.columns[col];
 				}
 
+				@Override
 				public int getRowCount() {
 					return this.data.length;
 				}
 
+				@Override
 				public Object getValueAt(final int row, final int col) {
 					return this.data[row][col];
 				}
 
+				@Override
 				public boolean isCellEditable(final int row, final int col) {
 					return false;
 				}
@@ -542,22 +570,24 @@ public class ShowResult extends CollectRIFResult {
 							.getDefaultRenderer(JPanel.class)));
 			resultTable.setDefaultEditor(JPanel.class, new ButtonEditor(
 					new JCheckBox()));
-		} else
+		} else {
 			resultTable = new JTable(rows, tableHead);
+		}
 
 		resultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		if (operatorGraph != null)
+		if (operatorGraph != null) {
 			CommentLabelElement.updateTable(resultTable, operatorGraph);
-		else
+		} else {
 			updateTable(resultTable, false);
+		}
 
 		return resultTable;
 	}
-	
+
 	public static void updateTable(final JTable table) {
 		updateTable(table, true);
 	}
-	
+
 	public static void updateTable(final JTable table,
 			final boolean considerMaximum) {
 		// determine the height of a scrollpane!
@@ -572,8 +602,9 @@ public class ShowResult extends CollectRIFResult {
 			final JLabel sizeLabel = new JLabel(table.getColumnName(i));
 			int maxWidth = sizeLabel.getPreferredSize().width + 2
 			* table.getIntercellSpacing().width + 2;
-			if (sizeLabel.getPreferredSize().height > maxHeight)
+			if (sizeLabel.getPreferredSize().height > maxHeight) {
 				maxHeight = sizeLabel.getPreferredSize().height;
+			}
 			for (int j = 0; j < table.getRowCount(); j++) {
 				final Object cell = table.getValueAt(j, i);
 				if (cell != null) {
@@ -597,10 +628,12 @@ public class ShowResult extends CollectRIFResult {
 						+ table.getInsets().top
 						+ table.getInsets().bottom;
 					}
-					if (width > maxWidth)
+					if (width > maxWidth) {
 						maxWidth = width;
-					if (height > maxHeight)
+					}
+					if (height > maxHeight) {
 						maxHeight = height;
+					}
 				}
 			}
 			// table.getColumnModel().getColumn(i).setMinWidth(maxWidth);
