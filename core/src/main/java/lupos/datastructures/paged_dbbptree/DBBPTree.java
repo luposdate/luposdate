@@ -2028,15 +2028,20 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.pageManager.reset();
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
 		this.size = sortedMap.size();
-		final Container leaf = new Container(this.size, this.k_, true);
+
+		final Container leaf = new Container(this.size, this.k_, true); // Container for first leaf node
 		this.firstLeafPage = leaf.getFileName();
 		if (sortedMap.comparator() != null) {
 			this.comparator = sortedMap.comparator();
 		}
-		final Iterator<Entry<K, V>> it = sortedMap.entrySet().iterator();
 
+		/*
+		 * Iterate over Sorted Map --- Building the leaf level and implicitly inner nodes
+		 */
+		final Iterator<Entry<K, V>> it = sortedMap.entrySet().iterator();
 		while (it.hasNext()) {
 			final Entry<K, V> entry = it.next();
+			// Is there space inside the current node? No => close leaf node and open next one before storing element
 			if (leaf.newNodeForNextEntry()) {
 				leaf.closeNode(innerNodes);
 			}
@@ -2046,6 +2051,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			((ParallelIterator) it).close();
 		}
 		leaf.close();
+		/*
+		 * Finished building leaf level --- closing all remaining inner nodes
+		 */
 		Container previous = leaf;
 		for (final Container container : innerNodes) {
 			container.storeInInnerNode(previous.filename);
@@ -2059,24 +2067,23 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	protected class Container {
 		private OutputStream out = null;
 		private int filename;
-		private int currentEntry = 0;
-		private final double factor;
+		private int currentEntry = 0; // how many entries already stored in this level (entry = (key, value)-pairs for leaf nodes, otherwise number of pointer/children)
+		private final double factor; // how many entries per node (entry = (key, value)-pairs for leaf nodes, otherwise number of pointer/children)
 		private Entry<K, V> lastStoredEntry;
-		private final long numberOfNodes;
-		private double limitNextNode;
+		private final long numberOfNodes; // how many nodes in this level
+		private double limitNextNode; // at which entry to close the node?
 		private final boolean leaf;
 		private K lastKey = null;
 		private V lastValue = null;
 
-		public Container(final long numberOfEntries, final int kk_,
-				final boolean leaf) {
+		public Container(final long numberOfEntries, final int kk_, final boolean leaf) {
 			this.leaf = leaf;
 			this.filename = DBBPTree.this.newFilename();
 			this.init();
-			this.numberOfNodes = Math.round(Math
-					.ceil((double) numberOfEntries / kk_));
-			this.factor = (double) numberOfEntries / this.numberOfNodes;
-			this.limitNextNode = this.factor;
+			final int doubleKK_ = 2*kk_ + ((leaf)? 0 : 1); // for leaf nodes consider number of (key, value)-pairs, for inner nodes consider number of pointers/children
+			this.numberOfNodes = Math.round(Math.ceil((double) numberOfEntries / doubleKK_)); // how many nodes in this level
+			this.factor = (double) numberOfEntries / this.numberOfNodes; // how many entries per node
+			this.limitNextNode = this.factor; // next node will be closed after this number of entries
 		}
 
 		protected void init() {
@@ -2101,12 +2108,20 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			return this.filename;
 		}
 
-		public boolean newNodeForNextEntry() {
-			if (this.currentEntry + 1 > this.limitNextNode) {
+		private boolean newNodeForNextEntry(final int offset) {
+			if (this.currentEntry + offset > Math.ceil(this.limitNextNode)) {
 				return true;
 			} else {
 				return false;
 			}
+		}
+
+		public boolean newNodeForNextEntry() {
+			return this.newNodeForNextEntry(1); // look if next leaf node entry should be in the next leaf node, such that the current node can be closed before storing the next leaf node entry
+		}
+
+		public boolean isLastEntryOfCurrentInnerNode() {
+			return this.newNodeForNextEntry(2); // the next inner node entry will be anyway stored in this leaf node. If it is the last one, then it will be stored without the key...
 		}
 
 		public void storeInLeafNode(final Entry<K, V> entry) {
@@ -2115,8 +2130,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			DBBPTree.this.keyClass = (Class<? super K>) entry.getKey().getClass();
 			DBBPTree.this.valueClass = (Class<? super V>) entry.getValue().getClass();
 			try {
-				DBBPTree.this.writeLeafEntry(entry.getKey(), entry.getValue(), this.out, this.lastKey,
-						this.lastValue);
+				DBBPTree.this.writeLeafEntry(entry.getKey(), entry.getValue(), this.out, this.lastKey, this.lastValue);
 				this.lastKey = entry.getKey();
 				this.lastValue = entry.getValue();
 				// System.out.println("leaf "+ filename
@@ -2128,7 +2142,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		public void storeInInnerNode(final int fileName, final Entry<K, V> entry) {
-			this.currentEntry++;
+			this.currentEntry++; // count pointers/children
 			try {
 				DBBPTree.this.writeInnerNodeEntry(fileName, entry.getKey(), this.out, this.lastKey);
 				this.lastKey = entry.getKey();
@@ -2139,6 +2153,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		public void storeInInnerNode(final int fileName) {
+			this.currentEntry++; // also count pointers/children (not only keys)!
 			try {
 				DBBPTree.this.writeInnerNodeEntry(fileName, this.out);
 			} catch (final IOException e) {
@@ -2148,13 +2163,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 
 		public void closeNode(final LinkedList<Container> innerNodes) {
-			this.addToInnerNodes(innerNodes, 0, this, this.filename,
-					this.lastStoredEntry);
+			this.addToInnerNodes(innerNodes, 0, this, this.filename, this.lastStoredEntry);
 			this.filename = DBBPTree.this.newFilename();
 			DBBPTree.this.writeLeafEntryNextFileName(this.filename, this.out);
-
 			this.init();
-			this.limitNextNode = this.currentEntry + this.factor;
+			this.limitNextNode += this.factor;
 		}
 
 		public void close() {
@@ -2170,20 +2183,17 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				final int position, Container previous, final int filename,
 				final Entry<K, V> lastStoredEntry) {
 			while (innerNodes.size() < position + 1) {
-				final Container container = new Container(this.numberOfNodes - 1, DBBPTree.this.k,
-						false);
+				final Container container = new Container(this.numberOfNodes, DBBPTree.this.k, false);
 				previous = container;
 				innerNodes.add(container);
 			}
 			final Container container = innerNodes.get(position);
-			if (container.newNodeForNextEntry()) {
+			if (container.isLastEntryOfCurrentInnerNode()) {
 				container.storeInInnerNode(filename);
-				this.addToInnerNodes(innerNodes, position + 1, container,
-						container.filename, lastStoredEntry);
+				this.addToInnerNodes(innerNodes, position + 1, container, container.filename, lastStoredEntry);
 				container.filename = DBBPTree.this.newFilename();
 				container.init();
-				container.limitNextNode = container.currentEntry
-				+ container.factor;
+				container.limitNextNode += container.factor;
 			} else {
 				container.storeInInnerNode(filename, lastStoredEntry);
 			}
