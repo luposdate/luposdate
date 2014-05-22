@@ -2183,7 +2183,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				final int position, Container previous, final int filename,
 				final Entry<K, V> lastStoredEntry) {
 			while (innerNodes.size() < position + 1) {
-				final Container container = new Container(this.numberOfNodes, DBBPTree.this.k, false);
+				final Container container = new Container(previous.numberOfNodes, DBBPTree.this.k, false);
 				previous = container;
 				innerNodes.add(container);
 			}
