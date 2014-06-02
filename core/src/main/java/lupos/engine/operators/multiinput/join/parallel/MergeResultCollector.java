@@ -24,7 +24,7 @@
 package lupos.engine.operators.multiinput.join.parallel;
 
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.engine.operators.multiinput.MergeUnionIterator;
+import lupos.engine.operators.multiinput.mergeunion.MergeUnionIterator;
 
 public class MergeResultCollector extends ResultCollector {
 

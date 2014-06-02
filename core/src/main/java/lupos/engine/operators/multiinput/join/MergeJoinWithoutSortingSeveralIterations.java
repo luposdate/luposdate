@@ -34,7 +34,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
-import lupos.engine.operators.multiinput.MergeIterator;
+import lupos.engine.operators.multiinput.mergeunion.MergeIterator;
 
 public class MergeJoinWithoutSortingSeveralIterations extends Join {
 

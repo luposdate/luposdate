@@ -110,7 +110,7 @@ public class RemoveUnionRule extends Rule {
 
         if(_result) {
             // additional check method code...
-            return !(this.u instanceof lupos.engine.operators.multiinput.MergeUnion);
+            return !(this.u instanceof lupos.engine.operators.multiinput.mergeunion.MergeUnion);
         }
 
         return _result;
