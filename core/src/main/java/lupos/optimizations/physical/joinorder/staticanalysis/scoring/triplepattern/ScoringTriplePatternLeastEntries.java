@@ -33,13 +33,13 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class implements the scoring for least entries by determining the number of results of a triple pattern 
+ * This class implements the scoring for least entries by determining the number of results of a triple pattern
  */
 public class ScoringTriplePatternLeastEntries implements ScoringTriplePattern<HashSet<Variable>> {
 
 	@Override
-	public int determineScore(BasicIndexScan indexScan,
-			TriplePattern triplePattern, HashSet<Variable> additonalInformation) {
+	public int determineScore(final BasicIndexScan indexScan,
+			final TriplePattern triplePattern, final HashSet<Variable> additonalInformation) {
 		// just do dirty trick to determine the number of results of a triple pattern...
 		final LinkedList<TriplePattern> tpc = new LinkedList<TriplePattern>();
 		tpc.add(triplePattern);
@@ -47,7 +47,7 @@ public class ScoringTriplePatternLeastEntries implements ScoringTriplePattern<Ha
 		indexScan.setTriplePatterns(tpc);
 		final QueryResult queryResult = indexScan.join(indexScan.getRoot().dataset);
 		indexScan.setTriplePatterns(zTP);
-		final int entries = queryResult.oneTimeSize();
+		final int entries = (queryResult==null)? 0 : queryResult.oneTimeSize();
 		return entries;
 	}
 

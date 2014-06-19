@@ -38,13 +38,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 
-import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingTrie;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
@@ -59,17 +57,21 @@ import lupos.datastructures.items.literal.codemap.TProcedureEntry;
 import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
-import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
 import lupos.misc.util.ImmutableIterator;
 
 public class Dataset {
+
+	/**
+	 * TRUE:  Create Named Graph/Default Graph if not existing but in the case of access
+	 * FALSE: NOP
+	 */
+	public static boolean CREATEGRAPHSIFNOTEXISTING = false;
 
 	public enum SORT {
 		NORMAL, STRINGSEARCHTREE
@@ -508,11 +510,14 @@ public class Dataset {
 			indices=this.getNamedGraphIndices(graphURI);
 		}
 		if (indices == null) {
-			indices = this.indicesFactory.createIndices(graphURI);
-			indicesC.add(indices);
-			this.indexingRDFGraph(graphURI, indices, debug,
-					inMemoryExternalOntologyComputation);
-			newIndices = true;
+			if(Dataset.CREATEGRAPHSIFNOTEXISTING){
+				indices = this.indicesFactory.createIndices(graphURI);
+				indicesC.add(indices);
+				this.indexingRDFGraph(graphURI, indices, debug, inMemoryExternalOntologyComputation);
+				newIndices = true;
+			} else {
+				newIndices = false;
+			}
 		} else {
 			indicesC.add(indices);
 			newIndices = false;
@@ -542,121 +547,6 @@ public class Dataset {
 			indices.loadData(graphURI, this.dataFormat, this.materialize, this.indicesFactory,this.opt, this, debug, inMemoryExternalOntologyComputation);
 		}
 	}
-
-	// maybe this method should is in other class
-	public static QueryResult Binding(final Collection<Triple> tec,
-			final TriplePattern tp, final QueryResult queryResult,
-			final Indices indices, final BasicIndexScan index) {
-
-		final QueryResult qResult = QueryResult.createInstance();
-		QueryResult qr;
-		for (final Bindings currentBindings : queryResult) {
-			qr = variableBinding(tec, tp, currentBindings, indices, index);
-			if (qr != null) {
-				qResult.addAll(qr);
-			}
-		}
-		return qResult;
-	}
-
-	public static QueryResult variableBinding(final Collection<Triple> tec,
-			final TriplePattern tp, final Bindings currentBindings,
-			final Indices indices, final BasicIndexScan index) {
-
-		final QueryResult qresult = QueryResult.createInstance();
-
-		// join the elements of the collection
-		if (indices == null) {
-			if (tec == null || tec.size() == 0) {
-				return null;
-			}
-			// compute the variable names to be bound
-			final Variable[] var = { null, null, null };
-			for (int i = 0; i < 3; i++) {
-				final Item item = tp.getPos(i);
-				// a new binding is only necessary if the variable is still
-				// unbound
-				if (item.isVariable()
-						&& currentBindings.get((Variable) item) == null) {
-					var[i] = (Variable) tp.getPos(i);
-				}
-			}
-			for (final Triple triple : tec) {
-				final Bindings cB = currentBindings.clone();
-				for (int i = 0; i < var.length; i++) {
-					if (var[i] != null) {
-						cB.add(var[i], triple.getPos(i));
-					}
-				}
-				cB.addTriple(triple);
-				qresult.add(cB);
-			}
-			// replace the previous query results with the new ones
-			return qresult;
-		}
-
-		// Variable varGraph = indices.getVariable();
-		final Item varGraph = index.getGraphConstraint();
-		if (varGraph != null && varGraph.isVariable()) {
-			final URILiteral graph = indices.getRdfName();
-			final URILiteral value = (URILiteral) currentBindings
-					.get((Variable) varGraph);
-			if (value != null) {
-				if (value.compareTo(graph) != 0) {
-					return null;
-				}
-			}
-		}
-
-		// join the elements of the collection
-		if (tec != null) {
-
-			// compute the variable names to be bound
-			final Variable[] var = { null, null, null };
-			for (int i = 0; i < 3; i++) {
-				final Item item = tp.getPos(i);
-				// a new binding is only necessary if the variable is still
-				// unbound
-				if (item.isVariable()
-						&& currentBindings.get((Variable) item) == null) {
-					var[i] = (Variable) tp.getPos(i);
-				}
-			}
-
-			for (final Triple triple : tec) {
-
-				final Bindings cB = currentBindings.clone();
-				for (int i = 0; i < var.length; i++) {
-					if (var[i] != null) {
-						cB.add(var[i], triple.getPos(i));
-					}
-				}
-				cB.addTriple(triple);
-				if (varGraph != null && varGraph.isVariable()) {
-					Literal graphName;
-					try {
-						graphName = LiteralFactory.createURILiteral("<"
-								+ indices.getRdfName() + ">");
-						cB.add((Variable) varGraph, graphName);
-					} catch (final URISyntaxException e) {
-						System.err.println(e);
-						e.printStackTrace();
-					}
-				}
-				qresult.add(cB);
-			}
-			return qresult;
-		}
-		return null;
-	}
-
-	// public void prepareDataset(final BasicIndex index) {
-	// final Collection<TriplePattern> triplePatterns = index
-	// .getTriplePattern();
-	// for (final TriplePattern triplePattern : triplePatterns) {
-	// indexingRDFGraphs(index.getGraphConstraint());
-	// }
-	// }
 
 	public void putIntoDefaultGraphs(final URILiteral u, final Indices indices) {
 		this.defaultGraphData.put(u, indices);

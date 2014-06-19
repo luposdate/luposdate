@@ -607,6 +607,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 
 	@Override
 	public long evaluateQuery() throws Exception {
+		if(this.dataset==null){
+			this.prepareInputData(new LinkedList<URILiteral>(), new LinkedList<URILiteral>());
+		}
 		this.buildCompletelyAllIndices();
 		// new OperatorGraphNew(root.deepClone(), -1, false)
 		// .displayOperatorGraph("lala", null);
@@ -663,6 +666,9 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	@Override
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application)
 	throws Exception {
+		if(this.dataset==null){
+			this.prepareInputData(new LinkedList<URILiteral>(), new LinkedList<URILiteral>());
+		}
 		this.buildCompletelyAllIndices();
 		// new OperatorGraphNew(root.deepClone(), -1, false)
 		// .displayOperatorGraph("lala", null);
