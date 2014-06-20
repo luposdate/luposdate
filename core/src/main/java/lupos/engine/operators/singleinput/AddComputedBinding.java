@@ -30,11 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResultDebug;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
@@ -43,6 +45,7 @@ import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
+import lupos.sparql1_1.ASTAggregation;
 import lupos.sparql1_1.Node;
 
 public class AddComputedBinding extends SingleInputOperator {
@@ -55,6 +58,8 @@ public class AddComputedBinding extends SingleInputOperator {
 	public final Map<Variable, Filter> projections = new HashMap<Variable, Filter>();
 	protected QueryResult queryResult = null;
 	private boolean pipelineBreaker = false;
+
+	private BindingsFactory bindingsFactory = null;
 
 	public void addProjectionElement(final Variable var, final Node constraint) {
 		final Filter filter = new Filter(constraint);
@@ -142,64 +147,84 @@ public class AddComputedBinding extends SingleInputOperator {
 		}
 	}
 
-	protected QueryResult getQueryResultForAggregatedFilter(final QueryResult queryResultParameter) {
-		if (queryResultParameter != null) {
-			final List<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsList = new LinkedList<HashMap<lupos.sparql1_1.Node, Object>>();
-			for (final Map.Entry<Variable, Filter> entry: this.projections
-					.entrySet()) {
-				final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>();
-				Filter.computeAggregationFunctions(queryResultParameter, entry.getValue().aggregationFunctions, resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor());
-				resultsOfAggregationFunctionsList.add(resultsOfAggregationFunctions);
-			}
-			final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
-				final Iterator<Bindings> bindIt = queryResultParameter.oneTimeIterator();
-
-				Bindings next = this.computeNext();
-
-				@Override
-				public boolean hasNext() {
-					return (this.next != null);
-				}
-
-				@Override
-				public Bindings next() {
-					final Bindings zNext = this.next;
-					this.next = this.computeNext();
-					return zNext;
-				}
-
-				private Bindings computeNext() {
-					while (this.bindIt.hasNext()) {
-						final Bindings bind = this.bindIt.next();
-						try {
-							if (bind != null) {
-								final Bindings bindNew = bind.clone();
-								final Iterator<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsIterator = resultsOfAggregationFunctionsList.iterator();
-								for (final Map.Entry<Variable, Filter> entry: AddComputedBinding.this.projections
-										.entrySet()) {
-									final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = resultsOfAggregationFunctionsIterator.next();
-									bindNew.add(entry.getKey(),
-												Helper.getLiteral(Filter.staticEvalTree(
-																			bind,
-																			entry.getValue().getNodePointer(),
-																			resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor())));
-								}
-								return bindNew;
-							}
-						} catch (final NotBoundException nbe) {
-							return bind;
-						} catch (final TypeErrorException tee) {
-							return bind;
+	protected QueryResult getQueryResultForAggregatedFilter(QueryResult queryResultParameter) {
+		if(queryResultParameter==null){
+			queryResultParameter = QueryResult.createInstance();
+		}
+		final List<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsList = new LinkedList<HashMap<lupos.sparql1_1.Node, Object>>();
+		for (final Map.Entry<Variable, Filter> entry: this.projections.entrySet()) {
+			final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>();
+			Filter.computeAggregationFunctions(queryResultParameter, entry.getValue().aggregationFunctions, resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor());
+			resultsOfAggregationFunctionsList.add(resultsOfAggregationFunctions);
+		}
+		if(queryResultParameter.isEmpty()){
+			// workaround: count = 0 should occur in the result for an empty query result as input...
+			for(final HashMap<lupos.sparql1_1.Node, Object> entry: resultsOfAggregationFunctionsList){
+				boolean breakFor=false;
+				for(final lupos.sparql1_1.Node node: entry.keySet()){
+					if(node instanceof ASTAggregation){
+						if(((ASTAggregation)node).getTYPE()==ASTAggregation.TYPE.COUNT){
+							queryResultParameter.add(this.bindingsFactory.createInstance());
+							breakFor=true;
+							break;
 						}
 					}
-					return null;
 				}
-			};
-
-			if (resultIterator.hasNext()) {
-				return QueryResult.createInstance(resultIterator);
+				if(breakFor){
+					break;
+				}
 			}
 		}
+		final QueryResult finalQueryResult = queryResultParameter;
+		final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
+			final Iterator<Bindings> bindIt = finalQueryResult.oneTimeIterator();
+
+			Bindings next = this.computeNext();
+
+			@Override
+			public boolean hasNext() {
+				return (this.next != null);
+			}
+
+			@Override
+			public Bindings next() {
+				final Bindings zNext = this.next;
+				this.next = this.computeNext();
+				return zNext;
+			}
+
+			private Bindings computeNext() {
+				while (this.bindIt.hasNext()) {
+					final Bindings bind = this.bindIt.next();
+					try {
+						if (bind != null) {
+							final Bindings bindNew = bind.clone();
+							final Iterator<HashMap<lupos.sparql1_1.Node, Object>> resultsOfAggregationFunctionsIterator = resultsOfAggregationFunctionsList.iterator();
+							for (final Map.Entry<Variable, Filter> entry: AddComputedBinding.this.projections
+									.entrySet()) {
+								final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = resultsOfAggregationFunctionsIterator.next();
+								bindNew.add(entry.getKey(),
+										Helper.getLiteral(Filter.staticEvalTree(
+												bind,
+												entry.getValue().getNodePointer(),
+												resultsOfAggregationFunctions, entry.getValue().getUsedEvaluationVisitor())));
+							}
+							return bindNew;
+						}
+					} catch (final NotBoundException nbe) {
+						return bind;
+					} catch (final TypeErrorException tee) {
+						return bind;
+					}
+				}
+				return null;
+			}
+		};
+
+		if (resultIterator.hasNext()) {
+			return QueryResult.createInstance(resultIterator);
+		}
+
 		return null;
 	}
 
@@ -216,6 +241,13 @@ public class AddComputedBinding extends SingleInputOperator {
 		}
 		return msg;
 	}
+
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg) {
+		this.bindingsFactory  = msg.getBindingsFactory();
+		return msg;
+	}
+
 
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {

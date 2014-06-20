@@ -422,8 +422,7 @@ public class Filter extends SingleInputOperator {
 			if (aggregationFunctions != null) {
 				computeAggregationFunctions(queryResult, aggregationFunctions, resultsOfAggregationFunctions, evaluationVisitor);
 				final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
-					final Iterator<Bindings> bindIt = queryResult
-							.oneTimeIterator();
+					final Iterator<Bindings> bindIt = queryResult.oneTimeIterator();
 					Bindings next = this.computeNext();
 
 					@Override
