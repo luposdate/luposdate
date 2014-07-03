@@ -225,14 +225,11 @@ public abstract class BasicIndexScan extends RootChild {
 							// later on
 							for (final String name : this.root.namedGraphs) {
 
-								final Indices indices = dataset
-								.getNamedGraphIndices(LiteralFactory
-										.createURILiteralWithoutLazyLiteral(name));
+								final Indices indices = dataset.getNamedGraphIndices(LiteralFactory.createURILiteralWithoutLazyLiteral(name));
 
 								final Bindings graphConstraintBindings = this.bindingsFactory.createInstance();
 								final URILiteral rdfName = indices.getRdfName();
-								graphConstraintBindings.add(
-										graphConstraint, rdfName);
+								graphConstraintBindings.add(graphConstraint, rdfName);
 								if (queryResult == null) {
 									queryResult = QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, rdfName, this.join(indices,
 											graphConstraintBindings).oneTimeIterator()));
@@ -251,15 +248,12 @@ public abstract class BasicIndexScan extends RootChild {
 
 							// get all indices of named graphs and bind them to
 							// the graph constraint
-							final Collection<Indices> dataSetIndices = dataset
-							.getNamedGraphIndices();
+							final Collection<Indices> dataSetIndices = dataset.getNamedGraphIndices();
 							if (dataSetIndices != null) {
 
 								for (final Indices indices : dataSetIndices) {
 									final Bindings graphConstraintBindings = this.bindingsFactory.createInstance();
-									graphConstraintBindings.add(
-											graphConstraint, indices
-											.getRdfName());
+									graphConstraintBindings.add(graphConstraint, indices.getRdfName());
 									if (queryResult == null) {
 										queryResult = QueryResult.createInstance(new AddConstantBindingIterator(graphConstraint, indices.getRdfName(), this.join(indices,
 												graphConstraintBindings).oneTimeIterator()));
@@ -276,27 +270,13 @@ public abstract class BasicIndexScan extends RootChild {
 					// matching indices object
 					// but do not bind anything
 					else {
-
-						for (final Indices indices : indicesC) {
-
-							if (queryResult == null) {
-								queryResult = this.join(indices, this.bindingsFactory.createInstance());
-							} else {
-								queryResult.addAll(this.join(indices, this.bindingsFactory.createInstance()));
-							}
-						}
+						queryResult = this.join(indicesC);
 					}
 				}
 
 				// otherwise default graphs are used
 				else {
-					for (final Indices indices : indicesC) {
-						if (queryResult == null) {
-							queryResult = this.join(indices, this.bindingsFactory.createInstance());
-						} else {
-							queryResult.addAll(this.join(indices, this.bindingsFactory.createInstance()));
-						}
-					}
+					queryResult = this.join(indicesC);
 				}
 			}
 			return queryResult;
@@ -307,8 +287,26 @@ public abstract class BasicIndexScan extends RootChild {
 		}
 	}
 
+
 	/**
-	 * Performs a join over a collection of triple elements and a provided
+	 * Performs a join over a collection of triple patterns
+	 * @param indicesC all the the index structures which contains the data
+	 * @return the result of the join
+	 */
+	public QueryResult join(final Collection<Indices> indicesC){
+		QueryResult queryResult = null;
+		for (final Indices indices : indicesC) {
+			if(queryResult == null) {
+				queryResult = this.join(indices, this.bindingsFactory.createInstance());
+			} else {
+				queryResult.addAll(this.join(indices, this.bindingsFactory.createInstance()));
+			}
+		}
+		return queryResult;
+	}
+
+	/**
+	 * Performs a join over a collection of triple patterns and a provided
 	 * bindings object over data of a certain index structure. The collection of
 	 * triple patterns is to be retrieved from the super class.
 	 *

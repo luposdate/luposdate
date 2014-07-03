@@ -23,6 +23,7 @@
  */
 package lupos.engine.operators.index.memoryindex;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -81,34 +82,17 @@ public class MemoryIndexScan extends BasicIndexScan {
 	}
 
 	@Override
-	public QueryResult join(final Indices indices, final Bindings bindings) {
-		final QueryResult queryResult = QueryResult.createInstance();
-		queryResult.add(bindings); // empty since no bindings exist yet
-		return this.join(indices, queryResult);
-	}
-
-	/**
-	 * Returns the result of a join operation using triple patterns and results
-	 * of previous queries
-	 *
-	 * @param tps
-	 *            a collection of triple patterns
-	 * @param queryResult
-	 *            the result of previous queries
-	 * @return the result of a join operation using triple patterns and results
-	 *         of previous queries
-	 */
-	protected QueryResult join(final Indices indices, QueryResult queryResult) {
-		try {
-
+	public QueryResult join(final Collection<Indices> indicesC){
+		try{
+			QueryResult queryResult = QueryResult.createInstance();
+			queryResult.add(this.bindingsFactory.createInstance());
 			// move over the collection of the provided triple patterns
 			for (final TriplePattern tp : this.triplePatterns) {
 
 				final QueryResult zQueryResult = queryResult;
 
 				final Iterator<Bindings> itb = new ImmutableIterator<Bindings>() {
-					Iterator<Bindings> oldBindings = zQueryResult
-					.oneTimeIterator();
+					Iterator<Bindings> oldBindings = zQueryResult.oneTimeIterator();
 					Bindings currentBindings = null;
 					Iterator<Triple> newTriples = null;
 					Bindings next = null;
@@ -133,8 +117,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 					}
 
 					public Bindings computeNext() {
-						while ((this.newTriples == null || !this.newTriples.hasNext())
-								&& this.oldBindings.hasNext()) {
+						while ((this.newTriples == null || !this.newTriples.hasNext()) && this.oldBindings.hasNext()) {
 							this.retrieveNewTriples();
 						}
 						if (this.newTriples == null || !this.newTriples.hasNext()) {
@@ -144,15 +127,13 @@ public class MemoryIndexScan extends BasicIndexScan {
 						final Bindings cB = this.currentBindings.clone();
 						for (int i = 0; i < 3; i++) {
 							if (tp.getPos(i).isVariable()) {
-								final Literal l = cB.get((Variable) tp
-										.getPos(i));
+								final Literal l = cB.get((Variable) tp.getPos(i));
 								if (l != null) {
 									if (!triple.getPos(i).equals(l)) {
 										return this.computeNext();
 									}
 								} else {
-									cB.add((Variable) tp.getPos(i), triple
-											.getPos(i));
+									cB.add((Variable) tp.getPos(i), triple.getPos(i));
 								}
 							}
 						}
@@ -179,8 +160,153 @@ public class MemoryIndexScan extends BasicIndexScan {
 						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(2))) {
 							mapPattern += MAP_PATTERN.OMAP.ordinal();
 						}
-						final Collection<Triple> tec = MemoryIndexScan.this.getFromMap(MAP_PATTERN
-								.values()[mapPattern], key.toString(), indices);
+						final Collection<Triple> tec = MemoryIndexScan.this.getFromMap(MAP_PATTERN.values()[mapPattern], key.toString(), indicesC);
+						if (tec == null) {
+							this.newTriples = null;
+						} else {
+							this.newTriples = tec.iterator();
+						}
+					}
+				};
+
+				// use a "fresh" object to gather the result of the join
+				// operation
+				// when using the current triple pattern and the previous query
+				// results
+				final QueryResult qresult = QueryResult.createInstance(itb);
+
+				// replace the previous query results with the new ones
+				queryResult.release();
+				queryResult = qresult;
+			}
+			return queryResult;
+		} catch (final Exception e) {
+			System.err.println("Error while joining triple patterns"+e);
+			return null;
+		}
+	}
+
+	private Collection<Triple> getFromMap(final MAP_PATTERN mapPattern, final String keyString, final Collection<Indices> indicesG) {
+		if(indicesG.size()==1){
+			return this.getFromMap(mapPattern, keyString, indicesG.iterator().next());
+		}
+		@SuppressWarnings("unchecked")
+		final Collection<Triple>[] triples = new Collection[indicesG.size()];
+		int i = 0;
+		int size = 0;
+		for(final Indices indices: indicesG){
+			triples[i] = ((SevenMemoryIndices) indices).getFromMap(mapPattern, keyString);
+			size+=triples[i].size();
+			i++;
+		}
+		// could be optimized by returning a collection which works directly with above given array triples
+		// must implement an own class for this purpose...
+		final ArrayList<Triple> result = new ArrayList<Triple>(size);
+		for(final Collection<Triple> tripleCol: triples){
+			for(final Triple t: tripleCol){
+				result.add(t);
+			}
+		}
+		return result;
+	}
+
+
+	@Override
+	public QueryResult join(final Indices indices, final Bindings bindings) {
+		final QueryResult queryResult = QueryResult.createInstance();
+		queryResult.add(bindings); // empty since no bindings exist yet
+		return this.join(indices, queryResult);
+	}
+
+	/**
+	 * Returns the result of a join operation using triple patterns and results
+	 * of previous queries
+	 *
+	 * @param tps
+	 *            a collection of triple patterns
+	 * @param queryResult
+	 *            the result of previous queries
+	 * @return the result of a join operation using triple patterns and results
+	 *         of previous queries
+	 */
+	protected QueryResult join(final Indices indices, QueryResult queryResult) {
+		try {
+
+			// move over the collection of the provided triple patterns
+			for (final TriplePattern tp : this.triplePatterns) {
+
+				final QueryResult zQueryResult = queryResult;
+
+				final Iterator<Bindings> itb = new ImmutableIterator<Bindings>() {
+					Iterator<Bindings> oldBindings = zQueryResult.oneTimeIterator();
+					Bindings currentBindings = null;
+					Iterator<Triple> newTriples = null;
+					Bindings next = null;
+
+					@Override
+					public boolean hasNext() {
+						if (this.next != null) {
+							return true;
+						}
+						this.next = this.computeNext();
+						return (this.next != null);
+					}
+
+					@Override
+					public Bindings next() {
+						if (this.next != null) {
+							final Bindings znext = this.next;
+							this.next = null;
+							return znext;
+						}
+						return this.computeNext();
+					}
+
+					public Bindings computeNext() {
+						while ((this.newTriples == null || !this.newTriples.hasNext()) && this.oldBindings.hasNext()) {
+							this.retrieveNewTriples();
+						}
+						if (this.newTriples == null || !this.newTriples.hasNext()) {
+							return null;
+						}
+						final Triple triple = this.newTriples.next();
+						final Bindings cB = this.currentBindings.clone();
+						for (int i = 0; i < 3; i++) {
+							if (tp.getPos(i).isVariable()) {
+								final Literal l = cB.get((Variable) tp.getPos(i));
+								if (l != null) {
+									if (!triple.getPos(i).equals(l)) {
+										return this.computeNext();
+									}
+								} else {
+									cB.add((Variable) tp.getPos(i), triple.getPos(i));
+								}
+							}
+						}
+						cB.addTriple(triple);
+						return cB;
+					}
+
+					private void retrieveNewTriples() {
+						this.currentBindings = this.oldBindings.next();
+
+						final StringBuffer key = new StringBuffer();
+						int mapPattern = MAP_PATTERN.NONE.ordinal();
+
+						// compute a key which is as restrictive as possible
+						// to cut down the amount of triple pattern which
+						// have
+						// to be processed to produce the result
+						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(0))) {
+							mapPattern += MAP_PATTERN.SMAP.ordinal();
+						}
+						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(1))) {
+							mapPattern += MAP_PATTERN.PMAP.ordinal();
+						}
+						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(2))) {
+							mapPattern += MAP_PATTERN.OMAP.ordinal();
+						}
+						final Collection<Triple> tec = MemoryIndexScan.this.getFromMap(MAP_PATTERN.values()[mapPattern], key.toString(), indices);
 						if (tec == null) {
 							this.newTriples = null;
 						} else {
