@@ -393,12 +393,6 @@
 
 	<repositories>
     	<repository>
-        	<id>aduna</id>
-        	<name>Aduna Software</name>
-        	<url>http://repo.aduna-software.org/maven2/releases/</url>
-    	</repository>
-    	
-    	<repository>
 			<id>itm-maven-repository-releases</id>
 			<url>http://www.itm.uni-luebeck.de/projects/maven/releases/</url>
 			<releases>
