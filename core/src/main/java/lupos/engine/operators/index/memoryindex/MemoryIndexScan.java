@@ -196,15 +196,19 @@ public class MemoryIndexScan extends BasicIndexScan {
 		int size = 0;
 		for(final Indices indices: indicesG){
 			triples[i] = ((SevenMemoryIndices) indices).getFromMap(mapPattern, keyString);
-			size+=triples[i].size();
+			if(triples[i]!=null){
+				size+=triples[i].size();
+			}
 			i++;
 		}
 		// could be optimized by returning a collection which works directly with above given array triples
 		// must implement an own class for this purpose...
 		final ArrayList<Triple> result = new ArrayList<Triple>(size);
 		for(final Collection<Triple> tripleCol: triples){
-			for(final Triple t: tripleCol){
-				result.add(t);
+			if(tripleCol!=null){
+				for(final Triple t: tripleCol){
+					result.add(t);
+				}
 			}
 		}
 		return result;

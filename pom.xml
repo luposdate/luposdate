@@ -248,7 +248,6 @@
 				<artifactId>commons-lang</artifactId>
 				<version>2.3</version>
 			</dependency>
-			
 
 			<dependency>
 				<groupId>junit</groupId>
@@ -272,27 +271,20 @@
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-runtime</artifactId>
-				<version>2.6.10</version>
+				<version>2.7.12</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-rio-rdfxml</artifactId>
-				<version>2.6.10</version>
+				<version>2.7.12</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-rio-turtle</artifactId>
-				<version>2.6.10</version>
+				<version>2.7.12</version>
 			</dependency>
-
-<!--			<dependency>
-	<groupId>org.openrdf.sesame</groupId>
-	<artifactId>sesame-rio-n3</artifactId>
-	<version>2.7.7</version>
-</dependency>
--->
 			
 			<dependency>
 				<groupId>org.json</groupId>
@@ -378,11 +370,13 @@
 				<artifactId>args4j</artifactId>
 				<version>2.0.16</version>
 			</dependency>
+			
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.5</version>
             </dependency>
+            
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
@@ -392,15 +386,16 @@
 	</dependencyManagement>
 
 	<repositories>
-    	<repository>
-        	<id>aduna</id>
-        	<name>Aduna Software</name>
-        	<url>http://repo.aduna-software.org/maven2/releases/</url>
-    	</repository>
+
+        <repository>
+            <id>aduna</id>
+            <name>Aduna Software</name>
+            <url>http://maven.ontotext.com/content/repositories/aduna/</url>
+        </repository>
     	
     	<repository>
 			<id>itm-maven-repository-releases</id>
-			<url>http://www.itm.uni-luebeck.de/projects/maven/releases/</url>
+			<url>https://maven.itm.uni-luebeck.de/content/repositories/releases/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -411,7 +406,7 @@
 		
 		<repository>
 			<id>itm-maven-repository-snapshots</id>
-			<url>http://www.itm.uni-luebeck.de/projects/maven/snapshots/</url>
+			<url>https://maven.itm.uni-luebeck.de/content/repositories/snapshots/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
