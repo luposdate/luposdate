@@ -392,15 +392,15 @@
 	</dependencyManagement>
 
 	<repositories>
-    	<repository>
-        	<id>aduna</id>
-        	<name>Aduna Software</name>
-        	<url>http://repo.aduna-software.org/maven2/releases/</url>
-    	</repository>
-    	
+        <repository>
+            <id>aduna</id>
+            <name>Aduna Software</name>
+            <url>http://maven.ontotext.com/content/repositories/aduna/</url>
+        </repository>
+
     	<repository>
 			<id>itm-maven-repository-releases</id>
-			<url>http://www.itm.uni-luebeck.de/projects/maven/releases/</url>
+			<url>https://maven.itm.uni-luebeck.de/content/repositories/releases/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -411,7 +411,7 @@
 		
 		<repository>
 			<id>itm-maven-repository-snapshots</id>
-			<url>http://www.itm.uni-luebeck.de/projects/maven/snapshots/</url>
+			<url>https://maven.itm.uni-luebeck.de/content/repositories/snapshots/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
