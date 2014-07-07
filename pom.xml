@@ -386,12 +386,6 @@
 	</dependencyManagement>
 
 	<repositories>
-
-        <repository>
-            <id>aduna</id>
-            <name>Aduna Software</name>
-            <url>http://maven.ontotext.com/content/repositories/aduna/</url>
-        </repository>
     	
     	<repository>
 			<id>itm-maven-repository-releases</id>
