@@ -326,6 +326,17 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return this.evaluator.evaluateQueryDebugSteps(debugstep, application);
 	}
 
+	public QueryResult getResultWithOnDemandInference(final String inferenceRuleset, final String query) throws Exception{
+		return this.getResultWithOnDemandInference(inferenceRuleset, query, false);
+	}
+
+	public QueryResult getResultWithOnDemandInference(final String inferenceRuleset, final String query, final boolean oneTime) throws Exception{
+		this.compileQueryAndInferenceIntoOneOperatorgraph(inferenceRuleset, query);
+		this.logicalOptimization();
+		this.physicalOptimization();
+		return this.getResult(oneTime);
+	}
+
 	@Override
 	public QueryResult getResult() throws Exception {
 		return this.getResult(false);
