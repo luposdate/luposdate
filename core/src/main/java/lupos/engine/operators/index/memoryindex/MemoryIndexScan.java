@@ -23,7 +23,6 @@
  */
 package lupos.engine.operators.index.memoryindex;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -160,12 +159,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(2))) {
 							mapPattern += MAP_PATTERN.OMAP.ordinal();
 						}
-						final Collection<Triple> tec = MemoryIndexScan.this.getFromMap(MAP_PATTERN.values()[mapPattern], key.toString(), indicesC);
-						if (tec == null) {
-							this.newTriples = null;
-						} else {
-							this.newTriples = tec.iterator();
-						}
+						this.newTriples = MemoryIndexScan.this.getFromMap(MAP_PATTERN.values()[mapPattern], key.toString(), indicesC);
 					}
 				};
 
@@ -186,32 +180,53 @@ public class MemoryIndexScan extends BasicIndexScan {
 		}
 	}
 
-	private Collection<Triple> getFromMap(final MAP_PATTERN mapPattern, final String keyString, final Collection<Indices> indicesG) {
+	private Iterator<Triple> getFromMap(final MAP_PATTERN mapPattern, final String keyString, final Collection<Indices> indicesG) {
 		if(indicesG.size()==1){
 			return this.getFromMap(mapPattern, keyString, indicesG.iterator().next());
 		}
-		@SuppressWarnings("unchecked")
-		final Collection<Triple>[] triples = new Collection[indicesG.size()];
-		int i = 0;
-		int size = 0;
-		for(final Indices indices: indicesG){
-			triples[i] = ((SevenMemoryIndices) indices).getFromMap(mapPattern, keyString);
-			if(triples[i]!=null){
-				size+=triples[i].size();
+		final Iterator<Indices> it_indices = indicesG.iterator();
+		return new ImmutableIterator<Triple>(){
+			Iterator<Triple> it_triples = null;
+
+			Triple triple = null;
+
+			@Override
+			public boolean hasNext() {
+				if(this.triple!=null){
+					return true;
+				}
+				this.triple = this.nextTriple();
+				return (this.triple!=null);
 			}
-			i++;
-		}
-		// could be optimized by returning a collection which works directly with above given array triples
-		// must implement an own class for this purpose...
-		final ArrayList<Triple> result = new ArrayList<Triple>(size);
-		for(final Collection<Triple> tripleCol: triples){
-			if(tripleCol!=null){
-				for(final Triple t: tripleCol){
-					result.add(t);
+
+			@Override
+			public Triple next() {
+				if(this.triple!=null){
+					final Triple inter_triple = this.triple;
+					this.triple = null;
+					return inter_triple;
+				}
+				return this.nextTriple();
+			}
+
+			public Triple nextTriple(){
+				if(this.it_triples!=null && this.it_triples.hasNext()){
+					// just do this here to be faster in the normal case...
+					// (it would be enough to do this after the next while-loop)
+					return this.it_triples.next();
+				}
+				while((this.it_triples==null || (this.it_triples!=null && !this.it_triples.hasNext())) && it_indices.hasNext()){
+					final Indices indices = it_indices.next();
+					final Collection<Triple> col_triples = ((SevenMemoryIndices) indices).getFromMap(mapPattern, keyString);
+					this.it_triples = (col_triples==null) ? null : col_triples.iterator();
+				}
+				if(this.it_triples!=null && this.it_triples.hasNext()){
+					return this.it_triples.next();
+				} else {
+					return null;
 				}
 			}
-		}
-		return result;
+		};
 	}
 
 
@@ -310,12 +325,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 						if (MemoryIndexScan.this.computeKey4Maps(this.currentBindings, key, tp.getPos(2))) {
 							mapPattern += MAP_PATTERN.OMAP.ordinal();
 						}
-						final Collection<Triple> tec = MemoryIndexScan.this.getFromMap(MAP_PATTERN.values()[mapPattern], key.toString(), indices);
-						if (tec == null) {
-							this.newTriples = null;
-						} else {
-							this.newTriples = tec.iterator();
-						}
+						this.newTriples = MemoryIndexScan.this.getFromMap(MAP_PATTERN.values()[mapPattern], key.toString(), indices);
 					}
 				};
 
@@ -336,9 +346,14 @@ public class MemoryIndexScan extends BasicIndexScan {
 		}
 	}
 
-	private Collection<Triple> getFromMap(final MAP_PATTERN mapPattern,
+	private Iterator<Triple> getFromMap(final MAP_PATTERN mapPattern,
 			final String keyString, final Indices indicesG) {
-		return ((SevenMemoryIndices) indicesG).getFromMap(mapPattern, keyString);
+		final Collection<Triple> tc = ((SevenMemoryIndices) indicesG).getFromMap(mapPattern, keyString);
+		if(tc==null){
+			return null;
+		} else {
+			return tc.iterator();
+		}
 	}
 
 	/**
