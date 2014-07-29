@@ -57,6 +57,7 @@ import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Dataset.ONTOLOGY;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
@@ -732,10 +733,12 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		this.setBindingsVariablesBasedOnOperatorgraph();
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
 		refie.applyRules(this.root);
+		this.rootNode.sendMessage(new BindingsFactoryMessage(this.bindingsFactory));
 		this.root.optimizeJoinOrder(this.opt);
 		final LogicalOptimizationRulePackage refie2 = new LogicalOptimizationRulePackage();
 		refie2.applyRules(this.root);
 		this.parallelOperator(this.root);
+		this.rootNode.sendMessage(new BindingsFactoryMessage(this.bindingsFactory));
 		return ((new Date()).getTime() - a.getTime());
 	}
 
@@ -752,6 +755,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		final LogicalOptimizationRulePackage refie = new LogicalOptimizationRulePackage();
 		result.addAll(refie.applyRulesDebugByteArray(this.root,
 				prefixInstance));
+		this.rootNode.sendMessage(new BindingsFactoryMessage(this.bindingsFactory));
 		this.root.optimizeJoinOrder(this.opt);
 		result.add(new DebugContainer<BasicOperatorByteArray>(
 				"After optimizing the join order...",
@@ -766,6 +770,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		if (ldc != null) {
 			result.addAll(ldc);
 		}
+		this.rootNode.sendMessage(new BindingsFactoryMessage(this.bindingsFactory));
 		return result;
 	}
 
@@ -792,6 +797,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			case NESTEDLOOP:
 				to = "NestedLoopJoin";
 				break;
+			default:
 			case HASHMAPINDEX:
 				to = "HashMapIndexJoin";
 				break;
@@ -906,6 +912,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			case DBMERGESORT:
 				to = "DBMergeSortedBagSort";
 				break;
+			default:
 			case TREEMAP:
 				to = "TreeMapSort";
 				break;
@@ -928,6 +935,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			case LAZYHASHSETBLOCKING:
 				to = "HashBlockingDistinct";
 				break;
+			default:
 			case HASHSET:
 				to = "InMemoryDistinct";
 				break;
@@ -948,8 +956,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 					"multiinput.optional.", "MergeWithoutSortingOptional",
 			"parallel.MergeWithoutSortingParallelOptional");
-			switch (this.merge_join_optional) {
-			case PARALLEL:
+			if (this.merge_join_optional == MERGE_JOIN_OPTIONAL.PARALLEL) {
 				PhysicalOptimizations.addReplacementMergeJoinAndMergeOptional(
 						"multiinput.join.", "MergeJoinSort",
 				"parallel.MergeParallelJoinSort");
