@@ -69,23 +69,23 @@ public class GraphBox {
 	protected static int lineColor = 0;
 
 	protected int[] colorIndices = null;
-	
+
 	public static interface GraphBoxCreator{
 		public GraphBox createGraphBox(final OperatorGraph parent, final GraphWrapper op);
 	}
-	
+
 	public static class StandardGraphBoxCreator implements GraphBoxCreator {
 
 		@Override
-		public GraphBox createGraphBox(OperatorGraph parent, GraphWrapper op) {
+		public GraphBox createGraphBox(final OperatorGraph parent, final GraphWrapper op) {
 			return new GraphBox(parent, op);
 		}
-		
+
 	}
 
 	/**
 	 * Constructor for the box.
-	 * 
+	 *
 	 * @param parent
 	 *            QueryGraph where the box is in
 	 * @param op
@@ -129,7 +129,7 @@ public class GraphBox {
 
 		this.parent.add(this.element);
 	}
-	
+
 	/**
 	 * This method may be overridden by subclasses to add more functionality...
 	 * @return those succeeding elements of this operator, which are to draw
@@ -140,10 +140,15 @@ public class GraphBox {
 
 	public void draw(final Graphics2D g) {
 		// walk through child boxes...
-		List<GraphWrapperIDTuple> children = this.getSucceedingsElementsToDraw();
+		final List<GraphWrapperIDTuple> children = this.getSucceedingsElementsToDraw();
 		for(int i = 0; i < children.size(); i += 1) {
 			final GraphWrapper childGW = (children.get(i)).getOperator();
-			final GraphBox childBox = this.parent.getBoxes().get(childGW);
+			GraphBox childBox = this.parent.getBoxes().get(childGW);
+
+			if(childBox==null){
+				childBox = new GraphBox(this.parent, childGW);
+				System.err.println("GraphBox: childBox null, create new one!");
+			}
 
 			// check for direct circle with one drawn direction...
 			final boolean directCircle = this.op.getPrecedingElements().contains(childGW) && this.parent.annotationWasProcessed(childGW, this.op);
@@ -198,7 +203,7 @@ public class GraphBox {
 			} else if(directCircle) { // direct circle...
 
 				drawConnection(g, startPoint.x, startPoint.y, annotationPoint.x+annotationDimension.width, annotationPoint.y+(annotationDimension.height/2), endPoint.x, endPoint.y, true);
-								
+
 			}
 		}
 	}
@@ -211,20 +216,22 @@ public class GraphBox {
 			if (x2 + width2 < x && x - x2 - width2 > diffy) {
 				return new Point(x, y + height / 2);
 			} else {
-				if (x2 > x + width && x2 - x - width > diffy)
+				if (x2 > x + width && x2 - x - width > diffy) {
 					return new Point(x + width, y + height / 2);
-				else
+				} else {
 					return new Point(x + width / 2, y + height);
+				}
 			}
 		} else {
 			final int diffy = y - y2;
 			if (x2 + width2 < x && x - x2 - width2 > diffy) {
 				return new Point(x, y + height / 2);
 			} else {
-				if (x2 > x + width && x2 - x - width > diffy)
+				if (x2 > x + width && x2 - x - width > diffy) {
 					return new Point(x + width, y + height / 2);
-				else
+				} else {
 					return new Point(x + width / 2, y);
+				}
 			}
 		}
 	}
@@ -342,7 +349,7 @@ public class GraphBox {
 
 	/**
 	 * Draws an arrow from one box to an other.
-	 * 
+	 *
 	 * @param g
 	 *            Graphics2D object
 	 * @param x
@@ -362,7 +369,7 @@ public class GraphBox {
 			drawArrowHead( g, x, y, xChild, yChild);
 		}
 	}
-	
+
 	public static void drawArrowHead(final Graphics2D g, final int x, final int y, final int xChild, final int yChild) {
 		g.setStroke(new BasicStroke(1f)); // solid arrow head
 
@@ -386,22 +393,22 @@ public class GraphBox {
 		g.drawPolygon(tmpPoly); // draw the arrow head
 		g.fillPolygon(tmpPoly); // fill the arrow head
 	}
-	
-	
+
+
 	public static void drawConnection(final Graphics2D g, final int x, final int y, final int middle_x, final int middle_y, final int xChild, final int yChild, final boolean arrowHead) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		final Point[] p = {
-				new Point(x,y), 
-				new Point(x,y), 
-				new Point(middle_x, middle_y), 
+				new Point(x,y),
+				new Point(x,y),
+				new Point(middle_x, middle_y),
 				new Point(xChild, yChild)};
 		drawBSpline( g, p);
 		if(arrowHead) {
 			drawArrowHead( g, middle_x, middle_y, xChild, yChild);
 		}
 	}
-	
-	public static void drawBSpline(final Graphics2D g, Point[] p){
+
+	public static void drawBSpline(final Graphics2D g, final Point[] p){
 		// determine length of bspline line as approximation by summation of edges between the given points
 		double length = 0;
 		for(int i=0; i<p.length-1; i++){
@@ -410,8 +417,8 @@ public class GraphBox {
 			length += Math.sqrt(xlength*xlength + ylength*ylength);
 		}
 		// determine the distance between points on line of bspline dependant on the length of the edge
-		double dt = (length<100)? 1.0/100.0 : 1.0/length; // distance between points on the line
-		// for remembering previously computed colors for the same point ("the darker color wins") -> could be more efficiently solved with forgetting colors of points which will surely not be asked for any more, as they are too far away from current regarded points...   
+		final double dt = (length<100)? 1.0/100.0 : 1.0/length; // distance between points on the line
+		// for remembering previously computed colors for the same point ("the darker color wins") -> could be more efficiently solved with forgetting colors of points which will surely not be asked for any more, as they are too far away from current regarded points...
 		final HashMap<Point, Integer> forAntiAliasing = new HashMap<Point, Integer>();
 		// now draw bspline line...
 		if(p.length >= 1) {
@@ -426,11 +433,11 @@ public class GraphBox {
 					if(k >= p.length){
 						k = p.length-1;
 					}
-					double c = coefficent(t - j);
+					final double c = coefficent(t - j);
 					x += p[k].x * c;
-					y += p[k].y * c;                    
+					y += p[k].y * c;
 				}
-				final int xpos =(int) Math.round(x); 
+				final int xpos =(int) Math.round(x);
 				final int ypos =(int) Math.round(y);
 				// draw a thicker line around (x, y) with antialiasing...
 				for(int ix=-1; ix<2; ix++){
@@ -446,13 +453,13 @@ public class GraphBox {
 		}
 		g.setColor(Color.BLACK);
 	}
-	
+
 	private static int CONSTANTFORANTIALIASING = 255;
-	
+
 	private static void checkPointAndDraw(final Graphics2D g, final int xpos, final int ypos, final double x, final double y, final HashMap<Point, Integer> forAntiAliasing){
         // Antialiasing:
-        double xdist = x-xpos;
-        double ydist = y-ypos;
+        final double xdist = x-xpos;
+        final double ydist = y-ypos;
         final double distance = Math.sqrt(xdist*xdist+ydist*ydist);
         final int grey = (int) Math.round(GraphBox.CONSTANTFORANTIALIASING*distance);
         if(grey<255){ // only paint if it is not completely white!
@@ -465,20 +472,20 @@ public class GraphBox {
 	        }
         }
 	}
-	
+
     private static double coefficent(final double tt) {
-        final double r;        
-        final double t = (tt < 0.0)? (-tt) : tt;         
+        final double r;
+        final double t = (tt < 0.0)? (-tt) : tt;
         if(t < 1.0){
-            r = (3.0 * t * t * t -6.0 * t * t + 4.0) / 6.0;        
+            r = (3.0 * t * t * t -6.0 * t * t + 4.0) / 6.0;
         } else if(t < 2.0){
             r = -1.0 * (t - 2.0) * (t - 2.0) * (t - 2.0) / 6.0;
         } else {
             r = 0.0;
-        }        
-        return r; 
+        }
+        return r;
     }
-	
+
 
 	protected static int yCor(final int len, final double dir) {
 		return (int) (len * Math.cos(dir));

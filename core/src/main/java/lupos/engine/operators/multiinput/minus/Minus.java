@@ -46,15 +46,15 @@ public class Minus extends MultiInputOperator {
 																	new ParallelIteratorMultipleQueryResults()};
 
 	protected final boolean considerEmptyIntersection;
-	
+
 	public Minus(){
 		this(true);
 	}
-	
+
 	public Minus(final boolean considerEmptyIntersection){
 		this.considerEmptyIntersection = considerEmptyIntersection;
 	}
-	
+
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
 		// wait for all query results and process them when
@@ -66,16 +66,16 @@ public class Minus extends MultiInputOperator {
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
-			QueryResult result = QueryResult.createInstance();
-			Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
+			final QueryResult result = QueryResult.createInstance();
+			final Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
 			while (iteratorLeftChild.hasNext()) {
-				Bindings leftItem = iteratorLeftChild.next();
+				final Bindings leftItem = iteratorLeftChild.next();
 				boolean found = false;
-				for(Bindings rightItem : this.operands[1].getQueryResult()) {
+				for(final Bindings rightItem : this.operands[1].getQueryResult()) {
 					// compute intersection of the variable sets
-					Set<Variable> vars = rightItem.getVariableSet();
+					final Set<Variable> vars = rightItem.getVariableSet();
 					vars.retainAll(leftItem.getVariableSet());
-					
+
 					// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
 					// workaround: check whether vars is empty
 					if(vars.isEmpty() && this.considerEmptyIntersection){
@@ -83,7 +83,7 @@ public class Minus extends MultiInputOperator {
 					}
 
 					boolean isEqual = true;
-					for (Variable v : vars) {
+					for (final Variable v : vars) {
 						if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
 							isEqual = false;
 						}
@@ -109,18 +109,18 @@ public class Minus extends MultiInputOperator {
 		}
 		return msg;
 	}
-	
+
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
-			QueryResult result = QueryResult.createInstance();
-			Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
+			final QueryResult result = QueryResult.createInstance();
+			final Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
 			while (iteratorLeftChild.hasNext()) {
-				Bindings leftItem = iteratorLeftChild.next();
+				final Bindings leftItem = iteratorLeftChild.next();
 				boolean found = false;
-				for (Bindings rightItem : this.operands[1].getQueryResult()) {
+				for (final Bindings rightItem : this.operands[1].getQueryResult()) {
 					// compute intersection of the variable sets
-					Set<Variable> vars = rightItem.getVariableSet();
+					final Set<Variable> vars = rightItem.getVariableSet();
 					vars.retainAll(leftItem.getVariableSet());
 
 					// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
@@ -128,9 +128,9 @@ public class Minus extends MultiInputOperator {
 					if(vars.isEmpty() && this.considerEmptyIntersection){
 						continue;
 					}
-					
+
 					boolean isEqual = true;
-					for (Variable v : vars) {
+					for (final Variable v : vars) {
 						if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
 							isEqual = false;
 						}
@@ -158,19 +158,27 @@ public class Minus extends MultiInputOperator {
 	}
 
 	@Override
-	public Message preProcessMessage(BoundVariablesMessage msg) {
-		BoundVariablesMessage msg_result = new BoundVariablesMessage(msg);
+	public Message preProcessMessage(final BoundVariablesMessage msg) {
+		final BoundVariablesMessage msg_result = new BoundVariablesMessage(msg);
 		Set<Variable> variableSet = null;
 		// the variables, which are always bound are the intersection
 		// variables of the left hand side
-		for (BasicOperator parent : this.getPrecedingOperators()) {
-			OperatorIDTuple opID = parent.getOperatorIDTuple(this);
+		for (final BasicOperator parent : this.getPrecedingOperators()) {
+			final OperatorIDTuple opID = parent.getOperatorIDTuple(this);
 			if (opID.getId() == 0) {
 				if (variableSet == null) {
 					variableSet = new HashSet<Variable>();
-					variableSet.addAll(parent.getIntersectionVariables());
+					if(parent.getIntersectionVariables()!=null){
+						variableSet.addAll(parent.getIntersectionVariables());
+					} else {
+						System.err.println("Minus: Intersection variables of parent node not set!");
+					}
 				} else {
-					variableSet.retainAll(parent.getIntersectionVariables());
+					if(parent.getIntersectionVariables()!=null){
+						variableSet.retainAll(parent.getIntersectionVariables());
+					} else {
+						System.err.println("Minus: Intersection variables of parent node not set!");
+					}
 				}
 			}
 		}
@@ -180,7 +188,7 @@ public class Minus extends MultiInputOperator {
 		msg_result.setVariables(this.intersectionVariables);
 		return msg_result;
 	}
-	
+
 	@Override
 	public String toString(){
 		return super.toString()+" "+this.intersectionVariables;

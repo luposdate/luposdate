@@ -408,14 +408,17 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		for (final BasicOperator subOperator : subOperators) {
 			// Result immer auf linker Seite, damit keine Linksrekursion
 			// auftreten kann
-			if (!subOperator.getSucceedingOperators().isEmpty()) {
-				final OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
-				subOperator.getSucceedingOperators().set(0,new OperatorIDTuple(finalResult, 0));
-				finalResult.addPrecedingOperator(subOperator);
-				subOperator.addSucceedingOperator(temp);
-			} else {
-				subOperator.setSucceedingOperator(new OperatorIDTuple(finalResult, 0));
-				finalResult.addPrecedingOperator(subOperator);
+			if(!(finalResult instanceof TriplePattern && subOperator instanceof ConstructPredicate)
+					&&!(finalResult instanceof PredicatePattern && (subOperator instanceof Construct || subOperator instanceof Generate))){
+				if (!subOperator.getSucceedingOperators().isEmpty()) {
+					final OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
+					subOperator.getSucceedingOperators().set(0,new OperatorIDTuple(finalResult, 0));
+					finalResult.addPrecedingOperator(subOperator);
+					subOperator.addSucceedingOperator(temp);
+				} else {
+					subOperator.setSucceedingOperator(new OperatorIDTuple(finalResult, 0));
+					finalResult.addPrecedingOperator(subOperator);
+				}
 			}
 		}
 		if (subOperators.isEmpty()) {
