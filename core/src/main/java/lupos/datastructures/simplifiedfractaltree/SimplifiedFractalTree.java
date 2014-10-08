@@ -39,6 +39,9 @@ import lupos.datastructures.dbmergesortedds.heap.SequentialHeap;
 import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
 import lupos.datastructures.simplifiedfractaltree.buffermanager.BufferedList;
 import lupos.datastructures.simplifiedfractaltree.buffermanager.BufferedList_LuposSerialization;
+import lupos.io.Registration;
+import lupos.io.Registration.DeSerializerConsideringSubClasses;
+import lupos.io.serializer.FRACTALTREEENTRY;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -64,12 +67,33 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	protected BufferedList_LuposSerialization<FractalTreeEntry<K, V>> removeList;
 	protected ArrayList<Integer> rCount = new ArrayList<>();
 
+	@SuppressWarnings("rawtypes")
+	private static DeSerializerConsideringSubClasses<FractalTreeEntry> fractalTreeEntryDeSerializer = new FRACTALTREEENTRY();
+	private static boolean deSerializerAdded = false;
+
+	/**
+	 * Must be called before any FractalTree is constructed to take any effect
+	 * @param fractalTreeEntryDeSerializer
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static<K extends Comparable<K>, V> void setDeSerializerForFractalTreeEntry(final DeSerializerConsideringSubClasses<FractalTreeEntry<K, V>> fractalTreeEntryDeSerializer){
+		SimplifiedFractalTree.fractalTreeEntryDeSerializer = (DeSerializerConsideringSubClasses) fractalTreeEntryDeSerializer;
+	}
+
+	private static void addDeSerializer(){
+		if(!SimplifiedFractalTree.deSerializerAdded){
+			Registration.addDeSerializer(SimplifiedFractalTree.fractalTreeEntryDeSerializer);
+			SimplifiedFractalTree.deSerializerAdded = true;
+		}
+	}
+
 	/**
 	 * Constructs am empty fractal tree using a default page size of 8192.
 	 *
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree() {
+		SimplifiedFractalTree.addDeSerializer();
 		final FractalTreeEntry<K, V> entry = new FractalTreeEntry<>();
 		this.bufferedList = new BufferedList_LuposSerialization<FractalTreeEntry<K, V>>(8 * 1024, this.file.getAbsoluteFile(), entry);
 		this.mergeList = new MergeList(entry);
@@ -84,6 +108,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree(final File file) {
+		SimplifiedFractalTree.addDeSerializer();
 		final FractalTreeEntry<K, V> entry = new FractalTreeEntry<>();
 		this.bufferedList = new BufferedList_LuposSerialization<>(8 * 1024, new File(file.getAbsolutePath() + "bl"), entry);
 		this.mergeList = new MergeList(entry, file);
@@ -103,6 +128,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	public SimplifiedFractalTree(final File file, final int pageSize) {
 		assert pageSize > 0;
 
+		SimplifiedFractalTree.addDeSerializer();
 		final FractalTreeEntry<K, V> entry = new FractalTreeEntry<>();
 		this.bufferedList = new BufferedList_LuposSerialization<>(pageSize, new File(file.getAbsolutePath() + "bl"), entry);
 		this.mergeList = new MergeList(entry, pageSize, file);
@@ -121,6 +147,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	public SimplifiedFractalTree(final int pageSize) {
 		assert pageSize > 0;
 
+		SimplifiedFractalTree.addDeSerializer();
 		final FractalTreeEntry<K, V> entry = new FractalTreeEntry<>();
 		this.bufferedList = new BufferedList_LuposSerialization<>(pageSize, this.file.getAbsoluteFile(), entry);
 		this.mergeList = new MergeList(entry, pageSize);

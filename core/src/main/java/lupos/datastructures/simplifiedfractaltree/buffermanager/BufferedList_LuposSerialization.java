@@ -34,18 +34,12 @@ import java.net.URISyntaxException;
 import lupos.datastructures.buffermanager.BufferManager.PageAddress;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
-import lupos.io.Registration;
-import lupos.io.serializer.FRACTALTREEENTRY;
 
 public class BufferedList_LuposSerialization<E> extends BufferedList<E> {
 	/**
 	 * Serial Version ID.
 	 */
 	private static final long serialVersionUID = 4988155911642704072L;
-
-	static {
-		Registration.addDeSerializer(new FRACTALTREEENTRY());
-	}
 
 	public BufferedList_LuposSerialization(final Object arg0) {
 		super(arg0);
