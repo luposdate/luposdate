@@ -397,43 +397,47 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 
 		// 5. Ergebniss aller Regeln in einem Result zusammenfuehren
-		BasicOperator finalResult = null;
+		BasicOperator[] finalResults;
 		if (obj.getConclusion() == null) {
-			finalResult = new Result();
+			finalResults = new BasicOperator[1];
+			finalResults[0] = new Result();
 		} else {
-			finalResult = this.patternFromConclusion(obj.getConclusion());
+			finalResults = this.patternFromConclusion(obj.getConclusion());
 		}
 
-		// Verbindungen zum Endergebniss herstellen
-		for (final BasicOperator subOperator : subOperators) {
-			// Result immer auf linker Seite, damit keine Linksrekursion
-			// auftreten kann
-			if(!(finalResult instanceof TriplePattern && subOperator instanceof ConstructPredicate)
-					&&!(finalResult instanceof PredicatePattern && (subOperator instanceof Construct || subOperator instanceof Generate))){
-				if (!subOperator.getSucceedingOperators().isEmpty()) {
-					final OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
-					subOperator.getSucceedingOperators().set(0,new OperatorIDTuple(finalResult, 0));
-					finalResult.addPrecedingOperator(subOperator);
-					subOperator.addSucceedingOperator(temp);
-				} else {
-					subOperator.setSucceedingOperator(new OperatorIDTuple(finalResult, 0));
-					finalResult.addPrecedingOperator(subOperator);
+		for(final BasicOperator finalResult: finalResults){
+			// Verbindungen zum Endergebniss herstellen
+			for (final BasicOperator subOperator : subOperators) {
+				// Result immer auf linker Seite, damit keine Linksrekursion
+				// auftreten kann
+				if(!(finalResult instanceof TriplePattern && subOperator instanceof ConstructPredicate)
+						&&!(finalResult instanceof PredicatePattern && (subOperator instanceof Construct || subOperator instanceof Generate))){
+					if (!subOperator.getSucceedingOperators().isEmpty()) {
+						final OperatorIDTuple temp = subOperator.getSucceedingOperators().get(0);
+						subOperator.getSucceedingOperators().set(0,new OperatorIDTuple(finalResult, 0));
+						finalResult.addPrecedingOperator(subOperator);
+						subOperator.addSucceedingOperator(temp);
+					} else {
+						subOperator.setSucceedingOperator(new OperatorIDTuple(finalResult, 0));
+						finalResult.addPrecedingOperator(subOperator);
+					}
 				}
 			}
 		}
-		if (subOperators.isEmpty()) {
-			// Root verweist auf EmptyIndex und der direkt auf Result
-			if (finalResult instanceof PredicatePattern
-					|| finalResult instanceof TriplePattern) {
-				finalResult.removeFromOperatorGraph();
-				finalResult = null;
-			}
-			final EmptyIndexScan empty = new EmptyIndexScan(finalResult == null ? null
-					: new OperatorIDTuple(finalResult, 0));
-			this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(empty, this.indexScanCreator.getRoot().getSucceedingOperators().size()));
-			empty.addPrecedingOperator(this.indexScanCreator.getRoot());
-			if (finalResult == null) {
-				finalResult = empty;
+		for(int i=0; i<finalResults.length; i++){
+			BasicOperator finalResult = finalResults[i];
+			if (subOperators.isEmpty()) {
+				// Root verweist auf EmptyIndex und der direkt auf Result
+				if (finalResult instanceof PredicatePattern || finalResult instanceof TriplePattern) {
+					finalResult.removeFromOperatorGraph();
+					finalResult = null;
+				}
+				final EmptyIndexScan empty = new EmptyIndexScan(finalResult == null ? null : new OperatorIDTuple(finalResult, 0));
+				this.indexScanCreator.getRoot().addSucceedingOperator(new OperatorIDTuple(empty, this.indexScanCreator.getRoot().getSucceedingOperators().size()));
+				empty.addPrecedingOperator(this.indexScanCreator.getRoot());
+				if (finalResult == null) {
+					finalResults[i] = empty;
+				}
 			}
 		}
 
@@ -443,28 +447,48 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			this.booleanIndex.removePrecedingOperator(this.indexScanCreator.getRoot());
 		}
 
-		// Falls Conclusion vorhanden, noch Result anhaengen, zum Sammeln der
-		// Ergebnisse
-		if (!(finalResult instanceof Result)) {
-			if (obj.getConclusion() != null
-					&& obj.getConclusion().getVariables().isEmpty()) {
-				final BasicOperator mbr = new MakeBooleanResult();
-				finalResult.addSucceedingOperator(mbr);
-				mbr.addPrecedingOperator(finalResult);
-				finalResult = mbr;
-			}
+		if(finalResults.length==1 && (finalResults[0] instanceof Result)){
+			return finalResults[0];
+		}
+
+		// Falls Conclusion vorhanden, noch Result anhaengen, zum Sammeln der Ergebnisse
+		final Result result = new Result();
+		final BasicOperator makeBooleanResultOrResult;
+		if (obj.getConclusion() != null && obj.getConclusion().getVariables().isEmpty()) {
+			makeBooleanResultOrResult = new MakeBooleanResult();
+			makeBooleanResultOrResult.addSucceedingOperator(result);
+			result.addPrecedingOperator(makeBooleanResultOrResult);
+		} else {
+			makeBooleanResultOrResult = result;
+		}
+
+		for(final BasicOperator finalResult: finalResults){
 			// DEBUG
 			//finalResult.addSucceedingOperator(finalResult = new Distinct());
-			final Result result = new Result();
-			finalResult.addSucceedingOperator(result);
-			result.addPrecedingOperator(finalResult);
-			return result;
-		} else {
-			return finalResult;
+			finalResult.addSucceedingOperator(makeBooleanResultOrResult);
+			makeBooleanResultOrResult.addPrecedingOperator(finalResult);
 		}
+		return result;
 	}
 
-	private BasicOperator patternFromConclusion(final IExpression conclusion) {
+	private BasicOperator[] patternFromConclusion(final IExpression conclusion) {
+		BasicOperator[] result;
+		if(conclusion instanceof Conjunction){
+			final Conjunction conjunction = (Conjunction) conclusion;
+			result = new BasicOperator[conjunction.exprs.size()];
+			int i = 0;
+			for(final IExpression elem: conjunction.exprs) {
+				result[i] = this.onePatternFromConclusion(elem);
+				i++;
+			}
+		} else {
+			result = new BasicOperator[1];
+			result[0] = this.onePatternFromConclusion(conclusion);
+		}
+		return result;
+	}
+
+	private BasicOperator onePatternFromConclusion(final IExpression conclusion){
 		// Annahme, Conclusion ist Praedikat
 		final RulePredicate pred = (RulePredicate) conclusion;
 		if (pred.isTriple()) {
@@ -477,8 +501,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				final Item item = (Item) expr.accept(this, null);
 				predItems.add(item);
 			}
-			return new PredicatePattern(predName,
-					predItems.toArray(new Item[] {}));
+			return new PredicatePattern(predName, predItems.toArray(new Item[] {}));
 		}
 	}
 

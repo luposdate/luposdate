@@ -35,15 +35,16 @@ import lupos.rif.model.Rule;
 public class RuleFilteringVisitor extends SimpleRuleVisitor {
 
 	@Override
-	public IRuleNode visit(Document obj, IRuleNode arg) throws RIFException {
-		for (final Rule rule : new ArrayList<Rule>(obj.getRules()))
+	public IRuleNode visit(final Document obj, final IRuleNode arg) throws RIFException {
+		for (final Rule rule : new ArrayList<Rule>(obj.getRules())) {
 			if (rule.isImplication() && obj.getConclusion() != null) {
 				// If rule is not used for evaluating the conclusion, then skip it!
 				// Assumption: Conclusion is only one RulePredicate
-				if (!rule.containsRecursion(obj.getConclusion(),
-						new HashSet<Rule>()))
+				if (!rule.containsRecursion(obj.getConclusion(), new HashSet<Rule>())){
 					obj.getRules().remove(rule);
+				}
 			}
+		}
 		return obj;
 	}
 

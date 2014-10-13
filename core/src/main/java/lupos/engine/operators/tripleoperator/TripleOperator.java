@@ -26,11 +26,13 @@ package lupos.engine.operators.tripleoperator;
 import java.util.List;
 
 import lupos.datastructures.items.Triple;
-import lupos.engine.operators.BasicOperator;
+import lupos.datastructures.queryresult.GraphResult;
+import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.misc.debug.DebugStep;
 
-public class TripleOperator extends BasicOperator implements TripleConsumer, TripleConsumerDebug {
+public class TripleOperator extends Operator implements TripleConsumer, TripleConsumerDebug {
 
 	public TripleOperator() {
 	}
@@ -45,12 +47,23 @@ public class TripleOperator extends BasicOperator implements TripleConsumer, Tri
 
 	@Override
 	public void consume(final Triple triple) {
-		throw (new UnsupportedOperationException("This Operator(" + this
-				+ ") should have been replaced before being used."));
+		throw (new UnsupportedOperationException("This Operator(" + this + ") should have been replaced before being used."));
 	}
-	
+
+	@Override
+	public QueryResult process(final QueryResult queryResult, final int operandID) {
+		if(queryResult instanceof GraphResult){
+			for(final Triple triple: ((GraphResult) queryResult).getGraphResultTriples()){
+				this.consume(triple);
+			}
+		} else {
+			throw (new UnsupportedOperationException("This Operator(" + this + ") should can only process GraphResult, but not " + queryResult + " of type " + queryResult.getClass().getName() + "."));
+		}
+		return null;
+	}
+
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
-		consume(triple);
+		this.consume(triple);
 	}
 }

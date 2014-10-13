@@ -55,8 +55,7 @@ public class Operator extends BasicOperator {
 	 *            The operand number
 	 * @return
 	 */
-	public QueryResult process(final QueryResult queryResult,
-			final int operandID) {
+	public QueryResult process(final QueryResult queryResult, final int operandID) {
 		throw (new UnsupportedOperationException("This Operator(" + this + ") should have been replaced before being used."));
 	}
 

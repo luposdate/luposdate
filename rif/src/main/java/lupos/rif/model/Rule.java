@@ -29,13 +29,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
-
 import lupos.rif.IExpression;
 import lupos.rif.IRuleNode;
 import lupos.rif.IRuleVisitor;
 import lupos.rif.IVariableScope;
 import lupos.rif.RIFException;
+
+import com.google.common.collect.Sets;
 
 public class Rule extends AbstractRuleNode implements IVariableScope {
 	private final Set<Rule> recursiveConnections = Sets.newHashSet();
@@ -48,10 +48,11 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	// only predicate in the head
 	public Set<IExpression> getHeadExpressions() {
 		final Set<IExpression> result = new HashSet<IExpression>();
-		if (this.head instanceof Conjunction)
+		if (this.head instanceof Conjunction) {
 			result.addAll(((Conjunction) this.head).exprs);
-		else
+		} else {
 			result.add(this.head);
+		}
 		return result;
 	}
 
@@ -61,7 +62,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	}
 
 	@Override
-	public void addVariable(RuleVariable var) {
+	public void addVariable(final RuleVariable var) {
 		var.setParent(this);
 		this.vars.add(var);
 	}
@@ -70,7 +71,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 		return this.body != null;
 	}
 
-	public void setHead(IExpression head) {
+	public void setHead(final IExpression head) {
 		this.head = head;
 	}
 
@@ -78,7 +79,7 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 		return this.head;
 	}
 
-	public void setBody(IExpression body) {
+	public void setBody(final IExpression body) {
 		this.body = body;
 	}
 
@@ -92,75 +93,92 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 
 	@Override
 	public List<IRuleNode> getChildren() {
-		List<IRuleNode> ret = new ArrayList<IRuleNode>();
+		final List<IRuleNode> ret = new ArrayList<IRuleNode>();
 		ret.addAll(this.vars);
 		ret.add(this.head);
-		if (isImplication()){
+		if (this.isImplication()){
 			ret.add(this.body);
 		}
 		ret.addAll(this.nots);
 		return ret;
 	}
 
-	public boolean containsRecursion(IExpression conclusion, Set<Rule> visited) {
-		if (conclusion instanceof RulePredicate
-				&& getHead() instanceof RulePredicate) {
+	private boolean containsRecursionHelper(final IExpression conclusion){
+		if(conclusion instanceof Conjunction){
+			for(final IExpression conclusionElement: ((Conjunction) conclusion).exprs){
+				if(this.containsRecursionHelper(conclusionElement)){
+					return true;
+				}
+			}
+		} else if(conclusion instanceof RulePredicate && this.getHead() instanceof RulePredicate) {
 			final RulePredicate predConclusion = (RulePredicate) conclusion;
-			final RulePredicate predHead = (RulePredicate) getHead();
+			final RulePredicate predHead = (RulePredicate) this.getHead();
 			if (predConclusion.termParams.size() == predHead.termParams.size()) {
 				boolean breaking = false;
 				if (predConclusion.termName instanceof Constant
 						&& predHead.termName instanceof Constant
-						&& !predHead.termName.equals(predConclusion.termName))
+						&& !predHead.termName.equals(predConclusion.termName)) {
 					breaking = true;
+				}
 				if (!breaking) {
-					for (int i = 0; i < predConclusion.termParams.size(); i++)
+					for (int i = 0; i < predConclusion.termParams.size(); i++) {
 						if (predConclusion.termParams.get(i) instanceof Constant
 								&& predHead.termParams.get(i) instanceof Constant
 								&& !predHead.termParams.get(i).equals(
-										predConclusion.termParams.get(i)))
+										predConclusion.termParams.get(i))) {
 							breaking = true;
+						}
+					}
 				}
-				if (!breaking)
+				if (!breaking) {
 					return true;
+				}
 			}
-		} else if (conclusion instanceof Equality
-				&& getHead() instanceof Equality)
+		} else if (conclusion instanceof Equality && this.getHead() instanceof Equality){
 			// Do not remove any rule, which could create an equality
 			return true;
+		}
+		return false;
+	}
+
+	public boolean containsRecursion(final IExpression conclusion, final Set<Rule> visited) {
+		if(this.containsRecursionHelper(conclusion)){
+			return true;
+		}
 		visited.add(this);
-		for (final Rule rule : this.recursiveConnections)
-			if (!visited.contains(rule)
-					&& rule.containsRecursion(conclusion, visited))
+		for (final Rule rule : this.recursiveConnections){
+			if (!visited.contains(rule) && rule.containsRecursion(conclusion, visited)){
 				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return getHead().toString();
+		return this.getHead().toString();
 	}
 
 	@Override
 	public String getLabel() {
-		return isImplication() ? "Rule" : "Fact";
+		return this.isImplication() ? "Rule" : "Fact";
 	}
 
 	@Override
-	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg)
+	public <R, A> R accept(final IRuleVisitor<R, A> visitor, final A arg)
 			throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
-	public void addNot(IExpression iExpression) {
+	public void addNot(final IExpression iExpression) {
 		this.nots.add(iExpression);
 	}
-	
+
 	public List<IExpression> getNots(){
 		return this.nots;
 	}
-	
-	public void setNots(List<IExpression> nots){
+
+	public void setNots(final List<IExpression> nots){
 		this.nots = nots;
 	}
 }

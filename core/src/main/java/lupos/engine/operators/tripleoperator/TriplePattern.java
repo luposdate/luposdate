@@ -52,8 +52,7 @@ import lupos.misc.BitVector;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
 
-public class TriplePattern extends TripleOperator implements TripleConsumer,
-TripleDeleter, Iterable<Item> {
+public class TriplePattern extends TripleOperator implements TripleConsumer, TripleDeleter, Iterable<Item> {
 
 	private static final long serialVersionUID = 6269668218008457381L;
 
