@@ -257,7 +257,7 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 						System.err.println("ClassCastException: " + e.getMessage());
 						return false;
 					}
-					GetCollection.this.map.remove(GetCollection.this.key, element);
+					GetCollection.this.map.removeKeyWithValue(GetCollection.this.key, element);
 					return true;
 				}
 
@@ -278,7 +278,7 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 					Iterator<V> itelements = elements.iterator();
 					while(itelements.hasNext()){
 						final V element = itelements.next();
-						GetCollection.this.map.remove(GetCollection.this.key, element);
+						GetCollection.this.map.removeKeyWithValue(GetCollection.this.key, element);
 					}
 					return true;
 				}

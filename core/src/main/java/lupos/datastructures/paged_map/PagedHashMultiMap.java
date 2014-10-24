@@ -429,7 +429,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 * @return
 	 * element
 	 */
-	public V remove(final K key, final V element){
+	public V removeKeyWithValue(final K key, final V element){
 		final ResSet resultKey = this.containKeyGetAddressOfFoundKeyGetAddressOfLastKey(key);
 		final boolean containKey = resultKey.containEntry;
 		final long addressOfFoundKey = resultKey.addressOfFoundEntry;
@@ -1716,10 +1716,10 @@ private final Triple<V, Long, Long> getElement(final long address) {
 		System.out.println("entry set: "  + m.entrySet());
 		System.out.println("entry list: "  + m.entryList());
 		System.out.println("number of elements for key \"boris\": " + m.getNumberOfKeyElements(m.getAddressOfKey("boris")));
-		m.remove("c", "C");
-		m.remove("boris", "Beate");
-		m.remove("boris", "Brit");
-		m.remove("z", "Z");
+		m.removeKeyWithValue("c", "C");
+		m.removeKeyWithValue("boris", "Beate");
+		m.removeKeyWithValue("boris", "Brit");
+		m.removeKeyWithValue("z", "Z");
 		System.out.println("remove (c,C), (boris,Beate), (boris,Brit), (z,Z):");
 		System.out.println(m);
 		System.out.println("entry set: "  + m.entrySet());

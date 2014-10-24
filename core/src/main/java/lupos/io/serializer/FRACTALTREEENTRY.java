@@ -34,7 +34,6 @@ import lupos.datastructures.simplifiedfractaltree.FractalTreeEntry;
 import lupos.datastructures.simplifiedfractaltree.StringKey;
 import lupos.io.Registration;
 import lupos.io.Registration.DeSerializerConsideringSubClasses;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This class is a DeSerializer for <tt>FractalTreeEntry</tt> for the <tt>Luposdate</tt> de/serialization. In order to work it must be registered in
@@ -70,7 +69,7 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 
 	@Override
 	public int length(final FractalTreeEntry arg0) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	/**
