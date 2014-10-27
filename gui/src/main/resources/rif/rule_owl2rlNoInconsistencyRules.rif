@@ -380,7 +380,7 @@ Forall ?c1 ?c2 ?y ?p2 ?p1 (
  Forall ?y ?c ?l ?ci (
    ?y[rdf:type->?c] :- And (
      ?c[owl:unionOf->?l]
-     External(pred:list-contains(?l ?ci))
+     pred:membersOfList(?l ?ci)
      ?y[rdf:type->?ci] ))
  (* <#cls-oo> *)
  Forall ?yi ?c ?l (
