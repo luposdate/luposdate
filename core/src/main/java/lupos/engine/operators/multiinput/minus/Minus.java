@@ -59,7 +59,9 @@ public class Minus extends MultiInputOperator {
 	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
 		// wait for all query results and process them when
 		// EndOfEvaluationMessage arrives
-		this.operands[operandID].addQueryResult(queryResult);
+		if(!queryResult.isEmpty()){
+			this.operands[operandID].addQueryResult(queryResult);
+		}
 		return null;
 	}
 
@@ -99,12 +101,21 @@ public class Minus extends MultiInputOperator {
 				}
 			}
 
+			// if the operator is in a cycle: it is no problem if the left operand gets new bindings...
+			this.operands[0].release();
+			this.operands[0] = new ParallelIteratorMultipleQueryResults();
+
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
 				opId.processAll(result);
 			}
 		} else if (!this.operands[0].isEmpty()) { // happens when the group constraint which follows the minus is empty
+			final QueryResult result = this.operands[0].getQueryResult();
+
+			// if the operator is in a cycle: it is no problem if the left operand gets new bindings...
+			this.operands[0] = new ParallelIteratorMultipleQueryResults();
+
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
-				opId.processAll(this.operands[0].getQueryResult());
+				opId.processAll(result);
 			}
 		}
 		return msg;
