@@ -30,18 +30,21 @@ import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.engine.operators.singleinput.TypeErrorException;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
+import lupos.misc.Tuple;
 import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
 import lupos.rif.RIFException;
 import lupos.rif.model.Conjunction;
 import lupos.rif.model.Equality;
+import lupos.rif.model.RuleList;
 import lupos.rif.model.RuleVariable;
 
 import com.google.common.collect.Multimap;
@@ -101,9 +104,13 @@ public class RuleFilter extends SingleInputOperator {
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
+			// if several values are bound to a variable in an external function!
+			Iterator<Bindings> iteratorBindings = null;
+
 			final Iterator<Bindings> bindIt = bindings.oneTimeIterator();
 			int number = 0;
 			Bindings next = this.computeNext();
+
 
 			@Override
 			public boolean hasNext() {
@@ -118,17 +125,49 @@ public class RuleFilter extends SingleInputOperator {
 			}
 
 			private Bindings computeNext() {
+				if(this.iteratorBindings!=null && this.iteratorBindings.hasNext()){
+					return this.iteratorBindings.next();
+				}
 				while (this.bindIt.hasNext()) {
 					final Bindings bind = this.bindIt.next();
 					if (bind != null) {
 						try{
-							final boolean result = RuleFilter.this.filter(bind);
-							if (result) {
-								this.number++;
-								RuleFilter.this.onAccepted(bind);
-								return bind;
+							final Object result = RuleFilter.this.expression.evaluate(bind, null, RuleFilter.this.equalityMap);
+							if(result instanceof Tuple){
+								// deal with bindable externals!
+								@SuppressWarnings("unchecked")
+								final Tuple<Variable, RuleList> resultTuple = (Tuple<Variable, RuleList>) result;
+								this.iteratorBindings = new ImmutableIterator<Bindings>(){
+
+									final Iterator<IExpression> iteratorRuleList = resultTuple.getSecond().getItems().iterator();
+
+									@Override
+									public boolean hasNext() {
+										return this.iteratorRuleList.hasNext();
+									}
+
+									@Override
+									public Bindings next() {
+										if(this.hasNext()){
+											final Bindings result = bind.clone();
+											result.add(resultTuple.getFirst(), (Literal) this.iteratorRuleList.next().evaluate(result));
+											number++;
+											return result;
+										} else {
+											return null;
+										}
+									}
+								};
+								return this.computeNext();
 							} else {
-								RuleFilter.this.onFilteredOut(bind);
+								final boolean booleanResult = RuleFilter.this.filter(bind, result);
+								if (booleanResult) {
+									this.number++;
+									RuleFilter.this.onAccepted(bind);
+									return bind;
+								} else {
+									RuleFilter.this.onFilteredOut(bind);
+								}
 							}
 						} catch(final Exception e){
 							RuleFilter.this.onFilteredOut(bind);
@@ -149,9 +188,15 @@ public class RuleFilter extends SingleInputOperator {
 		}
 	}
 
-	protected boolean filter(final Bindings bind) {
+	/**
+	 * This method will be overridden by EqualityFilter!
+	 * @param bind the currently investigated binding
+	 * @param result the object of which this method determines the boolean effective value
+	 * @return the boolean effective value of result
+	 */
+	protected boolean filter(final Bindings bind, final Object result){
 		try {
-			return Helper.booleanEffectiveValue(this.expression.evaluate(bind, null, this.equalityMap));
+			return Helper.booleanEffectiveValue(result);
 		} catch (final TypeErrorException e) {
 			throw new RIFException(e.getMessage());
 		}

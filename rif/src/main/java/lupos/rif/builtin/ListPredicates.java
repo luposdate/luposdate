@@ -23,6 +23,9 @@
  */
 package lupos.rif.builtin;
 
+import lupos.datastructures.items.Variable;
+import lupos.datastructures.items.literal.Literal;
+import lupos.misc.Tuple;
 import lupos.rif.IExpression;
 import lupos.rif.model.RuleList;
 
@@ -32,26 +35,39 @@ public class ListPredicates {
 	@Builtin(Name = "is-list")
 	public static BooleanLiteral is_list(final Argument arg) {
 		if (arg.arguments.size() == 1
-				&& arg.arguments.get(0) instanceof RuleList)
+				&& arg.arguments.get(0) instanceof RuleList) {
 			return BooleanLiteral.TRUE;
-		else
+		} else {
 			return BooleanLiteral.FALSE;
+		}
 	}
 
-	@Builtin(Name = "list-contains")
-	public static BooleanLiteral list_contains(final Argument arg) {
-		if (arg.arguments.size() == 2
-				&& arg.arguments.get(0) instanceof RuleList
-				&& arg.arguments.get(1) instanceof RuleList) {
+	@Builtin(Name = "list-contains", Bindable = true)
+	public static Object list_contains(final Argument arg) {
+		if (arg.arguments.size() == 2) {
+
+			if(arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list1 = (RuleList) arg.arguments.get(0);
-			final RuleList list2 = (RuleList) arg.arguments.get(1);
-			for (final IExpression expr : list1.getItems()) {
-				if (expr.equals(list2))
-					return BooleanLiteral.TRUE;
+
+			if(arg.arguments.get(1) instanceof RuleList){
+				final RuleList list2 = (RuleList) arg.arguments.get(1);
+				for (final IExpression expr : list1.getItems()) {
+					if (expr.equals(list2)) {
+						return BooleanLiteral.TRUE;
+					}
+				}
+				return BooleanLiteral.FALSE;
+			} else if(arg.arguments.get(1) instanceof Variable) {
+				return new Tuple<Variable, RuleList>((Variable)arg.arguments.get(1), list1);
 			}
-			return BooleanLiteral.FALSE;
-		} else
-			return BooleanLiteral.FALSE;
+			} else if(arg.arguments.get(0) instanceof Literal){
+				System.err.println("Warning: The external list-contains is currently not iterable on lists!");
+				System.err.println("Use instead following predicate:");
+				System.err.println("Forall ?member ?headOfList ?rest(pred:membersOfList(?headOfList ?x) :- Or(?headOfList[rdf:first->?x] And(?headOfList[rdf:rest->?rest] pred:membersOfList(?rest ?x))))");
+			}
+		}
+		System.err.println("Wrong usage of the external list-contains, assuming FALSE");
+		return BooleanLiteral.FALSE;
 	}
 
 }

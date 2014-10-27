@@ -42,75 +42,72 @@ public class EqualityFilter extends RuleFilter {
 	private boolean saveFilteredBindings = true;
 	private final ReplaceVarsVisitor replace = new ReplaceVarsVisitor();
 
-	public EqualityFilter(IExpression expression,
-			Multimap<IExpression, IExpression> eqMap) {
+	public EqualityFilter(final IExpression expression,
+			final Multimap<IExpression, IExpression> eqMap) {
 		super(expression, eqMap);
 	}
 
 	@Override
-	public QueryResult process(QueryResult bindings, int operandID) {
+	public QueryResult process(final QueryResult bindings, final int operandID) {
 		try {
 			if (bindings instanceof EqualityResult
-					&& !filteredBindings.isEmpty()) {
+					&& !this.filteredBindings.isEmpty()) {
 				final QueryResult qr = QueryResult.createInstance();
-				for (final Bindings bind : filteredBindings)
+				for (final Bindings bind : this.filteredBindings) {
 					qr.add(bind);
-				saveFilteredBindings = false;
+				}
+				this.saveFilteredBindings = false;
 				return super.process(qr, operandID);
-			} else
+			} else {
 				return super.process(bindings, operandID);
+			}
 		} finally {
-			saveFilteredBindings = true;
+			this.saveFilteredBindings = true;
 		}
 	}
 
 	@Override
-	protected boolean filter(Bindings bind) {
-		boolean result = super.filter(bind);
-		if (result)
-			return result;
-		else {
-			replace.bindings = bind;
-			final Equality replacedEq = (Equality) expression.accept(replace,
-					null);
-			return equalityMap.get(replacedEq.leftExpr).contains(
-					replacedEq.rightExpr)
-					|| equalityMap.get(replacedEq.rightExpr).contains(
-							replacedEq.leftExpr);
+	protected boolean filter(final Bindings bind, final Object result){
+		final boolean booleanResult = super.filter(bind, result);
+		if (booleanResult) {
+			return booleanResult;
+		} else {
+			this.replace.bindings = bind;
+			final Equality replacedEq = (Equality) this.expression.accept(this.replace, null);
+			return this.equalityMap.get(replacedEq.leftExpr).contains(replacedEq.rightExpr)
+					|| this.equalityMap.get(replacedEq.rightExpr).contains(replacedEq.leftExpr);
 		}
 	}
 
 	@Override
-	protected void onAccepted(Bindings bind) {
-		if (!saveFilteredBindings)
-			filteredBindings.remove(bind);
+	protected void onAccepted(final Bindings bind) {
+		if (!this.saveFilteredBindings) {
+			this.filteredBindings.remove(bind);
+		}
 	}
 
 	@Override
 	protected void onFilteredOut(final Bindings bind) {
-		if (saveFilteredBindings)
-			filteredBindings.add(bind);
+		if (this.saveFilteredBindings) {
+			this.filteredBindings.add(bind);
+		}
 	}
 
+	@Override
 	public String toString() {
-		String result = "Equalityfilter\n" + expression.toString();
-
+		String result = "Equalityfilter\n" + this.expression.toString();
 		if (this.cardinality >= 0) {
 			result += "\nCardinality: " + this.cardinality;
 		}
-
 		return result;
 	}
 
+	@Override
 	public String toString(final Prefix prefixInstance) {
-		String result = "Equalityfilter\n"
-				+ expression.toString(prefixInstance);
-
+		String result = "Equalityfilter\n" + this.expression.toString(prefixInstance);
 		if (this.cardinality >= 0) {
 			result += "\nCardinality: " + this.cardinality;
 		}
-
 		return result;
 	}
-
 }
