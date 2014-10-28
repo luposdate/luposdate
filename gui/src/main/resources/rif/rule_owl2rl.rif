@@ -490,7 +490,7 @@ Forall ?c1 ?c2 ?x (
      ?x[?key->?v] ?y[?key->?v] ))
  
  (* just because pred:list-contains is currently not iterable! *)
- 	Forall ?member ?headOfList ?rest(
+ 	Forall ?x ?headOfList ?rest(
 	   pred:membersOfList(?headOfList ?x) :- Or(?headOfList[rdf:first->?x] And(?headOfList[rdf:rest->?rest] pred:membersOfList(?rest ?x)))
 	)
  

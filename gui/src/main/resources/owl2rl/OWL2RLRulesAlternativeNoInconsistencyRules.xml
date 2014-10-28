@@ -387,7 +387,7 @@ And(?listname[owl:propertyChainAxiom->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
@@ -427,7 +427,7 @@ And(?listname[owl:hasKey->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
@@ -467,7 +467,7 @@ And(?listname[owl:intersectionOf->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
@@ -503,7 +503,7 @@ And(?listname[owl:intersectionOf->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
@@ -536,7 +536,7 @@ And(?listname[owl:unionOf->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
@@ -571,7 +571,7 @@ And(?listname[owl:unionOf->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))
@@ -604,7 +604,7 @@ And(?listname[owl:oneOf->?headOfList]
 eg:membersOfList-spo(?headOfList ?x ?y))
                )
 	  
-               Forall ?member ?headOfList ?rest ?y ?y1(
+               Forall ?x ?headOfList ?rest ?y ?y1(
                        eg:membersOfList-spo(?headOfList ?x ?y) :-
 Or(And(?headOfList[rdf:first->?x] eg:count-spo(?headOfList ?y))
 And(?headOfList[rdf:rest->?rest] eg:membersOfList-spo(?rest ?x ?y) ))

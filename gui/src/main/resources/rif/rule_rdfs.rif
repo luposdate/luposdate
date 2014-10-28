@@ -42,7 +42,7 @@ Document(
 		
 		(* rdfs7 *)
 		Forall ?a ?b ?u ?y (
-		   ?u[?b -> ?a] :- And(?a[rdfs:subPropertyOf -> ?b] ?u[?a -> ?y])
+		   ?u[?b -> ?y] :- And(?a[rdfs:subPropertyOf -> ?b] ?u[?a -> ?y])
 		)
 		
 		(* rdfs8 *)
