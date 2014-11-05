@@ -40,10 +40,21 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 	protected Iterator<QueryResult> currentQueryResult = null;
 	protected Iterator<Bindings> currentIterator = null;
 
+	/**
+	 * @return true if ParallelIteratorMultipleQueryResults is already used for iterating, otherwise false
+	 */
+	public boolean isIterating(){
+		return this.currentQueryResult!=null;
+	}
+
 	public void addQueryResult(final QueryResult queryResult){
 		if(this.currentQueryResult!=null){
 			throw new RuntimeException("Adding a queryresult, but ParallelIteratorMultipleQueryResults is already used for iterating...");
 		}
+		this.queryResults.add(queryResult);
+	}
+
+	public void addQueryResultAllowingAddingAfterIterating(final QueryResult queryResult) {
 		this.queryResults.add(queryResult);
 	}
 
@@ -142,5 +153,22 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		for(final QueryResult qr: this.queryResults){
 			qr.materialize();
 		}
+	}
+
+	public boolean contains(final QueryResult queryResult) {
+		this.materialize();
+		for(final Bindings b: queryResult){
+			boolean flag = false;
+			for(final QueryResult qr: this.queryResults){
+				if(qr.contains(b)){
+					flag=true;
+					break;
+				}
+			}
+			if(!flag){
+				return false;
+			}
+		}
+		return true;
 	}
 }

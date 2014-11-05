@@ -25,6 +25,7 @@ package lupos.engine.operators.multiinput.minus;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 import lupos.datastructures.bindings.Bindings;
@@ -45,6 +46,8 @@ public class Minus extends MultiInputOperator {
 	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
 																	new ParallelIteratorMultipleQueryResults()};
 
+	protected LinkedList<QueryResult> oldResultsOfLeftOperand = new LinkedList<QueryResult>();
+
 	protected final boolean considerEmptyIntersection;
 
 	public Minus(){
@@ -60,6 +63,26 @@ public class Minus extends MultiInputOperator {
 		// wait for all query results and process them when
 		// EndOfEvaluationMessage arrives
 		if(!queryResult.isEmpty()){
+			if(operandID==1){
+				if(this.operands[operandID].isIterating()){
+					// Minus is definitely in a cycle and gets new results for the right operand!
+					// Check some special cases, where this is no problem!
+					if(this.operands[operandID].contains(queryResult)){
+						return null;
+					} else {
+						for(final Bindings b: queryResult){
+							for(final QueryResult qr: this.oldResultsOfLeftOperand){
+								if(qr.contains(b)){
+									throw new RuntimeException("The result of this Minus operator has already been computed, but new results are added to the right operand, such that a previously computed result becomes invalid...");
+								}
+							}
+						}
+						// allow adding queryResult
+						this.operands[1].addQueryResultAllowingAddingAfterIterating(queryResult);
+						return null;
+					}
+				}
+			}
 			this.operands[operandID].addQueryResult(queryResult);
 		}
 		return null;
@@ -69,6 +92,9 @@ public class Minus extends MultiInputOperator {
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
 			final QueryResult result = QueryResult.createInstance();
+			this.operands[0].materialize();
+			this.operands[1].materialize();
+			this.oldResultsOfLeftOperand.add(this.operands[0].getQueryResult());
 			final Iterator<Bindings> iteratorLeftChild = this.operands[0].getQueryResult().oneTimeIterator();
 			while (iteratorLeftChild.hasNext()) {
 				final Bindings leftItem = iteratorLeftChild.next();
@@ -102,7 +128,6 @@ public class Minus extends MultiInputOperator {
 			}
 
 			// if the operator is in a cycle: it is no problem if the left operand gets new bindings...
-			this.operands[0].release();
 			this.operands[0] = new ParallelIteratorMultipleQueryResults();
 
 			for (final OperatorIDTuple opId : this.succeedingOperators) {
