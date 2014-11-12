@@ -72,8 +72,9 @@ public class Minus extends MultiInputOperator {
 					} else {
 						for(final Bindings b: queryResult){
 							for(final QueryResult qr: this.oldResultsOfLeftOperand){
-								if(qr.contains(b)){
-									throw new RuntimeException("The result of this Minus operator has already been computed, but new results are added to the right operand, such that a previously computed result becomes invalid...");
+								if(this.rightBindingsIsMinusContainedInLeftOperand(qr, b)){
+									System.err.println("The result of this Minus operator has already been computed, but a new result "+b+" is added to the right operand, such that a previously computed result becomes invalid...");
+									System.err.println("This should be no problem if stratified negation is the evaluation model...");
 								}
 							}
 						}
@@ -88,6 +89,36 @@ public class Minus extends MultiInputOperator {
 		return null;
 	}
 
+	private boolean rightBindingsIsMinusContainedInLeftOperand(final QueryResult leftQueryResult, final Bindings rightItem){
+		for(final Bindings leftItem: leftQueryResult){
+			if(this.rightAndLeftBindingsIsMinusEqual(leftItem, rightItem)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean rightAndLeftBindingsIsMinusEqual(final Bindings leftItem, final Bindings rightItem){
+		// compute intersection of the variable sets
+		final Set<Variable> vars = rightItem.getVariableSet();
+		vars.retainAll(leftItem.getVariableSet());
+
+		// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
+		// workaround: check whether vars is empty
+		if(vars.isEmpty() && this.considerEmptyIntersection){
+			return false;
+		}
+
+		boolean isEqual = true;
+		for (final Variable v : vars) {
+			if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
+				isEqual = false;
+				break;
+			}
+		}
+		return isEqual;
+	}
+
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
@@ -100,24 +131,7 @@ public class Minus extends MultiInputOperator {
 				final Bindings leftItem = iteratorLeftChild.next();
 				boolean found = false;
 				for(final Bindings rightItem : this.operands[1].getQueryResult()) {
-					// compute intersection of the variable sets
-					final Set<Variable> vars = rightItem.getVariableSet();
-					vars.retainAll(leftItem.getVariableSet());
-
-					// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
-					// workaround: check whether vars is empty
-					if(vars.isEmpty() && this.considerEmptyIntersection){
-						continue;
-					}
-
-					boolean isEqual = true;
-					for (final Variable v : vars) {
-						if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
-							isEqual = false;
-						}
-					}
-
-					if (isEqual){
+					if(this.rightAndLeftBindingsIsMinusEqual(leftItem, rightItem)){
 						found = true;
 						break;
 					}
@@ -155,24 +169,7 @@ public class Minus extends MultiInputOperator {
 				final Bindings leftItem = iteratorLeftChild.next();
 				boolean found = false;
 				for (final Bindings rightItem : this.operands[1].getQueryResult()) {
-					// compute intersection of the variable sets
-					final Set<Variable> vars = rightItem.getVariableSet();
-					vars.retainAll(leftItem.getVariableSet());
-
-					// if intersection is empty then isEqual should always be false in the typical case (except for not in RIF rules),
-					// workaround: check whether vars is empty
-					if(vars.isEmpty() && this.considerEmptyIntersection){
-						continue;
-					}
-
-					boolean isEqual = true;
-					for (final Variable v : vars) {
-						if ((v.getLiteral(leftItem).compareToNotNecessarilySPARQLSpecificationConform(v.getLiteral(rightItem))) != 0) {
-							isEqual = false;
-						}
-					}
-
-					if (isEqual){
+					if(this.rightAndLeftBindingsIsMinusEqual(leftItem, rightItem)){
 						found = true;
 						break;
 					}
