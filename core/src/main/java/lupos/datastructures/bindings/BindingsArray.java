@@ -73,6 +73,14 @@ public class BindingsArray extends Bindings {
 	}
 
 	/**
+	 * Constructor. Be careful: only use this constructor if you know what you are doing!
+	 */
+	public BindingsArray(final BindingsFactory bindingsFactory, final Literal[] literals){
+		this.bindingsFactory = bindingsFactory;
+		this.literals = literals;
+	}
+
+	/**
 	 * @return the literals
 	 */
 	public Literal[] getLiterals() {
