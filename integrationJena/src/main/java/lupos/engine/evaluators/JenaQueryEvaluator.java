@@ -63,7 +63,15 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 	};
 
 	public enum FORMAT {
-		N3, RDFXML
+		N3, RDFXML {
+			@Override
+			public String getReaderName(){
+				return "RDF/XML";
+			}
+		};
+		public String getReaderName(){
+			return this.toString();
+		}
 	}
 
 	private ONTOLOGY ontology;
@@ -75,8 +83,8 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 	public JenaQueryEvaluator(final String[] arguments) throws Exception {
 		super(arguments);
 	}
-	
-	public JenaQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset, ONTOLOGY ontology, FORMAT type) throws Exception{
+
+	public JenaQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset, final ONTOLOGY ontology, final FORMAT type) throws Exception{
 		super.init(debug, multiplequeries, compare, compareoptions, times, dataset);
 		this.ontology = ontology;
 		this.type = type;
@@ -84,17 +92,17 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 
 	@Override
 	public void setupArguments() {
-		defaultRDFS = ONTOLOGY.NONE;
+		this.defaultRDFS = ONTOLOGY.NONE;
 		super.setupArguments();
 	}
 
 	@Override
 	public void init() throws Exception {
 		super.init();
-		ontology = (ONTOLOGY) args.getEnum("rdfs");
-		type = FORMAT.valueOf(FORMAT.class, args.getString("type"));
+		this.ontology = (ONTOLOGY) this.args.getEnum("rdfs");
+		this.type = FORMAT.valueOf(FORMAT.class, this.args.getString("type"));
 	}
-	
+
 	public void setOntology(final ONTOLOGY ontology){
 		this.ontology = ontology;
 	}
@@ -102,7 +110,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 	@Override
 	public long compileQuery(final String queryString) throws Exception {
 		final Date a = new Date();
-		query = QueryFactory.create(queryString);
+		this.query = QueryFactory.create(queryString);
 		return ((new Date()).getTime() - a.getTime());
 	}
 
@@ -120,27 +128,27 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
 		final Date a = new Date();
-		model = ModelFactory.createDefaultModel();
+		this.model = ModelFactory.createDefaultModel();
 		// // TODO: consider all default graphs and named graphs!
 		// System.out.println("used base dir: "+"file:"+System.getProperty("user.dir"));
-		// model.read(defaultGraphs.iterator().next().openStream(), "file:"+System.getProperty("user.dir"), type.toString());
-		model.read(defaultGraphs.iterator().next().openStream(), null, type.toString());
+		// model.read(defaultGraphs.iterator().next().openStream(), "file:"+System.getProperty("user.dir"), type.getReaderName());
+		this.model.read(defaultGraphs.iterator().next().openStream(), null, this.type.getReaderName());
 
-		if (ontology == ONTOLOGY.RDFS) {
+		if (this.ontology == ONTOLOGY.RDFS) {
 			// TODO: consider all default graphs and named graphs!
-			model = ModelFactory.createRDFSModel(model);
-		} else if (ontology == ONTOLOGY.OWL) {
+			this.model = ModelFactory.createRDFSModel(this.model);
+		} else if (this.ontology == ONTOLOGY.OWL) {
 			final Reasoner owlReasoner = ReasonerRegistry.getOWLReasoner();
-			model = ModelFactory.createInfModel(owlReasoner, model);
+			this.model = ModelFactory.createInfModel(owlReasoner, this.model);
 		}
 
 		return ((new Date()).getTime() - a.getTime());
 	}
-	
+
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
-			Collection<URILiteral> defaultGraphs,
-			Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
+			final Collection<URILiteral> defaultGraphs,
+			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
 			throws Exception {
 		return this.prepareInputData(defaultGraphs, null);
 	}
@@ -148,10 +156,10 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 	@Override
 	public long evaluateQuery() throws Exception {
 		final Date a = new Date();
-		final QueryExecution qe = QueryExecutionFactory.create(query, model);
-		if (query.isAskType()) {
+		final QueryExecution qe = QueryExecutionFactory.create(this.query, this.model);
+		if (this.query.isAskType()) {
 			qe.execAsk();
-		} else if (query.isSelectType()) {
+		} else if (this.query.isSelectType()) {
 			final ResultSet results = qe.execSelect();
 			ResultSetFormatter.consume(results);
 		}
@@ -161,8 +169,8 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 
 	@Override
 	public QueryResult getResult() throws Exception {
-		final QueryExecution qe = QueryExecutionFactory.create(query, model);
-		if (query.isAskType()) {
+		final QueryExecution qe = QueryExecutionFactory.create(this.query, this.model);
+		if (this.query.isAskType()) {
 			if (qe.execAsk()) {
 				// unempty => true
 				final QueryResult qr = new BooleanResult();
@@ -173,28 +181,30 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 				qe.close();
 				return qr;
 			}
-		} else if (query.isSelectType()) {
+		} else if (this.query.isSelectType()) {
 			final ResultSet results = qe.execSelect();
 			final QueryResult list = resultSetToBindingsList(results);
 			qe.close();
 			return list;
-		} else if (query.isConstructType()) {
+		} else if (this.query.isConstructType()) {
 			final Model model = qe.execConstruct();
 			qe.close();
 			final GraphResult gr = new GraphResult();
 			TurtleParser.triplesFromModel(model,
 					new TripleConsumer() {
+						@Override
 						public void consume(final Triple triple) {
 							gr.addGraphResultTriple(triple);
 						}
 					}, TurtleParser.readFileNumber++);
 			return gr;
-		} else if (query.isDescribeType()) {
+		} else if (this.query.isDescribeType()) {
 			final Model model = qe.execDescribe();
 			qe.close();
 			final GraphResult gr = new GraphResult();
 			TurtleParser.triplesFromModel(model,
 					new TripleConsumer() {
+						@Override
 						public void consume(final Triple triple) {
 							gr.addGraphResultTriple(triple);
 						}
@@ -224,7 +234,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 					varname = it.next();
 					if (sol.contains(varname)) {
 						if (sol.get(varname).isLiteral()) {
-							if (sol.getLiteral(varname).getDatatypeURI() != null)
+							if (sol.getLiteral(varname).getDatatypeURI() != null) {
 								binding
 										.add(
 												new Variable(varname),
@@ -242,7 +252,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 																						varname)
 																				.getDatatypeURI()
 																		+ ">"));
-							else {
+							} else {
 								if (sol.getLiteral(varname).getLanguage() != null
 										&& sol.getLiteral(varname)
 												.getLanguage().length() > 0) {
@@ -261,7 +271,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 																			.getLiteral(
 																					varname)
 																			.getLanguage()));
-								} else
+								} else {
 									binding
 											.add(
 													new Variable(varname),
@@ -272,9 +282,10 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 																					varname)
 																			.getLexicalForm()
 																	+ "\""));
+								}
 							}
 						} else {
-							if (sol.get(varname).isAnon())
+							if (sol.get(varname).isAnon()) {
 								binding
 										.add(
 												new Variable(varname),
@@ -283,7 +294,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 																.getResource(
 																		varname)
 																.toString()));
-							else 
+							} else {
 								binding
 										.add(
 												new Variable(varname),
@@ -292,6 +303,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 																+ sol
 																		.getResource(varname)
 																+ ">"));
+							}
 						}
 					}
 				}
