@@ -23,6 +23,7 @@
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -53,13 +54,13 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 
 public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 2525787949536056772L;
-	private AbstractRuleOperatorPanel that = this;
+	private final AbstractRuleOperatorPanel that = this;
 	protected GridBagConstraints gbc = null;
 	private JComboBox enumCoBo = null;
 	private JTextField textField = null;
 	private JCheckBoxOwnIcon cB_subClasses = null;
 
-	public AbstractRuleOperatorPanel(final VisualGraph<Operator> parent, GraphWrapper gw, final AbstractRuleOperator operator, RuleEnum classType, String name, boolean alsoSubClasses) {
+	public AbstractRuleOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw, final AbstractRuleOperator operator, final RuleEnum classType, final String name, final boolean alsoSubClasses) {
 		super(parent, gw, operator, true);
 
 		// build drop down menu for class names...
@@ -68,14 +69,15 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.enumCoBo.setFont(parent.getFONT());
 		this.enumCoBo.addMouseListener(new RuleMouseListener(this, this.enumCoBo));
 		this.enumCoBo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				operator.setClassType((RuleEnum) that.enumCoBo.getSelectedItem());
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				operator.setClassType((RuleEnum) AbstractRuleOperatorPanel.this.that.enumCoBo.getSelectedItem());
 			}
 		});
 
 
 		// build label for name...
-		JLabel nameLabel = new JLabel("Name:");
+		final JLabel nameLabel = new JLabel("Name:");
 		nameLabel.setFont(this.parent.getFONT());
 
 
@@ -85,17 +87,19 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.textField.setPreferredSize(new Dimension(this.textField.getPreferredSize().width + 100, this.textField.getPreferredSize().height));
 		this.textField.addMouseListener(new RuleMouseListener(this, this.textField));
 		this.textField.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent fe) {}
+			@Override
+			public void focusGained(final FocusEvent fe) {}
 
-			public void focusLost(FocusEvent fe) {
+			@Override
+			public void focusLost(final FocusEvent fe) {
 				try {
-					operator.applyChange(that.textField.getText());
+					operator.applyChange(AbstractRuleOperatorPanel.this.that.textField.getText());
 				}
-				catch(ModificationException me) {
-					int n = AbstractGuiComponent.showCorrectIgnoreOptionDialog(parent, me.getMessage());
+				catch(final ModificationException me) {
+					final int n = AbstractGuiComponent.showCorrectIgnoreOptionDialog(parent, me.getMessage());
 
 					if(n == JOptionPane.YES_OPTION) {
-						(new FocusThread(that.textField)).start();
+						(new FocusThread(AbstractRuleOperatorPanel.this.that.textField)).start();
 					}
 				}
 			}
@@ -129,9 +133,10 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 			this.cB_subClasses = new JCheckBoxOwnIcon("also Subclasses", alsoSubClasses, this.parent.getFONT());
 			this.cB_subClasses.addMouseListener(new RuleMouseListener(this, this.cB_subClasses));
 			this.cB_subClasses.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent ie) {
+				@Override
+				public void itemStateChanged(final ItemEvent ie) {
 					// get new state...
-					boolean selected = (ie.getStateChange() == ItemEvent.SELECTED);
+					final boolean selected = (ie.getStateChange() == ItemEvent.SELECTED);
 
 					operator.setAlsoSubClasses(selected);
 				}
@@ -140,20 +145,22 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 			this.add(this.cB_subClasses, this.gbc);
 			this.gbc.gridx++;
 		}
+		this.setBackground(new Color(211, 211, 211));
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		((AbstractRuleOperator) this.operator).setClassType((RuleEnum) this.enumCoBo.getSelectedItem());
 
 		try {
-			String newName = this.textField.getText();
+			final String newName = this.textField.getText();
 
 			((AbstractRuleOperator) this.operator).applyChange(newName);
 
 			if(!newName.equals("")) {
-				HashMap<String, Operator> names = (HashMap<String, Operator>) data;
-				Operator tmp = names.get(newName);
+				final HashMap<String, Operator> names = (HashMap<String, Operator>) data;
+				final Operator tmp = names.get(newName);
 
 				if(tmp != null && !tmp.equals(this.operator)) {
 					throw new ModificationException("Name already in use!", this.operator);
@@ -165,7 +172,7 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 
 			return true;
 		}
-		catch(ModificationException me) {
+		catch(final ModificationException me) {
 			if(showErrors) {
 				JOptionPane.showOptionDialog(this.parent.visualEditor, me.getMessage(), "Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, null , null);
 
@@ -173,6 +180,17 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 			}
 
 			return false;
+		}
+	}
+
+	@Override
+	public void setBackground(final Color bg){
+		super.setBackground(bg);
+		if(this.enumCoBo!=null){
+			this.enumCoBo.setBackground(bg);
+		}
+		if(this.cB_subClasses!=null){
+			this.cB_subClasses.setBackground(bg);
 		}
 	}
 }

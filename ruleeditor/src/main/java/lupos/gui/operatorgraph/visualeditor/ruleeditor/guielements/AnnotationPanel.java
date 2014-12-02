@@ -55,7 +55,7 @@ import lupos.misc.Triple;
 
 public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
-	private AnnotationPanel that = this;
+	private final AnnotationPanel that = this;
 	private JLabel jL_id = null;
 	private JLabel jL_opID = null;
 	private JCheckBoxOwnIcon jCB_activate = null;
@@ -67,7 +67,7 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 	private JRadioButton jRB_mode_only_succeeding = null;
 	private JRadioButton jRB_mode_only_preceding_and_succeeding = null;
 
-	public AnnotationPanel(final VisualGraph<Operator> parent, final AbstractRuleOperator operator, final AbstractRuleOperator child, Triple<Boolean, String, ModeEnum> data) {
+	public AnnotationPanel(final VisualGraph<Operator> parent, final AbstractRuleOperator operator, final AbstractRuleOperator child, final Triple<Boolean, String, ModeEnum> data) {
 		super(parent, new GraphWrapperOperator(operator), operator, false);
 
 		this.parentOp = operator;
@@ -89,7 +89,7 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.setLayout(new GridBagLayout());
 
-		GridBagConstraints mainGBC = new GridBagConstraints();
+		final GridBagConstraints mainGBC = new GridBagConstraints();
 		mainGBC.gridwidth = 3;
 		mainGBC.gridheight = 1;
 		mainGBC.gridx = mainGBC.gridy = 0;
@@ -102,21 +102,23 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		this.jTF_id.setFont(parent.getFONT());
 		this.jTF_id.setEnabled(active);
 		this.jTF_id.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent fe) {}
+			@Override
+			public void focusGained(final FocusEvent fe) {}
 
-			public void focusLost(FocusEvent fe) {
-				String content = that.jTF_id.getText();
+			@Override
+			public void focusLost(final FocusEvent fe) {
+				final String content = AnnotationPanel.this.that.jTF_id.getText();
 
 				if(!content.equals("")) {
 					try {
-						child.setOpID(content, that.isActive());
+						child.setOpID(content, AnnotationPanel.this.that.isActive());
 						operator.setChildOpID(child, content);
 					}
-					catch(ModificationException me) {
-						int n = AbstractGuiComponent.showCorrectIgnoreOptionDialog(parent, me.getMessage());
+					catch(final ModificationException me) {
+						final int n = AbstractGuiComponent.showCorrectIgnoreOptionDialog(parent, me.getMessage());
 
 						if(n == JOptionPane.YES_OPTION) {
-							(new FocusThread(that.jTF_id)).start();
+							(new FocusThread(AnnotationPanel.this.that.jTF_id)).start();
 						}
 					}
 				}
@@ -125,23 +127,22 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.jCB_activate = new JCheckBoxOwnIcon("activate", active, parent.getFONT());
 		this.jCB_activate.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent ie) {
+			@Override
+			public void itemStateChanged(final ItemEvent ie) {
 				// get new state...
-				boolean selected = (ie.getStateChange() == ItemEvent.SELECTED);
+				final boolean selected = (ie.getStateChange() == ItemEvent.SELECTED);
 
-				that.jTF_id.setEnabled(selected);
+				AnnotationPanel.this.that.jTF_id.setEnabled(selected);
 				operator.setActiveConnection(child, selected);
 			}
 		});
 
-		final Color transparent=new Color(0,0,0,0);
-		
 		this.jRB_mode_exists = new JRadioButton(ModeEnum.EXISTS.toString(), mode == ModeEnum.EXISTS);
 		this.jRB_mode_exists.setFont(parent.getFONT());
-		this.jRB_mode_exists.setBackground(transparent);
 		this.jRB_mode_exists.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				if(that.jRB_mode_exists.isSelected()) {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				if(AnnotationPanel.this.that.jRB_mode_exists.isSelected()) {
 					operator.setMode(child, ModeEnum.EXISTS);
 				}
 			}
@@ -149,10 +150,10 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.jRB_mode_all_preceding = new JRadioButton(ModeEnum.ALL_PRECEDING.toString(), mode == ModeEnum.ALL_PRECEDING);
 		this.jRB_mode_all_preceding.setFont(parent.getFONT());
-		this.jRB_mode_all_preceding.setBackground(transparent);
 		this.jRB_mode_all_preceding.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				if(that.jRB_mode_all_preceding.isSelected()) {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				if(AnnotationPanel.this.that.jRB_mode_all_preceding.isSelected()) {
 					operator.setMode(child, ModeEnum.ALL_PRECEDING);
 				}
 			}
@@ -160,10 +161,10 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.jRB_mode_only_preceding = new JRadioButton(ModeEnum.ONLY_PRECEDING.toString(), mode == ModeEnum.ONLY_PRECEDING);
 		this.jRB_mode_only_preceding.setFont(parent.getFONT());
-		this.jRB_mode_only_preceding.setBackground(transparent);
 		this.jRB_mode_only_preceding.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				if(that.jRB_mode_only_preceding.isSelected()) {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				if(AnnotationPanel.this.that.jRB_mode_only_preceding.isSelected()) {
 					operator.setMode(child, ModeEnum.ONLY_PRECEDING);
 				}
 			}
@@ -171,10 +172,10 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.jRB_mode_all_succeeding = new JRadioButton(ModeEnum.ALL_SUCCEEDING.toString(), mode == ModeEnum.ALL_SUCCEEDING);
 		this.jRB_mode_all_succeeding.setFont(parent.getFONT());
-		this.jRB_mode_all_succeeding.setBackground(transparent);
 		this.jRB_mode_all_succeeding.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				if(that.jRB_mode_all_succeeding.isSelected()) {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				if(AnnotationPanel.this.that.jRB_mode_all_succeeding.isSelected()) {
 					operator.setMode(child, ModeEnum.ALL_SUCCEEDING);
 				}
 			}
@@ -182,10 +183,10 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.jRB_mode_only_succeeding = new JRadioButton(ModeEnum.ONLY_SUCCEEDING.toString(), mode == ModeEnum.ONLY_SUCCEEDING);
 		this.jRB_mode_only_succeeding.setFont(parent.getFONT());
-		this.jRB_mode_only_succeeding.setBackground(transparent);
 		this.jRB_mode_only_succeeding.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				if(that.jRB_mode_only_succeeding.isSelected()) {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				if(AnnotationPanel.this.that.jRB_mode_only_succeeding.isSelected()) {
 					operator.setMode(child, ModeEnum.ONLY_SUCCEEDING);
 				}
 			}
@@ -193,16 +194,16 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 
 		this.jRB_mode_only_preceding_and_succeeding = new JRadioButton(ModeEnum.ONLY_PRECEDING_AND_SUCCEEDING.toString(), mode == ModeEnum.ONLY_PRECEDING_AND_SUCCEEDING);
 		this.jRB_mode_only_preceding_and_succeeding.setFont(parent.getFONT());
-		this.jRB_mode_only_preceding_and_succeeding.setBackground(transparent);
 		this.jRB_mode_only_preceding_and_succeeding.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				if(that.jRB_mode_only_preceding_and_succeeding.isSelected()) {
+			@Override
+			public void actionPerformed(final ActionEvent ae) {
+				if(AnnotationPanel.this.that.jRB_mode_only_preceding_and_succeeding.isSelected()) {
 					operator.setMode(child, ModeEnum.ONLY_PRECEDING_AND_SUCCEEDING);
 				}
 			}
 		});
 
-		ButtonGroup group = new ButtonGroup();
+		final ButtonGroup group = new ButtonGroup();
 		group.add(this.jRB_mode_exists);
 		group.add(this.jRB_mode_all_preceding);
 		group.add(this.jRB_mode_only_preceding);
@@ -264,29 +265,32 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		mainGBC.gridwidth = 2;
 
 		this.add(this.jRB_mode_only_preceding_and_succeeding, mainGBC);
+
+		this.setBackground(new Color(255, 165, 0));
 	}
 
+	@Override
 	public void updateSize() {
-		int objWidth = (int) (4*this.parent.PADDING) + this.jCB_activate.getPreferredSize().width + this.jL_id.getPreferredSize().width + this.jTF_id.getPreferredSize().width;
-		int objHeight = (int) (3*this.parent.PADDING) + this.jL_opID.getPreferredSize().height + this.jTF_id.getPreferredSize().height;
+		final int objWidth = (int) (4*this.parent.PADDING) + this.jCB_activate.getPreferredSize().width + this.jL_id.getPreferredSize().width + this.jTF_id.getPreferredSize().width;
+		final int objHeight = (int) (3*this.parent.PADDING) + this.jL_opID.getPreferredSize().height + this.jTF_id.getPreferredSize().height;
 
 		// if the needed size of the content of the panel is not equal with the
 		// current size of it...
 		if(objWidth != this.getPreferredSize().width || objHeight != this.getPreferredSize().height) {
 			// update size of the panel...
-			Dimension d = new Dimension(objWidth, objHeight);
+			final Dimension d = new Dimension(objWidth, objHeight);
 
-			int oldCenter = this.getX() + (this.getPreferredSize().width / 2);
+			final int oldCenter = this.getX() + (this.getPreferredSize().width / 2);
 
 			this.setPreferredSize(d);
 			this.setSize(d);
 			this.setMinimumSize(d);
 
-			int newCenter = this.getX() + (d.width / 2);
+			final int newCenter = this.getX() + (d.width / 2);
 
-			int xDiff = (newCenter - oldCenter) / 2;
+			final int xDiff = (newCenter - oldCenter) / 2;
 
-			int newX = this.getX() - xDiff;
+			final int newX = this.getX() - xDiff;
 
 			this.setLocation(newX, this.getY());
 
@@ -294,16 +298,17 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		try {
-			String idText = this.jTF_id.getText();
+			final String idText = this.jTF_id.getText();
 
-			AbstractRuleOperator ruleOp = (AbstractRuleOperator) this.operator;
-			AbstractRuleOperator ruleChildOp = (AbstractRuleOperator) this.child;
+			final AbstractRuleOperator ruleOp = (AbstractRuleOperator) this.operator;
+			final AbstractRuleOperator ruleChildOp = (AbstractRuleOperator) this.child;
 
 			ruleOp.setActiveConnection(ruleChildOp, this.jCB_activate.isSelected());
-			boolean ret = ruleChildOp.setOpID(idText, this.isActive());
+			final boolean ret = ruleChildOp.setOpID(idText, this.isActive());
 
 			if(ret) {
 				ruleOp.setChildOpID(ruleChildOp, idText);
@@ -315,8 +320,8 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 				try {
 					Integer.parseInt(idText);
 				}
-				catch(NumberFormatException nfe) {
-					HashMap<String, Operator> names = (HashMap<String, Operator>) data;
+				catch(final NumberFormatException nfe) {
+					final HashMap<String, Operator> names = (HashMap<String, Operator>) data;
 
 					if(names.containsKey(idText)) {
 						throw new ModificationException("Name already in use!", this.operator);
@@ -327,7 +332,7 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 				}
 			}
 		}
-		catch(ModificationException me) {
+		catch(final ModificationException me) {
 			if(showErrors) {
 				JOptionPane.showOptionDialog(this.parent.visualEditor, me.getMessage(), "Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
 
@@ -348,20 +353,20 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		try {
 			return Integer.parseInt(this.jTF_id.getText());
 		}
-		catch(NumberFormatException nfe) {
+		catch(final NumberFormatException nfe) {
 			return -1;
 		}
 	}
 
 	public String getOpLabel() {
-		String labelText = this.jTF_id.getText();
+		final String labelText = this.jTF_id.getText();
 
 		try {
 			Integer.parseInt(labelText);
 
 			return "";
 		}
-		catch(NumberFormatException nfe) {
+		catch(final NumberFormatException nfe) {
 			return labelText;
 		}
 	}
@@ -387,6 +392,20 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		}
 		else {
 			return null;
+		}
+	}
+
+	@Override
+	public void setBackground(final Color bg){
+		super.setBackground(bg);
+		if(this.jRB_mode_exists!=null){
+			this.jRB_mode_exists.setBackground(bg);
+			this.jRB_mode_all_preceding.setBackground(bg);
+			this.jRB_mode_only_preceding.setBackground(bg);
+			this.jRB_mode_all_succeeding.setBackground(bg);
+			this.jRB_mode_only_succeeding.setBackground(bg);
+			this.jRB_mode_only_preceding_and_succeeding.setBackground(bg);
+			this.jCB_activate.setBackground(bg);
 		}
 	}
 }

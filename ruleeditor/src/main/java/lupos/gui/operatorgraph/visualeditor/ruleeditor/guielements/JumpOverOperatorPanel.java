@@ -24,6 +24,7 @@
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -50,24 +51,24 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum;
 
 public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 	private static final long serialVersionUID = 3254499503232644390L;
-	private JumpOverOperatorPanel that = this;
+	private final JumpOverOperatorPanel that = this;
 	private JRadioButton cardinality_oneORnone = null;
 	private JRadioButton cardinality_oneORmore = null;
 	private JRadioButton cardinality_noneORmore = null;
 
-	public JumpOverOperatorPanel(final VisualGraph<Operator> parent, GraphWrapper gw, final JumpOverOperator operator, RuleEnum classType, String name, boolean alsoSubClasses, String cardinality) {
+	public JumpOverOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw, final JumpOverOperator operator, final RuleEnum classType, final String name, final boolean alsoSubClasses, final String cardinality) {
 		super(parent, gw, operator, classType, name, alsoSubClasses);
 
 		if(this.getParentQG() == ((RuleEditorPane) this.getParentQG().visualEditor).getVisualGraphs().get(0)) {
-			JButton jB_conditions = new JButton("Conditions");
+			final JButton jB_conditions = new JButton("Conditions");
 			jB_conditions.setFont(parent.getFONT());
 			jB_conditions.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					JPanel panel = new JPanel();
+				public void actionPerformed(final ActionEvent arg0) {
+					final JPanel panel = new JPanel();
 					final JFrame frame = parent.visualEditor.createSmallFrame(panel, "JumpOverOperator conditions");
 
-					LuposDocument document = new LuposDocument();
+					final LuposDocument document = new LuposDocument();
 					final JTextPane tp = new LuposJTextPane(document);
 					document.init(JavaScanner.createILuposParser(new LuposDocumentReader(document)), true);
 
@@ -76,15 +77,16 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 					tp.setText(operator.getConditions());
 
 					// create OK button, which starts query evaluation...
-					JButton bt_ok = new JButton("OK");
+					final JButton bt_ok = new JButton("OK");
 					bt_ok.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
+						@Override
+						public void actionPerformed(final ActionEvent e) {
 							operator.setConditions(tp.getText());
 							frame.setVisible(false); // hide query input frame
 						}
 					});
 
-					JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+					final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 					buttonPanel.add(bt_ok);
 
 					// create main panel and add components to it...
@@ -100,7 +102,7 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 			this.gbc.gridx++;
 
 
-			JLabel cardinalityLabel = new JLabel("Cardinality: ");
+			final JLabel cardinalityLabel = new JLabel("Cardinality: ");
 			cardinalityLabel.setFont(parent.getFONT());
 
 			this.add(cardinalityLabel, this.gbc);
@@ -111,8 +113,9 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 			this.cardinality_oneORnone.setFont(parent.getFONT());
 			this.cardinality_oneORnone.setOpaque(false);
 			this.cardinality_oneORnone.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					if(that.cardinality_oneORnone.isSelected()) {
+				@Override
+				public void actionPerformed(final ActionEvent ae) {
+					if(JumpOverOperatorPanel.this.that.cardinality_oneORnone.isSelected()) {
 						operator.setCardinality("?");
 					}
 				}
@@ -122,8 +125,9 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 			this.cardinality_oneORmore.setFont(parent.getFONT());
 			this.cardinality_oneORmore.setOpaque(false);
 			this.cardinality_oneORmore.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					if(that.cardinality_oneORmore.isSelected()) {
+				@Override
+				public void actionPerformed(final ActionEvent ae) {
+					if(JumpOverOperatorPanel.this.that.cardinality_oneORmore.isSelected()) {
 						operator.setCardinality("+");
 					}
 				}
@@ -133,35 +137,39 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 			this.cardinality_noneORmore.setFont(parent.getFONT());
 			this.cardinality_noneORmore.setOpaque(false);
 			this.cardinality_noneORmore.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent ae) {
-					if(that.cardinality_noneORmore.isSelected()) {
+				@Override
+				public void actionPerformed(final ActionEvent ae) {
+					if(JumpOverOperatorPanel.this.that.cardinality_noneORmore.isSelected()) {
 						operator.setCardinality("*");
 					}
 				}
 			});
 
-			ButtonGroup group = new ButtonGroup();
+			final ButtonGroup group = new ButtonGroup();
 			group.add(this.cardinality_oneORnone);
 			group.add(this.cardinality_oneORmore);
 			group.add(this.cardinality_noneORmore);
 
-			JPanel cardinalityPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			final JPanel cardinalityPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			cardinalityPanel.setOpaque(false);
 			cardinalityPanel.add(this.cardinality_oneORnone);
 			cardinalityPanel.add(this.cardinality_oneORmore);
 			cardinalityPanel.add(this.cardinality_noneORmore);
 
 			this.add(cardinalityPanel, this.gbc);
+
+			super.setBackground(new Color(255, 136, 136));
 		}
 	}
 
-	public boolean validateOperatorPanel(boolean showErrors, Object data) {
+	@Override
+	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		if(!super.validateOperatorPanel(showErrors, data)) {
 			return false;
 		}
 
 		if(this.getParentQG() == ((RuleEditorPane) this.getParentQG().visualEditor).getVisualGraphs().get(0)) {
-			JumpOverOperator jumpOp = (JumpOverOperator) this.operator;
+			final JumpOverOperator jumpOp = (JumpOverOperator) this.operator;
 
 			if(this.cardinality_oneORnone.isSelected()) {
 				jumpOp.setCardinality("?");
