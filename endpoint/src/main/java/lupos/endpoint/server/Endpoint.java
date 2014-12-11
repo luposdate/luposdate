@@ -288,6 +288,7 @@ public class Endpoint {
 			} catch (final Error e) {
 				System.err.println(e);
 				e.printStackTrace();
+				t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 				t.getResponseHeaders().add("Content-type", "text/plain");
 				final String answer = "Error:\n"+e.getMessage();
 				System.out.println(answer);
@@ -296,6 +297,7 @@ public class Endpoint {
 			} catch (final Exception e){
 				System.err.println(e);
 				e.printStackTrace();
+				t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 				t.getResponseHeaders().add("Content-type", "text/plain");
 				final String answer = "Error:\n"+e.getMessage();
 				System.out.println(answer);
