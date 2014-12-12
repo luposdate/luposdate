@@ -267,6 +267,7 @@ public class Endpoint {
 					final QueryResult queryResult = (this.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)this.evaluator).getResult(queryParameter, true):this.evaluator.getResult(queryParameter);
 					final String mimeType = formatter.getMIMEType(queryResult);
 					System.out.println("Done, sending response using MIME type "+mimeType);
+					t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 					t.getResponseHeaders().add("Content-type", mimeType);
 					t.getResponseHeaders().add("Transfer-encoding", "chunked");
 					t.sendResponseHeaders(200, 0);
@@ -287,6 +288,7 @@ public class Endpoint {
 			} catch (final Error e) {
 				System.err.println(e);
 				e.printStackTrace();
+				t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 				t.getResponseHeaders().add("Content-type", "text/plain");
 				final String answer = "Error:\n"+e.getMessage();
 				System.out.println(answer);
@@ -295,6 +297,7 @@ public class Endpoint {
 			} catch (final Exception e){
 				System.err.println(e);
 				e.printStackTrace();
+				t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 				t.getResponseHeaders().add("Content-type", "text/plain");
 				final String answer = "Error:\n"+e.getMessage();
 				System.out.println(answer);
