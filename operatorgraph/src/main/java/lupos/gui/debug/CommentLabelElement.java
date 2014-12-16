@@ -71,12 +71,32 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	 * the animation thread for this panel
 	 */
 	private Thread animationthread = null;
+	
+	/**
+	 * the mode for the speed of the animation for moves of this panel
+	 */
+	private static AnimationSpeedMode animationSpeedMode = AnimationSpeedMode.CONSTANT_SPEED;
 
 	/**
 	 * shared variable to interrupt the animation
 	 */
 	public volatile boolean stopAnimation = false;
 
+	/**
+	 * the mode for an animation 
+	 */
+	public static enum AnimationSpeedMode {
+		/**
+		 * visual element moves with a constant speed on the display
+		 */
+		CONSTANT_SPEED,
+		
+		/**
+		 * the element moves with constant time independent of the move distance
+		 */
+		CONSTANT_TIME
+	}
+	
 	/**
 	 * Number of milliseconds waited after each animation step
 	 */
@@ -366,6 +386,14 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		return table;
 	}
 
+	public static AnimationSpeedMode getAnimationSpeedMode() {
+		return animationSpeedMode;
+	}
+
+	public static void setAnimationSpeedMode(final AnimationSpeedMode animationSpeedMode) {
+		CommentLabelElement.animationSpeedMode = animationSpeedMode;
+	}
+
 	public static void updateTable(final JTable table,
 			final OperatorGraph operatorGraph) {
 		table.setFont(operatorGraph.getFONT());
@@ -483,40 +511,16 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.setBounds(midpointFrom.x, midpointFrom.y,
 				this.getPreferredSize().width, this.getPreferredSize().height);
 
-		final int x = Math.abs(midpointTo.x - midpointFrom.x);
-		final int y = Math.abs(midpointTo.y - midpointFrom.y);
-		final double steps = Math.sqrt((double) x * x + (double) y * y);
 
-		final double deltaX = ((midpointTo.x - midpointFrom.x)) / steps;
-		final double deltaY = ((midpointTo.y - midpointFrom.y)) / steps;
 
 		this.setLocation(midpointFrom.x, midpointFrom.y);
 
 		// --- animation example - begin ---
-		this.animationthread = new Thread() {
-			@Override
-			public void run() {
-				for (double i = 0; i < steps; i += 100 / percentageSteps) {
-					if (stopAnimation) {
-						break;
-					} else
-						try {
-							Thread.sleep(pause); // wait some milliseconds
-						} catch (final InterruptedException e) {
-							// no output
-						}
-
-					CommentLabelElement.this.setLocation(midpointFrom.x
-							+ (int) (i * deltaX), midpointFrom.y
-							+ (int) (i * deltaY));
-				}
-
-			}
-		};
+		this.animationthread = createAnimationThread(midpointFrom,midpointTo);
 		this.animationthread.start();
 		// --- animation example - end ---
 	}
-
+	
 	/**
 	 * This method removes this CommentLabelElement from the Operatorgraph
 	 */
@@ -571,5 +575,96 @@ public class CommentLabelElement extends AbstractCommentPanel {
 				- (int) this.operatorGraph.PADDING, size.height - 1
 				- (int) this.operatorGraph.PADDING, backgroundColor, new Color(
 				128, 128, 128, 100), (int) this.operatorGraph.PADDING);
+	}
+	
+	private Thread createAnimationThread(final Point midpointFrom,final Point midpointTo){
+		switch(animationSpeedMode){
+		case CONSTANT_SPEED:
+			return createConstSpeedAnimationThread(midpointFrom, midpointTo);
+		case CONSTANT_TIME:
+			return createConstTimeAnimationThread(midpointFrom, midpointTo);
+		default: return null;
+		}
+	}
+	
+	/**
+	 * Create an animation-thread moving the panel linear between two point with
+	 * constant speed in time: steps*percentageSteps / 100 
+	 * pause
+	 * 
+	 * @param midpointFrom
+	 *            the coordinate where the move animation should start
+	 * @param midpointTo
+	 *            the coordinate where the move animation should end
+	 * @return the animation thread which performs the animation
+	 */
+	private Thread createConstSpeedAnimationThread(final Point midpointFrom,
+			final Point midpointTo) {
+		final int x = Math.abs(midpointTo.x - midpointFrom.x);
+		final int y = Math.abs(midpointTo.y - midpointFrom.y);
+
+		final double steps = Math.sqrt((double) x * x + (double) y * y);
+
+		final double deltaX = ((midpointTo.x - midpointFrom.x)) / steps;
+		final double deltaY = ((midpointTo.y - midpointFrom.y)) / steps;
+		return new Thread() {
+			@Override
+			public void run() {
+				for (double i = 0; i < steps; i += 100 / percentageSteps) {
+					if (stopAnimation) {
+						break;
+					} else
+						try {
+							Thread.sleep(pause); // wait some milliseconds
+						} catch (final InterruptedException e) {
+							// no output
+						}
+
+					int newX = midpointFrom.x + (int) (i * deltaX);
+					int newY = midpointFrom.y + (int) (i * deltaY);
+
+					CommentLabelElement.this.setLocation(newX, newY);
+				}
+
+			}
+		};
+
+	}
+
+	/**
+	 * Create an animation-thread moving the panel linear between two points in
+	 * a constant time:  percentageSteps * pause
+	 * 
+	 * @param midpointFrom
+	 *            the coordinate where the move animation should start
+	 * @param midpointTo
+	 *            the coordinate where the move animation should end
+	 * @return the animation thread which performs the animation
+	 */
+	private Thread createConstTimeAnimationThread(final Point midpointFrom,
+			final Point midpointTo) {
+		final double deltaX = ((midpointTo.x - midpointFrom.x));
+		final double deltaY = ((midpointTo.y - midpointFrom.y));
+		return new Thread() {
+			@Override
+			public void run() {
+				for (double i = 0; i <= 100; i += 100/percentageSteps) {
+					if (stopAnimation) {
+						break;
+					} else
+						try {
+							Thread.sleep(pause); // wait some milliseconds
+						} catch (final InterruptedException e) {
+							// no output
+						}
+
+					int newX = midpointFrom.x + (int) (i * deltaX / 100);
+					int newY = midpointFrom.y + (int) (i * deltaY / 100);
+
+					CommentLabelElement.this.setLocation(newX, newY);
+				}
+
+			}
+		};
 	}
 }
