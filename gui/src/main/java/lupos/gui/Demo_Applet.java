@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+ * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
  * All rights reserved.
  *
@@ -97,6 +97,7 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoin;
 import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinNonStandardSPARQL;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.gui.DebugViewerCreator.RulesGetter;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE;
 import lupos.gui.anotherSyntaxHighlighting.LinePainter;
@@ -1512,7 +1513,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 		public abstract boolean evaluatorSuitableForEvaluation(String s);
 
-		public abstract long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs) throws Exception;
+		public abstract long prepareInputData(Collection<URILiteral> defaultGraphsParameter, LinkedList<URILiteral> namedGraphs, String query) throws Exception;
 	}
 
 	public class SPARQLEvaluation extends Evaluation {
@@ -1611,7 +1612,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			}
 		}
 
-		private void inference() throws Exception {
+		private void inference(final String query) throws Exception {
 			if(this.evaluator instanceof JenaQueryEvaluator || this.evaluator instanceof SesameQueryEvaluator){
 				return;
 			}
@@ -1619,8 +1620,18 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			Demo_Applet.this.materializationInfo = null;
 			Demo_Applet.this.inferenceRules = ((SPARQLINFERENCE)Demo_Applet.this.comboBox_sparqlInference.getSelectedItem()).getRuleSet(Demo_Applet.this.rulesets);
 			if(Demo_Applet.this.inferenceRules != null){
+				this.evaluator.compileQuery(query);
+				// determine Triple Patterns to be added as conclusions in RIF rule set!
+				String conclusion = "";
+				for(final TriplePattern tp: ((CommonCoreQueryEvaluator<Node>)this.evaluator).getTriplePatternsOfQuery()){
+					conclusion += tp.getSubject().toString() + " [ " + tp.getPredicate().toString() + " -> " + tp.getObject().toString() + " ] ";
+				}
+				if(conclusion.length()>0){
+					conclusion = "AND(" + conclusion + ")";
+				}
+
 				final BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)this.evaluator);
-				birqe.compileQuery(Demo_Applet.this.inferenceRules);
+				birqe.compileQuery(Demo_Applet.this.inferenceRules, conclusion);
 				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
 						new RulesGetter(){
 							@Override
@@ -1668,11 +1679,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		@Override
-		public long prepareInputData(final Collection<URILiteral> defaultGraphsParameter, final LinkedList<URILiteral> namedGraphs) throws Exception {
+		public long prepareInputData(final Collection<URILiteral> defaultGraphsParameter, final LinkedList<URILiteral> namedGraphs, final String query) throws Exception {
 			final long a = (new Date()).getTime();
 			this.setupInference();
 			this.evaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
-			this.inference();
+			this.inference(query);
 			return ((new Date()).getTime() - a);
 		}
 	}
@@ -1747,7 +1758,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 
 		@Override
-		public long prepareInputData(final Collection<URILiteral> defaultGraphsParameter, final LinkedList<URILiteral> namedGraphs) throws Exception {
+		public long prepareInputData(final Collection<URILiteral> defaultGraphsParameter, final LinkedList<URILiteral> namedGraphs, final String query) throws Exception {
 			Demo_Applet.this.materializationInfo = null;
 			return this.ruleEvaluator.prepareInputData(defaultGraphsParameter, namedGraphs);
 		}
@@ -1803,7 +1814,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 					if (mode == EvaluationMode.DEMO
 							|| mode == EvaluationMode.TIMES) {
 						this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
-						final long prepareInputData = evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
+						final long prepareInputData = evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>(), this.query);
 
 						try {
 							System.out.println("Compile query...");
@@ -1947,7 +1958,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 						try {
 							this.prefixInstance = new ViewerPrefix(this.usePrefixes.isTrue());
-							evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>());
+							evaluation.prepareInputData(this.defaultGraphs, new LinkedList<URILiteral>(), this.query);
 
 							System.out.println("Compile query...");
 							try {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+ * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
  * All rights reserved.
  *
@@ -63,6 +63,7 @@ import lupos.rif.RIFException;
 import lupos.rif.generated.parser.ParseException;
 import lupos.rif.generated.parser.RIFParser;
 import lupos.rif.generated.syntaxtree.CompilationUnit;
+import lupos.rif.magicset.ExtendedRuleFilteringVisitor;
 import lupos.rif.model.Conjunction;
 import lupos.rif.model.Constant;
 import lupos.rif.model.Disjunction;
@@ -78,7 +79,6 @@ import lupos.rif.visitor.NormalizeRuleVisitor;
 import lupos.rif.visitor.ParseSyntaxTreeVisitor;
 import lupos.rif.visitor.ResolveListsRuleVisitor;
 import lupos.rif.visitor.RuleDependencyGraphVisitor;
-import lupos.rif.visitor.RuleFilteringVisitor;
 import lupos.rif.visitor.SubstituteFunctionCallsVisitor;
 import lupos.rif.visitor.ValidateRuleVisitor;
 import lupos.sparql1_1.Node;
@@ -122,7 +122,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		final SubstituteFunctionCallsVisitor subVisitor = new SubstituteFunctionCallsVisitor();
 		final ResolveListsRuleVisitor listVisitor = new ResolveListsRuleVisitor();
 		final RuleDependencyGraphVisitor dependencyVisitor = new RuleDependencyGraphVisitor();
-		final RuleFilteringVisitor filteringVisitor = new RuleFilteringVisitor();
+		final ExtendedRuleFilteringVisitor filteringVisitor = new ExtendedRuleFilteringVisitor();
 
 		this.rifDocument = (Document) this.rifDocument.accept(subVisitor, arg);
 		this.rifDocument = (Document) this.rifDocument.accept(listVisitor, arg);

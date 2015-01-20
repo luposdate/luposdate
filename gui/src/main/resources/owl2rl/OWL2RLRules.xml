@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+    Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
 
     All rights reserved.
 
@@ -972,35 +972,33 @@ eg:count-spo(?rest ?y1) ?y=External(func:numeric-add(?y1 1))))
 
 
 
-(* <#eq-ref> *)
-Forall ?p ?o ?s (
-   ?s[owl:sameAs->?s] :- 
-   
-   And(
-   
-    Or(
-        External(pred:is-uri(?s))
-        External(pred:is-blanknode(?s))
-        ) 
-   
-   ?s[?p->?o]))
+(* <#eq-ref> *) (* the following three rules are excluded as they are very hard for subsumptive demand transformation *)
+(* Forall ?p ?o ?s ( *)
+(*   ?s[owl:sameAs->?s] :- *) 
+(*   And( *)
+(*    Or( *)
+(*        External(pred:is-uri(?s)) *)
+(*        External(pred:is-blanknode(?s)) *)
+(*        ) *)
+(*   ?s[?p->?o])) *)
 
 (* <#eq-ref1> *)
-Forall ?p ?o ?s (
-   ?p[owl:sameAs->?p] :-  And(
-    Or(
-        External(pred:is-uri(?p))
-        External(pred:is-blanknode(?p))
-        ) ?s[?p->?o]))
+(* Forall ?p ?o ?s ( *)
+(*   ?p[owl:sameAs->?p] :-  And( *)
+(*    Or( *)
+(*        External(pred:is-uri(?p)) *)
+(*        External(pred:is-blanknode(?p)) *)
+(*        ) *)
+(*    ?s[?p->?o])) *)
 
 (* <#eq-ref2> *)
-Forall ?p ?o ?s (
-
-   ?o[owl:sameAs->?o] :- And(
-    Or(
-        External(pred:is-uri(?o))
-        External(pred:is-blanknode(?o))
-        )  ?s[?p->?o]))
+(* Forall ?p ?o ?s ( *)
+(*   ?o[owl:sameAs->?o] :-  And( *)
+(*    Or( *)
+(*        External(pred:is-uri(?o)) *)
+(*        External(pred:is-blanknode(?o)) *)
+(*        ) *)
+(*        ?s[?p->?o])) *)
 
 (* <#eq-sym> *)
 Forall ?x ?y (

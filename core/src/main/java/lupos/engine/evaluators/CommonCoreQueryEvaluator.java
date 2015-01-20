@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+ * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
  * All rights reserved.
  *
@@ -23,6 +23,18 @@
  */
 package lupos.engine.evaluators;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import lupos.compression.Compression;
 import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
@@ -36,13 +48,16 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
+import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.engine.operators.application.CollectAllResults;
+import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.multiinput.join.parallel.ParallelJoin;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.parallel.ParallelOperand;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
+import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.FileHelper;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.optimizations.logical.rules.DebugContainer;
@@ -52,15 +67,9 @@ import lupos.rdf.Prefix;
 import lupos.rdf.parser.Parser;
 import lupos.rdf.parser.YagoParser;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.util.*;
 
 public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
@@ -466,6 +475,21 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	 */
 	public Set<Variable> getVariablesOfQuery(){
 		return new HashSet<Variable>(this.getResultOperator().getUnionVariables());
+	}
+
+	public List<TriplePattern> getTriplePatternsOfQuery(){
+		final List<TriplePattern> result = new LinkedList<TriplePattern>();
+
+		for(final OperatorIDTuple child: this.rootNode.getSucceedingOperators()){
+			final BasicOperator op = child.getOperator();
+			if(op instanceof BasicIndexScan){
+				result.addAll(((BasicIndexScan)op).getTriplePattern());
+			} else if(op instanceof TriplePattern){
+				result.add((TriplePattern) op);
+			}
+		}
+
+		return result;
 	}
 
 	@Override

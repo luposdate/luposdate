@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+ * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
  * All rights reserved.
  *
@@ -218,7 +218,7 @@ public class RDF3X_Client extends Demo_Applet {
 		@Override
 		public long prepareInputData(
 				final Collection<URILiteral> defaultGraphsParameter,
-				final LinkedList<URILiteral> namedGraphs) throws Exception {
+				final LinkedList<URILiteral> namedGraphs, final String query) throws Exception {
 			// already indices imported!
 			return 0;
 		}

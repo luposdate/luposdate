@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+ * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
  * All rights reserved.
  *
@@ -89,6 +89,9 @@ import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
 import lupos.rif.generated.parser.RIFParser;
 import lupos.rif.generated.syntaxtree.CompilationUnit;
+import lupos.rif.magicset.ExtendedRuleFilteringVisitor;
+import lupos.rif.magicset.LloydToporTransformationVisitor;
+import lupos.rif.magicset.SubsumptiveDemandTransformationVisitor;
 import lupos.rif.model.Document;
 import lupos.rif.operator.ConstructPredicate;
 import lupos.rif.operator.InsertIndexScan;
@@ -97,13 +100,15 @@ import lupos.rif.visitor.NormalizeRuleVisitor;
 import lupos.rif.visitor.ParseSyntaxTreeVisitor;
 import lupos.rif.visitor.ResolveListsRuleVisitor;
 import lupos.rif.visitor.RuleDependencyGraphVisitor;
-import lupos.rif.visitor.RuleFilteringVisitor;
 import lupos.rif.visitor.SubstituteFunctionCallsVisitor;
 import lupos.rif.visitor.ValidateRuleVisitor;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 
 public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
+
+	public static boolean applySubsumptiveDemandTransformation = true; // whether or not the magic sets variant "subsumptive demand transformation" is applied...
+
 	protected final CommonCoreQueryEvaluator<Node> evaluator;
 	private CompilationUnit compilationUnit;
 	private Document rifDocument;
@@ -159,33 +164,72 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.evaluator = rdf3xEvaluator;
 	}
 
-	@Override
-	public long compileQuery(final String query) throws Exception {
-		return this.compileQuery(query, this.evaluator.createIndexScanCreator());
-	}
-
-	public long compileQuery(
-			final String query, final IndexScanCreatorInterface indexScanCreator) throws Exception {
-		final Date start = new Date();
-
-		final RIFParser parser = new RIFParser(new StringReader(query));
+	private void parseAndPrepareRIFDocument(final String rifDocument) throws Exception{
+		final RIFParser parser = new RIFParser(new StringReader(rifDocument));
 		this.compilationUnit = parser.CompilationUnit();
 		this.rifDocument = (Document) this.compilationUnit.accept(new ParseSyntaxTreeVisitor(), null);
-		final BuildOperatorGraphRuleVisitor forward = new BuildOperatorGraphRuleVisitor(indexScanCreator);
+
 		final ValidateRuleVisitor valVisitor = new ValidateRuleVisitor();
 		final NormalizeRuleVisitor normVisitor = new NormalizeRuleVisitor();
 		final SubstituteFunctionCallsVisitor subVisitor = new SubstituteFunctionCallsVisitor();
 		final ResolveListsRuleVisitor listVisitor = new ResolveListsRuleVisitor();
 		final RuleDependencyGraphVisitor dependencyVisitor = new RuleDependencyGraphVisitor();
-		final RuleFilteringVisitor filteringVisitor = new RuleFilteringVisitor();
-
+		final ExtendedRuleFilteringVisitor filteringVisitor = new ExtendedRuleFilteringVisitor();
 		this.rifDocument = (Document) this.rifDocument.accept(subVisitor, null);
 		this.rifDocument = (Document) this.rifDocument.accept(listVisitor, null);
 		this.rifDocument = (Document) this.rifDocument.accept(normVisitor, null);
 		this.rifDocument.accept(valVisitor, null);
 		this.rifDocument.accept(dependencyVisitor, null);
 		this.rifDocument.accept(filteringVisitor, null);
+	}
 
+	public long compileQuery(final String query, final boolean applySubsumptiveDemandTransformationPar) throws Exception {
+		return this.compileQuery(query, applySubsumptiveDemandTransformationPar, this.evaluator.createIndexScanCreator());
+	}
+
+	public long compileQuery(final String query, final String conclusion, final boolean applySubsumptiveDemandTransformationPar) throws Exception {
+		return this.compileQuery(query, conclusion, applySubsumptiveDemandTransformationPar, this.evaluator.createIndexScanCreator());
+	}
+
+	@Override
+	public long compileQuery(final String query) throws Exception {
+		return this.compileQuery(query, this.evaluator.createIndexScanCreator());
+	}
+
+	public long compileQuery(final String query, final String conclusion) throws Exception {
+		return this.compileQuery(query, conclusion, this.evaluator.createIndexScanCreator());
+	}
+
+	public long compileQuery(final String query, final IndexScanCreatorInterface indexScanCreator) throws Exception {
+		return 	this.compileQuery(query, BasicIndexRuleEvaluator.applySubsumptiveDemandTransformation, indexScanCreator);
+	}
+
+	public long compileQuery(final String query, final String conclusion, final IndexScanCreatorInterface indexScanCreator) throws Exception {
+		return 	this.compileQuery(query, conclusion, BasicIndexRuleEvaluator.applySubsumptiveDemandTransformation, indexScanCreator);
+	}
+
+	public long compileQuery(final String query, final boolean applySubsumptiveDemandTransformationPar, final IndexScanCreatorInterface indexScanCreator) throws Exception {
+		return this.compileQuery(query, null, applySubsumptiveDemandTransformationPar, indexScanCreator);
+	}
+
+	public long compileQuery(final String query, final String conclusion, final boolean applySubsumptiveDemandTransformationPar, final IndexScanCreatorInterface indexScanCreator) throws Exception {
+		final Date start = new Date();
+		this.parseAndPrepareRIFDocument(query);
+
+		if(applySubsumptiveDemandTransformationPar && (this.rifDocument.getConclusion()!=null || conclusion!=null) && this.rifDocument.getRules().size()>0){
+			// Preprocessing Step:
+			String transformedQuery = (String) this.rifDocument.accept(new LloydToporTransformationVisitor(conclusion), null);
+			this.parseAndPrepareRIFDocument(transformedQuery);
+			// Optimization Step:
+			// This optimization step implements the subsumptive demand transformation, which is a magic sets variant, according to
+			// Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
+			// http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
+			// http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+			transformedQuery = (String)this.rifDocument.accept(new SubsumptiveDemandTransformationVisitor(), null);
+			this.parseAndPrepareRIFDocument(transformedQuery);
+		}
+
+		final BuildOperatorGraphRuleVisitor forward = new BuildOperatorGraphRuleVisitor(indexScanCreator);
 		final Class<? extends Bindings> clazz = Bindings.instanceClass;
 		Bindings.instanceClass = BindingsMap.class;
 		final Result res = (Result) this.rifDocument.accept(forward, null);
@@ -504,10 +548,19 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 	public long compileQueryAndInferenceIntoOneOperatorgraph(final String inferenceRuleset, final String query) throws Exception {
 		final Date a = new Date();
-		this.compileQuery(inferenceRuleset);
+		this.evaluator.compileQuery(query);
+		// determine Triple Patterns to be added as conclusions in RIF rule set!
+		String conclusion = "";
+		for(final TriplePattern tp: this.evaluator.getTriplePatternsOfQuery()){
+			conclusion += tp.getSubject().toString() + " [ " + tp.getPredicate().toString() + " -> " + tp.getObject().toString() + " ] ";
+		}
+		if(conclusion.length()>0){
+			conclusion = "AND(" + conclusion + ")";
+		}
+
+		this.compileQuery(inferenceRuleset, conclusion);
 		final BasicOperator rootInference = this.getRootNode();
 		final Result resultInference = this.getResultOperator();
-		this.evaluator.compileQuery(query);
 		integrateInferenceOperatorgraphIntoQueryOperatorgraph(rootInference, resultInference, this.evaluator.getRootNode(), this.evaluator.getResultOperator());
 		this.evaluator.setBindingsVariablesBasedOnOperatorgraph();
 		return ((new Date()).getTime() - a.getTime());

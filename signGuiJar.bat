@@ -1,5 +1,5 @@
 @REM
-@REM Copyright (c) 2013, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
+@REM Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
 @REM
 @REM All rights reserved.
 @REM
