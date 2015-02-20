@@ -35,19 +35,46 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Item;
+import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.TypedLiteral;
+import lupos.rif.IExpression;
 import lupos.rif.RIFException;
+import lupos.rif.datatypes.ListLiteral;
+import lupos.rif.model.RuleList;
 
 public class BuiltinHelper {
+
+	public static int getSizeOfList(final Object list){
+		if (list instanceof RuleList) {
+			return ((RuleList) list).getItems().size();
+		} else if (list instanceof ListLiteral) {
+				return ((ListLiteral) list).getEntries().size();
+		} else {
+			throw new RuntimeException("A list was expected, but got "+list);
+		}
+	}
+
+	public static Item getEntryOfList(final Object list, final int index, final Bindings b){
+		if (list instanceof RuleList) {
+			final IExpression expr = ((RuleList) list).getItems().get(index);
+			return (Item) expr.evaluate(b);
+		} else if (list instanceof ListLiteral) {
+				return ((ListLiteral) list).getEntries().get(index);
+		} else {
+			throw new RuntimeException("A list was expected, but got "+list);
+		}
+	}
+
 
 	public static Duration getYearMonthDurationFromString(final String duration) {
 		Duration dur;
 		try {
 			dur = DatatypeFactory.newInstance().newDurationYearMonth(duration);
-		} catch (DatatypeConfigurationException e) {
+		} catch (final DatatypeConfigurationException e) {
 			return null;
 		}
 		return dur;
@@ -57,140 +84,149 @@ public class BuiltinHelper {
 		Duration dur;
 		try {
 			dur = DatatypeFactory.newInstance().newDurationDayTime(duration);
-		} catch (DatatypeConfigurationException e) {
+		} catch (final DatatypeConfigurationException e) {
 			return null;
 		}
 		return dur;
 	}
 
-	public static Duration getDurationFromCalendar(XMLGregorianCalendar cal) {
+	public static Duration getDurationFromCalendar(final XMLGregorianCalendar cal) {
 		Duration dur;
 		try {
 			dur = DatatypeFactory.newInstance().newDurationDayTime(
 					cal.getTimezone() * 60000);
-		} catch (DatatypeConfigurationException e) {
+		} catch (final DatatypeConfigurationException e) {
 			return null;
 		}
 		return dur;
 	}
 
 	public static Calendar getCalendarFromDateTime(final String dateTime) {
-		String str = dateTime.replaceAll("T", "");
-		Calendar cal = GregorianCalendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+		final String str = dateTime.replaceAll("T", "");
+		final Calendar cal = GregorianCalendar.getInstance();
+		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
 		try {
-			Date date = sdf.parse(str);
+			final Date date = sdf.parse(str);
 			cal.setTime(date);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			return null;
 		}
 		return cal;
 	}
 
 	public static Calendar getCalendarFromDate(final String dateTime) {
-		Calendar cal = GregorianCalendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		final Calendar cal = GregorianCalendar.getInstance();
+		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		try {
-			Date date = sdf.parse(dateTime);
+			final Date date = sdf.parse(dateTime);
 			cal.setTime(date);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			return null;
 		}
 		return cal;
 	}
 
-	public static Literal getNumericLiteral(Double result) {
-		if (!result.toString().endsWith(".0"))
+	public static Literal getNumericLiteral(final Double result) {
+		if (!result.toString().endsWith(".0")) {
 			return BuiltinHelper.createXSLiteral(result, "double");
-		else
+		} else {
 			return BuiltinHelper.createXSLiteral((int) result.doubleValue(),
 					"integer");
+		}
 	}
 
-	public static Literal getNumericLiteral(Integer result) {
+	public static Literal getNumericLiteral(final Integer result) {
 		return BuiltinHelper.createXSLiteral(result, "integer");
 	}
 
 	public static double numberFromLiteral(final TypedLiteral literal) {
-		String str = literal.getContent();
+		final String str = literal.getContent();
 		return Double.parseDouble(str.substring(1, str.length() - 1));
 	}
 
-	public static String stringFromLiteral(final TypedLiteral literal) {
-		String str = literal.getContent();
+	public static String stringFromLiteral(Literal literal) {
+		if(literal instanceof LazyLiteral){
+			literal = ((LazyLiteral)literal).getLiteral();
+		}
+		final String str = (literal instanceof TypedLiteral)?((TypedLiteral)literal).getContent() : literal.toString();
 		return str.substring(1, str.length() - 1);
 	}
 
-	public static Literal createXSLiteral(Object value, String type) {
-		if (type.equals("string") && value.toString().length() > 2)
+	public static Literal createXSLiteral(Object value, final String type) {
+		if (type.equals("string") && value.toString().length() > 2) {
 			value = value.toString().substring(1, value.toString().length() - 1);
+		}
 		try {
 			return LiteralFactory.createTypedLiteralWithoutLazyLiteral("\""
 					+ value.toString() + "\"",
 					"<http://www.w3.org/2001/XMLSchema#" + type + ">");
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			throw new RIFException(e.getMessage());
 		}
 	}
 
-	public static Literal createRDFLiteral(Object value, String type) {
+	public static Literal createRDFLiteral(final Object value, final String type) {
 		try {
 			return LiteralFactory
 					.createTypedLiteralWithoutLazyLiteral(
 							"\"" + value.toString() + "\"",
 							"<http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 									+ type + ">");
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			throw new RIFException(e.getMessage());
 		}
 	}
 
-	public static int getInteger(TypedLiteral item) {
+	public static int getInteger(final TypedLiteral item) {
 		final String content = item.getContent();
 		return Integer.parseInt(content.substring(1, content.length() - 1));
 	}
 
-	public static boolean getBoolean(TypedLiteral item) {
+	public static boolean getBoolean(final TypedLiteral item) {
 		final String content = item.getContent();
 		return Boolean.parseBoolean(content.substring(1, content.length() - 1));
 	}
 
-	public static BooleanLiteral isOfXSType(Literal l, String... type) {
+	public static BooleanLiteral isOfXSType(final Literal l, final String... type) {
 		if (l != null && l instanceof TypedLiteral) {
-			for (String tp : type)
+			for (final String tp : type) {
 				if (((TypedLiteral) l).getType().equalsIgnoreCase(
-						"<http://www.w3.org/2001/XMLSchema#" + tp + ">"))
+						"<http://www.w3.org/2001/XMLSchema#" + tp + ">")) {
 					return BooleanLiteral.TRUE;
+				}
+			}
 		}
 		return BooleanLiteral.FALSE;
 	}
 
-	public static BooleanLiteral isOfRDFType(Literal l, String... type) {
+	public static BooleanLiteral isOfRDFType(final Literal l, final String... type) {
 		if (l != null && l instanceof TypedLiteral) {
-			for (String tp : type)
+			for (final String tp : type) {
 				if (((TypedLiteral) l).getType().equalsIgnoreCase(
 						"<http://www.w3.org/1999/02/22-rdf-syntax-ns#" + tp
-								+ ">"))
+								+ ">")) {
 					return BooleanLiteral.TRUE;
+				}
+			}
 		}
 		return BooleanLiteral.FALSE;
 	}
 
 	private static String mark = "-_.!~*'()\"";
 
-	public static String encodeURI(String argString) {
-		StringBuilder uri = new StringBuilder(); // Encoded URL
+	public static String encodeURI(final String argString) {
+		final StringBuilder uri = new StringBuilder(); // Encoded URL
 		// thanks Marco!
 
-		char[] chars = argString.toCharArray();
+		final char[] chars = argString.toCharArray();
 		for (int i = 0; i < chars.length; i++) {
-			char c = chars[i];
+			final char c = chars[i];
 			if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
 					|| (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1) {
 				uri.append(c);
 			} else {
 				uri.append("%");
-				uri.append(Integer.toHexString((int) c));
+				uri.append(Integer.toHexString(c));
 			}
 		}
 		return uri.toString();

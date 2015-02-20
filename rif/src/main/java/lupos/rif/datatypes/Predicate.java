@@ -35,50 +35,58 @@ import lupos.rif.RIFException;
 public class Predicate implements Serializable {
 	private static final long serialVersionUID = 253370338303245743L;
 	protected URILiteral name;
-	protected ArrayList<Literal> literals = new ArrayList<Literal>();
+	protected ArrayList<Literal> params = new ArrayList<Literal>();
 
 	public Literal getName() {
-		return name;
+		return this.name;
 	}
 
-	public void setName(Literal name) {
-		if (name instanceof URILiteral)
+	public void setName(final Literal name) {
+		if (name instanceof URILiteral) {
 			this.name = (URILiteral) name;
-		else
+		} else {
 			throw new RIFException("Predicatename can only be URILiteral!");
+		}
 	}
 
 	public List<Literal> getParameters() {
-		return literals;
+		return this.params;
 	}
 
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return this.toString().hashCode();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj != null && obj instanceof Predicate) {
 			final Predicate pred = (Predicate) obj;
-			if (!pred.name.equals(name))
+			if (!pred.name.equals(this.name)) {
 				return false;
-			if (pred.literals.size() != literals.size())
+			}
+			if (pred.params.size() != this.params.size()) {
 				return false;
-			for (int i = 0; i < literals.size(); i++)
-				if (!pred.literals.get(i).equals(literals.get(i)))
+			}
+			for (int i = 0; i < this.params.size(); i++) {
+				final Literal param = pred.params.get(i);
+				if (param==null || !param.equals(this.params.get(i))) {
 					return false;
+				}
+			}
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
+	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer();
-		str.append(name.toString()).append("(");
-		for (int idx = 0; idx < literals.size(); idx++) {
-			str.append(literals.get(idx).toString());
-			if (idx < literals.size() - 1){
+		str.append(this.name.toString()).append("(");
+		for (int idx = 0; idx < this.params.size(); idx++) {
+			str.append(this.params.get(idx));
+			if (idx < this.params.size() - 1){
 				str.append(", ");
 			}
 		}
@@ -88,10 +96,15 @@ public class Predicate implements Serializable {
 
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();
-		str.append(name.toString(prefixInstance)).append("(");
-		for (int idx = 0; idx < literals.size(); idx++) {
-			str.append(literals.get(idx).toString(prefixInstance));
-			if (idx < literals.size() - 1){
+		str.append(this.name.toString(prefixInstance)).append("(");
+		for (int idx = 0; idx < this.params.size(); idx++) {
+			final Object current = this.params.get(idx);
+			if(current instanceof Literal){
+				str.append(((Literal)current).toString(prefixInstance));
+			} else {
+				str.append(current.toString());
+			}
+			if (idx < this.params.size() - 1){
 				str.append(", ");
 			}
 		}

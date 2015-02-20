@@ -4780,7 +4780,7 @@
           "use generated code": true
         },
         "replace method": {
-          "additional code": "for(lupos.rif.operator.PredicatePattern tmp_p : p_new) {\n tmp_p.getSucceedingOperators().get(0).setId(id);\n    tmp_p.setUnionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getUnionVariables()));\n    tmp_p.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getIntersectionVariables()));\n    tmp_p.setPredicateName(this.p.getPredicateName());\n    tmp_p.setPatternItems(this.p.getPatternItems());\n}",
+          "additional code": "if(this.p.getUnionVariables()==null){\n  this.p.setVariables();\n}\nfor(lupos.rif.operator.PredicatePattern tmp_p : p_new) {\n    tmp_p.getSucceedingOperators().get(0).setId(id);\n    tmp_p.setUnionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getUnionVariables()));\n    tmp_p.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getIntersectionVariables()));\n    tmp_p.setPredicateName(this.p.getPredicateName());\n    tmp_p.setPatternItems(this.p.getPatternItems());\n}",
           "code": "",
           "use generated code": true
         }

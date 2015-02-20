@@ -36,6 +36,7 @@ import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
 import lupos.rif.IRuleVisitor;
 import lupos.rif.RIFException;
+import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.visitor.ReplaceVarsVisitor;
 
 import com.google.common.collect.Multimap;
@@ -45,90 +46,112 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 	public boolean isOpen = false;
 
 	public void addItem(final IExpression expr) {
-		if (!(expr instanceof AbstractExpressionContainer))
-			items.add(expr);
-		else
+		if (!(expr instanceof AbstractExpressionContainer)) {
+			this.items.add(expr);
+		} else {
 			throw new RIFException("And() and Or() forbidden in Lists!");
+		}
 	}
 
 	public ArrayList<IExpression> getItems() {
-		return items;
+		return this.items;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj != null && obj instanceof RuleList) {
 			final RuleList list = (RuleList) obj;
-			if (list.isOpen != isOpen)
+			if (list.isOpen != this.isOpen) {
 				return false;
-			if (list.getItems().size() != getItems().size())
+			}
+			if (list.getItems().size() != this.getItems().size()) {
 				return false;
-			for (int i = 0; i < getItems().size(); i++)
-				if (!getItems().get(i).equals(list.getItems().get(i)))
+			}
+			for (int i = 0; i < this.getItems().size(); i++) {
+				if (!this.getItems().get(i).equals(list.getItems().get(i))) {
 					return false;
+				}
+			}
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return this.toString().hashCode();
 	}
 
+	@Override
 	public String getLabel() {
-		return toString();
+		return this.toString();
 	}
 
-	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException {
+	@Override
+	public <R, A> R accept(final IRuleVisitor<R, A> visitor, final A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	@Override
 	public boolean containsOnlyVariables() {
-		for (IExpression expr : items)
-			if (!expr.containsOnlyVariables())
+		for (final IExpression expr : this.items) {
+			if (!expr.containsOnlyVariables()) {
 				return false;
+			}
+		}
 		return true;
 	}
 
+	@Override
 	public Set<RuleVariable> getVariables() {
 		final Set<RuleVariable> vars = new HashSet<RuleVariable>();
-		for (IExpression expr : items)
+		for (final IExpression expr : this.items) {
 			vars.addAll(expr.getVariables());
+		}
 		return vars;
 	}
 
+	@Override
 	public List<Uniterm> getPredicates() {
 		final List<Uniterm> vars = new ArrayList<Uniterm>();
-		for (IExpression expr : items)
+		for (final IExpression expr : this.items) {
 			vars.addAll(expr.getPredicates());
+		}
 		return vars;
 	}
 
-	public Object evaluate(Bindings binding) {
-		return evaluate(binding, null);
+	@Override
+	public Object evaluate(final Bindings binding) {
+		return this.evaluate(binding, null);
 	}
 
-	public Object evaluate(Bindings binding, Object optionalResult) {
-		return evaluate(binding, optionalResult, null);
+	@Override
+	public Object evaluate(final Bindings binding, final Object optionalResult) {
+		return this.evaluate(binding, optionalResult, null);
 	}
 
-	public Object evaluate(Bindings binding, Object result, Multimap<IExpression, IExpression> equalities) {
-		ReplaceVarsVisitor replace = new ReplaceVarsVisitor();
+	@Override
+	public Object evaluate(final Bindings binding, final Object result, final Multimap<IExpression, IExpression> equalities) {
+		final ReplaceVarsVisitor replace = new ReplaceVarsVisitor();
 		replace.bindings = binding;
-		return accept(replace, null);
+		return this.accept(replace, null);
 	}
 
-	public boolean isBound(RuleVariable var, Collection<RuleVariable> boundVars) {
-		for (IExpression expr : items)
+	@Override
+	public boolean isBound(final RuleVariable var, final Collection<RuleVariable> boundVars) {
+		for (final IExpression expr : this.items) {
 			if (expr instanceof RuleVariable && !boundVars.contains(var)) {
 				boundVars.add(var);
 				return true;
-			} else if (expr.isBound(var, boundVars))
+			} else if (expr.isBound(var, boundVars)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
+	@Override
 	public boolean isPossibleAssignment() {
 		return false;
 	}
@@ -136,34 +159,63 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 	@Override
 	public String toString() {
 		final StringBuilder str = new StringBuilder("List(");
-		for (IExpression expr : items) {
-			if (isOpen && items.indexOf(expr) == items.size() - 1)
+		for (final IExpression expr : this.items) {
+			if (this.isOpen && this.items.indexOf(expr) == this.items.size() - 1) {
 				str.append("| ");
+			}
 			str.append(expr.toString()).append(" ");
 		}
 		return str.append(")").toString();
 	}
 
-	public String toString(Prefix prefixInstance) {
+	@Override
+	public String toString(final Prefix prefixInstance) {
 		final StringBuilder str = new StringBuilder("List(");
-		for (IExpression expr : items) {
-			if (isOpen && items.indexOf(expr) == items.size() - 1)
+		for (final IExpression expr : this.items) {
+			if (this.isOpen && this.items.indexOf(expr) == this.items.size() - 1) {
 				str.append("| ");
+			}
 			str.append(expr.toString(prefixInstance)).append(" ");
 		}
 		return str.append(")").toString();
 
 	}
 
+	@Override
 	public boolean isVariable() {
 		return false;
 	}
 
-	public Literal getLiteral(Bindings b) {
+	@Override
+	public Literal getLiteral(final Bindings b) {
 		return null;
 	}
 
+	@Override
 	public String getName() {
-		return toString();
+		return this.toString();
+	}
+
+	@Override
+	public RuleList clone(){
+		final RuleList rl2 = new RuleList();
+		rl2.getItems().addAll(this.items);
+		rl2.isOpen = this.isOpen;
+		return rl2;
+	}
+
+	public ListLiteral createListLiteral(){
+		final ArrayList<Literal> al = new ArrayList<Literal>(this.items.size());
+		for(final IExpression ie: this.items){
+			final Object o = ie.evaluate(null);
+			if(o instanceof RuleList){
+				al.add(((RuleList)o).createListLiteral());
+			} else if(o instanceof Constant) {
+				al.add(((Constant)o).getLiteral());
+			} else {
+				al.add((Literal)o);
+			}
+		}
+		return new ListLiteral(al);
 	}
 }

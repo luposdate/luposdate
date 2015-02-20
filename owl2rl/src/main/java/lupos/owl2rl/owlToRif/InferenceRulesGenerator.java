@@ -30,8 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import lupos.owl2rl.parser.ParserResults;
-
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
@@ -41,7 +39,7 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.operators.index.Indices;
-
+import lupos.owl2rl.parser.ParserResults;
 import lupos.rif.BasicIndexRuleEvaluator;
 import lupos.rif.datatypes.Predicate;
 
@@ -49,16 +47,16 @@ public class InferenceRulesGenerator {
 
 	// the inference rules
 	private String output;
-	
+
 	/**results from the TemplateRuleParser**/
 	private ParserResults parsedValues;
 	/**whether print is on or Off**/
 	private boolean printOn = false;
 
 	/**number of emitted rules (not counting fixed rules)**/
-	public static int rulesEmitted; 
-	
-	public InferenceRulesGenerator(boolean print) {
+	public static int rulesEmitted;
+
+	public InferenceRulesGenerator(final boolean print) {
 		this.printOn = print;
 	}
 
@@ -71,15 +69,16 @@ public class InferenceRulesGenerator {
 
 	/** Calls the Emitter Classes with the Results and returns the inference rules**/
 	private String emit(
-			HashMap<Integer, LinkedList<BoundVariable>> variables,
-			HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists,
-			HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults) {
+			final HashMap<Integer, LinkedList<BoundVariable>> variables,
+			final HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists,
+			final HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults) {
 
-		if (this.printOn)
-			printSomeInfo();
+		if (this.printOn) {
+			this.printSomeInfo();
+		}
 
 		/**collects the inference rules**/
-		StringBuilder outputString = new StringBuilder();
+		final StringBuilder outputString = new StringBuilder();
 
 		/*
 		 *for property rules
@@ -92,7 +91,7 @@ public class InferenceRulesGenerator {
 			if (variablesInList == null){
 				continue;
 			}
-			invokeEmitterMethodByName(variablesInList, outputString);
+			this.invokeEmitterMethodByName(variablesInList, outputString);
 		}
 
 		outputString.append("\n");
@@ -104,15 +103,16 @@ public class InferenceRulesGenerator {
 		// for all ListRules
 		for (int i = 1; i <= RuleResultCounter; i++) {
 			/* list = Lists of Variables, by Name of the List*/
-			list = ListRuleResults.get(i); 
+			list = ListRuleResults.get(i);
 
-			if (list == null)
+			if (list == null) {
 				continue;
+			}
 
 			// For all Lists from Ontology that were returned by query
-			for (String s : ListOfOccuringOWLLists.get(i)) {
+			for (final String s : ListOfOccuringOWLLists.get(i)) {
 				variablesInList = list.get(s); // All variables in the list s
-				invokeEmitterMethodByName(variablesInList, outputString);
+				this.invokeEmitterMethodByName(variablesInList, outputString);
 			}
 		}
 		ListRuleResults.clear();
@@ -121,20 +121,20 @@ public class InferenceRulesGenerator {
 	}
 
 	private void invokeEmitterMethodByName(
-			LinkedList<BoundVariable> variablesInList,
-			StringBuilder outputString) {
+			final LinkedList<BoundVariable> variablesInList,
+			final StringBuilder outputString) {
 		// get MethodName from XML and use to Invoke Method with
 		// Reflection api
 
-		Class<?>[] types = new Class<?>[] { variablesInList.getClass(), outputString.getClass(), this.parsedValues.getTemplateRulesmap().getClass() };
-		Object[] args = new Object[] { variablesInList, outputString, this.parsedValues.getTemplateRulesmap() };
+		final Class<?>[] types = new Class<?>[] { variablesInList.getClass(), outputString.getClass(), this.parsedValues.getTemplateRulesmap().getClass() };
+		final Object[] args = new Object[] { variablesInList, outputString, this.parsedValues.getTemplateRulesmap() };
 		try {
 			Class.forName(variablesInList.getLast().getClassName())
 					.getDeclaredMethod(
 							variablesInList.getLast().getMethodName(), types)
 					.invoke(null, args);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -143,22 +143,22 @@ public class InferenceRulesGenerator {
 	/**
 	 * Handle Rule Results, that do not have bindings and are of the form
 	 * :predicate(?x ?y ...)
-	 * 
+	 *
 	 * @param qr
 	 * @param currentTemplateRule
 	 * @param ListOfOccuringOWLLists
 	 * @param ListRuleResults
 	 */
 	private void handleRuleResults(
-			lupos.rif.datatypes.RuleResult qr,
-			TemplateRule currentTemplateRule,
-			HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists,
-			HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults) {
+			final lupos.rif.datatypes.RuleResult qr,
+			final TemplateRule currentTemplateRule,
+			final HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists,
+			final HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults) {
 
 		RuleResultCounter++;
-		Collection<Predicate> pCollection = qr.getPredicateResults(); // triples of results
+		final Collection<Predicate> pCollection = qr.getPredicateResults(); // triples of results
 		String originalString = "";
-		for (Predicate p : pCollection) {
+		for (final Predicate p : pCollection) {
 
 			// the predicate local.rulenames is a filter to avoid unneccessary
 			// handling of the helperfunctions in the
@@ -166,16 +166,15 @@ public class InferenceRulesGenerator {
 			if (p.getName().toString().startsWith("<local.rulenames#")) {
 
 				String listName = "";
-				List<Literal> Literals = p.getParameters();
+				final List<Literal> literals = p.getParameters();
 
-				for (Literal l : Literals) {
-
+				for (final Literal l: literals) {
 					if(!l.isBlank()){
 						originalString = l.originalString();
 					} else {
 						originalString="External(func:bnode-from-string(\""+l.originalString()+"\"))";
 					}
-					if ((Literals.indexOf(l) == 0)) {// first literal is the
+					if ((literals.indexOf(l) == 0)) {// first literal is the
 														// name of the list
 						listName = originalString;
 
@@ -212,9 +211,9 @@ public class InferenceRulesGenerator {
 	/**
 	 * handles results that have bindings
 	 */
-	private void handleGraphResults(QueryResult qr,
-			TemplateRule currentTemplateRule,
-			HashMap<Integer, LinkedList<BoundVariable>> variables) {
+	private void handleGraphResults(final QueryResult qr,
+			final TemplateRule currentTemplateRule,
+			final HashMap<Integer, LinkedList<BoundVariable>> variables) {
 		final Iterator<Bindings> it_query = qr.oneTimeIterator();
 
 		while (it_query.hasNext()) {
@@ -225,19 +224,19 @@ public class InferenceRulesGenerator {
 			for (final Variable v : bindings.getVariableSet()) {
 				// Save the results
 				if(bindings.get(v).isBlank()){
-					originalString="External(func:bnode-from-string(\""+bindings.get(v).originalString()+"\"))";					
+					originalString="External(func:bnode-from-string(\""+bindings.get(v).originalString()+"\"))";
 				} else{
 					originalString=bindings.get(v).originalString();
 				}
 				variables.get(hit).add(new BoundVariable(v.toString(), "", currentTemplateRule,originalString ));
-				}		
+				}
 			hit++;
 		}
 	}
 
 	/**
 	 * Performs Query and calls method for handling of result
-	 * 
+	 *
 	 * @param evaluator
 	 * @param query
 	 * @throws Exception
@@ -245,35 +244,37 @@ public class InferenceRulesGenerator {
 	private final void evaluateQuery(
 			final BasicIndexRuleEvaluator evaluator,
 			final String query,
-			TemplateRule currentTemplateRule,
-			HashMap<Integer, LinkedList<BoundVariable>> variables,
-			HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists,
-			HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults)
+			final TemplateRule currentTemplateRule,
+			final HashMap<Integer, LinkedList<BoundVariable>> variables,
+			final HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists,
+			final HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults)
 			throws Exception {
 		// evaluate query:
 		final QueryResult qr = evaluator.getResult(query);
 		// Leave method if no matches
-		if (qr == (null) || qr.isEmpty())
+		if (qr == (null) || qr.isEmpty()) {
 			return;
-		
-		if (this.printOn)
+		}
+
+		if (this.printOn) {
 			System.out.println("QueryResult: " + qr);
+		}
 
 		if (qr instanceof lupos.rif.datatypes.RuleResult) {
-			handleRuleResults((lupos.rif.datatypes.RuleResult) qr,
+			this.handleRuleResults((lupos.rif.datatypes.RuleResult) qr,
 					currentTemplateRule, ListOfOccuringOWLLists,
 					ListRuleResults);
 		} else {
-			handleGraphResults(qr, currentTemplateRule, variables);
+			this.handleGraphResults(qr, currentTemplateRule, variables);
 		}
 	}
 
 	/**
 	 * Initializes Evaluator with ontology and arguments
-	 * 
+	 *
 	 * @return
 	 */
-	private BasicIndexRuleEvaluator initAndGetEvaluator(String ontology) {
+	private BasicIndexRuleEvaluator initAndGetEvaluator(final String ontology) {
 		try {
 			// set up parameters of evaluators and initialize the evaluators...
 			final MemoryIndexQueryEvaluator evaluator = new MemoryIndexQueryEvaluator();
@@ -291,12 +292,12 @@ public class InferenceRulesGenerator {
 					Indices.DATA_STRUCT.HASHMAP);
 			evaluator.init();
 
-			LinkedList<URILiteral> dataIRIs = new LinkedList<URILiteral>();
+			final LinkedList<URILiteral> dataIRIs = new LinkedList<URILiteral>();
 
 			dataIRIs.add(LiteralFactory.createStringURILiteral("<inlinedata:"
 					+ ontology + ">"));
 
-			BasicIndexRuleEvaluator rifEvaluator = new BasicIndexRuleEvaluator(
+			final BasicIndexRuleEvaluator rifEvaluator = new BasicIndexRuleEvaluator(
 					evaluator);
 			rifEvaluator.prepareInputData(dataIRIs,
 					new LinkedList<URILiteral>());
@@ -323,7 +324,7 @@ public class InferenceRulesGenerator {
 		// System.out.println("Rule Results: "+RuleResultCounter);
 		// System.out.println("\n\nHits:"+(hitIdentity+RuleResultCounter)); //
 
-		System.out.println(getOutputRules());
+		System.out.println(this.getOutputRules());
 
 		System.out.println("\nEmitted Rules:" + rulesEmitted); //
 
@@ -339,51 +340,51 @@ public class InferenceRulesGenerator {
 	 *debug etc.
 	 */
 	private void printSomeInfo() {
-		StringBuilder print = new StringBuilder();
+		final StringBuilder print = new StringBuilder();
 
 		print.append("\n#################################################################\n \n");
 		System.out.println(print);
 	}
 
-	
+
 
 	/**
 	 * Set the results from the rule template parser
 	 */
-	public void setParserResults(ParserResults results) {
+	public void setParserResults(final ParserResults results) {
 		this.parsedValues = results;
 	}
 
 	/**
 	 * set debug info to System.out on or Off
-	 * 
+	 *
 	 * @param printOn
 	 */
-	public void setPrintOnOrOff(boolean printOn) {
+	public void setPrintOnOrOff(final boolean printOn) {
 		this.printOn = printOn;
 	}
-	
+
 	/**
 	 * start the evaluation and emitting of inference rules
 	 * @param ontology
 	 */
-	public void start(String ontology) {
-		BasicIndexRuleEvaluator ruleEvaluator=initAndGetEvaluator(ontology);	
-		start(ruleEvaluator);
+	public void start(final String ontology) {
+		final BasicIndexRuleEvaluator ruleEvaluator=this.initAndGetEvaluator(ontology);
+		this.start(ruleEvaluator);
 	}
-	
+
 	/**
 	 * start the evaluation and emitting of inference rules
 	 * @param evaluator
 	 */
-	public void start(BasicIndexRuleEvaluator evaluator) {		
+	public void start(final BasicIndexRuleEvaluator evaluator) {
 		/**Results from Engine for GraphResults (Results with bindings)**/
-		HashMap<Integer, LinkedList<BoundVariable>> resultVariables = new HashMap<Integer, LinkedList<BoundVariable>>();
+		final HashMap<Integer, LinkedList<BoundVariable>> resultVariables = new HashMap<Integer, LinkedList<BoundVariable>>();
 		/**Results from Engine for RuleResults (e.g. for query :predicate(?x ?y))**/
-		HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults = new LinkedHashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>>();
+		final HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> ListRuleResults = new LinkedHashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>>();
 		/**HashMap containing the listnames from RuleResults **/
-		HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists = new HashMap<Integer, LinkedList<String>>();
-		
+		final HashMap<Integer, LinkedList<String>> ListOfOccuringOWLLists = new HashMap<Integer, LinkedList<String>>();
+
 		/* reset static variables */
 		this.output = "";
 		rulesEmitted = 0;
@@ -391,30 +392,30 @@ public class InferenceRulesGenerator {
 		RuleResultCounter = 0;
 
 		/*Send Queries to Engine, Evaluate an Sort Results in corresponding List */
-		evaluate(resultVariables, evaluator, ListOfOccuringOWLLists, ListRuleResults);
-		
+		this.evaluate(resultVariables, evaluator, ListOfOccuringOWLLists, ListRuleResults);
+
 		/* Let Emitter Construct the Inference Rules and Return Inference Rules */
-		this.output = emit(resultVariables, ListOfOccuringOWLLists, ListRuleResults);
-		
+		this.output = this.emit(resultVariables, ListOfOccuringOWLLists, ListRuleResults);
+
 		//Optional
 		if (this.printOn){
-			printAdditionalInfoAfterEmit();
+			this.printAdditionalInfoAfterEmit();
 		}
 	}
 
-/**evaluate rif rules 
- * 
+/**evaluate rif rules
+ *
  * @param resultVariables
  * @param evaluator
  * @param listOfOccuringOWLLists
  * @param listRuleResults
  */
 	private void evaluate(
-			HashMap<Integer, LinkedList<BoundVariable>> resultVariables,
-			BasicIndexRuleEvaluator evaluator,
-			HashMap<Integer, LinkedList<String>> listOfOccuringOWLLists,
-			HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> listRuleResults) {
-			BasicIndexRuleEvaluator rifEvaluator = evaluator;
+			final HashMap<Integer, LinkedList<BoundVariable>> resultVariables,
+			final BasicIndexRuleEvaluator evaluator,
+			final HashMap<Integer, LinkedList<String>> listOfOccuringOWLLists,
+			final HashMap<Integer, LinkedHashMap<String, LinkedList<BoundVariable>>> listRuleResults) {
+			final BasicIndexRuleEvaluator rifEvaluator = evaluator;
 			String query = "";
 			// query_startTime=System.currentTimeMillis();
 			TemplateRule currentTemplateRule;
@@ -430,9 +431,9 @@ public class InferenceRulesGenerator {
 
 				// evaluate Query
 				try {
-					evaluateQuery(rifEvaluator, query, currentTemplateRule,
+					this.evaluateQuery(rifEvaluator, query, currentTemplateRule,
 							resultVariables, listOfOccuringOWLLists, listRuleResults);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 
 					e.printStackTrace();
 				}

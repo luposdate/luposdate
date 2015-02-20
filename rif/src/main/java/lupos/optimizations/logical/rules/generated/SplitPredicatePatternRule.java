@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
+import lupos.optimizations.logical.rules.generated.runtime.Rule;
 
 
 
@@ -41,20 +41,20 @@ public class SplitPredicatePatternRule extends Rule {
     private lupos.rif.operator.PredicatePattern p = null;
     private int _dim_0 = -1;
 
-    private boolean _checkPrivate0(BasicOperator _op) {
+    private boolean _checkPrivate0(final BasicOperator _op) {
         if(_op.getClass() != lupos.rif.operator.PredicatePattern.class) {
             return false;
         }
 
         this.p = (lupos.rif.operator.PredicatePattern) _op;
 
-        List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
+        final List<BasicOperator> _precedingOperators_1_0 = _op.getPrecedingOperators();
 
 
         this._dim_0 = -1;
         this.o1 = new lupos.engine.operators.BasicOperator[_precedingOperators_1_0.size()];
 
-        for(BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
+        for(final BasicOperator _precOp_1_0 : _precedingOperators_1_0) {
             this._dim_0 += 1;
 
             if(!this._checkPrivate1(_precOp_1_0)) {
@@ -62,18 +62,18 @@ public class SplitPredicatePatternRule extends Rule {
             }
         }
 
-        List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
+        final List<OperatorIDTuple> _succedingOperators_1_0 = _op.getSucceedingOperators();
 
         if(_succedingOperators_1_0.size() != 1) {
             return false;
         }
 
-        for(OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
+        for(final OperatorIDTuple _sucOpIDTup_1_0 : _succedingOperators_1_0) {
             if(!(_sucOpIDTup_1_0.getOperator() instanceof lupos.engine.operators.BasicOperator)) {
                 continue;
             }
 
-            this.o2 = (lupos.engine.operators.BasicOperator) _sucOpIDTup_1_0.getOperator();
+            this.o2 = _sucOpIDTup_1_0.getOperator();
 
             return true;
         }
@@ -81,12 +81,12 @@ public class SplitPredicatePatternRule extends Rule {
         return false;
     }
 
-    private boolean _checkPrivate1(BasicOperator _op) {
+    private boolean _checkPrivate1(final BasicOperator _op) {
         if(!(_op instanceof lupos.engine.operators.BasicOperator)) {
             return false;
         }
 
-        this.o1[this._dim_0] = (lupos.engine.operators.BasicOperator) _op;
+        this.o1[this._dim_0] = _op;
 
         return true;
     }
@@ -97,26 +97,28 @@ public class SplitPredicatePatternRule extends Rule {
         this.ruleName = "Split PredicatePattern";
     }
 
-    protected boolean check(BasicOperator _op) {
-        boolean _result = this._checkPrivate0(_op);
+    @Override
+	protected boolean check(final BasicOperator _op) {
+        final boolean _result = this._checkPrivate0(_op);
 
         if(_result) {
             // additional check method code...
-            this.id = p.getSucceedingOperators().get(0).getId();
+            this.id = this.p.getSucceedingOperators().get(0).getId();
             return this.p.getPrecedingOperators().size() > 1;
         }
 
         return _result;
     }
 
-    protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
+    @Override
+	protected void replace(final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
         int[] _label_a = null;
 
         int _label_a_count = 0;
         _label_a = new int[this.o1.length];
 
-        for(lupos.engine.operators.BasicOperator _parent : this.o1) {
+        for(final lupos.engine.operators.BasicOperator _parent : this.o1) {
             _label_a[_label_a_count] = _parent.getOperatorIDTuple(this.p).getId();
             _label_a_count += 1;
 
@@ -144,7 +146,7 @@ public class SplitPredicatePatternRule extends Rule {
 
         _label_a_count = 0;
 
-        for(lupos.rif.operator.PredicatePattern _parent : p_new) {
+        for(final lupos.rif.operator.PredicatePattern _parent : p_new) {
             _parent.addSucceedingOperator(new OperatorIDTuple(this.o2, _label_a[_label_a_count]));
             this.o2.addPrecedingOperator(_parent);
 
@@ -158,8 +160,11 @@ public class SplitPredicatePatternRule extends Rule {
 
 
         // additional replace method code...
-        for(lupos.rif.operator.PredicatePattern tmp_p : p_new) {
-         tmp_p.getSucceedingOperators().get(0).setId(id);
+    	if(this.p.getUnionVariables()==null){
+    		this.p.setVariables();
+    	}
+        for(final lupos.rif.operator.PredicatePattern tmp_p : p_new) {
+            tmp_p.getSucceedingOperators().get(0).setId(this.id);
             tmp_p.setUnionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getUnionVariables()));
             tmp_p.setIntersectionVariables(new java.util.HashSet<lupos.datastructures.items.Variable>(this.p.getIntersectionVariables()));
             tmp_p.setPredicateName(this.p.getPredicateName());

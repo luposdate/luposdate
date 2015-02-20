@@ -23,8 +23,10 @@
  */
 package lupos.rif.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsMap;
@@ -35,6 +37,7 @@ import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
 import lupos.rif.IRuleVisitor;
 import lupos.rif.RIFException;
+import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.datatypes.Predicate;
 
 import com.google.common.collect.Multimap;
@@ -155,9 +158,23 @@ public class RulePredicate extends Uniterm {
 			final Predicate pred = new Predicate();
 			pred.setName(((Constant) this.termName).getLiteral());
 			for (final IExpression expr : this.termParams) {
-				pred.getParameters().add(	(expr instanceof Constant)?
-											((Constant) expr).getLiteral():
-											(Literal)((External) expr).evaluate(new BindingsMap()));
+				if(expr instanceof RuleList){
+					final List<IExpression> lie = ((RuleList) expr).getItems();
+					final List<Literal> ll = new ArrayList<Literal>(lie.size());
+					for(final IExpression ie: lie){
+						final Object res = ie.evaluate(null);
+						if(res instanceof RuleList){
+							ll.add(((RuleList) res).createListLiteral());
+						} else {
+							ll.add((Literal) res);
+						}
+					}
+					pred.getParameters().add(new ListLiteral(ll));
+				} else {
+					pred.getParameters().add(	(expr instanceof Constant)?
+												(Literal)((Constant) expr).getLiteral():
+												(Literal)((External) expr).evaluate(new BindingsMap()));
+				}
 			}
 			return pred;
 		}

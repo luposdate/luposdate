@@ -1260,8 +1260,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 							this.operatorGraphViewer.getOperatorGraph()
 							.getPrefix()));
 					for (final Literal l : p.getParameters()) {
-						columns.add(l.toString(this.operatorGraphViewer
-								.getOperatorGraph().getPrefix()));
+						columns.add(l.toString(this.operatorGraphViewer.getOperatorGraph().getPrefix()));
 					}
 					for (int i = p.getParameters().size(); i <= max; i++) {
 						columns.add("");

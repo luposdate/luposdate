@@ -31,6 +31,7 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.rif.IExpression;
+import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.model.Constant;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RuleVariable;
@@ -41,88 +42,136 @@ import com.google.common.collect.Lists;
 public class ListFunctions {
 
 	@Builtin(Name = "make-list")
-	public static RuleList make_list(final Argument arg) {
+	public static ListLiteral make_list(final Argument arg) {
+		final ArrayList<Literal> ls = new ArrayList<Literal>(arg.arguments.size());
+		for (final Item item : arg.arguments) {
+			if (item instanceof Variable) {
+				ls.add(arg.binding.get((Variable) item));
+			} else if (item instanceof Literal) {
+				ls.add((Literal)item);
+			} else if (item instanceof IExpression) {
+				ls.add((Literal)((IExpression) item).evaluate(arg.binding));
+			}
+		}
+		return new ListLiteral(ls);
+
+		/* old version with RuleList:
 		final RuleList result = new RuleList();
 		for (final Item item : arg.arguments) {
-			if (item instanceof Variable)
+			if (item instanceof Variable) {
 				result.addItem(new RuleVariable(item.getName()));
-			else if (item instanceof Literal)
+			} else if (item instanceof Literal) {
 				result.addItem(new Constant((Literal) item, result));
-			else if (item instanceof IExpression)
+			} else if (item instanceof IExpression) {
 				result.addItem((IExpression) item);
+			}
 		}
-		return result;
+		return result;*/
 	}
 
 	@Builtin(Name = "count")
 	public static Literal count(final Argument arg) {
-		if (arg.arguments.size() == 1
-				&& arg.arguments.get(0) instanceof RuleList)
-			return BuiltinHelper.createXSLiteral(
-					((RuleList) arg.arguments.get(0)).getItems().size(),
-					"integer");
-		else
+		try {
+			return BuiltinHelper.createXSLiteral(BuiltinHelper.getSizeOfList(arg.arguments.get(0)), "integer");
+		} catch(final RuntimeException re){
 			return null;
+		}
 	}
 
 	@Builtin(Name = "get")
 	public static Item get(final Argument arg) {
 		if (arg.arguments.size() == 2
-				&& arg.arguments.get(0) instanceof RuleList
+				&& (arg.arguments.get(0) instanceof RuleList || arg.arguments.get(0) instanceof ListLiteral)
 				&& arg.arguments.get(1) instanceof TypedLiteral) {
-			final RuleList list = (RuleList) arg.arguments.get(0);
-			int index = BuiltinHelper.getInteger((TypedLiteral) arg.arguments
-					.get(1));
-			if (index < 0)
-				index += list.getItems().size();
-			if (index < 0 || index >= list.getItems().size())
-				return null;
-			else {
-				final IExpression expr = list.getItems().get(index);
-				return (Item) expr.evaluate(arg.binding);
+			final int size = BuiltinHelper.getSizeOfList(arg.arguments.get(0));
+			int index = BuiltinHelper.getInteger((TypedLiteral) arg.arguments.get(1));
+			if (index < 0) {
+				index += size;
 			}
-		} else
+			if (index < 0 || index >= size) {
+				return null;
+			} else {
+				return BuiltinHelper.getEntryOfList(arg.arguments.get(0), index, arg.binding);
+			}
+		} else {
 			return null;
+		}
 	}
 
 	@Builtin(Name = "sublist")
-	public static RuleList sublist(final Argument arg) {
+	public static Object sublist(final Argument arg) {
 		if (arg.arguments.size() > 1 && arg.arguments.size() < 4
-				&& arg.arguments.get(0) instanceof RuleList
+				&& (arg.arguments.get(0) instanceof RuleList || arg.arguments.get(0) instanceof ListLiteral)
 				&& arg.arguments.get(1) instanceof TypedLiteral) {
-			final RuleList list = (RuleList) arg.arguments.get(0);
-			final int start = BuiltinHelper
-					.getInteger((TypedLiteral) arg.arguments.get(1));
-			int stop = list.getItems().size() - 1;
-			if (arg.arguments.size() == 3
-					&& arg.arguments.get(2) instanceof TypedLiteral)
-				stop = BuiltinHelper.getInteger((TypedLiteral) arg.arguments
-						.get(2));
-			List<IExpression> subList = list.getItems().subList(start, stop);
-			final RuleList result = new RuleList();
-			result.getItems().addAll(subList);
-			return result;
+			// final RuleList list = (RuleList) arg.arguments.get(0);
+			final int size = BuiltinHelper.getSizeOfList(arg.arguments.get(0));
+			int start = BuiltinHelper.getInteger((TypedLiteral) arg.arguments.get(1));
+			if(start<0){
+				start = size + 1 + start;
+			}
+			if(start<0){
+				start = 0;
+			}
+			int stop = - 1;
+			if (arg.arguments.size() == 3 && arg.arguments.get(2) instanceof TypedLiteral) {
+				stop = BuiltinHelper.getInteger((TypedLiteral) arg.arguments.get(2));
+			}
+			if(stop<0){
+				stop = size + 1 + stop;
+			}
+			if(stop<0 || stop<start){
+				stop = start;
+			}
+			if(size==0){
+				start = 0;
+				stop = 0;
+			}
+			if(arg.arguments.get(0) instanceof RuleList) {
+				final List<IExpression> subList = ((RuleList) arg.arguments.get(0)).getItems().subList(start, stop);
+				final RuleList result = new RuleList();
+				result.getItems().addAll(subList);
+				return result;
+			} else {
+				return new ListLiteral(((ListLiteral)arg.arguments.get(0)).getEntries().subList(start, stop));
+			}
 		}
 		return null;
 	}
 
 	@Builtin(Name = "append")
-	public static RuleList append(final Argument arg) {
-		if (arg.arguments.size() > 1
-				&& arg.arguments.get(0) instanceof RuleList) {
-			final RuleList list = (RuleList) arg.arguments.get(0);
+	public static Object append(final Argument arg) {
+		if (arg.arguments.size() > 1 && arg.arguments.get(0) instanceof RuleList) {
+			final RuleList list = ((RuleList) arg.arguments.get(0)).clone();
 			boolean first = true;
 			for (final Item item : arg.arguments) {
 				if (first) {
 					first = false;
 					continue;
 				}
-				if (item instanceof Variable)
+				if (item instanceof Variable) {
 					list.addItem(new RuleVariable(item.getName()));
-				else if (item instanceof Literal)
+				} else if (item instanceof Literal) {
 					list.addItem(new Constant((Literal) item, list));
-				else if (item instanceof IExpression)
+				} else if (item instanceof IExpression) {
 					list.addItem((IExpression) item);
+				}
+			}
+			return list;
+		} else if (arg.arguments.size() > 1 && arg.arguments.get(0) instanceof ListLiteral) {
+			final ListLiteral list = ((ListLiteral) arg.arguments.get(0)).clone();
+			boolean first = true;
+			for (final Item item : arg.arguments) {
+				if (first) {
+					first = false;
+					continue;
+				}
+				if (item instanceof Variable) {
+					throw new RuntimeException("Got variable, but literal expected!");
+				} else if (item instanceof Literal) {
+					list.getEntries().add((Literal) item);
+				} else if (item instanceof IExpression) {
+					list.getEntries().add((Literal)((IExpression) item).evaluate(arg.binding));
+				}
 			}
 			return list;
 		}
@@ -130,17 +179,32 @@ public class ListFunctions {
 	}
 
 	@Builtin(Name = "concatenate")
-	public static RuleList concatenate(final Argument arg) {
+	public static ListLiteral concatenate(final Argument arg) {
 		if (arg.arguments.size() > 0
-				&& arg.arguments.get(0) instanceof RuleList) {
-			final RuleList list = (RuleList) arg.arguments.get(0);
-			boolean first = true;
+				&& (arg.arguments.get(0) instanceof RuleList || arg.arguments.get(0) instanceof ListLiteral)) {
+			final Item arg0 = arg.arguments.get(0);
+			final ListLiteral list = (arg0 instanceof RuleList)?((RuleList) arg0).createListLiteral(): ((ListLiteral) arg0).clone();
+			boolean flag = true;
 			for (final Item item : arg.arguments) {
-				if (first) {
-					first = false;
+				if(flag){
+					// just for jumping over the first argument...
+					flag = false;
 					continue;
 				}
-				list.getItems().addAll(((RuleList) item).getItems());
+				if(item instanceof ListLiteral){
+					list.getEntries().addAll(((ListLiteral)item).getEntries());
+				} else {
+					for(final IExpression ie: ((RuleList) item).getItems()){
+						final Object o = ie.evaluate(null);
+						if(o instanceof Literal){
+							list.getEntries().add((Literal) o);
+						} else if(o instanceof RuleList){
+							list.getEntries().add(((RuleList) o).createListLiteral());
+						} else if(o instanceof Constant){
+							list.getEntries().add(((Constant) o).getLiteral());
+						}
+					}
+				}
 			}
 			return list;
 		}
@@ -157,22 +221,25 @@ public class ListFunctions {
 			int index = BuiltinHelper.getInteger((TypedLiteral) arg.arguments
 					.get(1));
 			final Item item = arg.arguments.get(2);
-			if (index < 0)
+			if (index < 0) {
 				index += list.getItems().size();
-			if (index < 0 || index >= list.getItems().size())
+			}
+			if (index < 0 || index >= list.getItems().size()) {
 				return null;
-			List<IExpression> original = new ArrayList<IExpression>(
+			}
+			final List<IExpression> original = new ArrayList<IExpression>(
 					list.getItems());
 			list.getItems().clear();
 			for (int i = 0; i < original.size(); i++) {
 				final IExpression expr = original.get(i);
 				if (i == index) {
-					if (item instanceof Variable)
+					if (item instanceof Variable) {
 						list.addItem(new RuleVariable(item.getName()));
-					else if (item instanceof Literal)
+					} else if (item instanceof Literal) {
 						list.addItem(new Constant((Literal) item, list));
-					else if (item instanceof IExpression)
+					} else if (item instanceof IExpression) {
 						list.addItem((IExpression) item);
+					}
 				}
 				list.addItem(expr);
 			}
@@ -189,16 +256,18 @@ public class ListFunctions {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			int index = BuiltinHelper.getInteger((TypedLiteral) arg.arguments
 					.get(1));
-			if (index < 0)
+			if (index < 0) {
 				index += list.getItems().size();
-			if (index < 0 || index >= list.getItems().size())
+			}
+			if (index < 0 || index >= list.getItems().size()) {
 				return null;
-			else {
+			} else {
 				list.getItems().remove(index);
 				return list;
 			}
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	@Builtin(Name = "reverse")
@@ -206,13 +275,14 @@ public class ListFunctions {
 		if (arg.arguments.size() == 1
 				&& arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
-			List<IExpression> reversed = new ArrayList<IExpression>(
+			final List<IExpression> reversed = new ArrayList<IExpression>(
 					Lists.reverse(list.getItems()));
 			list.getItems().clear();
 			list.getItems().addAll(reversed);
 			return list;
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	@Builtin(Name = "index-of")
@@ -223,17 +293,19 @@ public class ListFunctions {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			final Item item = arg.arguments.get(1);
 			IExpression lookingFor = null;
-			if (item instanceof Variable)
+			if (item instanceof Variable) {
 				lookingFor = new RuleVariable(item.getName());
-			else if (item instanceof Literal)
+			} else if (item instanceof Literal) {
 				lookingFor = new Constant((Literal) item, list);
-			else if (item instanceof IExpression)
+			} else if (item instanceof IExpression) {
 				lookingFor = (IExpression) item;
+			}
 			final RuleList results = new RuleList();
 			for (int i = 0; i < list.getItems().size(); i++) {
-				if (list.getItems().get(i).equals(lookingFor))
+				if (list.getItems().get(i).equals(lookingFor)) {
 					results.addItem(new Constant(BuiltinHelper
 							.createXSLiteral(i, "integer"), results));
+				}
 			}
 			return results;
 		}
@@ -246,9 +318,11 @@ public class ListFunctions {
 				&& arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			final List<IExpression> newList = Lists.newArrayList();
-			for (final IExpression expr : list.getItems())
-				if (!newList.contains(expr))
+			for (final IExpression expr : list.getItems()) {
+				if (!newList.contains(expr)) {
 					newList.add(expr);
+				}
+			}
 			list.getItems().clear();
 			list.getItems().addAll(newList);
 			boolean first = true;
@@ -257,9 +331,11 @@ public class ListFunctions {
 					first = false;
 					continue;
 				}
-				for (final IExpression expr : ((RuleList) item).getItems())
-					if (!list.getItems().contains(expr))
+				for (final IExpression expr : ((RuleList) item).getItems()) {
+					if (!list.getItems().contains(expr)) {
 						list.addItem(expr);
+					}
+				}
 			}
 			return list;
 		}
@@ -272,9 +348,11 @@ public class ListFunctions {
 				&& arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			final List<IExpression> newList = Lists.newArrayList();
-			for (final IExpression expr : list.getItems())
-				if (!newList.contains(expr))
+			for (final IExpression expr : list.getItems()) {
+				if (!newList.contains(expr)) {
 					newList.add(expr);
+				}
+			}
 			list.getItems().clear();
 			list.getItems().addAll(newList);
 			return list;
@@ -291,13 +369,15 @@ public class ListFunctions {
 			for (final Item item : arg.arguments) {
 				for (final IExpression expr : ((RuleList) item).getItems()) {
 					boolean contained = true;
-					for (final Item item1 : arg.arguments)
+					for (final Item item1 : arg.arguments) {
 						if (!((RuleList) item1).getItems().contains(expr)) {
 							contained = false;
 							break;
 						}
-					if (contained && !newList.contains(expr))
+					}
+					if (contained && !newList.contains(expr)) {
 						newList.add(expr);
+					}
 				}
 			}
 			list.getItems().clear();
@@ -314,8 +394,9 @@ public class ListFunctions {
 				&& arg.arguments.get(1) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			final RuleList listE = (RuleList) arg.arguments.get(1);
-			for (final IExpression expr : listE.getItems())
+			for (final IExpression expr : listE.getItems()) {
 				list.getItems().remove(expr);
+			}
 			return list;
 		}
 		return null;

@@ -67,16 +67,20 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		this.patternArgs = items;
 	}
 
-	@Override
-	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
-		this.unionVariables = new HashSet<Variable>(msg.getVariables());
+	public void setVariables(){
+		this.unionVariables = new HashSet<Variable>();
 		for (final Item item : this.patternArgs) {
 			if (item.isVariable()) {
 				this.unionVariables.add((Variable) item);
 			}
 		}
 		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
+	}
+
+	@Override
+	public Message preProcessMessage(final BoundVariablesMessage msg) {
+		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
+		this.setVariables();
 		result.getVariables().addAll(this.intersectionVariables);
 		return result;
 	}
@@ -106,8 +110,7 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 				boolean matched = true;
 				for (int idx = 0; idx < pred.getParameters().size(); idx++) {
 					if (this.patternArgs.get(idx).isVariable()) {
-						bind.add((Variable) this.patternArgs.get(idx), pred
-								.getParameters().get(idx));
+						bind.add((Variable) this.patternArgs.get(idx), pred.getParameters().get(idx));
 					} else if (!this.patternArgs.get(idx).equals(
 							pred.getParameters().get(idx))) {
 						matched = false;

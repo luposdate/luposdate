@@ -26,12 +26,13 @@ package lupos.rif.builtin;
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class NonStandardPredicates {
 	@Builtin(Name = "is-literal")
-	public static BooleanLiteral is_literal(Argument arg) {
+	public static BooleanLiteral is_literal(final Argument arg) {
 		Item arg0 = arg.arguments.get(0);
 		if(arg0 instanceof LazyLiteral){
 			arg0 = ((LazyLiteral) arg0).getLiteral();
@@ -40,7 +41,7 @@ public class NonStandardPredicates {
 	}
 
 	@Builtin(Name = "is-blanknode")
-	public static BooleanLiteral is_blanknode(Argument arg) {
+	public static BooleanLiteral is_blanknode(final Argument arg) {
 		Item arg0 = arg.arguments.get(0);
 		if(arg0 instanceof LazyLiteral){
 			arg0 = ((LazyLiteral) arg0).getLiteral();
@@ -49,11 +50,22 @@ public class NonStandardPredicates {
 	}
 
 	@Builtin(Name = "is-uri")
-	public static BooleanLiteral is_uri(Argument arg) {
+	public static BooleanLiteral is_uri(final Argument arg) {
 		Item arg0 = arg.arguments.get(0);
 		if(arg0 instanceof LazyLiteral){
 			arg0 = ((LazyLiteral) arg0).getLiteral();
 		}
 		return BooleanLiteral.create(arg0 instanceof URILiteral);
 	}
+
+	@Builtin(Name = "is-integer-expression")
+	public static BooleanLiteral is_integer_expression(final Argument arg) {
+		Item arg0 = arg.arguments.get(0);
+		if(arg0 instanceof LazyLiteral){
+			arg0 = ((LazyLiteral) arg0).getLiteral();
+		}
+		final double value = BuiltinHelper.numberFromLiteral((TypedLiteral) arg0);
+		return BooleanLiteral.create(Math.round(value)==value);
+	}
+
 }

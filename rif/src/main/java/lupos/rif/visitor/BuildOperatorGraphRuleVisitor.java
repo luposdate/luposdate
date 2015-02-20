@@ -357,8 +357,17 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		for (final Entry<KEY, Set<BasicOperator>> entry : this.tripleProducer.entrySet()) {
 			boolean consumerExists = false;
 			// find all matching consumers by just getting the previous determined tripleConsumers...
-			final Set<BasicOperator> consumers = this.tripleConsumer.get(entry.getKey());
-			if(consumers!=null){
+			final Set<BasicOperator> consumers = new HashSet<BasicOperator>();
+			final Iterator<KEY> itMatchingKeys = entry.getKey().iterator();
+			while(itMatchingKeys.hasNext()){
+				final KEY matchingKey = itMatchingKeys.next();
+				final Set<BasicOperator> matchedOperators = this.tripleConsumer.get(matchingKey);
+				if(matchedOperators!=null){
+					consumers.addAll(matchedOperators);
+				}
+			}
+
+			if(consumers.size()>0){
 				consumerExists = true;
 				// Kreuzverbindungen zwischen Produzenten und Konsumenten
 				// herstellen
@@ -507,7 +516,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 
 	@Override
 	public Object visit(final Rule obj, final Object arg) throws RIFException {
-		// Besimmen, ob Triple, Predicates oder Equalities erstellt werden sollen
+		// Bestimmen, ob Triple, Predicates oder Equalities erstellt werden sollen
 		final List<BasicOperator> resultOps = new ArrayList<BasicOperator>();
 		final List<Equality> equalities = new ArrayList<Equality>();
 		boolean generateTriples = false;
@@ -858,8 +867,11 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				predPat.setSucceedingOperator((OperatorIDTuple) arg);
 				((OperatorIDTuple) arg).getOperator().addPrecedingOperator(predPat);
 			}
-			// Pr�dikatkonsumenten anmelden
-			this.add(this.tripleConsumer, new KeyPredicatePattern(predPat), predPat);
+			// register predicate consuments (also consuming more general keys)
+			final KEY key = new KeyPredicatePattern(predPat);
+			for(final KEY k: key){
+				this.add(this.tripleConsumer, k, predPat);
+			}
 			return predPat;
 		}
 		// Normale TripleBearbeitung

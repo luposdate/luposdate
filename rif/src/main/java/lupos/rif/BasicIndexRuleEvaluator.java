@@ -345,7 +345,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.getRootNode().deleteParents();
 		this.getRootNode().setParents();
 		this.getRootNode().detectCycles();
-//		this.getRootNode().sendMessage(new BoundVariablesMessage());
+		this.getRootNode().sendMessage(new BoundVariablesMessage());
 		return (new Date()).getTime() - start;
 	}
 
