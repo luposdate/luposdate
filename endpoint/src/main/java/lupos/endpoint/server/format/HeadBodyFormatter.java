@@ -303,7 +303,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 		}
 	}
 
-	protected void writeLiteral(final OutputStream os, final Literal literal) throws IOException{
+	public void writeLiteral(final OutputStream os, final Literal literal) throws IOException{
 		if(literal!=null){
 			final Literal materializedLiteral = (literal instanceof LazyLiteral)?((LazyLiteral)literal).getLiteral(): literal;
 			if (materializedLiteral.isBlank()){
