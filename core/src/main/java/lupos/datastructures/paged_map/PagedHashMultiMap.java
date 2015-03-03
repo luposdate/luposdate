@@ -186,7 +186,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 * @param lois
 	 * input stream
 	 * @return
-	 * PagedHashMultiMap<K,V>
+	 * PagedHashMultiMap&lt;K,V&gt;
 	 * @throws IOException
 	 */
 	public static<K,V> PagedHashMultiMap<K,V> readLuposPagedHashMap(final InputStream lois) throws IOException{

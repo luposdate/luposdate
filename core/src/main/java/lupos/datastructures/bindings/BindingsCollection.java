@@ -80,7 +80,7 @@ public class BindingsCollection extends Bindings{
 	 * If the variable is already bound, the old value
 	 * will be dismissed. If the old value is still needed,
 	 * the collection of bindings has to be cloned previously.
-	 * @param varname  the variable's name
+	 * @param var  the variable
 	 * @param literal  the literal
 	 */
 	@Override
@@ -96,7 +96,7 @@ public class BindingsCollection extends Bindings{
 
 	/**
 	 * Returns the literal a variable is bound to.
-	 * @param varname  the variable's name
+	 * @param var  the variable
 	 * @return the literal a variable is bound to
 	 */
 	@Override

@@ -76,7 +76,6 @@ public class PhysicalOptimizations {
 	 *            The (unqualified) name of the class to be replaced.
 	 * @param to
 	 *            The (unqualified) name of the class to replace it.
-	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
 	public static void addReplacement(final String prefix, final String from,

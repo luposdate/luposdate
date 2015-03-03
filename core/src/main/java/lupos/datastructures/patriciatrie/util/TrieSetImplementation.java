@@ -32,12 +32,12 @@ import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.misc.util.AbstractSortedSet;
 
 /**
- * This class is a wrapper, such that a given TrieSet object implements the SortedSet<String> interface.
+ * This class is a wrapper, such that a given TrieSet object implements the SortedSet&lt;String&gt; interface.
  */
 public class TrieSetImplementation extends AbstractSortedSet<String>{
-	
+
 	protected final TrieSet trie;
-	
+
 	public TrieSetImplementation(final TrieSet trie){
 		this.trie = trie;
 	}
@@ -48,12 +48,12 @@ public class TrieSetImplementation extends AbstractSortedSet<String>{
 	}
 
 	@Override
-	public boolean isEmpty() {		
+	public boolean isEmpty() {
 		return this.size()==0;
 	}
 
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(final Object o) {
 		if(o instanceof String){
 			return this.trie.getIndex((String)o)>=0;
 		} else {
@@ -67,12 +67,12 @@ public class TrieSetImplementation extends AbstractSortedSet<String>{
 	}
 
 	@Override
-	public boolean add(String key) {
+	public boolean add(final String key) {
 		return this.trie.add(key);
 	}
 
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(final Object o) {
 		if(o instanceof String){
 			return this.trie.remove((String) o);
 		} else {
@@ -96,8 +96,8 @@ public class TrieSetImplementation extends AbstractSortedSet<String>{
 	}
 
 	@Override
-	public SortedSet<String> subSet(String fromElement, String toElement,
-			boolean inclusiveLastElement) {
+	public SortedSet<String> subSet(final String fromElement, final String toElement,
+			final boolean inclusiveLastElement) {
 		throw new UnsupportedOperationException();
 	}
 }

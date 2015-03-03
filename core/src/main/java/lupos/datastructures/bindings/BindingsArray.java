@@ -94,7 +94,7 @@ public class BindingsArray extends Bindings {
 	 * array of literals from this class as target and the provided array as
 	 * source.
 	 *
-	 * @param literals
+	 * @param otherLiterals
 	 *            the literals to set
 	 */
 	protected void cloneLiterals(final Literal[] otherLiterals) {
@@ -133,8 +133,8 @@ public class BindingsArray extends Bindings {
 	 * old value is still needed, the collection of bindings has to be cloned
 	 * previously.
 	 *
-	 * @param varname
-	 *            the variable's name
+	 * @param var
+	 *            the variable
 	 * @param literal
 	 *            the literal
 	 */
@@ -149,8 +149,8 @@ public class BindingsArray extends Bindings {
 	/**
 	 * Returns the literal a variable is bound to.
 	 *
-	 * @param varname
-	 *            the variable's name
+	 * @param var
+	 *            the variable
 	 * @return the literal a variable is bound to
 	 */
 	@Override

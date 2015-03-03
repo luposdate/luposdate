@@ -46,8 +46,8 @@ public final class NodeHelper {
 	 *            the node to which the key is added
 	 * @param key
 	 *            Key to add
-	 * @return <strong>false</strong> if the key could not be added (if the node already contained that key) <br />
-	 *         <strong>true</strong> otherwise.
+	 * @return false if the key could not be added (if the node already contained that key),
+	 *         true otherwise.
 	 */
 	public final static boolean addToSet(final Node node, final String key) {
 		final int keyLength = key.length();
@@ -138,8 +138,8 @@ public final class NodeHelper {
 	 *            the node to which the key is added
 	 * @param key
 	 *            Key to add
-	 * @return <strong>false</strong> if the key could not be added (if the node already contained that key) <br />
-	 *         <strong>true</strong> otherwise.
+	 * @return false if the key could not be added (if the node already contained that key),
+	 *         true otherwise.
 	 */
 	public final static boolean addToBag(final NodeWithValue<Integer> node, final String key) {
 		final int keyLength = key.length();
@@ -253,13 +253,13 @@ public final class NodeHelper {
 	/**
 	 * puts a value of a key to the node.
 	 *
-	 * @param Node
+	 * @param node
 	 *            the node in which the value is putted
 	 * @param key
 	 *            Key for the value
 	 * @param value
 	 *            Value of the key
-	 * @return <strong>null</strong> if the key could not be removed (if the trie did not contain that key),
+	 * @return null if the key could not be removed (if the trie did not contain that key),
 	 *         the old value otherwise (inside a Tuple-object to distinguish case that the the value itself is a null value).
 	 */
 	public final static<T> Tuple<T, Boolean> put(final NodeWithValue<T> node, final String key, final T value) {
@@ -499,12 +499,12 @@ public final class NodeHelper {
 	/**
 	 * Removes a key from the node.
 	 *
-	 * @param Node
+	 * @param node
 	 *            the node
 	 * @param key
 	 *            Key to remove
-	 * @return <strong>false</strong> if the key could not be removed (if the node did not contain that key)<br />
-	 *         <strong>true</strong> otherwise.
+	 * @return false if the key could not be removed (if the node did not contain that key),
+	 *         true otherwise.
 	 */
 	public final static boolean remove(final Node node, final String key) {
 		final Tuple<Boolean, Integer> idx = NodeHelper.searchMergePartner(node, key);
@@ -552,11 +552,11 @@ public final class NodeHelper {
 	/**
 	 * Removes a key from the node.
 	 *
-	 * @param Node
+	 * @param node
 	 *            the node
 	 * @param key
 	 *            Key to remove
-	 * @return <strong>null</strong> if the key could not be removed (if the trie did not contain that key),
+	 * @return null if the key could not be removed (if the trie did not contain that key),
 	 *         the old value otherwise (inside a Tuple-object to distinguish case that the the value itself is a null value).
 	 */
 	public final static<T> Tuple<T, Boolean> removeKey(final NodeWithValue<T> node, final String key) {
@@ -611,9 +611,9 @@ public final class NodeHelper {
 	 *            Node to be processed...
 	 * @param key
 	 *            Key to find a merge partner for
-	 * @return A tuple consisting of a boolean and an integer value: <br />
-	 *         <strong>true</strong> and the index of the merge partner if a merge partner was found<br />
-	 *         <strong>false</strong> and the index of the insertion index if no merge partner was found
+	 * @return A tuple consisting of a boolean and an integer value:
+	 *         true and the index of the merge partner if a merge partner was found,
+	 *         false and the index of the insertion index if no merge partner was found
 	 */
 	protected static Tuple<Boolean, Integer> searchMergePartner(final Node node, final String key) {
 		final int keyLength = key.length();
@@ -724,9 +724,9 @@ public final class NodeHelper {
 	}
 
 	/**
-	 * Merges n trie nodes into one trie node.<br />
-	 * <br />
-	 * <strong>Caution:</strong> This merge function <strong>must</strong> be called from an empty root node,
+	 * Merges n trie nodes into one trie node.
+	 *
+	 * Caution: This merge function must be called from an empty root node,
 	 * not from a node that should actually be merged with another!
 	 *
 	 * @param node The node in which the other nodes will be merged...
@@ -829,8 +829,7 @@ public final class NodeHelper {
 	}
 
 	/**
-	 * Merges n trie nodes into one trie node.<br />
-	 * <br />
+	 * Merges n trie nodes into one trie node.
 	 *
 	 * @param node The node in which the other nodes will be merged...
 	 * @param nodesToMerge List of nodes that will be merged.
@@ -1036,9 +1035,9 @@ public final class NodeHelper {
 	}
 
 	/**
-	 * Merges n trie nodes into one trie node.<br />
-	 * <br />
-	 * <strong>Caution:</strong> This merge function <strong>must</strong> be called from an empty root node,
+	 * Merges n trie nodes into one trie node.
+	 *
+	 * Caution: This merge function must be called from an empty root node,
 	 * not from a node that should actually be merged with another!
 	 *
 	 * @param node The node in which the other nodes will be merged...
@@ -1163,8 +1162,7 @@ public final class NodeHelper {
 
 
 	/**
-	 * Merges n trie nodes into one trie node.<br />
-	 * <br />
+	 * Merges n trie nodes into one trie node.
 	 *
 	 * @param node The node in which the other nodes will be merged...
 	 * @param nodesToMerge List of nodes that will be merged.
@@ -1399,7 +1397,7 @@ public final class NodeHelper {
 	 * element of the children array. If necessary, the children array will be
 	 * initialized first. It will not be initialized, if node is null.
 	 *
-	 * @param parentnode
+	 * @param parentNode
 	 *            The node to which the cloned node is added
 	 * @param i
 	 *            Array index of the node
@@ -1433,7 +1431,7 @@ public final class NodeHelper {
 	 * element of the children array. If necessary, the children array will be
 	 * initialized first. It will not be initialized, if node is null.
 	 *
-	 * @param parentnode
+	 * @param parentNode
 	 *            The node to which the cloned node is added
 	 * @param i
 	 *            Array index of the node

@@ -26,13 +26,28 @@
  */
 package lupos.engine.indexconstruction;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.SortedSet;
+
 import lupos.compression.Compression;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSetUsingTrie;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.items.Triple;
-import lupos.datastructures.items.literal.*;
+import lupos.datastructures.items.literal.LazyLiteral;
+import lupos.datastructures.items.literal.LazyLiteralOriginalContent;
+import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.LiteralFactory;
+import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
@@ -49,11 +64,9 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.io.helper.OutHelper;
 import lupos.misc.TimeInterval;
 import lupos.misc.util.ImmutableIterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.*;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
@@ -83,8 +96,8 @@ public class RDF3XIndexConstruction {
 	/**
 	 * Constructs the large-scale indices for RDF3X.
 	 * The command line arguments are
-	 * <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_ELEMENTS_IN_MEMORY [<datafile2> [<datafile3> ...]]]
-	 * If you want to import more than one file you can use the additional parameters <datafilei>!
+	 * datafile dataformat encoding NONE|BZIP2|HUFFMAN|GZIP directory_for_indices [LIMIT_ELEMENTS_IN_MEMORY [datafile2 [datafile3 ...]]]
+	 * If you want to import more than one file you can use the additional parameters datafilei!
 	 *
 	 * @param args
 	 *            command line arguments

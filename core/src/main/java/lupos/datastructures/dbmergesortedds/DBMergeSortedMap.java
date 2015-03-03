@@ -36,7 +36,7 @@ import java.util.SortedSet;
 public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 		implements SortedMap<K, V>, Iterable<MapEntry<K, V>>, Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8291344039430377245L;
 	protected SortedSet<MapEntry<K, V>> set;
@@ -45,11 +45,7 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 	/**
 	 * Create a new DBMergeSortedMap that sorts according to the elements'
 	 * natural order.
-	 * 
-	 * @param heapHeight
-	 *            The height of the heap used to presort the elements in memory.
-	 *            (The maximum number of elements that are held in memory at any
-	 *            given time will be 2**heapHeight-1)
+	 *
 	 */
 	public DBMergeSortedMap(final SortConfiguration sortConfiguration, final Class<? extends MapEntry<K, V>> classOfElements) {
 		this(sortConfiguration, null, classOfElements);
@@ -60,13 +56,14 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 
 		private Comparator<K> comp;
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 7910414506074836272L;
 
+		@Override
 		public int compare(final java.util.Map.Entry<K, V> e1,
 				final java.util.Map.Entry<K, V> e2) {
-			return comp.compare(e1.getKey(), e2.getKey());
+			return this.comp.compare(e1.getKey(), e2.getKey());
 		}
 
 		public MapComparator(final Comparator<K> comp) {
@@ -79,11 +76,7 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 
 	/**
 	 * Create a new DBMergeSortedMap that sorts using the specified Comparator.
-	 * 
-	 * @param heapHeight
-	 *            The height of the heap used to presort the elements in memory.
-	 *            (The maximum number of elements that are held in memory at any
-	 *            given time will be 2**heapHeight-1)
+	 *
 	 * @param comp
 	 *            The Comparator to use for sorting.
 	 */
@@ -94,68 +87,81 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 			this.comp = comp2;
 			final Comparator<Entry<K, V>> compa = new MapComparator(
 					(Comparator<K>) this.comp);
-			set = new DBMergeSortedSet<MapEntry<K, V>>(sortConfiguration, compa, classOfElements);
+			this.set = new DBMergeSortedSet<MapEntry<K, V>>(sortConfiguration, compa, classOfElements);
 		} else {
 			this.comp = new StandardComparator();
-			set = new DBMergeSortedSet<MapEntry<K, V>>(sortConfiguration, null, classOfElements);
+			this.set = new DBMergeSortedSet<MapEntry<K, V>>(sortConfiguration, null, classOfElements);
 		}
 	}
 
 	public DBMergeSortedMap(final SortedSet<MapEntry<K, V>> set) {
 		this.set = set;
-		comp = (Comparator<? super K>) set.comparator();
+		this.comp = (Comparator<? super K>) set.comparator();
 	}
 
+	@Override
 	public Comparator<? super K> comparator() {
-		return comp;
+		return this.comp;
 	}
 
+	@Override
 	public K firstKey() {
-		return set.first().getKey();
+		return this.set.first().getKey();
 	}
 
+	@Override
 	public SortedMap<K, V> headMap(final K to) {
-		return new DBMergeSortedMap<K, V>(set.headSet(new MapEntry<K, V>(to)));
+		return new DBMergeSortedMap<K, V>(this.set.headSet(new MapEntry<K, V>(to)));
 	}
 
+	@Override
 	public K lastKey() {
-		return set.last().getKey();
+		return this.set.last().getKey();
 	}
 
+	@Override
 	public SortedMap<K, V> subMap(final K from, final K to) {
-		return new DBMergeSortedMap<K, V>(set.subSet(new MapEntry<K, V>(from),
+		return new DBMergeSortedMap<K, V>(this.set.subSet(new MapEntry<K, V>(from),
 				new MapEntry<K, V>(to)));
 	}
 
+	@Override
 	public SortedMap<K, V> tailMap(final K from) {
-		return new DBMergeSortedMap<K, V>(set.tailSet(new MapEntry<K, V>(from)));
+		return new DBMergeSortedMap<K, V>(this.set.tailSet(new MapEntry<K, V>(from)));
 	}
 
+	@Override
 	public void clear() {
-		set.clear();
+		this.set.clear();
 	}
 
+	@Override
 	public boolean containsKey(final Object key) {
-		return set.contains(new MapEntry<K, V>((K) key));
+		return this.set.contains(new MapEntry<K, V>((K) key));
 	}
 
+	@Override
 	public boolean containsValue(final Object value) {
-		for (final Entry<K, V> entry : set) {
-			if (entry.getValue().equals(value))
+		for (final Entry<K, V> entry : this.set) {
+			if (entry.getValue().equals(value)) {
 				return true;
+			}
 		}
 		;
 		return false;
 	}
 
+	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
-		return new LazySortedSet<MapEntry<K, V>, Entry<K, V>>(set,
+		return new LazySortedSet<MapEntry<K, V>, Entry<K, V>>(this.set,
 				new LazySortedSet.Converter<MapEntry<K, V>, Entry<K, V>>() {
+					@Override
 					public MapEntry<K, V> extToInt(
 							final java.util.Map.Entry<K, V> obj) {
 						return (MapEntry<K, V>) obj;
 					}
 
+					@Override
 					public java.util.Map.Entry<K, V> intToExt(
 							final MapEntry<K, V> obj) {
 						return obj;
@@ -164,59 +170,72 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 				});
 	}
 
+	@Override
 	public V get(final Object key) {
-		for (final Entry<K, V> entry : set) {
-			if (entry.getKey().equals(key))
+		for (final Entry<K, V> entry : this.set) {
+			if (entry.getKey().equals(key)) {
 				return entry.getValue();
+			}
 		}
 		return null;
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return set.isEmpty();
+		return this.set.isEmpty();
 	}
 
+	@Override
 	public Set<K> keySet() {
-		return new LazySortedSet<MapEntry<K, V>, K>(set,
+		return new LazySortedSet<MapEntry<K, V>, K>(this.set,
 				new LazySortedSet.Converter<MapEntry<K, V>, K>() {
+					@Override
 					public MapEntry<K, V> extToInt(final K obj) {
 						return new MapEntry(obj);
 					}
 
+					@Override
 					public K intToExt(final MapEntry<K, V> obj) {
 						return obj.getKey();
 					}
 				});
 	}
 
+	@Override
 	public V put(final K key, final V value) {
-		set.add(new MapEntry<K, V>(key, value));
+		this.set.add(new MapEntry<K, V>(key, value));
 		return null;
 	}
 
+	@Override
 	public void putAll(final Map<? extends K, ? extends V> t) {
 		for (final Entry<? extends K, ? extends V> entry : t.entrySet()) {
-			put(entry.getKey(), entry.getValue());
+			this.put(entry.getKey(), entry.getValue());
 		}
 	}
 
+	@Override
 	public V remove(final Object key) {
-		set.remove(new MapEntry<K, V>((K) key));
+		this.set.remove(new MapEntry<K, V>((K) key));
 		return null;
 	}
 
+	@Override
 	public int size() {
-		return set.size();
+		return this.set.size();
 	}
 
+	@Override
 	public Collection<V> values() {
-		return new LazySortedSet<MapEntry<K, V>, V>(set,
+		return new LazySortedSet<MapEntry<K, V>, V>(this.set,
 				new LazySortedSet.Converter<MapEntry<K, V>, V>() {
+					@Override
 					public MapEntry<K, V> extToInt(final V obj) {
 						throw (new UnsupportedOperationException(
 								"You can't do that with a valueSet"));
 					}
 
+					@Override
 					public V intToExt(final MapEntry<K, V> obj) {
 						return obj.getValue();
 					}
@@ -225,15 +244,17 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 
 	@Override
 	public String toString() {
-		return set.toString();
+		return this.set.toString();
 	}
 
+	@Override
 	public Iterator<MapEntry<K, V>> iterator() {
-		return set.iterator();
+		return this.set.iterator();
 	}
 
 	public void release() {
-		if (set instanceof DBMergeSortedSet)
-			((DBMergeSortedSet) set).release();		
+		if (this.set instanceof DBMergeSortedSet) {
+			((DBMergeSortedSet) this.set).release();
+		}
 	}
 }

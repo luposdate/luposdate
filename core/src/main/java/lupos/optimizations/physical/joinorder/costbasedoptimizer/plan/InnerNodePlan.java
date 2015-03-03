@@ -33,7 +33,7 @@ import lupos.optimizations.logical.statistics.Statistics;
 import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
- * This class represents an inner node of the plan => join of two other plans 
+ * This class represents an inner node of the plan =&gt; join of two other plans
  */
 public class InnerNodePlan extends Plan {
 
@@ -41,7 +41,7 @@ public class InnerNodePlan extends Plan {
 	 * the left and right child, which are joined together...
 	 */
 	protected Plan left, right;
-	
+
 	/**
 	 * The join type (merge join or default)
 	 */
@@ -97,7 +97,7 @@ public class InnerNodePlan extends Plan {
 		this.selectivity = Statistics.estimateJoinSelectivity(left.selectivity, right.selectivity);
 		// compute the number of cartesian products
 		this.numberOfCartesianProducts = this.numberOfCartesianProducts();
-		// compute the cardinality of the join result as well as its cost 
+		// compute the cardinality of the join result as well as its cost
 		if (this.selectivity == null) {
 			this.cost = 0.0;
 			this.setCardinality(0.0);
@@ -107,12 +107,12 @@ public class InnerNodePlan extends Plan {
 				this.setCardinality(0.0);
 			} else {
 				this.setCardinality(this.selectivity.values().iterator().next().getSum());
-				this.cost = determineCostUsingSIP(this.getCardinality());
+				this.cost = this.determineCostUsingSIP(this.getCardinality());
 			}
 		}
 		// now compute the join type, i.e. determine if we can apply a merge
 		// join on already correct sorted intermediate results from previous joins
-		findMaxMergeJoins();
+		this.findMaxMergeJoins();
 	}
 
 	@Override
@@ -124,11 +124,11 @@ public class InnerNodePlan extends Plan {
 				return 0.0;
 			} else {
 				double costV = cardinalityOtherOperand + this.left.cost + this.right.cost;
-				if (this.joinPartner.size() == 0)
+				if (this.joinPartner.size() == 0) {
 					// cartesian product! Set the cost high to avoid
 					// cartesian products!
 					costV *= 10.0;
-				else if (this.joinType != JoinType.MERGEJOIN) {
+				} else if (this.joinType != JoinType.MERGEJOIN) {
 					// no direct merge join can be applied! Set the cost
 					// high (but lower than cart. products) to avoid hash
 					// joins etc.!
@@ -173,16 +173,17 @@ public class InnerNodePlan extends Plan {
 	protected int numberOfCartesianProducts() {
 		final int numberOfCartesianProductsSubTrees = this.left.numberOfCartesianProducts() + this.right.numberOfCartesianProducts();
 		// is this join a cartesian product?
-		if (this.joinPartner.size() == 0)
+		if (this.joinPartner.size() == 0) {
 			return numberOfCartesianProductsSubTrees + 1;
-		else
+		} else {
 			return numberOfCartesianProductsSubTrees;
+		}
 	}
 
 	@Override
 	public int findMaxMergeJoins() {
 		if (this.joinPartner.size() > 0){
-			this.numberMergeJoins = permutationOfOrderings(new LinkedList<Variable>(), this.joinPartner);
+			this.numberMergeJoins = this.permutationOfOrderings(new LinkedList<Variable>(), this.joinPartner);
 		} else {
 			this.numberMergeJoins = -1;
 		}
@@ -250,7 +251,7 @@ public class InnerNodePlan extends Plan {
 				+ JoinType.values()[this.joinType.ordinal()]
 				+ super.getNodeString();
 	}
-	
+
 	@Override
 	protected String toString(final String indent) {
 		return super.toString(indent) + this.left.toString(indent + "|") + this.right.toString(indent + "|");
@@ -263,7 +264,7 @@ public class InnerNodePlan extends Plan {
 	}
 
 	@Override
-	protected boolean checkOrdering(LinkedList<Variable> possibleOrdering) {
+	protected boolean checkOrdering(final LinkedList<Variable> possibleOrdering) {
 		this.numberMergeJoins = 1; // in case of success this node represents a merge join
 		if (this.left != null) {
 			@SuppressWarnings("unchecked")
@@ -271,7 +272,7 @@ public class InnerNodePlan extends Plan {
 			@SuppressWarnings("unchecked")
 			final HashSet<Variable> jp = (HashSet<Variable>) this.left.joinPartner.clone();
 			jp.removeAll(po2);
-			// permute all the orderings of the join partners of the left operand except those which are already ordered 
+			// permute all the orderings of the join partners of the left operand except those which are already ordered
 			final int numberMergeJoins2 = this.left.permutationOfOrderings(po2, jp);
 			if (numberMergeJoins2 == -1){
 				// ordering in the left operand is not possible!
@@ -286,7 +287,7 @@ public class InnerNodePlan extends Plan {
 			final HashSet<Variable> jp = (HashSet<Variable>) this.right.joinPartner.clone();
 			jp.removeAll(po2);
 			// permute all the orderings of the join partners of the right operand except those which are already ordered
-			final int numberMergeJoins2 = this.right.permutationOfOrderings(po2, jp);					
+			final int numberMergeJoins2 = this.right.permutationOfOrderings(po2, jp);
 			if (numberMergeJoins2 == -1){
 				// ordering in the right operand is not possible!
 				return false;

@@ -30,10 +30,9 @@ import lupos.datastructures.patriciatrie.node.Node;
  * This class implements the RAM based behaviour for a trie for a set of strings.
  */
 public class RBTrieSet extends TrieSet {
-	
+
 	/**
 	 * Constructor
-	 * @param mode the mode of this trie
 	 */
 	public RBTrieSet() {
 		super();
@@ -43,12 +42,12 @@ public class RBTrieSet extends TrieSet {
 	protected Node createNodeInstance() {
 		return new RBNode();
 	}
-	
+
 	@Override
 	protected Node createRootNodeInstance() {
 		return new RBNode();
 	}
-	
+
 	@Override
 	protected void changeRootNode(final Node rootNode_param) {
 		this.setRootNode(rootNode_param);

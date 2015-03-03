@@ -47,14 +47,14 @@ import lupos.misc.Tuple;
 /**
  * This class implements following rule to replace constant values in Index
  * operations:
- * 
+ *
  * index(...?X...)          index(...constant...)
  *   |                        |
- * filter(?X=constant)  =>  addBinding(?X=constant)
+ * filter(?X=constant)  =&gt;  addBinding(?X=constant)
  *   |                        |
- * 
+ *
  * Preconditions: - the filter should contain an expression like ?X=constant
- * 
+ *
  **/
 public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 
@@ -72,10 +72,10 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 		// Define left side of rule
 		final Filter a = new Filter();
 
-		subGraphMap = new HashMap<BasicOperator, String>();
-		subGraphMap.put(a, "filter");
+		this.subGraphMap = new HashMap<BasicOperator, String>();
+		this.subGraphMap.put(a, "filter");
 
-		startNode = a;
+		this.startNode = a;
 	}
 
 	@Override
@@ -84,17 +84,20 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 		BasicOperator searchTriplePattern = filter;
 		while (searchTriplePattern != null
 				&& !(searchTriplePattern instanceof TriplePattern)) {
-			if (searchTriplePattern.getPrecedingOperators().size() > 1)
+			if (searchTriplePattern.getPrecedingOperators().size() > 1) {
 				return false;
+			}
 			searchTriplePattern = searchTriplePattern.getPrecedingOperators()
 			.get(0);
 		}
 		if (searchTriplePattern == null
-				|| !(searchTriplePattern instanceof TriplePattern))
+				|| !(searchTriplePattern instanceof TriplePattern)) {
 			return false;
-		if (searchTriplePattern.getSucceedingOperators().size() > 1)
+		}
+		if (searchTriplePattern.getSucceedingOperators().size() > 1) {
 			return false;
-		triplePattern = (TriplePattern) searchTriplePattern;
+		}
+		this.triplePattern = (TriplePattern) searchTriplePattern;
 		lupos.sparql1_1.Node n = filter.getNodePointer();
 		if (n.jjtGetNumChildren() > 0) {
 			n = n.jjtGetChild(0);
@@ -109,12 +112,12 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 				if (left instanceof lupos.sparql1_1.ASTVar) {
 					final String varname = ((lupos.sparql1_1.ASTVar) left)
 					.getName();
-					var = new Variable(varname);
-					varInference = new VariableInInferenceRule(varname);
+					this.var = new Variable(varname);
+					this.varInference = new VariableInInferenceRule(varname);
 
-					if (!triplePattern.getVariables().contains(var)
-							&& !triplePattern.getVariables().contains(
-									varInference)) {
+					if (!this.triplePattern.getVariables().contains(this.var)
+							&& !this.triplePattern.getVariables().contains(
+									this.varInference)) {
 						// TODO
 						// delete triple pattern as it will never have a result!
 						System.err
@@ -128,20 +131,22 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 							|| right instanceof lupos.sparql1_1.ASTInteger
 							|| right instanceof lupos.sparql1_1.ASTStringLiteral
 							|| right instanceof lupos.sparql1_1.ASTDoubleCircumflex) {
-						constant = LazyLiteral.getLiteral(right);
+						this.constant = LazyLiteral.getLiteral(right);
 						// Is it possible to loose the information of the
 						// original string representation?
-						if (constant instanceof TypedLiteralOriginalContent
-								|| constant instanceof LanguageTaggedLiteralOriginalLanguage)
+						if (this.constant instanceof TypedLiteralOriginalContent
+								|| this.constant instanceof LanguageTaggedLiteralOriginalLanguage) {
 							return false;
-						else if (constant instanceof TypedLiteral) {
-							if (Helper.isNumeric(((TypedLiteral) constant)
+						} else if (this.constant instanceof TypedLiteral) {
+							if (Helper.isNumeric(((TypedLiteral) this.constant)
 									.getType())) {
 								return false;
-							} else
+							} else {
 								return true;
-						} else
+							}
+						} else {
 							return true;
+						}
 					}
 				}
 			}
@@ -162,27 +167,28 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 
 		aboveFilter.setSucceedingOperators(filter.getSucceedingOperators());
 
-		triplePattern.replace(var, constant);
-		triplePattern.replace(varInference, constant);
+		this.triplePattern.replace(this.var, this.constant);
+		this.triplePattern.replace(this.varInference, this.constant);
 
-		final AddBinding addBinding = new AddBinding(var, constant);
+		final AddBinding addBinding = new AddBinding(this.var, this.constant);
 		added.add(addBinding);
 
-		addBinding.setSucceedingOperators(triplePattern
+		addBinding.setSucceedingOperators(this.triplePattern
 				.getSucceedingOperators());
 
-		triplePattern.setSucceedingOperator(new OperatorIDTuple(addBinding, 0));
+		this.triplePattern.setSucceedingOperator(new OperatorIDTuple(addBinding, 0));
 
 		rootOperator.deleteParents();
 		rootOperator.setParents();
 		rootOperator.detectCycles();
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		deleted.add(filter);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (deleted.size() > 0 || added.size() > 0) {
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override

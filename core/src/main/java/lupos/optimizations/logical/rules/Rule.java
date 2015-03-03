@@ -238,7 +238,6 @@ public abstract class Rule {
 	 * check in one place, rather than having it implemented in each and every
 	 * subclass.
 	 *
-	 * @see lupos.optimizations.logical.rules.Rule#isReapplicationNecessary(BitVector)
 	 * @param comparisonVector
 	 *            bit vector containtin all operators whose modification inside
 	 *            the operator graph leads to a reapplication of the rule in

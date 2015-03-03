@@ -129,7 +129,6 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	 * Retrieves a string
 	 * @param index the index of the string
 	 * @return the string
-	 * @throws IOException in case of any i/o failures...
 	 */
 	@Override
 	public String get(final int index){

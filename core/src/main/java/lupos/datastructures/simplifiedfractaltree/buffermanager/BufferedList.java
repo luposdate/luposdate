@@ -140,7 +140,6 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 	 * Constructs an empty list with the specified page size and name.
 	 *
 	 * @param pageSize The page size (should be 2^x)
-	 * @param name A name
 	 * @param instance A instance of <tt>E</tt>
 	 */
 	@SuppressWarnings("rawtypes")
@@ -589,7 +588,6 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 	 *
 	 * @param index A index
 	 * @return A String
-	 * @see IndexOutOfBoundException
 	 */
 	protected String outOfBoundsMsg(final int index) {
 		return "Index: " + index + ", Size: " + this.size();

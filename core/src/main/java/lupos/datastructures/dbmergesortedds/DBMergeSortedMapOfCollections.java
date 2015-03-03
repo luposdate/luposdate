@@ -49,10 +49,6 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	 *            The class object used to create the collections that are
 	 *            returned by this map. This should be the same collection class
 	 *            that this map is parametrisized with.
-	 * @param heapHeight
-	 *            The height of the heap used to presort the elements in memory.
-	 *            (The maximum number of elements that are held in memory at any
-	 *            given time will be 2**heapHeight-1)
 	 */
 	public DBMergeSortedMapOfCollections(final Class<?> collectionClass,
 			final SortConfiguration sortConfiguration,
@@ -69,10 +65,6 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	 *            The class object used to create the collections that are
 	 *            returned by this map. This should be the same collection class
 	 *            that this map is parametrisized with.
-	 * @param heapHeight
-	 *            The height of the heap used to presort the elements in memory.
-	 *            (The maximum number of elements that are held in memory at any
-	 *            given time will be 2**heapHeight-1)
 	 * @param comp
 	 *            The Comparator to use for sorting.
 	 */

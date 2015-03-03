@@ -63,8 +63,6 @@ public class DBSeqTrieSet extends TrieSet {
 	 *
 	 * @param fileName
 	 *            Name of the file for this Trie
-	 *
-	 * @param mode the mode of this trie
 	 */
 	public DBSeqTrieSet(final String fileName) {
 		super();

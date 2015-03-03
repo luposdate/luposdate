@@ -22,31 +22,29 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * 
+ *
  */
 package lupos.datastructures.sorteddata;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.SortedMap;
 
 /**
- * A {@link Map} that further provides a <i>total ordering</i> on its keys and
- * the values of the collections which are used as values of the map.<br>
+ * A Map that further provides a <i>total ordering</i> on its keys and
+ * the values of the collections which are used as values of the map.
  * The map and the collection are ordered according to the
  * {@linkplain Comparable natural ordering} of its keys, or by a
  * {@link Comparator} typically provided at sorted map and sorted collection
  * creation time, respectively.
- * 
+ *
  * @author Sebastian Ebers
  * @param <K>
  *            the type of keys maintained by this map
  * @param <V>
  *            the type of mapped values
- * 
+ *
  */
 public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collection<V>>
 		extends SortedMapOfCollectionsImplementation<K, V, CV> {
@@ -56,7 +54,7 @@ public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collect
 	/**
 	 * Constructor setting up the map to use and the class of the values of the
 	 * collections which are used as values of the map
-	 * 
+	 *
 	 * @param sortedMap
 	 *            the map to use
 	 * @param clazz
@@ -75,7 +73,7 @@ public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collect
 	 * Creates a new instance of the collection used as value of the map. Note
 	 * that the comparator will be set if there was one explicitly provided
 	 * during the instantiation of this class.
-	 * 
+	 *
 	 * @return a newly allocated instance of the class represented by this
 	 *         object.
 	 * @throws IllegalAccessException
@@ -89,10 +87,10 @@ public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collect
 	@Override
 	protected CV getNewCollection() throws InstantiationException,
 			IllegalAccessException {
-		if (comparator != null) {			
+		if (this.comparator != null) {
 				try {
-					return klass.getConstructor(Comparator.class).newInstance(
-							comparator);
+					return this.klass.getConstructor(Comparator.class).newInstance(
+							this.comparator);
 				} catch (final IllegalArgumentException e1) {
 					System.err.println(e1);
 					e1.printStackTrace();
@@ -107,6 +105,6 @@ public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collect
 					e1.printStackTrace();
 				}
 		}
-		return klass.newInstance();
+		return this.klass.newInstance();
 	}
 }

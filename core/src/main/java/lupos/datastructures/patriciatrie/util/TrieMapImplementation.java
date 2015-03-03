@@ -35,14 +35,14 @@ import lupos.datastructures.patriciatrie.TrieMap;
 import lupos.misc.util.AbstractSortedMap;
 
 /**
- * This class is a wrapper, such that a given TrieMap object implements the SortedMap<String, V> interface,
+ * This class is a wrapper, such that a given TrieMap object implements the SortedMap&lt;String, V&gt; interface,
  * where V is the type of the stored values...
  * @param <V> the type of the stored values
  */
 public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
-	
+
 	public final TrieMap<V> trie;
-	
+
 	/**
 	 * @param trie the TrieMap object to be wrapped
 	 */
@@ -56,16 +56,16 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 	}
 
 	@Override
-	public final boolean isEmpty() {		
+	public final boolean isEmpty() {
 		return this.size()==0;
 	}
 
 	@Override
-	public boolean containsKey(Object key) {
+	public boolean containsKey(final Object key) {
 		if(key instanceof String){
 			// use getIndex(key)>=0 instead of get(key)!=null,
 			// because in the latter we cannot distinguish whether or not
-			// the key has been added or under the key a null value has been put... 
+			// the key has been added or under the key a null value has been put...
 			return this.trie.getIndex((String)key)>=0;
 		} else {
 			return false;
@@ -73,7 +73,7 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 	}
 
 	@Override
-	public V get(Object key) {
+	public V get(final Object key) {
 		if(key instanceof String){
 			return this.trie.get((String)key);
 		} else {
@@ -82,17 +82,17 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 	}
 
 	@Override
-	public V put(String key, V value) {		
+	public V put(final String key, final V value) {
 		return this.trie.put(key, value);
 	}
 
 	@Override
-	public V remove(Object key) {
+	public V remove(final Object key) {
 		if(key instanceof String){
 			return this.trie.removeKey((String)key);
 		} else {
 			return null;
-		}		
+		}
 	}
 
 	@Override
@@ -115,30 +115,30 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 				return new Iterator<String>(){
 
 					final Iterator<Entry<String, V>> it = TrieMapImplementation.this.trie.iterator();
-					
+
 					@Override
 					public boolean hasNext() {
 						return this.it.hasNext();
 					}
 
 					@Override
-					public String next() {						
+					public String next() {
 						return this.it.next().getKey();
 					}
 
 					@Override
 					public void remove() {
 						this.it.remove();
-					}					
+					}
 				};
 			}
 
 			@Override
 			public int size() {
 				return TrieMapImplementation.this.size();
-			}			
+			}
 	        @Override
-			public boolean remove(Object o) {
+			public boolean remove(final Object o) {
 	            return TrieMapImplementation.this.remove(o) != null;
 	        }
 	        @Override
@@ -149,7 +149,7 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 	}
 
 	@Override
-	public Collection<V> values() {	
+	public Collection<V> values() {
 		return new java.util.AbstractCollection<V>(){
 
 			@Override
@@ -157,21 +157,21 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 				return new Iterator<V>(){
 
 					final Iterator<Entry<String, V>> it = TrieMapImplementation.this.trie.iterator();
-					
+
 					@Override
 					public boolean hasNext() {
 						return this.it.hasNext();
 					}
 
 					@Override
-					public V next() {						
+					public V next() {
 						return this.it.next().getValue();
 					}
 
 					@Override
 					public void remove() {
 						this.it.remove();
-					}					
+					}
 				};
 			}
 
@@ -179,16 +179,16 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 			public int size() {
 				return TrieMapImplementation.this.size();
 			}
-			
+
 			@Override
 			public void clear() {
 				TrieMapImplementation.this.clear();
-			}			
+			}
 		};
 	}
 
 	@Override
-	public Set<java.util.Map.Entry<String, V>> entrySet() {		
+	public Set<java.util.Map.Entry<String, V>> entrySet() {
 		return new java.util.AbstractSet<java.util.Map.Entry<String, V>>(){
 
 			@Override
@@ -199,15 +199,16 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 			@Override
 			public int size() {
 				return TrieMapImplementation.this.size();
-			}			
+			}
 	        @Override
-			public boolean remove(Object o) {
+			public boolean remove(final Object o) {
 	            if (!(o instanceof Map.Entry)){
 	                return false;
 	            }
 	            @SuppressWarnings("unchecked")
+				final
 				Map.Entry<String, V> entry = (Map.Entry<String, V>) o;
-	            V v = TrieMapImplementation.this.trie.get(entry.getKey());
+	            final V v = TrieMapImplementation.this.trie.get(entry.getKey());
 	            if(entry.getValue()==null){
 	            	if(v==null){
 	            		return TrieMapImplementation.this.remove(entry.getKey()) != null;
@@ -223,15 +224,15 @@ public class TrieMapImplementation<V> extends AbstractSortedMap<String, V> {
 	        }
 		};
 	}
-	
+
 	@Override
 	public String lastKey() {
 		return this.trie.get(this.size()-1);
 	}
 
 	@Override
-	public SortedMap<String, V> subMap(String fromKey, String toKey,
-			boolean inclusiveLastKey) {
+	public SortedMap<String, V> subMap(final String fromKey, final String toKey,
+			final boolean inclusiveLastKey) {
 		throw new UnsupportedOperationException();
-	}	
+	}
 }

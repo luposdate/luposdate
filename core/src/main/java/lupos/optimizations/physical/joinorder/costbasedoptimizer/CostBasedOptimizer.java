@@ -189,7 +189,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 	}
 
 	/**
-	 * Determines further splitted plans if the number of triple patterns is large (> LIMIT_TRIPLEPATTERNS) and tries out each join order
+	 * Determines further splitted plans if the number of triple patterns is large (&gt; LIMIT_TRIPLEPATTERNS) and tries out each join order
 	 * @param initialPlans the plans to be splitted further
 	 * @return a best estimated plan
 	 */

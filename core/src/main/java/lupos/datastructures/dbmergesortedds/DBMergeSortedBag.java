@@ -137,10 +137,6 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	/**
 	 * Create a new DBMergeSortedBag that sorts using the specified Comparator.
 	 *
-	 * @param heapHeight
-	 *            The height of the heap used to presort the elements in memory.
-	 *            (The maximum number of elements that are held in memory at any
-	 *            given time will be 2**heapHeight-1)
 	 * @param comp
 	 *            The Comparator to use for sorting.
 	 */

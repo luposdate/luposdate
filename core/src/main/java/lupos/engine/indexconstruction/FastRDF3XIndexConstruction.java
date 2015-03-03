@@ -23,6 +23,26 @@
  */
 package lupos.engine.indexconstruction;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import lupos.compression.Compression;
 import lupos.datastructures.buffermanager.BufferManager;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
@@ -58,15 +78,9 @@ import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.TimeInterval;
 import lupos.misc.util.ImmutableIterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
@@ -92,8 +106,8 @@ public class FastRDF3XIndexConstruction {
 	/**
 	 * Constructs the large-scale indices for RDF3X.
 	 * The command line arguments are
-	 * <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]
-	 * If you want to import more than one file you can use the additional parameters <datafilei>!
+	 * datafile dataformat encoding NONE|BZIP2|HUFFMAN|GZIP directory_for_indices [LIMIT_TRIPLES_IN_MEMORY [datafile2 [datafile3 ...]]]
+	 * If you want to import more than one file you can use the additional parameters datafilei!
 	 *
 	 * @param args
 	 *            command line arguments
