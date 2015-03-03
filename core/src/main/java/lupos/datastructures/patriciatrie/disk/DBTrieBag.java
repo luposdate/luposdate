@@ -37,37 +37,36 @@ public class DBTrieBag extends TrieBag {
 
 	/** This encoding will be used when Strings are serialized */
 	public static final String OUTPUT_ENCODING = "UTF-8";
-	
+
 	/** NodeManager responsible for all the nodes of this trie */
-	private NodeManager nodeManager;
-	
+	private final NodeManager nodeManager;
+
 	/**
 	 * Creates a new trie
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @param bufferSize
 	 *            Amount of nodes that are simultaneously kept in memory
 	 * @param pageSize
 	 *            The size of a page to be stored on disk
-	 * @param mode the mode of this trie
 	 * @throws IOException
 	 */
 	public DBTrieBag(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		super();
 		this.nodeManager = new NodeManager(this, fileName, bufferSize, pageSize);
-		
+
 		if (this.nodeManager.isEmpty(1)) {
 			this.setRootNode(null);
 		}
 		else {
 			this.setRootNode((Node) this.nodeManager.loadDBNode(1, DBNodeWithValue.deserializer));
-		}		
+		}
 	}
-	
+
 	/**
 	 * Creates a new trie with the default buffer size
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @throws IOException
@@ -75,7 +74,7 @@ public class DBTrieBag extends TrieBag {
 	public DBTrieBag(final String fileName) throws IOException {
 		this(fileName, NodeManager.NODES_TO_BUFFER, NodeManager.DEFAULT_PAGESIZE);
 	}
-	
+
 	/**
 	 * Saves all unsaved changes to disk and closes the underlying node manager.
 	 * After this method has been called, the trie should not be accessed
@@ -89,10 +88,10 @@ public class DBTrieBag extends TrieBag {
 		this.nodeManager.writeBufferToDisk();
 		try {
 			this.nodeManager.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		super.release();
 	}
 
@@ -100,18 +99,18 @@ public class DBTrieBag extends TrieBag {
 	protected NodeWithValue<Integer> createNodeInstance() {
 		return new DBNodeWithValue<Integer>(this.nodeManager, -1);
 	}
-	
+
 	@Override
 	protected NodeWithValue<Integer> createRootNodeInstance() {
 		return new DBNodeWithValue<Integer>(this.nodeManager, 1);
 	}
-	
+
 	@Override
 	protected void changeRootNode(final Node rootNode_local) {
 		this.setRootNode(rootNode_local);
-		
+
 		((DBNodeWithValue<Integer>) this.getRootNode()).setNodeIndex(1);
-		
+
 		this.nodeManager.saveDBNode((IDBNode) this.getRootNode());
 	}
 

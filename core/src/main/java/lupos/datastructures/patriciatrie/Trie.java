@@ -30,51 +30,50 @@ import lupos.datastructures.patriciatrie.node.NodeHelper;
  * This class implements some of the base algorithms that can be executed on Patricia Tries.
  */
 public abstract class Trie {
-		
+
 	/**
 	 * Root node of the trie.
 	 */
 	private Node rootNode;
-	
+
 	/**
 	 * Constructor
-	 * @param mode the mode of this trie
 	 */
 	public Trie() {
 		this.setRootNode(null);
 	}
-	
+
 	/**
 	 * Creates a new node instance, depending on what kind of trie instance this is.
-	 * 
+	 *
 	 * @return An instance of either RBNode, RBNodeWithValue, DBNode, DBNodeWithValue, DBSeqNode or DBSeqNodeWithValue
 	 */
 	protected abstract Node createNodeInstance();
-	
+
 	/**
 	 * Creates a new root node instance, depending on what kind of trie instance this is.
 	 * @return An instance of either RBNode, RBNodeWithValue, DBNode, DBNodeWithValue, DBSeqNode or DBSeqNodeWithValue
 	 */
 	protected abstract Node createRootNodeInstance();
-	
+
 	/**
 	 * Changes the current root node.
-	 * 
+	 *
 	 * @param rootNode_param
 	 *            The new root node
 	 */
 	protected abstract void changeRootNode(Node rootNode_param);
-	
+
 	/**
 	 * Deletes all nodes contained within this trie.
 	 */
 	public void clear() {
 		if (this.getRootNode() != null) {
 			this.getRootNode().destroyNode(true);
-			this.setRootNode(null);			
+			this.setRootNode(null);
 		}
 	}
-	
+
 	/**
 	 * Releases the trie. In most cases it should not be used anymore after
 	 * calling this method.
@@ -82,7 +81,7 @@ public abstract class Trie {
 	public void release() {
 		this.setRootNode(null);
 	}
-	
+
 	/**
 	 * @return <strong>true</strong> if this trie contains all metadata like
 	 *         numberOfEntries for each inner node.<br />
@@ -92,10 +91,10 @@ public abstract class Trie {
 	public boolean hasCompleteMetadata() {
 		return true;
 	}
-	
+
 	/**
 	 * Retrieves the <i>index</i>-th key in lexicographical order from the trie
-	 * 
+	 *
 	 * @param index
 	 *            Index of the key
 	 * @return The key
@@ -104,17 +103,17 @@ public abstract class Trie {
 		if (this.getRootNode() == null){
 			return null;
 		}
-		
+
 		if (this.getRootNode().getNumberOfEntries() < index - 1){
 			return null;
 		}
 
 		return NodeHelper.get(this.getRootNode(), index);
 	}
-		
+
 	/**
 	 * Returns the index of the key
-	 * 
+	 *
 	 * @param key
 	 *            Key to get index for
 	 * @return Index of the key
@@ -126,10 +125,10 @@ public abstract class Trie {
 
 		return NodeHelper.getIndex(this.getRootNode(), key);
 	}
-	
+
 	/**
 	 * Removes a key from the trie.
-	 * 
+	 *
 	 * @param key
 	 *            Key to remove
 	 * @return <strong>false</strong> if the key could not be removed (if the trie did not contain that key),
@@ -139,10 +138,10 @@ public abstract class Trie {
 		if (this.getRootNode() == null) {
 			return false;
 		}
-		
+
 		return NodeHelper.remove(this.getRootNode(), key);
 	}
-		
+
 	/**
 	 * Prepares this trie for reading. In most cases, there is nothing to do,
 	 * but certain Tries may require a stream reset.
@@ -150,7 +149,7 @@ public abstract class Trie {
 	protected void prepareForReading() {
 		// nothing to do per default
 	}
-		
+
 	/**
 	 * @return Number of entries in this trie
 	 */
@@ -161,7 +160,7 @@ public abstract class Trie {
 			return this.getRootNode().getNumberOfEntries();
 		}
 	}
-	
+
 	/**
 	 * @return Number of nodes in this trie
 	 */
@@ -172,7 +171,7 @@ public abstract class Trie {
 			return this.getRootNode().getNodeCount();
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		if (this.getRootNode() != null){
@@ -181,25 +180,25 @@ public abstract class Trie {
 			return "";
 		}
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Trie)){
 			return false;
 		}
-		
+
 		final Trie trie = (Trie) obj;
-		
+
 		if(!((this instanceof TrieSet && trie instanceof TrieSet)
 				|| (this instanceof TrieBag && trie instanceof TrieBag)
 				|| (this instanceof TrieMap && trie instanceof TrieMap))){
 			return false;
 		}
-		
+
 		if ((this.getRootNode() == null) ^ (trie.getRootNode() == null)){ // ^ = OR Exclusive (XOR)!
 			return false;
 		}
-		
+
 		if (this.getRootNode() != null){
 			return this.getRootNode().equals(trie.getRootNode());
 		} else {
@@ -210,7 +209,7 @@ public abstract class Trie {
 	/**
 	 * @param rootNode the rootNode to set
 	 */
-	public void setRootNode(Node rootNode) {
+	public void setRootNode(final Node rootNode) {
 		this.rootNode = rootNode;
 	}
 
