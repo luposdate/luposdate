@@ -33,6 +33,9 @@ import lupos.rif.generated.visitor.*;
  * f1 -> < LPAREN ><br>
  * f2 -> RIFQuotedURIref()<br>
  * f3 -> < RPAREN ><br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFBase implements INode {
 
@@ -133,18 +136,18 @@ public class RIFBase implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

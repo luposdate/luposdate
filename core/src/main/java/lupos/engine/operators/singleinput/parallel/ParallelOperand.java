@@ -39,10 +39,12 @@ import lupos.engine.operators.messages.Message;
 
 /**
  * A parallel operator implementation which distributes the computation of
- * previous to a helper thread. Uses a {@link BlockingQueue} to communicate with
+ * previous to a helper thread. Uses a {@link java.util.concurrent.BlockingQueue} to communicate with
  * it.
  *
- **/
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class ParallelOperand extends Operator {
 
 	protected List<Thread> threadsList = null;
@@ -72,6 +74,8 @@ public class ParallelOperand extends Operator {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Processes a QueryResult; in our case, gets values from the #queue
 	 * and returns them. Its enclosed in an iterator, so we actually transfer it
 	 * only when necessary (using {@link Iterator#next}).
@@ -80,7 +84,6 @@ public class ParallelOperand extends Operator {
 	 * {@link InterruptedException}s, but that's not visible from the signature.
 	 * Actually we circumvent this by rethrowing using {@link Thread#interrupt}
 	 * on the current thread.
-	 *
 	 * @see QueryResult
 	 * @see Iterator
 	 * @see BlockingQueue
@@ -107,6 +110,7 @@ public class ParallelOperand extends Operator {
 
 	protected Semaphore sem = new Semaphore(0);
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		// wait until all threads are finished!

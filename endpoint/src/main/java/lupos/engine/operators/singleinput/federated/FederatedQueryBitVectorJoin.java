@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.federated;
 
@@ -37,11 +41,15 @@ import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
-
 public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoin {
 	
 	private IToStringHelper toStringHelper;
 	
+	/**
+	 * <p>Constructor for FederatedQueryBitVectorJoin.</p>
+	 *
+	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
+	 */
 	public FederatedQueryBitVectorJoin(Node federatedQuery) {
 		super(federatedQuery);
 		try {
@@ -54,8 +62,11 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 		}
 	}
 
+	/** Constant <code>substringSize=8</code> */
 	public static int substringSize = 8;
+	/** Constant <code>hashFunction</code> */
 	public static HASHFUNCTION hashFunction = HASHFUNCTION.MD5;
+	/** Constant <code>approachClass</code> */
 	public static Class<? extends IToStringHelper> approachClass = BitVectorJoinToStringHelper.class;
 	
 	public static enum HASHFUNCTION {
@@ -152,6 +163,7 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 		}		
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toStringQuery(final QueryResult queryResult) {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() ;

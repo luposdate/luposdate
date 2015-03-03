@@ -32,16 +32,18 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneToThreeKeysDistribution;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.sparql1_1.Node;
-	/**
-	 * TomP2P Network with {@link OneToThreeKeysDistribution} strategy
-	 * @author Bjoern
-	 *
-	 */
+/**
+ * TomP2P Network with {@link lupos.distributed.storage.distributionstrategy.tripleproperties.OneToThreeKeysDistribution} strategy
+ *
+ * @author Bjoern
+ * @version $Id: $Id
+ */
 public abstract class TomP2P_WithOneToThreeKeysDistribution  extends QueryEvaluator<Node> {
 	/*
 	 * information about the network to be used
 	 */
 	private static final String NETWORK = P2PNetworkCreator.TOM_P2P;
+	/** Constant <code>DISTRIBUTION</code> */
 	@SuppressWarnings("rawtypes")
 	/*
 	 * information about the selected distribution strategy (will be improved
@@ -51,6 +53,8 @@ public abstract class TomP2P_WithOneToThreeKeysDistribution  extends QueryEvalua
 
 	/**
 	 * don't use
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	@Deprecated
 	public TomP2P_WithOneToThreeKeysDistribution() throws Exception {
@@ -60,6 +64,8 @@ public abstract class TomP2P_WithOneToThreeKeysDistribution  extends QueryEvalua
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance() {
 		try {
@@ -73,9 +79,10 @@ public abstract class TomP2P_WithOneToThreeKeysDistribution  extends QueryEvalua
 
 	/**
 	 * Returns an already running queryClient or starts a new one
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to be used
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance(Map<String, Object> config) {
 		try {

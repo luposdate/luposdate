@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.bindings;
 
@@ -34,7 +38,6 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
-
 public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	/**
 	 *
@@ -44,13 +47,31 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	/** The subclass extending Bindings to be actually used */
 	public static Class<? extends Bindings> instanceClass = BindingsArray.class;
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract Bindings clone();
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public abstract void add(final Variable var, final Literal lit);
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public abstract Literal get(final Variable var);
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public abstract Bindings createInstance();
 
 	/**
@@ -60,25 +81,47 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	 */
 	public abstract Set<Variable> getVariableSet();
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public Iterator<Variable> getVariables() {
 		return this.getVariableSet().iterator();
 	}
 
+	/**
+	 * <p>addAll.</p>
+	 *
+	 * @param other a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public void addAll(final Bindings other) {
 		for (final Variable v : other.getVariableSet()) {
 			this.add(v, other.get(v));
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.toStringOnlyBindings();
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefix a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(final Prefix prefix) {
 		return this.toStringOnlyBindings(prefix);
 	}
 
+	/**
+	 * <p>toStringOnlyBindings.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toStringOnlyBindings() {
 		String s = "{";
 		final Iterator<Variable> it = this.getVariables();
@@ -93,6 +136,12 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return s;
 	}
 
+	/**
+	 * <p>toStringOnlyBindings.</p>
+	 *
+	 * @param prefix a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toStringOnlyBindings(final Prefix prefix) {
 		String s = "{";
 		final Iterator<Variable> it = this.getVariables();
@@ -112,6 +161,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return s;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final Bindings b) {
 		final Set<Variable> sv = this.getVariableSet();
@@ -155,6 +205,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		int hashCode = 0;
@@ -166,6 +217,13 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return hashCode;
 	}
 
+	/**
+	 * <p>equals.</p>
+	 *
+	 * @param other a {@link java.lang.Object} object.
+	 * @param bindingsEqualComparison a {@link lupos.datastructures.bindings.Bindings.BindingsEqualComparison} object.
+	 * @return a boolean.
+	 */
 	public boolean equals(final Object other, final BindingsEqualComparison bindingsEqualComparison) {
 
 		if (other instanceof Bindings || other instanceof BindingsMap
@@ -190,27 +248,58 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object other) {
 		return this.equals(other, Bindings.bindingsValueEqualComparison);
 	}
 
+	/**
+	 * <p>semanticallyEquals.</p>
+	 *
+	 * @param other a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean semanticallyEquals(final Object other) {
 		return this.equals(other, Bindings.bindingsEqualComparisonSemanticInterpretation);
 	}
 
+	/**
+	 * <p>equalsExceptAnonymousLiterals.</p>
+	 *
+	 * @param other a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean equalsExceptAnonymousLiterals(final Object other) {
 		return this.equals(other, new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation));
 	}
 
+	/**
+	 * <p>equalsExceptAnonymousLiteralsAndInlineDataIRIs.</p>
+	 *
+	 * @param other a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean equalsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
 		return this.equals(other, new Iris(new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation)));
 	}
 
+	/**
+	 * <p>semanticallyEqualsExceptAnonymousLiterals.</p>
+	 *
+	 * @param other a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean semanticallyEqualsExceptAnonymousLiterals(final Object other) {
 		return this.equals(other, new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation));
 	}
 
+	/**
+	 * <p>semanticallyEqualsExceptAnonymousLiteralsAndInlineDataIRIs.</p>
+	 *
+	 * @param other a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean semanticallyEqualsExceptAnonymousLiteralsAndInlineDataIRIs(final Object other) {
 		return this.equals(other, new Iris(new Blanks(Bindings.bindingsEqualComparisonSemanticInterpretation)));
 	}
@@ -263,6 +352,8 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	 * This method adds a triple to the internal list of read triples for these
 	 * bindings. This method must be overridden by Bindings-subclasses, which
 	 * support this feature, e.g. BindingsArrayReadTriples
+	 *
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
 	 */
 	public void addTriple(final Triple triple) {
 	}
@@ -271,6 +362,8 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	 * This method adds all triples to the internal list of read triples for
 	 * these bindings. This method must be overridden by Bindings-subclasses,
 	 * which support this feature, e.g. BindingsArrayReadTriples
+	 *
+	 * @param triples a {@link java.util.Collection} object.
 	 */
 	public void addAllTriples(final Collection<Triple> triples) {
 	}
@@ -280,10 +373,17 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	 * read triples for these bindings. This method must be overridden by
 	 * Bindings-subclasses, which support this feature, e.g.
 	 * BindingsArrayReadTriples
+	 *
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
 	 */
 	public void addAllTriples(final Bindings bindings) {
 	}
 
+	/**
+	 * <p>addAllPresortingNumbers.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public void addAllPresortingNumbers(final Bindings bindings) {
 	}
 
@@ -291,6 +391,8 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 	 * This method returns the internal list of read triples for these bindings.
 	 * This method must be overridden by Bindings-subclasses, which support this
 	 * feature, e.g. BindingsArrayReadTriples
+	 *
+	 * @return a {@link java.util.List} object.
 	 */
 	public List<Triple> getTriples() {
 		return null;
@@ -318,5 +420,8 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 			final int id) {
 	}
 
+	/**
+	 * <p>init.</p>
+	 */
 	public abstract void init();
 }

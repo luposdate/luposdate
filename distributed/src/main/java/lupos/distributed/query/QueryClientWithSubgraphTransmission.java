@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.query;
 
@@ -36,33 +40,69 @@ import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.optimizations.logical.rules.generated.AddSubGraphContainerRule;
 import lupos.optimizations.logical.rules.generated.DistributedRulePackage;
 import lupos.rdf.Prefix;
-
 public class QueryClientWithSubgraphTransmission<K> extends QueryClient {
 
 	public final IDistribution<K> distribution;
 
 	public final ISubgraphExecutor<K> subgraphExecutor;
 
+	/**
+	 * <p>Constructor for QueryClientWithSubgraphTransmission.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClientWithSubgraphTransmission(final IStorage storage, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor) throws Exception {
 		this(storage, null, distribution, subgraphExecutor);
 	}
 
+	/**
+	 * <p>Constructor for QueryClientWithSubgraphTransmission.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param histogramExecutor a {@link lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor} object.
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClientWithSubgraphTransmission(final IStorage storage, final IHistogramExecutor histogramExecutor, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor) throws Exception {
 		super(storage, histogramExecutor);
 		this.distribution = distribution;
 		this.subgraphExecutor = subgraphExecutor;
 	}
 
+	/**
+	 * <p>Constructor for QueryClientWithSubgraphTransmission.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClientWithSubgraphTransmission(final IStorage storage, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor, final String[] args) throws Exception {
 		this(storage, null, distribution, subgraphExecutor, args);
 	}
 
+	/**
+	 * <p>Constructor for QueryClientWithSubgraphTransmission.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param histogramExecutor a {@link lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor} object.
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClientWithSubgraphTransmission(final IStorage storage, final IHistogramExecutor histogramExecutor, final IDistribution<K> distribution, final ISubgraphExecutor<K> subgraphExecutor, final String[] args) throws Exception {
 		super(storage, histogramExecutor, args);
 		this.distribution = distribution;
 		this.subgraphExecutor = subgraphExecutor;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void initOptimization() {
 		if(this.histogramExecutor == null){
@@ -74,6 +114,7 @@ public class QueryClientWithSubgraphTransmission<K> extends QueryClient {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		final long start = new Date().getTime();
@@ -88,6 +129,7 @@ public class QueryClientWithSubgraphTransmission<K> extends QueryClient {
 		return new Date().getTime() - start;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {

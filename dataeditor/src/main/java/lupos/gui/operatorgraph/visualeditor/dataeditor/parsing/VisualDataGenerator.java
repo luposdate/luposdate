@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.parsing;
 
@@ -38,12 +42,17 @@ import lupos.sparql1_1.ASTTripleSet;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SPARQL1_1ParserVisitor;
 import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
-
 public class VisualDataGenerator extends VisualQueryGenerator {
+	/**
+	 * <p>Constructor for VisualDataGenerator.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public VisualDataGenerator(Prefix prefix) {
 		super(prefix);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public Object visit(ASTTripleSet node, Object data) {
 		Item[] item = { null, null, null };
@@ -83,6 +92,7 @@ public class VisualDataGenerator extends VisualQueryGenerator {
 		return rdfTermSubject;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public Object visit(ASTGroupConstraint node, Object data) {
 		try {

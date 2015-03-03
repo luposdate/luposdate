@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -34,7 +38,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.AssociationsContainer;
-
 public class AssociationsPanel extends JPanel {
 	private static final long serialVersionUID = 2631033545142339598L;
 
@@ -43,6 +46,12 @@ public class AssociationsPanel extends JPanel {
 	private String elementName;
 	private AssociationsContainer associationsContainer = null;
 
+	/**
+	 * <p>Constructor for AssociationsPanel.</p>
+	 *
+	 * @param elementName a {@link java.lang.String} object.
+	 * @param associationsContainer a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.AssociationsContainer} object.
+	 */
 	public AssociationsPanel(String elementName, AssociationsContainer associationsContainer) {
 		super(new GridBagLayout());
 
@@ -59,6 +68,11 @@ public class AssociationsPanel extends JPanel {
 	}
 
 	
+	/**
+	 * <p>rebuildRules.</p>
+	 *
+	 * @param elements a {@link java.util.LinkedList} object.
+	 */
 	public void rebuildRules(LinkedList<RulePanel> elements) {
 		this.removeAll();
 		this.gbc.gridy = 0;
@@ -87,6 +101,11 @@ public class AssociationsPanel extends JPanel {
 	}
 	
 	
+	/**
+	 * <p>rebuildRulePackages.</p>
+	 *
+	 * @param elements a {@link java.util.LinkedList} object.
+	 */
 	public void rebuildRulePackages(LinkedList<RulePackagePanel> elements) {
 		this.removeAll();
 		this.gbc.gridy = 0;
@@ -113,10 +132,20 @@ public class AssociationsPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>elementName</code>.</p>
+	 *
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void setElementName(String newName) {
 		this.elementName = newName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>associationsContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.AssociationsContainer} object.
+	 */
 	public AssociationsContainer getAssociationsContainer() {
 		return this.associationsContainer;
 	}

@@ -34,14 +34,19 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * Methods for creating the operators for the RDF3X approach
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RDF3XCreator implements IOperatorCreator {
 
+	/** {@inheritDoc} */
 	@Override
 	public Root createRoot(final Dataset dataset) {
 		return new RDF3XRoot(dataset);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan createIndexScan(final Root root,
 			final Collection<TriplePattern> triplePatterns) {

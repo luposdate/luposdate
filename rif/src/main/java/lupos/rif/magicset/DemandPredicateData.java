@@ -28,6 +28,9 @@ package lupos.rif.magicset;
  * Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
  * http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
  * http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import java.util.ArrayList;
@@ -36,34 +39,63 @@ import java.util.List;
 import lupos.rif.IExpression;
 import lupos.rif.model.Constant;
 import lupos.rif.model.RuleVariable;
-
 public class DemandPredicateData implements Comparable<DemandPredicateData>{
+	/** Constant <code>predicateNameURLPrefix="http://example.com/subsumtive_demand#"</code> */
 	public static final String predicateNameURLPrefix = "http://example.com/subsumtive_demand#";
 	private static int instanceCount = 0;
 	private final int instanceNumber;
 	private String bindingPattern;
 	private final List<IExpression> originalParameters;
+	/**
+	 * <p>Constructor for DemandPredicateData.</p>
+	 */
 	public DemandPredicateData() {
 		this.originalParameters = new ArrayList<IExpression>();
 		this.instanceNumber = instanceCount;
 		instanceCount++;
 	}
 
+	/**
+	 * <p>Getter for the field <code>bindingPattern</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getBindingPattern() {
 		return this.bindingPattern;
 	}
+	/**
+	 * <p>Setter for the field <code>bindingPattern</code>.</p>
+	 *
+	 * @param bindingPattern a {@link java.lang.String} object.
+	 */
 	public void setBindingPattern(final String bindingPattern) {
 		this.bindingPattern = bindingPattern;
 	}
+	/**
+	 * <p>Getter for the field <code>originalParameters</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IExpression> getOriginalParameters() {
 		return this.originalParameters;
 	}
 
+	/**
+	 * <p>getVisibleParameters.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IExpression> getVisibleParameters(){
 		final ExpressionHelper helper = new ExpressionHelper();
 		return helper.getBoundParameters(this.bindingPattern, this.originalParameters);
 	}
 
+	/**
+	 * <p>isVariableBoundByPredicate.</p>
+	 *
+	 * @param variable a {@link lupos.rif.model.RuleVariable} object.
+	 * @return a boolean.
+	 */
 	public boolean isVariableBoundByPredicate(final RuleVariable variable) {
 		final ToPresentationSyntaxStringVisitor visitor = new ToPresentationSyntaxStringVisitor();
 		final String variableString = (String)variable.accept(visitor, null);
@@ -76,6 +108,12 @@ public class DemandPredicateData implements Comparable<DemandPredicateData>{
 		return false;
 	}
 
+	/**
+	 * <p>canBeInferredBy.</p>
+	 *
+	 * @param ruleData a {@link lupos.rif.magicset.DemandPredicateRuleData} object.
+	 * @return a boolean.
+	 */
 	public boolean canBeInferredBy(final DemandPredicateRuleData ruleData ) {
 		if (ruleData.getHeadData() == null) {
 			throw new IllegalArgumentException();
@@ -97,6 +135,7 @@ public class DemandPredicateData implements Comparable<DemandPredicateData>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 
@@ -113,6 +152,7 @@ public class DemandPredicateData implements Comparable<DemandPredicateData>{
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final DemandPredicateData o) {
 

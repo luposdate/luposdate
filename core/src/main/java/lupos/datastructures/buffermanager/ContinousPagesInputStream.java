@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.buffermanager;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 public class ContinousPagesInputStream extends InputStream {
 
 	protected final PageManager pageManager;
@@ -34,11 +37,26 @@ public class ContinousPagesInputStream extends InputStream {
 	protected int index;
 	protected int currentPageNumber;
 
+	/**
+	 * <p>Constructor for ContinousPagesInputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public ContinousPagesInputStream(final int pagenumber, final PageManager pageManager) throws IOException {
 		this(pagenumber, pageManager, 0);
 	}
 
 
+	/**
+	 * <p>Constructor for ContinousPagesInputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param index a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public ContinousPagesInputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
 		this.currentPageNumber = pagenumber;
 		this.pageManager = pageManager;
@@ -46,6 +64,7 @@ public class ContinousPagesInputStream extends InputStream {
 		this.index = index;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int read() throws IOException {
 		if (this.index >= this.currentPage.length) {
@@ -57,10 +76,20 @@ public class ContinousPagesInputStream extends InputStream {
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>index</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getIndex() {
 		return this.index;
 	}
 
+	/**
+	 * <p>Getter for the field <code>currentPageNumber</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getCurrentPageNumber() {
 		return this.currentPageNumber;
 	}

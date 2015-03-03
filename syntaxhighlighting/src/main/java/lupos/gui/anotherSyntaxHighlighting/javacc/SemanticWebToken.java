@@ -29,31 +29,49 @@ import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 
 
 /**
- * {@link SemanticWebToken}
+ * {@link lupos.gui.anotherSyntaxHighlighting.javacc.SemanticWebToken}
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SemanticWebToken extends JavaCCToken {
 	
+	/**
+	 * <p>Constructor for SemanticWebToken.</p>
+	 *
+	 * @param ID a int.
+	 * @param contents a {@link java.lang.String} object.
+	 * @param beginChar a int.
+	 * @param endChar a int.
+	 */
 	public SemanticWebToken(final int ID, final String contents, final int beginChar, final int endChar) {
 		super(ID, contents, beginChar, endChar);
 	}
 
 
+	/**
+	 * <p>Constructor for SemanticWebToken.</p>
+	 *
+	 * @param description a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} object.
+	 * @param contents a {@link java.lang.String} object.
+	 * @param beginChar a int.
+	 */
 	public SemanticWebToken(final TYPE_ENUM description, final String contents, final int beginChar) {
 		super(description, contents, beginChar);
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * A description of this token. The description should be appropriate for
 	 * syntax highlighting. For example "comment" is returned for a comment.
-	 * 
-	 * @return a description of this token.
 	 */
 	@Override
 	public TYPE_ENUM getDescription() {
 		return TYPE__SemanticWeb.values()[this.ID];
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("cast")
 	@Override
 	public ILuposToken create(TYPE_ENUM description, String contentsPar, int beginCharPar) {

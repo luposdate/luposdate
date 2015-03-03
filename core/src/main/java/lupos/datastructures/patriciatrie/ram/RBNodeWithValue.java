@@ -28,6 +28,9 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
 
 /**
  * This class extends the abstract NodeWithValue class and implements a RAM based behavior.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RBNodeWithValue<T> extends NodeWithValue<T> {
 
@@ -42,16 +45,19 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 		this.children = null;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected final RBNodeWithValue<T> createNode() {
 		return new RBNodeWithValue<T>();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final boolean hasChild(final int i) {
 		return this.children != null && i < this.children.length && this.children[i] != null;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final NodeWithValue<T> getChild(final int i) {
 		if (this.children != null){
@@ -61,6 +67,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected final void setChild(final int i, final NodeWithValue<T> node) {
@@ -76,6 +83,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof RBNodeWithValue) {
@@ -87,6 +95,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 		}
 	}
 		
+	/** {@inheritDoc} */
 	@Override
 	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		if (this.children != null) {
@@ -106,6 +115,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected final void removeChildrenArrayElement(final int idx) {
 		if (this.children != null) {
@@ -123,6 +133,7 @@ public class RBNodeWithValue<T> extends NodeWithValue<T> {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final int getChildrenLength() {
 		return (this.children == null ? 0 : this.children.length);

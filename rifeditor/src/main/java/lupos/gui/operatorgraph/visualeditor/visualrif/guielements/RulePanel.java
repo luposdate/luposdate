@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -37,7 +41,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.ScrollPane;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RulePanel extends JTabbedPane {
 	private static final long serialVersionUID = 1776324661493797131L;
 
@@ -52,11 +55,24 @@ public class RulePanel extends JTabbedPane {
 	private RuleEditorPane ruleEditorPane = null;
 
 	// Constructor
+	/**
+	 * <p>Constructor for RulePanel.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public RulePanel(final VisualRifEditor visualRifEditor, final String name) {
 		this(visualRifEditor, name, null);
 	}
 
 	// Constructor
+	/**
+	 * <p>Constructor for RulePanel.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param name a {@link java.lang.String} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public RulePanel(final VisualRifEditor visualRifEditor, final String name,
 			final JSONObject loadObject) {
 
@@ -144,12 +160,21 @@ public class RulePanel extends JTabbedPane {
 		return visualPanel;
 	}
 
+	/**
+	 * <p>cancelModi.</p>
+	 */
 	public void cancelModi() {
 		if (this.ruleEditorPane != null) {
 			this.ruleEditorPane.cancelModi();
 		}
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @param documentName a {@link java.lang.String} object.
+	 * @return a {@link org.json.JSONObject} object.
+	 */
 	public JSONObject toJSON(final String documentName) {
 		final JSONObject saveObject = new JSONObject();
 		try {
@@ -166,6 +191,7 @@ public class RulePanel extends JTabbedPane {
 
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.ruleName;
@@ -176,43 +202,93 @@ public class RulePanel extends JTabbedPane {
 	 * Getter + Setter **
 	 * *************** */
 
+	/**
+	 * <p>Getter for the field <code>ruleName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRuleName() {
 		return this.ruleName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleName</code>.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void setRuleName(final String ruleName) {
 		this.ruleName = ruleName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulePath</code>.</p>
+	 *
+	 * @return a {@link javax.swing.tree.TreePath} object.
+	 */
 	public TreePath getRulePath() {
 
 		return this.rulePath;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulePath</code>.</p>
+	 *
+	 * @param rulePath a {@link javax.swing.tree.TreePath} object.
+	 */
 	public void setRulePath(final TreePath rulePath) {
 		this.rulePath = rulePath;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleEditorPane</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RuleEditorPane} object.
+	 */
 	public RuleEditorPane getRuleEditorPane() {
 		return this.ruleEditorPane;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleEditorPane</code>.</p>
+	 *
+	 * @param ruleEditorPane a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RuleEditorPane} object.
+	 */
 	public void setRuleEditorPane(final RuleEditorPane ruleEditorPane) {
 		this.ruleEditorPane = ruleEditorPane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>that</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public RulePanel getThat() {
 		return this.that;
 	}
 
+	/**
+	 * <p>Setter for the field <code>that</code>.</p>
+	 *
+	 * @param that a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public void setThat(final RulePanel that) {
 		this.that = that;
 	}
 
+	/**
+	 * <p>Getter for the field <code>tabTitle</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getTabTitle() {
 		return this.tabTitle;
 	}
 
+	/**
+	 * <p>Setter for the field <code>tabTitle</code>.</p>
+	 *
+	 * @param tabTitle a {@link java.lang.String} object.
+	 */
 	public void setTabTitle(final String tabTitle) {
 		this.tabTitle = tabTitle;
 	}

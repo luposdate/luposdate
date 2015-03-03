@@ -34,16 +34,25 @@ import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
  *
  * @param <K> the type of keys
  * @param <V> the type of values
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PrefixSearchMinMaxWithAdderThread<K, V> extends SortedMapWithAdderThread<K, V> implements PrefixSearchMinMax<K, V>{
 
 	final protected PrefixSearchMinMax<K, V> prefixSearchMinMax;
 
+	/**
+	 * <p>Constructor for PrefixSearchMinMaxWithAdderThread.</p>
+	 *
+	 * @param prefixSearchMinMax a {@link lupos.datastructures.paged_dbbptree.PrefixSearchMinMax} object.
+	 * @param size a int.
+	 */
 	public PrefixSearchMinMaxWithAdderThread(final PrefixSearchMinMax<K, V> prefixSearchMinMax, final int size) {
 		super(prefixSearchMinMax, size);
 		this.prefixSearchMinMax = prefixSearchMinMax;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
 		synchronized(this){
@@ -52,6 +61,7 @@ public class PrefixSearchMinMaxWithAdderThread<K, V> extends SortedMapWithAdderT
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] getClosestElements(final K arg0) {
 		synchronized(this){
@@ -60,6 +70,7 @@ public class PrefixSearchMinMaxWithAdderThread<K, V> extends SortedMapWithAdderT
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
 		synchronized(this){
@@ -68,6 +79,7 @@ public class PrefixSearchMinMaxWithAdderThread<K, V> extends SortedMapWithAdderT
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min, final K max) {
 		synchronized(this){
@@ -76,6 +88,7 @@ public class PrefixSearchMinMaxWithAdderThread<K, V> extends SortedMapWithAdderT
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K max) {
 		synchronized(this){

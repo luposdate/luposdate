@@ -27,17 +27,31 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 /**
- * Extends {@link MessageService} to serialize before sending an message and deserializing after receiving a message.
+ * Extends {@link lupos.event.communication.MessageService} to serialize before sending an message and deserializing after receiving a message.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SerializingMessageService extends MessageService implements IMessageReceivedHandler<ByteBuffer> {
 	
 	private final MessageReceivedHandlerList<Serializable> msgReceivedHandlers = new MessageReceivedHandlerList<Serializable>();
 	
+	/**
+	 * <p>Constructor for SerializingMessageService.</p>
+	 *
+	 * @param transportClass a {@link java.lang.Class} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public SerializingMessageService(Class<? extends IMessageTransport> transportClass) throws Exception {
 		super(transportClass);
 		super.addHandler(this);
 	}
 	
+	/**
+	 * <p>addHandler2.</p>
+	 *
+	 * @param handler a {@link lupos.event.communication.IMessageReceivedHandler} object.
+	 */
 	public void addHandler2(IMessageReceivedHandler<Serializable> handler) {
 		this.msgReceivedHandlers.add(handler);
 	}
@@ -45,8 +59,9 @@ public class SerializingMessageService extends MessageService implements IMessag
 
 	/**
 	 * Serializes the given object before sending it.
-	 * @param obj
-	 * @throws IOException
+	 *
+	 * @param obj a {@link java.io.Serializable} object.
+	 * @throws java.io.IOException if any.
 	 */
 	public void sendMessage(Serializable obj) throws IOException {	
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -61,8 +76,10 @@ public class SerializingMessageService extends MessageService implements IMessag
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Callback method for {@link MessageService}, which gets called after a message got received.
-	 * The received message get deserialized 
+	 * The received message get deserialized
 	 */
 	@Override
 	public void messageReceived(Object src, ByteBuffer msg) {

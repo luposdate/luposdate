@@ -26,8 +26,19 @@ package lupos.event.action.send;
 /**
  *  This interface is for all classes, the purpose of which is to send a string (e.g. plain or html) for displaying the string somewhere based on an action.
  *  Examples are sending an email, displaying the string in a notification window or generation of html pages...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface Send {
+	/**
+	 * <p>init.</p>
+	 */
 	public void init();
+	/**
+	 * <p>sendContent.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public void sendContent(final String content);
 }

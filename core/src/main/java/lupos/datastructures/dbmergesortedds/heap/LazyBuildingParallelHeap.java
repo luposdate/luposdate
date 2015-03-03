@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,42 +21,82 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
-
 public class LazyBuildingParallelHeap<E extends Comparable<E>> extends
 		ParallelHeap<E> {
 
 	private boolean phase1 = true;
 
+	/**
+	 * <p>Constructor for LazyBuildingParallelHeap.</p>
+	 *
+	 * @param height a int.
+	 */
 	public LazyBuildingParallelHeap(final int height) {
 		super(height);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingParallelHeap.</p>
+	 *
+	 * @param height a int.
+	 * @param localFirstHeapHeight a int.
+	 */
 	public LazyBuildingParallelHeap(final int height,
 			final int localFirstHeapHeight) {
 		super(height, localFirstHeapHeight);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingParallelHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param size a int.
+	 */
 	public LazyBuildingParallelHeap(final Object[] content, final int size) {
 		super(content, size);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingParallelHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param size a int.
+	 * @param localFirstHeapHeight a int.
+	 */
 	public LazyBuildingParallelHeap(final Object[] content, final int size,
 			final int localFirstHeapHeight) {
 		super(content, size, localFirstHeapHeight);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingParallelHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 */
 	public LazyBuildingParallelHeap(final int length_or_height,
 			final boolean length) {
 		super(length_or_height, length);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingParallelHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 * @param localFirstHeapHeight a int.
+	 */
 	public LazyBuildingParallelHeap(final int length_or_height,
 			final boolean length, final int localFirstHeapHeight) {
 		super(length_or_height, length, localFirstHeapHeight);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void initParallelHeaps() {
 		for (int i = (1 << localFirstHeapHeight) - 1; i < arr.length; i++) {
@@ -67,12 +108,14 @@ public class LazyBuildingParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Object[] getContent() {
 		buildHeap();
 		return super.getContent();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void buildHeap() {
 		if (phase1) {
@@ -87,30 +130,35 @@ public class LazyBuildingParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		super.clear();
 		phase1 = true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E peek() {
 		buildHeap();
 		return super.peek();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E pop() {
 		buildHeap();
 		return super.pop();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		buildHeap();
 		return super.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		if (phase1) {

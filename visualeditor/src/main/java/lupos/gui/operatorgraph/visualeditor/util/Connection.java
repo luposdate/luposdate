@@ -43,6 +43,9 @@ import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
  * operator he wants to create a connection two. After the first click an arrow
  * is drawn to the mouse where it goes. After the second click the connection is
  * added, if it is allowed to make a connection between these two operators.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Connection<T> {
 	/**
@@ -85,7 +88,7 @@ public abstract class Connection<T> {
 
 	/**
 	 * Creates a Connection object to connect two operators.
-	 * 
+	 *
 	 * @param visualEditor
 	 *            reference to the main visual editor
 	 */
@@ -97,10 +100,9 @@ public abstract class Connection<T> {
 
 	/**
 	 * Returns the dummy GraphBox on the given QueryGraphCanvas.
-	 * 
+	 *
 	 * @param qgc
 	 *            the QueryGraphCanvas to get the dummy GraphBox from
-	 * 
 	 * @return the dummy GraphBox
 	 */
 	public GraphBox getDummyBox(final VisualGraph<T> qgc) {
@@ -112,7 +114,7 @@ public abstract class Connection<T> {
 	 * next step. After the second operator is added this method automatically
 	 * cancels the connectionMode of the VisualEditor and adds the connection.
 	 * This method should be called two times during a connectionMode.
-	 * 
+	 *
 	 * @param op
 	 *            The operator to add to the connection.
 	 */
@@ -149,6 +151,11 @@ public abstract class Connection<T> {
 		}
 	}
 
+	/**
+	 * <p>setConnectionContent.</p>
+	 *
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void setConnectionContent(final Item item) {
 		this.item = item;
 	}
@@ -229,6 +236,9 @@ public abstract class Connection<T> {
 		this.visualEditor.repaint();
 	}
 
+	/**
+	 * <p>cancel.</p>
+	 */
 	public void cancel() {
 		this.visualEditor.connectionMode = null; // end connectionMode of the editor
 
@@ -240,5 +250,10 @@ public abstract class Connection<T> {
 		this.queryGraph.getBoxes().remove(this.dummyGW);
 	}
 
+	/**
+	 * <p>validateConnection.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected abstract String validateConnection();
 }

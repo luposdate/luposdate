@@ -29,14 +29,19 @@ import lupos.datastructures.queryresult.QueryResult;
 
 
 /**
- * Helper class which extends a {@link ArrayList} holding {@link IQueryResultReceivedHandler} instances with a method which calls the callback function of every object in the list.
+ * Helper class which extends a {@link java.util.ArrayList} holding {@link lupos.event.pubsub.IQueryResultReceivedHandler} instances with a method which calls the callback function of every object in the list.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class QueryResultReceivedHandlerList extends ArrayList<IQueryResultReceivedHandler> {
 
 	/**
 	 * Calls the {IQueryResultReceivedHandler.queryResultReceived} method of all handlers in the list.
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param sub a {@link lupos.event.pubsub.Subscription} object.
 	 */
 	public void callAll(final QueryResult qr, final Subscription sub) {
 		for(final IQueryResultReceivedHandler handler : this) {

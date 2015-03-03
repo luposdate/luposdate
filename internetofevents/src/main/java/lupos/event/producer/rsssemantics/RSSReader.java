@@ -35,6 +35,9 @@ import javax.xml.stream.events.XMLEvent;
 
 /**
  * Opens the input stream, retrieves data and adds it to the feed.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RSSReader {
 	static final String TITLE = "title";
@@ -51,8 +54,8 @@ public class RSSReader {
 
 	/**
 	 * Constructor sets url to read from
-	 * 
-	 * @param feedUrl
+	 *
+	 * @param feedUrl a {@link java.lang.String} object.
 	 */
 	public RSSReader(String feedUrl) {
 		try {
@@ -64,6 +67,8 @@ public class RSSReader {
 
 	/**
 	 * Retrieves RSSFeed data, creates a FeedMessage and adds it to the feed.
+	 *
+	 * @return a {@link lupos.event.producer.rsssemantics.Feed} object.
 	 */
 	@SuppressWarnings("null")
 	public Feed readFeed() {

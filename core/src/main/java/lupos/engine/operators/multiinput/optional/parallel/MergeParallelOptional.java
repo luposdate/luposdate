@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.optional.parallel;
 
@@ -28,9 +32,14 @@ import java.util.Collection;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.join.parallel.MergeParallelJoin;
-
 public abstract class MergeParallelOptional extends MergeParallelJoin {
 
+	/**
+	 * <p>Constructor for MergeParallelOptional.</p>
+	 *
+	 * @param operators a {@link java.util.Collection} object.
+	 * @param optional a boolean.
+	 */
 	public MergeParallelOptional(
 			final Collection<? extends MultiInputOperator> operators,
 			final boolean optional) {
@@ -38,6 +47,8 @@ public abstract class MergeParallelOptional extends MergeParallelJoin {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * the actual join
 	 */
 	@Override

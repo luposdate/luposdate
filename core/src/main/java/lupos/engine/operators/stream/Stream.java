@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -36,16 +40,25 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.misc.debug.DebugStep;
-
 public abstract class Stream extends TripleOperator {
 
 	protected LinkedList<NotifyStreamResult> notifyStreamResults = new LinkedList<NotifyStreamResult>();
 	protected CollectResult collectResult;
 
+	/**
+	 * <p>Constructor for Stream.</p>
+	 *
+	 * @param cr a {@link lupos.engine.operators.application.CollectResult} object.
+	 */
 	public Stream(final CollectResult cr) {
 		this.collectResult = cr;
 	}
 
+	/**
+	 * <p>getPatternMatchers.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<PatternMatcher> getPatternMatchers() {
 		final LinkedList<PatternMatcher> llpm = new LinkedList<PatternMatcher>();
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
@@ -58,6 +71,7 @@ public abstract class Stream extends TripleOperator {
 		return llpm;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
@@ -66,17 +80,30 @@ public abstract class Stream extends TripleOperator {
 		}
 	}
 
+	/**
+	 * <p>addNotifyStreamResult.</p>
+	 *
+	 * @param notifyStreamResult a {@link lupos.engine.operators.stream.NotifyStreamResult} object.
+	 */
 	public void addNotifyStreamResult(
 			final NotifyStreamResult notifyStreamResult) {
 		this.notifyStreamResults.add(notifyStreamResult);
 	}
 
+	/**
+	 * <p>notifyStreamResults.</p>
+	 */
 	protected void notifyStreamResults() {
 		this.sendMessage(new ComputeIntermediateResultMessage());
 		for (final NotifyStreamResult nsr : this.notifyStreamResults)
 			nsr.notifyStreamResult(this.collectResult.getResult());
 	}
 	
+	/**
+	 * <p>notifyStreamResultsDebug.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	protected void notifyStreamResultsDebug(DebugStep debugstep) {
 		this.sendMessageDebug(new ComputeIntermediateResultMessage(),debugstep);
 		for (final NotifyStreamResult nsr : this.notifyStreamResults){
@@ -84,6 +111,7 @@ public abstract class Stream extends TripleOperator {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
@@ -95,6 +123,13 @@ public abstract class Stream extends TripleOperator {
 		}
 	}
 	
+	/**
+	 * <p>createDebugInstance.</p>
+	 *
+	 * @param stream a {@link lupos.engine.operators.stream.Stream} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.stream.Stream} object.
+	 */
 	public static Stream createDebugInstance(final Stream stream,
 			final DebugStep debugstep) {
 		if (stream instanceof StreamTriples) {

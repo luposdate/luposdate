@@ -35,9 +35,13 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * Richard Mietz
  * Date: 20.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Boundary implements ExternalFunction
 {
+    /** {@inheritDoc} */
     @Override
     public Object evaluate(final Object[] args) throws TypeErrorException {
         if(args.length==1) {
@@ -50,6 +54,9 @@ public class Boundary implements ExternalFunction
         }
     }
 
+    /**
+     * <p>register.</p>
+     */
     public static void register(){
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.stSPARQLFunctionUri + "boundary>"), new Boundary());
     }

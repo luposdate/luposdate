@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -30,21 +34,25 @@ import java.util.Set;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
-
 public class ReachabilityMap<K extends Comparable<K> & Serializable, V extends Set<Literal> & Serializable> extends MapImplementation<K,V> {
 
 	private int elementsInMemory = 0;
 
+	/**
+	 * <p>Constructor for ReachabilityMap.</p>
+	 */
 	public ReachabilityMap(){
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		super.clear();
 		this.elementsInMemory = 0;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V put(final K arg0, final V arg1) {
@@ -68,6 +76,7 @@ public class ReachabilityMap<K extends Comparable<K> & Serializable, V extends S
 		return this.diskMap.put(arg0, arg1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object arg0) {
 		final V v = super.remove(arg0);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -31,6 +35,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class LiteralFunctions {
 
+	/**
+	 * <p>fromStringLang.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.LanguageTaggedLiteral} object.
+	 */
 	@Builtin(Name = "PlainLiteral-from-string-lang")
 	public static LanguageTaggedLiteral fromStringLang(final Argument arg) {
 		if (arg.arguments.size() == 2
@@ -43,6 +53,12 @@ public class LiteralFunctions {
 			return null;
 	}
 
+	/**
+	 * <p>stringFromPlainLiteral.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "string-from-PlainLiteral")
 	public static Literal stringFromPlainLiteral(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -58,6 +74,12 @@ public class LiteralFunctions {
 			return null;
 	}
 
+	/**
+	 * <p>langFromPlainLiteral.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "lang-from-PlainLiteral")
 	public static Literal langFromPlainLiteral(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -73,6 +95,12 @@ public class LiteralFunctions {
 			return null;
 	}
 
+	/**
+	 * <p>PlainLiteral_compare.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "PlainLiteral-compare")
 	public static Literal PlainLiteral_compare(final Argument arg) {
 		if (arg.arguments.size() == 2

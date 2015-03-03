@@ -37,6 +37,9 @@ import lupos.misc.Quadruple;
 /**
  * This class implements the methods for the buffer manager to cache and reuse some files.
  * It provides the LRU caching methods to be used also in BufferManager_RandomAccess for caching pages.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BufferManager_CachedFiles extends BufferManager {
 
@@ -238,7 +241,7 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	 * @param pageaddress
 	 *            The page address to be accessed afterwards...
 	 * @return a quadruple of the determined filename, file and offset, as well as eventually the filename of the file to be closed due to a full buffer
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	protected final Quadruple<String, RandomAccessFile, Integer, String> getFile(final int pagesize, final PageAddress pageaddress) throws IOException{
 		final int javalimitfilesize = (BufferManager_CachedFiles.JAVALIMITFILESIZE_IN_BYTES / pagesize);
@@ -260,6 +263,8 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	}
 
 	/**
+	 * <p>Getter for the field <code>replacementStrategyOpenedFiles</code>.</p>
+	 *
 	 * @return The used replacement strategy
 	 */
 	public REPLACEMENTSTRATEGY<String> getReplacementStrategyOpenedFiles() {
@@ -268,6 +273,7 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 
 	/**
 	 * This method should be called only if the default replacement strategy is not used and it should be called before the BufferManager is used the first time.
+	 *
 	 * @param replacementStrategyOpenedFiles the replacement strategy to be used
 	 */
 	public void setReplacementStrategyOpenedFiles(final REPLACEMENTSTRATEGY<String> replacementStrategyOpenedFiles) {
@@ -275,6 +281,8 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	}
 
 	/**
+	 * <p>getMaxOpenedFiles.</p>
+	 *
 	 * @return the max number of opened files in the buffer manager
 	 */
 	public static int getMaxOpenedFiles() {
@@ -282,6 +290,8 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	}
 
 	/**
+	 * <p>setMaxOpenedFiles.</p>
+	 *
 	 * @param maxOpenedFiles the max opened number of files in the buffer manager
 	 */
 	public static void setMaxOpenedFiles(final int maxOpenedFiles) {
@@ -289,6 +299,8 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method closes the underlying files. This method should only be called
 	 * if the buffer manager is not used any more...
 	 */
@@ -307,8 +319,9 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method closes the underlying files of basis filename.
-	 * @param filename the filename of the basis file
 	 */
 	@Override
 	public void close(final String filename) throws IOException {
@@ -332,10 +345,10 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method releases all pages, deletes the buffered file from disk and starts with a new file,
 	 * i.e. all content of the buffered file is deleted.
-	 * @param filename the filename of the basis file
-	 * @throws IOException
 	 */
 	@Override
 	public void reset(final String filename) throws IOException {

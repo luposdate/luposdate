@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -85,7 +89,6 @@ import lupos.sparql1_1.SimpleNode;
 import lupos.sparql1_1.operatorgraph.IndexOperatorGraphGenerator;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
-
 public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
 	protected Root root;
@@ -93,14 +96,65 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	protected Dataset dataset;
 	protected lupos.engine.operators.index.Indices.DATA_STRUCT datastructure;
 
+	/**
+	 * <p>Constructor for BasicIndexQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public BasicIndexQueryEvaluator() throws Exception {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for BasicIndexQueryEvaluator.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public BasicIndexQueryEvaluator(final String[] args) throws Exception {
 		super(args);
 	}
 
+	/**
+	 * <p>Constructor for BasicIndexQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param externalontology a {@link java.lang.String} object.
+	 * @param inmemoryexternalontologyinference a boolean.
+	 * @param rdfs a RDFS object.
+	 * @param codemap a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 * @param tmpDirs an array of {@link java.lang.String} objects.
+	 * @param loadindexinfo a boolean.
+	 * @param parallelOperands a PARALLELOPERANDS object.
+	 * @param blockwise a boolean.
+	 * @param limit a int.
+	 * @param jointhreads a int.
+	 * @param joinbuffer a int.
+	 * @param heap a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param indexheap a int.
+	 * @param mergeheapheight a int.
+	 * @param mergeheaptype a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param chunk a int.
+	 * @param mergethreads a int.
+	 * @param yagomax a int.
+	 * @param resulttype a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 * @param storage a STORAGE object.
+	 * @param join a JOIN object.
+	 * @param optional a JOIN object.
+	 * @param sort a SORT object.
+	 * @param distinct a DISTINCT object.
+	 * @param merge_join_optional a MERGE_JOIN_OPTIONAL object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @param datastructure a {@link lupos.engine.operators.index.Indices.DATA_STRUCT} object.
+	 * @param datasetsort a {@link lupos.engine.operators.index.Dataset.SORT} object.
+	 */
 	public BasicIndexQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
@@ -136,6 +190,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		Dataset.setSortingApproach(sort);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		this.defaultRDFS = RDFS.NONE;
@@ -152,6 +207,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				Dataset.SORT.NORMAL);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -160,6 +216,12 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				.getEnum("sortduringindexconstruction"));
 	}
 
+	/**
+	 * <p>writeOutAllModifiedPagesInRDFDataIndices.</p>
+	 *
+	 * @param dir a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeOutAllModifiedPagesInRDFDataIndices(final String dir) throws IOException {
 		this.dataset.writeOutAllModifiedPages();
 		if(dir!=null){
@@ -169,10 +231,18 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		}
 	}
 
+	/**
+	 * <p>buildCompletelyAllIndices.</p>
+	 */
 	public void buildCompletelyAllIndices() {
 		this.dataset.buildCompletelyAllIndices();
 	}
 
+	/**
+	 * <p>getMaterializeOntology.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Dataset.ONTOLOGY} object.
+	 */
 	protected ONTOLOGY getMaterializeOntology() {
 		switch (this.rdfs) {
 		case RDFS:
@@ -186,6 +256,11 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		}
 	}
 
+	/**
+	 * <p>isNonOptimizedRDFS.</p>
+	 *
+	 * @return a boolean.
+	 */
 	protected boolean isNonOptimizedRDFS() {
 		switch (this.rdfs) {
 		case RDFS:
@@ -287,6 +362,13 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		transformStreamToIndexOperatorGraph((PatternMatcher) sqe.getRootNode(), ic);
 	}
 
+	/**
+	 * <p>transformStreamToIndexOperatorGraph.</p>
+	 *
+	 * @param pm a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @return a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public static Root transformStreamToIndexOperatorGraph(
 			final PatternMatcher pm, final Root ic) {
 		final Set<TriplePattern> visited = new HashSet<TriplePattern>();
@@ -488,6 +570,14 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	// return res;
 	// }
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param root_param a {@link lupos.engine.operators.index.Root} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query,
 			final Root root_param) throws Exception {
 		final Date a = new Date();
@@ -524,6 +614,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
 			final String query, final Prefix prefixInstance) throws Exception {
@@ -531,6 +622,15 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 				prefixInstance);
 	}
 
+	/**
+	 * <p>compileQueryDebugByteArray.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param root_param a {@link lupos.engine.operators.index.Root} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link lupos.engine.evaluators.DebugContainerQuery} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
 			final String query, final Root root_param,
 			final Prefix prefixInstance)
@@ -606,6 +706,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return dcq;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQuery() throws Exception {
 		if(this.dataset==null){
@@ -664,6 +765,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return time;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application)
 	throws Exception {
@@ -727,6 +829,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		final Date a = new Date();
@@ -742,6 +845,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
@@ -775,6 +879,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public long physicalOptimization() {
 		final Date a = new Date();
@@ -976,6 +1081,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -987,6 +1093,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		return (new Date().getTime())-a.getTime();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			final Collection<URILiteral> defaultGraphs,
@@ -1001,23 +1108,40 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	}
 
 
+	/**
+	 * <p>createRoot.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public abstract Root createRoot();
 
+	/** {@inheritDoc} */
 	@Override
 	public long compileQuery(final String query) throws Exception {
 		return this.compileQuery(query, this.createRoot());
 	}
 
+	/**
+	 * <p>Setter for the field <code>root</code>.</p>
+	 *
+	 * @param root_param a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public void setRoot(final Root root_param) {
 		this.root = root_param;
 		this.rootNode = root_param;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setRootNode(final BasicOperator rootNode) {
 		this.setRoot((Root)rootNode);
 	}
 
+	/**
+	 * <p>Getter for the field <code>dataset</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Dataset} object.
+	 */
 	public Dataset getDataset() {
 		return this.dataset;
 	}
@@ -1028,7 +1152,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 	 *
 	 * @param filename The basic filename (will be extended with X.n3, where X is a run number)
 	 * @param triplesInOneFile The maximum number of triples to be stored in one file (<=0 for all triples in one file)
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public void dump(final String filename, final int triplesInOneFile) throws Exception{
 		int currentRunNumber=0;
@@ -1084,6 +1208,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 		printer.close();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IndexScanCreatorInterface createIndexScanCreator() {
 		return new IndexScanCreator_BasicIndex(this.createRoot());

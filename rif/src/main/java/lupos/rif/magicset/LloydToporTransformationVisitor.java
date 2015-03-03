@@ -28,6 +28,9 @@ package lupos.rif.magicset;
  * Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
  * http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
  * http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import java.util.ArrayList;
@@ -46,7 +49,6 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class LloydToporTransformationVisitor implements IRuleVisitor<Object, Object>{
 
 	private final ToPresentationSyntaxStringVisitor toStringVisitor = new ToPresentationSyntaxStringVisitor();
@@ -54,12 +56,15 @@ public class LloydToporTransformationVisitor implements IRuleVisitor<Object, Obj
 	private final String conclusion;
 
 	/**
+	 * <p>Constructor for LloydToporTransformationVisitor.</p>
+	 *
 	 * @param conclusion an external given conclusion (can be null if there is no external given conclusion)
 	 */
 	public LloydToporTransformationVisitor(final String conclusion){
 		this.conclusion = conclusion;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Document obj, final Object arg) throws RIFException {
 		if (obj.getConclusion() == null && this.conclusion==null) {
@@ -88,6 +93,7 @@ public class LloydToporTransformationVisitor implements IRuleVisitor<Object, Obj
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Rule obj, final Object arg) throws RIFException {
 		final ArrayList<IExpression> headExpressions = new ArrayList<>();
@@ -133,46 +139,55 @@ public class LloydToporTransformationVisitor implements IRuleVisitor<Object, Obj
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ExistExpression obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Conjunction obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Disjunction obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RulePredicate obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Equality obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final External obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RuleList obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RuleVariable obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Constant obj, final Object arg) throws RIFException {
 		throw new UnsupportedOperationException();

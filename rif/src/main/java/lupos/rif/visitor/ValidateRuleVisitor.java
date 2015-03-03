@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -41,7 +45,6 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 
 	public enum VALIDATION {
@@ -50,6 +53,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 
 	final Set<RuleVariable> declaredVars = new HashSet<RuleVariable>();
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Document obj, final Object arg) throws RIFException {
 		// Fakten ueberpruefen
@@ -68,6 +72,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Rule obj, final Object arg) throws RIFException {
 		// Alle deklarierten Variablen muessen auch verwendet werden und keine
@@ -124,6 +129,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RulePredicate obj, final Object arg) throws RIFException {
 		final VALIDATION flag = (VALIDATION) arg;
@@ -137,6 +143,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Conjunction obj, final Object arg) throws RIFException {
 		for (final IExpression expr : obj.exprs) {
@@ -145,6 +152,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Disjunction obj, final Object arg) throws RIFException {
 		for (final IExpression expr : obj.exprs) {
@@ -153,6 +161,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ExistExpression obj, final Object arg) throws RIFException {
 		final VALIDATION flag = (VALIDATION) arg;
@@ -199,6 +208,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Equality obj, final Object arg) throws RIFException {
 		obj.leftExpr.accept(this, null);
@@ -206,11 +216,13 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final External obj, final Object arg) throws RIFException {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Constant obj, final Object arg) throws RIFException {
 		final VALIDATION flag = (VALIDATION) arg;
@@ -222,6 +234,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RuleVariable obj, final Object arg) throws RIFException {
 		final VALIDATION flag = (VALIDATION) arg;
@@ -232,6 +245,7 @@ public class ValidateRuleVisitor implements IRuleVisitor<Object, Object> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RuleList obj, final Object arg) throws RIFException {
 		return true;

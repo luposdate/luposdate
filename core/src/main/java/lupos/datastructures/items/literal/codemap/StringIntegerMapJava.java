@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
 
@@ -31,11 +35,15 @@ import java.util.Map;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
 import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
-
 public class StringIntegerMapJava implements StringIntegerMap {
 	private Map<String, Integer> m;
 	private Map<String, Integer> original;
 
+	/**
+	 * <p>Constructor for StringIntegerMapJava.</p>
+	 *
+	 * @param mapType a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 */
 	@SuppressWarnings("rawtypes")
 	public StringIntegerMapJava(final MapType mapType) {
 		switch (mapType) {
@@ -62,35 +70,54 @@ public class StringIntegerMapJava implements StringIntegerMap {
 		}
 	}
 
+	/**
+	 * <p>Constructor for StringIntegerMapJava.</p>
+	 *
+	 * @param map a {@link java.util.Map} object.
+	 */
 	public StringIntegerMapJava(final Map<String, Integer> map) {
 		this.original = map;
 		this.m = Collections.synchronizedMap(map);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Integer get(final String s) {
 		return this.m.get(s);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void put(final String s, final int value) {
 		this.m.put(s, value);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.m.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.m.clear();
 	}
 
+	/**
+	 * <p>getMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String, Integer> getMap() {
 		return this.m;
 	}
 
+	/**
+	 * <p>getOriginalMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String, Integer> getOriginalMap() {
 		return this.original;
 	}

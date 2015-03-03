@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui;
 
@@ -72,15 +76,25 @@ import xpref.XPref;
 import xpref.datatypes.BooleanDatatype;
 import xpref.formatter.HTMLFormatter;
 import xpref.util.CommandLineOptionException;
-
 public class GUI implements IXPref {
 
+	/** Constant <code>pref</code> */
 	public static XPref pref;
+	/** Constant <code>accessToFileSystem</code> */
 	public static boolean accessToFileSystem;
+	/** Constant <code>icon</code> */
 	static protected Image icon;
+	/** Constant <code>lock</code> */
 	static protected ReentrantLock lock = new ReentrantLock();
+	/** Constant <code>editorPane=true</code> */
 	static public boolean editorPane = true;
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		final String dataFile = (args.length > 0) ? args[0] : "";
 		final String queryFile = (args.length > 1) ? args[1] : "";
@@ -233,6 +247,12 @@ public class GUI implements IXPref {
 				});
 	}
 
+	/**
+	 * <p>Getter for the field <code>icon</code>.</p>
+	 *
+	 * @param accessToFileSystem_param a boolean.
+	 * @return a {@link java.awt.Image} object.
+	 */
 	public static Image getIcon(final boolean accessToFileSystem_param) {
 		URL url = GUI.class.getResource("/icons/demo.gif");
 		if (accessToFileSystem_param)
@@ -404,6 +424,18 @@ public class GUI implements IXPref {
 		return mainpanel;
 	}
 
+	/**
+	 * <p>initJFrame.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @param preferencesFile a {@link java.lang.String} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param startButtonAction a {@link java.awt.event.ActionListener} object.
+	 * @param panelNorth a {@link javax.swing.JPanel} object.
+	 * @param borderLayoutConstant a {@link java.lang.String} object.
+	 * @param ixpref a {@link xpref.IXPref} object.
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	public static JFrame initJFrame(final String[] args,
 			final String preferencesFile, final String title,
 			final ActionListener startButtonAction, final JPanel panelNorth,
@@ -420,6 +452,20 @@ public class GUI implements IXPref {
 						panelNorth, borderLayoutConstant, textarea, content, ixpref);
 	}
 
+	/**
+	 * <p>initJFrame.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @param preferencesFile a {@link java.lang.String} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param startButtonAction a {@link java.awt.event.ActionListener} object.
+	 * @param panelNorth a {@link javax.swing.JPanel} object.
+	 * @param borderLayoutConstant a {@link java.lang.String} object.
+	 * @param textArea a {@link javax.swing.text.JTextComponent} object.
+	 * @param content a {@link java.lang.StringBuilder} object.
+	 * @param ixpref a {@link xpref.IXPref} object.
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	public static JFrame initJFrame(final String[] args,
 			final String preferencesFile, final String title,
 			final ActionListener startButtonAction, final JPanel panelNorth,
@@ -481,6 +527,13 @@ public class GUI implements IXPref {
 		return frame;
 	}
 
+	/**
+	 * <p>replaceAllLineSeparators.</p>
+	 *
+	 * @param originalString a {@link java.lang.String} object.
+	 * @param replacement a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String replaceAllLineSeparators(final String originalString,
 			final String replacement) {
 		final StringBuilder newString = new StringBuilder();
@@ -525,6 +578,7 @@ public class GUI implements IXPref {
 		return textfield;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void preferencesChanged() {
 		// nothing to update...

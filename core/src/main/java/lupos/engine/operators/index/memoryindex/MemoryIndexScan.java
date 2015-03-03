@@ -47,6 +47,9 @@ import lupos.misc.util.ImmutableIterator;
  * The index structure has to be initialized previously. It is stored in a
  * static way so new instantiations of this class to not yield a change in the
  * original index structure.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MemoryIndexScan extends BasicIndexScan {
 
@@ -54,25 +57,50 @@ public class MemoryIndexScan extends BasicIndexScan {
 
 	/**
 	 * Constructor
+	 *
+	 * @param root a lupos$engine$operators$index$Root object.
 	 */
 	public MemoryIndexScan(final lupos.engine.operators.index.Root root) {
 		super(root);
 	}
 
+	/**
+	 * <p>Constructor for MemoryIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePattern a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a lupos$engine$operators$index$Root object.
+	 */
 	public MemoryIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root root) {
 		super(succeedingOperator, triplePattern, rdfGraph, root);
 	}
 
+	/**
+	 * <p>Constructor for MemoryIndexScan.</p>
+	 *
+	 * @param succeedingOperators a {@link java.util.List} object.
+	 * @param triplePattern a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a lupos$engine$operators$index$Root object.
+	 */
 	public MemoryIndexScan(final List<OperatorIDTuple> succeedingOperators,
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final lupos.engine.operators.index.Root root) {
 		super(succeedingOperators, triplePattern, rdfGraph, root);
 	}
 
+	/**
+	 * <p>Constructor for MemoryIndexScan.</p>
+	 *
+	 * @param root a lupos$engine$operators$index$Root object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 */
 	public MemoryIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
 		super(root, triplePatterns);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public MemoryIndexScan clone() {
 		final MemoryIndexScan clone = new MemoryIndexScan(this.succeedingOperators, this.triplePatterns, this.rdfGraph, this.root);
@@ -80,6 +108,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 		return clone;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Collection<Indices> indicesC){
 		try{
@@ -230,6 +259,7 @@ public class MemoryIndexScan extends BasicIndexScan {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		final QueryResult queryResult = QueryResult.createInstance();
@@ -241,12 +271,11 @@ public class MemoryIndexScan extends BasicIndexScan {
 	 * Returns the result of a join operation using triple patterns and results
 	 * of previous queries
 	 *
-	 * @param tps
-	 *            a collection of triple patterns
 	 * @param queryResult
 	 *            the result of previous queries
 	 * @return the result of a join operation using triple patterns and results
 	 *         of previous queries
+	 * @param indices a {@link lupos.engine.operators.index.Indices} object.
 	 */
 	protected QueryResult join(final Indices indices, QueryResult queryResult) {
 		try {
@@ -396,11 +425,13 @@ public class MemoryIndexScan extends BasicIndexScan {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Memory " + super.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "Memory " + super.toString(prefixInstance);

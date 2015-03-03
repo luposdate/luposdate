@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,16 +21,26 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
 import java.awt.Dimension;
 
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public class AnnotationPanel<T> extends AbstractGuiComponent<T> {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>Constructor for AnnotationPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a T object.
+	 * @param child a T object.
+	 */
 	public AnnotationPanel(VisualGraph<T> parent, GraphWrapper gw, T operator, T child) {
 		super(parent, gw, operator, false);
 
@@ -41,6 +52,7 @@ public class AnnotationPanel<T> extends AbstractGuiComponent<T> {
 		this.setPreferredSize(new Dimension(dimension, dimension));
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(boolean showErrors, Object data) {
 		return true;
 	}

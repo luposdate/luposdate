@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.parser;
 
@@ -33,7 +37,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import lupos.owl2rl.owlToRif.TemplateRule;
-
 public class TemplatesRuleParser extends DefaultHandler{
 
 
@@ -51,10 +54,18 @@ public class TemplatesRuleParser extends DefaultHandler{
 
 	private ParserResults results= new ParserResults();
 
+	/**
+	 * <p>Getter for the field <code>results</code>.</p>
+	 *
+	 * @return a {@link lupos.owl2rl.parser.ParserResults} object.
+	 */
 	public ParserResults getResults(){
 		return this.results;
 	}
 
+	/**
+	 * <p>Constructor for TemplatesRuleParser.</p>
+	 */
 	public TemplatesRuleParser(){
 		super();
 	}
@@ -76,6 +87,11 @@ public class TemplatesRuleParser extends DefaultHandler{
 								CLASS ="classname",
 								FIXED = "fixedrules";
 
+	/**
+	 * <p>start.</p>
+	 *
+	 * @param rules a {@link java.io.InputStream} object.
+	 */
 	public void start(InputStream rules) {
 		try {
 			XMLReader parser = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
@@ -89,6 +105,8 @@ public class TemplatesRuleParser extends DefaultHandler{
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Wird am Anfang des Dokuments aufgerufen, definiert im Interface ContentHandler.
 	 */
 	@Override
@@ -98,6 +116,7 @@ public class TemplatesRuleParser extends DefaultHandler{
 
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void endDocument() throws SAXException {
 		//        System.out.println("++++++++++Ende des Dokuments+++++++++++");
@@ -109,19 +128,21 @@ public class TemplatesRuleParser extends DefaultHandler{
 		this.finishedParsing=true;
 	}
 
+	/**
+	 * <p>isFinished.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isFinished(){
 		return this.finishedParsing;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Wird bei jedem öffnenden Tag aufgerufen, definiert im Interface ContentHandler.
 	 * Bei leeren Tags wie zum Beispiel &lt;img /&gt; wird startElement und
-	 * endElement direkt hintereinander aufgerufen. 
-	 *
-	 * @param namespaceURI URI des Namespaces für dieses Element, kann auch ein leerer String sein.
-	 * @param localName Lokaler Name des Elements, kann auch ein leerer String sein.
-	 * @param qName Qualifizierter Name (mit Namespace-Prefix) des Elements.
-	 * @param atts Liste der Attribute.
+	 * endElement direkt hintereinander aufgerufen.
 	 */
 	@Override
 	public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException{
@@ -157,11 +178,9 @@ public class TemplatesRuleParser extends DefaultHandler{
 
 
 	/**
-	 * Wird bei jedem schließenden Tag aufgerufen, definiert im Interface ContentHandler.
+	 * {@inheritDoc}
 	 *
-	 * @param namespaceURI URI des Namespaces für dieses Element, kann auch ein leerer String sein.
-	 * @param localName Lokaler Name des Elements.
-	 * @param qName Qualifizierter Name des Elements.
+	 * Wird bei jedem schließenden Tag aufgerufen, definiert im Interface ContentHandler.
 	 */
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName){
@@ -227,11 +246,9 @@ public class TemplatesRuleParser extends DefaultHandler{
 
 
 	/**
-	 * Wird immer aufgerufen, wenn Zeichen im Dokument auftauchen.
+	 * {@inheritDoc}
 	 *
-	 * @param ch Character Array
-	 * @param start Startindex der Zeichen in ch
-	 * @param length Länge der Zeichenkette
+	 * Wird immer aufgerufen, wenn Zeichen im Dokument auftauchen.
 	 */
 	@Override
 	public void characters(char ch[], int start, int length) {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.operators;
 
@@ -44,7 +48,6 @@ import lupos.gui.operatorgraph.visualeditor.util.SimpleOperatorGraphVisitor;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.ParseException;
 import lupos.sparql1_1.TokenMgrError;
-
 public abstract class Operator implements IPrefix {
 	/**
 	 * succeedingOperators contains all succeeding operators (together with an
@@ -67,6 +70,12 @@ public abstract class Operator implements IPrefix {
 
 	protected Hashtable<Operator, AbstractGuiComponent<Operator>> annotationLabels = new Hashtable<Operator, AbstractGuiComponent<Operator>>();
 
+	/**
+	 * <p>Setter for the field <code>parentContainer</code>.</p>
+	 *
+	 * @param parentContainer a {@link lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer} object.
+	 * @param visited a {@link java.util.HashSet} object.
+	 */
 	public void setParentContainer(OperatorContainer parentContainer, HashSet<Operator> visited) {
 		if(visited.contains(this)) {
 			return;
@@ -81,21 +90,37 @@ public abstract class Operator implements IPrefix {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>parentContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer} object.
+	 */
 	public OperatorContainer getParentContainer() {
 		return this.parentContainer;
 	}
 
+	/**
+	 * <p>getGUIComponent.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent} object.
+	 */
 	public AbstractGuiComponent<Operator> getGUIComponent() {
 		return this.panel;
 	}
 
+	/**
+	 * <p>getAnnotationLabel.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent} object.
+	 */
 	public AbstractGuiComponent<Operator> getAnnotationLabel(Operator child) {
 		return this.annotationLabels.get(child);
 	}
 
 	/**
 	 * This method adds one succeeding operator
-	 * 
+	 *
 	 * @param succeedingOperator
 	 *            the succeeding operator
 	 */
@@ -110,7 +135,7 @@ public abstract class Operator implements IPrefix {
 
 	/**
 	 * This method returns the succeeding operators
-	 * 
+	 *
 	 * @return the succeeding operators
 	 */
 	public LinkedList<OperatorIDTuple<Operator>> getSucceedingOperators() {
@@ -119,7 +144,7 @@ public abstract class Operator implements IPrefix {
 
 	/**
 	 * This method adds one preceding operator
-	 * 
+	 *
 	 * @param precedingOperator
 	 *            the preceding operator
 	 */
@@ -131,7 +156,7 @@ public abstract class Operator implements IPrefix {
 
 	/**
 	 * This method returns the preceding operators
-	 * 
+	 *
 	 * @return the preceding operators
 	 */
 	public LinkedList<Operator> getPrecedingOperators() {
@@ -140,7 +165,7 @@ public abstract class Operator implements IPrefix {
 
 	/**
 	 * Replaces this operator with a replacement operator.
-	 * 
+	 *
 	 * @param replacement
 	 *            The replacement operator
 	 */
@@ -162,6 +187,11 @@ public abstract class Operator implements IPrefix {
 		}
 	}
 
+	/**
+	 * <p>removeSucceedingOperator.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public void removeSucceedingOperator(Operator operator) {
 		Iterator<OperatorIDTuple<Operator>> suIt = this.succeedingOperators.iterator();
 
@@ -183,6 +213,8 @@ public abstract class Operator implements IPrefix {
 
 	/**
 	 * Delete this Operator and remove it completely from the AST.
+	 *
+	 * @param subtree a boolean.
 	 */
 	public void delete(boolean subtree) {
 		// remove the link from the preceding operators...
@@ -213,6 +245,12 @@ public abstract class Operator implements IPrefix {
 		this.panel.delete();
 	}
 
+	/**
+	 * <p>dump.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @param visited a {@link java.util.HashSet} object.
+	 */
 	public void dump(String prefix, HashSet<Operator> visited) {
 		if(visited.contains(this)) {
 			return;
@@ -243,7 +281,7 @@ public abstract class Operator implements IPrefix {
 	 * relevant state, have to override this method to copy that state from the
 	 * superclass. Make sure to call super so that children and parents don't
 	 * get lost
-	 * 
+	 *
 	 * @param op
 	 *            The Operator to copy state from
 	 */
@@ -293,7 +331,7 @@ public abstract class Operator implements IPrefix {
 	/**
 	 * This method starts processing a simple visitor in the whole operator
 	 * graph. Depth-first visit is applied.
-	 * 
+	 *
 	 * @param visitor
 	 *            The visitor to be applied to each node in the operator graph
 	 * @return The object retrieved from processing the visitor on this
@@ -330,10 +368,23 @@ public abstract class Operator implements IPrefix {
 		return result;
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
 
+	/**
+	 * <p>validateOperator.</p>
+	 *
+	 * @param showErrors a boolean.
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @param data a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean validateOperator(boolean showErrors, HashSet<Operator> visited, Object data) {
 		if(this.panel.validateOperatorPanel(showErrors, data) == false) {
 			return false;
@@ -348,6 +399,12 @@ public abstract class Operator implements IPrefix {
 		return true;
 	}
 
+	/**
+	 * <p>handleParseError.</p>
+	 *
+	 * @param t a {@link java.lang.Throwable} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void handleParseError(Throwable t) throws ModificationException {
 		int line = 0;
 		int column = 0;
@@ -387,10 +444,21 @@ public abstract class Operator implements IPrefix {
 		throw new ModificationException(t.getMessage(), line, column, this);
 	}
 
+	/**
+	 * <p>canAddSucceedingOperator.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean canAddSucceedingOperator() {
 		return (this.succeedingOperators.size() < 1);
 	}
 
+	/**
+	 * <p>drawAnnotations.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualGraph<Operator> parent) {
 		Hashtable<GraphWrapper, AbstractSuperGuiComponent> lineLables = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 
@@ -408,6 +476,11 @@ public abstract class Operator implements IPrefix {
 		return lineLables;
 	}
 
+	/**
+	 * <p>deleteAnnotation.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public void deleteAnnotation(Operator child) {
 		if(!this.annotationLabels.containsKey(child)) {
 			return;
@@ -447,6 +520,12 @@ public abstract class Operator implements IPrefix {
 		this.annotationLabels.remove(child);
 	}
 
+	/**
+	 * <p>computeUsedVariables.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @param variables a {@link java.util.HashSet} object.
+	 */
 	public static void computeUsedVariables(Node n, HashSet<Variable> variables) {
 		if(n == null) {
 			return;
@@ -469,12 +548,37 @@ public abstract class Operator implements IPrefix {
 		}
 	}
 
+	/**
+	 * <p>draw.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent} object.
+	 */
 	public abstract AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent);
 
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public abstract StringBuffer serializeOperator();
 
+	/**
+	 * <p>serializeOperatorAndTree.</p>
+	 *
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public abstract StringBuffer serializeOperatorAndTree(HashSet<Operator> visited);
 
+	/**
+	 * <p>variableInUse.</p>
+	 *
+	 * @param variable a {@link java.lang.String} object.
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @return a boolean.
+	 */
 	public abstract boolean variableInUse(String variable, HashSet<Operator> visited);
 	
 	private String getXPrefIDPrefix() {
@@ -482,10 +586,20 @@ public abstract class Operator implements IPrefix {
 		return className.substring(0, 1).toLowerCase() + className.substring(1);
 	}
 	
+	/**
+	 * <p>getXPrefID.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getXPrefID() {
 		return getXPrefIDPrefix() + "_style_operator";
 	}
 	
+	/**
+	 * <p>getXPrefIDForAnnotation.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getXPrefIDForAnnotation(){		
 		return getXPrefIDPrefix() + "_style_annotation";
 	}

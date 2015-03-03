@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -35,7 +39,6 @@ import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
 import lupos.gui.operatorgraph.visualeditor.util.Connection;
-
 public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent {
 	private static final long serialVersionUID = 1L;
 	protected VisualGraph<T> parent;
@@ -44,6 +47,14 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 	protected T parentOp;
 	protected T child;
 
+	/**
+	 * <p>Constructor for AbstractGuiComponent.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a T object.
+	 * @param movable a boolean.
+	 */
 	protected AbstractGuiComponent(final VisualGraph<T> parent, final GraphWrapper gw, final T operator, final boolean movable) {
 		super(parent, gw, movable);
 
@@ -51,6 +62,9 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 		this.operator = operator;
 	}
 
+	/**
+	 * <p>delete.</p>
+	 */
 	public void delete() {
 		if(this.isAnnotation()) {
 			this.getBox().deleteLineAnnotation(this.parent.createGraphWrapper(this.child));
@@ -81,14 +95,29 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 		this.parent.repaint();
 	}
 
+	/**
+	 * <p>getVisualEditor.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public VisualEditor<T> getVisualEditor() {
 		return this.parent.visualEditor;
 	}
 
+	/**
+	 * <p>getParentQG.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public VisualGraph<T> getParentQG() {
 		return this.parent;
 	}
 
+	/**
+	 * <p>Getter for the field <code>parentOp</code>.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getParentOp() {
 		if(this.isAnnotation()) {
 			return this.parentOp;
@@ -98,21 +127,39 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>child</code>.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getChild() {
 		return this.child;
 	}
 
+	/**
+	 * <p>Getter for the field <code>operator</code>.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getOperator() {
 		return this.operator;
 	}
 
 
+	/**
+	 * <p>showCorrectIgnoreOptionDialog.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param msg a {@link java.lang.String} object.
+	 * @return a int.
+	 */
 	@SuppressWarnings("rawtypes")
 	public static int showCorrectIgnoreOptionDialog(final VisualGraph parent, final String msg) {
 		return JOptionPane.showOptionDialog(parent.visualEditor, msg, "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Correct Input", "Ignore Error"}, 0);
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public void mouseClicked(final MouseEvent me) {
@@ -172,12 +219,20 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 		}
 	}
 
+	/**
+	 * <p>makeSuggestions.</p>
+	 */
 	protected void makeSuggestions() {
 		this.parent.visualEditor.getStatusBar().clear();
 
 		((Suggester<T>) this.parent.visualEditor).makeSuggestions(this.operator);
 	}
 
+	/**
+	 * <p>handleConnectionMode.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean handleConnectionMode() {
 		// get the connection mode...
 		final Connection<T> connectionMode = this.parent.visualEditor.connectionMode;
@@ -191,9 +246,21 @@ public abstract class AbstractGuiComponent<T> extends AbstractSuperGuiComponent 
 		return false;
 	}
 
+	/**
+	 * <p>inConnectionMode.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean inConnectionMode() {
 		return this.parent.visualEditor.connectionMode != null;
 	}
 
+	/**
+	 * <p>validateOperatorPanel.</p>
+	 *
+	 * @param showErrors a boolean.
+	 * @param data a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public abstract boolean validateOperatorPanel(boolean showErrors, Object data);
 }

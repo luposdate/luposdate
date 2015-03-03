@@ -25,7 +25,9 @@ package lupos.datastructures.simplifiedfractaltree.buffermanager;
 
 /**
  * This class represents a pointer.
+ *
  * @author Denis Fäcke
+ * @version $Id: $Id
  */
 public class Pointer {
 	public int leftPage;
@@ -34,6 +36,7 @@ public class Pointer {
 
 	/**
 	 * Creates a new Pointer.
+	 *
 	 * @param leftPage The left page
 	 * @param leftBound The left bound
 	 * @param size The size

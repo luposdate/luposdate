@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -31,32 +35,51 @@ import java.io.ObjectOutput;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
-
 public class AnonymousLiteral extends Literal implements Externalizable {
 	private static final long serialVersionUID = -2205699226774394906L;
 
 	protected Literal content;
 
+	/**
+	 * <p>Constructor for AnonymousLiteral.</p>
+	 */
 	public AnonymousLiteral() {
 	}
 
+	/**
+	 * <p>Constructor for AnonymousLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public AnonymousLiteral(final String content) {
 		this.content = LiteralFactory.createLiteralWithoutLazyLiteral(content);
 	}
 
+	/**
+	 * <p>Constructor for AnonymousLiteral.</p>
+	 *
+	 * @param code a int.
+	 */
 	protected AnonymousLiteral(final int code) {
 		this.content = new CodeMapLiteral(code);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.content.toString();
 	}
 
+	/**
+	 * <p>getBlankNodeLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getBlankNodeLabel(){
 		return this.toString().substring(2);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof AnonymousLiteral) {
@@ -67,26 +90,35 @@ public class AnonymousLiteral extends Literal implements Externalizable {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>content</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getContent() {
 		return this.content;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return this.content.getUsedStringRepresentations();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 	ClassNotFoundException {
 		this.content = InputHelper.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		OutHelper.writeLuposLiteral(this.content, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew() {
 		return LiteralFactory.createAnonymousLiteral(this.content.originalString());

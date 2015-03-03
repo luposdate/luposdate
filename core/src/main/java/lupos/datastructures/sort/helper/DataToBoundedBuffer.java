@@ -40,7 +40,10 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.misc.FileHelper;
 
 /**
- * Helper class to read in and parse different types of data (strings or RDF terms of RDF data). 
+ * Helper class to read in and parse different types of data (strings or RDF terms of RDF data).
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DataToBoundedBuffer {
 	/**
@@ -89,10 +92,11 @@ public class DataToBoundedBuffer {
 	
 	/**
 	 * Read in and parse strings or RDF terms of RDF data, and put one after the other in the given bounded buffer.
+	 *
 	 * @param dataFiles the data
 	 * @param format the format (STRING => strings in a file, each line one string, MULTIPLESTRING => file contains file list, all are read in line by line, otherwise RDF format)
 	 * @param buffer the bounded buffer, in which the data is put
-	 * @throws Exception in case of any failure
+	 * @throws java.lang.Exception in case of any failure
 	 */
 	public static void dataToBoundedBuffer(final InputStream dataFiles, final String format, final BoundedBuffer<String> buffer) throws Exception {
 		if(format.toUpperCase().compareTo("STRING")==0){

@@ -60,6 +60,9 @@ import lupos.misc.Triple;
  * and the first 8 bytes in the values file stores the maximum position in the values file.
  * Each value is part of linked list, after the serialization of a value an 8-bytes pointer
  * is used to point to the next value in the list (is 0 for marking the end of the list).
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PagedHashMultiSet<V> extends AbstractSet<V> {
 
@@ -81,6 +84,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 	private static int fileID=0;
 
 	// the lock for getting a new id
+	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
 
 	// the inital table size
@@ -92,6 +96,11 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 
 	private final int TABLEPAGESIZE = INITIALTABLESIZE * 8;
 
+	/**
+	 * <p>Constructor for PagedHashMultiSet.</p>
+	 *
+	 * @param classOfValues a {@link java.lang.Class} object.
+	 */
 	public PagedHashMultiSet(final Class<V> classOfValues) {
 		this.classOfValues = classOfValues;
 		PagedHashMultiSet.lock.lock();
@@ -117,6 +126,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 	 * (non-Javadoc)
 	 * @see java.util.AbstractCollection#add(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final V element) {
 
@@ -168,6 +178,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		return false;
 	}
 
+    /** {@inheritDoc} */
     @Override
 	public boolean contains(final Object element) {
 		try {
@@ -210,6 +221,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
     }
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object element) {
 		try {
@@ -251,6 +263,12 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		return false;
 	}
 
+	/**
+	 * <p>removeAllDuplicates.</p>
+	 *
+	 * @param element a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean removeAllDuplicates(final Object element) {
 		try {
 			final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
@@ -397,6 +415,11 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		return null;
 	}
 
+	/**
+	 * <p>iteratorWithDuplicates.</p>
+	 *
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public Iterator<V> iteratorWithDuplicates() {
 		return new Iterator<V>(){
 
@@ -466,6 +489,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> iterator() {
 		return new Iterator<V>(){
@@ -537,15 +561,28 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return PagedHashMultiSet.toString(this.iteratorWithDuplicates());
 	}
 
+	/**
+	 * <p>toStringWithoutDuplicates.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toStringWithoutDuplicates(){
 		return PagedHashMultiSet.toString(this.iterator());
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param it a {@link java.util.Iterator} object.
+	 * @param <V> a V object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static<V> String toString(final Iterator<V> it){
 		String result = "Paged Hash Set: {";
 		boolean firstTime = true;
@@ -561,6 +598,7 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		return result+" }";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
@@ -579,16 +617,32 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		this.lastValue = 0;
 	}
 
+	/**
+	 * <p>release.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public void release() throws IOException {
 		BufferManager.getBufferManager().releaseAllPages(this.pointersFilename);
 		BufferManager.getBufferManager().close(this.pointersFilename);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return (int) this.size;
 	}
 
+	/**
+	 * <p>Constructor for PagedHashMultiSet.</p>
+	 *
+	 * @param classOfValues a {@link java.lang.Class} object.
+	 * @param pointersFilename a {@link java.lang.String} object.
+	 * @param stringsFilename a {@link java.lang.String} object.
+	 * @param size a long.
+	 * @param lastValue a long.
+	 * @throws java.io.IOException if any.
+	 */
 	protected PagedHashMultiSet(final Class<V> classOfValues, final String pointersFilename, final String stringsFilename, final long size, final long lastValue) throws IOException {
 		this.classOfValues = classOfValues;
 		this.pointersFilename = pointersFilename;
@@ -597,6 +651,14 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		this.lastValue = lastValue;
 	}
 
+	/**
+	 * <p>readLuposPagedHashSet.</p>
+	 *
+	 * @param lois a {@link java.io.InputStream} object.
+	 * @param <V> a V object.
+	 * @return a {@link lupos.datastructures.paged_set.PagedHashMultiSet} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static<V> PagedHashMultiSet<V> readLuposPagedHashSet(final InputStream lois) throws IOException{
 		final String pointersFilename = InputHelper.readLuposString(lois);
 		final String valuesFilename = InputHelper.readLuposString(lois);
@@ -607,6 +669,12 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		return new PagedHashMultiSet<V>(classOfValues, pointersFilename, valuesFilename, size, lastValue);
 	}
 
+	/**
+	 * <p>writeLuposPagedHashSet.</p>
+	 *
+	 * @param loos a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposPagedHashSet(final OutputStream loos) throws IOException{
 		BufferManager.getBufferManager().writeAllModifiedPages();
 		OutHelper.writeLuposString(this.pointersFilename, loos);
@@ -616,16 +684,29 @@ public class PagedHashMultiSet<V> extends AbstractSet<V> {
 		OutHelper.writeLuposLong(this.lastValue, loos);
 	}
 
+	/**
+	 * <p>Getter for the field <code>fileID</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getFileID() {
 		return PagedHashMultiSet.fileID;
 	}
 
+	/**
+	 * <p>Setter for the field <code>fileID</code>.</p>
+	 *
+	 * @param fileID a int.
+	 */
 	public static void setFileID(final int fileID) {
 		PagedHashMultiSet.fileID = fileID;
 	}
 
 	/**
 	 * just to quickly test the implementation...
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.io.IOException if any.
 	 */
 	public static void main(final String[] args) throws IOException{
 		final PagedHashMultiSet<String> d = new PagedHashMultiSet<String>(String.class);

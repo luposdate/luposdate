@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -36,6 +40,12 @@ import lupos.datastructures.items.literal.string.StringLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class StringPredicates {
 
+	/**
+	 * <p>is_string.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-string")
 	public static BooleanLiteral is_string(final Argument arg) {
 		return BooleanLiteral.create(BuiltinHelper.isOfXSType(
@@ -43,76 +53,160 @@ public class StringPredicates {
 				|| LiteralPredicates.is_plainLiteral(arg).value);
 	}
 
+	/**
+	 * <p>is_normalizedString.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-normalizedString")
 	public static BooleanLiteral is_normalizedString(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"string", "normalizedString");
 	}
 
+	/**
+	 * <p>is_token.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-token")
 	public static BooleanLiteral is_token(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"string", "token");
 	}
 
+	/**
+	 * <p>is_language.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-language")
 	public static BooleanLiteral is_language(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"language");
 	}
 
+	/**
+	 * <p>is_name.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-Name")
 	public static BooleanLiteral is_name(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0), "Name");
 	}
 
+	/**
+	 * <p>is_ncname.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-NCName")
 	public static BooleanLiteral is_ncname(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"NCName");
 	}
 
+	/**
+	 * <p>is_nmtoken.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-NMTOKEN")
 	public static BooleanLiteral is_nmtoken(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"NMTOKEN");
 	}
 
+	/**
+	 * <p>is_not_string.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-string")
 	public static BooleanLiteral is_not_string(final Argument arg) {
 		return BooleanLiteral.not(is_string(arg));
 	}
 
+	/**
+	 * <p>is_not_normalizedString.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-normalizedString")
 	public static BooleanLiteral is_not_normalizedString(final Argument arg) {
 		return BooleanLiteral.not(is_normalizedString(arg));
 	}
 
+	/**
+	 * <p>is_not_token.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-token")
 	public static BooleanLiteral is_not_token(final Argument arg) {
 		return BooleanLiteral.not(is_token(arg));
 	}
 
+	/**
+	 * <p>is_not_lang.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-language")
 	public static BooleanLiteral is_not_lang(final Argument arg) {
 		return BooleanLiteral.not(is_language(arg));
 	}
 
+	/**
+	 * <p>is_not_name.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-Name")
 	public static BooleanLiteral is_not_name(final Argument arg) {
 		return BooleanLiteral.not(is_name(arg));
 	}
 
+	/**
+	 * <p>is_not_ncname.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-NCName")
 	public static BooleanLiteral is_not_ncname(final Argument arg) {
 		return BooleanLiteral.not(is_ncname(arg));
 	}
 
+	/**
+	 * <p>is_not_nmtoken.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-NMTOKEN")
 	public static BooleanLiteral is_not_nmtoken(final Argument arg) {
 		return BooleanLiteral.not(is_nmtoken(arg));
 	}
 
+	/**
+	 * <p>iri_string.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "iri-string", Bindable = true)
 	public static BooleanLiteral iri_string(final Argument arg) {
 		Literal left = null;
@@ -165,6 +259,12 @@ public class StringPredicates {
 		}
 	}
 
+	/**
+	 * <p>contains.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "contains")
 	public static BooleanLiteral contains(final Argument arg) {
 		String left = BuiltinHelper
@@ -175,6 +275,12 @@ public class StringPredicates {
 		return BooleanLiteral.create(result);
 	}
 
+	/**
+	 * <p>starts_with.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "starts-with")
 	public static BooleanLiteral starts_with(final Argument arg) {
 		String left = BuiltinHelper
@@ -185,6 +291,12 @@ public class StringPredicates {
 		return BooleanLiteral.create(result);
 	}
 
+	/**
+	 * <p>ends_with.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "ends-with")
 	public static BooleanLiteral ends_with(final Argument arg) {
 		String left = BuiltinHelper
@@ -195,6 +307,12 @@ public class StringPredicates {
 		return BooleanLiteral.create(result);
 	}
 
+	/**
+	 * <p>matches.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "matches")
 	public static BooleanLiteral matches(final Argument arg) {
 		String left = BuiltinHelper

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.diao;
 
@@ -30,9 +34,14 @@ import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.javacc.SPARQLParser;
 import lupos.sparql1_1.SPARQL1_1ParserConstants;
-
 public class DocumentInputAndAlphabeticOrderStrategySPARQL extends DocumentInputAndAlphabeticOrderStrategy {
 
+	/**
+	 * <p>Constructor for DocumentInputAndAlphabeticOrderStrategySPARQL.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public DocumentInputAndAlphabeticOrderStrategySPARQL(final LuposDocumentReader r, final ILuposParser p) {
 		super(r, p);
 	}
@@ -41,6 +50,7 @@ public class DocumentInputAndAlphabeticOrderStrategySPARQL extends DocumentInput
 	 * reservedWords sind urspruenglich durch Anfuehrungszeichen eingeschlossen,
 	 * diese werden natuerlich entfernt
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void initReservedWords() {
 		TYPE__SemanticWeb[] tokenMap;

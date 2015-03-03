@@ -29,6 +29,9 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphge
 
 /**
  * This class is the cost-based optimizer for the QueryClient query evaluator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientCostBasedOptimizer extends CostBasedOptimizer {
 
@@ -41,6 +44,7 @@ public class QueryClientCostBasedOptimizer extends CostBasedOptimizer {
 
 	/**
 	 * Static method to call the cost-based optimizer for the QueryClient query evaluator
+	 *
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 * @return the root operator under which the subgraph with the reordered joins are inserted
 	 */

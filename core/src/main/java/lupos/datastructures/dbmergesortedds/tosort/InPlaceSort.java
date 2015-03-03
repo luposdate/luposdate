@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,19 +21,27 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
 
 import java.util.Iterator;
 
 import lupos.misc.util.ImmutableIterator;
-
 public abstract class InPlaceSort<E extends Comparable<E>> extends ArraySort<E> {
 
+	/**
+	 * <p>Constructor for InPlaceSort.</p>
+	 *
+	 * @param length a int.
+	 */
 	public InPlaceSort(final int length) {
 		super(length);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> emptyDatastructure() {
 		this.sort(0, this.length - 1);
@@ -51,5 +60,11 @@ public abstract class InPlaceSort<E extends Comparable<E>> extends ArraySort<E> 
 		};
 	}
 
+	/**
+	 * <p>sort.</p>
+	 *
+	 * @param unten a int.
+	 * @param oben a int.
+	 */
 	public abstract void sort(final int unten, final int oben);
 }

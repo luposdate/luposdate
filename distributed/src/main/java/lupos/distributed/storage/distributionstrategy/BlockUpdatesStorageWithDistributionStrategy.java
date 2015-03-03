@@ -44,7 +44,10 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * This class inserts imported triples block-wise according to a given distribution strategy...
+ *
  * @param <K> the type of the keys as retrieved from the distribution strategy
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements IStorage {
 
@@ -81,13 +84,16 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 
 	/**
 	 * Constructor for the storage module
+	 *
 	 * @param distribution The distribution strategy to be used in this storage
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public BlockUpdatesStorageWithDistributionStrategy(final IDistribution<K> distribution, final BindingsFactory bindingsFactory){
 		this.distribution = distribution;
 		this.bindingsFactory = bindingsFactory;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 		if(!this.toBeAdded.isEmpty()){
@@ -96,6 +102,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addTriple(final Triple triple) {
 		final K[] keys = this.distribution.getKeysForStoring(triple);
@@ -131,6 +138,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTriple(final Triple triple) {
 		// first add remaining triples
@@ -164,6 +172,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final Triple triple) {
 		final K[] keys = this.distribution.getKeysForStoring(triple);
@@ -203,6 +212,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception {
 		// first add remaining triples
@@ -247,6 +257,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 
 	/**
 	 * Gets the distribution strategy
+	 *
 	 * @return the distribution of this storage
 	 */
 	public IDistribution<K> getDistribution(){
@@ -255,6 +266,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 
 	/**
 	 * This method must implement the insertion of a list of triples under a given key
+	 *
 	 * @param key the key under which the triples are stored
 	 * @param triples the triples to be stored
 	 */
@@ -263,15 +275,17 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	/**
 	 * Checks whether or not a triple is contained in the distributed indices.
 	 * This method is called after all pending triples are inserted...
+	 *
 	 * @param key the key under which the triple might be stored
 	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
+	 * @return a boolean.
 	 */
 	public abstract boolean containsTripleAfterAdding(K key, Triple triple);
 
 	/**
 	 * Removes a triple in the distributed indices.
 	 * This method is called after all pending triples are inserted...
+	 *
 	 * @param key the key under which the triple must be removed
 	 * @param triple the triple to e removed
 	 */
@@ -280,6 +294,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	/**
 	 * Evaluates one triple pattern on the distributed indices.
 	 * This method is called after all pending triples are inserted...
+	 *
 	 * @param key the key under which solutions for this triple pattern might be stored
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query result of the triple pattern
@@ -298,6 +313,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 	 *
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query result of the triple pattern
+	 * @throws lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError if any.
 	 */
 	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) throws TriplePatternNotSupportedError {
 		throw new TriplePatternNotSupportedError(this.distribution, triplePattern);
@@ -394,6 +410,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void setBindingsFactory(final BindingsFactory bindingsFactory){
 		this.bindingsFactory = bindingsFactory;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,15 +21,18 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.application;
 
 import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.QueryResult;
-
 public class Output implements Application {
 	private boolean iHasResult = false;
 
+	/** {@inheritDoc} */
 	public void call(final QueryResult res) {
 		if (!(res instanceof BooleanResult && iHasResult)) {
 			iHasResult = true;
@@ -36,21 +40,33 @@ public class Output implements Application {
 		}
 	}
 
+	/**
+	 * <p>start.</p>
+	 *
+	 * @param type a Type object.
+	 */
 	public void start(final Type type) {
 		System.out.println("Results:");
 	}
 
+	/**
+	 * <p>stop.</p>
+	 */
 	public void stop() {
 		if (!iHasResult)
 			System.out.println("I no has resultz????");
 	}
 
+	/** {@inheritDoc} */
 	public void deleteResult(final QueryResult res) {
 		if (res != null) {
 			System.out.println("To be deleted: " + res);
 		}
 	}
 
+	/**
+	 * <p>deleteResult.</p>
+	 */
 	public void deleteResult() {
 		System.out.println("All results so far deleted!");
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -47,7 +51,6 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator;
-
 public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 
 	private static final long serialVersionUID = -6993813701569431678L;
@@ -61,6 +64,16 @@ public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 	protected AnnotationOperator annotationOperator;
 
 	// Constructor
+	/**
+	 * <p>Constructor for AnnotationOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AnnotationOperator} object.
+	 * @param text a {@link java.lang.String} object.
+	 * @param slabel a {@link java.lang.String} object.
+	 * @param movable a boolean.
+	 */
 	public AnnotationOperatorPanel(final VisualGraph<Operator> parent,
 			final GraphWrapper gw, final AnnotationOperator operator, final String text, final String slabel, final boolean movable) {
 
@@ -154,11 +167,13 @@ public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.remove(this.textField);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize(){
 		if(this.getComponentCount() >= 2){
@@ -203,34 +218,74 @@ public class AnnotationOperatorPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>textField</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JTextField} object.
+	 */
 	public JTextField getTextField() {
 		return this.textField;
 	}
 
+	/**
+	 * <p>Setter for the field <code>textField</code>.</p>
+	 *
+	 * @param textField a {@link javax.swing.JTextField} object.
+	 */
 	public void setTextField(final JTextField textField) {
 		this.textField = textField;
 	}
 
+	/**
+	 * <p>Getter for the field <code>label</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JLabel} object.
+	 */
 	public JLabel getLabel() {
 		return this.label;
 	}
 
+	/**
+	 * <p>Setter for the field <code>label</code>.</p>
+	 *
+	 * @param label a {@link javax.swing.JLabel} object.
+	 */
 	public void setLabel(final JLabel label) {
 		this.label = label;
 	}
 
+	/**
+	 * <p>Getter for the field <code>addButton</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JButton} object.
+	 */
 	public JButton getAddButton() {
 		return this.addButton;
 	}
 
+	/**
+	 * <p>Setter for the field <code>addButton</code>.</p>
+	 *
+	 * @param addButton a {@link javax.swing.JButton} object.
+	 */
 	public void setAddButton(final JButton addButton) {
 		this.addButton = addButton;
 	}
 
+	/**
+	 * <p>isMinimizedByLostFocus.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isMinimizedByLostFocus() {
 		return this.minimizedByLostFocus;
 	}
 
+	/**
+	 * <p>Setter for the field <code>minimizedByLostFocus</code>.</p>
+	 *
+	 * @param minimizedByLostFocus a boolean.
+	 */
 	public void setMinimizedByLostFocus(final boolean minimizedByLostFocus) {
 		this.minimizedByLostFocus = minimizedByLostFocus;
 	}

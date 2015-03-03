@@ -29,6 +29,9 @@ import java.util.Map;
 
 /**
  * This class provides a method to build a stream-based SPARQL query.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EventQueryBuilder {
 
@@ -59,9 +62,10 @@ public class EventQueryBuilder {
 	
 	/**
 	 * Builds a query.
+	 *
 	 * @param intermediateResultDuration Evaluation interval in milliseconds
 	 * @param eventWindowDataList Data of the windows
-	 * @return 
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String buildQuery(int intermediateResultDuration, List<EventWindowData> eventWindowDataList) {
 		

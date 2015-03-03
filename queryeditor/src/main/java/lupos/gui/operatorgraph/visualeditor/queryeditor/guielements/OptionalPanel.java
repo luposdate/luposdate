@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.guielements;
 
@@ -36,10 +40,18 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.Optional;
-
 public class OptionalPanel extends MultiInputPanel {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>Constructor for OptionalPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param string a {@link java.lang.String} object.
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public OptionalPanel(MultiInputOperator operator, GraphWrapper gw, VisualGraph<Operator> parent, String string, Operator child) {
 		super(operator, gw, parent, string, false);
 
@@ -60,6 +72,7 @@ public class OptionalPanel extends MultiInputPanel {
 		popupMenu.show(this, me.getX(), me.getY());
 	}
 
+	/** {@inheritDoc} */
 	public void mousePressed(MouseEvent me) {
 		if(me.isPopupTrigger()) {
 			this.showPopupMenu(me);
@@ -69,6 +82,7 @@ public class OptionalPanel extends MultiInputPanel {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseReleased(MouseEvent me) {
 		if(me.isPopupTrigger()) {
 			this.showPopupMenu(me);

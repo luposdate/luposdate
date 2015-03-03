@@ -43,6 +43,9 @@ import lupos.io.helper.OutHelper;
  * This run represents an already sorted run stored on disk.
  * It is saving space as it uses difference encoding
  * in order to avoid storing common prefixes of succeeding elements.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MemorySortSortedRunOnDisk extends Run {
 
@@ -89,6 +92,11 @@ public class MemorySortSortedRunOnDisk extends Run {
 	 */
 	private final DiskCollection<StringWithoutCommonPrefix> diskCollection;
 
+	/**
+	 * <p>Constructor for MemorySortSortedRunOnDisk.</p>
+	 *
+	 * @param arrayOfStrings an array of {@link lupos.datastructures.sort.run.memorysort.MemorySortSortedRun.StringWithoutCommonPrefix} objects.
+	 */
 	public MemorySortSortedRunOnDisk(final StringWithoutCommonPrefix[] arrayOfStrings) {
 		this.diskCollection = new DiskCollection<StringWithoutCommonPrefix>(StringWithoutCommonPrefix.class);
 		for(final StringWithoutCommonPrefix swcp: arrayOfStrings){
@@ -97,6 +105,12 @@ public class MemorySortSortedRunOnDisk extends Run {
 		this.diskCollection.close();
 	}
 
+	/**
+	 * <p>Constructor for MemorySortSortedRunOnDisk.</p>
+	 *
+	 * @param emptyDatastructure a {@link java.util.Iterator} object.
+	 * @param set a boolean.
+	 */
 	public MemorySortSortedRunOnDisk(final Iterator<String> emptyDatastructure, final boolean set) {
 		this.diskCollection = new DiskCollection<StringWithoutCommonPrefix>(StringWithoutCommonPrefix.class);
 		boolean firstTime = true;
@@ -115,28 +129,33 @@ public class MemorySortSortedRunOnDisk extends Run {
 		this.diskCollection.close();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final String toBeAdded) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run sort() {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run swapRun() {
 		// this run is already stored on disk!
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		// empty runs are not going to become sorted runs!
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ParallelIterator<String> iterator() {
 		return new ParallelIterator<String>(){
@@ -177,11 +196,13 @@ public class MemorySortSortedRunOnDisk extends Run {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.diskCollection.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		this.diskCollection.release();

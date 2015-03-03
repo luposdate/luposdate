@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.bindings;
 
@@ -28,31 +32,39 @@ import java.util.Map.Entry;
 
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
-
 public class BindingsArrayPresortingNumbers extends BindingsArray {
 
+	/**
+	 * <p>Constructor for BindingsArrayPresortingNumbers.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsArrayPresortingNumbers(final BindingsFactory bindingsFactory) {
 		super(bindingsFactory);
 	}
 
 	protected HashMap<TriplePattern, HashMap<Object, Container>> presortingnumbers = null;
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " presorting numbers:" + this.presortingnumbers + "\n";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefix) {
 		return super.toString(prefix) + " presorting numbers:" + this.presortingnumbers + "\n";
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() {
 		super.init();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addPresortingNumber(final TriplePattern tp,
 			final Object orderPattern, final int pos, final int max,
@@ -68,6 +80,13 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 		this.presortingnumbers.put(tp, hm);
 	}
 
+	/**
+	 * <p>getPos.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param orderPattern a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public int getPos(final TriplePattern tp, final Object orderPattern) {
 		if (this.presortingnumbers == null) {
 			return -1;
@@ -92,6 +111,13 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 		return -1;
 	}
 
+	/**
+	 * <p>getMax.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param orderPattern a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public int getMax(final TriplePattern tp, final Object orderPattern) {
 		if (this.presortingnumbers == null) {
 			return -1;
@@ -116,6 +142,13 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 		return -1;
 	}
 
+	/**
+	 * <p>getId.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param orderPattern a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public int getId(final TriplePattern tp, final Object orderPattern) {
 		if (this.presortingnumbers == null) {
 			return -1;
@@ -157,6 +190,7 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArrayPresortingNumbers clone() {
 		final BindingsArrayPresortingNumbers other = new BindingsArrayPresortingNumbers(this.bindingsFactory);
@@ -179,6 +213,7 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 		return other;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addAllPresortingNumbers(final Bindings bindings) {
 		if (!(bindings instanceof BindingsArrayPresortingNumbers)) {
@@ -198,6 +233,7 @@ public class BindingsArrayPresortingNumbers extends BindingsArray {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArrayPresortingNumbers createInstance(){
 		return new BindingsArrayPresortingNumbers(this.bindingsFactory);

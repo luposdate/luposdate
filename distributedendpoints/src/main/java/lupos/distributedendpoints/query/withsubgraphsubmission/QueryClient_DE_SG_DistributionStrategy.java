@@ -38,24 +38,53 @@ import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
  * Complete subgraphs are submitted for evaluation to the storage nodes.
  *
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSubgraphTransmission<KeyContainer<Integer>> {
 
+	/**
+	 * <p>Constructor for QueryClient_DE_SG_DistributionStrategy.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
 		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
 		this(Storage_DE_DistributionStrategy.createInstance(distribution, null));
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE_SG_DistributionStrategy.</p>
+	 *
+	 * @param storage a {@link lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage) throws Exception {
 		super(storage, storage.getDistribution(), new DE_SubgraphExecutor(storage.getEndpointManagement()));
 		this.askForHistogramRequests();
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE_SG_DistributionStrategy.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_SG_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
 		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
 		this(Storage_DE_DistributionStrategy.createInstance(distribution, null), args);
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE_SG_DistributionStrategy.</p>
+	 *
+	 * @param storage a {@link lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_SG_DistributionStrategy(final Storage_DE_DistributionStrategy storage, final String[] args) throws Exception {
 		super(storage, storage.getDistribution(), new DE_SubgraphExecutor(storage.getEndpointManagement()), args);
 		this.askForHistogramRequests();
@@ -70,6 +99,7 @@ public class QueryClient_DE_SG_DistributionStrategy<K> extends QueryClientWithSu
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		// just for avoiding problems in distributed scenarios

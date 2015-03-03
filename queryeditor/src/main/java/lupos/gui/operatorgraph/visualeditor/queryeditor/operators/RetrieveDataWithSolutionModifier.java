@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.operators;
 
@@ -32,21 +36,36 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.RetrieveDataPanel;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.util.SortContainer;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
-
 public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 	private LinkedList<SortContainer> sortContainerList = new LinkedList<SortContainer>();
 	private int offset = -1;
 	private int limit = -1;
 
+	/**
+	 * <p>Constructor for RetrieveDataWithSolutionModifier.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	protected RetrieveDataWithSolutionModifier(Prefix prefix) {
 		super(prefix);
 	}
 
 
+	/**
+	 * <p>getLimitValue.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getLimitValue() {
 		return this.limit;
 	}
 
+	/**
+	 * <p>setLimitValue.</p>
+	 *
+	 * @param limit a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void setLimitValue(String limit) throws ModificationException {
 		try {
 			this.limit = Integer.parseInt(limit);
@@ -57,10 +76,21 @@ public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 	}
 
 
+	/**
+	 * <p>getOffsetValue.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getOffsetValue() {
 		return this.offset;
 	}
 
+	/**
+	 * <p>setOffsetValue.</p>
+	 *
+	 * @param offset a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void setOffsetValue(String offset) throws ModificationException {
 		try {
 			this.offset = Integer.parseInt(offset);
@@ -71,14 +101,30 @@ public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 	}
 
 
+	/**
+	 * <p>getOrderByList.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<SortContainer> getOrderByList() {
 		return this.sortContainerList;
 	}
 
+	/**
+	 * <p>setNewOrderByList.</p>
+	 *
+	 * @param list a {@link java.util.LinkedList} object.
+	 */
 	public void setNewOrderByList(LinkedList<SortContainer> list) {
 		this.sortContainerList = list;
 	}
 
+	/**
+	 * <p>setOrderByElement.</p>
+	 *
+	 * @param index a int.
+	 * @param sortContainer a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.util.SortContainer} object.
+	 */
 	public void setOrderByElement(int index, SortContainer sortContainer) {
 		try {
 			// new element...
@@ -101,10 +147,20 @@ public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 		}
 	}
 
+	/**
+	 * <p>addOrderByElement.</p>
+	 *
+	 * @param sortContainer a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.util.SortContainer} object.
+	 */
 	public void addOrderByElement(SortContainer sortContainer) {
 		this.sortContainerList.add(sortContainer);
 	}
 
+	/**
+	 * <p>removeOrderByElement.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void removeOrderByElement(int index) {
 		if(index == this.sortContainerList.size()) {
 			return;
@@ -114,6 +170,11 @@ public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 	}
 
 
+	/**
+	 * <p>serializeSolutionModifier.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeSolutionModifier() {
 		StringBuffer ret = new StringBuffer();
 
@@ -151,6 +212,7 @@ public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public boolean variableInUse(String variable, HashSet<Operator> visited) {
 		for(SortContainer sc : this.sortContainerList) {
 			HashSet<Variable> variables = new HashSet<Variable>();

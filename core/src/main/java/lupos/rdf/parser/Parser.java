@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rdf.parser;
 
@@ -35,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-
 public abstract class Parser {
 
 	private static final Logger log = LoggerFactory.getLogger(Parser.class);
@@ -46,10 +49,23 @@ public abstract class Parser {
 
 	private BufferedReader reader = null;
 
+	/**
+	 * <p>getTripleNumber.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getTripleNumber() {
 		return this.counter - 1;
 	}
 
+	/**
+	 * <p>parse.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	public void parse(final InputStream in, final TripleConsumer tc,
 			final String encoding) throws UnsupportedEncodingException {
 		try {
@@ -143,6 +159,12 @@ public abstract class Parser {
 	private int pos = -1;
 	private int linenumber = 0;
 
+	/**
+	 * <p>nextCharacter.</p>
+	 *
+	 * @return a char.
+	 * @throws java.io.EOFException if any.
+	 */
 	protected char nextCharacter() throws EOFException {
 		if (this.backFlag) {
 			this.backFlag = false;
@@ -179,6 +201,12 @@ public abstract class Parser {
 	private char back;
 	private boolean backFlag = false;
 
+	/**
+	 * <p>handlePrefix.</p>
+	 *
+	 * @return a char.
+	 * @throws java.io.EOFException if any.
+	 */
 	protected abstract char handlePrefix() throws EOFException;
 
 	private Literal nextLiteral() throws EOFException {
@@ -349,10 +377,22 @@ public abstract class Parser {
 		}
 	}
 
+	/**
+	 * <p>isSeparator.</p>
+	 *
+	 * @param next a char.
+	 * @return a boolean.
+	 */
 	protected final static boolean isSeparator(final char next){
 		return (next == ' ' || next == '.' || next == ',' || next == ';' || next == '"' || next == '<' || next == '\n' || next == '\t');
 	}
 
+	/**
+	 * <p>jumpOverBlanks.</p>
+	 *
+	 * @return a char.
+	 * @throws java.io.EOFException if any.
+	 */
 	protected char jumpOverBlanks() throws EOFException {
 		char next = this.nextCharacter();
 		while (next == ' ' || next == '\n' || next == '\t'){
@@ -367,10 +407,20 @@ public abstract class Parser {
 		return next;
 	}
 
+	/**
+	 * <p>Getter for the field <code>maxTriples</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getMaxTriples() {
 		return Parser.maxTriples;
 	}
 
+	/**
+	 * <p>Setter for the field <code>maxTriples</code>.</p>
+	 *
+	 * @param maxTriples a int.
+	 */
 	public static void setMaxTriples(final int maxTriples) {
 		Parser.maxTriples = maxTriples;
 	}

@@ -37,6 +37,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * It can be used as pipe between distribution strategies
  * whenever the storage nodes are accessible via a key (e.g., like in P2P networks)
  * (and LUPOPSDATE has no "direct" access to the storage nodes).
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class KeyCombinerPipe implements IDistribution<String> {
 
@@ -47,17 +50,20 @@ public class KeyCombinerPipe implements IDistribution<String> {
 
 	/**
 	 * Constructor
+	 *
 	 * @param distribution the inner distribution strategy producing key containers which are transformed to string keys
 	 */
 	public KeyCombinerPipe(final IDistributionKeyContainer<String> distribution) {
 		this.distribution = distribution;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeysForStoring(final Triple triple) {
 		return KeyCombinerPipe.transformToStringKeys(this.distribution.getKeysForStoring(triple));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeysForQuerying(final TriplePattern triplePattern)
 			throws TriplePatternNotSupportedError {
@@ -66,6 +72,7 @@ public class KeyCombinerPipe implements IDistribution<String> {
 
 	/**
 	 * Transforms an array of key containers to an array of string keys
+	 *
 	 * @param keys the key containers
 	 * @return the transformed string keys
 	 */

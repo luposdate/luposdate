@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie;
 
@@ -32,25 +36,26 @@ import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
 import lupos.misc.Tuple;
-
 public abstract class TrieWithValue<T> extends Trie implements Iterable<Entry<String, T>> {
 	
+	/** {@inheritDoc} */
 	@Override
 	protected abstract NodeWithValue<T> createNodeInstance();
 
+	/** {@inheritDoc} */
 	@Override
 	protected abstract NodeWithValue<T> createRootNodeInstance();
 
 	/**
 	 * Deletes all nodes contained within this trie and copies all nodes from
 	 * the other trie.
-	 * 
+	 *
 	 * The main purpose of this method is to convert one trie type into another
 	 * (e.g. RAM-based to disk-based)
-	 * 
+	 *
 	 * @param trie
 	 *            Trie to copy
-	 * @throws TrieNotCopyableException 
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotCopyableException if any.
 	 */
 	@SuppressWarnings("unchecked")
 	public void copy(final TrieWithValue<T> trie) throws TrieNotCopyableException {
@@ -89,6 +94,7 @@ public abstract class TrieWithValue<T> extends Trie implements Iterable<Entry<St
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<Entry<String, T>> iterator() {

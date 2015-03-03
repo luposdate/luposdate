@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sparul;
 
@@ -28,31 +32,58 @@ import java.util.LinkedList;
 
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
 public abstract class MultipleURIOperator extends SingleInputOperator {
 	protected Collection<URILiteral> cu;
 	
+	/**
+	 * <p>Constructor for MultipleURIOperator.</p>
+	 */
 	public MultipleURIOperator(){		
 	}
 	
+	/**
+	 * <p>Constructor for MultipleURIOperator.</p>
+	 *
+	 * @param cu a {@link java.util.Collection} object.
+	 */
 	public MultipleURIOperator(Collection<URILiteral> cu){
 		super();
 		this.cu=cu;
 	}
 	
+	/**
+	 * <p>getURIs.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<URILiteral> getURIs(){
 		return cu;
 	}
 
+	/**
+	 * <p>setURIs.</p>
+	 *
+	 * @param cu a {@link java.util.Collection} object.
+	 */
 	public void setURIs(Collection<URILiteral> cu){
 		this.cu=cu;
 	}
 	
+	/**
+	 * <p>setURI.</p>
+	 *
+	 * @param uri a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void setURI(final URILiteral uri){
 		this.cu=new LinkedList<URILiteral>();
 		this.cu.add(uri);
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(){
 		String result = super.toString();
 		if(cu!=null && cu.size()>0){

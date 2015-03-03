@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers;
 
@@ -29,7 +33,6 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
 public class Offset extends SingleInputOperator {
 
 	// the offset to use
@@ -60,19 +63,25 @@ public class Offset extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>offset</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getOffset() {
 		return this.offset;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		this.offset = ((Offset) op).offset;
 	}
 
 	/**
-	 * overrides process method from OperatorInterface
+	 * {@inheritDoc}
 	 *
-	 * @return the BindingsList cut to offset:bindings.length;
+	 * overrides process method from OperatorInterface
 	 */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
@@ -90,6 +99,7 @@ public class Offset extends SingleInputOperator {
 		return QueryResult.createInstance(itb);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " " + this.offset;

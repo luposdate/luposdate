@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,20 +21,39 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
-
 public class OptimizedSequentialHeap<E extends Comparable<E>> extends
 		SequentialHeap<E> {
 
+	/**
+	 * <p>Constructor for OptimizedSequentialHeap.</p>
+	 *
+	 * @param height a int.
+	 */
 	public OptimizedSequentialHeap(final int height) {
 		super(height < 2 ? 2 : height);
 	}
 
+	/**
+	 * <p>Constructor for OptimizedSequentialHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param size a int.
+	 */
 	public OptimizedSequentialHeap(final Object[] content, final int size) {
 		super(content, (content[0] == null && size > 0) ? size + 1 : size);
 	}
 
+	/**
+	 * <p>Constructor for OptimizedSequentialHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 */
 	public OptimizedSequentialHeap(final int length_or_height,
 			final boolean length) {
 		super(length_or_height < 3 ? 3 : length_or_height, length);
@@ -44,11 +64,13 @@ public class OptimizedSequentialHeap<E extends Comparable<E>> extends
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#isFull()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFull() {
 		return arr[0] != null && size() >= arr.length;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E peek() {
 		if (arr[0] == null) {
@@ -59,6 +81,7 @@ public class OptimizedSequentialHeap<E extends Comparable<E>> extends
 			return super.peek();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E pop() {
 		if (arr[0] == null) {
@@ -77,6 +100,7 @@ public class OptimizedSequentialHeap<E extends Comparable<E>> extends
 		return e;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		if (arr[0] == null) {
@@ -88,6 +112,7 @@ public class OptimizedSequentialHeap<E extends Comparable<E>> extends
 			super.add(elem);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		if (length == 0)

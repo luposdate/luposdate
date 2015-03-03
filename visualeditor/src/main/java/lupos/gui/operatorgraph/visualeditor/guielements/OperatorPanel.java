@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -42,22 +46,48 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.FocusThread;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
-
 public class OperatorPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 	protected JTextFieldResizing textField;
 	protected JLabel label;
 
+	/**
+	 * <p>Constructor for OperatorPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.JTFOperator} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param text a {@link java.lang.String} object.
+	 */
 	public OperatorPanel(JTFOperator operator, GraphWrapper gw, VisualGraph<Operator> parent, String text) {
 		this(operator, gw, parent, text, "");
 	}
 
+	/**
+	 * <p>Constructor for OperatorPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.JTFOperator} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param text a {@link java.lang.String} object.
+	 * @param label a {@link java.lang.String} object.
+	 */
 	public OperatorPanel(JTFOperator operator, GraphWrapper gw, VisualGraph<Operator> parent, String text, String label) {
 		super(parent, gw, operator, true);
 
 		init(operator, parent.PADDING, parent.getFONT(), text, label);
 	}
 
+	/**
+	 * <p>Constructor for OperatorPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.JTFOperator} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param PADDING a double.
+	 * @param font a {@link java.awt.Font} object.
+	 * @param text a {@link java.lang.String} object.
+	 * @param label a {@link java.lang.String} object.
+	 */
 	public OperatorPanel(JTFOperator operator, GraphWrapper gw, double PADDING, Font font, String text, String label) {
 		super(null, gw, operator, true);
 
@@ -132,14 +162,25 @@ public class OperatorPanel extends AbstractGuiComponent<Operator> {
 		this.setPreferredSize(new Dimension(width, height));
 	}
 
+	/**
+	 * <p>setValue.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 */
 	public void setValue(String value) {
 		this.textField.setText(value);
 	}
 
+	/**
+	 * <p>getValue.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getValue() {
 		return this.textField.getText();
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(boolean showErrors, Object data) {
 		try {
 			((JTFOperator) this.operator).applyChange(this.textField.getText());
@@ -158,6 +199,9 @@ public class OperatorPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize() {
 		int objWidth = this.textField.getPreferredSize().width + (int) (2 * this.parent.PADDING);
 		int objHeight = this.textField.getPreferredSize().height + (int) (2 * this.parent.PADDING);

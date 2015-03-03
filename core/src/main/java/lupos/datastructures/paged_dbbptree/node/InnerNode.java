@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node;
 
@@ -36,13 +40,21 @@ import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
-
 public class InnerNode<K extends Comparable<K> & Serializable, V extends Serializable> extends Node<K, V> {
 
 	public List<Integer> readReferences = new LinkedList<Integer>();
 	protected final PageManager pageManager;
 	protected final NodeDeSerializer<K, V> nodeDeSerializer;
 
+	/**
+	 * <p>Constructor for InnerNode.</p>
+	 *
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 * @param k a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 */
 	public InnerNode(final Class<? super K> keyClass,
 			final Class<? super V> valueClass, final int k,
 			final PageManager pageManager,
@@ -53,6 +65,7 @@ public class InnerNode<K extends Comparable<K> & Serializable, V extends Seriali
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String result = "Node stored in " + this.filename + "\n";
@@ -66,6 +79,9 @@ public class InnerNode<K extends Comparable<K> & Serializable, V extends Seriali
 		return result;
 	}
 
+	/**
+	 * <p>readNextEntry.</p>
+	 */
 	public void readNextEntry() {
 		final Tuple<K, Integer> result = this.nodeDeSerializer
 				.getNextInnerNodeEntry(this.readKeys.size() == 0 ? null : this.readKeys
@@ -94,6 +110,9 @@ public class InnerNode<K extends Comparable<K> & Serializable, V extends Seriali
 		this.readKeys.add(nextKey);
 	}
 
+	/**
+	 * <p>readFullInnerNode.</p>
+	 */
 	public void readFullInnerNode() {
 		final int pos=this.readKeys.size();
 		K lastKey=(pos==0)?null:this.readKeys.get(pos-1);
@@ -113,14 +132,29 @@ public class InnerNode<K extends Comparable<K> & Serializable, V extends Seriali
 		}
 	}
 
+	/**
+	 * <p>getReferences.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Integer> getReferences() {
 		return this.readReferences;
 	}
 
+	/**
+	 * <p>setReferences.</p>
+	 *
+	 * @param readReferences a {@link java.util.List} object.
+	 */
 	public void setReferences(final List<Integer> readReferences) {
 		this.readReferences = readReferences;
 	}
 
+	/**
+	 * <p>writeInnerNode.</p>
+	 *
+	 * @param overwrite a boolean.
+	 */
 	public void writeInnerNode(final boolean overwrite) {
 		try {
 			final OutputStream out = new PageOutputStream(this.filename, this.pageManager, !overwrite);

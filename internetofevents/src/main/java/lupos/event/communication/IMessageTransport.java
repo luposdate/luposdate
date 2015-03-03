@@ -27,18 +27,61 @@ import java.nio.ByteBuffer;
 
 /**
  * Interface for message-oriented transport protocol implementations.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IMessageTransport {
+	/**
+	 * <p>connect.</p>
+	 *
+	 * @param connectInfo a {@link lupos.event.communication.IConnectInfo} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	void connect(IConnectInfo connectInfo) throws Exception;
+	/**
+	 * <p>disconnect.</p>
+	 */
 	void disconnect();
+	/**
+	 * <p>waitForConnection.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean waitForConnection();
+	/**
+	 * <p>sendMessage.</p>
+	 *
+	 * @param msg a {@link java.nio.ByteBuffer} object.
+	 */
 	void sendMessage(ByteBuffer msg);
+	/**
+	 * <p>messageReceived.</p>
+	 *
+	 * @param msg a {@link java.nio.ByteBuffer} object.
+	 */
 	void messageReceived(ByteBuffer msg);
+	/**
+	 * <p>addHandler.</p>
+	 *
+	 * @param handler a {@link lupos.event.communication.IMessageReceivedHandler} object.
+	 */
 	void addHandler(IMessageReceivedHandler<ByteBuffer> handler);
+	/**
+	 * <p>addHandler.</p>
+	 *
+	 * @param handler a {@link lupos.event.communication.IDisconnectedHandler} object.
+	 */
 	void addHandler(IDisconnectedHandler handler);
+	/**
+	 * <p>isConnected.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean isConnected();
 	/**
 	 * Gets the host of this tcp connection
+	 *
 	 * @return the tcp hostname
 	 */
 	String getHost();

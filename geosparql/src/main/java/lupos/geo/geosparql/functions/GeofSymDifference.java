@@ -34,9 +34,13 @@ import lupos.geo.serializer.GeoSPARQLWktSerializer;
 /**
  * Richard Mietz
  * Date: 20.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeofSymDifference implements ExternalFunction
 {
+    /** {@inheritDoc} */
     @Override
     public Object evaluate(Object[] args) throws TypeErrorException
     {
@@ -54,6 +58,9 @@ public class GeofSymDifference implements ExternalFunction
     }
 
 
+    /**
+     * <p>register.</p>
+     */
     public static void register(){
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "symDifference>"), new GeofSymDifference());
     }

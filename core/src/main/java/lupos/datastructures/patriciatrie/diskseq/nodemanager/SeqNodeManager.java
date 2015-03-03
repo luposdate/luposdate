@@ -41,6 +41,9 @@ import lupos.datastructures.patriciatrie.node.Node;
 
 /**
  * NodeManager for a DBSeqTrie and its DBSeqNodes
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SeqNodeManager {
 
@@ -57,6 +60,8 @@ public class SeqNodeManager {
 	protected NodeOutputStream outputStream;
 	
 	/**
+	 * <p>Constructor for SeqNodeManager.</p>
+	 *
 	 * @param fileName
 	 *            Name of the file, that contains the actual trie data
 	 */
@@ -141,8 +146,9 @@ public class SeqNodeManager {
 	/**
 	 * Reads the next node from the input stream. If the input stream has not
 	 * been initialized before, it will be initialized first.
-	 * 
+	 *
 	 * @return Node instance
+	 * @param deSerializer a {@link lupos.datastructures.patriciatrie.diskseq.DeSerializer} object.
 	 */
 	public Node readNextNode(final DeSerializer deSerializer) {
 		if (this.inputStream == null)
@@ -186,9 +192,10 @@ public class SeqNodeManager {
 	/**
 	 * Writes the root node again to update the numberOfEntries stored in the
 	 * trie.
-	 * 
+	 *
 	 * @param rootNode
 	 *            rootNode to write again
+	 * @param deSerializer a {@link lupos.datastructures.patriciatrie.diskseq.DeSerializer} object.
 	 */
 	public void writeRootNodeAgain(final DeSerializer deSerializer, final Node rootNode) {
 		this.releaseInputStream();
@@ -223,9 +230,10 @@ public class SeqNodeManager {
 	/**
 	 * Writes the next node to the output stream. If the output stream has not
 	 * been initialized yet, it will be initialized as a new file.
-	 * 
+	 *
 	 * @param node
 	 *            Node to store in the trie
+	 * @param deSerializer a {@link lupos.datastructures.patriciatrie.diskseq.DeSerializer} object.
 	 */
 	public void writeNextNode(final DeSerializer deSerializer, final Node node) {
 
@@ -243,10 +251,11 @@ public class SeqNodeManager {
 	
 	/**
 	 * Writes the given node and all of its children to the output stream.
-	 * 
+	 *
 	 * @param node
 	 *            Node to write recursively
 	 * @return Number of entries stored in this node and its children
+	 * @param deSerializer a {@link lupos.datastructures.patriciatrie.diskseq.DeSerializer} object.
 	 */
 	public int writeNextNodeRecursive(final DeSerializer deSerializer, final Node node) {
 		/*
@@ -275,7 +284,7 @@ public class SeqNodeManager {
 	
 	/**
 	 * Sets the flag completeMetadata
-	 * 
+	 *
 	 * @param completeMetadata
 	 *            Value to set for the flag
 	 */
@@ -284,6 +293,8 @@ public class SeqNodeManager {
 	}
 	
 	/**
+	 * <p>hasCompleteMetadata.</p>
+	 *
 	 * @return <strong>true</strong> if the trie stored in this node manager
 	 *         contains all metadata, <strong>false</strong> otherwise
 	 */

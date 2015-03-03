@@ -46,6 +46,9 @@ import lupos.event.util.Utils;
 
 /**
  * This is the central component which acts as a server. It manages the subscriptions from consumers and the stream-based evaluation of their queries.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Broker implements IMessageReceivedHandler<Serializable>, ISubscriptionChangedHandler, Observer {
 	
@@ -67,7 +70,8 @@ public class Broker implements IMessageReceivedHandler<Serializable>, ISubscript
 
 	/**
 	 * Starts the broker and waits for new connections in an infinite loop.
-	 * @throws Exception
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	public void start() throws Exception {
 		while(true) {
@@ -87,6 +91,8 @@ public class Broker implements IMessageReceivedHandler<Serializable>, ISubscript
 	
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Callback method for {@link SerializingMessageService} which gets called when a message is received.
 	 */
 	@SuppressWarnings("unchecked")
@@ -121,6 +127,8 @@ public class Broker implements IMessageReceivedHandler<Serializable>, ISubscript
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Callback method for {@link PubSubServer} which gets called when a subscription message was received.
 	 */
 	@Override
@@ -211,6 +219,7 @@ public class Broker implements IMessageReceivedHandler<Serializable>, ISubscript
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void update(Observable o, Object arg) {
 		if(o instanceof PubSubServer) {
@@ -224,6 +233,12 @@ public class Broker implements IMessageReceivedHandler<Serializable>, ISubscript
 		}
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		Broker broker = new Broker();
 		broker.start();

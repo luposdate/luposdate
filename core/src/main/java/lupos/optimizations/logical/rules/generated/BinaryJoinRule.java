@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated;
 
@@ -30,11 +34,14 @@ import java.util.List;
 import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-
-
-
-
 public class BinaryJoinRule extends Rule {
+                /**
+                 * <p>getBinaryJoin.</p>
+                 *
+                 * @param oldJoin a {@link lupos.engine.operators.multiinput.join.Join} object.
+                 * @param _startNodes a {@link java.util.HashMap} object.
+                 * @return a {@link lupos.engine.operators.BasicOperator} object.
+                 */
                 public BasicOperator getBinaryJoin(lupos.engine.operators.multiinput.join.Join oldJoin, HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
                 	java.util.LinkedList<BasicOperator> oldJoinPrec = new java.util.LinkedList<BasicOperator>();
                 	oldJoinPrec.addAll(oldJoin.getPrecedingOperators());
@@ -291,11 +298,15 @@ public class BinaryJoinRule extends Rule {
     }
 
 
+    /**
+     * <p>Constructor for BinaryJoinRule.</p>
+     */
     public BinaryJoinRule() {
         this.startOpClass = lupos.engine.operators.multiinput.join.Join.class;
         this.ruleName = "Binary Join";
     }
 
+    /** {@inheritDoc} */
     protected boolean check(BasicOperator _op) {
         boolean _result = this._checkPrivate0(_op);
 
@@ -311,6 +322,7 @@ public class BinaryJoinRule extends Rule {
         return _result;
     }
 
+    /** {@inheritDoc} */
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         BasicOperator finalJoin = this.getBinaryJoin(this.join, _startNodes);
         finalJoin.setSucceedingOperators(this.join.getSucceedingOperators());

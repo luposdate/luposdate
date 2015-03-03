@@ -41,8 +41,9 @@ import lupos.event.util.Literals;
 
 /**
  * Searches bsh with a keyword and calls the GeneralProducer and forwards the website and search data
- * @author Team 4
  *
+ * @author Team 4
+ * @version $Id: $Id
  */
 public class WaterTempProducer extends GeneralProducer{
 
@@ -56,7 +57,9 @@ public class WaterTempProducer extends GeneralProducer{
 	public final static URILiteral TYPE = Literals.createURI(WaterTempProducer.WATERTEMPPRODUCER_NAMESPACE, "WaterTempProducer");
 	
 	// the other predicates...
+	/** Constant <code>TIME</code> */
 	public final static URILiteral TIME = Literals.createURI(WATERTEMPPRODUCER_NAMESPACE, "time");
+	/** Constant <code>TEMP</code> */
 	public final static URILiteral TEMP = Literals.createURI(WATERTEMPPRODUCER_NAMESPACE, "temperature_in_Ã‚Â°C");
 	/**
 	 * the page of the referred provider
@@ -79,11 +82,12 @@ public class WaterTempProducer extends GeneralProducer{
 
 	/**
 	 * For creating a WaterTempProducer
+	 *
 	 * @param msgService for TCP-transport
 	 * @param location the location for the water temperature
 	 * @return the created WaterTempProducer
-	 * @throws MalformedURLException
-	 * @throws UnsupportedEncodingException
+	 * @throws java.net.MalformedURLException if any.
+	 * @throws java.io.UnsupportedEncodingException if any.
 	 */
 	public static WaterTempProducer createWaterTempProducer(final SerializingMessageService msgService, final String location) throws MalformedURLException, UnsupportedEncodingException{
 		/**
@@ -124,8 +128,9 @@ public class WaterTempProducer extends GeneralProducer{
 	/**
 	 * 	sets the xPath commands and corresponding regular expressions, literaltypes and namespaces.
 	 *  After that it starts the producer and with that calls constructor of WeatherProducer.
-	 * @param args
-	 * @throws Exception
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 

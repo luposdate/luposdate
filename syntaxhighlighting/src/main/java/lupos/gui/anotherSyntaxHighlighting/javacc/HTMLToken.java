@@ -29,31 +29,49 @@ import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__HTML;
 
 
 /**
- * {@link HTMLToken}
+ * {@link lupos.gui.anotherSyntaxHighlighting.javacc.HTMLToken}
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class HTMLToken extends JavaCCToken {
 	
+	/**
+	 * <p>Constructor for HTMLToken.</p>
+	 *
+	 * @param ID a int.
+	 * @param contents a {@link java.lang.String} object.
+	 * @param beginChar a int.
+	 * @param endChar a int.
+	 */
 	public HTMLToken(final int ID, final String contents, final int beginChar, final int endChar) {
 		super(ID, contents, beginChar, endChar);
 	}
 
 
+	/**
+	 * <p>Constructor for HTMLToken.</p>
+	 *
+	 * @param description a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} object.
+	 * @param contents a {@link java.lang.String} object.
+	 * @param beginChar a int.
+	 */
 	public HTMLToken(final TYPE_ENUM description, final String contents, final int beginChar) {
 		super(description, contents, beginChar);
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * A description of this token. The description should be appropriate for
 	 * syntax highlighting. For example "comment" is returned for a comment.
-	 * 
-	 * @return a description of this token.
 	 */
 	@Override
 	public TYPE_ENUM getDescription() {
 		return TYPE__HTML.values()[this.ID];
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("cast")
 	@Override
 	public ILuposToken create(TYPE_ENUM description, String contentsPar, int beginCharPar) {

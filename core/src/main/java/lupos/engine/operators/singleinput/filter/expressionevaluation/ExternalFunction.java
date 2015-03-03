@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,11 +21,20 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.filter.expressionevaluation;
 
 import lupos.engine.operators.singleinput.TypeErrorException;
-
 public interface ExternalFunction {
+	/**
+	 * <p>evaluate.</p>
+	 *
+	 * @param args an array of {@link java.lang.Object} objects.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public Object evaluate(Object[] args) throws TypeErrorException;
 }

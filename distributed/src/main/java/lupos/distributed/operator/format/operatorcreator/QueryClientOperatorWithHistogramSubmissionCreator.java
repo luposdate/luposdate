@@ -35,20 +35,30 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * This class is for creating the operators of the query client...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientOperatorWithHistogramSubmissionCreator implements IOperatorCreator {
 
 	protected final IHistogramExecutor histogramExecutor;
 
+	/**
+	 * <p>Constructor for QueryClientOperatorWithHistogramSubmissionCreator.</p>
+	 *
+	 * @param histogramExecutor a {@link lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor} object.
+	 */
 	public QueryClientOperatorWithHistogramSubmissionCreator(final IHistogramExecutor histogramExecutor) {
 		this.histogramExecutor = histogramExecutor;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Root createRoot(final Dataset dataset) {
 		return new QueryClientRootWithHistogramSubmission(dataset, this.histogramExecutor);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
 		return new QueryClientIndexScanWithHistogramSubmission((QueryClientRootWithHistogramSubmission) root, triplePatterns);

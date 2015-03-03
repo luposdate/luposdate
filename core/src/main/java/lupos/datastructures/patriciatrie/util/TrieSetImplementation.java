@@ -33,25 +33,36 @@ import lupos.misc.util.AbstractSortedSet;
 
 /**
  * This class is a wrapper, such that a given TrieSet object implements the SortedSet&lt;String&gt; interface.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TrieSetImplementation extends AbstractSortedSet<String>{
 
 	protected final TrieSet trie;
 
+	/**
+	 * <p>Constructor for TrieSetImplementation.</p>
+	 *
+	 * @param trie a {@link lupos.datastructures.patriciatrie.TrieSet} object.
+	 */
 	public TrieSetImplementation(final TrieSet trie){
 		this.trie = trie;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.trie.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return this.size()==0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object o) {
 		if(o instanceof String){
@@ -61,16 +72,19 @@ public class TrieSetImplementation extends AbstractSortedSet<String>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<String> iterator() {
 		return this.trie.iterator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final String key) {
 		return this.trie.add(key);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object o) {
 		if(o instanceof String){
@@ -80,21 +94,25 @@ public class TrieSetImplementation extends AbstractSortedSet<String>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.trie.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super String> comparator() {
 		return new StandardComparator<String>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String last() {
 		return this.trie.get(this.size()-1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<String> subSet(final String fromElement, final String toElement,
 			final boolean inclusiveLastElement) {

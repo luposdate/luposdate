@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -48,7 +52,6 @@ import lupos.rif.model.RuleList;
 import lupos.rif.model.RuleVariable;
 
 import com.google.common.collect.Multimap;
-
 public class RuleFilter extends SingleInputOperator {
 
 	protected IExpression expression;
@@ -56,6 +59,12 @@ public class RuleFilter extends SingleInputOperator {
 	protected final Set<Variable> assignVariables = new HashSet<Variable>();
 	protected int cardinality = -1;
 
+	/**
+	 * <p>Constructor for RuleFilter.</p>
+	 *
+	 * @param expression a {@link lupos.rif.IExpression} object.
+	 * @param eqMap a {@link com.google.common.collect.Multimap} object.
+	 */
 	public RuleFilter(final IExpression expression,
 			final Multimap<IExpression, IExpression> eqMap) {
 		super();
@@ -63,11 +72,19 @@ public class RuleFilter extends SingleInputOperator {
 		this.equalityMap = eqMap;
 	}
 
+	/**
+	 * <p>Constructor for RuleFilter.</p>
+	 */
 	public RuleFilter() {
 		this.expression = null;
 		this.equalityMap = null;
 	}
 
+	/**
+	 * <p>Setter for the field <code>expression</code>.</p>
+	 *
+	 * @param expression a {@link lupos.rif.IExpression} object.
+	 */
 	public void setExpression(IExpression expression) {
 		if (expression instanceof Conjunction) {
 			if (((Conjunction) expression).exprs.size() == 1) {
@@ -77,22 +94,48 @@ public class RuleFilter extends SingleInputOperator {
 		this.expression = expression;
 	}
 
+	/**
+	 * <p>Getter for the field <code>expression</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.IExpression} object.
+	 */
 	public IExpression getExpression() {
 		return this.expression;
 	}
 
+	/**
+	 * <p>equalFilterExpression.</p>
+	 *
+	 * @param r a {@link lupos.rif.operator.RuleFilter} object.
+	 * @return a boolean.
+	 */
 	public boolean equalFilterExpression(final RuleFilter r) {
 		return (this.expression.equals(r.expression));
 	}
 
+	/**
+	 * <p>isAssignment.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isAssignment() {
 		return !this.assignVariables.isEmpty();
 	}
 
+	/**
+	 * <p>getAssignedVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getAssignedVariables() {
 		return this.assignVariables;
 	}
 
+	/**
+	 * <p>getVariablesInExpression.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getVariablesInExpression() {
 		final Set<Variable> vars = new HashSet<Variable>();
 		for (final RuleVariable var : this.expression.getVariables()) {
@@ -101,6 +144,7 @@ public class RuleFilter extends SingleInputOperator {
 		return vars;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final Iterator<Bindings> resultIterator = new ImmutableIterator<Bindings>() {
@@ -190,6 +234,7 @@ public class RuleFilter extends SingleInputOperator {
 
 	/**
 	 * This method will be overridden by EqualityFilter!
+	 *
 	 * @param bind the currently investigated binding
 	 * @param result the object of which this method determines the boolean effective value
 	 * @return the boolean effective value of result
@@ -202,12 +247,23 @@ public class RuleFilter extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>onFilteredOut.</p>
+	 *
+	 * @param bind a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	protected void onFilteredOut(final Bindings bind) {
 	}
 
+	/**
+	 * <p>onAccepted.</p>
+	 *
+	 * @param bind a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	protected void onAccepted(final Bindings bind) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
@@ -223,6 +279,7 @@ public class RuleFilter extends SingleInputOperator {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String result = "Rulefilter\n" + this.expression.toString();
@@ -234,6 +291,7 @@ public class RuleFilter extends SingleInputOperator {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		String result = "Rulefilter\n" + this.expression.toString(prefixInstance);
@@ -245,6 +303,11 @@ public class RuleFilter extends SingleInputOperator {
 		return result;
 	}
 
+	/**
+	 * <p>getEqualities.</p>
+	 *
+	 * @return a {@link com.google.common.collect.Multimap} object.
+	 */
 	public Multimap<IExpression, IExpression> getEqualities() {
 		return this.equalityMap;
 	}
@@ -261,6 +324,7 @@ public class RuleFilter extends SingleInputOperator {
 	// return expression.hashCode();
 	// }
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		if (this.getExpression() instanceof Equality) {

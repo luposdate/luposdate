@@ -42,6 +42,9 @@ import lupos.event.util.TimedWrapper;
 
 /**
  * A panel which displays a list with the query results of specific subscription.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class SubscriptionResultsView extends AbstractSubscriptionResultView implements ActionListener {
@@ -54,6 +57,7 @@ public class SubscriptionResultsView extends AbstractSubscriptionResultView impl
 
 	/**
 	 * Constructor.
+	 *
 	 * @param consumer The consumer from which to obtain query results.
 	 */
 	public SubscriptionResultsView(Consumer consumer) {
@@ -69,10 +73,14 @@ public class SubscriptionResultsView extends AbstractSubscriptionResultView impl
         super.add(this.splitPane, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * <p>ClearDataset.</p>
+	 */
 	protected void ClearDataset(){
 		this.resultsListModel.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(this.subscription == null || !this.consumer.isConnected()) 

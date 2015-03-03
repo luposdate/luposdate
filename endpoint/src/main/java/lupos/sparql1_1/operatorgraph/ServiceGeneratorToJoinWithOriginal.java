@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph;
 
@@ -37,8 +41,8 @@ import lupos.sparql1_1.ASTService;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
-
 public abstract class ServiceGeneratorToJoinWithOriginal extends ServiceGenerator {
+	/** {@inheritDoc} */
 	@Override
 	public void insertFederatedQueryOperator(final ASTService node, final OperatorConnection connection){
 		SeveralSucceedingOperators sso = new SeveralSucceedingOperators();
@@ -64,5 +68,11 @@ public abstract class ServiceGeneratorToJoinWithOriginal extends ServiceGenerato
 		connection.setOperatorConnection(sso);
 	}
 
+	/**
+	 * <p>getFederatedQuery.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTService} object.
+	 * @return a {@link lupos.engine.operators.singleinput.federated.FederatedQuery} object.
+	 */
 	protected abstract FederatedQuery getFederatedQuery(ASTService node);
 }

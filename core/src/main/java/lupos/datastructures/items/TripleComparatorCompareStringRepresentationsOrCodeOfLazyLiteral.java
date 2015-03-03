@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
 
@@ -28,7 +32,6 @@ import java.io.Serializable;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-
 public class TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral
 		extends TripleComparator implements Serializable {
 	/**
@@ -36,36 +39,68 @@ public class TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral
 	 */
 	private static final long serialVersionUID = -742270859357719454L;
 
+	/**
+	 * <p>Constructor for TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral.</p>
+	 */
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral.</p>
+	 *
+	 * @param primary a COMPARE object.
+	 */
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(
 			final COMPARE primary) {
 		super(primary);
 	}
 
+	/**
+	 * <p>Constructor for TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral.</p>
+	 *
+	 * @param primary a COMPARE object.
+	 * @param secondary a COMPARE object.
+	 */
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(
 			final COMPARE primary, final COMPARE secondary) {
 		super(primary, secondary);
 	}
 
+	/**
+	 * <p>Constructor for TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral.</p>
+	 *
+	 * @param primary a COMPARE object.
+	 * @param secondary a COMPARE object.
+	 * @param tertiary a COMPARE object.
+	 */
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(
 			final COMPARE primary, final COMPARE secondary,
 			final COMPARE tertiary) {
 		super(primary, secondary, tertiary);
 	}
 
+	/**
+	 * <p>Constructor for TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral.</p>
+	 *
+	 * @param orderPattern a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(
 			final RDF3XIndexScan.CollationOrder orderPattern) {
 		super(orderPattern);
 	}
 
+	/**
+	 * <p>Constructor for TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral.</p>
+	 *
+	 * @param readByte a byte.
+	 */
 	public TripleComparatorCompareStringRepresentationsOrCodeOfLazyLiteral(
 			final byte readByte) {
 		super(readByte);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(final Triple t0, final Triple t1) {
 		try {

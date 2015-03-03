@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rdf.parser;
 
@@ -28,8 +32,16 @@ import java.io.UnsupportedEncodingException;
 
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.rdf.parser.SesameturtleParser.SesameParserType;
-
 public class SesamentriplesParser {
+	/**
+	 * <p>parseRDFData.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @return a int.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	public static int parseRDFData(final InputStream in, final TripleConsumer tc,
 			final String encoding) throws UnsupportedEncodingException {
 		return SesameturtleParser.readTriplesUsingSesameParser(in, tc, SesameParserType.NTRIPLES, encoding);

@@ -31,9 +31,12 @@ import java.util.Iterator;
  * throw UnsupportedOperationException.
  *
  * @param <T> the type of the elements to be returned by this iterator
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class ImmutableIterator<T> implements Iterator<T>{
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();

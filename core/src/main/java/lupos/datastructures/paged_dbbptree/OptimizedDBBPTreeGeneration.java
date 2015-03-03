@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree;
 
@@ -38,7 +42,6 @@ import java.util.SortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMap;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedMapOfCollections;
-
 public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable, V extends Serializable>
 		implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
@@ -56,16 +59,28 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 	protected SortedMap<K, V> sortedMap;
 	protected DBBPTree<K, V> dbbptree;
 
+	/**
+	 * <p>Constructor for OptimizedDBBPTreeGeneration.</p>
+	 *
+	 * @param sortedMap a {@link java.util.SortedMap} object.
+	 * @param dbbptree a {@link lupos.datastructures.paged_dbbptree.DBBPTree} object.
+	 */
 	public OptimizedDBBPTreeGeneration(final SortedMap<K, V> sortedMap,
 			final DBBPTree<K, V> dbbptree) {
 		this.sortedMap = sortedMap;
 		this.dbbptree = dbbptree;
 	}
 
+	/**
+	 * <p>generatedCompletely.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean generatedCompletely() {
 		return this.phase == PhaseEnum.DBBPTREE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		switch (this.phase) {
@@ -76,6 +91,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<Entry<K, V>> entrySet() {
 		switch (this.phase) {
@@ -86,6 +102,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		switch (this.phase) {
@@ -96,6 +113,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(final K toKey) {
 		switch (this.phase) {
@@ -106,6 +124,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		switch (this.phase) {
@@ -116,6 +135,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		switch (this.phase) {
@@ -126,6 +146,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(final K fromKey, final K toKey) {
 		switch (this.phase) {
@@ -136,6 +157,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(final K fromKey) {
 		switch (this.phase) {
@@ -146,6 +168,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> values() {
 		switch (this.phase) {
@@ -156,6 +179,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		switch (this.phase) {
@@ -168,6 +192,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object key) {
 		switch (this.phase) {
@@ -178,6 +203,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object value) {
 		switch (this.phase) {
@@ -188,6 +214,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object key) {
 		switch (this.phase) {
@@ -198,6 +225,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		switch (this.phase) {
@@ -208,6 +236,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K key, final V value) {
 		switch (this.phase) {
@@ -218,6 +247,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final Map<? extends K, ? extends V> m) {
 		switch (this.phase) {
@@ -230,6 +260,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object key) {
 		switch (this.phase) {
@@ -240,6 +271,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		switch (this.phase) {
@@ -250,6 +282,12 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/**
+	 * <p>writeLuposObject.</p>
+	 *
+	 * @param loos a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposObject(final OutputStream loos)
 			throws IOException {
 		if (this.phase == PhaseEnum.SORTEDMAP) {
@@ -265,6 +303,15 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 
 	}
 
+	/**
+	 * <p>readLuposObject.</p>
+	 *
+	 * @param lois a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.OptimizedDBBPTreeGeneration} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static OptimizedDBBPTreeGeneration readLuposObject(
 			final InputStream lois) throws IOException,
 			ClassNotFoundException, URISyntaxException {
@@ -274,6 +321,9 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		return odtg;
 	}
 
+	/**
+	 * <p>generateCompletely.</p>
+	 */
 	public void generateCompletely() {
 		switch (this.phase) {
 		case SORTEDMAP:
@@ -282,10 +332,16 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>sortedMap</code>.</p>
+	 *
+	 * @return a {@link java.util.SortedMap} object.
+	 */
 	public SortedMap<K, V> getSortedMap() {
 		return this.sortedMap;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
 		switch (this.phase) {
@@ -296,6 +352,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] getClosestElements(final K arg0) {
 		switch (this.phase) {
@@ -306,6 +363,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
 		switch (this.phase) {
@@ -316,6 +374,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min, final K max) {
 		switch (this.phase) {
@@ -326,6 +385,7 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K max) {
 		switch (this.phase) {
@@ -354,6 +414,11 @@ public class OptimizedDBBPTreeGeneration<K extends Comparable<K> & Serializable,
 		this.sortedMap = null;
 	}
 
+	/**
+	 * <p>getDBBPTree.</p>
+	 *
+	 * @return a {@link lupos.datastructures.paged_dbbptree.DBBPTree} object.
+	 */
 	public DBBPTree<K, V> getDBBPTree() {
 		return this.dbbptree;
 	}

@@ -36,6 +36,9 @@ import lupos.datastructures.buffermanager.PageOutputStream;
 
 /**
  * This class provides methods for the disk based management of nodes.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	
@@ -60,7 +63,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	
 	/**
 	 * Checks if there is any data stored on a given page.
-	 * 
+	 *
 	 * @param pageIdx
 	 *            Page index to check for data
 	 * @return <strong>true</strong> if no byte of that page differs from 0,
@@ -83,7 +86,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	
 	/**
 	 * Stores a given node to its assigned page
-	 * 
+	 *
 	 * @param node
 	 *            DBNode to store
 	 */
@@ -104,7 +107,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	/**
 	 * Adds a node to the node buffer. If the node buffer is full, the oldest
 	 * entry will be actually written to disk
-	 * 
+	 *
 	 * @param node
 	 *            DBNode to save
 	 */
@@ -115,10 +118,11 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	/**
 	 * Retrieves a node with the given index from either the node buffer or the
 	 * page with the given index.
-	 * 
+	 *
 	 * @param idx
 	 *            Index of the DBNode
 	 * @return The DBNode with the index idx
+	 * @param deserializer a {@link lupos.datastructures.patriciatrie.disk.Deserializer} object.
 	 */
 	public IDBNode loadDBNode(final int idx, Deserializer deserializer) {
 		IDBNode node = this.nodeBuffer.get(idx);
@@ -142,6 +146,8 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	}
 	
 	/**
+	 * <p>Constructor for NodeManager.</p>
+	 *
 	 * @param trie
 	 *            Trie, to which this NodeManager belongs
 	 * @param fileName
@@ -150,7 +156,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	 *            Number of DBNodes to hold in the buffer
 	 * @param pageSize
 	 *            The number of bytes in a page to be stored on disk
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public NodeManager(final Trie trie, final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		this.pageManager = new PageManager(fileName, pageSize);
@@ -166,17 +172,21 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	}
 	
 	/**
+	 * <p>Constructor for NodeManager.</p>
+	 *
 	 * @param trie
 	 *            Trie, to which this NodeManager belongs
 	 * @param fileName
 	 *            Name of the file, that contains all the pages for this trie
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public NodeManager(final Trie trie, final String fileName) throws IOException {
 		this(trie, fileName, NODES_TO_BUFFER, DEFAULT_PAGESIZE);
 	}
 	
 	/**
+	 * <p>getIndexForNewNode.</p>
+	 *
 	 * @return Next free index to use for a DBNode
 	 */
 	public int getIndexForNewNode() {
@@ -185,7 +195,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 		
 	/**
 	 * Removes a node from the node manager
-	 * 
+	 *
 	 * @param idx
 	 *            Index of the node to be removed
 	 */
@@ -203,6 +213,8 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	}
 	
 	/**
+	 * <p>Getter for the field <code>pageManager</code>.</p>
+	 *
 	 * @return PageManager for this NodeManager
 	 */
 	public PageManager getPageManager() {
@@ -211,7 +223,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 
 	/**
 	 * Returns an InputStream for the node with the index idx to load from.
-	 * 
+	 *
 	 * @param idx
 	 *            Index of the DBNode
 	 * @return NodeInputStream to read from
@@ -228,7 +240,7 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	
 	/**
 	 * Returns an OutputStream for the node with the index idx to write to.
-	 * 
+	 *
 	 * @param idx
 	 *            Index of the DBNode
 	 * @return NodeOutputStream to write to
@@ -263,13 +275,14 @@ public class NodeManager implements HashBuffer.OverflowHandler<IDBNode> {
 	/**
 	 * Closes the NodeManager. Afterwards the NodeManager should not be used
 	 * anymore.
-	 * 
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public void close() throws IOException {
 		this.pageManager.close();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void onOverflow(final IDBNode obj) {
 		if (obj.isChanged() && !obj.isOnRecursionStack()) {

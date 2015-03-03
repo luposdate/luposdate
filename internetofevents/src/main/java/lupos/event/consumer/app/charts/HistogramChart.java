@@ -47,10 +47,11 @@ import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
 /**
-  * Class for displaying input elements for histogram charts and display 
+ * Class for displaying input elements for histogram charts and display
  * of the histogram itself.
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class HistogramChart extends ChartHandler {
 
@@ -61,7 +62,8 @@ public class HistogramChart extends ChartHandler {
 	
 	/**
 	 * Contructor. Creates an appropiate DataModel and inits all required GUI-Elements.
-	 * @param type
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
 	 */
 	public HistogramChart(ChartTyp type){
 		super(new GridBagLayout(), type);
@@ -87,6 +89,7 @@ public class HistogramChart extends ChartHandler {
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(TimedWrapper<QueryResult> l) {
 		
@@ -113,11 +116,13 @@ public class HistogramChart extends ChartHandler {
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	protected HistogramChartModel getModel(){
 		return (HistogramChartModel) super.getModel();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void clearFields(){
 		bins.setText(null);

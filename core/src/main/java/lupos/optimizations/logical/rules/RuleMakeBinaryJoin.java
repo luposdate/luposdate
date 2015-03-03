@@ -41,15 +41,22 @@ import lupos.misc.Tuple;
 
 /**
  * super class for all those rules, the left side of which is
- * 
+ *
  * operator | filter
- **/
+ *
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class RuleMakeBinaryJoin extends Rule {
 
+	/**
+	 * <p>Constructor for RuleMakeBinaryJoin.</p>
+	 */
 	public RuleMakeBinaryJoin() {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		// Define left side of rule
@@ -61,6 +68,7 @@ public class RuleMakeBinaryJoin extends Rule {
 		startNode = a;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final Join join = (Join) mso.get("join");
@@ -71,6 +79,7 @@ public class RuleMakeBinaryJoin extends Rule {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -93,6 +102,13 @@ public class RuleMakeBinaryJoin extends Rule {
 			return null;
 	}
 
+	/**
+	 * <p>getBinaryJoin.</p>
+	 *
+	 * @param ctp a {@link java.util.List} object.
+	 * @param added a {@link java.util.Collection} object.
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator getBinaryJoin(final List<BasicOperator> ctp,
 			final Collection<BasicOperator> added) {
 
@@ -207,6 +223,7 @@ public class RuleMakeBinaryJoin extends Rule {
 		return co;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return "Binary Join";

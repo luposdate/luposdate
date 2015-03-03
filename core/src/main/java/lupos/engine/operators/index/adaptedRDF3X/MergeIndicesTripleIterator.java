@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.adaptedRDF3X;
 
@@ -31,13 +35,18 @@ import lupos.datastructures.dbmergesortedds.heap.SequentialHeap;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.misc.util.ImmutableIterator;
-
 public class MergeIndicesTripleIterator extends ImmutableIterator<Triple> {
 
 	private final Comparator<Triple> comparator;
 	private final Heap<HeapEntry> heap;
 	private int idOfLastElement;
 
+	/**
+	 * <p>Constructor for MergeIndicesTripleIterator.</p>
+	 *
+	 * @param itia an array of {@link lupos.engine.operators.index.adaptedRDF3X.IndicesTripleIterator} objects.
+	 * @param collationOrder a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public MergeIndicesTripleIterator(final IndicesTripleIterator[] itia,
 			final RDF3XIndexScan.CollationOrder collationOrder) {
 		this.comparator = new TripleComparator(collationOrder);
@@ -52,11 +61,13 @@ public class MergeIndicesTripleIterator extends ImmutableIterator<Triple> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasNext() {
 		return !(this.heap.isEmpty());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Triple next() {
 		if (this.heap.isEmpty()) {
@@ -74,6 +85,11 @@ public class MergeIndicesTripleIterator extends ImmutableIterator<Triple> {
 		return null;
 	}
 
+	/**
+	 * <p>Getter for the field <code>idOfLastElement</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getIdOfLastElement() {
 		return this.idOfLastElement;
 	}
@@ -99,6 +115,11 @@ public class MergeIndicesTripleIterator extends ImmutableIterator<Triple> {
 		}
 	}
 
+	/**
+	 * <p>getMaxId.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getMaxId() {
 		return this.heap.maxLength();
 	}

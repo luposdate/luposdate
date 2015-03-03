@@ -29,13 +29,27 @@ import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePro
  * This class is the query evaluator for querying distributed SPARQL endpoints based on the one key distribution strategy.
  *
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClient_DE_OneKeyDistribution extends QueryClient_DE_DistributionStrategy<String> {
 
+	/**
+	 * <p>Constructor for QueryClient_DE_OneKeyDistribution.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_OneKeyDistribution() throws Exception {
 		super(TriplePropertiesDistributionStrategyEnum.OneKeyDistribution.createInstance());
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE_OneKeyDistribution.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_OneKeyDistribution(final String[] args) throws Exception {
 		super(TriplePropertiesDistributionStrategyEnum.OneKeyDistribution.createInstance(), args);
 	}

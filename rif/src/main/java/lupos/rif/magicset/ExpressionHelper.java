@@ -28,6 +28,9 @@ package lupos.rif.magicset;
  * Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
  * http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
  * http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import java.util.ArrayList;
@@ -45,9 +48,15 @@ import lupos.rif.model.ExistExpression;
 import lupos.rif.model.Rule;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class ExpressionHelper {
 
+	/**
+	 * <p>canRuleInferPredicate.</p>
+	 *
+	 * @param rule a {@link lupos.rif.model.Rule} object.
+	 * @param predicate a {@link lupos.rif.model.RulePredicate} object.
+	 * @return a boolean.
+	 */
 	public boolean canRuleInferPredicate(final Rule rule, final RulePredicate predicate){
 		if (rule.getHead() instanceof RulePredicate) {
 			final RulePredicate predHead = (RulePredicate) rule.getHead();
@@ -73,6 +82,13 @@ public class ExpressionHelper {
 		}
 	}
 
+	/**
+	 * <p>isPredicateIntensional.</p>
+	 *
+	 * @param predicate a {@link lupos.rif.model.RulePredicate} object.
+	 * @param allRules a {@link java.util.Collection} object.
+	 * @return a boolean.
+	 */
 	public boolean isPredicateIntensional(final RulePredicate predicate, final Collection<Rule> allRules){
 		for (final Rule rule : allRules){
 			if (this.canRuleInferPredicate(rule, predicate)) {
@@ -82,10 +98,22 @@ public class ExpressionHelper {
 		return false;
 	}
 
+	/**
+	 * <p>getNumberOfParameters.</p>
+	 *
+	 * @param predicate a {@link lupos.rif.model.RulePredicate} object.
+	 * @return a int.
+	 */
 	public int getNumberOfParameters(final RulePredicate predicate){
 		 return predicate.termParams.size() +1;
 	}
 
+	/**
+	 * <p>isConclusionSupported.</p>
+	 *
+	 * @param expression a {@link lupos.rif.IExpression} object.
+	 * @return a boolean.
+	 */
 	public boolean isConclusionSupported(final IExpression expression){
 		return (expression instanceof RulePredicate
 				|| expression instanceof Disjunction
@@ -94,10 +122,24 @@ public class ExpressionHelper {
 				|| expression instanceof ExistExpression);
 	}
 
+	/**
+	 * <p>isTermParameterSupported.</p>
+	 *
+	 * @param expression a {@link lupos.rif.IExpression} object.
+	 * @return a boolean.
+	 */
 	public boolean isTermParameterSupported(final IExpression expression){
 		return (expression instanceof RuleVariable || expression instanceof Constant);
 	}
 
+	/**
+	 * <p>getBoundParameters.</p>
+	 *
+	 * @param bindingPattern a {@link java.lang.String} object.
+	 * @param rule a {@link lupos.rif.model.Rule} object.
+	 * @return a {@link java.util.List} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public List<IExpression> getBoundParameters(final String bindingPattern, final Rule rule) throws RIFException{
 		if (rule.getHead() instanceof RulePredicate) {
 			return this.getBoundParameters(bindingPattern, (RulePredicate)rule.getHead());
@@ -106,6 +148,13 @@ public class ExpressionHelper {
 		}
 	}
 
+	/**
+	 * <p>getBoundParameters.</p>
+	 *
+	 * @param bindingPattern a {@link java.lang.String} object.
+	 * @param predicate a {@link lupos.rif.model.RulePredicate} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IExpression> getBoundParameters(final String bindingPattern, final RulePredicate predicate){
 		final List<IExpression> parameters = new ArrayList<>();
 		parameters.add(predicate.termName);
@@ -113,6 +162,13 @@ public class ExpressionHelper {
 		return this.getBoundParameters(bindingPattern, parameters);
 	}
 
+	/**
+	 * <p>getBoundParameters.</p>
+	 *
+	 * @param bindingPattern a {@link java.lang.String} object.
+	 * @param parameters a {@link java.util.List} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IExpression> getBoundParameters(final String bindingPattern, final List<IExpression> parameters){
 		final List<IExpression> result = new ArrayList<>();
 		for (int i = 0; i < bindingPattern.length(); i++) {
@@ -123,6 +179,12 @@ public class ExpressionHelper {
 		return result;
 	}
 
+	/**
+	 * <p>getParentRule.</p>
+	 *
+	 * @param node a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.model.Rule} object.
+	 */
 	public Rule getParentRule(final IRuleNode node){
 		final IRuleNode result = this.getParent(node, Rule.class);
 		if (result != null) {
@@ -132,6 +194,13 @@ public class ExpressionHelper {
 		}
 	}
 
+	/**
+	 * <p>getParent.</p>
+	 *
+	 * @param expression a {@link lupos.rif.IRuleNode} object.
+	 * @param requestedClass a {@link java.lang.Class} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 */
 	public IRuleNode getParent(final IRuleNode expression, final Class<? extends IRuleNode> requestedClass){
 		IRuleNode parent = expression.getParent();
 		Class<? extends IRuleNode> parentClass = null;

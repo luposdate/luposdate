@@ -36,6 +36,9 @@ import lupos.rif.generated.visitor.IVoidVisitor;
  * Represents a single token in the grammar.<br>
  * If the "-tk" option is used, also contains a ArrayList of preceding special tokens.<br>
  * The class stores the token image, kind and position information, and the special tokens list.<br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class NodeToken implements INode {
 
@@ -70,7 +73,7 @@ public class NodeToken implements INode {
   public static final String LS = System.getProperty("line.separator");
 
   /**
-   * Initializes a {@link NodeToken} with a given string and no position information.
+   * Initializes a {@link lupos.rif.generated.syntaxtree.NodeToken} with a given string and no position information.
    *
    * @param s the token string
    */
@@ -79,7 +82,7 @@ public class NodeToken implements INode {
   }
 
   /**
-   * Initializes a {@link NodeToken} with a given string and position information.
+   * Initializes a {@link lupos.rif.generated.syntaxtree.NodeToken} with a given string and position information.
    *
    * @param s the token string
    * @param kn the token kind
@@ -112,6 +115,8 @@ public class NodeToken implements INode {
   }
 
   /**
+   * <p>numSpecials.</p>
+   *
    * @return the number of special tokens
    */
   public int numSpecials() {
@@ -144,16 +149,14 @@ public class NodeToken implements INode {
     this.specialTokens.trimToSize();
   }
 
-  /**
-   * @return the token image
-   */
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return this.tokenImage;
   }
 
   /**
-   * Returns the list of special tokens of the current {@link NodeToken} as a string,<br>
+   * Returns the list of special tokens of the current {@link lupos.rif.generated.syntaxtree.NodeToken} as a string,<br>
    * taking in account a given indentation.
    *
    * @param spc the indentation
@@ -179,8 +182,8 @@ public class NodeToken implements INode {
   }
 
   /**
-   * Returns the list of special tokens of the current {@link NodeToken} and the current<br>
-   * {@link NodeToken} as a string, taking in account a given indentation.
+   * Returns the list of special tokens of the current {@link lupos.rif.generated.syntaxtree.NodeToken} and the current<br>
+   * {@link lupos.rif.generated.syntaxtree.NodeToken} as a string, taking in account a given indentation.
    *
    * @param spc the indentation
    * @return the string representing the special tokens list and the token
@@ -197,13 +200,9 @@ public class NodeToken implements INode {
   }
 
   /**
-   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
+   * {@inheritDoc}
    *
-   * @param <R> the user Return type
-   * @param <A> the user Argument type
-   * @param vis the visitor
-   * @param argu the user Argument data
-   * @return the user Return data
+   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
    */
   @Override
 public <R, A> R accept(final IRetArguVisitor<R, A> vis, final A argu) {
@@ -211,11 +210,9 @@ public <R, A> R accept(final IRetArguVisitor<R, A> vis, final A argu) {
   }
 
   /**
-   * Accepts a {@link IRetVisitor} visitor with user Return data.
+   * {@inheritDoc}
    *
-   * @param <R> the user Return type
-   * @param vis the visitor
-   * @return the user Return data
+   * Accepts a {@link IRetVisitor} visitor with user Return data.
    */
   @Override
 public <R> R accept(final IRetVisitor<R> vis) {
@@ -223,11 +220,9 @@ public <R> R accept(final IRetVisitor<R> vis) {
   }
 
   /**
-   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
+   * {@inheritDoc}
    *
-   * @param <A> the user Argument type
-   * @param vis the visitor
-   * @param argu the user Argument data
+   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
    */
   @Override
 public <A> void accept(final IVoidArguVisitor<A> vis, final A argu) {
@@ -235,9 +230,9 @@ public <A> void accept(final IVoidArguVisitor<A> vis, final A argu) {
   }
 
   /**
-   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
    */
   @Override
 public void accept(final IVoidVisitor vis) {
@@ -245,9 +240,9 @@ public void accept(final IVoidVisitor vis) {
   }
 
   /**
-   * Sets the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Sets the parent node.
    */
   @Override
 public void setParent(final INode n) {
@@ -255,9 +250,9 @@ public void setParent(final INode n) {
   }
 
   /**
-   * Gets the parent node.
+   * {@inheritDoc}
    *
-   * @return the parent node
+   * Gets the parent node.
    */
   @Override
 public INode getParent() {

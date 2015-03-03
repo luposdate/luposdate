@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.guielements;
 
@@ -38,7 +42,6 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler.ComboItem;
-
 public class SuggestionRowPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private int startX = -1;
@@ -54,6 +57,13 @@ public class SuggestionRowPanel extends JPanel implements ActionListener {
 	private LinkedList<ComboItem> predElements;
 	private LinkedList<ComboItem> soElements;
 
+	/**
+	 * <p>Constructor for SuggestionRowPanel.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param varSO a {@link lupos.datastructures.items.Variable} object.
+	 * @param varPred a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public SuggestionRowPanel(QueryResult queryResult, Variable varSO, Variable varPred) {
 		super();
 
@@ -62,6 +72,7 @@ public class SuggestionRowPanel extends JPanel implements ActionListener {
 		this.varSO = varSO;
 	}
 
+	/** {@inheritDoc} */
 	public Component add(Component comp) {
 		super.add(comp);
 
@@ -96,6 +107,7 @@ public class SuggestionRowPanel extends JPanel implements ActionListener {
 		return comp;
 	}
 
+	/** {@inheritDoc} */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -103,6 +115,7 @@ public class SuggestionRowPanel extends JPanel implements ActionListener {
 	}
 
 
+	/** {@inheritDoc} */
 	public void actionPerformed(ActionEvent ae) {
 		ComboItem choice;
 

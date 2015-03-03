@@ -27,10 +27,19 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * Builds SPARQL 1.1 query strings and queries the database.
- * 
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryBuilder {
 
+	/**
+	 * <p>query.</p>
+	 *
+	 * @param item a {@link java.lang.String} object.
+	 * @param filterBy a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult query(String item, String filterBy) {
 		String startstring = "PREFIX : <http://dbpedia.org/resource/>"
 				+ "PREFIX dbo: <http://dbpedia.org/ontology/> "

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.bindings;
 
@@ -33,9 +37,13 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.rdf.Prefix;
-
 public class BindingsArrayReadTriples extends BindingsArray {
 
+	/**
+	 * <p>Constructor for BindingsArrayReadTriples.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsArrayReadTriples(final BindingsFactory bindingsFactory) {
 		super(bindingsFactory);
 	}
@@ -47,6 +55,7 @@ public class BindingsArrayReadTriples extends BindingsArray {
 
 	protected List<Triple> readTriples = new LinkedList<Triple>();
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArrayReadTriples clone() {
 		final BindingsArrayReadTriples other = new BindingsArrayReadTriples(this.bindingsFactory);
@@ -59,6 +68,8 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method adds a triple to the internal list of read triples for these
 	 * bindings
 	 */
@@ -68,6 +79,8 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method adds all triples to the internal list of read triples for
 	 * these bindings. This method must be overridden by Bindings-subclasses,
 	 * which support this feature, e.g. BindingsArrayReadTriples
@@ -80,6 +93,8 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method adds all triples of a given Bindings to the internal list of
 	 * read triples for these bindings. This method must be overridden by
 	 * Bindings-subclasses, which support this feature, e.g.
@@ -91,6 +106,8 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method returns the internal list of read triples for these bindings.
 	 */
 	@Override
@@ -98,11 +115,13 @@ public class BindingsArrayReadTriples extends BindingsArray {
 		return this.readTriples;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " read triples:" + this.readTriples + "\n";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefix) {
 		String result = super.toString(prefix) + " read triples: [";
@@ -119,12 +138,16 @@ public class BindingsArrayReadTriples extends BindingsArray {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() {
 		super.init();
 		this.readTriples = new LinkedList<Triple>();
 	}
 
+	/**
+	 * <p>sortReadTriples.</p>
+	 */
 	public void sortReadTriples() {
 		final SortedSet<Triple> sst = new TreeSet<Triple>(new TripleComparator(
 				RDF3XIndexScan.CollationOrder.SPO));
@@ -133,6 +156,7 @@ public class BindingsArrayReadTriples extends BindingsArray {
 		this.readTriples.addAll(sst);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArrayReadTriples createInstance(){
 		return new BindingsArrayReadTriples(this.bindingsFactory);

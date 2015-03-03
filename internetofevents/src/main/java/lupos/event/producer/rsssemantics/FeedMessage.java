@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.producer.rsssemantics;
 
@@ -32,7 +36,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.event.util.Literals;
 
 // Einzelne RSS-Message
-
 public class FeedMessage {
 
   String title;
@@ -41,6 +44,7 @@ public class FeedMessage {
   String author;
   String guid;
   private static final String NAMESPACE = "http://www.ifis.uni-luebeck.de/events/RSSSemantics/FeedMessage/";
+  /** Constant <code>TYPE</code> */
   public static final URILiteral TYPE = Literals.createURI(FeedMessage.NAMESPACE,"RSSSemanticInterpretationEvent");
   
   public static class Predicates {
@@ -51,14 +55,29 @@ public class FeedMessage {
 	  public static final URILiteral GUID = Literals.createURI(FeedMessage.NAMESPACE, "guid");
   }
   
+  /**
+   * <p>Getter for the field <code>title</code>.</p>
+   *
+   * @return a {@link java.lang.String} object.
+   */
   public String getTitle() {
     return this.title;
   }
 
+  /**
+   * <p>Setter for the field <code>title</code>.</p>
+   *
+   * @param title a {@link java.lang.String} object.
+   */
   public void setTitle(String title) {
     this.title = title;
   }
 
+  /**
+   * <p>Getter for the field <code>description</code>.</p>
+   *
+   * @return a {@link java.lang.String} object.
+   */
   public String getDescription() {
 	  if(!(this.description.equals(""))){
 		  return this.description;
@@ -66,34 +85,75 @@ public class FeedMessage {
 	  else return null;
   }
 
+  /**
+   * <p>Setter for the field <code>description</code>.</p>
+   *
+   * @param description a {@link java.lang.String} object.
+   */
   public void setDescription(String description) {
     this.description = description;
   }
 
+  /**
+   * <p>Getter for the field <code>link</code>.</p>
+   *
+   * @return a {@link java.lang.String} object.
+   */
   public String getLink() {
     return this.link;
   }
 
+  /**
+   * <p>Setter for the field <code>link</code>.</p>
+   *
+   * @param link a {@link java.lang.String} object.
+   */
   public void setLink(String link) {
     this.link = link;
   }
 
+  /**
+   * <p>Getter for the field <code>author</code>.</p>
+   *
+   * @return a {@link java.lang.String} object.
+   */
   public String getAuthor() {
     return this.author;
   }
 
+  /**
+   * <p>Setter for the field <code>author</code>.</p>
+   *
+   * @param author a {@link java.lang.String} object.
+   */
   public void setAuthor(String author) {
     this.author = author;
   }
 
+  /**
+   * <p>Getter for the field <code>guid</code>.</p>
+   *
+   * @return a {@link java.lang.String} object.
+   */
   public String getGuid() {
     return this.guid;
   }
 
+  /**
+   * <p>Setter for the field <code>guid</code>.</p>
+   *
+   * @param guid a {@link java.lang.String} object.
+   */
   public void setGuid(String guid) {
     this.guid = guid;
   }
   
+	/**
+	 * <p>generateTriples.</p>
+	 *
+	 * @return a {@link java.util.ArrayList} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public ArrayList<Triple> generateTriples() throws Exception {
 			
 		// generate literals
@@ -147,6 +207,7 @@ public class FeedMessage {
 
   
   // Umwandlung in String
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return "FeedMessage [title=" + this.title + ", description=" + this.description

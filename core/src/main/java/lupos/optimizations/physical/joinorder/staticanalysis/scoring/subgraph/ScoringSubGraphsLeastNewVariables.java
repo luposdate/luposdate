@@ -29,7 +29,10 @@ import lupos.datastructures.items.Variable;
 import lupos.engine.operators.index.BasicIndexScan;
 
 /**
- * This class implements the scoring for least new variables by determining the number of new variables in sub graphs 
+ * This class implements the scoring for least new variables by determining the number of new variables in sub graphs
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ScoringSubGraphsLeastNewVariables implements ScoringSubGraph<HashSet<Variable>>{
 	
@@ -38,6 +41,7 @@ public class ScoringSubGraphsLeastNewVariables implements ScoringSubGraph<HashSe
 	 */
 	public static final int PUNISHMENT_FOR_CARTESIAN_PRODUCT = 100;
 
+	/** {@inheritDoc} */
 	@Override
 	public int determineScore(BasicIndexScan indexScan,
 			final HashSet<Variable> additionalInformation1, final HashSet<Variable> additionalInformation2) {
@@ -47,6 +51,7 @@ public class ScoringSubGraphsLeastNewVariables implements ScoringSubGraph<HashSe
 		return v.size() + ((flag)? 0 : ScoringSubGraphsLeastNewVariables.PUNISHMENT_FOR_CARTESIAN_PRODUCT);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean scoreIsAscending() {
 		return true;

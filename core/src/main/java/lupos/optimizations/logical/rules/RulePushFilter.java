@@ -52,13 +52,20 @@ import lupos.misc.Tuple;
  *
  * The original filter is deleted if there does not exist any of o1 to on, which
  * contains a subset of the used variables of the filter.
- **/
+ *
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class RulePushFilter extends RuleFilter {
 
+	/**
+	 * <p>Constructor for RulePushFilter.</p>
+	 */
 	public RulePushFilter() {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		BasicOperator operator = mso.get("operator");
@@ -127,6 +134,7 @@ public class RulePushFilter extends RuleFilter {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -205,6 +213,7 @@ public class RulePushFilter extends RuleFilter {
 				added, deleted);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return "Push Filter";

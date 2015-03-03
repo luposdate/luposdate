@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer;
 
@@ -35,11 +39,17 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraphOperatorWithPrefix;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
 public class MultiElementsPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = -5247920987996477146L;
 	private JComboBox comboBox = null;
 
+	/**
+	 * <p>Constructor for MultiElementsPanel.</p>
+	 *
+	 * @param rdfTerm a {@link lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.CondensedRDFTerm} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public MultiElementsPanel(CondensedRDFTerm rdfTerm, GraphWrapper gw, VisualGraph<Operator> parent) {
 		super(parent, gw, rdfTerm, true);
 
@@ -67,10 +77,16 @@ public class MultiElementsPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(boolean showErrors, Object data) {
 		return true;
 	}
 
+	/**
+	 * <p>getSelectedItem.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSelectedItem() {
 		return this.comboBox.getSelectedItem().toString();
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,18 +21,24 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
 import java.io.IOException;
 
 import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
-
 public class InnerNodeInPartitionTree extends NodeInPartitionTree {
 
+	/** Constant <code>numberChildren=100</code> */
 	protected static final int numberChildren = 100;
 	public PagedCollection<NodeInPartitionTree> nodes;
 
+	/**
+	 * <p>Constructor for InnerNodeInPartitionTree.</p>
+	 */
 	public InnerNodeInPartitionTree() {
 		try {
 			this.nodes = new PagedCollection<NodeInPartitionTree>(NodeInPartitionTree.class);
@@ -41,10 +48,16 @@ public class InnerNodeInPartitionTree extends NodeInPartitionTree {
 		}
 	}
 
+	/**
+	 * <p>Constructor for InnerNodeInPartitionTree.</p>
+	 *
+	 * @param nodes a {@link lupos.datastructures.smallerinmemorylargerondisk.PagedCollection} object.
+	 */
 	public InnerNodeInPartitionTree(final PagedCollection<NodeInPartitionTree> nodes) {
 		this.nodes = nodes;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		if(this.nodes!=null){

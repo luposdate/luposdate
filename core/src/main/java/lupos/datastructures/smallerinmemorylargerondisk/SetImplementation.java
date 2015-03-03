@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -32,22 +36,31 @@ import java.util.SortedSet;
 
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
-
 public class SetImplementation<E extends Serializable> implements Set<E>, Serializable {
 
 	private final Set<E> memorySet;
 	private SortedSet<E> diskSet;
 
+	/** Constant <code>MAXMEMORYMAPENTRIES=30000</code> */
 	protected final static int MAXMEMORYMAPENTRIES = 30000;
 
+	/**
+	 * <p>Constructor for SetImplementation.</p>
+	 */
 	public SetImplementation() {
 		this.memorySet = new HashSet<E>();
 	}
 
+	/**
+	 * <p>Constructor for SetImplementation.</p>
+	 *
+	 * @param memorySet a {@link java.util.Set} object.
+	 */
 	public SetImplementation(final Set<E> memorySet) {
 		this.memorySet = memorySet;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean add(final E arg0) {
@@ -61,6 +74,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return this.diskSet.add(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag = false;
@@ -69,6 +83,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.memorySet.clear();
@@ -77,6 +92,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object arg0) {
 		if (this.memorySet.contains(arg0)){
@@ -88,6 +104,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(final Collection<?> arg0) {
 		for (final Object o : arg0){
@@ -98,6 +115,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		if (!this.memorySet.isEmpty()){
@@ -109,6 +127,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		return new Iterator<E>() {
@@ -145,6 +164,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object arg0) {
 		final boolean flag = this.memorySet.remove(arg0);
@@ -157,6 +177,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeAll(final Collection<?> arg0) {
 		boolean flag = false;
@@ -166,6 +187,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		boolean flag = false;
@@ -178,6 +200,7 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		int size = this.memorySet.size();
@@ -187,18 +210,21 @@ public class SetImplementation<E extends Serializable> implements Set<E>, Serial
 		return size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"This set does not support toArray."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"This set does not support toArray."));
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		String result = "Set in memory: " + this.memorySet;

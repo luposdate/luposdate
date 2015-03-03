@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,27 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort;
 
 import java.util.Comparator;
-
-
-
 public class DifferentFromComparator<E extends Comparable<E>> implements Comparator<E>{
 
 	private Comparator<E> comp;
 	
 	/**
 	 * Compares two given bindings as specified in SPARQL-specification
+	 *
+	 * @param comp a {@link java.util.Comparator} object.
 	 */
-	
 	public DifferentFromComparator( Comparator<E> comp ){
 		this.comp=comp;
 	}
 
 	/**
 	 * Compares two bindings considering SPARQL-specifications
+	 *
 	 * @param arg0 first Bindings to compare
 	 * @param arg1 second Bindings to compare
 	 * @return simlar to any other integer based compare method: <br>

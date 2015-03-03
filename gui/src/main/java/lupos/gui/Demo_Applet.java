@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui;
 
@@ -142,7 +146,6 @@ import xpref.datatypes.IntegerDatatype;
 
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.query.QueryParseException;
-
 public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryEditor {
 	// set webdemo to false in the case that you want to run it under eclipse
 	// webdemo=true => example files are read from the current jar-file
@@ -212,11 +215,24 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 */
 	private static List<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>> registeredEvaluators = new LinkedList<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>>();
 
+	/**
+	 * <p>registerEvaluator.</p>
+	 *
+	 * @param evaluatorName a {@link java.lang.String} object.
+	 * @param evaluatorClass a {@link java.lang.Class} object.
+	 */
 	public static void registerEvaluator(final String evaluatorName, final Class<? extends QueryEvaluator<Node>> evaluatorClass){
 		registeredEvaluators.add(new lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>(evaluatorName, evaluatorClass, new boolean[]{true, true, true, true}));
 	}
 
 
+	/**
+	 * <p>registerEvaluator.</p>
+	 *
+	 * @param evaluatorName a {@link java.lang.String} object.
+	 * @param evaluatorClass a {@link java.lang.Class} object.
+	 * @param enabled an array of boolean.
+	 */
 	public static void registerEvaluator(final String evaluatorName, final Class<? extends QueryEvaluator<Node>> evaluatorClass, final boolean[] enabled){
 		registeredEvaluators.add(new lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>(evaluatorName, evaluatorClass, enabled));
 	}
@@ -245,6 +261,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>getEvaluators.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	protected String[] getEvaluators() {
 		// started with Java Web Start? Java Web start has a more restrictive
 		// rights management, i.e. Jena and Sesame do not work with Java Web Start...
@@ -258,6 +279,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return evals.toArray(new String[0]);
 	}
 
+	/**
+	 * <p>getEvaluatorClass.</p>
+	 *
+	 * @param index a int.
+	 * @return a {@link java.lang.Class} object.
+	 */
 	protected Class<? extends QueryEvaluator<Node>> getEvaluatorClass(final int index) {
 		final int caseIndex = this.getCaseIndex();
 		final Iterator<lupos.misc.Triple<String, Class<? extends QueryEvaluator<Node>>, boolean[]>> entryIt = Demo_Applet.registeredEvaluators.iterator();
@@ -272,6 +299,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String args[]) {
 		final Demo_Applet applet = new Demo_Applet();
 		if (args.length > 0) {
@@ -281,10 +313,21 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>startDemoAsApplication.</p>
+	 *
+	 * @param applet a {@link lupos.gui.Demo_Applet} object.
+	 */
 	public static void startDemoAsApplication(final Demo_Applet applet){
 		Demo_Applet.startDemoAsApplication(null, applet);
 	}
 
+	/**
+	 * <p>startDemoAsApplication.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @param applet a {@link lupos.gui.Demo_Applet} object.
+	 */
 	public static void startDemoAsApplication(final String type, final Demo_Applet applet){
 		if (type!=null) {
 			applet.setType(type);
@@ -312,6 +355,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		applet.frame.setVisible(true);
 	}
 
+	/**
+	 * <p>getIcon.</p>
+	 *
+	 * @param webdemo a {@link lupos.gui.Demo_Applet.DEMO_ENUM} object.
+	 * @return a {@link java.awt.Image} object.
+	 */
 	protected static Image getIcon(final DEMO_ENUM webdemo) {
 		if (webdemo != DEMO_ENUM.ECLIPSE) {
 			return new ImageIcon(Demo_Applet.class.getResource("/icons/demo.gif")).getImage();
@@ -321,6 +370,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Main Method.
 	 */
 	@Override
@@ -338,6 +389,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.preferencesChanged();
 	}
 
+	/**
+	 * <p>setType.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 */
 	protected void setType(final String type) {
 		if (type != null) {
 			if (type.toLowerCase().compareTo("demo") == 0) {
@@ -354,6 +410,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>initialise.</p>
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	public JPanel initialise() {
 		try {
 			this.myself = this;
@@ -460,6 +521,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return splitPane;
 	}
 
+	/**
+	 * <p>generateLookAndFeelList.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public static LinkedList<String> generateLookAndFeelList() {
 		final LinkedList<String> lafList = new LinkedList<String>();
 
@@ -509,6 +575,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.masterpanel.add(rowpanel, BorderLayout.NORTH);
 	}
 
+	/**
+	 * <p>generatePreferencesButton.</p>
+	 *
+	 * @return a {@link javax.swing.JButton} object.
+	 */
 	protected JButton generatePreferencesButton(){
 		final JButton preferencesButton = new JButton("Preferences");
 		preferencesButton.addActionListener(new ActionListener() {
@@ -538,6 +609,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return preferencesButton;
 	}
 
+	/**
+	 * <p>enableOrDisableEvaluationDemoButtonSPARQL.</p>
+	 */
 	protected void enableOrDisableEvaluationDemoButtonSPARQL() {
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		if (chosen.compareTo("Jena") == 0 || chosen.compareTo("Sesame") == 0) {
@@ -547,21 +621,37 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>isEvaluatorWithSupportOfRIFChosen.</p>
+	 *
+	 * @return a boolean.
+	 */
 	protected boolean isEvaluatorWithSupportOfRIFChosen(){
 		final String chosen = (String) this.cobo_evaluator.getSelectedItem();
 		return (chosen.compareTo("Jena") != 0 && chosen.compareTo("Sesame") != 0);
 	}
 
+	/**
+	 * <p>enableOrDisableEvaluationButtonsRIF.</p>
+	 */
 	protected void enableOrDisableEvaluationButtonsRIF() {
 		final boolean enable=this.isEvaluatorWithSupportOfRIFChosen();
 		this.bt_rifEvaluate.setEnabled(enable);
 		this.bt_rifMeasureExecutionTimes.setEnabled(enable);
 	}
 
+	/**
+	 * <p>enableOrDisableEvaluationDemoButtonRIF.</p>
+	 */
 	protected void enableOrDisableEvaluationDemoButtonRIF() {
 		this.bt_rifEvalDemo.setEnabled(this.isEvaluatorWithSupportOfRIFChosen());
 	}
 
+	/**
+	 * <p>enableOrDisableButtons.</p>
+	 *
+	 * @param queryOrRif a boolean.
+	 */
 	protected void enableOrDisableButtons(final boolean queryOrRif) {
 		if(queryOrRif){
 			this.enableOrDisableEvaluationDemoButtonSPARQL();
@@ -636,6 +726,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for the query input.
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateQueryTab() {
 
@@ -661,6 +753,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for the query input.
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateRifTab() {
 
@@ -686,6 +780,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for error output on the SPARQL query tab.
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateQueryInputErrorBox() {
 		this.ta_queryInputErrors = new JTextArea();
@@ -695,6 +791,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for error output on the RDF Data tab.
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateDataInputErrorBox() {
 		this.ta_dataInputErrors = new JTextArea();
@@ -703,6 +801,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for error output on the RIF tab.
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateRifInputErrorBox() {
 		this.ta_rifInputErrors = new JTextArea();
@@ -711,6 +811,10 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for error output on the RDF Data tab.
+	 *
+	 * @param input a {@link lupos.gui.anotherSyntaxHighlighting.LuposJTextPane} object.
+	 * @param inputErrors a {@link javax.swing.JTextArea} object.
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateInputErrorBox(
 			final LuposJTextPane input, final JTextArea inputErrors) {
@@ -751,6 +855,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Generate the stuff for the data input.
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
 	 */
 	protected JPanel generateDataTab() {
 
@@ -792,6 +898,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				"Clear data field", this.tp_dataInput, this.dataInputSP);
 	}
 
+	/**
+	 * <p>getResourceAsString.</p>
+	 *
+	 * @param resource a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getResourceAsString(final String resource){
 		final URL url = Demo_Applet.class.getResource(resource);
 
@@ -810,6 +922,19 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 			});
 	}
 
+	/**
+	 * <p>generateInputTab.</p>
+	 *
+	 * @param bt_visualEdit a {@link javax.swing.JButton} object.
+	 * @param bt_CondensedView a {@link javax.swing.JButton} object.
+	 * @param chooseText a {@link java.lang.String} object.
+	 * @param toChoose an array of {@link java.lang.String} objects.
+	 * @param PATH a {@link java.lang.String} object.
+	 * @param clearText a {@link java.lang.String} object.
+	 * @param tp_input a {@link lupos.gui.anotherSyntaxHighlighting.LuposJTextPane} object.
+	 * @param inputSP a {@link javax.swing.JScrollPane} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected JPanel generateInputTab(final JButton bt_visualEdit,
 			final JButton bt_CondensedView, final String chooseText,
 			final String[] toChoose, final String PATH, final String clearText,
@@ -1042,6 +1167,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>generateEvalpanel.</p>
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected JPanel generateEvalpanel() {
 
 		this.comboBox_sparqlInferenceMaterialization = new JComboBox();
@@ -1126,6 +1256,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return panel;
 	}
 
+	/**
+	 * <p>generateRifEvalPanel.</p>
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected JPanel generateRifEvalPanel() {
 		// create evaluate-button, add actionListener and add it to Applet...
 		this.bt_rifEvaluate = new JButton("Evaluate");
@@ -1172,6 +1307,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				this.bt_rifMeasureExecutionTimes);
 	}
 
+	/**
+	 * <p>generateEvalpanel.</p>
+	 *
+	 * @param components a {@link javax.swing.JComponent} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected static JPanel generateEvalpanel(final JComponent... components ) {
 		final JPanel evalpanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
 		for(final JComponent component: components){
@@ -1180,6 +1321,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return evalpanel;
 	}
 
+	/**
+	 * <p>prepareForEvaluation.</p>
+	 *
+	 * @param rif a boolean.
+	 * @return a boolean.
+	 */
 	protected boolean prepareForEvaluation(final boolean rif) {
 		if (this.operatorGraphViewer != null && this.operatorGraphViewer.isVisible()) {
 			if (JOptionPane
@@ -1263,6 +1410,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * create the button to show the operator graph.
+	 *
+	 * @param enabled a {@link java.lang.Boolean} object.
+	 * @return a {@link javax.swing.JButton} object.
 	 */
 	protected JButton createEvaluationDemoButton(final Boolean enabled) {
 		// create OperatorGraph-button, add actionListener and add it to
@@ -1272,6 +1422,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return bt_evalDemo_local;
 	}
 
+	/**
+	 * <p>getFiles.</p>
+	 *
+	 * @param path a {@link java.lang.String} object.
+	 * @param suffix a {@link java.lang.String} object.
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	protected String[] getFiles(final String path, final String suffix){
 		// create array list for files...
 		final ArrayList<String> tmp = new ArrayList<String>();
@@ -1346,6 +1503,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>getRuleFiles.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	protected String[] getRuleFiles() {
 		switch (this.webdemo) {
 		default:
@@ -1393,6 +1555,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>setupEvaluator.</p>
+	 *
+	 * @param mode a lupos.gui.Demo_Applet.EvaluationMode object.
+	 * @return a {@link lupos.engine.evaluators.QueryEvaluator} object.
+	 * @throws java.lang.Throwable if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public QueryEvaluator<Node> setupEvaluator(final EvaluationMode mode)
 			throws Throwable {
@@ -1766,6 +1935,8 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	/**
 	 * Evaluates the given query on the given data.
+	 *
+	 * @param mode a {@link lupos.gui.Demo_Applet.EvaluationMode} object.
 	 */
 	protected void evaluateSPARQLQuery(final EvaluationMode mode) {
 		try {
@@ -1776,6 +1947,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>evaluateRIFRule.</p>
+	 *
+	 * @param mode a {@link lupos.gui.Demo_Applet.EvaluationMode} object.
+	 */
 	protected void evaluateRIFRule(final EvaluationMode mode) {
 		try {
 			this.evaluate(new RIFEvaluation(this.setupEvaluator(mode)), mode);
@@ -1785,6 +1961,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>evaluate.</p>
+	 *
+	 * @param evaluation a {@link lupos.gui.Demo_Applet.Evaluation} object.
+	 * @param mode a {@link lupos.gui.Demo_Applet.EvaluationMode} object.
+	 */
 	@SuppressWarnings("rawtypes")
 	protected void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
 
@@ -2045,6 +2227,14 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>dealWithThrowableFromQueryParser.</p>
+	 *
+	 * @param e a {@link java.lang.Throwable} object.
+	 * @param mode a {@link lupos.gui.Demo_Applet.EvaluationMode} object.
+	 * @param queryOrRif a boolean.
+	 * @return a boolean.
+	 */
 	protected boolean dealWithThrowableFromQueryParser(final Throwable e,
 			final EvaluationMode mode, final boolean queryOrRif) {
 		if (e instanceof TokenMgrError) {
@@ -2181,6 +2371,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		return false;
 	}
 
+	/**
+	 * <p>setErrorPosition.</p>
+	 *
+	 * @param line a int.
+	 * @param column a int.
+	 * @param queryOrRif a boolean.
+	 */
 	protected void setErrorPosition(final int line, final int column, final boolean queryOrRif){
 		if(queryOrRif){
 			this.tp_queryInput.setErrorPosition(line, column);
@@ -2189,6 +2386,13 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>dealWithThrowable.</p>
+	 *
+	 * @param e a {@link java.lang.Throwable} object.
+	 * @param mode a {@link lupos.gui.Demo_Applet.EvaluationMode} object.
+	 * @param queryOrRif a boolean.
+	 */
 	protected void dealWithThrowable(final Throwable e, final EvaluationMode mode, final boolean queryOrRif) {
 		if (this.dealWithThrowableFromQueryParser(e, mode, queryOrRif)) {
 			return;
@@ -2256,6 +2460,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 	}
 
+	/**
+	 * <p>outputResult.</p>
+	 */
 	protected void outputResult(){
 		try{
 			final Container contentPane = (this.isApplet) ? this.getContentPane() : this.frame.getContentPane();
@@ -2277,6 +2484,11 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 
 
 
+	/**
+	 * <p>setGlobalFont.</p>
+	 *
+	 * @param font a {@link java.awt.Font} object.
+	 */
 	protected void setGlobalFont(final Font font) {
 		final Enumeration<Object> keys = UIManager.getDefaults().keys();
 
@@ -2289,6 +2501,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void preferencesChanged() {
 		final int lp_query_pos = this.tp_queryInput.getCaretPosition();
@@ -2317,6 +2530,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.loadErrorLineColor();
 	}
 
+	/**
+	 * <p>loadMainFont.</p>
+	 */
 	protected void loadMainFont() {
 		try {
 			if (BooleanDatatype.getValues("standardFont.fontEnable").get(0)
@@ -2330,6 +2546,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>loadLookAndFeel.</p>
+	 */
 	protected void loadLookAndFeel() {
 		if (this.defaultFont != null) {
 			this.setGlobalFont(this.defaultFont);
@@ -2427,6 +2646,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>removeLinePainterAndErrorLinePainter.</p>
+	 */
 	protected void removeLinePainterAndErrorLinePainter() {
 		removeLinePainter(this.lp_queryInput, this.tp_queryInput);
 		removeLinePainter(this.lp_rifInput, this.tp_rifInput);
@@ -2436,6 +2658,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		this.tp_dataInput.disableErrorLine();
 	}
 
+	/**
+	 * <p>loadCurrentLineColor.</p>
+	 */
 	protected void loadCurrentLineColor() {
 		try {
 			if (BooleanDatatype.getValues("currentLineColor.colorEnable")
@@ -2467,6 +2692,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>removeLinePainter.</p>
+	 *
+	 * @param lp a {@link lupos.gui.anotherSyntaxHighlighting.LinePainter} object.
+	 * @param tp a {@link javax.swing.JTextPane} object.
+	 */
 	protected static void removeLinePainter(final LinePainter lp, final JTextPane tp) {
 		if (lp != null) {
 			lp.removeLinePainter();
@@ -2475,6 +2706,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>loadErrorLineColor.</p>
+	 */
 	protected void loadErrorLineColor() {
 		try {
 			if (BooleanDatatype.getValues("errorLine.colorEnable").get(0)
@@ -2504,6 +2738,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>loadTextFieldFont.</p>
+	 */
 	protected void loadTextFieldFont() {
 		try {
 			Font tfFont;
@@ -2528,6 +2765,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>loadLineNumbers.</p>
+	 */
 	protected void loadLineNumbers() {
 		try {
 			if (BooleanDatatype.getValues("lineCount").get(0).booleanValue()) {
@@ -2548,6 +2788,9 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>loadSyntaxHighlighting.</p>
+	 */
 	protected void loadSyntaxHighlighting() {
 		try {
 			final boolean highlighterStatus = BooleanDatatype
@@ -2580,20 +2823,28 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>tp_dataInput</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.anotherSyntaxHighlighting.LuposJTextPane} object.
+	 */
 	public LuposJTextPane getTp_dataInput() {
 		return this.tp_dataInput;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setSerializedData(final String n3daten) {
 		this.tp_dataInput.setText(n3daten);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setSerializedQuery(final String query) {
 		this.tp_queryInput.setText(query);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getData() {
 		return this.tp_dataInput.getText();
@@ -2609,12 +2860,26 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
+	/**
+	 * <p>displayErrorMessage.</p>
+	 *
+	 * @param error a {@link java.lang.String} object.
+	 * @param append a boolean.
+	 */
 	protected void displayErrorMessage(final String error, final boolean append) {
 		this.displayDataErrorMessage(error, append);
 		this.displayRifErrorMessage(error, append);
 		this.displayQueryErrorMessage(error, append);
 	}
 
+	/**
+	 * <p>displayErrorMessage.</p>
+	 *
+	 * @param error a {@link java.lang.String} object.
+	 * @param append a boolean.
+	 * @param ta_inputErrors a {@link javax.swing.JTextArea} object.
+	 * @param index a int.
+	 */
 	protected void displayErrorMessage(final String error, final boolean append,
 			final JTextArea ta_inputErrors, final int index) {
 		if (ta_inputErrors != null) {
@@ -2638,11 +2903,24 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
+	/**
+	 * <p>displayDataErrorMessage.</p>
+	 *
+	 * @param dataError a {@link java.lang.String} object.
+	 * @param append a boolean.
+	 */
 	protected void displayDataErrorMessage(final String dataError,
 			final boolean append) {
 		this.displayErrorMessage(dataError, append, this.ta_dataInputErrors, 2);
 	}
 
+	/**
+	 * <p>displayErrorMessage.</p>
+	 *
+	 * @param queryError a {@link java.lang.String} object.
+	 * @param append a boolean.
+	 * @param queryOrRif a boolean.
+	 */
 	protected void displayErrorMessage(final String queryError, final boolean append, final boolean queryOrRif){
 		if(queryOrRif){
 			this.displayQueryErrorMessage(queryError, append);
@@ -2660,6 +2938,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
 	 */
+	/**
+	 * <p>displayQueryErrorMessage.</p>
+	 *
+	 * @param queryError a {@link java.lang.String} object.
+	 * @param append a boolean.
+	 */
 	protected void displayQueryErrorMessage(final String queryError,
 			final boolean append) {
 		this.displayErrorMessage(queryError, append, this.ta_queryInputErrors, 0);
@@ -2673,6 +2957,12 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	 * @param append if true, the message will be appended to the current
 	 * content of the error box if false, the previous content of the error box
 	 * is deleted
+	 */
+	/**
+	 * <p>displayRifErrorMessage.</p>
+	 *
+	 * @param rifError a {@link java.lang.String} object.
+	 * @param append a boolean.
 	 */
 	protected void displayRifErrorMessage(final String rifError,
 			final boolean append) {

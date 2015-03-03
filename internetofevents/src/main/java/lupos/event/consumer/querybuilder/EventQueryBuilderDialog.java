@@ -41,8 +41,10 @@ import javax.swing.JScrollPane;
 
 
 /**
- * A JDialog which hosts a {@link EventQueryBuilderView}.
+ * A JDialog which hosts a {@link lupos.event.consumer.querybuilder.EventQueryBuilderView}.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EventQueryBuilderDialog extends JDialog implements ActionListener {
 	
@@ -51,6 +53,11 @@ public class EventQueryBuilderDialog extends JDialog implements ActionListener {
 	private String query = null;
 	
 	
+	/**
+	 * <p>Constructor for EventQueryBuilderDialog.</p>
+	 *
+	 * @param owner a {@link java.awt.Window} object.
+	 */
 	public EventQueryBuilderDialog(Window owner) {
 		super(owner, "Event query builder", ModalityType.APPLICATION_MODAL);
 		super.setMinimumSize(new Dimension(450,500));
@@ -91,10 +98,16 @@ public class EventQueryBuilderDialog extends JDialog implements ActionListener {
 		super.add(buttonsPanel, c);
 	}
 	
+	/**
+	 * <p>Getter for the field <code>query</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getQuery() {
 		return this.query;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.okButton)

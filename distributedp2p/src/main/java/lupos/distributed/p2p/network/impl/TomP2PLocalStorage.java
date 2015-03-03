@@ -54,11 +54,11 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This is the class for the P2P-networks private storage on each node. Here we
  * can retrieve local triples from node's storage to answer subgraph-requests.
- * 
+ *
  * @author Bjoern
- * 
  * @param <T>
  *            KeyContainerType, esp. String
+ * @version $Id: $Id
  */
 public class TomP2PLocalStorage<T> implements IStorage {
 
@@ -70,7 +70,7 @@ public class TomP2PLocalStorage<T> implements IStorage {
 	/**
 	 * Create a new local Storage for this peer, to get only triples stored on
 	 * this p2p node, not in full network.
-	 * 
+	 *
 	 * @param s
 	 *            The storage used by TomP2P
 	 */
@@ -78,16 +78,24 @@ public class TomP2PLocalStorage<T> implements IStorage {
 		p2pStorage = s;
 	}
 
+	/**
+	 * <p>Setter for the field <code>distribution</code>.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @return a {@link lupos.distributed.p2p.network.impl.TomP2PLocalStorage} object.
+	 */
 	public TomP2PLocalStorage<?> setDistribution(
 			IDistribution<KeyContainer<T>> distribution) {
 		this.distribution = distribution;
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addTriple(Triple triple) {
 		// you shouldn't add triples to local storage
@@ -96,6 +104,7 @@ public class TomP2PLocalStorage<T> implements IStorage {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTriple(Triple triple) {
 		KeyContainer<T>[] keys = this.distribution.getKeysForStoring(triple);
@@ -109,6 +118,7 @@ public class TomP2PLocalStorage<T> implements IStorage {
 
 	/**
 	 * Get all triples stored at given key (as Collection)
+	 *
 	 * @param locationKey key
 	 * @return all triples stored at this key
 	 */
@@ -157,6 +167,7 @@ public class TomP2PLocalStorage<T> implements IStorage {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(Triple triple) {
 		throw new RuntimeException(
@@ -200,6 +211,7 @@ public class TomP2PLocalStorage<T> implements IStorage {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern)
@@ -258,11 +270,13 @@ public class TomP2PLocalStorage<T> implements IStorage {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "TomP2P LocalStorage";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setBindingsFactory(BindingsFactory bindingsFactory) {
 		this.bindings = bindingsFactory;

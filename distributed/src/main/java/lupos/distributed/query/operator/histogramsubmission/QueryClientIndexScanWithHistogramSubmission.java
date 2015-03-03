@@ -38,22 +38,40 @@ import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
  * This class represents an index scan operator for the distributed query evaluators...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientIndexScanWithHistogramSubmission extends QueryClientIndexScan {
 
 	protected final IHistogramExecutor histogramExecutor;
 
+	/**
+	 * <p>Constructor for QueryClientIndexScanWithHistogramSubmission.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a {@link lupos.distributed.query.operator.histogramsubmission.QueryClientRootWithHistogramSubmission} object.
+	 */
 	public QueryClientIndexScanWithHistogramSubmission(final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final QueryClientRootWithHistogramSubmission root) {
 		super(succeedingOperator, triplePatterns, rdfGraph, root);
 		this.histogramExecutor = root.histogramExecutor;
 	}
 
+	/**
+	 * <p>Constructor for QueryClientIndexScanWithHistogramSubmission.</p>
+	 *
+	 * @param root a {@link lupos.distributed.query.operator.histogramsubmission.QueryClientRootWithHistogramSubmission} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 */
 	public QueryClientIndexScanWithHistogramSubmission(final QueryClientRootWithHistogramSubmission root, final Collection<TriplePattern> triplePatterns) {
 		super(root, triplePatterns);
 		this.histogramExecutor = root.histogramExecutor;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern triplePattern,
 			final Class<? extends Bindings> classBindings,
@@ -63,6 +81,7 @@ public class QueryClientIndexScanWithHistogramSubmission extends QueryClientInde
 		return this.histogramExecutor.getHistograms(triplePattern, joinPartners, minima, maxima);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<Variable, Tuple<Literal, Literal>> getMinMax(final TriplePattern triplePattern, final Collection<Variable> variables) {
 		return this.histogramExecutor.getMinMax(triplePattern, variables);

@@ -45,6 +45,9 @@ import lupos.event.util.Literals;
 /**
  * Produce the daily meal info from the refectory of university of luebeck. The
  * Casino is not supported!
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MensaProducer extends ProducerBaseNoDuplicates {
 
@@ -52,11 +55,15 @@ public class MensaProducer extends ProducerBaseNoDuplicates {
 	private static final String MENSA_URL_BASE = "http://www.studentenwerk-s-h.de/seiten_essen/plan_mensa_luebeck.html";
 
 	// MensaProducer namespace and type
+	/** Constant <code>NAMESPACE="http://localhost/events/Mensa/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/Mensa/";
+	/** Constant <code>TYPE</code> */
 	public final static URILiteral TYPE = Literals.createURI(NAMESPACE, "MensaEvent");
 
 	// event predicates
+	/** Constant <code>NAME</code> */
 	public static final URILiteral NAME = Literals.createURI(NAMESPACE, "name");
+	/** Constant <code>PRICE</code> */
 	public static final URILiteral PRICE = Literals.createURI(NAMESPACE, "price");
 
 	/**
@@ -186,6 +193,9 @@ public class MensaProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Constructor!
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @param interval a int.
 	 */
 	public MensaProducer(SerializingMessageService msgService, int interval) {
 		super(msgService, interval);
@@ -193,6 +203,9 @@ public class MensaProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * This is {@link #main(String[])}. It does {@link #main(String[])}.
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
@@ -209,6 +222,7 @@ public class MensaProducer extends ProducerBaseNoDuplicates {
 	 * 
 	 * @see lupos.event.ProducerBase#produce()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		List<MealInfo> mealinfolist = parseMensaSite();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -30,9 +34,13 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
 import lupos.misc.debug.DebugStep;
-
 public abstract class Window extends TripleOperator implements TripleDeleter {
 
+	/**
+	 * <p>getPatternMatcher.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 */
 	public PatternMatcher getPatternMatcher() {
 		if (this.getSucceedingOperators().size() == 1) {
 			final BasicOperator bo = this.getSucceedingOperators().get(0)
@@ -44,6 +52,7 @@ public abstract class Window extends TripleOperator implements TripleDeleter {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
@@ -51,6 +60,7 @@ public abstract class Window extends TripleOperator implements TripleDeleter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTriple(final Triple triple) {
 		for (final OperatorIDTuple oid : this.succeedingOperators) {
@@ -58,6 +68,7 @@ public abstract class Window extends TripleOperator implements TripleDeleter {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		for (final OperatorIDTuple oid : this.getSucceedingOperators()) {
@@ -66,6 +77,7 @@ public abstract class Window extends TripleOperator implements TripleDeleter {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 		for (final OperatorIDTuple oid : this.succeedingOperators) {

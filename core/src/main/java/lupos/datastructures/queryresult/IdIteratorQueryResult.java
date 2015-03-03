@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.queryresult;
 
@@ -27,12 +31,17 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.engine.operators.index.adaptedRDF3X.MergeIndicesTripleIterator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.util.ImmutableIterator;
-
 public class IdIteratorQueryResult extends IteratorQueryResult {
 
 	private final MergeIndicesTripleIterator itt;
 	private int idOfLastElement;
 
+	/**
+	 * <p>Constructor for IdIteratorQueryResult.</p>
+	 *
+	 * @param itt a {@link lupos.engine.operators.index.adaptedRDF3X.MergeIndicesTripleIterator} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	public IdIteratorQueryResult(final MergeIndicesTripleIterator itt,
 			final TriplePattern tp) {
 		super(null);
@@ -75,10 +84,20 @@ public class IdIteratorQueryResult extends IteratorQueryResult {
 
 	// return the id of the indices used in the case e.g. that there are
 	// several default graphs...
+	/**
+	 * <p>getIDOfLastBinding.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getIDOfLastBinding() {
 		return this.idOfLastElement;
 	}
 
+	/**
+	 * <p>getMaxId.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getMaxId() {
 		return this.itt.getMaxId();
 	}

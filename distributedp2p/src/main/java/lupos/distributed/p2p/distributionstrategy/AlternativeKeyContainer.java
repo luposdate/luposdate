@@ -28,16 +28,17 @@ import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContai
 /**
  * Extension of the KeyContainer for holding a set of alternative key's where the same
  * data is stored, so that in optimization the best matching KeyContainer can be chosen.
- * 
- * @author Bjoern
  *
- * @param <T> The type of the {@link KeyContainer}
+ * @author Bjoern
+ * @param <T> The type of the {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
+ * @version $Id: $Id
  */
 public class AlternativeKeyContainer<T> extends KeyContainer<T>{
 	private static final long serialVersionUID = -8293383650978266404L;
 
 	/**
-	 * Create a new KeyContainer with additional functionality as storing an alternate {@link KeyContainer}
+	 * Create a new KeyContainer with additional functionality as storing an alternate {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
+	 *
 	 * @param type the type
 	 * @param key the key
 	 */
@@ -46,10 +47,11 @@ public class AlternativeKeyContainer<T> extends KeyContainer<T>{
 	}
 	
 	/**
-	 * Create a new KeyContainer with additional functionality as storing an alternate {@link KeyContainer}
+	 * Create a new KeyContainer with additional functionality as storing an alternate {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
+	 *
 	 * @param type the type
 	 * @param key the key
-	 * @param alternative the alternate, redundant {@link KeyContainer}
+	 * @param alternative the alternate, redundant {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
 	 */
 	public AlternativeKeyContainer(String type, T key, KeyContainer<T> alternative) {
 		super(type, key);
@@ -60,8 +62,9 @@ public class AlternativeKeyContainer<T> extends KeyContainer<T>{
 	private KeyContainer<T>[] alternative = new KeyContainer[0];
 	
 	/**
-	 * Adds an alternative to this {@link KeyContainer} which is redundant and has same data.
-	 * @param alternative the alternative {@link KeyContainer}
+	 * Adds an alternative to this {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer} which is redundant and has same data.
+	 *
+	 * @param alternative the alternative {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
@@ -74,16 +77,18 @@ public class AlternativeKeyContainer<T> extends KeyContainer<T>{
 	}
 	
 	/**
-	 * Is any alternative {@link KeyContainer} set?
-	 * @return yes, or no, if none is set via {@link #addAlternative(KeyContainer)}
+	 * Is any alternative {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer} set?
+	 *
+	 * @return a boolean.
 	 */
 	public boolean hasAlternative() {
 		return this.alternative != null && this.alternative.length != 0;
 	}
 	
 	/**
-	 * Returns the first alternative redundant {@link KeyContainer}
-	 * @return the {@link KeyContainer} or {@code null}, if none set!
+	 * Returns the first alternative redundant {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
+	 *
+	 * @return the {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer} or {@code null}, if none set!
 	 */
 	public KeyContainer<T> getAlternative() {
 		if (this.alternative.length == 0) return null;
@@ -92,7 +97,8 @@ public class AlternativeKeyContainer<T> extends KeyContainer<T>{
 	
 	/**
 	 * Returns all alternatives
-	 * @return all alternative redundant {@link KeyContainer}
+	 *
+	 * @return all alternative redundant {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
 	 */
 	public KeyContainer<T>[] getAlternatives() {
 		 return this.alternative;

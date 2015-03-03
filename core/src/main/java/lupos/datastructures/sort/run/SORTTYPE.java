@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sort.run;
 
@@ -29,7 +33,6 @@ import lupos.datastructures.sort.run.trie.TrieBagRuns;
 import lupos.datastructures.sort.run.trie.TrieSetRuns;
 import lupos.datastructures.sort.run.trieWithStringMerging.TrieBagRunsWithStringMerging;
 import lupos.datastructures.sort.run.trieWithStringMerging.TrieSetRunsWithStringMerging;
-
 public enum SORTTYPE {
 	SET {
 		@Override
@@ -104,5 +107,11 @@ public enum SORTTYPE {
 		}
 	};
 	
+	/**
+	 * <p>createRuns.</p>
+	 *
+	 * @param NUMBER_ELEMENTS_IN_INITIAL_RUNS a int.
+	 * @return a {@link lupos.datastructures.sort.run.Runs} object.
+	 */
 	public abstract Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS);
 }

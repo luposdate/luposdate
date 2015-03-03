@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -27,30 +31,49 @@ import java.util.Arrays;
 import java.util.List;
 
 import lupos.rif.IRuleNode;
-
 public abstract class AbstractRuleNode implements IRuleNode {
 	protected IRuleNode parent;
 
+	/**
+	 * <p>Constructor for AbstractRuleNode.</p>
+	 */
 	public AbstractRuleNode() {
 	}
 
+	/**
+	 * <p>Constructor for AbstractRuleNode.</p>
+	 *
+	 * @param parent a {@link lupos.rif.IRuleNode} object.
+	 */
 	public AbstractRuleNode(IRuleNode parent) {
 		this();
 		setParent(parent);
 	}
 
+	/**
+	 * <p>Getter for the field <code>parent</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 */
 	public IRuleNode getParent() {
 		return parent;
 	}
 
+	/** {@inheritDoc} */
 	public void setParent(IRuleNode parent) {
 		this.parent = parent;
 	}
 
+	/**
+	 * <p>getChildren.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IRuleNode> getChildren() {
 		return Arrays.asList();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return getLabel();

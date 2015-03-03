@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -39,20 +43,35 @@ import lupos.rif.IVariableScope;
 import lupos.rif.RIFException;
 
 import com.google.common.collect.Multimap;
-
 public class ExistExpression extends AbstractRuleNode implements IExpression,
 IVariableScope {
 	private final Set<RuleVariable> vars = new HashSet<RuleVariable>();
 	public IExpression expr;
 
+	/**
+	 * <p>accept.</p>
+	 *
+	 * @param visitor a {@link lupos.rif.IRuleVisitor} object.
+	 * @param arg a A object.
+	 * @param <R> a R object.
+	 * @param <A> a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/**
+	 * <p>getLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLabel() {
 		return "Exists";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<IRuleNode> getChildren() {
 		List<IRuleNode> ret = new ArrayList<IRuleNode>();
@@ -61,10 +80,20 @@ IVariableScope {
 		return ret;
 	}
 
+	/**
+	 * <p>containsOnlyVariables.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean containsOnlyVariables() {
 		return false;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<RuleVariable> getVariables() {
 		// nur Variablen, die nicht deklariert sind, aber im K�rper vorkommen
 		Set<RuleVariable> innerVars = expr.getVariables();
@@ -72,40 +101,61 @@ IVariableScope {
 		return innerVars;
 	}
 
+	/**
+	 * <p>getPredicates.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Uniterm> getPredicates() {
 		// Exists steht f�r sich
 		return Arrays.asList();
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding) {
 		return evaluate(binding, null);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult) {
 		return evaluate(binding, optionalResult, null);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object result, Multimap<IExpression, IExpression> equalities) {
 		throw new RIFException("Exists not supported in Evaluation!");
 	}
 
+	/** {@inheritDoc} */
 	public boolean isBound(RuleVariable var, Collection<RuleVariable> boundVars) {
 		return expr.isBound(var, boundVars);
 	}
 
+	/**
+	 * <p>isPossibleAssignment.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isPossibleAssignment() {
 		return false;
 	}
 
+	/**
+	 * <p>getDeclaredVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<RuleVariable> getDeclaredVariables() {
 		return vars;
 	}
 
+	/** {@inheritDoc} */
 	public void addVariable(RuleVariable var) {
 		var.setParent(this);
 		vars.add(var);
 	}
 
+	/** {@inheritDoc} */
 	public String toString(Prefix prefixInstance) {
 		return toString();
 	}

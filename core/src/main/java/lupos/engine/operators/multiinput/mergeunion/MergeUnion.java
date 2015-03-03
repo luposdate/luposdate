@@ -34,12 +34,17 @@ import lupos.datastructures.items.literal.Literal;
  * This operator computes the union of its operands.
  * The input of this operator must be sorted according to a given sort criterium.
  * The sorted order remains also in the output.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MergeUnion extends ComparatorMergeUnion {
 
 	protected final Collection<Variable> sortCriterium;
 
 	/**
+	 * <p>Constructor for MergeUnion.</p>
+	 *
 	 * @param sortCriterium the sort criterium after which the input of this operator must be sorted. Furthermore, the result of this operator follows this sort criterium.
 	 */
 	public MergeUnion(final Collection<Variable> sortCriterium) {
@@ -73,6 +78,8 @@ public class MergeUnion extends ComparatorMergeUnion {
 	}
 
 	/**
+	 * <p>Getter for the field <code>sortCriterium</code>.</p>
+	 *
 	 * @return the sort criterium after which the input of this operator must be sorted. Furthermore, the result of this operator follows this sort criterium.
 	 */
 	public Collection<Variable> getSortCriterium(){

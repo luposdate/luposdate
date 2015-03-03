@@ -34,8 +34,17 @@ import java.util.ArrayList;
  * Retrieves stoplist words from stoplist.txt (language sensitive, provisional
  * stoplist words for english and german texts included so far) and removes
  * these words from feed description string, if contained.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class StoplistReader {
+	/**
+	 * <p>readStoplist.</p>
+	 *
+	 * @param path a {@link java.lang.String} object.
+	 * @return an array of {@link java.util.ArrayList} objects.
+	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<String>[] readStoplist(String path) {
 		ArrayList<String> germanstoplist = new ArrayList<String>();

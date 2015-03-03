@@ -34,7 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Class for creating {@link JPanel} handling template and the queries layout.
+ * Class for creating {@link javax.swing.JPanel} handling template and the queries layout.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class WorkPanel {
 
@@ -106,7 +109,7 @@ public class WorkPanel {
 	 * @param path
 	 *            the path to save
 	 * @return JSONObject to save
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public JSONObject toJSON(final String path) throws JSONException {
 		final JSONObject saveObject = new JSONObject();
@@ -140,12 +143,12 @@ public class WorkPanel {
 	}
 
 	/**
-	 * Loads from a given {@link JSONObject} the data for setting them into
+	 * Loads from a given {@link org.json.JSONObject} the data for setting them into
 	 * template panel.
 	 *
 	 * @param loadObject
 	 *            the object to load
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public void fromJSON(final JSONObject loadObject) throws JSONException {
 
@@ -206,7 +209,7 @@ public class WorkPanel {
 	}
 
 	/**
-	 * For getting the selected Subscriptions and creates {@link JSONObject}
+	 * For getting the selected Subscriptions and creates {@link org.json.JSONObject}
 	 *
 	 * @return result as JSONObject
 	 */

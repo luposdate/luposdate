@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -30,22 +34,28 @@ import lupos.datastructures.items.Triple;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.misc.debug.DebugStep;
-
 public class WindowDuration extends Window {
 
 	private final int duration;
 	private LinkedList<TimestampedTriple> tripleList;
 
+	/**
+	 * <p>Constructor for WindowDuration.</p>
+	 *
+	 * @param duration a int.
+	 */
 	public WindowDuration(final int duration) {
 		this.duration = duration;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
 		this.tripleList = new LinkedList<TimestampedTriple>();
 		return message;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		final TimestampedTriple timestampedTriple = (TimestampedTriple) triple;
@@ -66,6 +76,7 @@ public class WindowDuration extends Window {
 		super.consume(timestampedTriple);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		final TimestampedTriple timestampedTriple = (TimestampedTriple) triple;
@@ -86,6 +97,7 @@ public class WindowDuration extends Window {
 		super.consumeDebug(timestampedTriple, debugstep);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" " + this.duration;

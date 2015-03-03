@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -33,15 +37,22 @@ import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
-
 public class PredicateIndexScan extends InsertIndexScan {
 	final public Set<Predicate> predFacts = new HashSet<Predicate>();
 
+	/**
+	 * <p>Constructor for PredicateIndexScan.</p>
+	 */
 	public PredicateIndexScan() {
 		super(null);
 		this.triplePatterns = Arrays.asList();
 	}
 
+	/**
+	 * <p>addPredicateFact.</p>
+	 *
+	 * @param fact a {@link lupos.rif.datatypes.Predicate} object.
+	 */
 	public void addPredicateFact(final Predicate fact) {
 		this.predFacts.add(fact);
 	}
@@ -52,11 +63,13 @@ public class PredicateIndexScan extends InsertIndexScan {
 		return gr;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		return this.createQueryResult();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer("PredicateFacts")
@@ -67,6 +80,7 @@ public class PredicateIndexScan extends InsertIndexScan {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer("PredicateFacts")
@@ -77,16 +91,19 @@ public class PredicateIndexScan extends InsertIndexScan {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeOnce() {
 		this.processAtSucceedingOperators(this.createQueryResult());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebugOnce(final DebugStep debugstep) {
 		this.processAtSucceedingOperatorsDebug(this.createQueryResult(), debugstep);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean joinOrderToBeOptimized(){
 		return false;

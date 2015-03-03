@@ -25,6 +25,9 @@ package lupos.event.producer.ebay.parser;
 
 /**
  * Factory for incremental construction of a JSON string.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSValueFactory extends JSONFactory {
 
@@ -39,6 +42,7 @@ public class JSValueFactory extends JSONFactory {
 	 */
 	private boolean escaped = false;
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean append(char c) {
 		boolean next = !this.finished;
@@ -67,6 +71,7 @@ public class JSValueFactory extends JSONFactory {
 		return next;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSObject create() {
 		return new JSValue(this.value.toString());

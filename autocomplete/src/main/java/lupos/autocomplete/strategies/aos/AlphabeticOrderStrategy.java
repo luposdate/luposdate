@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.aos;
 
@@ -30,20 +34,26 @@ import java.util.Map.Entry;
 
 import lupos.autocomplete.misc.Item;
 import lupos.autocomplete.strategies.Strategy;
-
 public abstract class AlphabeticOrderStrategy extends Strategy {
 
 	protected List<String> reservedWords = new ArrayList<String>();
 
+	/**
+	 * <p>Constructor for AlphabeticOrderStrategy.</p>
+	 */
 	public AlphabeticOrderStrategy(){
 		this.initReservedWords();
 	}
 
+	/**
+	 * <p>initReservedWords.</p>
+	 */
 	public abstract void initReservedWords();
 
 	/*
 	 * erstellt die Vorschlagsliste
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> createAutoCompletionList(
 			final String textDocument, final int cursorPosition) {
@@ -85,6 +95,7 @@ public abstract class AlphabeticOrderStrategy extends Strategy {
 	/*
 	 * generiert die Gewichte
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> generateWeight(final List<Item> list) {
 

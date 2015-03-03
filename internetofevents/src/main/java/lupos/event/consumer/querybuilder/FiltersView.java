@@ -44,6 +44,8 @@ import javax.swing.SwingConstants;
 /**
  * A View which allows to add and remove filters
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class FiltersView extends JPanel implements ActionListener {
 	
@@ -51,6 +53,9 @@ public class FiltersView extends JPanel implements ActionListener {
 	private List <Row> rows = new ArrayList<Row>();
 	
 	
+	/**
+	 * <p>Constructor for FiltersView.</p>
+	 */
 	public FiltersView() {
 		super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -71,6 +76,8 @@ public class FiltersView extends JPanel implements ActionListener {
 	
 	/**
 	 * Returns a list of filters that has been added.
+	 *
+	 * @return a {@link java.util.List} object.
 	 */
 	public List<Filter> getFilters() {
 		List<Filter> filters = new ArrayList<Filter>();
@@ -83,6 +90,7 @@ public class FiltersView extends JPanel implements ActionListener {
 		return filters;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.addButton) {

@@ -34,12 +34,11 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 
 /**
  * The class EdgeBased implements a simple edge based Layout algorithm
- * which is used in the LUPOSDATE- Project 
- * 
- * @author Tobias Bielfeld
+ * which is used in the LUPOSDATE- Project
  *
+ * @author Tobias Bielfeld
+ * @version $Id: $Id
  */
-
 public class EdgeBased {
 	
 	private static final int EDGE_LENGTH =  350;
@@ -175,10 +174,12 @@ public class EdgeBased {
 	
 	/**
 	 * Method recursively computes and sets the new coordinates for all nodes
-	 * in the graph with a depth-search.  
+	 * in the graph with a depth-search.
+	 *
 	 * @param node		the node
 	 * @param op		the graph
 	 * @param isSet		HashMap with already visited nodes
+	 * @param isVisited a {@link java.util.HashSet} object.
 	 */
 	public static void setCoordinates(GraphWrapper node, final OperatorGraph op, HashSet<GraphWrapper> isSet, HashSet<Edge> isVisited) {
 		HashMap <GraphWrapper, GraphBox> boxes = op.getBoxes();
@@ -230,6 +231,11 @@ public class EdgeBased {
 		
 	}
 	
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public static void arrange(final OperatorGraph operatorgraph) {
 		HashMap <GraphWrapper, GraphBox> boxes = operatorgraph.getBoxes();
 		HashSet<GraphWrapper> isSet = new HashSet<GraphWrapper>();

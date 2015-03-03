@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.federated;
 
@@ -30,18 +34,29 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.sparql1_1.Node;
-
 public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedingJoin {
 
+	/**
+	 * <p>Constructor for FederatedQueryJoinAtEndpoint.</p>
+	 *
+	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
+	 */
 	public FederatedQueryJoinAtEndpoint(final Node federatedQuery) {
 		super(federatedQuery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult queryResult, final int operandID) {
 		return FederatedQueryWithSucceedingJoin.process(queryResult, this.endpoint, this.toStringQuery(queryResult), this.bindingsFactory);
 	}
 
+	/**
+	 * <p>toStringQuery.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toStringQuery(final QueryResult queryResult) {
 		queryResult.materialize();
 		String query = FederatedQuerySemiJoin.toStringQuery(this.surelyBoundVariablesInServiceCall, this.variablesInServiceCall, this.federatedQuery, queryResult);

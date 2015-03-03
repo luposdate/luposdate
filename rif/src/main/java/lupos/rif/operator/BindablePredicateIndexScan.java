@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -35,15 +39,21 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rif.datatypes.RuleResult;
-
 public class BindablePredicateIndexScan extends BindableIndexScan {
 	private final PredicatePattern predicatePattern;
 
+	/**
+	 * <p>Constructor for BindablePredicateIndexScan.</p>
+	 *
+	 * @param index a {@link lupos.rif.operator.PredicateIndexScan} object.
+	 * @param pattern a {@link lupos.rif.operator.PredicatePattern} object.
+	 */
 	public BindablePredicateIndexScan(final PredicateIndexScan index, final PredicatePattern pattern) {
 		super(index);
 		this.predicatePattern = pattern;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = (BoundVariablesMessage) this.predicatePattern
@@ -54,6 +64,7 @@ public class BindablePredicateIndexScan extends BindableIndexScan {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void processIndexScan(final QueryResult result, final Bindings bind) {
 		final Item[] newItems = new Item[this.predicatePattern.getPatternItems()
@@ -76,6 +87,7 @@ public class BindablePredicateIndexScan extends BindableIndexScan {
 		result.add(tempResult);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<TriplePattern> getTriplePattern() {
 		return new ArrayList<TriplePattern>();

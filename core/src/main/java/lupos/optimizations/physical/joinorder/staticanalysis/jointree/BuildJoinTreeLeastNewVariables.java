@@ -28,16 +28,23 @@ import lupos.engine.operators.index.Root;
 import lupos.optimizations.physical.joinorder.staticanalysis.scoring.subgraph.ScoringSubGraphsLeastNewVariables;
 
 /**
- * Join ordering according to least new variables for the next best chosen combination of subgraphs... 
+ * Join ordering according to least new variables for the next best chosen combination of subgraphs...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BuildJoinTreeLeastNewVariables extends BuildJoinTreeByScoring {
 	
+	/**
+	 * <p>Constructor for BuildJoinTreeLeastNewVariables.</p>
+	 */
 	public BuildJoinTreeLeastNewVariables(){
 		this.scorings.add(new ScoringSubGraphsLeastNewVariables());
 	}
 
 	/**
-	 * Static method to call the optimizer for join ordering according to least new variables for the next best chosen combination of subgraphs 
+	 * Static method to call the optimizer for join ordering according to least new variables for the next best chosen combination of subgraphs
+	 *
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 * @return the root operator under which the subgraph with the reordered joins are inserted
 	 */

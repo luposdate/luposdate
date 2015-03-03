@@ -47,9 +47,12 @@ import lupos.event.util.Literals;
 /**
  * Base class for producers.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class ProducerBase implements IMessageReceivedHandler<Serializable>, IDisconnectedHandler {
 
+	/** Constant <code>MIN_INTERVAL=100</code> */
 	public static int MIN_INTERVAL = 100;
 	private final Literal TIMESTAMP_LITERAL = LiteralFactory.createURILiteralWithoutException("<timestamp>");
 
@@ -58,6 +61,7 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 	private final int interval;
 
 	/**
+	 * <p>Constructor for ProducerBase.</p>
 	 *
 	 * @param msgService The message service that the producer should use to communicate.
 	 * @param interval Interval in milliseconds
@@ -155,14 +159,30 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 		return l;
 	}
 
+	/**
+	 * <p>fold.</p>
+	 *
+	 * @param triplesToFold a {@link java.util.List} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	protected static List<List<Triple>> fold(final List<Triple> triplesToFold){
 		final List<List<Triple>> result = new LinkedList<List<Triple>>();
 		result.add(triplesToFold);
 		return result;
 	}
 
+	/**
+	 * <p>produce.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public abstract List<List<Triple>> produce();
 
+	/**
+	 * <p>askForHostOfBroker.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected static String askForHostOfBroker(){
 		return JOptionPane.showInputDialog("Enter the host of the broker:", "localhost");
 	}
@@ -170,6 +190,7 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 	/**
 	 * Establishes a connection to the master broker
 	 * and afterwards send a connection request message to it
+	 *
 	 * @return msgService the message service of the connection
 	 */
 	protected static SerializingMessageService connectToMaster(){
@@ -185,6 +206,7 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 		return msgService;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void messageReceived(final Object src, final Serializable msg){
 		if (msg instanceof TcpConnectInfo){
@@ -194,6 +216,8 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method will be called after the master
 	 * broker has sent a forwarding tcpConnect object.
 	 * This method will then connect to this specific

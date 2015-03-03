@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -34,6 +38,12 @@ import lupos.rif.model.RuleList;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class ListPredicates {
 
+	/**
+	 * <p>is_list.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-list")
 	public static BooleanLiteral is_list(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -44,6 +54,12 @@ public class ListPredicates {
 		}
 	}
 
+	/**
+	 * <p>list_contains.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	@Builtin(Name = "list-contains", Bindable = true)
 	public static Object list_contains(final Argument arg) {
 		if (arg.arguments.size() == 2) {

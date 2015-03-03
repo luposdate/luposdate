@@ -35,10 +35,14 @@ import lupos.datastructures.sort.run.Runs;
 
 /**
  * Tries are used to generate the initial runs.
- * Merging and swapping is done node-based.  
+ * Merging and swapping is done node-based.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TrieSetRuns implements Runs {
 
+	/** {@inheritDoc} */
 	@Override
 	public Run merge(final List<Run> runs, final boolean inmemory) {
 		ArrayList<TrieSet> triestoBeMerged = new ArrayList<TrieSet>(runs.size());
@@ -55,11 +59,13 @@ public class TrieSetRuns implements Runs {
 		return new TrieSetRun(result);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run createRun() {
 		return new TrieSetRun(TrieSet.createRamBasedTrieSet());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "Initial runs generated using trie sets (node-based merging)";

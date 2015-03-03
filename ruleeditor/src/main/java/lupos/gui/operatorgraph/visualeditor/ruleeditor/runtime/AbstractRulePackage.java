@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.runtime;
 
@@ -29,10 +33,21 @@ import lupos.engine.operators.BasicOperator;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.optimizations.logical.rules.DebugContainer;
-
 public abstract class AbstractRulePackage {
 	protected Rule[] rules;
 
+	/**
+	 * <p>applyRules.</p>
+	 *
+	 * @param rootOp a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public abstract void applyRules(BasicOperator rootOp);
+	/**
+	 * <p>applyRulesDebugByteArray.</p>
+	 *
+	 * @param rootOp a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param prefixInstance a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public abstract List<DebugContainer<BasicOperatorByteArray>> applyRulesDebugByteArray(BasicOperator rootOp, Prefix prefixInstance);
 }

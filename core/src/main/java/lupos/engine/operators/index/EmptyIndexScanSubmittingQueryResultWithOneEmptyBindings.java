@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index;
 
@@ -37,7 +41,6 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.rdf.Prefix;
-
 public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends EmptyIndexScan {
 
 	protected final Root root;
@@ -49,6 +52,13 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	 */
 	private static final long serialVersionUID = -6813056199050211285L;
 
+	/**
+	 * <p>Constructor for EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param graphConstraint a {@link lupos.datastructures.items.Item} object.
+	 * @param root_param a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(final OperatorIDTuple succeedingOperator,
 			final Item graphConstraint,
 			final lupos.engine.operators.index.Root root_param) {
@@ -57,6 +67,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 		this.rdfGraph = graphConstraint;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
@@ -64,10 +75,10 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Creating a new query result with an empty binding to handle an empty BIND
 	 * statement
-	 *
-	 * @param dataset
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {
@@ -104,11 +115,13 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 		return queryResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+"\nReturning queryResult with one empty bindings";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefix) {
 		return super.toString(prefix)+"\nReturning queryResult with one empty bindings";
@@ -117,6 +130,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	// just for using this also for the stream engine
 	protected boolean firstTime = true;
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		if(this.firstTime){

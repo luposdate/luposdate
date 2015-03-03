@@ -39,6 +39,9 @@ import javax.swing.text.BadLocationException;
  * improvements through reuse.  It can be used even after the
  * lexer explicitly closes it by seeking to the place that
  * we want to read next, and reseting the lexer.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LuposDocumentReader extends InputStream {
 
@@ -48,6 +51,9 @@ public class LuposDocumentReader extends InputStream {
      * reader with this method (in a nice thread safe way, this
      * should not be called at the same time as a read) allows
      * the reader to compensate.
+     *
+     * @param position_parameter a int.
+     * @param adjustment a int.
      */
     public void update(final int position_parameter, final int adjustment){
         if (position_parameter < this.position){
@@ -86,6 +92,8 @@ public class LuposDocumentReader extends InputStream {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Has no effect.  This reader can be used even after
      * it has been closed.
      */
@@ -95,9 +103,9 @@ public class LuposDocumentReader extends InputStream {
     }
 
     /**
-     * Save a position for reset.
+     * {@inheritDoc}
      *
-     * @param readAheadLimit ignored.
+     * Save a position for reset.
      */
     @Override
 	public synchronized void mark(final int readAheadLimit){
@@ -105,9 +113,9 @@ public class LuposDocumentReader extends InputStream {
     }
 
     /**
-     * This reader support mark and reset.
+     * {@inheritDoc}
      *
-     * @return true
+     * This reader support mark and reset.
      */
     @Override
 	public boolean markSupported(){
@@ -115,9 +123,9 @@ public class LuposDocumentReader extends InputStream {
     }
 
     /**
-     * Read a single character.
+     * {@inheritDoc}
      *
-     * @return the character or -1 if the end of the document has been reached.
+     * Read a single character.
      */
     @Override
     public int read(){
@@ -148,11 +156,6 @@ public class LuposDocumentReader extends InputStream {
     /**
      * Read and fill the buffer.
      * This method will always fill the buffer unless the end of the document is reached.
-     *
-     * @param cbuf the buffer to fill.
-     * @param off offset into the buffer to begin the fill.
-     * @param len maximum number of characters to put in the buffer.
-     * @return the number of characters read or -1 if no more characters are available in the document.
      */
     public int read(final char[] cbuf, final int off, final int len){
         if (this.position < this.document.getLength()){
@@ -188,6 +191,8 @@ public class LuposDocumentReader extends InputStream {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Reset this reader to the last mark, or the beginning of the document if a mark has not been set.
      */
     @Override
@@ -201,12 +206,11 @@ public class LuposDocumentReader extends InputStream {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Skip characters of input.
      * This method will always skip the maximum number of characters unless
      * the end of the file is reached.
-     *
-     * @param n number of characters to skip.
-     * @return the actual number of characters skipped.
      */
     @Override
 	public long skip(final long n){
@@ -282,10 +286,11 @@ public class LuposDocumentReader extends InputStream {
 	}
 
 
-    /**
-     * Returns this stream as a reader.
-     * @return The reader.
-     */
+	/**
+	 * Returns this stream as a reader.
+	 *
+	 * @return The reader.
+	 */
 	public Reader getReader() {
 
 		final String str = this.getText();

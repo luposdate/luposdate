@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler;
 
@@ -27,12 +31,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
-
 public class ComboListener implements ActionListener {
 	private JComboBox combo;
 	private Object currentItem;
 	private ActionListener additionalActionListener = null;
 
+	/**
+	 * <p>Constructor for ComboListener.</p>
+	 *
+	 * @param combo a {@link javax.swing.JComboBox} object.
+	 */
 	public ComboListener(JComboBox combo) {
 		combo.setSelectedIndex(0);
 
@@ -40,12 +48,19 @@ public class ComboListener implements ActionListener {
 		this.currentItem = combo.getSelectedItem();
 	}
 
+	/**
+	 * <p>Constructor for ComboListener.</p>
+	 *
+	 * @param combo a {@link javax.swing.JComboBox} object.
+	 * @param additionalActionListener a {@link java.awt.event.ActionListener} object.
+	 */
 	public ComboListener(JComboBox combo, ActionListener additionalActionListener) {
 		this(combo);
 
 		this.additionalActionListener = additionalActionListener;
 	}
 
+	/** {@inheritDoc} */
 	public void actionPerformed(ActionEvent ae) {
 		Object tempItem = this.combo.getSelectedItem();
 

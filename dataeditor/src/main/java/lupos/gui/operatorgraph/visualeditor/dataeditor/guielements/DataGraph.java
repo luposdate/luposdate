@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.guielements;
 
@@ -32,26 +36,34 @@ import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraphOperatorWithPrefix;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
 public class DataGraph extends VisualGraphOperatorWithPrefix {
 	private static final long serialVersionUID = 69926446707446031L;
 
+	/**
+	 * <p>Constructor for DataGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public DataGraph(final VisualEditor<Operator> visualEditor, final Prefix prefix) {
 		super(visualEditor, prefix);
 
 		System.out.println(">" + (this.prefix == null));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void handleAddOperator(final Operator newOp) {
 		// do not need here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean validateAddOperator(final int x, final int y, final String newClassName) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String serializeGraph() {
 		final String object = super.serializeSuperGraph();
@@ -62,6 +74,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 		return ret.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized void arrange(final Arrange arrange) {
 		final GraphWrapper prefixGW = new GraphWrapperPrefix(this.prefix);
@@ -87,6 +100,7 @@ public class DataGraph extends VisualGraphOperatorWithPrefix {
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public VisualGraphOperatorWithPrefix newInstance(
 			VisualEditor<Operator> visualEditorParameter, Prefix prefixParamater) {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.owlToRif;
 
@@ -42,7 +46,6 @@ import lupos.engine.operators.index.Indices;
 import lupos.owl2rl.parser.ParserResults;
 import lupos.rif.BasicIndexRuleEvaluator;
 import lupos.rif.datatypes.Predicate;
-
 public class InferenceRulesGenerator {
 
 	// the inference rules
@@ -56,11 +59,20 @@ public class InferenceRulesGenerator {
 	/**number of emitted rules (not counting fixed rules)**/
 	public static int rulesEmitted;
 
+	/**
+	 * <p>Constructor for InferenceRulesGenerator.</p>
+	 *
+	 * @param print a boolean.
+	 */
 	public InferenceRulesGenerator(final boolean print) {
 		this.printOn = print;
 	}
 
-	/**Return the inference rules with prefixes and Document/Group brackets**/
+	/**
+	 *Return the inference rules with prefixes and Document/Group brackets*
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOutputRules() {
 		return lupos.owl2rl.tools.Tools.document(this.parsedValues.getPrefixes()
 						+ lupos.owl2rl.tools.Tools.group(this.parsedValues.getFixedrules()
@@ -313,8 +325,10 @@ public class InferenceRulesGenerator {
 		return null;
 	}
 
+	/** Constant <code>hit</code> */
 	public static int hit;
 	private static int RuleResultCounter;
+	/** Constant <code>debugString=""</code> */
 	public static String debugString = "";
 
 	/**
@@ -350,6 +364,8 @@ public class InferenceRulesGenerator {
 
 	/**
 	 * Set the results from the rule template parser
+	 *
+	 * @param results a {@link lupos.owl2rl.parser.ParserResults} object.
 	 */
 	public void setParserResults(final ParserResults results) {
 		this.parsedValues = results;
@@ -358,7 +374,7 @@ public class InferenceRulesGenerator {
 	/**
 	 * set debug info to System.out on or Off
 	 *
-	 * @param printOn
+	 * @param printOn a boolean.
 	 */
 	public void setPrintOnOrOff(final boolean printOn) {
 		this.printOn = printOn;
@@ -366,7 +382,8 @@ public class InferenceRulesGenerator {
 
 	/**
 	 * start the evaluation and emitting of inference rules
-	 * @param ontology
+	 *
+	 * @param ontology a {@link java.lang.String} object.
 	 */
 	public void start(final String ontology) {
 		final BasicIndexRuleEvaluator ruleEvaluator=this.initAndGetEvaluator(ontology);
@@ -375,7 +392,8 @@ public class InferenceRulesGenerator {
 
 	/**
 	 * start the evaluation and emitting of inference rules
-	 * @param evaluator
+	 *
+	 * @param evaluator a {@link lupos.rif.BasicIndexRuleEvaluator} object.
 	 */
 	public void start(final BasicIndexRuleEvaluator evaluator) {
 		/**Results from Engine for GraphResults (Results with bindings)**/

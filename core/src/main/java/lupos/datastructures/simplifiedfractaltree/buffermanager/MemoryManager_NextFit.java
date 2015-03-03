@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.simplifiedfractaltree.buffermanager;
 
@@ -37,7 +41,6 @@ import java.util.HashMap;
 
 import lupos.datastructures.simplifiedfractaltree.FractalTreeEntry;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V extends Serializable> implements Serializable {
 	/**
 	 * Serial Version ID
@@ -49,10 +52,18 @@ public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V ext
 	private final int pBound = -1;
 	private final int max = 20;
 
+	/**
+	 * <p>Constructor for MemoryManager_NextFit.</p>
+	 */
 	public MemoryManager_NextFit() {
 		this.map = new HashMap<>();
 	}
 
+	/**
+	 * <p>Constructor for MemoryManager_NextFit.</p>
+	 *
+	 * @param file a {@link java.io.File} object.
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MemoryManager_NextFit(final File file) {
 		ObjectInputStream ois = null;
@@ -88,6 +99,13 @@ public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>acquire.</p>
+	 *
+	 * @param pageCount a int.
+	 * @param size a int.
+	 * @return a {@link lupos.datastructures.simplifiedfractaltree.buffermanager.Pointer} object.
+	 */
 	public Pointer acquire(final int pageCount, final int size) {
 		ArrayList<Point> tmp;
 		final int lmax = this.max;
@@ -152,6 +170,13 @@ public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>release.</p>
+	 *
+	 * @param page a int.
+	 * @param leftBound a int.
+	 * @param size a int.
+	 */
 	public void release(final int page, final int leftBound, final int size) {
 		if (leftBound + size <= this.pageSize) {
 			if (this.map.get(new Integer(page)) != null) {
@@ -212,10 +237,20 @@ public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V ext
 	}
 
 
+	/**
+	 * <p>getAll.</p>
+	 *
+	 * @return a {@link java.util.ArrayList} object.
+	 */
 	public ArrayList<Triple> getAll() {
 		throw new NotImplementedException();
 	}
 
+	/**
+	 * <p>writeToDisk.</p>
+	 *
+	 * @param file a {@link java.io.File} object.
+	 */
 	public void writeToDisk(final File file) {
 		ObjectOutputStream oos = null;
 		FileOutputStream fos = null;
@@ -243,14 +278,27 @@ public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>map</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<Integer, ArrayList<Point>> getMap() {
 		return this.map;
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		this.map = new HashMap<>();
 	}
 
+	/**
+	 * <p>defragment.</p>
+	 *
+	 * @param bufferedList a {@link lupos.datastructures.simplifiedfractaltree.buffermanager.BufferedList_LuposSerialization} object.
+	 */
 	public void defragment(final BufferedList_LuposSerialization<FractalTreeEntry<K, V>> bufferedList){
 		final FractalTreeEntry<K, V> entry = new FractalTreeEntry<>();
 		final BufferedList_LuposSerialization<FractalTreeEntry<K, V>> tempBufferedList = new BufferedList_LuposSerialization<FractalTreeEntry<K, V>>(8 * 1024, (new File("tempbf")).getAbsoluteFile(), entry);

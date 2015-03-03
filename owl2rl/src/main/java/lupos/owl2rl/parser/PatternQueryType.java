@@ -24,10 +24,11 @@
 package lupos.owl2rl.parser;
 
 /**
- * Used for identifying recurring types of rules that can be completed by the program instead of being parsed and thus reduce parsing time.  
- * 
+ * Used for identifying recurring types of rules that can be completed by the program instead of being parsed and thus reduce parsing time.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
-
 public enum PatternQueryType {
 	
 	RDFTYPE, // ?x  rdf:type :something 

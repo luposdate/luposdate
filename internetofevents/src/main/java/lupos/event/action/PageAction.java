@@ -44,6 +44,9 @@ import lupos.event.consumer.html.Encode;
 /**
  * Class for handling with query results and interpretating template file code
  * for generating HTML pages.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PageAction extends Action {
 
@@ -53,7 +56,7 @@ public class PageAction extends Action {
 
 	/**
 	 * Constructor of this action.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the action
 	 * @param template
@@ -69,11 +72,10 @@ public class PageAction extends Action {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Receives query results and interpretates the incoming triples. Also
 	 * replaces the syntax of template HTML's to HTML files with data.
-	 * 
-	 * @param queryResult
-	 *            the incoming data
 	 */
 	@Override
 	public void execute(QueryResult queryResult) {
@@ -174,14 +176,13 @@ public class PageAction extends Action {
 
 	/**
 	 * Checking incoming bindings and creates out of syntax a readable content.
-	 * 
+	 *
 	 * @param b
 	 *            the bindings with information
 	 * @param v
 	 *            the variables of bindings
 	 * @param template_param
 	 *            with row data
-	 * 
 	 * @return the new HTML content
 	 */
 	public String replaceContent(Bindings b, Variable v, String template_param) {
@@ -218,14 +219,13 @@ public class PageAction extends Action {
 	 * Checking incoming bindings and creates out of the template HTML content a
 	 * HTML content with readable data. At this case the escape syntax is
 	 * replaced.
-	 * 
+	 *
 	 * @param b
 	 *            the bindings with information
 	 * @param v
 	 *            the variables of bindings
 	 * @param template_param
 	 *            with row data
-	 * 
 	 * @return the new HTML content
 	 */
 	public String replaceEscape(Bindings b, Variable v, String template_param) {
@@ -252,7 +252,7 @@ public class PageAction extends Action {
 
 	/**
 	 * For getting the next content of for syntax.
-	 * 
+	 *
 	 * @param forCode
 	 *            the syntax code
 	 * @return the content
@@ -268,6 +268,12 @@ public class PageAction extends Action {
 		return null;
 	}
 
+	/**
+	 * <p>getNextChartTemplate.</p>
+	 *
+	 * @param chartCode a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getNextChartTemplate(String chartCode){
 		
 		Pattern pattern = Pattern.compile(Encode.CHARTSTART + "(.*?)" + Encode.CHARTEND);
@@ -283,14 +289,13 @@ public class PageAction extends Action {
 
 	/**
 	 * Replaces the ECode with the last word of the predicate of v.
-	 * 
+	 *
 	 * @param b
 	 *            the bindings with information
 	 * @param v
 	 *            the variables of bindings
 	 * @param template_param
 	 *            with row data
-	 * 
 	 * @return the new HTML content
 	 */
 	public String replacePredicate(Bindings b, Variable v, String template_param) {
@@ -338,10 +343,24 @@ public class PageAction extends Action {
 		
 	}
 	
+	/**
+	 * <p>replaceImage.</p>
+	 *
+	 * @param image a {@link java.lang.String} object.
+	 * @param template a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String replaceImage(String image, String template){
 		return template.replaceAll(Encode.IMAGE, image);
 	}
 	
+	/**
+	 * <p>replaceLegend.</p>
+	 *
+	 * @param legend a {@link java.lang.String} object.
+	 * @param template a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String replaceLegend(String legend, String template){
 		String finalLegend = legend.replaceAll("\\n","<br>");
 		return template.replaceAll(Encode.LEGEND, finalLegend);

@@ -29,14 +29,18 @@ import lupos.sparql1_1.Node;
 /**
  * This class is for starting the Demo_Applet with a distributed query evaluator.
  * It is not in the module distributed in order to solve a cycle in the module dependencies...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Start_Demo_Applet {
 
 	/**
 	 * This method starts the Demo_Applet. It is assumed that the first command line argument contains
 	 * the class name of the distributed query evaluator.
+	 *
 	 * @param args command line arguments
-	 * @throws ClassNotFoundException
+	 * @throws java.lang.ClassNotFoundException if any.
 	 */
 	public static void start(final String[] args) throws ClassNotFoundException {
 		final String[] argsWithoutFirst = new String[args.length-1];
@@ -46,9 +50,10 @@ public class Start_Demo_Applet {
 
 	/**
 	 * This method starts the Demo_Applet.
+	 *
 	 * @param evaluator the class name of the distributed query evaluator
 	 * @param args command line arguments
-	 * @throws ClassNotFoundException
+	 * @throws java.lang.ClassNotFoundException if any.
 	 */
 	public static void start(final String evaluator, final String[] args) throws ClassNotFoundException {
 		@SuppressWarnings("unchecked")
@@ -59,6 +64,7 @@ public class Start_Demo_Applet {
 
 	/**
 	 * This method starts the Demo_Applet.
+	 *
 	 * @param evaluator the distributed query evaluator class
 	 * @param args the command line arguments
 	 */
@@ -70,8 +76,9 @@ public class Start_Demo_Applet {
 	/**
 	 * Main method to start the Demo_Applet. It is assumed that the first command line argument contains
 	 * the class name of the distributed query evaluator.
+	 *
 	 * @param args command line arguments
-	 * @throws ClassNotFoundException
+	 * @throws java.lang.ClassNotFoundException if any.
 	 */
 	public static void main(final String[] args) throws ClassNotFoundException {
 		Start_Demo_Applet.start(args);

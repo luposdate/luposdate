@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -52,7 +56,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-
 public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 
 	private Model model;
@@ -77,25 +80,51 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 	private ONTOLOGY ontology;
 	private FORMAT type;
 
+	/**
+	 * <p>Constructor for JenaQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public JenaQueryEvaluator() throws Exception {
 	}
 
+	/**
+	 * <p>Constructor for JenaQueryEvaluator.</p>
+	 *
+	 * @param arguments an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public JenaQueryEvaluator(final String[] arguments) throws Exception {
 		super(arguments);
 	}
 
+	/**
+	 * <p>Constructor for JenaQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param ontology a {@link lupos.engine.evaluators.JenaQueryEvaluator.ONTOLOGY} object.
+	 * @param type a {@link lupos.engine.evaluators.JenaQueryEvaluator.FORMAT} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public JenaQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset, final ONTOLOGY ontology, final FORMAT type) throws Exception{
 		super.init(debug, multiplequeries, compare, compareoptions, times, dataset);
 		this.ontology = ontology;
 		this.type = type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		this.defaultRDFS = ONTOLOGY.NONE;
 		super.setupArguments();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -103,10 +132,16 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		this.type = FORMAT.valueOf(FORMAT.class, this.args.getString("type"));
 	}
 
+	/**
+	 * <p>Setter for the field <code>ontology</code>.</p>
+	 *
+	 * @param ontology a {@link lupos.engine.evaluators.JenaQueryEvaluator.ONTOLOGY} object.
+	 */
 	public void setOntology(final ONTOLOGY ontology){
 		this.ontology = ontology;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long compileQuery(final String queryString) throws Exception {
 		final Date a = new Date();
@@ -114,16 +149,19 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long physicalOptimization() {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -145,6 +183,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			final Collection<URILiteral> defaultGraphs,
@@ -153,6 +192,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		return this.prepareInputData(defaultGraphs, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQuery() throws Exception {
 		final Date a = new Date();
@@ -167,6 +207,7 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getResult() throws Exception {
 		final QueryExecution qe = QueryExecutionFactory.create(this.query, this.model);
@@ -218,6 +259,12 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 
+	/**
+	 * <p>resultSetToBindingsList.</p>
+	 *
+	 * @param solutions a {@link com.hp.hpl.jena.query.ResultSet} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult resultSetToBindingsList(final ResultSet solutions) {
 		// System.out.println(solutions);
 		try {
@@ -317,6 +364,11 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		_main(args, JenaQueryEvaluator.class);
 	}

@@ -26,13 +26,22 @@ package lupos.sparql1_1;
 import java.io.*;
 import java.util.HashSet;
 
-/** Token Manager. */
+/**
+ * Token Manager.
+ *
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class SPARQL1_1ParserTokenManager implements SPARQL1_1ParserConstants
 {
 
   /** Debug output. */
   public  java.io.PrintStream debugStream = System.out;
-  /** Set debug output. */
+  /**
+   * Set debug output.
+   *
+   * @param ds a {@link java.io.PrintStream} object.
+   */
   public  void setDebugStream(java.io.PrintStream ds) { debugStream = ds; }
 private final int jjStopStringLiteralDfa_0(int pos, long active0, long active1, long active2)
 {
@@ -3574,20 +3583,33 @@ protected JavaCharStream input_stream;
 private final int[] jjrounds = new int[429];
 private final int[] jjstateSet = new int[858];
 protected char curChar;
-/** Constructor. */
+/**
+ * Constructor.
+ *
+ * @param stream a {@link lupos.sparql1_1.JavaCharStream} object.
+ */
 public SPARQL1_1ParserTokenManager(JavaCharStream stream){
    if (JavaCharStream.staticFlag)
       throw new Error("ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
    input_stream = stream;
 }
 
-/** Constructor. */
+/**
+ * Constructor.
+ *
+ * @param stream a {@link lupos.sparql1_1.JavaCharStream} object.
+ * @param lexState a int.
+ */
 public SPARQL1_1ParserTokenManager(JavaCharStream stream, int lexState){
    this(stream);
    SwitchTo(lexState);
 }
 
-/** Reinitialise parser. */
+/**
+ * Reinitialise parser.
+ *
+ * @param stream a {@link lupos.sparql1_1.JavaCharStream} object.
+ */
 public void ReInit(JavaCharStream stream)
 {
    jjmatchedPos = jjnewStateCnt = 0;
@@ -3603,14 +3625,23 @@ private void ReInitRounds()
       jjrounds[i] = 0x80000000;
 }
 
-/** Reinitialise parser. */
+/**
+ * Reinitialise parser.
+ *
+ * @param stream a {@link lupos.sparql1_1.JavaCharStream} object.
+ * @param lexState a int.
+ */
 public void ReInit(JavaCharStream stream, int lexState)
 {
    ReInit(stream);
    SwitchTo(lexState);
 }
 
-/** Switch to specified lex state. */
+/**
+ * Switch to specified lex state.
+ *
+ * @param lexState a int.
+ */
 public void SwitchTo(int lexState)
 {
    if (lexState >= 1 || lexState < 0)
@@ -3619,6 +3650,11 @@ public void SwitchTo(int lexState)
       curLexState = lexState;
 }
 
+/**
+ * <p>jjFillToken.</p>
+ *
+ * @return a {@link lupos.sparql1_1.Token} object.
+ */
 protected Token jjFillToken()
 {
    final Token t;
@@ -3650,7 +3686,11 @@ int jjround;
 int jjmatchedPos;
 int jjmatchedKind;
 
-/** Get the next Token. */
+/**
+ * Get the next Token.
+ *
+ * @return a {@link lupos.sparql1_1.Token} object.
+ */
 public Token getNextToken() 
 {
   Token matchedToken;

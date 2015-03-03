@@ -28,13 +28,16 @@ import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.optimizations.logical.rules.generated.runtime.RulePackage;
 
 /**
- * {@link RulePackage} for subgraph submission to be run after physical optimization
- * in {@link QueryClientWithSubgraphTransmission}.
- * 
- * @author Bjoern
+ * {@link lupos.optimizations.logical.rules.generated.runtime.RulePackage} for subgraph submission to be run after physical optimization
+ * in {@link lupos.distributed.query.QueryClientWithSubgraphTransmission}.
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public class AfterPhysicalOptimizationDistributedRulePackage extends RulePackage {
+    /**
+     * <p>Constructor for AfterPhysicalOptimizationDistributedRulePackage.</p>
+     */
     public AfterPhysicalOptimizationDistributedRulePackage() {
         this.rules = new Rule[] {
         		/*

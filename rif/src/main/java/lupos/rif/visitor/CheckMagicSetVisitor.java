@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -37,15 +41,22 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class CheckMagicSetVisitor implements IRuleVisitor<Boolean, Object> {
 	private int conjuntionCounter = 0;
 	private int recursivePredicateCounter = 0;
 	private boolean doDebug = false;
 
+	/**
+	 * <p>Constructor for CheckMagicSetVisitor.</p>
+	 */
 	public CheckMagicSetVisitor() {
 	}
 
+	/**
+	 * <p>Constructor for CheckMagicSetVisitor.</p>
+	 *
+	 * @param debug a boolean.
+	 */
 	public CheckMagicSetVisitor(final boolean debug) {
 		this();
 		doDebug = debug;
@@ -56,6 +67,7 @@ public class CheckMagicSetVisitor implements IRuleVisitor<Boolean, Object> {
 			System.out.println("MagicSetChecker: " + str);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(Document obj, Object arg) throws RIFException {
 		if (obj.getConclusion() != null
@@ -86,6 +98,7 @@ public class CheckMagicSetVisitor implements IRuleVisitor<Boolean, Object> {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(Rule obj, Object arg) throws RIFException {
 		recursivePredicateCounter = 0;
@@ -97,6 +110,7 @@ public class CheckMagicSetVisitor implements IRuleVisitor<Boolean, Object> {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(RulePredicate obj, Object arg) throws RIFException {
 		// only one recursive Predicate
@@ -115,6 +129,7 @@ public class CheckMagicSetVisitor implements IRuleVisitor<Boolean, Object> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(Conjunction obj, Object arg) throws RIFException {
 		// only one conjunction allowed -> Horn Rules
@@ -133,41 +148,48 @@ public class CheckMagicSetVisitor implements IRuleVisitor<Boolean, Object> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(ExistExpression obj, Object arg) throws RIFException {
 		debug("ExitsExpression not supported!");
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(Disjunction obj, Object arg) throws RIFException {
 		debug("Disjunction not supported!");
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(Equality obj, Object arg) throws RIFException {
 		debug("Equalities not allowed!");
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(External obj, Object arg) throws RIFException {
 		debug("Externals not allowed!");
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(RuleList obj, Object arg) throws RIFException {
 		debug("Lists not allowed!");
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(RuleVariable obj, Object arg) throws RIFException {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Boolean visit(Constant obj, Object arg) throws RIFException {
 		return true;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated;
 
@@ -38,8 +42,6 @@ import lupos.engine.operators.singleinput.modifiers.Offset;
 import lupos.engine.operators.singleinput.modifiers.SortLimit;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 import lupos.datastructures.items.Variable;
-
-
 public class SortLimitoverSortRule extends Rule {
     private final static int MAXLIMIT = 1000;
     private int limitSortLimit = 0;
@@ -146,11 +148,15 @@ public class SortLimitoverSortRule extends Rule {
     }
 
 
+    /**
+     * <p>Constructor for SortLimitoverSortRule.</p>
+     */
     public SortLimitoverSortRule() {
         this.startOpClass = lupos.engine.operators.singleinput.modifiers.Limit.class;
         this.ruleName = "SortLimit over Sort";
     }
 
+    /** {@inheritDoc} */
     protected boolean check(BasicOperator _op) {
         boolean _result = this._checkPrivate0(_op);
 
@@ -173,6 +179,7 @@ public class SortLimitoverSortRule extends Rule {
         return _result;
     }
 
+    /** {@inheritDoc} */
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
         int[] _label_a = null;

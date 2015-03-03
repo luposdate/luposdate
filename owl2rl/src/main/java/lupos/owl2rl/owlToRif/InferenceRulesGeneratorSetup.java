@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.owlToRif;
 
@@ -32,7 +36,6 @@ import java.util.HashMap;
 import lupos.owl2rl.parser.ParserResults;
 import lupos.owl2rl.parser.TemplatesRuleParser;
 import lupos.rif.BasicIndexRuleEvaluator;
-
 public class InferenceRulesGeneratorSetup {
 
 
@@ -47,8 +50,9 @@ public class InferenceRulesGeneratorSetup {
 
 	/**
 	 * Init InferenceRulesGenerator with rule templates from file
-	 * @param ontology
-	 * @param file
+	 *
+	 * @param ontology a {@link java.lang.String} object.
+	 * @param file a {@link java.lang.String} object.
 	 */
 	public void init(final String ontology, final String file){
 		this.init(ontology, createInputStream(file), file);
@@ -56,9 +60,10 @@ public class InferenceRulesGeneratorSetup {
 
 	/**
 	 * Init InferenceRulesGenerator with rule templates from InputStream
-	 * @param ontology
-	 * @param rules
-	 * @param key
+	 *
+	 * @param ontology a {@link java.lang.String} object.
+	 * @param rules a {@link java.io.InputStream} object.
+	 * @param key a {@link java.lang.String} object.
 	 */
 	public  void init(final String ontology, final InputStream rules, final String key){
 		// Reuse old parsed rule set if exists...
@@ -83,7 +88,8 @@ public class InferenceRulesGeneratorSetup {
 		gen.start(ontology);
 	}
 
-	/**Returns the Initialized Generator
+	/**
+	 *Returns the Initialized Generator
 	 *
 	 * @return initialized Generator
 	 */
@@ -91,11 +97,11 @@ public class InferenceRulesGeneratorSetup {
 		return gen;
 	}
 
-	/**Set wether or not debug Information and emitted Rules should be printed on System.out
+	/**
+	 *Set wether or not debug Information and emitted Rules should be printed on System.out
 	 *
-	 * @param printOn
+	 * @param printOn a boolean.
 	 */
-
 	public void setPrintOnOrOff(final boolean printOn){
 		this.printOn=printOn;
 		if(gen!=null) {
@@ -123,6 +129,13 @@ public class InferenceRulesGeneratorSetup {
 		return null;
 	}
 
+	/**
+	 * <p>initWithEvaluator.</p>
+	 *
+	 * @param ruleEvaluator a {@link lupos.rif.BasicIndexRuleEvaluator} object.
+	 * @param rules a {@link java.lang.String} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	public void initWithEvaluator(final BasicIndexRuleEvaluator ruleEvaluator, final String rules, final String key) {
 		// Reuse old parsed rule set if exists...
 

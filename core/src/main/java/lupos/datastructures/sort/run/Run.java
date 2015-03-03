@@ -26,7 +26,10 @@ package lupos.datastructures.sort.run;
 import java.util.Iterator;
 
 /**
- * This class is used to wrap different types of runs to be used in ExternalParallelSort (e.g. tries (bag/set), arrays of string to be sorted by merge sort, quicksort etc.) 
+ * This class is used to wrap different types of runs to be used in ExternalParallelSort (e.g. tries (bag/set), arrays of string to be sorted by merge sort, quicksort etc.)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Run {
 	
@@ -36,6 +39,8 @@ public abstract class Run {
 	private static int trieID = 0;
 	
 	/**
+	 * <p>getFilenameForNewRun.</p>
+	 *
 	 * @return the file name for a new trie stored on disk
 	 */
 	public static String getFilenameForNewRun(){
@@ -44,6 +49,7 @@ public abstract class Run {
 	
 	/**
 	 * Add a string to this run
+	 *
 	 * @param toBeAdded the string to be added
 	 * @return true if adding this element consumes more space in main memory
 	 */
@@ -51,26 +57,35 @@ public abstract class Run {
 	
 	/**
 	 * sorts the run and returns a sorted run
+	 *
+	 * @return a {@link lupos.datastructures.sort.run.Run} object.
 	 */
 	public abstract Run sort();
 	
 	/**
 	 * Writes this run to disk in order to free main memory
+	 *
 	 * @return a new run representing the run on disk
 	 */
 	public abstract Run swapRun();
 	
 	/**
-	 * @return true, if the run is empty, otherwise false
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
 	 */
 	public abstract boolean isEmpty();
 	
 	/**
+	 * <p>iterator.</p>
+	 *
 	 * @return an iterator for iterating through the added elements
 	 */
 	public abstract Iterator<String> iterator();
 	
 	/**
+	 * <p>size.</p>
+	 *
 	 * @return the number of elements stored in this run
 	 */
 	public abstract int size();

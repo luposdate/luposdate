@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.graphwrapper;
 
@@ -41,20 +45,27 @@ import lupos.rif.IRuleNode;
 import lupos.rif.model.Constant;
 import lupos.rif.model.RuleVariable;
 import xpref.datatypes.BooleanDatatype;
-
 public class GraphWrapperRules extends GraphWrapper {
+	/**
+	 * <p>Constructor for GraphWrapperRules.</p>
+	 *
+	 * @param element a {@link lupos.rif.IRuleNode} object.
+	 */
 	public GraphWrapperRules(final IRuleNode element) {
 		super(element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
 		return new ElementPanel(parent, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d, final Dimension size) {}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
@@ -86,16 +97,19 @@ public class GraphWrapperRules extends GraphWrapper {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(final OperatorGraph parent) {
 		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
 		final LinkedList<GraphWrapper> precedingElements = new LinkedList<GraphWrapper>();
@@ -107,6 +121,7 @@ public class GraphWrapperRules extends GraphWrapper {
 		return precedingElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
 		final List<IRuleNode> children = ((IRuleNode) element).getChildren();
@@ -123,31 +138,37 @@ public class GraphWrapperRules extends GraphWrapper {
 		return succedingElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return new StringBuffer();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return ((IRuleNode) this.element).getLabel();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IRuleNode getElement() {
 		return (IRuleNode) this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean usePrefixesActive() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "ast_useStyledBoxes";

@@ -33,9 +33,13 @@ import lupos.geo.GeoHelper;
 /**
  * Richard Mietz
  * Date: 22.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Dimension implements ExternalFunction
 {
+    /** {@inheritDoc} */
     @Override
     public Object evaluate(Object[] args) throws TypeErrorException
     {
@@ -50,6 +54,9 @@ public class Dimension implements ExternalFunction
         }
     }
 
+    /**
+     * <p>register.</p>
+     */
     public static void register(){
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.stSPARQLFunctionUri + "dimension>"), new Dimension());
     }

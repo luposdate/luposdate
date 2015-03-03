@@ -39,7 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Class for creating the {@link JPanel} for generating a HTML template.
+ * Class for creating the {@link javax.swing.JPanel} for generating a HTML template.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class HTMLOptionsPanel {
 

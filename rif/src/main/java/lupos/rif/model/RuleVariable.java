@@ -41,56 +41,108 @@ import com.google.common.collect.Multimap;
 /**
  * Represents a Variable, as used in a Rule. Internally a Lupos Variable is
  * used.
- * 
+ *
  * @author jenskluttig
- * 
+ * @version $Id: $Id
  */
 public class RuleVariable extends AbstractRuleNode implements IExpression {
 	private Variable internalVariable;
 
+	/**
+	 * <p>Constructor for RuleVariable.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public RuleVariable(String name) {
 		internalVariable = new Variable(name);
 	}
 
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return internalVariable.getName();
 	}
 
+	/**
+	 * <p>getVariable.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getVariable() {
 		return internalVariable;
 	}
 
+	/**
+	 * <p>setVariable.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setVariable(String name) {
 		internalVariable = new Variable(name);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return getVariable().hashCode();
 	}
 
+	/**
+	 * <p>accept.</p>
+	 *
+	 * @param visitor a {@link lupos.rif.IRuleVisitor} object.
+	 * @param arg a A object.
+	 * @param <R> a R object.
+	 * @param <A> a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/**
+	 * <p>getLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLabel() {
 		return internalVariable.toString();
 	}
 
+	/**
+	 * <p>containsOnlyVariables.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean containsOnlyVariables() {
 		return true;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<RuleVariable> getVariables() {
 		Set<RuleVariable> ret = new HashSet<RuleVariable>();
 		ret.add(this);
 		return ret;
 	}
 
+	/**
+	 * <p>getPredicates.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Uniterm> getPredicates() {
 		return Arrays.asList();
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding) {
 		Object ret = binding.get(internalVariable);
 		if (ret == null)
@@ -99,18 +151,26 @@ public class RuleVariable extends AbstractRuleNode implements IExpression {
 			return ret;
 	}
 
+	/** {@inheritDoc} */
 	public boolean isBound(RuleVariable var, Collection<RuleVariable> boundVars) {
 		return false;
 	}
 
+	/**
+	 * <p>isPossibleAssignment.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isPossibleAssignment() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	public String toString(Prefix prefixInstance) {
 		return toString();
 	}
 
+	/** {@inheritDoc} */
 	public boolean equals(Object expr) {
 		if (expr instanceof RuleVariable)
 			return ((RuleVariable) expr).getVariable().equals(internalVariable);
@@ -118,10 +178,12 @@ public class RuleVariable extends AbstractRuleNode implements IExpression {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult) {
 		return evaluate(binding);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult, Multimap<IExpression, IExpression> equalities) {
 		return evaluate(binding);
 	}

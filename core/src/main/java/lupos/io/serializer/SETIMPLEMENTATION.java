@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -38,38 +42,45 @@ import lupos.io.helper.OutHelper;
 
 @SuppressWarnings("rawtypes")
 public class SETIMPLEMENTATION extends DeSerializerConsideringSubClasses<SetImplementation> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof SetImplementation;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SetImplementation deserialize(final LuposObjectInputStream<SetImplementation> in) throws IOException, ClassNotFoundException, URISyntaxException {
 		return in.readLuposSetImplementation();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<SetImplementation>[] getRegisteredClasses() {
 		return new Class[] { SetImplementation.class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final SetImplementation t, final LuposObjectOutputStream out) throws IOException {
 		out.writeLuposSetImplementation(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final SetImplementation t) {
 		return LengthHelper.lengthLuposSet(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final SetImplementation t, final OutputStream out)
 			throws IOException {
 		OutHelper.writeLuposSet(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SetImplementation deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		return InputHelper.readLuposSet(in);

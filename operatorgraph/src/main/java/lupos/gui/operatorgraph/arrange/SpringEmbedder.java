@@ -33,12 +33,11 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 
 /**
  * The class SpringEmbedder implements the Spring Embedder - Algorithm
- * which is used in the LUPOSDATE- Project 
- * 
- * @author Tobias Bielfeld
+ * which is used in the LUPOSDATE- Project
  *
+ * @author Tobias Bielfeld
+ * @version $Id: $Id
  */
-
 public class SpringEmbedder {
 	
 	private static final double springConst = 500.0;
@@ -99,6 +98,11 @@ public class SpringEmbedder {
 		return factor;
 	}	
 	
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public static void arrange(final OperatorGraph operatorgraph) {
 				
 		HashMap<GraphWrapper, GraphBox> nodes = operatorgraph.getBoxes();

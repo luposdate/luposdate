@@ -32,6 +32,9 @@ import lupos.rif.generated.visitor.*;
  * f0 -> RIFString()<br>
  * f1 -> < H ><br>
  * f2 -> RIFURI()<br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFTypedLiteral implements INode {
 
@@ -123,18 +126,18 @@ public class RIFTypedLiteral implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

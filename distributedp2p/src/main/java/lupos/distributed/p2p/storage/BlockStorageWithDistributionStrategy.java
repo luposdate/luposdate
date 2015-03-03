@@ -38,18 +38,20 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 
 /**
- * This is a {@link IStorage} implementation that is used for P2P networks, where
+ * This is a {@link lupos.distributed.storage.IStorage} implementation that is used for P2P networks, where
  * the triples are added and removed block-wise
- * @author Bjoern
  *
- * @param <T> The Type of Distribution Strategy, @see {@link StorageWithDistributionStrategy}
+ * @author Bjoern
+ * @param <T> The Type of Distribution Strategy, @see {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy}
+ * @version $Id: $Id
  */
 public class BlockStorageWithDistributionStrategy<T> extends
 		StorageWithDistributionStrategy<T> {
 
 	/**
-	 * Constructor as in {@link StorageWithDistributionStrategy} but for new
-	 * instance of a {@link BindingsFactory}
+	 * Constructor as in {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy} but for new
+	 * instance of a {@link lupos.datastructures.bindings.BindingsFactory}
+	 *
 	 * @param p2pImplementation P2P network
 	 * @param distribution distribution strategy
 	 */
@@ -61,9 +63,11 @@ public class BlockStorageWithDistributionStrategy<T> extends
 	}
 
 	/**
-	 * Constructor as in {@link StorageWithDistributionStrategy}
+	 * Constructor as in {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy}
+	 *
 	 * @param p2pImplementation P2P network
 	 * @param distribution distribution strategy
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public BlockStorageWithDistributionStrategy(
 			AbstractP2PNetwork<Triple> p2pImplementation,
@@ -83,6 +87,7 @@ public class BlockStorageWithDistributionStrategy<T> extends
 	 */
 	protected int blocksize = 100;
 	
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 		//iterate through each locationkey
@@ -99,6 +104,7 @@ public class BlockStorageWithDistributionStrategy<T> extends
 		super.endImportData();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void remove(String key, Triple t) {
 		mode_adding = false;
@@ -107,6 +113,7 @@ public class BlockStorageWithDistributionStrategy<T> extends
 	
 	private boolean mode_adding = true;
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void addTriple(String key, Triple t) {
 		// get the Set corresponding with this key
@@ -137,6 +144,7 @@ public class BlockStorageWithDistributionStrategy<T> extends
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTriple(Triple triple) {
 		this.endImportData();
@@ -145,12 +153,14 @@ public class BlockStorageWithDistributionStrategy<T> extends
 
 	/**
 	 * Sets the blockSize, that is to be used
+	 *
 	 * @param bSize the size
 	 */
 	public void setBlockSize(int bSize) {
 		this.blocksize = bSize;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.format("BlockStorage n=%d",blocksize);

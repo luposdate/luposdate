@@ -25,6 +25,9 @@ package lupos.event.producer.ebay;
 
 /**
  * Configuration set
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Configuration {
 	
@@ -104,10 +107,7 @@ public class Configuration {
 	
 	/**
 	 * Constructor
-	 * 
-	 * @param	keywordString	Keywords to search for
-	 * @param	opName			Index of the OPERATION_NAME that has to be used
-	 * @param	locale			Index of the GLOBAL_ID that has to be used
+	 *
 	 * @param 	resultCount 	Number of pages to retrieve during each loop
 	 */
 	public Configuration(String keywordString, int opName, int locale, int resultCount) {
@@ -117,6 +117,7 @@ public class Configuration {
 		this.resultCount = resultCount;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return (new StringBuilder(PATH)

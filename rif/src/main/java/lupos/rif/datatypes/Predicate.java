@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.datatypes;
 
@@ -31,16 +35,25 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.rdf.Prefix;
 import lupos.rif.RIFException;
-
 public class Predicate implements Serializable {
 	private static final long serialVersionUID = 253370338303245743L;
 	protected URILiteral name;
 	protected ArrayList<Literal> params = new ArrayList<Literal>();
 
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getName() {
 		return this.name;
 	}
 
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public void setName(final Literal name) {
 		if (name instanceof URILiteral) {
 			this.name = (URILiteral) name;
@@ -49,15 +62,22 @@ public class Predicate implements Serializable {
 		}
 	}
 
+	/**
+	 * <p>getParameters.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Literal> getParameters() {
 		return this.params;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj != null && obj instanceof Predicate) {
@@ -80,6 +100,7 @@ public class Predicate implements Serializable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer();
@@ -94,6 +115,12 @@ public class Predicate implements Serializable {
 		return str.toString();
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();
 		str.append(this.name.toString(prefixInstance)).append("(");

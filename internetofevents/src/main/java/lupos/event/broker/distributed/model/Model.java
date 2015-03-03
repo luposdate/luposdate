@@ -33,8 +33,9 @@ import lupos.event.communication.ModelUpdateMessage;
  * This class represents the active model
  * of a SubBroker and provides information
  * for the routing process
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class Model {
 
@@ -53,12 +54,18 @@ public class Model {
 	/**
 	 * Gets a modelupdatemessage which can be directly sent
 	 * to the master broker sending all the model data
-	 * @return
+	 *
+	 * @return a {@link lupos.event.communication.ModelUpdateMessage} object.
 	 */
 	public ModelUpdateMessage getUpdateMessage(){
 		return new ModelUpdateMessage(this.bProducers, this.bConsumers);
 	}
 	
+	/**
+	 * <p>addBConsumer.</p>
+	 *
+	 * @param con a {@link lupos.event.broker.distributed.model.BConsumer} object.
+	 */
 	public void addBConsumer(BConsumer con){
 		if (this.bConsumers.contains(con)){
 			return;
@@ -67,11 +74,21 @@ public class Model {
 		notifyListeners();
 	}
 	
+	/**
+	 * <p>removeBConsumer.</p>
+	 *
+	 * @param con a {@link lupos.event.broker.distributed.model.BConsumer} object.
+	 */
 	public void removeBConsumer(BConsumer con){
 		this.bConsumers.remove(con);
 		notifyListeners();
 	}
 	
+	/**
+	 * <p>addBProducer.</p>
+	 *
+	 * @param producer a {@link lupos.event.broker.distributed.model.BProducer} object.
+	 */
 	public void addBProducer(BProducer producer){
 		if (this.bProducers.contains(producer)){
 			return;
@@ -80,15 +97,30 @@ public class Model {
 		notifyListeners();
 	}
 	
+	/**
+	 * <p>removeBProducer.</p>
+	 *
+	 * @param producer a {@link lupos.event.broker.distributed.model.BProducer} object.
+	 */
 	public void removeBProducer(BProducer producer){
 		this.bProducers.remove(producer);
 		notifyListeners();
 	}
 	
+	/**
+	 * <p>Getter for the field <code>bConsumers</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BConsumer> getBConsumers(){
 		 return this.bConsumers;
 	 }
 	 
+	/**
+	 * <p>Getter for the field <code>bProducers</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BProducer> getBProducers(){
 		 return this.bProducers;
 	 }
@@ -101,6 +133,7 @@ public class Model {
 	
 	/**
 	 * Registers a model changed listener
+	 *
 	 * @param listener the listener which will be called
 	 * when the model has been changed
 	 */
@@ -110,6 +143,7 @@ public class Model {
 	
 	/**
 	 * Removes a registered model change listener
+	 *
 	 * @param listener the listener to remove
 	 */
 	public void removeChangeListener(IModelChangedListener listener){

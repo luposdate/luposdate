@@ -49,22 +49,35 @@ import lupos.misc.util.ImmutableIterator;
  * Thus, the operand with less intermediate results should be the left operand.
  *
  * This operator is not suitable for recursive queries and rule processing, where cycles in the operatorgraph can occur.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class IndexOnLeftOperandJoin extends Join {
 	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
 																	new ParallelIteratorMultipleQueryResults()};
 
+	/**
+	 * <p>Constructor for IndexOnLeftOperandJoin.</p>
+	 */
 	public IndexOnLeftOperandJoin() {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
 	}
 
+	/**
+	 * <p>createDatastructure.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public abstract Map<String, QueryResult> createDatastructure();
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
 		//bindings.materialize(); // I do not know why this is necessary, but if there are several IndexOnLeftOperandJoin operators after each other this seems to be necessary...
@@ -72,6 +85,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 		return null; // wait for EndOfStreamMessage...
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
@@ -93,6 +107,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		if(!this.operands[0].isEmpty() && ! this.operands[1].isEmpty()){
@@ -115,6 +130,14 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 	}
 
 
+	/**
+	 * <p>indexQueryResult.</p>
+	 *
+	 * @param toIndex a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param joinVariables a {@link java.util.Collection} object.
+	 * @param index a {@link java.util.Map} object.
+	 * @param cartesianProduct a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static void indexQueryResult(final QueryResult toIndex, final Collection<Variable> joinVariables, final Map<String, QueryResult> index, final QueryResult cartesianProduct){
 		final Iterator<Bindings> itbindings = toIndex.oneTimeIterator();
 		while (itbindings.hasNext()) {
@@ -140,6 +163,13 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 		}
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param joinVariables a {@link java.util.Collection} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getKey(final Bindings bindings, final Collection<Variable> joinVariables){
 		String keyJoin = "";
 		final Iterator<Variable> it = joinVariables.iterator();

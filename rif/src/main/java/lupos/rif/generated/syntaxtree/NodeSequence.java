@@ -35,6 +35,9 @@ import java.util.*;
  * Represents a sequence of nodes (x y z ...) nested within a choice (|), list (+),
  * optional list (*), or optional node (? or []), e.g. ' ( A B )+ ' or ' [ C D E ] '.<br>
  * The class stores the nodes list in an ArrayList.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class NodeSequence implements INodeList {
 
@@ -48,14 +51,14 @@ public class NodeSequence implements INodeList {
   private static final long serialVersionUID = 144L;
 
   /**
-   * Initializes an empty {@link NodeSequence} with a default allocation.
+   * Initializes an empty {@link lupos.rif.generated.syntaxtree.NodeSequence} with a default allocation.
    */
   public NodeSequence() {
     nodes = new ArrayList<INode>();
   }
 
   /**
-   * Initializes an empty {@link NodeSequence} with a given allocation.
+   * Initializes an empty {@link lupos.rif.generated.syntaxtree.NodeSequence} with a given allocation.
    *
    * @param sz the list size
    */
@@ -64,7 +67,7 @@ public class NodeSequence implements INodeList {
   }
 
   /**
-   * Initializes an empty {@link NodeSequence} with a default allocation and adds a first node.
+   * Initializes an empty {@link lupos.rif.generated.syntaxtree.NodeSequence} with a default allocation and adds a first node.
    *
    * @param firstNode the node to add
    */
@@ -74,7 +77,7 @@ public class NodeSequence implements INodeList {
   }
 
   /**
-   * Initializes an empty {@link NodeSequence} with a given allocation and adds a first node.
+   * Initializes an empty {@link lupos.rif.generated.syntaxtree.NodeSequence} with a given allocation and adds a first node.
    *
    * @param sz the list size
    * @param firstNode the node to add
@@ -85,9 +88,9 @@ public class NodeSequence implements INodeList {
   }
 
   /**
-   * Adds a node to the {@link NodeSequence}.
+   * {@inheritDoc}
    *
-   * @param n the node to add
+   * Adds a node to the {@link NodeSequence}.
    */
   public void addNode(final INode n) {
     nodes.add(n);
@@ -96,10 +99,9 @@ public class NodeSequence implements INodeList {
   }
 
   /**
-   * Gets the node in the list at a given position.
+   * {@inheritDoc}
    *
-   * @param i the node's position
-   * @return the node
+   * Gets the node in the list at a given position.
    */
   public INode elementAt(final int i) {
     return nodes.get(i); }
@@ -121,7 +123,7 @@ public class NodeSequence implements INodeList {
     return nodes.size(); }
 
   /**
-   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetArguVisitor} visitor with user Return and Argument data.
    *
    * @param <R> the user Return type
    * @param <A> the user Argument type
@@ -134,18 +136,16 @@ public class NodeSequence implements INodeList {
   }
 
   /**
-   * Accepts a {@link IRetVisitor} visitor with user Return data.
+   * {@inheritDoc}
    *
-   * @param <R> the user Return type
-   * @param vis the visitor
-   * @return the user Return data
+   * Accepts a {@link IRetVisitor} visitor with user Return data.
    */
   public <R> R accept(final IRetVisitor<R> vis) {
     return vis.visit(this);
   }
 
   /**
-   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IVoidArguVisitor} visitor with user Argument data.
    *
    * @param <A> the user Argument type
    * @param vis the visitor
@@ -156,18 +156,18 @@ public class NodeSequence implements INodeList {
   }
 
   /**
-   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Sets the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Sets the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

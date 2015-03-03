@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.mergeunion;
 
@@ -31,19 +35,33 @@ import java.util.Iterator;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.heap.SequentialHeap;
 import lupos.datastructures.queryresult.ParallelIterator;
-
 public class MergeIterator<E> implements ParallelIterator<E> {
 	protected Heap<HeapEntry> heap;
 	protected Comparator<? super E> comparator;
 
+	/**
+	 * <p>Constructor for MergeIterator.</p>
+	 */
 	protected MergeIterator() {
 	}
 
+	/**
+	 * <p>Constructor for MergeIterator.</p>
+	 *
+	 * @param operandResults a {@link java.util.Collection} object.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public MergeIterator(final Collection<Iterator<E>> operandResults,
 			final Comparator<? super E> comparator) {
 		init(operandResults, comparator);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param operandResults a {@link java.util.Collection} object.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	protected void init(final Collection<Iterator<E>> operandResults,
 			final Comparator<? super E> comparator) {
 		this.comparator = comparator;
@@ -58,16 +76,34 @@ public class MergeIterator<E> implements ParallelIterator<E> {
 		}
 	}
 
+	/**
+	 * <p>Constructor for MergeIterator.</p>
+	 *
+	 * @param operandResults an array of {@link java.util.Iterator} objects.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public MergeIterator(final Iterator<E>[] operandResults,
 			final Comparator<? super E> comparator) {
 		init(operandResults, comparator);
 	}
 
+	/**
+	 * <p>Constructor for MergeIterator.</p>
+	 *
+	 * @param comparator a {@link java.util.Comparator} object.
+	 * @param operandResults a {@link java.util.Iterator} object.
+	 */
 	public MergeIterator(final Comparator<? super E> comparator,
 			final Iterator<E>... operandResults) {
 		init(operandResults, comparator);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param operandResults an array of {@link java.util.Iterator} objects.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	protected void init(final Iterator<E>[] operandResults,
 			final Comparator<? super E> comparator) {
 		this.comparator = comparator;
@@ -84,10 +120,20 @@ public class MergeIterator<E> implements ParallelIterator<E> {
 		}
 	}
 
+	/**
+	 * <p>hasNext.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean hasNext() {
 		return !heap.isEmpty();
 	}
 
+	/**
+	 * <p>next.</p>
+	 *
+	 * @return a E object.
+	 */
 	public E next() {
 		if (heap.isEmpty())
 			return null;
@@ -106,6 +152,9 @@ public class MergeIterator<E> implements ParallelIterator<E> {
 		return null;
 	}
 
+	/**
+	 * <p>remove.</p>
+	 */
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
@@ -130,6 +179,9 @@ public class MergeIterator<E> implements ParallelIterator<E> {
 		}
 	}
 
+	/**
+	 * <p>close.</p>
+	 */
 	public void close() {
 		while (!heap.isEmpty()) {
 			final HeapEntry next = heap.pop();

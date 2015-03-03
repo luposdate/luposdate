@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -55,17 +59,21 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
 import lupos.misc.util.OperatorIDTuple;
 import xpref.datatypes.BooleanDatatype;
-
 public class GraphWrapperOperator extends GraphWrapperEditable {
+	/**
+	 * <p>Constructor for GraphWrapperOperator.</p>
+	 *
+	 * @param element a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public GraphWrapperOperator(final Operator element) {
 		super(element);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns a list of GraphWrapper elements which are the preceding elements
 	 * of the current element.
-	 *
-	 * @return List of preceding elements
 	 */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
@@ -84,16 +92,17 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		return precedingElements; // return preceding elements
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Operator getElement() {
 		return (Operator) this.element;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns a list of GraphWrapperIdTuple elements which are the succeeding
 	 * elements of the current element.
-	 *
-	 * @return List of succeeding elements
 	 */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
@@ -116,11 +125,13 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		return succedingElements; // return succeeding elements
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return this.element.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		if(this.element instanceof AbstractContainer) {
@@ -129,6 +140,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		final LinkedList<GraphWrapper> gwList = new LinkedList<GraphWrapper>();
@@ -138,33 +150,39 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		return gwList;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public AbstractGuiComponent<Operator> createObject(final OperatorGraph parent) {
 		return ((Operator) this.element).draw(this, (VisualRIFGraph<Operator>) parent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(final OperatorGraph parent) {
 		return ((Operator) this.element).drawAnnotations((VisualRIFGraph<Operator>) parent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return ((Operator) this.element).serializeOperatorAndTree(new HashSet<Operator>());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateObject(final boolean showErrors, final Object data) {
 		return ((Operator) this.element).validateOperator(showErrors, new HashSet<Operator>(), data);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean variableInUse(final String variable) {
 		return ((Operator) this.element).variableInUse(variable, new HashSet<Operator>());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -216,6 +234,7 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -260,12 +279,14 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final Operator elem = (Operator) this.element;
 		return System.identityHashCode(elem);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object element) {
 		if(element instanceof GraphWrapperOperator) {
@@ -274,37 +295,44 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addSucceedingElement(final GraphWrapperIDTuple gwidt) {
 		((Operator) this.element).addSucceedingOperator(new OperatorIDTuple<Operator>((Operator) gwidt.getOperator().getElement(), gwidt.getId()));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> getGUIComponent() {
 		return ((Operator) this.element).getGUIComponent();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean canAddSucceedingElement() {
 		return ((Operator) this.element).canAddSucceedingOperator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addPrecedingElement(final GraphWrapper gw) {
 		((Operator) this.element).addPrecedingOperator((Operator) gw.getElement());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(final VisualGraph parent) {
 		return ((Operator) this.element).drawAnnotations(parent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeSucceedingElement(final GraphWrapper gw) {
 		((Operator) this.element).removeSucceedingOperator((Operator) gw.getElement());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAnnotation(final GraphWrapper gw) {
 		if ( this.element instanceof AbstractTermOperator ){
@@ -328,22 +356,26 @@ public class GraphWrapperOperator extends GraphWrapperEditable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void delete(final boolean subtree) {
 		((Operator) this.element).delete(subtree);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 		return ((Operator) this.element).serializeOperator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("rawtypes")
 	public AbstractGuiComponent getAnnotationLabel(final GraphWrapper gw) {
 		return ((Operator) this.element).getAnnotationLabel((Operator) gw.getElement());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "documentEditorPane_style_prefixoperator";

@@ -24,10 +24,10 @@
 package lupos.datastructures.paged_map;
 
 /**
- * ResSet returns a set of results (boolean, long, long) for (K key) or (V element) of {@link PagedHashMultiMap}
+ * ResSet returns a set of results (boolean, long, long) for (K key) or (V element) of {@link lupos.datastructures.paged_map.PagedHashMultiMap}
  *
  * @author K. Knof
- *
+ * @version $Id: $Id
  */
 public class ResSet {
 
@@ -39,6 +39,8 @@ public class ResSet {
     long addressOfLastEntry;
     
     /**
+     * <p>Constructor for ResSet.</p>
+     *
      * @param contain
      * contain entry
      * @param found

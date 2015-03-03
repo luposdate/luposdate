@@ -30,6 +30,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * Interface for accessing the data.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IStorage {
 	/**
@@ -38,29 +41,36 @@ public interface IStorage {
 	public void endImportData();
 	/**
 	 * adds a triple to the distributed indices
+	 *
 	 * @param triple the triple to be added
 	 */
 	public void addTriple(Triple triple);
 	/**
 	 * Checks whether or not a triple is contained in the distributed indices
+	 *
 	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
+	 * @return a boolean.
 	 */
 	public boolean containsTriple(Triple triple);
 	/**
 	 * removes a triple in the distributed indices
+	 *
 	 * @param triple the triple to e removed
 	 */
 	public void remove(Triple triple);
 	/**
 	 * evaluates one triple pattern on the distributed indices
+	 *
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query result of the triple pattern
+	 * @throws java.lang.Exception if any.
 	 */
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) throws Exception;
 
 	/**
 	 * for setting the BindingsFactory
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public void setBindingsFactory(final BindingsFactory bindingsFactory);
 }

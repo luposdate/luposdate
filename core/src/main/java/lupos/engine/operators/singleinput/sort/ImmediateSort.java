@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort;
 
@@ -36,7 +40,6 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.sorteddata.SortedBag;
-
 public class ImmediateSort extends Sort {
 
 	/**
@@ -46,10 +49,18 @@ public class ImmediateSort extends Sort {
 	protected Comparator<Bindings> compLocal = comparator;
 	protected List<Variable> sortCriterium;
 
+	/**
+	 * <p>Constructor for ImmediateSort.</p>
+	 */
 	public ImmediateSort() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for ImmediateSort.</p>
+	 *
+	 * @param sortCriterium a {@link java.util.List} object.
+	 */
 	public ImmediateSort(final List<Variable> sortCriterium) {
 		super();
 		this.sortCriterium = sortCriterium;
@@ -75,14 +86,25 @@ public class ImmediateSort extends Sort {
 		};
 	}
 
+	/**
+	 * <p>Constructor for ImmediateSort.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public ImmediateSort(final lupos.sparql1_1.Node node) {
 		super(node);
 	}
 
+	/**
+	 * <p>Getter for the field <code>sortCriterium</code>.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Variable> getSortCriterium() {
 		return sortCriterium;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
@@ -94,11 +116,22 @@ public class ImmediateSort extends Sort {
 		return QueryResult.createInstance(getIterator(sswd.iterator()));
 	}
 
+	/**
+	 * <p>createBag.</p>
+	 *
+	 * @return a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 */
 	protected SortedBag<Bindings> createBag() {
 		return new DBMergeSortedBag<Bindings>(new SortConfiguration(), compLocal,
 				Bindings.class);
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @param itb a {@link java.util.Iterator} object.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	protected ParallelIterator<Bindings> getIterator(
 			final Iterator<Bindings> itb) {
 		return new ParallelIterator<Bindings>() {

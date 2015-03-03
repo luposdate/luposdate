@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -29,13 +33,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-
 public abstract class URILiteral extends Literal implements Externalizable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2826285205704387677L;
 
+	/**
+	 * <p>isURI.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean isURI(final String content) {
 		if (content.length() < 2
 				|| content.substring(0, 1).compareTo("<") != 0
@@ -50,16 +59,24 @@ public abstract class URILiteral extends Literal implements Externalizable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "<" + getString() + ">";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(lupos.rdf.Prefix prefixInstance) {
 		return prefixInstance.add(this.toString());
 	}
 
+	/**
+	 * <p>openStream.</p>
+	 *
+	 * @return a {@link java.io.InputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public InputStream openStream() throws IOException {
 		if (getString().startsWith("inlinedata:")) {
 			return new ByteArrayInputStream(getString().substring(11)
@@ -77,10 +94,22 @@ public abstract class URILiteral extends Literal implements Externalizable {
 			return (u.toURL().openStream());
 	}
 
+	/**
+	 * <p>getString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String getString();
 
+	/**
+	 * <p>update.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public abstract void update(String s) throws java.net.URISyntaxException;
 	
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew(){
 		return LiteralFactory.createURILiteralWithoutException(this.originalString());

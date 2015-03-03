@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.string;
 
@@ -27,7 +31,6 @@ import java.io.Externalizable;
 
 import lupos.datastructures.items.Item;
 import lupos.datastructures.items.literal.Literal;
-
 public class StringLiteral extends PlainStringLiteral implements Item,
 		Comparable<Literal>, Externalizable {
 	/**
@@ -35,9 +38,17 @@ public class StringLiteral extends PlainStringLiteral implements Item,
 	 */
 	private static final long serialVersionUID = 7110464399527264155L;
 
+	/**
+	 * <p>Constructor for StringLiteral.</p>
+	 */
 	public StringLiteral() {
 	}
 
+	/**
+	 * <p>Constructor for StringLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public StringLiteral(String content) {
 		if (content.length() >= 6 && content.startsWith("\"\"\"")
 				&& content.endsWith("\"\"\""))

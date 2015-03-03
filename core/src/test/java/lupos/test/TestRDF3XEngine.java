@@ -40,6 +40,10 @@ import lupos.sparql1_1.Node;
 /**
  * This class shows how to use the RDF3X Query Evaluator to process a SPARQL
  * query
+ *
+ * @author groppe
+ * @version $Id: $Id
+ * @since 1.0
  */
 public class TestRDF3XEngine {
 
@@ -51,19 +55,20 @@ public class TestRDF3XEngine {
 	private final static String updateQuery3 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> INSERT { ?s rdf:type2 ?o } WHERE { ?s rdf:type ?o. }";
 	private final static String query4 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{ ?s rdf:type2 ?o. }";
 	
+	/** Constant <code>dir=""</code> */
 	protected static String dir;
 
 	/**
 	 * Remark: Before using this program, please import
 	 * your input data and construct the indices by using
 	 * the class lupos.engine.indexconstruction.RDF3XIndexConstruction
-	 * 
-	 * Command line entry point of the program: 
+	 *
+	 * Command line entry point of the program:
 	 * The command line parameter is
 	 * <directory for indices>
 	 * for the directory, where the indices are stored.
-	 * 
-	 * @param args
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
 	 */
 	public static void main(final String[] args) {
 		try {
@@ -87,6 +92,11 @@ public class TestRDF3XEngine {
 
 	}
 	
+	/**
+	 * <p>test.</p>
+	 *
+	 * @param evaluator a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
+	 */
 	public final static void test(BasicIndexQueryEvaluator evaluator){
 		try {
 			

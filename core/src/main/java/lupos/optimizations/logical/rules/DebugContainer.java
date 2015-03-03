@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,10 +21,11 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules;
-
-
 public class DebugContainer<T> {
 
 	private String ruleName;
@@ -31,9 +33,11 @@ public class DebugContainer<T> {
 	private T root;
 
 	/**
-	 * @param description
-	 * @param root
-	 * @param ruleName
+	 * <p>Constructor for DebugContainer.</p>
+	 *
+	 * @param description a {@link java.lang.String} object.
+	 * @param root a T object.
+	 * @param ruleName a {@link java.lang.String} object.
 	 */
 	public DebugContainer(final String ruleName, final String description,
 			final T root) {
@@ -42,26 +46,56 @@ public class DebugContainer<T> {
 		this.ruleName = ruleName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRuleName() {
 		return ruleName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleName</code>.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void setRuleName(final String ruleName) {
 		this.ruleName = ruleName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>description</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * <p>Setter for the field <code>description</code>.</p>
+	 *
+	 * @param description a {@link java.lang.String} object.
+	 */
 	public void setDescription(final String description) {
 		this.description = description;
 	}
 
+	/**
+	 * <p>Getter for the field <code>root</code>.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getRoot() {
 		return root;
 	}
 
+	/**
+	 * <p>Setter for the field <code>root</code>.</p>
+	 *
+	 * @param root a T object.
+	 */
 	public void setRoot(final T root) {
 		this.root = root;
 	}

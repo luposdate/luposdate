@@ -28,7 +28,10 @@ import lupos.engine.operators.index.Root;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator.MemoryIndexOperatorGraphGenerator;
 
 /**
- * This class is the cost-based optimizer for the memory index query evaluator. 
+ * This class is the cost-based optimizer for the memory index query evaluator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MemoryIndexCostBasedOptimizer extends CostBasedOptimizer {
 
@@ -40,7 +43,8 @@ public class MemoryIndexCostBasedOptimizer extends CostBasedOptimizer {
 	}
 
 	/**
-	 * Static method to call the cost-based optimizer for the memory index query evaluator 
+	 * Static method to call the cost-based optimizer for the memory index query evaluator
+	 *
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 * @return the root operator under which the subgraph with the reordered joins are inserted
 	 */

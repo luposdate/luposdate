@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -28,38 +32,66 @@ import java.util.Iterator;
 
 import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.queryresult.ParallelIterator;
-
 public class DBMergeSortedSetUsingTrie extends DBMergeSortedSet<String> {
 
 	protected TrieSet searchtree = TrieSet.createRamBasedTrieSet();
 	
+	/** Constant <code>LIMIT_ELEMENTS_IN_SET=50000000</code> */
 	public static long LIMIT_ELEMENTS_IN_SET = 50000000;
 
+	/**
+	 * <p>Constructor for DBMergeSortedSetUsingTrie.</p>
+	 *
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 */
 	public DBMergeSortedSetUsingTrie(final SortConfiguration sortConfiguration, final Class<? extends String> classOfElements){
 		super(sortConfiguration, classOfElements);
 	}
 
+	/**
+	 * <p>Constructor for DBMergeSortedSetUsingTrie.</p>
+	 */
 	public DBMergeSortedSetUsingTrie(){
 		super();
 	}
 
+	/**
+	 * <p>Constructor for DBMergeSortedSetUsingTrie.</p>
+	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 */
 	public DBMergeSortedSetUsingTrie(
 			final Class<? extends String> classOfElements){
 		super(classOfElements);
 	}
 
+	/**
+	 * <p>Constructor for DBMergeSortedSetUsingTrie.</p>
+	 *
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 */
 	public DBMergeSortedSetUsingTrie(final SortConfiguration sortConfiguration,
 			final Comparator<? super String> comp,
 			final Class<? extends String> classOfElements){
 		super(sortConfiguration, comp, classOfElements);
 	}
 
+	/**
+	 * <p>Constructor for DBMergeSortedSetUsingTrie.</p>
+	 *
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 */
 	public DBMergeSortedSetUsingTrie(
 			final Comparator<? super String> comp,
 			final Class<? extends String> classOfElements){
 		super(comp, classOfElements);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final String ele) {
 		if (searchtree.size()>LIMIT_ELEMENTS_IN_SET) {
@@ -84,17 +116,24 @@ public class DBMergeSortedSetUsingTrie extends DBMergeSortedSet<String> {
 		searchtree = TrieSet.createRamBasedTrieSet();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		super.clear();
 		searchtree.clear();
 	}
 
+	/**
+	 * <p>sorted.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean sorted() {
 		return searchtree.size()==0
 				&& (currentRun == null || unsortedID == currentRun.runID);
 	}
 		
+	/** {@inheritDoc} */
 	@Override
 	public void sort() {
 		if (sorted() || currentRun == null)
@@ -104,6 +143,7 @@ public class DBMergeSortedSetUsingTrie extends DBMergeSortedSet<String> {
 		super.sort();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ParallelIterator<String> iterator() {
 		// Do we have a small sorted bag? In other words:

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -52,6 +56,11 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 
 	private static ArrayList<DSNodeDeSerializer<?, ?>> listOfDeSerializer = new ArrayList<DSNodeDeSerializer<?, ?>>();
 
+	/**
+	 * <p>registerDeSerializer.</p>
+	 *
+	 * @param deSerializers a {@link lupos.io.serializer.NODEDESERIALIZER.DSNodeDeSerializer} object.
+	 */
 	public static void registerDeSerializer(final DSNodeDeSerializer<?, ?>... deSerializers){
 		for(final DSNodeDeSerializer<?, ?> deSerializer: deSerializers){
 			NODEDESERIALIZER.listOfDeSerializer.add(deSerializer);
@@ -75,6 +84,7 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 				new DSStringIntegerNodeDeSerializer());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final NodeDeSerializer<K, V> t) {
 		@SuppressWarnings("unchecked")
@@ -87,6 +97,7 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final NodeDeSerializer<K, V> t, final OutputStream out) throws IOException {
 		@SuppressWarnings("unchecked")
@@ -99,6 +110,7 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public NodeDeSerializer<K, V> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		@SuppressWarnings("unchecked")
@@ -111,6 +123,7 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends NodeDeSerializer<K, V>>[] getRegisteredClasses() {
@@ -120,6 +133,7 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return (o instanceof Comparator);

@@ -45,6 +45,9 @@ import lupos.datastructures.patriciatrie.node.NodeHelper;
  * Merging is possible, but it breaks to possibility to convert this trie back
  * into a RBTrie or DBTrie, because the values of numberOfEntries for the
  * children will be wrong.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBSeqTrieSet extends TrieSet {
 
@@ -70,6 +73,7 @@ public class DBSeqTrieSet extends TrieSet {
 		this.nodeManager = new SeqNodeManager(fileName);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void copy(final Trie trie) throws TrieNotCopyableException {
 		if (!trie.hasCompleteMetadata()){
@@ -83,6 +87,8 @@ public class DBSeqTrieSet extends TrieSet {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Resets the InputStream, that is responsible for the retrieval of the nodes from the underlying filesystem.
 	 *
 	 * This method must be called before trying to merge this trie into another.
@@ -94,6 +100,7 @@ public class DBSeqTrieSet extends TrieSet {
 		this.setRootNode(this.nodeManager.readNextNode(DBSeqNode.deSerializer));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		this.nodeManager.close();
@@ -102,45 +109,54 @@ public class DBSeqTrieSet extends TrieSet {
 		super.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Node createNodeInstance() {
 		return new DBSeqNode(this.nodeManager);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Node createRootNodeInstance() {
 		throw new UnsupportedOperationException();	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void changeRootNode(final Node rootNodeParam) {
 		this.nodeManager.writeRootNodeAgain(DBSeqNode.deSerializer, rootNodeParam);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		// TODO Implementieren
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final String key) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String get(final int index) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getIndex(final String key) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final String key) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void merge(final List<? extends Trie> tries) throws TrieNotMergeableException {
 		/*
@@ -160,16 +176,19 @@ public class DBSeqTrieSet extends TrieSet {
 		this.prepareForReading();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasCompleteMetadata() {
 		return this.nodeManager.hasCompleteMetadata();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getNodeCount() {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void mergeAfterCheck(final Node root, final List<Node> nodesToMerge){
 		NodeHelper.mergeSeqSet((DBSeqNode) root, nodesToMerge);

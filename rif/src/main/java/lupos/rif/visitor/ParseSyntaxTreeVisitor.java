@@ -90,9 +90,9 @@ import lupos.rif.model.Uniterm;
 /**
  * Visitor zum aufbauen der Datenstruktur in lupos.rif.model, welche als
  * Zwischenschicht zwischen AST und Operatorbaum steht.
- * 
+ *
  * @author jenskluttig
- * 
+ * @version $Id: $Id
  */
 public class ParseSyntaxTreeVisitor implements
 		IRetArguVisitor<Object, IRuleNode> {
@@ -105,11 +105,25 @@ public class ParseSyntaxTreeVisitor implements
 	 */
 	public Map<String, String> prefixMap = null;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.CompilationUnit} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final CompilationUnit n, final IRuleNode argu) {
 		final Document resultDoc = (Document) n.f0.accept(this, null);
 		return resultDoc;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFDocument} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFDocument n, final IRuleNode argu) {
 		final Document doc = new Document();
 		doc.setParent(argu);
@@ -148,10 +162,24 @@ public class ParseSyntaxTreeVisitor implements
 		return doc;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFBase} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFBase n, final IRuleNode argu) {
 		return n.f2.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFPrefix} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFPrefix n, final IRuleNode argu) {
 		return new String[] {
 				(String) n.f2.accept(this, argu),
@@ -159,6 +187,13 @@ public class ParseSyntaxTreeVisitor implements
 						.getString() };
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFGroup} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFGroup n, final IRuleNode argu) {
 		final List<Rule> ruleList = new ArrayList<Rule>();
 		if (n.f2.present())
@@ -172,6 +207,13 @@ public class ParseSyntaxTreeVisitor implements
 		return ruleList;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFRule} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFRule n, final IRuleNode argu) {
 		final Rule rule = new Rule();
 		rule.setParent(argu);
@@ -188,6 +230,13 @@ public class ParseSyntaxTreeVisitor implements
 		return rule;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFClause} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFClause n, final IRuleNode argu) {
 		final Rule parent = (Rule) argu;
 		// nur eine Aussage
@@ -212,10 +261,24 @@ public class ParseSyntaxTreeVisitor implements
 		return parent;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFTerm} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFTerm n, final IRuleNode argu) {
 		return n.f0.choice.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFFormula} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFFormula n, final IRuleNode argu) {
 		switch (n.f0.which) {
 		case 0:
@@ -252,6 +315,13 @@ public class ParseSyntaxTreeVisitor implements
 		}
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFAtomic} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFAtomic n, final IRuleNode argu) {
 		if (n.f1.present()){
 			if(((NodeChoice)n.f1.node).which == 1){			
@@ -297,6 +367,13 @@ public class ParseSyntaxTreeVisitor implements
 		}
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFUniterm} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFUniterm n, final IRuleNode argu) {
 		final Uniterm term = new RulePredicate(false);
 		term.setParent(argu);
@@ -313,6 +390,13 @@ public class ParseSyntaxTreeVisitor implements
 		return term;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFFrame} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFFrame n, final IRuleNode argu) {
 		final List<INode> args = (List<INode>) n.f1.accept(this, argu);
 		final AbstractExpressionContainer and = new Conjunction();
@@ -332,10 +416,24 @@ public class ParseSyntaxTreeVisitor implements
 		return and;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFConclusion} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(RIFConclusion n, IRuleNode argu) {
 		return n.f2.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFExternal} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFExternal n, final IRuleNode argu) {
 		final Uniterm term = (Uniterm) n.f2.accept(this, argu);
 		final External external = new External(term);
@@ -343,6 +441,13 @@ public class ParseSyntaxTreeVisitor implements
 		return external;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFVar} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFVar n, final IRuleNode argu) {
 		final RuleVariable var = new RuleVariable((String) n.f1.accept(this,
 				argu));
@@ -350,10 +455,24 @@ public class ParseSyntaxTreeVisitor implements
 		return var;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFImport} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFImport n, final IRuleNode argu) {
 		throw new RIFException("IMPORT not supported!");
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFList} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFList n, final IRuleNode argu) {
 		final RuleList result = new RuleList();
 		result.setParent(argu);
@@ -372,10 +491,24 @@ public class ParseSyntaxTreeVisitor implements
 		return result;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFRDFLiteral} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFRDFLiteral n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFTypedLiteral} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFTypedLiteral n, final IRuleNode argu) {
 		final Literal content = ((Constant) n.f0.accept(this, argu))
 				.getLiteral();
@@ -390,6 +523,13 @@ public class ParseSyntaxTreeVisitor implements
 		return new Constant(literal, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFLiteralWithLangTag} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFLiteralWithLangTag n, final IRuleNode argu) {
 		final TypedLiteral content = (TypedLiteral) ((Constant) n.f0.accept(
 				this, argu)).getLiteral();
@@ -399,10 +539,24 @@ public class ParseSyntaxTreeVisitor implements
 		return new Constant(literal, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFNumericLiteral} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFNumericLiteral n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFString} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFString n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 //		Literal literal = null;
@@ -416,14 +570,35 @@ public class ParseSyntaxTreeVisitor implements
 		return new Constant(literal, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFVarOrURI} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFVarOrURI n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFURI} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFURI n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFQName} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFQName n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal = null;
@@ -451,6 +626,13 @@ public class ParseSyntaxTreeVisitor implements
 		return new Constant(literal, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFInteger} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFInteger n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal;
@@ -463,6 +645,13 @@ public class ParseSyntaxTreeVisitor implements
 		return new Constant(literal, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFFloatingPoint} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFFloatingPoint n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal = null;
@@ -483,10 +672,24 @@ public class ParseSyntaxTreeVisitor implements
 		return new Constant(literal, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFNCName} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFNCName n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.RIFQuotedURIref} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final RIFQuotedURIref n, final IRuleNode argu) {
 		final String uriRef = (String) n.f0.accept(this, argu);
 		Literal literal;
@@ -500,22 +703,57 @@ public class ParseSyntaxTreeVisitor implements
 
 	/* JTB-spezifische Klassen */
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.NodeList} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final NodeList n, final IRuleNode argu) {
 		return n.nodes;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.NodeListOptional} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final NodeListOptional n, final IRuleNode argu) {
 		return n.present() ? n.nodes : new ArrayList<INode>();
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.NodeOptional} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final NodeOptional n, final IRuleNode argu) {
 		return n.present() ? n.node.accept(this, argu) : null;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.NodeSequence} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final NodeSequence n, final IRuleNode argu) {
 		return n.nodes;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param n a {@link lupos.rif.generated.syntaxtree.NodeToken} object.
+	 * @param argu a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(final NodeToken n, final IRuleNode argu) {
 		return n.tokenImage;
 	}

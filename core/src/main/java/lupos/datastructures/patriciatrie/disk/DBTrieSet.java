@@ -31,6 +31,9 @@ import lupos.datastructures.patriciatrie.node.Node;
 
 /**
  * This class implements the disk based behavior for a trie for a set of strings.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBTrieSet extends TrieSet {
 
@@ -42,14 +45,14 @@ public class DBTrieSet extends TrieSet {
 	
 	/**
 	 * Creates a new trie
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @param bufferSize
 	 *            Amount of nodes that are simultaneously kept in memory
 	 * @param pageSize
 	 *            The size of a page to be stored on disk
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public DBTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		super();
@@ -65,16 +68,18 @@ public class DBTrieSet extends TrieSet {
 	
 	/**
 	 * Creates a new trie with the default buffer size
-	 * 
+	 *
 	 * @param fileName
 	 *            Base filename for the trie
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public DBTrieSet(final String fileName) throws IOException {
 		this(fileName, NodeManager.NODES_TO_BUFFER, NodeManager.DEFAULT_PAGESIZE);
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Saves all unsaved changes to disk and closes the underlying node manager.
 	 * After this method has been called, the trie should not be accessed
 	 * anymore.
@@ -94,16 +99,19 @@ public class DBTrieSet extends TrieSet {
 		super.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Node createNodeInstance() {
 		return new DBNode(this.nodeManager, -1);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected Node createRootNodeInstance() {
 		return new DBNode(this.nodeManager, 1);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void changeRootNode(final Node rootNode_local) {
 		this.setRootNode(rootNode_local);

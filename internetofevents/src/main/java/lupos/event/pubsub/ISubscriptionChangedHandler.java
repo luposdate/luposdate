@@ -26,7 +26,15 @@ package lupos.event.pubsub;
 /**
  * Interface which can be implemented by classes that should be used as subscription changed handlers.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface ISubscriptionChangedHandler {
+	/**
+	 * <p>subscriptionChanged.</p>
+	 *
+	 * @param sub a {@link lupos.event.pubsub.Subscription} object.
+	 * @param server a {@link lupos.event.pubsub.PubSubServer} object.
+	 */
 	void subscriptionChanged(Subscription sub, PubSubServer server);
 }

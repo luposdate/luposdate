@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.memoryindex;
 
@@ -30,24 +34,33 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class MemoryIndexRoot extends
 		lupos.engine.operators.index.Root {
 
+	/**
+	 * <p>Constructor for MemoryIndexRoot.</p>
+	 */
 	public MemoryIndexRoot() {
 	}
 
 
+	/**
+	 * <p>Constructor for MemoryIndexRoot.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 */
 	public MemoryIndexRoot(final Dataset dataset) {
 		super(dataset);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
 		return new MemoryIndexScan(succeedingOperator, triplePattern, data, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public MemoryIndexRoot newInstance(final Dataset dataset_param) {
 		return new MemoryIndexRoot(dataset_param);

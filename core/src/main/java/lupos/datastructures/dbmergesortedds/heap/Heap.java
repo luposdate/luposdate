@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
 
@@ -27,24 +31,41 @@ import java.util.Iterator;
 
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.misc.util.ImmutableIterator;
-
 public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 
 	public enum HEAPTYPE {
 		DEFAULT, SEQUENTIAL, OPTIMIZEDSEQUENTIAL, PARALLEL, PARALLEL8, PARALLEL16, PARALLEL32, LAZYOPTIMIZEDSEQUENTIAL, LAZYPARALLEL, LAZYPARALLEL8, LAZYPARALLEL16, LAZYPARALLEL32, SORTANDMERGEHEAP, SORTANDMERGEHEAPUSINGMERGESORT
 	}
 
+	/** Constant <code>heapType</code> */
 	protected static HEAPTYPE heapType = HEAPTYPE.SEQUENTIAL;
 
+	/**
+	 * <p>maxLength.</p>
+	 *
+	 * @return a int.
+	 */
 	public abstract int maxLength();
 
+	/**
+	 * <p>peek.</p>
+	 *
+	 * @return a E object.
+	 */
 	public abstract E peek();
 
+	/**
+	 * <p>pop.</p>
+	 *
+	 * @return a E object.
+	 */
 	public abstract E pop();
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract int size();
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> emptyDatastructure() {
 		return new ImmutableIterator<E>() {
@@ -61,15 +82,30 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 		};
 	}
 
+	/**
+	 * <p>getContent.</p>
+	 *
+	 * @return an array of {@link java.lang.Object} objects.
+	 */
 	protected abstract Object[] getContent();
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract String toString();
 
+	/** {@inheritDoc} */
 	public static<T extends Comparable<T>> Heap<T> createInstance(final int height) {
 		return createInstance(height, Heap.heapType);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param height a int.
+	 * @param heapType_param a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 */
 	public static<T extends Comparable<T>> Heap<T> createInstance(final int height, final HEAPTYPE heapType_param) {
 		switch (heapType_param) {
 		default:
@@ -102,10 +138,27 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 		}
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 */
 	public static<T extends Comparable<T>> Heap<T> createInstance(final int length_or_height, final boolean length) {
 		return createInstance(length_or_height, length, Heap.heapType);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 * @param heapType_param a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 */
 	public static<T extends Comparable<T>> Heap<T> createInstance(final int length_or_height, final boolean length, final HEAPTYPE heapType_param) {
 		switch (heapType_param) {
 		default:
@@ -138,10 +191,25 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 		}
 	}
 
+	/**
+	 * <p>cloneInstance.</p>
+	 *
+	 * @param heap a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 */
 	public static<T extends Comparable<T>> Heap<T> cloneInstance(final Heap<T> heap) {
 		return Heap.cloneInstance(heap, Heap.heapType);
 	}
 
+	/**
+	 * <p>cloneInstance.</p>
+	 *
+	 * @param heap_param a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 * @param heapType_param a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 */
 	public static<T extends Comparable<T>> Heap<T> cloneInstance(final Heap<T> heap_param, final HEAPTYPE heapType_param) {
 		switch (heapType_param) {
 		default:
@@ -174,10 +242,20 @@ public abstract class Heap<E extends Comparable<E>> extends ToSort<E> {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>heapType</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 */
 	public static HEAPTYPE getHeapType() {
 		return heapType;
 	}
 
+	/**
+	 * <p>Setter for the field <code>heapType</code>.</p>
+	 *
+	 * @param heapType a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 */
 	public static void setHeapType(final HEAPTYPE heapType) {
 		Heap.heapType = heapType;
 	}

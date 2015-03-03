@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -33,7 +37,6 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 
 //import java.util.*;
-
 public class LanguageTaggedLiteralOriginalLanguage extends
 		LanguageTaggedLiteral implements Externalizable {
 
@@ -43,9 +46,18 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 	private static final long serialVersionUID = 2588014593133047329L;
 	protected Literal originalLang;
 
+	/**
+	 * <p>Constructor for LanguageTaggedLiteralOriginalLanguage.</p>
+	 */
 	public LanguageTaggedLiteralOriginalLanguage() {
 	}
 
+	/**
+	 * <p>Constructor for LanguageTaggedLiteralOriginalLanguage.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param language a {@link java.lang.String} object.
+	 */
 	protected LanguageTaggedLiteralOriginalLanguage(final String content,
 			String language) {
 		super(content, language);
@@ -59,6 +71,12 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 				: this.originalLang;
 	}
 
+	/**
+	 * <p>Constructor for LanguageTaggedLiteralOriginalLanguage.</p>
+	 *
+	 * @param codeContent a int.
+	 * @param codeLang a int.
+	 */
 	protected LanguageTaggedLiteralOriginalLanguage(final int codeContent,
 			final int codeLang) {
 		super(codeContent, codeLang);
@@ -69,6 +87,12 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 				: this.originalLang;
 	}
 
+	/**
+	 * <p>originalLangDiffersFromUniqueRepresentation.</p>
+	 *
+	 * @param language a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean originalLangDiffersFromUniqueRepresentation(final String language) {
 		if(LiteralFactory.semanticInterpretationOfLiterals==false){
 			return false;
@@ -77,16 +101,34 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 		}
 	}
 
+	/**
+	 * <p>originalLangDiffersFromUniqueRepresentation.</p>
+	 *
+	 * @param language a int.
+	 * @return a boolean.
+	 */
 	public static boolean originalLangDiffersFromUniqueRepresentation(
 			final int language) {
 		final String originallanguage = CodeMapLiteral.getValue(language);
 		return (originallanguage.toUpperCase().compareTo(originallanguage) != 0);
 	}
 
+	/**
+	 * <p>Getter for the field <code>originalLang</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getOriginalLang() {
 		return this.originalLang;
 	}
 
+	/**
+	 * <p>createLanguageTaggedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param lang a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.LanguageTaggedLiteral} object.
+	 */
 	public static LanguageTaggedLiteral createLanguageTaggedLiteral(
 			final String content, final String lang) {
 		if (LanguageTaggedLiteralOriginalLanguage
@@ -97,6 +139,13 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 		}
 	}
 
+	/**
+	 * <p>createLanguageTaggedLiteral.</p>
+	 *
+	 * @param content a int.
+	 * @param lang a int.
+	 * @return a {@link lupos.datastructures.items.literal.LanguageTaggedLiteral} object.
+	 */
 	public static LanguageTaggedLiteral createLanguageTaggedLiteral(
 			final int content, final int lang) {
 		if (LanguageTaggedLiteralOriginalLanguage
@@ -107,33 +156,39 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String originalString() {
 		return this.content.toString() + "@" + this.originalLang.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String printYagoStringWithPrefix() {
 		return this.content.printYagoStringWithPrefix() + "@"
 				+ this.originalLang.printYagoStringWithPrefix();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getOriginalLanguage() {
 		return this.originalLang.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return new String[] { this.content.toString(), this.lang.toString(),
 				this.originalLang.toString() };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean originalStringDiffers() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
@@ -141,6 +196,7 @@ public class LanguageTaggedLiteralOriginalLanguage extends
 		this.originalLang = InputHelper.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		super.writeExternal(out);

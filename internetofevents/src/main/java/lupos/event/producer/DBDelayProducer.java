@@ -36,9 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
@@ -46,9 +43,15 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.event.communication.SerializingMessageService;
 import lupos.event.util.Literals;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * Producer to report maximum delays for (G-G-G-German) interregional trains,
  * obtained from Zugmonitor API.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
@@ -57,15 +60,23 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 	private static final String STATION_URL = "http://zugmonitor.sueddeutsche.de/api/stations";
 
 	// DBDelayProducer namespace and type
+	/** Constant <code>NAMESPACE="http://localhost/events/DB/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/DB/";
+	/** Constant <code>TYPE</code> */
 	public final static URILiteral TYPE = Literals.createURI(NAMESPACE, "TrainDBEvent");
 
 	// event predicates
+	/** Constant <code>TRAIN_NAME</code> */
 	public static final URILiteral TRAIN_NAME = Literals.createURI(NAMESPACE, "train_name");
+	/** Constant <code>STATION_NAME</code> */
 	public static final URILiteral STATION_NAME = Literals.createURI(NAMESPACE, "station_name");
+	/** Constant <code>LATITUDE</code> */
 	public static final URILiteral LATITUDE = Literals.createURI(NAMESPACE, "latitude");
+	/** Constant <code>LONGITUDE</code> */
 	public static final URILiteral LONGITUDE = Literals.createURI(NAMESPACE, "longitude");
+	/** Constant <code>DELAY</code> */
 	public static final URILiteral DELAY = Literals.createURI(NAMESPACE, "delay");
+	/** Constant <code>DELAY_CAUSE</code> */
 	public static final URILiteral DELAY_CAUSE = Literals.createURI(NAMESPACE, "delay_cause");
 
 	/**
@@ -105,19 +116,19 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Download textual content from a given URL via HTTP GET.
-	 * 
+	 *
 	 * @param strUrl
 	 *            URL to download (textual) content from.
 	 * @return Content downloaded from the given URL, obtained via HTTP GET.
 	 */
-	private String getHttp(String strUrl) {
+	private String getHttp(final String strUrl) {
 		String result = "";
 		try {
-			URL url = new URL(strUrl);
-			HttpURLConnection connection = (HttpURLConnection) url
+			final URL url = new URL(strUrl);
+			final HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setRequestMethod("GET");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 
 			String line;
@@ -125,7 +136,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 				result += line;
 			}
 			reader.close();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -134,28 +145,29 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Parse JSON-encoded station data from Zugmonitor API.
-	 * 
+	 *
 	 * @param jsonStr
 	 *            JSON-encoded station information data (from Zugmonitor API).
 	 * @return List of StationInfos, one for each station.
 	 */
-	private Map<Integer, StationInfo> parseStationDataSets(String jsonStr) {
-		Map<Integer, StationInfo> result = new HashMap<Integer, StationInfo>();
+	private Map<Integer, StationInfo> parseStationDataSets(final String jsonStr) {
+		final Map<Integer, StationInfo> result = new HashMap<Integer, StationInfo>();
 		try {
 			// parse JSON-encoded string
-			JSONObject obj = new JSONObject(jsonStr);
+			final JSONObject obj = new JSONObject(jsonStr);
 
 			// process each key (keys = station IDs)
 			@SuppressWarnings("unchecked")
+			final
 			Iterator<String> it = obj.keys();
 			while (it.hasNext()) {
-				String key = it.next();
-				StationInfo si = parseStationDataSet(obj, key);
+				final String key = it.next();
+				final StationInfo si = this.parseStationDataSet(obj, key);
 				if (si != null) {
 					result.put(si.id, si);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -164,7 +176,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Parse a single station's information to a StationInfo object.
-	 * 
+	 *
 	 * @param rootObj
 	 *            (Root) JSONObject containing all the parsed information from
 	 *            Zugmonitor API.
@@ -173,18 +185,18 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 	 *            object.
 	 * @return StationInfo for the specified station.
 	 */
-	private StationInfo parseStationDataSet(JSONObject rootObj,
-			String stationKey) {
-		StationInfo result = new StationInfo();
+	private StationInfo parseStationDataSet(final JSONObject rootObj,
+			final String stationKey) {
+		final StationInfo result = new StationInfo();
 
 		try {
 			result.id = Integer.parseInt(stationKey);
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			return null;
 		}
 
 		try {
-			JSONObject stationObj = rootObj.getJSONObject(stationKey);
+			final JSONObject stationObj = rootObj.getJSONObject(stationKey);
 
 			// get the station's name
 			if (stationObj.has("name")) {
@@ -199,7 +211,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			if (stationObj.has("lon")) {
 				result.longitude = stationObj.getDouble("lon");
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -209,26 +221,27 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Parse JSON-encoded train data from Zugmonitor API.
-	 * 
+	 *
 	 * @param jsonStr
 	 *            JSON-encoded train information data (from Zugmonitor API).
 	 * @return List of TrainInfos, one for each train.
 	 */
-	private List<TrainInfo> parseTrainDataSets(String jsonStr) {
+	private List<TrainInfo> parseTrainDataSets(final String jsonStr) {
 		// System.out.println(jsonData);
-		List<TrainInfo> result = new ArrayList<TrainInfo>();
+		final List<TrainInfo> result = new ArrayList<TrainInfo>();
 		try {
 			// parse JSON-encoded string
-			JSONObject obj = new JSONObject(jsonStr);
+			final JSONObject obj = new JSONObject(jsonStr);
 
 			// process each key (keys = train IDs)
 			@SuppressWarnings("unchecked")
+			final
 			Iterator<String> it = obj.keys();
 			while (it.hasNext()) {
-				String key = it.next();
-				result.add(parseTrainDataSet(obj, key));
+				final String key = it.next();
+				result.add(this.parseTrainDataSet(obj, key));
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -238,7 +251,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Parse a single train's information to a TrainInfo object.
-	 * 
+	 *
 	 * @param rootObj
 	 *            (Root) JSONObject containing all the parsed information from
 	 *            Zugmonitor API.
@@ -247,12 +260,12 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 	 *            object.
 	 * @return TrainInfo for the specified train.
 	 */
-	private TrainInfo parseTrainDataSet(JSONObject rootObj, String trainKey) {
-		TrainInfo result = new TrainInfo();
+	private TrainInfo parseTrainDataSet(final JSONObject rootObj, final String trainKey) {
+		final TrainInfo result = new TrainInfo();
 		result.id = Integer.parseInt(trainKey);
 
 		try {
-			JSONObject trainObj = rootObj.getJSONObject(trainKey);
+			final JSONObject trainObj = rootObj.getJSONObject(trainKey);
 
 			// get train_nr: the train's name
 			if (trainObj.has("train_nr")) {
@@ -261,16 +274,16 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 			// parse station infos to compute the train's maximum delay
 			if (trainObj.has("stations")) {
-				JSONArray stationArray = trainObj.getJSONArray("stations");
+				final JSONArray stationArray = trainObj.getJSONArray("stations");
 				for (int i = 0; i < stationArray.length(); i++) {
-					StationDelayInfo sdi = getStationDelayInfo(stationArray
+					final StationDelayInfo sdi = this.getStationDelayInfo(stationArray
 							.getJSONObject(i));
 					result.maxDelay = Math.max(result.maxDelay,
 							sdi.delayMinutes);
 					result.delayPerStation.add(sdi);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -281,16 +294,16 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 	/**
 	 * Extract the StationDelayInfo from a station's JSONObject (parsed from
 	 * Zugmonitor API data).
-	 * 
+	 *
 	 * @param stationObj
 	 *            The station's JSONObject.
 	 * @return The corresponding StationDelayInfo.
 	 */
-	private StationDelayInfo getStationDelayInfo(JSONObject stationObj) {
-		StationDelayInfo result = new StationDelayInfo();
+	private StationDelayInfo getStationDelayInfo(final JSONObject stationObj) {
+		final StationDelayInfo result = new StationDelayInfo();
 		try {
 			if (stationObj.has("station_id")) {
-				int stationID = stationObj.getInt("station_id");
+				final int stationID = stationObj.getInt("station_id");
 
 				if (this.stations.containsKey(stationID)) {
 					result.station = this.stations.get(stationID);
@@ -307,7 +320,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -316,20 +329,24 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @param interval a int.
 	 */
-	public DBDelayProducer(SerializingMessageService msgService, int interval) {
+	public DBDelayProducer(final SerializingMessageService msgService, final int interval) {
 		super(msgService, interval);
 	}
 
 	/**
 	 * Construct a SerializingMessageService, connect it to host:4444 and create
 	 * a DBDelayProducer instance with interval 3000.
-	 * 
-	 * @throws Exception
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		// create communication channel
-		SerializingMessageService msgService = ProducerBase.connectToMaster();
+		final SerializingMessageService msgService = ProducerBase.connectToMaster();
 
 		// start producer
 		new DBDelayProducer(msgService, 30000).start();
@@ -337,31 +354,32 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see lupos.event.ProducerBase#produce()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		// build Zugmonitor API url with current date
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String trainURL = TRAIN_URL_BASE + df.format(new Date());
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		final String trainURL = TRAIN_URL_BASE + df.format(new Date());
 
 		// retrieve json-encoded train infos (http GET)
-		String jsonTrains = getHttp(trainURL);
+		final String jsonTrains = this.getHttp(trainURL);
 
 		// retrieve json-encoded station infos
-		String jsonStations = getHttp(STATION_URL);
+		final String jsonStations = this.getHttp(STATION_URL);
 
 		// parse json data
-		this.stations = parseStationDataSets(jsonStations);
-		List<TrainInfo> trainInfos = parseTrainDataSets(jsonTrains);
+		this.stations = this.parseStationDataSets(jsonStations);
+		final List<TrainInfo> trainInfos = this.parseTrainDataSets(jsonTrains);
 
 		// encode to triples
-		List<List<Triple>> triplelist = new ArrayList<List<Triple>>();
+		final List<List<Triple>> triplelist = new ArrayList<List<Triple>>();
 
 		// add to list
-		for (TrainInfo ti : trainInfos) {
-			triplelist.addAll(trainToEvents(ti));
+		for (final TrainInfo ti : trainInfos) {
+			triplelist.addAll(this.trainToEvents(ti));
 		}
 
 		return (triplelist.size() == 0) ? null : triplelist;
@@ -369,24 +387,24 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 	/**
 	 * Encode a TrainInfo object into triples.
-	 * 
+	 *
 	 * @param train
 	 *            TrainInfo to be encoded into triples.
 	 * @return well ... guess what!
 	 */
-	private List<List<Triple>> trainToEvents(TrainInfo train) {
-		List<List<Triple>> result = new ArrayList<List<Triple>>();
+	private List<List<Triple>> trainToEvents(final TrainInfo train) {
+		final List<List<Triple>> result = new ArrayList<List<Triple>>();
 
 		try {
 			// the train subject
-			Literal subj = LiteralFactory.createAnonymousLiteral("_:t"+ train.id);
+			final Literal subj = LiteralFactory.createAnonymousLiteral("_:t"+ train.id);
 
 			// the train's name
-			Literal nameObj = LiteralFactory.createTypedLiteral("\"" + train.name + "\"", Literals.XSD.String);
+			final Literal nameObj = LiteralFactory.createTypedLiteral("\"" + train.name + "\"", Literals.XSD.String);
 
 			// for each station, compose a new event
-			for (StationDelayInfo sdi : train.delayPerStation) {
-				List<Triple> event = stationDelayInfoToTriples(subj, sdi);
+			for (final StationDelayInfo sdi : train.delayPerStation) {
+				final List<Triple> event = this.stationDelayInfoToTriples(subj, sdi);
 
 				// add the event type and the train's name
 				event.add(0, new Triple(subj, Literals.RDF.TYPE, TYPE));
@@ -394,7 +412,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 
 				result.add(event);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
@@ -405,7 +423,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 	/**
 	 * Construct an event (i.e., a List of Triples) with a given subject from a
 	 * StationDelayInfo object.
-	 * 
+	 *
 	 * @param trainSubj
 	 *            Triples' subject; usually identifying the corresponding train.
 	 * @param sdi
@@ -413,9 +431,9 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 	 * @return List of Triples encoding the station's name, the delay at the
 	 *         station and the cause of the delay.
 	 */
-	private List<Triple> stationDelayInfoToTriples(Literal trainSubj,
-			StationDelayInfo sdi) {
-		List<Triple> result = new ArrayList<Triple>();
+	private List<Triple> stationDelayInfoToTriples(final Literal trainSubj,
+			final StationDelayInfo sdi) {
+		final List<Triple> result = new ArrayList<Triple>();
 		try {
 			Literal obj;
 
@@ -435,13 +453,13 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			// split delay into days, hours, minutes
 			int totalMinutes = sdi.delayMinutes;
 
-			int days = totalMinutes / 1440;
+			final int days = totalMinutes / 1440;
 			totalMinutes -= days * 1440;
 
-			int hours = totalMinutes / 60;
+			final int hours = totalMinutes / 60;
 			totalMinutes -= hours * 60;
 
-			int minutes = totalMinutes;
+			final int minutes = totalMinutes;
 
 			obj = Literals.createDurationLiteral(0, 0, days, hours, minutes, 0);
 			result.add(new Triple(trainSubj, DELAY, obj));
@@ -449,7 +467,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			// delay cause
 			obj = LiteralFactory.createTypedLiteral("\"" + sdi.delayCause + "\"", Literals.XSD.String);
 			result.add(new Triple(trainSubj, DELAY_CAUSE, obj));
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}

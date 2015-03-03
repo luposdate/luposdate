@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,10 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
+ * @since 1.0
  */
 package lupos.test;
 
@@ -47,7 +52,6 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.engine.operators.stream.NotifyStreamResult;
 import lupos.engine.operators.stream.Stream;
-
 public class TestStream {
 
 	/**
@@ -118,6 +122,8 @@ public class TestStream {
 	/**
 	 * Create the GUI and show it. For thread safety, this method uses the event
 	 * dispatch thread.
+	 *
+	 * @param labelDemo a {@link lupos.test.TestStream.LabelDemo} object.
 	 */
 	public void createAndShowGUI(final LabelDemo labelDemo) {
 		// Schedule a job for the event dispatch thread:

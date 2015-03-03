@@ -65,6 +65,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @see BufferManager
  * @see RandomAccess
  * @see MemoryManager
+ * @version $Id: $Id
  */
 public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cloneable, Serializable {
 	/**
@@ -141,6 +142,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 	 *
 	 * @param pageSize The page size (should be 2^x)
 	 * @param instance A instance of <tt>E</tt>
+	 * @param file a {@link java.io.File} object.
 	 */
 	@SuppressWarnings("rawtypes")
 	public BufferedList(final int pageSize, File file, final Object instance) {
@@ -173,6 +175,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.bufferManager.releaseAllPages();
@@ -196,7 +199,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 	 * Checks if the specified <tt>index</tt> is valid.
 	 *
 	 * @param index A index
-	 * @throws IndexOutOfBoundsException
+	 * @throws java.lang.IndexOutOfBoundsException
 	 */
 	protected void rangeCheck(final int index) {
 		if (index >= this.size) {
@@ -204,16 +207,19 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return this.size == 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E e) {
 		this.add(this.size, e);
@@ -299,14 +305,31 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/**
+	 * <p>getPointerPage.</p>
+	 *
+	 * @param index a int.
+	 * @return a int.
+	 */
 	public int getPointerPage(final int index) {
 		return (int) Math.floor(index / this.sizeDiv12);
 	}
 
+	/**
+	 * <p>getPointerBound.</p>
+	 *
+	 * @param index a int.
+	 * @return a int.
+	 */
 	protected int getPointerBound(final int index) {
 		return (index % this.sizeDiv12) * 12;
 	}
 
+	/**
+	 * <p>setEnd.</p>
+	 *
+	 * @param end a {@link java.awt.Point} object.
+	 */
 	protected void setEnd(final Point end) {
 		try {
 			final byte[] page = this.bufferManager.getPage(this.pageSize, new BufferManager.PageAddress(0, this.path1));
@@ -320,6 +343,11 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/**
+	 * <p>getEnd.</p>
+	 *
+	 * @return a {@link java.awt.Point} object.
+	 */
 	protected Point getEnd() {
 		ByteBuffer byteBuffer = null;
 		try {
@@ -331,6 +359,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return new Point(byteBuffer.getInt(4), byteBuffer.getInt(8));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final int index, final E e) {
 		final Point end = this.getEnd();
@@ -462,11 +491,13 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(final Collection<? extends E> c) {
 		return this.addAll(this.size(), c);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(int index, final Collection<? extends E> c) {
 		this.rangeCheckForAdd(index);
@@ -479,6 +510,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return modified;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
 		if (o == null) {
@@ -497,11 +529,13 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return -1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object o) {
 		return this.indexOf(o) >= 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(final Collection<?> c) {
 		@SuppressWarnings("unchecked")
@@ -516,6 +550,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return modified;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E get(final int index) {
 		this.rangeCheck(index);
@@ -567,6 +602,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return this.deserialize(element, this.instance);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		return this.listIterator();
@@ -593,6 +629,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return "Index: " + index + ", Size: " + this.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int lastIndexOf(final Object o) {
 		if (o == null) {
@@ -611,6 +648,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return -1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ListIterator<E> listIterator(final int index) {
 		if (index < 0 || index > this.size()) {
@@ -619,11 +657,13 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return new ListItr(index);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ListIterator<E> listIterator() {
 		return new ListItr(0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object o) {
 		final int size = this.size();
@@ -645,6 +685,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E remove(final int index) {
 		final E oldValue = this.get(index);
@@ -678,6 +719,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return oldValue;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean removeAll(final Collection<?> c) {
@@ -690,6 +732,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return modified;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(final Collection<?> c) {
 		boolean modified = false;
@@ -702,6 +745,12 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return modified;
 	}
 
+	/**
+	 * <p>setNoReturn.</p>
+	 *
+	 * @param index a int.
+	 * @param element a E object.
+	 */
 	public void setNoReturn(final int index, final E element) {
 		this.rangeCheck(index);
 
@@ -725,6 +774,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		this.setEnd(new Point(rightPage, rightBound));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E set(final int index, final E element) {
 		this.rangeCheck(index);
@@ -753,6 +803,12 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return oldValue;
 	}
 
+	/**
+	 * <p>getPointers.</p>
+	 *
+	 * @param index a int.
+	 * @return a {@link lupos.datastructures.simplifiedfractaltree.buffermanager.Pointer} object.
+	 */
 	protected Pointer getPointers(final int index) {
 		ByteBuffer byteBuffer = null;
 		try {
@@ -765,6 +821,14 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return new Pointer(byteBuffer.getInt(pointerBound), byteBuffer.getInt(pointerBound + 4), byteBuffer.getInt(pointerBound + 8));
 	}
 
+	/**
+	 * <p>setPointers.</p>
+	 *
+	 * @param index a int.
+	 * @param leftPage a int.
+	 * @param leftBound a int.
+	 * @param size a int.
+	 */
 	protected void setPointers(final int index, final int leftPage, final int leftBound, final int size) {
 		try {
 			final ByteBuffer byteBuffer = ByteBuffer.wrap(this.bufferManager.getPage(this.pageSize, new PageAddress(this.getPointerPage(index), this.path2)));
@@ -779,6 +843,13 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/**
+	 * <p>calcRightBound.</p>
+	 *
+	 * @param leftBound a int.
+	 * @param size a int.
+	 * @return a int.
+	 */
 	public int calcRightBound(final int leftBound, final int size) {
 		final int ans = (leftBound + size) % this.pageSize;
 		if (ans == 0) {
@@ -788,6 +859,14 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		}
 	}
 
+	/**
+	 * <p>calcRightPage.</p>
+	 *
+	 * @param leftPage a int.
+	 * @param leftBound a int.
+	 * @param size a int.
+	 * @return a int.
+	 */
 	public int calcRightPage(final int leftPage, final int leftBound, final int size) {
 		double ans = 0;
 		if (leftBound + size <= this.pageSize) {
@@ -799,6 +878,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return (int) (ans);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<E> subList(final int fromIndex, final int toIndex) {
 		this.subListRangeCheck(fromIndex, toIndex, this.size());
@@ -810,6 +890,7 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return list;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E[] toArray() {
 		@SuppressWarnings("unchecked")
@@ -822,11 +903,13 @@ public class BufferedList<E> implements Collection<E>, List<E>, RandomAccess, Cl
 		return array;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(final T[] a) {
 		throw new NotImplementedException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object clone() {
 		try {

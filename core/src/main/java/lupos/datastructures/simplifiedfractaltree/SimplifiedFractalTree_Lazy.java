@@ -30,10 +30,11 @@ import lupos.datastructures.simplifiedfractaltree.buffermanager.BufferedList_Lup
 
 /**
  * This class is an implementation of the simplified fractaltree with lazy insertion.
- * @author Denis Fäcke
  *
+ * @author Denis Fäcke
  * @param <K> Key
  * @param <V> Value
+ * @version $Id: $Id
  */
 public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, V extends Serializable> extends SimplifiedFractalTree<K, V> {
 	/**
@@ -44,6 +45,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 
 	/**
 	 * Creats a new <tt>SimplifiedFractalTree_Lazy</tt>.
+	 *
 	 * @param pageSize The pageSize
 	 */
 	public SimplifiedFractalTree_Lazy(final int pageSize) {
@@ -52,6 +54,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 
 	/**
 	 * Creats a new <tt>SimplifiedFractalTree_Lazy</tt>.
+	 *
 	 * @param file A file
 	 * @param pageSize The pageSize
 	 */
@@ -68,12 +71,14 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 
 	/**
 	 * Creats a new <tt>SimplifiedFractalTree_Lazy</tt>.
+	 *
 	 * @param file A file
 	 */
 	public SimplifiedFractalTree_Lazy(final File file) {
 		super(file);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K key, final V value) {
 		assert key != null;
@@ -85,6 +90,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 
 	/**
 	 * Increments the count of deleted elements for the specified array.
+	 *
 	 * @param array An array
 	 */
 	protected void incDeletedCount(final int array) {
@@ -96,6 +102,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 
 	/**
 	 * Checks if the specified array has enough elements to delete.
+	 *
 	 * @param array An array
 	 */
 	protected void delCheck(final int array) {
@@ -156,6 +163,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void merge(final int index) {
 		int imax = 2 * index;
@@ -354,6 +362,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void merge(final FractalTreeEntry<K, V> element) {
 		element.pointer = -2;
@@ -367,6 +376,12 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 		}
 	}
 
+	/**
+	 * <p>calcPointers.</p>
+	 *
+	 * @param index a int.
+	 * @param max a int.
+	 */
 	protected void calcPointers(final int index, final int max) {
 		if (this.bufferedList.get(index).key == null) {
 			return;
@@ -407,6 +422,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final int index, final K key, FractalTreeEntry<K, V> entry, int nextArrayIndex) {
 		if (index >= this.bufferedList.size()) {

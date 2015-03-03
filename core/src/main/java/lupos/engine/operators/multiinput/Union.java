@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,24 +21,31 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-
 public class Union extends MultiInputOperator {
 
+	/**
+	 * <p>Constructor for Union.</p>
+	 */
 	public Union() {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		return bindings;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(BoundVariablesMessage msg) {
 		BoundVariablesMessage msg_result = new BoundVariablesMessage(msg); 

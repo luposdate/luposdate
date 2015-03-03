@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.helper;
 
@@ -54,9 +58,16 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
 import lupos.io.Registration;
 import lupos.optimizations.logical.statistics.VarBucket;
-
 public final class OutHelper {
 
+	/**
+	 * <p>writeLuposTriple.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @param previousTriple a {@link lupos.datastructures.items.Triple} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposTriple(final Triple t, final Triple previousTriple, final OutputStream os) throws IOException {
 		int diff = 0;
 		if (previousTriple.getSubject() == null
@@ -95,6 +106,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposTriple.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposTriple(final Triple t, final OutputStream os) throws IOException {
 		OutHelper.writeLuposLiteral(t.getSubject(), os);
 		OutHelper.writeLuposLiteral(t.getPredicate(), os);
@@ -102,12 +120,13 @@ public final class OutHelper {
 	}
 
 	/**
+	 * <p>writeLuposDifferenceString.</p>
 	 *
-	 * @param s
-	 * @param previousString
-	 * @param os
+	 * @param s a {@link java.lang.String} object.
+	 * @param previousString an array of byte.
+	 * @param os a {@link java.io.OutputStream} object.
 	 * @return the byte array of the just written string (to be kept and used for next call to this method)
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public final static byte[] writeLuposDifferenceString(final String s, final byte[] previousString, final OutputStream os) throws IOException {
 		if (s == null){
@@ -132,10 +151,25 @@ public final class OutHelper {
 		return bytesOfS;
 	}
 
+	/**
+	 * <p>writeLuposString.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @param previousString a {@link java.lang.String} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposString(final String s, final String previousString, final OutputStream os) throws IOException {
 		OutHelper.writeLuposDifferenceString(s, (previousString==null)? null: previousString.getBytes(LuposObjectInputStream.UTF8), os);
 	}
 
+	/**
+	 * <p>writeLuposString.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposString(final String s, final OutputStream os) throws IOException {
 		if (s == null){
 			return;
@@ -146,6 +180,13 @@ public final class OutHelper {
 		os.write(bytesOfS);
 	}
 
+	/**
+	 * <p>writeLuposBoolean.</p>
+	 *
+	 * @param flag a boolean.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposBoolean(final boolean flag, final OutputStream os) throws IOException {
 		if (flag){
 			os.write(0);
@@ -154,6 +195,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposInt.</p>
+	 *
+	 * @param i a int.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposInt(final int i, final OutputStream os) throws IOException {
 		int remaining = i;
 		os.write((byte) remaining);
@@ -165,6 +213,14 @@ public final class OutHelper {
 		os.write((byte) remaining);
 	}
 
+	/**
+	 * <p>writeLuposBigInteger.</p>
+	 *
+	 * @param value a {@link java.math.BigInteger} object.
+	 * @param numberOfBits a int.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposBigInteger(final BigInteger value, final int numberOfBits, final OutputStream os) throws IOException {
 		int remainingBits = numberOfBits;
 		BigInteger remainingValue = value;
@@ -177,10 +233,24 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposInt1Byte.</p>
+	 *
+	 * @param i a int.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposInt1Byte(final int i, final OutputStream os) throws IOException {
 		os.write((byte) i);
 	}
 
+	/**
+	 * <p>writeLuposInt2Bytes.</p>
+	 *
+	 * @param i a int.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static  void writeLuposInt2Bytes(final int i, final OutputStream os) throws IOException {
 		int remaining = i;
 		os.write((byte) remaining);
@@ -188,6 +258,13 @@ public final class OutHelper {
 		os.write((byte) remaining);
 	}
 
+	/**
+	 * <p>writeLuposInt3Bytes.</p>
+	 *
+	 * @param i a int.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposInt3Bytes(final int i, final OutputStream os) throws IOException {
 		int remaining = i;
 		os.write((byte) remaining);
@@ -197,15 +274,36 @@ public final class OutHelper {
 		os.write((byte) remaining);
 	}
 
+	/**
+	 * <p>writeLuposLong.</p>
+	 *
+	 * @param l a long.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposLong(final long l, final OutputStream os) throws IOException {
 		OutHelper.writeLuposInt((int) l, os);
 		OutHelper.writeLuposInt((int) (l >>> 32), os);
 	}
 
+	/**
+	 * <p>writeLuposByte.</p>
+	 *
+	 * @param b a byte.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposByte(final byte b, final OutputStream os) throws IOException {
 		os.write(b);
 	}
 
+	/**
+	 * <p>writeLuposIntVariableBytes.</p>
+	 *
+	 * @param i_par a int.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposIntVariableBytes(final int i_par, final OutputStream os) throws IOException {
 		int i = i_par;
 		if (i <= 251) {
@@ -232,6 +330,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposInt.</p>
+	 *
+	 * @param i_par a int.
+	 * @param out a {@link java.io.ObjectOutput} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposInt(final int i_par, final ObjectOutput out) throws IOException {
 		int i = i_par;
 		if (i <= 251) {
@@ -258,6 +363,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposLiteral.</p>
+	 *
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param out a {@link java.io.ObjectOutput} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposLiteral(final Literal literal, final ObjectOutput out) throws IOException {
 		if (literal instanceof StringLiteral) {
 			out.writeObject(((StringLiteral) literal).originalString());
@@ -266,18 +378,50 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposLiteral.</p>
+	 *
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposLiteral(final Literal literal, final OutputStream os) throws IOException {
 		LiteralFactory.writeLuposLiteral(literal, os);
 	}
 
+	/**
+	 * <p>writeLuposEntry.</p>
+	 *
+	 * @param e a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param <T> a T object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static<T> void writeLuposEntry(final Entry<T> e, final OutputStream os) throws IOException {
 		Registration.serializeWithId(e.e, os);
 	}
 
+	/**
+	 * <p>writeLuposEntry.</p>
+	 *
+	 * @param e a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @param os a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @param <T> a T object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static<T> void writeLuposEntry(final Entry<T> e, final LuposObjectOutputStream os) throws IOException {
 		Registration.serializeWithId(e.e, os);
 	}
 
+	/**
+	 * <p>writeLuposMapEntry.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.dbmergesortedds.MapEntry} object.
+	 * @param os a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static<K, V> void writeLuposMapEntry(final lupos.datastructures.dbmergesortedds.MapEntry<K, V> t, final LuposObjectOutputStream os) throws IOException {
 		Registration.serializeId(t.getKey(), os);
 		Registration.serializeId(t.getValue(), os);
@@ -290,6 +434,15 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposMapEntry.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.dbmergesortedds.MapEntry} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static<K, V> void writeLuposMapEntry(final lupos.datastructures.dbmergesortedds.MapEntry<K, V> t, final OutputStream os) throws IOException {
 		Registration.serializeId(t.getKey(), os);
 		Registration.serializeId(t.getValue(), os);
@@ -302,6 +455,14 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeStringKey.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	protected final static void writeStringKey(final String s, final Triple t, final OutputStream os) throws IOException {
 		if (s.startsWith(t.getSubject().toString())) {
 			if (s.compareTo(t.getSubject().toString() + t.getPredicate().toString() + t.getObject().toString()) == 0) {
@@ -332,6 +493,14 @@ public final class OutHelper {
 		OutHelper.writeLuposString(s, os);
 	}
 
+	/**
+	 * <p>writeLuposBindings.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param previousBindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposBindings(final Bindings t, final Bindings previousBindings, final OutputStream os) throws IOException {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
@@ -401,6 +570,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposBindings.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposBindings(final Bindings t, final OutputStream os) throws IOException {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
@@ -456,20 +632,50 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposTripleKey.</p>
+	 *
+	 * @param tk a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposTripleKey(final TripleKey tk, final OutputStream os) throws IOException {
 		os.write(tk.getTripleComparator().getBytePattern());
 		OutHelper.writeLuposTriple(tk.getTriple(), os);
 	}
 
+	/**
+	 * <p>writeLuposTripleKey.</p>
+	 *
+	 * @param tk a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param previousTripleKey a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposTripleKey(final TripleKey tk, final TripleKey previousTripleKey, final OutputStream os) throws IOException {
 		OutHelper.writeLuposTripleKey(tk,  previousTripleKey.getTriple(), os);
 	}
 
+	/**
+	 * <p>writeLuposTripleKey.</p>
+	 *
+	 * @param tk a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param previousTriple a {@link lupos.datastructures.items.Triple} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposTripleKey(final TripleKey tk, final Triple previousTriple, final OutputStream os) throws IOException {
 		os.write(tk.getTripleComparator().getBytePattern());
 		OutHelper.writeLuposTriple(tk.getTriple(), previousTriple, os);
 	}
 
+	/**
+	 * <p>writeLuposCollection.</p>
+	 *
+	 * @param t a {@link java.util.Collection} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public final static void writeLuposCollection(final Collection t, final OutputStream os) throws IOException {
 		if (t.size() > 200) {
@@ -493,6 +699,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposSet.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.smallerinmemorylargerondisk.SetImplementation} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public final static void writeLuposSet(final SetImplementation t, final OutputStream os) throws IOException{
 		OutHelper.writeLuposInt(t.size(), os);
@@ -504,6 +717,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposNodeInPartitionTree.</p>
+	 *
+	 * @param t a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposNodeInPartitionTree(final NodeInPartitionTree t, final OutputStream os) throws IOException {
 		if (t instanceof LeafNodeInPartitionTree) {
 			OutHelper.writeLuposByte((byte) 1, os);
@@ -514,6 +734,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposVarBucket.</p>
+	 *
+	 * @param vb a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposVarBucket(final VarBucket vb, final OutputStream os) throws IOException {
 		OutHelper.writeLuposIntVariableBytes(vb.selectivityOfInterval.size(), os);
 		if (vb.minimum == null) {
@@ -540,6 +767,13 @@ public final class OutHelper {
 		}
 	}
 
+	/**
+	 * <p>writeLuposVarBucketArray.</p>
+	 *
+	 * @param t an array of {@link lupos.optimizations.logical.statistics.VarBucket} objects.
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static void writeLuposVarBucketArray(final VarBucket[] t, final OutputStream os) throws IOException {
 		OutHelper.writeLuposIntVariableBytes(t.length, os);
 		int nulls = 0;

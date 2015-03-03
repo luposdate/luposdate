@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -44,35 +48,60 @@ import lupos.misc.debug.DebugStepRIF;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
-
 public class ConstructPredicate extends Operator {
 	final private List<Tuple<URILiteral, List<Item>>> patternList = new ArrayList<Tuple<URILiteral, List<Item>>>();
 
+	/**
+	 * <p>Constructor for ConstructPredicate.</p>
+	 */
 	public ConstructPredicate() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for ConstructPredicate.</p>
+	 *
+	 * @param name a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param params a {@link lupos.datastructures.items.Item} object.
+	 */
 	public ConstructPredicate(final URILiteral name, final Item... params) {
 		this();
 		addPattern(name, params);
 	}
 
+	/**
+	 * <p>setPredicatePattern.</p>
+	 *
+	 * @param patternList a {@link java.util.List} object.
+	 */
 	public void setPredicatePattern(
 			final List<Tuple<URILiteral, List<Item>>> patternList) {
 		this.patternList.clear();
 		this.patternList.addAll(patternList);
 	}
 
+	/**
+	 * <p>getPredicatePattern.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Tuple<URILiteral, List<Item>>> getPredicatePattern() {
 		return this.patternList;
 	}
 
+	/**
+	 * <p>addPattern.</p>
+	 *
+	 * @param name a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param params a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void addPattern(final URILiteral name, final Item... params) {
 		final Tuple<URILiteral, List<Item>> item = new Tuple<URILiteral, List<Item>>(
 				name, Arrays.asList(params));
 		this.patternList.add(item);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -100,6 +129,7 @@ public class ConstructPredicate extends Operator {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void processAllDebug(final QueryResult queryResult,
 			final int operandID, final DebugStep debugstep) {
@@ -119,6 +149,7 @@ public class ConstructPredicate extends Operator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer();
@@ -139,6 +170,7 @@ public class ConstructPredicate extends Operator {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();

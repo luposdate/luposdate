@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,13 +21,15 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
 
 import java.util.Iterator;
 
 import lupos.datastructures.dbmergesortedds.heap.Heap;
-
 public abstract class ToSort<E extends Comparable<E>> {
 
 	public enum TOSORT {
@@ -37,25 +40,71 @@ public abstract class ToSort<E extends Comparable<E>> {
 
 	private static int height = 16;
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public abstract void clear();
 
+	/**
+	 * <p>isFull.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public abstract boolean isFull();
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public abstract boolean isEmpty();
 	
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public abstract int size();
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param elem a E object.
+	 */
 	public abstract void add(final E elem);
 
+	/**
+	 * <p>emptyDatastructure.</p>
+	 *
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public abstract Iterator<E> emptyDatastructure();
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param height_param a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort} object.
+	 */
 	public static<T extends Comparable<T>> ToSort<T> createInstance(final int height_param) {
 		return ToSort.createInstance(ToSort.tosort, height_param);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param height a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort} object.
+	 */
 	public static<T extends Comparable<T>> ToSort<T> createInstance(final TOSORT tosort, final int height) {
 		switch (tosort) {
 		case MERGESORT:
@@ -71,6 +120,14 @@ public abstract class ToSort<E extends Comparable<E>> {
 		}
 	}
 	
+	/**
+	 * <p>createInstanceWithGivenNumberOfElements.</p>
+	 *
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param numberOfElements a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort} object.
+	 */
 	public static<T extends Comparable<T>> ToSort<T> createInstanceWithGivenNumberOfElements(final TOSORT tosort, final int numberOfElements) {
 		switch (tosort) {
 		case MERGESORT:
@@ -86,10 +143,23 @@ public abstract class ToSort<E extends Comparable<E>> {
 		}
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort} object.
+	 */
 	public static<T extends Comparable<T>> ToSort<T> createInstance() {
 		return ToSort.createInstance(ToSort.tosort, ToSort.height);
 	}
 
+	/**
+	 * <p>cloneInstance.</p>
+	 *
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort} object.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort} object.
+	 */
 	public static<T extends Comparable<T>> ToSort<T> cloneInstance(final ToSort tosort) {
 		if (tosort instanceof Heap) {
 			return Heap.cloneInstance((Heap) tosort);
@@ -97,18 +167,38 @@ public abstract class ToSort<E extends Comparable<E>> {
 			return tosort;
 	}
 
+	/**
+	 * <p>Getter for the field <code>height</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getHeight() {
 		return height;
 	}
 
+	/**
+	 * <p>Setter for the field <code>height</code>.</p>
+	 *
+	 * @param height a int.
+	 */
 	public static void setHeight(final int height) {
 		ToSort.height = height;
 	}
 
+	/**
+	 * <p>Getter for the field <code>tosort</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 */
 	public static TOSORT getTosort() {
 		return ToSort.tosort;
 	}
 
+	/**
+	 * <p>Setter for the field <code>tosort</code>.</p>
+	 *
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 */
 	public static void setTosort(final TOSORT tosort) {
 		ToSort.tosort = tosort;
 	}

@@ -33,6 +33,9 @@ import org.json.JSONObject;
 
 /**
  * Implements the formatter for the result operator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ResultFormatter implements OperatorFormatter {
 
@@ -43,12 +46,17 @@ public class ResultFormatter implements OperatorFormatter {
 
 	/**
 	 * Use: public ResultSerializer(String dest_ip, int request_id).
+	 *
+	 * @param p2pApplication a {@link lupos.engine.operators.application.Application} object.
 	 */
 	public ResultFormatter(final Application p2pApplication) {
 		this.application = p2pApplication;
 		this.request_id = 0;
 	}
 
+	/**
+	 * <p>Constructor for ResultFormatter.</p>
+	 */
 	public ResultFormatter() {
 	}
 
@@ -57,6 +65,7 @@ public class ResultFormatter implements OperatorFormatter {
 	 *
 	 * @param request_id
 	 *            the request_id
+	 * @param application a {@link lupos.engine.operators.application.Application} object.
 	 */
 	public ResultFormatter(final Application application, final int request_id) {
 		this.application = application;
@@ -70,6 +79,7 @@ public class ResultFormatter implements OperatorFormatter {
 	 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
 	 * .operators.BasicOperator, int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public JSONObject serialize(final BasicOperator operator, final int node_id) throws JSONException {
 		final JSONObject json = new JSONObject();
@@ -92,6 +102,7 @@ public class ResultFormatter implements OperatorFormatter {
 	 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.
 	 * JSONObject)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
 		final Result result = new Result();

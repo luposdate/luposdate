@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting;
 
@@ -49,6 +53,12 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 	 *
 	 *  @param component  text component that requires background line painting
 	 */
+	/**
+	 * <p>Constructor for ErrorLinePainter.</p>
+	 *
+	 * @param component a {@link javax.swing.text.JTextComponent} object.
+	 * @param position a int.
+	 */
 	public ErrorLinePainter(JTextComponent component, int position) {
 		this(component, position, null);
 		this.setLighter(component.getSelectionColor());
@@ -59,6 +69,13 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 	 *
 	 *  @param component  text component that requires background line painting
 	 *  @param color      the color of the background line
+	 */
+	/**
+	 * <p>Constructor for ErrorLinePainter.</p>
+	 *
+	 * @param component a {@link javax.swing.text.JTextComponent} object.
+	 * @param position a int.
+	 * @param color a {@link java.awt.Color} object.
 	 */
 	public ErrorLinePainter(JTextComponent component, int position, Color color) {
 		this.component = component;
@@ -80,6 +97,11 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 	 *
 	 *  @param color  the color of the background line
 	 */
+	/**
+	 * <p>Setter for the field <code>color</code>.</p>
+	 *
+	 * @param color a {@link java.awt.Color} object.
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
@@ -89,6 +111,11 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 	 *
 	 *  @return the color of the background line
 	 */
+	/**
+	 * <p>setLighter.</p>
+	 *
+	 * @param color a {@link java.awt.Color} object.
+	 */
 	public void setLighter(Color color) {
 		int red   = Math.min(255, (int)(color.getRed() * 1.2));
 		int green = Math.min(255, (int)(color.getGreen() * 1.2));
@@ -96,6 +123,9 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 		this.setColor(new Color(red, green, blue));
 	}
 
+	/**
+	 * <p>disable.</p>
+	 */
 	public void disable() {
 		if(this.highlighter != null) {
 			this.component.getHighlighter().removeHighlight(this.highlighter);
@@ -106,6 +136,7 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 
 	//  Paint the background highlight
 
+	/** {@inheritDoc} */
 	public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
 		try {
 			Rectangle r = c.modelToView(this.position);
@@ -120,6 +151,11 @@ public class ErrorLinePainter implements Highlighter.HighlightPainter {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>position</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPosition() {
 		return this.position;
 	}

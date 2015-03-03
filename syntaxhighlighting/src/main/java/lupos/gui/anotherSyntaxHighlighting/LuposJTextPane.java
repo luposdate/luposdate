@@ -33,6 +33,8 @@ import javax.swing.text.StyledDocument;
 /**
  * Additional LuposJTextPane extends JTextPane
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LuposJTextPane extends JTextPane {
 	private static final long serialVersionUID = 1L;
@@ -51,6 +53,7 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Constructor for LuposJTextPane
+	 *
 	 * @param doc StyledDocument
 	 */
 	public LuposJTextPane(final StyledDocument doc) {
@@ -59,7 +62,8 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Constructor for LuposJTextPane
-	 * @param doc {@link LuposDocument}
+	 *
+	 * @param doc {@link lupos.gui.anotherSyntaxHighlighting.LuposDocument}
 	 */
 	public LuposJTextPane(final LuposDocument doc) {
 		super(doc);
@@ -70,8 +74,9 @@ public class LuposJTextPane extends JTextPane {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Setter for size
-	 * @param d set the {@link Dimension}
 	 */
 	public void setSize(final Dimension d) {
 		if (d.width < getParent().getSize().width)
@@ -82,6 +87,7 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Getter for width
+	 *
 	 * @return false
 	 */
 	public boolean getScrollableTracksViewportWidth() {
@@ -89,8 +95,9 @@ public class LuposJTextPane extends JTextPane {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Setter for Text, repaint off while writing
-	 * @param t String t as text 
 	 */
 	public void setText(final String t) {
 		this.setRepaint(false);
@@ -110,6 +117,7 @@ public class LuposJTextPane extends JTextPane {
 		this.repaint();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void repaint() {
 		if (this.repaint){
@@ -120,6 +128,7 @@ public class LuposJTextPane extends JTextPane {
 	
 	/**
 	 * Getter for repaint
+	 *
 	 * @return repaint
 	 */
 	public boolean getRepaint() {
@@ -129,6 +138,7 @@ public class LuposJTextPane extends JTextPane {
 	/**
 	 * Setter for repaint
 	 * synchronized because its run in a thread
+	 *
 	 * @param repaint the repaint to set
 	 */
 	public synchronized void setRepaint(final boolean repaint) {
@@ -138,6 +148,7 @@ public class LuposJTextPane extends JTextPane {
 	/**
 	 * calculates the lineStartOffset
 	 * because the lines have a different length
+	 *
 	 * @param line the line to calculate the offset
 	 * @return the start offset
 	 */
@@ -166,6 +177,7 @@ public class LuposJTextPane extends JTextPane {
 	/**
 	 * calculates the lineEndOffset
 	 * because the lines have a different length
+	 *
 	 * @param line the line to calculate the offset
 	 * @return the end offset
 	 */
@@ -191,6 +203,7 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Get Line of a specified position
+	 *
 	 * @param pos position
 	 * @return the line where the position is
 	 */
@@ -214,6 +227,7 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Calculate the Error
+	 *
 	 * @param line Line
 	 * @param column Column
 	 */
@@ -269,6 +283,7 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Setter for errorlineStatus
+	 *
 	 * @param status bool to set errorLine
 	 */
 	public void setErrorLineStatus(final boolean status) {
@@ -277,6 +292,7 @@ public class LuposJTextPane extends JTextPane {
 
 	/**
 	 * Setter for errorLineColor
+	 *
 	 * @param errorLineColor Color to set Errorline
 	 */
 	public void setErrorLineColor(final Color errorLineColor) {

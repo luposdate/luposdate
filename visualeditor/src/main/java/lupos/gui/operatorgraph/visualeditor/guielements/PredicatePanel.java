@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -46,7 +50,6 @@ import lupos.gui.operatorgraph.visualeditor.util.FocusThread;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
-
 public class PredicatePanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<JTextFieldResizing> predicateElementsList = new LinkedList<JTextFieldResizing>();
@@ -54,6 +57,14 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 
 	protected JLabel addLabel = new JLabel();
 
+	/**
+	 * <p>Constructor for PredicatePanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public PredicatePanel(VisualGraph<Operator> parent, final RDFTerm operator, final RDFTerm child, Prefix prefix) {
 		super(parent, new GraphWrapperOperator(operator), operator, false);
 
@@ -112,6 +123,13 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		this.add(this.addLabel, mainGBC);
 	}
 
+	/**
+	 * <p>createPredicateElement.</p>
+	 *
+	 * @param tmpIndex a int.
+	 * @param predicateString a {@link java.lang.String} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected JPanel createPredicateElement(final int tmpIndex, String predicateString) {
 		final JPanel panel = new JPanel(new GridBagLayout());
 		panel.setOpaque(false);
@@ -198,6 +216,9 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		return panel;
 	}
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize() {
 		int objWidth = (int) this.parent.PADDING;
 		int objHeight = this.predicateElementsList.get(0).getPreferredSize().height + (int) (2 * this.parent.PADDING);
@@ -247,12 +268,21 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>prefixAdded.</p>
+	 */
 	public void prefixAdded() {
 		for (final JTextField jtf : this.predicateElementsList) {
 			jtf.setText(this.prefix.add(jtf.getText()));
 		}
 	}
 
+	/**
+	 * <p>prefixRemoved.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @param namespace a {@link java.lang.String} object.
+	 */
 	public void prefixRemoved(final String prefix, final String namespace) {
 		for (final JTextField jtf : this.predicateElementsList) {
 			final String replacement = jtf.getText().replaceFirst(prefix + ":",
@@ -264,6 +294,12 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>prefixModified.</p>
+	 *
+	 * @param oldPrefix a {@link java.lang.String} object.
+	 * @param newPrefix a {@link java.lang.String} object.
+	 */
 	public void prefixModified(final String oldPrefix, final String newPrefix) {
 		for (final JTextField jtf : this.predicateElementsList) {
 			jtf.setText(jtf.getText().replaceFirst(oldPrefix + ":",
@@ -271,6 +307,7 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(final boolean showErrors, Object data) {
 		for (int i = 0; i < this.predicateElementsList.size(); ++i) {
 			final JTextField jtf = this.predicateElementsList.get(i);

@@ -40,6 +40,9 @@ import lupos.sparql1_1.SimpleNode;
 /**
  * Class for the prefixes. This class holds all prefixes of the operators in the
  * OperatorGraph.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Prefix {
 	// defines whether the prefix class is active or not...
@@ -55,6 +58,8 @@ public class Prefix {
 	/**
 	 * This is the constructor of the prefix class. The constructor initiates
 	 * the internal prefixList and adds some basic name-spaces.
+	 *
+	 * @param active a boolean.
 	 */
 	public Prefix(final boolean active) {
 		this.active = active;
@@ -67,6 +72,12 @@ public class Prefix {
 		this.predefined.put("<http://www.w3.org/2005/xpath-functions#>", "fn");
 	}
 
+	/**
+	 * <p>Constructor for Prefix.</p>
+	 *
+	 * @param active a boolean.
+	 * @param prefixReference a {@link lupos.rdf.Prefix} object.
+	 */
 	public Prefix(final boolean active, final Prefix prefixReference) {
 		this(active);
 
@@ -91,14 +102,29 @@ public class Prefix {
 		}
 	}
 
+	/**
+	 * <p>getPredefinedList.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, String> getPredefinedList() {
 		return this.predefined;
 	}
 
+	/**
+	 * <p>Getter for the field <code>prefixList</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, String> getPrefixList() {
 		return this.prefixList;
 	}
 
+	/**
+	 * <p>getPrefixNames.</p>
+	 *
+	 * @return a {@link java.util.HashSet} object.
+	 */
 	public HashSet<String> getPrefixNames() {
 		final HashSet<String> prefixNames = new HashSet<String>();
 
@@ -109,6 +135,11 @@ public class Prefix {
 		return prefixNames;
 	}
 
+	/**
+	 * <p>isActive.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isActive() {
 		return this.active;
 	}
@@ -121,9 +152,7 @@ public class Prefix {
 	 *            prefix to check
 	 * @param namespace
 	 *            name-space to check
-	 *
-	 * @return true, if prefix or name-space exist in the prefixList, false if
-	 *         both are not present
+	 * @return a boolean.
 	 */
 	protected boolean entryExists(final String namespace, final String prefix) {
 		return this.prefixList.containsKey(namespace)
@@ -135,7 +164,6 @@ public class Prefix {
 	 *
 	 * @param item
 	 *            name-space to add
-	 *
 	 * @return returns the prefix of the name-space
 	 */
 	public String add(final String item) {
@@ -169,11 +197,24 @@ public class Prefix {
 		}
 	}
 
+	/**
+	 * <p>addEntry.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @param namespace a {@link java.lang.String} object.
+	 * @param notify a boolean.
+	 */
 	public void addEntry(final String prefix, final String namespace,
 			final boolean notify) {
 		this.prefixList.put(namespace, prefix);
 	}
 
+	/**
+	 * <p>removeEntry.</p>
+	 *
+	 * @param namespace a {@link java.lang.String} object.
+	 * @param notify a boolean.
+	 */
 	public void removeEntry(String namespace, final boolean notify) {
 		String prefix = this.prefixList.get(namespace);
 
@@ -188,6 +229,13 @@ public class Prefix {
 		}
 	}
 
+	/**
+	 * <p>changeEntryName.</p>
+	 *
+	 * @param oldPrefix a {@link java.lang.String} object.
+	 * @param newPrefix a {@link java.lang.String} object.
+	 * @param notify a boolean.
+	 */
 	public void changeEntryName(final String oldPrefix, final String newPrefix,
 			final boolean notify) {
 		final String namespace = this.getNamespace(oldPrefix);
@@ -238,12 +286,18 @@ public class Prefix {
 	/**
 	 * This method determines whether the internal prefixList is empty or not.
 	 *
-	 * @return true, if internal prefixList is not empty, false if it is
+	 * @return a boolean.
 	 */
 	public boolean hasElements() {
 		return !this.prefixList.isEmpty();
 	}
 
+	/**
+	 * <p>getNamespace.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getNamespace(final String prefix) {
 		for (final Entry<String, String> entry : this.prefixList.entrySet()) {
 			if (entry.getValue().equals(prefix)) {
@@ -254,6 +308,11 @@ public class Prefix {
 		return "";
 	}
 
+	/**
+	 * <p>registerElementsInPrefixInstance.</p>
+	 *
+	 * @param root a {@link lupos.sparql1_1.SimpleNode} object.
+	 */
 	public void registerElementsInPrefixInstance(final SimpleNode root) {
 		// walk through children of root node...
 		for (int i = 0; i < root.jjtGetNumChildren(); ++i) {
@@ -281,6 +340,13 @@ public class Prefix {
 		}
 	}
 
+	/**
+	 * <p>getPrefixString.</p>
+	 *
+	 * @param strPre a {@link java.lang.String} object.
+	 * @param strPost a {@link java.lang.String} object.
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer getPrefixString(final String strPre,
 			final String strPost) {
 		final List<String> namespaces = new LinkedList<String>();
@@ -306,10 +372,16 @@ public class Prefix {
 		return ret;
 	}
 
+	/**
+	 * <p>setStatus.</p>
+	 *
+	 * @param status a boolean.
+	 */
 	public void setStatus(final boolean status) {
 		this.active = status;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.getPrefixString("", "").toString();

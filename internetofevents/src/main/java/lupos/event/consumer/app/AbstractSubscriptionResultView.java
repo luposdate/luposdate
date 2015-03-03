@@ -37,10 +37,11 @@ import lupos.event.consumer.Consumer;
 import lupos.event.pubsub.Subscription;
 
 
-/** Abstract class for common parts of result views
- * 
- * @author heidemey
+/**
+ * Abstract class for common parts of result views
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 abstract public class AbstractSubscriptionResultView extends JPanel implements
 		ActionListener {
@@ -48,71 +49,80 @@ abstract public class AbstractSubscriptionResultView extends JPanel implements
 	// timer for updating the view
 	// can be removed once callback on receiving new results is implemented
 	private static final int UPDATE_INTERVAL = 500;
-	private Timer timer;
-	
+	private final Timer timer;
+
 	final protected Consumer consumer;
 	protected Subscription subscription = null;
-	
-	/** Constructor 
-	 * 
+
+	/**
+	 * Constructor
+	 *
 	 * @param mgr LayoutManager
-	 * @param consumer 
+	 * @param consumer a {@link lupos.event.consumer.Consumer} object.
 	 */
-	public AbstractSubscriptionResultView(LayoutManager mgr, Consumer consumer){
+	public AbstractSubscriptionResultView(final LayoutManager mgr, final Consumer consumer){
 		super(mgr);
 		this.timer = new Timer(UPDATE_INTERVAL, this);
         this.timer.start();
         this.consumer =consumer;
 	}
-	/** Constructor with GridbagLayout Manager
-	 * 
-	 * @param consumer
+	/**
+	 * Constructor with GridbagLayout Manager
 	 */
-	public AbstractSubscriptionResultView(Consumer consumer){
+	public AbstractSubscriptionResultView(final Consumer consumer){
 		this(new GridBagLayout(), consumer);
 	}
-	
 	@Override
 	/** Method for updating the GUI with new results. Gets called by the timer.
-	 * 
+	 *
 	 */
 	abstract public void actionPerformed(ActionEvent arg0);
-	
+
 	/**
 	 * Sets the subscription
-	 * @param subscription
+	 *
+	 * @param subscription a {@link lupos.event.pubsub.Subscription} object.
 	 */
-	public void setSubscription(Subscription subscription) {
+	public void setSubscription(final Subscription subscription) {
 		this.subscription = subscription;
 		if(this.subscription == null){
 			this.ClearDataset();
 
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Resets the view
 	 */
 	abstract protected void ClearDataset();
-	
-	protected static GridBagConstraints createGBC(int gridx, int gridy, int fill) {
-		GridBagConstraints c = new GridBagConstraints();
+
+	/**
+	 * <p>createGBC.</p>
+	 *
+	 * @param gridx a int.
+	 * @param gridy a int.
+	 * @param fill a int.
+	 * @return a {@link java.awt.GridBagConstraints} object.
+	 */
+	protected static GridBagConstraints createGBC(final int gridx, final int gridy, final int fill) {
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(2,2,2,2);
 		c.gridx = gridx;
 		c.gridy = gridy;
 		c.fill= fill;
 		return c;
 	}
-	
+
 	/**
 	 * Returns a GridBagContraints object with gridx and gridy. Other constraints
-	 *  are set to default values.  
-	 * @param gridx 
-	 * @param gridy
-	 * @return
+	 *  are set to default values.
+	 *
+	 * @param gridx a int.
+	 * @param gridy a int.
+	 * @return a {@link java.awt.GridBagConstraints} object.
 	 */
-	protected static GridBagConstraints createGBC(int gridx, int gridy){
+	protected static GridBagConstraints createGBC(final int gridx, final int gridy){
 		return createGBC(gridx, gridy, GridBagConstraints.NONE);
 	}
-	
+
 }

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.optional;
 
@@ -32,21 +36,29 @@ import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.misc.debug.DebugStep;
-
 public class UsingJoinOptional extends Optional {
 	private QueryResult notJoinedFromLeftOperand = null;
 	private QueryResult joinedFromLeftOperand = null;
 	protected Join join;
 
+	/**
+	 * <p>Constructor for UsingJoinOptional.</p>
+	 */
 	public UsingJoinOptional() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for UsingJoinOptional.</p>
+	 *
+	 * @param join a {@link lupos.engine.operators.multiinput.join.Join} object.
+	 */
 	public UsingJoinOptional(final Join join) {
 		super();
 		this.join = join;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
@@ -94,11 +106,19 @@ public class UsingJoinOptional extends Optional {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		return this.preProcessMessage(msg, true);
 	}
 
+	/**
+	 * <p>preProcessMessage.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.EndOfEvaluationMessage} object.
+	 * @param delete a boolean.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message preProcessMessage(final EndOfEvaluationMessage msg,
 			final boolean delete) {
 		if (this.join != null) {
@@ -152,11 +172,13 @@ public class UsingJoinOptional extends Optional {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		return this.preProcessMessage(new EndOfEvaluationMessage(), false);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
@@ -188,23 +210,40 @@ public class UsingJoinOptional extends Optional {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	/**
+	 * <p>Getter for the field <code>notJoinedFromLeftOperand</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getNotJoinedFromLeftOperand() {
 		return this.notJoinedFromLeftOperand;
 	}
 
+	/**
+	 * <p>Getter for the field <code>joinedFromLeftOperand</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getJoinedFromLeftOperand() {
 		return this.joinedFromLeftOperand;
 	}
 
+	/**
+	 * <p>Getter for the field <code>join</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.multiinput.join.Join} object.
+	 */
 	public Join getJoin() {
 		return this.join;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -213,6 +252,14 @@ public class UsingJoinOptional extends Optional {
 				false);
 	}
 
+	/**
+	 * <p>preProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.EndOfEvaluationMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @param delete a boolean.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep, final boolean delete) {
 		if (this.join != null) {
@@ -274,6 +321,7 @@ public class UsingJoinOptional extends Optional {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

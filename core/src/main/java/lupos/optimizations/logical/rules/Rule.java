@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules;
 
@@ -37,7 +41,6 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.findsubgraph.FindSubGraph;
-
 public abstract class Rule {
 
 	protected BasicOperator startNode;
@@ -46,14 +49,27 @@ public abstract class Rule {
 	protected boolean findall = false;
 	protected Set<BasicOperator> alreadyAppliedTo = new HashSet<BasicOperator>();
 
+	/**
+	 * <p>Constructor for Rule.</p>
+	 */
 	public Rule() {
 		this.init();
 	}
 
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return this.getClass().getSimpleName();
 	}
 
+	/**
+	 * <p>getDescription.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDescription() {
 		String s = this.getName();
 		if (s == null) {
@@ -64,10 +80,23 @@ public abstract class Rule {
 		return s + "Rule";
 	}
 
+	/**
+	 * <p>getRulesToApply.</p>
+	 *
+	 * @param ruleEngine a {@link lupos.optimizations.logical.rules.RuleEngine} object.
+	 * @return an array of {@link lupos.optimizations.logical.rules.Rule} objects.
+	 */
 	public Rule[] getRulesToApply(final RuleEngine ruleEngine) {
 		return null;
 	}
 
+	/**
+	 * <p>apply.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 * @return a boolean.
+	 */
 	protected boolean apply(
 			final BasicOperator op,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes) {
@@ -105,6 +134,13 @@ public abstract class Rule {
 		return false;
 	}
 
+	/**
+	 * <p>applyDebug.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 * @return a boolean.
+	 */
 	protected boolean applyDebug(
 			final BasicOperator op,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes) {
@@ -146,8 +182,17 @@ public abstract class Rule {
 		return false;
 	}
 
+	/**
+	 * <p>init.</p>
+	 */
 	protected abstract void init();
 
+	/**
+	 * <p>checkPrecondition.</p>
+	 *
+	 * @param mso a {@link java.util.Map} object.
+	 * @return a boolean.
+	 */
 	protected abstract boolean checkPrecondition(Map<String, BasicOperator> mso);
 
 	private boolean inSubgraph(final Map<String, BasicOperator> mso,
@@ -160,6 +205,13 @@ public abstract class Rule {
 		return false;
 	}
 
+	/**
+	 * <p>transformOperatorGraph.</p>
+	 *
+	 * @param mso a {@link java.util.Map} object.
+	 * @param rootOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	protected Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
 			final BasicOperator rootOperator) {
@@ -219,6 +271,13 @@ public abstract class Rule {
 		}
 	}
 
+	/**
+	 * <p>setSucc.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param succ a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	protected BasicOperator setSucc(final BasicOperator op,
 			final OperatorIDTuple... succ) {
 		op.setSucceedingOperators(new LinkedList<OperatorIDTuple>());
@@ -252,6 +311,14 @@ public abstract class Rule {
 		return vectorOfChanges.oneBitInCommon(comparisonVector);
 	}
 
+	/**
+	 * <p>putToClassToPosMap.</p>
+	 *
+	 * @param classToPosMap a {@link java.util.HashMap} object.
+	 * @param pos a {@link java.lang.Integer} object.
+	 * @param classes a {@link java.lang.Class} object.
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	protected static HashMap<Class<? extends BasicOperator>, Integer> putToClassToPosMap(
 			HashMap<Class<? extends BasicOperator>, Integer> classToPosMap,
 			final Integer pos, final Class<? extends BasicOperator>... classes) {

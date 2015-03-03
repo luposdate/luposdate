@@ -34,8 +34,12 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * Richard Mietz
  * Date: 20.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeofSfTouchesEhMeet implements ExternalFunction {
+    /** {@inheritDoc} */
     @Override
     public Object evaluate(final Object[] args) throws TypeErrorException {
         if(args.length==2) {
@@ -54,6 +58,9 @@ public class GeofSfTouchesEhMeet implements ExternalFunction {
         }
     }
 
+    /**
+     * <p>register.</p>
+     */
     public static void register() {
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "sfTouches>"), new GeofSfTouchesEhMeet());
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "ehMeet>"), new GeofSfTouchesEhMeet());

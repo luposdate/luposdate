@@ -40,9 +40,10 @@ import org.codehaus.jackson.*;
 
 
 /**
- * 
- * @author Christopher Gudat, Guillaume Assaud
+ * <p>YQLQueryProducer class.</p>
  *
+ * @author Christopher Gudat, Guillaume Assaud
+ * @version $Id: $Id
  */
 public class YQLQueryProducer extends ProducerBaseNoDuplicates {
 	/**
@@ -77,6 +78,14 @@ public class YQLQueryProducer extends ProducerBaseNoDuplicates {
 	private final String SEARCH_YQL;
 	
 			
+	/**
+	 * <p>Constructor for YQLQueryProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @param NAMESPACE a {@link java.lang.String} object.
+	 * @param YQL_TYPE_OBJECT a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param SEARCH_YQL a {@link java.lang.String} object.
+	 */
 	public YQLQueryProducer(SerializingMessageService msgService, final String NAMESPACE, final URILiteral YQL_TYPE_OBJECT, final String SEARCH_YQL) {
 		super(msgService, INTERVAL);
 		this.NAMESPACE = NAMESPACE;
@@ -84,6 +93,7 @@ public class YQLQueryProducer extends ProducerBaseNoDuplicates {
 		this.SEARCH_YQL = SEARCH_YQL;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {		
@@ -149,6 +159,12 @@ public class YQLQueryProducer extends ProducerBaseNoDuplicates {
 	}
 
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		//Create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

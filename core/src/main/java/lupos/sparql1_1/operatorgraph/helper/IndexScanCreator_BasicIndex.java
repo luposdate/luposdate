@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph.helper;
 
@@ -34,20 +38,26 @@ import lupos.engine.operators.index.EmptyIndexScan;
 import lupos.engine.operators.index.EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 
 	protected final Root root;
 
+	/**
+	 * <p>Constructor for IndexScanCreator_BasicIndex.</p>
+	 *
+	 * @param root_param a lupos$engine$operators$index$Root object.
+	 */
 	public IndexScanCreator_BasicIndex(final Root root_param){
 		this.root = root_param;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Root getRoot() {
 		return this.root;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator createIndexScanAndConnectWithRoot(
 			final OperatorIDTuple opID, final Collection<TriplePattern> triplePatterns,
@@ -57,21 +67,25 @@ public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 		return index;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(final OperatorIDTuple opID, final Item graphConstraint) {
 		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings(opID, graphConstraint, this.root), 0));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void createEmptyIndexScanAndConnectWithRoot(final OperatorIDTuple opID) {
 		this.root.getSucceedingOperators().add(new OperatorIDTuple(new EmptyIndexScan(opID), 0));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Dataset getDataset() {
 		return this.root.dataset;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addDefaultGraph(final String defaultgraph) {
 		if (this.root.defaultGraphs == null) {
@@ -80,6 +94,7 @@ public class IndexScanCreator_BasicIndex implements IndexScanCreatorInterface {
 		this.root.defaultGraphs.add(defaultgraph);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addNamedGraph(final String namedgraph) {
 		if (this.root.namedGraphs == null) {

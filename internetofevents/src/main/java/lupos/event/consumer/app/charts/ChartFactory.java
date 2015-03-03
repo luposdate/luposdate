@@ -27,14 +27,17 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * Class for finding the GUI-Handler and Datamodel for a type of chart
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class ChartFactory {
 
 	/**
 	 * Finds and returns the ChartHandler GUI for the given type of chart
-	 * @param typ
+	 *
+	 * @param typ a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 * @return a {@link lupos.event.consumer.app.charts.ChartHandler} object.
 	 */
 	static public ChartHandler getHandler(final ChartTyp typ){
 		if( typ == ChartTyp.PIE_CHART) {
@@ -65,7 +68,7 @@ public class ChartFactory {
 	 *
 	 * @param typ ChartTyp
 	 * @param vars Array of variable names
-	 * @param queryResult
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 * @return DataModel for typ filled with data from the query result
 	 */
 	static public DataModel getModel(final String typ, final String[] vars, final QueryResult queryResult){

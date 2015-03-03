@@ -25,6 +25,9 @@ package lupos.event.consumer.querybuilder;
 
 /**
  * A filter for a events property
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Filter {
 	/**

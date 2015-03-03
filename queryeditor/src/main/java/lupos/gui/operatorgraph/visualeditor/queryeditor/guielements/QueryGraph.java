@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.guielements;
 
@@ -44,23 +48,24 @@ import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.TripleContaine
 
 import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
 import lupos.gui.operatorgraph.visualeditor.guielements.ContainerPanel;
-
-
 public class QueryGraph extends VisualGraphOperatorWithPrefix {
 	private static final long serialVersionUID = -9170756530703844692L;
 
+	/**
+	 * <p>Constructor for QueryGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public QueryGraph(final VisualEditor<Operator> visualEditor, final Prefix prefix) {
 		super(visualEditor, prefix);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This is one way to get a QueryGraph. This method should be used if you
 	 * have one root element.
-	 * 
-	 * @param root
-	 *            the root element
-	 * 
-	 * @return the JPanel with the QueryGraph on it
 	 */
 	@Override
 	public JPanel createGraph(final GraphWrapper root, final Arrange arrange) {
@@ -72,6 +77,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		return this.createGraph(rootList, arrange);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createInternalNewGraph(final Arrange arrange) {
 		final LinkedList<GraphWrapper> rootList = new LinkedList<GraphWrapper>();
@@ -80,6 +86,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		this.createGraph(rootList, arrange);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean validateAddOperator(final int x, final int y, final String newClassName) {
 		// --- error handling - begin ---
@@ -120,6 +127,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void handleAddOperator(final Operator newOp) {
 		if(this.outerReference != null) {
@@ -130,6 +138,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseMoved(final MouseEvent me) {
 		super.mouseMoved(me);
@@ -139,6 +148,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseDragged(final MouseEvent me) {
 		super.mouseDragged(me);
@@ -148,6 +158,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseEntered(final MouseEvent me) {
 		super.mouseEntered(me);
@@ -157,6 +168,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseExited(final MouseEvent me) {
 		super.mouseExited(me);
@@ -166,6 +178,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mousePressed(final MouseEvent me) {
 		super.mousePressed(me);
@@ -175,6 +188,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseReleased(final MouseEvent me) {
 		super.mouseReleased(me);
@@ -184,6 +198,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseClicked(final MouseEvent me) {
 		super.mouseClicked(me);
@@ -193,6 +208,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String serializeGraph() {
 		final String object = super.serializeSuperGraph();
@@ -203,6 +219,7 @@ public class QueryGraph extends VisualGraphOperatorWithPrefix {
 		return ret.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public VisualGraphOperatorWithPrefix newInstance(VisualEditor<Operator> visualEditor, Prefix prefix) {
 		return new QueryGraph(visualEditor, prefix);

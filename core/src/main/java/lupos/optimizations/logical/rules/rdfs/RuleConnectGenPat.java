@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -39,15 +43,20 @@ import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-
 public class RuleConnectGenPat extends Rule {
 
 	private final boolean doNotConnectInferenceRules;
 
+	/**
+	 * <p>Constructor for RuleConnectGenPat.</p>
+	 *
+	 * @param doNotConnectInferenceRules a boolean.
+	 */
 	public RuleConnectGenPat(final boolean doNotConnectInferenceRules) {
 		this.doNotConnectInferenceRules = doNotConnectInferenceRules;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final Generate generate = new Generate();
@@ -58,6 +67,7 @@ public class RuleConnectGenPat extends Rule {
 		startNode = generate;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final Generate generate = (Generate) mso.get("generate");
@@ -66,6 +76,7 @@ public class RuleConnectGenPat extends Rule {
 				&& (!(generate.getSucceedingOperators().get(0).getOperator() instanceof TriplePattern));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,

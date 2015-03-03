@@ -35,6 +35,9 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
  * This class is to be used, to get an evaluator for a p2p network.
  * Furthermore a UI will present the network to be connected to, or will
  * give possibility to choose an already started evaluator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class P2P_QueryClient_Creator {
 	
@@ -55,6 +58,7 @@ public class P2P_QueryClient_Creator {
 	/**
 	 * Net P2P-Query-Client creater with the given p2p-network and the given
 	 * distribution strategy
+	 *
 	 * @param p2pNetwork the P2P network identifier
 	 * @param distributionStrategy the strategy for distribution to be used
 	 * @param sgSubmission use subgraph submission?
@@ -70,6 +74,7 @@ public class P2P_QueryClient_Creator {
 	/**
 	 * Net P2P-Query-Client creater with the given p2p-network and the given
 	 * distribution strategy
+	 *
 	 * @param p2pNetwork the P2P network identifier
 	 * @param distributionStrategy the strategy for distribution to be used
 	 */
@@ -180,6 +185,7 @@ public class P2P_QueryClient_Creator {
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
 	 * @return a new evaluator which can be used in LuposDate UI
 	 */
 	public QueryClient newInstance() {
@@ -205,6 +211,7 @@ public class P2P_QueryClient_Creator {
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
 	 * @param config the configuration to be used
 	 * @return a new evaluator which can be used in LuposDate UI
 	 */

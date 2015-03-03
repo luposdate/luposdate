@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -38,63 +42,114 @@ import lupos.rif.IRuleVisitor;
 import lupos.rif.RIFException;
 
 import com.google.common.collect.Multimap;
-
 public class Constant extends AbstractRuleNode implements IExpression {
 	private Literal value;
 
+	/**
+	 * <p>Constructor for Constant.</p>
+	 *
+	 * @param value a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param parent a {@link lupos.rif.IRuleNode} object.
+	 */
 	public Constant(Literal value, IRuleNode parent) {
 		super(parent);
 		this.value = value;
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getLiteral() {
 		return value;
 	}
 
+	/**
+	 * <p>accept.</p>
+	 *
+	 * @param visitor a {@link lupos.rif.IRuleVisitor} object.
+	 * @param arg a A object.
+	 * @param <R> a R object.
+	 * @param <A> a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/**
+	 * <p>getLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLabel() {
 		return value.toString();
 	}
 
+	/**
+	 * <p>containsOnlyVariables.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean containsOnlyVariables() {
 		return false;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<RuleVariable> getVariables() {
 		return new HashSet<RuleVariable>();
 	}
 
+	/**
+	 * <p>getPredicates.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Uniterm> getPredicates() {
 		return Arrays.asList();
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding) {
 		return evaluate(binding, null);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult) {
 		return evaluate(binding, optionalResult, null);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult, Multimap<IExpression, IExpression> equalities) {
 		return value;
 	}
 
+	/** {@inheritDoc} */
 	public boolean isBound(RuleVariable var, Collection<RuleVariable> boundVars) {
 		return false;
 	}
 
+	/**
+	 * <p>isPossibleAssignment.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isPossibleAssignment() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	public String toString(Prefix prefixInstance) {
 		return value.toString(prefixInstance);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof Constant)
@@ -103,6 +158,7 @@ public class Constant extends AbstractRuleNode implements IExpression {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return getLiteral().hashCode();

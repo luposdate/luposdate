@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.minus;
 
@@ -39,7 +43,6 @@ import lupos.engine.operators.singleinput.sort.Sort;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorVariables;
 import lupos.misc.debug.DebugStep;
-
 public class SortedMinus extends Minus {
 
 	protected ComparatorBindings comp;
@@ -47,11 +50,18 @@ public class SortedMinus extends Minus {
 	// preprocess the input
 	protected boolean isSortable;
 
+	/**
+	 * <p>Constructor for SortedMinus.</p>
+	 *
+	 * @param predecessorLeft a {@link lupos.engine.operators.singleinput.sort.Sort} object.
+	 * @param predecessorRight a {@link lupos.engine.operators.singleinput.sort.Sort} object.
+	 */
 	public SortedMinus(Sort predecessorLeft, Sort predecessorRight) {
 		this.predecessorLeft = predecessorLeft;
 		this.predecessorRight = predecessorRight;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
@@ -69,6 +79,7 @@ public class SortedMinus extends Minus {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(EndOfEvaluationMessage msg) {
 
@@ -113,6 +124,7 @@ public class SortedMinus extends Minus {
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(EndOfEvaluationMessage msg, final DebugStep debugstep) {
 
@@ -157,6 +169,7 @@ public class SortedMinus extends Minus {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(BoundVariablesMessage msg) {
 		Message msgResult = super.preProcessMessage(msg);

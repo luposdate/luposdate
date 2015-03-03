@@ -28,6 +28,9 @@ import lupos.engine.operators.BasicOperator;
 /**
  * The class RingBuffer represents a simple mechanism to store an amount of
  * values in a cyclic order within a limited space
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RingBuffer {
 
@@ -45,8 +48,8 @@ public class RingBuffer {
 
 	/**
 	 * This method is only called, when a StepContainer should be added
-	 * 
-	 * @param stepContainer
+	 *
+	 * @param stepContainer a {@link lupos.gui.debug.StepContainer} object.
 	 * @return the current stepContainer
 	 */
 	public synchronized StepContainer next(final StepContainer stepContainer) {
@@ -73,7 +76,7 @@ public class RingBuffer {
 
 	/**
 	 * Returns the next StepContainer inside the RingBuffer
-	 * 
+	 *
 	 * @return the next StepContainer
 	 */
 	public synchronized StepContainer next() {
@@ -84,7 +87,7 @@ public class RingBuffer {
 
 	/**
 	 * Returns the previous StepContainer inside the RingBuffer
-	 * 
+	 *
 	 * @return the current StepContainer
 	 */
 	public synchronized StepContainer previous() {
@@ -97,7 +100,7 @@ public class RingBuffer {
 
 	/**
 	 * Returns the current StepContainer if existing
-	 * 
+	 *
 	 * @return the current StepContainer
 	 */
 	public synchronized StepContainer getCurrentStepContainer() {
@@ -110,8 +113,8 @@ public class RingBuffer {
 
 	/**
 	 * Check whether there is a previous element
-	 * 
-	 * @return true, if there is an element preceeding the current one
+	 *
+	 * @return a boolean.
 	 */
 	public synchronized boolean hasPrevious() {
 		return ((current != -1) && (current != start));
@@ -119,8 +122,8 @@ public class RingBuffer {
 
 	/**
 	 * Check whether there is a next element
-	 * 
-	 * @return true, if there is an element after the current one
+	 *
+	 * @return a boolean.
 	 */
 	public synchronized boolean hasNext() {
 		return (current != end && current != -1);
@@ -128,6 +131,9 @@ public class RingBuffer {
 
 	/**
 	 * goBackTo returns the element preceeding the parameter StepContainer
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link lupos.gui.debug.StepContainer} object.
 	 */
 	public synchronized StepContainer goBackTo(final BasicOperator from) {
 		if (current != -1 && start != current) {
@@ -148,7 +154,7 @@ public class RingBuffer {
 
 	/**
 	 * goBackToStart sets current to start, thus returning the first element
-	 * 
+	 *
 	 * @return the first element from the ringbuffer
 	 */
 	public synchronized StepContainer goBackToStart() {

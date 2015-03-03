@@ -42,10 +42,14 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePl
 
 /**
  * This class generated an operator graph for the QueryClient query evaluator
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientOperatorGraphGenerator extends OperatorGraphGenerator {
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected BasicIndexScan getIndex(final LeafNodePlan plan,
 			final BasicIndexScan indexScan,
@@ -60,6 +64,7 @@ public class QueryClientOperatorGraphGenerator extends OperatorGraphGenerator {
 
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected BasicOperator generateJoin(final InnerNodePlan inp, final Root root, final BasicOperator left, final BasicOperator right, final Collection<Variable> sortCriterium, final Map<TriplePattern, Map<Variable, VarBucket>> selectivity){
 		final Join join = new Join();

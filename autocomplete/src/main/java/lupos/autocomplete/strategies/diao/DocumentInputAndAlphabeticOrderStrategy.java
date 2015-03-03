@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.diao;
 
@@ -36,13 +40,18 @@ import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-
 public abstract class DocumentInputAndAlphabeticOrderStrategy extends Strategy {
 
 	protected LuposDocumentReader readerLocal;
 	protected ILuposParser parserLocal;
 	protected LuposDocument document;
 
+	/**
+	 * <p>Constructor for DocumentInputAndAlphabeticOrderStrategy.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public DocumentInputAndAlphabeticOrderStrategy(final LuposDocumentReader r, final ILuposParser p){
 		this.readerLocal = r;
 		this.parserLocal = p;
@@ -53,11 +62,22 @@ public abstract class DocumentInputAndAlphabeticOrderStrategy extends Strategy {
 	 * reservedWords sind urspruenglich durch Anfuehrungszeichen eingeschlossen,
 	 * diese werden natuerlich entfernt
 	 */
+	/**
+	 * <p>initReservedWords.</p>
+	 */
 	public abstract void initReservedWords();
 
 	/*
 	 * findet die gesuchten Tokens mit Beschreibung:
 	 * QUALIFIEDURI, VARIABLE, PREFIXLABEL, URI
+	 */
+	/**
+	 * <p>tokensToList.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @param indexBeforeCurrentWord a int.
+	 * @return a {@link java.util.List} object.
 	 */
 	public List<Item> tokensToList(final LuposDocumentReader r, final ILuposParser p, final int indexBeforeCurrentWord) {
 		final String content = r.getText().substring(0, indexBeforeCurrentWord);
@@ -78,6 +98,7 @@ public abstract class DocumentInputAndAlphabeticOrderStrategy extends Strategy {
 	/*
 	 * erstellt die Vorschlagsliste
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> createAutoCompletionList(
 			final String textDocument, final int cursorPosition) {
@@ -148,6 +169,7 @@ public abstract class DocumentInputAndAlphabeticOrderStrategy extends Strategy {
 	/*
 	 * generiert die Gewichtungen
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> generateWeight(final List<Item> list) {
 

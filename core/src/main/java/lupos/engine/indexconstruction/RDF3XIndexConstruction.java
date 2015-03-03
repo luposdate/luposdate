@@ -71,6 +71,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
  * also constructed on disk...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RDF3XIndexConstruction {
 
@@ -79,8 +82,17 @@ public class RDF3XIndexConstruction {
 	private static final int k = 1000;
 	private static final int k_ = 1000;
 
+	/** Constant <code>LIMIT_ELEMENTS_IN_TRIE=50000000</code> */
 	public static long LIMIT_ELEMENTS_IN_TRIE = 50000000;
 
+	/**
+	 * <p>insertUsedStringRepresentations.</p>
+	 *
+	 * @param u a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param dataFormat a {@link java.lang.String} object.
+	 * @param rdftermsRepresentations a {@link java.util.SortedSet} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 */
 	public static void insertUsedStringRepresentations(final URILiteral u,
 			final String dataFormat,
 			final SortedSet<String> rdftermsRepresentations,

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -35,8 +39,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-
-
 import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
@@ -49,24 +51,22 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOper
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
-
-
 public class GraphBoxRif extends GraphBox {
-	
-	
+
+
 	public static class RifGraphBoxCreator implements GraphBoxCreator {
 
 		@Override
-		public GraphBox createGraphBox(OperatorGraph parent, GraphWrapper op) {
+		public GraphBox createGraphBox(final OperatorGraph parent, final GraphWrapper op) {
 			return new GraphBoxRif(parent, op);
 		}
-		
+
 	}
 
-	
+
 	/**
 	 * Constructor for the box.
-	 * 
+	 *
 	 * @param parent
 	 *            QueryGraph where the box is in
 	 * @param op
@@ -75,31 +75,37 @@ public class GraphBoxRif extends GraphBox {
 	protected GraphBoxRif(final OperatorGraph parent, final GraphWrapper op) {
 		super(parent, op);
 	}
-	
+
+	/**
+	 * <p>getSucceedingsElementsToDraw.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
+	@Override
 	public List<GraphWrapperIDTuple> getSucceedingsElementsToDraw(){
-		LinkedList<GraphWrapperIDTuple> list = new LinkedList<GraphWrapperIDTuple>(this.op.getSucceedingElements());
-		
+		final LinkedList<GraphWrapperIDTuple> list = new LinkedList<GraphWrapperIDTuple>(this.op.getSucceedingElements());
+
 		if(this.op.getElement() instanceof AbstractTermOperator ) {
-			AbstractTermOperator ato = (AbstractTermOperator) this.op.getElement();
+			final AbstractTermOperator ato = (AbstractTermOperator) this.op.getElement();
 
-			for( Term term : ato.getTerms()){
+			for( final Term term : ato.getTerms()){
 
-				if( (term.isList() || term.isUniterm()) ){ 
+				if( (term.isList() || term.isUniterm()) ){
 
 					GraphWrapper childGW = term.getSucceedingOperator();
-					
+
 					if(childGW==null){
-						Operator dummyOperator = term.getDummyOperator();
-						
+						final Operator dummyOperator = term.getDummyOperator();
+
 						if(dummyOperator==null){
 							continue;
 						}
-						
+
 						childGW = new GraphWrapperOperator(dummyOperator);
-						
-					}			
-					
-					for(GraphWrapperIDTuple gwidTuple: new LinkedList<GraphWrapperIDTuple>(list)){
+
+					}
+
+					for(final GraphWrapperIDTuple gwidTuple: new LinkedList<GraphWrapperIDTuple>(list)){
 						if(gwidTuple.getOperator().equals(childGW)){
 							list.remove(gwidTuple);
 						}
@@ -108,34 +114,36 @@ public class GraphBoxRif extends GraphBox {
 			}
 
 
-		}		
-		
+		}
+
 		return list;
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public void draw(final Graphics2D g) {
 
 		if(this.op.getElement() instanceof AbstractTermOperator ) {
-			AbstractTermOperator ato = (AbstractTermOperator) this.op.getElement();
+			final AbstractTermOperator ato = (AbstractTermOperator) this.op.getElement();
 
-			for( Term term : ato.getTerms()){
+			for( final Term term : ato.getTerms()){
 
-				if( (term.isList() || term.isUniterm()) ){ 
+				if( (term.isList() || term.isUniterm()) ){
 
 					GraphWrapper childGW = term.getSucceedingOperator();
-					
+
 					if(childGW==null){
-						Operator dummyOperator = term.getDummyOperator();
-						
+						final Operator dummyOperator = term.getDummyOperator();
+
 						if(dummyOperator==null){
 							continue;
 						}
-						
+
 						childGW = new GraphWrapperOperator(dummyOperator);
 					}
-					
-					drawTermOperator(g, term, childGW,ato);
-					
+
+					this.drawTermOperator(g, term, childGW,ato);
+
 				}
 			}
 
@@ -143,10 +151,10 @@ public class GraphBoxRif extends GraphBox {
 		}
 		super.draw(g);
 	}
-	
-	
-	
-	private void drawTermOperator(final Graphics2D g, final Term term, final GraphWrapper childGW, AbstractTermOperator ato){
+
+
+
+	private void drawTermOperator(final Graphics2D g, final Term term, final GraphWrapper childGW, final AbstractTermOperator ato){
 		final GraphBox childBox = this.parent.getBoxes().get(childGW);
 
 
@@ -163,7 +171,7 @@ public class GraphBoxRif extends GraphBox {
 				drawTermConnection(g, startPoint.x, startPoint.y, endPoint.x, endPoint.y, true,ato);
 
 				final JPanel annotationPanel = this.drawTermLineAnnotation(startPoint.x, startPoint.y,childGW, false, ato,term);
-				
+
 				if(annotationPanel != null){
 				annotationPanel.invalidate();
 				annotationPanel.repaint();
@@ -172,9 +180,20 @@ public class GraphBoxRif extends GraphBox {
 				ato.getGUIComponent().repaint();
 
 	}
-	
 
-	protected synchronized JPanel drawTermLineAnnotation(int x, int y, final GraphWrapper childGW, final boolean align, AbstractTermOperator ato, final Term term) {
+
+	/**
+	 * <p>drawTermLineAnnotation.</p>
+	 *
+	 * @param x a int.
+	 * @param y a int.
+	 * @param childGW a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param align a boolean.
+	 * @param ato a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOperator} object.
+	 * @param term a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Term} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
+	protected synchronized JPanel drawTermLineAnnotation(final int x, final int y, final GraphWrapper childGW, final boolean align, final AbstractTermOperator ato, final Term term) {
 		// get current child box...
 		final GraphBox childBox = this.parent.getBoxes().get(childGW);
 
@@ -185,9 +204,9 @@ public class GraphBoxRif extends GraphBox {
 
 			return null;
 		}
-		
-	
-		
+
+
+
 
 		// get panel for predicate to this arrow...
 		final JPanel annotationPanel = this.lineAnnotations.get(childGW);
@@ -209,35 +228,35 @@ public class GraphBoxRif extends GraphBox {
 //			GraphBox.determineEdgePoint(this.x,
 //					this.y, this.width, this.height, childBox.getX(), childBox.getY(),
 //					childBox.width);
-			
-			Dimension buttonDimension = new Dimension();
+
+			final Dimension buttonDimension = new Dimension();
 			buttonDimension.setSize(30d, 24d);
 			final JIconButton deleteButton = new JIconButton("icons/001_02.png");
 			deleteButton.setPreferredSize(buttonDimension);
 			deleteButton.setMaximumSize(buttonDimension);
 			deleteButton.setMinimumSize(buttonDimension);
-			
-			
 
-			
-			
+
+
+
+
 			int distance = 0;
-			
+
 			if (ato instanceof UnitermOperator) {
 				distance = 130;
 //				final UnitermOperator uo = (UnitermOperator) ato;
 //				final UnitermOperatorPanel uop = uo.getFactOperatorPanel();
 //				deleteButton.addActionListener(new ActionListener(){
 //					 public void actionPerformed(ActionEvent e) {
-//					
+//
 //						 uop.removeRow(term);
 //						 uo.getTerms().remove(term);
-//					  
+//
 //					 }});
 //				annotationPanel.add(deleteButton);
 			}
 			if (ato instanceof FrameOperator){
-				
+
 				distance = 50;
 			}
 			if (ato instanceof ListOperator) {
@@ -246,16 +265,16 @@ public class GraphBoxRif extends GraphBox {
 //				final ListOperatorPanel lop = lo.getListOperatorPanel();
 //				deleteButton.addActionListener(new ActionListener(){
 //					 public void actionPerformed(ActionEvent e) {
-//					
+//
 //						 lop.removeRow(term);
 //						lo.getTerms().remove(term);
-//					  
+//
 //					 }});
-		
+
 //				annotationPanel.add(deleteButton);
 			}
-			
-			
+
+
 			// determine end point of the connection...
 			final Point endPoint = new Point(x+distance,y);
 			// determine center of the connection...
@@ -278,8 +297,8 @@ public class GraphBoxRif extends GraphBox {
 			x_ += diff;
 		}
 
-		
-		
+
+
 		// connection in opposite direction does exist and was already drawn...
 		if(this.op.getPrecedingElements().contains(childGW) && this.parent.annotationWasProcessed(childGW, this.op)) {
 			x_ += this.lineAnnotations.get(childGW).getPreferredSize().width + 10;
@@ -294,7 +313,7 @@ public class GraphBoxRif extends GraphBox {
 		return annotationPanel;
 	}
 
-	
+
 //	protected synchronized JPanel drawTermLineAnnotation(int x, int y, final GraphWrapper childGW, final boolean align) {
 //		// get current child box...
 //		final GraphBox childBox = this.parent.getBoxes().get(childGW);
@@ -366,36 +385,37 @@ public class GraphBoxRif extends GraphBox {
 //
 //		return annotationPanel;
 //	}
-	
-	
+
+
 	/**
 	 * Draws an arrow from one box to an other.
-	 * 
+	 *
 	 * @param g
 	 *            Graphics2D object
 	 * @param x
 	 *            x coordinate of box
-	 * @param y
-	 *            y coordinate of box
 	 * @param xChild
 	 *            x coordinate of child box
+	 * @param y
+	 *            y coordinate of box
 	 * @param yChild
 	 *            y coordinate of child box
-	 * @param ato 
+	 * @param ato a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOperator} object.
+	 * @param arrowHead a boolean.
 	 */
-	public static void drawTermConnection(final Graphics2D g, final int x, final int y, final int xChild, final int yChild, final boolean arrowHead, AbstractTermOperator ato) {
+	public static void drawTermConnection(final Graphics2D g, final int x, final int y, final int xChild, final int yChild, final boolean arrowHead, final AbstractTermOperator ato) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		
+
+
 		int width = 0;
 		int height = 0;
 		int opX = 0;
 		int opY = 0;
 		int distance = 0;
-		
+
 		if (ato instanceof UnitermOperator) {
-			UnitermOperator uo = (UnitermOperator) ato;
-			UnitermOperatorPanel uop = uo.getFactOperatorPanel();
+			final UnitermOperator uo = (UnitermOperator) ato;
+			final UnitermOperatorPanel uop = uo.getFactOperatorPanel();
 			width = uop.getWidth();
 			height = uop.getHeight();
 			opX = uop.getX();
@@ -403,8 +423,8 @@ public class GraphBoxRif extends GraphBox {
 			distance = 90;
 		}
 		if (ato instanceof FrameOperator){
-			FrameOperator fo = (FrameOperator) ato;
-			FrameOperatorPanel fop = fo.getFrameOperatorPanel();
+			final FrameOperator fo = (FrameOperator) ato;
+			final FrameOperatorPanel fop = fo.getFrameOperatorPanel();
 			width = fop.getWidth();
 			height = fop.getHeight();
 			opX = fop.getX();
@@ -412,21 +432,21 @@ public class GraphBoxRif extends GraphBox {
 			distance = 50;
 		}
 		if (ato instanceof ListOperator) {
-			ListOperator lo = (ListOperator) ato;
-			ListOperatorPanel lop = lo.getListOperatorPanel();
+			final ListOperator lo = (ListOperator) ato;
+			final ListOperatorPanel lop = lo.getListOperatorPanel();
 			width = lop.getWidth();
 			height = lop.getHeight();
 			opX = lop.getX();
 			opY = lop.getY();
 			distance = 90;
 		}
-		
+
 		// case: child behind operator
 		if ( opX < xChild && xChild < (opX+width) && opY < yChild && yChild < (opY+height) ){
 
 			distance = 0;
 		}else
-		
+
 		// case child under operator
 		if ( xChild < (opX+width) && yChild > (opY+height)  ){
 
@@ -434,7 +454,7 @@ public class GraphBoxRif extends GraphBox {
 			g.drawLine(x+distance, y, x+distance, (opY+height) +30); // draw normal line
 			g.drawLine(x+distance,(opY+height) +30, xChild, yChild); // draw normal line
 		}else
-			
+
 		// case child above operator
 		if ( xChild < (opX+width) && yChild < opY ){
 
@@ -442,28 +462,28 @@ public class GraphBoxRif extends GraphBox {
 			g.drawLine(x+distance, y, x+distance, opY -30); // draw normal line
 			g.drawLine(x+distance, opY -30, xChild, yChild); // draw normal line
 		}else
-		
+
 		if(  xChild < opX && opY < yChild && yChild < (opY+(height/2))) {
 			g.drawLine(opX+width, y, x+distance, y); // draw normal line
 			g.drawLine(x+distance, y, x+distance, opY -30); // draw normal line
 			g.drawLine(x+distance, opY -30, opX -30,  opY -30); // draw normal line
 			g.drawLine(opX -30,  opY -30, xChild, yChild); // draw normal line
 		}else
-			
+
 		if(  xChild < opX && (opY+(height/2)) < yChild && yChild < (opY+height)) {
 			g.drawLine(opX+width, y, x+distance, y); // draw normal line
 			g.drawLine(x+distance, y, x+distance, (opY+height) +30); // draw normal line
 			g.drawLine(x+distance,(opY+height) +30, opX -30,(opY+height) +30); // draw normal line
 			g.drawLine(opX -30,(opY+height) +30, xChild, yChild); // draw normal line
 		}
-		
+
 		else{
 		// default
 		g.drawLine(opX+width, y, x+distance, y); // draw normal line
 		g.drawLine(x+distance, y, xChild, yChild); // draw normal line
-		
+
 		}
-		
+
 		if(arrowHead) {
 			g.setStroke(new BasicStroke(1f)); // solid arrow head
 
@@ -488,7 +508,7 @@ public class GraphBoxRif extends GraphBox {
 			g.fillPolygon(tmpPoly); // fill the arrow head
 		}
 	}
-	
-	
-	
+
+
+
 }

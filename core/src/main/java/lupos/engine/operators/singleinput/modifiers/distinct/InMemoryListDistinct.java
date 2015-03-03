@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers.distinct;
 
@@ -34,11 +38,11 @@ import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
-
 public class InMemoryListDistinct extends Distinct {
 
 	protected LinkedList<Bindings> bindings = new LinkedList<Bindings>();
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult _bindings, final int operandID) {
 		for (final Bindings b : _bindings) {
@@ -49,6 +53,7 @@ public class InMemoryListDistinct extends Distinct {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		for (final Bindings b : this.bindings) {
@@ -60,12 +65,14 @@ public class InMemoryListDistinct extends Distinct {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		preProcessMessage(new EndOfEvaluationMessage());
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -74,6 +81,7 @@ public class InMemoryListDistinct extends Distinct {
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

@@ -34,18 +34,25 @@ import lupos.geo.GeoFactory;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeoSPARQLWktDeserializer extends AbstractDeserializer
 {
     private WKTReader reader;
     private GeometryFactory factory;
 
+    /**
+     * <p>Constructor for GeoSPARQLWktDeserializer.</p>
+     */
     public GeoSPARQLWktDeserializer()
     {
         reader = new WKTReader();
         factory = GeoFactory.getDefaultGeometryFactory();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Geometry toGeometry(String content) throws TypeErrorException
     {

@@ -27,14 +27,19 @@ import java.util.ArrayList;
 
 
 /**
- * Helper class which extends a {@link ArrayList} holding {@link ISubscriptionChangedHandler} instances with a method which calls the callback function of every object in the list.
+ * Helper class which extends a {@link java.util.ArrayList} holding {@link lupos.event.pubsub.ISubscriptionChangedHandler} instances with a method which calls the callback function of every object in the list.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class SubscriptionChangedHandlerList extends ArrayList<ISubscriptionChangedHandler> {
 
 	/**
 	 * Calls the {ISubscriptionChangedHandler.subscriptionChanged} method of all handlers in the list.
+	 *
+	 * @param sub a {@link lupos.event.pubsub.Subscription} object.
+	 * @param server a {@link lupos.event.pubsub.PubSubServer} object.
 	 */
 	public void callAll(final Subscription sub, final PubSubServer server) {
 		for(final ISubscriptionChangedHandler handler : this) {

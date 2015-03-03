@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,13 +21,15 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.parallel;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 public class BoundedBuffer<E> {
 	final Lock lock = new ReentrantLock();
 	final Condition notFull = this.lock.newCondition();
@@ -40,16 +43,30 @@ public class BoundedBuffer<E> {
 	private boolean endOfData = false;
 	private boolean stop = false;
 
+	/**
+	 * <p>Constructor for BoundedBuffer.</p>
+	 */
 	public BoundedBuffer() {
 		this.buffer = new Object[maxBuffer];
 		this.maxBufferLocal = maxBuffer;
 	}
 
+	/**
+	 * <p>Constructor for BoundedBuffer.</p>
+	 *
+	 * @param maxBufferLocal a int.
+	 */
 	public BoundedBuffer(final int maxBufferLocal) {
 		this.buffer = new Object[maxBufferLocal];
 		this.maxBufferLocal = maxBufferLocal;
 	}
 
+	/**
+	 * <p>put.</p>
+	 *
+	 * @param bindings a E object.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public void put(final E bindings) throws InterruptedException {
 		this.lock.lock();
 		try {
@@ -70,6 +87,13 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>put.</p>
+	 *
+	 * @param bindings a E object.
+	 * @param freeSpace a int.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public void put(final E bindings, final int freeSpace)
 			throws InterruptedException {
 		this.lock.lock();
@@ -91,6 +115,12 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>putFirst.</p>
+	 *
+	 * @param bindings a E object.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public void putFirst(final E bindings) throws InterruptedException {
 		this.lock.lock();
 		try {
@@ -111,6 +141,12 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @return a E object.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public E get() throws InterruptedException {
 		this.lock.lock();
 		try {
@@ -131,6 +167,14 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param min a int.
+	 * @param max a int.
+	 * @return an array of {@link java.lang.Object} objects.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public Object[] get(final int min, final int max)
 			throws InterruptedException {
 		this.lock.lock();
@@ -168,6 +212,12 @@ public class BoundedBuffer<E> {
 		return bindings;
 	}
 
+	/**
+	 * <p>hasNext.</p>
+	 *
+	 * @return a boolean.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public boolean hasNext() throws InterruptedException {
 		this.lock.lock();
 		try {
@@ -187,6 +237,11 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		this.lock.lock();
 		try {
@@ -196,6 +251,9 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>endOfData.</p>
+	 */
 	public void endOfData() {
 		this.lock.lock();
 		try {
@@ -206,6 +264,9 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>stopIt.</p>
+	 */
 	public void stopIt() {
 		this.lock.lock();
 		try {
@@ -217,14 +278,29 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>maxBuffer</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getMaxBuffer() {
 		return maxBuffer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>maxBuffer</code>.</p>
+	 *
+	 * @param maxBuffer a int.
+	 */
 	public static void setMaxBuffer(final int maxBuffer) {
 		BoundedBuffer.maxBuffer = maxBuffer;
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		this.lock.lock();
 		try {
@@ -238,6 +314,11 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>isCurrentlyEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isCurrentlyEmpty() {
 		this.lock.lock();
 		try {
@@ -251,6 +332,11 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>isCurrentlyFull.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isCurrentlyFull() {
 		this.lock.lock();
 		try {
@@ -260,6 +346,12 @@ public class BoundedBuffer<E> {
 		}
 	}
 
+	/**
+	 * <p>awaitEmpty.</p>
+	 *
+	 * @return a boolean.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public boolean awaitEmpty() throws InterruptedException{
 		this.lock.lock();
 		try {

@@ -59,6 +59,9 @@ import lupos.misc.util.ImmutableIterator;
  *
  * The first four bytes in the pointers file stores the maximum index for the strings,
  * and the first 8 bytes in the strings file stores the maximum position in the strings file.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStringMap{
 
@@ -77,8 +80,12 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	private static int fileID=0;
 
 	// the lock for getting a new id
+	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
 
+	/**
+	 * <p>Constructor for StringArray.</p>
+	 */
 	public StringArray() {
 		StringArray.lock.lock();
 		try{
@@ -99,8 +106,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 
 	/**
 	 * Adds a string to this map
+	 *
 	 * @param string the string to be added
-	 * @throws IOException in case of any i/o failures
+	 * @throws java.io.IOException in case of any i/o failures
 	 */
 	public void add(final String string) throws IOException {
 
@@ -126,9 +134,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Retrieves a string
-	 * @param index the index of the string
-	 * @return the string
 	 */
 	@Override
 	public String get(final int index){
@@ -412,6 +420,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		return new String(result, LuposObjectInputStream.UTF8);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Entry<Integer, String>> iterator() {
 		return new ImmutableIterator<Entry<Integer, String>>(){
@@ -436,6 +445,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		String result = "(Only appendable disk-based) Map from Integer to String: {";
@@ -451,6 +461,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		return result+" }";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void put(final int key, final String value) {
 		if(key!=this.max+1){
@@ -465,6 +476,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		try {
@@ -477,11 +489,13 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return (int) this.max;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void forEachValue(final TProcedureValue<String> arg0) {
 		for(final Entry<Integer, String> entry: this){
@@ -489,6 +503,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void forEachEntry(final TProcedureEntry<Integer, String> arg0) {
 		for(final Entry<Integer, String> entry: this){
@@ -499,8 +514,9 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 	/**
 	 * This method creates the string array on disk by storing the string given by an iterator.
 	 * It is optimized to store many strings and is therefore faster than just using the methods add or put for each string...
+	 *
 	 * @param valuesIterator an iterator for the strings to be stored in this string array
-	 * @throws IOException in case of any i/o failures
+	 * @throws java.io.IOException in case of any i/o failures
 	 */
 	public void generate(final Iterator<String> valuesIterator) throws IOException{
 		if(this.max!=0){
@@ -530,6 +546,13 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		StringArray.storeLongInPage(this.stringsFilename, 0, this.lastString);
 	}
 
+	/**
+	 * <p>Constructor for StringArray.</p>
+	 *
+	 * @param pointersFilename a {@link java.lang.String} object.
+	 * @param stringsFilename a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	protected StringArray(final String pointersFilename, final String stringsFilename) throws IOException{
 		this.pointersFilename = pointersFilename;
 		this.stringsFilename = stringsFilename;
@@ -537,28 +560,54 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 		this.lastString = getLongFromPage(this.stringsFilename, 0);
 	}
 
+	/**
+	 * <p>readLuposStringArray.</p>
+	 *
+	 * @param lois a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.stringarray.StringArray} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static StringArray readLuposStringArray(final InputStream lois) throws IOException{
 		final String pointersFilename = InputHelper.readLuposString(lois);
 		final String stringsFilename = InputHelper.readLuposString(lois);
 		return new StringArray(pointersFilename, stringsFilename);
 	}
 
+	/**
+	 * <p>writeLuposStringArray.</p>
+	 *
+	 * @param loos a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposStringArray(final OutputStream loos) throws IOException{
 		BufferManager.getBufferManager().writeAllModifiedPages();
 		OutHelper.writeLuposString(this.pointersFilename, loos);
 		OutHelper.writeLuposString(this.stringsFilename, loos);
 	}
 
+	/**
+	 * <p>Getter for the field <code>fileID</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getFileID() {
 		return StringArray.fileID;
 	}
 
+	/**
+	 * <p>Setter for the field <code>fileID</code>.</p>
+	 *
+	 * @param fileID a int.
+	 */
 	public static void setFileID(final int fileID) {
 		StringArray.fileID = fileID;
 	}
 
 	/**
 	 * just to quickly test the implementation...
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.io.IOException if any.
 	 */
 	public static void main(final String[] args) throws IOException{
 		final StringArray d = new StringArray();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sort;
 
@@ -39,7 +43,6 @@ import lupos.datastructures.sort.sorter.ReplacementSelectionSorter;
 import lupos.datastructures.sort.sorter.Sorter;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.misc.TimeInterval;
-
 public class Sort {
 	public enum SORTER {
 		PARALLEL {
@@ -126,8 +129,9 @@ public class Sort {
 
 	/**
 	 * Main method to measure the execution time for different external sorting algorithms.
+	 *
 	 * @param args command line arguments
-	 * @throws Exception in case of any errors
+	 * @throws java.lang.Exception in case of any errors
 	 */
 	public static void main(final String[] args) throws Exception{
 		System.out.println("Sorting a large collection of Strings or RDF terms of large RDF data...");
@@ -202,6 +206,11 @@ public class Sort {
 		System.out.println("Standard Deviation of the Sample: " + (QueryEvaluator.computeStandardDeviationOfTheSample(execution_times) / 1000) + " seconds");
 	}
 
+	/**
+	 * <p>getHelpText.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getHelpText(){
 		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT TIMES SORTARGS\n\n";
 		result += "ALGO can be one of " + Arrays.toString(SORTER.values()) + "\n";

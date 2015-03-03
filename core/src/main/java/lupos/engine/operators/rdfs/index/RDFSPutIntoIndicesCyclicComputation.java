@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.rdfs.index;
 
@@ -28,7 +32,6 @@ import java.util.Set;
 import lupos.datastructures.items.Triple;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-
 public class RDFSPutIntoIndicesCyclicComputation extends RDFSPutIntoIndices
 		implements TripleConsumer {
 
@@ -38,20 +41,35 @@ public class RDFSPutIntoIndicesCyclicComputation extends RDFSPutIntoIndices
 	private static final long serialVersionUID = 4752511368314625259L;
 	private final Set<Triple> newTriplesSet;
 
+	/**
+	 * <p>Constructor for RDFSPutIntoIndicesCyclicComputation.</p>
+	 *
+	 * @param newTriplesSet a {@link java.util.Set} object.
+	 * @param indices a {@link lupos.engine.operators.index.Indices} object.
+	 */
 	public RDFSPutIntoIndicesCyclicComputation(final Set<Triple> newTriplesSet,
 			final Indices indices) {
 		super(indices);
 		this.newTriplesSet = newTriplesSet;
 	}
 
+	/**
+	 * <p>newTripleProcessing.</p>
+	 */
 	public void newTripleProcessing() {
 		newTriplesSet.clear();
 	}
 
+	/**
+	 * <p>getNewTriples.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean getNewTriples() {
 		return newTriplesSet.size() > 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		if (!newTriplesSet.contains(triple) && !indices.contains(triple)) {

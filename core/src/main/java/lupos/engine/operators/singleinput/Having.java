@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,15 +21,22 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.sparql1_1.ASTFilterConstraint;
-
 public class Having extends Filter {
 
+	/**
+	 * <p>Constructor for Having.</p>
+	 *
+	 * @param astFilterConstraint a {@link lupos.sparql1_1.ASTFilterConstraint} object.
+	 */
 	public Having(final ASTFilterConstraint astFilterConstraint) {
 		super(astFilterConstraint);
 	}
@@ -39,9 +47,10 @@ public class Having extends Filter {
 	private static final long serialVersionUID = 8734474236903049575L;
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Modified Filter for HAVING statement so that the query results aren't
 	 * merged
-	 *
 	 */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -48,7 +52,6 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.JumpOverOperator;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum;
-
 public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 	private static final long serialVersionUID = 3254499503232644390L;
 	private final JumpOverOperatorPanel that = this;
@@ -56,6 +59,17 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 	private JRadioButton cardinality_oneORmore = null;
 	private JRadioButton cardinality_noneORmore = null;
 
+	/**
+	 * <p>Constructor for JumpOverOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.JumpOverOperator} object.
+	 * @param classType a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum} object.
+	 * @param name a {@link java.lang.String} object.
+	 * @param alsoSubClasses a boolean.
+	 * @param cardinality a {@link java.lang.String} object.
+	 */
 	public JumpOverOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw, final JumpOverOperator operator, final RuleEnum classType, final String name, final boolean alsoSubClasses, final String cardinality) {
 		super(parent, gw, operator, classType, name, alsoSubClasses);
 
@@ -162,6 +176,7 @@ public class JumpOverOperatorPanel extends AbstractRuleOperatorPanel {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		if(!super.validateOperatorPanel(showErrors, data)) {

@@ -40,12 +40,15 @@ import lupos.event.util.Literals;
 import lupos.event.util.Utils;
 
 /**
- * 
+ * <p>FinanceProducer class.</p>
+ *
  * @author Christopher Gudat, Guillaume Assaud
  * Search finances with YQL-Query
+ * @version $Id: $Id
  */
 public class FinanceProducer extends ProducerBaseNoDuplicates {
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/FinanceProducer"{trunked}</code> */
 	public static final String NAMESPACE = "http://localhost/events/FinanceProducer/";
 	private final static int INTERVAL = 3000;
  	private String SEARCH_SYMBOL = "Yahoo";
@@ -53,12 +56,19 @@ public class FinanceProducer extends ProducerBaseNoDuplicates {
 	private static final String SEARCH_URL_SYMBOL = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=";
 	private static final String SEARCH_URL_SYMBOL_2 = "&callback=YAHOO.Finance.SymbolSuggest.ssCallback";
 		
+	/** Constant <code>FINANCE_TYPE_OBJECT</code> */
 	public final static URILiteral FINANCE_TYPE_OBJECT = Literals.createURI(NAMESPACE, "FinanceProducer"); 	
  
+	/**
+	 * <p>Constructor for FinanceProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public FinanceProducer(SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {			
@@ -127,6 +137,12 @@ public class FinanceProducer extends ProducerBaseNoDuplicates {
 		return null;
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		//Create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

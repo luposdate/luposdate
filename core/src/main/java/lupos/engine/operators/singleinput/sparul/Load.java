@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sparul;
 
@@ -29,7 +33,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
-
 public class Load extends MultipleURIOperator {
 
 	// the URI into which the data is loaded, is null in the case of the default
@@ -38,6 +41,14 @@ public class Load extends MultipleURIOperator {
 	protected final Dataset dataset;
 	protected final boolean isSilent;
 
+	/**
+	 * <p>Constructor for Load.</p>
+	 *
+	 * @param cu a {@link java.util.Collection} object.
+	 * @param into a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param isSilent a boolean.
+	 */
 	public Load(final Collection<URILiteral> cu, final URILiteral into, Dataset dataset, final boolean isSilent) {
 		super(cu);
 		this.into = into;
@@ -45,14 +56,25 @@ public class Load extends MultipleURIOperator {
 		this.isSilent = isSilent;
 	}
 
+	/**
+	 * <p>Setter for the field <code>into</code>.</p>
+	 *
+	 * @param into a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void setInto(final URILiteral into) {
 		this.into = into;
 	}
 
+	/**
+	 * <p>Getter for the field <code>into</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getInto() {
 		return into;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (into != null)
@@ -80,6 +102,7 @@ public class Load extends MultipleURIOperator {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = super.toString() + cu;

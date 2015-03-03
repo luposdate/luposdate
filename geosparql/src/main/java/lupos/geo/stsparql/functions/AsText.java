@@ -34,9 +34,13 @@ import lupos.geo.serializer.StSPARQLSerializer;
 /**
  * Richard Mietz
  * Date: 22.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class AsText implements ExternalFunction
 {
+    /** {@inheritDoc} */
     @Override
     public Object evaluate(Object[] args) throws TypeErrorException
     {
@@ -52,6 +56,9 @@ public class AsText implements ExternalFunction
         }
     }
 
+    /**
+     * <p>register.</p>
+     */
     public static void register(){
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.stSPARQLFunctionUri + "srid>"), new AsText());
     }

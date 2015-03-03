@@ -34,10 +34,14 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
 
 /**
  * This class extends the abstract Node class and implements a disk based behavior for sequential serialization of the whole trie.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 
 
+	/** Constant <code>deSerializer</code> */
 	public final static DeSerializer deSerializer = new DeSerializer(){
 		/**
 		 * Reads all relevant information for a DBSeqNode from a given InputStream
@@ -172,16 +176,19 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 		this.setNodeManager(nodeManager);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final NodeWithValue<T> createNode() {
 		return new DBSeqNodeWithValue<T>(this.getNodeManager());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final boolean hasChild(final int i) {
 		return this.getChildren() != null && this.getChildren().length > i && this.getChildren()[i];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final NodeWithValue<T> getChild(final int i) {
 		if (this.hasChild(i)) {
@@ -191,32 +198,39 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final void setChild(final int i, final NodeWithValue<T> node) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final boolean isFromSameTrie(final Node node) {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final void removeChildrenArrayElement(final int idx) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final int getChildrenLength() {
 		return this.getChildren() == null ? 0 : this.getChildren().length;
 	}
 
 	/**
+	 * <p>Setter for the field <code>children</code>.</p>
+	 *
 	 * @param children the children to set
 	 */
 	public final void setChildren(final boolean[] children) {
@@ -224,6 +238,8 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	}
 
 	/**
+	 * <p>Getter for the field <code>children</code>.</p>
+	 *
 	 * @return the children
 	 */
 	public final boolean[] getChildren() {
@@ -231,6 +247,8 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	}
 
 	/**
+	 * <p>Setter for the field <code>nodeManager</code>.</p>
+	 *
 	 * @param nodeManager the nodeManager to set
 	 */
 	public final void setNodeManager(final SeqNodeManager nodeManager) {
@@ -238,6 +256,8 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	}
 
 	/**
+	 * <p>Getter for the field <code>nodeManager</code>.</p>
+	 *
 	 * @return the nodeManager
 	 */
 	public final SeqNodeManager getNodeManager() {

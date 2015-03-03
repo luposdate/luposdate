@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc.debug;
 
@@ -27,17 +31,24 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Triple;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.messages.Message;
-
 public interface DebugStep {
 	/**
 	 * This method is called whenever an intermediate result is transmitted
 	 * between two operators
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
 	 */
 	public void step(BasicOperator from, BasicOperator to, Bindings bindings);
 
 	/**
 	 * This method is called whenever an intermediate result to be deleted is
 	 * transmitted between two operators
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
 	 */
 	public void stepDelete(BasicOperator from, BasicOperator to,
 			Bindings bindings);
@@ -45,24 +56,39 @@ public interface DebugStep {
 	/**
 	 * This method is called whenever a triple is transmitted between two
 	 * operators
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
 	 */
 	public void step(BasicOperator from, BasicOperator to, Triple triple);
 
 	/**
 	 * This method is called whenever a triple to be deleted is transmitted
 	 * between two operators
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
 	 */
 	public void stepDelete(BasicOperator from, BasicOperator to, Triple triple);
 
 	/**
 	 * This method is called whenever an event for deleting all intermediate
 	 * results is transmitted between two operators
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
 	 */
 	public void stepDeleteAll(BasicOperator from, BasicOperator to);
 
 	/**
 	 * This method is called whenever a message is transmitted between two
 	 * operators
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
 	 */
 	public void stepMessage(BasicOperator from, BasicOperator to, Message msg);
 

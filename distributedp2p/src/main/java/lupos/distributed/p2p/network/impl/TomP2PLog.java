@@ -31,20 +31,23 @@ import lupos.distributed.p2p.network.impl.TomP2P.ITomP2PLog;
 /**
  * This is a special logger for the TomP2P network, which stores all access in a
  * special log file.
- * 
+ *
  * @author Bjoern
- * 
+ * @version $Id: $Id
  */
 public class TomP2PLog implements ITomP2PLog {
 
 	private static FileLogger logger;
+	/** Constant <code>LOG=true</code> */
 	public static boolean LOG = true;
+	/** Constant <code>FILENAME="tomP2P.txt"</code> */
 	public static String FILENAME = "tomP2P.txt";
 
 	static {
 		logger = new TomP2PLog.FileLogger(FILENAME);
 	}
 
+	/** {@inheritDoc} */
 	public void log(String type, String logString, int level) {
 		if (LOG)
 			logger.logMsg(composeLogMsg(type, logString, level));

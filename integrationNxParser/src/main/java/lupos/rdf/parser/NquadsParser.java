@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rdf.parser;
 
@@ -34,10 +38,18 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-
 public class NquadsParser {
 	
 	// Using the parser NxParser for NQUADS
+	/**
+	 * <p>parseRDFData.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @return a int.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	public static int parseRDFData(final InputStream in, final TripleConsumer tc,
 			final String encoding) throws UnsupportedEncodingException {
 		// ignore encoding as it is not supported by the NxParser!
@@ -61,6 +73,13 @@ public class NquadsParser {
 		return number;
 	}
 
+	/**
+	 * <p>transformToLiteral.</p>
+	 *
+	 * @param node a {@link org.semanticweb.yars.nx.Node} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.net.URISyntaxException if any.
+	 */
 	public static Literal transformToLiteral(final Node node) throws URISyntaxException {
 		if (node instanceof org.semanticweb.yars.nx.Resource) {
 			return LiteralFactory.createURILiteral(node.toN3());

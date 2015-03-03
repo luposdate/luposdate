@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -29,22 +33,34 @@ import lupos.datastructures.items.Triple;
 import lupos.engine.operators.application.CollectResult;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
-
 public class StreamDuration extends Stream {
 
 	protected final int duration;
 	protected long lastTime;
 
+	/**
+	 * <p>Constructor for StreamDuration.</p>
+	 *
+	 * @param cr a {@link lupos.engine.operators.application.CollectResult} object.
+	 * @param duration a int.
+	 */
 	public StreamDuration(final CollectResult cr, final int duration) {
 		super(cr);
 		this.duration = duration;
 	}
 
+	/**
+	 * <p>preprocessMessage.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.StartOfEvaluationMessage} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message preprocessMessage(final StartOfEvaluationMessage msg) {
 		this.lastTime = (new Date()).getTime();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		super.consume(triple);
@@ -55,6 +71,7 @@ public class StreamDuration extends Stream {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" " + this.duration;

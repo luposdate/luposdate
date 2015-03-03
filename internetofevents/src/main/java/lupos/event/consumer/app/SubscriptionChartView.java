@@ -48,8 +48,9 @@ import lupos.event.util.TimedWrapper;
 
 /**
  * Result view for presentation as charts.
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class SubscriptionChartView extends AbstractSubscriptionResultView implements ActionListener {
 
@@ -64,9 +65,10 @@ public class SubscriptionChartView extends AbstractSubscriptionResultView implem
 	
 	//Timer timer;
 	
-	/** Constructor
-	 * 
-	 * @param consumer
+	/**
+	 * Constructor
+	 *
+	 * @param consumer a {@link lupos.event.consumer.Consumer} object.
 	 */
 	public SubscriptionChartView(Consumer consumer) {
 		super(consumer);
@@ -93,6 +95,7 @@ public class SubscriptionChartView extends AbstractSubscriptionResultView implem
 	}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource().equals(chartType)){
@@ -126,6 +129,7 @@ public class SubscriptionChartView extends AbstractSubscriptionResultView implem
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void ClearDataset(){
 		//handler.clearDataset();

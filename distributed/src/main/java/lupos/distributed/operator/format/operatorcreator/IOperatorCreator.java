@@ -32,10 +32,14 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * Methods for creating the basic operators Root and IndexScan
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IOperatorCreator {
 	/**
 	 * create the root node
+	 *
 	 * @param dataset the dataset to be used in the root node
 	 * @return the new root node
 	 */
@@ -43,6 +47,7 @@ public interface IOperatorCreator {
 
 	/**
 	 * create the index scan operator
+	 *
 	 * @param root the root node
 	 * @param triplePatterns the triple patterns to be matched by the new index scan operator
 	 * @return the new index scan operator

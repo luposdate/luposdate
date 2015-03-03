@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.operators;
 
@@ -37,8 +41,8 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.guielements.MultiInputPanel;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.misc.util.OperatorIDTuple;
-
 public abstract class MultiInputOperator extends Operator {
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw, final VisualGraph<Operator> parent) {
 		this.panel = new MultiInputPanel(this, gw, parent, this.toString());
@@ -55,6 +59,13 @@ public abstract class MultiInputOperator extends Operator {
 		return contextMenu;
 	}
 
+	/**
+	 * <p>replaceOperator.</p>
+	 *
+	 * @param newOP a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param oldGW a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	protected void replaceOperator(final Operator newOP, final VisualGraph<Operator> parent, final GraphWrapper oldGW) {
 		newOP.cloneFrom(this);
 		this.replaceWith(newOP);
@@ -82,6 +93,7 @@ public abstract class MultiInputOperator extends Operator {
 		parent.repaint();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperator(final boolean showErrors, final HashSet<Operator> visited, final Object data) {
 		if(this.succeedingOperators.size() < 2) {
@@ -99,11 +111,13 @@ public abstract class MultiInputOperator extends Operator {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean canAddSucceedingOperator() {
 		return (this.succeedingOperators.size() < 2);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean variableInUse(final String variable, final HashSet<Operator> visited) {
 		for(final OperatorIDTuple<Operator> opIDT : this.succeedingOperators)
@@ -113,13 +127,31 @@ public abstract class MultiInputOperator extends Operator {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	public void prefixRemoved(final String prefix, final String namespace) {}
+	/**
+	 * <p>prefixAdded.</p>
+	 */
 	public void prefixAdded() {}
+	/** {@inheritDoc} */
 	public void prefixModified(final String oldPrefix, final String newPrefix) {}
 
+	/**
+	 * <p>addAvailableOperators.</p>
+	 *
+	 * @param popupMenu a {@link javax.swing.JPopupMenu} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param oldGW a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public abstract void addAvailableOperators(JPopupMenu popupMenu, final VisualGraph<Operator> parent, final GraphWrapper oldGW);
+	/**
+	 * <p>getFreeOpID.</p>
+	 *
+	 * @return a int.
+	 */
 	public abstract int getFreeOpID();
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefID(){
 		return "queryEditor_style_multiinputoperator";

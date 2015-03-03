@@ -29,18 +29,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import lupos.datastructures.parallel.BoundedBuffer;
-
 class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 
 	protected Lock lockFinish = new ReentrantLock();
-	protected Condition finishCondition = lockFinish.newCondition();
+	protected Condition finishCondition = this.lockFinish.newCondition();
 
 	protected Lock lockEmpty = new ReentrantLock();
-	protected Condition emptyCondition = lockEmpty.newCondition();
-	protected Condition nonemptyCondition = lockEmpty.newCondition();
+	protected Condition emptyCondition = this.lockEmpty.newCondition();
+	protected Condition nonemptyCondition = this.lockEmpty.newCondition();
 
 	protected int waitForEmpty = 0;
 
+	/** Constant <code>maxInstructionBuffer=10</code> */
 	protected static final int maxInstructionBuffer = 10;
 	protected final SequentialHeap<E> sh;
 	protected BoundedBuffer<InstructionContainer> bi = new BoundedBuffer<InstructionContainer>(
@@ -55,7 +55,9 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 	};
 
 	/**
-	 * @param sh
+	 * <p>Constructor for InnerParallelHeap.</p>
+	 *
+	 * @param sh a {@link lupos.datastructures.dbmergesortedds.heap.SequentialHeap} object.
 	 */
 	public InnerParallelHeap(final SequentialHeap<E> sh) {
 		super("InnerParallelHeap");
@@ -68,75 +70,92 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 				main = t;
 			}
 		}
-		if (main != null)
-			for (final StackTraceElement str : map.get(main))
+		if (main != null) {
+			for (final StackTraceElement str : map.get(main)) {
 				s += str.toString() + "\n";
+			}
+		}
 		this.setName("InnerParallelHeap, StackTrace: " + s);
 	}
 
+	/**
+	 * <p>getLastElement.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object getLastElement() {
-		lockEmpty.lock();
+		this.lockEmpty.lock();
 		try {
-			waitForEmpty++;
-			lockFinish.lock();
+			this.waitForEmpty++;
+			this.lockFinish.lock();
 			try {
 				try {
-					while (finishedInstructionId + 1 < runningInstructionId) {
-						finishCondition.await();
+					while (this.finishedInstructionId + 1 < this.runningInstructionId) {
+						this.finishCondition.await();
 					}
 				} catch (final InterruptedException e) {
 					System.err.println(e);
 					e.printStackTrace();
 				}
-				final E e = (E) sh.arr[--sh.length];
-				sh.arr[sh.length] = null;
+				final E e = (E) this.sh.arr[--this.sh.length];
+				this.sh.arr[this.sh.length] = null;
 				return e;
 			} finally {
-				lockFinish.unlock();
+				this.lockFinish.unlock();
 			}
 		} finally {
-			waitForEmpty--;
-			if (waitForEmpty == 0)
-				nonemptyCondition.signalAll();
-			lockEmpty.unlock();
+			this.waitForEmpty--;
+			if (this.waitForEmpty == 0) {
+				this.nonemptyCondition.signalAll();
+			}
+			this.lockEmpty.unlock();
 		}
 	}
 
+	/**
+	 * <p>peek.</p>
+	 *
+	 * @return a E object.
+	 */
 	public E peek() {
-		lockEmpty.lock();
+		this.lockEmpty.lock();
 		try {
-			waitForEmpty++;
-			lockFinish.lock();
+			this.waitForEmpty++;
+			this.lockFinish.lock();
 			try {
 				try {
-					while (finishedInstructionId + 1 < runningInstructionId) {
-						finishCondition.await();
+					while (this.finishedInstructionId + 1 < this.runningInstructionId) {
+						this.finishCondition.await();
 					}
 				} catch (final InterruptedException e) {
 					System.err.println(e);
 					e.printStackTrace();
 				}
-				return sh.peek();
+				return this.sh.peek();
 			} finally {
-				lockFinish.unlock();
+				this.lockFinish.unlock();
 			}
 		} finally {
-			waitForEmpty--;
-			if (waitForEmpty == 0)
-				nonemptyCondition.signalAll();
-			lockEmpty.unlock();
+			this.waitForEmpty--;
+			if (this.waitForEmpty == 0) {
+				this.nonemptyCondition.signalAll();
+			}
+			this.lockEmpty.unlock();
 		}
 	}
 
+	/**
+	 * <p>waitForEmptyInstructionQueue.</p>
+	 */
 	public void waitForEmptyInstructionQueue() {
-		lockEmpty.lock();
+		this.lockEmpty.lock();
 		try {
-			waitForEmpty++;
-			lockFinish.lock();
+			this.waitForEmpty++;
+			this.lockFinish.lock();
 			try {
 				try {
-					while (finishedInstructionId + 1 < runningInstructionId) {
-						finishCondition.await();
+					while (this.finishedInstructionId + 1 < this.runningInstructionId) {
+						this.finishCondition.await();
 					}
 				} catch (final InterruptedException e) {
 					System.err.println(e);
@@ -144,90 +163,108 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 				}
 				return;
 			} finally {
-				lockFinish.unlock();
+				this.lockFinish.unlock();
 			}
 		} finally {
-			waitForEmpty--;
-			if (waitForEmpty == 0)
-				nonemptyCondition.signalAll();
-			lockEmpty.unlock();
+			this.waitForEmpty--;
+			if (this.waitForEmpty == 0) {
+				this.nonemptyCondition.signalAll();
+			}
+			this.lockEmpty.unlock();
 		}
 	}
 
+	/**
+	 * <p>bubbledown.</p>
+	 *
+	 * @param data a E object.
+	 */
 	public void bubbledown(final E data) {
-		lockEmpty.lock();
+		this.lockEmpty.lock();
 		try {
-			while (waitForEmpty > 0)
-				nonemptyCondition.await();
-			bi.put(new InstructionContainer(INSTRUCTION.BUBBLEDOWN, data));
+			while (this.waitForEmpty > 0) {
+				this.nonemptyCondition.await();
+			}
+			this.bi.put(new InstructionContainer(INSTRUCTION.BUBBLEDOWN, data));
 		} catch (final InterruptedException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		} finally {
-			lockEmpty.unlock();
+			this.lockEmpty.unlock();
 		}
 	}
 
+	/**
+	 * <p>buildHeap.</p>
+	 */
 	public void buildHeap() {
-		lockEmpty.lock();
+		this.lockEmpty.lock();
 		try {
-			while (waitForEmpty > 0)
-				nonemptyCondition.await();
-			bi.put(new InstructionContainer(INSTRUCTION.BUILDHEAP));
+			while (this.waitForEmpty > 0) {
+				this.nonemptyCondition.await();
+			}
+			this.bi.put(new InstructionContainer(INSTRUCTION.BUILDHEAP));
 		} catch (final InterruptedException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		} finally {
-			lockEmpty.unlock();
+			this.lockEmpty.unlock();
 		}
 	}
 
+	/**
+	 * <p>addByUpdating.</p>
+	 *
+	 * @param data a E object.
+	 */
 	public void addByUpdating(final E data) {
-		lockEmpty.lock();
+		this.lockEmpty.lock();
 		try {
-			while (waitForEmpty > 0)
-				nonemptyCondition.await();
-			bi.put(new InstructionContainer(INSTRUCTION.UPDATE, data));
+			while (this.waitForEmpty > 0) {
+				this.nonemptyCondition.await();
+			}
+			this.bi.put(new InstructionContainer(INSTRUCTION.UPDATE, data));
 		} catch (final InterruptedException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		} finally {
-			lockEmpty.unlock();
+			this.lockEmpty.unlock();
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void run() {
 		try {
-			while (running) {
+			while (this.running) {
 				InstructionContainer ic;
-				ic = bi.get();
+				ic = this.bi.get();
 				if (ic != null) {
 					switch (ic.getInstruction()) {
 					case BUBBLEDOWN:
-						sh.arr[0] = ic.getData();
-						if (sh.arr[0] == null) {
-							sh.bubbleDown(0);
-							sh.length--;
+						this.sh.arr[0] = ic.getData();
+						if (this.sh.arr[0] == null) {
+							this.sh.bubbleDown(0);
+							this.sh.length--;
 						} else {
-							sh.bubbleDown(0);
+							this.sh.bubbleDown(0);
 						}
 						break;
 					case UPDATE:
-						sh.addByUpdating(ic.getData());
+						this.sh.addByUpdating(ic.getData());
 						break;
 					case BUILDHEAP:
-						sh.buildHeap();
+						this.sh.buildHeap();
 						break;
 					}
-					finishedInstructionId = ic.getInstructionId();
-					lockFinish.lock();
+					this.finishedInstructionId = ic.getInstructionId();
+					this.lockFinish.lock();
 					try {
-						if (finishedInstructionId + 1 == runningInstructionId) {
-							finishCondition.signalAll();
+						if (this.finishedInstructionId + 1 == this.runningInstructionId) {
+							this.finishCondition.signalAll();
 						}
 					} finally {
-						lockFinish.unlock();
+						this.lockFinish.unlock();
 					}
 				}
 			}
@@ -237,20 +274,24 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void finalize() {
-		stopIt();
+		this.stopIt();
 	}
 
+	/**
+	 * <p>stopIt.</p>
+	 */
 	public void stopIt() {
-		running = false;
-		bi.stopIt();
+		this.running = false;
+		this.bi.stopIt();
 	}
 
 	private class InstructionContainer {
 		private E data;
 		private INSTRUCTION instruction;
-		private int instructionId = runningInstructionId++;
+		private int instructionId = InnerParallelHeap.this.runningInstructionId++;
 
 		/**
 		 * @param data
@@ -271,7 +312,7 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 		}
 
 		public E getData() {
-			return data;
+			return this.data;
 		}
 
 		public void setData(final E data) {
@@ -279,7 +320,7 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 		}
 
 		public INSTRUCTION getInstruction() {
-			return instruction;
+			return this.instruction;
 		}
 
 		public void setInstruction(final INSTRUCTION instruction) {
@@ -287,7 +328,7 @@ class InnerParallelHeap<E extends Comparable<E>> extends Thread {
 		}
 
 		public int getInstructionId() {
-			return instructionId;
+			return this.instructionId;
 		}
 
 		public void setInstructionId(final int instructionId) {

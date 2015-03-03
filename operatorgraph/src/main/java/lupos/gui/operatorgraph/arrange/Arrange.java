@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,11 +21,13 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.arrange;
 
 import lupos.gui.operatorgraph.OperatorGraph;
-
 public enum Arrange {
 	LAYERED() {
 
@@ -129,10 +132,16 @@ public enum Arrange {
 		}
 	};
 
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public abstract void arrange(final OperatorGraph operatorgraph);
 	
 	/**
 	 * With this method it is decided whether just arranged is called after zooming (for stable layout algorithms) or the new positions of the graph boxes are determined by calculations with a factor.
+	 *
 	 * @return true if just arrange is called after zooming
 	 */
 	public boolean arrangeAfterZooming(){

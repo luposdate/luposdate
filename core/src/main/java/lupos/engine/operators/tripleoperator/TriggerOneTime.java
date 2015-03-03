@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.tripleoperator;
 
@@ -34,46 +38,60 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
-
 public class TriggerOneTime extends TripleOperator implements TripleConsumer {
 
 	protected boolean firstTime = true;
 	protected final boolean addEmptyBindings;
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for TriggerOneTime.</p>
+	 */
 	public TriggerOneTime() {
 		this(true);
 	}
 
+	/**
+	 * <p>Constructor for TriggerOneTime.</p>
+	 *
+	 * @param addEmptyBindings a boolean.
+	 */
 	public TriggerOneTime(final boolean addEmptyBindings) {
 		this.unionVariables = new HashSet<Variable>();
 		this.intersectionVariables = this.unionVariables;
 		this.addEmptyBindings = addEmptyBindings;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		this.trigger();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
 		this.firstTime=true;
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message postProcessMessage(final StartOfEvaluationMessage msg) {
 		this.trigger();
 		return msg;
 	}
 
+	/**
+	 * <p>trigger.</p>
+	 */
 	public void trigger(){
 		if (this.firstTime) {
 			final QueryResult ll = QueryResult.createInstance();
@@ -87,6 +105,7 @@ public class TriggerOneTime extends TripleOperator implements TripleConsumer {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return super.toString()+" "+((this.addEmptyBindings)?"1 empty bindings":"1 empty queryresult");

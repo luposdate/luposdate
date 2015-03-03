@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.ps;
 
@@ -36,10 +40,14 @@ import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.misc.Tuple;
-
 public abstract class ParserIdentificationStrategy extends Strategy {
 
 	protected TYPE__SemanticWeb[] tokenMap;
+	/**
+	 * <p>Getter for the field <code>tokenMap</code>.</p>
+	 *
+	 * @return an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb} objects.
+	 */
 	protected abstract TYPE__SemanticWeb[] getTokenMap();
 
 	protected HashMap<String, String> hashmap = new HashMap<String,String>();
@@ -47,6 +55,12 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 	protected ILuposParser parserLocal;
 	protected LuposDocument document;
 
+	/**
+	 * <p>Constructor for ParserIdentificationStrategy.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public ParserIdentificationStrategy(final LuposDocumentReader r, final ILuposParser p){
 		this.readerLocal = r;
 		this.parserLocal = p;
@@ -56,20 +70,73 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 	/*
 	 * fuellt die hashmap mit den Beispielen die ausprobiert werden
 	 */
+	/**
+	 * <p>fillMap.</p>
+	 */
 	protected abstract void fillMap();
 	/*
 	 * hier wird ermittelt welche Art des Fehlers vorliegt und
 	 * die Fehlermeldung zurueckgegeben
 	 */
+	/**
+	 * <p>handleException.</p>
+	 *
+	 * @param document a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String handleException(String document);
+	/**
+	 * <p>testforTokensNE.</p>
+	 *
+	 * @param doc a {@link java.lang.String} object.
+	 * @param tokenMap an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb} objects.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.util.ArrayList} object.
+	 */
 	public abstract ArrayList<Item> testforTokensNE(String doc, TYPE__SemanticWeb[] tokenMap, int cursorPosition);
+	/**
+	 * <p>testforTokensPE.</p>
+	 *
+	 * @param exception a {@link java.lang.String} object.
+	 * @param doc a {@link java.lang.String} object.
+	 * @param tokenMap an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb} objects.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.util.ArrayList} object.
+	 */
 	public abstract ArrayList<Item> testforTokensPE(String exception, String doc, TYPE__SemanticWeb[] tokenMap, int cursorPosition);
+	/**
+	 * <p>testForTokensLE.</p>
+	 *
+	 * @param exception a {@link java.lang.String} object.
+	 * @param doc a {@link java.lang.String} object.
+	 * @param tokenMap an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb} objects.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.util.ArrayList} object.
+	 */
 	public abstract ArrayList<Item> testForTokensLE(String exception, String doc, TYPE__SemanticWeb[] tokenMap, int cursorPosition);
+	/**
+	 * <p>findExistingElements.</p>
+	 *
+	 * @param hashmapKey a {@link java.lang.String} object.
+	 * @param hashmapValue a {@link java.lang.String} object.
+	 * @param indexBeforeCurrentWord a int.
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public abstract List<Item> findExistingElements(String hashmapKey, String hashmapValue , int indexBeforeCurrentWord, LuposDocumentReader r, ILuposParser p);
 
 
 	/*
 	 * durchsucht das Dokument nach validen Bezeichnern
+	 */
+	/**
+	 * <p>setExistingIdentifier.</p>
+	 *
+	 * @param hashmapKey a {@link java.lang.String} object.
+	 * @param description a {@link java.lang.String} object.
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
 	 */
 	public void setExistingIdentifier(final String hashmapKey, final String description, final LuposDocumentReader r, final ILuposParser p){
 		final String content = r.getText();
@@ -92,6 +159,12 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 	/*
 	 * extrahiert aus einer gegebenen Exception- oder Fehlernachricht
 	 * zeile und spalte der falschen Zeichensequenz
+	 */
+	/**
+	 * <p>parseLineAndColumn.</p>
+	 *
+	 * @param msg a {@link java.lang.String} object.
+	 * @return a {@link lupos.misc.Tuple} object.
 	 */
 	public Tuple<Integer, Integer> parseLineAndColumn(final String msg){
 
@@ -123,6 +196,12 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 	/*
 	 * extrahiert die fehlerhafte Zeichensequenz bei einem lexikalischen Fehler
 	 */
+	/**
+	 * <p>parseErrorWordLE.</p>
+	 *
+	 * @param exception a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String parseErrorWordLE(final String exception){
 		if (exception.contains("<EOF>")) {
 			return "<EOF>";
@@ -141,6 +220,12 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 
 	/*
 	 * extrahiert die fehlerhafte Zeichensequenz bei einer Parse Exception
+	 */
+	/**
+	 * <p>parseErrorWordPE.</p>
+	 *
+	 * @param exception a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String parseErrorWordPE(final String exception) {
 		final String searchelements = "Encountered \"";
@@ -172,6 +257,7 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 	 * erstellt die Vorschlagsliste
 	 *
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> createAutoCompletionList(
 			final String textDocument, final int cursorPosition) {
@@ -222,6 +308,7 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 	/*
 	 * generiert die Gewichte, alle vorgeschlagenen Elemente haben Gewicht 1
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> generateWeight(final List<Item> list){
 		final HashMap<Item, Integer> map = new HashMap<Item, Integer>();

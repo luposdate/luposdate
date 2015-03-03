@@ -36,19 +36,29 @@ import lupos.event.util.Literals;
 
 /**
  * Searches for bluetooth devices in range and builds events for it.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BTDevicesProducer extends ProducerBaseNoDuplicates {
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/BTDevices/"</code> */
 	public final static String NAMESPACE = "http://localhost/events/BTDevices/";
 	
 	private final Literal TYPE = Literals.createURI(NAMESPACE, "BTDevicesEvent");
 	private final Literal PREDICATE = Literals.createURI(NAMESPACE, "inRange");
 	
+	/**
+	 * <p>Constructor for BTDevicesProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public BTDevicesProducer(SerializingMessageService msgService) {
 		super(msgService, 15000);
 		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		if (!LocalDevice.isPowerOn()) {
@@ -127,6 +137,12 @@ public class BTDevicesProducer extends ProducerBaseNoDuplicates {
 	}
 
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		
 		// create communication channel

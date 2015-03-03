@@ -33,9 +33,13 @@ import com.vividsolutions.jts.io.WKTWriter;
 /**
  * Richard Mietz
  * Date: 22.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class StSPARQLSerializer extends AbstractSerializer
 {
+    /** {@inheritDoc} */
     @Override
     public TypedLiteral toLiteral(final Geometry geo) {
         final WKTWriter writer = new WKTWriter();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -28,7 +32,6 @@ import java.awt.Component;
 import javax.swing.tree.TreePath;
 
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel;
-
 public class GroupIdentifier {
 
 
@@ -42,6 +45,14 @@ public class GroupIdentifier {
 	private GroupPanel groupPanel;
 	
 	
+	/**
+	 * <p>Constructor for GroupIdentifier.</p>
+	 *
+	 * @param groupName a {@link java.lang.String} object.
+	 * @param groupPanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel} object.
+	 * @param component a {@link java.awt.Component} object.
+	 * @param path a {@link javax.swing.tree.TreePath} object.
+	 */
 	public GroupIdentifier(String groupName, GroupPanel groupPanel,  Component component, TreePath path){
 		
 		this.setComponent(component);
@@ -55,21 +66,41 @@ public class GroupIdentifier {
 
 
 
+	/**
+	 * <p>Getter for the field <code>component</code>.</p>
+	 *
+	 * @return a {@link java.awt.Component} object.
+	 */
 	public Component getComponent() {
 		return component;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>component</code>.</p>
+	 *
+	 * @param component a {@link java.awt.Component} object.
+	 */
 	public void setComponent(Component component) {
 		this.component = component;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>path</code>.</p>
+	 *
+	 * @return a {@link javax.swing.tree.TreePath} object.
+	 */
 	public TreePath getPath() {
 		return path;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>path</code>.</p>
+	 *
+	 * @param path a {@link javax.swing.tree.TreePath} object.
+	 */
 	public void setPath(TreePath path) {
 		this.path = path;
 	}
@@ -77,6 +108,11 @@ public class GroupIdentifier {
 
 
 
+	/**
+	 * <p>Getter for the field <code>groupName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getGroupName() {
 		return groupName;
 	}
@@ -84,6 +120,11 @@ public class GroupIdentifier {
 
 
 
+	/**
+	 * <p>Setter for the field <code>groupName</code>.</p>
+	 *
+	 * @param groupName a {@link java.lang.String} object.
+	 */
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
@@ -91,6 +132,11 @@ public class GroupIdentifier {
 
 
 
+	/**
+	 * <p>Getter for the field <code>groupPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel} object.
+	 */
 	public GroupPanel getGroupPanel() {
 		return groupPanel;
 	}
@@ -98,6 +144,11 @@ public class GroupIdentifier {
 
 
 
+	/**
+	 * <p>Setter for the field <code>groupPanel</code>.</p>
+	 *
+	 * @param groupPanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel} object.
+	 */
 	public void setGroupPanel(GroupPanel groupPanel) {
 		this.groupPanel = groupPanel;
 	}

@@ -40,7 +40,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 /**
- * This class is for sending an email 
+ * This class is for sending an email
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SendEMail implements Send {
 
@@ -52,14 +55,23 @@ public class SendEMail implements Send {
 	private String subject;
 	private final String contentType;
 	
+	/**
+	 * <p>Constructor for SendEMail.</p>
+	 */
 	public SendEMail(){
 		this("text/plain");
 	}
 	
+	/**
+	 * <p>Constructor for SendEMail.</p>
+	 *
+	 * @param contentType a {@link java.lang.String} object.
+	 */
 	public SendEMail(final String contentType){
 		this.contentType = contentType;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void init() {
 		JPanel panel = new JPanel();
@@ -105,6 +117,7 @@ public class SendEMail implements Send {
         this.password = String.valueOf(passwordField.getPassword());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendContent(final String content) {
 	      Properties properties = System.getProperties();

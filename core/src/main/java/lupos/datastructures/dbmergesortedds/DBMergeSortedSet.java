@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -34,7 +38,6 @@ import java.util.SortedSet;
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.queryresult.ParallelIterator;
-
 public class DBMergeSortedSet<E extends Serializable> extends
 		DBMergeSortedBag<E> implements SortedSet<E>, Serializable {
 
@@ -47,6 +50,8 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	 * Create a new DBMergeSortedBag that sorts according to the elements'
 	 * natural order.
 	 *
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedSet(final SortConfiguration sortConfiguration,
 			final Class<? extends E> classOfElements) {
@@ -56,7 +61,6 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	/**
 	 * This constructor is just there to make the class serializable and should
 	 * not be used in other cases (than the Java serialization)!
-	 *
 	 */
 	public DBMergeSortedSet() {
 		super(new SortConfiguration(), null);
@@ -65,6 +69,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	/**
 	 * Standard constructor
 	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedSet(final Class<? extends E> classOfElements){
 		this(new SortConfiguration(), classOfElements);
@@ -75,6 +80,8 @@ public class DBMergeSortedSet<E extends Serializable> extends
 	 *
 	 * @param comp
 	 *            The Comparator to use for sorting.
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedSet(final SortConfiguration sortConfiguration,
 			final Comparator<? super E> comp,
@@ -82,6 +89,12 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		super(sortConfiguration, comp, classOfElements);
 	}
 
+	/**
+	 * <p>Constructor for DBMergeSortedSet.</p>
+	 *
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 */
 	public DBMergeSortedSet(final Comparator<? super E> comp,
 			final Class<? extends E> classOfElements) {
 		this(new SortConfiguration(), comp, classOfElements);
@@ -92,10 +105,17 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		super(bag.sortConfiguration, bag.comp, classOfElements);
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param e a E object.
+	 * @return a E object.
+	 */
 	public E get(final E e) {
 		return this.subSet(e, e).last();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object o) {
 		final List<Object> list = new LinkedList<Object>();
@@ -103,6 +123,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		return this.removeAll(list);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		if (this.currentRun == null) {
@@ -119,6 +140,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		return super.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Entry<E> getNext(final Iterator<Entry<E>>[] iters,
 			final Map<Integer, Integer> hm, final Heap<Entry<E>> mergeheap) {
@@ -142,6 +164,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		return res;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Entry<E> getNext(final Iterator<Entry<E>>[] iters,
 			final int basisID, final Heap<Entry<E>> mergeheap) {
@@ -166,6 +189,7 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		return res;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void addToRun(final Entry<E> e){
 		// already eliminate duplicates when adding the entry to the run
@@ -174,17 +198,20 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBMergeSortedSet<E> subSet(final E arg0, final E arg1) {
 			return new DBMergeSortedSet<E>(super.subBag(arg0, arg1),
 					this.classOfElements);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBMergeSortedSet<E> tailSet(final E arg0) {
 			return new DBMergeSortedSet<E>(super.tailBag(arg0), this.classOfElements);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final Iterator<E> iter = this.iterator();
@@ -199,12 +226,14 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBMergeSortedSet<E> headSet(final E toElement) {
 			return new DBMergeSortedSet<E>(super.headBag(toElement),
 					this.classOfElements);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ParallelIterator<E> iterator() {
 		// Do we have a small sorted bag? In other words:
@@ -310,6 +339,11 @@ public class DBMergeSortedSet<E extends Serializable> extends
 		};
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param arg an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] arg){
 		final SortConfiguration sortConfig = new SortConfiguration();
 		sortConfig.useChunksMergeSort();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -33,7 +37,6 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
-
 public abstract class WindowInstances extends Window {
 	
 	private final Literal RDF_TYPE = LiteralFactory.createURILiteralWithoutException("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"); 
@@ -47,18 +50,33 @@ public abstract class WindowInstances extends Window {
 	protected LinkedList<TimestampedTriple> typeTripleBuffer;
 	
 	
+	/**
+	 * <p>Constructor for WindowInstances.</p>
+	 *
+	 * @param instanceClass a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public WindowInstances(final Literal instanceClass){
 		this.instanceClass = instanceClass;
 	}
 	
 	/**
 	 * Checks if given triple has predicate==rdf:type and object==instanceClass
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @return a boolean.
 	 */
 	protected boolean isMatchingTypeTriple(Triple t) {
 		return t.getPredicate().compareToNotNecessarilySPARQLSpecificationConform(this.RDF_TYPE) == 0
 				&& t.getObject().compareToNotNecessarilySPARQLSpecificationConform(this.instanceClass)==0;
 	}
 	
+	/**
+	 * <p>haveSameSubject.</p>
+	 *
+	 * @param t1 a {@link lupos.datastructures.items.Triple} object.
+	 * @param t2 a {@link lupos.datastructures.items.Triple} object.
+	 * @return a boolean.
+	 */
 	protected boolean haveSameSubject(Triple t1, Triple t2) {
 		if(t1==null || t2==null){
 			return false;
@@ -68,7 +86,8 @@ public abstract class WindowInstances extends Window {
 	
 	/**
 	 * Deletes all triples which have the same subject as a given triple t.
-	 * @param t
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
 	 */
 	protected void deleteInstance(Triple t) {
 		// 1. search for triples with same subject
@@ -85,6 +104,12 @@ public abstract class WindowInstances extends Window {
 		}
 	}
 	
+	/**
+	 * <p>deleteInstanceDebug.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	protected void deleteInstanceDebug(Triple t, DebugStep debugstep) {
 		// 1. search for triples with same subject
 		List<TimestampedTriple> instanceTriples = new ArrayList<TimestampedTriple>();
@@ -100,11 +125,13 @@ public abstract class WindowInstances extends Window {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return super.toString()+" on "+this.instanceClass.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(Prefix prefixInstance){
 		return super.toString()+" on "+this.instanceClass.toString(prefixInstance);

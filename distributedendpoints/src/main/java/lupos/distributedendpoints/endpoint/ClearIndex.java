@@ -30,11 +30,15 @@ import lupos.engine.indexconstruction.RDF3XEmptyIndexConstruction;
 
 /**
  * This class creates the indices for the different distribution strategies
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ClearIndex {
 
 	/**
 	 * main entry point of the program
+	 *
 	 * @param args see method help()
 	 */
 	public static void main(final String[] args) {
@@ -69,8 +73,9 @@ public class ClearIndex {
 
 	/**
 	 * creates an empty index under the folder base_dir/keyType
-	 * @param base_dir
-	 * @param keyType
+	 *
+	 * @param base_dir a {@link java.lang.String} object.
+	 * @param keyType a {@link java.lang.String} object.
 	 */
 	public static void createEmptyIndex(final String base_dir, final String keyType){
 		final String[] dir_array = new String[] { base_dir + keyType };

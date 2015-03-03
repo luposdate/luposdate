@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
 
@@ -41,7 +45,6 @@ import lupos.datastructures.patriciatrie.ram.RBTrieMap;
 import lupos.datastructures.patriciatrie.util.TrieMapImplementation;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
-
 public class CodeMapLiteral extends Literal implements Item,
 		Comparable<Literal>, Externalizable {
 
@@ -53,13 +56,26 @@ public class CodeMapLiteral extends Literal implements Item,
 
 	private final static ReentrantLock lock=new ReentrantLock();
 
+	/**
+	 * <p>Constructor for CodeMapLiteral.</p>
+	 *
+	 * @param code a int.
+	 */
 	public CodeMapLiteral(final int code) {
 		this.code = code;
 	}
 
+	/**
+	 * <p>Constructor for CodeMapLiteral.</p>
+	 */
 	public CodeMapLiteral() {
 	}
 
+	/**
+	 * <p>Constructor for CodeMapLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public CodeMapLiteral(String content) {
 		if (content.length() >= 6 && content.startsWith("\"\"\"")
 				&& content.endsWith("\"\"\"")) {
@@ -89,10 +105,17 @@ public class CodeMapLiteral extends Literal implements Item,
 		}
 	}
 
+	/**
+	 * <p>valueEquals.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.codemap.CodeMapLiteral} object.
+	 * @return a boolean.
+	 */
 	public boolean valueEquals(final CodeMapLiteral lit) {
 		return (this.code == lit.code);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof CodeMapLiteral) {
@@ -113,20 +136,33 @@ public class CodeMapLiteral extends Literal implements Item,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.code;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return v.get(this.code);
 	}
 
+	/**
+	 * <p>getValue.</p>
+	 *
+	 * @param codeParam a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getValue(final int codeParam) {
 		return v.get(codeParam);
 	}
 
+	/**
+	 * <p>Getter for the field <code>code</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getCode() {
 		return this.code;
 	}
@@ -141,13 +177,23 @@ public class CodeMapLiteral extends Literal implements Item,
 		this.code = in.readInt();
 	}
 
+	/** Constant <code>hm</code> */
 	protected static StringIntegerMap hm = null;
+	/** Constant <code>v</code> */
 	protected static IntegerStringMap v = null;
 
+	/**
+	 * <p>maxID.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int maxID() {
 		return v.size();
 	}
 
+	/**
+	 * <p>init.</p>
+	 */
 	public static void init() {
 		if (hm == null
 				&& LiteralFactory.getMapType() != MapType.NOCODEMAP
@@ -167,38 +213,62 @@ public class CodeMapLiteral extends Literal implements Item,
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>hm</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public static StringIntegerMap getHm() {
 		return hm;
 	}
 
+	/**
+	 * <p>Setter for the field <code>hm</code>.</p>
+	 *
+	 * @param hm a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public static void setHm(final StringIntegerMap hm) {
 		CodeMapLiteral.hm = hm;
 	}
 
+	/**
+	 * <p>Getter for the field <code>v</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public static IntegerStringMap getV() {
 		return v;
 	}
 
+	/**
+	 * <p>Setter for the field <code>v</code>.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public static void setV(final IntegerStringMap v) {
 		CodeMapLiteral.v = v;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return new String[] { this.toString() };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
 		this.code = InputHelper.readLuposInt(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		OutHelper.writeLuposInt(this.code, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String printYagoStringWithPrefix() {
 		final String s = this.toString();
@@ -212,6 +282,7 @@ public class CodeMapLiteral extends Literal implements Item,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew() {
 		return LiteralFactory.createLiteral(this.originalString());

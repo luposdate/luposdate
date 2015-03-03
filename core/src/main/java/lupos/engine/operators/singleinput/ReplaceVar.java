@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -37,12 +41,17 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-
 public class ReplaceVar extends SingleInputOperator {
 	private LinkedList<Variable> substitutionsVariableLeft = new LinkedList<Variable>();
 	private LinkedList<Variable> substitutionsVariableRight = new LinkedList<Variable>();
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>getReplacement.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getReplacement(final Variable v) {
 		for (int i = 0; i < this.substitutionsVariableLeft.size(); i++) {
 			if (this.substitutionsVariableRight.get(i).equals(v)) {
@@ -52,6 +61,12 @@ public class ReplaceVar extends SingleInputOperator {
 		return null;
 	}
 
+	/**
+	 * <p>removeSubstitution.</p>
+	 *
+	 * @param left a {@link lupos.datastructures.items.Variable} object.
+	 * @param right a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void removeSubstitution(final Variable left, final Variable right) {
 		final LinkedList<Integer> pos = this.getPositions(this.substitutionsVariableLeft,
 				left);
@@ -66,24 +81,45 @@ public class ReplaceVar extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsVariableLeft</code>.</p>
+	 *
+	 * @param substitutionsVariableLeft a {@link java.util.LinkedList} object.
+	 */
 	public void setSubstitutionsVariableLeft(
 			final LinkedList<Variable> substitutionsVariableLeft) {
 		this.substitutionsVariableLeft = substitutionsVariableLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsVariableRight</code>.</p>
+	 *
+	 * @param substitutionsVariableRight a {@link java.util.LinkedList} object.
+	 */
 	public void setSubstitutionsVariableRight(
 			final LinkedList<Variable> substitutionsVariableRight) {
 		this.substitutionsVariableRight = substitutionsVariableRight;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsVariableLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Variable> getSubstitutionsVariableLeft() {
 		return this.substitutionsVariableLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsVariableRight</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Variable> getSubstitutionsVariableRight() {
 		return this.substitutionsVariableRight;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.intersectionVariables = new LinkedList<Variable>();
@@ -119,6 +155,12 @@ public class ReplaceVar extends SingleInputOperator {
 		return false;
 	}
 
+	/**
+	 * <p>addSubstitution.</p>
+	 *
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 * @param content a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void addSubstitution(final Variable variable, final Variable content) {
 		if (!this.contains(variable, content)) {
 			this.substitutionsVariableLeft.add(variable);
@@ -126,17 +168,24 @@ public class ReplaceVar extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>removeSubstitutionVars.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void removeSubstitutionVars(final int index) {
 		this.substitutionsVariableLeft.remove(index);
 		this.substitutionsVariableRight.remove(index);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
@@ -177,6 +226,7 @@ public class ReplaceVar extends SingleInputOperator {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator bo) {
 		super.cloneFrom(bo);
@@ -189,6 +239,7 @@ public class ReplaceVar extends SingleInputOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String result = super.toString() + "(";
@@ -202,11 +253,13 @@ public class ReplaceVar extends SingleInputOperator {
 		return result + ")";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<Variable> transformSortCriterium(final Collection<Variable> sortCriterium){
 		for (final Variable var : new ArrayList<Variable>(sortCriterium)) {

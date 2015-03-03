@@ -27,6 +27,9 @@ import lupos.datastructures.patriciatrie.node.Node;
 
 /**
  * This class extends the abstract Node class and implements a RAM based behavior.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RBNode extends Node {
 
@@ -41,16 +44,19 @@ public class RBNode extends Node {
 		this.children = null;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected final Node createNode() {
 		return new RBNode();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final boolean hasChild(final int i) {
 		return this.children != null && i < this.children.length && this.children[i] != null;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final Node getChild(final int i) {
 		if (this.children != null){
@@ -60,6 +66,7 @@ public class RBNode extends Node {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final void setChild(final int i, final Node node) {
 		if (this.children == null && node != null) {
@@ -74,6 +81,7 @@ public class RBNode extends Node {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof RBNode) {
@@ -85,6 +93,7 @@ public class RBNode extends Node {
 		}
 	}
 		
+	/** {@inheritDoc} */
 	@Override
 	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		if (this.children != null) {
@@ -103,6 +112,7 @@ public class RBNode extends Node {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected final void removeChildrenArrayElement(final int idx) {
 		if (this.children != null) {
@@ -119,6 +129,7 @@ public class RBNode extends Node {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final int getChildrenLength() {
 		return (this.children == null ? 0 : this.children.length);

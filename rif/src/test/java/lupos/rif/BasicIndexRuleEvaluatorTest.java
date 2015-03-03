@@ -38,12 +38,21 @@ import java.util.Collection;
 
 /**
  * Created by sebers on 3/11/14.
+ *
+ * @author groppe
+ * @version $Id: $Id
+ * @since 1.0
  */
 public class BasicIndexRuleEvaluatorTest extends TestCase {
 
 
 	private CommonCoreQueryEvaluator evaluator;
 
+	/**
+	 * <p>setUp.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -63,11 +72,21 @@ public class BasicIndexRuleEvaluatorTest extends TestCase {
 
 	}
 
+	/**
+	 * <p>tearDown.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	@After
 	public void tearDown() throws Exception {
 
 	}
 
+	/**
+	 * <p>testInsertPurgeAndInsert.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	@Test
 	public void testInsertPurgeAndInsert() throws Exception {
 		{
@@ -101,12 +120,22 @@ public class BasicIndexRuleEvaluatorTest extends TestCase {
 
 	}
 
+	/**
+	 * <p>insertTriple.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public void insertTriple() throws Exception {
 		String query = "INSERT DATA {<http://www.auto-nomos.de/ontologies/query-driven-semantic-data-cloud-examples#equippedcarRight2>\n" +
 				"      <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.auto-nomos.de/ontologies/query-driven-data-clouds#EquippedVehicle> }";
 		evaluator.getResult(query);
 	}
 
+	/**
+	 * <p>deleteTriple.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public void deleteTriple() throws Exception {
 		String query = "" +
 				"DELETE {?s ?p ?o} " +

@@ -32,6 +32,9 @@ import java.util.Iterator;
 
 /**
  * Dumps the syntax tree using the location information in each NodeToken.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TreeDumper extends DepthFirstVoidVisitor {
 
@@ -74,7 +77,6 @@ public class TreeDumper extends DepthFirstVoidVisitor {
    * Allows you to specify whether or not to print special tokens.
    *
    * @param b true to print specials, false otherwise
-
    */
   public void printSpecials(final boolean b)  { printSpecials = b; }
 
@@ -96,11 +98,9 @@ public class TreeDumper extends DepthFirstVoidVisitor {
   public void resetPosition()  { curLine = curColumn = 1; }
 
   /**
-   * Dumps the current NodeToken to the output stream being used.
+   * {@inheritDoc}
    *
-   * @throws  IllegalStateException   if the token position is invalid
-   *   relative to the current position, i.e. its location places it
-   *   before the previous token.
+   * Dumps the current NodeToken to the output stream being used.
    */
   @Override
   public void visit(final NodeToken n) {

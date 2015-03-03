@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -41,16 +45,28 @@ import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.datatypes.Predicate;
 
 import com.google.common.collect.Multimap;
-
 public class RulePredicate extends Uniterm {
 	private boolean isRecursive = false;
 	private final boolean triple;
 
+	/**
+	 * <p>Constructor for RulePredicate.</p>
+	 *
+	 * @param triple a boolean.
+	 */
 	public RulePredicate(final boolean triple) {
 		super();
 		this.triple=triple;
 	}
 
+	/**
+	 * <p>Constructor for RulePredicate.</p>
+	 *
+	 * @param subject a {@link lupos.rif.IExpression} object.
+	 * @param predicate a {@link lupos.rif.IExpression} object.
+	 * @param object a {@link lupos.rif.IExpression} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public RulePredicate(final IExpression subject, final IExpression predicate,
 			final IExpression object) throws RIFException {
 		this(true);
@@ -59,32 +75,47 @@ public class RulePredicate extends Uniterm {
 		this.termParams.add(object);
 	}
 
+	/**
+	 * <p>Constructor for RulePredicate.</p>
+	 *
+	 * @param predName a {@link lupos.rif.IExpression} object.
+	 * @param predParams a {@link lupos.rif.IExpression} object.
+	 */
 	public RulePredicate(final IExpression predName, final IExpression... predParams) {
 		this(false);
 		this.termName = predName;
 		this.termParams = Arrays.asList(predParams);
 	}
 
+	/**
+	 * <p>isTriple.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isTriple() {
 		return this.triple;
 		// return termParams.size() == 2;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <R, A> R accept(final IRuleVisitor<R, A> visitor, final A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final Bindings binding) {
 		return this.evaluate(binding, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final Bindings binding, final Object optionalResult) {
 		return this.evaluate(binding, optionalResult, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final Bindings binding, final Object optionalResult, final Multimap<IExpression, IExpression> equalities) {
 		if (equalities != null) {
@@ -116,6 +147,7 @@ public class RulePredicate extends Uniterm {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isBound(final RuleVariable var, final Collection<RuleVariable> boundVars) {
 		boundVars.addAll(this.getVariables());
@@ -126,19 +158,35 @@ public class RulePredicate extends Uniterm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPossibleAssignment() {
 		return false;
 	}
 
+	/**
+	 * <p>setRecursive.</p>
+	 *
+	 * @param isRecursive a boolean.
+	 */
 	public void setRecursive(final boolean isRecursive) {
 		this.isRecursive = isRecursive;
 	}
 
+	/**
+	 * <p>isRecursive.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isRecursive() {
 		return this.isRecursive;
 	}
 
+	/**
+	 * <p>toDataStructure.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object toDataStructure() {
 		if (this.isTriple()){
 			final Literal subject = (this.termParams.get(0) instanceof Constant)?
@@ -180,6 +228,7 @@ public class RulePredicate extends Uniterm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equalsDataStructure(final Object obj) {
 		if (this.isTriple() && obj instanceof Triple) {
@@ -191,6 +240,7 @@ public class RulePredicate extends Uniterm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj != null && obj instanceof RulePredicate) {
@@ -212,11 +262,13 @@ public class RulePredicate extends Uniterm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getLabel() {
 		if(this.isTriple()){
@@ -230,6 +282,7 @@ public class RulePredicate extends Uniterm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		if(this.isTriple()){

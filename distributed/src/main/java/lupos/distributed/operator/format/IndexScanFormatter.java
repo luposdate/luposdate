@@ -33,6 +33,9 @@ import org.json.JSONObject;
 
 /**
  * Implements the formatter for the index scan operator
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class IndexScanFormatter implements OperatorFormatter {
 
@@ -66,6 +69,7 @@ public class IndexScanFormatter implements OperatorFormatter {
 		 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
 		 * .operators.BasicOperator, int)
 		 */
+		/** {@inheritDoc} */
 		@Override
 		public JSONObject serialize(final BasicOperator operator, final int node_id) {
 			final BasicIndexScan indexScan = (BasicIndexScan) operator;
@@ -90,6 +94,7 @@ public class IndexScanFormatter implements OperatorFormatter {
 		 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.
 		 * JSONObject)
 		 */
+		/** {@inheritDoc} */
 		@Override
 		public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
 			return this.operatorCreator.createIndexScan(this.root, Helper.createTriplePatternsFromJSON(serializedOperator));

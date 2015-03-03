@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort;
 
@@ -27,17 +31,25 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.sorteddata.ElementCounter;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
-
 public class TreeMapSort extends SortedBagSort {
 
+	/**
+	 * <p>Constructor for TreeMapSort.</p>
+	 */
 	public TreeMapSort(){
 		super();
 	}
 	
+	/**
+	 * <p>Constructor for TreeMapSort.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public TreeMapSort(lupos.sparql1_1.Node node){
 		super(new lupos.datastructures.sorteddata.SortedBagImplementation<Bindings>(new java.util.TreeMap<Bindings,ElementCounter<Bindings>>(new ComparatorAST(node))), node);
 	}
 	
+	/** {@inheritDoc} */
 	public void cloneFrom(BasicOperator op) {
 		super.cloneFrom(op);
 		this.sswd= new lupos.datastructures.sorteddata.SortedBagImplementation<Bindings>(new java.util.TreeMap<Bindings,ElementCounter<Bindings>>(new DifferentFromComparator<Bindings>(((Sort)op).getComparator())));		

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.generators;
 
@@ -48,7 +52,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleContainer;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.VariableContainer;
 import lupos.misc.Triple;
 import lupos.misc.util.OperatorIDTuple;
-
 public class JavaCodeGenerator {
 	private RuleEditor editor = null;
 	private String targetDirectory = "";
@@ -63,10 +66,22 @@ public class JavaCodeGenerator {
 	private HashMap<String, VariableContainer> variableList_left = null;
 	private HashMap<String, Triple<Boolean, HashMap<String, VariableContainer>, HashMap<String, VariableContainer>>> validatedRules = new HashMap<String, Triple<Boolean, HashMap<String, VariableContainer>, HashMap<String, VariableContainer>>>();
 
+	/**
+	 * <p>Constructor for JavaCodeGenerator.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public JavaCodeGenerator(RuleEditor editor) {
 		this.editor = editor;
 	}
 
+	/**
+	 * <p>generate.</p>
+	 *
+	 * @param targetDirectory a {@link java.lang.String} object.
+	 * @param packageName a {@link java.lang.String} object.
+	 * @param generateStartMap a boolean.
+	 */
 	public void generate(String targetDirectory, String packageName, boolean generateStartMap) {
 		// correct targetDirectory if needed...
 		if(!targetDirectory.endsWith("/")) {

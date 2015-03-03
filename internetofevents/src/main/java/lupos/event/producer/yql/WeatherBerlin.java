@@ -29,24 +29,37 @@ import lupos.event.producer.ProducerBase;
 import lupos.event.util.Literals;
 
 /**
- * 
- * @author Christopher Gudat, Guillaume Assaud
- * 
- * YQLSpecializer can change into every Producer, YQL-Query is necessary
+ * <p>WeatherBerlin class.</p>
  *
+ * @author Christopher Gudat, Guillaume Assaud
+ *
+ * YQLSpecializer can change into every Producer, YQL-Query is necessary
+ * @version $Id: $Id
  */
-
 public class WeatherBerlin extends YQLQueryProducer {
 	//Change these values to create an other Producer
+	/** Constant <code>NAMESPACE_WEATHER="http://localhost/events/weatherBerlin/"</code> */
 	public final static String NAMESPACE_WEATHER = "http://localhost/events/weatherBerlin/";
 	private final static String NAME = "WeatherBerlin";
 	private final static String QUERY = "select * from weather.forecast where location in (select id from weather.search where query=\"berlin, germany\")";
+	/** Constant <code>TYPE</code> */
 	public final static URILiteral TYPE = Literals.createURI(NAMESPACE_WEATHER, NAME);
 	
+	/**
+	 * <p>Constructor for WeatherBerlin.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public WeatherBerlin(SerializingMessageService msgService){
 		super(msgService, NAMESPACE_WEATHER, TYPE, QUERY);
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		//Create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

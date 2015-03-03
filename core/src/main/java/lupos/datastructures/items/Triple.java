@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
 
@@ -30,7 +34,6 @@ import java.util.List;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.misc.util.ImmutableIterator;
-
 public class Triple implements Iterable<Literal>, Serializable,
 		Comparable<Triple> {
 	private static final long serialVersionUID = 8477763054076434668L;
@@ -38,6 +41,13 @@ public class Triple implements Iterable<Literal>, Serializable,
 	protected Literal predicate;
 	protected Literal object;
 
+	/**
+	 * <p>Constructor for Triple.</p>
+	 *
+	 * @param subject a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param predicate a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param object a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Triple(final Literal subject, final Literal predicate,
 			final Literal object) {
 		this.subject = subject;
@@ -45,32 +55,61 @@ public class Triple implements Iterable<Literal>, Serializable,
 		this.object = object;
 	}
 
+	/**
+	 * <p>Constructor for Triple.</p>
+	 *
+	 * @param spo a {@link java.util.List} object.
+	 */
 	public Triple(final List<Literal> spo) {
 		this.subject = spo.get(0);
 		this.predicate = spo.get(1);
 		this.object = spo.get(2);
 	}
 
+	/**
+	 * <p>Constructor for Triple.</p>
+	 */
 	public Triple() {
 		// standard constructor without initialization...
 	}
 
+	/**
+	 * <p>Constructor for Triple.</p>
+	 *
+	 * @param literals an array of {@link lupos.datastructures.items.literal.Literal} objects.
+	 */
 	public Triple(final Literal[] literals) {
 		this(literals[0], literals[1], literals[2]);
 	}
 
+	/**
+	 * <p>Getter for the field <code>subject</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getSubject() {
 		return this.subject;
 	}
 
+	/**
+	 * <p>Getter for the field <code>predicate</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getPredicate() {
 		return this.predicate;
 	}
 
+	/**
+	 * <p>Getter for the field <code>object</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getObject() {
 		return this.object;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Literal> iterator() {
 		return new ImmutableIterator<Literal>() {
@@ -88,6 +127,12 @@ public class Triple implements Iterable<Literal>, Serializable,
 		};
 	}
 
+	/**
+	 * <p>getPos.</p>
+	 *
+	 * @param i a int.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getPos(final int i) {
 		if (i == 0) {
 			return this.subject;
@@ -100,6 +145,12 @@ public class Triple implements Iterable<Literal>, Serializable,
 		}
 	}
 
+	/**
+	 * <p>setPos.</p>
+	 *
+	 * @param i a int.
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public void setPos(final int i, final Literal lit) {
 		if (i == 0) {
 			this.subject = lit;
@@ -110,38 +161,59 @@ public class Triple implements Iterable<Literal>, Serializable,
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "(" + this.subject + "," + this.predicate + "," + this.object + ")";
 	}
 
+	/**
+	 * <p>toN3String.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toN3String() {
 		return this.subject + " " + this.predicate + " " + this.object + " .";
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "(" + this.subject.toString(prefixInstance) + ","
 				+ this.predicate.toString(prefixInstance) + ","
 				+ this.object.toString(prefixInstance) + ")";
 	}
 
+	/**
+	 * <p>toN3String.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toN3String(final lupos.rdf.Prefix prefixInstance) {
 		return this.subject.toString(prefixInstance) + " "
 				+ this.predicate.toString(prefixInstance) + " "
 				+ this.object.toString(prefixInstance) + " .";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Triple clone() {
 		final Triple t = new Triple(this.subject, this.predicate, this.object);
 		return t;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Triple) {
@@ -156,6 +228,12 @@ public class Triple implements Iterable<Literal>, Serializable,
 		}
 	}
 
+	/**
+	 * <p>equivalentExceptAnonymousLiterals.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @return a boolean.
+	 */
 	public boolean equivalentExceptAnonymousLiterals(final Triple t) {
 		return ((this.subject == null || t.getSubject() == null
 				|| this.subject.equals(t.getSubject()) || (this.subject instanceof AnonymousLiteral && t.subject instanceof AnonymousLiteral))
@@ -164,6 +242,7 @@ public class Triple implements Iterable<Literal>, Serializable,
 						(this.object == null || t.getObject() == null || this.object.equals(t.getObject()) || (this.object instanceof AnonymousLiteral && t.object instanceof AnonymousLiteral)));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final Triple arg0) {
 		for (int pos = 0; pos < 3; pos++) {
@@ -178,6 +257,12 @@ public class Triple implements Iterable<Literal>, Serializable,
 	}
 
 	// is overriden by TimestampedTriple for returning a variable with timestamp
+	/**
+	 * <p>getVariable.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getVariable(final Variable var) {
 		return var;
 	}

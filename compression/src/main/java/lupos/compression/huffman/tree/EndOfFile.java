@@ -30,43 +30,53 @@ import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
 /**
- * Class to represent the symbol End Of File in the huffman tree! 
+ * Class to represent the symbol End Of File in the huffman tree!
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EndOfFile extends Node {
 
+	/** {@inheritDoc} */
 	@Override
 	public void encode(final BitOutputStream out) throws IOException {
 		out.write(false); // bit cleared for leaf node!
 		out.write(false); // bit cleared for EOF!
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public int getDepth() {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getMin() {
 		return Integer.MAX_VALUE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getMax() {
 		return Integer.MIN_VALUE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void fillCodeArray(LinkedList<Boolean> currentCode, Boolean[][] codeArray, int min) {
 		// the code of EOF is stored in the last element of the array!
 		this.fill(currentCode, codeArray, codeArray.length - 1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getSymbol(BitInputStream in) throws IOException {
 		// end of stream reached!
 		return -1;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "EndOfFile";

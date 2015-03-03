@@ -58,7 +58,10 @@ import org.json.JSONObject;
 
 /**
  * The Class SubGraphContainerFormatter.
- * @since 12/2013 <ul><li>subgraph container with included subgraph container<li>subgraph container with >1 succeeding operator, so also non-linear subgraphs are supported now!</ul> 
+ *
+ * @since 12/2013 <ul><li>subgraph container with included subgraph container<li>subgraph container with >1 succeeding operator, so also non-linear subgraphs are supported now!</ul>
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SubgraphContainerFormatter implements OperatorFormatter {
 
@@ -77,18 +80,29 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 	 */
 	private ISubgraphExecutor<?> executer;
 
+	/**
+	 * <p>Constructor for SubgraphContainerFormatter.</p>
+	 */
 	public SubgraphContainerFormatter() {
 	}
 	
 	/**
-	 * Now constructor for the {@link SubgraphContainerFormatter}, which stores an {@link ISubgraphExecutor} 
-	 * which is used to execute an included {@link SubgraphContainer}.
+	 * Now constructor for the {@link lupos.distributed.operator.format.SubgraphContainerFormatter}, which stores an {@link lupos.distributed.operator.ISubgraphExecutor}
+	 * which is used to execute an included {@link lupos.distributed.operator.SubgraphContainer}.
+	 *
 	 * @param executer The executer
 	 */
 	public SubgraphContainerFormatter(ISubgraphExecutor<?> executer) {
 		this.executer = executer;
 	}
 
+	/**
+	 * <p>Constructor for SubgraphContainerFormatter.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param operatorCreator a {@link lupos.distributed.operator.format.operatorcreator.IOperatorCreator} object.
+	 * @param application a {@link lupos.engine.operators.application.Application} object.
+	 */
 	public SubgraphContainerFormatter(final Dataset dataset,
 			final IOperatorCreator operatorCreator,
 			final Application application) {
@@ -97,6 +111,14 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 		this.operatorCreator = operatorCreator;
 	}
 
+	/**
+	 * <p>Constructor for SubgraphContainerFormatter.</p>
+	 *
+	 * @param dataset2 a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param operatorCreator2 a {@link lupos.distributed.operator.format.operatorcreator.IOperatorCreator} object.
+	 * @param collectResult a {@link lupos.engine.operators.application.CollectResult} object.
+	 * @param sgExecuter a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 */
 	public SubgraphContainerFormatter(Dataset dataset2,
 			IOperatorCreator operatorCreator2, CollectResult collectResult,
 			ISubgraphExecutor<?> sgExecuter) {
@@ -104,6 +126,7 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 		this.executer = sgExecuter;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSONObject serialize(final BasicOperator operator, final int node_id)
 			throws JSONException {
@@ -295,6 +318,7 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Root deserialize(final JSONObject serializedOperator)
 			throws JSONException {

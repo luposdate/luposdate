@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -41,7 +45,6 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleIdentifier;
-
 public class RuleOperatorPanel extends AbstractGuiComponent<Operator>{
 
 	private static final long serialVersionUID = -4782440727633760278L;
@@ -52,6 +55,14 @@ public class RuleOperatorPanel extends AbstractGuiComponent<Operator>{
 
 	private VisualRifEditor visualRifEditor;
 
+	/**
+	 * <p>Constructor for RuleOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator} object.
+	 * @param movable a boolean.
+	 */
 	public RuleOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw,
 			final RuleOperator operator, final boolean movable) {
 		super(parent, gw, operator, movable);
@@ -127,31 +138,58 @@ public class RuleOperatorPanel extends AbstractGuiComponent<Operator>{
 	});
 }
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean arg0, final Object arg1) {
 		return false;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator} object.
+	 */
 	public RuleOperator getRuleOperator() {
 		return this.ruleOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleOperator</code>.</p>
+	 *
+	 * @param ruleOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator} object.
+	 */
 	public void setRuleOperator(final RuleOperator ruleOperator) {
 		this.ruleOperator = ruleOperator;
 	}
 
+	/**
+	 * <p>getRuleName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRuleName() {
 		return this.ruleOperator.getRuleName();
 	}
 
+	/**
+	 * <p>setRuleName.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void setRuleName(final String ruleName) {
 		this.ruleOperator.setRuleName(ruleName);
 	}
 
+	/**
+	 * <p>getRuleLabelName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRuleLabelName() {
 		return this.ruleOperator.getRuleLabelName();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize(){
 		this.setMinimumSize(this.label.getSize());
@@ -159,6 +197,11 @@ public class RuleOperatorPanel extends AbstractGuiComponent<Operator>{
 		this.revalidate();
 	}
 
+	/**
+	 * <p>setRuleLabelName.</p>
+	 *
+	 * @param ruleLabelName a {@link java.lang.String} object.
+	 */
 	public void setRuleLabelName(final String ruleLabelName) {
 		this.ruleOperator.setRuleLabelName(ruleLabelName);
 		this.remove(this.label);
@@ -169,14 +212,29 @@ public class RuleOperatorPanel extends AbstractGuiComponent<Operator>{
 
 	}
 
+	/**
+	 * <p>setSerializedOperator.</p>
+	 *
+	 * @param serializedOperator a {@link java.lang.StringBuffer} object.
+	 */
 	public void setSerializedOperator(final StringBuffer serializedOperator){
 		this.ruleOperator.setSerializedOperator(serializedOperator);
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}

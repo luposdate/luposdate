@@ -33,6 +33,9 @@ import org.json.JSONObject;
 
 /**
  * Implements the formatter for the root operator
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RootFormatter implements OperatorFormatter {
 
@@ -58,6 +61,7 @@ public class RootFormatter implements OperatorFormatter {
 		 *
 		 * @param dataset
 		 *            the dataset
+		 * @param operatorCreator a {@link lupos.distributed.operator.format.operatorcreator.IOperatorCreator} object.
 		 */
 		public RootFormatter(final Dataset dataset, final IOperatorCreator operatorCreator) {
 			this.dataset = dataset;
@@ -77,6 +81,7 @@ public class RootFormatter implements OperatorFormatter {
 		 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
 		 * .operators.BasicOperator, int)
 		 */
+		/** {@inheritDoc} */
 		@Override
 		public JSONObject serialize(final BasicOperator operator, final int node_id)
 				throws JSONException {
@@ -96,6 +101,7 @@ public class RootFormatter implements OperatorFormatter {
 		 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.
 		 * JSONObject)
 		 */
+		/** {@inheritDoc} */
 		@Override
 		public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
 			return this.operatorCreator.createRoot(this.dataset);

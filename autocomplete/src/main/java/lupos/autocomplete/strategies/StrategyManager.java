@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies;
 
@@ -56,7 +60,6 @@ import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.javacc.RIFParser;
 import lupos.gui.anotherSyntaxHighlighting.javacc.SPARQLParser;
 import lupos.gui.anotherSyntaxHighlighting.javacc.TurtleParser;
-
 public class StrategyManager {
 
 	//Standardmaessig ist hybride Strategie 5 eingestellt ( diof + ps = true)
@@ -160,6 +163,12 @@ public class StrategyManager {
 	protected final DocumentInputAndOrderByFrequencyStrategy diofStrategy;
 	protected final ParserIdentificationStrategy psStrategy;
 
+	/**
+	 * <p>Constructor for StrategyManager.</p>
+	 *
+	 * @param language a {@link lupos.autocomplete.strategies.StrategyManager.LANGUAGE} object.
+	 * @param d a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocument} object.
+	 */
 	public StrategyManager(final LANGUAGE language, final LuposDocument d) {
 		this.document = d;
 		this.reader = new LuposDocumentReader(this.document);
@@ -174,6 +183,14 @@ public class StrategyManager {
 	 * Funktion zum setzen der Strategie booleans,
 	 * wird aufgerufen in GuiWindow
 	 */
+	/**
+	 * <p>setStrategyChoices.</p>
+	 *
+	 * @param aos a boolean.
+	 * @param diao a boolean.
+	 * @param diof a boolean.
+	 * @param ps a boolean.
+	 */
 	public void setStrategyChoices(final boolean aos, final boolean diao, final boolean diof, final boolean ps){
 		this.aos = aos;
 		this.diao = diao;
@@ -184,6 +201,13 @@ public class StrategyManager {
 	/*
 	 * Hier werden die Elemente der einzelnen Strategien zusammengefuehrt
 	 * und nach gewichtungen sortiert
+	 */
+	/**
+	 * <p>JoinStrategies.</p>
+	 *
+	 * @param textDocument a {@link java.lang.String} object.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.util.ArrayList} object.
 	 */
 	public ArrayList<Entry<Item, int[]>> JoinStrategies(final String textDocument, final int cursorPosition){
 		List<Entry<Item, Integer>> returnList = new ArrayList<Entry<Item,Integer>>();
@@ -271,6 +295,13 @@ public class StrategyManager {
 	/*
 	 * fuegt die Elemente der Vorschlagsliste in ein fuer die JList lesbares Objekt ein
 	 */
+	/**
+	 * <p>listToJList.</p>
+	 *
+	 * @param textDocument a {@link java.lang.String} object.
+	 * @param cursorPosition a int.
+	 * @return a {@link javax.swing.DefaultListModel} object.
+	 */
 	public DefaultListModel listToJList( final String textDocument, final int cursorPosition){
 		final List<Entry<Item, int[]>> returnList = this.JoinStrategies(textDocument, cursorPosition);
 		final DefaultListModel jl = new DefaultListModel();
@@ -285,6 +316,13 @@ public class StrategyManager {
 
 	/*
 	 * gibt fuer die Analyse Klasse die Werte als Liste zurueck
+	 */
+	/**
+	 * <p>listForAnalyse.</p>
+	 *
+	 * @param textDocument a {@link java.lang.String} object.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.util.List} object.
 	 */
 	public List<String> listForAnalyse(final String textDocument, final int cursorPosition){
 		final List<Entry<Item, int[]>> returnList = this.JoinStrategies(textDocument, cursorPosition);

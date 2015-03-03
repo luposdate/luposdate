@@ -34,9 +34,13 @@ import lupos.geo.serializer.GeoSPARQLWktSerializer;
 /**
  * Richard Mietz
  * Date: 20.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeofUnion implements ExternalFunction
 {
+    /** {@inheritDoc} */
     @Override
     public Object evaluate(Object[] args) throws TypeErrorException
     {
@@ -53,6 +57,9 @@ public class GeofUnion implements ExternalFunction
         }
     }
 
+    /**
+     * <p>register.</p>
+     */
     public static void register(){
         EvaluationVisitorImplementation.registerExternalFunction(LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException("<" + GeoHelper.geoSPARQLFunctionUri + "union>"), new GeofUnion());
     }

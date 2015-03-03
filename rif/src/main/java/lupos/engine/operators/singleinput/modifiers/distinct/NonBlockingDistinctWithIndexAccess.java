@@ -45,28 +45,53 @@ import lupos.misc.util.ImmutableIterator;
  * If a bindings is retrieved from within the cycle (ID>0):
  * This class first looks into a given index if a bindings is generated from the mentioned index scan operator.
  * If yes, then it does not pass this operator, otherwise it is checked whether or not it has already passed by using the functionality of the NonBlockingDistinct operator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDistinct {
 
 	protected BasicIndexScan basicIndex;
 
+	/**
+	 * <p>Constructor for NonBlockingDistinctWithIndexAccess.</p>
+	 *
+	 * @param setOfBindings a {@link java.util.Set} object.
+	 * @param basicIndex a {@link lupos.engine.operators.index.BasicIndexScan} object.
+	 */
 	public NonBlockingDistinctWithIndexAccess(final Set<Bindings> setOfBindings, final BasicIndexScan basicIndex) {
 		super(setOfBindings);
 		this.basicIndex = basicIndex;
 	}
 
+	/**
+	 * <p>Constructor for NonBlockingDistinctWithIndexAccess.</p>
+	 *
+	 * @param setOfBindings a {@link java.util.Set} object.
+	 */
 	public NonBlockingDistinctWithIndexAccess(final Set<Bindings> setOfBindings) {
 		super(setOfBindings);
 	}
 
+	/**
+	 * <p>Getter for the field <code>basicIndex</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.BasicIndexScan} object.
+	 */
 	public BasicIndexScan getBasicIndex() {
 		return this.basicIndex;
 	}
 
+	/**
+	 * <p>Setter for the field <code>basicIndex</code>.</p>
+	 *
+	 * @param basicIndex a {@link lupos.engine.operators.index.BasicIndexScan} object.
+	 */
 	public void setBasicIndex(final BasicIndexScan basicIndex) {
 		this.basicIndex = basicIndex;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult _bindings, final int operandID) {
 		if(operandID==0){
@@ -132,6 +157,12 @@ public abstract class NonBlockingDistinctWithIndexAccess extends NonBlockingDist
 		}
 	}
 
+	/**
+	 * <p>isGeneratedFromIndexScanOperator.</p>
+	 *
+	 * @param bindingsToCheck a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	protected boolean isGeneratedFromIndexScanOperator(final Bindings bindingsToCheck){
 		for(final TriplePattern tp: this.basicIndex.getTriplePattern()){
 			final Literal[] literals = new Literal[3];

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.util;
 
@@ -33,13 +37,20 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.sparql1_1.ParseException;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
-
 public class SortContainer {
 	private boolean desc = false;
 	private String sortString = "";
 	private Prefix prefix;
 	private RetrieveDataWithSolutionModifier operator;
 
+	/**
+	 * <p>Constructor for SortContainer.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param desc a boolean.
+	 * @param sortString a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public SortContainer(Prefix prefix, boolean desc, String sortString) throws ModificationException {
 		this.prefix = prefix;
 		this.desc = desc;
@@ -47,18 +58,39 @@ public class SortContainer {
 		this.setSortString(sortString);
 	}
 
+	/**
+	 * <p>isDesc.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isDesc() {
 		return this.desc;
 	}
 
+	/**
+	 * <p>Setter for the field <code>desc</code>.</p>
+	 *
+	 * @param desc a boolean.
+	 */
 	public void setDesc(boolean desc) {
 		this.desc = desc;
 	}
 
+	/**
+	 * <p>Getter for the field <code>sortString</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSortString() {
 		return this.sortString;
 	}
 
+	/**
+	 * <p>Setter for the field <code>sortString</code>.</p>
+	 *
+	 * @param sortString a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void setSortString(String sortString) throws ModificationException {
 		if(!sortString.equals("")) {
 			try {
@@ -72,6 +104,11 @@ public class SortContainer {
 		}
 	}
 
+	/**
+	 * <p>serializeSortContainer.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeSortContainer() {
 		StringBuffer ret = new StringBuffer();
 
@@ -87,10 +124,20 @@ public class SortContainer {
 		return ret;
 	}
 
+	/**
+	 * <p>Setter for the field <code>operator</code>.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.operators.RetrieveDataWithSolutionModifier} object.
+	 */
 	public void setOperator(RetrieveDataWithSolutionModifier operator) {
 		this.operator = operator;
 	}
 
+	/**
+	 * <p>getUsedVariables.</p>
+	 *
+	 * @param variables a {@link java.util.HashSet} object.
+	 */
 	public void getUsedVariables(HashSet<Variable> variables) {
 		try {
 			SimpleNode node = SPARQL1_1Parser.parseOrderCondition(this.sortString, this.prefix.getPrefixNames());

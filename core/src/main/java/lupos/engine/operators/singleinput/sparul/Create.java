@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sparul;
 
@@ -31,7 +35,6 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
 public class Create extends SingleInputOperator {
 
 	protected final boolean silent;
@@ -39,19 +42,36 @@ public class Create extends SingleInputOperator {
 	protected URILiteral uri;
 	protected final Dataset dataset;
 	
+	/**
+	 * <p>Constructor for Create.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param isSilent a boolean.
+	 */
 	public Create(Dataset dataset, final boolean isSilent){
 		this.dataset=dataset;
 		this.silent=isSilent;
 	}
 	
+	/**
+	 * <p>setURI.</p>
+	 *
+	 * @param uri a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void setURI(URILiteral uri){
 		this.uri=uri;
 	}
 	
+	/**
+	 * <p>getURI.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getURI(){
 		return uri;
 	}
 
+	/** {@inheritDoc} */
 	public QueryResult process(QueryResult bindings, final int operandID) {
 		Indices indices = dataset.getNamedGraphIndices(uri);
 		if (indices != null){

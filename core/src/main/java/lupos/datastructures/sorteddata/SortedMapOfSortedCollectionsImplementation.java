@@ -36,7 +36,7 @@ import java.util.SortedMap;
  * the values of the collections which are used as values of the map.
  * The map and the collection are ordered according to the
  * {@linkplain Comparable natural ordering} of its keys, or by a
- * {@link Comparator} typically provided at sorted map and sorted collection
+ * {@link java.util.Comparator} typically provided at sorted map and sorted collection
  * creation time, respectively.
  *
  * @author Sebastian Ebers
@@ -44,7 +44,7 @@ import java.util.SortedMap;
  *            the type of keys maintained by this map
  * @param <V>
  *            the type of mapped values
- *
+ * @version $Id: $Id
  */
 public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collection<V>>
 		extends SortedMapOfCollectionsImplementation<K, V, CV> {
@@ -70,19 +70,11 @@ public class SortedMapOfSortedCollectionsImplementation<K, V, CV extends Collect
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Creates a new instance of the collection used as value of the map. Note
 	 * that the comparator will be set if there was one explicitly provided
 	 * during the instantiation of this class.
-	 *
-	 * @return a newly allocated instance of the class represented by this
-	 *         object.
-	 * @throws IllegalAccessException
-	 *             if the class or its nullary constructor is not accessible.
-	 * @throws InstantiationException
-	 *             if this <code>Class</code> represents an abstract class, an
-	 *             interface, an array class, a primitive type, or void; or if
-	 *             the class has no nullary constructor; or if the instantiation
-	 *             fails for some other reason.
 	 */
 	@Override
 	protected CV getNewCollection() throws InstantiationException,

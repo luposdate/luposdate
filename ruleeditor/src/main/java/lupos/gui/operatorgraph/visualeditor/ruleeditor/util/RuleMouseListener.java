@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -30,11 +34,16 @@ import javax.swing.JComponent;
 
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
 public class RuleMouseListener implements MouseListener {
 	private AbstractGuiComponent<Operator> parent;
 	private MouseListener[] listeners;
 
+	/**
+	 * <p>Constructor for RuleMouseListener.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent} object.
+	 * @param comp a {@link javax.swing.JComponent} object.
+	 */
 	public RuleMouseListener(AbstractGuiComponent<Operator> parent, JComponent comp) {
 		this.parent = parent;
 
@@ -45,6 +54,7 @@ public class RuleMouseListener implements MouseListener {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseClicked(MouseEvent me) {
 		boolean ret = this.parent.handleConnectionMode();
 
@@ -55,6 +65,7 @@ public class RuleMouseListener implements MouseListener {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseEntered(MouseEvent e) {
 		if(!this.parent.inConnectionMode()) {
 			for(MouseListener l : this.listeners) {
@@ -63,6 +74,7 @@ public class RuleMouseListener implements MouseListener {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseExited(MouseEvent e) {
 		if(!this.parent.inConnectionMode()) {
 			for(MouseListener l : this.listeners) {
@@ -71,6 +83,7 @@ public class RuleMouseListener implements MouseListener {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mousePressed(MouseEvent e) {
 		if(!this.parent.inConnectionMode()) {
 			for(MouseListener l : this.listeners) {
@@ -79,6 +92,7 @@ public class RuleMouseListener implements MouseListener {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseReleased(MouseEvent e) {
 		if(!this.parent.inConnectionMode()) {
 			for(MouseListener l : this.listeners) {

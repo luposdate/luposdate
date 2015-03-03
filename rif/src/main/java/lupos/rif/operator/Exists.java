@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -31,7 +35,6 @@ import com.google.common.collect.Maps;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
 import lupos.engine.operators.multiinput.join.Join;
-
 public class Exists extends Join {
 	final int operantIdOfMBR;
 	private STATUS status = STATUS.WAIT;
@@ -41,20 +44,30 @@ public class Exists extends Join {
 		WAIT, CLOSED, OPEN
 	}
 
+	/**
+	 * <p>Constructor for Exists.</p>
+	 */
 	public Exists() {
 		this(1);
 	}
 
+	/**
+	 * <p>Constructor for Exists.</p>
+	 *
+	 * @param operant a int.
+	 */
 	public Exists(final int operant) {
 		super();
 		operantIdOfMBR = operant;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(QueryResult queryResult, int operandID) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;

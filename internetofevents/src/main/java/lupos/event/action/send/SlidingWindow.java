@@ -45,7 +45,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import lupos.event.action.send.Send;
 import lupos.event.util.data.Handler;
 
 import com.sun.awt.AWTUtilities;
@@ -57,6 +56,9 @@ import com.sun.awt.AWTUtilities;
  * over it. Transparency is reduced while the mouse is hovering over it,
  * allowing to read it more easily on demand while being less disturbing
  * otherwise.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("restriction")
 public class SlidingWindow extends JWindow implements ActionListener,
@@ -104,13 +106,13 @@ public class SlidingWindow extends JWindow implements ActionListener,
 
 	// start/end height for sliding animation (reset internally based on content
 	// size and max window size)
-	private int startHeight = 1;
+	private final int startHeight = 1;
 	private int endHeight;
 
 	// animation parameters
-	private Timer timer;
-	private int slideStep = 1;
-	private int slideTime = 1000; // time (in ms) it takes to fully slide out/in
+	private final Timer timer;
+	private final int slideStep = 1;
+	private final int slideTime = 1000; // time (in ms) it takes to fully slide out/in
 	private int slideDelay; // (dynamically computed) timer delay to ensure the
 							// slideTime at the current text size
 	private int displayTime = 2000;
@@ -121,15 +123,15 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	private int posOffset = 100;
 
 	// textcolor is ignored for html/rtf contents
-	private Color backgroundcolor = Color.YELLOW;
-	private Color textcolor = Color.DARK_GRAY;
+	private final Color backgroundcolor = Color.YELLOW;
+	private final Color textcolor = Color.DARK_GRAY;
 
 	// content type
 	ContentType contentType = ContentType.HTML;
 
 	// display components
-	private JEditorPane textPane;
-	private JScrollPane scrollPane;
+	private final JEditorPane textPane;
+	private final JScrollPane scrollPane;
 
 	// current states
 	private AnimState state = AnimState.IDLE;
@@ -145,7 +147,7 @@ public class SlidingWindow extends JWindow implements ActionListener,
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param maxW
 	 *            Maximum window width.
 	 * @param maxH
@@ -155,8 +157,8 @@ public class SlidingWindow extends JWindow implements ActionListener,
 		super();
 
 		// we want a toplevel notification window
-		setAlwaysOnTop(true);
-		getContentPane().setBackground(this.backgroundcolor);
+		this.setAlwaysOnTop(true);
+		this.getContentPane().setBackground(this.backgroundcolor);
 
 		// ... with a semi-transparent background
 		AWTUtilities.setWindowOpacity(this, normalTransparecy);
@@ -173,13 +175,13 @@ public class SlidingWindow extends JWindow implements ActionListener,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		setLayout(new GridLayout(1, 1));
-		add(this.scrollPane);
+		this.setLayout(new GridLayout(1, 1));
+		this.add(this.scrollPane);
 
 		this.textPane.addMouseListener(this);
 
 		// determine the screen dimensions
-		Rectangle screenRect = GraphicsEnvironment
+		final Rectangle screenRect = GraphicsEnvironment
 				.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
 		// set size constraints
@@ -195,21 +197,21 @@ public class SlidingWindow extends JWindow implements ActionListener,
 			this.maxHeight = (int) (screenRect.getHeight() / 2);
 		}
 
-		setSize(this.maxWidth, 1);
+		this.setSize(this.maxWidth, 1);
 
 		// initialize animation timer
 		this.timer = new Timer(100, this);
 		this.timer.setInitialDelay(0);
 
 		// hide until exec() is called
-		setVisible(false);
+		this.setVisible(false);
 	}
 
 	/**
 	 * Convert a {@link ContentType} value to a content type string which can be
 	 * handed to {@link JEditorPane#setContentType(String)}. Default (fallback)
 	 * if contentType is not HTML or RTF: "text/plain".
-	 * 
+	 *
 	 * @param contentType_param
 	 *            {@link ContentType} to be converted.
 	 * @return The string representing the given {@link ContentType}.
@@ -231,11 +233,11 @@ public class SlidingWindow extends JWindow implements ActionListener,
 
 	/**
 	 * Change position settings.
-	 * 
+	 *
 	 * @param border
-	 *            The {@link ScreenBorder} to slide in from.
+	 *            The {@link lupos.event.action.send.SlidingWindow.ScreenBorder} to slide in from.
 	 * @param basePos
-	 *            The basic {@link BorderPosition} on the border.
+	 *            The basic {@link lupos.event.action.send.SlidingWindow.BorderPosition} on the border.
 	 * @param offset
 	 *            A manual offset from the basePos (in px).
 	 */
@@ -249,9 +251,9 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	/**
 	 * Set the content type, i.e. the way a content string is interpreted and
 	 * displayed.
-	 * 
+	 *
 	 * @param type
-	 *            {@link ContentType} to be set.
+	 *            {@link lupos.event.action.send.SlidingWindow.ContentType} to be set.
 	 */
 	public void setContentType(final ContentType type) {
 		this.contentType = type;
@@ -260,7 +262,7 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	/**
 	 * Set the display time, i.e. the amount of time between sliding in and
 	 * sliding out again.
-	 * 
+	 *
 	 * @param ms
 	 *            Number of milliseconds
 	 */
@@ -271,34 +273,40 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	/**
 	 * Slide out, displaying the given content based on the currently set
 	 * content type, display time and position parameters.
-	 * 
-	 * @param content
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @see #setPosition(ScreenBorder, BorderPosition, int)
+	 * @see #setContentType(ContentType)
+	 * @see #setDisplayTime(int)
+	 * @see #setPosition(ScreenBorder, BorderPosition, int)
+	 * @see #setContentType(ContentType)
+	 * @see #setDisplayTime(int)
 	 * @see #setPosition(ScreenBorder, BorderPosition, int)
 	 * @see #setContentType(ContentType)
 	 * @see #setDisplayTime(int)
 	 */
 	public void exec(final String content) {
-		exec(content, this.displayTime, this.contentType);
+		this.exec(content, this.displayTime, this.contentType);
 	}
 
 	/**
 	 * Slide out, display the given content according to the given content type
 	 * for the specified time (in ms), then sliding in again. Global position
 	 * parameters are used.
-	 * 
+	 *
 	 * @param content
 	 *            Content to be displayed according to contentType.
 	 * @param time
 	 *            Time (in ms) to display the text (time between sliding out and
 	 *            in again).
 	 * @param contentType_param
-	 *            {@link ContentType} telling how the content is to be
+	 *            {@link lupos.event.action.send.SlidingWindow.ContentType} telling how the content is to be
 	 *            interpreted and displayed.
 	 * @see #setPosition(ScreenBorder, BorderPosition, int)
 	 */
 	public void exec(final String content, final int time,
 			final ContentType contentType_param) {
-		exec(content, time, contentTypeToStr(contentType_param));
+		this.exec(content, time, this.contentTypeToStr(contentType_param));
 	}
 
 	/**
@@ -306,26 +314,26 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	 * the given content type for the specified time (int ms), then sliding in
 	 * again. Overriding all global settings (content type, display time,
 	 * position paremters).
-	 * 
+	 *
 	 * @param content
 	 *            Content to be displayed according to contentType.
 	 * @param time
 	 *            Time (in ms) to display the text (time between sliding out and
 	 *            in again).
 	 * @param contentType_param
-	 *            {@link ContentType}, specifying how the content is to be
+	 *            {@link lupos.event.action.send.SlidingWindow.ContentType}, specifying how the content is to be
 	 *            interpreted and displayed.
 	 * @param fromBorder
-	 *            {@link ScreenBorder} from which to slide in.
+	 *            {@link lupos.event.action.send.SlidingWindow.ScreenBorder} from which to slide in.
 	 * @param basePos
-	 *            {@link BorderPosition} on fromBorder.
+	 *            {@link lupos.event.action.send.SlidingWindow.BorderPosition} on fromBorder.
 	 * @param positionOffset
 	 *            Manual offset from basePos (in px).
 	 */
 	public void exec(final String content, final int time,
 			final ContentType contentType_param, final ScreenBorder fromBorder,
 			final BorderPosition basePos, final int positionOffset) {
-		exec(content, time, contentTypeToStr(contentType_param), fromBorder, basePos,
+		this.exec(content, time, this.contentTypeToStr(contentType_param), fromBorder, basePos,
 				positionOffset);
 	}
 
@@ -334,7 +342,7 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	 * the given content type for the specified time (int ms), then sliding in
 	 * again. Overriding all global settings (content type, display time,
 	 * position paremters).
-	 * 
+	 *
 	 * @param content
 	 *            Content to be displayed according to contentType.
 	 * @param time
@@ -344,24 +352,24 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	 *            Content type (string) to be used. Currently supported:
 	 *            "text/plain", "text/html", "text/rtf".
 	 * @param fromBorder
-	 *            {@link ScreenBorder} from which to slide in.
+	 *            {@link lupos.event.action.send.SlidingWindow.ScreenBorder} from which to slide in.
 	 * @param basePos
-	 *            {@link BorderPosition} on fromBorder.
+	 *            {@link lupos.event.action.send.SlidingWindow.BorderPosition} on fromBorder.
 	 * @param positionOffset
 	 *            Manual offset from basePos (in px).
 	 */
 	public void exec(final String content, final int time,
 			final String contentType_param, final ScreenBorder fromBorder,
 			final BorderPosition basePos, final int positionOffset) {
-		setPosition(fromBorder, basePos, positionOffset);
-		exec(content, time, contentType_param);
+		this.setPosition(fromBorder, basePos, positionOffset);
+		this.exec(content, time, contentType_param);
 	}
 
 	/**
 	 * Slide out, display the given content according to the given content type
 	 * for the specified time (in ms), then sliding in again. Global position
 	 * parameters are used.
-	 * 
+	 *
 	 * @param content
 	 *            Content to be displayed.
 	 * @param time
@@ -375,11 +383,12 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	public void exec(final String content, final int time,
 			final String contentType_param) {
 		// abort if an animation is already running
-		if (this.timer.isRunning())
+		if (this.timer.isRunning()) {
 			return;
+		}
 
 		// unhide if hidden
-		setVisible(true);
+		this.setVisible(true);
 
 		// textPane.setText(text);
 		this.displayTime = time;
@@ -388,34 +397,34 @@ public class SlidingWindow extends JWindow implements ActionListener,
 		this.textPane.setContentType(contentType_param);
 
 		// calculate size constraints
-		Rectangle screenRect = GraphicsEnvironment
+		final Rectangle screenRect = GraphicsEnvironment
 				.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
 		// initial size to leave as much vertical space as possible for the
 		// content
-		setSize(this.maxWidth, Short.MAX_VALUE);
+		this.setSize(this.maxWidth, Short.MAX_VALUE);
 
 		// set the content so we can now obtain the text pane's preferred
 		// size
 		this.textPane.setText(content);
 
 		// set preferred width, clamping to maxWidth
-		int newWidth = (int) Math.min(
+		final int newWidth = (int) Math.min(
 				this.textPane.getPreferredSize().getWidth() + 10, this.maxWidth);
 
-		setSize(newWidth, 1);
+		this.setSize(newWidth, 1);
 
 		// compute final height, clamping to maxHeight
 		this.endHeight = Math.min(
 				(int) this.textPane.getPreferredSize().getHeight() + 10, this.maxHeight);
 
-		setSize(getWidth(), this.startHeight);
+		this.setSize(this.getWidth(), this.startHeight);
 
 		// determine origin position by origin border
 		int xPos = 0;
 		int yPos = 0;
 
-		int margin = 3;
+		final int margin = 3;
 		switch (this.originBorder) {
 		case Top:
 			yPos = (int) screenRect.getY();
@@ -432,16 +441,16 @@ public class SlidingWindow extends JWindow implements ActionListener,
 			break;
 
 		case Middle:
-			xPos = (int) ((screenRect.getX() + screenRect.getWidth() - getWidth()) * 0.5f)
+			xPos = (int) ((screenRect.getX() + screenRect.getWidth() - this.getWidth()) * 0.5f)
 					+ this.posOffset;
 			break;
 
 		case Right:
 			xPos = (int) (screenRect.getX() + screenRect.getWidth()
-					- getWidth() - margin)
+					- this.getWidth() - margin)
 					+ this.posOffset;
 		}
-		setLocation(xPos, yPos);
+		this.setLocation(xPos, yPos);
 
 		// start animating
 		this.state = AnimState.SLIDING_OUT;
@@ -452,9 +461,10 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	}
 
 	// simple state machine for animation controlling
+	/** {@inheritDoc} */
 	@SuppressWarnings("fallthrough")
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		switch (this.state) {
 		case IDLE:
 			break;
@@ -462,7 +472,7 @@ public class SlidingWindow extends JWindow implements ActionListener,
 		case SLIDING_OUT: {
 			// when the final height is reached, switch to DISPLAYING
 			// mode and show scrollbars if needed
-			if (getHeight() >= this.endHeight) {
+			if (this.getHeight() >= this.endHeight) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -483,10 +493,10 @@ public class SlidingWindow extends JWindow implements ActionListener,
 				case Bottom:
 					// if coming from the bottom, we have to move the window,
 					// too
-					this.setLocation(getX(), getY() - this.slideStep);
+					this.setLocation(this.getX(), this.getY() - this.slideStep);
 
 				case Top:
-					this.setSize(getWidth(), getHeight() + this.slideStep);
+					this.setSize(this.getWidth(), this.getHeight() + this.slideStep);
 					break;
 				}
 			}
@@ -523,13 +533,13 @@ public class SlidingWindow extends JWindow implements ActionListener,
 
 				// if the minimal height (usually 1px) is reached, stop
 				// the timer and hide the window completely
-				if (getHeight() <= this.startHeight) {
+				if (this.getHeight() <= this.startHeight) {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
 							SlidingWindow.this.timer.stop();
 							SlidingWindow.this.state = AnimState.IDLE;
-							setVisible(false);
+							SlidingWindow.this.setVisible(false);
 						}
 					});
 				} else {
@@ -538,10 +548,10 @@ public class SlidingWindow extends JWindow implements ActionListener,
 					case Bottom:
 						// if coming from the bottom, we have to move the
 						// window, too
-						this.setLocation(getX(), getY() + this.slideStep);
+						this.setLocation(this.getX(), this.getY() + this.slideStep);
 
 					case Top:
-						this.setSize(getWidth(), getHeight() - this.slideStep);
+						this.setSize(this.getWidth(), this.getHeight() - this.slideStep);
 						break;
 					}
 				}
@@ -554,42 +564,48 @@ public class SlidingWindow extends JWindow implements ActionListener,
 	// ---------------------
 	// MouseListener methods
 	// ---------------------
+	/** {@inheritDoc} */
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(final MouseEvent e) {
 		// ignore...
 	}
 
 	// watch for mouseEntered/mosueExited events, so we know when the mouse is
 	// hovering over the window and adjust its transparency accordingly
+	/** {@inheritDoc} */
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(final MouseEvent e) {
 		this.mouseHovering = true;
 
 		// ... with a still semi-transparent, but more opaque background
 		AWTUtilities.setWindowOpacity(this, hoveringTransparecy);
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(final MouseEvent e) {
 		this.mouseHovering = false;
 
 		// ... with a semi-transparent background, a little less opaque
 		AWTUtilities.setWindowOpacity(this, normalTransparecy);
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(final MouseEvent e) {
 		// ignore
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(final MouseEvent e) {
 		// ignore
 	}
 
 	// ------------
 	// Send methods
 	// ------------
+	/** {@inheritDoc} */
 	@Override
 	public void init() {
 		// show an option pane to let the user choose the origin border,
@@ -598,16 +614,16 @@ public class SlidingWindow extends JWindow implements ActionListener,
 		final String[] strPositions = { "Left", "Middle", "Right" };
 		final String[] strContentTypes = { "Plain Text", "HTML", "RTF" };
 
-		JComboBox cbBorder = new JComboBox(strBorders);
-		JComboBox cbPosition = new JComboBox(strPositions);
-		JSpinner spOffset = new JSpinner();
+		final JComboBox cbBorder = new JComboBox(strBorders);
+		final JComboBox cbPosition = new JComboBox(strPositions);
+		final JSpinner spOffset = new JSpinner();
 
-		JComboBox cbContentType = new JComboBox(strContentTypes);
+		final JComboBox cbContentType = new JComboBox(strContentTypes);
 
-		JSpinner spDisplayTime = new JSpinner(new SpinnerNumberModel(2500, 100,
+		final JSpinner spDisplayTime = new JSpinner(new SpinnerNumberModel(2500, 100,
 				Integer.MAX_VALUE, 100));
 
-		JPanel mainPanel = new JPanel();
+		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(0, 2));
 
 		mainPanel.add(new JLabel("Origin Border:"));
@@ -651,7 +667,7 @@ public class SlidingWindow extends JWindow implements ActionListener,
 			pos = BorderPosition.Right;
 			break;
 		}
-		int offset = (Integer) spOffset.getValue();
+		final int offset = (Integer) spOffset.getValue();
 
 		ContentType type = ContentType.PLAIN_TEXT;
 		switch (cbContentType.getSelectedIndex()) {
@@ -663,16 +679,17 @@ public class SlidingWindow extends JWindow implements ActionListener,
 			break;
 		}
 
-		int time = (Integer) spDisplayTime.getValue();
+		final int time = (Integer) spDisplayTime.getValue();
 
 		// apply settings
-		setPosition(border, pos, offset);
-		setContentType(type);
-		setDisplayTime(time);
+		this.setPosition(border, pos, offset);
+		this.setContentType(type);
+		this.setDisplayTime(time);
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void sendContent(String content) {
-		exec(content);
+	public void sendContent(final String content) {
+		this.exec(content);
 	}
 }

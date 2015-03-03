@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -40,7 +44,6 @@ import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.util.Connection;
 import lupos.gui.operatorgraph.visualeditor.util.DummyItem;
 import lupos.gui.operatorgraph.util.VEImageIcon;
-
 public abstract class VisualGraph<T> extends OperatorGraph implements MouseListener, MouseMotionListener {
 	/**
 	 * The serial version UID.
@@ -58,12 +61,20 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	public ImageIcon delIcon;
 	public ImageIcon resizeIcon;
 
+	/**
+	 * <p>Constructor for VisualGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	protected VisualGraph(final VisualEditor<T> visualEditor) {
 		super();
 
 		this.visualEditor = visualEditor;
 	}
 
+	/**
+	 * <p>construct.</p>
+	 */
 	protected void construct() {
 		this.addIcon = VEImageIcon.getPlusIcon((int) (this.FONTSIZE));
 		this.delIcon = VEImageIcon.getMinusIcon((int) (this.FONTSIZE));
@@ -79,6 +90,10 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	/**
 	 * Adds the chosen operator with an empty string as content in it to the
 	 * QueryGraphCanvas. Returns the new added Operator.
+	 *
+	 * @param x a int.
+	 * @param y a int.
+	 * @return a T object.
 	 */
 	public T addOperator(final int x, final int y) {
 		return this.addOperator(x, y, new DummyItem());
@@ -87,6 +102,11 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	/**
 	 * Adds the chosen operator with the given content in it to the
 	 * QueryGraphCanvas. Returns the new added Operator.
+	 *
+	 * @param x a int.
+	 * @param y a int.
+	 * @param content a {@link lupos.datastructures.items.Item} object.
+	 * @return a T object.
 	 */
 	public T addOperator(final int x, final int y, final Item content) {
 		this.visualEditor.isInInsertMode = false; // leave insertMode
@@ -131,6 +151,13 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		}
 	}
 
+	/**
+	 * <p>addOperator.</p>
+	 *
+	 * @param x a int.
+	 * @param y a int.
+	 * @param newOp a T object.
+	 */
 	public void addOperator(final int x, final int y, final T newOp) {
 		this.visualEditor.isInInsertMode = false; // leave insertMode
 
@@ -167,6 +194,13 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	}
 
 
+	/**
+	 * <p>validateGraph.</p>
+	 *
+	 * @param showErrors a boolean.
+	 * @param data a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean validateGraph(final boolean showErrors, final Object data) {
 		for(final GraphWrapper gw : this.rootList) {
 			if(((GraphWrapperEditable) gw).validateObject(showErrors, data) == false) {
@@ -177,10 +211,21 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		return true;
 	}
 
+	/**
+	 * <p>serializeSuperGraph.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String serializeSuperGraph() {
 		return super.serializeGraph();
 	}
 
+	/**
+	 * <p>getFreeVariable.</p>
+	 *
+	 * @param variableName a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getFreeVariable(final String variableName) {
 		final StringBuffer variable = new StringBuffer(variableName);
 
@@ -202,10 +247,10 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This internal method resets some displacement variables according to the
 	 * given zoomFactor.
-	 * 
-	 * @param zoomFactor the zoom factor
 	 */
 	@Override
 	protected void setZoomFactors(final double zoomFactor) {
@@ -216,11 +261,15 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		super.setZoomFactors(zoomFactor);
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		// do not need to handle this here
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseMoved(final MouseEvent me) {
 		// get connection mode...
@@ -238,6 +287,7 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseClicked(final MouseEvent me) {
 		if(this.visualEditor.isInInsertMode) { // deal with insert mode...
@@ -249,34 +299,72 @@ public abstract class VisualGraph<T> extends OperatorGraph implements MouseListe
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseDragged(final MouseEvent me) {
 		// need only e.g. mouseClicked to listen
 	}
+	/** {@inheritDoc} */
 	@Override
 	public void mouseEntered(final MouseEvent me) {
 		// need only e.g. mouseClicked to listen		
 	}
+	/** {@inheritDoc} */
 	@Override
 	public void mouseExited(final MouseEvent me) {
 		// need only e.g. mouseClicked to listen		
 	}
+	/** {@inheritDoc} */
 	@Override
 	public void mousePressed(final MouseEvent me) {
 		// need only e.g. mouseClicked to listen		
 	}
+	/** {@inheritDoc} */
 	@Override
 	public void mouseReleased(final MouseEvent me) {
 		// need only e.g. mouseClicked to listen		
 	}
 
 
+	/**
+	 * <p>validateAddOperator.</p>
+	 *
+	 * @param x a int.
+	 * @param y a int.
+	 * @param newClassName a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	protected abstract boolean validateAddOperator(int x, int y, String newClassName);
+	/**
+	 * <p>handleAddOperator.</p>
+	 *
+	 * @param newOp a T object.
+	 */
 	protected abstract void handleAddOperator(T newOp);
+	/** {@inheritDoc} */
 	@Override
 	public abstract String serializeGraph();
 
+	/**
+	 * <p>createGraphWrapper.</p>
+	 *
+	 * @param op a T object.
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable} object.
+	 */
 	public abstract GraphWrapperEditable createGraphWrapper(T op);
+	/**
+	 * <p>createDummyOperator.</p>
+	 *
+	 * @return a T object.
+	 */
 	public abstract T createDummyOperator();
+	/**
+	 * <p>createOperator.</p>
+	 *
+	 * @param clazz a {@link java.lang.Class} object.
+	 * @param content a {@link lupos.datastructures.items.Item} object.
+	 * @return a T object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected abstract T createOperator(Class<? extends T> clazz, Item content) throws Exception;
 }

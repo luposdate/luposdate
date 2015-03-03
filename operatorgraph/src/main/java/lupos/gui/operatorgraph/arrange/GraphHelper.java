@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.arrange;
 
@@ -29,12 +33,13 @@ import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.misc.Tuple;
-
 public class GraphHelper {
 
 	/**
-	 * If graph is out of display after a computed layout, this method fits it 
+	 * If graph is out of display after a computed layout, this method fits it
 	 * back into the display
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
 	 */
 	public static void fitToWindow(final OperatorGraph operatorgraph) {
 		HashMap<GraphWrapper, GraphBox> boxes = operatorgraph.getBoxes();
@@ -85,7 +90,9 @@ public class GraphHelper {
 	
 	/**
 	 * Method gets the width of the graph
-	 * @return
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a int.
 	 */
 	protected static int graphWidth(final OperatorGraph operatorgraph) {
 		int width = 0;
@@ -101,7 +108,9 @@ public class GraphHelper {
 	
 	/**
 	 * Method gets the avg. width and height of all boxes in the graph
-	 * @return
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link lupos.misc.Tuple} object.
 	 */
 	protected static Tuple<Double, Double> getAvgSizesOfBoxes(final OperatorGraph operatorgraph) {		
 		long width = 0;
@@ -122,7 +131,9 @@ public class GraphHelper {
 	
 	/**
 	 * Method gets the height of the graph
-	 * @return
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a int.
 	 */
 	protected static int graphHeight(final OperatorGraph operatorgraph) {
 		int height = 0;
@@ -139,6 +150,8 @@ public class GraphHelper {
 	/**
 	 * Method sets all node-positions to their starting-positions.
 	 * Here x = -1 an y = -1
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
 	 */
 	protected static void restoreOriginalPositions(final OperatorGraph operatorgraph) {
 		for (GraphBox box: operatorgraph.getBoxes().values()) {

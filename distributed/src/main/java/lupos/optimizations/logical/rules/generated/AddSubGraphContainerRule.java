@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated;
 
@@ -46,11 +50,12 @@ import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.sparql1_1.ParseException;
 
 import org.json.JSONException;
-
 public class AddSubGraphContainerRule extends Rule {
 
+	/** Constant <code>distribution</code> */
 	public static IDistribution distribution;
 
+	/** Constant <code>subgraphExecutor</code> */
 	public static ISubgraphExecutor subgraphExecutor;
 
 	private Filter getFilterFromIndexScan(final BasicOperator root) {
@@ -334,16 +339,21 @@ public class AddSubGraphContainerRule extends Rule {
 		return true;
 	}
 
+	/**
+	 * <p>Constructor for AddSubGraphContainerRule.</p>
+	 */
 	public AddSubGraphContainerRule() {
 		this.startOpClass = lupos.engine.operators.index.BasicIndexScan.class;
 		this.ruleName = "AddSubGraphContainer";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(final BasicOperator _op) {
 		return this._checkPrivate0(_op);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void replace(
 			final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {

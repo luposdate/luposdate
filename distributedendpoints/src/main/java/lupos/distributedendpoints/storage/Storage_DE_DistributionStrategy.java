@@ -45,6 +45,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  *
  * The data is distributed according to the distribution strategy given as parameter to the constructor.
  * Only relevant endpoints are asked during answering a given query.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDistributionStrategy<KeyContainer<Integer>> {
 
@@ -62,6 +65,7 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
 	 *
 	 * @param distribution The distribution strategy to be used
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public Storage_DE_DistributionStrategy(final IDistributionKeyContainer<Integer> distribution, final BindingsFactory bindingsFactory) {
 		this(new EndpointManagement(), distribution, bindingsFactory);
@@ -81,8 +85,11 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 	/**
 	 * Creates an instance of Storage_DE_DistributionStrategy based on a given distribution.
 	 * The keys of the distribution are additionally transformed into integer values by hashing (and modulo calculation with the number of endpoints)
+	 *
 	 * @param distribution the distribution strategy
 	 * @return an instance of Storage_DE_DistributionStrategy
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @param <K> a K object.
 	 */
 	public static<K> Storage_DE_DistributionStrategy createInstance(final IDistributionKeyContainer<K> distribution, final BindingsFactory bindingsFactory){
 		final EndpointManagement endpointManagement = new EndpointManagement();
@@ -92,35 +99,42 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 
 	/**
 	 * Creates an instance of Storage_DE_DistributionStrategy based on a given distribution strategy.
+	 *
 	 * @param strategy the distribution strategy to be used
 	 * @return an instance of Storage_DE_DistributionStrategy
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public static Storage_DE_DistributionStrategy createInstance(final TriplePropertiesDistributionStrategyEnum strategy, final BindingsFactory bindingsFactory){
 		return Storage_DE_DistributionStrategy.createInstance(strategy.createInstance(), bindingsFactory);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void storeBlock(final KeyContainer<Integer> key, final List<Triple> triples) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildInsertQuery(triples), key, this.bindingsFactory);
 		this.insertedData = true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTripleAfterAdding(final KeyContainer<Integer> key, final Triple triple) {
 		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), key, this.bindingsFactory).isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeAfterAdding(final KeyContainer<Integer> key, final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), key, this.bindingsFactory);
 		this.endpointManagement.waitForThreadPool();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final KeyContainer<Integer> key, final TriplePattern triplePattern) {
 		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), key, this.bindingsFactory);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
 		// in case of non-supported triple patterns ask all endpoints for their results!
@@ -128,12 +142,14 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 		return this.endpointManagement.submitSPARQLQueryWithKeyType(QueryBuilder.buildQuery(triplePattern), possibleKeys[0], this.bindingsFactory);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void blockInsert() {
 		super.blockInsert();
 		this.endpointManagement.waitForThreadPool();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 		super.blockInsert();
@@ -148,12 +164,14 @@ public class Storage_DE_DistributionStrategy extends BlockUpdatesStorageWithDist
 
 	/**
 	 * return the endpoint management object for communication to the endpoints
+	 *
 	 * @return the endpoint manager
 	 */
 	public EndpointManagement getEndpointManagement() {
 		return this.endpointManagement;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IDistribution<KeyContainer<Integer>> getDistribution(){
 		return this.distribution;

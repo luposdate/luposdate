@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.operators;
 
@@ -39,32 +43,49 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.misc.util.OperatorIDTuple;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
-
 public class Graph extends JTFOperator {
 	private Item graphItem;
 
+	/**
+	 * <p>Constructor for Graph.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public Graph(Prefix prefix) {
 		super(prefix);
 
 		this.graphItem = new DummyItem();
 	}
 
+	/**
+	 * <p>Constructor for Graph.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param graphItem a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Graph(Prefix prefix, Item graphItem) {
 		super(prefix);
 
 		this.graphItem = graphItem;
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.graphItem.toString();
 	}
 
+	/** {@inheritDoc} */
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
 		this.panel = new OperatorPanel(this, gw, parent, this.prefix.add(this.toString()), "Graph");
 
 		return this.panel;
 	}
 
+	/** {@inheritDoc} */
 	public void applyChange(String value) throws ModificationException {
 		try {
 			SimpleNode node = SPARQL1_1Parser.parseVarOrBlankNodeOrIRIref(value, this.prefix.getPrefixNames());
@@ -76,6 +97,11 @@ public class Graph extends JTFOperator {
 		}
 	}
 
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeOperator() {
 		StringBuffer ret = new StringBuffer();
 		ret.append("GRAPH " + this.graphItem.toString() + "{\n");
@@ -88,6 +114,7 @@ public class Graph extends JTFOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		StringBuffer ret = new StringBuffer();
 		ret.append("GRAPH " + this.graphItem.toString() + "{\n");
@@ -100,6 +127,7 @@ public class Graph extends JTFOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public boolean variableInUse(String variable, HashSet<Operator> visited) {
 		if(visited.contains(this))
 			return false;
@@ -116,6 +144,7 @@ public class Graph extends JTFOperator {
 		return false;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefID(){
 		return "queryEditor_style_graph";

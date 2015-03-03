@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -29,6 +33,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class StringFunctions {
 
+	/**
+	 * <p>compare.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "compare")
 	public static Literal compare(final Argument arg) {
 		final String left = BuiltinHelper
@@ -40,6 +50,12 @@ public class StringFunctions {
 				: 1, "integer");
 	}
 
+	/**
+	 * <p>concat.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "concat")
 	public static Literal concat(final Argument arg) {
 		final String left = BuiltinHelper
@@ -50,6 +66,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>join.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "string-join")
 	public static Literal join(final Argument arg) {
 		final String left = BuiltinHelper
@@ -62,6 +84,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>substring.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "substring")
 	public static Literal substring(final Argument arg) {
 		final String str = BuiltinHelper
@@ -77,6 +105,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>str_length.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "string-length")
 	public static Literal str_length(final Argument arg) {
 		final String str = BuiltinHelper
@@ -85,6 +119,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral(result, "integer");
 	}
 
+	/**
+	 * <p>upper_case.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "upper-case")
 	public static Literal upper_case(final Argument arg) {
 		final String str = BuiltinHelper
@@ -93,6 +133,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>lower_case.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "lower-case")
 	public static Literal lower_case(final Argument arg) {
 		final String str = BuiltinHelper
@@ -101,6 +147,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>encode_for_uri.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "encode-for-uri")
 	public static Literal encode_for_uri(final Argument arg) {
 		final String str = BuiltinHelper
@@ -109,6 +161,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>substring_before.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "substring-before")
 	public static Literal substring_before(final Argument arg) {
 		final String left = BuiltinHelper
@@ -119,6 +177,12 @@ public class StringFunctions {
 		return BuiltinHelper.createXSLiteral("\"" + result + "\"", "string");
 	}
 
+	/**
+	 * <p>substring_after.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "substring-after")
 	public static Literal substring_after(final Argument arg) {
 		final String left = BuiltinHelper

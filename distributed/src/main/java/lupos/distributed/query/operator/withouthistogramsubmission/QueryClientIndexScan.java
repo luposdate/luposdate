@@ -42,18 +42,36 @@ import lupos.misc.util.ImmutableIterator;
 
 /**
  * This class represents an index scan operator for the distributed query evaluators...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientIndexScan extends BasicIndexScan {
 
+	/**
+	 * <p>Constructor for QueryClientIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public QueryClientIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final Root root) {
 		super(succeedingOperator, triplePatterns, rdfGraph, root);
 	}
 
+	/**
+	 * <p>Constructor for QueryClientIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 */
 	public QueryClientIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
 		super(root, triplePatterns);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		// a fetch as needed distributed join strategy is implemented

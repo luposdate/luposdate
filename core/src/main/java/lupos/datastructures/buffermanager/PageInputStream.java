@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,22 +21,40 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.buffermanager;
 
 import java.io.IOException;
-
 public class PageInputStream extends ContinousPagesInputStream {
 
+	/** Constant <code>DEFAULTSTARTINDEX=6</code> */
 	public final static int DEFAULTSTARTINDEX = 6;
 
 	protected int maxOnThisPage;
 
+	/**
+	 * <p>Constructor for PageInputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageInputStream(final int pagenumber, final PageManager pageManager) throws IOException {
 		this(pagenumber, pageManager, PageInputStream.DEFAULTSTARTINDEX);
 	}
 
 
+	/**
+	 * <p>Constructor for PageInputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param index a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageInputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
 		super(pagenumber, pageManager, index);
 		this.setMaxOnThisPage();
@@ -45,6 +64,7 @@ public class PageInputStream extends ContinousPagesInputStream {
 		this.maxOnThisPage = ((0xFF & this.currentPage[4]) << 8) | (0xFF & this.currentPage[5]);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int read() throws IOException {
 		if (this.index >= this.maxOnThisPage) {

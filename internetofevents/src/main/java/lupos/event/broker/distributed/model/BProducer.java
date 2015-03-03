@@ -31,8 +31,9 @@ import lupos.event.communication.TcpConnectInfo;
  * This class encapsulates some data about
  * a producer which is created for each event
  * type which is produced and sent to a broker
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class BProducer implements Serializable{
 	
@@ -43,6 +44,7 @@ public class BProducer implements Serializable{
 	
 	/**
 	 * Constructs a new BProducer by data
+	 *
 	 * @param producedEvent the string rdf event type
 	 * @param tcpHost the connection data of this producer
 	 */
@@ -57,14 +59,25 @@ public class BProducer implements Serializable{
 		}
 	}
 	
+	/**
+	 * <p>Getter for the field <code>producedEvent</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getProducedEvent() {
 		return this.producedEvent;
 	}
 	
+	/**
+	 * <p>getConnectionInfo.</p>
+	 *
+	 * @return a {@link lupos.event.communication.TcpConnectInfo} object.
+	 */
 	public TcpConnectInfo getConnectionInfo(){
 		return this.tcpInfo;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof BProducer){

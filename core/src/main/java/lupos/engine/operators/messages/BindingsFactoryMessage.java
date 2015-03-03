@@ -30,17 +30,30 @@ import lupos.engine.operators.BasicOperator;
 
 /**
  * This message is used to inform the operators about the BindingsFactory to be used...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class BindingsFactoryMessage extends Message {
 
 	protected final BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for BindingsFactoryMessage.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsFactoryMessage(final BindingsFactory bindingsFactory){
 		super();
 		this.bindingsFactory = bindingsFactory;
 	}
 
+	/**
+	 * <p>Constructor for BindingsFactoryMessage.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public BindingsFactoryMessage(final Message msg){
 		super(msg);
 		if(msg instanceof BindingsFactoryMessage){
@@ -50,26 +63,35 @@ public class BindingsFactoryMessage extends Message {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message postProcess(final BasicOperator op) {
 		return op.postProcessMessage(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcess(final BasicOperator op) {
 		return op.preProcessMessage(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message merge(final Collection<Message> msgs, final BasicOperator op) {
 		return op.mergeMessages(msgs, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message clone() {
 		return new BindingsFactoryMessage(this);
 	}
 
+	/**
+	 * <p>Getter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsFactory getBindingsFactory(){
 		return this.bindingsFactory;
 	}

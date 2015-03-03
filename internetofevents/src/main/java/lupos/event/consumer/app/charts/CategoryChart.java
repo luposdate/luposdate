@@ -38,10 +38,11 @@ import lupos.event.util.TimedWrapper;
 import org.jfree.chart.ChartPanel;
 
 /**
- * Class for displaying input elements for bar, line and pie charts and display 
+ * Class for displaying input elements for bar, line and pie charts and display
  * of the chart itself.
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class CategoryChart extends ChartHandler {
 	
@@ -51,7 +52,8 @@ public class CategoryChart extends ChartHandler {
 	
 	/**
 	 * Contructor. Creates an appropiate DataModel and inits all required GUI-Elements.
-	 * @param chartTyp
+	 *
+	 * @param chartTyp a {@link lupos.event.consumer.app.charts.ChartTyp} object.
 	 */
 	public CategoryChart(ChartTyp chartTyp){
 		super(new GridBagLayout(), chartTyp);
@@ -87,6 +89,8 @@ public class CategoryChart extends ChartHandler {
 	
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Extracts data from QueryResult into the DataModel
 	 */
 	@Override
@@ -100,12 +104,15 @@ public class CategoryChart extends ChartHandler {
 	}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	protected CategoryChartModel getModel(){
 		return (CategoryChartModel) super.getModel(); 
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Clears all input fields of this element
 	 */
 	@Override

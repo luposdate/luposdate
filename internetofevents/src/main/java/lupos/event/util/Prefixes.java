@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,10 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.util;
-
 public class Prefixes {
+	/** Constant <code>RDF="http://www.w3.org/1999/02/22-rdf-syntax"{trunked}</code> */
 	public static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	/** Constant <code>XSD="http://www.w3.org/2001/XMLSchema#"</code> */
 	public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
 }

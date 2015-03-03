@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
@@ -38,7 +42,6 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
-
 public class JTextFieldResizing extends JTextField {
 	private static final long serialVersionUID = 9125138588941985739L;
 
@@ -51,6 +54,13 @@ public class JTextFieldResizing extends JTextField {
 	 */
 	public static int MAX_SIZE_TEXTFIELD = 20;
 
+	/**
+	 * <p>Constructor for JTextFieldResizing.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 * @param font a {@link java.awt.Font} object.
+	 * @param holder a {@link lupos.gui.operatorgraph.AbstractSuperGuiComponent} object.
+	 */
 	public JTextFieldResizing(final String text, final Font font,
 			final AbstractSuperGuiComponent holder) {
 		super(text);
@@ -140,10 +150,21 @@ public class JTextFieldResizing extends JTextField {
 		return placeholder + "  ";
 	}
 
+	/**
+	 * <p>calculateSize.</p>
+	 *
+	 * @return a {@link java.awt.Dimension} object.
+	 */
 	public Dimension calculateSize() {
 		return this.calculateSize(getFont());
 	}
 
+	/**
+	 * <p>calculateSize.</p>
+	 *
+	 * @param font a {@link java.awt.Font} object.
+	 * @return a {@link java.awt.Dimension} object.
+	 */
 	public Dimension calculateSize(final Font font) {
 		final FontMetrics fm = getFontMetrics(font);
 
@@ -152,6 +173,11 @@ public class JTextFieldResizing extends JTextField {
 		return new Dimension(fm.stringWidth(placeholder), fm.getHeight());
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.getText();
 	}

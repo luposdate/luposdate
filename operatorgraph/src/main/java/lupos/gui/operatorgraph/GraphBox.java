@@ -44,6 +44,9 @@ import lupos.gui.operatorgraph.guielements.ContainerArrange;
 
 /**
  * Represents one box in the graph.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GraphBox {
 	protected GraphWrapper op;
@@ -99,6 +102,11 @@ public class GraphBox {
 		this.initBox(op);
 	}
 
+	/**
+	 * <p>initBox.</p>
+	 *
+	 * @param graphWrapper a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void initBox(final GraphWrapper graphWrapper) {
 		this.op = graphWrapper;
 
@@ -112,6 +120,11 @@ public class GraphBox {
 		this.height = this.element.getPreferredSize().height;
 	}
 
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param arrange a {@link lupos.gui.operatorgraph.arrange.Arrange} object.
+	 */
 	public void arrange(final Arrange arrange) {
 		if (this.element instanceof ContainerArrange) {
 			((ContainerArrange) this.element).arrange(arrange);
@@ -122,6 +135,9 @@ public class GraphBox {
 		this.parent.updateSize();
 	}
 
+	/**
+	 * <p>arrangeWithoutUpdatingParentsSize.</p>
+	 */
 	public void arrangeWithoutUpdatingParentsSize() {
 		this.drawLineAnnotations(true);
 
@@ -132,12 +148,18 @@ public class GraphBox {
 
 	/**
 	 * This method may be overridden by subclasses to add more functionality...
+	 *
 	 * @return those succeeding elements of this operator, which are to draw
 	 */
 	public List<GraphWrapperIDTuple> getSucceedingsElementsToDraw(){
 		return this.op.getSucceedingElements();
 	}
 
+	/**
+	 * <p>draw.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 */
 	public void draw(final Graphics2D g) {
 		// walk through child boxes...
 		final List<GraphWrapperIDTuple> children = this.getSucceedingsElementsToDraw();
@@ -208,6 +230,18 @@ public class GraphBox {
 		}
 	}
 
+	/**
+	 * <p>determineEdgePoint.</p>
+	 *
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param x2 a int.
+	 * @param y2 a int.
+	 * @param width2 a int.
+	 * @return a {@link java.awt.Point} object.
+	 */
 	protected static Point determineEdgePoint(final int x, final int y,
 			final int width, final int height, final int x2, final int y2,
 			final int width2) {
@@ -236,6 +270,13 @@ public class GraphBox {
 		}
 	}
 
+	/**
+	 * <p>drawLineAnnotation.</p>
+	 *
+	 * @param childGW a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param align a boolean.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected synchronized JPanel drawLineAnnotation(final GraphWrapper childGW, final boolean align) {
 		// get current child box...
 		final GraphBox childBox = this.parent.getBoxes().get(childGW);
@@ -307,6 +348,13 @@ public class GraphBox {
 		return annotationPanel;
 	}
 
+	/**
+	 * <p>updateX.</p>
+	 *
+	 * @param x_ a int.
+	 * @param y_ a int.
+	 * @param visited a {@link java.util.HashSet} object.
+	 */
 	public void updateX(final int x_, final int y_,
 			final HashSet<GraphBox> visited) {
 		if (visited.contains(this)) {
@@ -330,6 +378,11 @@ public class GraphBox {
 		// --- update position of subtree - end ---
 	}
 
+	/**
+	 * <p>drawLineAnnotations.</p>
+	 *
+	 * @param align a boolean.
+	 */
 	protected void drawLineAnnotations(final boolean align) {
 		final List<GraphWrapper> list = new LinkedList<GraphWrapper>();
 		list.addAll(this.lineAnnotations.keySet());
@@ -339,6 +392,11 @@ public class GraphBox {
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>lineAnnotations</code>.</p>
+	 *
+	 * @param annotationList a {@link java.util.Hashtable} object.
+	 */
 	public void setLineAnnotations(final Hashtable<GraphWrapper, AbstractSuperGuiComponent> annotationList) {
 		this.removeAnnotations();
 
@@ -354,12 +412,13 @@ public class GraphBox {
 	 *            Graphics2D object
 	 * @param x
 	 *            x coordinate of box
-	 * @param y
-	 *            y coordinate of box
 	 * @param xChild
 	 *            x coordinate of child box
+	 * @param y
+	 *            y coordinate of box
 	 * @param yChild
 	 *            y coordinate of child box
+	 * @param arrowHead a boolean.
 	 */
 	public static void drawConnection(final Graphics2D g, final int x, final int y, final int xChild, final int yChild, final boolean arrowHead) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -370,6 +429,15 @@ public class GraphBox {
 		}
 	}
 
+	/**
+	 * <p>drawArrowHead.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param xChild a int.
+	 * @param yChild a int.
+	 */
 	public static void drawArrowHead(final Graphics2D g, final int x, final int y, final int xChild, final int yChild) {
 		g.setStroke(new BasicStroke(1f)); // solid arrow head
 
@@ -395,6 +463,18 @@ public class GraphBox {
 	}
 
 
+	/**
+	 * <p>drawConnection.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param middle_x a int.
+	 * @param middle_y a int.
+	 * @param xChild a int.
+	 * @param yChild a int.
+	 * @param arrowHead a boolean.
+	 */
 	public static void drawConnection(final Graphics2D g, final int x, final int y, final int middle_x, final int middle_y, final int xChild, final int yChild, final boolean arrowHead) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		final Point[] p = {
@@ -408,6 +488,12 @@ public class GraphBox {
 		}
 	}
 
+	/**
+	 * <p>drawBSpline.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param p an array of {@link java.awt.Point} objects.
+	 */
 	public static void drawBSpline(final Graphics2D g, final Point[] p){
 		// determine length of bspline line as approximation by summation of edges between the given points
 		double length = 0;
@@ -487,31 +573,64 @@ public class GraphBox {
     }
 
 
+	/**
+	 * <p>yCor.</p>
+	 *
+	 * @param len a int.
+	 * @param dir a double.
+	 * @return a int.
+	 */
 	protected static int yCor(final int len, final double dir) {
 		return (int) (len * Math.cos(dir));
 	}
 
+	/**
+	 * <p>xCor.</p>
+	 *
+	 * @param len a int.
+	 * @param dir a double.
+	 * @return a int.
+	 */
 	protected static int xCor(final int len, final double dir) {
 		return (int) (len * Math.sin(dir));
 	}
 
+	/**
+	 * <p>Getter for the field <code>op</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public GraphWrapper getOp() {
 		return this.op;
 	}
 
+	/**
+	 * <p>Getter for the field <code>element</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.AbstractSuperGuiComponent} object.
+	 */
 	public AbstractSuperGuiComponent getElement() {
 		return this.element;
 	}
 
+	/**
+	 * <p>deleteLineAnnotation.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void deleteLineAnnotation(final GraphWrapper gw) {
 		this.lineAnnotations.remove(gw);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.op.toString();
 	}
 
+	/**
+	 * <p>removeAnnotations.</p>
+	 */
 	public void removeAnnotations() {
 		for(final AbstractSuperGuiComponent agc : this.lineAnnotations.values()) {
 			agc.setVisible(false);
@@ -520,6 +639,11 @@ public class GraphBox {
 		this.lineAnnotations.clear();
 	}
 
+	/**
+	 * <p>removeAnnotationsTo.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void removeAnnotationsTo(final GraphWrapper gw) {
 		final AbstractSuperGuiComponent asgc = this.lineAnnotations.get(gw);
 
@@ -530,6 +654,11 @@ public class GraphBox {
 		this.lineAnnotations.remove(gw);
 	}
 
+	/**
+	 * <p>Setter for the field <code>x</code>.</p>
+	 *
+	 * @param x a int.
+	 */
 	public void setX(final int x) {
 		this.x = x;
 
@@ -538,12 +667,22 @@ public class GraphBox {
 		this.parent.updateSize();
 	}
 
+	/**
+	 * <p>setXWithoutUpdatingParentsSize.</p>
+	 *
+	 * @param x a int.
+	 */
 	public void setXWithoutUpdatingParentsSize(final int x) {
 		this.x = x;
 
 		this.element.setBounds(this.x, this.y, this.width, this.height);
 	}
 
+	/**
+	 * <p>Setter for the field <code>y</code>.</p>
+	 *
+	 * @param y a int.
+	 */
 	public void setY(final int y) {
 		this.y = y;
 
@@ -552,24 +691,45 @@ public class GraphBox {
 		this.parent.updateSize();
 	}
 
+	/**
+	 * <p>setYWithoutUpdatingParentsSize.</p>
+	 *
+	 * @param y a int.
+	 */
 	public void setYWithoutUpdatingParentsSize(final int y) {
 		this.y = y;
 
 		this.element.setBounds(this.x, this.y, this.width, this.height);
 	}
 
+	/**
+	 * <p>Getter for the field <code>x</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getX() {
 		return this.x;
 	}
 
+	/**
+	 * <p>Getter for the field <code>y</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getY() {
 		return this.y;
 	}
 
+	/**
+	 * <p>Getter for the field <code>lineAnnotations</code>.</p>
+	 *
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> getLineAnnotations() {
 		return this.lineAnnotations;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		if(o instanceof GraphBox) {
@@ -581,18 +741,34 @@ public class GraphBox {
 		return false;
 	}
 
+	/**
+	 * <p>resetLineColorIndex.</p>
+	 */
 	public static void resetLineColorIndex() {
 		GraphBox.lineColor = 0;
 	}
 
+	/**
+	 * <p>Getter for the field <code>parent</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public OperatorGraph getParent() {
 		return this.parent;
 	}
 
+	/**
+	 * <p>updateColorIndizes.</p>
+	 */
 	public void updateColorIndizes() {
 		this.updateColorIndizes(this.op);
 	}
 
+	/**
+	 * <p>updateColorIndizes.</p>
+	 *
+	 * @param graphWrapper a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void updateColorIndizes(final GraphWrapper graphWrapper) {
 		this.colorIndices = new int[graphWrapper.getSucceedingElements().size()];
 
@@ -601,6 +777,7 @@ public class GraphBox {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.op.hashCode();

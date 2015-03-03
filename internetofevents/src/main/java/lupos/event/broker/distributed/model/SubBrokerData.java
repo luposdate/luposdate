@@ -33,8 +33,9 @@ import lupos.event.communication.SerializingMessageService;
  * the master broker class. It will communicate with the
  * broker clients to recieve data such as connected producers
  * or subscriptions
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class SubBrokerData {
 
@@ -48,6 +49,7 @@ public class SubBrokerData {
 	/**
 	 * Constructs a new subbroker object which is
 	 * initialized by a message service to the master broker
+	 *
 	 * @param service the connection to the master
 	 */
 	public SubBrokerData(SerializingMessageService service){
@@ -58,10 +60,20 @@ public class SubBrokerData {
 		this.registeredConsumers = new LinkedList<BConsumer>();
 	}
 	
+	/**
+	 * <p>getID.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getID(){
 		return this.subID;
 	}
 	
+	/**
+	 * <p>getMessageService.</p>
+	 *
+	 * @return a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public SerializingMessageService getMessageService(){
 		return this.msgService;
 	}
@@ -70,6 +82,7 @@ public class SubBrokerData {
 	 * Gets a list of all events which come
 	 * directly from connected producers to
 	 * this sub broker
+	 *
 	 * @return a list of all incoming
 	 * event types
 	 */
@@ -85,6 +98,7 @@ public class SubBrokerData {
 	 * Gets a list of all events which
 	 * are requested from subscriptions
 	 * of connected consumers
+	 *
 	 * @return a list of all requsted
 	 * event types
 	 */
@@ -96,22 +110,43 @@ public class SubBrokerData {
 		return queries;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>registeredProducers</code>.</p>
+	 *
+	 * @param producers a {@link java.util.List} object.
+	 */
 	public void setRegisteredProducers(List<BProducer> producers){
 		this.registeredProducers = producers;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>registeredConsumers</code>.</p>
+	 *
+	 * @param consumers a {@link java.util.List} object.
+	 */
 	public void setRegisteredConsumers(List<BConsumer> consumers){
 		this.registeredConsumers = consumers;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>registeredProducers</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BProducer> getRegisteredProducers(){
 		return this.registeredProducers;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>registeredConsumers</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BConsumer> getRegisteredConsumers(){
 		return this.registeredConsumers;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof SubBrokerData){

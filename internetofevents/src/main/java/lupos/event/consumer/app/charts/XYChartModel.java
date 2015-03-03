@@ -38,14 +38,20 @@ import org.jfree.data.xy.MatrixSeries;
 import org.jfree.data.xy.MatrixSeriesCollection;
 /**
  * Wrapper for XY-DataSets
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class XYChartModel extends DataModel {
 
 	private Variable valueVar;
 	private Variable valueVar2;
 	
+	/**
+	 * <p>Constructor for XYChartModel.</p>
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 */
 	public XYChartModel(ChartTyp type){
 		super(type);
 		
@@ -55,6 +61,12 @@ public class XYChartModel extends DataModel {
 		
 	}
 	
+	/**
+	 * <p>Constructor for XYChartModel.</p>
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 * @param vars an array of {@link java.lang.String} objects.
+	 */
 	public XYChartModel(ChartTyp type, String[] vars){
 		this(type);
 		
@@ -65,7 +77,8 @@ public class XYChartModel extends DataModel {
 	
 	/**
 	 * Set the Variable containing the y-values
-	 * @param y
+	 *
+	 * @param y a {@link lupos.datastructures.items.Variable} object.
 	 */
 	public void setY(Variable y){
 		valueVar = y;
@@ -73,13 +86,15 @@ public class XYChartModel extends DataModel {
 	
 	/**
 	 * Sets the variable containing the z-values
-	 * @param z
+	 *
+	 * @param z a {@link lupos.datastructures.items.Variable} object.
 	 */
 	public void setZ(Variable z){
 		valueVar2 = z;
 		
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(QueryResult l) {
 		
@@ -140,6 +155,7 @@ public class XYChartModel extends DataModel {
 
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public MatrixSeriesCollection getDataset(){
 		
@@ -147,6 +163,7 @@ public class XYChartModel extends DataModel {
 		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JFreeChart makeChart() {
 		

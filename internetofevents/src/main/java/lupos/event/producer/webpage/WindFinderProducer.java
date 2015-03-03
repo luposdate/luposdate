@@ -40,8 +40,9 @@ import lupos.event.util.Literals;
 
 /**
  * Searches windfinder with a keyword and calls the GeneralProducer and forwards the website and search data
- * @author Team 4
  *
+ * @author Team 4
+ * @version $Id: $Id
  */
 public class WindFinderProducer extends GeneralProducer {
 	
@@ -58,10 +59,15 @@ public class WindFinderProducer extends GeneralProducer {
 	 * The different used predicates...
 	 */
 	public final static URILiteral TIME = Literals.createURI(WINDFINDERNAMESPACE, "time");
+	/** Constant <code>WIND_DIRECTION</code> */
 	public final static URILiteral WIND_DIRECTION = Literals.createURI(WINDFINDERNAMESPACE, "wind_direction");
+	/** Constant <code>WIND_SPEED</code> */
 	public final static URILiteral WIND_SPEED = Literals.createURI(WINDFINDERNAMESPACE, "windspeed_in_kts");
+	/** Constant <code>PRECIPITATION</code> */
 	public final static URILiteral PRECIPITATION = Literals.createURI(WINDFINDERNAMESPACE, "precipitation_in_mm");
+	/** Constant <code>PRESSURE</code> */
 	public final static URILiteral PRESSURE = Literals.createURI(WINDFINDERNAMESPACE, "pressure_in_hpa");
+	/** Constant <code>TEMPERATURE</code> */
 	public final static URILiteral TEMPERATURE = Literals.createURI(WINDFINDERNAMESPACE, "temperature_in_Ã‚Â°C");
 	
 	/**
@@ -85,12 +91,13 @@ public class WindFinderProducer extends GeneralProducer {
 	}
 	
 	/**
-	 * 
+	 * <p>createWindFinderProducer.</p>
+	 *
 	 * @param msgService for TCP-transport
 	 * @param location the location for the weather
 	 * @return the WindFinderProducer
-	 * @throws MalformedURLException
-	 * @throws UnsupportedEncodingException
+	 * @throws java.net.MalformedURLException if any.
+	 * @throws java.io.UnsupportedEncodingException if any.
 	 */
 	public static WindFinderProducer createWindFinderProducer(SerializingMessageService msgService, String location) throws MalformedURLException, UnsupportedEncodingException{
 		/**
@@ -153,8 +160,9 @@ public class WindFinderProducer extends GeneralProducer {
 	/**
 	 * 	sets the xPath commands and corresponding regular expressions, literaltypes and namespaces.
 	 *  After that it starts the producer and with that calls constructor of WeatherProducer.
-	 * @param args
-	 * @throws Exception
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 		

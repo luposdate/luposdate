@@ -36,9 +36,10 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.Dataset;
 /**
  * Wrapper for JFreeChart DataSets
- * Contains Logic to generate Chart from a QueryResult 
- * @author heidemey
+ * Contains Logic to generate Chart from a QueryResult
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 abstract public class DataModel {
 	
@@ -50,7 +51,8 @@ abstract public class DataModel {
 	
 	/**
 	 * Constructor with ChartTyp
-	 * @param chartType
+	 *
+	 * @param chartType a {@link lupos.event.consumer.app.charts.ChartTyp} object.
 	 */
 	public DataModel(ChartTyp chartType){
 		
@@ -60,16 +62,18 @@ abstract public class DataModel {
 	}
 	
 	/**
-	 * Returns the DataSet of this model  
-	 * @return
+	 * Returns the DataSet of this model
+	 *
+	 * @return a {@link org.jfree.data.general.Dataset} object.
 	 */
 	public Dataset getDataset() {
 		return dataset;
 	}
 
 	/**
-	 * Set the Variable containing data for the X-Axis 
-	 * @param xVar
+	 * Set the Variable containing data for the X-Axis
+	 *
+	 * @param xVar a {@link lupos.datastructures.items.Variable} object.
 	 */
 	public void setXVar(Variable xVar) {
 		this.categoryVar = xVar;
@@ -77,13 +81,15 @@ abstract public class DataModel {
 	
 	/**
 	 * Extract data from QueryResult into the DataSet
-	 * @param l
+	 *
+	 * @param l a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	abstract public void fillDataset(QueryResult l); 
 	
 	/**
 	 * Returns a legend for the chart.
-	 * @return
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String getLegend(){
 		return "Chart";
@@ -91,22 +97,24 @@ abstract public class DataModel {
 	
 	/**
 	 * Return the type of the chart, see ChartTyp
-	 * @return
+	 *
+	 * @return a {@link lupos.event.consumer.app.charts.ChartTyp} object.
 	 */
 	public ChartTyp getChartTyp(){
 		return chartType;
 	}
 	
-	/** Parses a String into a Java Number class
-	 * 
-	 * @param type XML schema data type of the String  
+	/**
+	 * Parses a String into a Java Number class
+	 *
+	 * @param type XML schema data type of the String
 	 * @param content String to be parsed
-	 * @return Number class 
+	 * @return Number class
 	 *  Long - for <http://www.w3.org/2001/XMLSchema#long>
 	 *  Integer - for <http://www.w3.org/2001/XMLSchema#int>, <http://www.w3.org/2001/XMLSchema#integer>
 	 *  Float - for <http://www.w3.org/2001/XMLSchema#float>
 	 *  Double - for <http://www.w3.org/2001/XMLSchema#double>, <http://www.w3.org/2001/XMLSchema#decimal>
-	 * @throws NumberFormatException if literal is not a number
+	 * @throws java.lang.NumberFormatException if literal is not a number
 	 */
 	protected Number content2Number(String type, String content) throws NumberFormatException{
 		
@@ -134,15 +142,17 @@ abstract public class DataModel {
 	
 	/**
 	 * Creates a chart for the contained DataSet
-	 * @return
+	 *
+	 * @return a {@link org.jfree.chart.JFreeChart} object.
 	 */
 	abstract public JFreeChart makeChart();
 
 	/**
 	 * Parses a Lietral into a Number
+	 *
 	 * @param literal - Literal to be parsed
 	 * @return Number of same value
-	 * @throws NumberFormatException if literal is not typed or type is not a number (see content2Number)
+	 * @throws java.lang.NumberFormatException if literal is not typed or type is not a number (see content2Number)
 	 */
 	protected Number literal2Number(Literal literal) throws NumberFormatException{
 		if (literal.isTypedLiteral()) {
@@ -159,8 +169,9 @@ abstract public class DataModel {
 	
 	/**
 	 * Returns the untyped content of a Literal
-	 * @param literal
-	 * @return
+	 *
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	protected String stripType(Literal literal){
 		TypedLiteral tl = null;
@@ -177,6 +188,7 @@ abstract public class DataModel {
 	
 	/**
 	 * Generate the chart as jpeg Image
+	 *
 	 * @param width - width of the image
 	 * @param height - height of the image
 	 * @return ByteArrayOutputStream containing the image

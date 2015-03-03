@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,29 +21,57 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.misc;
-
 public class Item {
 	
 	String value;
 	boolean caseSensitiv;
 	//Konstruktor
+	/**
+	 * <p>Constructor for Item.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 * @param caseSensitiv a boolean.
+	 */
 	public Item(String value, boolean caseSensitiv){
 		this.value = value;
 		this.caseSensitiv = caseSensitiv;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>value</code>.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 */
 	public void setValue(String value){
 		this.value = value;
 	}
+	/**
+	 * <p>Setter for the field <code>caseSensitiv</code>.</p>
+	 *
+	 * @param caseSensitiv a boolean.
+	 */
 	public void setCaseSensitiv(boolean caseSensitiv){
 		this.caseSensitiv = caseSensitiv;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>value</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getValue(){
 		return value;
 	}
+	/**
+	 * <p>Getter for the field <code>caseSensitiv</code>.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean getCaseSensitiv(){
 		return caseSensitiv;
 	}
@@ -53,6 +82,7 @@ public class Item {
 	 * wenn caseSensitiv == false wird mit equalsIgnoreCase verglichen
 	 */
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj){
 			
@@ -71,6 +101,7 @@ public class Item {
 	/*
 	 * angepasster hashcode mit toLowerCase
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode(){
 		return this.value.toLowerCase().hashCode();

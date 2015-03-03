@@ -33,6 +33,9 @@ import lupos.engine.operators.singleinput.SingleInputOperator;
  * if it is larger than a given limit.
  * Be sure to call forward at the end of inputstream (look at forward describtion), as it
  * has a quite similar importance like flush() using an Stream.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Collector extends SingleInputOperator {
 
@@ -41,6 +44,8 @@ public class Collector extends SingleInputOperator {
 	private final SingleInputOperator forward;
 	private final int operandID;
 	/**
+	 * <p>Constructor for Collector.</p>
+	 *
 	 * @param inp a SingleInputOperator who will get the forwarded QueryResults
 	 * @param limit the minimal number of bindings at wich they will be forwarded<br>
 	 * if limit < 0 the public method forward has to be called to forward bindings
@@ -54,9 +59,9 @@ public class Collector extends SingleInputOperator {
 
 	/**
 	 * Adds a binding to the list wich will be forwarded soon
+	 *
 	 * @param b Bindings to add
-	 * @return QueryResult, which has been processed by forward if limit has been reached <br>
-	 * else null
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	public QueryResult addBinding( final Bindings b ){
 		this.store.add( b );
@@ -70,6 +75,7 @@ public class Collector extends SingleInputOperator {
 
 	/**
 	 * Adds more than one Binding to the list which will be processed
+	 *
 	 * @param qr QueryResult to add
 	 * @return processed QueryResult, if limit has been reached<br>
 	 * null if not
@@ -89,6 +95,7 @@ public class Collector extends SingleInputOperator {
 	 * limit has not been reached. DO this at the end of every inputstream as you propably have something
 	 * stored here, what has not been processed, but as end of inputStream has been reached, limit will
 	 * never be reached => no processing.
+	 *
 	 * @return processed QueryResult
 	 */
 	public QueryResult forward(){

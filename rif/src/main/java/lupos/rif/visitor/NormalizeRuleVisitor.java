@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -41,11 +45,18 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> {
 
 	public boolean generateDNF = true;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Conjunction} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(Conjunction obj, IRuleNode arg) throws RIFException {
 		if (obj.exprs.size() == 1)
 			return obj.exprs.get(0).accept(this, arg);
@@ -150,6 +161,14 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return null;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Disjunction} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(Disjunction obj, IRuleNode arg) throws RIFException {
 		if (obj.exprs.size() == 1)
 			return obj.exprs.get(0).accept(this, arg);
@@ -168,6 +187,14 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Document} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(Document obj, IRuleNode arg) throws RIFException {
 		List<Rule> newRules = new ArrayList<Rule>();
 		List<IExpression> newFacts = new ArrayList<IExpression>();
@@ -190,6 +217,14 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Rule} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(Rule obj, IRuleNode arg) throws RIFException {
 		obj.setParent(arg);
 		obj.setHead((IExpression) obj.getHead().accept(this, obj));
@@ -202,6 +237,14 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RulePredicate} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(RulePredicate obj, IRuleNode arg)
 			throws RIFException {
 		obj.setParent(arg);
@@ -213,6 +256,14 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.External} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(External obj, IRuleNode arg) throws RIFException {
 		obj.setParent(arg);
 		obj.termName = (IExpression) obj.termName.accept(this, obj);
@@ -223,6 +274,14 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.ExistExpression} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(ExistExpression obj, IRuleNode arg)
 			throws RIFException {
 		obj.setParent(arg);
@@ -230,21 +289,53 @@ public class NormalizeRuleVisitor implements IRuleVisitor<IRuleNode, IRuleNode> 
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RuleVariable} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(RuleVariable obj, IRuleNode arg) throws RIFException {
 		obj.setParent(arg);
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Constant} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(Constant obj, IRuleNode arg) throws RIFException {
 		obj.setParent(arg);
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Equality} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(Equality obj, IRuleNode arg) throws RIFException {
 		obj.setParent(arg);
 		return obj;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RuleList} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public IRuleNode visit(RuleList obj, IRuleNode arg) throws RIFException {
 		for (IExpression expr : obj.getItems())
 			expr.accept(this, arg);

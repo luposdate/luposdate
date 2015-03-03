@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
@@ -30,15 +34,22 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
-
 public class StatusBar extends JPanel {
 	private static final long serialVersionUID = 4602066192309533345L;
 	private JLabel label = new JLabel();
 
+	/**
+	 * <p>Constructor for StatusBar.</p>
+	 */
 	public StatusBar() {
 		this(" ");
 	}
 
+	/**
+	 * <p>Constructor for StatusBar.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 */
 	public StatusBar(String text) {
 		super(new GridBagLayout());
 
@@ -56,12 +67,20 @@ public class StatusBar extends JPanel {
 		this.setText(text);
 	}
 
+	/**
+	 * <p>setText.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 */
 	public void setText(String text) {
 		this.label.setText(text);
 
 		this.revalidate();
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		this.setText(" ");
 	}

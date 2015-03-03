@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -51,6 +55,12 @@ public class RIFBuiltinFactory {
 					NonStandardFunctions.class);
 	private static final Map<String, Tuple<Builtin, Method>> builtins = new HashMap<String, Tuple<Builtin, Method>>();
 
+	/**
+	 * <p>canBind.</p>
+	 *
+	 * @param builtin a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a boolean.
+	 */
 	public static boolean canBind(final URILiteral builtin) {
 		if (builtins.isEmpty()) {
 			initializeBuiltins();
@@ -62,6 +72,12 @@ public class RIFBuiltinFactory {
 		}
 	}
 
+	/**
+	 * <p>isIterable.</p>
+	 *
+	 * @param builtin a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a boolean.
+	 */
 	public static boolean isIterable(final URILiteral builtin) {
 		if (builtins.isEmpty()) {
 			initializeBuiltins();
@@ -73,6 +89,12 @@ public class RIFBuiltinFactory {
 		}
 	}
 
+	/**
+	 * <p>isDefined.</p>
+	 *
+	 * @param builtin a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a boolean.
+	 */
 	public static boolean isDefined(final URILiteral builtin) {
 		if (builtins.isEmpty()) {
 			initializeBuiltins();
@@ -80,6 +102,13 @@ public class RIFBuiltinFactory {
 		return builtins.containsKey(builtin.originalString());
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @param builtin a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param args a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public static Iterator<Literal> getIterator(final URILiteral builtin,
 			final Literal... args) {
 		Method methodToCall = null;
@@ -103,6 +132,13 @@ public class RIFBuiltinFactory {
 		}
 	}
 
+	/**
+	 * <p>callBuiltin.</p>
+	 *
+	 * @param builtin a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public static Object callBuiltin(final URILiteral builtin, final Argument arg) {
 		if (builtins.isEmpty()) {
 			initializeBuiltins();
@@ -135,14 +171,35 @@ public class RIFBuiltinFactory {
 		}
 	}
 
+	/**
+	 * <p>createArgument.</p>
+	 *
+	 * @param args a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link lupos.rif.builtin.Argument} object.
+	 */
 	public static Argument createArgument(final Literal... args) {
 		return createArgument(null, null, args);
 	}
 
+	/**
+	 * <p>createArgument.</p>
+	 *
+	 * @param binding a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param args a {@link lupos.datastructures.items.Item} object.
+	 * @return a {@link lupos.rif.builtin.Argument} object.
+	 */
 	public static Argument createArgument(final Bindings binding, final Item... args) {
 		return createArgument(binding, null, args);
 	}
 
+	/**
+	 * <p>createArgument.</p>
+	 *
+	 * @param binding a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param result a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param args a {@link lupos.datastructures.items.Item} object.
+	 * @return a {@link lupos.rif.builtin.Argument} object.
+	 */
 	public static Argument createArgument(final Bindings binding, final Literal result,
 			final Item... args) {
 		final Argument arg = new Argument();

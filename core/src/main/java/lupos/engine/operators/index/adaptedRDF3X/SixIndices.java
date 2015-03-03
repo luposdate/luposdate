@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.adaptedRDF3X;
 
@@ -66,7 +70,6 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class SixIndices extends Indices {
 
     protected PrefixSearchMinMax<TripleKey, Triple> SPO;
@@ -78,17 +81,34 @@ public class SixIndices extends Indices {
 
     protected lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics[] statisticsIndicesForFastHistogramComputation = null;
 
+    /** Constant <code>k=1000</code> */
     protected static final int k = 1000;
+    /** Constant <code>k_=500</code> */
     protected static final int k_ = 500;
 
+    /**
+     * <p>Constructor for SixIndices.</p>
+     */
     public SixIndices() {
         this.init(Indices.usedDatastructure);
     }
 
+    /**
+     * <p>getDBBPTreeStatistics.</p>
+     *
+     * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+     * @return a {@link lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics} object.
+     */
     public lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics getDBBPTreeStatistics(final CollationOrder order) {
         return this.statisticsIndicesForFastHistogramComputation[order.ordinal()];
     }
 
+    /**
+     * <p>getDatastructure.</p>
+     *
+     * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+     * @return a {@link lupos.datastructures.paged_dbbptree.PrefixSearchMinMax} object.
+     */
     public PrefixSearchMinMax<TripleKey, Triple> getDatastructure(final CollationOrder order) {
         try {
             if (Indices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
@@ -111,6 +131,13 @@ public class SixIndices extends Indices {
         }
     }
 
+    /**
+     * <p>generate.</p>
+     *
+     * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+     * @param generator a {@link lupos.datastructures.paged_dbbptree.DBBPTree.Generator} object.
+     * @throws java.io.IOException if any.
+     */
     public void generate(final CollationOrder order, final Generator<TripleKey, Triple> generator) throws IOException {
     	final PrefixSearchMinMax<TripleKey, Triple> psmm = this.getIndex(order);
 
@@ -150,6 +177,7 @@ public class SixIndices extends Indices {
 
     /**
      * Generates the statistics based on the triples in the evaluation indices...
+     *
      * @param order the collation order the statistics of which is to be generated!
      */
     public void generateStatistics(final CollationOrder order){
@@ -185,6 +213,12 @@ public class SixIndices extends Indices {
     	}
     }
 
+    /**
+     * <p>getIndex.</p>
+     *
+     * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+     * @return a {@link lupos.datastructures.paged_dbbptree.PrefixSearchMinMax} object.
+     */
     public PrefixSearchMinMax<TripleKey, Triple> getIndex(final CollationOrder order) {
     	switch(order){
     		default:
@@ -203,11 +237,22 @@ public class SixIndices extends Indices {
     	}
     }
 
+    /**
+     * <p>Constructor for SixIndices.</p>
+     *
+     * @param uriLiteral a {@link lupos.datastructures.items.literal.URILiteral} object.
+     */
     public SixIndices(final URILiteral uriLiteral) {
     	this.rdfName = uriLiteral;
         this.init(Indices.usedDatastructure);
     }
 
+    /**
+     * <p>Constructor for SixIndices.</p>
+     *
+     * @param uriLiteral a {@link lupos.datastructures.items.literal.URILiteral} object.
+     * @param initialize a boolean.
+     */
     public SixIndices(final URILiteral uriLiteral, final boolean initialize) {
     	this.rdfName = uriLiteral;
         if (initialize) {
@@ -215,6 +260,7 @@ public class SixIndices extends Indices {
 		}
     }
 
+    /** {@inheritDoc} */
     @Override
     public void add(final Triple t) {
         this.addTriple(t);
@@ -222,7 +268,9 @@ public class SixIndices extends Indices {
 
     protected Adder[] adders = null;
     protected BoundedBuffer<Triple>[] boundedBuffersForAdders = null;
+    /** Constant <code>MAXBUFFER=1000</code> */
     protected final static int MAXBUFFER = 1000;
+    /** Constant <code>parallel=true</code> */
     protected final static boolean parallel = true;
 
     private void addTriple(final Triple t) {
@@ -290,21 +338,29 @@ public class SixIndices extends Indices {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void build() {
         this.waitForAdderThreads();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean contains(final Triple t) {
     	this.waitForAdderThreads();
         return (this.SPO.get(new TripleKey(t, new TripleComparator(CollationOrder.SPO))) != null);
     }
 
+    /**
+     * <p>size.</p>
+     *
+     * @return a int.
+     */
     public int size(){
     	return this.SPO.size();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void init(final DATA_STRUCT ds) {
         Indices.usedDatastructure = ds;
@@ -318,6 +374,7 @@ public class SixIndices extends Indices {
         this.OPS = this.getDatastructure(CollationOrder.OPS);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove(final Triple t) {
     	this.SPO.remove(new TripleKey(t, new TripleComparator(CollationOrder.SPO)));
@@ -328,10 +385,17 @@ public class SixIndices extends Indices {
     	this.OPS.remove(new TripleKey(t, new TripleComparator(CollationOrder.OPS)));
     }
 
+    /**
+     * <p>evaluateTriplePattern.</p>
+     *
+     * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+     * @return a {@link java.util.Iterator} object.
+     */
     public Iterator<Triple> evaluateTriplePattern(final TriplePattern tp) {
         return RDF3XIndexScan.getIterator(this, RDF3XIndexScan.getKey(tp, null), RDF3XIndexScan.getCollationOrder(tp, null), null, null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void constructCompletely() {
         this.waitForAdderThreads();
@@ -508,6 +572,7 @@ public class SixIndices extends Indices {
 		}
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void loadDataWithoutConsideringOntoloy(final URILiteral graphURI, final String dataFormat, final Dataset dataset) throws Exception {
         if (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP) {
@@ -558,6 +623,7 @@ public class SixIndices extends Indices {
 		}
     }
 
+    /** {@inheritDoc} */
     @Override
     public void readIndexInfo(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
         this.SPO = DBBPTree.readLuposObject(in);
@@ -580,6 +646,7 @@ public class SixIndices extends Indices {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void writeIndexInfo(final OutputStream out) throws IOException {
         if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {
@@ -608,6 +675,7 @@ public class SixIndices extends Indices {
 		}
     }
 
+    /** {@inheritDoc} */
     @Override
     public void writeOutAllModifiedPages() throws IOException {
         if (SixIndices.usedDatastructure == DATA_STRUCT.DBBPTREE) {

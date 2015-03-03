@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.consumer.app;
 
@@ -48,6 +52,9 @@ public class ActionsEditView  extends JPanel {
 	
 	private JComboBox actionTypesBox;
 	
+	/**
+	 * <p>Constructor for ActionsEditView.</p>
+	 */
 	public ActionsEditView() {
 		super.setLayout(new BorderLayout());
 		
@@ -55,6 +62,11 @@ public class ActionsEditView  extends JPanel {
 		super.add(this.actionTypesBox, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * <p>getAction.</p>
+	 *
+	 * @return a {@link lupos.event.action.Action} object.
+	 */
 	public Action getAction() {
 		@SuppressWarnings("unchecked")
 		Class<? extends Action> selectedType = (Class<? extends Action>) this.actionTypesBox.getSelectedItem();

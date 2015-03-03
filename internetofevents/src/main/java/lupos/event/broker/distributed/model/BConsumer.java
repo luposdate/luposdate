@@ -34,8 +34,9 @@ import lupos.event.pubsub.Subscription;
  * This Class encapsulates some data about
  * a consumer which is created for each subscription
  * which has been registered
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class BConsumer implements Serializable{
 	
@@ -48,6 +49,7 @@ public class BConsumer implements Serializable{
 	/**
 	 * Constructs a new BConsumer object
 	 * by giving it a subscription object
+	 *
 	 * @param sub the subscription
 	 */
 	public BConsumer(Subscription sub){
@@ -57,6 +59,7 @@ public class BConsumer implements Serializable{
 	/**
 	 * Updates this BConsumer instance by giving
 	 * it a new subscription object
+	 *
 	 * @param sub the new or changed subscription object
 	 */
 	public void replaceSubscription(Subscription sub){
@@ -94,28 +97,41 @@ public class BConsumer implements Serializable{
 	/**
 	 * Gets a list of all requested events of the
 	 * underlying subscription
+	 *
 	 * @return a list of all rdf events
 	 */
 	public List<String> getWantedEvents() {
 		return this.wantedEvents;
 	}
 
+	/**
+	 * <p>Getter for the field <code>connectionInfo</code>.</p>
+	 *
+	 * @return a {@link lupos.event.communication.TcpConnectInfo} object.
+	 */
 	public TcpConnectInfo getConnectionInfo() {
 		return this.connectionInfo;
 	}
 
+	/**
+	 * <p>Setter for the field <code>connectionInfo</code>.</p>
+	 *
+	 * @param connectionInfo a {@link lupos.event.communication.TcpConnectInfo} object.
+	 */
 	public void setConnectionInfo(TcpConnectInfo connectionInfo) {
 		this.connectionInfo = connectionInfo;
 	}
 	
 	/**
 	 * Gets the underlying subscription object
+	 *
 	 * @return the subscription object
 	 */
 	public Subscription getSubscription(){
 		return this.storedSubscription;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof BConsumer){

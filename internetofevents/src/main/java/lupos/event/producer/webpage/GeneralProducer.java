@@ -53,9 +53,9 @@ import org.w3c.dom.NodeList;
 /**
  * This class can be used to extract data from any html based website.
  * Sub-classes call this instructor for extracting explicit data
- * 
- * @author Team 4
  *
+ * @author Team 4
+ * @version $Id: $Id
  */
 public class GeneralProducer extends ProducerBaseNoDuplicates {
 
@@ -69,7 +69,8 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 	protected List<String> regexString;
 
 	/**
-	 * 
+	 * <p>Constructor for GeneralProducer.</p>
+	 *
 	 * @param msgService for TCP-transport
 	 * @param namespace the namespace of the Producer
 	 * @param type literaltype of the calling sub-class
@@ -79,9 +80,8 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 	 * @param datastring type of literal for each node value
 	 * @param regexstring optional for selecting specific data out of xpathNode (regular expressions)
 	 * @param interval the interval (in milliseconds) for checking the web page for updates
-	 * 
+	 *
 	 * The constructor just sets the parameter
-	 * 
 	 */
 	public GeneralProducer(SerializingMessageService msgService,
 			String namespace, Literal type, URL url2, List<String> xpathlist,
@@ -98,7 +98,8 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 	}
 
 	/**
-	 * 
+	 * <p>Constructor for GeneralProducer.</p>
+	 *
 	 * @param msgService for TCP-transport
 	 * @param namespace the namespace of the Producer
 	 * @param type literaltype of the calling sub-class
@@ -107,9 +108,8 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 	 * @param literallist list of literals where each entry corresponds to each entry in xpathlist
 	 * @param datastring type of literal for each node value
 	 * @param regexstring optional for selecting specific data out of xpathNode (regular expressions)
-	 * 
+	 *
 	 * The constructor just sets the parameter
-	 * 
 	 */
 	public GeneralProducer(SerializingMessageService msgService,
 			String namespace, Literal type, URL url2, List<String> xpathlist,
@@ -118,10 +118,11 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method parses the website and executes every XPath expression.
 	 * The result for each node in each query is put into a specific triple-list.
 	 * The results for  XPath can be casted to Integer by using regular expressions
-	 * @return result as List of triple-lists
 	 */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {

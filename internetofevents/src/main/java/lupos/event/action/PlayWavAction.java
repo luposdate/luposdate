@@ -35,16 +35,23 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * Action that plays a WAV-file when executed.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PlayWavAction extends Action {
 
 	private String wavFile = "/alarm.wav";
 	
 	
+	/**
+	 * <p>Constructor for PlayWavAction.</p>
+	 */
 	public PlayWavAction() {
 		super("PlayWavAction");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void execute(QueryResult queryResult) {
 
@@ -73,6 +80,11 @@ public class PlayWavAction extends Action {
 		}
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args) {
 		new PlayWavAction().execute(null);
 	}

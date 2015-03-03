@@ -49,6 +49,8 @@ import lupos.misc.util.ImmutableIterator;
  * These variables are stored statically and in the same order they have been
  * provided.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BindingsArray extends Bindings {
 
@@ -66,6 +68,8 @@ public class BindingsArray extends Bindings {
 
 	/**
 	 * Constructor
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	protected BindingsArray(final BindingsFactory bindingsFactory){
 		this.bindingsFactory = bindingsFactory;
@@ -74,6 +78,9 @@ public class BindingsArray extends Bindings {
 
 	/**
 	 * Constructor. Be careful: only use this constructor if you know what you are doing!
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @param literals an array of {@link lupos.datastructures.items.literal.Literal} objects.
 	 */
 	public BindingsArray(final BindingsFactory bindingsFactory, final Literal[] literals){
 		this.bindingsFactory = bindingsFactory;
@@ -81,6 +88,8 @@ public class BindingsArray extends Bindings {
 	}
 
 	/**
+	 * <p>Getter for the field <code>literals</code>.</p>
+	 *
 	 * @return the literals
 	 */
 	public Literal[] getLiterals() {
@@ -90,7 +99,7 @@ public class BindingsArray extends Bindings {
 	/**
 	 * Sets the literals.<br>
 	 * In fact, provided array of literals copied by an
-	 * {@link System#arraycopy(Object, int, Object, int, int)} call with the
+	 * {@link java.lang.System#arraycopy(Object, int, Object, int, int)} call with the
 	 * array of literals from this class as target and the provided array as
 	 * source.
 	 *
@@ -120,6 +129,7 @@ public class BindingsArray extends Bindings {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArray clone() {
 		final BindingsArray other = new BindingsArray(this.bindingsFactory);
@@ -128,15 +138,12 @@ public class BindingsArray extends Bindings {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Adds a new binding to the collection.<br>
 	 * If the variable is already bound, the old value will be dismissed. If the
 	 * old value is still needed, the collection of bindings has to be cloned
 	 * previously.
-	 *
-	 * @param var
-	 *            the variable
-	 * @param literal
-	 *            the literal
 	 */
 	@Override
 	public void add(final Variable var, final Literal literal) {
@@ -147,11 +154,9 @@ public class BindingsArray extends Bindings {
 	}
 
 	/**
-	 * Returns the literal a variable is bound to.
+	 * {@inheritDoc}
 	 *
-	 * @param var
-	 *            the variable
-	 * @return the literal a variable is bound to
+	 * Returns the literal a variable is bound to.
 	 */
 	@Override
 	public Literal get(final Variable var) {
@@ -163,9 +168,9 @@ public class BindingsArray extends Bindings {
 	}
 
 	/**
-	 * Returns the set of bound variables
+	 * {@inheritDoc}
 	 *
-	 * @return the set of bound variables
+	 * Returns the set of bound variables
 	 */
 	@Override
 	public Set<Variable> getVariableSet() {
@@ -178,6 +183,7 @@ public class BindingsArray extends Bindings {
 		return hs;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Variable> getVariables() {
 		// this method is overridden because of performance issues...
@@ -217,7 +223,7 @@ public class BindingsArray extends Bindings {
 	 * If the bindings of the other collections conflict with the bindings of
 	 * this collection, the old bindings of this one will be dismissed.
 	 *
-	 * @param other
+	 * @param other a {@link lupos.datastructures.bindings.BindingsArray} object.
 	 */
 	public void addAll(final BindingsArray other) {
 		// add or overwrite all values of the other bindings object
@@ -230,6 +236,7 @@ public class BindingsArray extends Bindings {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() {
 		lock.lock();
@@ -240,11 +247,17 @@ public class BindingsArray extends Bindings {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArray createInstance(){
 		return new BindingsArray(this.bindingsFactory);
 	}
 
+	/**
+	 * <p>Getter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsFactory getBindingsFactory() {
 		return this.bindingsFactory;
 	}

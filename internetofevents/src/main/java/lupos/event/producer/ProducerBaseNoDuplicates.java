@@ -36,6 +36,8 @@ import lupos.event.communication.SerializingMessageService;
  * triples in a new data set (comparing to the previous one). Subclasses must
  * implement produceNoDuplicates() instead of produce()!
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 
@@ -59,12 +61,20 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 	 */
 	private List<Integer> prevHashes = new ArrayList<Integer>();
 
+	/**
+	 * <p>Constructor for ProducerBaseNoDuplicates.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @param interval a int.
+	 */
 	public ProducerBaseNoDuplicates(final SerializingMessageService msgService,
 			final int interval) {
 		super(msgService, interval);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * NOT to be overridden by subclasses anymore!
 	 *
 	 * see #produceNoDuplicates()

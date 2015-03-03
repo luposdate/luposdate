@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
 
@@ -27,7 +31,6 @@ import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.tosort.ArraySort;
 import lupos.datastructures.dbmergesortedds.tosort.ParallelMergeSort;
 import lupos.datastructures.dbmergesortedds.tosort.QuickSort;
-
 public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 
 	protected boolean useQuickSort = true;
@@ -41,12 +44,25 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 	protected Object[] alreadySorted = null;
 	protected ArraySort<E> toSort;
 
+	/**
+	 * <p>Constructor for SortAndMergeHeap.</p>
+	 *
+	 * @param length a int.
+	 * @param useQuickSort a boolean.
+	 */
 	public SortAndMergeHeap(final int length, final boolean useQuickSort) {
 		this.useQuickSort = useQuickSort;
 		newSort(length);
 		maxLength = length;
 	}
 
+	/**
+	 * <p>Constructor for SortAndMergeHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param capacity a int.
+	 * @param useQuickSort a boolean.
+	 */
 	public SortAndMergeHeap(final Object[] content, final int capacity,
 			final boolean useQuickSort) {
 		this.useQuickSort = useQuickSort;
@@ -63,11 +79,22 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		maxLength = capacity;
 	}
 
+	/**
+	 * <p>Constructor for SortAndMergeHeap.</p>
+	 *
+	 * @param length a int.
+	 */
 	public SortAndMergeHeap(final int length) {
 		newSort(length);
 		maxLength = length;
 	}
 
+	/**
+	 * <p>Constructor for SortAndMergeHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param capacity a int.
+	 */
 	public SortAndMergeHeap(final Object[] content, final int capacity) {
 		// newSort(0);
 		// if (content != null)
@@ -82,6 +109,11 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		maxLength = capacity;
 	}
 
+	/**
+	 * <p>newSort.</p>
+	 *
+	 * @param length a int.
+	 */
 	public void newSort(final int length) {
 		if (useQuickSort)
 			toSort = new QuickSort<E>(length);
@@ -89,6 +121,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 			toSort = new ParallelMergeSort<E>(length);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Object[] getContent() {
 		if (size() == 0)
@@ -106,11 +139,13 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 			return alreadySorted;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int maxLength() {
 		return maxLength;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E peek() {
 		if (size() == 0)
@@ -122,6 +157,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		return (E) alreadySorted[start];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E pop() {
 		if (size() == 0)
@@ -228,6 +264,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		merged = alreadySorted.length + 1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		int size = (alreadySorted == null) ? 0 : lengthAlreadySorted - start;
@@ -235,6 +272,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		return size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = "";
@@ -245,6 +283,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		return s;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		if (toSort == null) {
@@ -253,6 +292,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		toSort.add(elem);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		if (toSort != null) {
@@ -262,6 +302,7 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		start = 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		if (toSort != null) {
@@ -270,11 +311,13 @@ public class SortAndMergeHeap<E extends Comparable<E>> extends Heap<E> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return size() == 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFull() {
 		if (toSort == null) {

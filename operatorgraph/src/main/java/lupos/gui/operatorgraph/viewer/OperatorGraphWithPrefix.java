@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.viewer;
 
@@ -30,12 +34,14 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperPrefixNonEditable;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import xpref.datatypes.BooleanDatatype;
-
 public class OperatorGraphWithPrefix extends OperatorGraph {
 	private static final long serialVersionUID = 902876317608720839L;
 
 	private Prefix prefix = null;
 
+	/**
+	 * <p>Constructor for OperatorGraphWithPrefix.</p>
+	 */
 	public OperatorGraphWithPrefix() {
 		super();
 		try {
@@ -47,6 +53,11 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 		}
 	}
 
+	/**
+	 * <p>Constructor for OperatorGraphWithPrefix.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 */
 	public OperatorGraphWithPrefix(final ViewerPrefix prefix) {
 		super();
 		try {
@@ -60,14 +71,25 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 		}
 	}
 
+	/**
+	 * <p>setPrefixStatus.</p>
+	 *
+	 * @param status a boolean.
+	 */
 	public void setPrefixStatus(final boolean status) {
 		this.prefix.setStatus(status);
 	}
 
+	/**
+	 * <p>Getter for the field <code>prefix</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public Prefix getPrefix() {
 		return this.prefix;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized void arrange(final Arrange arrange) {
 		final GraphWrapper prefixGW = new GraphWrapperPrefixNonEditable(this.prefix);

@@ -28,13 +28,14 @@ import java.util.Comparator;
 
 /**
  * This class represents an entry in the <tt>SimplifiedFractalTree</tt>.
- * @author Denis Fäcke
  *
+ * @author Denis Fäcke
  * @param <K> The type of the key
  * @param <V> The type of the value
  * @see Comparable
  * @see Serializable
  * @see SimplifiedFractalTree
+ * @version $Id: $Id
  */
 public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<FractalTreeEntry<K, V>>, Serializable, Comparator<FractalTreeEntry<K, V>> {
 	/**
@@ -48,6 +49,7 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 
 	/**
 	 * Constructs a new <tt>FractalTreeEntry</tt>.
+	 *
 	 * @param key A key
 	 * @param value A value
 	 */
@@ -59,6 +61,7 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 
 	/**
 	 * Constructs a new <tt>FractalTreeEntry</tt>.
+	 *
 	 * @param key A key
 	 * @param value A value
 	 * @param pointer A pointer
@@ -71,6 +74,7 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 
 	/**
 	 * Constructs a new <tt>FractalTreeEntry</tt>.
+	 *
 	 * @param key A key
 	 * @param value A value
 	 * @param pointer A pointer
@@ -92,6 +96,7 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 		this.pointer = -1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		if (this.key != null) {
@@ -105,17 +110,20 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final FractalTreeEntry<K, V> arg0) {
 		return this.compare(this, arg0);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(final Object arg0) {
 		return this.compareTo((FractalTreeEntry<K, V>) arg0) == 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(final FractalTreeEntry<K, V> o1, final FractalTreeEntry<K, V> o2) {
 		if (o1.key.compareTo(o2.key) == -1) {

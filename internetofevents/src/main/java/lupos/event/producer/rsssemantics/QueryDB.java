@@ -34,6 +34,9 @@ import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
 /**
  * Establishes a connection to the database and sends queries.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryDB {
 
@@ -51,10 +54,20 @@ public class QueryDB {
 
 	private String query;
 
+	/**
+	 * <p>Constructor for QueryDB.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 */
 	public QueryDB(String query) {
 		this.query = query;
 	}
 
+	/**
+	 * <p>query.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult query() {
 		try {
 			MemoryIndexQueryEvaluator evaluator = new MemoryIndexQueryEvaluator();

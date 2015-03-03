@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
@@ -34,7 +38,6 @@ import javax.swing.Icon;
 import javax.swing.JCheckBox;
 
 import lupos.gui.operatorgraph.util.VEImageIcon;
-
 public class JCheckBoxOwnIcon extends JCheckBox {
 	private static final long serialVersionUID = 5080828594396977595L;
 	private JCheckBoxOwnIcon that = this;
@@ -44,6 +47,13 @@ public class JCheckBoxOwnIcon extends JCheckBox {
 	private Icon moCheckedCB;
 	private Icon moUncheckedCB;
 
+	/**
+	 * <p>Constructor for JCheckBoxOwnIcon.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param state a boolean.
+	 * @param font a {@link java.awt.Font} object.
+	 */
 	public JCheckBoxOwnIcon(String title, boolean state, Font font) {
 		super(title, state);
 

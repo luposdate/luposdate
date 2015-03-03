@@ -46,6 +46,9 @@ import lupos.sparql1_1.Node;
 
 /**
  * Superclass of all operators for the service calls to sparql endpoints.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class FederatedQuery  extends SingleInputOperator {
 	protected final Node federatedQuery;
@@ -55,12 +58,18 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 
 	protected BindingsFactory bindingsFactory;
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/**
+	 * <p>Constructor for FederatedQuery.</p>
+	 *
+	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
+	 */
 	public FederatedQuery(final Node federatedQuery) {
 		this.federatedQuery = federatedQuery;
 		final Node child0 = this.federatedQuery.jjtGetChild(0);
@@ -78,18 +87,26 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 		return "Approach "+this.getClass().getSimpleName();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper();
 		return this.getApproachName()+"\n"+this.federatedQuery.accept(dumper);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumperShort(prefixInstance);
 		return this.getApproachName()+"\n"+this.federatedQuery.accept(dumper);
 	}
 
+	/**
+	 * <p>checkVariables.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 */
 	public static void checkVariables(final Node node, final Collection<Variable> vars) {
 		if (node instanceof ASTVar) {
 			final Variable v = new Variable(((ASTVar) node).getName());
@@ -103,10 +120,23 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>getVariablesInIntersectionOfServiceCallAndBindings.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getVariablesInIntersectionOfServiceCallAndBindings(final Bindings bindings){
 		return FederatedQuery.getVariablesInIntersectionOfSetOfVariablesAndBindings(this.variablesInServiceCall, bindings);
 	}
 
+	/**
+	 * <p>getVariablesInIntersectionOfSetOfVariablesAndBindings.</p>
+	 *
+	 * @param variablesInServiceCall a {@link java.util.Set} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link java.util.Set} object.
+	 */
 	public static Set<Variable> getVariablesInIntersectionOfSetOfVariablesAndBindings(final Set<Variable> variablesInServiceCall, final Bindings bindings){
 		final Set<Variable> result = bindings.getVariableSet();
 		result.retainAll(variablesInServiceCall);

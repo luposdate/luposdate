@@ -27,6 +27,9 @@ import java.io.IOException;
 
 /**
  * This abstract super class specifies the basic methods to be implemented by concrete buffer manager implementations.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BufferManager {
 
@@ -70,6 +73,7 @@ public abstract class BufferManager {
 
 	/**
 	 * the only way to get the singleton buffer manager
+	 *
 	 * @return the singleton buffer manager
 	 */
 	public static synchronized BufferManager getBufferManager(){
@@ -105,27 +109,27 @@ public abstract class BufferManager {
 	 * @param pageaddress
 	 *            The address of the page to be retrieved.
 	 * @return The content of the page
-	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract byte[] getPage(final int pagesize, final PageAddress pageaddress) throws IOException;
 
 	/**
 	 * This method modifies a page in the buffer. If the page does not exist so
 	 * far in the buffer it is added to the buffer and marked as modified.
+	 *
 	 * @param pagesize the size of the page
 	 * @param pageaddress
 	 *            The address of the modified page
 	 * @param pageContent
 	 *            The modified page
-	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract void modifyPage(final int pagesize, final PageAddress pageaddress, final byte[] pageContent) throws IOException;
 
 	/**
 	 * This method releases a page, i.e., its content does not need to be stored
 	 * on disk.
+	 *
 	 * @param pageaddress the address of the page
 	 */
 	public abstract void releasePage(final PageAddress pageaddress);
@@ -138,41 +142,49 @@ public abstract class BufferManager {
 
 	/**
 	 * This method writes all modified pages (in the buffer) to disk for a specific basis filename
+	 *
 	 * @param filename the basis filename of the pages to be written
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract void writeAllModifiedPages(final String filename) throws IOException;
 
 
 	/**
 	 * This method writes all modified pages (in the buffer) to disk
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract void writeAllModifiedPages() throws IOException;
 	/**
 	 * This method closes the underlying files. This method should only be called
 	 * if the buffer manager is not used any more...
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract void close() throws IOException;
 
 	/**
 	 * This method releases all pages of a basis filename, i.e., their contents do not need to be stored
 	 * on disk.
+	 *
 	 * @param filename the filename of the basis file
 	 */
 	public abstract void releaseAllPages(final String filename);
 
 	/**
 	 * This method closes the underlying files of basis filename.
+	 *
 	 * @param filename the filename of the basis file
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract void close(final String filename) throws IOException;
 
 	/**
 	 * This method releases all pages, deletes the buffered file from disk and starts with a new file,
 	 * i.e. all content of the buffered file is deleted.
+	 *
 	 * @param filename the filename of the basis file
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public abstract void reset(final String filename) throws IOException;
 }

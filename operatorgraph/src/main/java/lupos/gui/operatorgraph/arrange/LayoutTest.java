@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.arrange;
 
@@ -30,7 +34,6 @@ import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public class LayoutTest {
 	
 	/**
@@ -150,6 +153,9 @@ public class LayoutTest {
 	/**
 	 * Method computes the amount of edge-crossing in a graph and displays the
 	 * result on command-line
+	 *
+	 * @param graph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String minEdgeCrossing_Test(OperatorGraph graph) {
 		HashMap<GraphWrapper, GraphBox> boxes = graph.getBoxes();
@@ -236,7 +242,9 @@ public class LayoutTest {
 	/**
 	 * Method computes standard variance and average length of edges in the graph and displays the
 	 * result on command-line
-	 * @param graph
+	 *
+	 * @param graph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String fixedEdgeLength_Test(OperatorGraph graph) {
 		double ariMiddle = 0.0;
@@ -282,7 +290,9 @@ public class LayoutTest {
 
 	/**
 	 * Method tests if graph-nodes are uniform distributed over the screen.
+	 *
 	 * @param op	the graph
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String uniformDistribution_Test(OperatorGraph op) {
 		HashMap<GraphWrapper, GraphBox> boxes = op.getBoxes();
@@ -346,8 +356,10 @@ public class LayoutTest {
 
 	/**
 	 * Method computes the average edge-length to compare it with the shortest
-	 * edge-length and shows the difference an the command line 
-	 * @param graph
+	 * edge-length and shows the difference an the command line
+	 *
+	 * @param graph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String closeness_Test(OperatorGraph graph) {
 		
@@ -385,7 +397,9 @@ public class LayoutTest {
 	/**
 	 * Method compares the average edge-length and the average node-distance with the
 	 * optimal Sugiyama-distance.
-	 * @param graph
+	 *
+	 * @param graph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String smallestSeparation_Test(OperatorGraph graph) {
 		HashMap <GraphWrapper, GraphBox> boxes = graph.getBoxes();
@@ -447,7 +461,9 @@ public class LayoutTest {
 	/**
 	 * Method tests if a graph-layout is symmetric to an axis and
 	 * shows the result on command-line
-	 * @param graph
+	 *
+	 * @param graph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String symmetry_Test(OperatorGraph graph) {
 		int width = GraphHelper.graphWidth(graph);
@@ -511,6 +527,12 @@ public class LayoutTest {
 		return result;
 	}
 	
+	/**
+	 * <p>test.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String test(final OperatorGraph operatorgraph){
 		String result = "Number of nodes: "+getNodeNumber(operatorgraph)+"\n"
 						+ "Number of edges: "+getEdgeNumber(operatorgraph)+"\n\n";

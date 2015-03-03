@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,37 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
 public class ModificationException extends Exception {
 	private static final long serialVersionUID = 1L;
 	private int line;
 	private int column;
 	private Operator operator;
 
+	/**
+	 * <p>Constructor for ModificationException.</p>
+	 *
+	 * @param msg a {@link java.lang.String} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public ModificationException(String msg, Operator operator) {
 		this(msg, 0, 0, operator);
 	}
 
+	/**
+	 * <p>Constructor for ModificationException.</p>
+	 *
+	 * @param msg a {@link java.lang.String} object.
+	 * @param line a int.
+	 * @param column a int.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public ModificationException(String msg, int line, int column, Operator operator) {
 		super(msg);
 
@@ -43,14 +60,29 @@ public class ModificationException extends Exception {
 		this.operator = operator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>line</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getLine() {
 		return this.line;
 	}
 
+	/**
+	 * <p>Getter for the field <code>column</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getColumn() {
 		return this.column;
 	}
 
+	/**
+	 * <p>Getter for the field <code>operator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public Operator getOperator() {
 		return this.operator;
 	}

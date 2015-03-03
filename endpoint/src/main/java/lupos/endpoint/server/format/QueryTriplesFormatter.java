@@ -36,19 +36,27 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * This class is for returning the query-triples of a query
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryTriplesFormatter extends Formatter {
 
+	/**
+	 * <p>Constructor for QueryTriplesFormatter.</p>
+	 */
 	public QueryTriplesFormatter() {
 		super("Query-Triples", "text/n3");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType(final QueryResult queryResult){
 		return "text/n3";
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		final byte[] carriageReturn = "\n".getBytes();
@@ -71,6 +79,7 @@ public class QueryTriplesFormatter extends Formatter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isWriteQueryTriples() {
 		return true;

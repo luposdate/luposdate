@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
 
@@ -29,23 +33,39 @@ import java.util.concurrent.Semaphore;
 
 import lupos.datastructures.dbmergesortedds.StandardComparator;
 import lupos.misc.util.ImmutableIterator;
-
 public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 
+	/** Constant <code>NUMBEROFTHREADS=8</code> */
 	protected final static int NUMBEROFTHREADS = 8;
 	protected Semaphore threadsPoolRemaining;
 	protected Comparator<E> comparator;
 
+	/**
+	 * <p>Constructor for ParallelMergeSort.</p>
+	 *
+	 * @param length a int.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public ParallelMergeSort(final int length, final Comparator<E> comparator) {
 		super(length);
 		this.comparator = comparator;
 	}
 
+	/**
+	 * <p>Constructor for ParallelMergeSort.</p>
+	 *
+	 * @param length a int.
+	 */
 	public ParallelMergeSort(final int length) {
 		super(length);
 		this.comparator = new StandardComparator<E>();
 	}
 
+	/**
+	 * <p>Constructor for ParallelMergeSort.</p>
+	 *
+	 * @param elements an array of {@link java.lang.Object} objects.
+	 */
 	public ParallelMergeSort(final Object[] elements) {
 		super(0);
 		this.elements = elements;
@@ -53,6 +73,12 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 		this.comparator = new StandardComparator<E>();
 	}
 
+	/**
+	 * <p>Constructor for ParallelMergeSort.</p>
+	 *
+	 * @param elements an array of {@link java.lang.Object} objects.
+	 * @param length a int.
+	 */
 	public ParallelMergeSort(final Object[] elements, final int length) {
 		super(0);
 		this.elements = elements;
@@ -60,6 +86,13 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 		this.comparator = new StandardComparator<E>();
 	}
 
+	/**
+	 * <p>Constructor for ParallelMergeSort.</p>
+	 *
+	 * @param elements an array of {@link java.lang.Object} objects.
+	 * @param length a int.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public ParallelMergeSort(final Object[] elements, final int length,
 			final Comparator<E> comparator) {
 		super(0);
@@ -68,11 +101,13 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 		this.comparator = comparator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sort() {
 		this.elements = this.sortAndReturn();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> emptyDatastructure() {
 		final int lengthSorted = this.length;
@@ -97,8 +132,14 @@ public class ParallelMergeSort<E extends Comparable<E>> extends ArraySort<E> {
 		};
 	}
 
+	/** Constant <code>M=25</code> */
 	public static int M = 25; // length of start sequences sorted with insertion
 
+	/**
+	 * <p>sortAndReturn.</p>
+	 *
+	 * @return an array of {@link java.lang.Object} objects.
+	 */
 	public Object[] sortAndReturn() {
 		this.threadsPoolRemaining = new Semaphore(NUMBEROFTHREADS);
 		final Sorter sorter = new Sorter(this.elements, 0, this.length);

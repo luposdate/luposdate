@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.tripleoperator.patternmatcher;
 
@@ -37,19 +41,31 @@ import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
-
 public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		TripleDeleter {
 
 	private static final long serialVersionUID = 6553461929216505005L;
 
+	/**
+	 * <p>Constructor for PatternMatcher.</p>
+	 */
 	public PatternMatcher() {
 	}
 
+	/**
+	 * <p>Constructor for PatternMatcher.</p>
+	 *
+	 * @param operators an array of {@link lupos.engine.operators.tripleoperator.TripleConsumer} objects.
+	 */
 	public PatternMatcher(final TripleConsumer[] operators) {
 		set(operators);
 	}
 
+	/**
+	 * <p>set.</p>
+	 *
+	 * @param operators an array of {@link lupos.engine.operators.tripleoperator.TripleConsumer} objects.
+	 */
 	public void set(final TripleConsumer[] operators) {
 		final List<OperatorIDTuple> succeedingOperators = new LinkedList<OperatorIDTuple>();
 		int i = 0;
@@ -59,6 +75,11 @@ public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		setSucceedingOperators(succeedingOperators);
 	}
 
+	/**
+	 * <p>getTriplePatterns.</p>
+	 *
+	 * @return an array of {@link lupos.engine.operators.tripleoperator.TriplePattern} objects.
+	 */
 	public TriplePattern[] getTriplePatterns() {
 		final TripleConsumer[] o = getOperators();
 		int numberTPs = 0;
@@ -75,6 +96,11 @@ public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		return tp;
 	}
 
+	/**
+	 * <p>getOperators.</p>
+	 *
+	 * @return an array of {@link lupos.engine.operators.tripleoperator.TripleConsumer} objects.
+	 */
 	public TripleConsumer[] getOperators() {
 		final TripleConsumer[] o = new TripleConsumer[getSucceedingOperators().size()];
 		int i = 0;
@@ -83,28 +109,37 @@ public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		return o;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
 		set(((PatternMatcher) op).getOperators());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		throw (new UnsupportedOperationException("This Operator(" + this
 				+ ") should have been replaced before being used."));
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	public void add(final TriplePattern tp) {
 		addSucceedingOperator(new OperatorIDTuple(tp, 0));
 	}
 
+	/** {@inheritDoc} */
 	public void deleteTriple(final Triple triple) {
 		for (final OperatorIDTuple opOuter : getSucceedingOperators()) {
 			((TriplePattern) opOuter.getOperator()).deleteTriple(triple);
 		}
 	}
 	
+	/** {@inheritDoc} */
 	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 		for (final OperatorIDTuple opOuter : getSucceedingOperators()) {
 			debugstep.stepDelete(this, opOuter.getOperator(), triple);
@@ -113,6 +148,13 @@ public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		}
 	}
 	
+	/**
+	 * <p>createDebugInstance.</p>
+	 *
+	 * @param pm a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 */
 	public static PatternMatcher createDebugInstance(final PatternMatcher pm,
 			final DebugStep debugstep) {
 		if (pm instanceof RDFSSimplePatternMatcher)
@@ -127,6 +169,7 @@ public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		return null;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message postProcessMessage(final StartOfEvaluationMessage msg) {
 		Triple dummyTriple = new Triple();
@@ -138,6 +181,7 @@ public class PatternMatcher extends TripleOperator implements TripleConsumer,
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message postProcessMessageDebug(final StartOfEvaluationMessage msg, DebugStep debugstep) {
 		Triple dummyTriple = new Triple();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -34,11 +38,16 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-
 public class ReplaceLit extends SingleInputOperator {
 	private LinkedList<Variable> substitutionsLiteralLeft = new LinkedList<Variable>();
 	private LinkedList<Literal> substitutionsLiteralRight = new LinkedList<Literal>();
 
+	/**
+	 * <p>removeSubstitution.</p>
+	 *
+	 * @param left a {@link lupos.datastructures.items.Variable} object.
+	 * @param right a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public void removeSubstitution(final Variable left, final Literal right) {
 		final LinkedList<Integer> pos = getPositions(substitutionsLiteralLeft,
 				left);
@@ -53,21 +62,37 @@ public class ReplaceLit extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>removeSubstitutionVars.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void removeSubstitutionVars(final int index) {
 		substitutionsLiteralLeft.remove(index);
 		substitutionsLiteralRight.remove(index);
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsLiteralLeft</code>.</p>
+	 *
+	 * @param substitutionsLiteralLeft a {@link java.util.LinkedList} object.
+	 */
 	public void setSubstitutionsLiteralLeft(
 			final LinkedList<Variable> substitutionsLiteralLeft) {
 		this.substitutionsLiteralLeft = substitutionsLiteralLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsLiteralRight</code>.</p>
+	 *
+	 * @param substitutionsLiteralRight a {@link java.util.LinkedList} object.
+	 */
 	public void setSubstitutionsLiteralRight(
 			final LinkedList<Literal> substitutionsLiteralRight) {
 		this.substitutionsLiteralRight = substitutionsLiteralRight;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		for (final Variable i : substitutionsLiteralLeft) {
@@ -79,10 +104,20 @@ public class ReplaceLit extends SingleInputOperator {
 		return msg;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsLiteralLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Variable> getSubstitutionsLiteralLeft() {
 		return substitutionsLiteralLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsLiteralRight</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Literal> getSubstitutionsLiteralRight() {
 		return substitutionsLiteralRight;
 	}
@@ -98,6 +133,13 @@ public class ReplaceLit extends SingleInputOperator {
 		return pos;
 	}
 
+	/**
+	 * <p>contains.</p>
+	 *
+	 * @param left a {@link lupos.datastructures.items.Item} object.
+	 * @param right a {@link lupos.datastructures.items.Item} object.
+	 * @return a boolean.
+	 */
 	public boolean contains(final Item left, final Item right) {
 		final LinkedList<Integer> indices = getPositions(
 				substitutionsLiteralLeft, left);
@@ -111,6 +153,12 @@ public class ReplaceLit extends SingleInputOperator {
 		return false;
 	}
 
+	/**
+	 * <p>addSubstitution.</p>
+	 *
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 * @param content a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public void addSubstitution(final Variable variable, final Literal content) {
 		if (!contains(variable, content)) {
 			substitutionsLiteralLeft.add(variable);
@@ -118,6 +166,7 @@ public class ReplaceLit extends SingleInputOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
@@ -152,6 +201,7 @@ public class ReplaceLit extends SingleInputOperator {
 		return qr;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator bo) {
 		super.cloneFrom(bo);
@@ -164,6 +214,12 @@ public class ReplaceLit extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>equals.</p>
+	 *
+	 * @param other a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a boolean.
+	 */
 	public boolean equals(final BasicOperator other) {
 		if (other instanceof ReplaceLit)
 			return equals((ReplaceLit) other);
@@ -171,6 +227,12 @@ public class ReplaceLit extends SingleInputOperator {
 			return false;
 	}
 
+	/**
+	 * <p>equals.</p>
+	 *
+	 * @param other a {@link lupos.engine.operators.singleinput.ReplaceLit} object.
+	 * @return a boolean.
+	 */
 	public boolean equals(final ReplaceLit other) {
 		final Iterator<Variable> iv = other.substitutionsLiteralLeft.iterator();
 		for (final Variable v : substitutionsLiteralLeft) {
@@ -189,6 +251,7 @@ public class ReplaceLit extends SingleInputOperator {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String result = super.toString() + "(";

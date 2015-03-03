@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.viewer;
 
@@ -37,10 +41,15 @@ import javax.swing.SwingConstants;
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public class ElementPanel extends AbstractSuperGuiComponent {
 	private static final long serialVersionUID = -8331563992779078372L;
 
+	/**
+	 * <p>Constructor for ElementPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public ElementPanel(OperatorGraph parent, GraphWrapper gw) {
 		super(parent, gw, true);
 
@@ -80,6 +89,7 @@ public class ElementPanel extends AbstractSuperGuiComponent {
 		this.setPreferredSize(new Dimension(width + (int) (2 * parent.PADDING), height + (int) (2 * parent.PADDING)));
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);

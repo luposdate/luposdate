@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,35 +21,64 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc;
-
 public class Tuple<T1, T2> {
 
 	protected T1 t1;
 	protected T2 t2;
 
+	/**
+	 * <p>Constructor for Tuple.</p>
+	 *
+	 * @param t1 a T1 object.
+	 * @param t2 a T2 object.
+	 */
 	public Tuple(final T1 t1, final T2 t2) {
 		this.t1 = t1;
 		this.t2 = t2;
 	}
 
+	/**
+	 * <p>getFirst.</p>
+	 *
+	 * @return a T1 object.
+	 */
 	public T1 getFirst() {
 		return t1;
 	}
 
+	/**
+	 * <p>setFirst.</p>
+	 *
+	 * @param t1 a T1 object.
+	 */
 	public void setFirst(final T1 t1) {
 		this.t1 = t1;
 	}
 
+	/**
+	 * <p>getSecond.</p>
+	 *
+	 * @return a T2 object.
+	 */
 	public T2 getSecond() {
 		return t2;
 	}
 
+	/**
+	 * <p>setSecond.</p>
+	 *
+	 * @param t2 a T2 object.
+	 */
 	public void setSecond(final T2 t2) {
 		this.t2 = t2;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object object) {
 		if (object instanceof Tuple) {
@@ -60,11 +90,17 @@ public class Tuple<T1, T2> {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return (int) (((long) t1.hashCode() + t2.hashCode()) % Integer.MAX_VALUE);
 	}
 	
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(){
 		return "(" + t1.toString()+", "+t2.toString()+")";
 	}

@@ -38,9 +38,12 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
  * Instances of this class are used as data structure for storing triples
  * indexed by various criteria.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Indices implements TripleConsumer {
 
+	/** Constant <code>HEAPHEIGHT=16</code> */
 	protected static int HEAPHEIGHT = 16;
 
 	/**
@@ -99,10 +102,20 @@ public abstract class Indices implements TripleConsumer {
 
 	protected URILiteral rdfName = null;
 
+	/**
+	 * <p>Getter for the field <code>rdfName</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getRdfName() {
 		return this.rdfName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rdfName</code>.</p>
+	 *
+	 * @param rdfName a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void setRdfName(final URILiteral rdfName) {
 		this.rdfName = rdfName;
 	}
@@ -115,6 +128,7 @@ public abstract class Indices implements TripleConsumer {
 	 */
 	public abstract void add(Triple t);
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple e) {
 		this.add(e);
@@ -171,16 +185,40 @@ public abstract class Indices implements TripleConsumer {
 		return Indices.usedDatastructure;
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		this.init(usedDatastructure);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param ds a {@link lupos.engine.operators.index.Indices.DATA_STRUCT} object.
+	 */
 	public abstract void init(DATA_STRUCT ds);
 
+	/**
+	 * <p>build.</p>
+	 */
 	public void build() {
 		// may be overridden...
 	}
 
+	/**
+	 * <p>loadData.</p>
+	 *
+	 * @param graphURI a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param dataFormat a {@link java.lang.String} object.
+	 * @param materialize a {@link lupos.engine.operators.index.Dataset.ONTOLOGY} object.
+	 * @param indicesFactory a {@link lupos.engine.operators.index.Dataset.IndicesFactory} object.
+	 * @param opt a int.
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @throws java.lang.Exception if any.
+	 */
 	public void loadData(
 			final URILiteral graphURI, final String dataFormat,
 			final ONTOLOGY materialize,
@@ -402,6 +440,14 @@ public abstract class Indices implements TripleConsumer {
 	}
 
 
+	/**
+	 * <p>loadDataWithoutConsideringOntoloy.</p>
+	 *
+	 * @param graphURI a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param dataFormat a {@link java.lang.String} object.
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void loadDataWithoutConsideringOntoloy(final URILiteral graphURI,
 			final String dataFormat, final Dataset dataset) throws Exception {
 		dataset.waitForCodeMapConstruction();
@@ -409,16 +455,38 @@ public abstract class Indices implements TripleConsumer {
 				this);
 	}
 
+	/**
+	 * <p>constructCompletely.</p>
+	 */
 	public abstract void constructCompletely();
 
+	/**
+	 * <p>writeOutAllModifiedPages.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeOutAllModifiedPages() throws IOException;
 
+	/**
+	 * <p>writeIndexInfo.</p>
+	 *
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeIndexInfo(final OutputStream out)
 			throws IOException {
 		System.err
 				.println("Writing index info is not supported by this type of index!");
 	}
 
+	/**
+	 * <p>readIndexInfo.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public void readIndexInfo(final InputStream in)
 			throws IOException, ClassNotFoundException, URISyntaxException {
 		System.err

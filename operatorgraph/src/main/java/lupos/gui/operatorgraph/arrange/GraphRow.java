@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.arrange;
 
@@ -32,19 +36,31 @@ import java.util.Map;
 import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public class GraphRow {
 	private final List<GraphBox> boxes; // holds the boxes of the row
 	private final int y;
 	private int height = 0;
 	private final OperatorGraph parent;
 
+	/**
+	 * <p>Constructor for GraphRow.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param y a int.
+	 */
 	public GraphRow(final OperatorGraph parent, final int y) {
 		this.parent = parent;
 		this.y = y;
 		this.boxes = new LinkedList<GraphBox>();
 	}
 
+	/**
+	 * <p>Constructor for GraphRow.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param y a int.
+	 * @param initialSize a int.
+	 */
 	public GraphRow(final OperatorGraph parent, final int y, final int initialSize) {
 		this.parent = parent;
 		this.y = y;
@@ -53,7 +69,7 @@ public class GraphRow {
 
 	/**
 	 * Adds a GraphBox to the current row.
-	 * 
+	 *
 	 * @param b
 	 *            box to add
 	 */
@@ -78,6 +94,12 @@ public class GraphRow {
 		this.height = Math.max(this.height, b.height);
 	}
 
+	/**
+	 * <p>addAllWithoutUpdatingParentsSize.</p>
+	 *
+	 * @param cgw a {@link java.util.Collection} object.
+	 * @param boxesMap a {@link java.util.Map} object.
+	 */
 	public void addAllWithoutUpdatingParentsSize(final Collection<GraphWrapper> cgw, final Map<GraphWrapper, GraphBox> boxesMap) {
 		// last box in the row
 		GraphBox last = (this.boxes.isEmpty()) ? null : this.boxes.get(this.boxes.size() - 1);
@@ -106,7 +128,7 @@ public class GraphRow {
 
 	/**
 	 * Centers the current row.
-	 * 
+	 *
 	 * @param center
 	 *            the center of the largest row
 	 */
@@ -119,6 +141,11 @@ public class GraphRow {
 		}
 	}
 
+	/**
+	 * <p>centerWithoutUpdatingParentsSize.</p>
+	 *
+	 * @param center a int.
+	 */
 	public void centerWithoutUpdatingParentsSize(final int center) {
 		final int offset = center - (this.getWidth() / 2);
 
@@ -128,14 +155,29 @@ public class GraphRow {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>boxes</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<GraphBox> getBoxes() {
 		return this.boxes;
 	}
 
+	/**
+	 * <p>Getter for the field <code>height</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getHeight() {
 		return this.height;
 	}
 
+	/**
+	 * <p>getWidth.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getWidth() {
 		if(this.boxes.size()==0){
 			return 0;
@@ -160,10 +202,20 @@ public class GraphRow {
 		return mostRightPosition - mostLeft.getX() + 2 * (int) Math.ceil(this.parent.getSPACING_X());
 	}
 
+	/**
+	 * <p>removeBox.</p>
+	 *
+	 * @param box a {@link lupos.gui.operatorgraph.GraphBox} object.
+	 */
 	public void removeBox(final GraphBox box) {
 		this.boxes.remove(box);
 	}
 
+	/**
+	 * <p>Getter for the field <code>y</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getY() {
 		return this.y;
 	}

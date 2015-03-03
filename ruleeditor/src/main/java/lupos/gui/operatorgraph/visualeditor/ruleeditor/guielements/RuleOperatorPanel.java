@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -30,11 +34,21 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum;
-
 public class RuleOperatorPanel extends AbstractRuleOperatorPanel {
 	private static final long serialVersionUID = -7897238149968316491L;
 	private JLabel startNodeLabel;
 
+	/**
+	 * <p>Constructor for RuleOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.RuleOperator} object.
+	 * @param classType a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum} object.
+	 * @param name a {@link java.lang.String} object.
+	 * @param startNode a boolean.
+	 * @param alsoSubClasses a boolean.
+	 */
 	public RuleOperatorPanel(final VisualGraph<Operator> parent, GraphWrapper gw, RuleOperator operator, RuleEnum classType, String name, boolean startNode, boolean alsoSubClasses) {
 		super(parent, gw, operator, classType, name, alsoSubClasses);
 
@@ -53,6 +67,11 @@ public class RuleOperatorPanel extends AbstractRuleOperatorPanel {
 		}
 	}
 
+	/**
+	 * <p>setAsStartNode.</p>
+	 *
+	 * @param state a boolean.
+	 */
 	public void setAsStartNode(boolean state) {
 		this.startNodeLabel.setVisible(state);
 	}

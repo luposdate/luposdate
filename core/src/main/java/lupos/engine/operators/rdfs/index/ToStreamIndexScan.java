@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.rdfs.index;
 
@@ -33,13 +37,24 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class ToStreamIndexScan extends BasicIndexScan {
 
+	/**
+	 * <p>Constructor for ToStreamIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.rdfs.index.RDFSRoot} object.
+	 */
 	public ToStreamIndexScan (final RDFSRoot root){
 		super(root);
 	}
 
+	/**
+	 * <p>Constructor for ToStreamIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePattern a {@link java.util.Collection} object.
+	 * @param root a {@link lupos.engine.operators.rdfs.index.RDFSRoot} object.
+	 */
 	public ToStreamIndexScan (final OperatorIDTuple succeedingOperator, final Collection<TriplePattern> triplePattern, final RDFSRoot root)
 	{
 		super(root);
@@ -56,6 +71,7 @@ public class ToStreamIndexScan extends BasicIndexScan {
 	/**
 	 * Joins the triple pattern using the index maps and returns the result.<br>
 	 * The succeeding operators are passed to the operator pipe to be processed.
+	 *
 	 * @param triplePattern - the triple pattern to be joined
 	 * @param succeedingOperators - the succeeding operators to be passed
 	 * @return the result of the performed join
@@ -65,6 +81,7 @@ public class ToStreamIndexScan extends BasicIndexScan {
 		throw new UnsupportedOperationException("join(	final Collection<TriplePattern> triplePattern, final List<OperatorIDTuple> succeedingOperators) is not supported by ToStreamIndexScan");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		throw new UnsupportedOperationException(

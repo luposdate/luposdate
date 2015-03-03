@@ -28,6 +28,9 @@ import lupos.event.producer.ebay.parser.JSObject;
 
 /**
  * Contains all relevant information about an eBay auction
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Auction {
 	
@@ -64,19 +67,6 @@ public class Auction {
 	
 	/**
 	 * Constructor
-	 * 
-	 * @param	id
-	 * 				Article id
-	 * @param	remainingTime
-	 * 				Remaining time until the auction ends
-	 * @param	name
-	 * 				Name of the auction
-	 * @param	bid
-	 * 				Highest bid
-	 * @param	price
-	 * 				Price for immediate purchase
-	 * @param	shippingFee
-	 * 				Shipping fee
 	 */
 	public Auction(String id, String remainingTime, String name, int bid,
 			int price, int shippingFee) {
@@ -90,9 +80,6 @@ public class Auction {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param	item
-	 * 				JSObject that contains the information about this auction
 	 */
 	public Auction(JSObject item) {
 		String shippingInfo = item.access("shippingInfo.shippingServiceCost.__value__");
@@ -129,6 +116,7 @@ public class Auction {
 		this.shippingServiceCost = shippingServiceCost_local;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return new StringBuilder("Auction(id = ").append(this.id)

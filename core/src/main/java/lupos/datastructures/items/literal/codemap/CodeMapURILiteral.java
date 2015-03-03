@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
 
@@ -42,7 +46,6 @@ import lupos.datastructures.patriciatrie.ram.RBTrieMap;
 import lupos.datastructures.patriciatrie.util.TrieMapImplementation;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
-
 public class CodeMapURILiteral extends URILiteral implements Externalizable {
 	/**
 	 *
@@ -54,14 +57,24 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 	protected Literal content;
 	protected int prefix;
 
+	/**
+	 * <p>Constructor for CodeMapURILiteral.</p>
+	 */
 	public CodeMapURILiteral() {
 	}
 
+	/**
+	 * <p>Constructor for CodeMapURILiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public CodeMapURILiteral(final String content)
 			throws java.net.URISyntaxException {
 		this.update(content);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void update(final String content) throws java.net.URISyntaxException {
 		final String[] preAndPostfix = getPreAndPostfix(content);
@@ -88,24 +101,51 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		this.content = LiteralFactory.createPostFixOfURI(stringContent);
 	}
 
+	/**
+	 * <p>Constructor for CodeMapURILiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param prefixCode a int.
+	 */
 	public CodeMapURILiteral(final String content, final int prefixCode) {
 		this.content = new StringLiteral(content);
 		this.prefix = prefixCode;
 	}
 
+	/**
+	 * <p>Constructor for CodeMapURILiteral.</p>
+	 *
+	 * @param contentCode a int.
+	 * @param prefixCode a int.
+	 */
 	public CodeMapURILiteral(final int contentCode, final int prefixCode) {
 		this.content = new CodeMapLiteral(contentCode);
 		this.prefix = prefixCode;
 	}
 
+	/**
+	 * <p>Getter for the field <code>content</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getContent() {
 		return this.content;
 	}
 
+	/**
+	 * <p>getPrefixCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPrefixCode() {
 		return this.prefix;
 	}
 
+	/**
+	 * <p>getPrefixString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getPrefixString() {
 		return v.get(this.prefix);
 	}
@@ -125,6 +165,7 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		return values[values.length - 1];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof CodeMapURILiteral) {
@@ -139,11 +180,13 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getString() {
 		return v.get(this.prefix) + this.content.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String printYagoStringWithPrefix() {
 		return ">p"
@@ -153,6 +196,13 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 						Matcher.quoteReplacement("&lt;")) + "<";
 	}
 
+	/**
+	 * <p>getPreAndPostfix.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return an array of {@link java.lang.String} objects.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static String[] getPreAndPostfix(String content)
 			throws URISyntaxException {
 		if (content == null
@@ -178,9 +228,14 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		return preAndPostfix;
 	}
 
+	/** Constant <code>hm</code> */
 	protected static StringIntegerMap hm = null;
+	/** Constant <code>v</code> */
 	protected static IntegerStringMap v = null;
 
+	/**
+	 * <p>init.</p>
+	 */
 	public static void init() {
 		if (hm == null
 				&& LiteralFactory.getMapType() != MapType.NOCODEMAP
@@ -199,27 +254,49 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>hm</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public static StringIntegerMap getHm() {
 		return hm;
 	}
 
+	/**
+	 * <p>Setter for the field <code>hm</code>.</p>
+	 *
+	 * @param hm a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public static void setHm(final StringIntegerMap hm) {
 		CodeMapURILiteral.hm = hm;
 	}
 
+	/**
+	 * <p>Getter for the field <code>v</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public static IntegerStringMap getV() {
 		return v;
 	}
 
+	/**
+	 * <p>Setter for the field <code>v</code>.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public static void setV(final IntegerStringMap v) {
 		CodeMapURILiteral.v = v;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return new String[] { this.content.toString(), this.getPrefixString() };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
@@ -227,6 +304,7 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		this.content = InputHelper.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		OutHelper.writeLuposInt(this.prefix, out);

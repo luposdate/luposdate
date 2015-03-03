@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.simplifiedfractaltree.buffermanager;
 
@@ -34,21 +38,33 @@ import java.net.URISyntaxException;
 import lupos.datastructures.buffermanager.BufferManager.PageAddress;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
-
 public class BufferedList_LuposSerialization<E> extends BufferedList<E> {
 	/**
 	 * Serial Version ID.
 	 */
 	private static final long serialVersionUID = 4988155911642704072L;
 
+	/**
+	 * <p>Constructor for BufferedList_LuposSerialization.</p>
+	 *
+	 * @param arg0 a {@link java.lang.Object} object.
+	 */
 	public BufferedList_LuposSerialization(final Object arg0) {
 		super(arg0);
 	}
 
+	/**
+	 * <p>Constructor for BufferedList_LuposSerialization.</p>
+	 *
+	 * @param pageSize a int.
+	 * @param file a {@link java.io.File} object.
+	 * @param arg0 a {@link java.lang.Object} object.
+	 */
 	public BufferedList_LuposSerialization(final int pageSize, final File file, final Object arg0) {
 		super(pageSize, file, arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected byte[] serialize(final E element) {
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -70,6 +86,7 @@ public class BufferedList_LuposSerialization<E> extends BufferedList<E> {
 		return array;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	protected E deserialize(final byte[] array, final Object arg0) {
@@ -94,6 +111,7 @@ public class BufferedList_LuposSerialization<E> extends BufferedList<E> {
 		return element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E get(final int index) {
 		this.rangeCheck(index);
@@ -101,6 +119,13 @@ public class BufferedList_LuposSerialization<E> extends BufferedList<E> {
 		return this.getElement(this.getPointers(index), this.instance);
 	}
 
+	/**
+	 * <p>getElement.</p>
+	 *
+	 * @param pointer a {@link lupos.datastructures.simplifiedfractaltree.buffermanager.Pointer} object.
+	 * @param arg0 a {@link java.lang.Object} object.
+	 * @return a E object.
+	 */
 	@SuppressWarnings("unchecked")
 	protected E getElement(final Pointer pointer, final Object arg0) {
 		ByteArrayOutputStream baos = null;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -28,8 +32,6 @@ import java.awt.Component;
 import javax.swing.tree.TreePath;
 
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel;
-
-
 public class RuleIdentifier  {
 
 
@@ -44,6 +46,15 @@ public class RuleIdentifier  {
 	private RulePanel rulePanel;
 	
 	
+	/**
+	 * <p>Constructor for RuleIdentifier.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @param rulePanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 * @param component a {@link java.awt.Component} object.
+	 * @param path a {@link javax.swing.tree.TreePath} object.
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public RuleIdentifier(String ruleName, RulePanel rulePanel,  Component component, TreePath path, String documentName){
 		this.setComponent(component);
 		this.setRuleName(ruleName);
@@ -56,51 +67,101 @@ public class RuleIdentifier  {
 
 	
 
+ 	/**
+ 	 * <p>Getter for the field <code>ruleName</code>.</p>
+ 	 *
+ 	 * @return a {@link java.lang.String} object.
+ 	 */
  	public String getRuleName() {
 		return ruleName;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>ruleName</code>.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>component</code>.</p>
+	 *
+	 * @return a {@link java.awt.Component} object.
+	 */
 	public Component getComponent() {
 		return component;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>component</code>.</p>
+	 *
+	 * @param component a {@link java.awt.Component} object.
+	 */
 	public void setComponent(Component component) {
 		this.component = component;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>path</code>.</p>
+	 *
+	 * @return a {@link javax.swing.tree.TreePath} object.
+	 */
 	public TreePath getPath() {
 		return path;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>path</code>.</p>
+	 *
+	 * @param path a {@link javax.swing.tree.TreePath} object.
+	 */
 	public void setPath(TreePath path) {
 		this.path = path;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public RulePanel getRulePanel() {
 		return rulePanel;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @param rulePanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public void setRulePanel(RulePanel rulePanel) {
 		this.rulePanel = rulePanel;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>documentName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentName() {
 		return documentName;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>documentName</code>.</p>
+	 *
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public void setDocumentName(String documentName) {
 		this.documentName = documentName;
 	}

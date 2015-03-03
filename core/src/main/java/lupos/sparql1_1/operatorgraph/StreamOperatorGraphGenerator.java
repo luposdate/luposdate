@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph;
 
@@ -51,13 +55,21 @@ import lupos.sparql1_1.ASTWindow;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_Stream;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
-
 public class StreamOperatorGraphGenerator extends
 	SPARQLCoreParserVisitorImplementation implements
 	SPARQL1_1OperatorgraphGeneratorVisitor {
 
+	/** Constant <code>operatorGraphGeneratorClass</code> */
 	public static Class<? extends StreamOperatorGraphGenerator> operatorGraphGeneratorClass = StreamOperatorGraphGenerator.class;
 
+	/**
+	 * <p>createOperatorGraphGenerator.</p>
+	 *
+	 * @param evaluator a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 * @return a {@link lupos.sparql1_1.operatorgraph.StreamOperatorGraphGenerator} object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	public static StreamOperatorGraphGenerator createOperatorGraphGenerator(final CommonCoreQueryEvaluator<Node> evaluator) throws InstantiationException, IllegalAccessException{
 		final StreamOperatorGraphGenerator sogg = operatorGraphGeneratorClass.newInstance();
 		sogg.setIndexScanGenerator_Stream(new IndexScanCreator_Stream());
@@ -67,6 +79,9 @@ public class StreamOperatorGraphGenerator extends
 
 	private IndexScanCreator_Stream indexScanCreator_Stream;
 
+	/**
+	 * <p>Constructor for StreamOperatorGraphGenerator.</p>
+	 */
 	protected StreamOperatorGraphGenerator(){
 		super();
 	}
@@ -77,6 +92,7 @@ public class StreamOperatorGraphGenerator extends
 		this.setIndexScanGenerator(this.indexScanCreator_Stream);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final lupos.sparql1_1.ASTStream node) {
 		final CollectResult cr = new CollectResult(false);
@@ -88,6 +104,7 @@ public class StreamOperatorGraphGenerator extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTWindow node, final OperatorConnection connection, final Item graphConstraint) {
 		ASTType.TYPE dot = ASTType.TYPE.TRIPLES;
@@ -139,46 +156,55 @@ public class StreamOperatorGraphGenerator extends
 		this.indexScanCreator_Stream.setCurrentPatternMatcher(oldPatternMatcher);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTLoad node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTClear node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTDrop node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTCreate node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTInsert node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTDelete node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTModify node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support Updates!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTDefaultGraph node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support several graphs!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTNamedGraph node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("This evaluator does not support named graphs!");

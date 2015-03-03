@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.adaptedRDF3X;
 
@@ -57,7 +61,6 @@ import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.Entry;
 import lupos.optimizations.logical.statistics.VarBucket;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
-
 public class RDF3XIndexScan extends BasicIndexScan {
 
 	public enum CollationOrder {
@@ -243,20 +246,37 @@ public class RDF3XIndexScan extends BasicIndexScan {
 	 */
 	private static final long serialVersionUID = -2346474799334082208L;
 
+	/**
+	 * <p>setMinimaMaxima.</p>
+	 *
+	 * @param minima a {@link java.util.Map} object.
+	 * @param maxima a {@link java.util.Map} object.
+	 */
 	public void setMinimaMaxima(final Map<Variable, Literal> minima,
 			final Map<Variable, Literal> maxima) {
 		this.minima = minima;
 		this.maxima = maxima;
 	}
 
+	/**
+	 * <p>Getter for the field <code>minima</code>.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, Literal> getMinima() {
 		return this.minima;
 	}
 
+	/**
+	 * <p>Getter for the field <code>maxima</code>.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, Literal> getMaxima() {
 		return this.maxima;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public RDF3XIndexScan clone() {
 		final RDF3XIndexScan clone = new RDF3XIndexScan(this.succeedingOperators, this.triplePatterns, this.rdfGraph, this.root);
@@ -265,16 +285,42 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return clone;
 	}
 
+	/**
+	 * <p>Constructor for RDF3XIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a lupos$engine$operators$index$Root object.
+	 */
 	public RDF3XIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePatterns, final Item rdfGraph, final lupos.engine.operators.index.Root root) {
 		super(succeedingOperator, triplePatterns, rdfGraph, root);
 	}
 
+	/**
+	 * <p>Constructor for RDF3XIndexScan.</p>
+	 *
+	 * @param succeedingOperators a {@link java.util.List} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a lupos$engine$operators$index$Root object.
+	 */
 	public RDF3XIndexScan(final List<OperatorIDTuple> succeedingOperators,
 			final Collection<TriplePattern> triplePatterns, final Item rdfGraph,final lupos.engine.operators.index.Root root) {
 		super(succeedingOperators, triplePatterns, rdfGraph, root);
 	}
 
+	/**
+	 * <p>Constructor for RDF3XIndexScan.</p>
+	 *
+	 * @param operatorIDTuple a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param graphConstraint a {@link lupos.datastructures.items.Item} object.
+	 * @param minima a {@link java.util.Map} object.
+	 * @param maxima a {@link java.util.Map} object.
+	 * @param root a lupos$engine$operators$index$Root object.
+	 */
 	public RDF3XIndexScan(final OperatorIDTuple operatorIDTuple,
 			final Collection<TriplePattern> triplePatterns,
 			final Item graphConstraint, final Map<Variable, Literal> minima,
@@ -284,11 +330,18 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		this.maxima = maxima;
 	}
 
+	/**
+	 * <p>Constructor for RDF3XIndexScan.</p>
+	 *
+	 * @param root a lupos$engine$operators$index$Root object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 */
 	public RDF3XIndexScan(final lupos.engine.operators.index.Root root,
 			final Collection<TriplePattern> triplePatterns) {
 		super(root, triplePatterns);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Dataset dataset) {
 		try {
@@ -343,6 +396,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return super.join(dataset);
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected static Triple getKey(final TriplePattern tp,
 			final Bindings bindings) {
 		final Item[] items = tp.getItems();
@@ -362,16 +422,38 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return key;
 	}
 
+	/**
+	 * <p>getKeyMinimum.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected Triple getKeyMinimum(final TriplePattern tp,
 			final Bindings bindings) {
 		return this.getKey(tp, bindings, this.minima);
 	}
 
+	/**
+	 * <p>getKeyMaximum.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected Triple getKeyMaximum(final TriplePattern tp,
 			final Bindings bindings) {
 		return this.getKey(tp, bindings, this.maxima);
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param minMax a {@link java.util.Map} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected Triple getKey(final TriplePattern tp, final Bindings bindings,
 			final Map<Variable, Literal> minMax) {
 		boolean flag = false;
@@ -397,12 +479,31 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return flag ? key : null;
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @param sixIndices a {@link lupos.engine.operators.index.adaptedRDF3X.SixIndices} object.
+	 * @param key a {@link lupos.datastructures.items.Triple} object.
+	 * @param keyMinimum a {@link lupos.datastructures.items.Triple} object.
+	 * @param keyMaximum a {@link lupos.datastructures.items.Triple} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	protected Iterator<Triple> getIterator(final SixIndices sixIndices,
 			final Triple key, final Triple keyMinimum, final Triple keyMaximum) {
 		return RDF3XIndexScan.getIterator(sixIndices, key, this.collationOrder,
 				keyMinimum, keyMaximum);
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @param sixIndices a {@link lupos.engine.operators.index.adaptedRDF3X.SixIndices} object.
+	 * @param key a {@link lupos.datastructures.items.Triple} object.
+	 * @param collationOrder a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @param keyMinimum a {@link lupos.datastructures.items.Triple} object.
+	 * @param keyMaximum a {@link lupos.datastructures.items.Triple} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	protected static Iterator<Triple> getIterator(final SixIndices sixIndices,
 			final Triple key, final CollationOrder collationOrder,
 			final Triple keyMinimum, final Triple keyMaximum) {
@@ -549,6 +650,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		final SixIndices sixIndices = (SixIndices) indices;
@@ -570,6 +672,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				.getBloomFilters() != null);
 	}
 
+	/**
+	 * <p>Getter for the field <code>collationOrder</code>.</p>
+	 *
+	 * @param first a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public static CollationOrder getCollationOrder(final TriplePattern first,
 			final Collection<Variable> sortCriterium) {
 
@@ -606,18 +715,38 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return CollationOrder.valueOf(orderFirst.toString());
 	}
 
+	/**
+	 * <p>Getter for the field <code>collationOrder</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public CollationOrder getCollationOrder() {
 		return this.collationOrder;
 	}
 
+	/**
+	 * <p>Setter for the field <code>collationOrder</code>.</p>
+	 *
+	 * @param collationOrder a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public void setCollationOrder(final CollationOrder collationOrder) {
 		this.collationOrder = collationOrder;
 	}
 
+	/**
+	 * <p>Setter for the field <code>collationOrder</code>.</p>
+	 *
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 */
 	public void setCollationOrder(final Collection<Variable> sortCriterium) {
 		this.collationOrder = getCollationOrder(this.triplePatterns.iterator().next(), sortCriterium);
 	}
 
+	/**
+	 * <p>getBinaryJoin.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot} object.
+	 */
 	public RDF3XRoot getBinaryJoin() {
 		final RDF3XRoot ic = new RDF3XRoot();
 		if (this.triplePatterns.size() <= 1) {
@@ -763,6 +892,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return ic;
 	}
 
+	/**
+	 * <p>fill.</p>
+	 *
+	 * @param collationOrder an array of int.
+	 * @param i a int.
+	 * @return an array of int.
+	 */
 	protected int[] fill(final int[] collationOrder, int i) {
 		for (; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -781,6 +917,12 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return collationOrder;
 	}
 
+	/**
+	 * <p>Getter for the field <code>collationOrder</code>.</p>
+	 *
+	 * @param collationOrderArray an array of int.
+	 * @return a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	protected static CollationOrder getCollationOrder(
 			final int[] collationOrderArray) {
 		if (collationOrderArray[0] == 0) {
@@ -865,6 +1007,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		this.triplePatterns = newTriplePattern;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<Variable, Tuple<Literal, Literal>> getMinMax(final TriplePattern triplePattern, final Collection<Variable> variables) {
 		final Map<Variable, Tuple<Literal, Literal>> result = new HashMap<Variable, Tuple<Literal, Literal>>();
@@ -888,6 +1031,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return null;
 	}
 
+	/**
+	 * <p>getMin.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getMin(final Variable v,
 			final TriplePattern tp) {
 		final Collection<TriplePattern> ztp = this.getTriplePattern();
@@ -916,6 +1066,13 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return min;
 	}
 
+	/**
+	 * <p>getMax.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param pos a int.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getMax(final TriplePattern tp, final int pos) {
 		Literal max = null;
 		try {
@@ -1080,6 +1237,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
@@ -1433,6 +1591,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				pos);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "RDF3X"
@@ -1441,6 +1600,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 						+ CollationOrder.values()[this.collationOrder.ordinal()]);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "RDF3X "

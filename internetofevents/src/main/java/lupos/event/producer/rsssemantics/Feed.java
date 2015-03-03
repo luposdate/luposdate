@@ -23,13 +23,15 @@
  */
 /**
  *  Represents the entire RSS feed, containing (here: producing) several FeedMessages
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 package lupos.event.producer.rsssemantics;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class Feed {
 
 	final String title;
@@ -40,6 +42,16 @@ public class Feed {
 	final String pubDate;
 	final List<FeedMessage> entries = new ArrayList<FeedMessage>();
 
+	/**
+	 * <p>Constructor for Feed.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param link a {@link java.lang.String} object.
+	 * @param description a {@link java.lang.String} object.
+	 * @param language a {@link java.lang.String} object.
+	 * @param copyright a {@link java.lang.String} object.
+	 * @param pubDate a {@link java.lang.String} object.
+	 */
 	public Feed(String title, String link, String description, String language,
 			String copyright, String pubDate) {
 		this.title = title;
@@ -51,6 +63,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>getMessages.</p>
+	 *
 	 * @return all FeedMessages from feed as ArrayList
 	 */
 	public List<FeedMessage> getMessages() {
@@ -58,6 +72,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>getLastMessage.</p>
+	 *
 	 * @return FeedMessage from feed that was last added
 	 */
 	public FeedMessage getLastMessage() {
@@ -65,6 +81,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>Getter for the field <code>title</code>.</p>
+	 *
 	 * @return title
 	 */
 	public String getTitle() {
@@ -72,6 +90,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>Getter for the field <code>link</code>.</p>
+	 *
 	 * @return link
 	 */
 	public String getLink() {
@@ -79,6 +99,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>Getter for the field <code>description</code>.</p>
+	 *
 	 * @return description
 	 */
 	public String getDescription() {
@@ -86,6 +108,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>Getter for the field <code>language</code>.</p>
+	 *
 	 * @return language
 	 */
 	public String getLanguage() {
@@ -93,6 +117,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>Getter for the field <code>copyright</code>.</p>
+	 *
 	 * @return copyright
 	 */
 	public String getCopyright() {
@@ -100,6 +126,8 @@ public class Feed {
 	}
 
 	/**
+	 * <p>Getter for the field <code>pubDate</code>.</p>
+	 *
 	 * @return pubDate
 	 */
 	public String getPubDate() {
@@ -107,6 +135,8 @@ public class Feed {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Convert to String
 	 */
 	@Override

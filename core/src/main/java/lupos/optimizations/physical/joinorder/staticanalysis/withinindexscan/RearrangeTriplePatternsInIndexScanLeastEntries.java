@@ -28,16 +28,23 @@ import lupos.engine.operators.index.Root;
 import lupos.optimizations.physical.joinorder.staticanalysis.scoring.triplepattern.ScoringTriplePatternLeastEntries;
 
 /**
- * Join ordering according to least solutions for the next best chosen triple pattern... 
+ * Join ordering according to least solutions for the next best chosen triple pattern...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RearrangeTriplePatternsInIndexScanLeastEntries extends RearrangeJoinOrderWithScoringTriplePatterns {
 	
+	/**
+	 * <p>Constructor for RearrangeTriplePatternsInIndexScanLeastEntries.</p>
+	 */
 	public RearrangeTriplePatternsInIndexScanLeastEntries(){
 		this.scorings.add(new ScoringTriplePatternLeastEntries());
 	}
 
 	/**
-	 * Static method to call the optimizer for join ordering according to least solutions for the next best chosen triple pattern 
+	 * Static method to call the optimizer for join ordering according to least solutions for the next best chosen triple pattern
+	 *
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 * @return the root operator under which the subgraph with the reordered joins are inserted
 	 */

@@ -9,6 +9,12 @@ import java.util.List;
 import lupos.datastructures.items.literal.Literal;
 import lupos.rdf.Prefix;
 
+/**
+ * <p>ListLiteral class.</p>
+ *
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class ListLiteral extends Literal {
 
 	/**
@@ -18,6 +24,7 @@ public class ListLiteral extends Literal {
 
 	/**
 	 * Gets the entries of this list...
+	 *
 	 * @return the entries of this list
 	 */
 	public List<Literal> getEntries(){
@@ -26,32 +33,38 @@ public class ListLiteral extends Literal {
 
 	/**
 	 * Constructor, which expects the entries of this list as parameter
+	 *
 	 * @param entries the entries of this list...
 	 */
 	public ListLiteral(final List<Literal> entries){
 		this.entries = entries;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew() {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		final StringBuilder sa = new StringBuilder();
@@ -68,6 +81,7 @@ public class ListLiteral extends Literal {
 		return sa.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefix){
 		final StringBuilder sa = new StringBuilder();
@@ -84,6 +98,7 @@ public class ListLiteral extends Literal {
 		return sa.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ListLiteral clone(){
 		return new ListLiteral(new ArrayList<Literal>(this.entries));

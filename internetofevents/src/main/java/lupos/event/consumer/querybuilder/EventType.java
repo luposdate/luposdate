@@ -27,11 +27,20 @@ import lupos.datastructures.items.literal.URILiteral;
 
 /**
  * Represents an event type which is a URI for the event type itself and a list of URIs for its properties.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EventType {
 	URILiteralWrapper eventUri;
 	URILiteralWrapper[] properties;
 	
+	/**
+	 * <p>Constructor for EventType.</p>
+	 *
+	 * @param eventUri a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param properties a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public EventType(URILiteral eventUri, URILiteral... properties) {
 		this.eventUri = new URILiteralWrapper(eventUri);
 		this.properties  = new URILiteralWrapper[properties.length];
@@ -39,14 +48,25 @@ public class EventType {
 			this.properties[i] = new URILiteralWrapper(properties[i]);
 	}
 	
+	/**
+	 * <p>Getter for the field <code>eventUri</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getEventUri() {
 		return this.eventUri.getWrappedLiteral();
 	}
 	
+	/**
+	 * <p>Getter for the field <code>properties</code>.</p>
+	 *
+	 * @return an array of {@link lupos.event.consumer.querybuilder.URILiteralWrapper} objects.
+	 */
 	public URILiteralWrapper[] getProperties() {
 		return this.properties;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.eventUri.toString();

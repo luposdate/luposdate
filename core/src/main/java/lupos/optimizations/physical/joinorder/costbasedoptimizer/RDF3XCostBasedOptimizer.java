@@ -28,21 +28,26 @@ import lupos.engine.operators.index.Root;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphgenerator.RDF3XOperatorGraphGenerator;
 
 /**
- * This class is the cost-based optimizer for the RDF3X query evaluator. 
+ * This class is the cost-based optimizer for the RDF3X query evaluator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RDF3XCostBasedOptimizer extends CostBasedOptimizer {
 
 	/**
-	 * Constructor for the choice of n-ary versus binary merge joins, and enforcing always merge joins by eventual preceding sorting phases or using other join algorithms for unsorted data  
+	 * Constructor for the choice of n-ary versus binary merge joins, and enforcing always merge joins by eventual preceding sorting phases or using other join algorithms for unsorted data
+	 *
 	 * @param RDF3XSORT true, if merge joins should be enforced by eventual preceding sorting phases; false, if other join algorithms are used whenever the data is not already sorted in the right way
 	 * @param NARYMERGEJOIN n-ary (true) versus binary (false) merge joins
-	 */	
+	 */
 	public RDF3XCostBasedOptimizer(final boolean RDF3XSORT, final boolean NARYMERGEJOIN) {
 		super(new RDF3XOperatorGraphGenerator(RDF3XSORT, NARYMERGEJOIN));
 	}
 
 	/**
-	 * Static method to call the cost-based optimizer for the RDF3X query evaluator 
+	 * Static method to call the cost-based optimizer for the RDF3X query evaluator
+	 *
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 * @param RDF3XSORT true, if merge joins should be enforced by eventual preceding sorting phases; false, if other join algorithms are used whenever the data is not already sorted in the right way
 	 * @param NARYMERGEJOIN n-ary (true) versus binary (false) merge joins

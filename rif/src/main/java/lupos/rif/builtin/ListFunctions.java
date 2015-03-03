@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -41,6 +45,12 @@ import com.google.common.collect.Lists;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class ListFunctions {
 
+	/**
+	 * <p>make_list.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.datatypes.ListLiteral} object.
+	 */
 	@Builtin(Name = "make-list")
 	public static ListLiteral make_list(final Argument arg) {
 		final ArrayList<Literal> ls = new ArrayList<Literal>(arg.arguments.size());
@@ -69,6 +79,12 @@ public class ListFunctions {
 		return result;*/
 	}
 
+	/**
+	 * <p>count.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "count")
 	public static Literal count(final Argument arg) {
 		try {
@@ -78,6 +94,12 @@ public class ListFunctions {
 		}
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	@Builtin(Name = "get")
 	public static Item get(final Argument arg) {
 		if (arg.arguments.size() == 2
@@ -98,6 +120,12 @@ public class ListFunctions {
 		}
 	}
 
+	/**
+	 * <p>sublist.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	@Builtin(Name = "sublist")
 	public static Object sublist(final Argument arg) {
 		if (arg.arguments.size() > 1 && arg.arguments.size() < 4
@@ -138,6 +166,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>append.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	@Builtin(Name = "append")
 	public static Object append(final Argument arg) {
 		if (arg.arguments.size() > 1 && arg.arguments.get(0) instanceof RuleList) {
@@ -178,6 +212,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>concatenate.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.datatypes.ListLiteral} object.
+	 */
 	@Builtin(Name = "concatenate")
 	public static ListLiteral concatenate(final Argument arg) {
 		if (arg.arguments.size() > 0
@@ -211,6 +251,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>insert_before.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "insert-before")
 	public static RuleList insert_before(final Argument arg) {
 		if (arg.arguments.size() == 3
@@ -248,6 +294,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "remove")
 	public static RuleList remove(final Argument arg) {
 		if (arg.arguments.size() == 2
@@ -270,6 +322,12 @@ public class ListFunctions {
 		}
 	}
 
+	/**
+	 * <p>reverse.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "reverse")
 	public static RuleList reverse(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -285,6 +343,12 @@ public class ListFunctions {
 		}
 	}
 
+	/**
+	 * <p>index_of.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "index-of")
 	public static RuleList index_of(final Argument arg) {
 		if (arg.arguments.size() == 2
@@ -312,6 +376,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>union.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "union")
 	public static RuleList union(final Argument arg) {
 		if (arg.arguments.size() > 0
@@ -342,6 +412,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>distinct_values.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "distinct-values")
 	public static RuleList distinct_values(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -360,6 +436,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>intersect.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "intersect")
 	public static RuleList intersect(final Argument arg) {
 		if (arg.arguments.size() > 0
@@ -387,6 +469,12 @@ public class ListFunctions {
 		return null;
 	}
 
+	/**
+	 * <p>except.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.model.RuleList} object.
+	 */
 	@Builtin(Name = "except")
 	public static RuleList except(final Argument arg) {
 		if (arg.arguments.size() == 2

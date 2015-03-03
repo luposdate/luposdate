@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
 import java.io.Serializable;
 import java.util.Comparator;
-
 public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 	private static final long serialVersionUID = -5186882148047627193L;
 
@@ -34,6 +37,13 @@ public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 	public int n;
 	transient protected Comparator<? super E> comp;
 
+	/**
+	 * <p>Constructor for Entry.</p>
+	 *
+	 * @param e a E object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param n a int.
+	 */
 	public Entry(final E e, final Comparator<? super E> comp, final int n) {
 		this.n = n;
 		run = 1;
@@ -41,17 +51,29 @@ public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 		this.comp = comp;
 	}
 
+	/**
+	 * <p>Constructor for Entry.</p>
+	 *
+	 * @param e a E object.
+	 * @param n a int.
+	 */
 	public Entry(final E e, final int n) {
 		this.n = n;
 		this.e = e;
 		this.comp = null;
 	}
 
+	/**
+	 * <p>Constructor for Entry.</p>
+	 *
+	 * @param e a E object.
+	 */
 	public Entry(final E e) {
 		this.e = e;
 		this.comp = null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object other) {
 		return comp.compare(e, ((Entry<E>) other).e) == 0;
@@ -59,6 +81,12 @@ public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 
 	public boolean runMatters = true;
 
+	/**
+	 * <p>compareTo.</p>
+	 *
+	 * @param other a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @return a int.
+	 */
 	public int compareTo(final Entry<E> other) {
 		if (other == null) {
 			return -1;
@@ -96,6 +124,7 @@ public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return run + " - " + e.toString();

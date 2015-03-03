@@ -27,11 +27,15 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Root;
 
 /**
- * All classes optimizing the join order must implement this interface. 
+ * All classes optimizing the join order must implement this interface.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface RearrangeJoinOrder {
 	/**
-	 * In this method, the joins are reordered by hanging in the suboperatorgraph, where the joins are reordered, under newRoot. 
+	 * In this method, the joins are reordered by hanging in the suboperatorgraph, where the joins are reordered, under newRoot.
+	 *
 	 * @param newRoot the root operator under which the subgraph with the reordered joins are inserted
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 */

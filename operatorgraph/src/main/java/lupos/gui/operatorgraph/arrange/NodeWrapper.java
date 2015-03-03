@@ -28,22 +28,39 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 /**
  * The class NodeWrapper is used by Sugiyama-Layout, to save the grid-position
  * of an node in his level.
- * @author Tobias Bielfeld
  *
+ * @author Tobias Bielfeld
+ * @version $Id: $Id
  */
 public class NodeWrapper {
 	private GraphWrapper op;
 	private double pos;
 	
+	/**
+	 * <p>Constructor for NodeWrapper.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param position a double.
+	 */
 	public NodeWrapper(GraphWrapper gw, double position) {
 		this.op = gw;
 		this.pos = position;
 	}
 	
+	/**
+	 * <p>get_Node.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	protected GraphWrapper get_Node() {
 		return this.op;
 	}
 
+	/**
+	 * <p>getGridPosition.</p>
+	 *
+	 * @return a double.
+	 */
 	protected double getGridPosition(){
 		return this.pos;
 	}

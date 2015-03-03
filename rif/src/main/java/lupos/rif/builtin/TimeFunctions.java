@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -46,6 +50,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class TimeFunctions {
 
+	/**
+	 * <p>year_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "year-from-dateTime")
 	public static Literal year_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -54,6 +64,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.YEAR), "integer");
 	}
 
+	/**
+	 * <p>month_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "month-from-dateTime")
 	public static Literal month_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -62,6 +78,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.MONTH) + 1, "integer");
 	}
 
+	/**
+	 * <p>day_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "day-from-dateTime")
 	public static Literal day_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -71,6 +93,12 @@ public class TimeFunctions {
 				"integer");
 	}
 
+	/**
+	 * <p>hours_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "hours-from-dateTime")
 	public static Literal hours_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -80,6 +108,12 @@ public class TimeFunctions {
 				"integer");
 	}
 
+	/**
+	 * <p>minutes_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "minutes-from-dateTime")
 	public static Literal minutes_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -88,6 +122,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.MINUTE), "integer");
 	}
 
+	/**
+	 * <p>seconds_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "seconds-from-dateTime")
 	public static Literal seconds_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -96,6 +136,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.SECOND), "integer");
 	}
 
+	/**
+	 * <p>year_from_date.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "year-from-date")
 	public static Literal year_from_date(final Argument arg) {
 		String str = BuiltinHelper
@@ -104,6 +150,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.YEAR), "integer");
 	}
 
+	/**
+	 * <p>month_from_date.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "month-from-date")
 	public static Literal month_from_date(final Argument arg) {
 		String str = BuiltinHelper
@@ -112,6 +164,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.MONTH) + 1, "integer");
 	}
 
+	/**
+	 * <p>day_from_date.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "day-from-date")
 	public static Literal day_from_date(final Argument arg) {
 		String str = BuiltinHelper
@@ -121,6 +179,12 @@ public class TimeFunctions {
 				"integer");
 	}
 
+	/**
+	 * <p>hours_from_time.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "hours-from-time")
 	public static Literal hours_from_time(final Argument arg) {
 		String str = BuiltinHelper
@@ -129,6 +193,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.HOUR), "integer");
 	}
 
+	/**
+	 * <p>minutes_from_time.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "minutes-from-time")
 	public static Literal minutes_from_time(final Argument arg) {
 		String str = BuiltinHelper
@@ -137,6 +207,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.MINUTE), "integer");
 	}
 
+	/**
+	 * <p>seconds_from_time.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "seconds-from-time")
 	public static Literal seconds_from_time(final Argument arg) {
 		String str = BuiltinHelper
@@ -145,6 +221,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(cal.get(cal.SECOND), "integer");
 	}
 
+	/**
+	 * <p>timezone_from_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "timezone-from-dateTime")
 	public static Literal timezone_from_dateTime(final Argument arg) {
 		String str = BuiltinHelper
@@ -156,6 +238,12 @@ public class TimeFunctions {
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>timezone_from_date.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "timezone-from-date")
 	public static Literal timezone_from_date(final Argument arg) {
 		String str = BuiltinHelper
@@ -167,6 +255,12 @@ public class TimeFunctions {
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>timezone_from_time.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "timezone-from-time")
 	public static Literal timezone_from_time(final Argument arg) {
 		String str = BuiltinHelper
@@ -178,6 +272,12 @@ public class TimeFunctions {
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>years_from_duration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "years-from-duration")
 	public static Literal years_from_duration(final Argument arg) {
 		String str = BuiltinHelper
@@ -187,6 +287,12 @@ public class TimeFunctions {
 				* (dur.getYears() + (dur.getMonths() / 12)), "integer");
 	}
 
+	/**
+	 * <p>months_from_duration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "months-from-duration")
 	public static Literal months_from_duration(final Argument arg) {
 		String str = BuiltinHelper
@@ -196,6 +302,12 @@ public class TimeFunctions {
 				* (dur.getMonths() % 12), "integer");
 	}
 
+	/**
+	 * <p>days_from_duration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "days-from-duration")
 	public static Literal days_from_duration(final Argument arg) {
 		String str = BuiltinHelper
@@ -205,6 +317,12 @@ public class TimeFunctions {
 				"integer");
 	}
 
+	/**
+	 * <p>hours_from_duration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "hours-from-duration")
 	public static Literal hours_from_duration(final Argument arg) {
 		String str = BuiltinHelper
@@ -214,6 +332,12 @@ public class TimeFunctions {
 				"integer");
 	}
 
+	/**
+	 * <p>minutes_from_duration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "minutes-from-duration")
 	public static Literal minutes_from_duration(final Argument arg) {
 		String str = BuiltinHelper
@@ -223,6 +347,12 @@ public class TimeFunctions {
 				dur.getSign() * (dur.getMinutes()), "integer");
 	}
 
+	/**
+	 * <p>seconds_from_duration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "seconds-from-duration")
 	public static Literal seconds_from_duration(final Argument arg) {
 		String str = BuiltinHelper
@@ -232,6 +362,12 @@ public class TimeFunctions {
 				* (dur.getField(DatatypeConstants.SECONDS).doubleValue()));
 	}
 
+	/**
+	 * <p>substract_dateTimes.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "subtract-dateTimes")
 	public static Literal substract_dateTimes(final Argument arg) {
 		String str = BuiltinHelper
@@ -253,6 +389,12 @@ public class TimeFunctions {
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>substract_dates.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "subtract-dates")
 	public static Literal substract_dates(final Argument arg) {
 		String str = BuiltinHelper
@@ -274,6 +416,12 @@ public class TimeFunctions {
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>substract_times.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "subtract-times")
 	public static Literal substract_times(final Argument arg) {
 		String str = BuiltinHelper
@@ -295,6 +443,12 @@ public class TimeFunctions {
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>add_yearMonthDurations.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "add-yearMonthDurations")
 	public static Literal add_yearMonthDurations(final Argument arg) {
 		String str = BuiltinHelper
@@ -314,6 +468,12 @@ public class TimeFunctions {
 		return BuiltinHelper.createXSLiteral(dur, "yearMonthDuration");
 	}
 
+	/**
+	 * <p>substract_yearMonthDurations.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "subtract-yearMonthDurations")
 	public static Literal substract_yearMonthDurations(final Argument arg) {
 		String str = BuiltinHelper
@@ -334,6 +494,12 @@ public class TimeFunctions {
 				.replaceAll("0Y", ""), "yearMonthDuration");
 	}
 
+	/**
+	 * <p>multiply_yearMonthDurations.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "multiply-yearMonthDuration")
 	public static Literal multiply_yearMonthDurations(final Argument arg) {
 		String str = BuiltinHelper
@@ -354,6 +520,12 @@ public class TimeFunctions {
 				.replaceAll("0Y", ""), "yearMonthDuration");
 	}
 
+	/**
+	 * <p>divide_yearMonthDurations.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "divide-yearMonthDuration")
 	public static Literal divide_yearMonthDurations(final Argument arg) {
 		String str = BuiltinHelper

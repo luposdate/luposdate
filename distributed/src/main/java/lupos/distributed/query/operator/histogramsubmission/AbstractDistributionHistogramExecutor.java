@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.query.operator.histogramsubmission;
 
 import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public abstract class AbstractDistributionHistogramExecutor<K> extends AbstractHistogramExecutor {
 
 	protected final IDistribution<K> distribution;
 
+	/**
+	 * <p>Constructor for AbstractDistributionHistogramExecutor.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 */
 	public AbstractDistributionHistogramExecutor(final IDistribution<K> distribution){
 		this.distribution = distribution;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] sendJSONRequests(final String request, final TriplePattern triplePattern) {
 		try {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler;
 
@@ -30,15 +34,18 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-
 public class ComboRenderer extends JLabel implements ListCellRenderer {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>Constructor for ComboRenderer.</p>
+	 */
 	public ComboRenderer() {
 		this.setOpaque(true);
 		this.setBorder(new EmptyBorder(1, 1, 1, 1));
 	}
 
+	/** {@inheritDoc} */
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		if(isSelected) {
 			this.setBackground(list.getSelectionBackground());

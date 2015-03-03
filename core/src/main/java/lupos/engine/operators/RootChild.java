@@ -29,12 +29,16 @@ import lupos.engine.operators.index.Dataset;
 import lupos.misc.debug.DebugStep;
 
 /**
- * This is the child of a root operator (typically an Index Scan operator) 
+ * This is the child of a root operator (typically an Index Scan operator)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class RootChild extends BasicOperator {
 	
 	/**
 	 * this method starts the evaluation process
+	 *
 	 * @param dataset the dataset on which the processing should be done
 	 */
 	public void startProcessing(final Dataset dataset){
@@ -52,6 +56,7 @@ public abstract class RootChild extends BasicOperator {
 	
 	/**
 	 * this method starts the evaluation process in the debug mode
+	 *
 	 * @param dataset the dataset on which the processing should be done
 	 * @param debugstep the object the methods of which are called for the single debugsteps
 	 */
@@ -71,6 +76,7 @@ public abstract class RootChild extends BasicOperator {
 	
 	/**
 	 * start the evaluation under the root operator with a given dataset
+	 *
 	 * @param dataset the dataset as input for this operator
 	 * @return the queryresult to be processed by the children of this operator
 	 */

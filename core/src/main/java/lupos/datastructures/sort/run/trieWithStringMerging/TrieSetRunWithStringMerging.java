@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sort.run.trieWithStringMerging;
 
@@ -27,13 +31,18 @@ import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.memorysort.MemorySortSortedRunOnDisk;
 import lupos.datastructures.sort.run.trie.TrieSetRun;
-
 public class TrieSetRunWithStringMerging extends TrieSetRun {
 
+	/**
+	 * <p>Constructor for TrieSetRunWithStringMerging.</p>
+	 *
+	 * @param trie a {@link lupos.datastructures.patriciatrie.TrieSet} object.
+	 */
 	public TrieSetRunWithStringMerging(final TrieSet trie) {
 		super(trie);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Run swapRun() {
 		return new MemorySortSortedRunOnDisk(this.iterator(), true);

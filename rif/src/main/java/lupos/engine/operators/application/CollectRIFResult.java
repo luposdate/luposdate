@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.application;
 
@@ -27,9 +31,13 @@ import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.rif.datatypes.EqualityResult;
 import lupos.rif.datatypes.RuleResult;
-
 public class CollectRIFResult extends CollectResult {
 
+	/**
+	 * <p>Constructor for CollectRIFResult.</p>
+	 *
+	 * @param oneTime a boolean.
+	 */
 	public CollectRIFResult(final boolean oneTime) {
 		super(oneTime);
 	}
@@ -37,6 +45,7 @@ public class CollectRIFResult extends CollectResult {
 	protected RuleResult rr;
 	protected EqualityResult er;
 
+	/** {@inheritDoc} */
 	@Override
 	public void call(final QueryResult res) {
 		if (res != null) {
@@ -72,6 +81,7 @@ public class CollectRIFResult extends CollectResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start(final Type type) {
 		super.start(type);
@@ -79,11 +89,14 @@ public class CollectRIFResult extends CollectResult {
 		this.rr = null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void stop() {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * get result, if there are several types of QueryResults, one of them is
 	 * returned...
 	 */
@@ -100,6 +113,7 @@ public class CollectRIFResult extends CollectResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteResult(final QueryResult res) {
 		if (res instanceof EqualityResult) {
@@ -113,6 +127,7 @@ public class CollectRIFResult extends CollectResult {
 		} super.deleteResult(res);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteResult() {
 		if (this.rr != null) {
@@ -126,6 +141,7 @@ public class CollectRIFResult extends CollectResult {
 		super.deleteResult();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult[] getQueryResults() {
 		final int size = (this.qr == null ? 0 : 1) + (this.rr == null ? 0 : 1)

@@ -25,7 +25,9 @@ package lupos.event.producer.ebay.parser;
 
 /**
  * Representation of a simple JSON string, used for key identifiers and plain text data.
-
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSValue extends JSObject {
 
@@ -36,23 +38,24 @@ public class JSValue extends JSObject {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param	value	Character data stored in this JSON string
 	 */
 	public JSValue(String value) {
 		this.value = value;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.value;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSObject get(String key) {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(String indent) {
 		return this.value;

@@ -29,10 +29,14 @@ import lupos.engine.operators.singleinput.TypeErrorException;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GmlDeserializer extends AbstractDeserializer
 {
 
+    /** {@inheritDoc} */
     @Override
     public Geometry toGeometry(String content) throws TypeErrorException
     {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.graphwrapper;
 
@@ -43,15 +47,26 @@ import lupos.misc.Helper;
 
 import xpref.datatypes.ColorDatatype;
 import xpref.datatypes.EnumDatatype;
-
 public abstract class GraphWrapper {
+	/** Constant <code>styles</code> */
 	protected static HashMap<String, DrawObject> styles = new HashMap<String, DrawObject>();
 	protected Object element;
 
+	/**
+	 * <p>Constructor for GraphWrapper.</p>
+	 *
+	 * @param element a {@link java.lang.Object} object.
+	 */
 	public GraphWrapper(final Object element) {
 		this.element = element;
 	}
 
+	/**
+	 * <p>getGraphWrapperIDTuple.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @return a {@link lupos.gui.operatorgraph.GraphWrapperIDTuple} object.
+	 */
 	public GraphWrapperIDTuple getGraphWrapperIDTuple(final GraphWrapper op) {
 		for(final GraphWrapperIDTuple opid : this.getSucceedingElements()) {
 			if(opid.getOperator().equals(op)) {
@@ -62,15 +77,20 @@ public abstract class GraphWrapper {
 		return null;
 	}
 
+	/**
+	 * <p>clearColorCache.</p>
+	 */
 	public static void clearColorCache() {
 		GraphWrapper.styles.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return System.identityHashCode(this.element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object element_param) {
 		if(element_param instanceof GraphWrapper) {
@@ -80,6 +100,12 @@ public abstract class GraphWrapper {
 		return false;
 	}
 	
+	/**
+	 * <p>getOperatorStyle.</p>
+	 *
+	 * @param styleName a {@link java.lang.String} object.
+	 * @return a {@link lupos.gui.operatorgraph.DrawObject} object.
+	 */
 	protected DrawObject getOperatorStyle(final String styleName) {
 		try {
 			if(!GraphWrapper.styles.containsKey(styleName)) {
@@ -98,10 +124,16 @@ public abstract class GraphWrapper {
 		return GraphWrapper.styles.get(styleName);
 	}
 
+	/**
+	 * <p>Getter for the field <code>element</code>.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object getElement() {
 		return this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.element.toString();
@@ -109,10 +141,10 @@ public abstract class GraphWrapper {
 
 	/**
 	 * Checks if an object is instance of a List of Classes
-	 * 
-	 * @param instance
-	 * @param classes
-	 * @return
+	 *
+	 * @param instance a {@link java.lang.Object} object.
+	 * @param classes a {@link java.util.List} object.
+	 * @return a boolean.
 	 */
 	@SuppressWarnings("rawtypes")
 	protected boolean instanceOf(final Object instance, final List classes) {
@@ -125,23 +157,88 @@ public abstract class GraphWrapper {
 		return false;
 	}
 
+	/**
+	 * <p>getPrecedingElements.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public abstract LinkedList<GraphWrapper> getPrecedingElements();
+	/**
+	 * <p>getSucceedingElements.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public abstract LinkedList<GraphWrapperIDTuple> getSucceedingElements();
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String toString(Prefix prefixInstance);
 
+	/**
+	 * <p>serializeObjectAndTree.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public abstract StringBuffer serializeObjectAndTree();
 
+	/**
+	 * <p>createObject.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link lupos.gui.operatorgraph.AbstractSuperGuiComponent} object.
+	 */
 	public abstract AbstractSuperGuiComponent createObject(OperatorGraph parent);
 
+	/**
+	 * <p>drawLineAnnotations.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public abstract Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(OperatorGraph parent);
+	/**
+	 * <p>drawBackground.</p>
+	 *
+	 * @param g2d a {@link java.awt.Graphics2D} object.
+	 * @param size a {@link java.awt.Dimension} object.
+	 */
 	public abstract void drawBackground(Graphics2D g2d, Dimension size);
+	/**
+	 * <p>drawAnnotationsBackground.</p>
+	 *
+	 * @param g2d a {@link java.awt.Graphics2D} object.
+	 * @param size a {@link java.awt.Dimension} object.
+	 */
 	public abstract void drawAnnotationsBackground(Graphics2D g2d, Dimension size);
 
+	/**
+	 * <p>isContainer.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public abstract boolean isContainer();
+	/**
+	 * <p>getContainerElements.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public abstract LinkedList<GraphWrapper> getContainerElements();
 
+	/**
+	 * <p>usePrefixesActive.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public abstract boolean usePrefixesActive();
 
+	/**
+	 * <p>getWantedPreferencesID.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String getWantedPreferencesID();
 }

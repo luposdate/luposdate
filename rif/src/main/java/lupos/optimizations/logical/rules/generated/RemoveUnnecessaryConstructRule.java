@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated;
 
@@ -30,10 +34,6 @@ import java.util.List;
 import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
-
-
-
-
 public class RemoveUnnecessaryConstructRule extends Rule {
 
     private lupos.engine.operators.singleinput.Construct c = null;
@@ -66,15 +66,20 @@ public class RemoveUnnecessaryConstructRule extends Rule {
     }
 
 
+    /**
+     * <p>Constructor for RemoveUnnecessaryConstructRule.</p>
+     */
     public RemoveUnnecessaryConstructRule() {
         this.startOpClass = lupos.engine.operators.singleinput.Construct.class;
         this.ruleName = "Remove Unnecessary Construct";
     }
 
+    /** {@inheritDoc} */
     protected boolean check(BasicOperator _op) {
         return this._checkPrivate0(_op);
     }
 
+    /** {@inheritDoc} */
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
         this.c.removeSucceedingOperator(this.p);

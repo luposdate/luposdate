@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.guielements;
 
@@ -59,7 +63,6 @@ import lupos.gui.operatorgraph.visualeditor.queryeditor.operators.QueryRDFTerm;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.util.QueryConnection;
 import lupos.gui.operatorgraph.visualeditor.util.Connection;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
-
 public class SuggestionFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final SuggestionFrame myself = this;
@@ -75,6 +78,17 @@ public class SuggestionFrame extends JFrame {
 	protected SuggestionPanel predicatePanelO;
 	protected SuggestionPanel objectPanel;
 
+	/**
+	 * <p>Constructor for SuggestionFrame.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.QueryEditor} object.
+	 * @param queryGraph a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.QueryGraph} object.
+	 * @param queryResult_preceding a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param queryResult_succeeding a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.operators.QueryRDFTerm} object.
+	 * @param varSOName a {@link java.lang.String} object.
+	 * @param varPredName a {@link java.lang.String} object.
+	 */
 	public SuggestionFrame(final QueryEditor parent,
 			final QueryGraph queryGraph,
 			final QueryResult queryResult_preceding,
@@ -111,6 +125,17 @@ public class SuggestionFrame extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * <p>Constructor for SuggestionFrame.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.AdvancedQueryEditor} object.
+	 * @param queryGraph a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.QueryGraph} object.
+	 * @param queryResult_preceding a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param queryResult_succeeding a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.operators.QueryRDFTerm} object.
+	 * @param varSOName a {@link java.lang.String} object.
+	 * @param varPredName a {@link java.lang.String} object.
+	 */
 	public SuggestionFrame(final AdvancedQueryEditor parent,
 			final QueryGraph queryGraph,
 			final QueryResult queryResult_preceding,
@@ -241,6 +266,12 @@ public class SuggestionFrame extends JFrame {
 		return contentPanel;
 	}
 
+	/**
+	 * <p>createPrecedingSuggestionsPanel.</p>
+	 *
+	 * @param addPrecedingSuggestionAction a {@link java.awt.event.ActionListener} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected JPanel createPrecedingSuggestionsPanel(
 			final ActionListener addPrecedingSuggestionAction) {
 		System.out.println("creating preceding suggestions...");
@@ -359,6 +390,12 @@ public class SuggestionFrame extends JFrame {
 		return panel;
 	}
 
+	/**
+	 * <p>createSucceedingSuggestionsPanel.</p>
+	 *
+	 * @param addSucceedingSuggestionAction a {@link java.awt.event.ActionListener} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	protected JPanel createSucceedingSuggestionsPanel(
 			final ActionListener addSucceedingSuggestionAction) {
 		System.out.println("creating succeeding suggestions...");
@@ -476,6 +513,12 @@ public class SuggestionFrame extends JFrame {
 		return panel;
 	}
 
+	/**
+	 * <p>addPrecedingSuggestion.</p>
+	 *
+	 * @param subjectPanel a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.SuggestionPanel} object.
+	 * @param predicatePanel a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.SuggestionPanel} object.
+	 */
 	protected void addPrecedingSuggestion(final SuggestionPanel subjectPanel,
 			final SuggestionPanel predicatePanel) {
 		// get items...
@@ -507,6 +550,12 @@ public class SuggestionFrame extends JFrame {
 		this.queryGraph.arrange(Arrange.values()[0]);
 	}
 
+	/**
+	 * <p>addSucceedingSuggestion.</p>
+	 *
+	 * @param predicatePanel a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.SuggestionPanel} object.
+	 * @param objectPanel a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.SuggestionPanel} object.
+	 */
 	protected void addSucceedingSuggestion(
 			final SuggestionPanel predicatePanel,
 			final SuggestionPanel objectPanel) {

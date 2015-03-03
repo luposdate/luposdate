@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
@@ -38,7 +42,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualR
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.FrameOperatorPanel;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 import lupos.misc.util.OperatorIDTuple;
-
 public class FrameOperator extends AbstractTermOperator {
 
 
@@ -49,6 +52,7 @@ public class FrameOperator extends AbstractTermOperator {
 	
 
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw,
 			VisualGraph<Operator> parent) {
@@ -59,6 +63,7 @@ public class FrameOperator extends AbstractTermOperator {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 	
@@ -132,6 +137,7 @@ public class FrameOperator extends AbstractTermOperator {
 	}
 
 	
+	/** {@inheritDoc} */
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		StringBuffer sb = new StringBuffer("");
 		
@@ -238,27 +244,46 @@ public class FrameOperator extends AbstractTermOperator {
 
 
 	
+	/**
+	 * <p>getNextTermCombo.</p>
+	 *
+	 * @return a {@link javax.swing.JComboBox} object.
+	 */
 	public JComboBox getNextTermCombo() {
 		return nextTermCombo;
 	}
 
 
+	/** {@inheritDoc} */
 	public void setNextTermCombo(JComboBox nextTermCombo) {
 		this.nextTermCombo = nextTermCombo;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>termTypArray</code>.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getTermTypArray() {
 		return termTypArray;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>termTypArray</code>.</p>
+	 *
+	 * @param termTypArray an array of {@link java.lang.String} objects.
+	 */
 	public void setTermTypArray(String[] termTypArray) {
 		this.termTypArray = termTypArray;
 	}
 
 
 	
+	/**
+	 * <p>sortTermsByTermFrameID.</p>
+	 */
 	public void sortTermsByTermFrameID() {
 		
 		HashMap<Integer,Term> unsortedTerms = new HashMap<Integer,Term>();

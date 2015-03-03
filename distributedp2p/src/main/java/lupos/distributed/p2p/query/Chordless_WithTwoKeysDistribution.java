@@ -32,17 +32,19 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.TwoKeysDistribution;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.sparql1_1.Node;
-	/**
-	 * TomP2P Network with {@link TwoKeysDistribution} strategy
-	 * @author Bjoern
-	 *
-	 */
+/**
+ * TomP2P Network with {@link lupos.distributed.storage.distributionstrategy.tripleproperties.TwoKeysDistribution} strategy
+ *
+ * @author Bjoern
+ * @version $Id: $Id
+ */
 public abstract class Chordless_WithTwoKeysDistribution  extends QueryEvaluator<Node> {
 
 	/*
 	 * information about the network to be used
 	 */
 	private static final String NETWORK = P2PNetworkCreator.CHORDLESS;
+	/** Constant <code>DISTRIBUTION</code> */
 	@SuppressWarnings("rawtypes")
 	/*
 	 * information about the selected distribution strategy (will be improved
@@ -52,6 +54,8 @@ public abstract class Chordless_WithTwoKeysDistribution  extends QueryEvaluator<
 
 	/**
 	 * don't use
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	@Deprecated
 	public Chordless_WithTwoKeysDistribution() throws Exception {
@@ -61,6 +65,8 @@ public abstract class Chordless_WithTwoKeysDistribution  extends QueryEvaluator<
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance() {
 		try {
@@ -74,9 +80,10 @@ public abstract class Chordless_WithTwoKeysDistribution  extends QueryEvaluator<
 
 	/**
 	 * Returns an already running queryClient or starts a new one
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to be used
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance(Map<String, Object> config) {
 		try {

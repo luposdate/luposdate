@@ -34,7 +34,10 @@ import lupos.optimizations.physical.joinorder.staticanalysis.scoring.triplepatte
 
 /**
  * This class determines the best triple pattern according to scoring alternatives to be specified when initialized...
- * This class must be overridden and the used scoring algorithms must be initialized... 
+ * This class must be overridden and the used scoring algorithms must be initialized...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class RearrangeJoinOrderWithScoringTriplePatterns extends RearrangeTriplePatternsInIndexScan<HashSet<Variable>> {
 
@@ -44,6 +47,7 @@ public abstract class RearrangeJoinOrderWithScoringTriplePatterns extends Rearra
 	protected LinkedList<ScoringTriplePattern<HashSet<Variable>>> scorings = new LinkedList<ScoringTriplePattern<HashSet<Variable>>>();
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	protected TriplePattern getBestNextTriplePatternToJoin(
 			BasicIndexScan indexScan, Collection<TriplePattern> remainingTP,
@@ -88,11 +92,13 @@ public abstract class RearrangeJoinOrderWithScoringTriplePatterns extends Rearra
 		return bestScored.iterator().next();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected HashSet<Variable> initAdditionalInformation() {
 		return new HashSet<Variable>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void updateInitialInformation(
 			HashSet<Variable> additionalInformation,

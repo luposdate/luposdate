@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -37,7 +41,6 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.LengthHelper;
 import lupos.io.helper.OutHelper;
-
 public class LiteralFactory {
 
 	/**
@@ -49,6 +52,13 @@ public class LiteralFactory {
 	 */
 	public static boolean semanticInterpretationOfLiterals = false;
 
+	/**
+	 * <p>writeLuposLiteral.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void writeLuposLiteral(final Literal lit, final OutputStream out) throws IOException {
 		if (lit instanceof CodeMapURILiteral) {
 			OutHelper.writeLuposByte((byte) LuposObjectInputStream.URILITERAL, out);
@@ -107,6 +117,13 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>writeContentOfLiteral.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	protected static void writeContentOfLiteral(final Literal lit, final OutputStream out) throws IOException {
 		if (lit instanceof StringLiteral) {
 			OutHelper.writeLuposString(lit.toString(), out);
@@ -115,6 +132,12 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>lengthLuposLiteral.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a int.
+	 */
 	public static int lengthLuposLiteral(final Literal lit) {
 		if (lit instanceof CodeMapURILiteral) {
 			return 	LengthHelper.lengthLuposByte() +
@@ -162,6 +185,12 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>lengthContentOfLiteral.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a int.
+	 */
 	protected static int lengthContentOfLiteral(final Literal lit) {
 		if (lit instanceof StringLiteral) {
 			return LengthHelper.lengthLuposString(lit.toString());
@@ -171,6 +200,13 @@ public class LiteralFactory {
 	}
 
 
+	/**
+	 * <p>readLuposLiteral.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Literal readLuposLiteral(final InputStream in)
 			throws IOException {
 		try {
@@ -256,6 +292,13 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createURILiteralWithoutLazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static URILiteral createURILiteralWithoutLazyLiteral(
 			final String content) throws java.net.URISyntaxException {
 		if (mapType == MapType.NOCODEMAP
@@ -266,6 +309,12 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createURILiteralWithoutLazyLiteralWithoutException.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public static URILiteral createURILiteralWithoutLazyLiteralWithoutException(
 			final String content) {
 		try {
@@ -282,10 +331,23 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createStringURILiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static URILiteral createStringURILiteral(final String content) throws URISyntaxException {
 		return new StringURILiteral(content);
 	}
 
+	/**
+	 * <p>createStringURILiteralWithoutException.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public static URILiteral createStringURILiteralWithoutException(final String content) {
 		try {
 			return new StringURILiteral(content);
@@ -296,11 +358,26 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createTypedLiteralWithoutLazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static TypedLiteral createTypedLiteralWithoutLazyLiteral(final String content, final String type)
 			throws java.net.URISyntaxException {
 		return TypedLiteralOriginalContent.createTypedLiteral(content, type);
 	}
 
+	/**
+	 * <p>createTypedLiteralWithoutLazyLiteralWithoutException.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+	 */
 	public static TypedLiteral createTypedLiteralWithoutLazyLiteralWithoutException(final String content, final String type) {
 		try {
 			return TypedLiteralOriginalContent.createTypedLiteral(content, type);
@@ -311,12 +388,26 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createTypedLiteralWithoutLazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static TypedLiteral createTypedLiteralWithoutLazyLiteral(
 			final String content, final URILiteral type)
 			throws java.net.URISyntaxException {
 		return TypedLiteralOriginalContent.createTypedLiteral(content, type);
 	}
 
+	/**
+	 * <p>createLiteralWithoutLazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createLiteralWithoutLazyLiteral(final String content) {
 		if (mapType == MapType.NOCODEMAP || mapType == MapType.LAZYLITERAL
 				|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
@@ -328,20 +419,46 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createStringLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createStringLiteral(final String content) {
 			return new StringLiteral(content);
 	}
 
+	/**
+	 * <p>createLanguageTaggedLiteralWithoutLazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param language a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.LanguageTaggedLiteral} object.
+	 */
 	public static LanguageTaggedLiteral createLanguageTaggedLiteralWithoutLazyLiteral(
 			final String content, final String language) {
 		return LanguageTaggedLiteralOriginalLanguage.createLanguageTaggedLiteral(content, language);
 	}
 
+	/**
+	 * <p>createAnonymousLiteralWithoutLazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.AnonymousLiteral} object.
+	 */
 	public static AnonymousLiteral createAnonymousLiteralWithoutLazyLiteral(
 			final String content) {
 		return new AnonymousLiteral(content);
 	}
 
+	/**
+	 * <p>createURILiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static Literal createURILiteral(final String content)
 	throws java.net.URISyntaxException {
 		if (LazyLiteral.getHm() != null
@@ -353,6 +470,12 @@ public class LiteralFactory {
 
 	}
 
+	/**
+	 * <p>createURILiteralWithoutException.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createURILiteralWithoutException(final String content) {
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
@@ -362,6 +485,13 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createTypedLiteralWithoutException.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createTypedLiteralWithoutException(final String content, final String type) {
 		try {
 			return LiteralFactory.createTypedLiteral(content, type);
@@ -372,6 +502,14 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createTypedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static Literal createTypedLiteral(final String content, final String type) throws java.net.URISyntaxException {
 		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(content, type);
 		if (LazyLiteral.getHm() != null
@@ -387,6 +525,14 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createTypedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static Literal createTypedLiteral(final String content, final URILiteral type) throws java.net.URISyntaxException {
 		final Literal typedLiteral = createTypedLiteralWithoutLazyLiteral(content, type);
 		if (LazyLiteral.getHm() != null
@@ -402,11 +548,23 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>creatPlainStringLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.string.PlainStringLiteral} object.
+	 */
 	public static PlainStringLiteral creatPlainStringLiteral(
 			final String content) {
 		return new PlainStringLiteral(content);
 	}
 
+	/**
+	 * <p>createLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createLiteral(final String content) {
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
@@ -416,6 +574,13 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createLanguageTaggedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param language a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createLanguageTaggedLiteral(final String content,
 			final String language) {
 		final Literal languageTaggedLiteral = createLanguageTaggedLiteralWithoutLazyLiteral(
@@ -433,6 +598,12 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createAnonymousLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createAnonymousLiteral(final String content) {
 		if (LazyLiteral.getHm() != null
 				&& (mapType == MapType.LAZYLITERAL || mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
@@ -442,6 +613,12 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>createPostFixOfURI.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal createPostFixOfURI(final String content) {
 		if (mapType == MapType.NOCODEMAP || mapType == MapType.LAZYLITERAL
 				|| mapType == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
@@ -456,8 +633,14 @@ public class LiteralFactory {
 		TRIEMAP, HASHMAP, DBBPTREE, SMALLERINHASHMAPLARGERINDBBPTREE, NOCODEMAP, PREFIXCODEMAP, URICODEMAP, LAZYLITERAL, LAZYLITERALWITHOUTINITIALPREFIXCODEMAP
 	};
 
+	/** Constant <code>mapType</code> */
 	protected static volatile MapType mapType = MapType.NOCODEMAP;
 
+	/**
+	 * <p>setType.</p>
+	 *
+	 * @param mapType a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 */
 	public static void setType(final MapType mapType) {
 		LiteralFactory.mapType = mapType;
 		if (mapType != MapType.NOCODEMAP && mapType != MapType.LAZYLITERAL
@@ -471,10 +654,20 @@ public class LiteralFactory {
 		}
 	}
 
+	/**
+	 * <p>setTypeWithoutInitializing.</p>
+	 *
+	 * @param mapType a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 */
 	public static void setTypeWithoutInitializing(final MapType mapType) {
 		LiteralFactory.mapType = mapType;
 	}
 
+	/**
+	 * <p>Getter for the field <code>mapType</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 */
 	public static MapType getMapType() {
 		return mapType;
 	}

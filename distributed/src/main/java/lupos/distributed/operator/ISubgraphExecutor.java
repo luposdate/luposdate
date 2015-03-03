@@ -28,15 +28,20 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * This interface declares the methods to submit a subgraph and retrieve its result
+ *
  * @param <K> the type of the key which addresses the node where the subgraph is submitted to
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface ISubgraphExecutor<K> {
 
 	/**
 	 * This method submits a given subgraph and returns the result of the evaluated subgraph
+	 *
 	 * @param key the key to address the node to which the subgraph is submitted to
 	 * @param subgraphSerializedAsJSON the subgraph serialized as JSON string
 	 * @return the retrieved query result
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public QueryResult evaluate(K key, String subgraphSerializedAsJSON, BindingsFactory bindingsFactory);
 }

@@ -29,9 +29,11 @@ import java.util.Map.Entry;
 /**
  * HashBuffer that uses Integer as key. Whenever the buffer is full, an overflow
  * handler is called.
- * 
+ *
  * @param <T>
  *            Object type for the values in the LinkedHashMap.
+ * @author groppe
+ * @version $Id: $Id
  */
 public class HashBuffer<T> extends LinkedHashMap<Integer, T> {
 	
@@ -60,6 +62,8 @@ public class HashBuffer<T> extends LinkedHashMap<Integer, T> {
 	private OverflowHandler<T> overflowHandler;
 	
 	/**
+	 * <p>Constructor for HashBuffer.</p>
+	 *
 	 * @param bufferSize
 	 *            Size of the buffer
 	 */
@@ -71,8 +75,8 @@ public class HashBuffer<T> extends LinkedHashMap<Integer, T> {
 
 	/**
 	 * Sets the overflow handler
-	 * 
-	 * @param overflowHandler
+	 *
+	 * @param overflowHandler a {@link lupos.datastructures.patriciatrie.disk.nodemanager.HashBuffer.OverflowHandler} object.
 	 */
 	public void setOverflowHandler(final OverflowHandler<T> overflowHandler) {
 		this.overflowHandler = overflowHandler;
@@ -81,7 +85,7 @@ public class HashBuffer<T> extends LinkedHashMap<Integer, T> {
 	/**
 	 * Adds an object to the buffer with idx as key. If the buffer is full, the
 	 * overflow handler will be called and the eldest entry will be removed.
-	 * 
+	 *
 	 * @param idx
 	 *            Key for the buffer
 	 * @param obj

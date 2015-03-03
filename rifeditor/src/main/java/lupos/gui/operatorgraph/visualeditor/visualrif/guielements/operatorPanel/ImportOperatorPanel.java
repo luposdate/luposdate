@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -53,7 +57,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualR
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.JIconButton;
-
 public class ImportOperatorPanel extends AbstractGuiComponent<Operator>  {
 
 
@@ -75,6 +78,16 @@ private static final long serialVersionUID = -4952532158340724404L;
 	
 	
 		// Constructor
+		/**
+		 * <p>Constructor for ImportOperatorPanel.</p>
+		 *
+		 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+		 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+		 * @param importOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator} object.
+		 * @param name a {@link java.lang.String} object.
+		 * @param startNode a boolean.
+		 * @param alsoSubClasses a boolean.
+		 */
 		public ImportOperatorPanel(final VisualGraph<Operator> parent,
 				GraphWrapper gw, final ImportOperator importOperator,
 				String name, boolean startNode, boolean alsoSubClasses) {
@@ -165,6 +178,12 @@ private static final long serialVersionUID = -4952532158340724404L;
 		}
 
 		
+		/**
+		 * <p>createPrefixRow.</p>
+		 *
+		 * @param locatorString a {@link java.lang.String} object.
+		 * @param profileString a {@link java.lang.String} object.
+		 */
 		public void createPrefixRow(final String locatorString,
 				final String profileString) {
 	
@@ -355,6 +374,9 @@ private static final long serialVersionUID = -4952532158340724404L;
 		}
 
 		
+		/**
+		 * <p>updateSize.</p>
+		 */
 		public void updateSize() {
 			this.setMinimumSize(this.importRowsPanel.getSize());
 
@@ -517,6 +539,7 @@ private static final long serialVersionUID = -4952532158340724404L;
 		}
 
 		
+		/** {@inheritDoc} */
 		public boolean validateOperatorPanel(final boolean showErrors, Object data) {
 			return true;
 		}
@@ -528,31 +551,61 @@ private static final long serialVersionUID = -4952532158340724404L;
 		
 		
 		
+		/**
+		 * <p>Getter for the field <code>gbc</code>.</p>
+		 *
+		 * @return a {@link java.awt.GridBagConstraints} object.
+		 */
 		public GridBagConstraints getGbc() {
 			return gbc;
 		}
 
 
+		/**
+		 * <p>Setter for the field <code>gbc</code>.</p>
+		 *
+		 * @param gbc a {@link java.awt.GridBagConstraints} object.
+		 */
 		public void setGbc(GridBagConstraints gbc) {
 			this.gbc = gbc;
 		}
 
 
+		/**
+		 * <p>Getter for the field <code>importRowsPanel</code>.</p>
+		 *
+		 * @return a {@link javax.swing.JPanel} object.
+		 */
 		public JPanel getImportRowsPanel() {
 			return importRowsPanel;
 		}
 
 
+		/**
+		 * <p>Setter for the field <code>importRowsPanel</code>.</p>
+		 *
+		 * @param importRowsPanel a {@link javax.swing.JPanel} object.
+		 */
 		public void setImportRowsPanel(JPanel importRowsPanel) {
 			this.importRowsPanel = importRowsPanel;
 		}
 
 
+		/**
+		 * <p>Getter for the field <code>importOperator</code>.</p>
+		 *
+		 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator} object.
+		 */
 		public ImportOperator getImportOperator() {
 			return importOperator;
 		}
 
 
+		/**
+		 * <p>Setter for the field <code>importOperator</code>.</p>
+		 *
+		 * @param importOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator} object.
+		 */
 		public void setImportOperator(ImportOperator importOperator) {
 			this.importOperator = importOperator;
 		}

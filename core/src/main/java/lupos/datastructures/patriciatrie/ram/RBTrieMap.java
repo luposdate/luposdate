@@ -29,6 +29,9 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
 
 /**
  * This class implements the RAM based behavior for a trie for a map the keys of which are strings.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RBTrieMap<T> extends TrieMap<T> {
 	
@@ -39,16 +42,19 @@ public class RBTrieMap<T> extends TrieMap<T> {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<T> createNodeInstance() {
 		return new RBNodeWithValue<T>();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<T> createRootNodeInstance() {
 		return new RBNodeWithValue<T>();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void changeRootNode(final Node rootNode_param) {
 		this.setRootNode(rootNode_param);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -64,7 +68,6 @@ import lupos.rif.generated.syntaxtree.RIFUniterm;
 import lupos.rif.generated.syntaxtree.RIFVar;
 import lupos.rif.generated.syntaxtree.RIFVarOrURI;
 import lupos.rif.generated.visitor.IRetArguVisitor;
-
 public class ChildrenSyntaxTreeVisitor implements IRetArguVisitor<List<INode>, Object> {
 
 	private List<INode> list(INode... nodes) {
@@ -83,139 +86,173 @@ public class ChildrenSyntaxTreeVisitor implements IRetArguVisitor<List<INode>, O
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(NodeList n, Object argu) {
 		return n.nodes;
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(NodeListOptional n, Object argu) {
 		return n.nodes != null ? n.nodes : new ArrayList<INode>();
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(NodeOptional n, Object argu) {
 		return n.node != null ? list(n.node) : new ArrayList<INode>();
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(NodeSequence n, Object argu) {
 		return n.nodes;
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(NodeToken n, Object argu) {
 		return list();
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(CompilationUnit n, Object argu) {
 		return list((INode) n.f0);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFDocument n, Object argu) {
 		return list(n.f0, n.f1, n.f2.node, n.f3, n.f4, n.f5.node, n.f6.node,
 				n.f7);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFBase n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFPrefix n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3, n.f4);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFImport n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3.node, n.f4);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFGroup n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFRule n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFClause n, Object argu) {
 		return list(n.f0.choice, n.f1.node);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFFormula n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFAtomic n, Object argu) {
 		return list(n.f0, n.f1.node);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFUniterm n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFFrame n, Object argu) {
 		return list(((RIFAtomic)n.getParent().getParent().getParent()).f0, n.f0, n.f1, n.f2);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFTerm n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFExternal n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFList n, Object argu) {
 		return list(n.f0, n.f1, n.f2.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFVar n, Object argu) {
 		return list(n.f0, n.f1);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFRDFLiteral n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFTypedLiteral n, Object argu) {
 		return list(n.f0, n.f2);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFLiteralWithLangTag n, Object argu) {
 		return list(n.f0, n.f1);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFNumericLiteral n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFString n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFVarOrURI n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFURI n, Object argu) {
 		return list(n.f0.choice);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFQName n, Object argu) {
 		return list(n.f0);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFInteger n, Object argu) {
 		return list(n.f0);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFFloatingPoint n, Object argu) {
 		return list(n.f0);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFNCName n, Object argu) {
 		return list(n.f0);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFQuotedURIref n, Object argu) {
 		return list((INode) n.f0);
 	}
 
+	/** {@inheritDoc} */
 	public List<INode> visit(RIFConclusion n, Object argu) {
 		return list(n.f0, n.f1, n.f2, n.f3);
 	}

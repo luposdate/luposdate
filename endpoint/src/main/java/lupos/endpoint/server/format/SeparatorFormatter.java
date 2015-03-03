@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -35,35 +39,55 @@ import lupos.datastructures.items.literal.LanguageTaggedLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
-
 public abstract class SeparatorFormatter extends HeadBodyFormatter{
 
+	/**
+	 * <p>Constructor for SeparatorFormatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 */
 	public SeparatorFormatter(final String formatName) {
 		super(formatName);
 	}
 
+	/**
+	 * <p>Constructor for SeparatorFormatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	public SeparatorFormatter(final String formatName, final String key) {
 		super(formatName, key);
 	}
 
+	/**
+	 * <p>writeSeparator.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeSeparator(OutputStream os) throws IOException;
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeBooleanResult(final OutputStream os, final boolean result)
 			throws IOException {
 		os.write(Boolean.toString(result).getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartHead(final OutputStream os) throws IOException { // do not need here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeFirstVariableInHead(final OutputStream os, final Variable v)
 			throws IOException {
 		os.write(v.getName().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeVariableInHead(final OutputStream os, final Variable v)
 			throws IOException {
@@ -71,62 +95,75 @@ public abstract class SeparatorFormatter extends HeadBodyFormatter{
 		this.writeFirstVariableInHead(os, v);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndHead(final OutputStream os) throws IOException {
 		os.write("\n".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartResult(final OutputStream os) throws IOException { // do not need here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndResult(final OutputStream os) throws IOException {
 		os.write("\n".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEpilogue(final OutputStream os) throws IOException { // do not need here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeFirstStartBinding(final OutputStream os, final Variable v) throws IOException { // do not need here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartBinding(final OutputStream os, final Variable v) throws IOException {
 		this.writeSeparator(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndBinding(final OutputStream os) throws IOException { // do not need here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeBlankNode(final OutputStream os, final AnonymousLiteral blankNode) throws IOException {
 		os.write(blankNode.originalString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeURI(final OutputStream os, final URILiteral uri) throws IOException {
 		os.write(uri.originalString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeSimpleLiteral(final OutputStream os, final Literal literal) throws IOException {
 		os.write(literal.originalString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeTypedLiteral(final OutputStream os, final TypedLiteral literal) throws IOException {
 		os.write(literal.originalString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLanguageTaggedLiteral(final OutputStream os, final LanguageTaggedLiteral literal) throws IOException {
 		os.write(literal.originalString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Collection<Variable> variables, final Bindings bindings){
 		return variables.iterator();

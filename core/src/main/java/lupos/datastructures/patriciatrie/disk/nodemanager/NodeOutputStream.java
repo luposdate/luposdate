@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie.disk.nodemanager;
 
@@ -28,7 +32,6 @@ import java.io.OutputStream;
 
 import lupos.datastructures.patriciatrie.diskseq.DeSerializer.Writer;
 import lupos.misc.ByteHelper;
-
 public class NodeOutputStream extends OutputStream implements Writer {
 	
 	/**
@@ -37,6 +40,8 @@ public class NodeOutputStream extends OutputStream implements Writer {
 	private OutputStream stream;
 	
 	/**
+	 * <p>Constructor for NodeOutputStream.</p>
+	 *
 	 * @param stream
 	 *            Stream to use for writing
 	 */
@@ -44,17 +49,16 @@ public class NodeOutputStream extends OutputStream implements Writer {
 		this.stream = stream;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void write(int b) throws IOException {
 		this.stream.write(b);
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Writes an integer value to the stream (4 bytes)
-	 * 
-	 * @param i
-	 *            Integer to write
-	 * @throws IOException
 	 */
 	@Override
 	public void writeInt(int i) throws IOException {
@@ -63,15 +67,16 @@ public class NodeOutputStream extends OutputStream implements Writer {
 	
 	/**
 	 * Writes a long value to the stream (8 bytes)
-	 * 
+	 *
 	 * @param l
 	 *            Long to write
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void writeLong(long l) throws IOException {
 		this.stream.write(ByteHelper.longToByte(l));
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
 		this.stream.close();

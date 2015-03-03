@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
 
@@ -27,29 +31,42 @@ import java.util.Iterator;
 
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.misc.util.ImmutableIterator;
-
 public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
 
 	private final Heap<E> heap;
 
+	/**
+	 * <p>Constructor for HeapSort.</p>
+	 *
+	 * @param height a int.
+	 */
 	public HeapSort(final int height) {
 		this.heap = Heap.createInstance(height);
 	}
 
+	/**
+	 * <p>Constructor for HeapSort.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 */
 	public HeapSort(final int length_or_height, final boolean length) {
 		this.heap = Heap.createInstance(length_or_height, length);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		this.heap.add(elem);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.heap.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> emptyDatastructure() {
 		// return heap.emptyDatastructure();
@@ -71,21 +88,25 @@ public class HeapSort<E extends Comparable<E>> extends ToSort<E> {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return this.heap.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFull() {
 		return this.heap.isFull();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		this.heap.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.heap.size();

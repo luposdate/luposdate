@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.consumer.app;
 
@@ -36,8 +40,6 @@ import lupos.event.*;
 import lupos.event.action.Action;
 import lupos.event.consumer.Consumer;
 import lupos.event.pubsub.Subscription;
-
-
 public class Controller {
 	
 	private Consumer consumer;
@@ -48,6 +50,12 @@ public class Controller {
 	private Subscription activeSubscription;
 	
 	
+	/**
+	 * <p>Constructor for Controller.</p>
+	 *
+	 * @param model a {@link lupos.event.consumer.Consumer} object.
+	 * @param view a {@link lupos.event.consumer.app.ClientView} object.
+	 */
 	public Controller(Consumer model, final ClientView view) {
 		this.consumer = model;
 		this.view = view;
@@ -97,11 +105,20 @@ public class Controller {
 		});	
 	}
 	
+	/**
+	 * <p>disconnectFromBroker.</p>
+	 */
 	public void disconnectFromBroker() {
 		this.consumer.disconnect();
 		this.subscriptionsListModel.clear();
 	}
 	
+	/**
+	 * <p>connectToBroker.</p>
+	 *
+	 * @param host a {@link java.lang.String} object.
+	 * @param port a int.
+	 */
 	public void connectToBroker(String host, int port) {
 		try {
 			this.consumer.connect(host, port);
@@ -111,6 +128,12 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * <p>subscribe.</p>
+	 *
+	 * @param sub a {@link lupos.event.pubsub.Subscription} object.
+	 * @param action a {@link lupos.event.action.Action} object.
+	 */
 	public void subscribe(Subscription sub, Action action) {
 		try {
 			this.consumer.subscribe(sub, action);

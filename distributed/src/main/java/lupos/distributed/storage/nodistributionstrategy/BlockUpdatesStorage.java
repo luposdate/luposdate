@@ -34,6 +34,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This class inserts imported triples block-wise...
  * There is no distribution strategy assumed.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BlockUpdatesStorage implements IStorage {
 
@@ -52,10 +55,16 @@ public abstract class BlockUpdatesStorage implements IStorage {
 	 */
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for BlockUpdatesStorage.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BlockUpdatesStorage(final BindingsFactory bindingsFactory){
 		this.bindingsFactory = bindingsFactory;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 		if(!this.toBeAdded.isEmpty()){
@@ -65,6 +74,7 @@ public abstract class BlockUpdatesStorage implements IStorage {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addTriple(final Triple triple) {
 		this.toBeAdded.add(triple);
@@ -75,6 +85,7 @@ public abstract class BlockUpdatesStorage implements IStorage {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTriple(final Triple triple) {
 		// first add remaining triples
@@ -82,6 +93,7 @@ public abstract class BlockUpdatesStorage implements IStorage {
 		return this.containsTripleAfterAdding(triple);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final Triple triple) {
 		this.toBeAdded.remove(triple);
@@ -90,6 +102,7 @@ public abstract class BlockUpdatesStorage implements IStorage {
 		this.removeAfterAdding(triple);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern) {
 		// first add remaining triples
@@ -97,6 +110,7 @@ public abstract class BlockUpdatesStorage implements IStorage {
 		return this.evaluateTriplePatternAfterAdding(triplePattern);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setBindingsFactory(final BindingsFactory bindingsFactory) {
 		this.bindingsFactory = bindingsFactory;
@@ -110,14 +124,16 @@ public abstract class BlockUpdatesStorage implements IStorage {
 	/**
 	 * Checks whether or not a triple is contained in the distributed indices.
 	 * This method is called after all pending triples are inserted...
+	 *
 	 * @param triple the triple to be checked
-	 * @return true, if the triple is contained, false otherwise
+	 * @return a boolean.
 	 */
 	public abstract boolean containsTripleAfterAdding(Triple triple);
 
 	/**
 	 * Removes a triple in the distributed indices.
 	 * This method is called after all pending triples are inserted...
+	 *
 	 * @param triple the triple to e removed
 	 */
 	public abstract void removeAfterAdding(Triple triple);
@@ -125,6 +141,7 @@ public abstract class BlockUpdatesStorage implements IStorage {
 	/**
 	 * Evaluates one triple pattern on the distributed indices.
 	 * This method is called after all pending triples are inserted...
+	 *
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query result of the triple pattern
 	 */

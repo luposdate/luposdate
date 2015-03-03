@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui;
 
@@ -48,7 +52,6 @@ import lupos.gui.operatorgraph.viewer.Viewer;
 import lupos.gui.operatorgraph.viewer.ViewerPrefix;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.optimizations.logical.rules.DebugContainer;
-
 public abstract class DebugViewerCreator {
 	
 	private final boolean fromJar;
@@ -57,6 +60,15 @@ public abstract class DebugViewerCreator {
 	private final RulesGetter rulesGetter;
 	private final Image icon;
 	
+	/**
+	 * <p>Constructor for DebugViewerCreator.</p>
+	 *
+	 * @param fromJar a boolean.
+	 * @param viewerPrefix a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 * @param usePrefixes a {@link lupos.gui.BooleanReference} object.
+	 * @param rulesGetter a {@link lupos.gui.DebugViewerCreator.RulesGetter} object.
+	 * @param icon a {@link java.awt.Image} object.
+	 */
 	public DebugViewerCreator(final boolean fromJar, final ViewerPrefix viewerPrefix, final BooleanReference usePrefixes, final RulesGetter rulesGetter, final Image icon){
 		this.fromJar = fromJar;
 		this.viewerPrefix = viewerPrefix;
@@ -65,16 +77,38 @@ public abstract class DebugViewerCreator {
 		this.icon = icon;
 	}
 	
+	/**
+	 * <p>getASTGraphWrapper.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public abstract GraphWrapper getASTGraphWrapper();
 
+	/**
+	 * <p>getASTCoreGraphWrapper.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public abstract GraphWrapper getASTCoreGraphWrapper();
 
+	/**
+	 * <p>getCore.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String getCore();
 
+	/**
+	 * <p>queryOrRule.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String queryOrRule();
 
 	/**
 	 * create the button to show the operator graph.
+	 *
+	 * @return a {@link javax.swing.JButton} object.
 	 */
 	public JButton createASTButton() {
 		// create operatorgraph-button, add actionListener and add it to
@@ -98,6 +132,11 @@ public abstract class DebugViewerCreator {
 		return bt_AST;
 	}
 
+	/**
+	 * <p>createCoreSPARQLQueryButton.</p>
+	 *
+	 * @return a {@link javax.swing.JButton} object.
+	 */
 	public JButton createCoreSPARQLQueryButton() {
 		// create coreSPARQLQuery-button, add actionListener and add it to
 		// Applet...
@@ -146,6 +185,12 @@ public abstract class DebugViewerCreator {
 		return bt_coreSPARQLQuery;
 	}
 	
+	/**
+	 * <p>createInferenceRulesButton.</p>
+	 *
+	 * @param inferenceRulesParameter a {@link java.lang.String} object.
+	 * @return a {@link javax.swing.JButton} object.
+	 */
 	public JButton createInferenceRulesButton(final String inferenceRulesParameter) {
 		// create coreSPARQLQuery-button, add actionListener and add it to Applet...
 		final JButton bt_InferenceRules = new JButton("Show Rules");
@@ -190,6 +235,8 @@ public abstract class DebugViewerCreator {
 
 	/**
 	 * create the button to show the operator graph.
+	 *
+	 * @return a {@link javax.swing.JButton} object.
 	 */
 	public JButton createASTCoreSPARQLButton() {
 		// create operatorgraph-button, add actionListener and add it to
@@ -214,11 +261,19 @@ public abstract class DebugViewerCreator {
 
 	/**
 	 * create the button to show the operator graph.
+	 *
+	 * @return a {@link javax.swing.JButton} object.
 	 */
 	public JButton createOperatorGraphButton() {
 		return this.createOperatorGraphButton(this.rulesGetter.getRuleApplications());
 	}
 
+	/**
+	 * <p>createOperatorGraphButton.</p>
+	 *
+	 * @param ruleApplicationsParameter a {@link java.util.List} object.
+	 * @return a {@link javax.swing.JButton} object.
+	 */
 	public JButton createOperatorGraphButton(final List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsParameter) {
 		// create OperatorGraph-button, add actionListener and add it to
 		// Applet...
@@ -239,6 +294,11 @@ public abstract class DebugViewerCreator {
 		return bt_opgraph;
 	}
 
+	/**
+	 * <p>getCorrectOperatorGraphRules.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<BasicOperatorByteArray>> getCorrectOperatorGraphRules() {
 		return null;
 	}

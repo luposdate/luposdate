@@ -39,11 +39,15 @@ import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
  * This class represents a leaf node of the plan.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LeafNodePlan extends Plan {
 
 	/**
 	 * This constructor is used for cloning...
+	 *
 	 * @param triplePatterns the triple patterns of this node (usually one if it is a leaf)
 	 * @param joinPartner the join partners (usually empty for a leaf node)
 	 * @param variables the variables appearing (can be determined from the triple patterns)
@@ -74,11 +78,13 @@ public class LeafNodePlan extends Plan {
 
 	/**
 	 * This constructor is normally used to set up the leaf node. Missing information like cardinality is computed...
+	 *
 	 * @param tp the triple pattern of this leaf node
 	 * @param indexScan the index scan operator such that the histogram of the result can be determined
 	 * @param classBindings the currently used Bindings class
 	 * @param minima the minimum values of a variable
 	 * @param maxima the maximum values of a variable
+	 * @param joinPartner a {@link java.util.Collection} object.
 	 */
 	public LeafNodePlan(
 			final TriplePattern tp,
@@ -116,6 +122,8 @@ public class LeafNodePlan extends Plan {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method checks whether or not the ordering can be fulfilled by this leaf node (i.e., all variables of the given ordering to check appear in the result?)
 	 */
 	@Override
@@ -127,21 +135,25 @@ public class LeafNodePlan extends Plan {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int findMaxMergeJoins() {
 		return 0; // leaf nodes do not have any joins and therefore also no merge joins!
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected String getNodeString() {
 		return "+ Leaf:" + super.getNodeString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LeafNodePlan clone(){
 		return new LeafNodePlan(this.triplePatterns, this.joinPartner, this.joinPartner, this.order, this.numberJoins, this.numberJoins, this.selectivity, this.getCardinality(), this.getCardinality());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkOrdering(final LinkedList<Variable> possibleOrdering) {
 		// Leaf node does not count as merge join! => this.numberMergeJoin remains 0 through whole lifetime of this leaf node!

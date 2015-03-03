@@ -43,13 +43,22 @@ import lupos.sparql1_1.Node;
 
 /**
  * For all those approaches, which must join the result of the sparql endpoint afterwards with the original queryresult (computed from the local data (and/or other service calls))
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 
+	/**
+	 * <p>Constructor for FederatedQueryWithSucceedingJoin.</p>
+	 *
+	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
+	 */
 	public FederatedQueryWithSucceedingJoin(final Node federatedQuery) {
 		super(federatedQuery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.intersectionVariables = new HashSet<Variable>();
@@ -61,11 +70,21 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		return FederatedQueryWithSucceedingJoin.process(bindings, this.endpoint, this.toStringQuery(bindings), this.bindingsFactory);
 	}
 
+	/**
+	 * <p>process.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param endpoint a {@link lupos.datastructures.items.Item} object.
+	 * @param fQuery a {@link java.lang.String} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult process(final QueryResult bindings, final Item endpoint, final String fQuery, final BindingsFactory bindingsFactory){
 		if (!endpoint.isVariable()) {
 			try {
@@ -158,8 +177,22 @@ public abstract class FederatedQueryWithSucceedingJoin extends FederatedQuery {
 		return null;
 	}
 
+	/**
+	 * <p>toStringQuery.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected abstract String toStringQuery(QueryResult bindings);
 
+	/**
+	 * <p>addEndpointVariable.</p>
+	 *
+	 * @param endpointVariable a {@link lupos.datastructures.items.Variable} object.
+	 * @param endpointURI a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param resultSetToBindingsList a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult addEndpointVariable(final Variable endpointVariable, final Literal endpointURI, final QueryResult resultSetToBindingsList) {
 		return QueryResult.createInstance(new ParallelIterator<Bindings>(){
 

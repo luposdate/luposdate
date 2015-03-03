@@ -34,6 +34,9 @@ import lupos.event.util.Literals;
 
 /**
  * Main class
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RSSSemanticInterpretationProducer extends ProducerBaseNoDuplicates {
 	private static final String feedUrl = "http://www.abendblatt.de/politik/?service=Rss";
@@ -53,11 +56,22 @@ public class RSSSemanticInterpretationProducer extends ProducerBaseNoDuplicates 
 				NAMESPACE, "DBPediaResult");
 	}
 
+	/**
+	 * <p>Constructor for RSSSemanticInterpretationProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public RSSSemanticInterpretationProducer(
 			SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		SerializingMessageService msgService = ProducerBase.connectToMaster();
 		
@@ -72,6 +86,8 @@ public class RSSSemanticInterpretationProducer extends ProducerBaseNoDuplicates 
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Starts interpretation and database querying process for all messages in
 	 * the feed, finally initiates triple creation and returns the list of
 	 * triple lists to the broker.

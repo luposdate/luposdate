@@ -42,25 +42,39 @@ import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
 
 /**
- * Implements a graph transformation which inserts a {@link ParallelOperand}
- * between each {@link Join} operator and its arguments, effectively evaluating
+ * Implements a graph transformation which inserts a {@link lupos.engine.operators.singleinput.parallel.ParallelOperand}
+ * between each {@link lupos.engine.operators.multiinput.join.Join} operator and its arguments, effectively evaluating
  * in a separate thread and thus distributing it across possibly multiple
  * processors.
- * 
+ *
  * @see ParallelOperand
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RuleJoinWithParallelOperands extends Rule {
 
+	/** Constant <code>BLOCKWISE=false</code> */
 	protected static boolean BLOCKWISE = false;
 
+	/**
+	 * <p>isBLOCKWISE.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public static boolean isBLOCKWISE() {
 		return BLOCKWISE;
 	}
 
+	/**
+	 * <p>setBLOCKWISE.</p>
+	 *
+	 * @param blockwise a boolean.
+	 */
 	public static void setBLOCKWISE(final boolean blockwise) {
 		BLOCKWISE = blockwise;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final Operator a = new Join();
@@ -71,6 +85,7 @@ public class RuleJoinWithParallelOperands extends Rule {
 		startNode = a;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final BasicOperator join = mso.get("join");
@@ -82,6 +97,7 @@ public class RuleJoinWithParallelOperands extends Rule {
 			return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -132,6 +148,7 @@ public class RuleJoinWithParallelOperands extends Rule {
 			return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return "JoinWithParallelOperands";

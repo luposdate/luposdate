@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.string;
 
@@ -39,7 +43,6 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 
 //import java.util.*;
-
 public class StringURILiteral extends URILiteral implements Externalizable {
 
 	/**
@@ -48,14 +51,24 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 	private static final long serialVersionUID = -7170680344509876823L;
 	protected Literal content;
 
+	/**
+	 * <p>Constructor for StringURILiteral.</p>
+	 */
 	public StringURILiteral() {
 	}
 
+	/**
+	 * <p>Constructor for StringURILiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public StringURILiteral(final String content)
 			throws java.net.URISyntaxException {
 		this.update(content);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void update(final String content) throws java.net.URISyntaxException {
 		if (content == null
@@ -69,10 +82,16 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 				.substring(1, content.length() - 1));
 	}
 
+	/**
+	 * <p>Constructor for StringURILiteral.</p>
+	 *
+	 * @param code a int.
+	 */
 	public StringURILiteral(final int code) {
 		this.content = new CodeMapLiteral(code);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof StringURILiteral) {
@@ -87,11 +106,13 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getString() {
 		return this.content.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		try {
@@ -104,12 +125,14 @@ public class StringURILiteral extends URILiteral implements Externalizable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
 		this.content = InputHelper.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		OutHelper.writeLuposLiteral(this.content, out);

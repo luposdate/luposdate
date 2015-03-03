@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -39,7 +43,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TypeEnum;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RulePackagePanel extends JTabbedPane {
 	private static final long serialVersionUID = 1870189692371247906L;
 
@@ -58,10 +61,23 @@ public class RulePackagePanel extends JTabbedPane {
 	// --- documentation variables - end ---
 
 
+	/**
+	 * <p>Constructor for RulePackagePanel.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 */
 	public RulePackagePanel(RuleEditor editor, String rulePackageName) {
 		this(editor, rulePackageName, null);
 	}
 
+	/**
+	 * <p>Constructor for RulePackagePanel.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public RulePackagePanel(RuleEditor editor, String rulePackageName, JSONObject loadObject) {
 		super();
 
@@ -99,14 +115,27 @@ public class RulePackagePanel extends JTabbedPane {
 
 
 	// --- basic functions - begin ---
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.rulePackageName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulePackageName</code>.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 */
 	public void setRulePackageName(String rulePackageName) {
 		this.rulePackageName = rulePackageName;
 	}
 
+	/**
+	 * <p>updateRulePackage.</p>
+	 */
 	public void updateRulePackage() {
 		this.assotiationsPanel.rebuildRules(this.editor.getRules());
 		this.documentationPanel.rebuild(this.editor.getRules(), this.editor.getRulePackages());
@@ -129,10 +158,20 @@ public class RulePackagePanel extends JTabbedPane {
 		return panel;
 	}
 
+	/**
+	 * <p>getAssociationsPanel.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.AssociationsPanel} object.
+	 */
 	public AssociationsPanel getAssociationsPanel() {
 		return this.assotiationsPanel;
 	}
 
+	/**
+	 * <p>getAssociatedRules.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<RulePanel> getAssociatedRules() {
 		LinkedList<String> associations = this.assotiationsPanel.getAssociationsContainer().getAssociationsToRulePackage(this.rulePackageName);
 		LinkedList<RulePanel> allRules = this.editor.getRules();
@@ -160,11 +199,22 @@ public class RulePackagePanel extends JTabbedPane {
 		return new ScrollPane(panel);
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentationPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.DocumentationPanel} object.
+	 */
 	public DocumentationPanel getDocumentationPanel() {
 		return this.documentationPanel;
 	}
 	// --- documentation - end ---
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject saveObject = new JSONObject();
 

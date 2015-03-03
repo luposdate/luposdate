@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers;
 
@@ -30,7 +34,6 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
 public class Limit extends SingleInputOperator {
 
 	private int limit;
@@ -50,14 +53,13 @@ public class Limit extends SingleInputOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		this.limit = ((Limit) op).limit;
 	}
 
-	/**
-	 * @return the given list of bindings cut to limit entries.
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (this.pos >= this.limit || bindings.isEmpty()) {
@@ -109,10 +111,16 @@ public class Limit extends SingleInputOperator {
 		});
 	}
 
+	/**
+	 * <p>Getter for the field <code>limit</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getLimit() {
 		return this.limit;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " " + this.limit;

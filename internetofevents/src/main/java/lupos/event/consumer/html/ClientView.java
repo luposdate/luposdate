@@ -52,8 +52,11 @@ import lupos.event.communication.IResultReceivedHandler;
 import lupos.event.consumer.Consumer;
 
 /**
- * Creates the view of the user including all {@link JPanel}s,{@link JButton}s
- * and the {@link JFrame}.
+ * Creates the view of the user including all {@link javax.swing.JPanel}s,{@link javax.swing.JButton}s
+ * and the {@link javax.swing.JFrame}.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class ClientView implements Observer, IResultReceivedHandler {
@@ -93,7 +96,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * Constructor for the class.
-	 * 
+	 *
 	 * @param consumer
 	 *            the consumer of the clientView
 	 */
@@ -393,10 +396,9 @@ public class ClientView implements Observer, IResultReceivedHandler {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Handles the event a query receives.
-	 * 
-	 * @param result
-	 *            the result that receives
 	 */
 	@Override
 	public void resultReceived(QueryResult result) {
@@ -415,12 +417,9 @@ public class ClientView implements Observer, IResultReceivedHandler {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Observer for certain actions.
-	 * 
-	 * @param o
-	 *            the observeable
-	 * @param arg
-	 *            the object
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
@@ -436,7 +435,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For setting the controller to use.
-	 * 
+	 *
 	 * @param c
 	 *            the controller
 	 */
@@ -452,7 +451,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the selected send option.
-	 * 
+	 *
 	 * @return the selected send option
 	 */
 	public String getSelectedSendOption() {
@@ -461,7 +460,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the workPanel.
-	 * 
+	 *
 	 * @return workPanel as itself
 	 */
 	public WorkPanel getWorkPanel() {
@@ -470,7 +469,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the clientViewPanel.
-	 * 
+	 *
 	 * @return clientViewPanel as itself
 	 */
 	public JPanel getClientViewPanel() {
@@ -479,7 +478,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the connectPanel.
-	 * 
+	 *
 	 * @return connectPanel as itself
 	 */
 	public JPanel getConnectPanel() {
@@ -488,7 +487,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the configPanel.
-	 * 
+	 *
 	 * @return configPanel as itself
 	 */
 	public JPanel getConfigPanel() {
@@ -497,7 +496,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the templatesPanel.
-	 * 
+	 *
 	 * @return templatesPanel as itself
 	 */
 	public JPanel getTemplatesPanel() {
@@ -506,7 +505,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the subscriptionsPanel.
-	 * 
+	 *
 	 * @return subscriptionsPanel as itself
 	 */
 	public JPanel getSubscriptionsPanel() {
@@ -515,7 +514,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the connectButton.
-	 * 
+	 *
 	 * @return connectButton as itself
 	 */
 	public JButton getConnectButton() {
@@ -524,7 +523,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the addTemplateButton.
-	 * 
+	 *
 	 * @return addTemplateButton as itself
 	 */
 	public JButton getAddTemplateButton() {
@@ -533,7 +532,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the removeTemplateButton.
-	 * 
+	 *
 	 * @return removeTemplateButton as itself
 	 */
 	public JButton getRemoveTemplateButton() {
@@ -542,7 +541,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the generateTemplateButton.
-	 * 
+	 *
 	 * @return generateTemplateButton as itself
 	 */
 	public JButton getGenerateButton() {
@@ -551,7 +550,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the templateListModel.
-	 * 
+	 *
 	 * @return templateListModel as itself
 	 */
 	public DefaultListModel getTemplateListModel() {
@@ -560,7 +559,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the subscriptionListModel.
-	 * 
+	 *
 	 * @return subscriptionListModel as itself
 	 */
 	public DefaultListModel getSubscriptionListModel() {
@@ -569,7 +568,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the templateList.
-	 * 
+	 *
 	 * @return templateList as itself
 	 */
 	public JList getTemplateList() {
@@ -578,7 +577,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the subscriptionList.
-	 * 
+	 *
 	 * @return subscriptionList as itself
 	 */
 	public JList getSubscriptionList() {
@@ -587,7 +586,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the host.
-	 * 
+	 *
 	 * @return host as itself
 	 */
 	public String getHost() {
@@ -596,7 +595,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the port.
-	 * 
+	 *
 	 * @return port as itself
 	 */
 	public int getPort() {
@@ -605,8 +604,8 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting subscriptions of the workPanel.
-	 * 
-	 * @return {@link JSONObject}
+	 *
+	 * @return {@link org.json.JSONObject}
 	 */
 	public JSONObject getSubscriptions() {
 		return this.workPanel.getSubscriptions();
@@ -614,7 +613,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the frame.
-	 * 
+	 *
 	 * @return frame as itself
 	 */
 	public JFrame getFrame() {
@@ -623,7 +622,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the hostField.
-	 * 
+	 *
 	 * @return hostField as itself
 	 */
 	public JTextField getHostField() {
@@ -632,7 +631,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the portField.
-	 * 
+	 *
 	 * @return portField as itself
 	 */
 	public JTextField getPortField() {
@@ -641,7 +640,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the configField.
-	 * 
+	 *
 	 * @return configField as itself
 	 */
 	public JTextField getConfigField() {
@@ -650,7 +649,7 @@ public class ClientView implements Observer, IResultReceivedHandler {
 
 	/**
 	 * For getting the locationField.
-	 * 
+	 *
 	 * @return locationField as itself
 	 */
 	public JTextField getLocationField() {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.parallel;
 
@@ -34,7 +38,6 @@ import lupos.engine.operators.Operator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
-
 public class UnionParallelOperands extends Operator {
 
 	private static final long serialVersionUID = 7906232457715819851L;
@@ -71,6 +74,9 @@ public class UnionParallelOperands extends Operator {
 		queueLimit = limit;
 	}
 
+	/**
+	 * <p>waitForJoinThreads.</p>
+	 */
 	public static void waitForJoinThreads() {
 		final Thread[] threads = new Thread[UnionParallelOperands.toJoinBeforeNewQuery
 				.activeCount()];
@@ -87,6 +93,7 @@ public class UnionParallelOperands extends Operator {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -102,6 +109,7 @@ public class UnionParallelOperands extends Operator {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		final QueryResult qr = QueryResult.createInstance(this.queue);

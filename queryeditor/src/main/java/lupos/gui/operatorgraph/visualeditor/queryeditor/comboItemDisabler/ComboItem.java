@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,26 +21,45 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler;
-
 public class ComboItem {
 	private Object obj;
 	public boolean isEnabled;
 
+	/**
+	 * <p>Constructor for ComboItem.</p>
+	 *
+	 * @param obj a {@link java.lang.Object} object.
+	 * @param isEnabled a boolean.
+	 */
 	public ComboItem(Object obj, boolean isEnabled) {
 		this.obj = obj;
 		this.isEnabled = isEnabled;
 	}
 
+	/**
+	 * <p>Constructor for ComboItem.</p>
+	 *
+	 * @param obj a {@link java.lang.Object} object.
+	 */
 	public ComboItem(Object obj) {
 		this(obj, true);
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.obj.toString();
 	}
 
+	/** {@inheritDoc} */
 	public boolean equals(Object o) {
 		if(o instanceof ComboItem) {
 			ComboItem co = (ComboItem) o;
@@ -50,6 +70,11 @@ public class ComboItem {
 			return false;
 	}
 
+	/**
+	 * <p>getObject.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object getObject() {
 		return this.obj;
 	}

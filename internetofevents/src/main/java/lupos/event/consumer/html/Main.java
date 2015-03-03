@@ -23,27 +23,30 @@
  */
 package lupos.event.consumer.html;
 
-import javax.swing.*;
+import javax.swing.UIManager;
 
 import lupos.event.consumer.Consumer;
 
 /**
  * Main class.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Main {
 
 	@SuppressWarnings("unused")
-	/**
-	 * Initializing main class
-	 * 
-	 * @param args
+	 /**
+	  * Initializing main class
+	  *
+	  * @param args an array of {@link java.lang.String} objects.
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
-		
-		Consumer model = new Consumer();
-		ClientView view = new ClientView(model);
+
+		final Consumer model = new Consumer();
+		final ClientView view = new ClientView(model);
 		new Controller(model, view);
 	}
 }

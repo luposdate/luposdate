@@ -40,6 +40,7 @@ import lupos.engine.evaluators.BasicIndexQueryEvaluator;
  * This is a helper class creating new peers of different p2p-networks
  *
  * @author Bjoern
+ * @version $Id: $Id
  */
 public class PeerCreator {
 
@@ -157,6 +158,7 @@ public class PeerCreator {
 
 	/**
 	 * Sets the bindings to be used
+	 *
 	 * @param b bindings
 	 * @return the controller of the peer
 	 */
@@ -170,7 +172,7 @@ public class PeerCreator {
 	 *
 	 * @param p2pNetworkName
 	 *            the network name, which is registered in
-	 *            {@link P2PNetworkCreator}.
+	 *            {@link lupos.distributed.p2p.network.P2PNetworkCreator}.
 	 * @param arguments
 	 *            configuration of the p2p network
 	 * @return the controller of the peer
@@ -186,7 +188,7 @@ public class PeerCreator {
 	 * configuration
 	 *
 	 * @param p2pNetworkName
-	 *            the network type name, registered in {@link P2PNetworkCreator}
+	 *            the network type name, registered in {@link lupos.distributed.p2p.network.P2PNetworkCreator}
 	 * @return the controller of the peer
 	 */
 	public PeerCreator setP2PNetwork(final String p2pNetworkName) {

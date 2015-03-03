@@ -29,6 +29,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * This error is thrown whenever the triple pattern is not supported by
  * the used distribution strategy (e.g., a triple pattern with three variables
  * is not supported by the one key distribution)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TriplePatternNotSupportedError extends Error {
 
@@ -37,6 +40,12 @@ public class TriplePatternNotSupportedError extends Error {
 	 */
 	private static final long serialVersionUID = -5802969991107830886L;
 
+	/**
+	 * <p>Constructor for TriplePatternNotSupportedError.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param triplePattern a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	public TriplePatternNotSupportedError(final IDistribution<?> distribution, final TriplePattern triplePattern){
 		super("The triple pattern " + triplePattern + " is not supported by the distribution strategy " + distribution);
 	}

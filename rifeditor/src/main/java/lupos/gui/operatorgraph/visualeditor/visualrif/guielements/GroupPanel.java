@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -39,9 +43,6 @@ import org.json.JSONObject;
 
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.ScrollPane;
-
-
-
 public class GroupPanel extends JTabbedPane {
 
 
@@ -60,11 +61,24 @@ public class GroupPanel extends JTabbedPane {
 	private LinkedList<String> listOfRules;
 	
 	// Constructor
+	/**
+	 * <p>Constructor for GroupPanel.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public GroupPanel(VisualRifEditor visualRifEditor, String name) {
 		this(visualRifEditor, name, null);
 	}
 	
 	// Constructor
+	/**
+	 * <p>Constructor for GroupPanel.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param name a {@link java.lang.String} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public GroupPanel(VisualRifEditor visualRifEditor, String name,
 			JSONObject loadObject) {
 		super();
@@ -140,6 +154,9 @@ public class GroupPanel extends JTabbedPane {
 				return visualPanel;
 			}
 	
+		/**
+		 * <p>cancelModi.</p>
+		 */
 		public void cancelModi() {
 			if (this.groupEditorPane != null) {
 				this.groupEditorPane.cancelModi();
@@ -147,6 +164,11 @@ public class GroupPanel extends JTabbedPane {
 		}	
 	
 	
+		/**
+		 * <p>toString.</p>
+		 *
+		 * @return a {@link java.lang.String} object.
+		 */
 		public String toString(){
 			return this.groupName;
 		}
@@ -156,64 +178,139 @@ public class GroupPanel extends JTabbedPane {
 	 * Getter + Setter **
 	 * *************** */
 
+	/**
+	 * <p>Getter for the field <code>that</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel} object.
+	 */
 	public GroupPanel getThat() {
 		return that;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>that</code>.</p>
+	 *
+	 * @param that a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel} object.
+	 */
 	public void setThat(GroupPanel that) {
 		this.that = that;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return visualRifEditor;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 	
 
 	
+	/**
+	 * <p>Getter for the field <code>tabTitle</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getTabTitle() {
 		return tabTitle;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>tabTitle</code>.</p>
+	 *
+	 * @param tabTitle a {@link java.lang.String} object.
+	 */
 	public void setTabTitle(String tabTitle) {
 		this.tabTitle = tabTitle;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>groupName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getGroupName() {
 		return groupName;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>groupName</code>.</p>
+	 *
+	 * @param groupName a {@link java.lang.String} object.
+	 */
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
 	
+	/**
+	 * <p>getSerialversionuid.</p>
+	 *
+	 * @return a long.
+	 */
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
+	/**
+	 * <p>Getter for the field <code>groupEditorPane</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupEditorPane} object.
+	 */
 	public GroupEditorPane getGroupEditorPane() {
 		return groupEditorPane;
 	}
 
+	/**
+	 * <p>Setter for the field <code>groupEditorPane</code>.</p>
+	 *
+	 * @param groupEditorPane a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupEditorPane} object.
+	 */
 	public void setGroupEditorPane(GroupEditorPane groupEditorPane) {
 		this.groupEditorPane = groupEditorPane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>listOfRules</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<String> getListOfRules() {
 		return listOfRules;
 	}
 
+	/**
+	 * <p>Setter for the field <code>listOfRules</code>.</p>
+	 *
+	 * @param listOfRules a {@link java.util.LinkedList} object.
+	 */
 	public void setListOfRules(LinkedList<String> listOfRules) {
 		this.listOfRules = listOfRules;
 	}
 
+	/**
+	 * <p>Getter for the field <code>groupPath</code>.</p>
+	 *
+	 * @return a {@link javax.swing.tree.TreePath} object.
+	 */
 	public TreePath getGroupPath() {
 		return groupPath;
 	}
 
+	/**
+	 * <p>Setter for the field <code>groupPath</code>.</p>
+	 *
+	 * @param groupPath a {@link javax.swing.tree.TreePath} object.
+	 */
 	public void setGroupPath(TreePath groupPath) {
 		this.groupPath = groupPath;
 	}

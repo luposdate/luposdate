@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,10 +21,19 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.tools;
-
 public class Tools {
+	/**
+	 * <p>forall.</p>
+	 *
+	 * @param variables an array of {@link java.lang.String} objects.
+	 * @param toForall a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public  static String forall(String[] variables,String toForall) {
 		String v="";
 		for(int i=0; i<variables.length; i++){
@@ -32,10 +42,22 @@ public class Tools {
 		return "Forall "+v+"(\n"+toForall+"\n )";
 	}
 
+	/**
+	 * <p>group.</p>
+	 *
+	 * @param toGroup a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String group(String toGroup){
 		return "Group (\n"+toGroup+"\n )";
 	}
 
+	/**
+	 * <p>document.</p>
+	 *
+	 * @param inDocument a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public  static String document(String inDocument){
 		return "Document (\n"+inDocument+"\n )";
 	}

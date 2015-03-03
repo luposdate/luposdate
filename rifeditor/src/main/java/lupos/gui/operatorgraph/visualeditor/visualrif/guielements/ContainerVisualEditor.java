@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -27,20 +31,26 @@ import javax.swing.JMenuBar;
 
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
 public class ContainerVisualEditor extends VisualEditor<Operator> {
 
+	/**
+	 * <p>Constructor for ContainerVisualEditor.</p>
+	 *
+	 * @param standAlone a boolean.
+	 */
 	public ContainerVisualEditor(final boolean standAlone) {
 		super(standAlone);
 	}
 
 	private static final long serialVersionUID = 9188638407656666175L;
 
+	/** {@inheritDoc} */
 	@Override
 	public JMenuBar buildMenuBar() {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void pasteElements(final String content) {
 	}

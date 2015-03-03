@@ -29,6 +29,9 @@ import java.util.ArrayList;
  * Experimental: Calculates the frequency of each substring contained in the
  * FeedMessage's description. Currently not executed in main method, can be used
  * for further improving the database results' quality.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Frequency {
 	private final ArrayList<String> substring = new ArrayList<String>();
@@ -38,13 +41,15 @@ public class Frequency {
 	 * increments the substring's frequency value at (index) in ArrayList
 	 * frequency
 	 *
-	 * @param index
+	 * @param index a int.
 	 */
 	public void incFrequency(final int index) {
 		this.frequency.set(index, this.frequency.get(index) + 1);
 	}
 
 	/**
+	 * <p>Getter for the field <code>frequency</code>.</p>
+	 *
 	 * @return ArrayList frequency
 	 */
 	public ArrayList<Integer> getFrequency() {
@@ -52,8 +57,9 @@ public class Frequency {
 	}
 
 	/**
+	 * <p>getSubstringAt.</p>
 	 *
-	 * @param i
+	 * @param i a int.
 	 * @return Substring at position i in ArrayList substring
 	 */
 	public String getSubstringAt(final int i) {
@@ -61,6 +67,8 @@ public class Frequency {
 	}
 
 	/**
+	 * <p>Getter for the field <code>substring</code>.</p>
+	 *
 	 * @return ArrayList substring
 	 */
 	public ArrayList<String> getSubstring() {
@@ -68,6 +76,8 @@ public class Frequency {
 	}
 
 	/**
+	 * <p>getSubstrLength.</p>
+	 *
 	 * @return Size of ArrayList substring
 	 */
 	public int getSubstrLength() {
@@ -77,6 +87,7 @@ public class Frequency {
 	/**
 	 * Adds param s to ArrayList substring.
 	 *
+	 * @param s a {@link java.lang.String} object.
 	 */
 	public void addToSubstring(final String s) {
 		this.substring.add(s);
@@ -85,13 +96,15 @@ public class Frequency {
 	/**
 	 * Adds param i to ArrayList frequency.
 	 *
-	 * @param i
+	 * @param i a int.
 	 */
 	public void addToFrequency(final int i) {
 		this.frequency.add(i);
 	}
 
 	/**
+	 * <p>isEmpty.</p>
+	 *
 	 * @return true if substring is empty, false if not
 	 */
 	public boolean isEmpty() {

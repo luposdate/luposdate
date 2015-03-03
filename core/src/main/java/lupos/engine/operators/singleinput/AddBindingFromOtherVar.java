@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -36,37 +40,66 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.util.ImmutableIterator;
-
 public class AddBindingFromOtherVar extends SingleInputOperator {
 	private Variable var;
 	private Variable valueFromVar;
 
+	/**
+	 * <p>Constructor for AddBindingFromOtherVar.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param valueFromVar a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public AddBindingFromOtherVar(final Variable var,
 			final Variable valueFromVar) {
 		this.var = var;
 		this.valueFromVar = valueFromVar;
 	}
 
+	/**
+	 * <p>Constructor for AddBindingFromOtherVar.</p>
+	 */
 	public AddBindingFromOtherVar() {
 	}
 
+	/**
+	 * <p>Setter for the field <code>var</code>.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void setVar(final Variable var) {
 		this.var = var;
 	}
 
+	/**
+	 * <p>setOtherVar.</p>
+	 *
+	 * @param valueFromVar a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void setOtherVar(final Variable valueFromVar) {
 		this.valueFromVar = valueFromVar;
 	}
 
+	/**
+	 * <p>Getter for the field <code>var</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getVar() {
 		return this.var;
 	}
 
+	/**
+	 * <p>getOtherVar.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getOtherVar() {
 		return this.valueFromVar;
 	}
 
 	// bindings should contain exactly one element!
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
@@ -103,6 +136,7 @@ public class AddBindingFromOtherVar extends SingleInputOperator {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		msg.getVariables().add(this.var);
@@ -112,16 +146,19 @@ public class AddBindingFromOtherVar extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Add (" + this.var.toString() + "=" + this.valueFromVar.toString() + ")";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<Variable> transformSortCriterium(final Collection<Variable> sortCriterium){
 		if (sortCriterium

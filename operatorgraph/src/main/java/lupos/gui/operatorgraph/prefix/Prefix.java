@@ -32,6 +32,9 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 /**
  * Class for the prefixes. This class holds all prefixes of the operators in the
  * OperatorGraph.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Prefix extends lupos.rdf.Prefix {
 
@@ -41,16 +44,25 @@ public abstract class Prefix extends lupos.rdf.Prefix {
 	/**
 	 * This is the constructor of the prefix class. The constructor initiates
 	 * the internal prefixList and adds some basic name-spaces.
+	 *
+	 * @param active a boolean.
 	 */
 	public Prefix(final boolean active) {
 		super(active);
 	}
 
+	/**
+	 * <p>Constructor for Prefix.</p>
+	 *
+	 * @param active a boolean.
+	 * @param prefixReference a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public Prefix(final boolean active, final Prefix prefixReference) {
 		super(active, prefixReference);
 	}
 
 
+	/** {@inheritDoc} */
 	public void addEntry(final String prefix, final String namespace,
 			final boolean notify) {
 		this.prefixList.put(namespace, prefix);
@@ -62,6 +74,7 @@ public abstract class Prefix extends lupos.rdf.Prefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void removeEntry(String namespace, final boolean notify) {
 		String prefix = this.prefixList.get(namespace);
 
@@ -82,6 +95,7 @@ public abstract class Prefix extends lupos.rdf.Prefix {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void changeEntryName(final String oldPrefix, final String newPrefix,
 			final boolean notify) {
 		final String namespace = this.getNamespace(oldPrefix);
@@ -127,10 +141,22 @@ public abstract class Prefix extends lupos.rdf.Prefix {
 		}
 	}
 
+	/**
+	 * <p>addOperator.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.prefix.IPrefix} object.
+	 */
 	public void addOperator(final IPrefix op) {
 		this.prefixOperators.add(op);
 	}
 
+	/**
+	 * <p>draw.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link lupos.gui.operatorgraph.AbstractSuperGuiComponent} object.
+	 */
 	public abstract AbstractSuperGuiComponent draw(GraphWrapper gw,
 			OperatorGraph parent);
 }

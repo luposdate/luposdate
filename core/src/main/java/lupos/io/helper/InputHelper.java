@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.helper;
 
@@ -60,9 +64,16 @@ import lupos.engine.operators.multiinput.join.NodeInPartitionTree;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.Registration;
 import lupos.optimizations.logical.statistics.VarBucket;
-
 public final class InputHelper {
 
+	/**
+	 * <p>readLuposString.</p>
+	 *
+	 * @param lastString a {@link java.lang.String} object.
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static String readLuposString(final String lastString, final InputStream is) throws IOException {
 		final byte[] result = InputHelper.readLuposDifferenceString((lastString==null)?null:lastString.getBytes(LuposObjectInputStream.UTF8), is);
 		if(result==null){
@@ -72,6 +83,14 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposDifferenceString.</p>
+	 *
+	 * @param lastString an array of byte.
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return an array of byte.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static byte[] readLuposDifferenceString(final byte[] lastString, final InputStream is) throws IOException {
 		if(lastString==null){
 			return InputHelper.readLuposStringAsByteArray(is);
@@ -93,6 +112,13 @@ public final class InputHelper {
 		return bytesOfResult;
 	}
 
+	/**
+	 * <p>readLuposString.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static String readLuposString(final InputStream is) throws IOException {
 		final byte[] result = InputHelper.readLuposStringAsByteArray(is);
 		if(result==null){
@@ -102,6 +128,13 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposStringAsByteArray.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return an array of byte.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static byte[] readLuposStringAsByteArray(final InputStream is) throws IOException {
 		final Integer length = InputHelper.readLuposIntVariableBytes(is);
 		if(length==null || length<0){
@@ -112,6 +145,15 @@ public final class InputHelper {
 		return bytesOfResult;
 	}
 
+	/**
+	 * <p>readLuposEntry.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @param <E> a E object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static<E> Entry<E> readLuposEntry(final InputStream is) throws IOException, ClassNotFoundException {
 		E e = null;
 		try {
@@ -125,6 +167,15 @@ public final class InputHelper {
 		return new Entry<E>(e);
 	}
 
+	/**
+	 * <p>readLuposEntry.</p>
+	 *
+	 * @param is a {@link lupos.io.LuposObjectInputStream} object.
+	 * @param <E> a E object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static<E> Entry<E> readLuposEntry(final LuposObjectInputStream<E> is) throws IOException, ClassNotFoundException {
 		E e = null;
 		try {
@@ -138,11 +189,25 @@ public final class InputHelper {
 		return new Entry<E>(e);
 	}
 
+	/**
+	 * <p>readLuposBoolean.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a boolean.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static boolean readLuposBoolean(final InputStream is) throws IOException {
 		final int i = is.read();
 		return (i == 0);
 	}
 
+	/**
+	 * <p>readLuposInteger1Byte.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.Integer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Integer readLuposInteger1Byte(final InputStream is) throws IOException {
 		final int i1 = is.read();
 		if (i1 < 0) {
@@ -151,6 +216,13 @@ public final class InputHelper {
 		return i1;
 	}
 
+	/**
+	 * <p>readLuposInteger2Bytes.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.Integer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Integer readLuposInteger2Bytes(final InputStream is) throws IOException {
 		final int i1 = is.read();
 		if (i1 < 0) {
@@ -163,6 +235,13 @@ public final class InputHelper {
 		return (0xFF & i1) | (0xFF & i2) << 8;
 	}
 
+	/**
+	 * <p>readLuposInteger3Bytes.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.Integer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Integer readLuposInteger3Bytes(final InputStream is) throws IOException {
 		final int i1 = is.read();
 		if (i1 < 0) {
@@ -179,6 +258,13 @@ public final class InputHelper {
 		return (0xFF & i1) | ((0xFF & i2) | (0xFF & i3) << 8) << 8;
 	}
 
+	/**
+	 * <p>readLuposInteger.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.Integer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Integer readLuposInteger(final InputStream is) throws IOException {
 		final int i1 = is.read();
 		if (i1 < 0) {
@@ -199,6 +285,13 @@ public final class InputHelper {
 		return (0xFF & i1) | ((0xFF & i2) | ((0xFF & i3) | (0xFF & i4) << 8) << 8) << 8;
 	}
 
+	/**
+	 * <p>readLuposLong.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.Long} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Long readLuposLong(final InputStream is) throws IOException {
 		final Integer a = InputHelper.readLuposInteger(is);
 		final Integer b = InputHelper.readLuposInteger(is);
@@ -208,6 +301,13 @@ public final class InputHelper {
 		return (long) a | ((long) b) << 32;
 	}
 
+	/**
+	 * <p>readLuposInt.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static int readLuposInt(final InputStream is) throws IOException {
 		final int i1 = is.read();
 		if (i1 < 0) {
@@ -228,6 +328,13 @@ public final class InputHelper {
 		return (0xFF & i1) | ((0xFF & i2) | ((0xFF & i3) | (0xFF & i4) << 8) << 8) << 8;
 	}
 
+	/**
+	 * <p>readLuposByte.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a byte.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static byte readLuposByte(final InputStream is) throws IOException {
 		final int value = is.read();
 		if (value < 0) {
@@ -236,6 +343,13 @@ public final class InputHelper {
 		return (byte) value;
 	}
 
+	/**
+	 * <p>readLuposIntVariableBytes.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.Integer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Integer readLuposIntVariableBytes(final InputStream is) throws IOException {
 		final Integer i0 = InputHelper.readLuposInteger1Byte(is);
 		if(i0==null){
@@ -253,6 +367,13 @@ public final class InputHelper {
 		return result;
 	}
 
+	/**
+	 * <p>readLuposInt.</p>
+	 *
+	 * @param in a {@link java.io.ObjectInput} object.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static int readLuposInt(final ObjectInput in) throws IOException {
 		final int i0 = in.read();
 		if (i0 <= 251){
@@ -267,6 +388,14 @@ public final class InputHelper {
 		return result;
 	}
 
+	/**
+	 * <p>readLuposBigInteger.</p>
+	 *
+	 * @param numberOfBits a int.
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link java.math.BigInteger} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static BigInteger readLuposBigInteger(final int numberOfBits, final InputStream is) throws IOException {
 		BigInteger result = BigInteger.ZERO;
 		BigInteger factor = BigInteger.ONE;
@@ -286,10 +415,26 @@ public final class InputHelper {
 		return result;
 	}
 
+	/**
+	 * <p>readLuposLiteral.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static Literal readLuposLiteral(final InputStream is) throws IOException, ClassNotFoundException {
 		return LiteralFactory.readLuposLiteral(is);
 	}
 
+	/**
+	 * <p>readLuposLiteral.</p>
+	 *
+	 * @param in a {@link java.io.ObjectInput} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static Literal readLuposLiteral(final ObjectInput in) throws IOException, ClassNotFoundException {
 		if (LiteralFactory.getMapType() == MapType.NOCODEMAP
 				|| LiteralFactory.getMapType() == MapType.LAZYLITERAL
@@ -301,6 +446,15 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposTriple.</p>
+	 *
+	 * @param previousTriple a {@link lupos.datastructures.items.Triple} object.
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static Triple readLuposTriple(final Triple previousTriple, final InputStream is) throws IOException, ClassNotFoundException {
 		final int diff = is.read();
 		if (diff < 0) {
@@ -315,10 +469,26 @@ public final class InputHelper {
 		return new Triple(subject, predicate, object);
 	}
 
+	/**
+	 * <p>readLuposTriple.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static Triple readLuposTriple(final InputStream is) throws ClassNotFoundException, IOException {
 		return new Triple(InputHelper.readLuposLiteral(is), InputHelper.readLuposLiteral(is), InputHelper.readLuposLiteral(is));
 	}
 
+	/**
+	 * <p>readLuposMapEntry.</p>
+	 *
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.MapEntry} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static lupos.datastructures.dbmergesortedds.MapEntry<Object, Object> readLuposMapEntry(final LuposObjectInputStream in) throws IOException, ClassNotFoundException {
 		final Class type1 = Registration.deserializeId(in)[0];
 		if (type1 == null) {
@@ -364,6 +534,14 @@ public final class InputHelper {
 		return new lupos.datastructures.dbmergesortedds.MapEntry<Object, Object>(key, value);
 	}
 
+	/**
+	 * <p>readLuposMapEntry.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.MapEntry} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static lupos.datastructures.dbmergesortedds.MapEntry<Object, Object> readLuposMapEntry(final InputStream in) throws IOException, ClassNotFoundException {
 		final Class type1 = Registration.deserializeId(in)[0];
 		if (type1 == null) {
@@ -409,6 +587,15 @@ public final class InputHelper {
 		return new lupos.datastructures.dbmergesortedds.MapEntry<Object, Object>(key, value);
 	}
 
+	/**
+	 * <p>readLuposBindings.</p>
+	 *
+	 * @param previousBindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static Bindings readLuposBindings(final Bindings previousBindings, final InputStream in) throws IOException, ClassNotFoundException {
 		if (Bindings.instanceClass == BindingsMap.class) {
 			return InputHelper.readLuposBindingsMap(in);
@@ -440,6 +627,14 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposBindings.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static Bindings readLuposBindings(final InputStream in) throws IOException, ClassNotFoundException {
 		if (Bindings.instanceClass == BindingsMap.class) {
 			return InputHelper.readLuposBindingsMap(in);
@@ -522,6 +717,14 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposTripleKey.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.TripleKey} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static TripleKey readLuposTripleKey(final InputStream in) throws IOException, ClassNotFoundException {
 		final int order = in.read();
 		if (order < 0) {
@@ -531,10 +734,28 @@ public final class InputHelper {
 		return new TripleKey(t, new TripleComparator((byte) order));
 	}
 
+	/**
+	 * <p>readLuposTripleKey.</p>
+	 *
+	 * @param previousTripleKey a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.TripleKey} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static TripleKey readLuposTripleKey(final TripleKey previousTripleKey, final InputStream in) throws IOException, ClassNotFoundException {
 		return InputHelper.readLuposTripleKey(previousTripleKey.getTriple(), in);
 	}
 
+	/**
+	 * <p>readLuposTripleKey.</p>
+	 *
+	 * @param previousTriple a {@link lupos.datastructures.items.Triple} object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.items.TripleKey} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static TripleKey readLuposTripleKey(final Triple previousTriple, final InputStream in) throws IOException, ClassNotFoundException {
 		final int order = in.read();
 		if (order < 0) {
@@ -544,6 +765,15 @@ public final class InputHelper {
 		return new TripleKey(t, new TripleComparator((byte) order));
 	}
 
+	/**
+	 * <p>readLuposCollection.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param <T> a T object.
+	 * @return a {@link java.util.Collection} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public final static<T> Collection<T> readLuposCollection(final InputStream in) throws IOException, ClassNotFoundException {
 		final int size = in.read();
@@ -565,6 +795,14 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposSet.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.smallerinmemorylargerondisk.SetImplementation} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public final static SetImplementation readLuposSet(final InputStream in) throws IOException, ClassNotFoundException {
 		final int size = InputHelper.readLuposInt(in);
@@ -586,6 +824,14 @@ public final class InputHelper {
 		return set;
 	}
 
+	/**
+	 * <p>readLuposNodeInPartitionTree.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public final static NodeInPartitionTree readLuposNodeInPartitionTree(final InputStream in) throws IOException, ClassNotFoundException {
 		final byte type = InputHelper.readLuposByte(in);
 		switch (type) {
@@ -599,6 +845,13 @@ public final class InputHelper {
 		}
 	}
 
+	/**
+	 * <p>readLuposVarBucket.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static VarBucket readLuposVarBucket(final InputStream is) throws IOException {
 		final VarBucket vb = new VarBucket();
 		final int size = InputHelper.readLuposIntVariableBytes(is);
@@ -619,6 +872,13 @@ public final class InputHelper {
 		return vb;
 	}
 
+	/**
+	 * <p>readLuposVarBucketArray.</p>
+	 *
+	 * @param is a {@link java.io.InputStream} object.
+	 * @return an array of {@link lupos.optimizations.logical.statistics.VarBucket} objects.
+	 * @throws java.io.IOException if any.
+	 */
 	public final static VarBucket[] readLuposVarBucketArray(final InputStream is) throws IOException {
 		final int number = InputHelper.readLuposIntVariableBytes(is);
 		final int nulls = InputHelper.readLuposIntVariableBytes(is);

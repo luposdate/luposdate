@@ -59,12 +59,18 @@ import javax.swing.text.Utilities;
  *
  *  This class was designed to be used as a component added to the row header
  *  of a JScrollPane.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TextLineNumber extends JPanel
 	implements CaretListener, DocumentListener, PropertyChangeListener
 {
+	/** Constant <code>LEFT=0.0f</code> */
 	public final static float LEFT = 0.0f;
+	/** Constant <code>CENTER=0.5f</code> */
 	public final static float CENTER = 0.5f;
+	/** Constant <code>RIGHT=1.0f</code> */
 	public final static float RIGHT = 1.0f;
 
 	private final static Border OUTER = new MatteBorder(0, 0, 0, 2, Color.GRAY);
@@ -211,6 +217,8 @@ public class TextLineNumber extends JPanel
 	 *  TextLineNumber.LEFT
 	 *  TextLineNumber.CENTER
 	 *  TextLineNumber.RIGHT (default)
+	 *
+	 * @param digitAlignment a float.
 	 */
 	public void setDigitAlignment(final float digitAlignment)
 	{
@@ -268,6 +276,8 @@ public class TextLineNumber extends JPanel
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 *  Draw the line numbers
 	 */
 	@Override
@@ -333,6 +343,12 @@ public class TextLineNumber extends JPanel
 	/*
 	 *	Get the line number to be drawn. The empty string will be returned
 	 *  when a line of text has wrapped.
+	 */
+	/**
+	 * <p>getTextLineNumber.</p>
+	 *
+	 * @param rowStartOffset a int.
+	 * @return a {@link java.lang.String} object.
 	 */
 	protected String getTextLineNumber(final int rowStartOffset)
 	{
@@ -412,6 +428,7 @@ public class TextLineNumber extends JPanel
 //
 //  Implement CaretListener interface
 //
+	/** {@inheritDoc} */
 	@Override
 	public void caretUpdate(final CaretEvent e)
 	{
@@ -433,18 +450,21 @@ public class TextLineNumber extends JPanel
 //
 //  Implement DocumentListener interface
 //
+	/** {@inheritDoc} */
 	@Override
 	public void changedUpdate(final DocumentEvent e)
 	{
 		this.documentChanged();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void insertUpdate(final DocumentEvent e)
 	{
 		this.documentChanged();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeUpdate(final DocumentEvent e)
 	{
@@ -483,6 +503,7 @@ public class TextLineNumber extends JPanel
 //
 //  Implement PropertyChangeListener interface
 //
+	/** {@inheritDoc} */
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt)
 	{

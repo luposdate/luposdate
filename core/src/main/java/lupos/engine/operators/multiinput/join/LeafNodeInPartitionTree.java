@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,20 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
 import lupos.datastructures.queryresult.QueryResult;
-
 public class LeafNodeInPartitionTree extends NodeInPartitionTree {
 
+	/** Constant <code>maxNumberEntries=5000</code> */
 	protected static final int maxNumberEntries = 5000;
 	public QueryResult partition;
 
+	/**
+	 * <p>Constructor for LeafNodeInPartitionTree.</p>
+	 *
+	 * @param partition a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public LeafNodeInPartitionTree(final QueryResult partition) {
 		this.partition = partition;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		if(this.partition!=null){

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,30 +21,40 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.datatypes;
 
 import java.util.Iterator;
-
 public class IteratorRuleResult extends RuleResult {
 
 	private final Iterator<Predicate> iterator;
 
+	/**
+	 * <p>Constructor for IteratorRuleResult.</p>
+	 *
+	 * @param it a {@link java.util.Iterator} object.
+	 */
 	public IteratorRuleResult(final Iterator<Predicate> it) {
 		super();
 		iterator = it;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Predicate> getPredicateIterator() {
 		return iterator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return iterator.hasNext();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return isEmpty() ? 0 : 1;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.p2p.network.impl;
 
@@ -53,13 +57,15 @@ import cx.ath.troja.chordless.dhash.Delay;
 import cx.ath.troja.nja.Identifier;
 import de.rwglab.p2pts.DHashService;
 // import de.rwglab.p2pts.IPutAction;
-
 public class Chordless extends P2PTripleNetwork {
 
+	/** Constant <code>l</code> */
 	public static Logger l = Logger.getLogger(Chordless.class);
 
+	/** Constant <code>OPTION_JDBC_DRIVER="jdbcDriver"</code> */
 	public static final String OPTION_JDBC_DRIVER = "jdbcDriver";
 
+	/** Constant <code>OPTION_JDBC_URL="jdbcUrl"</code> */
 	public static final String OPTION_JDBC_URL = "jdbcUrl";
 
 	private final static String DEFAULT_JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -89,7 +95,7 @@ public class Chordless extends P2PTripleNetwork {
 	 * @param masterPeerPort
 	 *            port of master peer
 	 * @return peer
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             error during process
 	 */
 	public static DHashService createPeer(final int port,
@@ -132,6 +138,7 @@ public class Chordless extends P2PTripleNetwork {
 
 	/**
 	 * New chord p2p network with the given peer.
+	 *
 	 * @param peer the peer
 	 */
 	public Chordless(final DHashService peer) {
@@ -183,12 +190,14 @@ public class Chordless extends P2PTripleNetwork {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String locationKey) {
 		final List<Triple> res = this.get(locationKey);
 		return (res != null && res.size() > 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Triple> get(final String locationKey) {
 		/*
@@ -205,6 +214,7 @@ public class Chordless extends P2PTripleNetwork {
 		return resultList;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final String locationKey, final Triple triple) {
 		/*
@@ -216,6 +226,7 @@ public class Chordless extends P2PTripleNetwork {
 		delay.get();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final String locationKey, final Triple value) {
 		final ChordSet<Triple> set = new ChordSet<Triple>();
@@ -329,6 +340,7 @@ public class Chordless extends P2PTripleNetwork {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessage(final String key, final String message) {
 		/*
@@ -366,6 +378,7 @@ public class Chordless extends P2PTripleNetwork {
 		return matcher.find();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessageTo(final String peer, final String message) {
 		/*
@@ -401,6 +414,7 @@ public class Chordless extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		/*
@@ -413,6 +427,7 @@ public class Chordless extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public IStorage getLocalStorage(final IDistribution<?> distibution) {
@@ -428,6 +443,7 @@ public class Chordless extends P2PTripleNetwork {
 		}.setDistribution(distibution);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasLocalStorage() {
 		/*

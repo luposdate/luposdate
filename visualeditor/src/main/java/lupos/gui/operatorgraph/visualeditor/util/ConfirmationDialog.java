@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
@@ -35,11 +39,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
 public class ConfirmationDialog extends JDialog {
 	private static final long serialVersionUID = 7715900088284584423L;
 	private int returnValue = 0; // 0 = cancel; 1 = set data and close; 2 = ignore data and close
 
+	/**
+	 * <p>Constructor for ConfirmationDialog.</p>
+	 *
+	 * @param parentFrame a {@link javax.swing.JFrame} object.
+	 * @param contentPanel a {@link javax.swing.JPanel} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param confirmationText a {@link java.lang.String} object.
+	 */
 	public ConfirmationDialog(JFrame parentFrame, JPanel contentPanel, String title, String confirmationText) {
 		super(parentFrame, title, true);
 
@@ -102,7 +113,7 @@ public class ConfirmationDialog extends JDialog {
 	/**
 	 * Gets the return value of the dialog.
 	 * 0 = cancel; 1 = set data and close; 2 = ignore data and close
-	 * 
+	 *
 	 * @return return value
 	 */
 	public int getReturnValue() {

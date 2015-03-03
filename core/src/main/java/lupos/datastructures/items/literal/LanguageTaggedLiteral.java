@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -33,7 +37,6 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 
 //import java.util.*;
-
 public class LanguageTaggedLiteral extends Literal implements Externalizable {
 
 	/**
@@ -43,9 +46,18 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 	protected Literal content;
 	protected Literal lang;
 
+	/**
+	 * <p>Constructor for LanguageTaggedLiteral.</p>
+	 */
 	public LanguageTaggedLiteral() {
 	}
 
+	/**
+	 * <p>Constructor for LanguageTaggedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param language a {@link java.lang.String} object.
+	 */
 	protected LanguageTaggedLiteral(final String content, String language) {
 		this.content = LiteralFactory.createLiteralWithoutLazyLiteral(content);
 		if (language.startsWith("@")) {
@@ -55,11 +67,18 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 		this.lang = LiteralFactory.createLiteralWithoutLazyLiteral(languageUniqueRepresentation);
 	}
 
+	/**
+	 * <p>Constructor for LanguageTaggedLiteral.</p>
+	 *
+	 * @param codeContent a int.
+	 * @param codeLang a int.
+	 */
 	protected LanguageTaggedLiteral(final int codeContent, final int codeLang) {
 		this.content = new CodeMapLiteral(codeContent);
 		this.lang = new CodeMapLiteral(codeLang);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof LanguageTaggedLiteral) {
@@ -70,42 +89,71 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.content.toString() + "@" + this.lang.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String printYagoStringWithPrefix() {
 		return this.content.printYagoStringWithPrefix() + "@"
 				+ this.lang.printYagoStringWithPrefix();
 	}
 
+	/**
+	 * <p>getLanguage.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLanguage() {
 		return this.lang.toString();
 	}
 
+	/**
+	 * <p>getOriginalLanguage.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOriginalLanguage() {
 		return this.lang.toString();
 	}
 
+	/**
+	 * <p>Getter for the field <code>content</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getContent() {
 		return this.content.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return new String[] { this.content.toString(), this.lang.toString() };
 	}
 
+	/**
+	 * <p>Getter for the field <code>lang</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getLang() {
 		return this.lang;
 	}
 
+	/**
+	 * <p>getContentLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getContentLiteral() {
 		return this.content;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
@@ -113,12 +161,14 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 		this.lang = InputHelper.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		OutHelper.writeLuposLiteral(this.content, out);
 		OutHelper.writeLuposLiteral(this.lang, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew() {
 		return LiteralFactory.createLanguageTaggedLiteral(this.content.originalString(), this.lang.originalString());

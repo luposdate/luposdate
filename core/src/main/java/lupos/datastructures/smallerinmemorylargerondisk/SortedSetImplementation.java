@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -31,24 +35,31 @@ import java.util.SortedSet;
 import lupos.datastructures.dbmergesortedds.DBMergeSortedSet;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.misc.util.ImmutableIterator;
-
 public class SortedSetImplementation<E extends Serializable> extends
 		SetImplementation<E> implements SortedSet<E> {
 
 	private final SortedSet<E> memorySet;
 	private SortedSet<E> diskSet;
 
+	/** Constant <code>MAXMEMORYMAPENTRIES=30000</code> */
 	protected final static int MAXMEMORYMAPENTRIES = 30000;
 
+	/**
+	 * <p>Constructor for SortedSetImplementation.</p>
+	 *
+	 * @param memorySet a {@link java.util.SortedSet} object.
+	 */
 	public SortedSetImplementation(final SortedSet<E> memorySet) {
 		this.memorySet = memorySet;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super E> comparator() {
 		return this.memorySet.comparator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E first() {
 		final E firstMemory = this.memorySet.first();
@@ -66,12 +77,14 @@ public class SortedSetImplementation<E extends Serializable> extends
 				: firstDisk;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<E> headSet(final E arg0) {
 		throw (new UnsupportedOperationException(
 				"This set does not support headSet."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E last() {
 		final E lastMemory = this.memorySet.last();
@@ -89,18 +102,21 @@ public class SortedSetImplementation<E extends Serializable> extends
 				: lastDisk;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<E> subSet(final E arg0, final E arg1) {
 		throw (new UnsupportedOperationException(
 				"This set does not support subSet."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<E> tailSet(final E arg0) {
 		throw (new UnsupportedOperationException(
 				"This set does not support tailSet."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E arg0) {
 		if (this.memorySet.size() < MAXMEMORYMAPENTRIES) {
@@ -116,6 +132,7 @@ public class SortedSetImplementation<E extends Serializable> extends
 		return this.diskSet.add(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		return new ImmutableIterator<E>() {

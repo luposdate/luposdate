@@ -27,14 +27,23 @@ import java.io.File;
 import java.io.FilenameFilter;
 /**
  * FilenameFilter implementation that selects all files matching a regex
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RegexpMatcher implements FilenameFilter {
 	private String regexp;
 	
+	/**
+	 * <p>Constructor for RegexpMatcher.</p>
+	 *
+	 * @param regexp a {@link java.lang.String} object.
+	 */
 	public RegexpMatcher(String regexp) {
 		this.regexp = regexp;
 	}
 
+	/** {@inheritDoc} */
 	public boolean accept(File dir, String filename) {
 		return filename.matches(regexp);
 	}

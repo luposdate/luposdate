@@ -27,7 +27,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This class converts a bit output stream into a byte-oriented output stream. 
+ * This class converts a bit output stream into a byte-oriented output stream.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BitOutputStream {
 	
@@ -49,6 +52,7 @@ public class BitOutputStream {
 
 	/**
 	 * Constructor
+	 *
 	 * @param out the underlying output stream
 	 */
 	public BitOutputStream(final OutputStream out){
@@ -57,8 +61,9 @@ public class BitOutputStream {
 	
 	/**
 	 * Writes a bit to the bit output stream...
+	 *
 	 * @param b the bit to be written
-	 * @throws IOException if something fails when writing to the underlying output stream
+	 * @throws java.io.IOException if something fails when writing to the underlying output stream
 	 */
 	public void write(boolean b) throws IOException{
 		if(b){
@@ -77,7 +82,8 @@ public class BitOutputStream {
 
 	/**
 	 * This method closes the bit input stream by writing the last byte (event when it is incomplete) and closing the underlying output stream.
-	 * @throws IOException if something fails when writing into or closing the underlying output stream
+	 *
+	 * @throws java.io.IOException if something fails when writing into or closing the underlying output stream
 	 */
 	public void close() throws IOException {
 		if(this.currentBitValue>1){

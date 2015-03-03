@@ -72,7 +72,7 @@ import xpref.XPref;
  * inserting triples and querying sparql.
  *
  * @author Bjoern
- *
+ * @version $Id: $Id
  */
 public class StartConsole implements Runnable {
 
@@ -144,6 +144,7 @@ public class StartConsole implements Runnable {
 		return  result.getValue();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void run() {
@@ -534,6 +535,12 @@ public class StartConsole implements Runnable {
 
 	}
 
+	/**
+	 * <p>getFileMenu.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getFileMenu(final String title) {
 		final MenuSelector<String> menu = new MenuSelector<String>();
 		menu.addCustomInput(new InputValidator<String>() {
@@ -617,6 +624,11 @@ public class StartConsole implements Runnable {
 		return true;
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		/*
 		 * Start and parse the arguments

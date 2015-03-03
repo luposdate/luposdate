@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,10 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
+ * @since 1.0
  */
 package lupos.test;
 
@@ -37,13 +42,14 @@ import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
 import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.ram.RBTrieMap;
 import lupos.datastructures.patriciatrie.ram.RBTrieSet;
-
 public class TestTrie {
 
 	/**
-	 * @param args
-	 * @throws IOException 
-	 * @throws TrieNotCopyableException 
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.io.IOException if any.
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotCopyableException if any.
 	 */
 	public static void main(String[] args) throws IOException, TrieNotCopyableException {
 		DBTrieBag trie = new DBTrieBag("d:/test");

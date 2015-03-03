@@ -38,9 +38,12 @@ import org.json.JSONObject;
 /**
  * Produces events which contain current Bitcoin-related values gathered from Mt.Gox.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MtGoxProducer extends ProducerBaseNoDuplicates {
 
+	/** Constant <code>NAMESPACE="http://localhost/events/MtGox/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/MtGox/";
 	private static final int INTERVAL = 10000;
 	
@@ -71,10 +74,17 @@ public class MtGoxProducer extends ProducerBaseNoDuplicates {
 		public static final Literal BEST_ASK = Literals.createURI(NAMESPACE, "bestAsk");
 	}
 	
+	/**
+	 * <p>Constructor for MtGoxProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public MtGoxProducer(SerializingMessageService msgService) throws Exception {
 		super(msgService, INTERVAL);	
 	}	
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {
@@ -110,6 +120,12 @@ public class MtGoxProducer extends ProducerBaseNoDuplicates {
 	}
 	
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

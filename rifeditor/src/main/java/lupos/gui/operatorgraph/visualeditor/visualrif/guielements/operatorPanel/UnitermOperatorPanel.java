@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -60,7 +64,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.HintTextFieldResizing
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.JIconButton;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.TermConnection;
-
 public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 
 	private static final long serialVersionUID = 8238554719560169292L;
@@ -75,6 +78,16 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 	private FocusListener comboBoxFocusListener;
 
 	// Constructor
+	/**
+	 * <p>Constructor for UnitermOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param unitermOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+	 * @param startNode a boolean.
+	 * @param alsoSubClasses a boolean.
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public UnitermOperatorPanel(final VisualGraph<Operator> parent,
 			final GraphWrapper gw, final UnitermOperator unitermOperator,
 			final boolean startNode, final boolean alsoSubClasses, final VisualRifEditor visualRifEditor) {
@@ -88,6 +101,9 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.init();
 	}
 
+	/**
+	 * <p>init.</p>
+	 */
 	public void init() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -1540,6 +1556,11 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 	/*
 	 * Util
 	 */
+	/**
+	 * <p>removeRow.</p>
+	 *
+	 * @param term a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Term} object.
+	 */
 	public void removeRow(final Term term) {
 		// Constant
 		if ( term.isConstant() ) {
@@ -1577,6 +1598,7 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize() {
 		this.setMinimumSize(this.termRowsPanel.getSize());
@@ -1632,11 +1654,15 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.revalidate(); // re-validate the PrefixPanel
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
 	}
 
+	/**
+	 * <p>repaintAllTerms.</p>
+	 */
 	public void repaintAllTerms(){
 		for (int i = 0; i < this.unitermOperator.getTerms().size(); i++) {
 			this.removeRow(this.unitermOperator.getTerms().get(i));
@@ -1714,18 +1740,38 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 	/* ***************** **
 	 * Getter and Setter **
 	 * ***************** */
+	/**
+	 * <p>Getter for the field <code>unitermOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+	 */
 	public UnitermOperator getUnitermOperator() {
 		return this.unitermOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>unitermOperator</code>.</p>
+	 *
+	 * @param factOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+	 */
 	public void setUnitermOperator(final UnitermOperator factOperator) {
 		this.unitermOperator = factOperator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>selectedChoiceString</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSelectedChoiceString() {
 		return this.selectedChoiceString;
 	}
 
+	/**
+	 * <p>Setter for the field <code>selectedChoiceString</code>.</p>
+	 *
+	 * @param selectedChoiceString a {@link java.lang.String} object.
+	 */
 	public void setSelectedChoiceString(final String selectedChoiceString) {
 		this.selectedChoiceString = selectedChoiceString;
 	}
@@ -1738,18 +1784,38 @@ public class UnitermOperatorPanel extends AbstractGuiComponent<Operator> {
 		 this.unitermOperator.setTermName(text);
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Getter for the field <code>comboBoxFocusListener</code>.</p>
+	 *
+	 * @return a {@link java.awt.event.FocusListener} object.
+	 */
 	public FocusListener getComboBoxFocusListener() {
 		return this.comboBoxFocusListener;
 	}
 
+	/**
+	 * <p>Setter for the field <code>comboBoxFocusListener</code>.</p>
+	 *
+	 * @param comboBoxFocusListener a {@link java.awt.event.FocusListener} object.
+	 */
 	public void setComboBoxFocusListener(final FocusListener comboBoxFocusListener) {
 		this.comboBoxFocusListener = comboBoxFocusListener;
 	}

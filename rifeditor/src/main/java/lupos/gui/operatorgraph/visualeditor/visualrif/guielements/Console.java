@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 public class Console   {
 
 	private JScrollPane scrollPane;
@@ -42,22 +45,47 @@ public class Console   {
 		this.scrollPane  = new JScrollPane(this.textArea);
 	}
 
+	/**
+	 * <p>setText.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 */
 	public void setText(String text){
 		this.textArea.setText(text);
 	} 
 
+	/**
+	 * <p>Getter for the field <code>scrollPane</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JScrollPane} object.
+	 */
 	public JScrollPane getScrollPane() {
 		return scrollPane;
 	}
 
+	/**
+	 * <p>Setter for the field <code>scrollPane</code>.</p>
+	 *
+	 * @param scrollPane a {@link javax.swing.JScrollPane} object.
+	 */
 	public void setScrollPane(JScrollPane scrollPane) {
 		this.scrollPane = scrollPane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>textArea</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JTextArea} object.
+	 */
 	public JTextArea getTextArea() {
 		return textArea;
 	}
 
+	/**
+	 * <p>Setter for the field <code>textArea</code>.</p>
+	 *
+	 * @param textArea a {@link javax.swing.JTextArea} object.
+	 */
 	public void setTextArea(JTextArea textArea) {
 		this.textArea = textArea;
 	}

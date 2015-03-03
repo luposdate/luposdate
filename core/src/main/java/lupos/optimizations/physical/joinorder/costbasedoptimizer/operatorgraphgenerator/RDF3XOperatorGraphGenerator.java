@@ -52,6 +52,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class generated an operator graph for the RDF3X query evaluator
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 
@@ -77,6 +80,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 
 	/**
 	 * Constructor for allowing only binary joins and having the choice of enforcing merge joins or using only merge joins if the data is already sorted in the right way
+	 *
 	 * @param RDF3XSORT true, if merge joins should be enforced by eventual preceding sorting phases; false, if other join algorithms are used whenever the data is not already sorted in the right way
 	 */
 	public RDF3XOperatorGraphGenerator(final boolean RDF3XSORT){
@@ -85,6 +89,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 
 	/**
 	 * Constructor for the choice of n-ary versus binary merge joins, and enforcing always merge joins by eventual preceding sorting phases or using other join algorithms for unsorted data
+	 *
 	 * @param RDF3XSORT true, if merge joins should be enforced by eventual preceding sorting phases; false, if other join algorithms are used whenever the data is not already sorted in the right way
 	 * @param NARYMERGEJOIN n-ary (true) versus binary (false) merge joins
 	 */
@@ -93,6 +98,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 		this.NARYMERGEJOIN = NARYMERGEJOIN;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected RDF3XIndexScan getIndex(final LeafNodePlan plan,
 			final BasicIndexScan indexScan,
@@ -123,6 +129,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 
 	/**
 	 * Determines a complete collation order array
+	 *
 	 * @param collationOrder the incomplete collation order array
 	 * @param pos the position where the collation order starts being incomplete
 	 * @return the complete collation order array
@@ -147,6 +154,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 
 	/**
 	 * Determines the collation order from a collation order array
+	 *
 	 * @param collationOrderArray the collation order as array
 	 * @return the collation order
 	 */
@@ -175,6 +183,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 
 	/**
 	 * Determines the collation order for a triple pattern, such that using an index with the determined collation order, returns its result sorted according to a given sort criterium
+	 *
 	 * @param tp the triple pattern to be considered
 	 * @param sortCriterium the sort criterium
 	 * @return the collation order
@@ -199,6 +208,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 		return getCollationOrder(collationOrder1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected BasicOperator generateJoin(final InnerNodePlan inp, final Root root, final BasicOperator left, final BasicOperator right, final Collection<Variable> sortCriterium, final Map<TriplePattern, Map<Variable, VarBucket>> selectivity){
 		Join join;

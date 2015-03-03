@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif;
 
@@ -32,26 +36,79 @@ import com.google.common.collect.Multimap;
 import lupos.datastructures.bindings.Bindings;
 import lupos.rif.model.RuleVariable;
 import lupos.rif.model.Uniterm;
-
 public interface IExpression extends IRuleNode {
 
+	/**
+	 * <p>containsOnlyVariables.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean containsOnlyVariables();
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	Set<RuleVariable> getVariables();
 
+	/**
+	 * <p>getPredicates.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	List<Uniterm> getPredicates();
 
+	/**
+	 * <p>evaluate.</p>
+	 *
+	 * @param binding a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	Object evaluate(final Bindings binding);
 
+	/**
+	 * <p>evaluate.</p>
+	 *
+	 * @param binding a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param optionalResult a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	Object evaluate(final Bindings binding, final Object optionalResult);
 
+	/**
+	 * <p>evaluate.</p>
+	 *
+	 * @param binding a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param optionalResult a {@link java.lang.Object} object.
+	 * @param equalities a {@link com.google.common.collect.Multimap} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	Object evaluate(final Bindings binding, final Object optionalResult,
 			final Multimap<IExpression, IExpression> equalities);
 
+	/**
+	 * <p>isBound.</p>
+	 *
+	 * @param var a {@link lupos.rif.model.RuleVariable} object.
+	 * @param boundVars a {@link java.util.Collection} object.
+	 * @return a boolean.
+	 */
 	boolean isBound(final RuleVariable var,
 			final Collection<RuleVariable> boundVars);
 
+	/**
+	 * <p>isPossibleAssignment.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean isPossibleAssignment();
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	String toString(final lupos.rdf.Prefix prefixInstance);
 }

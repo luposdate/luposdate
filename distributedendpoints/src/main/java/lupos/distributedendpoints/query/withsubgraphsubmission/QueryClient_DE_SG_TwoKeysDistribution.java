@@ -30,13 +30,27 @@ import lupos.distributed.storage.distributionstrategy.tripleproperties.TriplePro
  * Complete subgraphs are submitted for evaluation to the storage nodes.
  *
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClient_DE_SG_TwoKeysDistribution extends QueryClient_DE_SG_DistributionStrategy<String> {
 
+	/**
+	 * <p>Constructor for QueryClient_DE_SG_TwoKeysDistribution.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_SG_TwoKeysDistribution() throws Exception {
 		super(TriplePropertiesDistributionStrategyEnum.TwoKeysDistribution.createInstance());
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE_SG_TwoKeysDistribution.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_SG_TwoKeysDistribution(final String[] args) throws Exception {
 		super(TriplePropertiesDistributionStrategyEnum.TwoKeysDistribution.createInstance(), args);
 	}

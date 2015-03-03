@@ -41,9 +41,12 @@ import lupos.event.util.Utils;
 /**
  * Searches twitter with a keyword and creates an event every a new tweet is found.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TwitterSearchProducer extends ProducerBaseNoDuplicates {
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/TwitterSearch/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/TwitterSearch/";
 	private final static int INTERVAL = 3000;
 	private static final String SEARCH_URL = "http://search.twitter.com/search.json?q=";
@@ -59,10 +62,16 @@ public class TwitterSearchProducer extends ProducerBaseNoDuplicates {
 	private long max_id = 0;
 		
 	
+	/**
+	 * <p>Constructor for TwitterSearchProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public TwitterSearchProducer(SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {			
@@ -105,6 +114,12 @@ public class TwitterSearchProducer extends ProducerBaseNoDuplicates {
 	}
 
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

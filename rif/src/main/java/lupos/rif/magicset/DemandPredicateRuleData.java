@@ -28,6 +28,9 @@ package lupos.rif.magicset;
  * Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
  * http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
  * http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import java.util.ArrayList;
@@ -36,37 +39,71 @@ import java.util.Set;
 
 import lupos.rif.IExpression;
 import lupos.rif.model.RuleVariable;
-
 public class DemandPredicateRuleData {
 	private DemandPredicateData headData;
 	private DemandPredicateData demandHypothesisData;
 	private final List<IExpression> otherHypotheses = new ArrayList<>();
 	private List<RuleVariable> declaredVariables = new ArrayList<>();
 
+	/**
+	 * <p>Getter for the field <code>declaredVariables</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<RuleVariable> getDeclaredVariables() {
 		return this.declaredVariables;
 	}
 
+	/**
+	 * <p>Getter for the field <code>headData</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.magicset.DemandPredicateData} object.
+	 */
 	public DemandPredicateData getHeadData() {
 		return this.headData;
 	}
 
+	/**
+	 * <p>Setter for the field <code>headData</code>.</p>
+	 *
+	 * @param headData a {@link lupos.rif.magicset.DemandPredicateData} object.
+	 */
 	public void setHeadData(final DemandPredicateData headData) {
 		this.headData = headData;
 	}
 
+	/**
+	 * <p>Getter for the field <code>demandHypothesisData</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.magicset.DemandPredicateData} object.
+	 */
 	public DemandPredicateData getDemandHypothesisData() {
 		return this.demandHypothesisData;
 	}
 
+	/**
+	 * <p>Setter for the field <code>demandHypothesisData</code>.</p>
+	 *
+	 * @param demandHypothesisData a {@link lupos.rif.magicset.DemandPredicateData} object.
+	 */
 	public void setDemandHypothesisData(final DemandPredicateData demandHypothesisData) {
 		this.demandHypothesisData = demandHypothesisData;
 	}
 
+	/**
+	 * <p>Getter for the field <code>otherHypotheses</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IExpression> getOtherHypotheses() {
 		return this.otherHypotheses;
 	}
 
+	/**
+	 * <p>setDeclaredVariablesWithCheck.</p>
+	 *
+	 * @param possibleVariables a {@link java.util.Set} object.
+	 */
 	public void setDeclaredVariablesWithCheck(final Set<RuleVariable> possibleVariables) {
 		this.declaredVariables.clear();
 		final ToPresentationSyntaxStringVisitor visitor = new ToPresentationSyntaxStringVisitor();
@@ -80,6 +117,7 @@ public class DemandPredicateRuleData {
 		this.declaredVariables = checkedVariables;
 	}
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
     	final ToPresentationSyntaxStringVisitor visitor = new ToPresentationSyntaxStringVisitor();

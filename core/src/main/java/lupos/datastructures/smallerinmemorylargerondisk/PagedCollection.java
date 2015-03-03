@@ -60,6 +60,8 @@ import lupos.io.helper.OutHelper;
  * than a large number of objects.
  *
  * @param <E> the type of the elements in the collection
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PagedCollection<E> extends AbstractCollection<E> {
 
@@ -70,11 +72,14 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	protected final Class<? extends E> classname;
 	protected ContinousPagesOutputStream out = null;
 
+	/** Constant <code>NOTREMOVED=0</code> */
 	protected final static byte NOTREMOVED = 0;
 
 	/**
 	 * Constructor to create new (empty) PagedCollection...
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
+	 * @param classname a {@link java.lang.Class} object.
 	 */
 	public PagedCollection(final Class<? extends E> classname) throws IOException {
 		DiskCollection.makeFolders();
@@ -90,7 +95,8 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	 * Constructor to open an existing PagedCollection...
 	 *
 	 * @param filename the filename under which this collection is stored!
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
+	 * @param classname a {@link java.lang.Class} object.
 	 */
 	public PagedCollection(final String filename, final Class<? extends E> classname) throws IOException {
 		this.filename = filename;
@@ -103,6 +109,11 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.classname = classname;
 	}
 
+	/**
+	 * <p>release.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public void release() throws IOException {
 		if(this.out!=null){
 			this.out.close();
@@ -113,11 +124,13 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.endOfCollection = 12;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		try {
@@ -229,6 +242,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E e) {
 		try {
@@ -244,12 +258,22 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		return true;
 	}
 
+	/**
+	 * <p>openOutputStream.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	protected final void openOutputStream() throws IOException {
 		if(this.out==null){
 			this.out = new ContinousPagesOutputStream((int)(this.endOfCollection / PageManager.getDefaultPageSize()), this.pageManager, false, (int)(this.endOfCollection % PageManager.getDefaultPageSize()));
 		}
 	}
 
+	/**
+	 * <p>closeOutputStream.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	protected final void closeOutputStream() throws IOException {
 		if(this.out!=null){
 			this.out.close();
@@ -259,6 +283,11 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		}
 	}
 
+	/**
+	 * <p>storeSizeAndEndOfCollection.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	protected final void storeSizeAndEndOfCollection() throws IOException {
 		final byte[] page = this.pageManager.getPage(0);
 		final ExistingByteArrayOutputStream out1 = new ExistingByteArrayOutputStream(page, 0);
@@ -268,6 +297,11 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.pageManager.modifyPage(0, page);
 	}
 
+	/**
+	 * <p>initFirstPage.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	protected final void initFirstPage() throws IOException {
 		final byte[] page = this.pageManager.getEmptyPage();
 		page[0] = (byte) 0;
@@ -285,21 +319,46 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.pageManager.modifyPage(0, page);
 	}
 
+	/**
+	 * <p>writeLuposObject.</p>
+	 *
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposObject(final OutputStream out) throws IOException {
 		this.closeOutputStream();
 		OutHelper.writeLuposString(this.filename, out);
 		Registration.serializeClass(this.classname, out);
 	}
 
+	/**
+	 * <p>readAndCreateLuposObject.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.datastructures.smallerinmemorylargerondisk.PagedCollection} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public static<T> PagedCollection<T> readAndCreateLuposObject(final InputStream in) throws IOException{
 		return new PagedCollection<T>(InputHelper.readLuposString(in), (Class<? extends T>) Registration.deserializeId(in)[0]);
 	}
 
+	/**
+	 * <p>lengthLuposObject.</p>
+	 *
+	 * @return a int.
+	 */
 	public int lengthLuposObject() {
 		return LengthHelper.lengthLuposString(this.filename) + Registration.lengthSerializeId();
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void main(final String[] args) throws IOException{
 		final PagedCollection<String> c = new PagedCollection<String>(String.class);
 		c.add("hallo");

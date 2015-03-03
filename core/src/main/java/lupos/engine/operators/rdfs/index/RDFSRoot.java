@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.rdfs.index;
 
@@ -35,22 +39,28 @@ import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
-
 public class RDFSRoot extends
 		lupos.engine.operators.index.Root {
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
 		return new ToStreamIndexScan(succeedingOperator, triplePattern, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public lupos.engine.operators.index.Root newInstance(Dataset dataset) {
 		this.dataset = dataset;
 		return new RDFSRoot();
 	}
 
+	/**
+	 * <p>addToPatternMatcher.</p>
+	 *
+	 * @param pm a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 */
 	public void addToPatternMatcher(final PatternMatcher pm) {
 		for (final OperatorIDTuple oit : succeedingOperators) {
 			final ToStreamIndexScan tsi = (ToStreamIndexScan) oit.getOperator();

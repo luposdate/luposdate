@@ -36,7 +36,10 @@ import lupos.optimizations.physical.joinorder.staticanalysis.scoring.subgraph.Sc
 
 /**
  * This class determines the best combination of subgraphs according to scoring alternatives to be specified when initialized...
- * This class must be overridden and the used scoring algorithms must be initialized... 
+ * This class must be overridden and the used scoring algorithms must be initialized...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BuildJoinTreeByScoring extends BuildJoinTree<HashSet<Variable>> {
 
@@ -45,6 +48,7 @@ public abstract class BuildJoinTreeByScoring extends BuildJoinTree<HashSet<Varia
 	 */
 	protected LinkedList<ScoringSubGraph<HashSet<Variable>>> scorings = new LinkedList<ScoringSubGraph<HashSet<Variable>>>();
 	
+	/** {@inheritDoc} */
 	@Override
 	protected Tuple<Integer, Integer> getBestNextSubgraphsToJoin(
 			BasicIndexScan indexScan,
@@ -114,11 +118,13 @@ public abstract class BuildJoinTreeByScoring extends BuildJoinTree<HashSet<Varia
 		return bestSubGraphsToJoin.get(0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected HashSet<Variable> initAdditionalInformation(TriplePattern tp) {
 		return new HashSet<Variable>(tp.getUnionVariables());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected HashSet<Variable> mergeInitialInformations(
 			HashSet<Variable> additionalInformation1,

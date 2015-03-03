@@ -30,15 +30,23 @@ import javax.swing.JOptionPane;
 
 /**
  * Class to create the FileChooser for saving the graph.
- * 
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SaveGraphDialog extends JFileChooser {
 	private static final long serialVersionUID = -9182650514741475066L;
 
+	/**
+	 * <p>Constructor for SaveGraphDialog.</p>
+	 */
 	public SaveGraphDialog() {
 		this.setDialogTitle("Save as... PNG, JPG or GIF");
 	}
 
+	/**
+	 * <p>approveSelection.</p>
+	 */
 	public void approveSelection() {
 		// if choosen file name already exists...
 		if(new File(this.getSelectedFile().getAbsolutePath()).exists()) {

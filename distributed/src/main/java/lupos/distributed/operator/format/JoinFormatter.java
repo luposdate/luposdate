@@ -40,14 +40,15 @@ import org.json.JSONObject;
 /**
  * Formatter for the operation "join" to be used in serialized
  * SubgraphContainer.
- * 
+ *
  * @author Bjoern
+ * @version $Id: $Id
  */
 public class JoinFormatter implements OperatorFormatter {
 
 	/**
 	 * Instantiates a new join formatter.
-	 * 
+	 *
 	 * @param operatorCreator
 	 *            the operator creator for creating the join operator
 	 */
@@ -60,6 +61,7 @@ public class JoinFormatter implements OperatorFormatter {
 	public JoinFormatter() {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSONObject serialize(final BasicOperator operator, final int node_id) {
 		final Join join = (Join) operator;
@@ -89,6 +91,7 @@ public class JoinFormatter implements OperatorFormatter {
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator deserialize(final JSONObject serializedOperator)
 			throws JSONException {
@@ -120,7 +123,7 @@ public class JoinFormatter implements OperatorFormatter {
 
 	/**
 	 * Sets the index collection.
-	 * 
+	 *
 	 * @param root
 	 *            the new index collection
 	 */

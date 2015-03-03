@@ -30,6 +30,9 @@ import org.json.JSONObject;
 
 /**
  * The Interface OperatorFormatter.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface OperatorFormatter {
 
@@ -39,7 +42,7 @@ public interface OperatorFormatter {
 	 * @param operator the operator
 	 * @param node_id the node_id
 	 * @return the jSON object
-	 * @throws JSONException the jSON exception
+	 * @throws org.json.JSONException the jSON exception
 	 */
 	public JSONObject serialize(BasicOperator operator, int node_id) throws JSONException;
 
@@ -48,7 +51,7 @@ public interface OperatorFormatter {
 	 *
 	 * @param serializedOperator the serialiezed operator
 	 * @return the basic operator
-	 * @throws JSONException the jSON exception
+	 * @throws org.json.JSONException the jSON exception
 	 */
 	public BasicOperator deserialize(JSONObject serializedOperator) throws JSONException;
 }

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif;
 
@@ -55,7 +59,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.SaveLoader;
 import lupos.misc.FileHelper;
 import xpref.XPref;
-
 public class VisualRifEditor extends JFrame {
 
 	private static final long serialVersionUID = 136000538613610467L;
@@ -74,12 +77,21 @@ public class VisualRifEditor extends JFrame {
 
 	private SaveLoader saveLoader = new SaveLoader(this);
 
+	/**
+	 * <p>Constructor for VisualRifEditor.</p>
+	 */
 	public VisualRifEditor(){
 		this(null, null);
 	}
 
 
 	/* Constructor */
+	/**
+	 * <p>Constructor for VisualRifEditor.</p>
+	 *
+	 * @param rules a {@link java.lang.String} object.
+	 * @param icon a {@link java.awt.Image} object.
+	 */
 	public VisualRifEditor(final String rules, final Image icon){
 		super();
 
@@ -346,6 +358,11 @@ public class VisualRifEditor extends JFrame {
 		return fileMenu;
 	}
 
+	/**
+	 * <p>importNewDocument.</p>
+	 *
+	 * @param rules a {@link java.lang.String} object.
+	 */
 	public void importNewDocument(final String rules){
 		final DocumentPanel newDocument = this.documentContainer.createNewDocument();
 		this.treePane.addNewDocument(newDocument);
@@ -354,6 +371,11 @@ public class VisualRifEditor extends JFrame {
 	}
 
 
+	/**
+	 * <p>importDocument.</p>
+	 *
+	 * @param rules a {@link java.lang.String} object.
+	 */
 	public void importDocument(final String rules){
 		this.getDocumentContainer().getActiveDocument().getDocumentEditorPane().getRifCodeEditor().getTp_rifInput().setText(rules);
 		this.getDocumentContainer().getActiveDocument().getDocumentEditorPane().evaluate();
@@ -362,7 +384,7 @@ public class VisualRifEditor extends JFrame {
 	/**
 	 * Loads the component on the right side
 	 *
-	 * @param component
+	 * @param component a {@link javax.swing.JComponent} object.
 	 */
 	public void setRightComponent(final JComponent component) {
 		final int dividerLocation = this.splitPane.getDividerLocation();
@@ -371,6 +393,11 @@ public class VisualRifEditor extends JFrame {
 		this.splitPane.setDividerLocation(dividerLocation);
 	}
 
+	/**
+	 * <p>enableMenus.</p>
+	 *
+	 * @param state a boolean.
+	 */
 	public void enableMenus(final boolean state) {
 		System.out.println("VisualrifEditor.enableMenus():");
 	}
@@ -380,47 +407,102 @@ public class VisualRifEditor extends JFrame {
 	 * Getter + Setter **
 	 * *************** */
 
+	/**
+	 * <p>Setter for the field <code>documentContainer</code>.</p>
+	 *
+	 * @param documentContainer a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer} object.
+	 */
 	public void setDocumentContainer(final DocumentContainer documentContainer){
 		this.documentContainer = documentContainer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer} object.
+	 */
 	public DocumentContainer getDocumentContainer(){
 		return this.documentContainer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleContainer</code>.</p>
+	 *
+	 * @param ruleContainer a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer} object.
+	 */
 	public void setRuleContainer(final RuleContainer ruleContainer){
 		this.ruleContainer = ruleContainer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer} object.
+	 */
 	public RuleContainer getRuleContainer(){
 		return this.ruleContainer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>statusBar</code>.</p>
+	 *
+	 * @param statusBar a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	public void setStatusBar(final StatusBar statusBar){
 		this.statusBar = statusBar;
 	}
 
+	/**
+	 * <p>Getter for the field <code>statusBar</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	public StatusBar getStatusBar(){
 		return this.statusBar;
 	}
 
+	/**
+	 * <p>Setter for the field <code>treePane</code>.</p>
+	 *
+	 * @param treePane a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.TreePane} object.
+	 */
 	public void setTreePane(final TreePane treePane){
 		this.treePane = treePane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>treePane</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.TreePane} object.
+	 */
 	public TreePane getTreePane(){
 		return this.treePane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>saveLoader</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.SaveLoader} object.
+	 */
 	public SaveLoader getSaveLoader() {
 		return this.saveLoader;
 	}
 
+	/**
+	 * <p>Setter for the field <code>saveLoader</code>.</p>
+	 *
+	 * @param saveLoader a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.SaveLoader} object.
+	 */
 	public void setSaveLoader(final SaveLoader saveLoader) {
 		this.saveLoader = saveLoader;
 	}
 
 	// Start
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args){
 		new VisualRifEditor();
 	}

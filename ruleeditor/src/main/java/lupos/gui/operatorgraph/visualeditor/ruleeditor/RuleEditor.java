@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor;
 
@@ -60,7 +64,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.SaveLoader;
 import lupos.gui.operatorgraph.visualeditor.util.SaveDialog;
 import lupos.gui.operatorgraph.visualeditor.util.StatusBar;
 import xpref.XPref;
-
 public class RuleEditor extends JFrame {
 	private static final long serialVersionUID = -1212916381422834360L;
 	private RuleEditor that = this;
@@ -79,8 +82,12 @@ public class RuleEditor extends JFrame {
 	private JavaCodeGenerator javaCodeGen = new JavaCodeGenerator(this);
 	private SaveLoader saveLoader = new SaveLoader(this);
 	
+	/** Constant <code>PATH_RULEFILES="src/main/resources/"</code> */
 	protected static final String PATH_RULEFILES = "src/main/resources/";
 
+	/**
+	 * <p>Constructor for RuleEditor.</p>
+	 */
 	public RuleEditor() {
 		super();
 
@@ -137,6 +144,11 @@ public class RuleEditor extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * <p>buildMenuBar.</p>
+	 *
+	 * @return a {@link javax.swing.JMenuBar} object.
+	 */
 	public JMenuBar buildMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.getSelectionModel().addChangeListener(new ChangeListener() {
@@ -152,6 +164,11 @@ public class RuleEditor extends JFrame {
 		return menuBar; // return the MenuBar
 	}
 
+	/**
+	 * <p>setRightComponent.</p>
+	 *
+	 * @param comp a {@link javax.swing.JComponent} object.
+	 */
 	public void setRightComponent(final JComponent comp) {
 		int dividerLocation = this.splitPane.getDividerLocation();
 
@@ -306,56 +323,121 @@ public class RuleEditor extends JFrame {
 		return this.generationMenu;
 	}
 
+	/**
+	 * <p>getRuleEditMenu.</p>
+	 *
+	 * @return a {@link javax.swing.JMenu} object.
+	 */
 	public JMenu getRuleEditMenu() {
 		return this.editRuleMenu;
 	}
 
+	/**
+	 * <p>Getter for the field <code>generationMenu</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JMenu} object.
+	 */
 	public JMenu getGenerationMenu() {
 		return this.generationMenu;
 	}
 
+	/**
+	 * <p>Getter for the field <code>treePane</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.TreePane} object.
+	 */
 	public TreePane getTreePane() {
 		return this.treePane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>statusBar</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	public StatusBar getStatusBar() {
 		return this.statusBar;
 	}
 
+	/**
+	 * <p>Getter for the field <code>associationsContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.AssociationsContainer} object.
+	 */
 	public AssociationsContainer getAssociationsContainer() {
 		return this.associationsContainer;
 	}
 
+	/**
+	 * <p>getRulePackages.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<RulePackagePanel> getRulePackages() {
 		return this.rulePackageContainer.getRulePackages();
 	}
 
+	/**
+	 * <p>getRules.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<RulePanel> getRules() {
 		return this.ruleContainer.getRules();
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleContainer} object.
+	 */
 	public RuleContainer getRuleContainer() {
 		return this.ruleContainer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulePackageContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RulePackageContainer} object.
+	 */
 	public RulePackageContainer getRulePackageContainer() {
 		return this.rulePackageContainer;
 	}
 
+	/**
+	 * <p>getDocumentationGenerator.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.generators.DocumentationGenerator} object.
+	 */
 	public DocumentationGenerator getDocumentationGenerator() {
 		return this.docGen;
 	}
 
+	/**
+	 * <p>getJavaCodeGenerator.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.generators.JavaCodeGenerator} object.
+	 */
 	public JavaCodeGenerator getJavaCodeGenerator() {
 		return this.javaCodeGen;
 	}
 
+	/**
+	 * <p>enableMenus.</p>
+	 *
+	 * @param state a boolean.
+	 */
 	public void enableMenus(boolean state) {
 		this.editRuleMenu.setEnabled(state);
 		this.generationMenu.setEnabled(state);
 	}
 
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args) {
 		new RuleEditor();
 	}

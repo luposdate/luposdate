@@ -33,13 +33,20 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
+ * <p>SortedBagImplementation class.</p>
+ *
  * @author groppe
- * 
+ * @version $Id: $Id
  */
 public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 
 	protected SortedMap<E, ElementCounter<E>> sortedMap;
 
+	/**
+	 * <p>Constructor for SortedBagImplementation.</p>
+	 *
+	 * @param sortedMap a {@link java.util.SortedMap} object.
+	 */
 	public SortedBagImplementation(
 			final SortedMap<E, ElementCounter<E>> sortedMap) {
 		this.sortedMap = sortedMap;
@@ -47,40 +54,79 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param comparator
 	 *            the comparator to use
-	 * 
 	 */
 	public SortedBagImplementation(final Comparator<E> comparator) {
 		this.sortedMap = new TreeMap<E, ElementCounter<E>>(comparator);
 	}
 
+	/**
+	 * <p>comparator.</p>
+	 *
+	 * @return a {@link java.util.Comparator} object.
+	 */
 	public Comparator<? super E> comparator() {
 		return sortedMap.comparator();
 	}
 
+	/**
+	 * <p>first.</p>
+	 *
+	 * @return a E object.
+	 */
 	public E first() {
 		return sortedMap.firstKey();
 	}
 
+	/**
+	 * <p>headBag.</p>
+	 *
+	 * @param toElement a E object.
+	 * @return a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 */
 	public SortedBag<E> headBag(final E toElement) {
 		return new SortedBagImplementation<E>(sortedMap.headMap(toElement));
 	}
 
+	/**
+	 * <p>last.</p>
+	 *
+	 * @return a E object.
+	 */
 	public E last() {
 		return sortedMap.lastKey();
 	}
 
+	/**
+	 * <p>subBag.</p>
+	 *
+	 * @param fromElement a E object.
+	 * @param toElement a E object.
+	 * @return a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 */
 	public SortedBag<E> subBag(final E fromElement, final E toElement) {
 		return new SortedBagImplementation<E>(sortedMap.subMap(fromElement,
 				toElement));
 	}
 
+	/**
+	 * <p>tailBag.</p>
+	 *
+	 * @param fromElement a E object.
+	 * @return a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 */
 	public SortedBag<E> tailBag(final E fromElement) {
 		return new SortedBagImplementation<E>(sortedMap.tailMap(fromElement));
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param e a E object.
+	 * @return a boolean.
+	 */
 	public boolean add(final E e) {
 		ElementCounter<E> elementCounter = sortedMap.get(e);
 		if (elementCounter == null)
@@ -91,6 +137,7 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	public boolean addAll(final Collection<? extends E> c) {
 		boolean flag = true;
 		for (final E o : c) {
@@ -99,14 +146,19 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return flag;
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		sortedMap.clear();
 	}
 
+	/** {@inheritDoc} */
 	public boolean contains(final Object o) {
 		return sortedMap.containsKey(o);
 	}
 
+	/** {@inheritDoc} */
 	public boolean containsAll(final Collection<?> c) {
 		for (final Object o : c) {
 			if (!sortedMap.containsKey(o))
@@ -115,14 +167,25 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return true;
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return sortedMap.isEmpty();
 	}
 
+	/**
+	 * <p>iterator.</p>
+	 *
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public Iterator<E> iterator() {
 		return new SortedIterator();
 	}
 
+	/** {@inheritDoc} */
 	public boolean remove(final Object o) {
 		if (sortedMap.remove(o) != null)
 			return true;
@@ -130,6 +193,7 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	public boolean removeAll(final Collection<?> c) {
 		boolean flag = true;
 		for (final Object o : c) {
@@ -138,6 +202,7 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	public boolean retainAll(final Collection<?> c) {
 		boolean flag = false;
 		for (final Object o : this) {
@@ -149,6 +214,11 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return flag;
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		int size = 0;
 		for (final ElementCounter<E> element : sortedMap.values()) {
@@ -157,6 +227,11 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return size;
 	}
 
+	/**
+	 * <p>toArray.</p>
+	 *
+	 * @return an array of {@link java.lang.Object} objects.
+	 */
 	public Object[] toArray() {
 		final Object[] oa = new Object[size()];
 		int i = 0;
@@ -169,6 +244,13 @@ public class SortedBagImplementation<E> implements SortedBag<E>, Collection<E> {
 		return oa;
 	}
 
+	/**
+	 * <p>toArray.</p>
+	 *
+	 * @param a an array of T objects.
+	 * @param <T> a T object.
+	 * @return an array of T objects.
+	 */
 	public <T> T[] toArray(final T[] a) {
 		if (a.length != size()) {
 			System.err.println("Size of given array is different from the number of elements!");

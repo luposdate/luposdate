@@ -37,7 +37,10 @@ import lupos.datastructures.dbmergesortedds.heap.SequentialHeap;
 /**
  * The block-wise huffman output stream for writing out a huffman encoded stream.
  * In comparison to the adaptive huffman tree, we choose a block-wise encoding scheme due to performance reasons.
- * In the block-wise encoding scheme, each block contains a huffman tree and a huffman tree is valid (and is not changed) for a complete block.  
+ * In the block-wise encoding scheme, each block contains a huffman tree and a huffman tree is valid (and is not changed) for a complete block.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class HuffmanOutputStream extends OutputStream {
 
@@ -63,6 +66,7 @@ public class HuffmanOutputStream extends OutputStream {
 		
 	/**
 	 * Constructor
+	 *
 	 * @param out the underlying bit output stream
 	 */
 	public HuffmanOutputStream(final BitOutputStream out){
@@ -71,12 +75,14 @@ public class HuffmanOutputStream extends OutputStream {
 
 	/**
 	 * Constructor
+	 *
 	 * @param out the underlying output stream, which is converted into a bit output stream
 	 */
 	public HuffmanOutputStream(final OutputStream out){
 		this.out = new BitOutputStream(out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void write(final int b) throws IOException{
 		// store in current block
@@ -94,6 +100,7 @@ public class HuffmanOutputStream extends OutputStream {
 	/**
 	 * This method builds the huffman tree from the block.
 	 * If the block is incomplete, the huffman tree contains the EndOfFile symbol such that the end of the file can be encoded!
+	 *
 	 * @return the built huffman tree
 	 */
 	protected Node buildHuffmanTree(){
@@ -159,8 +166,9 @@ public class HuffmanOutputStream extends OutputStream {
 	
 	/**
 	 * This method writes out the given huffman tree plus the current block.
+	 *
 	 * @param root the huffman tree to be used
-	 * @throws IOException if something fails in the underlying (bit) output stream
+	 * @throws java.io.IOException if something fails in the underlying (bit) output stream
 	 */
 	public void encode(final Node root) throws IOException{
 		// write out the current huffman tree
@@ -190,8 +198,9 @@ public class HuffmanOutputStream extends OutputStream {
 	
 	/**
 	 * writes out the code of an element
+	 *
 	 * @param code the code as boolean array to be written out
-	 * @throws IOException if something fails in the underlying (bit) output stream
+	 * @throws java.io.IOException if something fails in the underlying (bit) output stream
 	 */
 	protected void writeCode(final Boolean[] code) throws IOException {
 		for(Boolean codeBit: code){
@@ -204,6 +213,7 @@ public class HuffmanOutputStream extends OutputStream {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException{
 		// Write out the current incomplete block.

@@ -31,24 +31,27 @@ import java.util.SortedSet;
  * This class provides a skeletal implementation of the <tt>Set</tt>
  * interface to minimize the effort required to implement this
  * interface. <p>
- * 
+ *
  * @param <T> the type of elements maintained by this sorted set
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class AbstractSortedSet<T> extends AbstractSet<T> implements SortedSet<T>{
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<T> subSet(T fromElement, T toElement) {
 		return this.subSet(fromElement, toElement, false);
 	}
 
 	/**
-	 * Returns a view of the portion of this set whose elements range from fromElement, inclusive, to toElement (inclusive if inclusiveLastElement is true, otherwise exclusive). 
-	 * (If fromElement and toElement are equal and inclusiveLastElement is false, the returned set is empty.) 
-	 * The returned set is backed by this set, so changes in the returned set are reflected in this set, and vice-versa. 
+	 * Returns a view of the portion of this set whose elements range from fromElement, inclusive, to toElement (inclusive if inclusiveLastElement is true, otherwise exclusive).
+	 * (If fromElement and toElement are equal and inclusiveLastElement is false, the returned set is empty.)
+	 * The returned set is backed by this set, so changes in the returned set are reflected in this set, and vice-versa.
 	 * The returned set supports all optional set operations that this set supports.
-	 *  
+	 *
 	 * The returned set will throw an IllegalArgumentException on an attempt to insert an element outside its range.
-	 * 
+	 *
 	 * @param fromElement low endpoint (inclusive) of the returned set
 	 * @param toElement high endpoint of the returned set
 	 * @param inclusiveLastElement true for an inclusive high endpoint, otherwise (for an exclusive high endpoint) false
@@ -56,16 +59,19 @@ public abstract class AbstractSortedSet<T> extends AbstractSet<T> implements Sor
 	 */
 	public abstract SortedSet<T> subSet(T fromElement, T toElement, boolean inclusiveLastElement);
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<T> headSet(T toElement) {
 		return this.subSet(this.first(), toElement);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedSet<T> tailSet(T fromElement) {
 		return this.subSet(fromElement, this.last(), true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public T first() {
 		Iterator<T> it = this.iterator();
@@ -75,6 +81,7 @@ public abstract class AbstractSortedSet<T> extends AbstractSet<T> implements Sor
 		return it.next();	
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public T last() {
 		// This implementation is not efficient!

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.mergeunion;
 
@@ -32,15 +36,28 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
-
 public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		Iterator<Bindings> {
 
+	/**
+	 * <p>Constructor for MergeUnionIterator.</p>
+	 *
+	 * @param operandResults an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @param moreThanOnce a boolean.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public MergeUnionIterator(final QueryResult[] operandResults,
 			final boolean moreThanOnce, final Comparator<Bindings> comparator) {
 		init(getArray(operandResults, moreThanOnce), comparator);
 	}
 
+	/**
+	 * <p>getArray.</p>
+	 *
+	 * @param operandResults an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @param moreThanOnce a boolean.
+	 * @return an array of {@link java.util.Iterator} objects.
+	 */
 	protected Iterator<Bindings>[] getArray(final QueryResult[] operandResults,
 			final boolean moreThanOnce) {
 		int minus = 0;
@@ -59,6 +76,13 @@ public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		return ita;
 	}
 
+	/**
+	 * <p>getArray.</p>
+	 *
+	 * @param operandResults a {@link java.util.List} object.
+	 * @param moreThanOnce a boolean.
+	 * @return an array of {@link java.util.Iterator} objects.
+	 */
 	protected Iterator<Bindings>[] getArray(
 			final List<QueryResult> operandResults, final boolean moreThanOnce) {
 		final Iterator<Bindings>[] ita = new Iterator[operandResults.size()];
@@ -70,6 +94,12 @@ public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		return ita;
 	}
 
+	/**
+	 * <p>getArray.</p>
+	 *
+	 * @param operandResults a {@link java.util.Collection} object.
+	 * @return an array of {@link java.util.Iterator} objects.
+	 */
 	protected Iterator<Bindings>[] getArray(
 			final Collection<Iterator<Bindings>> operandResults) {
 		final Iterator<Bindings>[] ita = new Iterator[operandResults.size()];
@@ -80,12 +110,24 @@ public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		return ita;
 	}
 
+	/**
+	 * <p>Constructor for MergeUnionIterator.</p>
+	 *
+	 * @param operandResults a {@link java.util.Collection} object.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public MergeUnionIterator(
 			final Collection<Iterator<Bindings>> operandResults,
 			final Comparator<Bindings> comparator) {
 		init(getArray(operandResults), comparator);
 	}
 
+	/**
+	 * <p>Constructor for MergeUnionIterator.</p>
+	 *
+	 * @param operandResults a {@link java.util.Collection} object.
+	 * @param toCompare a {@link java.util.Collection} object.
+	 */
 	public MergeUnionIterator(
 			final Collection<Iterator<Bindings>> operandResults,
 			final Collection<Variable> toCompare) {
@@ -109,6 +151,13 @@ public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		});
 	}
 
+	/**
+	 * <p>Constructor for MergeUnionIterator.</p>
+	 *
+	 * @param operandResults an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @param moreThanOnce a boolean.
+	 * @param toCompare a {@link java.util.Collection} object.
+	 */
 	public MergeUnionIterator(final QueryResult[] operandResults,
 			final boolean moreThanOnce, final Collection<Variable> toCompare) {
 		this(operandResults, moreThanOnce, new Comparator<Bindings>() {
@@ -131,6 +180,13 @@ public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		});
 	}
 
+	/**
+	 * <p>Constructor for MergeUnionIterator.</p>
+	 *
+	 * @param operandResults a {@link java.util.List} object.
+	 * @param moreThanOnce a boolean.
+	 * @param toCompare a {@link java.util.Collection} object.
+	 */
 	public MergeUnionIterator(final List<QueryResult> operandResults,
 			final boolean moreThanOnce, final Collection<Variable> toCompare) {
 		this(operandResults, moreThanOnce, new Comparator<Bindings>() {
@@ -153,6 +209,13 @@ public class MergeUnionIterator extends MergeIterator<Bindings> implements
 		});
 	}
 
+	/**
+	 * <p>Constructor for MergeUnionIterator.</p>
+	 *
+	 * @param operandResults a {@link java.util.List} object.
+	 * @param moreThanOnce a boolean.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public MergeUnionIterator(final List<QueryResult> operandResults,
 			final boolean moreThanOnce, final Comparator<Bindings> comparator) {
 		init(getArray(operandResults, moreThanOnce), comparator);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,25 +21,46 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc;
-
 public class Quadruple<T1, T2, T3, T4> extends Triple<T1, T2, T3> {
 	protected T4 t4;
 
+	/**
+	 * <p>Constructor for Quadruple.</p>
+	 *
+	 * @param t1 a T1 object.
+	 * @param t2 a T2 object.
+	 * @param t3 a T3 object.
+	 * @param t4 a T4 object.
+	 */
 	public Quadruple(final T1 t1, final T2 t2, final T3 t3, final T4 t4) {
 		super(t1, t2, t3);
 		this.t4 = t4;
 	}
 
+	/**
+	 * <p>getFourth.</p>
+	 *
+	 * @return a T4 object.
+	 */
 	public T4 getFourth() {
 		return this.t4;
 	}
 
+	/**
+	 * <p>setFourth.</p>
+	 *
+	 * @param t4 a T4 object.
+	 */
 	public void setFourth(final T4 t4) {
 		this.t4 = t4;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object object) {
 		if(object instanceof Quadruple) {
@@ -56,11 +78,13 @@ public class Quadruple<T1, T2, T3, T4> extends Triple<T1, T2, T3> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return (int) (((long) this.t1.hashCode() + this.t2.hashCode() + this.t3.hashCode() + this.t4.hashCode() ) % Integer.MAX_VALUE);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "(" + this.t1.toString()+", "+this.t2.toString()+", "+this.t3.toString()+", "+this.t4.toString()+")";

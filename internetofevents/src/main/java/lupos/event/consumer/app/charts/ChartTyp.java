@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,9 +21,11 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.consumer.app.charts;
-
 public enum ChartTyp{
 	BAR_CHART		("BAR", "Bar Chart"),
 	PIE_CHART		("PIE", "Pie Chart"),
@@ -39,19 +42,36 @@ public enum ChartTyp{
 		this.longName = longName;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>longName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLongName(){
 		return longName;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>shortName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getShortName(){
 		return shortName;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return getLongName();
 	}
 	
+	/**
+	 * <p>equals.</p>
+	 *
+	 * @param typ a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public boolean equals(String typ){
 		return getShortName().equals(typ);
 	}

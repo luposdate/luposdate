@@ -42,10 +42,11 @@ import org.jfree.chart.ChartPanel;
 
 
 /**
- *  * Class for displaying input elements for non-numerical charts and display 
+ *  * Class for displaying input elements for non-numerical charts and display
  * of the chart itself.
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class NonNumericalChart extends ChartHandler {
 
@@ -59,7 +60,8 @@ public class NonNumericalChart extends ChartHandler {
 	
 	/**
 	 * Contructor. Creates an appropiate DataModel and inits all required GUI-Elements.
-	 * @param type
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
 	 */
 	public NonNumericalChart(ChartTyp type){
 		super(type);
@@ -95,6 +97,7 @@ public class NonNumericalChart extends ChartHandler {
 		model = new NonNumericalChartModel(type);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(TimedWrapper<QueryResult> l) {
 		
@@ -104,6 +107,7 @@ public class NonNumericalChart extends ChartHandler {
 		getModel().fillDataset(l.getWrappedObject());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void clearFields(){
 		value.setText(null);
@@ -111,10 +115,16 @@ public class NonNumericalChart extends ChartHandler {
 		
 	}
 	
+	/**
+	 * <p>getModel.</p>
+	 *
+	 * @return a {@link lupos.event.consumer.app.charts.NonNumericalChartModel} object.
+	 */
 	protected NonNumericalChartModel getModel(){
 		return (NonNumericalChartModel) super.getModel();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void makeChart() {
 		super.makeChart();

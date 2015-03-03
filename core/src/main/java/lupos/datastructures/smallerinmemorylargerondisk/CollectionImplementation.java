@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -30,7 +34,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import lupos.misc.util.ImmutableIterator;
-
 public class CollectionImplementation<E> implements
 		Collection<E>, Serializable {
 
@@ -41,20 +44,30 @@ public class CollectionImplementation<E> implements
 
 	private final int memoryLimit;
 
+	/** Constant <code>DEFAULTMEMORYLIMIT=20000</code> */
 	public static int DEFAULTMEMORYLIMIT = 20000;
 
 	private final Collection<E> memoryCollection;
 	private PagedCollection<E> diskCollection = null;
 
+	/**
+	 * <p>Constructor for CollectionImplementation.</p>
+	 */
 	public CollectionImplementation() {
 		this(CollectionImplementation.DEFAULTMEMORYLIMIT);
 	}
 
+	/**
+	 * <p>Constructor for CollectionImplementation.</p>
+	 *
+	 * @param memoryLimit a int.
+	 */
 	public CollectionImplementation(final int memoryLimit) {
 		this.memoryLimit = memoryLimit;
 		this.memoryCollection = new ArrayList<E>(this.memoryLimit);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E arg0) {
 		if (this.memoryCollection.size() + 1 < this.memoryLimit) {
@@ -72,6 +85,7 @@ public class CollectionImplementation<E> implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag = true;
@@ -81,6 +95,7 @@ public class CollectionImplementation<E> implements
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.memoryCollection.clear();
@@ -95,6 +110,7 @@ public class CollectionImplementation<E> implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object arg0) {
 		if (this.memoryCollection.contains(arg0)) {
@@ -106,6 +122,7 @@ public class CollectionImplementation<E> implements
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(final Collection<?> arg0) {
 		for (final Object o : arg0) {
@@ -116,11 +133,13 @@ public class CollectionImplementation<E> implements
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return (this.memoryCollection.size() == 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		return new ImmutableIterator<E>() {
@@ -152,6 +171,7 @@ public class CollectionImplementation<E> implements
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object arg0) {
 		boolean flag = this.memoryCollection.remove(arg0);
@@ -161,6 +181,7 @@ public class CollectionImplementation<E> implements
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeAll(final Collection<?> arg0) {
 		boolean flag = true;
@@ -170,6 +191,7 @@ public class CollectionImplementation<E> implements
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		final boolean flag = this.memoryCollection.retainAll(arg0);
@@ -179,6 +201,7 @@ public class CollectionImplementation<E> implements
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		if (this.diskCollection != null) {
@@ -188,18 +211,21 @@ public class CollectionImplementation<E> implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = "";
@@ -214,6 +240,9 @@ public class CollectionImplementation<E> implements
 		return "[ " + s + " ]";
 	}
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 		this.clear();
 	}

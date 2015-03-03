@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,33 +21,54 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
-
 public class LazyBuildingSequentialHeap<E extends Comparable<E>> extends
 		OptimizedSequentialHeap<E> {
 
 	private boolean phase1 = true;
 
+	/**
+	 * <p>Constructor for LazyBuildingSequentialHeap.</p>
+	 *
+	 * @param height a int.
+	 */
 	public LazyBuildingSequentialHeap(final int height) {
 		super(height);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingSequentialHeap.</p>
+	 *
+	 * @param arr an array of {@link java.lang.Object} objects.
+	 * @param length a int.
+	 */
 	public LazyBuildingSequentialHeap(final Object[] arr, final int length) {
 		super(arr, length);
 	}
 
+	/**
+	 * <p>Constructor for LazyBuildingSequentialHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 */
 	public LazyBuildingSequentialHeap(final int length_or_height,
 			final boolean length) {
 		super(length_or_height, length);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Object[] getContent() {
 		buildHeap();
 		return super.getContent();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void buildHeap() {
 		if (phase1) {
@@ -55,30 +77,35 @@ public class LazyBuildingSequentialHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		super.clear();
 		phase1 = true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E peek() {
 		buildHeap();
 		return super.peek();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E pop() {
 		buildHeap();
 		return super.pop();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		buildHeap();
 		return super.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		if (phase1) {

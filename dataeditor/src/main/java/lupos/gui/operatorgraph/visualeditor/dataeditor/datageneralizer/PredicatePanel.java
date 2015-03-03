@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer;
 
@@ -38,10 +42,16 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraphOperatorWithP
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
-
 public class PredicatePanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 5428234388837014129L;
 
+	/**
+	 * <p>Constructor for PredicatePanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraphOperatorWithPrefix} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 */
 	public PredicatePanel(final VisualGraphOperatorWithPrefix parent, final RDFTerm operator, final RDFTerm child) {
 		super(parent, new GraphWrapperOperator(operator), operator, false);
 
@@ -69,6 +79,7 @@ public class PredicatePanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(boolean showErrors, Object data) {
 		return true;
 	}

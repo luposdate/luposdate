@@ -29,6 +29,9 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
 
 /**
  * This class implements the RAM based behavior for a trie for a bag of strings.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RBTrieBag extends TrieBag {
 	
@@ -39,16 +42,19 @@ public class RBTrieBag extends TrieBag {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<Integer> createNodeInstance() {
 		return new RBNodeWithValue<Integer>();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<Integer> createRootNodeInstance() {
 		return new RBNodeWithValue<Integer>();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void changeRootNode(final Node rootNode_param) {
 		this.setRootNode(rootNode_param);

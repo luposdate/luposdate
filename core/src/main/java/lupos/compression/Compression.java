@@ -40,11 +40,14 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * This enumeration contains some standard compression algorithms.
- * 
+ *
  * This enum can especially be used to create input and output streams for (un-) compressing content.
- * 
+ *
  * Note that some compression algorithms are lazily bound. They only work if other modules are also loaded.
  * (Background: the goal of the core-module is to support a light-weight evaluator, which is not dependent on third-party jars. The lazy binding of some extended functionality is a compromise.)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public enum Compression {
 	/**
@@ -254,7 +257,7 @@ public enum Compression {
 	 * @param inferior
 	 *            Compressed input stream
 	 * @return The wrapping input stream
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             if an I/O error occurs
 	 */
 	public abstract InputStream createInputStream(final InputStream inferior)
@@ -267,7 +270,7 @@ public enum Compression {
 	 * @param inferior
 	 *            Output stream to contain the compressed data
 	 * @return The wrapping output stream
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             if an I/O error occurs
 	 */
 	public abstract OutputStream createOutputStream(final OutputStream inferior) throws IOException;

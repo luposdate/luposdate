@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -37,7 +41,6 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 import lupos.misc.debug.DebugStep;
-
 public class Group extends SingleInputOperator {
 	/**
 	 *
@@ -49,12 +52,17 @@ public class Group extends SingleInputOperator {
 	/**
 	 * Constructor sets the node, the parent and the comparator
 	 *
-	 * @param node
+	 * @param node a lupos$sparql1_1$Node object.
 	 */
 	public Group(final lupos.sparql1_1.Node node) {
 		this.comp = new ComparatorAST(node);
 	}
 
+	/**
+	 * <p>Constructor for Group.</p>
+	 *
+	 * @param comp a {@link lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings} object.
+	 */
 	public Group(final ComparatorBindings comp) {
 		this.comp = comp;
 	}
@@ -62,8 +70,9 @@ public class Group extends SingleInputOperator {
 	protected ParallelIteratorMultipleQueryResults queryResults = new ParallelIteratorMultipleQueryResults();
 
 	/**
-	 * saving the QueryResult
+	 * {@inheritDoc}
 	 *
+	 * saving the QueryResult
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
@@ -110,10 +119,9 @@ public class Group extends SingleInputOperator {
 	}
 
 	/**
-	 * Bindings are compared and split in separate QueryResults
+	 * {@inheritDoc}
 	 *
-	 * @param msg
-	 * @return Message
+	 * Bindings are compared and split in separate QueryResults
 	 */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
@@ -122,10 +130,9 @@ public class Group extends SingleInputOperator {
 	}
 
 	/**
-	 * Bindings are compared and split in separate QueryResults
+	 * {@inheritDoc}
 	 *
-	 * @param msg
-	 * @return Message
+	 * Bindings are compared and split in separate QueryResults
 	 */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
@@ -172,24 +179,28 @@ public class Group extends SingleInputOperator {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		this.computeResultDebug(debugstep);
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		this.computeResultDebug(debugstep);
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		this.queryResults.removeAll(queryResult);
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteQueryResult(final int operandID) {
 		this.queryResults.removeAll();

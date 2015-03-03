@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -44,7 +48,6 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer;
-
 public class ContainerPanel extends AbstractGuiComponent<Operator> implements ContainerArrange{
 	private static final long serialVersionUID = 1L;
 	protected VisualGraph<Operator> qg = null;
@@ -52,6 +55,15 @@ public class ContainerPanel extends AbstractGuiComponent<Operator> implements Co
 	protected final JPanel graphPanel;
 	protected final JLabel resizeLabel;
 
+	/**
+	 * <p>Constructor for ContainerPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.OperatorContainer} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param graphPanel a {@link javax.swing.JPanel} object.
+	 * @param qg a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public ContainerPanel(final OperatorContainer operator, final GraphWrapper gw, final JPanel graphPanel, final VisualGraph<Operator> qg, final VisualGraph<Operator> parent) {
 		super(parent, gw, operator, true);
 
@@ -94,6 +106,9 @@ public class ContainerPanel extends AbstractGuiComponent<Operator> implements Co
 		this.add(this.resizeLabel, gbc);
 	}
 
+	/**
+	 * <p>resize.</p>
+	 */
 	public void resize() {
 		this.graphPanel.setSize(this.graphPanel.getPreferredSize());
 
@@ -107,6 +122,7 @@ public class ContainerPanel extends AbstractGuiComponent<Operator> implements Co
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void arrange(final Arrange arrange) {
 		final int centerX = this.getLocation().x + (this.getPreferredSize().width / 2);
 
@@ -129,11 +145,17 @@ public class ContainerPanel extends AbstractGuiComponent<Operator> implements Co
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return this.qg.validateGraph(showErrors, data);
 	}
 
+	/**
+	 * <p>getQueryGraph.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public VisualGraph<Operator> getQueryGraph() {
 		return this.qg;
 	}
@@ -145,6 +167,11 @@ class ResizeLabel extends JLabel implements MouseMotionListener, MouseListener {
 	private int positionX = 0;
 	private int positionY = 0;
 
+	/**
+	 * <p>Constructor for ResizeLabel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.ContainerPanel} object.
+	 */
 	public ResizeLabel(final ContainerPanel parent) {
 		super(parent.getQueryGraph().resizeIcon);
 
@@ -154,6 +181,7 @@ class ResizeLabel extends JLabel implements MouseMotionListener, MouseListener {
 		this.addMouseMotionListener(this);
 	}
 
+	/** {@inheritDoc} */
 	public void mouseDragged(final MouseEvent me) {
 		final int dx = me.getX() - this.positionX;
 		final int dy = me.getY() - this.positionY;
@@ -176,14 +204,20 @@ class ResizeLabel extends JLabel implements MouseMotionListener, MouseListener {
 		this.parent.resize();
 	}
 
+	/** {@inheritDoc} */
 	public void mousePressed(final MouseEvent me) {
 		this.positionX = me.getX();
 		this.positionY = me.getY();
 	}
 
+	/** {@inheritDoc} */
 	public void mouseClicked(final MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseEntered(final MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseExited(final MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseReleased(final MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseMoved(final MouseEvent me) {}
 }

@@ -26,20 +26,26 @@ package lupos.datastructures.sort.run;
 import java.util.List;
 
 /**
- * This class is used to wrap different types of runs to be used in ExternalParallelSort (e.g. tries (bag/set), arrays of string to be sorted by merge sort, quicksort etc.) 
+ * This class is used to wrap different types of runs to be used in ExternalParallelSort (e.g. tries (bag/set), arrays of string to be sorted by merge sort, quicksort etc.)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface Runs {
 	/**
 	 * Merges two or more runs.
 	 * We assume that runs contains at least two runs!
+	 *
 	 * @param runs the runs to be merged
-	 * @params inmemory true for merging in a run stored in main memory, false for merging in a run stored on disk  
+	 * @params inmemory true for merging in a run stored in main memory, false for merging in a run stored on disk
 	 * @return the merged run
+	 * @param inmemory a boolean.
 	 */
 	public Run merge(List<Run> runs, final boolean inmemory);
 	
 	/**
 	 * Creates a new run
+	 *
 	 * @return the newly created run
 	 */
 	public Run createRun();

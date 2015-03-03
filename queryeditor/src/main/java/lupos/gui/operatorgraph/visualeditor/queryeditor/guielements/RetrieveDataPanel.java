@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.guielements;
 
@@ -60,7 +64,6 @@ import lupos.gui.operatorgraph.visualeditor.util.FocusThread;
 import lupos.gui.operatorgraph.visualeditor.util.JCheckBoxOwnIcon;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
-
 public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 	private RetrieveData operator;
@@ -78,6 +81,14 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 	private JTextFieldResizing offsetTF = new JTextFieldResizing("", this.parent.getFONT(), this);
 	private HashMap<String, Boolean> elementStatus = new HashMap<String, Boolean>();
 
+	/**
+	 * <p>Constructor for RetrieveDataPanel.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.operators.RetrieveData} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public RetrieveDataPanel(GraphWrapper gw, RetrieveData operator, VisualGraph<Operator> parent, String name) {
 		super(parent, gw, operator, true);
 
@@ -92,6 +103,11 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		this.add(Box.createRigidArea(new Dimension(10, 3)));
 	}
 
+	/**
+	 * <p>addProjections.</p>
+	 *
+	 * @param distinct a boolean.
+	 */
 	public void addProjections(boolean distinct) {
 		final RetrieveDataWithProjectionAndSolutionModifier operator = (RetrieveDataWithProjectionAndSolutionModifier) this.operator;
 
@@ -222,16 +238,25 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		this.add(projectionPanel);
 	}
 
+	/**
+	 * <p>addDatasetClause.</p>
+	 */
 	public void addDatasetClause() {
 		this.createFromElements();
 		this.createFromNamedElements();
 	}
 
+	/**
+	 * <p>addSolutionModifier.</p>
+	 */
 	public void addSolutionModifier() {
 		this.createOrderByElements();
 		this.createLimitOffsetElements();
 	}
 
+	/**
+	 * <p>finalize.</p>
+	 */
 	public void finalize() {
 		this.setPreferredSize(new Dimension(this.getPreferredSize().width + 10, this.getPreferredSize().height + 10));
 	}
@@ -1169,6 +1194,9 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		return rowPanel; // return panel
 	}
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize() {
 		int objWidth = 0;
 		int objHeight = 0;
@@ -1197,12 +1225,21 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		this.parent.repaint();
 	}
 
+	/**
+	 * <p>prefixAdded.</p>
+	 */
 	public void prefixAdded() {
 		for(JTextField jtf : this.textElements) {
 			jtf.setText(((VisualGraphOperatorWithPrefix) this.parent).prefix.add(jtf.getText()));
 		}
 	}
 
+	/**
+	 * <p>prefixRemoved.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @param namespace a {@link java.lang.String} object.
+	 */
 	public void prefixRemoved(String prefix, final String namespace) {
 		for(JTextField jtf : this.textElements) {
 			String replacement = jtf.getText().replaceFirst(prefix + ":", namespace);
@@ -1213,12 +1250,19 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>prefixModified.</p>
+	 *
+	 * @param oldPrefix a {@link java.lang.String} object.
+	 * @param newPrefix a {@link java.lang.String} object.
+	 */
 	public void prefixModified(String oldPrefix, String newPrefix) {
 		for(JTextField jtf : this.textElements) {
 			jtf.setText(jtf.getText().replaceFirst(oldPrefix + ":", newPrefix + ":"));
 		}
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(boolean showErrors, Object data) {
 		// Projections...
 		for(int i = 0; i < this.projElementsList.size(); ++i) {
@@ -1343,6 +1387,12 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		return true;
 	}
 
+	/**
+	 * <p>Getter for the field <code>elementStatus</code>.</p>
+	 *
+	 * @param elementName a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public boolean getElementStatus(String elementName) {
 		return this.elementStatus.get(elementName);
 	}

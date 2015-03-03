@@ -34,8 +34,9 @@ import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 
 /**
  * SPARQL Parser Implements ILuposParser
- * 
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JAVACCParser implements ILuposParser {
 
@@ -58,7 +59,9 @@ public class JAVACCParser implements ILuposParser {
 
 	/**
 	 * Constructor which is initializes the input Stream
+	 *
 	 * @param s inputstream to set
+	 * @param parser a {@link lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER} object.
 	 */
 	public JAVACCParser(LuposDocumentReader s, final PARSER parser) {
 		this.stream = s;
@@ -67,6 +70,14 @@ public class JAVACCParser implements ILuposParser {
 	}
 
 	
+	/**
+	 * <p>testOfComment.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param beginChar a int.
+	 * @param endChar a int.
+	 * @return a {@link lupos.gui.anotherSyntaxHighlighting.ILuposToken} object.
+	 */
 	protected ILuposToken testOfComment(final String content, final int beginChar, final int endChar){
 		int beginCharVar = beginChar;
 		// jump over leading returns
@@ -81,6 +92,7 @@ public class JAVACCParser implements ILuposParser {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken getNextToken(final String content) {
 		
@@ -169,6 +181,7 @@ public class JAVACCParser implements ILuposParser {
 		return token;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setReaderTokenFriendly(LuposDocumentReader stream, int beginChar, int endChar) {
 		
@@ -195,6 +208,7 @@ public class JAVACCParser implements ILuposParser {
 		return stream.getText();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setReader(LuposDocumentReader stream, int beginChar, int endChar) {
 
@@ -225,6 +239,7 @@ public class JAVACCParser implements ILuposParser {
 //		System.out.println("parse from "+beginChar+" to "+endChar);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setReader(LuposDocumentReader stream) {
 		this.parser.ReInit(stream);
@@ -236,6 +251,7 @@ public class JAVACCParser implements ILuposParser {
 		this.beginCharOffset = 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LuposDocumentReader getReader() {
 		return this.stream;
@@ -254,16 +270,22 @@ public class JAVACCParser implements ILuposParser {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Tells whether the end of file is reached within parsing. This means the
 	 * end of the given inputStream was reached.
-	 * 
-	 * @return Returns true if the end of file is reached within parsing.
 	 */
 	@Override
 	public boolean isEOF() {
 		return this.eof;
 	}
 		
+	/**
+	 * <p>checkTopicMap.</p>
+	 *
+	 * @param images an array of {@link java.lang.String} objects.
+	 * @param tokenMap an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} objects.
+	 */
 	protected static void checkTopicMap(final String[] images, final TYPE_ENUM[] tokenMap){
 		int index = 0;
 		for(TYPE_ENUM type: tokenMap){
@@ -274,6 +296,14 @@ public class JAVACCParser implements ILuposParser {
 		}
 	}
 	
+	/**
+	 * <p>insertIntoTokenMap.</p>
+	 *
+	 * @param images an array of {@link java.lang.String} objects.
+	 * @param tokenMap an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} objects.
+	 * @param imagesToSet an array of {@link java.lang.String} objects.
+	 * @param type a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} object.
+	 */
 	protected static void insertIntoTokenMap(final String[] images, final TYPE_ENUM[] tokenMap, final String[] imagesToSet, final TYPE_ENUM type){
 		for(String currentImage: imagesToSet){
 			boolean flag = false;

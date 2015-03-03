@@ -30,13 +30,13 @@ import java.util.Iterator;
 
 /**
  * GetCollection implements a collection of values for a key
- * 
- * @author Katja Knof
  *
+ * @author Katja Knof
  * @param <K>
  * keys
  * @param <V>
  * values
+ * @version $Id: $Id
  */
 public class GetCollection<K, V> extends AbstractCollection<V>{
 	
@@ -49,7 +49,7 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 	
 	/**
 	 * this method copies a PagedHashMultiMap
-	 * 
+	 *
 	 * @param classOfKeys
 	 * class of keys
 	 * @param classOfValues
@@ -68,11 +68,13 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 	 * last key
 	 * @param lastValue
 	 * last value
+	 * @param keysFilename
+	 * keys file
 	 * @param key
 	 * key of values
 	 * @param fileID
 	 * file ID
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public GetCollection(final Class<K> classOfKeys, final Class<V> classOfValues, final String pointersFilename, final String keysFilename, final String valuesFilename, final long sizeKeys, final long sizeValues, final long lastKey, final long lastValue, final K key, final int fileID) throws IOException{
 		this.map = new PagedHashMultiMap<K, V>(classOfKeys, classOfValues, pointersFilename, keysFilename, valuesFilename, sizeKeys, sizeValues, lastKey, lastValue);
@@ -81,32 +83,36 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 	}
 
 	/**
-	 * @return
-	 * PagedHashMultiMap
+	 * <p>returnMap.</p>
+	 *
+	 * @return a {@link lupos.datastructures.paged_map.PagedHashMultiMap} object.
 	 */
 	public PagedHashMultiMap<K, V> returnMap() {
 		return this.map;
 	}
 	
 	/**
-	 * @return
-	 * key
+	 * <p>returnKey.</p>
+	 *
+	 * @return a K object.
 	 */
 	public K returnKey() {
 		return this.key;
 	}
 	
 	/**
-	 * @return
-	 * file ID
+	 * <p>returnFileID.</p>
+	 *
+	 * @return a int.
 	 */
 	public int returnFileID() {
 		return this.fileID;
 	}
 
-	/** 
+	/**
+	 * {@inheritDoc}
+	 *
 	 * Iterator with duplicates
-	 * 
 	 * @see java.util.AbstractCollection#iterator()
 	 */
 	@Override
@@ -117,6 +123,7 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractCollection#size()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return (int) GetCollection.this.map.getNumberOfKeyElements(GetCollection.this.map.getAddressOfKey(this.key));
@@ -124,9 +131,8 @@ public class GetCollection<K, V> extends AbstractCollection<V>{
 	
 	/**
 	 * this method implements methods for a collection
-	 * 
-	 * @return
-	 * AbstractCollection
+	 *
+	 * @return a {@link java.util.AbstractCollection} object.
 	 */
 	public AbstractCollection<V> getCollection(){
 		

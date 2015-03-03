@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -34,14 +38,30 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator;
-
 public class MultiInputPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>Constructor for MultiInputPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param string a {@link java.lang.String} object.
+	 */
 	public MultiInputPanel(MultiInputOperator operator, GraphWrapper gw, VisualGraph<Operator> parent, String string) {
 		this(operator, gw, parent, string, true);
 	}
 
+	/**
+	 * <p>Constructor for MultiInputPanel.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param string a {@link java.lang.String} object.
+	 * @param movable a boolean.
+	 */
 	public MultiInputPanel(MultiInputOperator operator, GraphWrapper gw, VisualGraph<Operator> parent, String string, boolean movable) {
 		super(parent, gw, operator, movable);
 
@@ -61,6 +81,7 @@ public class MultiInputPanel extends AbstractGuiComponent<Operator> {
 		this.add(textLabel, gbc);
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(boolean showErrors, Object data) {
 		return true;
 	}

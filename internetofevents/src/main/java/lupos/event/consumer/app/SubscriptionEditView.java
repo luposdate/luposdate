@@ -44,6 +44,8 @@ import lupos.event.consumer.querybuilder.EventQueryBuilderDialog;
 /**
  * A view for editing a subscription (name, query, action)
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class SubscriptionEditView extends JPanel implements ActionListener {
@@ -55,6 +57,9 @@ public class SubscriptionEditView extends JPanel implements ActionListener {
 	private ActionsEditView actionsEditView;
 	
 	
+	/**
+	 * <p>Constructor for SubscriptionEditView.</p>
+	 */
 	public SubscriptionEditView() {		
 		super(new GridBagLayout());
 	
@@ -129,12 +134,19 @@ public class SubscriptionEditView extends JPanel implements ActionListener {
 		return c;
 	}
 
+	/**
+	 * <p>addSubmitActionListener.</p>
+	 *
+	 * @param al a {@link java.awt.event.ActionListener} object.
+	 */
 	public void addSubmitActionListener(ActionListener al) {
 		this.submitButton.addActionListener(al);
 	}
 
 	/**
 	 * Sets the text of the views name textfield.
+	 *
+	 * @param name a {@link java.lang.String} object.
 	 */
 	public void setSubscriptionName(String name) {
 		this.subscriptionNameField.setText(name);
@@ -142,23 +154,41 @@ public class SubscriptionEditView extends JPanel implements ActionListener {
 
 	/**
 	 * Sets the text of the views query textfield.
+	 *
+	 * @param query a {@link java.lang.String} object.
 	 */
 	public void setSubscriptionQuery(String query) {
 		this.queryTextArea.setText(query);
 	}
 	
+	/**
+	 * <p>getSubscriptionName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSubscriptionName() {
 		return this.subscriptionNameField.getText();
 	}
 
+	/**
+	 * <p>getSubscriptionQuery.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSubscriptionQuery() {
 		return this.queryTextArea.getText();
 	}
 	
+	/**
+	 * <p>getAction.</p>
+	 *
+	 * @return a {@link lupos.event.action.Action} object.
+	 */
 	public Action getAction() {
 		return this.actionsEditView.getAction();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.queryBuilderButton) {

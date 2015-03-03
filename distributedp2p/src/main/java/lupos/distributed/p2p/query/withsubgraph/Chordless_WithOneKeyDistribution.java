@@ -32,16 +32,18 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.OneKeyDistribution;
 import lupos.engine.evaluators.QueryEvaluator;
 import lupos.sparql1_1.Node;
-	/**
-	 * TomP2P Network with {@link OneKeyDistribution} strategy
-	 * @author Bjoern
-	 *
-	 */
+/**
+ * TomP2P Network with {@link lupos.distributed.storage.distributionstrategy.tripleproperties.OneKeyDistribution} strategy
+ *
+ * @author Bjoern
+ * @version $Id: $Id
+ */
 public abstract class Chordless_WithOneKeyDistribution  extends QueryEvaluator<Node> {
 	/*
 	 * information about the network to be used
 	 */
 	private static final String NETWORK = P2PNetworkCreator.CHORDLESS;
+	/** Constant <code>DISTRIBUTION</code> */
 	@SuppressWarnings("rawtypes")
 	/*
 	 * information about the selected distribution strategy (will be improved
@@ -51,6 +53,8 @@ public abstract class Chordless_WithOneKeyDistribution  extends QueryEvaluator<N
 
 	/**
 	 * don't use
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	@Deprecated
 	public Chordless_WithOneKeyDistribution() throws Exception {
@@ -60,6 +64,8 @@ public abstract class Chordless_WithOneKeyDistribution  extends QueryEvaluator<N
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance() {
 		try {
@@ -73,9 +79,10 @@ public abstract class Chordless_WithOneKeyDistribution  extends QueryEvaluator<N
 
 	/**
 	 * Returns an already running queryClient or starts a new one
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to be used
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance(Map<String, Object> config) {
 		try {

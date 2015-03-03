@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -42,7 +46,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-
 public abstract class HeadBodyFormatter extends Formatter {
 
 	/**
@@ -52,49 +55,137 @@ public abstract class HeadBodyFormatter extends Formatter {
 	 */
 	protected final boolean writeQueryTriples;
 
+	/**
+	 * <p>Constructor for HeadBodyFormatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 * @param writeQueryTriples a boolean.
+	 */
 	public HeadBodyFormatter(final String formatName, final boolean writeQueryTriples){
 		super(formatName);
 		this.writeQueryTriples = writeQueryTriples;
 	}
 
+	/**
+	 * <p>Constructor for HeadBodyFormatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 */
 	public HeadBodyFormatter(final String formatName){
 		this(formatName, false);
 	}
 
+	/**
+	 * <p>Constructor for HeadBodyFormatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 * @param key a {@link java.lang.String} object.
+	 * @param writeQueryTriples a boolean.
+	 */
 	public HeadBodyFormatter(final String formatName, final String key, final boolean writeQueryTriples){
 		super(formatName, key);
 		this.writeQueryTriples = writeQueryTriples;
 	}
 
+	/**
+	 * <p>Constructor for HeadBodyFormatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	public HeadBodyFormatter(final String formatName, final String key){
 		this(formatName, key, false);
 	}
 
+	/**
+	 * <p>writeBooleanResult.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param result a boolean.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeBooleanResult(final OutputStream os, final boolean result) throws IOException;
 
+	/**
+	 * <p>writeStartHead.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeStartHead(final OutputStream os) throws IOException;
 
+	/**
+	 * <p>writeFirstVariableInHead.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeFirstVariableInHead(final OutputStream os, final Variable v) throws IOException{
 		this.writeVariableInHead(os, v);
 	}
 
+	/**
+	 * <p>writeVariableInHead.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeVariableInHead(final OutputStream os, final Variable v) throws IOException;
 
+	/**
+	 * <p>writeQueryTriplesHead.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTriplesHead(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeEndHead.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeEndHead(final OutputStream os) throws IOException;
 
+	/**
+	 * <p>writeFirstStartResult.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeFirstStartResult(final OutputStream os) throws IOException{
 		this.writeStartResult(os);
 	}
 
+	/**
+	 * <p>writeStartResult.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeStartResult(final OutputStream os) throws IOException;
 
+	/**
+	 * <p>writeEndResult.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeEndResult(final OutputStream os) throws IOException;
 
+	/**
+	 * <p>writeQueryTriples.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param queryTriples a {@link java.util.List} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTriples(final OutputStream os, final List<Triple> queryTriples) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTriplesStart(os);
@@ -111,41 +202,90 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTriplesEnd(os);
 	}
 
+	/**
+	 * <p>writeQueryTriplesStart.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeQueryTriplesEnd.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeQueryTripleStart.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleStart(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeQueryTripleFirstStart.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleFirstStart(final OutputStream os) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStart(os);
 	}
 
+	/**
+	 * <p>writeQueryTripleEnd.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeQueryTripleStartComponent.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleStartComponent(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeQueryTripleEndComponent.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleEndComponent(final OutputStream os) throws IOException {
 		// Override method if the formatter supports to submit also the annotated triples!
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 	}
 
+	/**
+	 * <p>writeQueryTripleSubject.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStartComponent(os);
@@ -153,6 +293,13 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTripleEndComponent(os);
 	}
 
+	/**
+	 * <p>writeQueryTriplePredicate.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStartComponent(os);
@@ -160,6 +307,13 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTripleEndComponent(os);
 	}
 
+	/**
+	 * <p>writeQueryTripleObject.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStartComponent(os);
@@ -167,6 +321,13 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTripleEndComponent(os);
 	}
 
+	/**
+	 * <p>writeQueryTriple.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryTriple(final OutputStream os, final Triple triple) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleStart(os);
@@ -176,6 +337,13 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTripleEnd(os);
 	}
 
+	/**
+	 * <p>writeQueryFirstTriple.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeQueryFirstTriple(final OutputStream os, final Triple triple) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!
 		this.writeQueryTripleFirstStart(os);
@@ -185,26 +353,94 @@ public abstract class HeadBodyFormatter extends Formatter {
 		this.writeQueryTripleEnd(os);
 	}
 
+	/**
+	 * <p>writeEpilogue.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeEpilogue(final OutputStream os) throws IOException;
 
+	/**
+	 * <p>writeFirstStartBinding.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeFirstStartBinding(final OutputStream os, final Variable v) throws IOException{
 		this.writeStartBinding(os, v);
 	}
 
+	/**
+	 * <p>writeStartBinding.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeStartBinding(final OutputStream os, final Variable v) throws IOException;
 
+	/**
+	 * <p>writeEndBinding.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeEndBinding(final OutputStream os) throws IOException;
 
+	/**
+	 * <p>writeBlankNode.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param blankNode a {@link lupos.datastructures.items.literal.AnonymousLiteral} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeBlankNode(final OutputStream os, AnonymousLiteral blankNode) throws IOException;
 
+	/**
+	 * <p>writeURI.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param uri a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeURI(final OutputStream os, URILiteral uri) throws IOException;
 
+	/**
+	 * <p>writeSimpleLiteral.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException;
 
+	/**
+	 * <p>writeTypedLiteral.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeTypedLiteral(final OutputStream os, TypedLiteral literal) throws IOException;
 
+	/**
+	 * <p>writeLanguageTaggedLiteral.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.LanguageTaggedLiteral} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public abstract void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException;
 
+	/**
+	 * <p>getVariablesToIterateOnForOneBindings.</p>
+	 *
+	 * @param variables a {@link java.util.Collection} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public Iterator<Variable> getVariablesToIterateOnForOneBindings(final Collection<Variable> variables, final Bindings bindings){
 		return new Iterator<Variable>(){
 
@@ -244,6 +480,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
@@ -303,6 +540,13 @@ public abstract class HeadBodyFormatter extends Formatter {
 		}
 	}
 
+	/**
+	 * <p>writeLiteral.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLiteral(final OutputStream os, final Literal literal) throws IOException{
 		if(literal!=null){
 			final Literal materializedLiteral = (literal instanceof LazyLiteral)?((LazyLiteral)literal).getLiteral(): literal;
@@ -324,6 +568,7 @@ public abstract class HeadBodyFormatter extends Formatter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isWriteQueryTriples() {
 		return this.writeQueryTriples;

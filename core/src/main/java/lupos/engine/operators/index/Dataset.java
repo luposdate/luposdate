@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index;
 
@@ -64,7 +68,6 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
 import lupos.misc.util.ImmutableIterator;
-
 public class Dataset {
 
 	/**
@@ -112,10 +115,27 @@ public class Dataset {
 
 	private Thread codeMapConstructionThread = null;
 
+	/**
+	 * <p>Getter for the field <code>indicesFactory</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Dataset.IndicesFactory} object.
+	 */
 	public IndicesFactory getIndicesFactory() {
 		return this.indicesFactory;
 	}
 
+	/**
+	 * <p>Constructor for Dataset.</p>
+	 *
+	 * @param dataFormat a {@link java.lang.String} object.
+	 * @param materialize a {@link lupos.engine.operators.index.Dataset.ONTOLOGY} object.
+	 * @param opt a int.
+	 * @param indicesFactory a {@link lupos.engine.operators.index.Dataset.IndicesFactory} object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public Dataset(final String dataFormat, final ONTOLOGY materialize,
 			final int opt, final IndicesFactory indicesFactory,
 			final InputStream in) throws IOException,
@@ -296,6 +316,19 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>Constructor for Dataset.</p>
+	 *
+	 * @param defaultGraphs a {@link java.util.Collection} object.
+	 * @param namedGraphs a {@link java.util.Collection} object.
+	 * @param dataFormat a {@link java.lang.String} object.
+	 * @param materialize a {@link lupos.engine.operators.index.Dataset.ONTOLOGY} object.
+	 * @param opt a int.
+	 * @param indicesFactory a {@link lupos.engine.operators.index.Dataset.IndicesFactory} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @throws java.lang.Exception if any.
+	 */
 	public Dataset(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs, final String dataFormat,
 			final ONTOLOGY materialize, final int opt,
@@ -309,6 +342,19 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>Constructor for Dataset.</p>
+	 *
+	 * @param defaultGraphs a {@link java.util.Collection} object.
+	 * @param namedGraphs a {@link java.util.Collection} object.
+	 * @param materialize a {@link lupos.engine.operators.index.Dataset.ONTOLOGY} object.
+	 * @param dataFormat a {@link java.lang.String} object.
+	 * @param opt a int.
+	 * @param indicesFactory a {@link lupos.engine.operators.index.Dataset.IndicesFactory} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @throws java.lang.Exception if any.
+	 */
 	public Dataset(final Collection<URILiteral> defaultGraphs,
 			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs,
 			final ONTOLOGY materialize, final String dataFormat, final int opt,
@@ -345,6 +391,12 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>getNamedGraphIndices.</p>
+	 *
+	 * @param rdfName a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a {@link lupos.engine.operators.index.Indices} object.
+	 */
 	public Indices getNamedGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
 		for(final Entry<URILiteral, Indices> entry: this.namedGraphData.entrySet()){
@@ -356,6 +408,11 @@ public class Dataset {
 		// return namedGraphData.get(rdfName);
 	}
 
+	/**
+	 * <p>removeNamedGraphIndices.</p>
+	 *
+	 * @param rdfName a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void removeNamedGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
 		final Iterator<Entry<URILiteral, Indices>> it = this.namedGraphData.entrySet().iterator();
@@ -367,14 +424,30 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>getNamedGraphs.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<URILiteral> getNamedGraphs() {
 		return this.namedGraphData.keySet();
 	}
 
+	/**
+	 * <p>getNamedGraphIndices.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Indices> getNamedGraphIndices() {
 		return this.namedGraphData.values();
 	}
 
+	/**
+	 * <p>getDefaultGraphIndices.</p>
+	 *
+	 * @param rdfName a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a {@link lupos.engine.operators.index.Indices} object.
+	 */
 	public Indices getDefaultGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
 		for(final Entry<URILiteral, Indices> entry: this.defaultGraphData.entrySet()){
@@ -386,6 +459,11 @@ public class Dataset {
 		// return defaultGraphData.get(rdfName);
 	}
 
+	/**
+	 * <p>removeDefaultGraphIndices.</p>
+	 *
+	 * @param rdfName a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void removeDefaultGraphIndices(final URILiteral rdfName) {
 		// Because CodeMapURILiteral and StringURILiterals do not have the same hash value!
 		final Iterator<Entry<URILiteral, Indices>> it = this.defaultGraphData.entrySet().iterator();
@@ -397,14 +475,29 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>getDefaultGraphs.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<URILiteral> getDefaultGraphs() {
 		return this.defaultGraphData.keySet();
 	}
 
+	/**
+	 * <p>getDefaultGraphIndices.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Indices> getDefaultGraphIndices() {
 		return this.defaultGraphData.values();
 	}
 
+	/**
+	 * <p>buildCompletelyAllIndices.</p>
+	 *
+	 * @return a long.
+	 */
 	public long buildCompletelyAllIndices() {
 		final Date a = new Date();
 		for (final Indices indices : this.defaultGraphData.values()) {
@@ -417,6 +510,11 @@ public class Dataset {
 		return b.getTime() - a.getTime();
 	}
 
+	/**
+	 * <p>writeOutAllModifiedPages.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeOutAllModifiedPages() throws IOException{
 		for (final Indices indices : this.defaultGraphData.values()) {
 			indices.writeOutAllModifiedPages();
@@ -426,6 +524,15 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>indexingRDFGraphs.</p>
+	 *
+	 * @param graphConstraint a {@link lupos.datastructures.items.Item} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Indices> indexingRDFGraphs(final Item graphConstraint,
 			final boolean debug,
 			final boolean inMemoryExternalOntologyComputation, final Root root) {
@@ -490,6 +597,15 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>addNamedGraph.</p>
+	 *
+	 * @param graphURI a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param graphSource a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @throws java.lang.Exception if any.
+	 */
 	public void addNamedGraph(final URILiteral graphURI, final URILiteral graphSource, final boolean debug, final boolean inMemoryExternalOntologyComputation) throws Exception{
 		Indices indices = this.namedGraphData.get(graphURI);
 		if(indices == null){
@@ -501,6 +617,16 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>indexingRDFGraph.</p>
+	 *
+	 * @param graphURI a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param indicesC a {@link java.util.LinkedList} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public Tuple<Boolean,Indices> indexingRDFGraph(final URILiteral graphURI,
 			final LinkedList<Indices> indicesC, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
@@ -525,6 +651,16 @@ public class Dataset {
 		return new Tuple<Boolean, Indices>(newIndices, indices);
 	}
 
+	/**
+	 * <p>indexingRDFGraph.</p>
+	 *
+	 * @param graphURI a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param graphs a {@link java.util.Map} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @return a {@link lupos.engine.operators.index.Indices} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public Indices indexingRDFGraph(final URILiteral graphURI,
 			final Map<URILiteral, Indices> graphs, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
@@ -540,6 +676,15 @@ public class Dataset {
 		return indices;
 	}
 
+	/**
+	 * <p>indexingRDFGraph.</p>
+	 *
+	 * @param graphURI a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param indices a {@link lupos.engine.operators.index.Indices} object.
+	 * @param debug a boolean.
+	 * @param inMemoryExternalOntologyComputation a boolean.
+	 * @throws java.lang.Exception if any.
+	 */
 	public void indexingRDFGraph(final URILiteral graphURI,
 			final Indices indices, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation) throws Exception {
@@ -548,14 +693,31 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>putIntoDefaultGraphs.</p>
+	 *
+	 * @param u a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param indices a {@link lupos.engine.operators.index.Indices} object.
+	 */
 	public void putIntoDefaultGraphs(final URILiteral u, final Indices indices) {
 		this.defaultGraphData.put(u, indices);
 	}
 
+	/**
+	 * <p>putIntoNamedGraphs.</p>
+	 *
+	 * @param u a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param indices a {@link lupos.engine.operators.index.Indices} object.
+	 */
 	public void putIntoNamedGraphs(final URILiteral u, final Indices indices) {
 		this.namedGraphData.put(u, indices);
 	}
 
+	/**
+	 * <p>getIdMax.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getIdMax() {
 		return this.defaultGraphData.size() + this.namedGraphData.size();
 	}
@@ -572,6 +734,14 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>readIndexInfo.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public void readIndexInfo(final InputStream in)
 			throws IOException, ClassNotFoundException, URISyntaxException {
 
@@ -636,6 +806,13 @@ public class Dataset {
 		});
 	}
 
+	/**
+	 * <p>writeIndexInfo.</p>
+	 *
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @param currentFileID a {@link java.lang.Integer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeIndexInfo(final OutputStream out, final Integer currentFileID)
 			throws IOException {
 		this.buildCompletelyAllIndices();
@@ -677,14 +854,27 @@ public class Dataset {
 		}
 	}
 
+	/**
+	 * <p>getSortingApproach.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Dataset.SORT} object.
+	 */
 	public static SORT getSortingApproach() {
 		return SortingApproach;
 	}
 
+	/**
+	 * <p>setSortingApproach.</p>
+	 *
+	 * @param SortingApproach a {@link lupos.engine.operators.index.Dataset.SORT} object.
+	 */
 	public static void setSortingApproach(final SORT SortingApproach) {
 		Dataset.SortingApproach = SortingApproach;
 	}
 
+	/**
+	 * <p>waitForCodeMapConstruction.</p>
+	 */
 	public void waitForCodeMapConstruction() {
 		if (this.codeMapConstructionThread != null) {
 			try {

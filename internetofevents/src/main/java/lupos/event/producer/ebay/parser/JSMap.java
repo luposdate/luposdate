@@ -29,6 +29,9 @@ import java.util.Map.Entry;
 
 /**
  * Represents a whole JSON object, i.e. a mapping of string identifiers to JSON objects.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSMap extends JSObject {
 
@@ -46,20 +49,16 @@ public class JSMap extends JSObject {
 	
 	/**
 	 * Adds a mapping to this JSON object.
-	 * 
-	 * @param	key		String identifier
-	 * @param	value	JSON data structure identified by <code>key</code>
 	 */
 	public void set(String key, JSObject value) {
 		this.map.put(key, value);
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the JSON data structure in this JSON object identified by <code>key</code>.
 	 * If no such JSON data structure exists, <strong>null</strong> is returned.
-	 * 
-	 * @param	key		String identifier of the requested JSON data
-	 * @return	The requested JSON data structure
 	 */
 	@Override
 	public JSObject get(String key) {
@@ -68,20 +67,20 @@ public class JSMap extends JSObject {
 	
 	/**
 	 * States, whether this JSON object contains JSON data identified by <code>key</code>.
-	 * 
-	 * @param	key		String identifier of the requested JSON data
-	 * @return	<strong>true</strong>, if there's JSON data identified by <code>key</code>
-	 * 			in this JSON object, <strong>false</strong> otherwise
+	 *
+	 * @return a boolean.
 	 */
 	public boolean contains(String key) {
 		return this.get(key) != null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.map.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(String indent) {
 		StringBuilder builder = new StringBuilder().append('{');

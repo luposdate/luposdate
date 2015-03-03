@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,35 +21,61 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.adaptedRDF3X;
 
 import java.util.Iterator;
 
 import lupos.datastructures.items.Triple;
-
 public class IndicesTripleIterator implements Iterator<Triple> {
 
 	private final Iterator<Triple> it;
 	private final int id;
 
+	/**
+	 * <p>Constructor for IndicesTripleIterator.</p>
+	 *
+	 * @param it a {@link java.util.Iterator} object.
+	 * @param id a int.
+	 */
 	public IndicesTripleIterator(final Iterator<Triple> it, final int id) {
 		this.it = it;
 		this.id = id;
 	}
 
+	/**
+	 * <p>hasNext.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean hasNext() {
 		return it.hasNext();
 	}
 
+	/**
+	 * <p>next.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 */
 	public Triple next() {
 		return it.next();
 	}
 
+	/**
+	 * <p>remove.</p>
+	 */
 	public void remove() {
 		it.remove();
 	}
 
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getId() {
 		return id;
 	}

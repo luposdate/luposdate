@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.bindings;
 
@@ -27,26 +31,44 @@ import java.util.Collection;
 import java.util.Map;
 
 import lupos.datastructures.items.Variable;
-
 public class ArrayReadTriplesBindingsFactory extends BindingsFactory{
 
+	/**
+	 * <p>Constructor for ArrayReadTriplesBindingsFactory.</p>
+	 */
 	protected ArrayReadTriplesBindingsFactory(){
 		super();
 	}
 
+	/**
+	 * <p>Constructor for ArrayReadTriplesBindingsFactory.</p>
+	 *
+	 * @param variables a {@link java.util.Collection} object.
+	 */
 	protected ArrayReadTriplesBindingsFactory(final Collection<Variable> variables){
 		super(variables);
 	}
 
 
+	/**
+	 * <p>Constructor for ArrayReadTriplesBindingsFactory.</p>
+	 *
+	 * @param variables an array of {@link lupos.datastructures.items.Variable} objects.
+	 */
 	protected ArrayReadTriplesBindingsFactory(final Variable[] variables){
 		super(variables);
 	}
 
+	/**
+	 * <p>Constructor for ArrayReadTriplesBindingsFactory.</p>
+	 *
+	 * @param posVariables a {@link java.util.Map} object.
+	 */
 	protected ArrayReadTriplesBindingsFactory(final Map<Variable, Integer> posVariables){
 		super(posVariables);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Bindings createInstance(){
 		return new BindingsArrayReadTriples(this);

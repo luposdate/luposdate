@@ -37,28 +37,40 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.QueryClientCost
 
 /**
  * Represents the root node in the operator graph for distributed query processing.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientRootWithHistogramSubmission extends Root {
 
 	protected final IHistogramExecutor histogramExecutor;
 
+	/**
+	 * <p>Constructor for QueryClientRootWithHistogramSubmission.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param histogramExecutor a {@link lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor} object.
+	 */
 	public QueryClientRootWithHistogramSubmission(final Dataset dataset, final IHistogramExecutor histogramExecutor){
 		super();
 		this.dataset = dataset;
 		this.histogramExecutor = histogramExecutor;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePatterns, final Item data) {
 		return new QueryClientIndexScanWithHistogramSubmission(succeedingOperator, triplePatterns, data, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Root newInstance(final Dataset dataset_param) {
 		return new QueryClientRootWithHistogramSubmission(dataset_param, this.histogramExecutor);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void optimizeJoinOrder(final int opt) {
 		if(opt != BasicIndexScan.BINARY){

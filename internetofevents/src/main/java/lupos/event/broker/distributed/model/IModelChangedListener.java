@@ -26,14 +26,16 @@ package lupos.event.broker.distributed.model;
 /**
  * This interface listener sends events
  * if the model has been changed
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public interface IModelChangedListener {
 
 	/**
 	 * Notification that the model has been
 	 * changed
+	 *
 	 * @param m the specific model object
 	 */
 	public void modelChanged(Model m);

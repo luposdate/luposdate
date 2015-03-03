@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rdf.parser;
 
@@ -39,15 +43,35 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.TypedLiteralOriginalContent;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-
 public class TurtleParser {
+	/** Constant <code>readFileNumber=0</code> */
 	public static int readFileNumber=0; 
 	
+	/**
+	 * <p>parseRDFData.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @return a int.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	public static int parseRDFData(final InputStream in, final TripleConsumer tc,
 			final String encoding) throws UnsupportedEncodingException {
 		return TurtleParser.readTriplesFromInputWithFormat(in, tc, "Turtle", encoding, readFileNumber++);
 	}
 	
+	/**
+	 * <p>readTriplesFromInputWithFormat.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @param format a {@link java.lang.String} object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @param id a int.
+	 * @return a int.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	public static int readTriplesFromInputWithFormat(final InputStream in,
 			final TripleConsumer tc, final String format, final String encoding, int id)throws UnsupportedEncodingException {
 		final Model model = ModelFactory.createDefaultModel();
@@ -55,6 +79,14 @@ public class TurtleParser {
 		return triplesFromModel(model, tc, id);
 	}
 
+	/**
+	 * <p>triplesFromModel.</p>
+	 *
+	 * @param model a {@link com.hp.hpl.jena.rdf.model.Model} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @param id a int.
+	 * @return a int.
+	 */
 	public static int triplesFromModel(final Model model,
 			final TripleConsumer tc, int id) {
 		final StmtIterator sit = model.listStatements();
@@ -85,6 +117,14 @@ public class TurtleParser {
 		return number;
 	}
 
+	/**
+	 * <p>printResource2Literal.</p>
+	 *
+	 * @param r a {@link com.hp.hpl.jena.rdf.model.Resource} object.
+	 * @param blanknodeNames a {@link java.util.HashMap} object.
+	 * @param global_id a int.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal printResource2Literal(final Resource r, final HashMap<Resource, Integer> blanknodeNames, int global_id) {
 		if (r.isAnon()) {
 			Integer id = blanknodeNames.get(r);
@@ -101,6 +141,12 @@ public class TurtleParser {
 			}
 	}
 
+	/**
+	 * <p>printNTripleLiteral2Literal.</p>
+	 *
+	 * @param l a {@link com.hp.hpl.jena.rdf.model.Literal} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal printNTripleLiteral2Literal(final com.hp.hpl.jena.rdf.model.Literal l) {
 		String s1 = "\"";
 		final char ar[] = l.getLexicalForm().toCharArray();

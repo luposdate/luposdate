@@ -54,11 +54,15 @@ import com.sun.net.httpserver.HttpExchange;
 
 /**
  * This class is for starting the endpoints with contexts according to the used distribution strategy
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class StartEndpoint {
 
 	/**
 	 * Main entry point to start the endpoints...
+	 *
 	 * @param args see init() for the command line arguments
 	 */
 	public static void main(final String[] args) {
@@ -88,6 +92,7 @@ public class StartEndpoint {
 
 	/**
 	 * Initializes the endpoint and returns the list of possible keys for the specified distribution strategy
+	 *
 	 * @param args command line arguments
 	 * @return the list of possible keys for the specified distribution strategy
 	 */

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc;
 
@@ -34,32 +38,58 @@ import lupos.io.LuposObjectOutputStream;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.util.ImmutableIterator;
-
 public final class BitVector implements Comparable<BitVector>, Iterable<Boolean> {
 
 	public byte[] bits;
 	private int size;
 
+	/**
+	 * <p>Constructor for BitVector.</p>
+	 *
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @param n a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public BitVector(final LuposObjectInputStream in, final int n) throws IOException {
 		this.readWithoutSize(in, n);
 	}
 
+	/**
+	 * <p>Constructor for BitVector.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param n a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public BitVector(final InputStream in, final int n) throws IOException {
 		this.readWithoutSize(in, n);
 	}
 
-	/** Constructs a vector for storing n bits */
+	/**
+	 * Constructs a vector for storing n bits
+	 *
+	 * @param n a int.
+	 */
 	public BitVector(final int n) {
 		this.size = n;
 		this.bits = new byte[(this.size >> 3) + 1];
 	}
 
-	/** Sets a bit */
+	/**
+	 * Sets a bit
+	 *
+	 * @param bit a int.
+	 */
 	public final void set(final int bit) {
 		this.bits[bit >> 3] |= 1 << (bit & 7);
 	}
 
-	/** Sets or clears a bit according to a boolean value */
+	/**
+	 * Sets or clears a bit according to a boolean value
+	 *
+	 * @param bit a int.
+	 * @param value a boolean.
+	 */
 	public final void set(final int bit, final boolean value) {
 		if (value){
 			this.set(bit);
@@ -68,13 +98,20 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		}
 	}
 
-	/** Clears a bit */
+	/**
+	 * Clears a bit
+	 *
+	 * @param bit a int.
+	 */
 	public final void clear(final int bit) {
 		this.bits[bit >> 3] &= ~(1 << (bit & 7));
 	}
 
 	/**
 	 * Returns true if the bit is set or false if it is cleared
+	 *
+	 * @param bit a int.
+	 * @return a boolean.
 	 */
 	public final boolean get(final int bit) {
 		return (this.bits[bit >> 3] & (1 << (bit & 7))) != 0;
@@ -83,6 +120,8 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 	/**
 	 * Returns the number of bits in this vector (one greater than
 	 * the number of the largest valid bit number)
+	 *
+	 * @return a int.
 	 */
 	public final int size() {
 		return this.size;
@@ -94,7 +133,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 	 * both vectors have different size and the smallest vector has size n, then
 	 * only the first n bits of both vectors are compared.
 	 *
-	 * @param vectorParam
+	 * @param vectorParam a {@link lupos.misc.BitVector} object.
 	 * @return true if both vectors have at least one bit in common
 	 */
 	public final boolean oneBitInCommon(final BitVector vectorParam) {
@@ -111,6 +150,8 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 	}
 
 	/**
+	 * <p>count.</p>
+	 *
 	 * @return the number of bits, which are set
 	 */
 	public final int count() {
@@ -124,6 +165,12 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 	}
 
 
+	/**
+	 * <p>getNextBit.</p>
+	 *
+	 * @param start a int.
+	 * @return a int.
+	 */
 	public int getNextBit(int start) {
 		while (start % 8 != 0) {
 			if (start > this.size) {
@@ -156,12 +203,25 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		}
 	}
 
+	/**
+	 * <p>writeWithoutSize.</p>
+	 *
+	 * @param out a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final void writeWithoutSize(final LuposObjectOutputStream out) throws IOException {
 		for (int i = 0; i < this.bits.length; i++){
 			OutHelper.writeLuposByte(this.bits[i], out.os);
 		}
 	}
 
+	/**
+	 * <p>readWithoutSize.</p>
+	 *
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @param n a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public final void readWithoutSize(final LuposObjectInputStream in, final int n) throws IOException {
 		this.size = n;
 		this.bits = new byte[(this.size >> 3) + 1];
@@ -170,12 +230,25 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		}
 	}
 
+	/**
+	 * <p>writeWithoutSize.</p>
+	 *
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public final void writeWithoutSize(final OutputStream out) throws IOException {
 		for (int i = 0; i < this.bits.length; i++){
 			OutHelper.writeLuposByte(this.bits[i], out);
 		}
 	}
 
+	/**
+	 * <p>readWithoutSize.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param n a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public final void readWithoutSize(final InputStream in, final int n) throws IOException {
 		this.size = n;
 		this.bits = new byte[(this.size >> 3) + 1];
@@ -184,6 +257,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = "";
@@ -193,6 +267,11 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		return s;
 	}
 
+	/**
+	 * <p>getLong.</p>
+	 *
+	 * @return a long.
+	 */
 	public long getLong() {
 		long result = 0;
 		for (int i = this.size - 1; i >= 0; i--) {
@@ -204,6 +283,11 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		return result;
 	}
 
+	/**
+	 * <p>setAccordingToLongValue.</p>
+	 *
+	 * @param value a long.
+	 */
 	public void setAccordingToLongValue(long value) {
 		int bit = 0;
 		while (value > 0 && bit < this.size) {
@@ -213,6 +297,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final BitVector o) {
 		final int max = Math.max(o.size, this.size);
@@ -226,6 +311,11 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		return 0;
 	}
 
+	/**
+	 * <p>getBigInteger.</p>
+	 *
+	 * @return a {@link java.math.BigInteger} object.
+	 */
 	public BigInteger getBigInteger() {
 		BigInteger result = BigInteger.ZERO;
 		for (int i = this.size - 1; i >= 0; i--) {
@@ -237,6 +327,13 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		return result;
 	}
 
+	/**
+	 * <p>getBitVector.</p>
+	 *
+	 * @param bigInt a {@link java.math.BigInteger} object.
+	 * @param numberOfBits a int.
+	 * @return a {@link lupos.misc.BitVector} object.
+	 */
 	public static BitVector getBitVector(BigInteger bigInt,
 			final int numberOfBits) {
 		final BigInteger TWO = BigInteger.valueOf(2);
@@ -250,6 +347,7 @@ public final class BitVector implements Comparable<BitVector>, Iterable<Boolean>
 		return bv;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Boolean> iterator() {
 		return new ImmutableIterator<Boolean>() {

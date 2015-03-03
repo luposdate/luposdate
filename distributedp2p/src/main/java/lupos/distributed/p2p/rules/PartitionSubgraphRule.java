@@ -53,9 +53,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * Rule that integrates two subgraph containers with same key, into one request
  * in one subgraph, that is sent to other nodes
- * 
+ *
  * @author Bjoern
- * 
+ * @version $Id: $Id
  */
 public class PartitionSubgraphRule extends Rule {
 
@@ -409,14 +409,15 @@ public class PartitionSubgraphRule extends Rule {
 
 	/**
 	 * Creates the partition rule which is to be used to offer "local joining"
-	 * in subgraphs on partitions used in {@link SimplePartitionDistribution} or
-	 * {@link NinefoldInsertionDistribution}.
+	 * in subgraphs on partitions used in {@link lupos.distributed.p2p.distributionstrategy.SimplePartitionDistribution} or
+	 * {@link lupos.distributed.p2p.distributionstrategy.NinefoldInsertionDistribution}.
 	 */
 	public PartitionSubgraphRule() {
 		this.startOpClass = lupos.distributed.operator.SubgraphContainer.class;
 		this.ruleName = "DistributionStrategyOptimization";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(BasicOperator _op) {
 		/*
@@ -430,6 +431,7 @@ public class PartitionSubgraphRule extends Rule {
 		return this._checkPrivate0(_op);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "unused", "rawtypes" })
 	@Override
 	protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {

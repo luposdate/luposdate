@@ -28,12 +28,16 @@ import java.util.List;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
 
 /**
- * This interface must be implemented by all classes, which split a long list of leaf nodes according to some certain heuristics 
+ * This interface must be implemented by all classes, which split a long list of leaf nodes according to some certain heuristics
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface SplitHeuristic {
 	
 	/**
-	 * This method splits a long list of leaf nodes according to some heuristics 
+	 * This method splits a long list of leaf nodes according to some heuristics
+	 *
 	 * @param initialPlans the long list of leaf nodes to split
 	 * @return the groups of leaf nodes, which should be independently optimized
 	 */

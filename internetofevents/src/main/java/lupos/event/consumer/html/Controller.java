@@ -49,6 +49,9 @@ import lupos.event.pubsub.Subscription;
 
 /**
  * Controller class for handling actions between GUI and logic parts.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Controller {
 
@@ -59,7 +62,7 @@ public class Controller {
 
 	/**
 	 * Constructor of the controller.
-	 * 
+	 *
 	 * @param model the consumer
 	 * @param view the Clientview
 	 */
@@ -72,10 +75,10 @@ public class Controller {
 
 	/**
 	 * Handles the event for setting a output folder after submitting.
-	 * Also reads out {@link JSONObject} for sending options which will
+	 * Also reads out {@link org.json.JSONObject} for sending options which will
 	 * be produced.
-	 * 
-	 * @param subscriptions {@link JSONObject} for reading content to send.
+	 *
+	 * @param subscriptions {@link org.json.JSONObject} for reading content to send.
 	 */
 	public void submit(JSONObject subscriptions) {
 		String outPutFolder = null;
@@ -153,8 +156,8 @@ public class Controller {
 	}
 
 	/**
-	 * Creates a subscription and a {@link PageAction}.
-	 * 
+	 * Creates a subscription and a {@link lupos.event.action.PageAction}.
+	 *
 	 * @param sub the subsription to create
 	 * @param action the action to create
 	 */
@@ -170,7 +173,7 @@ public class Controller {
 
 	/**
 	 * Connects to the broker.
-	 * 
+	 *
 	 * @param host the name of the host
 	 * @param port the port of the host
 	 */
@@ -207,7 +210,7 @@ public class Controller {
 
 	/**
 	 * Handles the events of loading a config for the GUI.
-	 * 
+	 *
 	 * @param file the config file to load
 	 */
 	public void load(File file) {
@@ -284,7 +287,7 @@ public class Controller {
 
 	/**
 	 * Handles users mistsakes befor open the submit event.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getSubmitAction() {
@@ -312,7 +315,7 @@ public class Controller {
 
 	/**
 	 * Handles connection and disconnection events.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getConnectAction() {
@@ -335,7 +338,7 @@ public class Controller {
 	
 	/**
 	 * Handles event of adding a template.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getAddTemplateAction() {
@@ -364,7 +367,7 @@ public class Controller {
 
 	/**
 	 * Handles event of removing a template.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getRemoveTemplateAction() {
@@ -387,7 +390,7 @@ public class Controller {
 
 	/**
 	 * Handles event of generating a template.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getShowGeneratePanelAction() {
@@ -413,7 +416,7 @@ public class Controller {
 
 	/**
 	 * Handles event of creating an empty config.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getNewConfigAction() {
@@ -436,7 +439,7 @@ public class Controller {
 
 	/**
 	 * Handles event of loading a config.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getLoadConfigAction() {
@@ -453,7 +456,7 @@ public class Controller {
 	
 	/**
 	 * Handles event of saving a config.
-	 * 
+	 *
 	 * @return GuiAction as an event
 	 */
 	public Action getSaveConfigAction() {

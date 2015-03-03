@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.parsing;
 
@@ -82,7 +86,6 @@ import lupos.rif.visitor.RuleDependencyGraphVisitor;
 import lupos.rif.visitor.SubstituteFunctionCallsVisitor;
 import lupos.rif.visitor.ValidateRuleVisitor;
 import lupos.sparql1_1.Node;
-
 public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 	String query;
@@ -98,6 +101,16 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 
 	// Constructor
+	/**
+	 * <p>Constructor for VisualRifGenerator.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param that a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentEditorPane} object.
+	 * @param console a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.Console} object.
+	 * @param bottomPane a {@link javax.swing.JTabbedPane} object.
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param arg a {@link lupos.rif.IRuleNode} object.
+	 */
 	public VisualRifGenerator(final String query, final DocumentEditorPane that, final Console console, final JTabbedPane bottomPane, final VisualRifEditor visualRifEditor, final IRuleNode arg){
 		this.setVisualRifEditor(visualRifEditor);
 		this.setQuery(query);
@@ -133,6 +146,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	}
 
 	// Visit
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Document obj, final Object arg) throws RIFException {
 		// Prefix + Base
@@ -188,6 +202,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Rule obj, final Object arg) throws RIFException {
 		System.out.println("visit(Rule obj, Object arg)");
@@ -200,6 +215,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return ro;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ExistExpression obj, final Object arg) throws RIFException {
 		System.out.println("visit(ExistExpression obj, Object arg)");
@@ -224,6 +240,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return existsContainer;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Conjunction obj, final Object arg) throws RIFException {
 		System.out.println("visit(Conjunction obj, Object arg)");
@@ -240,6 +257,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return andContainer;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Disjunction obj, final Object arg) throws RIFException {
 		System.out.println("visit(Disjunction obj, Object arg)");
@@ -255,6 +273,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return orContainer;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RulePredicate obj, final Object arg) throws RIFException {
 		System.out.println("visit(RulePredicate obj, Object arg)");
@@ -439,6 +458,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Equality obj, final Object arg) throws RIFException {
 		System.out.println("visit(Equality obj, Object arg)");
@@ -719,6 +739,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final External obj, final Object arg) throws RIFException {
 		System.out.println("visit(External obj, Object arg)");
@@ -787,6 +808,7 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return uniTerm;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RuleList obj, final Object arg) throws RIFException {
 		System.out.println("visit(RuleList obj, Object arg)");
@@ -842,12 +864,14 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return listOperator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RuleVariable obj, final Object arg) throws RIFException {
 		System.out.println("visit(RuleVariable obj, Object arg)");
 		return obj.getLabel().substring(1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Constant obj, final Object arg) throws RIFException {
 		System.out.println("visit(Constant obj, Object arg)");
@@ -930,6 +954,13 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 		return prefValueArray;
 	}
 
+	/**
+	 * <p>findMatches.</p>
+	 *
+	 * @param pattern a {@link java.lang.String} object.
+	 * @param s a {@link java.lang.CharSequence} object.
+	 * @return a {@link java.lang.Iterable} object.
+	 */
 	public static Iterable<MatchResult> findMatches( final String pattern, final CharSequence s ) {
 		final List<MatchResult> results = new ArrayList<MatchResult>();
 		for ( final Matcher m = Pattern.compile(pattern).matcher(s); m.find(); ) {
@@ -941,46 +972,101 @@ public class VisualRifGenerator implements IRuleVisitor<Object, Object>{
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
+	/**
+	 * <p>Getter for the field <code>query</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getQuery() {
 		return this.query;
 	}
 
+	/**
+	 * <p>Setter for the field <code>query</code>.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 */
 	public void setQuery(final String query) {
 		this.query = query;
 	}
 
+	/**
+	 * <p>Getter for the field <code>compilationUnit</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.generated.syntaxtree.CompilationUnit} object.
+	 */
 	public CompilationUnit getCompilationUnit() {
 		return this.compilationUnit;
 	}
 
+	/**
+	 * <p>Setter for the field <code>compilationUnit</code>.</p>
+	 *
+	 * @param compilationUnit a {@link lupos.rif.generated.syntaxtree.CompilationUnit} object.
+	 */
 	public void setCompilationUnit(final CompilationUnit compilationUnit) {
 		this.compilationUnit = compilationUnit;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rifDocument</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.model.Document} object.
+	 */
 	public Document getRifDocument() {
 		return this.rifDocument;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rifDocument</code>.</p>
+	 *
+	 * @param rifDocument a {@link lupos.rif.model.Document} object.
+	 */
 	public void setRifDocument(final Document rifDocument) {
 		this.rifDocument = rifDocument;
 	}
 
+	/**
+	 * <p>Getter for the field <code>evaluator</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 */
 	public CommonCoreQueryEvaluator<Node> getEvaluator() {
 		return this.evaluator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentEditorPane</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentEditorPane} object.
+	 */
 	public DocumentEditorPane getDocumentEditorPane() {
 		return this.documentEditorPane;
 	}
 
+	/**
+	 * <p>Setter for the field <code>documentEditorPane</code>.</p>
+	 *
+	 * @param documentEditorPane a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentEditorPane} object.
+	 */
 	public void setDocumentEditorPane(final DocumentEditorPane documentEditorPane) {
 		this.documentEditorPane = documentEditorPane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}

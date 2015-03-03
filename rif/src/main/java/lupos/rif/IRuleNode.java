@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,19 +21,51 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif;
 
 import java.util.List;
-
 public interface IRuleNode {
+	/**
+	 * <p>getParent.</p>
+	 *
+	 * @return a {@link lupos.rif.IRuleNode} object.
+	 */
 	IRuleNode getParent();
 
+	/**
+	 * <p>setParent.</p>
+	 *
+	 * @param parent a {@link lupos.rif.IRuleNode} object.
+	 */
 	void setParent(IRuleNode parent);
 
+	/**
+	 * <p>getChildren.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	List<IRuleNode> getChildren();
 	
+	/**
+	 * <p>getLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	String getLabel();
 
+	/**
+	 * <p>accept.</p>
+	 *
+	 * @param visitor a {@link lupos.rif.IRuleVisitor} object.
+	 * @param arg a A object.
+	 * @param <R> a R object.
+	 * @param <A> a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	<R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException;
 }

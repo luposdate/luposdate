@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -47,7 +51,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class ImplementationPanel extends JPanel {
 	private static final long serialVersionUID = 7960538499474821569L;
 
@@ -70,6 +73,11 @@ public class ImplementationPanel extends JPanel {
 	private LuposJTextPane jTP_additionalImportDeclarations = null;
 	private JComboBox jCB_startNode = null;
 
+	/**
+	 * <p>Constructor for ImplementationPanel.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public ImplementationPanel(JSONObject loadObject) {
 		super(new BorderLayout());
 		
@@ -311,34 +319,74 @@ public class ImplementationPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * <p>getAdditionalGlobalJavaCode.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAdditionalGlobalJavaCode() {
 		return this.jTP_globalJavaCode.getText();
 	}
 
+	/**
+	 * <p>useGeneratedJavaCode_CheckMethod.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean useGeneratedJavaCode_CheckMethod() {
 		return this.jRB_useGeneratedCode_checkMethod.isSelected();
 	}
 
+	/**
+	 * <p>useGeneratedJavaCode_ReplaceMethod.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean useGeneratedJavaCode_ReplaceMethod() {
 		return this.jRB_useGeneratedCode_replaceMethod.isSelected();
 	}
 
+	/**
+	 * <p>getAdditionalCheckJavaCode.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAdditionalCheckJavaCode() {
 		return this.jTP_additionalCheckJavaCode.getText();
 	}
 
+	/**
+	 * <p>getAdditonalReplaceJavaCode.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAdditonalReplaceJavaCode() {
 		return this.jTP_additionalReplaceJavaCode.getText();
 	}
 
+	/**
+	 * <p>getCheckJavaCode.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getCheckJavaCode() {
 		return this.jTP_checkJavaCode.getText();
 	}
 
+	/**
+	 * <p>getReplaceJavaCode.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getReplaceJavaCode() {
 		return this.jTP_replaceJavaCode.getText();
 	}
 
+	/**
+	 * <p>getStartNodeClass.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getStartNodeClass() {
 		if(this.jRB_useGeneratedCode_checkMethod.isSelected()) {
 			return "";
@@ -348,10 +396,21 @@ public class ImplementationPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * <p>getAdditionalImportDeclarations.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAdditionalImportDeclarations(){
 		return this.jTP_additionalImportDeclarations.getText();
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject checkMethodSaveObject = new JSONObject();
 		checkMethodSaveObject.put("use generated code", this.jRB_useGeneratedCode_checkMethod.isSelected());

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -70,7 +74,6 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 
 	private static final Logger log = LoggerFactory.getLogger(CommonCoreQueryEvaluator.class);
@@ -119,8 +122,10 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		N3, Detect, RDFXML, Turtle, Yago, ParallelN3, SesameNTriples, SesameRDFXML, SesameTurtle, NQUADS, BZIP2NQUADS
 	}
 
+	/** Constant <code>encoding="UTF-8"</code> */
 	public static String encoding = "UTF-8";
 
+	/** Constant <code>printNumberOfTriples=true</code> */
 	public static boolean printNumberOfTriples = true;
 
 	protected Result result;
@@ -139,12 +144,22 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		NONE, RDFS, RUDIMENTARYRDFS, ALTERNATIVERDFS, OPTIMIZEDRDFS, OPTIMIZEDRUDIMENTARYRDFS, OPTIMIZEDALTERNATIVERDFS
 	}
 
+	/**
+	 * <p>supportedCharSets.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public static Collection<String> supportedCharSets() {
 		return Charset.availableCharsets().keySet();
 	}
 
 	private PARALLELOPERANDS parallelOperands;
 
+	/**
+	 * <p>parallelOperator.</p>
+	 *
+	 * @param bo a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public void parallelOperator(final BasicOperator bo) {
 		switch (this.parallelOperands) {
 		case LAST:
@@ -155,6 +170,13 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		}
 	}
 
+	/**
+	 * <p>parallelOperatorDebugByteArray.</p>
+	 *
+	 * @param bo a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<BasicOperatorByteArray>> parallelOperatorDebugByteArray(
 			final BasicOperator bo, final Prefix prefixInstance) {
 		switch (this.parallelOperands) {
@@ -167,14 +189,63 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		}
 	}
 
+	/**
+	 * <p>Constructor for CommonCoreQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public CommonCoreQueryEvaluator() throws Exception {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for CommonCoreQueryEvaluator.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public CommonCoreQueryEvaluator(final String[] args) throws Exception {
 		super(args);
 	}
 
+	/**
+	 * <p>Constructor for CommonCoreQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param externalontology a {@link java.lang.String} object.
+	 * @param inmemoryexternalontologyinference a boolean.
+	 * @param rdfs a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.RDFS} object.
+	 * @param codemap a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 * @param tmpDirs an array of {@link java.lang.String} objects.
+	 * @param loadindexinfo a boolean.
+	 * @param parallelOperands a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.PARALLELOPERANDS} object.
+	 * @param blockwise a boolean.
+	 * @param limit a int.
+	 * @param jointhreads a int.
+	 * @param joinbuffer a int.
+	 * @param heap a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param indexheap a int.
+	 * @param mergeheapheight a int.
+	 * @param mergeheaptype a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param chunk a int.
+	 * @param mergethreads a int.
+	 * @param yagomax a int.
+	 * @param resulttype a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 * @param storage a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.STORAGE} object.
+	 * @param join a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.JOIN} object.
+	 * @param optional a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.JOIN} object.
+	 * @param sort a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.SORT} object.
+	 * @param distinct a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.DISTINCT} object.
+	 * @param merge_join_optional a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator.MERGE_JOIN_OPTIONAL} object.
+	 * @param encoding a {@link java.lang.String} object.
+	 */
 	public CommonCoreQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
@@ -270,10 +341,20 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		CommonCoreQueryEvaluator.encoding = encoding;
 	}
 
+	/**
+	 * <p>Setter for the field <code>result</code>.</p>
+	 *
+	 * @param result a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public void setResult(final Result result) {
 		this.result = result;
 	}
 
+	/**
+	 * <p>getResultOperator.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public Result getResultOperator() {
 		return this.result;
 	}
@@ -283,6 +364,8 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	};
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Specifies arguments accepted by all descendants from
 	 * CommonCoreQueryEvaluator. When overriding this, make sure to call
 	 * super.setupArguments() and that defaultOptimization is set before you do.
@@ -376,6 +459,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				encoding);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -428,22 +512,41 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 				this.args.getString("encoding"));
 	}
 
+	/**
+	 * <p>createIndexScanCreator.</p>
+	 *
+	 * @return a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	public abstract IndexScanCreatorInterface createIndexScanCreator();
 
+	/**
+	 * <p>setBindingsVariablesBasedOnOperatorgraph.</p>
+	 */
 	public void setBindingsVariablesBasedOnOperatorgraph(){
 		this.bindingsFactory.setVariables(this.getAllVariablesOfQuery());
 		this.rootNode.sendMessage(new BindingsFactoryMessage(this.bindingsFactory));
 	}
 
+	/**
+	 * <p>Getter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsFactory getBindingsFactory(){
 		return this.bindingsFactory;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public void setBindingsFactory(final BindingsFactory bindingsFactory){
 		this.bindingsFactory = bindingsFactory;
 	}
 
 	/**
+	 * <p>getAllVariablesOfQuery.</p>
 	 *
 	 * @return all used variables in the current query (also those, which are not projected)
 	 * @see CommonCoreQueryEvaluator#getVariablesOfQuery()
@@ -452,6 +555,12 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return CommonCoreQueryEvaluator.getAllVariablesOfQuery(this.rootNode);
 	}
 
+	/**
+	 * <p>getAllVariablesOfQuery.</p>
+	 *
+	 * @param rootNode a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link java.util.Set} object.
+	 */
 	@SuppressWarnings("serial")
 	public static Set<Variable> getAllVariablesOfQuery(final BasicOperator rootNode) {
 		final Set<Variable> maxVariables = new TreeSet<Variable>();
@@ -469,6 +578,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	}
 
 	/**
+	 * <p>getVariablesOfQuery.</p>
 	 *
 	 * @return the variables which may occur in the result of the current query, but not all used variables in the query (e.g., variables are left away, which are projected)
 	 * @see CommonCoreQueryEvaluator#getAllVariablesOfQuery()
@@ -477,6 +587,11 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return new HashSet<Variable>(this.getResultOperator().getUnionVariables());
 	}
 
+	/**
+	 * <p>getTriplePatternsOfQuery.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<TriplePattern> getTriplePatternsOfQuery(){
 		final List<TriplePattern> result = new LinkedList<TriplePattern>();
 
@@ -492,6 +607,7 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
 		this.physicalOptimization();
@@ -503,11 +619,19 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return debug;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getResult() throws Exception {
 		return this.getResult(false);
 	}
 
+	/**
+	 * <p>Getter for the field <code>result</code>.</p>
+	 *
+	 * @param oneTime a boolean.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResult(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
 		this.result.addApplication(cr);
@@ -515,10 +639,23 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return cr.getResult();
 	}
 
+	/**
+	 * <p>getResults.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult[] getResults() throws Exception {
 		return this.getResults(false);
 	}
 
+	/**
+	 * <p>getResults.</p>
+	 *
+	 * @param oneTime a boolean.
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult[] getResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
 		this.result.addApplication(cr);
@@ -526,6 +663,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return cr.getQueryResults();
 	}
 
+	/**
+	 * <p>Getter for the field <code>result</code>.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param oneTime a boolean.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResult(final String query, final boolean oneTime) throws Exception {
 		this.compileQuery(query);
 		this.logicalOptimization();
@@ -533,6 +678,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return this.getResult(oneTime);
 	}
 
+	/**
+	 * <p>getResults.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param oneTime a boolean.
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult[] getResults(final String query, final boolean oneTime) throws Exception {
 		this.compileQuery(query);
 		this.logicalOptimization();
@@ -540,6 +693,13 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return this.getResults(oneTime);
 	}
 
+	/**
+	 * <p>getCollectedResults.</p>
+	 *
+	 * @param oneTime a boolean.
+	 * @return a {@link lupos.engine.operators.application.CollectAllResults} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public CollectAllResults getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectAllResults cr = new CollectAllResults(oneTime);
 		this.result.addApplication(cr);
@@ -547,10 +707,20 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		return cr;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rootNode</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator getRootNode() {
 		return this.rootNode;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rootNode</code>.</p>
+	 *
+	 * @param rootNode a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public void setRootNode(final BasicOperator rootNode) {
 		this.rootNode = rootNode;
 	}
@@ -558,6 +728,8 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	private static int MULTIPLEDATATHREADS = 8;
 
 	/**
+	 * <p>getMultipleDataThreads.</p>
+	 *
 	 * @return the multipledatathreads
 	 */
 	public static int getMultipleDataThreads() {
@@ -565,14 +737,25 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	}
 
 	/**
-	 * @param MULTIPLEDATATHREADS
+	 * <p>setMultipleDataThreads.</p>
+	 *
+	 * @param MULTIPLEDATATHREADS a int.
 	 */
 	public static void setMultipleDataThreads(final int MULTIPLEDATATHREADS) {
 		CommonCoreQueryEvaluator.MULTIPLEDATATHREADS = MULTIPLEDATATHREADS;
 	}
 
+	/** Constant <code>MAX_TRIPLES_IN_BUFFER=50</code> */
 	public final static int MAX_TRIPLES_IN_BUFFER = 50;
 
+	/**
+	 * <p>readTriples.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @param input a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void readTriples(String type, final InputStream input,
 			final TripleConsumer tc) throws Exception {
 		type = type.toUpperCase();
@@ -705,6 +888,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		}
 	}
 
+	/**
+	 * <p>readTriplesWithoutMultipleFiles.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @param input a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void readTriplesWithoutMultipleFiles(final String type,
 			final InputStream input, final TripleConsumer tc)
 			throws Exception {
@@ -722,6 +913,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 		}
 	}
 
+	/**
+	 * <p>readTriplesWithoutMultipleFilesUncompressed.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @param input a {@link java.io.InputStream} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void readTriplesWithoutMultipleFilesUncompressed(
 			final String type,
 			final InputStream input, final TripleConsumer tc) throws Exception {

@@ -41,7 +41,10 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 
 /**
  * This class sets up the client to use the delta approach for caching query triples...
+ *
  * @seealso lupos.endpoint.caching.DeltaEndpoint
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DeltaClient {
 
@@ -97,6 +100,7 @@ public class DeltaClient {
 	 * This main method calls the main method of CommandLineEvaluator (after the DeltaClient has been initialized).
 	 * The delta approach for caching and reusing query triples is used for any communication with an endpoint
 	 * (which must be DeltaEndpoint, otherwise the approach will not work).
+	 *
 	 * @param args Command line arguments
 	 */
 	public static void main(final String[] args) {

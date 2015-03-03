@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -46,19 +50,21 @@ import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.Registration.DeSerializerConsideringSubClasses;
 import lupos.io.helper.LengthHelper;
-
 public class SUPERLITERAL extends DeSerializerConsideringSubClasses<Literal> {
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof Literal;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal deserialize(final LuposObjectInputStream<Literal> in) throws IOException {
 		return LiteralFactory.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Literal>[] getRegisteredClasses() {
@@ -78,16 +84,19 @@ public class SUPERLITERAL extends DeSerializerConsideringSubClasses<Literal> {
 				StringURILiteral.class};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final Literal t) {
 		return LengthHelper.lengthLuposLiteral(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final Literal t, final OutputStream out) throws IOException {
 		LiteralFactory.writeLuposLiteral(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		return LiteralFactory.readLuposLiteral(in);

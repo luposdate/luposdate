@@ -31,6 +31,9 @@ import lupos.rif.generated.visitor.*;
  * Corresponding grammar :<br>
  * f0 -> RIFString()<br>
  * f1 -> < LANGTAG ><br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFLiteralWithLangTag implements INode {
 
@@ -97,18 +100,18 @@ public class RIFLiteralWithLangTag implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -35,7 +39,6 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-
 public class ReduceEnv extends SingleInputOperator {
 
 	private List<Variable> letThrough = new LinkedList<Variable>();
@@ -50,6 +53,7 @@ public class ReduceEnv extends SingleInputOperator {
 	// Simulate
 	// private Item[] valueOrVariable;
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.intersectionVariables = new HashSet<Variable>();
@@ -68,6 +72,9 @@ public class ReduceEnv extends SingleInputOperator {
 		return result;
 	}
 
+	/**
+	 * <p>Constructor for ReduceEnv.</p>
+	 */
 	public ReduceEnv() {
 	}
 
@@ -80,69 +87,139 @@ public class ReduceEnv extends SingleInputOperator {
 	 * substitutionsLiteralLeft.get(index); } } return var; }
 	 */
 
+	/**
+	 * <p>Getter for the field <code>filterLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Literal> getFilterLeft() {
 		return this.filterLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>filterLeft</code>.</p>
+	 *
+	 * @param filterLeft a {@link java.util.List} object.
+	 */
 	public void setFilterLeft(final List<Literal> filterLeft) {
 		this.filterLeft = filterLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsLiteralLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getSubstitutionsLiteralLeft() {
 		return this.substitutionsLiteralLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsLiteralLeft</code>.</p>
+	 *
+	 * @param substitutionsLiteralLeft a {@link java.util.List} object.
+	 */
 	public void setSubstitutionsLiteralLeft(
 			final List<Variable> substitutionsLiteralLeft) {
 		this.substitutionsLiteralLeft = substitutionsLiteralLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsLiteralRight</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Literal> getSubstitutionsLiteralRight() {
 		return this.substitutionsLiteralRight;
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsLiteralRight</code>.</p>
+	 *
+	 * @param substitutionsLiteralRight a {@link java.util.List} object.
+	 */
 	public void setSubstitutionsLiteralRight(
 			final List<Literal> substitutionsLiteralRight) {
 		this.substitutionsLiteralRight = substitutionsLiteralRight;
 	}
 
+	/**
+	 * <p>Getter for the field <code>letThrough</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getLetThrough() {
 		return this.letThrough;
 	}
 
+	/**
+	 * <p>Setter for the field <code>letThrough</code>.</p>
+	 *
+	 * @param letThrough a {@link java.util.List} object.
+	 */
 	public void setLetThrough(final List<Variable> letThrough) {
 		this.letThrough = letThrough;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsVariableLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getSubstitutionsVariableLeft() {
 		return this.substitutionsVariableLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsVariableRight</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getSubstitutionsVariableRight() {
 		return this.substitutionsVariableRight;
 	}
 
+	/**
+	 * <p>addSubstitution.</p>
+	 *
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 * @param content a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void addSubstitution(final Variable variable, final Variable content) {
 		this.substitutionsVariableLeft.add(variable);
 		this.substitutionsVariableRight.add(content);
 	}
 
+	/**
+	 * <p>addSubstitution.</p>
+	 *
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 * @param content a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public void addSubstitution(final Variable variable, final Literal content) {
 		this.substitutionsLiteralLeft.add(variable);
 		this.substitutionsLiteralRight.add(content);
 	}
 
+	/**
+	 * <p>addFilter.</p>
+	 *
+	 * @param content a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void addFilter(final Literal content, final Variable variable) {
 		this.filterLeft.add(content);
 		this.filterRight.add(variable);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
@@ -214,6 +291,7 @@ public class ReduceEnv extends SingleInputOperator {
 	 * } return bnew; }
 	 */
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final String text = "Reduce to (" + this.substitutionsVariableLeft + ","

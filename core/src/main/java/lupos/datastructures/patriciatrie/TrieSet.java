@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie;
 
@@ -37,11 +41,11 @@ import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.ram.RBTrieSet;
 import lupos.misc.Tuple;
 import lupos.misc.util.ImmutableIterator;
-
 public abstract class TrieSet extends Trie implements Iterable<String> {
 
 	/**
 	 * Create a new main memory based trie
+	 *
 	 * @return the newly created main memory based trie set
 	 */
 	public static RBTrieSet createRamBasedTrieSet(){
@@ -54,7 +58,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @return the newly created disk based trie set
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public static DBTrieSet createDiskBasedTrieSet(final String fileName) throws IOException {
 		return new DBTrieSet(fileName);
@@ -70,7 +74,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 * @param pageSize
 	 *            The size of a page to be stored on disk
 	 * @return the newly created disk based trie set
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public static DBTrieSet createDiskBasedTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		return new DBTrieSet(fileName, bufferSize, pageSize);
@@ -85,7 +89,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 *
 	 * @param trie
 	 *            Trie to copy
-	 * @throws TrieNotCopyableException
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotCopyableException if any.
 	 */
 	public void copy(final Trie trie) throws TrieNotCopyableException {
 		if (!trie.hasCompleteMetadata()) {
@@ -140,7 +144,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 * @param checkMetadata
 	 *            When set, a TrieNotMergeableException is thrown, when one or
 	 *            more tries have missing metadata.
-	 * @throws TrieNotMergeableException
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotMergeableException if any.
 	 */
 	protected void merge(final List<? extends Trie> tries, final boolean checkMetadata) throws TrieNotMergeableException {
 		final List<Node> nodesToMerge = new ArrayList<Node>(tries.size());
@@ -185,6 +189,7 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 
 	/**
 	 * This method is overwritten by DBSeqTrieSet
+	 *
 	 * @param root the new root node
 	 * @param nodesToMerge the nodes to be merged
 	 */
@@ -197,12 +202,13 @@ public abstract class TrieSet extends Trie implements Iterable<String> {
 	 *
 	 * @param tries
 	 *            List of tries
-	 * @throws TrieNotMergeableException
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotMergeableException if any.
 	 */
 	public void merge(final List<? extends Trie> tries) throws TrieNotMergeableException {
 		this.merge(tries, true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final Iterator<String> iterator() {
 		this.prepareForReading();

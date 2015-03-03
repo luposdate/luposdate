@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.producer.ebay;
 
@@ -38,9 +42,9 @@ import lupos.event.communication.TcpConnectInfo;
 import lupos.event.communication.TcpMessageTransport;
 import lupos.event.producer.ProducerBaseNoDuplicates;
 import lupos.event.util.Literals;
-
 public class EbayProducer extends ProducerBaseNoDuplicates {
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/Ebay/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/Ebay/";
 	private static final int INTERVAL = 20000;
 	
@@ -58,6 +62,11 @@ public class EbayProducer extends ProducerBaseNoDuplicates {
 	private ContentRetriever retriever;
 	
 	
+	/**
+	 * <p>Constructor for EbayProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public EbayProducer(SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 		
@@ -77,6 +86,7 @@ public class EbayProducer extends ProducerBaseNoDuplicates {
 				0, 1, Configuration.ENTRIES_PER_PAGE), null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 
@@ -96,6 +106,12 @@ public class EbayProducer extends ProducerBaseNoDuplicates {
 		return (t.size()==0)? null : t;
 	}
 
+	/**
+	 * <p>auctionToTriple.</p>
+	 *
+	 * @param auction a {@link lupos.event.producer.ebay.Auction} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	protected List<Triple> auctionToTriple(Auction auction) {
 		List<Triple> t = new ArrayList<Triple>();
 		
@@ -132,6 +148,12 @@ public class EbayProducer extends ProducerBaseNoDuplicates {
 	}
 	
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = new SerializingMessageService(TcpMessageTransport.class);

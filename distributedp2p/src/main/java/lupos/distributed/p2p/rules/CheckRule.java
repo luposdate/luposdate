@@ -37,17 +37,24 @@ import lupos.engine.operators.index.Root;
 import lupos.optimizations.logical.rules.generated.runtime.Rule;
 
 /**
- * This {@link Rule} is an optional rule, that checks if all proceeding and succeeding operators are right connected,
+ * This {@link lupos.optimizations.logical.rules.generated.runtime.Rule} is an optional rule, that checks if all proceeding and succeeding operators are right connected,
  * so that the graph can be accessed in both order.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class CheckRule extends Rule {
 	private Logger l = Logger.getLogger(getClass().getName());
 	private BasicOperator root;
 
+	/**
+	 * <p>Constructor for CheckRule.</p>
+	 */
 	public CheckRule() {
 		this.ruleName = "CheckSucceedingPreceding-Connections";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(BasicOperator _rootOp) {
 		if (root == null && _rootOp instanceof Root) {
@@ -76,6 +83,7 @@ public class CheckRule extends Rule {
 		for (OperatorIDTuple op : root.getSucceedingOperators()) checkSucceeding(op.getOperator());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
 		for (OperatorIDTuple o : this.root.getSucceedingOperators()) checkSucceeding(o.getOperator());

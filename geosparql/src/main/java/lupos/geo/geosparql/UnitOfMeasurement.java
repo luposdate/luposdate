@@ -30,14 +30,26 @@ import lupos.engine.operators.singleinput.TypeErrorException;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class UnitOfMeasurement {
+    /** Constant <code>conversionRate</code> */
     public static final HashMap<String,Double> conversionRate = new HashMap<String, Double>();
 
     static {
         conversionRate.put("<http://www.opengis.net/def/uom/OGC/1.0/metre>", 1.0);
     }
 
+    /**
+     * <p>convert.</p>
+     *
+     * @param url a {@link java.lang.String} object.
+     * @param valueToConvert a double.
+     * @return a double.
+     * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+     */
     public static double convert(final String url, final double valueToConvert) throws TypeErrorException {
         if(conversionRate.containsKey(url)) {
             return valueToConvert * conversionRate.get(url);

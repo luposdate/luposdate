@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -35,31 +39,41 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-
 public class Projection extends SingleInputOperator {
 	private final HashSet<Variable> s = new HashSet<Variable>();
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for Projection.</p>
+	 */
 	public Projection() {
 	}
 
+	/**
+	 * <p>addProjectionElement.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void addProjectionElement(final Variable var) {
 		if (!this.s.contains(var)) {
 			this.s.add(var);
 		}
 	}
 
+	/**
+	 * <p>getProjectedVariables.</p>
+	 *
+	 * @return a {@link java.util.HashSet} object.
+	 */
 	public HashSet<Variable> getProjectedVariables() {
 		return this.s;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Handles the BoundVariablesMessage by removing all variables from it that
 	 * are not projected to.
-	 *
-	 * @param msg
-	 *            The BoundVariablesMessage
-	 * @return The modified message
 	 */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
@@ -74,12 +88,14 @@ public class Projection extends SingleInputOperator {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final Iterator<Bindings> itb = new ParallelIterator<Bindings>() {
@@ -134,11 +150,13 @@ public class Projection extends SingleInputOperator {
 		return QueryResult.createInstance(itb);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" to " + this.s;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return true;

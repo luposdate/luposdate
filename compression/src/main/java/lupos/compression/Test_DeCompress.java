@@ -33,6 +33,9 @@ import java.io.OutputStream;
 
 /**
  * This class is for testing some standard compressors...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Test_DeCompress {
 
@@ -138,6 +141,8 @@ public class Test_DeCompress {
 	}
 
 	/**
+	 * <p>main.</p>
+	 *
 	 * @param args
 	 *            command line options: java misc.Test_DeCompress
 	 *            <COMPRESS|UNCOMPRESS> <NONE|GZIP|HUFFMAN|BZIP2|LZMA|PPM> <Inputfile> <Outputfile>

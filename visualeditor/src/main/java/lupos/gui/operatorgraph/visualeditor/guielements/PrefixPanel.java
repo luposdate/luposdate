@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -44,7 +48,6 @@ import lupos.gui.operatorgraph.prefix.IPrefixPanel;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
-
 public class PrefixPanel extends AbstractGuiComponent<Operator> implements
 IPrefixPanel {
 	private static final long serialVersionUID = 1L;
@@ -53,6 +56,13 @@ IPrefixPanel {
 	protected final JPanel prefixRowsPanel;
 	protected final JLabel addLabel;
 
+	/**
+	 * <p>Constructor for PrefixPanel.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public PrefixPanel(final Prefix prefix, final GraphWrapper gw,
 			final VisualGraph<Operator> parent) {
 		super(parent, gw, null, true);
@@ -96,6 +106,7 @@ IPrefixPanel {
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	public void createPrefixRow(final String prefixString,
 			final String namespaceString) {
 		this.gbc.gridx = 0;
@@ -251,6 +262,9 @@ IPrefixPanel {
 		this.updateSize();
 	}
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize() {
 		this.setMinimumSize(this.prefixRowsPanel.getSize());
 
@@ -332,6 +346,11 @@ IPrefixPanel {
 		this.revalidate(); // re-validate the PrefixPanel
 	}
 
+	/**
+	 * <p>showPrefixAddedOptionDialog.</p>
+	 *
+	 * @return a int.
+	 */
 	protected int showPrefixAddedOptionDialog() {
 		return JOptionPane
 		.showOptionDialog(
@@ -343,6 +362,11 @@ IPrefixPanel {
 				"Don't add prefix" }, 0);
 	}
 
+	/**
+	 * <p>showPrefixRemovedOptionDialog.</p>
+	 *
+	 * @return a int.
+	 */
 	protected int showPrefixRemovedOptionDialog() {
 		return JOptionPane
 		.showOptionDialog(
@@ -354,6 +378,11 @@ IPrefixPanel {
 				"Don't remove prefix" }, 0);
 	}
 
+	/**
+	 * <p>showPrefixNameChangedOptionDialog.</p>
+	 *
+	 * @return a int.
+	 */
 	protected int showPrefixNameChangedOptionDialog() {
 		return JOptionPane
 		.showOptionDialog(
@@ -366,9 +395,11 @@ IPrefixPanel {
 				"Don't change prefix name" }, 0);
 	}
 
+	/** {@inheritDoc} */
 	public void mouseClicked(final MouseEvent me) {
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(final boolean showErrors, Object data) {
 		return true;
 	}

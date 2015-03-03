@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -32,23 +36,30 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.viewer.Viewer;
-
 public class OperatorgraphFormatter extends Formatter {
 
 		private final String format;
 		private final BasicIndexQueryEvaluator evaluator;
 
+		/**
+		 * <p>Constructor for OperatorgraphFormatter.</p>
+		 *
+		 * @param format a {@link java.lang.String} object.
+		 * @param evaluator a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
+		 */
 		public OperatorgraphFormatter(final String format, final BasicIndexQueryEvaluator evaluator) {
 			super("Operatorgraph in " + format, "image/"+format);
 			this.format = format;
 			this.evaluator = evaluator;
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 			new Viewer(new GraphWrapperBasicOperator(this.evaluator.getRootNode()), this.format, os);
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public String getMIMEType(final QueryResult queryResult) {
 			return this.getKey();

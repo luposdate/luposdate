@@ -27,15 +27,16 @@ import java.io.InputStream;
 import java.util.EventListener;
 
 /**
- * This is the interface used to register to a {@link AbstractP2PNetwork}, to
+ * This is the interface used to register to a {@link lupos.distributed.p2p.network.AbstractP2PNetwork}, to
  * be informed if a new P2P message arrives at the actual node.
- * 
- * @author Bjoern
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public interface IP2PMessageListener extends EventListener {
 	/**
 	 * A new message received at actual node
+	 *
 	 * @param message the message text
 	 * @param from the sender, if available
 	 */
@@ -43,6 +44,7 @@ public interface IP2PMessageListener extends EventListener {
 	
 	/**
 	 * A new message received at actual node
+	 *
 	 * @param in message stream
 	 * @param from the sender, if available
 	 */

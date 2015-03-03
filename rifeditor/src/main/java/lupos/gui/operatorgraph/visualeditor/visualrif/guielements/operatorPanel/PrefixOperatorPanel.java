@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -55,8 +59,6 @@ import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.JIconButton;
-
-
 public class PrefixOperatorPanel extends AbstractGuiComponent<Operator>  {
 
 
@@ -75,6 +77,16 @@ private static final long serialVersionUID = -4952532158340724404L;
 	
 	
 		// Constructor
+		/**
+		 * <p>Constructor for PrefixOperatorPanel.</p>
+		 *
+		 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+		 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+		 * @param prefix a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator} object.
+		 * @param name a {@link java.lang.String} object.
+		 * @param startNode a boolean.
+		 * @param alsoSubClasses a boolean.
+		 */
 		public PrefixOperatorPanel(final VisualGraph<Operator> parent,
 				GraphWrapper gw, final PrefixOperator prefix,
 				String name, boolean startNode, boolean alsoSubClasses) {
@@ -169,6 +181,12 @@ private static final long serialVersionUID = -4952532158340724404L;
 		}
 
 		
+		/**
+		 * <p>createPrefixRow.</p>
+		 *
+		 * @param prefixString a {@link java.lang.String} object.
+		 * @param namespaceString a {@link java.lang.String} object.
+		 */
 		public void createPrefixRow(final String prefixString,
 				final String namespaceString) {
 	
@@ -359,6 +377,9 @@ private static final long serialVersionUID = -4952532158340724404L;
 		}
 
 		
+		/**
+		 * <p>updateSize.</p>
+		 */
 		public void updateSize() {
 			this.setMinimumSize(this.prefixRowsPanel.getSize());
 
@@ -546,41 +567,77 @@ private static final long serialVersionUID = -4952532158340724404L;
 		}
 
 		
+		/** {@inheritDoc} */
 		public boolean validateOperatorPanel(final boolean showErrors, Object data) {
 			return true;
 		}
 
 		
+		/**
+		 * <p>Getter for the field <code>gbc</code>.</p>
+		 *
+		 * @return a {@link java.awt.GridBagConstraints} object.
+		 */
 		public GridBagConstraints getGbc() {
 			return gbc;
 		}
 
 
+		/**
+		 * <p>Setter for the field <code>gbc</code>.</p>
+		 *
+		 * @param gbc a {@link java.awt.GridBagConstraints} object.
+		 */
 		public void setGbc(GridBagConstraints gbc) {
 			this.gbc = gbc;
 		}
 
 
+		/**
+		 * <p>Getter for the field <code>prefixRowsPanel</code>.</p>
+		 *
+		 * @return a {@link javax.swing.JPanel} object.
+		 */
 		public JPanel getPrefixRowsPanel() {
 			return prefixRowsPanel;
 		}
 
 
+		/**
+		 * <p>Setter for the field <code>prefixRowsPanel</code>.</p>
+		 *
+		 * @param prefixRowsPanel a {@link javax.swing.JPanel} object.
+		 */
 		public void setPrefixRowsPanel(JPanel prefixRowsPanel) {
 			this.prefixRowsPanel = prefixRowsPanel;
 		}
 
 
+		/**
+		 * <p>Getter for the field <code>prefix</code>.</p>
+		 *
+		 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator} object.
+		 */
 		public PrefixOperator getPrefix() {
 			return prefix;
 		}
 
 
+		/**
+		 * <p>Setter for the field <code>prefix</code>.</p>
+		 *
+		 * @param prefix a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator} object.
+		 */
 		public void setPrefix(PrefixOperator prefix) {
 			this.prefix = prefix;
 		}
 
 	
+		/**
+		 * <p>getSerialversionuid.</p>
+		 *
+		 * @return a long.
+		 */
 		public static long getSerialversionuid() {
 			return serialVersionUID;
 		}

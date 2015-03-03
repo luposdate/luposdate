@@ -37,6 +37,9 @@ import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
  * This class represents a node in a plan for join ordering holding several information like joined triple patterns, joinpartner, if and how the joined result is ordered, the selectivity, estimated cardinality and cost, number of cartesian products and the computed histogram of the result
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Plan implements Comparable<Plan>, Cloneable {
 
@@ -90,6 +93,7 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		 */
 		protected int numberOfCartesianProducts = 0;
 
+		/** {@inheritDoc} */
 		@Override
 		public String toString() {
 			return this.toString("");
@@ -97,6 +101,7 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 
 		/**
 		 * This method returns the string representation of this plan (using a certain indentation allowing a recursive construction of the string representation).
+		 *
 		 * @param indent the indentation used
 		 * @return the string representation of this plan
 		 */
@@ -106,6 +111,7 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 
 		/**
 		 * This method determines the string representation of this node without its children.
+		 *
 		 * @return the string representation of this node without its children
 		 */
 		protected String getNodeString() {
@@ -133,6 +139,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>numberOfCartesianProducts.</p>
+		 *
 		 * @return the number of cartesian products in this plan
 		 */
 		protected int numberOfCartesianProducts() {
@@ -140,6 +148,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>Getter for the field <code>order</code>.</p>
+		 *
 		 * @return the order of the result
 		 */
 		public Collection<Variable> getOrder() {
@@ -147,6 +157,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>Getter for the field <code>variables</code>.</p>
+		 *
 		 * @return the variables appearing in the result
 		 */
 		public HashSet<Variable> getVariables() {
@@ -154,6 +166,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>Getter for the field <code>joinPartner</code>.</p>
+		 *
 		 * @return the join partner of the join represented by this node
 		 */
 		public HashSet<Variable> getJoinPartner() {
@@ -161,6 +175,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>Getter for the field <code>triplePatterns</code>.</p>
+		 *
 		 * @return all triple patterns which are joined by this plan
 		 */
 		public Collection<TriplePattern> getTriplePatterns() {
@@ -169,6 +185,7 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 
 		/**
 		 * This method determines the estimated costs when using sideways information passing (SIP)
+		 *
 		 * @param cardinalityOtherOperand the cardinality of the other operand (this node is the operand with the higher cardinality in a succeeding join)
 		 * @return the estimated costs when using SIP
 		 */
@@ -185,9 +202,9 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * {@inheritDoc}
+		 *
 		 * This method is essential and determines if this or another plan is better.
-		 * @param arg0 the other plan to compare
-		 * @return value &lt; 0 if this plan is better, value &gt; 0 if the other plan is better, 0 if the plans are exactly the same (if the plans are different but are as good as the other, then an ordering is defined by comparing the string representations)
 		 */
 		@Override
 		public int compareTo(final Plan arg0) {
@@ -228,19 +245,22 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 
 		/**
 		 * This method checks whether or not a merge join can be used
+		 *
 		 * @param possibleOrdering the ordering which must be fulfilled
-		 * @return true, if a merge join can be used for this join, false otherwise
+		 * @return a boolean.
 		 */
 		protected abstract boolean canUseMergeJoin(LinkedList<Variable> possibleOrdering);
 
 		/**
 		 * This method determines the maximum number of merge joins.
+		 *
 		 * @return the maximum number of possible merge joins
 		 */
 		public abstract int findMaxMergeJoins();
 
 		/**
 		 * This method determines if a merge join is possible for this node and how many merge joins occur then in this plan
+		 *
 		 * @param possibleOrdering the possible ordering to be checked
 		 * @param remainingJoinPartner the remaining join partners to be checked if the result of the operands can be ordered such that a merge join can be applied
 		 * @return -1 if no merge join can be applied
@@ -281,19 +301,23 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 
 		/**
 		 * This method is called by permutationOfOrderings in order to check whether or not a given ordering is possible by this plan
+		 *
 		 * @param possibleOrdering the ordering to be checked
-		 * @return true, if the ordering is possible by this plan, otherwise false
+		 * @return a boolean.
 		 */
 		protected abstract boolean checkOrdering(final LinkedList<Variable> possibleOrdering);
 
 		/**
+		 * {@inheritDoc}
+		 *
 		 * This clone method overrides the standard clone method (just to specify that the result is again of type Plan in order to avoid cast operations)
-		 * @return a cloned instance of this node
 		 */
 		@Override
 		public abstract Plan clone();
 
 		/**
+		 * <p>setCardinality.</p>
+		 *
 		 * @param card the cardinality to set
 		 */
 		public void setCardinality(final double card) {
@@ -301,6 +325,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>getCardinality.</p>
+		 *
 		 * @return the cardinality
 		 */
 		public double getCardinality() {
@@ -308,6 +334,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>Getter for the field <code>cost</code>.</p>
+		 *
 		 * @return the cost
 		 */
 		public double getCost() {
@@ -315,6 +343,8 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		}
 
 		/**
+		 * <p>Getter for the field <code>selectivity</code>.</p>
+		 *
 		 * @return the histogram of this node...
 		 */
 		public Map<Variable, VarBucket> getSelectivity() {

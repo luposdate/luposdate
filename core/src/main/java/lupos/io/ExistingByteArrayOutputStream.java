@@ -30,6 +30,9 @@ import java.io.OutputStream;
  * The functionality of this class is similar to ByteArrayOutputStream,
  * except that the stream is written into an existing byte array
  * rather than creating a new one.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ExistingByteArrayOutputStream extends OutputStream {
 
@@ -38,6 +41,7 @@ public class ExistingByteArrayOutputStream extends OutputStream {
 
 	/**
 	 * Constructor
+	 *
 	 * @param byteArray the byte array into which the stream is written.
 	 * @param offset the offset in the byte array at which the writing of the stream is started.
 	 */
@@ -48,20 +52,24 @@ public class ExistingByteArrayOutputStream extends OutputStream {
 
 	/**
 	 * Constructor
+	 *
 	 * @param byteArray the byte array into which the stream is written.
 	 */
 	public ExistingByteArrayOutputStream(final byte[] byteArray){
 		this(byteArray, 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void write(final int b) throws IOException {
 		this.byteArray[this.offset++] = (byte) b;
 	}
 
-	/**
-	 * This method is overridden just for performance reasons (such that System.arraycopy can be used...)
-	 */
+    /**
+     * {@inheritDoc}
+     *
+     * This method is overridden just for performance reasons (such that System.arraycopy can be used...)
+     */
     @Override
     public void write(final byte b[], final int off, final int len) throws IOException {
         if (b == null) {
@@ -77,6 +85,8 @@ public class ExistingByteArrayOutputStream extends OutputStream {
     }
 
     /**
+     * <p>Getter for the field <code>offset</code>.</p>
+     *
      * @return the current offset in the byte array
      */
     public int getOffset(){

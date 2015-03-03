@@ -41,6 +41,9 @@ import lupos.endpoint.server.format.XMLFormatter;
 
 /**
  * This class can be used to serialize a Triple
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SerializedQueryResult implements Serializable {
 
@@ -53,6 +56,14 @@ public class SerializedQueryResult implements Serializable {
 	private final byte[] serialized;
 
 
+	/**
+	 * <p>Constructor for SerializedQueryResult.</p>
+	 *
+	 * @param vars a {@link java.util.Set} object.
+	 * @param result a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param id a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public SerializedQueryResult(final Set<Variable> vars, final QueryResult result, final String id) throws IOException {
 		this.id = id;
 		// serialize query result
@@ -61,6 +72,11 @@ public class SerializedQueryResult implements Serializable {
 		this.serialized = baos.toByteArray();
 	}
 
+	/**
+	 * <p>getQueryResult.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getQueryResult() {
 		if(Bindings.instanceClass!=BindingsMap.class){
 			throw new RuntimeException("The configuration shouldbe set to BindingsMap, but found "+Bindings.instanceClass);
@@ -70,6 +86,11 @@ public class SerializedQueryResult implements Serializable {
 		return SerializedQueryResult.formatReader.getQueryResult(bais, bindingsFactory);
 	}
 
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getId() {
 		return this.id;
 	}

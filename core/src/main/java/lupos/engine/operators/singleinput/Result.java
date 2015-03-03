@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -31,22 +35,37 @@ import lupos.engine.operators.application.Application;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
-
 public class Result extends SingleInputOperator {
 	protected LinkedList<Application> apps = new LinkedList<Application>();
 
+	/**
+	 * <p>addApplication.</p>
+	 *
+	 * @param app a {@link lupos.engine.operators.application.Application} object.
+	 */
 	public void addApplication(final Application app) {
 		apps.add(app);
 	}
 	
+	/**
+	 * <p>clearApplications.</p>
+	 */
 	public void clearApplications(){
 		apps.clear();
 	}
 
+	/**
+	 * <p>addFirstApplication.</p>
+	 *
+	 * @param app a {@link lupos.engine.operators.application.Application} object.
+	 */
 	public void addFirstApplication(final Application app) {
 		apps.addFirst(app);
 	}
 
+	/**
+	 * <p>start.</p>
+	 */
 	public void start() {
 		Application.Type type = Application.Type.SELECT;
 		for (final BasicOperator bo : precedingOperators) {
@@ -59,27 +78,48 @@ public class Result extends SingleInputOperator {
 			app.start(type);
 	}
 
+	/**
+	 * <p>preProcessMessage.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.StartOfEvaluationMessage} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
 		start();
 		return msg;
 	}
 
+	/**
+	 * <p>preProcessMessage.</p>
+	 *
+	 * @param eos a {@link lupos.engine.operators.messages.EndOfEvaluationMessage} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message preProcessMessage(final EndOfEvaluationMessage eos) {
 		close();
 		return eos;
 	}
 
+	/**
+	 * <p>close.</p>
+	 */
 	public void close() {
 		for (final Application app : apps)
 			app.stop();
 	}
 
+	/**
+	 * <p>callAll.</p>
+	 *
+	 * @param res a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	protected void callAll(final QueryResult res) {
 		for (final Application app : apps) {
 			app.call(res);
 		}
 	}
 
+	/** {@inheritDoc} */
 	public synchronized QueryResult process(final QueryResult res,
 			final int operandID) {
 		if (res != null) {
@@ -88,6 +128,7 @@ public class Result extends SingleInputOperator {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
 		for (final Application app : apps) {
@@ -96,6 +137,7 @@ public class Result extends SingleInputOperator {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public void deleteQueryResult(final int operandID) {
 		for (final Application app : apps) {
 			app.deleteResult();

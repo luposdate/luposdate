@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.rdfs;
 
@@ -41,12 +45,23 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.sparql1_1.ParseException;
-
 public class RudimentaryRDFSchemaInference {
+	/**
+	 * <p>v.</p>
+	 *
+	 * @param str a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	protected static Variable v(final String str) {
 		return new VariableInInferenceRule(str);
 	}
 
+	/**
+	 * <p>u.</p>
+	 *
+	 * @param str a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	protected static URILiteral u(final String str) {
 		try {
 			return LiteralFactory
@@ -59,10 +74,26 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/**
+	 * <p>t.</p>
+	 *
+	 * @param a a {@link java.lang.String} object.
+	 * @param b a {@link java.lang.String} object.
+	 * @param c a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected static Triple t(final String a, final String b, final String c) {
 		return new Triple(u(a), u(b), u(c));
 	}
 
+	/**
+	 * <p>tp.</p>
+	 *
+	 * @param a a {@link lupos.datastructures.items.Item} object.
+	 * @param b a {@link lupos.datastructures.items.Item} object.
+	 * @param c a {@link lupos.datastructures.items.Item} object.
+	 * @return a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	protected static TriplePattern tp(final Item a, final Item b, final Item c) {
 		return new TriplePattern(a, b, c);
 	}
@@ -586,9 +617,23 @@ public class RudimentaryRDFSchemaInference {
 			t("2000/01/rdf-schema#label", "1999/02/22-rdf-syntax-ns#type",
 					"1999/02/22-rdf-syntax-ns#Property") };
 
+	/**
+	 * <p>Constructor for RudimentaryRDFSchemaInference.</p>
+	 */
 	public RudimentaryRDFSchemaInference() {
 	}
 
+	/**
+	 * <p>addTps.</p>
+	 *
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param a a {@link lupos.datastructures.items.Item} object.
+	 * @param b a {@link lupos.datastructures.items.Item} object.
+	 * @param c a {@link lupos.datastructures.items.Item} object.
+	 * @param tps a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	protected static void addTps(final Item data, final Root ic,
 			final TripleOperator tp, final Item a, final Item b, final Item c,
 			final TriplePattern... tps) {
@@ -612,6 +657,18 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/**
+	 * <p>addTpsFilter.</p>
+	 *
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param a a {@link lupos.datastructures.items.Item} object.
+	 * @param b a {@link lupos.datastructures.items.Item} object.
+	 * @param c a {@link lupos.datastructures.items.Item} object.
+	 * @param filter a {@link java.lang.String} object.
+	 * @param tp2 a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	protected static void addTpsFilter(final Item data,
 			final Root ic, final TripleOperator tp, final Item a,
 			final Item b, final Item c, final String filter,
@@ -631,6 +688,20 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/**
+	 * <p>addTpsFilter.</p>
+	 *
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param a a {@link lupos.datastructures.items.Item} object.
+	 * @param b a {@link lupos.datastructures.items.Item} object.
+	 * @param c a {@link lupos.datastructures.items.Item} object.
+	 * @param filter1 a {@link java.lang.String} object.
+	 * @param filter2 a {@link java.lang.String} object.
+	 * @param tp1 a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param tp2 a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	protected static void addTpsFilter(final Item data,
 			final Root ic, final TripleOperator tp, final Item a,
 			final Item b, final Item c, final String filter1,
@@ -660,6 +731,19 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/**
+	 * <p>addTpsFilter.</p>
+	 *
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param a a {@link lupos.datastructures.items.Item} object.
+	 * @param b a {@link lupos.datastructures.items.Item} object.
+	 * @param c a {@link lupos.datastructures.items.Item} object.
+	 * @param filter1 a {@link java.lang.String} object.
+	 * @param tp1 a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param tp2 a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	protected static void addTpsFilter(final Item data,
 			final Root ic, final TripleOperator tp, final Item a,
 			final Item b, final Item c, final String filter1,
@@ -686,30 +770,63 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/** Constant <code>TYPE</code> */
 	protected static final URILiteral TYPE = u("1999/02/22-rdf-syntax-ns#type");
+	/** Constant <code>DOMAIN</code> */
 	protected static final URILiteral DOMAIN = u("2000/01/rdf-schema#domain");
+	/** Constant <code>RANGE</code> */
 	protected static final URILiteral RANGE = u("2000/01/rdf-schema#range");
+	/** Constant <code>RESSOURCE</code> */
 	protected static final URILiteral RESSOURCE = u("2000/01/rdf-schema#Resource");
+	/** Constant <code>PROPERTY</code> */
 	protected static final URILiteral PROPERTY = u("1999/02/22-rdf-syntax-ns#Property");
+	/** Constant <code>SUBPROPERTY</code> */
 	protected static final URILiteral SUBPROPERTY = u("2000/01/rdf-schema#subPropertyOf");
+	/** Constant <code>CLASS</code> */
 	protected static final URILiteral CLASS = u("2000/01/rdf-schema#Class");
+	/** Constant <code>SUBCLASS</code> */
 	protected static final URILiteral SUBCLASS = u("2000/01/rdf-schema#subClassOf");
 
+	/**
+	 * <p>addInferenceRules.</p>
+	 *
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 */
 	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp) {
 		addInferenceRules(ic, tp, null);
 	}
 
+	/**
+	 * <p>addInferenceRulesForInstanceData.</p>
+	 *
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 */
 	public static void addInferenceRulesForInstanceData(
 			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForInstanceData(ic, tp, null);
 	}
 
+	/**
+	 * <p>addInferenceRulesForExternalOntology.</p>
+	 *
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 */
 	public static void addInferenceRulesForExternalOntology(
 			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForExternalOntology(ic, tp, null);
 	}
 
+	/**
+	 * <p>addInferenceRulesForExternalOntology.</p>
+	 *
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 */
 	public static void addInferenceRulesForExternalOntology(
 			final Root ic, final TripleOperator tp, final Item data) {
 		try {
@@ -744,6 +861,13 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/**
+	 * <p>addInferenceRulesForInstanceData.</p>
+	 *
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 */
 	public static void addInferenceRulesForInstanceData(
 			final Root ic, final TripleOperator tp, final Item data) {
 		try {
@@ -773,12 +897,24 @@ public class RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/**
+	 * <p>addInferenceRules.</p>
+	 *
+	 * @param ic a {@link lupos.engine.operators.index.Root} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 */
 	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp, final Item data) {
 		addInferenceRulesForExternalOntology(ic, tp, data);
 		addInferenceRulesForInstanceData(ic, tp, data);
 	}
 
+	/**
+	 * <p>evaluateAxiomaticAndRDFSValidTriples.</p>
+	 *
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 */
 	public static void evaluateAxiomaticAndRDFSValidTriples(
 			final TripleConsumer tc) {
 		for (int i = 0; i < axiomaticRDFTriples.length; i++) {

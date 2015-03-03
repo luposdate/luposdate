@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.operators;
 
@@ -43,31 +47,57 @@ import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.misc.util.OperatorIDTuple;
 import lupos.gui.operatorgraph.visualeditor.util.SimpleOperatorGraphVisitor;
-
 public abstract class RDFTerm extends JTFOperator {
 	protected Item item;
 	protected Hashtable<RDFTerm, LinkedList<Item>> predicates = new Hashtable<RDFTerm, LinkedList<Item>>();
 
+	/**
+	 * <p>Constructor for RDFTerm.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	protected RDFTerm(Prefix prefix) {
 		super(prefix);
 
 		this.item = new DummyItem();
 	}
 
+	/**
+	 * <p>Constructor for RDFTerm.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 */
 	protected RDFTerm(Prefix prefix, Item item) {
 		super(prefix);
 
 		this.item = item;
 	}
 
+	/**
+	 * <p>Getter for the field <code>item</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getItem() {
 		return this.item;
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.item.toString();
 	}
 
+	/**
+	 * <p>addPredicate.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param predicate a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void addPredicate(RDFTerm child, Item predicate) {
 		if(!this.predicates.containsKey(child)) {
 			this.predicates.put(child, new LinkedList<Item>());
@@ -76,6 +106,12 @@ public abstract class RDFTerm extends JTFOperator {
 		this.predicates.get(child).add(predicate);
 	}
 
+	/**
+	 * <p>deletePredicate.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param index a int.
+	 */
 	public void deletePredicate(RDFTerm child, int index) {
 		if(index == this.predicates.get(child).size()) {
 			return;
@@ -89,16 +125,24 @@ public abstract class RDFTerm extends JTFOperator {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>predicates</code>.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Item> getPredicates(RDFTerm child) {
 		return this.predicates.get(child);
 	}
 
+	/** {@inheritDoc} */
 	public void deleteAnnotation(Operator child) {
 		super.deleteAnnotation(child);
 
 		this.predicates.remove(child);
 	}
 
+	/** {@inheritDoc} */
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualGraph<Operator> parent) {
 		Hashtable<GraphWrapper, AbstractSuperGuiComponent> predicates = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 
@@ -118,6 +162,7 @@ public abstract class RDFTerm extends JTFOperator {
 		return predicates;
 	}
 
+	/** {@inheritDoc} */
 	public boolean equals(Object o) {
 		try {
 			return this.item == ((RDFTerm) o).item;
@@ -127,10 +172,18 @@ public abstract class RDFTerm extends JTFOperator {
 		}
 	}
 
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		return System.identityHashCode(this);
 	}
 
+	/**
+	 * <p>prefixAdded.</p>
+	 */
 	public void prefixAdded() {
 		super.prefixAdded();
 
@@ -139,6 +192,7 @@ public abstract class RDFTerm extends JTFOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void prefixModified(String oldPrefix, String newPrefix) {
 		super.prefixModified(oldPrefix, newPrefix);
 
@@ -147,6 +201,7 @@ public abstract class RDFTerm extends JTFOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void prefixRemoved(String prefix, String namespace) {
 		super.prefixRemoved(prefix, namespace);
 
@@ -155,10 +210,16 @@ public abstract class RDFTerm extends JTFOperator {
 		}
 	}
 
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeOperator() {
 		return new StringBuffer(this.item.toString());
 	}
 
+	/** {@inheritDoc} */
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		StringBuffer ret = new StringBuffer();
 
@@ -183,6 +244,7 @@ public abstract class RDFTerm extends JTFOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperator(boolean showErrors, HashSet<Operator> visited, Object data) {
 		if(visited.contains(this)) {
 			return true;
@@ -219,10 +281,16 @@ public abstract class RDFTerm extends JTFOperator {
 		return true;
 	}
 
+	/**
+	 * <p>canAddSucceedingOperator.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean canAddSucceedingOperator() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	public boolean variableInUse(String variable, HashSet<Operator> visited) {
 		if(visited.contains(this)) {
 			return false;
@@ -251,6 +319,12 @@ public abstract class RDFTerm extends JTFOperator {
 		return false;
 	}
 
+	/**
+	 * <p>findRootNodes.</p>
+	 *
+	 * @param nodeList a {@link java.util.LinkedHashSet} object.
+	 * @return a {@link java.util.LinkedHashSet} object.
+	 */
 	@SuppressWarnings("unchecked")
 	public static LinkedHashSet<Operator> findRootNodes(LinkedHashSet<Operator> nodeList) {
 		LinkedHashSet<Operator> result = (LinkedHashSet<Operator>) nodeList.clone();
@@ -336,6 +410,21 @@ public abstract class RDFTerm extends JTFOperator {
 		return notVisitedNodes;
 	}
 
+	/**
+	 * <p>addPredicate.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param predicate a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public abstract void addPredicate(RDFTerm child, String predicate) throws ModificationException;
+	/**
+	 * <p>setPredicate.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.operators.RDFTerm} object.
+	 * @param predicate a {@link java.lang.String} object.
+	 * @param index a int.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public abstract void setPredicate(RDFTerm child, String predicate, int index) throws ModificationException;
 }

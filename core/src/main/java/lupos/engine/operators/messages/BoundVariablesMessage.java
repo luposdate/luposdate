@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.messages;
 
@@ -28,7 +32,6 @@ import java.util.HashSet;
 
 import lupos.datastructures.items.Variable;
 import lupos.engine.operators.BasicOperator;
-
 public class BoundVariablesMessage extends Message {
 	/**
 	 * 
@@ -37,42 +40,65 @@ public class BoundVariablesMessage extends Message {
 
 	private Collection<Variable> variables = new HashSet<Variable>();
 
+	/**
+	 * <p>Constructor for BoundVariablesMessage.</p>
+	 */
 	public BoundVariablesMessage() {
 	}
 
+	/**
+	 * <p>Constructor for BoundVariablesMessage.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public BoundVariablesMessage(final Message msg) {
 		super(msg);
 		// variables.addAll(((BoundVariablesMessage)msg).variables);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message postProcess(final BasicOperator op) {
 		return op.postProcessMessage(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcess(final BasicOperator op) {
 		return op.preProcessMessage(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message merge(final Collection<Message> msgs, final BasicOperator op) {
 		return op.mergeMessages(msgs, this);
 	}
 
+	/**
+	 * <p>Getter for the field <code>variables</code>.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Variable> getVariables() {
 		return variables;
 	}
 
+	/**
+	 * <p>Setter for the field <code>variables</code>.</p>
+	 *
+	 * @param variables a {@link java.util.Collection} object.
+	 */
 	public void setVariables(final Collection<Variable> variables) {
 		this.variables = variables;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " " + variables;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message clone() {
 		final BoundVariablesMessage msg = new BoundVariablesMessage(this);

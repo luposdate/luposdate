@@ -38,17 +38,29 @@ import org.jfree.data.statistics.HistogramType;
 
 /**
  * Wrapper for HistogramDatasets
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class HistogramChartModel extends DataModel {
 	
 	int numberBins;
 	
+	/**
+	 * <p>Constructor for HistogramChartModel.</p>
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 */
 	public HistogramChartModel(ChartTyp type){
 		super(type);
 		dataset = new HistogramDataset();
 	}
+	/**
+	 * <p>Constructor for HistogramChartModel.</p>
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 * @param vars an array of {@link java.lang.String} objects.
+	 */
 	public HistogramChartModel(ChartTyp type, String[] vars){
 		super(type);
 		dataset = new HistogramDataset();
@@ -56,6 +68,7 @@ public class HistogramChartModel extends DataModel {
 		categoryVar=new Variable(vars[0]);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public HistogramDataset getDataset(){
 		return (HistogramDataset) super.dataset;
@@ -63,12 +76,14 @@ public class HistogramChartModel extends DataModel {
 	
 	/**
 	 * Set the number of bins for the histogram
-	 * @param numberOfBins
+	 *
+	 * @param numberOfBins a int.
 	 */
 	public void setNrBins(int numberOfBins){
 		this.numberBins=numberOfBins;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(QueryResult l) {
 		
@@ -100,6 +115,7 @@ public class HistogramChartModel extends DataModel {
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	public JFreeChart makeChart() {
 		JFreeChart chart=null;

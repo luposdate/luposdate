@@ -34,8 +34,9 @@ import lupos.sparql1_1.Node;
 
 /**
  * Chordless P2P Network with HierarchyDistribution strategy
- * @author Bjoern
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public abstract class Chordless_WithSimplePartitionDistribution  extends QueryEvaluator<Node> {
 
@@ -43,6 +44,7 @@ public abstract class Chordless_WithSimplePartitionDistribution  extends QueryEv
 	 * information about the network to be used
 	 */
 	private static final String NETWORK = P2PNetworkCreator.CHORDLESS;
+	/** Constant <code>DISTRIBUTION</code> */
 	@SuppressWarnings("rawtypes")
 	/*
 	 * information about the selected distribution strategy (will be improved soon)
@@ -54,6 +56,8 @@ public abstract class Chordless_WithSimplePartitionDistribution  extends QueryEv
 	
 	/**
 	 * don't use
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	@Deprecated
 	public Chordless_WithSimplePartitionDistribution() throws Exception {
@@ -63,6 +67,8 @@ public abstract class Chordless_WithSimplePartitionDistribution  extends QueryEv
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance() {
 		try {
@@ -75,7 +81,9 @@ public abstract class Chordless_WithSimplePartitionDistribution  extends QueryEv
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
 	 * @param config the configuration to be used
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance(Map<String, Object> config) {
 		try {

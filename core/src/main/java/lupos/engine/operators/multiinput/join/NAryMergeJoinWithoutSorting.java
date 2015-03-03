@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -34,7 +38,6 @@ import lupos.datastructures.queryresult.SIPParallelIterator;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
-
 public class NAryMergeJoinWithoutSorting extends Join {
 
 	/**
@@ -48,6 +51,13 @@ public class NAryMergeJoinWithoutSorting extends Join {
 
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for NAryMergeJoinWithoutSorting.</p>
+	 *
+	 * @param numberOfOperands a int.
+	 * @param minimum a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param maximum a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public NAryMergeJoinWithoutSorting(final int numberOfOperands, final Bindings minimum, final Bindings maximum) {
 		super();
 		this.operandResults = new QueryResult[this.getNumberOfOperands()];
@@ -58,11 +68,9 @@ public class NAryMergeJoinWithoutSorting extends Join {
 	protected BindingsComparator comp = new BindingsComparator();
 
 	/**
-	 * This method pre-processes the StartOfStreamMessage
+	 * {@inheritDoc}
 	 *
-	 * @param msg
-	 *            the message to be pre-processed
-	 * @return the pre-processed message
+	 * This method pre-processes the StartOfStreamMessage
 	 */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
@@ -75,12 +83,14 @@ public class NAryMergeJoinWithoutSorting extends Join {
 		return super.preProcessMessage(msg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (operandID < this.operandResults.length) {

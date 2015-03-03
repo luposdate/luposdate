@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif;
 
@@ -34,28 +38,115 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public interface IRuleVisitor<R, A> {
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Document} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(Document obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Rule} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(Rule obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.ExistExpression} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(ExistExpression obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Conjunction} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(Conjunction obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Disjunction} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(Disjunction obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RulePredicate} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(RulePredicate obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Equality} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(Equality obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.External} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(External obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RuleList} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(RuleList obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RuleVariable} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(RuleVariable obj, A arg) throws RIFException;
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Constant} object.
+	 * @param arg a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	R visit(Constant obj, A arg) throws RIFException;
 
 }

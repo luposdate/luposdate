@@ -38,12 +38,20 @@ import lupos.misc.Tuple;
  *
  * @param <K> the type of keys
  * @param <V> the type of values
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 
 	final protected BoundedBuffer<Tuple<K,V>> toInsert;
 	final protected SortedMap<K,V> sortedMap;
 
+	/**
+	 * <p>Constructor for SortedMapWithAdderThread.</p>
+	 *
+	 * @param sortedMap a {@link java.util.SortedMap} object.
+	 * @param size a int.
+	 */
 	public SortedMapWithAdderThread(final SortedMap<K,V> sortedMap, final int size){
 		this.toInsert = new BoundedBuffer<Tuple<K,V>>(size);
 		this.sortedMap = sortedMap;
@@ -51,6 +59,9 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		adderThread.start();
 	}
 
+	/**
+	 * <p>waitForAdderThread.</p>
+	 */
 	protected void waitForAdderThread(){
 		try {
 			this.toInsert.awaitEmpty();
@@ -60,6 +71,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		synchronized(this){
@@ -68,6 +80,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		synchronized(this){
@@ -76,6 +89,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object key) {
 		synchronized(this){
@@ -84,6 +98,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object value) {
 		synchronized(this){
@@ -92,6 +107,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object key) {
 		synchronized(this){
@@ -100,6 +116,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K key, final V value) {
 		synchronized(this){
@@ -113,6 +130,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object key) {
 		synchronized(this){
@@ -121,6 +139,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final Map<? extends K, ? extends V> m) {
 		synchronized(this){
@@ -135,6 +154,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		synchronized(this){
@@ -143,11 +163,13 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		return this.sortedMap.comparator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(final K fromKey, final K toKey) {
 		synchronized(this){
@@ -156,6 +178,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(final K toKey) {
 		synchronized(this){
@@ -164,6 +187,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(final K fromKey) {
 		synchronized(this){
@@ -172,6 +196,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		synchronized(this){
@@ -180,6 +205,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		synchronized(this){
@@ -188,6 +214,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		synchronized(this){
@@ -196,6 +223,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> values() {
 		synchronized(this){
@@ -204,6 +232,7 @@ public class SortedMapWithAdderThread<K, V> implements SortedMap<K,V>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		synchronized(this){

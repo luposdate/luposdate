@@ -27,6 +27,9 @@ import lupos.event.consumer.html.Utils;
 
 /**
  * Class for creating a HTML page.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GenerateHTML implements Send {
 
@@ -35,7 +38,7 @@ public class GenerateHTML implements Send {
 	
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the file
 	 * @param outPutFolder
@@ -47,6 +50,8 @@ public class GenerateHTML implements Send {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * For initializing.
 	 */
 	@Override
@@ -55,10 +60,9 @@ public class GenerateHTML implements Send {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * For writing the file with given content.
-	 * 
-	 * @param content
-	 *            the content to save as file
 	 */
 	@Override
 	public void sendContent(String content) {

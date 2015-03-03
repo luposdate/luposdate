@@ -29,8 +29,17 @@ import lupos.datastructures.items.literal.TypedLiteral;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class AbstractSerializer
 {
+    /**
+     * <p>toLiteral.</p>
+     *
+     * @param geo a {@link com.vividsolutions.jts.geom.Geometry} object.
+     * @return a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+     */
     public abstract TypedLiteral toLiteral(Geometry geo);
 }

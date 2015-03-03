@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -38,7 +42,6 @@ import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 
 import org.apache.commons.lang.StringEscapeUtils;
-
 public class HTMLFormatter extends HeadBodyFormatter {
 
 	private final static String XML_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
@@ -82,16 +85,34 @@ public class HTMLFormatter extends HeadBodyFormatter {
 
 	private final boolean colored;
 
+	/**
+	 * <p>Constructor for HTMLFormatter.</p>
+	 *
+	 * @param colored a boolean.
+	 */
 	public HTMLFormatter(final boolean colored) {
 		this(colored, false);
 	}
 
 
+	/**
+	 * <p>Constructor for HTMLFormatter.</p>
+	 *
+	 * @param colored a boolean.
+	 * @param queryTriples a boolean.
+	 */
 	public HTMLFormatter(final boolean colored, final boolean queryTriples) {
 		super((colored?"Colored HTML":"HTML")+(queryTriples?" with Query-Triples":""), queryTriples);
 		this.colored = colored;
 	}
 
+	/**
+	 * <p>writeStartColor.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param color a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeStartColor(final OutputStream os, final String color) throws IOException{
 		if(this.colored){
 			os.write("<font color=\"#".getBytes());
@@ -100,12 +121,19 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		}
 	}
 
+	/**
+	 * <p>writeEndColor.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeEndColor(final OutputStream os) throws IOException{
 		if(this.colored){
 			os.write("</font>".getBytes());
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeBooleanResult(final OutputStream os, final boolean result) throws IOException{
 		os.write(HTMLFormatter.XML_1.getBytes());
@@ -116,11 +144,13 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write(HTMLFormatter.XML_Boolean_3.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartHead(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_1.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeVariableInHead(final OutputStream os, final Variable v) throws IOException{
 		os.write(HTMLFormatter.XML_Var_1.getBytes());
@@ -130,6 +160,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write(HTMLFormatter.XML_Var_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplesHead(final OutputStream os) throws IOException {
 		os.write(HTMLFormatter.XML_Var_1.getBytes());
@@ -139,66 +170,79 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write(HTMLFormatter.XML_Var_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndHead(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartResult(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Result_1.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndResult(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Result_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
 		os.write(HTMLFormatter.XML_QueryTriplesStart.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
 		os.write(HTMLFormatter.XML_QueryTriplesEnd.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleStart(final OutputStream os) throws IOException {
 		this.writeStartResult(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
 		this.writeEndResult(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleStartComponent(final OutputStream os) throws IOException {
 		os.write(HTMLFormatter.XML_Binding_1.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleEndComponent(final OutputStream os) throws IOException {
 		os.write(HTMLFormatter.XML_Binding_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEpilogue(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_3.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartBinding(final OutputStream os, final Variable v) throws IOException{
 		os.write(HTMLFormatter.XML_Binding_1.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndBinding(final OutputStream os) throws IOException{
 		os.write(HTMLFormatter.XML_Binding_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeBlankNode(final OutputStream os, final AnonymousLiteral blankNode) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_BLANKNODE);
@@ -206,6 +250,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeEndColor(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeURI(final OutputStream os, final URILiteral uri) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_URI);
@@ -215,6 +260,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeEndColor(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeSimpleLiteral(final OutputStream os, final Literal literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
@@ -222,6 +268,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeEndColor(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeTypedLiteral(final OutputStream os, final TypedLiteral literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
@@ -233,6 +280,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeURI(os, literal.getTypeLiteral());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLanguageTaggedLiteral(final OutputStream os, final LanguageTaggedLiteral literal) throws IOException{
 		this.writeStartColor(os, HTMLFormatter.COLOR_LITERAL);
@@ -244,6 +292,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		this.writeEndColor(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
@@ -267,6 +316,13 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		}
 	}
 
+	/**
+	 * <p>writeTableHeadEntry.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param entry a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	protected void writeTableHeadEntry(final OutputStream os, final String entry) throws IOException {
 		os.write("<th>".getBytes());
 		this.writeStartColor(os, HTMLFormatter.COLOR_VAR);
@@ -275,6 +331,7 @@ public class HTMLFormatter extends HeadBodyFormatter {
 		os.write("</th>".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType(final QueryResult queryResult) {
 		return "text/html";

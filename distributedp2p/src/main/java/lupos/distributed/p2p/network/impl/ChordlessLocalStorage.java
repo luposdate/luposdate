@@ -59,11 +59,11 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * This is the local storage for Chord, so each node has its own local storage
  * to get the entries which are stored locally on this node. This storage is
  * used in subgraph container, sent for sub-queries.
- * 
+ *
  * @author Bjoern
- * 
  * @param <T>
- *            The type of {@link KeyContainer}
+ *            The type of {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
+ * @version $Id: $Id
  */
 public class ChordlessLocalStorage<T> implements IStorage {
 	private LockingStorage p2pStorage;
@@ -71,6 +71,7 @@ public class ChordlessLocalStorage<T> implements IStorage {
 	private DHashService p;
 	private BindingsFactory bindings = BindingsFactory.createBindingsFactory();
 
+	/** {@inheritDoc} */
 	@Override
 	public void setBindingsFactory(BindingsFactory bindingsFactory) {
 		this.bindings = bindingsFactory;
@@ -79,9 +80,8 @@ public class ChordlessLocalStorage<T> implements IStorage {
 	/**
 	 * Create a new local Storage for this peer, to get only triples stored on
 	 * this p2p node, not in full network.
-	 * 
-	 * @param p
-	 * 
+	 *
+	 * @param p a {@link de.rwglab.p2pts.DHashService} object.
 	 * @param lockingStorage
 	 *            The storage used by TomP2P
 	 */
@@ -92,7 +92,7 @@ public class ChordlessLocalStorage<T> implements IStorage {
 
 	/**
 	 * Sets the distribution to be used on the local storage on this node
-	 * 
+	 *
 	 * @param distribution
 	 *            type of distribution strategy
 	 * @return the local storage
@@ -103,10 +103,12 @@ public class ChordlessLocalStorage<T> implements IStorage {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addTriple(Triple triple) {
 		// you shouldn't add triples to local storage
@@ -114,6 +116,7 @@ public class ChordlessLocalStorage<T> implements IStorage {
 				"Is not allowed to add data to local storage.");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTriple(Triple triple) {
 		KeyContainer<T>[] keys = this.distribution.getKeysForStoring(triple);
@@ -190,6 +193,7 @@ public class ChordlessLocalStorage<T> implements IStorage {
 		return t;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(Triple triple) {
 		throw new RuntimeException(
@@ -238,6 +242,7 @@ public class ChordlessLocalStorage<T> implements IStorage {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern)
 			throws Exception {
@@ -277,6 +282,7 @@ public class ChordlessLocalStorage<T> implements IStorage {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Chordless LocalStorage";

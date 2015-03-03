@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,38 +21,72 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc.util;
-
 public class OperatorIDTuple<T> {
 	protected T op;
 	protected int id;
 
+	/**
+	 * <p>Constructor for OperatorIDTuple.</p>
+	 *
+	 * @param op a T object.
+	 * @param id a int.
+	 */
 	public OperatorIDTuple(T op, int id) {
 		this.op = op;
 		this.id = id;
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return id + ": " + this.op;
 	}
 
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * <p>Setter for the field <code>id</code>.</p>
+	 *
+	 * @param id a int.
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	/**
+	 * <p>getOperator.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getOperator() {
 		return this.op;
 	}
 
+	/**
+	 * <p>setOperator.</p>
+	 *
+	 * @param op a T object.
+	 */
 	public void setOperator(final T op) {
 		this.op = op;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
 		if(o instanceof OperatorIDTuple) {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.application;
 
@@ -29,7 +33,6 @@ import java.util.List;
 import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-
 public class CollectResult implements Application {
 
 	protected final boolean oneTime;
@@ -38,10 +41,16 @@ public class CollectResult implements Application {
 	protected List<BooleanResult> br_list;
 	protected Application.Type type;
 
+	/**
+	 * <p>Constructor for CollectResult.</p>
+	 *
+	 * @param oneTime a boolean.
+	 */
 	public CollectResult(final boolean oneTime){
 		this.oneTime = oneTime;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void call(final QueryResult res) {
 		if (res != null) {
@@ -86,6 +95,7 @@ public class CollectResult implements Application {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start(final Type type) {
 		this.qr = null;
@@ -95,6 +105,7 @@ public class CollectResult implements Application {
 		this.type = type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void stop() {
 	}
@@ -103,6 +114,7 @@ public class CollectResult implements Application {
 	 * get result, if there are several types of QueryResults, one of them is
 	 * returned...
 	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	public QueryResult getResult() {
 		QueryResult result = this.qr;
@@ -129,6 +141,7 @@ public class CollectResult implements Application {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteResult(final QueryResult res) {
 		if (res instanceof GraphResult) {
@@ -146,6 +159,7 @@ public class CollectResult implements Application {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteResult() {
 		if (this.qr != null) {
@@ -164,6 +178,11 @@ public class CollectResult implements Application {
 		this.br_list = null;
 	}
 
+	/**
+	 * <p>getQueryResults.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 */
 	public QueryResult[] getQueryResults() {
 		final int size = (this.qr == null ? 0 : 1) + (this.gr == null ? 0 : 1)
 				+ (this.br_list == null ? 0 : this.br_list.size());

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -35,18 +39,24 @@ import lupos.rif.model.Equality;
 import lupos.rif.visitor.ReplaceVarsVisitor;
 
 import com.google.common.collect.Multimap;
-
 public class EqualityFilter extends RuleFilter {
 
 	private final Set<Bindings> filteredBindings = new HashSet<Bindings>();
 	private boolean saveFilteredBindings = true;
 	private final ReplaceVarsVisitor replace = new ReplaceVarsVisitor();
 
+	/**
+	 * <p>Constructor for EqualityFilter.</p>
+	 *
+	 * @param expression a {@link lupos.rif.IExpression} object.
+	 * @param eqMap a {@link com.google.common.collect.Multimap} object.
+	 */
 	public EqualityFilter(final IExpression expression,
 			final Multimap<IExpression, IExpression> eqMap) {
 		super(expression, eqMap);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		try {
@@ -66,6 +76,7 @@ public class EqualityFilter extends RuleFilter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean filter(final Bindings bind, final Object result){
 		final boolean booleanResult = super.filter(bind, result);
@@ -79,6 +90,7 @@ public class EqualityFilter extends RuleFilter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void onAccepted(final Bindings bind) {
 		if (!this.saveFilteredBindings) {
@@ -86,6 +98,7 @@ public class EqualityFilter extends RuleFilter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void onFilteredOut(final Bindings bind) {
 		if (this.saveFilteredBindings) {
@@ -93,6 +106,7 @@ public class EqualityFilter extends RuleFilter {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String result = "Equalityfilter\n" + this.expression.toString();
@@ -102,6 +116,7 @@ public class EqualityFilter extends RuleFilter {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		String result = "Equalityfilter\n" + this.expression.toString(prefixInstance);

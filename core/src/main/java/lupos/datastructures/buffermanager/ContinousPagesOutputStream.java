@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.buffermanager;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 public class ContinousPagesOutputStream extends OutputStream {
 
 	protected final PageManager pageManager;
@@ -34,10 +37,27 @@ public class ContinousPagesOutputStream extends OutputStream {
 	protected int index;
 	protected int currentPageNumber;
 
+	/**
+	 * <p>Constructor for ContinousPagesOutputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param emptyPage a boolean.
+	 * @throws java.io.IOException if any.
+	 */
 	public ContinousPagesOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage) throws IOException {
 		this(pagenumber, pageManager, emptyPage, 0);
 	}
 
+	/**
+	 * <p>Constructor for ContinousPagesOutputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param emptyPage a boolean.
+	 * @param index a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public ContinousPagesOutputStream(final int pagenumber, final PageManager pageManager, final boolean emptyPage, final int index) throws IOException {
 		this.index = index;
 		this.pageManager = pageManager;
@@ -49,19 +69,45 @@ public class ContinousPagesOutputStream extends OutputStream {
 		}
 	}
 
+	/**
+	 * <p>Constructor for ContinousPagesOutputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public ContinousPagesOutputStream(final int pagenumber, final PageManager pageManager) throws IOException {
 		this(pagenumber, pageManager, 0);
 	}
 
+	/**
+	 * <p>Constructor for ContinousPagesOutputStream.</p>
+	 *
+	 * @param pagenumber a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param index a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public ContinousPagesOutputStream(final int pagenumber, final PageManager pageManager, final int index) throws IOException {
 		this(pagenumber, pageManager, false, index);
 	}
 
+	/**
+	 * <p>Constructor for ContinousPagesOutputStream.</p>
+	 *
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 */
 	public ContinousPagesOutputStream(final PageManager pageManager) {
 		this(pageManager, 0);
 	}
 
 
+	/**
+	 * <p>Constructor for ContinousPagesOutputStream.</p>
+	 *
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param index a int.
+	 */
 	public ContinousPagesOutputStream(final PageManager pageManager, final int index) {
 		this.index = index;
 		this.pageManager = pageManager;
@@ -69,18 +115,32 @@ public class ContinousPagesOutputStream extends OutputStream {
 		this.currentPageNumber = pageManager.getNumberOfNewPage();
 	}
 
+	/**
+	 * <p>emptyPage.</p>
+	 */
 	protected void emptyPage() {
 		this.currentPage = this.pageManager.getEmptyPage();
 	}
 
+	/**
+	 * <p>Getter for the field <code>currentPageNumber</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getCurrentPageNumber() {
 		return this.currentPageNumber;
 	}
 
+	/**
+	 * <p>getPosInCurrentPage.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPosInCurrentPage() {
 		return this.index;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void write(final int b) throws IOException {
 		if (this.index >= this.currentPage.length) {
@@ -93,6 +153,7 @@ public class ContinousPagesOutputStream extends OutputStream {
 		this.currentPage[this.index++] = (byte) b;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
 		this.pageManager.modifyPage(this.currentPageNumber, this.currentPage);

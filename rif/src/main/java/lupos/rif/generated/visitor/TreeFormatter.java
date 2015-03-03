@@ -67,6 +67,9 @@ import lupos.rif.generated.syntaxtree.RIFVarOrURI;
  * <p>
  * Pass your syntax tree to this visitor, and then to the TreeDumper visitor<br>
  * in order to "pretty print" your tree.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TreeFormatter extends DepthFirstVoidVisitor {
 
@@ -224,6 +227,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * Executes the commands waiting in the command queue,<br>
    * then inserts the proper location information into the current NodeToken.
    * <p>
@@ -331,6 +336,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   //
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> RIFDocument()<br>
    * f1 -> < EOF ><br>
    */
@@ -341,6 +348,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < DOCUMENT ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> ( RIFBase() )?<br>
@@ -369,6 +378,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < BASE ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> RIFQuotedURIref()<br>
@@ -383,6 +394,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < PREFIX ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> RIFNCName()<br>
@@ -399,6 +412,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < IMPORT ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> RIFQuotedURIref()<br>
@@ -417,6 +432,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < GROUP ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> ( %0 RIFRule()<br>
@@ -434,6 +451,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 #0 < FORALL ><br>
    * .. .. . .. #1 ( RIFVar() )+ #2 < LPAREN > #3 RIFClause() #4 < RPAREN ><br>
    * .. .. | %1 RIFClause()<br>
@@ -444,6 +463,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> ( %0 RIFAtomic()<br>
    * .. .. | %1 #0 < AND > #1 < LPAREN ><br>
    * .. .. . .. #2 ( RIFAtomic() )* #3 < RPAREN > )<br>
@@ -458,6 +479,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 #0 < AND > #1 < LPAREN ><br>
    * .. .. . .. #2 ( RIFFormula() )* #3 < RPAREN ><br>
    * .. .. | %1 #0 < OR > #1 < LPAREN ><br>
@@ -472,6 +495,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 RIFFrame()<br>
    * .. .. | %1 #0 RIFTerm()<br>
    * .. .. . .. #1 ( $0 ( &0 < EQUAL ><br>
@@ -487,6 +512,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> RIFVarOrURI()<br>
    * f1 -> < LPAREN ><br>
    * f2 -> ( %0 #0 RIFNCName() #1 < TO > #2 RIFTerm()<br>
@@ -504,6 +531,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> RIFVarOrURI()<br>
    * f1 -> < LBRACK ><br>
    * f2 -> ( #0 RIFVarOrURI() #1 < TO > #2 RIFTerm() )*<br>
@@ -517,6 +546,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 RIFUniterm()<br>
    * .. .. | %1 RIFRDFLiteral()<br>
    * .. .. | %2 RIFNumericLiteral()<br>
@@ -531,6 +562,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < EXTERNAL ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> RIFUniterm()<br>
@@ -545,6 +578,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < LIST ><br>
    * f1 -> < LPAREN ><br>
    * f2 -> ( %0 < RPAREN ><br>
@@ -559,6 +594,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 RIFTypedLiteral()<br>
    * .. .. | %1 RIFLiteralWithLangTag()<br>
    * .. .. | %2 RIFString()<br>
@@ -569,6 +606,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> RIFString()<br>
    * f1 -> < H ><br>
    * f2 -> RIFURI()<br>
@@ -581,6 +620,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> RIFString()<br>
    * f1 -> < LANGTAG ><br>
    */
@@ -591,6 +632,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 RIFInteger()<br>
    * .. .. | %1 RIFFloatingPoint()<br>
    */
@@ -600,6 +643,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 < STRING_LITERAL1 ><br>
    * .. .. | %1 < STRING_LITERAL2 ><br>
    * .. .. | %2 < STRING_LITERALLONG1 ><br>
@@ -611,6 +656,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 RIFVar()<br>
    * .. .. | %1 RIFURI()<br>
    */
@@ -620,6 +667,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 RIFQuotedURIref()<br>
    * .. .. | %1 RIFQName()<br>
    */
@@ -629,6 +678,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> . %0 < QNAME ><br>
    * .. .. | %1 < QNAME_NS ><br>
    */
@@ -638,6 +689,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < INTEGER_10 ><br>
    */
   @Override
@@ -646,17 +699,19 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < FLOATING_POINT ><br>
    */
   @Override
   public void visit(final RIFFloatingPoint n) {
     n.f0.accept(this);
-  }
+ }
 
-  /**
-   * f0 -> < QUESTION ><br>
-   * f1 -> RIFNCName()<br>
-   */
+/**
+ * <p>Getter for the field <code>numCommands</code>.</p>
+ *
+ */
   @Override
   public void visit(final RIFVar n) {
     n.f0.accept(this);
@@ -664,6 +719,8 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * f0 -> < NCNAME ><br>
    */
   @Override
@@ -671,14 +728,13 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
     n.f0.accept(this);
   }
 
-  /**
-   * f0 -> < Q_URIref ><br>
-   */
+   /**
+    * {@inheritDoc}
+    */
   @Override
   public void visit(final RIFQuotedURIref n) {
     n.f0.accept(this);
   }
-
 }
 
 /**

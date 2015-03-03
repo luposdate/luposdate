@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -36,7 +40,6 @@ import lupos.rif.IVariableScope;
 import lupos.rif.RIFException;
 
 import com.google.common.collect.Sets;
-
 public class Rule extends AbstractRuleNode implements IVariableScope {
 	private final Set<Rule> recursiveConnections = Sets.newHashSet();
 	private final Set<RuleVariable> vars = Sets.newHashSet();
@@ -44,6 +47,11 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 	private IExpression body;
 	private List<IExpression> nots = new LinkedList<IExpression>();
 
+	/**
+	 * <p>getHeadExpressions.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	@Deprecated
 	// only predicate in the head
 	public Set<IExpression> getHeadExpressions() {
@@ -56,41 +64,74 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<RuleVariable> getDeclaredVariables() {
 		return this.vars;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addVariable(final RuleVariable var) {
 		var.setParent(this);
 		this.vars.add(var);
 	}
 
+	/**
+	 * <p>isImplication.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isImplication() {
 		return this.body != null;
 	}
 
+	/**
+	 * <p>Setter for the field <code>head</code>.</p>
+	 *
+	 * @param head a {@link lupos.rif.IExpression} object.
+	 */
 	public void setHead(final IExpression head) {
 		this.head = head;
 	}
 
+	/**
+	 * <p>Getter for the field <code>head</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.IExpression} object.
+	 */
 	public IExpression getHead() {
 		return this.head;
 	}
 
+	/**
+	 * <p>Setter for the field <code>body</code>.</p>
+	 *
+	 * @param body a {@link lupos.rif.IExpression} object.
+	 */
 	public void setBody(final IExpression body) {
 		this.body = body;
 	}
 
+	/**
+	 * <p>Getter for the field <code>body</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.IExpression} object.
+	 */
 	public IExpression getBody() {
 		return this.body;
 	}
 
+	/**
+	 * <p>Getter for the field <code>recursiveConnections</code>.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Rule> getRecursiveConnections() {
 		return this.recursiveConnections;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<IRuleNode> getChildren() {
 		final List<IRuleNode> ret = new ArrayList<IRuleNode>();
@@ -141,6 +182,13 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 		return false;
 	}
 
+	/**
+	 * <p>containsRecursion.</p>
+	 *
+	 * @param conclusion a {@link lupos.rif.IExpression} object.
+	 * @param visited a {@link java.util.Set} object.
+	 * @return a boolean.
+	 */
 	public boolean containsRecursion(final IExpression conclusion, final Set<Rule> visited) {
 		if(this.containsRecursionHelper(conclusion)){
 			return true;
@@ -154,30 +202,48 @@ public class Rule extends AbstractRuleNode implements IVariableScope {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.getHead().toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getLabel() {
 		return this.isImplication() ? "Rule" : "Fact";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <R, A> R accept(final IRuleVisitor<R, A> visitor, final A arg)
 			throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/**
+	 * <p>addNot.</p>
+	 *
+	 * @param iExpression a {@link lupos.rif.IExpression} object.
+	 */
 	public void addNot(final IExpression iExpression) {
 		this.nots.add(iExpression);
 	}
 
+	/**
+	 * <p>Getter for the field <code>nots</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IExpression> getNots(){
 		return this.nots;
 	}
 
+	/**
+	 * <p>Setter for the field <code>nots</code>.</p>
+	 *
+	 * @param nots a {@link java.util.List} object.
+	 */
 	public void setNots(final List<IExpression> nots){
 		this.nots = nots;
 	}

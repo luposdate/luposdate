@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie;
 
@@ -35,11 +39,11 @@ import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
 import lupos.datastructures.patriciatrie.ram.RBTrieBag;
 import lupos.misc.util.ImmutableIterator;
-
 public abstract class TrieBag extends TrieWithValue<Integer> {
 
 	/**
 	 * Create a new main memory based trie
+	 *
 	 * @return the newly created main memory based trie set
 	 */
 	public static RBTrieBag createRamBasedTrieBag(){
@@ -52,7 +56,7 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 * @param fileName
 	 *            Base filename for the trie
 	 * @return the newly created disk based trie set
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public static DBTrieBag createDiskBasedTrieBag(final String fileName) throws IOException {
 		return new DBTrieBag(fileName);
@@ -68,7 +72,7 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 * @param pageSize
 	 *            The size of a page to be stored on disk
 	 * @return the newly created disk based trie set
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public static DBTrieBag createDiskBasedTrieSet(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		return new DBTrieBag(fileName, bufferSize, pageSize);
@@ -100,7 +104,7 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 * @param checkMetadata
 	 *            When set, a TrieNotMergeableException is thrown, when one or
 	 *            more tries have missing metadata.
-	 * @throws TrieNotMergeableException
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotMergeableException if any.
 	 */
 	@SuppressWarnings("unchecked")
 	protected void merge(final List<TrieBag> tries, final boolean checkMetadata) throws TrieNotMergeableException {
@@ -149,6 +153,7 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 
 	/**
 	 * This method is overwritten by DBSeqTrieBag
+	 *
 	 * @param root the new root
 	 * @param nodesToMerge the nodes to be merged
 	 */
@@ -161,13 +166,15 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 	 *
 	 * @param tries
 	 *            List of tries
-	 * @throws TrieNotMergeableException
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotMergeableException if any.
 	 */
 	public void merge(final List<TrieBag> tries) throws TrieNotMergeableException {
 		this.merge(tries, true);
 	}
 
 	/**
+	 * <p>keyIterator.</p>
+	 *
 	 * @return an iterator to iterate trough the keys inside the patricia trie (returning also duplicates)
 	 */
 	public Iterator<String> keyIterator() {

@@ -30,6 +30,9 @@ import lupos.rif.generated.visitor.*;
  * JTB node class for the production RIFQName:<br>
  * Corresponding grammar :<br>
  * f0 -> < QNAME ><br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFQName implements INode {
 
@@ -89,18 +92,18 @@ public class RIFQName implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

@@ -28,8 +28,9 @@ import java.io.Serializable;
 import lupos.event.broker.distributed.model.BConsumer;
 /**
  * Tells the broker which clients should connect to which other broker
- * @author Carsten
  *
+ * @author Carsten
+ * @version $Id: $Id
  */
 public class BrokerUpdateMessage implements Serializable {
 	
@@ -38,24 +39,50 @@ public class BrokerUpdateMessage implements Serializable {
 	private TcpConnectInfo newBrokerInfo;
 	private BConsumer consumer;
 	
+	/**
+	 * <p>Constructor for BrokerUpdateMessage.</p>
+	 *
+	 * @param newBrokerInfo a {@link lupos.event.communication.TcpConnectInfo} object.
+	 * @param consumer a {@link lupos.event.broker.distributed.model.BConsumer} object.
+	 */
 	public BrokerUpdateMessage(TcpConnectInfo newBrokerInfo, BConsumer consumer) {
 		super();
 		this.newBrokerInfo = newBrokerInfo;
 		this.consumer = consumer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>newBrokerInfo</code>.</p>
+	 *
+	 * @return a {@link lupos.event.communication.TcpConnectInfo} object.
+	 */
 	public TcpConnectInfo getNewBrokerInfo() {
 		return this.newBrokerInfo;
 	}
 
+	/**
+	 * <p>Setter for the field <code>newBrokerInfo</code>.</p>
+	 *
+	 * @param newBrokerInfo a {@link lupos.event.communication.TcpConnectInfo} object.
+	 */
 	public void setNewBrokerInfo(TcpConnectInfo newBrokerInfo) {
 		this.newBrokerInfo = newBrokerInfo;
 	}
 
+	/**
+	 * <p>Getter for the field <code>consumer</code>.</p>
+	 *
+	 * @return a {@link lupos.event.broker.distributed.model.BConsumer} object.
+	 */
 	public BConsumer getConsumer() {
 		return this.consumer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>consumer</code>.</p>
+	 *
+	 * @param consumer a {@link lupos.event.broker.distributed.model.BConsumer} object.
+	 */
 	public void setConsumer(BConsumer consumer) {
 		this.consumer = consumer;
 	}

@@ -30,16 +30,21 @@ import java.net.URLStreamHandler;
 
 /**
  * Class to register a Handler for data URI. Must be in a package *.data
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class Handler extends URLStreamHandler {
 
+    /** {@inheritDoc} */
     @Override
     protected URLConnection openConnection(URL u) throws IOException {
         return new DataConnection(u);
     }
 
+    /**
+     * <p>install.</p>
+     */
     public static void install() {
         String pkgName = Handler.class.getPackage().getName();
         String pkg = pkgName.substring(0, pkgName.lastIndexOf('.'));

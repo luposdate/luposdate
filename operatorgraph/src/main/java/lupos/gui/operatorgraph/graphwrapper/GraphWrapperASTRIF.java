@@ -49,22 +49,33 @@ import xpref.datatypes.BooleanDatatype;
 
 /**
  * Graphwrapper for RIF Abstract Syntaxtree in lupos.rif.generated.syntaxtree
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GraphWrapperASTRIF extends GraphWrapper {
+	/**
+	 * <p>Constructor for GraphWrapperASTRIF.</p>
+	 *
+	 * @param element a {@link lupos.rif.generated.syntaxtree.INode} object.
+	 */
 	public GraphWrapperASTRIF(final INode element) {
 		super(element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
 		return new ElementPanel(parent, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d,
 			final Dimension size) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -95,17 +106,20 @@ public class GraphWrapperASTRIF extends GraphWrapper {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(
 			final OperatorGraph parent) {
 		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
 		final LinkedList<GraphWrapper> precedingElements = new LinkedList<GraphWrapper>();
@@ -123,6 +137,7 @@ public class GraphWrapperASTRIF extends GraphWrapper {
 		return precedingElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
 		final List<INode> children = ((INode) element).accept(
@@ -140,32 +155,38 @@ public class GraphWrapperASTRIF extends GraphWrapper {
 		return succedingElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return new StringBuffer();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return element instanceof NodeToken ? element.toString() : element
 				.getClass().getSimpleName().replaceAll("RIF", "");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public INode getElement() {
 		return (INode) this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean usePrefixesActive() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "ast_useStyledBoxes";

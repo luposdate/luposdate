@@ -46,6 +46,9 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
  * Merging is possible, but it breaks to possibility to convert this trie back
  * into a RBTrie or DBTrie, because the values of numberOfEntries for the
  * children will be wrong.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBSeqTrieBag extends TrieBag {
 
@@ -64,7 +67,6 @@ public class DBSeqTrieBag extends TrieBag {
 	 *
 	 * @param fileName
 	 *            Name of the file for this Trie
-	 *
 	 */
 	public DBSeqTrieBag(final String fileName) {
 		super();
@@ -72,6 +74,7 @@ public class DBSeqTrieBag extends TrieBag {
 		this.nodeManager = new SeqNodeManager(fileName);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void copy(final TrieWithValue<Integer> trie) throws TrieNotCopyableException {
 		if (!trie.hasCompleteMetadata()){
@@ -85,6 +88,8 @@ public class DBSeqTrieBag extends TrieBag {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Resets the InputStream, that is responsible for the retrieval of the nodes from the underlying filesystem.
 	 *
 	 * This method must be called before trying to merge this trie into another.
@@ -96,6 +101,7 @@ public class DBSeqTrieBag extends TrieBag {
 		this.setRootNode(this.nodeManager.readNextNode(DBSeqNodeWithValue.deSerializer));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		this.nodeManager.close();
@@ -104,45 +110,54 @@ public class DBSeqTrieBag extends TrieBag {
 		super.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<Integer> createNodeInstance() {
 		return new DBSeqNodeWithValue<Integer>(this.nodeManager);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<Integer> createRootNodeInstance() {
 		throw new UnsupportedOperationException();	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void changeRootNode(final Node rootNodeParam) {
 		this.nodeManager.writeRootNodeAgain(DBSeqNode.deSerializer, rootNodeParam);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		// TODO Implementieren
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final String key) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String get(final int index) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getIndex(final String key) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final String key) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void merge(final List<TrieBag> tries) throws TrieNotMergeableException {
 		/*
@@ -161,16 +176,19 @@ public class DBSeqTrieBag extends TrieBag {
 		this.merge(tries, false);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasCompleteMetadata() {
 		return this.nodeManager.hasCompleteMetadata();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getNodeCount() {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void mergeAfterCheck(final NodeWithValue<Integer> root, final List<NodeWithValue<Integer>> nodesToMerge){
 		NodeHelper.mergeSeqBag((DBSeqNodeWithValue<Integer>)root, nodesToMerge);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -39,7 +43,6 @@ import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
-
 public class Bind extends AddComputedBinding {
 	/**
 	 * serial ID
@@ -48,13 +51,19 @@ public class Bind extends AddComputedBinding {
 
 	private final Variable var;
 
+	/**
+	 * <p>Constructor for Bind.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Bind(final Variable var) {
 		this.var = var;
 	}
 
 	/**
-	 * This method filters if needed and calls evalTree
+	 * {@inheritDoc}
 	 *
+	 * This method filters if needed and calls evalTree
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
@@ -126,11 +135,13 @@ public class Bind extends AddComputedBinding {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		return msg;

@@ -33,6 +33,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This class implements the distribution strategy, where the hierarchy of
  * distribution is set via hash function.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SimplePartitionDistribution implements
 		IDistributionKeyContainer<String> {
@@ -40,11 +43,17 @@ public class SimplePartitionDistribution implements
 	/*
 	 * The needed keys
 	 */
+	/** Constant <code>TYPE_SP="SP"</code> */
 	protected final static String TYPE_SP = "SP";
+	/** Constant <code>TYPE_PO="PO"</code> */
 	protected final static String TYPE_PO = "PO";
+	/** Constant <code>TYPE_SO="SO"</code> */
 	protected final static String TYPE_SO = "SO";
+	/** Constant <code>TYPE_PS="PS"</code> */
 	protected final static String TYPE_PS = "PS";
+	/** Constant <code>TYPE_OP="OP"</code> */
 	protected final static String TYPE_OP = "OP";
+	/** Constant <code>TYPE_OS="OS"</code> */
 	protected final static String TYPE_OS = "OS";
 
 	/**
@@ -108,6 +117,7 @@ public class SimplePartitionDistribution implements
 		return s.charAt(1) + "";
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public KeyContainer<String>[] getKeysForStoring(final Triple triple) {
@@ -173,6 +183,13 @@ public class SimplePartitionDistribution implements
 	/*
 	 * this is the old method, which was not deterministic in its resulting
 	 * keycontainer
+	 */
+	/**
+	 * <p>getKeysForQueryingNonDeterministic.</p>
+	 *
+	 * @param triplePattern a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @return an array of {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer} objects.
+	 * @throws lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError if any.
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
@@ -285,6 +302,7 @@ public class SimplePartitionDistribution implements
 		throw new TriplePatternNotSupportedError(this, triplePattern);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public KeyContainer<String>[] getKeysForQuerying(
@@ -413,16 +431,23 @@ public class SimplePartitionDistribution implements
 		throw new TriplePatternNotSupportedError(this, triplePattern);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "P2P hierarchy distribution strategy (triple (s, p, o) has keys { 'SP' , 'PO', 'SO' , 'OS' , 'OP' , 'PS' })";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeyTypes() {
 		return SimplePartitionDistribution.getPossibleKeyTypes();
 	}
 
+	/**
+	 * <p>getPossibleKeyTypes.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public static String[] getPossibleKeyTypes() {
 		return new String[] { TYPE_SP, TYPE_SO, TYPE_PO, TYPE_OP, TYPE_OS,
 				TYPE_PS };

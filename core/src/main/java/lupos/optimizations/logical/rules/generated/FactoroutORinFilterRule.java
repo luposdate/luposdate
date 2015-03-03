@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated;
 
@@ -32,8 +36,6 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 
 import lupos.datastructures.items.Variable;
-
-
 public class FactoroutORinFilterRule extends Rule {
     int operandID;
     private lupos.engine.operators.singleinput.filter.Filter f = null;
@@ -140,11 +142,15 @@ public class FactoroutORinFilterRule extends Rule {
     }
 
 
+    /**
+     * <p>Constructor for FactoroutORinFilterRule.</p>
+     */
     public FactoroutORinFilterRule() {
         this.startOpClass = lupos.engine.operators.singleinput.filter.Filter.class;
         this.ruleName = "Factor out OR in Filter";
     }
 
+    /** {@inheritDoc} */
     protected boolean check(BasicOperator _op) {
         boolean _result = this._checkPrivate0(_op);
 
@@ -167,6 +173,7 @@ public class FactoroutORinFilterRule extends Rule {
         return _result;
     }
 
+    /** {@inheritDoc} */
     protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
         // remove obsolete connections...
         this.f.removeSucceedingOperator(this.o);

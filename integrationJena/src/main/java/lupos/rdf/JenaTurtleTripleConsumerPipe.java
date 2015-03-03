@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rdf;
 
@@ -36,15 +40,27 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.turtle.TurtleEventHandler;
 import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
-
 public class JenaTurtleTripleConsumerPipe extends TurtleParser {
 
+	/**
+	 * <p>Constructor for JenaTurtleTripleConsumerPipe.</p>
+	 *
+	 * @param arg0 a {@link java.io.Reader} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 */
 	public JenaTurtleTripleConsumerPipe(final Reader arg0,
 			final TripleConsumer tc) {
 		super(arg0);
 		this.setEventHandler(new TripleConsumerHandler(tc));
 	}
 
+	/**
+	 * <p>transformToLiteral.</p>
+	 *
+	 * @param node a {@link com.hp.hpl.jena.graph.Node} object.
+	 * @param blanknodeNames a {@link java.util.HashMap} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal transformToLiteral(
 			final com.hp.hpl.jena.graph.Node node,
 			final HashMap<String, Integer> blanknodeNames) {
@@ -96,6 +112,13 @@ public class JenaTurtleTripleConsumerPipe extends TurtleParser {
 		return null;
 	}
 
+	/**
+	 * <p>retrievePrefixes.</p>
+	 *
+	 * @param arg0 a {@link java.io.Reader} object.
+	 * @return a {@link java.util.Map} object.
+	 * @throws com.hp.hpl.jena.n3.turtle.parser.ParseException if any.
+	 */
 	public static Map<String, String> retrievePrefixes(final Reader arg0)
 			throws ParseException {
 		final TurtleParser parser = new TurtleParser(arg0);

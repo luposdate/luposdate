@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -36,11 +40,11 @@ import lupos.rif.model.RuleVariable;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
 public class RuleDependencyGraphVisitor extends SimpleRuleVisitor {
 	private final Multimap<String, Rule> predicateMap = HashMultimap.create();
 	private Rule currentRule = null;
 
+	/** {@inheritDoc} */
 	@Override
 	public IRuleNode visit(Document obj, IRuleNode arg) throws RIFException {
 		predicateMap.clear();
@@ -60,6 +64,7 @@ public class RuleDependencyGraphVisitor extends SimpleRuleVisitor {
 		return super.visit(obj, arg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IRuleNode visit(Rule obj, IRuleNode arg) throws RIFException {
 		currentRule = obj;
@@ -69,6 +74,7 @@ public class RuleDependencyGraphVisitor extends SimpleRuleVisitor {
 			return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IRuleNode visit(RulePredicate obj, IRuleNode arg)
 			throws RIFException {
@@ -87,6 +93,7 @@ public class RuleDependencyGraphVisitor extends SimpleRuleVisitor {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IRuleNode visit(Equality obj, IRuleNode arg) throws RIFException {
 		for (final Rule rule : predicateMap.get("="))

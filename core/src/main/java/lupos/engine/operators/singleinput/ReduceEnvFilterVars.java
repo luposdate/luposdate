@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -33,7 +37,6 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
-
 public class ReduceEnvFilterVars extends SingleInputOperator {
 	private List<Variable> substitutionsVariableLeft = new LinkedList<Variable>();
 	private List<Variable> substitutionsVariableRight = new LinkedList<Variable>();
@@ -43,6 +46,7 @@ public class ReduceEnvFilterVars extends SingleInputOperator {
 	// Simulate
 	// private Item[] valueOrVariable;
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		intersectionVariables = new HashSet<Variable>();
@@ -56,6 +60,9 @@ public class ReduceEnvFilterVars extends SingleInputOperator {
 		return result;
 	}
 
+	/**
+	 * <p>Constructor for ReduceEnvFilterVars.</p>
+	 */
 	public ReduceEnvFilterVars() {
 	}
 
@@ -68,50 +75,103 @@ public class ReduceEnvFilterVars extends SingleInputOperator {
 	 * substitutionsLiteralLeft.get(index); } } return var; }
 	 */
 
+	/**
+	 * <p>Getter for the field <code>filterRight</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getFilterRight() {
 		return filterRight;
 	}
 
+	/**
+	 * <p>Setter for the field <code>filterRight</code>.</p>
+	 *
+	 * @param filterRight a {@link java.util.List} object.
+	 */
 	public void setFilterRight(final List<Variable> filterRight) {
 		this.filterRight = filterRight;
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsVariableLeft</code>.</p>
+	 *
+	 * @param substitutionsVariableLeft a {@link java.util.List} object.
+	 */
 	public void setSubstitutionsVariableLeft(
 			final List<Variable> substitutionsVariableLeft) {
 		this.substitutionsVariableLeft = substitutionsVariableLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>substitutionsVariableRight</code>.</p>
+	 *
+	 * @param substitutionsVariableRight a {@link java.util.List} object.
+	 */
 	public void setSubstitutionsVariableRight(
 			final List<Variable> substitutionsVariableRight) {
 		this.substitutionsVariableRight = substitutionsVariableRight;
 	}
 
+	/**
+	 * <p>Getter for the field <code>filterLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Literal> getFilterLeft() {
 		return filterLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>filterLeft</code>.</p>
+	 *
+	 * @param filterLeft a {@link java.util.List} object.
+	 */
 	public void setFilterLeft(final List<Literal> filterLeft) {
 		this.filterLeft = filterLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsVariableLeft</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getSubstitutionsVariableLeft() {
 		return substitutionsVariableLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>substitutionsVariableRight</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Variable> getSubstitutionsVariableRight() {
 		return substitutionsVariableRight;
 	}
 
+	/**
+	 * <p>addSubstitution.</p>
+	 *
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 * @param content a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void addSubstitution(final Variable variable, final Variable content) {
 		substitutionsVariableLeft.add(variable);
 		substitutionsVariableRight.add(content);
 	}
 
+	/**
+	 * <p>addFilter.</p>
+	 *
+	 * @param content a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param variable a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void addFilter(final Literal content, final Variable variable) {
 		filterLeft.add(content);
 		filterRight.add(variable);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
@@ -155,6 +215,7 @@ public class ReduceEnvFilterVars extends SingleInputOperator {
 		return qr;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final String text = "ReduceEnvVars to (" + substitutionsVariableLeft

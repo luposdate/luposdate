@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies;
 
@@ -29,17 +33,36 @@ import java.util.Map.Entry;
 
 import lupos.autocomplete.misc.Item;
 import lupos.misc.Tuple;
-
 public abstract class Strategy {
 
 	public List<String> reservedWords = new ArrayList<String>();
 
+	/**
+	 * <p>createAutoCompletionList.</p>
+	 *
+	 * @param textDocument a {@link java.lang.String} object.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.util.List} object.
+	 */
 	public abstract List<Entry<Item, Integer>> createAutoCompletionList(String textDocument, int cursorPosition);
+	/**
+	 * <p>generateWeight.</p>
+	 *
+	 * @param list a {@link java.util.List} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public abstract List<Entry<Item, Integer>> generateWeight(List<Item> list);
 
 	/*
 	 * gibt das aktuelle Wort zurueck, dabei werden auch carriage return \n und tab \t
 	 * beachtet
+	 */
+	/**
+	 * <p>getCurrentWord.</p>
+	 *
+	 * @param textDocument a {@link java.lang.String} object.
+	 * @param cursorPosition a int.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String getCurrentWord(final String textDocument, final int cursorPosition) {
 		final String textTillCurserPosition = textDocument.substring(0, cursorPosition);
@@ -70,6 +93,13 @@ public abstract class Strategy {
 	/*
 	 * Rechnet fuer gegebenen Index Spalte und Zeile aus
 	 */
+	/**
+	 * <p>indexToLineAndColumn.</p>
+	 *
+	 * @param document a {@link java.lang.String} object.
+	 * @param index a int.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	public static Tuple<Integer, Integer> indexToLineAndColumn(String document, final int index) {
 		document = document.replaceAll("\r\n", "\n").substring(0, index);
 		final String[] temp = document.split("\r|\n");
@@ -85,6 +115,14 @@ public abstract class Strategy {
 
 	/*
 	 * Wandelt gegebene Spalte und Zeile in Index um
+	 */
+	/**
+	 * <p>lineAndColumnToIndex.</p>
+	 *
+	 * @param document a {@link java.lang.String} object.
+	 * @param line a int.
+	 * @param column a int.
+	 * @return a int.
 	 */
 	public int lineAndColumnToIndex(final String document, final int line, int column) {
 		final String[] splitArray = document.replaceAll("\r\n", "\n").split("\n|\r", line);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,13 +21,21 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
-
 public class TimestampedTriple extends Triple {
 
 	private final long timestamp;
 
+	/**
+	 * <p>Constructor for TimestampedTriple.</p>
+	 *
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
+	 * @param timestamp a long.
+	 */
 	public TimestampedTriple(final Triple triple, final long timestamp) {
 		this.timestamp = timestamp;
 		this.subject = triple.subject;
@@ -34,10 +43,16 @@ public class TimestampedTriple extends Triple {
 		this.object = triple.object;
 	}
 
+	/**
+	 * <p>Getter for the field <code>timestamp</code>.</p>
+	 *
+	 * @return a long.
+	 */
 	public long getTimestamp() {
 		return timestamp;
 	}
 
+	/** {@inheritDoc} */
 	public Variable getVariable(final Variable var) {
 		return new TimestampedVariable(var, timestamp);
 	}

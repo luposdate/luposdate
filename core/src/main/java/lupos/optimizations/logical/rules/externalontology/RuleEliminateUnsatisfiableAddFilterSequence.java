@@ -49,17 +49,23 @@ import lupos.optimizations.logical.rules.Rule;
  *
  * Preconditions: - the filter should contain an expression like ?X=constant
  *
- **/
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 
 	private Variable var;
 	private Variable varInference;
 	private Literal constant;
 
+	/**
+	 * <p>Constructor for RuleEliminateUnsatisfiableAddFilterSequence.</p>
+	 */
 	public RuleEliminateUnsatisfiableAddFilterSequence() {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		// Define left side of rule
@@ -76,6 +82,7 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 		this.startNode = filter;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final Filter filter = (Filter) mso.get("filter");
@@ -123,6 +130,7 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -147,6 +155,13 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 		}
 	}
 
+	/**
+	 * <p>deleteAllAbove.</p>
+	 *
+	 * @param parent a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param child a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param deleted a {@link java.util.Collection} object.
+	 */
 	public void deleteAllAbove(final BasicOperator parent,
 			final BasicOperator child, final Collection<BasicOperator> deleted) {
 		parent.removeSucceedingOperator(child);
@@ -171,6 +186,12 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 		}
 	}
 
+	/**
+	 * <p>logDeletedOperatorsBelow.</p>
+	 *
+	 * @param parent a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param deleted a {@link java.util.Collection} object.
+	 */
 	public void logDeletedOperatorsBelow(final BasicOperator parent,
 			final Collection<BasicOperator> deleted) {
 		if (parent.getPrecedingOperators().size() < 2) {
@@ -183,6 +204,13 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 		}
 	}
 
+	/**
+	 * <p>deleteAllBelow.</p>
+	 *
+	 * @param parent a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param child a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param deleted a {@link java.util.Collection} object.
+	 */
 	public void deleteAllBelow(final BasicOperator parent,
 			final BasicOperator child, final Collection<BasicOperator> deleted) {
 		if (child.getPrecedingOperators().size() > 1) {

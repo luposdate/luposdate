@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -38,12 +42,17 @@ import lupos.rif.model.External;
 import lupos.rif.visitor.ReplaceVarsVisitor;
 
 import com.google.common.collect.Multimap;
-
 public class ConstructEquality extends Operator {
 	private final Multimap<IExpression, IExpression> equalityMap;
 	private final Equality[] equalities;
 	private final ReplaceVarsVisitor replace = new ReplaceVarsVisitor();
 
+	/**
+	 * <p>Constructor for ConstructEquality.</p>
+	 *
+	 * @param eqMap a {@link com.google.common.collect.Multimap} object.
+	 * @param equality a {@link lupos.rif.model.Equality} object.
+	 */
 	public ConstructEquality(Multimap<IExpression, IExpression> eqMap,
 			Equality... equality) {
 		super();
@@ -51,6 +60,7 @@ public class ConstructEquality extends Operator {
 		this.equalities = equality;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(QueryResult queryResult, int operandID) {
 		final EqualityResult eqResult = new EqualityResult();
@@ -79,6 +89,7 @@ public class ConstructEquality extends Operator {
 		return eqResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder str = new StringBuilder("ConstructEquality\n");
@@ -87,6 +98,7 @@ public class ConstructEquality extends Operator {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(Prefix prefixInstance) {
 		final StringBuilder str = new StringBuilder("ConstructEquality\n");

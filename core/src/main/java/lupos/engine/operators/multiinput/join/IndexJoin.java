@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -32,16 +36,19 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
-
 public abstract class IndexJoin extends Join {
 	protected Map<String, QueryResult>[] lba;
 	protected QueryResult[] cartesianProduct = { this.createQueryResult(), this.createQueryResult() };
 
+	/**
+	 * <p>Constructor for IndexJoin.</p>
+	 */
 	public IndexJoin() {
 		super();
 		init();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
@@ -52,18 +59,24 @@ public abstract class IndexJoin extends Join {
 	 * This method creates a QueryResult object.
 	 * This method must be overriden by succeeding classes:
 	 * For joins with internal duplicate elimination, this method returns a QueryResult object with unique bindings, otherwise a normal multi-set QueryResult object.
+	 *
 	 * @return a new Queryresult object
 	 */
 	protected abstract QueryResult createQueryResult();
 	
 	/**
-	 * Must be overridden by succeeding classes for signaling whether or not duplicate elimination is part of this join. 
+	 * Must be overridden by succeeding classes for signaling whether or not duplicate elimination is part of this join.
+	 *
 	 * @return true if duplicate elimination is enabled for this join
 	 */
 	protected abstract boolean isDuplicateEliminationEnabled();
 
+	/**
+	 * <p>init.</p>
+	 */
 	public abstract void init();
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
 		final QueryResult result = this.createQueryResult();
@@ -136,6 +149,7 @@ public abstract class IndexJoin extends Join {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized OptionalResult processJoin(final QueryResult bindings,
 			final int operandID) {
@@ -233,14 +247,25 @@ public abstract class IndexJoin extends Join {
 		return or;
 	}
 
+	/**
+	 * <p>Getter for the field <code>lba</code>.</p>
+	 *
+	 * @return an array of {@link java.util.Map} objects.
+	 */
 	public Map<String, QueryResult>[] getLba() {
 		return this.lba;
 	}
 
+	/**
+	 * <p>Getter for the field <code>cartesianProduct</code>.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 */
 	public QueryResult[] getCartesianProduct() {
 		return this.cartesianProduct;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		this.cartesianProduct[operandID].release();
@@ -248,6 +273,7 @@ public abstract class IndexJoin extends Join {
 		this.lba[operandID].clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		final QueryResult result = this.createQueryResult();

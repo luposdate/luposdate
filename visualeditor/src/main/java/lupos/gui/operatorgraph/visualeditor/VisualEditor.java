@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor;
 
@@ -75,7 +79,6 @@ import lupos.gui.operatorgraph.visualeditor.util.StatusBar;
 import lupos.gui.operatorgraph.visualeditor.util.TopToolbar;
 
 import org.json.JSONObject;
-
 public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 	private static final long serialVersionUID = 254637585333969890L;
 	protected LinkedList<T> selectedOperatorsList = new LinkedList<T>();
@@ -95,6 +98,11 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 	protected boolean standAlone;
 	protected TopToolbar<T> topToolbar = null;
 
+	/**
+	 * <p>Constructor for VisualEditor.</p>
+	 *
+	 * @param standAlone a boolean.
+	 */
 	protected VisualEditor(final boolean standAlone) {
 		super();
 
@@ -113,6 +121,14 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		}
 	}
 
+	/**
+	 * <p>createMainWindowSingleGraph.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param showTopToolBar a boolean.
+	 * @param image a {@link java.awt.Image} object.
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	protected JFrame createMainWindowSingleGraph(final String title, final boolean showTopToolBar, final Image image) {
 		this.setLayout(new BorderLayout());
 		this.add(new JScrollPane(this.visualGraphs.get(0)), BorderLayout.CENTER);
@@ -138,20 +154,41 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		return frame;
 	}
 
+	/**
+	 * <p>createTopToolBar.</p>
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	public JPanel createTopToolBar() {
 		return this.createTopToolBar(null);
 	}
 
+	/**
+	 * <p>createTopToolBar.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	public JPanel createTopToolBar(final JSONObject loadObject) {
 		this.topToolbar = new TopToolbar<T>(this, this.standAlone, loadObject);
 
 		return this.topToolbar;
 	}
 
+	/**
+	 * <p>Getter for the field <code>insertOperator</code>.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public Class<? extends T> getInsertOperator() {
 		return this.insertOperator;
 	}
 
+	/**
+	 * <p>prepareOperatorForAdd.</p>
+	 *
+	 * @param clazz a {@link java.lang.Class} object.
+	 */
 	public void prepareOperatorForAdd(final Class<? extends T> clazz) {
 		this.isInInsertMode = true;
 
@@ -161,28 +198,52 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		.setText("InsertMode: Click somewhere on the canvas to insert the selected operator.");
 	}
 
+	/**
+	 * <p>setOperatorForDeletion.</p>
+	 *
+	 * @param op a T object.
+	 */
 	public synchronized void setOperatorForDeletion(final T op) {
 		this.selectedOperatorsList.add(op);
 
 		this.manageMenuItems();
 	}
 
+	/**
+	 * <p>unsetOperatorForDeletion.</p>
+	 *
+	 * @param op a T object.
+	 */
 	public synchronized void unsetOperatorForDeletion(final T op) {
 		this.selectedOperatorsList.remove(op);
 
 		this.manageMenuItems();
 	}
 
+	/**
+	 * <p>clearDeletionOperatorsList.</p>
+	 */
 	public synchronized void clearDeletionOperatorsList() {
 		this.selectedOperatorsList.clear();
 
 		this.manageMenuItems();
 	}
 
+	/**
+	 * <p>getDeletionOperatorsList.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<T> getDeletionOperatorsList() {
 		return this.selectedOperatorsList;
 	}
 
+	/**
+	 * <p>setAnnotationForDeletion.</p>
+	 *
+	 * @param op a T object.
+	 * @param child a T object.
+	 */
 	public synchronized void setAnnotationForDeletion(final T op, final T child) {
 		if (!this.selectedAnnotationList.containsKey(op)) {
 			this.selectedAnnotationList.put(op, new HashSet<T>());
@@ -193,34 +254,58 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		this.manageMenuItems();
 	}
 
+	/**
+	 * <p>unsetAnnotationForDeletion.</p>
+	 *
+	 * @param op a T object.
+	 */
 	public synchronized void unsetAnnotationForDeletion(final T op) {
 		this.selectedAnnotationList.remove(op);
 
 		this.manageMenuItems();
 	}
 
+	/**
+	 * <p>clearDeletionAnnotationList.</p>
+	 */
 	public synchronized void clearDeletionAnnotationList() {
 		this.selectedAnnotationList.clear();
 
 		this.manageMenuItems();
 	}
 
+	/**
+	 * <p>getDeletionAnnotationList.</p>
+	 *
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public Hashtable<T, HashSet<T>> getDeletionAnnotationList() {
 		return this.selectedAnnotationList;
 	}
 
+	/**
+	 * <p>activateGraphMenus.</p>
+	 */
 	public void activateGraphMenus() {
 		for (final JMenuItem jm : this.jGraphMenus) {
 			jm.setEnabled(true);
 		}
 	}
 
+	/**
+	 * <p>deactivateGraphMenu.</p>
+	 */
 	protected void deactivateGraphMenu() {
 		for (final JMenuItem jm : this.jGraphMenus) {
 			jm.setEnabled(false);
 		}
 	}
 
+	/**
+	 * <p>buildEditMenu.</p>
+	 *
+	 * @return a {@link javax.swing.JMenu} object.
+	 */
 	public JMenu buildEditMenu() {
 		this.copyMI = new JMenuItem("Copy");
 		this.copyMI.setEnabled(false);
@@ -307,6 +392,11 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		return editMenu;
 	}
 
+	/**
+	 * <p>deleteOperators.</p>
+	 *
+	 * @param subtree a boolean.
+	 */
 	protected void deleteOperators(final boolean subtree) {
 		for (final T op : this.selectedOperatorsList) {
 			for (final VisualGraph<T> visualGraph : this.visualGraphs) {
@@ -317,6 +407,9 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		this.clearDeletionOperatorsList();
 	}
 
+	/**
+	 * <p>deleteAnnotations.</p>
+	 */
 	protected void deleteAnnotations() {
 		for(final T op : this.selectedAnnotationList.keySet()) {
 			for(final T child : this.selectedAnnotationList.get(op)) {
@@ -329,6 +422,9 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		this.clearDeletionAnnotationList();
 	}
 
+	/**
+	 * <p>manageMenuItems.</p>
+	 */
 	protected void manageMenuItems() {
 		if (this.selectedOperatorsList.size() > 0
 				|| this.selectedAnnotationList.size() > 0) {
@@ -351,6 +447,13 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		}
 	}
 
+	/**
+	 * <p>createShowTextFrame.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param text a {@link java.lang.String} object.
+	 * @param parserGenerator a {@link java.lang.Class} object.
+	 */
 	public void createShowTextFrame(final String title, final String text, Class<?> parserGenerator) {
 		final JPanel panel = new JPanel();
 		final JFrame frame = this.createSmallFrame(panel, title);
@@ -408,6 +511,15 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * <p>createShowTextDialog.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param text a {@link java.lang.String} object.
+	 * @param confirmationText a {@link java.lang.String} object.
+	 * @param query_or_n3 a boolean.
+	 * @return a int.
+	 */
 	protected int createShowTextDialog(final String title, final String text,
 			final String confirmationText, final boolean query_or_n3) {
 		final JPanel panel = new JPanel();
@@ -437,6 +549,13 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		return dialog.getReturnValue();
 	}
 
+	/**
+	 * <p>createSmallFrame.</p>
+	 *
+	 * @param panel a {@link javax.swing.JPanel} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	public JFrame createSmallFrame(final JPanel panel, final String title) {
 		final JFrame frame = new JFrame(title);
 		frame.addKeyListener(this.getKeyListener(frame));
@@ -449,6 +568,12 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		return frame;
 	}
 
+	/**
+	 * <p>getKeyListener.</p>
+	 *
+	 * @param window a {@link java.awt.Window} object.
+	 * @return a {@link java.awt.event.KeyListener} object.
+	 */
 	public KeyListener getKeyListener(final Window window) {
 		return new KeyListener() {
 			public void keyPressed(final KeyEvent ke) {
@@ -462,6 +587,7 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		};
 	}
 
+	/** {@inheritDoc} */
 	public void lostOwnership(final Clipboard clipboard,
 			final Transferable transferable) {
 		final Transferable clipboardContent = VisualEditor.clipboard
@@ -474,6 +600,9 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		}
 	}
 
+	/**
+	 * <p>copyElements.</p>
+	 */
 	protected void copyElements() {
 		StringBuffer copiedText = new StringBuffer();
 
@@ -548,20 +677,36 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		VisualEditor.clipboard.setContents(fieldContent, this);
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualGraphs</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<VisualGraph<T>> getVisualGraphs() {
 		return this.visualGraphs;
 	}
 	
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize(){
 		for(VisualGraph<T> vg: this.visualGraphs){
 			vg.updateSize();
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>statusBar</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	public StatusBar getStatusBar() {
 		return this.statusBar;
 	}
 
+	/**
+	 * <p>cancelModi.</p>
+	 */
 	public void cancelModi() {
 		this.statusBar.clear();
 
@@ -573,6 +718,11 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		}
 	}
 
+	/**
+	 * <p>createMenuBar.</p>
+	 *
+	 * @return a {@link javax.swing.JMenuBar} object.
+	 */
 	public JMenuBar createMenuBar() {
 		final JMenuBar menuBar = new JMenuBar();
 		menuBar.getSelectionModel().addChangeListener(new ChangeListener() {
@@ -584,10 +734,25 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 		return menuBar;
 	}
 
+	/**
+	 * <p>buildMenuBar.</p>
+	 *
+	 * @return a {@link javax.swing.JMenuBar} object.
+	 */
 	public abstract JMenuBar buildMenuBar();
 
+	/**
+	 * <p>pasteElements.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 */
 	protected abstract void pasteElements(String content);
 
+	/**
+	 * <p>getXPrefPrefix.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getXPrefPrefix() {
 		return this.getClass().getSimpleName();
 	}

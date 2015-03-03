@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -35,13 +39,14 @@ import lupos.io.Registration.DeSerializerConsideringSubClasses;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.LengthHelper;
 import lupos.io.helper.OutHelper;
-
 public class NODEINPARTITIONTREE extends DeSerializerConsideringSubClasses<NodeInPartitionTree> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof NodeInPartitionTree;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<NodeInPartitionTree>[] getRegisteredClasses() {
@@ -50,16 +55,19 @@ public class NODEINPARTITIONTREE extends DeSerializerConsideringSubClasses<NodeI
 				InnerNodeInPartitionTree.class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final NodeInPartitionTree t) {
 		return LengthHelper.lengthLuposNodeInPartitionTree(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final NodeInPartitionTree t, final OutputStream out) throws IOException {
 		OutHelper.writeLuposNodeInPartitionTree(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public NodeInPartitionTree deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		return InputHelper.readLuposNodeInPartitionTree(in);

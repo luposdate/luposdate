@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.findsubgraph;
 
@@ -29,23 +33,34 @@ import java.util.Map;
 
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
-
 public class FindSubGraphMapsHelper implements SimpleOperatorGraphVisitor{
 	private Collection<Map<String,BasicOperator>> foundSubGraphs = new HashSet<Map<String,BasicOperator>>();
 	private BasicOperator startNode;
 	private Map<BasicOperator,String> subGraphMap;
 	
+	/**
+	 * <p>Constructor for FindSubGraphMapsHelper.</p>
+	 *
+	 * @param startNode a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param subGraphMap a {@link java.util.Map} object.
+	 */
 	public FindSubGraphMapsHelper(BasicOperator startNode, Map<BasicOperator,String> subGraphMap){
 		this.startNode=startNode;
 		this.subGraphMap=subGraphMap;
 	}
 	
+	/** {@inheritDoc} */
 	public Object visit(BasicOperator basicOperator) {
 		Map<String,BasicOperator> mso=FindSubGraph.checkSubGraph(basicOperator, subGraphMap, startNode);
 		if(mso!=null) foundSubGraphs.add(mso);
 		return null;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>foundSubGraphs</code>.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Map<String,BasicOperator>> getFoundSubGraphs(){
 		return foundSubGraphs;
 	}		

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -38,9 +42,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.ScrollPane;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Tree;
-
-
-
 public class TreePane extends JTabbedPane  {
 
 	private static final long serialVersionUID = 3803257060245483206L;
@@ -56,6 +57,12 @@ public class TreePane extends JTabbedPane  {
 
 
 	// Constructor
+	/**
+	 * <p>Constructor for TreePane.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param documentContainer a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer} object.
+	 */
 	public TreePane(final VisualRifEditor visualRifEditor,final DocumentContainer documentContainer){
 
 
@@ -119,9 +126,11 @@ public class TreePane extends JTabbedPane  {
 
 	}
 
-	/***
+	/**
+	 *
 	 * stores the name (string) of the document in the documents tree
-	 * @param newDocument
+	 *
+	 * @param newDocument a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel} object.
 	 */
 	public void addNewDocument(final DocumentPanel newDocument) {
 
@@ -129,21 +138,45 @@ public class TreePane extends JTabbedPane  {
 
 	}
 
+	/**
+	 * <p>addNewRule.</p>
+	 *
+	 * @param newRulePanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public void addNewRule(final RulePanel newRulePanel, final String documentName) {
 		this.tree_documents.add(newRulePanel.toString(),documentName);
 		newRulePanel.setRulePath(this.tree_documents.getTreePath());
 
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public void remove(final String name, final String documentName){
 		this.tree_documents.remove(name, documentName);
 	}
 
+	/**
+	 * <p>addNewGroup.</p>
+	 *
+	 * @param newGroupPanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.GroupPanel} object.
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public void addNewGroup(final GroupPanel newGroupPanel, final String documentName){
 		this.tree_documents.add(newGroupPanel.toString(), documentName);
 		newGroupPanel.setGroupPath(this.tree_documents.getTreePath());
 	}
 
+	/**
+	 * <p>updateTopComponent.</p>
+	 *
+	 * @param oldRuleName a {@link java.lang.String} object.
+	 * @param newRuleName a {@link java.lang.String} object.
+	 */
 	public void updateTopComponent(final String oldRuleName, final String newRuleName) {
 		final DefaultMutableTreeNode rootNode = this.tree_documents.getRootNode();
 
@@ -162,15 +195,24 @@ public class TreePane extends JTabbedPane  {
 		}
 	}
 
+	/**
+	 * <p>renameElement.</p>
+	 */
 	public void renameElement() {
 		this.currentTree.edit();
 	}
 
+	/**
+	 * <p>deleteElement.</p>
+	 */
 	public void deleteElement() {
 
 		this.currentTree.delete();
 	}
 
+	/**
+	 * <p>clearTopComponent.</p>
+	 */
 	public void clearTopComponent() {
 		this.tree_documents.clear();
 	}
@@ -181,70 +223,155 @@ public class TreePane extends JTabbedPane  {
 	 * *************** */
 
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer} object.
+	 */
 	public DocumentContainer getDocumentContainer() {
 		return this.documentContainer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>documentContainer</code>.</p>
+	 *
+	 * @param documentContainer a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.DocumentContainer} object.
+	 */
 	public void setDocumentContainer(final DocumentContainer documentContainer) {
 		this.documentContainer = documentContainer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>that</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.TreePane} object.
+	 */
 	public TreePane getThat() {
 		return this.that;
 	}
 
+	/**
+	 * <p>Setter for the field <code>that</code>.</p>
+	 *
+	 * @param that a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.TreePane} object.
+	 */
 	public void setThat(final TreePane that) {
 		this.that = that;
 	}
 
+	/**
+	 * <p>getMoveRulePanel.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object getMoveRulePanel() {
 		return null;
 	}
 
+	/**
+	 * <p>Getter for the field <code>currentTree</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Tree} object.
+	 */
 	public Tree getCurrentTree() {
 		return this.currentTree;
 	}
 
+	/**
+	 * <p>Setter for the field <code>currentTree</code>.</p>
+	 *
+	 * @param currentTree a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Tree} object.
+	 */
 	public void setCurrentTree(final Tree currentTree) {
 		this.currentTree = currentTree;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer} object.
+	 */
 	public RuleContainer getRuleContainer() {
 		return this.ruleContainer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleContainer</code>.</p>
+	 *
+	 * @param ruleContainer a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.RuleContainer} object.
+	 */
 	public void setRuleContainer(final RuleContainer ruleContainer) {
 		this.ruleContainer = ruleContainer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>tree_documents</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Tree} object.
+	 */
 	public Tree getTree_documents() {
 		return this.tree_documents;
 	}
 
+	/**
+	 * <p>Setter for the field <code>tree_documents</code>.</p>
+	 *
+	 * @param tree_documents a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Tree} object.
+	 */
 	public void setTree_documents(final Tree tree_documents) {
 		this.tree_documents = tree_documents;
 	}
 
+	/**
+	 * <p>Getter for the field <code>count</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getCount() {
 		return this.count;
 	}
 
+	/**
+	 * <p>Setter for the field <code>count</code>.</p>
+	 *
+	 * @param count a int.
+	 */
 	public void setCount(final int count) {
 		this.count = count;
 	}
 
+	/**
+	 * <p>Getter for the field <code>index</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getIndex() {
 		return this.index;
 	}
 
+	/**
+	 * <p>Setter for the field <code>index</code>.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void setIndex(final int index) {
 		this.index = index;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules;
 
@@ -36,20 +40,35 @@ import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.multiinput.optional.Optional;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.rdf.Prefix;
-
 public abstract class RuleEngine {
 
 	private final static boolean checkNodeMap = false;
 
 	protected Rule[] rules;
 
+	/**
+	 * <p>Constructor for RuleEngine.</p>
+	 */
 	public RuleEngine() {
 	}
 
+	/**
+	 * <p>applyRules.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public void applyRules(final BasicOperator op) {
 		applyRules(op, RuleEngine.createStartNodeMap(op), this.rules, null);
 	}
 
+	/**
+	 * <p>applyRules.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 * @param rules an array of {@link lupos.optimizations.logical.rules.Rule} objects.
+	 * @param untilRule a {@link lupos.optimizations.logical.rules.Rule} object.
+	 */
 	public void applyRules(
 			final BasicOperator op,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes,
@@ -66,12 +85,29 @@ public abstract class RuleEngine {
 		}
 	}
 	
+	/**
+	 * <p>applyRulesDebugByteArray.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<BasicOperatorByteArray>> applyRulesDebugByteArray(
 			final BasicOperator op, final Prefix prefixInstance) {
 		return applyRulesDebugByteArray(op, RuleEngine.createStartNodeMap(op),
 				this.rules, null, prefixInstance);
 	}
 	
+	/**
+	 * <p>applyRulesDebugByteArray.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 * @param rules an array of {@link lupos.optimizations.logical.rules.Rule} objects.
+	 * @param untilRule a {@link lupos.optimizations.logical.rules.Rule} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<BasicOperatorByteArray>> applyRulesDebugByteArray(
 			final BasicOperator op,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes,
@@ -147,8 +183,17 @@ public abstract class RuleEngine {
 		}
 	}
 
+	/**
+	 * <p>createRules.</p>
+	 */
 	protected abstract void createRules();
 
+	/**
+	 * <p>addToNodeMap.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 */
 	public static void addToNodeMap(
 			final BasicOperator basicOperator,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes) {
@@ -192,6 +237,12 @@ public abstract class RuleEngine {
 		}
 	}
 
+	/**
+	 * <p>deleteFromNodeMap.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 */
 	public static void deleteFromNodeMap(
 			final BasicOperator basicOperator,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes) {
@@ -239,6 +290,13 @@ public abstract class RuleEngine {
 		}
 	}
 
+	/**
+	 * <p>checkIfInNodeMap.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param mapStartNodes a {@link java.util.Map} object.
+	 * @return a boolean.
+	 */
 	public static boolean checkIfInNodeMap(
 			final BasicOperator basicOperator,
 			final Map<Class<? extends BasicOperator>, Set<BasicOperator>> mapStartNodes) {

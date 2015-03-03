@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif;
 
@@ -104,9 +108,9 @@ import lupos.rif.visitor.SubstituteFunctionCallsVisitor;
 import lupos.rif.visitor.ValidateRuleVisitor;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
-
 public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
+	/** Constant <code>applySubsumptiveDemandTransformation=true</code> */
 	public static boolean applySubsumptiveDemandTransformation = true; // whether or not the magic sets variant "subsumptive demand transformation" is applied...
 
 	protected final CommonCoreQueryEvaluator<Node> evaluator;
@@ -115,8 +119,9 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 	/**
 	 * This constructor initializes the rule evaluator using the given query evaluator as underlying query evaluator
+	 *
 	 * @param evaluator the underlying query evaluator
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public BasicIndexRuleEvaluator(final CommonCoreQueryEvaluator<Node> evaluator)
 			throws Exception {
@@ -126,7 +131,8 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 	/**
 	 * this constructor setups a rule evaluator, which works in main memory
-	 * @throws Exception
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	public BasicIndexRuleEvaluator() throws Exception{
 		this(false);
@@ -134,8 +140,9 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 	/**
 	 * this constructor setups a rule evaluator, which works in main memory
+	 *
 	 * @param stream if stream is true the rule evaluator for streams is used, otherwise the main memory evaluator
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public BasicIndexRuleEvaluator(final boolean stream) throws Exception{
 		super();
@@ -154,8 +161,9 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	/**
 	 * this constructor setups a rule evaluator, which uses disk-based indices
 	 * (it uses a RDF3XQueryEvaluator as underlying query evaluator)
+	 *
 	 * @param directoryOfIndices the directory, in which the indices have been constructed
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public BasicIndexRuleEvaluator(final String directoryOfIndices) throws Exception{
 		super();
@@ -183,35 +191,97 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		this.rifDocument.accept(filteringVisitor, null);
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param applySubsumptiveDemandTransformationPar a boolean.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final boolean applySubsumptiveDemandTransformationPar) throws Exception {
 		return this.compileQuery(query, applySubsumptiveDemandTransformationPar, this.evaluator.createIndexScanCreator());
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param conclusion a {@link java.lang.String} object.
+	 * @param applySubsumptiveDemandTransformationPar a boolean.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final String conclusion, final boolean applySubsumptiveDemandTransformationPar) throws Exception {
 		return this.compileQuery(query, conclusion, applySubsumptiveDemandTransformationPar, this.evaluator.createIndexScanCreator());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long compileQuery(final String query) throws Exception {
 		return this.compileQuery(query, this.evaluator.createIndexScanCreator());
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param conclusion a {@link java.lang.String} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final String conclusion) throws Exception {
 		return this.compileQuery(query, conclusion, this.evaluator.createIndexScanCreator());
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final IndexScanCreatorInterface indexScanCreator) throws Exception {
 		return 	this.compileQuery(query, BasicIndexRuleEvaluator.applySubsumptiveDemandTransformation, indexScanCreator);
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param conclusion a {@link java.lang.String} object.
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final String conclusion, final IndexScanCreatorInterface indexScanCreator) throws Exception {
 		return 	this.compileQuery(query, conclusion, BasicIndexRuleEvaluator.applySubsumptiveDemandTransformation, indexScanCreator);
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param applySubsumptiveDemandTransformationPar a boolean.
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final boolean applySubsumptiveDemandTransformationPar, final IndexScanCreatorInterface indexScanCreator) throws Exception {
 		return this.compileQuery(query, null, applySubsumptiveDemandTransformationPar, indexScanCreator);
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param conclusion a {@link java.lang.String} object.
+	 * @param applySubsumptiveDemandTransformationPar a boolean.
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQuery(final String query, final String conclusion, final boolean applySubsumptiveDemandTransformationPar, final IndexScanCreatorInterface indexScanCreator) throws Exception {
 		final Date start = new Date();
 		this.parseAndPrepareRIFDocument(query);
@@ -247,6 +317,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return new Date().getTime() - start.getTime();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		final Date start = new Date();
@@ -287,6 +358,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return new Date().getTime() - start.getTime();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
@@ -333,6 +405,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long physicalOptimization() {
 		final long start = (new Date()).getTime();
@@ -349,6 +422,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return (new Date()).getTime() - start;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
 		this.physicalOptimization();
@@ -360,20 +434,39 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return debugResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQuery() throws Exception {
 		return this.evaluator.evaluateQuery();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application) throws Exception {
 		return this.evaluator.evaluateQueryDebugSteps(debugstep, application);
 	}
 
+	/**
+	 * <p>getResultWithOnDemandInference.</p>
+	 *
+	 * @param inferenceRuleset a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResultWithOnDemandInference(final String inferenceRuleset, final String query) throws Exception{
 		return this.getResultWithOnDemandInference(inferenceRuleset, query, false);
 	}
 
+	/**
+	 * <p>getResultWithOnDemandInference.</p>
+	 *
+	 * @param inferenceRuleset a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @param oneTime a boolean.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResultWithOnDemandInference(final String inferenceRuleset, final String query, final boolean oneTime) throws Exception{
 		this.compileQueryAndInferenceIntoOneOperatorgraph(inferenceRuleset, query);
 		this.logicalOptimization();
@@ -381,11 +474,19 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return this.getResult(oneTime);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getResult() throws Exception {
 		return this.getResult(false);
 	}
 
+	/**
+	 * <p>getResult.</p>
+	 *
+	 * @param oneTime a boolean.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResult(final boolean oneTime) throws Exception {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
@@ -393,10 +494,23 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return cr.getResult();
 	}
 
+	/**
+	 * <p>getResults.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult[] getResults() throws Exception {
 		return this.getResults(false);
 	}
 
+	/**
+	 * <p>getResults.</p>
+	 *
+	 * @param oneTime a boolean.
+	 * @return an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult[] getResults(final boolean oneTime) throws Exception {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
@@ -404,6 +518,13 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return cr.getQueryResults();
 	}
 
+	/**
+	 * <p>getCollectedResults.</p>
+	 *
+	 * @param oneTime a boolean.
+	 * @return a {@link lupos.engine.operators.application.CollectRIFResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public CollectRIFResult getCollectedResults(final boolean oneTime) throws Exception {
 		final CollectRIFResult cr = new CollectRIFResult(oneTime);
 		this.evaluator.getResultOperator().addApplication(cr);
@@ -411,30 +532,48 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return cr;
 	}
 
+	/**
+	 * <p>getResultOperator.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public Result getResultOperator(){
 		return this.evaluator.getResultOperator();
 	}
 
+	/**
+	 * <p>getRootNode.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator getRootNode(){
 		return this.evaluator.getRootNode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ArgumentParser getArgs() {
 		return this.evaluator.getArgs();
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>evaluator</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 */
 	public CommonCoreQueryEvaluator<Node> getEvaluator() {
 		return this.evaluator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
 		return this.evaluator.prepareInputData(defaultGraphs, namedGraphs);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			final Collection<URILiteral> defaultGraphs,
@@ -443,18 +582,34 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return this.evaluator.prepareInputDataWithSourcesOfNamedGraphs(defaultGraphs, namedGraphs);
 	}
 
+	/**
+	 * <p>Getter for the field <code>compilationUnit</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.generated.syntaxtree.CompilationUnit} object.
+	 */
 	public CompilationUnit getCompilationUnit() {
 		return this.compilationUnit;
 	}
 
+	/**
+	 * <p>getDocument.</p>
+	 *
+	 * @return a {@link lupos.rif.model.Document} object.
+	 */
 	public Document getDocument() {
 		return this.rifDocument;
 	}
 
+	/**
+	 * <p>getRoot.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public Root getRoot() {
 		return (Root) this.evaluator.getRootNode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		if(this.evaluator != null) {
@@ -462,6 +617,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		if(this.evaluator != null) {
@@ -469,6 +625,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 		if(this.evaluator != null) {
@@ -479,9 +636,10 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	private final static URILiteral rif_error = LiteralFactory.createStringURILiteralWithoutException("<http://www.w3.org/2007/rif#error>");
 
 	/**
+	 * <p>inferTriplesAndStoreInDataset.</p>
 	 *
 	 * @return return a rule result with all predicates rif:error, which are detected errors in the ontology!
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public RuleResult inferTriplesAndStoreInDataset() throws Exception {
 		final CollectRIFResult cr = this.getCollectedResults(true);
@@ -541,11 +699,26 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 
+	/**
+	 * <p>materializeInferredTriplesOfRifEngineAndGetResultOfSPARQLQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult materializeInferredTriplesOfRifEngineAndGetResultOfSPARQLQuery(final String query) throws Exception {
 			this.inferTriplesAndStoreInDataset();
 			return this.evaluator.getResult(query);
 	}
 
+	/**
+	 * <p>compileQueryAndInferenceIntoOneOperatorgraph.</p>
+	 *
+	 * @param inferenceRuleset a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQueryAndInferenceIntoOneOperatorgraph(final String inferenceRuleset, final String query) throws Exception {
 		final Date a = new Date();
 		this.evaluator.compileQuery(query);
@@ -566,6 +739,14 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/**
+	 * <p>integrateInferenceOperatorgraphIntoQueryOperatorgraph.</p>
+	 *
+	 * @param rootInference a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param resultInference a {@link lupos.engine.operators.singleinput.Result} object.
+	 * @param rootQuery a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param resultQuery a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public static void integrateInferenceOperatorgraphIntoQueryOperatorgraph(final BasicOperator rootInference, final Result resultInference, final BasicOperator rootQuery, final Result resultQuery){
 		// first determine those operations, which generate triples of the result (and delete the other ones (and their preceding operators...))
 		// also replace Construct operators with Generate operators!
@@ -718,6 +899,14 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		rootQuery.detectCycles();
 	}
 
+	/**
+	 * <p>determineOperatorsConnectedWithResultOrInsert.</p>
+	 *
+	 * @param currentOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param currentPath a {@link java.util.LinkedList} object.
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @param connectedOperators a {@link java.util.HashSet} object.
+	 */
 	public static void determineOperatorsConnectedWithResultOrInsert(final BasicOperator currentOperator, final LinkedList<BasicOperator> currentPath, final HashSet<BasicOperator> visited, final HashSet<BasicOperator> connectedOperators){
 		if(currentOperator instanceof Result || currentOperator instanceof Insert){
 			BasicIndexRuleEvaluator.addToConnectedOperators(currentPath, connectedOperators);
@@ -763,6 +952,11 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		return flag;
 	}
 
+	/**
+	 * <p>deletePrecedingOperators.</p>
+	 *
+	 * @param toDelete a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public static void deletePrecedingOperators(final BasicOperator toDelete){
 		if(toDelete.getSucceedingOperators().size()>0){
 			// maybe result of this operation is somewhere else used => end of recursion
@@ -775,6 +969,12 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		}
 	}
 
+	/**
+	 * <p>determine1stLevelTriplePatternOrIndexScans.</p>
+	 *
+	 * @param rootQuery a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public static LinkedList<BasicOperator> determine1stLevelTriplePatternOrIndexScans(final BasicOperator rootQuery){
 		final LinkedList<BasicOperator> resultlist = new LinkedList<BasicOperator>();
 		determine1stLevelTriplePatternOrIndexScans(rootQuery, resultlist);

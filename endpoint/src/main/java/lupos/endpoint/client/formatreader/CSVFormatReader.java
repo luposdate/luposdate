@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.client.formatreader;
 
@@ -39,20 +43,25 @@ import lupos.endpoint.client.formatreader.csv.CSVParser;
 import lupos.endpoint.client.formatreader.csv.Node;
 import lupos.endpoint.client.formatreader.csv.ParseException;
 import lupos.endpoint.client.formatreader.csv.SimpleNode;
-
 public class CSVFormatReader extends DefaultMIMEFormatReader {
 
+	/** Constant <code>MIMETYPE="text/csv"</code> */
 	public final static String MIMETYPE = "text/csv";
 
+	/**
+	 * <p>Constructor for CSVFormatReader.</p>
+	 */
 	public CSVFormatReader() {
 		super("CSV", CSVFormatReader.MIMETYPE);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType() {
 		return CSVFormatReader.MIMETYPE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getQueryResult(final InputStream inputStream, final BindingsFactory bindingsFactory) {
 		final QueryResult result = QueryResult.createInstance();

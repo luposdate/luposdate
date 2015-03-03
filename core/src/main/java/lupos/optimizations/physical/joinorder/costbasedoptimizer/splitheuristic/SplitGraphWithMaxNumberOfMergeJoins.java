@@ -32,10 +32,14 @@ import lupos.datastructures.items.Variable;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
 
 /**
- * This strategy splits a group of leaf nodes to join into a subgraph with the maximum possible number of merge joins (and the remaining subgraph) 
+ * This strategy splits a group of leaf nodes to join into a subgraph with the maximum possible number of merge joins (and the remaining subgraph)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SplitGraphWithMaxNumberOfMergeJoins implements SplitHeuristic {
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<LeafNodePlan>> split(List<LeafNodePlan> initialPlans) {
 		// We determine the maximum number of possible merge joins!

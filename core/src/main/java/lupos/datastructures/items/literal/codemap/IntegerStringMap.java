@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,19 +21,51 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
-
 public interface IntegerStringMap {
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param key a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String get(int key);
 
+	/**
+	 * <p>put.</p>
+	 *
+	 * @param key a int.
+	 * @param s a {@link java.lang.String} object.
+	 */
 	public void put(int key, String s);
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear();
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size();
 
+	/**
+	 * <p>forEachValue.</p>
+	 *
+	 * @param arg0 a {@link lupos.datastructures.items.literal.codemap.TProcedureValue} object.
+	 */
 	public void forEachValue(final TProcedureValue<String> arg0);
 
+	/**
+	 * <p>forEachEntry.</p>
+	 *
+	 * @param arg0 a {@link lupos.datastructures.items.literal.codemap.TProcedureEntry} object.
+	 */
 	public void forEachEntry(final TProcedureEntry<Integer, String> arg0);
 }

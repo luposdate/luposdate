@@ -66,6 +66,9 @@ import lupos.sparql1_1.SimpleNode;
 
 /**
  * This Class implements the 'FILTER(...)' expression used by SPARQL queries
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Filter extends SingleInputOperator {
 
@@ -77,19 +80,34 @@ public class Filter extends SingleInputOperator {
 	public List<List<lupos.sparql1_1.Node>> aggregationFunctions = null;
 	protected QueryResult queryResult = null;
 
+	/** Constant <code>evaluationVisitorClass</code> */
 	public static Class<? extends EvaluationVisitor<Map<Node, Object>, Object>> evaluationVisitorClass = EvaluationVisitorImplementation.class;
 	private final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor;
 
+	/**
+	 * <p>Constructor for Filter.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public Filter(final lupos.sparql1_1.Node node) {
 		this.evaluationVisitor = getEvaluationVisitor();
 		this.setNodePointer(node);
 	}
 
+	/**
+	 * <p>Constructor for Filter.</p>
+	 */
 	public Filter() {
 		this.evaluationVisitor = getEvaluationVisitor();
 		this.np = null;
 	}
 
+	/**
+	 * <p>Constructor for Filter.</p>
+	 *
+	 * @param filter a {@link java.lang.String} object.
+	 * @throws lupos.sparql1_1.ParseException if any.
+	 */
 	public Filter(final String filter) throws ParseException {
 		this.evaluationVisitor = getEvaluationVisitor();
 		ASTFilterConstraint ASTfilter;
@@ -110,6 +128,11 @@ public class Filter extends SingleInputOperator {
 		return new EvaluationVisitorImplementation();
 	}
 
+	/**
+	 * <p>setNodePointer.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public void setNodePointer(final lupos.sparql1_1.Node node) {
 		this.np = node;
 		this.usedVariables.clear();
@@ -177,11 +200,17 @@ public class Filter extends SingleInputOperator {
 		return result;
 	}
 
+	/**
+	 * <p>Getter for the field <code>usedVariables</code>.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getUsedVariables() {
 		return this.usedVariables;
 	}
 
 	/**
+	 * <p>getNodePointer.</p>
 	 *
 	 * @return ASTFilterConstraint: the node this instance belongs to
 	 */
@@ -190,15 +219,11 @@ public class Filter extends SingleInputOperator {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This Method processes the incoming Bindings-sequence and forwards the
 	 * Bindings which meet the demands
-	 *
-	 * @param bindings
-	 *            : Bindings to evaluate.
-	 * @return List: Bindings which fitted. If there is no such binding NULL
-	 *         will be returned
 	 */
-
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (this.aggregationFunctions == null) {
@@ -406,6 +431,14 @@ public class Filter extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>computeAggregationFunctions.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param aggregationFunctions a {@link java.util.List} object.
+	 * @param resultsOfAggregationFunctions a {@link java.util.HashMap} object.
+	 * @param evaluationVisitor a {@link lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor} object.
+	 */
 	public static void computeAggregationFunctions(final QueryResult queryResult, final List<List<lupos.sparql1_1.Node>> aggregationFunctions, final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions, final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor) {
 		if (aggregationFunctions != null) {
 			for (final List<lupos.sparql1_1.Node> list : aggregationFunctions) {
@@ -416,6 +449,15 @@ public class Filter extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>getQueryResultForAggregatedFilter.</p>
+	 *
+	 * @param np a lupos$sparql1_1$Node object.
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param aggregationFunctions a {@link java.util.List} object.
+	 * @param evaluationVisitor a {@link lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	protected static QueryResult getQueryResultForAggregatedFilter(final Node np, final QueryResult queryResult, final List<List<lupos.sparql1_1.Node>> aggregationFunctions, final EvaluationVisitor<Map<Node, Object>, Object> evaluationVisitor) {
 		if (queryResult != null) {
 			final HashMap<lupos.sparql1_1.Node, Object> resultsOfAggregationFunctions = new HashMap<lupos.sparql1_1.Node, Object>();
@@ -469,12 +511,14 @@ public class Filter extends SingleInputOperator {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage msg) {
 		this.evaluationVisitor.init();
 		return super.preProcessMessage(msg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		final QueryResult qr = getQueryResultForAggregatedFilter(this.np, this.queryResult, this.aggregationFunctions, this.evaluationVisitor);
@@ -490,11 +534,13 @@ public class Filter extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		return this.preProcessMessage(new EndOfEvaluationMessage());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete,
 			final int operandID) {
@@ -505,6 +551,8 @@ public class Filter extends SingleInputOperator {
 	}
 
 	/**
+	 * <p>evalTree.</p>
+	 *
 	 * @param b
 	 *            : List of Bindings which are tested
 	 * @param n
@@ -512,6 +560,9 @@ public class Filter extends SingleInputOperator {
 	 * @return Object: might be everything, but by logical reasons the final
 	 *         return (outside recursion) is a boolean value which indicates
 	 *         weather the binding maps the subtree or not.
+	 * @param resultsOfAggregationFunctions a {@link java.util.Map} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
 	 */
 	public Object evalTree(
 			final Bindings b,
@@ -522,6 +573,8 @@ public class Filter extends SingleInputOperator {
 	}
 
 	/**
+	 * <p>staticEvalTree.</p>
+	 *
 	 * @param b
 	 *            : List of Bindings which are tested
 	 * @param n
@@ -529,6 +582,10 @@ public class Filter extends SingleInputOperator {
 	 * @return Object: might be everything, but by logical reasons the final
 	 *         return (outside recursion) is a boolean value which indicates
 	 *         weather the binding maps the subtree or not.
+	 * @param resultsOfAggregationFunctions a {@link java.util.Map} object.
+	 * @param evaluationVisitor a {@link lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
 	 */
 	public static Object staticEvalTree(
 			final Bindings b,
@@ -538,6 +595,16 @@ public class Filter extends SingleInputOperator {
 		return n.accept(evaluationVisitor, b, resultsOfAggregationFunctions);
 	}
 
+	/**
+	 * <p>staticEvalTree.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param n a lupos$sparql1_1$Node object.
+	 * @param resultsOfAggregationFunctions a {@link java.util.Map} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object staticEvalTree(
 			final Bindings b,
 			final lupos.sparql1_1.Node n,
@@ -547,6 +614,7 @@ public class Filter extends SingleInputOperator {
 				resultsOfAggregationFunctions);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		final Filter filter = (Filter) op;
@@ -557,10 +625,17 @@ public class Filter extends SingleInputOperator {
 		this.setCollectionForExistNodes(filter.getCollectionForExistNodes());
 	}
 
+	/**
+	 * <p>equalFilterExpression.</p>
+	 *
+	 * @param f a {@link lupos.engine.operators.singleinput.filter.Filter} object.
+	 * @return a boolean.
+	 */
 	public boolean equalFilterExpression(final Filter f) {
 		return (this.np.equals(f.np));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final SPARQLParserVisitorImplementationDumper filterDumper = new SPARQLParserVisitorImplementationDumper();
@@ -568,6 +643,7 @@ public class Filter extends SingleInputOperator {
 		return this.np.accept(filterDumper);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final SPARQLParserVisitorImplementationDumper filterDumper = new SPARQLParserVisitorImplementationDumperShort(
@@ -581,15 +657,22 @@ public class Filter extends SingleInputOperator {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPipelineBreaker() {
 		return this.aggregationFunctions != null;
 	}
 
+	/**
+	 * <p>Setter for the field <code>queryResult</code>.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void setQueryResult(final QueryResult queryResult) {
 		this.queryResult = queryResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final StartOfEvaluationMessage msg,
@@ -597,6 +680,7 @@ public class Filter extends SingleInputOperator {
 		return this.preProcessMessage(msg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -604,6 +688,7 @@ public class Filter extends SingleInputOperator {
 		return this.preProcessMessageDebug(new EndOfEvaluationMessage(), debugstep);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
@@ -623,6 +708,11 @@ public class Filter extends SingleInputOperator {
 	}
 
 
+	/**
+	 * <p>materializationOfLazyLiteralsNeeded.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean materializationOfLazyLiteralsNeeded(){
 		if(LiteralFactory.getMapType() == MapType.LAZYLITERAL || LiteralFactory.getMapType() == MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP){
 			final Object result = this.np.jjtAccept(new MaterializationNeededVisitor(), null);
@@ -635,24 +725,45 @@ public class Filter extends SingleInputOperator {
 
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium) {
 		return true;
 	}
 
+	/**
+	 * <p>setEvaluator.</p>
+	 *
+	 * @param evaluator a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 */
 	public void setEvaluator(
 			final lupos.engine.evaluators.CommonCoreQueryEvaluator<Node> evaluator) {
 		this.evaluationVisitor.setEvaluator(evaluator);
 	}
 
+	/**
+	 * <p>setCollectionForExistNodes.</p>
+	 *
+	 * @param root a {@link java.util.Map} object.
+	 */
 	public void setCollectionForExistNodes(final Map<SimpleNode, Root> root) {
 		this.evaluationVisitor.setCollectionForExistNodes(root);
 	}
 
+	/**
+	 * <p>getCollectionForExistNodes.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<SimpleNode, Root> getCollectionForExistNodes() {
 		return this.evaluationVisitor.getCollectionForExistNodes();
 	}
 
+	/**
+	 * <p>getUsedEvaluationVisitor.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitor} object.
+	 */
 	public EvaluationVisitor<Map<Node, Object>, Object> getUsedEvaluationVisitor() {
 		return this.evaluationVisitor;
 	}

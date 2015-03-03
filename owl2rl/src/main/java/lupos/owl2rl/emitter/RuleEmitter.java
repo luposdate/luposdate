@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.emitter;
 
@@ -29,9 +33,15 @@ import java.util.LinkedList;
 import lupos.owl2rl.owlToRif.BoundVariable;
 import lupos.owl2rl.owlToRif.InferenceRulesGenerator;
 import lupos.owl2rl.owlToRif.TemplateRule;
-
 public class RuleEmitter {
 
+	/**
+	 * <p>emitPropertyRules.</p>
+	 *
+	 * @param boundV a {@link java.util.LinkedList} object.
+	 * @param outputString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
+	 */
 	public static void emitPropertyRules(final LinkedList<BoundVariable> boundV, final StringBuilder outputString, final HashMap<String, TemplateRule> templateRulemap){
 		boolean block =false;
 		String ret="";
@@ -59,6 +69,13 @@ public class RuleEmitter {
 		}
 	}
 
+	/**
+	 * <p>emitSubClassOfRule.</p>
+	 *
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param outputString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
+	 */
 	public static void emitSubClassOfRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder outputString, final HashMap<String, TemplateRule> templateRulemap) {
 
 		final String c1=variablesInList.getLast().getPartOfList();
@@ -78,6 +95,13 @@ public class RuleEmitter {
 		}
 	}
 
+	/**
+	 * <p>emitSubPropertyOfRule.</p>
+	 *
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param outputString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
+	 */
 	public static void emitSubPropertyOfRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder outputString, final HashMap<String, TemplateRule> templateRulemap) {
 
 		final String p1=variablesInList.getLast().getPartOfList();
@@ -96,6 +120,11 @@ public class RuleEmitter {
 
 	/**
 	 * emit Rules for #eq-diff2/diff3 #prp-adp #cax-adc
+	 *
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param output a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String emitForEachRules(final LinkedList<BoundVariable> variablesInList, final StringBuilder output, final HashMap<String, TemplateRule> templateRulemap) {
 		String output2="";
@@ -143,8 +172,9 @@ public class RuleEmitter {
 	/**
 	 * make template for #prp-key
 	 *
-	 * @param variablesInList
-	 * @param returnString
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param returnString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unused")
 	public static void emitHasKeyRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
@@ -170,8 +200,9 @@ public class RuleEmitter {
 	/**
 	 * make template for #cls-int1
 	 *
-	 * @param variablesInList
-	 * @param returnString
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param returnString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unused")
 	public static void emitIntersectionOfRule1(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
@@ -196,8 +227,9 @@ public class RuleEmitter {
 	/**
 	 * make template for #scm-int
 	 *
-	 * @param variablesInList
-	 * @param returnString
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param returnString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unused")
 	public static void emitIntersectionOfRule2(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
@@ -224,8 +256,9 @@ public class RuleEmitter {
 	/**
 	 * make template for #cls-oo
 	 *
-	 * @param variablesInList
-	 * @param returnString
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param returnString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unused")
 	public static void emitOneOfRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
@@ -248,6 +281,9 @@ public class RuleEmitter {
 	/**
 	 * make template for #prp-spo2
 	 *
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param rule a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unused")
 	public static void emitPropertyChainRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder rule, final HashMap<String, TemplateRule> templateRulemap) {
@@ -285,8 +321,9 @@ public class RuleEmitter {
 	/**
 	 * make template for #cls-uni
 	 *
-	 * @param variablesInList
-	 * @param returnString
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param returnString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unused")
 	public static void emitUnionOfRule1(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
@@ -302,10 +339,10 @@ public class RuleEmitter {
 	/**
 	 * make template for #scm-uni
 	 *
-	 * @param variablesInList
-	 * @param returnString
+	 * @param variablesInList a {@link java.util.LinkedList} object.
+	 * @param returnString a {@link java.lang.StringBuilder} object.
+	 * @param templateRulemap a {@link java.util.HashMap} object.
 	 */
-
 	@SuppressWarnings("unused")
 	public static void emitUnionOfRule2(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 		returnString.append("\n(* #scm-uni *)");

@@ -28,7 +28,10 @@ import java.util.ArrayList;
 
 /**
  * Extends ArrayList with a method to call a specific method on all contained objects.
+ *
  * @param <T> The type of the objects hold by the list.
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class HandlerList<T> extends ArrayList<T> {
@@ -36,6 +39,7 @@ public class HandlerList<T> extends ArrayList<T> {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param methodToCall The method that should be called on all contained on all contained objects.
 	 */
 	public HandlerList(final Method methodToCall) {

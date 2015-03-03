@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,29 +21,50 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node;
-
 public class DBBPTreeEntry<K, V> {
 	public K key;
 	public V value;
 	public int filenameOfNextLeafNode;
 
+	/**
+	 * <p>Constructor for DBBPTreeEntry.</p>
+	 *
+	 * @param key a K object.
+	 * @param value a V object.
+	 */
 	public DBBPTreeEntry(final K key, final V value) {
 		this.key = key;
 		this.value = value;
 	}
 
+	/**
+	 * <p>Constructor for DBBPTreeEntry.</p>
+	 *
+	 * @param key a K object.
+	 * @param value a V object.
+	 * @param filenameOfNextLeafNode a int.
+	 */
 	public DBBPTreeEntry(final K key, final V value, final int filenameOfNextLeafNode) {
 		this.key = key;
 		this.value = value;
 		this.filenameOfNextLeafNode = filenameOfNextLeafNode;
 	}
 
+	/**
+	 * <p>Constructor for DBBPTreeEntry.</p>
+	 *
+	 * @param filenameOfNextLeafNode a int.
+	 */
 	public DBBPTreeEntry(final int filenameOfNextLeafNode) {
 		this(null, null, filenameOfNextLeafNode);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		if (this.key != null) {

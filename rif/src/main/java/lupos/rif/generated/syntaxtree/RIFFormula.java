@@ -36,6 +36,9 @@ import lupos.rif.generated.visitor.*;
  * .. .. | %2 #0 < EXISTS ><br>
  * .. .. . .. #1 ( RIFVar() )+ #2 < LPAREN > #3 RIFFormula() #4 < RPAREN ><br>
  * .. .. | %3 RIFAtomic()<br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFFormula implements INode {
 
@@ -95,18 +98,18 @@ public class RIFFormula implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

@@ -31,8 +31,9 @@ import java.util.List;
  * This message class is sent to all subbrokers
  * in some intervals to ensure that all event messages
  * are forwarded to all needed brokers
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class BrokerNetworkUpdateMessage implements Serializable{
 
@@ -41,6 +42,7 @@ public class BrokerNetworkUpdateMessage implements Serializable{
 	
 	/**
 	 * Sets this message
+	 *
 	 * @param table the hash table which maps event type strings
 	 * to a list of tcpConnectInfo objects to which these
 	 * specific event types should be sent
@@ -49,6 +51,11 @@ public class BrokerNetworkUpdateMessage implements Serializable{
 		this.table = table;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>table</code>.</p>
+	 *
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public Hashtable<String, List<TcpConnectInfo>> getTable(){
 		return this.table;
 	}

@@ -47,8 +47,9 @@ import lupos.event.communication.TcpMessageTransport;
  * This class represents the single master broker which
  * only handles management of severeal connecting producers,
  * brokers and consumers
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class MasterBroker implements IMessageReceivedHandler<Serializable>, Runnable, IDisconnectedHandler{
 
@@ -56,6 +57,9 @@ public class MasterBroker implements IMessageReceivedHandler<Serializable>, Runn
 	
 	private boolean threadToggle = false;
 	
+	/**
+	 * <p>Constructor for MasterBroker.</p>
+	 */
 	public MasterBroker(){
 		this.subBrokers = new Hashtable<Integer, SubBrokerData>();
 	}
@@ -73,6 +77,8 @@ public class MasterBroker implements IMessageReceivedHandler<Serializable>, Runn
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This thread method is the main calculating thread
 	 * in this master broker which does all networking
 	 * updates
@@ -165,6 +171,11 @@ public class MasterBroker implements IMessageReceivedHandler<Serializable>, Runn
 		return broker.getMessageService().getConnectionInfo();
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args){
 		MasterBroker master = new MasterBroker();
 		try{
@@ -174,6 +185,7 @@ public class MasterBroker implements IMessageReceivedHandler<Serializable>, Runn
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void messageReceived(Object src, Serializable msg) {
 		if (msg instanceof ConnectionRequest){
@@ -313,6 +325,8 @@ public class MasterBroker implements IMessageReceivedHandler<Serializable>, Runn
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method will be called after a client has been
 	 * disconnected. In fact this method will only handle
 	 * disconnects by subbroker and will remove them from

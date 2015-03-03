@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * MenuSelector<T> is a helper class for creating menus in console.
+ *
  * @author Bjoern
  *
  * <br><br>For multiple selection, the following commands (comma-separated) are allowed:
@@ -41,8 +42,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <li>1-10 -> all numeric input values from 1 to 10 (included) are processed
  * <li>1:10:2 -> all numeric input values from 1 to 10 (can be included) with step 2 are processed (odd/even)
  * </ul>
- *
  * @param <T> The type of results of the menu
+ * @version $Id: $Id
  */
 public class MenuSelector<T> {
 
@@ -58,6 +59,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Sets default values
+	 *
 	 * @param string the default value as String (for displaying)
 	 * @param i the default value as datatype (for accessing / resulting)
 	 * @return this
@@ -76,6 +78,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Sets the print stream to be used (default: System.out)
+	 *
 	 * @param ps the new print stream
 	 * @return this
 	 */
@@ -88,6 +91,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Sets the menu title / action descriptino
+	 *
 	 * @param s the title
 	 * @return this
 	 */
@@ -100,6 +104,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Adds an menu item with the specified
+	 *
 	 * @param key key (to be pressed)
 	 * @param value the value as result
 	 * @param niceName the nice name to be displayed
@@ -117,6 +122,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Adds an menu item with the specified
+	 *
 	 * @param key key (to be pressed)
 	 * @param value the value as result (and its toString for displaying)
 	 * @return this
@@ -129,6 +135,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Adds a numbered item in the menu
+	 *
 	 * @param value the value for the result, if choosen and its toString() for displaying
 	 * @return this
 	 */
@@ -138,6 +145,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Adds a numbered item in the menu
+	 *
 	 * @param value the value for the result, if choosen
 	 * @param niceName the nice name to be displayed
 	 * @return this
@@ -160,6 +168,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Adds custom free input type
+	 *
 	 * @param validator the validator for validating the input
 	 * @return this
 	 */
@@ -173,6 +182,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Executed the menu
+	 *
 	 * @return the item which is selected
 	 */
 	public MenuItem<T> run() {
@@ -181,6 +191,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Sets whether the input (keyboard key) is to be parsed without case-sensitive spelling
+	 *
 	 * @param enabled enables the parameter
 	 * @return this
 	 */
@@ -191,6 +202,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Sets whether multi input is allowed (select more than one item via comma seperated input)
+	 *
 	 * @param multiSelection enables the parameter
 	 * @return this
 	 */
@@ -201,6 +213,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Exceuted and displays the menu
+	 *
 	 * @param s the scanner to be used, if one already opened
 	 * @return the item which is selected
 	 */
@@ -370,6 +383,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Returns the menu-items selected on multi-input-support
+	 *
 	 * @return the menu items or null
 	 */
 	public MenuItem<T>[] getMenuResults() {
@@ -477,6 +491,7 @@ public class MenuSelector<T> {
 
 	/**
 	 * Is the result a multi selection? (more than one item is selected?)
+	 *
 	 * @return yes/no
 	 */
 	public boolean isMultiSelectedResult() {

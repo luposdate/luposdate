@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -33,7 +37,6 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.rdf.Prefix;
-
 public class ComputeBindings extends SingleInputOperator {
 	/**
 	 *
@@ -42,13 +45,19 @@ public class ComputeBindings extends SingleInputOperator {
 
 	protected QueryResult queryResult;
 
+	/**
+	 * <p>Constructor for ComputeBindings.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public ComputeBindings(final QueryResult qr) {
 		this.queryResult = qr;
 	}
 
 	/**
-	 * saving the QueryResult
+	 * {@inheritDoc}
 	 *
+	 * saving the QueryResult
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
@@ -56,11 +65,10 @@ public class ComputeBindings extends SingleInputOperator {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Sets the intersection variables and the union variables for the given
 	 * query result and returns a message with all used variables
-	 *
-	 * @param msg
-	 * @return Message
 	 */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
@@ -78,11 +86,13 @@ public class ComputeBindings extends SingleInputOperator {
 		return msgResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " " + this.queryResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return super.toString() + " " + this.queryResult.toString(prefixInstance);

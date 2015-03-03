@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -31,20 +35,36 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-
 public abstract class Formatter {
 	private final String formatName;
 	private final String key;
 
+	/**
+	 * <p>Constructor for Formatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 */
 	public Formatter(final String formatName){
 		this(formatName, formatName);
 	}
 
+	/**
+	 * <p>Constructor for Formatter.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	public Formatter(final String formatName, final String key){
 		this.formatName = formatName;
 		this.key = key.toLowerCase();
 	}
 
+	/**
+	 * <p>getMIMEType.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getMIMEType(final QueryResult queryResult){
 		if(queryResult instanceof GraphResult){
 			return "text/n3";
@@ -54,14 +74,32 @@ public abstract class Formatter {
 		}
 	}
 
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName(){
 		return this.formatName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>key</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getKey(){
 		return this.key;
 	}
 
+	/**
+	 * <p>writeResult.</p>
+	 *
+	 * @param os a {@link java.io.OutputStream} object.
+	 * @param variables a {@link java.util.Collection} object.
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		if(queryResult instanceof GraphResult){
 			final byte[] carriageReturn = "\n".getBytes();
@@ -76,6 +114,7 @@ public abstract class Formatter {
 
 	/**
 	 * This method is overwritten by those formatters, which support returning query-triples
+	 *
 	 * @return true if returning query-triples is supported, otherwise false
 	 */
 	public boolean isWriteQueryTriples() {

@@ -35,9 +35,13 @@ import lupos.event.util.Literals;
 
 /**
  * Increments a number every second and creates an event each time.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class CountProducer extends ProducerBase {	
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/Count/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/Count/";
 	
 	private final static Literal TYPE = Literals.createURI(NAMESPACE, "CountEvent");
@@ -46,10 +50,16 @@ public class CountProducer extends ProducerBase {
 	private int count = 0;
 	
 
+	/**
+	 * <p>Constructor for CountProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public CountProducer(SerializingMessageService msgService) {
 		super(msgService, 1000);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produce() {
 		try {
@@ -67,6 +77,12 @@ public class CountProducer extends ProducerBase {
 	}
 
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

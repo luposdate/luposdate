@@ -60,6 +60,8 @@ import lupos.distributed.query.QueryClient;
  * This class asks when instanciating a p2p network, how to configure or uses an
  * already created evaluator.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class P2PConfigFrame {
 
@@ -230,7 +232,7 @@ public abstract class P2PConfigFrame {
 	 * @param evaluator
 	 *            the item to be clicked on
 	 * @return the peer item to be used
-	 * @throws Exception
+	 * @throws java.lang.Exception
 	 *             error, if the given evaluator cannot be used, because
 	 *             different distribution strategy or wrong P2P network
 	 *             implementation
@@ -240,16 +242,17 @@ public abstract class P2PConfigFrame {
 
 	/**
 	 * a new instance of an evaluator and p2p-network is to be instantiated by
-	 * the implementation and a new {@link PeerItem} is to return
+	 * the implementation and a new {@link lupos.distributed.p2p.gui.P2PConfigFrame.PeerItem} is to return
 	 *
 	 * @param port
 	 *            the port, the network should listen to
+	 * @return a {@link lupos.distributed.p2p.gui.P2PConfigFrame.PeerItem} object.
 	 */
 	public abstract PeerItem onLocalInstance(int port);
 
 	/**
 	 * a new instance of an evaluator and p2p-network is to be instantiated by
-	 * the implementation and a new {@link PeerItem} is to return
+	 * the implementation and a new {@link lupos.distributed.p2p.gui.P2PConfigFrame.PeerItem} is to return
 	 *
 	 * @param localPort
 	 *            the port, the network should listen to
@@ -257,6 +260,7 @@ public abstract class P2PConfigFrame {
 	 *            the port of the master's peer
 	 * @param masterAddress
 	 *            the ip/server-name of the master's peer
+	 * @return a {@link lupos.distributed.p2p.gui.P2PConfigFrame.PeerItem} object.
 	 */
 	public abstract PeerItem onMasterInstance(int localPort, int masterPort,
 			String masterAddress);
@@ -269,6 +273,8 @@ public abstract class P2PConfigFrame {
 	/**
 	 * Shows the dialog to select the P2P-network / evaluator which is to be
 	 * used.
+	 *
+	 * @return a {@link lupos.distributed.p2p.gui.P2PConfigFrame.PeerItem} object.
 	 */
 	public PeerItem showDialog() {
 		//store the result here

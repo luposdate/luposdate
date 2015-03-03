@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.util;
 
@@ -31,20 +35,39 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
-
 public class VEImageIcon extends ImageIcon {
 	private static final long serialVersionUID = 6170066219065271242L;
 
+	/**
+	 * <p>getScaledIcon.</p>
+	 *
+	 * @param source a {@link java.net.URL} object.
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getScaledIcon(final URL source, final int height) {
 		return new ImageIcon(new ImageIcon(source).getImage()
 				.getScaledInstance(height, -1, Image.SCALE_SMOOTH));
 	}
 
+	/**
+	 * <p>getScaledIcon.</p>
+	 *
+	 * @param source a {@link java.lang.String} object.
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getScaledIcon(final String source, final int height) {
 		return new ImageIcon(new ImageIcon(source).getImage()
 				.getScaledInstance(height, -1, Image.SCALE_SMOOTH));
 	}
 
+	/**
+	 * <p>getMinusIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getMinusIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -79,6 +102,12 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getPlusIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getPlusIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -116,6 +145,12 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getUncheckedIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getUncheckedIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -131,6 +166,12 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getMouseOverUncheckedIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getMouseOverUncheckedIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -146,6 +187,12 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getCheckedIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getCheckedIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -162,6 +209,12 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getMouseOverCheckedIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getMouseOverCheckedIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -216,6 +269,12 @@ public class VEImageIcon extends ImageIcon {
 						- 6 * step));
 	}
 
+	/**
+	 * <p>getResizeIcon.</p>
+	 *
+	 * @param height a int.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getResizeIcon(int height) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -247,6 +306,13 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getPlayIcon.</p>
+	 *
+	 * @param height a int.
+	 * @param color a {@link java.awt.Color} object.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getPlayIcon(int height, final Color color) {
 		if (height % 2 == 1)
 			height -= 1;
@@ -264,6 +330,13 @@ public class VEImageIcon extends ImageIcon {
 		return new ImageIcon(dst);
 	}
 
+	/**
+	 * <p>getPauseIcon.</p>
+	 *
+	 * @param height a int.
+	 * @param color a {@link java.awt.Color} object.
+	 * @return a {@link javax.swing.ImageIcon} object.
+	 */
 	public static ImageIcon getPauseIcon(int height, final Color color) {
 		if (height % 2 == 1)
 			height -= 1;

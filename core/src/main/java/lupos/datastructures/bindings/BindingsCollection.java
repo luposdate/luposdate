@@ -41,7 +41,7 @@ import lupos.datastructures.items.literal.Literal;
  * literal at position 'i' in the literals' collection
  *
  * @author Sebastian Ebers
- *
+ * @version $Id: $Id
  */
 public class BindingsCollection extends Bindings{
 
@@ -56,17 +56,21 @@ public class BindingsCollection extends Bindings{
 	/** The collection storing the literals */
 	private Vector<Literal> literals;
 
+	/** {@inheritDoc} */
 	@Override
 	public void init(){
 		this.variables = new Vector<Variable>();
 		this.literals = new Vector<Literal>();
 	}
 
-	/** Constructor	 */
+	/**
+	 * Constructor
+	 */
 	public BindingsCollection(){
 		this.init();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsCollection clone(){
 		final BindingsCollection other=new BindingsCollection();
@@ -76,12 +80,12 @@ public class BindingsCollection extends Bindings{
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Adds a new binding to the collection.<br>
 	 * If the variable is already bound, the old value
 	 * will be dismissed. If the old value is still needed,
 	 * the collection of bindings has to be cloned previously.
-	 * @param var  the variable
-	 * @param literal  the literal
 	 */
 	@Override
 	public void add(final Variable var, final Literal literal){
@@ -95,9 +99,9 @@ public class BindingsCollection extends Bindings{
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the literal a variable is bound to.
-	 * @param var  the variable
-	 * @return the literal a variable is bound to
 	 */
 	@Override
 	public Literal get(final Variable var){
@@ -109,8 +113,9 @@ public class BindingsCollection extends Bindings{
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the set of bound variables
-	 * @return the set of bound variables
 	 */
 	@Override
 	public Set<Variable> getVariableSet(){
@@ -128,7 +133,8 @@ public class BindingsCollection extends Bindings{
 	 * If the bindings of the other collections conflict with
 	 * the bindings of this collection, the old bindings of
 	 * this one will be dismissed.
-	 * @param other
+	 *
+	 * @param other a {@link lupos.datastructures.bindings.BindingsCollection} object.
 	 */
 	public void addAll(final BindingsCollection other){
 		for (final Variable variable : other.variables) {
@@ -136,6 +142,7 @@ public class BindingsCollection extends Bindings{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object other) {
 
@@ -148,6 +155,7 @@ public class BindingsCollection extends Bindings{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsCollection createInstance(){
 		return new BindingsCollection();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.generate;
 
@@ -42,30 +46,46 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.debug.DebugStep;
-
 public class Generate extends SingleInputOperator {
 
 	private Item[] valueOrVariable;
 
 	/**
-	 * @param valueOrVariable
+	 * <p>Constructor for Generate.</p>
+	 *
+	 * @param valueOrVariable an array of {@link lupos.datastructures.items.Item} objects.
 	 */
 	public Generate(final Item[] valueOrVariable) {
 		this.valueOrVariable = valueOrVariable;
 	}
 
+	/**
+	 * <p>Constructor for Generate.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	public Generate(TriplePattern tp) {
 		this.valueOrVariable = tp.getItems().clone();
 	}
 
+	/**
+	 * <p>Constructor for Generate.</p>
+	 */
 	public Generate() {
 	}
 
+	/**
+	 * <p>Constructor for Generate.</p>
+	 *
+	 * @param pm a {@link lupos.engine.operators.tripleoperator.TripleOperator} object.
+	 * @param valueOrVariable a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Generate(final TripleOperator pm, final Item... valueOrVariable) {
 		this.valueOrVariable = valueOrVariable;
 		setSucceedingOperator(new OperatorIDTuple(pm, 0));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator bo) {
 		super.cloneFrom(bo);
@@ -78,14 +98,30 @@ public class Generate extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>valueOrVariable</code>.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.items.Item} objects.
+	 */
 	public Item[] getValueOrVariable() {
 		return valueOrVariable;
 	}
 
+	/**
+	 * <p>Setter for the field <code>valueOrVariable</code>.</p>
+	 *
+	 * @param valueOrVariable an array of {@link lupos.datastructures.items.Item} objects.
+	 */
 	public void setValueOrVariable(Item[] valueOrVariable) {
 		this.valueOrVariable=valueOrVariable;
 	}
 
+	/**
+	 * <p>replaceItems.</p>
+	 *
+	 * @param toBeReplaced a {@link lupos.datastructures.items.Item} object.
+	 * @param replacement a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void replaceItems(final Item toBeReplaced, final Item replacement) {
 		for (int i = 0; i < valueOrVariable.length; i++) {
 			if (valueOrVariable[i].equals(toBeReplaced))
@@ -94,6 +130,7 @@ public class Generate extends SingleInputOperator {
 	}
 
 	// bindings should contain exactly one element!
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final Iterator<Bindings> pib = bindings.oneTimeIterator();
@@ -126,6 +163,7 @@ public class Generate extends SingleInputOperator {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer result = new StringBuffer(super.toString()+" (");
@@ -141,6 +179,7 @@ public class Generate extends SingleInputOperator {
 		return result.toString() + ")";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		// specified...
@@ -162,6 +201,13 @@ public class Generate extends SingleInputOperator {
 	}
 
 
+	/**
+	 * <p>matched.</p>
+	 *
+	 * @param pos a int.
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a boolean.
+	 */
 	public boolean matched(final int pos, final Literal lit) {
 		if (valueOrVariable[pos].isVariable())
 			return true;
@@ -175,6 +221,13 @@ public class Generate extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>strictlyMatched.</p>
+	 *
+	 * @param pos a int.
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a boolean.
+	 */
 	public boolean strictlyMatched(final int pos, final Literal lit) {
 		if (valueOrVariable[pos].isVariable())
 			return false;
@@ -188,12 +241,20 @@ public class Generate extends SingleInputOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void processAllDebug(final QueryResult queryResult,
 			final int operandID, final DebugStep debugstep) {
 		processDebugStep(queryResult, debugstep);
 	}
 
+	/**
+	 * <p>processDebugStep.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param debugStep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult processDebugStep(final QueryResult bindings,
 			final DebugStep debugStep) {
 		final Iterator<Bindings> pib = bindings.oneTimeIterator();

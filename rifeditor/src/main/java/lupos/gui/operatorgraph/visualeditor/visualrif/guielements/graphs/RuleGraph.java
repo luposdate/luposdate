@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 
@@ -56,8 +60,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualGraphOperator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 public class RuleGraph  extends VisualGraphOperator{
 
 
@@ -79,6 +81,13 @@ public class RuleGraph  extends VisualGraphOperator{
 
 
 	// Constructor
+	/**
+	 * <p>Constructor for RuleGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 * @param isRecursiveOperatorGraph a boolean.
+	 */
 	public RuleGraph(final VisualEditor<Operator> visualEditor, final VisualRifEditor visualRifEditor,final boolean isRecursiveOperatorGraph) {
 		super(visualEditor);
 
@@ -102,6 +111,7 @@ public class RuleGraph  extends VisualGraphOperator{
 
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected Operator createOperator(final Class<? extends Operator> clazz, final Item content) throws Exception {
 
@@ -112,9 +122,11 @@ public class RuleGraph  extends VisualGraphOperator{
 		return newOp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void handleAddOperator(final Operator arg0) {}
 
+	/** {@inheritDoc} */
 	@Override
 	public String serializeGraph() {
 		final String ruleGraph = super.serializeSuperGraph();
@@ -123,20 +135,24 @@ public class RuleGraph  extends VisualGraphOperator{
 		return ret.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean validateAddOperator(final int arg0, final int arg1, final String arg2) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewRule(final RuleOperator ro) {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewPrefix(final PrefixOperator po) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewImport(final ImportOperator io) {
 	}
@@ -145,6 +161,7 @@ public class RuleGraph  extends VisualGraphOperator{
 	/*
 	 * Rule Elements
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void createNewUniterm(final UnitermOperator fo) {
 		fo.setVisualRifEditor(this.visualRifEditor);
@@ -154,6 +171,7 @@ public class RuleGraph  extends VisualGraphOperator{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewOperatorContainer(final AbstractContainer oc) {
 		oc.setVisualRifEditor(this.visualRifEditor);
@@ -168,6 +186,7 @@ public class RuleGraph  extends VisualGraphOperator{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewListOperator(final ListOperator lo) {
 		lo.setVisualRifEditor(this.visualRifEditor);
@@ -176,6 +195,7 @@ public class RuleGraph  extends VisualGraphOperator{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewFrameOperator(final FrameOperator fo) {
 		fo.setVisualRifEditor(this.visualRifEditor);
@@ -184,6 +204,7 @@ public class RuleGraph  extends VisualGraphOperator{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewConstantOperator(final ConstantOperator co) {
 		co.setVisualRifEditor(this.visualRifEditor);
@@ -192,6 +213,7 @@ public class RuleGraph  extends VisualGraphOperator{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewVariableOperator(final VariableOperator vo) {
 		vo.setVisualRifEditor(this.visualRifEditor);
@@ -200,14 +222,29 @@ public class RuleGraph  extends VisualGraphOperator{
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>operatorContainer</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer} object.
+	 */
 	public AbstractContainer getOperatorContainer() {
 		return this.operatorContainer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>operatorContainer</code>.</p>
+	 *
+	 * @param operatorContainer a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer} object.
+	 */
 	public void setOperatorContainer(final AbstractContainer operatorContainer) {
 		this.operatorContainer = operatorContainer;
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 */
 	public JSONObject toJSON() {
 		final JSONObject saveObject = new JSONObject();
 		this.operatorNames.clear();
@@ -274,6 +311,12 @@ public class RuleGraph  extends VisualGraphOperator{
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadRuleGraph a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void fromJSON(final JSONObject loadRuleGraph) throws JSONException{
 		@SuppressWarnings("unchecked")
 		final
@@ -474,9 +517,10 @@ public class RuleGraph  extends VisualGraphOperator{
 	/**
 	 * Checks whether the name of
 	 * the operator is already used.
-	 * @param basename
-	 * @param newname
-	 * @param index
+	 *
+	 * @param basename a {@link java.lang.String} object.
+	 * @param newname a {@link java.lang.String} object.
+	 * @param index a int.
 	 * @return a new auto-generated name for the new rule
 	 */
 	public String checkName(final String basename, String newname, int index) {
@@ -499,31 +543,66 @@ public class RuleGraph  extends VisualGraphOperator{
 		return newname;
 	}
 
+	/**
+	 * <p>isRecursiveOperatorGraph.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isRecursiveOperatorGraph() {
 		return this.recursiveOperatorGraph;
 	}
 
+	/**
+	 * <p>Setter for the field <code>recursiveOperatorGraph</code>.</p>
+	 *
+	 * @param recursiveOperatorGraph a boolean.
+	 */
 	public void setRecursiveOperatorGraph(final boolean recursiveOperatorGraph) {
 		this.recursiveOperatorGraph = recursiveOperatorGraph;
 	}
 
+	/**
+	 * <p>getVisualRifEditor.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor(){
 		return this.visualRifEditor;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>visualEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public VisualEditor<Operator> getVisualEditor() {
 		return this.visualEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualEditor</code>.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public void setVisualEditor(final VisualEditor<Operator> visualEditor) {
 		this.visualEditor = visualEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleVariableList</code>.</p>
+	 *
+	 * @param ruleVariableList a {@link java.util.LinkedList} object.
+	 */
 	public void setRuleVariableList(final LinkedList<Term> ruleVariableList) {
 		this.ruleVariableList = ruleVariableList;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleVariableList</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Term> getRuleVariableList() {
 		return this.ruleVariableList;
 	}

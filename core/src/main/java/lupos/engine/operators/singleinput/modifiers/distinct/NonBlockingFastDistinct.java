@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers.distinct;
 
@@ -34,23 +38,32 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
-
 public class NonBlockingFastDistinct extends Distinct {
 
 	private static final long serialVersionUID = -5670129779878953225L;
 
 	protected final Set<Bindings> bindings;
 
+	/** Constant <code>BITVECTORSIZE=64 * 1024</code> */
 	public static int BITVECTORSIZE = 64 * 1024;
 
+	/**
+	 * <p>Constructor for NonBlockingFastDistinct.</p>
+	 *
+	 * @param setOfBindings a {@link java.util.Set} object.
+	 */
 	public NonBlockingFastDistinct(final Set<Bindings> setOfBindings){
 		this.bindings = setOfBindings;
 	}
 
+	/**
+	 * <p>Constructor for NonBlockingFastDistinct.</p>
+	 */
 	public NonBlockingFastDistinct() {
 		this(new PagedHashMultiSet<Bindings>(Bindings.class));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult _bindings, final int operandID) {
 		if(_bindings.isEmpty()){
@@ -116,6 +129,7 @@ public class NonBlockingFastDistinct extends Distinct {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
@@ -125,16 +139,19 @@ public class NonBlockingFastDistinct extends Distinct {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteQueryResult(final int operandID) {
 		this.bindings.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void finalize(){
 		if(this.bindings instanceof PagedHashMultiSet){

@@ -34,6 +34,9 @@ import lupos.optimizations.logical.statistics.VarBucket;
 
 /**
  * This class represents an inner node of the plan =&gt; join of two other plans
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class InnerNodePlan extends Plan {
 
@@ -49,6 +52,7 @@ public class InnerNodePlan extends Plan {
 
 	/**
 	 * This method returns the left child of this inner node
+	 *
 	 * @return the left child
 	 */
 	public Plan getLeft() {
@@ -57,6 +61,7 @@ public class InnerNodePlan extends Plan {
 
 	/**
 	 * This method returns the right child of this inner node
+	 *
 	 * @return the right child
 	 */
 	public Plan getRight() {
@@ -65,6 +70,7 @@ public class InnerNodePlan extends Plan {
 
 	/**
 	 * This method returns the join type of this inner node
+	 *
 	 * @return the join type
 	 */
 	public JoinType getJoinType() {
@@ -73,6 +79,7 @@ public class InnerNodePlan extends Plan {
 
 	/**
 	 * Constructor for constructing an inner node representing a join between two children
+	 *
 	 * @param left the left child
 	 * @param right the right child
 	 */
@@ -115,6 +122,7 @@ public class InnerNodePlan extends Plan {
 		this.findMaxMergeJoins();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public double determineCostUsingSIP(final double cardinalityOtherOperand) {
 		if (this.selectivity == null) {
@@ -169,6 +177,7 @@ public class InnerNodePlan extends Plan {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected int numberOfCartesianProducts() {
 		final int numberOfCartesianProductsSubTrees = this.left.numberOfCartesianProducts() + this.right.numberOfCartesianProducts();
@@ -180,6 +189,7 @@ public class InnerNodePlan extends Plan {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int findMaxMergeJoins() {
 		if (this.joinPartner.size() > 0){
@@ -200,6 +210,7 @@ public class InnerNodePlan extends Plan {
 		return this.numberMergeJoins;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean canUseMergeJoin(
 			final LinkedList<Variable> possibleOrdering) {
@@ -245,6 +256,7 @@ public class InnerNodePlan extends Plan {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected String getNodeString() {
 		return "+ INNER NODE: join type:"
@@ -252,17 +264,20 @@ public class InnerNodePlan extends Plan {
 				+ super.getNodeString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected String toString(final String indent) {
 		return super.toString(indent) + this.left.toString(indent + "|") + this.right.toString(indent + "|");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public InnerNodePlan clone() {
 		// clone deeply!
 		return new InnerNodePlan(this.left.clone(), this.right.clone());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkOrdering(final LinkedList<Variable> possibleOrdering) {
 		this.numberMergeJoins = 1; // in case of success this node represents a merge join

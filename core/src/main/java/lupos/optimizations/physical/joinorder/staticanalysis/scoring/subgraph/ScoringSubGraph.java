@@ -26,12 +26,16 @@ package lupos.optimizations.physical.joinorder.staticanalysis.scoring.subgraph;
 import lupos.engine.operators.index.BasicIndexScan;
 
 /**
- * This interface is used in classes to score a subgraph to be the next best subgraph to join 
+ * This interface is used in classes to score a subgraph to be the next best subgraph to join
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface ScoringSubGraph<T> {
 	
 	/**
 	 * This method is used in classes to score subgraphs to be the next best subgraphs to join
+	 *
 	 * @param indexScan the IndexScan operator the join order to optimize
 	 * @param additionalInformation1 additional information of the first subgraph (e.g. the variables of already joined triple patterns)
 	 * @param additionalInformation2 additional information of the second subgraph (e.g. the variables of already joined triple patterns)
@@ -41,6 +45,7 @@ public interface ScoringSubGraph<T> {
 	
 	/**
 	 * Whether or not the score ordering is ascending or descending
+	 *
 	 * @return a boolean value (true = minimum score is best, false maximum score is best)
 	 */
 	public boolean scoreIsAscending();

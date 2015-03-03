@@ -37,19 +37,25 @@ import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 /**
  * This is almost an abstract class, but as it needs to be
  * instantiated in operatorPipe it is not. Nevertheless it should not be
- * instantiated, as no useful results will be created. 
+ * instantiated, as no useful results will be created.
  * DO ONLY USE EXTENDING CLASSES
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Sort extends SingleInputOperator {
 
 	protected ComparatorBindings comparator; // Comparator which compares in order to sort
 
+	/**
+	 * <p>Constructor for Sort.</p>
+	 */
 	public Sort() {
 	}
 
 	/**
 	 * Contructor
-	 * 
+	 *
 	 * @param node
 	 *            the current sort node. From this node all other informations
 	 *            like variables to sort after will be extracted.
@@ -58,25 +64,42 @@ public class Sort extends SingleInputOperator {
 		comparator = new ComparatorAST(node);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
 		comparator = ((Sort) op).getComparator();
 	}
 
+	/**
+	 * <p>Getter for the field <code>comparator</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings} object.
+	 */
 	public ComparatorBindings getComparator() {
 		return comparator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>comparator</code>.</p>
+	 *
+	 * @param comparator a {@link lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings} object.
+	 */
 	public void setComparator(ComparatorBindings comparator) {
 		this.comparator=comparator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + "\nSortcriterium:" + getSortCriterium();
 	}
 
+	/**
+	 * <p>getSortCriterium.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Variable> getSortCriterium() {
 		return getComparator().getSortCriterium();
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.mergeunion;
 
@@ -34,18 +38,23 @@ import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.Union;
 import lupos.misc.debug.DebugStep;
-
 public class ComparatorMergeUnion extends Union {
 
 	protected QueryResult[] operandResults = null;
 
 	protected final Comparator<Bindings> comparator;
 
+	/**
+	 * <p>Constructor for ComparatorMergeUnion.</p>
+	 *
+	 * @param comparator a {@link java.util.Comparator} object.
+	 */
 	public ComparatorMergeUnion(final Comparator<Bindings> comparator) {
 		super();
 		this.comparator = comparator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
@@ -71,6 +80,7 @@ public class ComparatorMergeUnion extends Union {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		// do we already process the operand results (then all operandResults
@@ -97,6 +107,7 @@ public class ComparatorMergeUnion extends Union {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
@@ -127,6 +138,7 @@ public class ComparatorMergeUnion extends Union {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + ": " + this.comparator.toString();

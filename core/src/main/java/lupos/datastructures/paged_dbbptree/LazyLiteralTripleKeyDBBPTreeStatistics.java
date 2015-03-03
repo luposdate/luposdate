@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree;
 
@@ -57,11 +61,19 @@ import lupos.io.helper.OutHelper;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.VarBucket;
-
 public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, Triple> {
 
 	protected final RDF3XIndexScan.CollationOrder order;
 
+	/**
+	 * <p>Constructor for LazyLiteralTripleKeyDBBPTreeStatistics.</p>
+	 *
+	 * @param comparator a {@link java.util.Comparator} object.
+	 * @param k a int.
+	 * @param k_ a int.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public LazyLiteralTripleKeyDBBPTreeStatistics(
 			final Comparator<? super TripleKey> comparator, final int k,
 			final int k_, final RDF3XIndexScan.CollationOrder order)
@@ -70,6 +82,13 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		this.order = order;
 	}
 
+	/** Constant <code>map={ { 0, 1, 2 }, // SPO
+			{ 0, 2, 1 }, // SOP
+			{ 1, 0, 2 }, // PSO
+			{ 1, 2, 0 }, // POS
+			{ 2, 0, 1 }, // OSP
+			{ 2, 1, 0 } // OPS
+	}</code> */
 	protected final static int[][] map = { { 0, 1, 2 }, // SPO
 			{ 0, 2, 1 }, // SOP
 			{ 1, 0, 2 }, // PSO
@@ -78,6 +97,22 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 			{ 2, 1, 0 } // OPS
 	};
 
+	/**
+	 * <p>writeInnerNodeEntry.</p>
+	 *
+	 * @param fileName a int.
+	 * @param key a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @param lastKey a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param numberOfTriples a int.
+	 * @param numberDistinctSubjects a int.
+	 * @param numberDistinctPredicates a int.
+	 * @param numberDistinctObjects a int.
+	 * @param subjectDifferentFromPreviousTriple a boolean.
+	 * @param predicateDifferentFromPreviousTriple a boolean.
+	 * @param objectDifferentFromPreviousTriple a boolean.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
 			final OutputStream out, final TripleKey lastKey,
 			final int numberOfTriples, final int numberDistinctSubjects,
@@ -228,6 +263,20 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		}
 	}
 
+	/**
+	 * <p>writeInnerNodeEntry.</p>
+	 *
+	 * @param fileName a int.
+	 * @param numberOfTriples a int.
+	 * @param numberDistinctSubjects a int.
+	 * @param numberDistinctPredicates a int.
+	 * @param numberDistinctObjects a int.
+	 * @param subjectDifferentFromPreviousTriple a boolean.
+	 * @param predicateDifferentFromPreviousTriple a boolean.
+	 * @param objectDifferentFromPreviousTriple a boolean.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeInnerNodeEntry(final int fileName,
 			final int numberOfTriples, final int numberDistinctSubjects,
 			final int numberDistinctPredicates,
@@ -309,6 +358,13 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		}
 	}
 
+	/**
+	 * <p>getNextInnerNodeEntryStatistics.</p>
+	 *
+	 * @param lastKey a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics.InnerNodeEntry} object.
+	 */
 	public InnerNodeEntry getNextInnerNodeEntryStatistics(
 			final TripleKey lastKey, final InputStream in) {
 		try {
@@ -470,6 +526,15 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		return null;
 	}
 
+	/**
+	 * <p>getVarBucket.</p>
+	 *
+	 * @param key a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param minimum a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param maximum a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param pos a int.
+	 * @return a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 */
 	public VarBucket getVarBucket(final TripleKey key, final TripleKey minimum,
 			final TripleKey maximum, final int pos) {
 		final VarBucket result = new VarBucket();
@@ -1239,6 +1304,13 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		}
 	}
 
+	/**
+	 * <p>getDistance.</p>
+	 *
+	 * @param minimum a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param maximum a {@link lupos.datastructures.items.TripleKey} object.
+	 * @return a int.
+	 */
 	public int getDistance(final TripleKey minimum, final TripleKey maximum) {
 		return this.getDistance(this.rootPage, minimum, maximum);
 	}
@@ -1436,6 +1508,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		return dist;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void generateDBBPTree(final SortedMap<TripleKey, Triple> sortedMap) {
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
@@ -1504,6 +1577,12 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		this.rootPage = previous.filename;
 	}
 
+	/**
+	 * <p>generateDBBPTree.</p>
+	 *
+	 * @param set a {@link java.util.Set} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void generateDBBPTree(final Set<Map.Entry<TripleKey, Triple>> set) throws IOException {
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
 		this.size = set.size();
@@ -1904,6 +1983,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLuposObject(final OutputStream loos)
 			throws IOException {
@@ -1920,6 +2000,7 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 		OutHelper.writeLuposByte((byte) this.order.ordinal(), loos);
 	}
 
+	/** {@inheritDoc} */
 	public static LazyLiteralTripleKeyDBBPTreeStatistics readLuposObject(final InputStream lois) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int currentID = InputHelper.readLuposInt(lois);
 		final int k = InputHelper.readLuposInt(lois);
@@ -1942,6 +2023,17 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 	 * This constructor is only used for creating a DBBPTree after reading it
 	 * from file!
 	 *
+	 * @param k a int.
+	 * @param k_ a int.
+	 * @param size a int.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param rootFilename a int.
+	 * @param firstLeafFileName a int.
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @param currentID a int.
+	 * @throws java.io.IOException if any.
 	 */
 	public LazyLiteralTripleKeyDBBPTreeStatistics(final int k, final int k_,
 			final int size, final Comparator comp, final int rootFilename,

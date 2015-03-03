@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer;
 
@@ -40,12 +44,19 @@ import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.dataeditor.guielements.DataGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.StatusBar;
-
 public class CondensedViewViewer extends VisualEditor<Operator> {
 	private static final long serialVersionUID = 7155983501843091279L;
 	private JButton copyButton;
 	private JFrame frame;
 
+	/**
+	 * <p>Constructor for CondensedViewViewer.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param standAlone a boolean.
+	 * @param image a {@link java.awt.Image} object.
+	 * @param toolbar a {@link javax.swing.JPanel} object.
+	 */
 	public CondensedViewViewer(final Prefix prefix, final boolean standAlone,
 			final Image image, final JPanel toolbar) {
 		super(standAlone);
@@ -61,6 +72,11 @@ public class CondensedViewViewer extends VisualEditor<Operator> {
 		this.frame.setVisible(true);
 	}
 
+	/**
+	 * <p>getStatusBar.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	public StatusBar getStatusBar() {
 		return null;
 	}
@@ -82,10 +98,20 @@ public class CondensedViewViewer extends VisualEditor<Operator> {
 		this.frame.setVisible(true);
 	}
 
+	/**
+	 * <p>buildMenuBar.</p>
+	 *
+	 * @return a {@link javax.swing.JMenuBar} object.
+	 */
 	public JMenuBar buildMenuBar() {
 		return null;
 	}
 
+	/**
+	 * <p>createTopToolBar.</p>
+	 *
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	public JPanel createTopToolBar() {
 		final JPanel toolBar = super.createTopToolBar();
 		
@@ -115,6 +141,9 @@ public class CondensedViewViewer extends VisualEditor<Operator> {
 		return this.copyButton;
 	}
 
+	/**
+	 * <p>manageMenuItems.</p>
+	 */
 	protected void manageMenuItems() {
 		super.manageMenuItems();
 
@@ -125,6 +154,7 @@ public class CondensedViewViewer extends VisualEditor<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	protected void pasteElements(final String content) {
 		System.err.println("Nothing can be pasted into the Condensed View!");
 	}

@@ -40,6 +40,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * It is assumed that the data is not distributed in an intelligent way and that any registered endpoint
  * can have data for any triple pattern.
  * Also non-luposdate SPARQL endpoints are supported.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Storage_DE extends BlockUpdatesStorage {
 
@@ -55,34 +58,41 @@ public class Storage_DE extends BlockUpdatesStorage {
 
 	/**
 	 * Constructor: The endpoint management is initialized (which reads in the configuration file with registered endpoints)
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public Storage_DE(final BindingsFactory bindingsFactory){
 		super(bindingsFactory);
 		this.endpointManagement = new EndpointManagement();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void blockInsert(){
 		this.endpointManagement.submitSPARULQueryToArbitraryEndpoint(QueryBuilder.buildInsertQuery(this.toBeAdded), this.bindingsFactory);
 		this.insertedData = true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTripleAfterAdding(final Triple triple) {
 		return !this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triple), this.bindingsFactory).isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeAfterAdding(final Triple triple) {
 		this.endpointManagement.submitSPARULQuery(QueryBuilder.buildDeleteQuery(triple), this.bindingsFactory);
 		this.endpointManagement.waitForThreadPool();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePatternAfterAdding(final TriplePattern triplePattern) {
 		return this.endpointManagement.submitSPARQLQuery(QueryBuilder.buildQuery(triplePattern), this.bindingsFactory);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 		if(!this.toBeAdded.isEmpty()){
@@ -97,6 +107,8 @@ public class Storage_DE extends BlockUpdatesStorage {
 	}
 
 	/**
+	 * <p>Getter for the field <code>endpointManagement</code>.</p>
+	 *
 	 * @return the endpoint management object for submitting to the registered endpoints
 	 */
 	public EndpointManagement getEndpointManagement(){

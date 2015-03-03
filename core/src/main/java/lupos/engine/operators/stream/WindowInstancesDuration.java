@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -33,16 +37,22 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
-
 public class WindowInstancesDuration extends WindowInstances {
 
 	private final int duration;
 
+	/**
+	 * <p>Constructor for WindowInstancesDuration.</p>
+	 *
+	 * @param duration a int.
+	 * @param instanceClass a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public WindowInstancesDuration(final int duration, Literal instanceClass) {
 		super(instanceClass);
 		this.duration = duration;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
 		this.tripleBuffer = new LinkedList<TimestampedTriple>();
@@ -50,6 +60,7 @@ public class WindowInstancesDuration extends WindowInstances {
 		return message;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
@@ -108,6 +119,7 @@ public class WindowInstancesDuration extends WindowInstances {
 		this.tripleBuffer.addLast(t);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
@@ -167,11 +179,13 @@ public class WindowInstancesDuration extends WindowInstances {
 		this.tripleBuffer.addLast(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" " + this.duration;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(Prefix prefixInstance) {
 		return super.toString(prefixInstance) + " " + this.duration;

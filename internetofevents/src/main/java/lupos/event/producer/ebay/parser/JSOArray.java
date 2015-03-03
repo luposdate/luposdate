@@ -28,6 +28,9 @@ import java.util.Arrays;
 /**
  * Representing an array of JSON data structures.
  * The array has a fixed length.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSOArray extends JSObject {
 
@@ -43,8 +46,6 @@ public class JSOArray extends JSObject {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param	array	JSON data structure representatives
 	 */
 	public JSOArray(JSObject[] array) {
 		this.array = array;
@@ -52,12 +53,11 @@ public class JSOArray extends JSObject {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the data in the <code>index</code>-th field of the array.
 	 * If <code>index</code> is out of the array's range <strong>null</strong> is
 	 * returned.
-	 * 
-	 * @param	index	Index of the requested array field
-	 * @return	The requested array field's data
 	 */
 	@Override
 	public JSObject get(int index) {
@@ -66,11 +66,13 @@ public class JSOArray extends JSObject {
 				: this.array[index];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return Arrays.toString(this.array);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSObject get(String key) {
 		JSObject got = null;
@@ -85,6 +87,7 @@ public class JSOArray extends JSObject {
 		return got;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(String indent) {
 		StringBuilder builder = new StringBuilder().append('[');

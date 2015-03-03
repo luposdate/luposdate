@@ -28,23 +28,35 @@ import lupos.event.action.send.SendEMail;
 
 /**
  * Action that sends a text message via XMPP when executed.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class XmppMessageAction extends Action {
 
 	private final SendEMail sendEMail;
 		
+	/**
+	 * <p>Constructor for XmppMessageAction.</p>
+	 */
 	public XmppMessageAction() {
 		super("SendMailAction");
 		this.sendEMail = new SendEMail();
 		this.sendEMail.init();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void execute(QueryResult queryResult) {
 		this.sendEMail.sendContent(queryResult.toString());
 	}
 
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args) {
 		new XmppMessageAction().execute(new QueryResult());
 	}

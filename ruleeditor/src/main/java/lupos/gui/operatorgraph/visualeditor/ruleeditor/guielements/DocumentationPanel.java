@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -59,7 +63,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TypeEnum;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class DocumentationPanel extends JPanel {
 	private static final long serialVersionUID = 7878587266163569062L;
 
@@ -81,6 +84,14 @@ public class DocumentationPanel extends JPanel {
 	private JTextField jTF_visualRepr_left = null;
 	private JTextField jTF_visualRepr_right = null;
 
+	/**
+	 * <p>Constructor for DocumentationPanel.</p>
+	 *
+	 * @param elementType a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TypeEnum} object.
+	 * @param elementName a {@link java.lang.String} object.
+	 * @param ruleEditorPane a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RuleEditorPane} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public DocumentationPanel(TypeEnum elementType, String elementName, RuleEditorPane ruleEditorPane, JSONObject loadObject) {
 		super(new BorderLayout());
 
@@ -328,6 +339,12 @@ public class DocumentationPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * <p>rebuild.</p>
+	 *
+	 * @param rules a {@link java.util.LinkedList} object.
+	 * @param rulePackages a {@link java.util.LinkedList} object.
+	 */
 	public void rebuild(LinkedList<RulePanel> rules, LinkedList<RulePackagePanel> rulePackages) {
 		// --- rules - begin ---
 		this.seeAlsoPanel_rules.removeAll();
@@ -388,10 +405,21 @@ public class DocumentationPanel extends JPanel {
 		// --- rule packages - end ---
 	}
 
+	/**
+	 * <p>Setter for the field <code>elementName</code>.</p>
+	 *
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void setElementName(String newName) {
 		this.elementName = newName;
 	}
 
+	/**
+	 * <p>updateRuleName.</p>
+	 *
+	 * @param oldName a {@link java.lang.String} object.
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void updateRuleName(String oldName, String newName) {
 		if(this.seeAlsoList_rules.contains(oldName)) {
 			this.seeAlsoList_rules.remove(oldName);
@@ -400,6 +428,12 @@ public class DocumentationPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * <p>updateRulePackageName.</p>
+	 *
+	 * @param oldName a {@link java.lang.String} object.
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void updateRulePackageName(String oldName, String newName) {
 		if(this.seeAlsoList_rulePackages.contains(oldName)) {
 			this.seeAlsoList_rulePackages.remove(oldName);
@@ -409,10 +443,22 @@ public class DocumentationPanel extends JPanel {
 	}
 
 
+	/**
+	 * <p>getShortDescription.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getShortDescription() {
 		return this.tp_shortDescription.getText();
 	}
 
+	/**
+	 * <p>getContent.</p>
+	 *
+	 * @param targetDirectory a {@link java.lang.String} object.
+	 * @param rules an array of {@link javax.swing.JTabbedPane} objects.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getContent(String targetDirectory, JTabbedPane[] rules) {
 		StringBuffer content = new StringBuffer();
 
@@ -534,6 +580,12 @@ public class DocumentationPanel extends JPanel {
 		return buffer;
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject seeAlsoSaveObject = new JSONObject();
 		seeAlsoSaveObject.put("rules", this.seeAlsoList_rules);

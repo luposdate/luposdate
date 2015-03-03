@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort;
 
@@ -36,21 +40,30 @@ import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
-
 public abstract class SortedBagSort extends Sort {
 
 	protected SortedBag<Bindings> sswd;
 
+	/**
+	 * <p>Constructor for SortedBagSort.</p>
+	 */
 	public SortedBagSort() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for SortedBagSort.</p>
+	 *
+	 * @param sswd a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public SortedBagSort(final SortedBag<Bindings> sswd,
 			final lupos.sparql1_1.Node node) {
 		super(node);
 		this.sswd = sswd;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
 			final int operandID) {
@@ -61,6 +74,11 @@ public abstract class SortedBagSort extends Sort {
 		return null;
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	protected ParallelIterator<Bindings> getIterator() {
 		final Iterator<Bindings> itb = this.sswd.iterator();
 		return new ParallelIterator<Bindings>() {
@@ -99,18 +117,21 @@ public abstract class SortedBagSort extends Sort {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		this.computeResult();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.computeResult();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		// problem: it does not count the number of occurences of a binding
@@ -123,11 +144,13 @@ public abstract class SortedBagSort extends Sort {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		this.sswd.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
@@ -146,6 +169,7 @@ public abstract class SortedBagSort extends Sort {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -154,6 +178,7 @@ public abstract class SortedBagSort extends Sort {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

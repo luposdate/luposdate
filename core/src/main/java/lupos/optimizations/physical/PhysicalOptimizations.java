@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.physical;
 
@@ -63,7 +67,6 @@ import lupos.engine.operators.singleinput.sort.fastsort.FastSort;
 import lupos.engine.operators.stream.Stream;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
-
 public class PhysicalOptimizations {
 	private static HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>> replacements = new HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>>();
 	private static HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>> replacementsMergeJoinAndMergeOptional = new HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>>();
@@ -76,6 +79,7 @@ public class PhysicalOptimizations {
 	 *            The (unqualified) name of the class to be replaced.
 	 * @param to
 	 *            The (unqualified) name of the class to replace it.
+	 * @param prefix a {@link java.lang.String} object.
 	 */
 	@SuppressWarnings("unchecked")
 	public static void addReplacement(final String prefix, final String from,
@@ -92,6 +96,13 @@ public class PhysicalOptimizations {
 		}
 	}
 
+	/**
+	 * <p>addReplacementMergeJoinAndMergeOptional.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @param from a {@link java.lang.String} object.
+	 * @param to a {@link java.lang.String} object.
+	 */
 	@SuppressWarnings("unchecked")
 	public static void addReplacementMergeJoinAndMergeOptional(
 			final String prefix, final String from, final String to) {
@@ -169,6 +180,13 @@ public class PhysicalOptimizations {
 		addReplacement("singleinput.sort.", "Sort", "HybridSortedBagSort");
 	}
 
+	/**
+	 * <p>replaceOperators.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param root a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public static BasicOperator replaceOperators(final BasicOperator op,
 			final BasicOperator root) {
 		final SimpleOperatorGraphVisitor sogv = new SimpleOperatorGraphVisitor() {
@@ -634,6 +652,13 @@ public class PhysicalOptimizations {
 		return (BasicOperator) newRoot.visit(sogvMergeJoinsAndOptionals);
 	}
 
+	/**
+	 * <p>operatorCanReceiveSortedData.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a boolean.
+	 */
 	public static boolean operatorCanReceiveSortedData(
 			BasicOperator basicOperator, Collection<Variable> sortCriterium) {
 		if (sortCriterium == null || sortCriterium.size() == 0) {
@@ -740,6 +765,14 @@ public class PhysicalOptimizations {
 		return result;
 	}
 
+	/**
+	 * <p>operatorMustReceiveSortedData.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a boolean.
+	 */
 	public static boolean operatorMustReceiveSortedData(
 			final BasicOperator root, BasicOperator basicOperator,
 			Collection<Variable> sortCriterium) {
@@ -817,6 +850,13 @@ public class PhysicalOptimizations {
 		return false;
 	}
 
+	/**
+	 * <p>varsInTriplePatterns.</p>
+	 *
+	 * @param list_tp a {@link java.util.List} object.
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a boolean.
+	 */
 	public static boolean varsInTriplePatterns(
 			final List<TriplePattern> list_tp,
 			final Collection<Variable> sortCriterium) {
@@ -835,6 +875,15 @@ public class PhysicalOptimizations {
 		return true;
 	}
 
+	/**
+	 * <p>determineTriplePatterns.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param list a {@link java.util.List} object.
+	 * @param alreadyVisited a {@link java.util.Set} object.
+	 * @return a {@link java.util.List} object.
+	 * @throws lupos.optimizations.physical.PhysicalOptimizations$CyclesDuringDeterminationofTriplePatternsException if any.
+	 */
 	protected static List<TriplePattern> determineTriplePatterns(
 			final BasicOperator basicOperator, final List<TriplePattern> list,
 			final Set<BasicOperator> alreadyVisited) throws CyclesDuringDeterminationofTriplePatternsException {
@@ -872,6 +921,14 @@ public class PhysicalOptimizations {
 		return list;
 	}
 
+	/**
+	 * <p>determineUnionFreeTriplePatterns.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param list a {@link java.util.List} object.
+	 * @param alreadyVisited a {@link java.util.Set} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public static List<TriplePattern> determineUnionFreeTriplePatterns(
 			final BasicOperator basicOperator, final List<TriplePattern> list,
 			final Set<BasicOperator> alreadyVisited) {

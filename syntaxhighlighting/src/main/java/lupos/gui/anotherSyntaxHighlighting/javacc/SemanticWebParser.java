@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting.javacc;
 
@@ -27,14 +31,15 @@ import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
-
 public abstract class SemanticWebParser implements PARSER {
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken create(final TYPE_ENUM description, final String contents, final int beginChar) {		
 		return new SemanticWebToken((TYPE__SemanticWeb)description, contents, beginChar);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken createErrorToken(final String contents, final int beginChar) {		
 		return new SemanticWebToken(TYPE__SemanticWeb.ERROR, contents, beginChar);

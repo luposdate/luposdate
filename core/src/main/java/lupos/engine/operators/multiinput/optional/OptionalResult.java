@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,52 +21,92 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.optional;
 
 import lupos.datastructures.queryresult.QueryResult;
-
 public class OptionalResult {
 	private QueryResult joinResult;
 	private QueryResult joinPartnerFromLeftOperand;
 
+	/**
+	 * <p>Constructor for OptionalResult.</p>
+	 *
+	 * @param joinResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param joinPartnerFromLeftOperand a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public OptionalResult(final QueryResult joinResult,
 			final QueryResult joinPartnerFromLeftOperand) {
 		this.joinResult = joinResult;
 		this.joinPartnerFromLeftOperand = joinPartnerFromLeftOperand;
 	}
 
+	/**
+	 * <p>Constructor for OptionalResult.</p>
+	 */
 	public OptionalResult() {
 		// no initializations
 	}
 
+	/**
+	 * <p>Getter for the field <code>joinResult</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getJoinResult() {
 		return this.joinResult;
 	}
 
+	/**
+	 * <p>Setter for the field <code>joinResult</code>.</p>
+	 *
+	 * @param joinResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void setJoinResult(final QueryResult joinResult) {
 		this.joinResult = joinResult;
 	}
 
+	/**
+	 * <p>Getter for the field <code>joinPartnerFromLeftOperand</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getJoinPartnerFromLeftOperand() {
 		return this.joinPartnerFromLeftOperand;
 	}
 
+	/**
+	 * <p>Setter for the field <code>joinPartnerFromLeftOperand</code>.</p>
+	 *
+	 * @param joinPartnerFromLeftOperand a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void setJoinPartnerFromLeftOperand(
 			final QueryResult joinPartnerFromLeftOperand) {
 		this.joinPartnerFromLeftOperand = joinPartnerFromLeftOperand;
 	}
 
+	/**
+	 * <p>addAll.</p>
+	 *
+	 * @param or a {@link lupos.engine.operators.multiinput.optional.OptionalResult} object.
+	 */
 	public void addAll(final OptionalResult or) {
 		this.joinResult.addAll(or.joinResult);
 		this.joinPartnerFromLeftOperand.addAll(or.joinPartnerFromLeftOperand);
 	}
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 		this.joinResult.release();
 		this.joinPartnerFromLeftOperand.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "joinResult: " + this.joinResult + " joinPartnerFromLeftOperand: "

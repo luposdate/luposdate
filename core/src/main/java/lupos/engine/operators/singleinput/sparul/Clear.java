@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sparul;
 
@@ -29,18 +33,24 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
-
 public class Clear extends MultipleURIOperator {
 	
 	protected final Dataset dataset;
 	protected final boolean isSilent;
 	
+	/**
+	 * <p>Constructor for Clear.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param isSilent a boolean.
+	 */
 	public Clear(final Dataset dataset, final boolean isSilent){
 		super();
 		this.dataset = dataset;
 		this.isSilent = isSilent;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		if (cu == null) {

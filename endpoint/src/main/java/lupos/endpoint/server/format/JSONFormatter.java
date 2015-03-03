@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -34,17 +38,25 @@ import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-
 public class JSONFormatter extends HeadBodyFormatter {
 
+	/**
+	 * <p>Constructor for JSONFormatter.</p>
+	 *
+	 * @param writeQueryTriples a boolean.
+	 */
 	public JSONFormatter(final boolean writeQueryTriples) {
 		super("JSON"+(writeQueryTriples?" with Query-Triples":""), "application/sparql-results+json"+(writeQueryTriples?"+querytriples":""), writeQueryTriples);
 	}
 	
+	/**
+	 * <p>Constructor for JSONFormatter.</p>
+	 */
 	public JSONFormatter() {
 		this(false);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeBooleanResult(OutputStream os, boolean result)
 			throws IOException {
@@ -53,11 +65,13 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write("\n}".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartHead(OutputStream os) throws IOException {
 		os.write("{\n \"head\": {\n  \"vars\": [".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeFirstVariableInHead(final OutputStream os, final Variable v)
 			throws IOException {
@@ -66,6 +80,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write("\"".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeVariableInHead(OutputStream os, Variable v)
 			throws IOException {
@@ -73,47 +88,56 @@ public class JSONFormatter extends HeadBodyFormatter {
 		this.writeFirstVariableInHead(os, v);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndHead(OutputStream os) throws IOException {
 		os.write("]\n },\n \"results\": {\n  \"bindings\": [".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeFirstStartResult(final OutputStream os) throws IOException {
 		os.write("\n   {".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartResult(OutputStream os) throws IOException {
 		os.write(",".getBytes());
 		this.writeFirstStartResult(os);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndResult(OutputStream os) throws IOException {
 		os.write("\n   }".getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplesStart(final OutputStream os) throws IOException {
 		os.write(",\n    \"<Query-Triples>\": [ ".getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplesEnd(final OutputStream os) throws IOException {
 		os.write("\n                       ]".getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleFirstStart(final OutputStream os) throws IOException {
 		// avoid writing comma!
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleStart(final OutputStream os) throws IOException {
 		os.write(",\n                         ".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {		
 		// This is in no way standard and a LUPOSDATE proprietary feature!
@@ -121,6 +145,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		this.writeLiteral(os, literal);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!		
@@ -128,6 +153,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		this.writeLiteral(os, literal);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!		
@@ -136,11 +162,13 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write(" }\n                         }".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEpilogue(OutputStream os) throws IOException {
 		os.write("\n  ]\n }\n}".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeFirstStartBinding(final OutputStream os, final Variable v)
 			throws IOException {
@@ -149,6 +177,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write("\": { ".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartBinding(OutputStream os, Variable v)
 			throws IOException {
@@ -156,11 +185,13 @@ public class JSONFormatter extends HeadBodyFormatter {
 		this.writeFirstStartBinding(os, v);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndBinding(OutputStream os) throws IOException {
 		os.write(" }".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeBlankNode(OutputStream os, AnonymousLiteral blankNode)
 			throws IOException {
@@ -169,6 +200,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write("\"".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeURI(OutputStream os, URILiteral uri) throws IOException {
 		os.write("\"type\": \"uri\", \"value\": \"".getBytes());
@@ -176,6 +208,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write("\"".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeSimpleLiteral(OutputStream os, Literal literal)
 			throws IOException {
@@ -183,6 +216,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write(literal.originalString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeTypedLiteral(OutputStream os, TypedLiteral literal)
 			throws IOException {
@@ -192,6 +226,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write(literal.getOriginalContent().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLanguageTaggedLiteral(OutputStream os,
 			LanguageTaggedLiteral literal) throws IOException {
@@ -201,6 +236,7 @@ public class JSONFormatter extends HeadBodyFormatter {
 		os.write(literal.getContent().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType(QueryResult queryResult) {
 		if (queryResult instanceof GraphResult) {

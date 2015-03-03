@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -33,12 +37,17 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
-
 public class WindowInstancesNumber extends WindowInstances {
 
 	private int numberOfInstances = 0;
 
 
+	/**
+	 * <p>Constructor for WindowInstancesNumber.</p>
+	 *
+	 * @param numberOfInstances a int.
+	 * @param instanceClass a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public WindowInstancesNumber(final int numberOfInstances, Literal instanceClass) {
 		super(instanceClass);
 		if (numberOfInstances < 1) {
@@ -49,6 +58,7 @@ public class WindowInstancesNumber extends WindowInstances {
 			this.numberOfInstances = numberOfInstances;		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
 		this.tripleBuffer = new LinkedList<TimestampedTriple>();
@@ -56,6 +66,7 @@ public class WindowInstancesNumber extends WindowInstances {
 		return message;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
@@ -103,6 +114,7 @@ public class WindowInstancesNumber extends WindowInstances {
 	}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		final TimestampedTriple t = new TimestampedTriple(triple, (new Date()).getTime());
@@ -150,11 +162,13 @@ public class WindowInstancesNumber extends WindowInstances {
 	}
 			
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + this.numberOfInstances;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(Prefix prefixInstance) {
 		return super.toString(prefixInstance) + " " + this.numberOfInstances;

@@ -34,14 +34,19 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * This class is for creating the operators of the query client...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientOperatorCreator implements IOperatorCreator {
 
+	/** {@inheritDoc} */
 	@Override
 	public Root createRoot(final Dataset dataset) {
 		return new QueryClientRoot(dataset);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan createIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
 		return new QueryClientIndexScan(root, triplePatterns);

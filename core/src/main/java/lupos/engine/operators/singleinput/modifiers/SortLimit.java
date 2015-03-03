@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers;
 
@@ -31,7 +35,6 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings;
 import lupos.misc.util.ImmutableIterator;
-
 public class SortLimit extends SingleInputOperator {
 
 	private ComparatorBindings comparator;
@@ -40,25 +43,45 @@ public class SortLimit extends SingleInputOperator {
 	private int posMax = -1;
 	private int pos = 0;
 
+	/**
+	 * <p>Constructor for SortLimit.</p>
+	 *
+	 * @param comparator a {@link lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings} object.
+	 * @param limit a int.
+	 */
 	public SortLimit(final ComparatorBindings comparator, final int limit) {
 		this.setComparator(comparator);
 		this.setLimit(limit);
 	}
 
+	/**
+	 * <p>Constructor for SortLimit.</p>
+	 */
 	public SortLimit() {
 		this.comparator=null;
 		this.smallestBindings=null;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>comparator</code>.</p>
+	 *
+	 * @param comp a {@link lupos.engine.operators.singleinput.sort.comparator.ComparatorBindings} object.
+	 */
 	public void setComparator(final ComparatorBindings comp){
 		this.comparator=comp;
 	}
 
+	/**
+	 * <p>setLimit.</p>
+	 *
+	 * @param limit a int.
+	 */
 	public void setLimit(final int limit){
 		this.smallestBindings = new Bindings[limit];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final Iterator<Bindings> itb = bindings.oneTimeIterator();
@@ -108,6 +131,7 @@ public class SortLimit extends SingleInputOperator {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" " + this.smallestBindings.length;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,55 +21,90 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
-
 public abstract class ArraySort<E extends Comparable<E>> extends ToSort<E> {
 
 	protected Object[] elements;
 	protected int length = 0;
 
+	/**
+	 * <p>Constructor for ArraySort.</p>
+	 *
+	 * @param length a int.
+	 */
 	public ArraySort(final int length) {
 		elements = new Object[length];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		if (!isFull())
 			elements[length++] = elem;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		length = 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return (length == 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFull() {
 		return (length == elements.length);
 	}
 
+	/**
+	 * <p>Getter for the field <code>elements</code>.</p>
+	 *
+	 * @return an array of {@link java.lang.Object} objects.
+	 */
 	public Object[] getElements() {
 		return elements;
 	}
 
+	/**
+	 * <p>Setter for the field <code>elements</code>.</p>
+	 *
+	 * @param elements an array of {@link java.lang.Object} objects.
+	 * @param length a int.
+	 */
 	public void setElements(final Object[] elements, final int length) {
 		this.elements = elements;
 		this.length = length;
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		return length;
 	}
 
+	/**
+	 * <p>Setter for the field <code>length</code>.</p>
+	 *
+	 * @param length a int.
+	 */
 	public void setLength(final int length) {
 		this.length = length;
 	}
 
+	/**
+	 * <p>sort.</p>
+	 */
 	public abstract void sort();
 }

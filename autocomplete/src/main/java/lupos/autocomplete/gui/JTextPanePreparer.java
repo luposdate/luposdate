@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.gui;
 
@@ -53,7 +57,6 @@ import lupos.autocomplete.strategies.Strategy;
 import lupos.autocomplete.strategies.StrategyManager;
 import lupos.autocomplete.strategies.StrategyManager.LANGUAGE;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
-
 public class JTextPanePreparer extends Observable implements ActionListener, KeyListener {
 
 	protected final JTextPane textPane;
@@ -63,6 +66,13 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	protected final LuposDocument document;
 	protected final StrategyManager sm;
 
+	/**
+	 * <p>Constructor for JTextPanePreparer.</p>
+	 *
+	 * @param textPane a {@link javax.swing.JTextPane} object.
+	 * @param language a {@link lupos.autocomplete.strategies.StrategyManager.LANGUAGE} object.
+	 * @param document a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocument} object.
+	 */
 	public JTextPanePreparer(final JTextPane textPane, final LANGUAGE language, final LuposDocument document) {
 		this.textPane = textPane;
 		this.document = document;
@@ -76,6 +86,7 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	}
 
 	// was passiert wenn tasten gedrueckt werden
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(final ActionEvent event) {
 
@@ -92,10 +103,12 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void keyTyped(final KeyEvent e) {
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("serial")
 	@Override
 	public void keyReleased(final KeyEvent e) {
@@ -229,6 +242,7 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void keyPressed(final KeyEvent e) {
 	}
@@ -236,6 +250,9 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 
 	/*
 	 * doppelter Mausklick fuegt ausgewähltes Wort ein
+	 */
+	/**
+	 * <p>handleMouseKlicks.</p>
 	 */
 	public void handleMouseKlicks() {
 		this.jl.addMouseListener(new MouseListener() {
@@ -274,6 +291,9 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	/*
 	 * fuegt das ausgewaehlte Listenelement an
 	 * der aktuellen Textcursorposition ein
+	 */
+	/**
+	 * <p>insertSelectedWord.</p>
 	 */
 	public void insertSelectedWord() {
 		try {
@@ -347,6 +367,9 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	/*
 	 * navigiert zum naechsten Listenelement
 	 */
+	/**
+	 * <p>nextListItem.</p>
+	 */
 	public void nextListItem() {
 		this.index = this.jl.getSelectedIndex();
 		if (this.index == (this.jl.getModel().getSize() - 1)) {
@@ -361,6 +384,9 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	/*
 	 * navigiert zum vorigen Listenelement
 	 */
+	/**
+	 * <p>previousListItem.</p>
+	 */
 	public void previousListItem() {
 		this.index = this.jl.getSelectedIndex();
 		if (this.index > 0) {
@@ -374,6 +400,9 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 
 	/*
 	 * oeffnet das Popup
+	 */
+	/**
+	 * <p>openPopup.</p>
 	 */
 	public void openPopup() {
 		/*
@@ -408,6 +437,9 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	/*
 	 * Initialisiert das Popup mit seinen Einstellungen
 	 */
+	/**
+	 * <p>buildPopup.</p>
+	 */
 	public void buildPopup() {
 		this.popupMenu = new JPopupMenu();
 		final JPanel panel = new JPanel();
@@ -437,6 +469,11 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	/*
 	 *  returnt die genaue X Koordinate on Screen
 	 */
+	/**
+	 * <p>getPositionX.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPositionX() {
 		if (this.textPane.getCaretPosition() == 0) {
 			return (int) this.textPane.getLocationOnScreen().getX();
@@ -449,6 +486,11 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	 *  returnt die genaue Y Koordinate on Screen + 15px damit es eine Spalte
 	 *  weiter unten ist
 	 */
+	/**
+	 * <p>getPositionY.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPositionY() {
 		if (this.textPane.getCaretPosition() == 0) {
 			return (int) this.textPane.getLocationOnScreen().getY() + 16;
@@ -458,6 +500,11 @@ public class JTextPanePreparer extends Observable implements ActionListener, Key
 	}
 
 	// gibt das aktuelle Wort zurueck
+	/**
+	 * <p>getCurrentWord.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getCurrentWord() {
 		return Strategy.getCurrentWord(this.textPane.getText().replaceAll("\r\n", "\n"), this.textPane.getCaretPosition());
 	}

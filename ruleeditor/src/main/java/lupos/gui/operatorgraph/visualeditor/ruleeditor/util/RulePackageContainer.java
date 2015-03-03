@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -36,16 +40,25 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePanel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RulePackageContainer implements ITree {
 	private RuleEditor editor;
 	private RulePackagePanel activeRulePackage = null;
 	private HashMap<String, RulePackagePanel> rulePackages = new HashMap<String, RulePackagePanel>();
 
+	/**
+	 * <p>Constructor for RulePackageContainer.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public RulePackageContainer(RuleEditor editor) {
 		this.editor = editor;
 	}
 
+	/**
+	 * <p>createNewRulePackage.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePackagePanel} object.
+	 */
 	public RulePackagePanel createNewRulePackage() {
 		String name = this.checkName("new rule package", "new rule package", 0);
 
@@ -55,6 +68,14 @@ public class RulePackageContainer implements ITree {
 		return this.activeRulePackage;
 	}
 
+	/**
+	 * <p>checkName.</p>
+	 *
+	 * @param basename a {@link java.lang.String} object.
+	 * @param newname a {@link java.lang.String} object.
+	 * @param index a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String checkName(String basename, String newname, int index) {
 		boolean exists = false;
 
@@ -75,6 +96,11 @@ public class RulePackageContainer implements ITree {
 		return newname;
 	}
 
+	/**
+	 * <p>showRulePackage.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 */
 	public void showRulePackage(String rulePackageName) {
 		this.activeRulePackage = this.rulePackages.get(rulePackageName);
 		this.activeRulePackage.updateRulePackage();
@@ -82,6 +108,7 @@ public class RulePackageContainer implements ITree {
 		this.editor.setRightComponent(this.activeRulePackage);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public void removeElement(String elem, TreeNode parentNode) {
 		RulePackagePanel ret = this.rulePackages.remove(elem);
@@ -102,6 +129,7 @@ public class RulePackageContainer implements ITree {
 		this.editor.setRightComponent(new JPanel());
 	}
 
+	/** {@inheritDoc} */
 	public boolean nameChanged(TypeEnum e, String oldName, String newName) {
 		if(e == TypeEnum.Rule) {
 			return this.editor.getRuleContainer().nameChanged(e, oldName, newName);
@@ -148,14 +176,30 @@ public class RulePackageContainer implements ITree {
 		}
 	}
 
+	/**
+	 * <p>getNameOfActiveElement.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getNameOfActiveElement() {
 		return this.activeRulePackage.toString();
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulePackages</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<RulePackagePanel> getRulePackages() {
 		return new LinkedList<RulePackagePanel>(this.rulePackages.values());
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject saveObject = new JSONObject();
 
@@ -168,6 +212,12 @@ public class RulePackageContainer implements ITree {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public void fromJSON(JSONObject loadObject) throws JSONException {
 		this.activeRulePackage = null;

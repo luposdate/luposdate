@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph;
 
@@ -53,17 +57,29 @@ import lupos.misc.Tuple;
 import lupos.sparql1_1.*;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
-
 public class IndexOperatorGraphGenerator extends
 		SPARQLCoreParserVisitorImplementation implements
 		SPARQL1_1OperatorgraphGeneratorVisitor {
 
+	/** Constant <code>operatorGraphGeneratorClass</code> */
 	public static Class<? extends IndexOperatorGraphGenerator> operatorGraphGeneratorClass = IndexOperatorGraphGenerator.class;
 	
+	/**
+	 * <p>Constructor for IndexOperatorGraphGenerator.</p>
+	 */
 	protected IndexOperatorGraphGenerator(){
 		super();
 	}
 			
+	/**
+	 * <p>createOperatorGraphGenerator.</p>
+	 *
+	 * @param root a lupos$engine$operators$index$Root object.
+	 * @param evaluator a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 * @return a {@link lupos.sparql1_1.operatorgraph.IndexOperatorGraphGenerator} object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	public static IndexOperatorGraphGenerator createOperatorGraphGenerator(Root root, CommonCoreQueryEvaluator<Node> evaluator) throws InstantiationException, IllegalAccessException{
 		IndexOperatorGraphGenerator iogg = operatorGraphGeneratorClass.newInstance();
 		iogg.setIndexScanGenerator(new IndexScanCreator_BasicIndex(root));
@@ -71,6 +87,7 @@ public class IndexOperatorGraphGenerator extends
 		return iogg;
 	}
 	
+	/** {@inheritDoc} */
 	public void visit(final ASTModify node, OperatorConnection connection) {
 		URILiteral with = null;
 		String withString = null;
@@ -123,6 +140,13 @@ public class IndexOperatorGraphGenerator extends
 		node.jjtGetChild(node.jjtGetNumChildren()-1).accept(this, connection, null);
 	}
 	
+	/**
+	 * <p>generateInsertForModify.</p>
+	 *
+	 * @param constructTemplate a {@link lupos.sparql1_1.ASTConstructTemplate} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 * @param with a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	protected void generateInsertForModify(ASTConstructTemplate constructTemplate, OperatorConnection connection, URILiteral with){
 		LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructsAndCheckForBNodes((ASTConstructTemplate)constructTemplate);
 		LinkedList<MultipleURIOperator> muos = new LinkedList<MultipleURIOperator>(); 
@@ -139,6 +163,13 @@ public class IndexOperatorGraphGenerator extends
 		insertMultipleURIOperator(muos, graphConstraints, connection);
 	}
 
+	/**
+	 * <p>generateDeleteForModify.</p>
+	 *
+	 * @param constructTemplate a {@link lupos.sparql1_1.ASTConstructTemplate} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 * @param with a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	protected void generateDeleteForModify(ASTConstructTemplate constructTemplate, OperatorConnection connection, URILiteral with){
 		LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructsAndCheckForBNodes((ASTConstructTemplate)constructTemplate);
 		LinkedList<MultipleURIOperator> muos = new LinkedList<MultipleURIOperator>(); 
@@ -155,6 +186,13 @@ public class IndexOperatorGraphGenerator extends
 		insertMultipleURIOperator(muos, graphConstraints, connection);
 	}
 
+	/**
+	 * <p>insertMultipleURIOperator.</p>
+	 *
+	 * @param ops a {@link java.util.Collection} object.
+	 * @param graphConstraints a {@link java.util.LinkedList} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 */
 	protected void insertMultipleURIOperator(Collection<MultipleURIOperator> ops, LinkedList<Tuple<Construct, Item>> graphConstraints, OperatorConnection connection){
 		Iterator<MultipleURIOperator> it = ops.iterator();
 		for(Tuple<Construct, Item> entry: graphConstraints){
@@ -185,6 +223,12 @@ public class IndexOperatorGraphGenerator extends
 		}
 	}
 	
+	/**
+	 * <p>getGraphConstructsAndCheckForBNodes.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTConstructTemplate} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	protected LinkedList<Tuple<Construct, Item>> getGraphConstructsAndCheckForBNodes(ASTConstructTemplate node){
 		LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructs(node);
 		for(Tuple<Construct, Item> entry: graphConstraints){
@@ -200,6 +244,12 @@ public class IndexOperatorGraphGenerator extends
 		return graphConstraints;
 	}
 	
+	/**
+	 * <p>getGraphConstructsAndCheckForBNodesAndVariables.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTConstructTemplate} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	protected LinkedList<Tuple<Construct, Item>> getGraphConstructsAndCheckForBNodesAndVariables(ASTConstructTemplate node){
 		LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructs(node);
 		for(Tuple<Construct, Item> entry: graphConstraints){
@@ -218,6 +268,7 @@ public class IndexOperatorGraphGenerator extends
 	}
 
 	
+	/** {@inheritDoc} */
 	public void visit(final ASTDelete node, OperatorConnection connection) {
 		LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructsAndCheckForBNodesAndVariables((ASTConstructTemplate)node.jjtGetChild(node.jjtGetNumChildren() - 1));
 		LinkedList<MultipleURIOperator> muos = new LinkedList<MultipleURIOperator>(); 
@@ -227,6 +278,7 @@ public class IndexOperatorGraphGenerator extends
 		insertMultipleURIOperator(muos,  graphConstraints,  node);
 	}
 
+	/** {@inheritDoc} */
 	public void visit(final ASTInsert node, OperatorConnection connection) {
 		LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructsAndCheckForBNodesAndVariables((ASTConstructTemplate)node.jjtGetChild(node.jjtGetNumChildren() - 1));
 		LinkedList<MultipleURIOperator> muos = new LinkedList<MultipleURIOperator>(); 
@@ -236,6 +288,13 @@ public class IndexOperatorGraphGenerator extends
 		insertMultipleURIOperator(muos,  graphConstraints,  node);
 	}
 	
+	/**
+	 * <p>insertMultipleURIOperator.</p>
+	 *
+	 * @param ops a {@link java.util.Collection} object.
+	 * @param graphConstraints a {@link java.util.LinkedList} object.
+	 * @param node a {@link lupos.sparql1_1.SimpleNode} object.
+	 */
 	protected void insertMultipleURIOperator(Collection<MultipleURIOperator> ops, LinkedList<Tuple<Construct, Item>> graphConstraints, SimpleNode node){
 		Iterator<MultipleURIOperator> it = ops.iterator();
 		for(Tuple<Construct, Item> entry: graphConstraints){
@@ -258,10 +317,17 @@ public class IndexOperatorGraphGenerator extends
 		}
 	}
 
+	/**
+	 * <p>InsertEmptyIndex.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.SimpleNode} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 */
 	public void InsertEmptyIndex(final SimpleNode node, final OperatorConnection connection) {
 		this.indexScanCreator.createEmptyIndexScanAndConnectWithRoot(connection.getOperatorIDTuple());
 	}
 
+	/** {@inheritDoc} */
 	public void visit(final ASTLoad node, final OperatorConnection connection) {
 		final Collection<URILiteral> cu = new LinkedList<URILiteral>();
 		Node child0 = node.jjtGetChild(0);
@@ -284,6 +350,12 @@ public class IndexOperatorGraphGenerator extends
 		this.indexScanCreator.createEmptyIndexScanAndConnectWithRoot(connection.getOperatorIDTuple());
 	}
 	
+	/**
+	 * <p>setURIs.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 * @param muo a {@link lupos.engine.operators.singleinput.sparul.MultipleURIOperator} object.
+	 */
 	public void setURIs(Node node, MultipleURIOperator muo){
 		if(node.jjtGetNumChildren()>0){
 			Node child = node.jjtGetChild(0);
@@ -324,6 +396,7 @@ public class IndexOperatorGraphGenerator extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void visit(final ASTClear node, final OperatorConnection connection) {
 		final Clear c = new Clear(this.indexScanCreator.getDataset(), node.isSilent());
 		this.setURIs(node, c);
@@ -331,6 +404,7 @@ public class IndexOperatorGraphGenerator extends
 		this.indexScanCreator.createEmptyIndexScanAndConnectWithRoot(connection.getOperatorIDTuple());
 	}
 
+	/** {@inheritDoc} */
 	public void visit(final ASTCreate node, final OperatorConnection connection) {
 		final Create c = new Create(this.indexScanCreator.getDataset(), node.isSilent());
 		try {
@@ -342,6 +416,7 @@ public class IndexOperatorGraphGenerator extends
 		this.indexScanCreator.createEmptyIndexScanAndConnectWithRoot(connection.getOperatorIDTuple());
 	}
 
+	/** {@inheritDoc} */
 	public void visit(final ASTDrop node, final OperatorConnection connection) {
 		final Drop d = new Drop(this.indexScanCreator.getDataset(), node.isSilent());
 		this.setURIs(node, d);
@@ -349,16 +424,19 @@ public class IndexOperatorGraphGenerator extends
 		this.indexScanCreator.createEmptyIndexScanAndConnectWithRoot(connection.getOperatorIDTuple());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTDefaultGraph node, final OperatorConnection connection) {
 		this.indexScanCreator.addDefaultGraph(((ASTQuotedURIRef) node.jjtGetChild(0)).getQRef());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTNamedGraph node, final OperatorConnection connection) {
 		this.indexScanCreator.addNamedGraph(((ASTQuotedURIRef) node.jjtGetChild(0)).getQRef());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTGraphConstraint node, OperatorConnection connection) {
 		final int numberChildren = node.jjtGetNumChildren();
@@ -385,6 +463,7 @@ public class IndexOperatorGraphGenerator extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(ASTWindow node, OperatorConnection connection, Item graphConstraint){
 		throw new UnsupportedOperationException("Index-based evaluators do not support stream processing!");

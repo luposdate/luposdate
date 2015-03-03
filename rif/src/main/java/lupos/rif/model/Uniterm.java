@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -31,19 +35,31 @@ import java.util.Set;
 
 import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
-
 public abstract class Uniterm extends AbstractRuleNode implements IExpression {
 	public IExpression termName;
 	public List<IExpression> termParams = new ArrayList<IExpression>();
 
+	/**
+	 * <p>Constructor for Uniterm.</p>
+	 */
 	public Uniterm() {
 		super();
 	}
 
+	/**
+	 * <p>containsOnlyVariables.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean containsOnlyVariables() {
 		return false;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<RuleVariable> getVariables() {
 		Set<RuleVariable> vars = new HashSet<RuleVariable>();
 		vars.addAll(termName.getVariables());
@@ -52,10 +68,20 @@ public abstract class Uniterm extends AbstractRuleNode implements IExpression {
 		return vars;
 	}
 
+	/**
+	 * <p>getPredicates.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Uniterm> getPredicates() {
 		return Arrays.asList(this);
 	}
 
+	/**
+	 * <p>getLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLabel() {
 		final StringBuffer str = new StringBuffer();
 		str.append(termName.toString()).append("(");
@@ -71,6 +97,7 @@ public abstract class Uniterm extends AbstractRuleNode implements IExpression {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	public String toString(Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();
 		str.append(termName.toString(prefixInstance)).append("(");
@@ -86,5 +113,11 @@ public abstract class Uniterm extends AbstractRuleNode implements IExpression {
 		return str.toString();
 	}
 
+	/**
+	 * <p>equalsDataStructure.</p>
+	 *
+	 * @param obj a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public abstract boolean equalsDataStructure(Object obj);
 }

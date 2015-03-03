@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui;
 
@@ -38,10 +42,14 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-
 public class Browser extends JFrame implements HyperlinkListener {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		if (args.length == 0) {
 			new Browser("http://www.google.de", "Simple Swing Browser", true);
@@ -54,6 +62,13 @@ public class Browser extends JFrame implements HyperlinkListener {
 
 	// private String initialURL;
 
+	/**
+	 * <p>Constructor for Browser.</p>
+	 *
+	 * @param initialURL a {@link java.lang.String} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param programExitOnWindowClosing a boolean.
+	 */
 	public Browser(final String initialURL, final String title,
 			final boolean programExitOnWindowClosing) {
 		super(title);
@@ -86,11 +101,29 @@ public class Browser extends JFrame implements HyperlinkListener {
 		this.setVisible(true);
 	}
 
+	/**
+	 * <p>Constructor for Browser.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param programExitOnWindowClosing a boolean.
+	 */
 	public Browser(final String content, final String type, final String title,
 			final boolean programExitOnWindowClosing) {
 		this(content, type, title, programExitOnWindowClosing, null, null);
 	}
 
+	/**
+	 * <p>Constructor for Browser.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param programExitOnWindowClosing a boolean.
+	 * @param panelNorth a {@link javax.swing.JPanel} object.
+	 * @param panelSouth a {@link javax.swing.JPanel} object.
+	 */
 	public Browser(final String content, final String type, final String title,
 			final boolean programExitOnWindowClosing, final JPanel panelNorth,
 			final JPanel panelSouth) {
@@ -128,6 +161,7 @@ public class Browser extends JFrame implements HyperlinkListener {
 		this.setVisible(true);
 	}
 
+	/** {@inheritDoc} */
 	public void hyperlinkUpdate(final HyperlinkEvent e) {
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			final JEditorPane pane = (JEditorPane) e.getSource();
@@ -150,6 +184,11 @@ public class Browser extends JFrame implements HyperlinkListener {
 		}
 	}
 
+	/**
+	 * <p>warnUser.</p>
+	 *
+	 * @param message a {@link java.lang.String} object.
+	 */
 	protected void warnUser(final String message) {
 		JOptionPane.showMessageDialog(this, message, "Error",
 				JOptionPane.ERROR_MESSAGE);

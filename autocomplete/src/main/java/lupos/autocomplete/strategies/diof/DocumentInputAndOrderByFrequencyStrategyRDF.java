@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.diof;
 
@@ -31,10 +35,15 @@ import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.javacc.TurtleParser;
 
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParserConstants;
-
 public class DocumentInputAndOrderByFrequencyStrategyRDF extends
 		DocumentInputAndOrderByFrequencyStrategy {
 
+	/**
+	 * <p>Constructor for DocumentInputAndOrderByFrequencyStrategyRDF.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public DocumentInputAndOrderByFrequencyStrategyRDF(final LuposDocumentReader r, final ILuposParser p) {
 		super(r, p);
 	}
@@ -43,6 +52,7 @@ public class DocumentInputAndOrderByFrequencyStrategyRDF extends
 	 * reservedWords sind urspruenglich durch Anfuehrungszeichen eingeschlossen,
 	 * diese werden natuerlich entfernt
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void initReservedWords() {
 		final TYPE__SemanticWeb[] tokenMap = TurtleParser.getStaticTokenMap();

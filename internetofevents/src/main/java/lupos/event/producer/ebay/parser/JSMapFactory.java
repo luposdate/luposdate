@@ -25,6 +25,9 @@ package lupos.event.producer.ebay.parser;
 
 /**
  * Factory for incremental construction of a complex JSON object.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSMapFactory extends JSONFactory {
 
@@ -38,6 +41,7 @@ public class JSMapFactory extends JSONFactory {
 	 */
 	private String key = null;
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean append(char c) {
 		boolean next = !this.finished;
@@ -96,6 +100,7 @@ public class JSMapFactory extends JSONFactory {
 		return next;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSObject create() {
 		return this.map;

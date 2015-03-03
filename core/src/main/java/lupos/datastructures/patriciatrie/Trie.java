@@ -28,6 +28,9 @@ import lupos.datastructures.patriciatrie.node.NodeHelper;
 
 /**
  * This class implements some of the base algorithms that can be executed on Patricia Tries.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Trie {
 
@@ -52,6 +55,7 @@ public abstract class Trie {
 
 	/**
 	 * Creates a new root node instance, depending on what kind of trie instance this is.
+	 *
 	 * @return An instance of either RBNode, RBNodeWithValue, DBNode, DBNodeWithValue, DBSeqNode or DBSeqNodeWithValue
 	 */
 	protected abstract Node createRootNodeInstance();
@@ -83,6 +87,8 @@ public abstract class Trie {
 	}
 
 	/**
+	 * <p>hasCompleteMetadata.</p>
+	 *
 	 * @return <strong>true</strong> if this trie contains all metadata like
 	 *         numberOfEntries for each inner node.<br />
 	 *         <strong>false</strong> if this trie is missing important
@@ -151,6 +157,8 @@ public abstract class Trie {
 	}
 
 	/**
+	 * <p>size.</p>
+	 *
 	 * @return Number of entries in this trie
 	 */
 	public int size() {
@@ -162,6 +170,8 @@ public abstract class Trie {
 	}
 
 	/**
+	 * <p>getNodeCount.</p>
+	 *
 	 * @return Number of nodes in this trie
 	 */
 	public int getNodeCount() {
@@ -172,6 +182,7 @@ public abstract class Trie {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		if (this.getRootNode() != null){
@@ -181,6 +192,7 @@ public abstract class Trie {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Trie)){
@@ -207,6 +219,8 @@ public abstract class Trie {
 	}
 
 	/**
+	 * <p>Setter for the field <code>rootNode</code>.</p>
+	 *
 	 * @param rootNode the rootNode to set
 	 */
 	public void setRootNode(final Node rootNode) {
@@ -214,6 +228,8 @@ public abstract class Trie {
 	}
 
 	/**
+	 * <p>Getter for the field <code>rootNode</code>.</p>
+	 *
 	 * @return the rootNode
 	 */
 	public Node getRootNode() {

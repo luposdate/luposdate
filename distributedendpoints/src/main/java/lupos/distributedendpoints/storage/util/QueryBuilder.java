@@ -32,11 +32,15 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * Helper class to build SPARUL queries for manipulating and querying the distributed endpoints
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryBuilder {
 
 	/**
 	 * Builds an insert-data-query, which inserts all given triples
+	 *
 	 * @param toBeAdded the triples to be inserted
 	 * @return a SPARUL query for inserting the given triples
 	 */
@@ -55,6 +59,7 @@ public class QueryBuilder {
 	
 	/**
 	 * Builds a delete-data-query, which deletes the given triple
+	 *
 	 * @param triple the triple to be deleted
 	 * @return a SPARUL query for deleting the given triple
 	 */
@@ -64,6 +69,7 @@ public class QueryBuilder {
 	
 	/**
 	 * Builds a query to check if a triple is contained in the distributed storage
+	 *
 	 * @param triple the triple to be checked for containment
 	 * @return the query for checking the containment of the given triple
 	 */
@@ -73,6 +79,7 @@ public class QueryBuilder {
 	
 	/**
 	 * Builds a query to evaluate the given triple pattern
+	 *
 	 * @param triplePattern the triple pattern to be evaluated
 	 * @return the query for evaluating the given triple pattern
 	 */
@@ -83,6 +90,7 @@ public class QueryBuilder {
 	/**
 	 * Blank nodes cannot occur in SPARUL insertions and deletions.
 	 * This method therefore replaces blank nodes in triples...
+	 *
 	 * @param triple the triple
 	 * @return A N3 string representation of the triple, where blank nodes have been replaced with iris
 	 */
@@ -101,6 +109,7 @@ public class QueryBuilder {
 	/**
 	 * Blank nodes cannot occur in SPARUL insertions and deletions.
 	 * This method therefore returns an iri for a given blank node or just the string representation otherwise
+	 *
 	 * @param literal the literal
 	 * @return string representation of the literal (for blank nodes an iri is returned)
 	 */

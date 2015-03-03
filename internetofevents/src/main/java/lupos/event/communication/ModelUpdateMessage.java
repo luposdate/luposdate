@@ -33,8 +33,9 @@ import lupos.event.broker.distributed.model.BProducer;
  * This message is used to tell the master
  * broker that the model of a subbroker has been
  * changed and transmits the new model data
- * @author Kevin
  *
+ * @author Kevin
+ * @version $Id: $Id
  */
 public class ModelUpdateMessage implements Serializable {
 
@@ -44,6 +45,7 @@ public class ModelUpdateMessage implements Serializable {
 	
 	/**
 	 * Construct a new message by filling the data
+	 *
 	 * @param producers the list of producers
 	 * @param consumers the list of consumers
 	 */
@@ -52,10 +54,20 @@ public class ModelUpdateMessage implements Serializable {
 		this.consumers = consumers;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>producers</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BProducer> getProducers(){
 		return this.producers;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>consumers</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BConsumer> getConsumers(){
 		return this.consumers;
 	}

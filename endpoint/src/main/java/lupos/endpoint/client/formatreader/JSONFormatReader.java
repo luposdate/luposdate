@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.client.formatreader;
 
@@ -42,27 +46,37 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 public class JSONFormatReader extends DefaultMIMEFormatReader {
 
+	/** Constant <code>MIMETYPE="application/sparql-results+json"</code> */
 	public final static String MIMETYPE = "application/sparql-results+json";
 
 	private final boolean writeQueryTriples;
 
+	/**
+	 * <p>Constructor for JSONFormatReader.</p>
+	 *
+	 * @param writeQueryTriples a boolean.
+	 */
 	public JSONFormatReader(final boolean writeQueryTriples) {
 		super("JSON", JSONFormatReader.MIMETYPE+(writeQueryTriples?"+querytriples":""));
 		this.writeQueryTriples = writeQueryTriples;
 	}
 
+	/**
+	 * <p>Constructor for JSONFormatReader.</p>
+	 */
 	public JSONFormatReader(){
 		this(false);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType() {
 		return JSONFormatReader.MIMETYPE+(this.writeQueryTriples?"+querytriples":"");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getQueryResult(final InputStream inputStream, final BindingsFactory bindingsFactory) {
 		try {
@@ -110,6 +124,14 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		return null;
 	}
 
+	/**
+	 * <p>getBindings.</p>
+	 *
+	 * @param oneResult a {@link org.json.JSONObject} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public static Bindings getBindings(final JSONObject oneResult, final BindingsFactory bindingsFactory) throws JSONException{
 		final Bindings luposResult = bindingsFactory.createInstance();
 		final Iterator<String> keysIt = oneResult.keys();
@@ -130,6 +152,13 @@ public class JSONFormatReader extends DefaultMIMEFormatReader {
 		return luposResult;
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param literal a {@link org.json.JSONObject} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public static Literal getLiteral(final JSONObject literal) throws JSONException {
 		final String type = literal.getString("type");
 		if(type.compareTo("uri")==0){

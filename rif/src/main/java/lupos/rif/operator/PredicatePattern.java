@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -43,30 +47,51 @@ import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
-
 public class PredicatePattern extends Operator implements Iterable<Item> {
 	private URILiteral patternName;
 	private List<Item> patternArgs;
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for PredicatePattern.</p>
+	 */
 	public PredicatePattern() {
 		this(null, (Item[]) null);
 	}
 
+	/**
+	 * <p>Constructor for PredicatePattern.</p>
+	 *
+	 * @param name a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param params a {@link lupos.datastructures.items.Item} object.
+	 */
 	@SuppressWarnings("unchecked")
 	public PredicatePattern(final URILiteral name, final Item... params) {
 		this.patternName = name;
 		this.patternArgs = (List<Item>) (params != null ? Arrays.asList(params) : Arrays.asList());
 	}
 
+	/**
+	 * <p>getPatternItems.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Item> getPatternItems() {
 		return this.patternArgs;
 	}
 
+	/**
+	 * <p>setPatternItems.</p>
+	 *
+	 * @param items a {@link java.util.List} object.
+	 */
 	public void setPatternItems(final List<Item> items) {
 		this.patternArgs = items;
 	}
 
+	/**
+	 * <p>setVariables.</p>
+	 */
 	public void setVariables(){
 		this.unionVariables = new HashSet<Variable>();
 		for (final Item item : this.patternArgs) {
@@ -77,6 +102,7 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
@@ -85,12 +111,14 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -125,6 +153,7 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer();
@@ -141,6 +170,7 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer();
@@ -156,14 +186,25 @@ public class PredicatePattern extends Operator implements Iterable<Item> {
 		return str.toString();
 	}
 
+	/**
+	 * <p>getPredicateName.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getPredicateName() {
 		return this.patternName;
 	}
 
+	/**
+	 * <p>setPredicateName.</p>
+	 *
+	 * @param name a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void setPredicateName(final URILiteral name) {
 		this.patternName = name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Item> iterator() {
 		return new ImmutableIterator<Item>(){

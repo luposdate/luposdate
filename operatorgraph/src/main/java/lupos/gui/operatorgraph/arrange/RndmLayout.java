@@ -33,13 +33,18 @@ import lupos.misc.Tuple;
 
 /**
  * The class RndLayout implements a Random - Layout
- * which is used in the LUPOSDATE- Project 
- * 
- * @author Tobias Bielfeld
+ * which is used in the LUPOSDATE- Project
  *
+ * @author Tobias Bielfeld
+ * @version $Id: $Id
  */
 public class RndmLayout {
 
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public static void arrange(final OperatorGraph operatorgraph){
 		//long time1 = System.currentTimeMillis();
 		

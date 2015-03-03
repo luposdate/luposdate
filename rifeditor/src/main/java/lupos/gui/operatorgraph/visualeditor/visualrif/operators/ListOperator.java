@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
@@ -41,16 +45,13 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 
 import lupos.misc.util.OperatorIDTuple;
-
-
-
-
 public class ListOperator extends AbstractTermOperator {
 
 	
 	private boolean open = false;
 
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw,
 			VisualGraph<Operator> parent) {
@@ -61,6 +62,7 @@ public class ListOperator extends AbstractTermOperator {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 	
@@ -124,6 +126,7 @@ public class ListOperator extends AbstractTermOperator {
 	}
 
 	
+	/** {@inheritDoc} */
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		StringBuffer sb = new StringBuffer("");
 		if(!this.isChild){
@@ -202,6 +205,14 @@ public class ListOperator extends AbstractTermOperator {
 	}
 
 	
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param operatorObject a {@link org.json.JSONObject} object.
+	 * @param listOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void fromJSON(JSONObject operatorObject, ListOperator listOperator,RuleGraph parent) throws JSONException {
 		
 		this.setVisualRifEditor(parent.getVisualRifEditor());
@@ -352,10 +363,20 @@ public class ListOperator extends AbstractTermOperator {
 	 * Getter and Setter **
 	 * ***************** */
 
+	/**
+	 * <p>isOpen.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isOpen() {
 		return open;
 	}
 
+	/**
+	 * <p>Setter for the field <code>open</code>.</p>
+	 *
+	 * @param open a boolean.
+	 */
 	public void setOpen(boolean open) {
 		this.open = open;
 	}

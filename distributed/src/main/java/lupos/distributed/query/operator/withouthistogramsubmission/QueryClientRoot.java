@@ -34,20 +34,30 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * Represents the root node in the operator graph for distributed query processing.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientRoot extends Root {
 
+	/**
+	 * <p>Constructor for QueryClientRoot.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 */
 	public QueryClientRoot(final Dataset dataset){
 		super();
 		this.dataset = dataset;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePatterns, final Item data) {
 		return new QueryClientIndexScan(succeedingOperator, triplePatterns, data, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Root newInstance(final Dataset dataset_param) {
 		return new QueryClientRoot(dataset_param);

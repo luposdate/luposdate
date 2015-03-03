@@ -32,12 +32,19 @@ import lupos.datastructures.bindings.BindingsMap;
 /**
  * Performs/initiates all relevant intepretation of RSSFeed's description
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MessageParser {
 
 	ArrayList<String>[] stoplist;
 	ArrayList<String> tokenstemp = new ArrayList<String>();
 
+	/**
+	 * <p>Constructor for MessageParser.</p>
+	 *
+	 * @param stoplist an array of {@link java.util.ArrayList} objects.
+	 */
 	public MessageParser(final ArrayList<String>[] stoplist) {
 		this.stoplist = stoplist;
 	}
@@ -45,7 +52,7 @@ public class MessageParser {
 	/**
 	 * Checks if s is parseable as an Integer
 	 *
-	 * @param s
+	 * @param s a {@link java.lang.String} object.
 	 * @return true if parseable, false if not
 	 */
 	public boolean isInteger(final String s) {
@@ -60,7 +67,6 @@ public class MessageParser {
 	/**
 	 * Removes special characters from token list. tokens that contain a hyphen
 	 * are formatted for further processing
-	 *
 	 */
 	public void cleanStrings() {
 
@@ -110,6 +116,13 @@ public class MessageParser {
 		}
 	}
 
+	/**
+	 * <p>parseMessage.</p>
+	 *
+	 * @param message a {@link lupos.event.producer.rsssemantics.FeedMessage} object.
+	 * @return a {@link lupos.event.producer.rsssemantics.DBAnswer} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public DBAnswer parseMessage(final FeedMessage message) throws Exception {
 		final Frequency freq = new Frequency();
 		String description;

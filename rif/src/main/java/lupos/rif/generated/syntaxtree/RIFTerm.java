@@ -36,6 +36,9 @@ import lupos.rif.generated.visitor.*;
  * .. .. | %4 RIFURI()<br>
  * .. .. | %5 RIFExternal()<br>
  * .. .. | %6 RIFList()<br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFTerm implements INode {
 
@@ -95,18 +98,18 @@ public class RIFTerm implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

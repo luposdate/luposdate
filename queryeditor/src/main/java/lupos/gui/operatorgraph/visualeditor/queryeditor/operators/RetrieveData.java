@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.operators;
 
@@ -32,18 +36,28 @@ import lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.RetrieveData
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.misc.util.OperatorIDTuple;
 import lupos.sparql1_1.SPARQL1_1Parser;
-
 public abstract class RetrieveData extends Operator {
 	private LinkedList<String> fromList = new LinkedList<String>();
 	private LinkedList<String> fromNamedList = new LinkedList<String>();
 	protected Prefix prefix;
 
 
+	/**
+	 * <p>Constructor for RetrieveData.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	protected RetrieveData(Prefix prefix) {
 		this.prefix = prefix;
 	}
 
 
+	/**
+	 * <p>addFromItem.</p>
+	 *
+	 * @param fromItem a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void addFromItem(String fromItem) throws ModificationException {
 		try {
 			SPARQL1_1Parser.parseSourceSelector(fromItem, this.prefix.getPrefixNames());
@@ -55,6 +69,13 @@ public abstract class RetrieveData extends Operator {
 		}
 	}
 
+	/**
+	 * <p>setFromItem.</p>
+	 *
+	 * @param index a int.
+	 * @param fromItem a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void setFromItem(int index, String fromItem) throws ModificationException {
 		try {
 			// new element...
@@ -78,6 +99,11 @@ public abstract class RetrieveData extends Operator {
 		}
 	}
 
+	/**
+	 * <p>removeFromItem.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void removeFromItem(int index) {
 		if(index == this.fromList.size()) {
 			return;
@@ -86,15 +112,29 @@ public abstract class RetrieveData extends Operator {
 		this.fromList.remove(index);
 	}
 
+	/**
+	 * <p>Getter for the field <code>fromList</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<String> getFromList() {
 		return this.fromList;
 	}
 
+	/**
+	 * <p>clearFromList.</p>
+	 */
 	public void clearFromList() {
 		this.fromList = new LinkedList<String>();
 	}
 
 
+	/**
+	 * <p>addFromNamedItem.</p>
+	 *
+	 * @param fromNamedItem a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void addFromNamedItem(String fromNamedItem) throws ModificationException {
 		try {
 			SPARQL1_1Parser.parseSourceSelector(fromNamedItem, this.prefix.getPrefixNames());
@@ -106,6 +146,13 @@ public abstract class RetrieveData extends Operator {
 		}
 	}
 
+	/**
+	 * <p>setFromNamedItem.</p>
+	 *
+	 * @param index a int.
+	 * @param fromNamedItem a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void setFromNamedItem(int index, String fromNamedItem) throws ModificationException {
 		try {
 			// new element...
@@ -129,6 +176,11 @@ public abstract class RetrieveData extends Operator {
 		}
 	}
 
+	/**
+	 * <p>removeFromNamedItem.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void removeFromNamedItem(int index) {
 		if(index == this.fromNamedList.size())
 			return;
@@ -136,28 +188,46 @@ public abstract class RetrieveData extends Operator {
 		this.fromNamedList.remove(index);
 	}
 
+	/**
+	 * <p>Getter for the field <code>fromNamedList</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<String> getFromNamedList() {
 		return this.fromNamedList;
 	}
 
+	/**
+	 * <p>clearFromNamedList.</p>
+	 */
 	public void clearFromNamedList() {
 		this.fromNamedList = new LinkedList<String>();
 	}
 
 
+	/**
+	 * <p>prefixAdded.</p>
+	 */
 	public void prefixAdded() {
 		((RetrieveDataPanel) this.panel).prefixAdded();
 	}
 
+	/** {@inheritDoc} */
 	public void prefixModified(String oldPrefix, String newPrefix) {
 		((RetrieveDataPanel) this.panel).prefixModified(oldPrefix, newPrefix);
 	}
 
+	/** {@inheritDoc} */
 	public void prefixRemoved(String prefix, String namespace) {
 		((RetrieveDataPanel) this.panel).prefixRemoved(prefix, namespace);
 	}
 
 
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeOperator() {
 		StringBuffer ret = new StringBuffer();
 
@@ -166,6 +236,11 @@ public abstract class RetrieveData extends Operator {
 		return ret;
 	}
 
+	/**
+	 * <p>serializeDatasetClause.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeDatasetClause() {
 		StringBuffer ret = new StringBuffer();
 
@@ -186,6 +261,12 @@ public abstract class RetrieveData extends Operator {
 		return ret;
 	}
 
+	/**
+	 * <p>serializeDatasetClauseAndWhereClause.</p>
+	 *
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeDatasetClauseAndWhereClause(HashSet<Operator> visited) {
 		StringBuffer ret = this.serializeDatasetClause();
 
@@ -201,6 +282,7 @@ public abstract class RetrieveData extends Operator {
 		return ret;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefID(){
 		return "queryEditor_style_retrievedata";

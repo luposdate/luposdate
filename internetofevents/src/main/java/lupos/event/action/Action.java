@@ -27,20 +27,34 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * Abstract base class for actions.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Action {
 
 	private String name;
 	
 
+	/**
+	 * <p>Constructor for Action.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public Action(String name) {
 		this.name = name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.name;
 	}
 	
+	/**
+	 * <p>execute.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public abstract void execute(QueryResult queryResult);
 }

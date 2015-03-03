@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -30,6 +34,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class NumericPredicates {
 
+	/**
+	 * <p>numeric_equal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-equal", Bindable = true)
 	public static BooleanLiteral numeric_equal(final Argument arg) {
 		Double lVal = null;
@@ -52,11 +62,23 @@ public class NumericPredicates {
 		return BooleanLiteral.TRUE;
 	}
 
+	/**
+	 * <p>numeric_not_equal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-not-equal")
 	public static BooleanLiteral numeric_not_equal(final Argument arg) {
 		return BooleanLiteral.not(numeric_equal(arg));
 	}
 
+	/**
+	 * <p>numeric_less_than.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-less-than")
 	public static BooleanLiteral numeric_less_than(final Argument arg) {
 		Double lVal = BuiltinHelper
@@ -66,6 +88,12 @@ public class NumericPredicates {
 		return BooleanLiteral.create(lVal.doubleValue() < rVal.doubleValue());
 	}
 
+	/**
+	 * <p>numeric_less_than_or_equal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-less-than-or-equal")
 	public static BooleanLiteral numeric_less_than_or_equal(final Argument arg) {
 		Double lVal = BuiltinHelper
@@ -75,6 +103,12 @@ public class NumericPredicates {
 		return BooleanLiteral.create(lVal.doubleValue() <= rVal.doubleValue());
 	}
 
+	/**
+	 * <p>numeric_greater_than.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-greater-than")
 	public static BooleanLiteral numeric_greater_than(final Argument arg) {
 		Double lVal = BuiltinHelper
@@ -84,6 +118,12 @@ public class NumericPredicates {
 		return BooleanLiteral.create(lVal.doubleValue() > rVal.doubleValue());
 	}
 
+	/**
+	 * <p>numeric_greater_than_or_equal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-greater-than-or-equal")
 	public static BooleanLiteral numeric_greater_than_or_equal(
 			final Argument arg) {
@@ -94,6 +134,12 @@ public class NumericPredicates {
 		return BooleanLiteral.create(lVal.doubleValue() >= rVal.doubleValue());
 	}
 
+	/**
+	 * <p>numeric_between.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-between", Iterable = true)
 	public static BooleanLiteral numeric_between(final Argument arg) {
 		Double Val = BuiltinHelper
@@ -105,6 +151,12 @@ public class NumericPredicates {
 		return BooleanLiteral.create(lVal < Val && Val < rVal);
 	}
 
+	/**
+	 * <p>numeric_between_enclosing.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "numeric-between-enclosing", Iterable = true)
 	public static BooleanLiteral numeric_between_enclosing(final Argument arg) {
 		Double Val = BuiltinHelper
@@ -116,191 +168,389 @@ public class NumericPredicates {
 		return BooleanLiteral.create(lVal <= Val && Val <= rVal);
 	}
 
+	/**
+	 * <p>is_double.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-double")
 	public static BooleanLiteral is_double(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"double");
 	}
 
+	/**
+	 * <p>is_float.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-float")
 	public static BooleanLiteral is_float(final Argument arg) {
 		return BuiltinHelper
 				.isOfXSType((Literal) arg.arguments.get(0), "float");
 	}
 
+	/**
+	 * <p>is_decimal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-decimal")
 	public static BooleanLiteral is_decimal(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "decimal");
 	}
 
+	/**
+	 * <p>is_integer.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-integer")
 	public static BooleanLiteral is_integer(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer");
 	}
 
+	/**
+	 * <p>is_long.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-long")
 	public static BooleanLiteral is_long(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "long");
 	}
 
+	/**
+	 * <p>is_int.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-int")
 	public static BooleanLiteral is_int(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "int");
 	}
 
+	/**
+	 * <p>is_short.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-short")
 	public static BooleanLiteral is_short(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "short");
 	}
 
+	/**
+	 * <p>is_byte.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-byte")
 	public static BooleanLiteral is_byte(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "byte");
 	}
 
+	/**
+	 * <p>is_nonNegativeInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-nonNegativeInteger")
 	public static BooleanLiteral is_nonNegativeInteger(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "nonNegativeInteger");
 	}
 
+	/**
+	 * <p>is_positiveInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-positiveInteger")
 	public static BooleanLiteral is_positiveInteger(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "positiveInteger");
 	}
 
+	/**
+	 * <p>is_unsignedLong.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-unsignedLong")
 	public static BooleanLiteral is_unsignedLong(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "unsignedLong");
 	}
 
+	/**
+	 * <p>is_unsignedInt.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-unsignedInt")
 	public static BooleanLiteral is_unsignedInt(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "unsignedInt");
 	}
 
+	/**
+	 * <p>is_unsignedShort.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-unsignedShort")
 	public static BooleanLiteral is_unsignedShort(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "unsignedShort");
 	}
 
+	/**
+	 * <p>is_unsignedByte.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-unsignedByte")
 	public static BooleanLiteral is_unsignedByte(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "unsignedByte");
 	}
 
+	/**
+	 * <p>is_nonPositiveInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-nonPositiveInteger")
 	public static BooleanLiteral is_nonPositiveInteger(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "nonPositiveInteger");
 	}
 
+	/**
+	 * <p>is_negativeInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-negativeInteger")
 	public static BooleanLiteral is_negativeInteger(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"integer", "negativeInteger");
 	}
 
+	/**
+	 * <p>is_not_double.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-double")
 	public static BooleanLiteral is_not_double(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "double"));
 	}
 
+	/**
+	 * <p>is_not_float.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-float")
 	public static BooleanLiteral is_not_float(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "float"));
 	}
 
+	/**
+	 * <p>is_not_hexBinary.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-hexBinary")
 	public static BooleanLiteral is_not_hexBinary(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "hexBinary"));
 	}
 
+	/**
+	 * <p>is_not_decimal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-decimal")
 	public static BooleanLiteral is_not_decimal(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "decimal"));
 	}
 
+	/**
+	 * <p>is_not_integer.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-integer")
 	public static BooleanLiteral is_not_integer(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "integer"));
 	}
 
+	/**
+	 * <p>is_not_long.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-long")
 	public static BooleanLiteral is_not_long(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "long"));
 	}
 
+	/**
+	 * <p>is_not_int.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-int")
 	public static BooleanLiteral is_not_int(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "integer"));
 	}
 
+	/**
+	 * <p>is_not_short.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-short")
 	public static BooleanLiteral is_not_short(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "short"));
 	}
 
+	/**
+	 * <p>is_not_byte.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-byte")
 	public static BooleanLiteral is_not_byte(final Argument arg) {
 		return BooleanLiteral.not(BuiltinHelper.isOfXSType(
 				(Literal) arg.arguments.get(0), "byte"));
 	}
 
+	/**
+	 * <p>is_not_nonNegativeInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-nonNegativeInteger")
 	public static BooleanLiteral is_not_nonNegativeInteger(final Argument arg) {
 		return BooleanLiteral.not(is_nonNegativeInteger(arg));
 	}
 
+	/**
+	 * <p>is_not_positiveInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-positiveInteger")
 	public static BooleanLiteral is_not_positiveInteger(final Argument arg) {
 		return BooleanLiteral.not(is_positiveInteger(arg));
 	}
 
+	/**
+	 * <p>is_not_unsignedLong.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-unsignedLong")
 	public static BooleanLiteral is_not_unsignedLong(final Argument arg) {
 		return BooleanLiteral.not(is_unsignedLong(arg));
 	}
 
+	/**
+	 * <p>is_not_unsignedInt.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-unsignedInt")
 	public static BooleanLiteral is_not_unsignedInt(final Argument arg) {
 		return BooleanLiteral.not(is_unsignedInt(arg));
 	}
 
+	/**
+	 * <p>is_not_unsignedShort.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-unsignedShort")
 	public static BooleanLiteral is_not_unsignedShort(final Argument arg) {
 		return BooleanLiteral.not(is_unsignedShort(arg));
 	}
 
+	/**
+	 * <p>is_not_unsignedByte.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-unsignedByte")
 	public static BooleanLiteral is_not_unsignedByte(final Argument arg) {
 		return BooleanLiteral.not(is_unsignedByte(arg));
 	}
 
+	/**
+	 * <p>is_not_nonPositiveInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-nonPositiveInteger")
 	public static BooleanLiteral is_not_nonPositiveInteger(final Argument arg) {
 		return BooleanLiteral.not(is_nonPositiveInteger(arg));
 	}
 
+	/**
+	 * <p>is_not_negativeInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-negativeInteger")
 	public static BooleanLiteral is_not_negativeInteger(final Argument arg) {
 		return BooleanLiteral.not(is_negativeInteger(arg));

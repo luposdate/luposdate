@@ -34,6 +34,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * triples are distributed according to one and two keys distribution strategies as well as
  * to the subject - predicate - object
  * (to seven different nodes).
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class OneToThreeKeysDistribution implements IDistributionKeyContainer<String> {
 
@@ -41,8 +44,10 @@ public class OneToThreeKeysDistribution implements IDistributionKeyContainer<Str
 	private final OneKeyDistribution oneKeyDistribution = new OneKeyDistribution();
 	private final TwoKeysDistribution twoKeysDistribution = new TwoKeysDistribution();
 
+	/** Constant <code>TYPE_SPO="SPO"</code> */
 	protected final static String TYPE_SPO = "SPO";
 
+	/** {@inheritDoc} */
 	@Override
 	public KeyContainer<String>[] getKeysForStoring(final Triple triple) {
 		@SuppressWarnings("unchecked")
@@ -56,6 +61,7 @@ public class OneToThreeKeysDistribution implements IDistributionKeyContainer<Str
 		return keys;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public KeyContainer<String>[] getKeysForQuerying(final TriplePattern triplePattern) throws TriplePatternNotSupportedError {
@@ -78,16 +84,23 @@ public class OneToThreeKeysDistribution implements IDistributionKeyContainer<Str
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "One to three keys distribution strategy (triple (s, p, o) has keys { 'S' + s, 'P' + p, 'O' + o, 'SP' + s + p, 'PO' + p + o, 'SO' + s + o, 'SPO' + s + p + o })";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeyTypes() {
 		return OneToThreeKeysDistribution.getPossibleKeyTypes();
 	}
 
+	/**
+	 * <p>getPossibleKeyTypes.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public static String[] getPossibleKeyTypes(){
 		return new String[]{ OneKeyDistribution.TYPE_S, OneKeyDistribution.TYPE_P,OneKeyDistribution.TYPE_O,
 				TwoKeysDistribution.TYPE_SP, TwoKeysDistribution.TYPE_SO, TwoKeysDistribution.TYPE_PO,

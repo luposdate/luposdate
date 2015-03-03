@@ -36,9 +36,18 @@ import lupos.gui.Demo_Applet;
 
 /**
  * This class is just for starting the Demo_Applet with our new distributed query evaluators (without and with different distribution strategies)...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Start_Demo_Applet_DE {
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public static void main(final String[] args) throws ClassNotFoundException {
 		Demo_Applet.registerEvaluator("Distributed Evaluator (without distribution strategy)", QueryClient_DE.class);
 		Demo_Applet.registerEvaluator("Distributed Evaluator (one key distribution)", QueryClient_DE_OneKeyDistribution.class);
@@ -50,6 +59,11 @@ public class Start_Demo_Applet_DE {
 		Demo_Applet.main(args);
 	}
 
+	/**
+	 * <p>askForHistogramRequests.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public static boolean askForHistogramRequests(){
 		final Object[] options = {"Histogram Requests", "Static Analysis"};
 		final int ret = JOptionPane.showOptionDialog(

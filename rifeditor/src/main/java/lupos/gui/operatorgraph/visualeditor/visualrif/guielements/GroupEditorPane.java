@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -57,7 +61,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.AnnotationConnection;
-
 public class GroupEditorPane extends VisualEditor<Operator> {
 
 	private static final long serialVersionUID = 1L;
@@ -83,6 +86,11 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 	private int rulesOnCanvasCnt=0;
 
 	// Constructor
+	/**
+	 * <p>Constructor for GroupEditorPane.</p>
+	 *
+	 * @param statusBar a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	protected GroupEditorPane(final StatusBar statusBar) {
 		super(true);
 		this.rifCodeEditor  = new RifCodeEditor();
@@ -164,6 +172,8 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * <li> EditMenu
 	 * <li> GraphMenu
 	 * <li> OperatorMenu
@@ -312,6 +322,7 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		return operatorMenu;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void manageMenuItems() {
 		super.manageMenuItems();
@@ -325,13 +336,24 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		this.graphMenu.setEnabled(!empty);
 	}
 
+	/**
+	 * <p>addJGraphMenu.</p>
+	 *
+	 * @param menu a {@link javax.swing.JMenu} object.
+	 */
 	public void addJGraphMenu(final JMenu menu) {
 		this.jGraphMenus.add(menu);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void pasteElements(final String arg0) {}
 
+	/**
+	 * <p>buildBottomPane.</p>
+	 *
+	 * @return a {@link javax.swing.JTabbedPane} object.
+	 */
 	public JTabbedPane buildBottomPane(){
 
 		new LinePainter(this.tp_rifInput, new Color(202, 223, 245));
@@ -431,6 +453,11 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		"Please insert an annotation first!");
 	}
 
+	/**
+	 * <p>deleteRule.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void deleteRule(final String ruleName) {
 		final Component[] c = this.visualGraphs.get(0).getComponents();
 		final int pos = this.getArrayPosition(ruleName);
@@ -439,6 +466,12 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		rop.delete();
 	}
 
+	/**
+	 * <p>updateRuleNameInVisualGraphsComponentArray.</p>
+	 *
+	 * @param oldName a {@link java.lang.String} object.
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void updateRuleNameInVisualGraphsComponentArray(final String oldName, final String newName){
 		final Component[] c = this.visualGraphs.get(0).getComponents();
 		for(int i = 0 ; i < c.length ; i++){
@@ -475,6 +508,11 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		return false;
 	}
 
+	/**
+	 * <p>getPrefixList.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getPrefixList() {
 		final Component[] comp = this.visualGraphs.get(0).getComponents();
 		String[] ret = new String[1];
@@ -516,74 +554,164 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
+	/**
+	 * <p>Getter for the field <code>bottomPane</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JTabbedPane} object.
+	 */
 	public JTabbedPane getBottomPane() {
 		return this.bottomPane;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bottomPane</code>.</p>
+	 *
+	 * @param bottomPane a {@link javax.swing.JTabbedPane} object.
+	 */
 	public void setBottomPane(final JTabbedPane bottomPane) {
 		this.bottomPane = bottomPane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Getter for the field <code>console</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.Console} object.
+	 */
 	public Console getConsole() {
 		return this.console;
 	}
 
+	/**
+	 * <p>Setter for the field <code>console</code>.</p>
+	 *
+	 * @param console a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.Console} object.
+	 */
 	public void setConsole(final Console console) {
 		this.console = console;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public RulePanel getRulePanel() {
 		return this.rulePanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @param rulePanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public void setRulePanel(final RulePanel rulePanel) {
 		this.rulePanel = rulePanel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulesCnt</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getRulesCnt() {
 		return this.rulesCnt;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulesCnt</code>.</p>
+	 *
+	 * @param rulesCnt a int.
+	 */
 	public void setRulesCnt(final int rulesCnt) {
 		this.rulesCnt = rulesCnt;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulesOnCanvasCnt</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getRulesOnCanvasCnt() {
 		return this.rulesOnCanvasCnt;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulesOnCanvasCnt</code>.</p>
+	 *
+	 * @param rulesOnCanvasCnt a int.
+	 */
 	public void setRulesOnCanvasCnt(final int rulesOnCanvasCnt) {
 		this.rulesOnCanvasCnt = rulesOnCanvasCnt;
 	}
 
+	/**
+	 * <p>Getter for the field <code>prefixOperatorPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel} object.
+	 */
 	public PrefixOperatorPanel getPrefixOperatorPanel() {
 		return this.prefixOperatorPanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>prefixOperatorPanel</code>.</p>
+	 *
+	 * @param prefixOperatorPanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel} object.
+	 */
 	public void setPrefixOperatorPanel(final PrefixOperatorPanel prefixOperatorPanel) {
 		this.prefixOperatorPanel = prefixOperatorPanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>startNode</code>.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public void setStartNode(final Operator op) {
 		this.startNode = op;
 	}
 
+	/**
+	 * <p>Getter for the field <code>startNode</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public Operator getStartNode() {
 		return this.startNode;
 	}
 
+	/**
+	 * <p>Getter for the field <code>groupName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getGroupName() {
 		return this.groupName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>groupName</code>.</p>
+	 *
+	 * @param groupName a {@link java.lang.String} object.
+	 */
 	public void setGroupName(final String groupName) {
 		this.groupName = groupName;
 	}

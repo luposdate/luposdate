@@ -36,8 +36,9 @@ import lupos.engine.operators.OperatorIDTuple;
 /**
  * {@link lupos.optimizations.logical.rules.Rule} for LuposDate, that removes the operator "union", if only
  * one single input is set! So the optimization is it, to remove the "union" operator.
- * @author Bjoern
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public class UnionRule extends Rule {
 
@@ -86,11 +87,13 @@ public class UnionRule extends Rule {
 		this.ruleName = "Remove single input union operator";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(BasicOperator _op) {
 		return this._checkPrivate0(_op);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
 		this.u.removeFromOperatorGraph();

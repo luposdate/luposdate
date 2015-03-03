@@ -32,6 +32,9 @@ import lupos.datastructures.items.literal.Literal;
 
 /**
  * This class can be used to serialize a Triple
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SerializedTriple implements Serializable {
 
@@ -41,9 +44,10 @@ public class SerializedTriple implements Serializable {
 
 
 	/**
+	 * <p>Constructor for SerializedTriple.</p>
 	 *
 	 * @param t The triple that should be serialized.
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public SerializedTriple(final Triple t) throws IOException {
 		this.subjectStr = t.getSubject().toString();
@@ -53,7 +57,8 @@ public class SerializedTriple implements Serializable {
 
 	/**
 	 * Returns the deserialized triple.
-	 * @return
+	 *
+	 * @return a {@link lupos.datastructures.items.Triple} object.
 	 */
 	public Triple getTriple() {
 

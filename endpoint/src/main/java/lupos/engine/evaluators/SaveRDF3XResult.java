@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -32,8 +36,13 @@ import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.XMLFormatter;
 import lupos.misc.FileHelper;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
-
 public class SaveRDF3XResult {
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(final String[] args) throws Exception{
 		System.out.println("lupos.engine.evaluators.SaveRDF3XResult processes a SPARQL query and saves its result");
 		System.out.println("Usage: java lupos.engine.evaluators.SaveRDF3XResult <Directory of indices> <Query-File> <Output-File> [<Query-File 2> <Output-File 2> ...]");

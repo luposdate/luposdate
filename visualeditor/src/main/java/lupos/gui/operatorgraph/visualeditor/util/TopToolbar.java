@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
@@ -72,7 +76,6 @@ import xpref.IXPref;
 import xpref.XPref;
 import xpref.datatypes.BooleanDatatype;
 import xpref.datatypes.IntegerDatatype;
-
 public class TopToolbar<T> extends JPanel implements IXPref {
 	private static final long serialVersionUID = 4732754047816183556L;
 
@@ -85,6 +88,13 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 
 	final JComboBox comboBox = new JComboBox(Arrange.values());
 
+	/**
+	 * <p>Constructor for TopToolbar.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param standAlone a boolean.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public TopToolbar(final VisualEditor<T> editor, final boolean standAlone, final JSONObject loadObject) {
 		super(new BorderLayout());
 
@@ -375,6 +385,9 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 		return preferencesButton;
 	}
 
+	/**
+	 * <p>preferencesChanged.</p>
+	 */
 	public void preferencesChanged() {
 		try {
 			this.lcCheckBox.setSelected(BooleanDatatype.getValues("viewer_useColoredArrows").get(0).booleanValue());
@@ -395,6 +408,12 @@ public class TopToolbar<T> extends JPanel implements IXPref {
 			editor.getStatusBar().clear();
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		final JSONObject saveObject = new JSONObject();
 		saveObject.put("zoom", this.zoomDropDown.getSelectedItem());

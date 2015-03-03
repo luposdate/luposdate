@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
@@ -53,10 +57,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-
-
 public abstract class AbstractContainer extends OperatorContainer {
 
 	protected VisualRifEditor visualRifEditor;
@@ -67,9 +67,13 @@ public abstract class AbstractContainer extends OperatorContainer {
 
 
 
+	/**
+	 * <p>Constructor for AbstractContainer.</p>
+	 */
 	public AbstractContainer() {
 	} // needed for insertOperator()...
 
+	/** {@inheritDoc} */
 	@Override
 	public void addOperator(final Operator op) {
 		this.getOperators().add(op);
@@ -77,6 +81,15 @@ public abstract class AbstractContainer extends OperatorContainer {
 		this.determineRootNodes();
 	}
 
+	/**
+	 * <p>drawPanel.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 * @param bgColor a {@link java.awt.Color} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent} object.
+	 */
 	protected AbstractGuiComponent<Operator> drawPanel(final GraphWrapper gw, final RuleGraph parent, final Color bgColor, final String title) {
 
 		this.recursiveOperatorGraph = new RuleGraph(parent.getVisualEditor(),this.visualRifEditor,true);
@@ -121,6 +134,11 @@ public abstract class AbstractContainer extends OperatorContainer {
 	}
 
 
+	/**
+	 * <p>initRecursiveOperatorGraph.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public void initRecursiveOperatorGraph(final RuleGraph parent) {
 
 		System.out.println("AbstractContainer.initRecursiveOperatorGraph(final RuleGraph parent) NullTest:" +" "+ (this.containerVisualEditor == null) +" "+(this.recursiveOperatorGraph==null));
@@ -134,6 +152,12 @@ public abstract class AbstractContainer extends OperatorContainer {
 
 
 
+	/**
+	 * <p>getVariableList.</p>
+	 *
+	 * @param varTerms a {@link java.util.LinkedList} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Term> getVariableList(final LinkedList<Term> varTerms){
 		//		LinkedList<Term> varTerms = new LinkedList<Term>();
 		System.out.println("AbstractContainer.getVariableList() NullTest:" +" "+ (this.containerVisualEditor == null) +" "+(this.recursiveOperatorGraph==null));
@@ -226,6 +250,12 @@ public abstract class AbstractContainer extends OperatorContainer {
 
 	}
 
+	/**
+	 * <p>deleteRedundantVariables.</p>
+	 *
+	 * @param varTerms a {@link java.util.LinkedList} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	protected LinkedList<Term> deleteRedundantVariables(final LinkedList<Term> varTerms) {
 
 		final LinkedList<Term> tmp = new LinkedList<Term>();
@@ -242,9 +272,10 @@ public abstract class AbstractContainer extends OperatorContainer {
 	}
 
 	/**
+	 * <p>listContainsElement.</p>
 	 *
-	 * @param varTerms
-	 * @param value
+	 * @param varTerms a {@link java.util.LinkedList} object.
+	 * @param value a {@link java.lang.String} object.
 	 * @return returns true if the List contains the String
 	 */
 	protected boolean listContainsElement(final LinkedList<Term> varTerms, final String value) {
@@ -256,15 +287,22 @@ public abstract class AbstractContainer extends OperatorContainer {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract StringBuffer serializeOperator();
 
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract StringBuffer serializeOperatorAndTree(HashSet<Operator> visited);
 
 
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 */
 	public JSONObject toJSON() {
 		final JSONObject saveObject = new JSONObject();
 
@@ -296,6 +334,12 @@ public abstract class AbstractContainer extends OperatorContainer {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadOperatorGraph a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void fromJSON(final JSONObject loadOperatorGraph) throws JSONException{
 		this.loadOperatorGraph = loadOperatorGraph;
 	}
@@ -304,18 +348,38 @@ public abstract class AbstractContainer extends OperatorContainer {
 	 * Getter + Setter
 	 */
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Getter for the field <code>recursiveOperatorGraph</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public RuleGraph getRecursiveOperatorGraph() {
 		return this.recursiveOperatorGraph;
 	}
 
+	/**
+	 * <p>Setter for the field <code>recursiveOperatorGraph</code>.</p>
+	 *
+	 * @param recursiveOperatorGraph a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public void setRecursiveOperatorGraph(final RuleGraph recursiveOperatorGraph) {
 		this.recursiveOperatorGraph = recursiveOperatorGraph;
 	}

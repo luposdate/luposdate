@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph;
 
@@ -38,7 +42,6 @@ import javax.swing.border.EmptyBorder;
 
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.misc.Tuple;
-
 public abstract class AbstractSuperGuiComponent extends JPanel implements MouseMotionListener, MouseListener {
 	private static final long serialVersionUID = 4151343022557835950L;
 	protected GraphWrapper gw;
@@ -50,6 +53,13 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 	protected GraphBox box = null;
 	private JPopupMenu contextMenu = null;
 
+	/**
+	 * <p>Constructor for AbstractSuperGuiComponent.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param movable a boolean.
+	 */
 	protected AbstractSuperGuiComponent(OperatorGraph parent, GraphWrapper gw, boolean movable) {
 		this.parent = parent;
 		this.gw = gw;
@@ -61,6 +71,11 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 		this.addMouseMotionListener(this);
 	}
 
+	/**
+	 * <p>Getter for the field <code>box</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.GraphBox} object.
+	 */
 	public GraphBox getBox() {
 		if(this.box == null) { // if the box does not exist...
 			this.box = this.parent.getBoxes().get(this.gw); // get it from the parent
@@ -72,10 +87,9 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 	/**
 	 * This method checks whether the given panel is overlapping with this one
 	 * or other way round.
-	 * 
+	 *
 	 * @param panel
 	 *            the panel to check with
-	 * 
 	 * @return true if the two panels overlap, otherwise false
 	 */
 	public boolean isOverlapping(AbstractSuperGuiComponent panel) {
@@ -84,10 +98,9 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 
 	/**
 	 * This method checks if the given panel is overlapping with this one.
-	 * 
+	 *
 	 * @param panel the panel to check with
-	 * 
-	 * @return true, if the given panel overlaps with this one, false otherwise
+	 * @return a boolean.
 	 */
 	protected boolean overlaps(AbstractSuperGuiComponent panel) {
 		Point topLeft = panel.getLocation();
@@ -99,11 +112,10 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 
 	/**
 	 * Checks whether a point is in this panel.
-	 * 
+	 *
 	 * @param x the x coordinate of the point to check
 	 * @param y the y coordinate of the point to check
-	 * 
-	 * @return true, if the point is in this panel, false otherwise
+	 * @return a boolean.
 	 */
 	protected boolean isIn(int x, int y) {
 		Point topLeft = this.getLocation();
@@ -120,14 +132,25 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 		return false;
 	}
 
+	/**
+	 * <p>Setter for the field <code>movable</code>.</p>
+	 *
+	 * @param movable a boolean.
+	 */
 	public void setMovable(boolean movable) {
 		this.movable = movable;
 	}
 
+	/**
+	 * <p>isAnnotation.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isAnnotation() {
 		return !this.movable;
 	}
 
+	/** {@inheritDoc} */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -141,22 +164,41 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void setBorder(Border border) {
 		super.setBorder(border);
 
 		this.border = border;
 	}
 
+	/**
+	 * <p>getMyBorder.</p>
+	 *
+	 * @return a {@link javax.swing.border.Border} object.
+	 */
 	public Border getMyBorder() {
 		return this.border;
 	}
 
+	/**
+	 * <p>setBorderNoRemember.</p>
+	 *
+	 * @param border a {@link javax.swing.border.Border} object.
+	 */
 	public void setBorderNoRemember(Border border) {
 		super.setBorder(border);
 	}
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize() {}
 
+	/**
+	 * <p>getPositionAndDimension.</p>
+	 *
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	public Tuple<Point, Dimension> getPositionAndDimension() {
 		return new Tuple<Point, Dimension>(this.getLocation(), this.getPreferredSize());
 	}
@@ -167,7 +209,7 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 
 	/**
 	 * Method to add a context menu to this operator panel.
-	 * 
+	 *
 	 * @param contextMenu
 	 *            The context menu to add
 	 */
@@ -184,14 +226,15 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 
 	/**
 	 * This method determines whether this panel has a context menu or not.
-	 * 
-	 * @return true, if this panel has a context menu; false otherwise
+	 *
+	 * @return a boolean.
 	 */
 	public boolean hasContextMenu() {
 		return this.contextMenu != null;
 	}
 
 
+	/** {@inheritDoc} */
 	public void mouseDragged(MouseEvent me) {
 		if(!this.movable) {
 			return;
@@ -224,6 +267,7 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 		// --- move the component - end ---
 	}
 
+	/** {@inheritDoc} */
 	public void mousePressed(MouseEvent me) {
 		// save position of click...
 		this.positionX = me.getX();
@@ -234,14 +278,19 @@ public abstract class AbstractSuperGuiComponent extends JPanel implements MouseM
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseReleased(final MouseEvent me) {
 		if(this.contextMenu != null && me.isPopupTrigger()) {
 			this.showContextMenu(me);
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void mouseMoved(MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseEntered(MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseExited(MouseEvent me) {}
+	/** {@inheritDoc} */
 	public void mouseClicked(MouseEvent arg0) {}
 }

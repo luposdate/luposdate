@@ -40,8 +40,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * Wrapper for CategoryDataSets
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class CategoryChartModel extends DataModel {
 	
@@ -49,6 +50,11 @@ public class CategoryChartModel extends DataModel {
 	protected Variable valueVar;
 	protected Variable valueVar2;
 	
+	/**
+	 * <p>Constructor for CategoryChartModel.</p>
+	 *
+	 * @param chartType a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 */
 	public CategoryChartModel(ChartTyp chartType){
 		super(chartType);
 		valueVar = new Variable("");
@@ -56,6 +62,12 @@ public class CategoryChartModel extends DataModel {
 		dataset = new DefaultCategoryDataset();
 	}
 	
+	/**
+	 * <p>Constructor for CategoryChartModel.</p>
+	 *
+	 * @param chartType a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 * @param vars an array of {@link java.lang.String} objects.
+	 */
 	public CategoryChartModel(ChartTyp chartType, String[] vars){
 		super(chartType);
 		categoryVar = new Variable(vars[0]);
@@ -67,25 +79,29 @@ public class CategoryChartModel extends DataModel {
 	
 	/**
 	 * Sets the variable containing first y-value
-	 * @param valueVar
+	 *
+	 * @param valueVar a {@link lupos.datastructures.items.Variable} object.
 	 */
 	public void setValueVar(Variable valueVar) {
 		this.valueVar = valueVar;
 	}
 	/**
 	 * Sets the variable containing second y-value
-	 * @param valueVar2
+	 *
+	 * @param valueVar2 a {@link lupos.datastructures.items.Variable} object.
 	 */
 	public void setValueVar2(Variable valueVar2) {
 		this.valueVar2 = valueVar2;
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	public DefaultCategoryDataset getDataset(){
 		return (DefaultCategoryDataset) super.dataset;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(QueryResult l) {
 		dataset = new DefaultCategoryDataset();
@@ -125,6 +141,8 @@ public class CategoryChartModel extends DataModel {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Generates and returns the chart for the contained DataSet
 	 */
 	@Override

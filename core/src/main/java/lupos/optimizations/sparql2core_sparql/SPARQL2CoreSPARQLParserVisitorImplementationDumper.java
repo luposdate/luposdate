@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.sparql2core_sparql;
 
@@ -82,7 +86,6 @@ import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SimpleNode;
 import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
-
 public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		SPARQL2CoreSPARQL_rules implements SPARQL1_1ParserVisitorStringGenerator, SPARQL1_1ParserPathVisitorStringGenerator {
 	protected final HashMap<Node, String> blankNodeHash = new HashMap<Node, String>();
@@ -93,14 +96,30 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	protected boolean construct = false;
 	protected boolean mustAddProjectionOnRealVars = false;
 
+	/** Constant <code>SPARQL2CoreSPARQLClass</code> */
 	public static Class<? extends SPARQL2CoreSPARQLParserVisitorImplementationDumper> SPARQL2CoreSPARQLClass = SPARQL2CoreSPARQLParserVisitorImplementationDumper.class;
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @return a {@link lupos.optimizations.sparql2core_sparql.SPARQL2CoreSPARQLParserVisitorImplementationDumper} object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	public static SPARQL2CoreSPARQLParserVisitorImplementationDumper createInstance() throws InstantiationException, IllegalAccessException{
 		final SPARQL2CoreSPARQLParserVisitorImplementationDumper result = SPARQL2CoreSPARQLClass.newInstance();
 		result.prefixHash.put("rdf", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>");
 		return result;
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param rules an array of boolean.
+	 * @return a {@link lupos.optimizations.sparql2core_sparql.SPARQL2CoreSPARQLParserVisitorImplementationDumper} object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	public static SPARQL2CoreSPARQLParserVisitorImplementationDumper createInstance(final boolean[] rules) throws InstantiationException, IllegalAccessException{
 		final SPARQL2CoreSPARQLParserVisitorImplementationDumper result = createInstance();
 		if (rules.length != result.LENGTH) {
@@ -112,6 +131,14 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return result;
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param allRules a boolean.
+	 * @return a {@link lupos.optimizations.sparql2core_sparql.SPARQL2CoreSPARQLParserVisitorImplementationDumper} object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	public static SPARQL2CoreSPARQLParserVisitorImplementationDumper createInstance(final boolean allRules) throws InstantiationException, IllegalAccessException{
 		final SPARQL2CoreSPARQLParserVisitorImplementationDumper result = createInstance();
 		if (!allRules) {
@@ -121,10 +148,18 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return result;
 	}
 
+	/**
+	 * <p>Constructor for SPARQL2CoreSPARQLParserVisitorImplementationDumper.</p>
+	 */
 	protected SPARQL2CoreSPARQLParserVisitorImplementationDumper() {
 		super();
 	}
 
+	/**
+	 * <p>getBlankNodeLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String getBlankNodeLabel() {
 		this.mustAddProjectionOnRealVars = true;
 		final String ret = "b" + String.valueOf(this.bn_nmbr++);
@@ -139,6 +174,11 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/**
+	 * <p>determineRealVariables.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	protected void determineRealVariables(final Node node) {
 		if (node instanceof ASTVar){
 			final String name = ((ASTVar)node).getName();
@@ -153,6 +193,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTQuery node) {
 		// first determine all "real" variables
@@ -162,6 +203,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 
 	protected URILiteral base = null;
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTBaseDecl node) {
 		try {
@@ -178,6 +220,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTPrefixDecl node) {
 		final String pref = node.getPrefix();
@@ -217,6 +260,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return "";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTSelectQuery node) {
 		String ret = "SELECT ";
@@ -245,6 +289,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return ret + "\n" + suff;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTDescribeQuery node) {
 		if (!this.rules[DESCRIBE]) {
@@ -324,6 +369,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTGroupConstraint node) {
 		if (node.jjtGetParent() instanceof ASTSelectQuery
@@ -498,6 +544,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTFilterConstraint node) {
 		final Node n = new SimpleNode(0);
@@ -520,6 +567,12 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return ret;
 	}
 
+	/**
+	 * <p>dumpFilter.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTFilterConstraint} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String dumpFilter(final ASTFilterConstraint node) {
 		return "FILTER(" + this.visitChild(node.jjtGetChild(0), 0) + ").";
 	}
@@ -622,6 +675,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	// "))||((" + visitChild( orChild, 1 ) + ")&&(" + evalOther + "))";
 	// }
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTConstructTemplate node) {
 		this.construct = true;
@@ -630,6 +684,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTNodeSet node) {
 		return this.visitChild(node, 0)+this.solvePOAndOLists(node, this.getVarOrBlankNode(node.jjtGetChild(0)), 1);
@@ -649,6 +704,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return sub;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTObjectList node) {
 		if (this.rules[PO_LISTS]) {
@@ -658,6 +714,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTAVerbType node) {
 		if (this.rules[RDF_TYPE]) {
@@ -666,6 +723,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return "a";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTBlankNodePropertyList node) {
 		if (this.rules[BLANK_NODES]) {
@@ -678,6 +736,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return super.visit(node);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTCollection node) {
 		if (this.rules[RDF_COLLECTIONS]) {
@@ -707,11 +766,13 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTVar node) {
 		return "?" + node.getName();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTQName node) {
 		String ret = this.prefixHash.get(node.getNameSpace());
@@ -732,6 +793,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return ret.substring(0, ret.length() - 1) + node.getLocalName() + ">";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTEmptyNode node) {
 		if (this.rules[BLANK_NODES]) {
@@ -745,6 +807,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return "[]";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTQuotedURIRef node) {
 		if (this.rules[BASE] && this.base != null) {
@@ -810,6 +873,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 
 	private final HashMap<String, String> variablesOfBlankNodes = new HashMap<String, String>();
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTBlankNode node) {
 		if (this.rules[BN_VARS]) {
@@ -824,6 +888,12 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/**
+	 * <p>getInsert.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getInsert(final Node node){
 		final String vChild1=this.visitChild(node, 1);
 		final String vChild0=this.visitChild(node, 0);
@@ -839,6 +909,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return " INSERT { "+start1+"?s ?p ?o."+end1+"} WHERE { "+start2+"?s ?p ?o."+end2+"}";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTAdd node) {
 		if(this.rules[ADD]){
@@ -848,6 +919,12 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/**
+	 * <p>getDropAndInsert.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDropAndInsert(final Node node){
 		final String vChild1=this.visitChild(node, 1);
 		if(vChild1.compareTo(this.visitChild(node, 0))==0){
@@ -857,6 +934,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return dropOrClear+" SILENT "+(node.jjtGetChild(1) instanceof ASTDefault?"":"GRAPH ")+vChild1+";\n"+this.getInsert(node);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTCopy node) {
 		if(this.rules[COPY]){
@@ -866,6 +944,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTMove node) {
 		if(this.rules[MOVE]){
@@ -881,6 +960,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 	/**
+	 * <p>getIntermediateVariable.</p>
 	 *
 	 * @return An unique variable which is definitely not used in the original query
 	 */
@@ -899,9 +979,10 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 
-	/** This method visits an ASTTripleSet and computes a String, representing the expression of the Triple set.
-	 * @param node The visited ASTTripleSet
-	 * @return a String put together by Subject Predicate and Object of the Triple Set and a break
+	/**
+	 * {@inheritDoc}
+	 *
+	 * This method visits an ASTTripleSet and computes a String, representing the expression of the Triple set.
 	 */
 	@Override
 	public String visit(final ASTTripleSet node) {
@@ -917,6 +998,14 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/**
+	 * <p>solvePOAndOLists.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 * @param subject a {@link java.lang.String} object.
+	 * @param indexStart a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String solvePOAndOLists(final Node node, final String subject, final int indexStart){
 		String ret = "";
 		/* The loop starts at 1, as explained above this is the first predicate
@@ -942,23 +1031,16 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 
-	/**
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return The variable inside this node surrounded by subject and object
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTAVerbType node, final String subject, final String object) {
 		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * AlternativePaths are equal to UNIONS of the input
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return The result string for AlternativePath Querys(x|y)
 	 */
 	@Override
 	public String visit(final ASTPathAlternative node, final String subject, final String object) {
@@ -968,13 +1050,11 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Path sequences get split into two seperated paths using a blank node.
 	 * One path leads from the subject to the blank node using the left side of the path sequence as it's predicate.
 	 * The second path from the blank node to the object using the right side of the path sequence as it's predicate.
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return
 	 */
 	@Override
 	public String visit(final ASTPathSequence node, final String subject, final String object) {
@@ -982,12 +1062,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return node.jjtGetChild(0).accept(this, subject, blank) + "\n" + node.jjtGetChild(1).accept(this, blank, object);
 	}
 
-	/**
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return A String where subject and object are exchanged around the predicate
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTInvers node, final String subject, final String object) {
 		return  node.jjtGetChild(0).accept(this, object, subject) ;
@@ -1038,6 +1113,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTArbitraryOccurences node, final String subject, final String object) {
 		if(SPARQLCoreParserVisitorImplementation.USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
@@ -1048,11 +1124,9 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method UNIONS a Zero-path and a path of length one.
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return
 	 */
 	@Override
 	public String visit(final ASTOptionalOccurence node, final String subject, final String object) {
@@ -1063,6 +1137,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTArbitraryOccurencesNotZero node, final String subject,
 			final String object) {
@@ -1070,11 +1145,9 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * A negated path takes all possible paths and substracts all paths using the predicate via the MINUS operator.
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return
 	 */
 	@Override
 	public String visit(final ASTNegatedPath node, final String subject, final String object) {
@@ -1106,39 +1179,25 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		return ret;
 	}
 
-	/**
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return A string surrounding the variable by subject and object
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTVar node, final String subject, final String object) {
 		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
-	/**
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return A string surrounding the variable by subject and object
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTQuotedURIRef node, final String subject, final String object) {
 		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
-	/**
-	 * @param node
-	 * @param subject
-	 * @param object
-	 * @return A string surrounding the variable by subject and object
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTQName node, final String subject, final String object) {
 		return subject + " " + this.visit(node) + " " + object + " .";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final SimpleNode node, final String subject, final String object) {
 		throw new UnsupportedOperationException("This class " + node.getClass() + " does not support an SPARQL1_1ParserPathVisitorStringGenerator!");

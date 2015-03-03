@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,23 +21,121 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.sparql2core_sparql;
 
 import lupos.sparql1_1.*;
-
 public interface SPARQL1_1ParserPathVisitorStringGenerator
 {
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.SimpleNode} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(SimpleNode node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTAVerbType} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTAVerbType node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTPathAlternative} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTPathAlternative node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTPathSequence} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTPathSequence node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTInvers} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTInvers node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTArbitraryOccurences} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTArbitraryOccurences node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTOptionalOccurence} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTOptionalOccurence node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTArbitraryOccurencesNotZero} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTArbitraryOccurencesNotZero node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTNegatedPath} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTNegatedPath node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTVar} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTVar node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTQuotedURIRef} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTQuotedURIRef node, String subject, String object);
+  /**
+   * <p>visit.</p>
+   *
+   * @param node a {@link lupos.sparql1_1.ASTQName} object.
+   * @param subject a {@link java.lang.String} object.
+   * @param object a {@link java.lang.String} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String visit(ASTQName node, String subject, String object);
 }

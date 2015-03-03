@@ -41,6 +41,9 @@ import javax.swing.text.JTextComponent;
 /**
  * Track the movement of the Caret by painting a background line at the current
  * caret position.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LinePainter implements Highlighter.HighlightPainter,
 		CaretListener, MouseListener, MouseMotionListener {
@@ -67,7 +70,6 @@ public class LinePainter implements Highlighter.HighlightPainter,
 	 *
 	 * @param component
 	 *            text component that requires background line painting
-	 *
 	 * @param color
 	 *            the color of the background line
 	 */
@@ -89,6 +91,9 @@ public class LinePainter implements Highlighter.HighlightPainter,
 		}
 	}
 
+	/**
+	 * <p>removeLinePainter.</p>
+	 */
 	public void removeLinePainter() {
 		this.component.removeCaretListener(this);
 		this.component.removeMouseListener(this);
@@ -109,6 +114,7 @@ public class LinePainter implements Highlighter.HighlightPainter,
 	/**
 	 * Calculate the line color by making the selection color lighter
 	 *
+	 * @param color a {@link java.awt.Color} object.
 	 */
 	public void setLighter(final Color color) {
 		final int red = Math.min(255, (int) (color.getRed() * 1.2));
@@ -120,6 +126,7 @@ public class LinePainter implements Highlighter.HighlightPainter,
 
 	// Paint the background highlight
 
+	/** {@inheritDoc} */
 	@Override
 	public void paint(final Graphics g, final int p0, final int p1,
 			final Shape bounds, final JTextComponent c) {
@@ -163,39 +170,47 @@ public class LinePainter implements Highlighter.HighlightPainter,
 	}
 
 	// Implement CaretListener
+	/** {@inheritDoc} */
 	@Override
 	public void caretUpdate(final CaretEvent e) {
 		this.resetHighlight();
 	}
 
 	// Implement MouseListener
+	/** {@inheritDoc} */
 	@Override
 	public void mousePressed(final MouseEvent e) {
 		this.resetHighlight();
 	}
 
 	// Implement MouseMotionListener
+	/** {@inheritDoc} */
 	@Override
 	public void mouseDragged(final MouseEvent e) {
 		this.resetHighlight();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseClicked(final MouseEvent e) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseEntered(final MouseEvent e) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseExited(final MouseEvent e) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseReleased(final MouseEvent e) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseMoved(final MouseEvent e) {
 	}

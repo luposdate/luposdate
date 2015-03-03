@@ -45,14 +45,16 @@ import lupos.event.util.Literals.XSD;
 import lupos.event.util.Utils;
 
 /**
- * 
+ * <p>EventsProducer class.</p>
+ *
  * @author Christopher Gudat, Guillaume Assaud
  * Search events by city, country, distance or tag from Last.fm
+ * @version $Id: $Id
  */
-
 public class EventsProducer extends ProducerBaseNoDuplicates {
 	//Query-String:
 	//http://ws.audioscrobbler.com/2.0/?method=geo.getevents&location=madrid&api_key=86029e27ac8170ddcb028fbf0c2dc4cf&format=json
+	/** Constant <code>NAMESPACE="http://localhost/events/EventSearch/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/EventSearch/";
 	private final static int INTERVAL = 3000;
 	private static final String SEARCH_URL = "http://ws.audioscrobbler.com/2.0/?method=geo.getevents&location=";
@@ -68,23 +70,41 @@ public class EventsProducer extends ProducerBaseNoDuplicates {
 	
 	private SimpleDateFormat date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.UK);	
 	
+	/** Constant <code>EVENT_TYPE_OBJECT</code> */
 	public final static URILiteral EVENT_TYPE_OBJECT = Literals.createURI(NAMESPACE, "EventsProducer");
+	/** Constant <code>HEADLINER_PREDICATE</code> */
 	public final static URILiteral HEADLINER_PREDICATE = Literals.createURI(NAMESPACE, "artist");
+	/** Constant <code>ID_PREDICATE</code> */
 	public final static URILiteral ID_PREDICATE = Literals.createURI(NAMESPACE, "id");
+	/** Constant <code>TITLE_PREDICATE</code> */
 	public final static URILiteral TITLE_PREDICATE = Literals.createURI(NAMESPACE, "title");
+	/** Constant <code>START_PREDICATE</code> */
 	public final static URILiteral START_PREDICATE = Literals.createURI(NAMESPACE, "startDate");
+	/** Constant <code>NAME_PREDICATE</code> */
 	public final static URILiteral NAME_PREDICATE = Literals.createURI(NAMESPACE, "location");
+	/** Constant <code>STREET_PREDICATE</code> */
 	public final static URILiteral STREET_PREDICATE = Literals.createURI(NAMESPACE, "street");
+	/** Constant <code>POSTALCODE_PREDICATE</code> */
 	public final static URILiteral POSTALCODE_PREDICATE = Literals.createURI(NAMESPACE, "postalcode");
+	/** Constant <code>CITY_PREDICATE</code> */
 	public final static URILiteral CITY_PREDICATE = Literals.createURI(NAMESPACE, "city");
+	/** Constant <code>URL_PREDICATE</code> */
 	public final static URILiteral URL_PREDICATE = Literals.createURI(NAMESPACE, "url");
+	/** Constant <code>DESCRIPTION_PREDICATE</code> */
 	public final static URILiteral DESCRIPTION_PREDICATE = Literals.createURI(NAMESPACE, "description");
+	/** Constant <code>IMAGE_PREDICATE</code> */
 	public final static URILiteral IMAGE_PREDICATE = Literals.createURI(NAMESPACE, "image");
 	
+	/**
+	 * <p>Constructor for EventsProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public EventsProducer(SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {			
@@ -157,9 +177,10 @@ public class EventsProducer extends ProducerBaseNoDuplicates {
 	}
 	
 	/**
-	 * 
-	 * @param args
-	 * @throws Exception
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 		//Create communication channel

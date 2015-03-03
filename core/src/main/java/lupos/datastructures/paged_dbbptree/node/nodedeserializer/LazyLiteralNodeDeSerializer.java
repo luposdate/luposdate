@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
@@ -41,13 +45,19 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
-
 public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, Triple> {
 
 	private static final long serialVersionUID = -8131702796960262942L;
 
 	protected final RDF3XIndexScan.CollationOrder order;
 
+	/** Constant <code>map={ { 0, 1, 2 }, // SPO
+			{ 0, 2, 1 }, // SOP
+			{ 1, 0, 2 }, // PSO
+			{ 1, 2, 0 }, // POS
+			{ 2, 0, 1 }, // OSP
+			{ 2, 1, 0 } // OPS
+	}</code> */
 	protected final static int[][] map = { { 0, 1, 2 }, // SPO
 			{ 0, 2, 1 }, // SOP
 			{ 1, 0, 2 }, // PSO
@@ -56,11 +66,17 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 			{ 2, 1, 0 } // OPS
 	};
 
+	/**
+	 * <p>Constructor for LazyLiteralNodeDeSerializer.</p>
+	 *
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public LazyLiteralNodeDeSerializer(
 			final RDF3XIndexScan.CollationOrder order) {
 		this.order = order;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
 			final OutputStream out, final TripleKey lastKey)
@@ -162,6 +178,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final OutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
@@ -171,6 +188,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		writeIntWithoutLeadingZeros(fileName, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLeafEntry(final TripleKey k, final Triple v,
 			final OutputStream out, final TripleKey lastKey,
@@ -267,6 +285,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLeafEntryNextFileName(final int filename, final OutputStream out) throws IOException {
 		final BitVector bits = new BitVector(7);
@@ -276,6 +295,13 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		writeIntWithoutLeadingZeros(filename, out);
 	}
 
+	/**
+	 * <p>writeIntWithoutLeadingZeros.</p>
+	 *
+	 * @param diff a int.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void writeIntWithoutLeadingZeros(final int diff,
 			final OutputStream out) throws IOException {
 		switch (determineNumberOfBytesForRepresentation(diff)) {
@@ -295,6 +321,16 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 	}
 
+	/**
+	 * <p>determineNumberOfBytesForRepresentation.</p>
+	 *
+	 * @param diff a int.
+	 * @param bits a {@link lupos.misc.BitVector} object.
+	 * @param index a int.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int determineNumberOfBytesForRepresentation(
 			final int diff, final BitVector bits, int index,
 			final OutputStream out) throws IOException {
@@ -318,6 +354,12 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return index;
 	}
 
+	/**
+	 * <p>determineNumberOfBytesForRepresentation.</p>
+	 *
+	 * @param diff a int.
+	 * @return a int.
+	 */
 	public static int determineNumberOfBytesForRepresentation(int diff) {
 		if (diff < 0) {
 			diff *= -1;
@@ -330,6 +372,15 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return number;
 	}
 
+	/**
+	 * <p>readInt.</p>
+	 *
+	 * @param bv a {@link lupos.misc.BitVector} object.
+	 * @param index a int.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int readInt(final BitVector bv, final int index,
 			final InputStream in) throws IOException {
 		if (bv.get(index)) {
@@ -348,6 +399,15 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 	}
 
+	/**
+	 * <p>getIntSize.</p>
+	 *
+	 * @param bits a {@link lupos.misc.BitVector} object.
+	 * @param index a int.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int getIntSize(final BitVector bits, int index, final InputStream in) throws IOException {
 		index++;
 		if (index == 8) {
@@ -364,6 +424,14 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return number;
 	}
 
+	/**
+	 * <p>getInt.</p>
+	 *
+	 * @param number a int.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int getInt(final int number,
 			final InputStream in) throws IOException {
 		switch (number) {
@@ -381,6 +449,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBBPTreeEntry<TripleKey, Triple> getNextLeafEntry(
 			final InputStream in, final TripleKey lastKey,
@@ -467,6 +536,7 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized Tuple<TripleKey, Integer> getNextInnerNodeEntry(
 			final TripleKey lastKey, final InputStream in) {
@@ -546,6 +616,15 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		return null;
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param code a int.
+	 * @param pos a int.
+	 * @param codeForOriginalContent a int.
+	 * @param objectIsLazyLiteralOriginalContent a boolean.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final int code, final int pos, final int codeForOriginalContent, final boolean objectIsLazyLiteralOriginalContent) {
 		if (!objectIsLazyLiteralOriginalContent || pos != 2) {
 			return new LazyLiteral(code);
@@ -554,6 +633,11 @@ public class LazyLiteralNodeDeSerializer implements NodeDeSerializer<TripleKey, 
 		}
 	}
 
+	/**
+	 * <p>getCollationOrder.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public RDF3XIndexScan.CollationOrder getCollationOrder(){
 		return this.order;
 	}

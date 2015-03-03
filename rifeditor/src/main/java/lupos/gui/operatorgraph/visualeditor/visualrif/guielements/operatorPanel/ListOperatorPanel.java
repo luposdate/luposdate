@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -59,7 +63,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.HintTextFieldResizing
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.JIconButton;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.TermConnection;
-
 public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 
 	private static final long serialVersionUID = 8238554719560169292L;
@@ -74,6 +77,16 @@ public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 	private FocusListener comboBoxFocusListener;
 
 	// Constructor
+	/**
+	 * <p>Constructor for ListOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param listOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 * @param startNode a boolean.
+	 * @param alsoSubClasses a boolean.
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public ListOperatorPanel(final VisualGraph<Operator> parent,
 			final GraphWrapper gw, final ListOperator listOperator,
 			final boolean startNode, final boolean alsoSubClasses, final VisualRifEditor visualRifEditor) {
@@ -1284,7 +1297,8 @@ public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 	/**
 	 * Sets the ComboBox entries for UniTermComboBox and the
 	 * ConstantComboBox
-	 * @param comboBoxEntries
+	 *
+	 * @param comboBoxEntries an array of {@link java.lang.String} objects.
 	 */
 	public void setConstantComboBoxEntries(final String[] comboBoxEntries){
 		this.comboBoxEntries = comboBoxEntries;
@@ -1339,6 +1353,11 @@ public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.termRowsPanel.add(this.listOperator.getNextTermCombo(),this.gbc);
 	}
 
+	/**
+	 * <p>removeRow.</p>
+	 *
+	 * @param term a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Term} object.
+	 */
 	public void removeRow(final Term term) {
 		// Constant
 		if ( term.isConstant() ) {
@@ -1362,6 +1381,7 @@ public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize() {
 		this.setMinimumSize(this.termRowsPanel.getSize());
@@ -1410,6 +1430,7 @@ public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.revalidate(); // re-validate the PrefixPanel
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
@@ -1446,34 +1467,74 @@ public class ListOperatorPanel extends AbstractGuiComponent<Operator> {
 	/* ***************** **
 	 * Getter and Setter **
 	 * ***************** */
+	/**
+	 * <p>Getter for the field <code>listOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 */
 	public ListOperator getListOperator() {
 		return this.listOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>listOperator</code>.</p>
+	 *
+	 * @param factOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 */
 	public void setListOperator(final ListOperator factOperator) {
 		this.listOperator = factOperator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>selectedChoiceString</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSelectedChoiceString() {
 		return this.selectedChoiceString;
 	}
 
+	/**
+	 * <p>Setter for the field <code>selectedChoiceString</code>.</p>
+	 *
+	 * @param selectedChoiceString a {@link java.lang.String} object.
+	 */
 	public void setSelectedChoiceString(final String selectedChoiceString) {
 		this.selectedChoiceString = selectedChoiceString;
 	}
 
+	/**
+	 * <p>Getter for the field <code>comboBoxEntries</code>.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getComboBoxEntries() {
 		return this.comboBoxEntries;
 	}
 
+	/**
+	 * <p>setFocusListener.</p>
+	 *
+	 * @param fL a {@link java.awt.event.FocusListener} object.
+	 */
 	public void setFocusListener(final FocusListener fL) {
 		this.comboBoxFocusListener = fL;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}

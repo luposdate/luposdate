@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,22 +21,31 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
 
 import java.util.Arrays;
-
 public class JavaMergeSort<E extends Comparable<E>> extends InPlaceSort<E> {
 
+	/**
+	 * <p>Constructor for JavaMergeSort.</p>
+	 *
+	 * @param length a int.
+	 */
 	public JavaMergeSort(final int length) {
 		super(length);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sort() {
 		sort(0, length - 1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sort(final int unten, final int oben) {
 		Arrays.sort(elements, unten, oben - unten + 1);

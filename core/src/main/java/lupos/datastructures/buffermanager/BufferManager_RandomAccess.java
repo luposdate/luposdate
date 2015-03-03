@@ -35,6 +35,9 @@ import lupos.misc.Triple;
 /**
  * This buffer manager uses random access files to store and retrieve the pages.
  * It uses a LRU cache.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 
@@ -179,15 +182,10 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method returns a page. If the page is not in the buffer, it is
 	 * loaded from disk and added to the buffer.
-	 *
-	 * @param pagesize the size of the page
-	 * @param pageaddress
-	 *            The address of the page to be retrieved.
-	 * @return The content of the page
-	 *
-	 * @throws IOException
 	 */
 	@Override
 	public byte[] getPage(final int pagesize, final PageAddress pageaddress) throws IOException {
@@ -211,15 +209,10 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method modifies a page in the buffer. If the page does not exist so
 	 * far in the buffer it is added to the buffer and marked as modified.
-	 * @param pagesize the size of the page
-	 * @param pageaddress
-	 *            The address of the modified page
-	 * @param pageContent
-	 *            The modified page
-	 *
-	 * @throws IOException
 	 */
 	@Override
 	public void modifyPage(final int pagesize, final PageAddress pageaddress, final byte[] pageContent)
@@ -246,9 +239,10 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method releases a page, i.e., its content does not need to be stored
 	 * on disk.
-	 * @param pageaddress the address of the page
 	 */
 	@Override
 	public void releasePage(final PageAddress pageaddress) {
@@ -268,6 +262,8 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method releases all pages, i.e., their contents do not need to be stored
 	 * on disk.
 	 */
@@ -285,9 +281,9 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method writes all modified pages (in the buffer) to disk for a specific basis filename
-	 * @param filename the basis filename of the pages to be written
-	 * @throws IOException
 	 */
 	@Override
 	public void writeAllModifiedPages(final String filename) throws IOException {
@@ -307,8 +303,9 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method writes all modified pages (in the buffer) to disk
-	 * @throws IOException
 	 */
 	@Override
 	public void writeAllModifiedPages() throws IOException {
@@ -326,9 +323,10 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method releases all pages of a basis filename, i.e., their contents do not need to be stored
 	 * on disk.
-	 * @param filename the filename of the basis file
 	 */
 	@Override
 	public void releaseAllPages(final String filename){
@@ -352,6 +350,8 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * <p>getMaxBytesInBuffer.</p>
+	 *
 	 * @return the max number of bytes in the buffer
 	 */
 	public static long getMaxBytesInBuffer() {
@@ -359,6 +359,8 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * <p>setMaxBytesInBuffer.</p>
+	 *
 	 * @param maxBytesInBuffer the max number of bytes in the buffer
 	 */
 	public static void setMaxBytesInBuffer(final long maxBytesInBuffer) {
@@ -366,6 +368,8 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
+	 * <p>Getter for the field <code>replacementStrategy</code>.</p>
+	 *
 	 * @return The used replacement strategy
 	 */
 	public REPLACEMENTSTRATEGY<PageAddress> getReplacementStrategy() {
@@ -374,6 +378,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 
 	/**
 	 * This method should be called only if the default replacement strategy is not used and it should be called before the BufferManager is used the first time.
+	 *
 	 * @param replacementStrategy the replacement strategy to be used
 	 */
 	public void setReplacementStrategy(final REPLACEMENTSTRATEGY<PageAddress> replacementStrategy) {

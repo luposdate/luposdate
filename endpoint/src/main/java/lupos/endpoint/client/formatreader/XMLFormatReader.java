@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.client.formatreader;
 
@@ -46,9 +50,9 @@ import lupos.datastructures.queryresult.QueryResult;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
 public class XMLFormatReader extends DefaultMIMEFormatReader {
 
+	/** Constant <code>MIMETYPE="application/sparql-results+xml"</code> */
 	public final static String MIMETYPE = "application/sparql-results+xml";
 
 	// the type of state used for sax parsing
@@ -67,24 +71,35 @@ public class XMLFormatReader extends DefaultMIMEFormatReader {
 	private volatile boolean booleanResult = false;
 	private volatile boolean resultOfBooleanResult;
 
+	/** Constant <code>BUFFERSIZE=50</code> */
 	protected static int BUFFERSIZE = 50;
 
 	private final boolean writeQueryTriples;
 
+	/**
+	 * <p>Constructor for XMLFormatReader.</p>
+	 *
+	 * @param writeQueryTriples a boolean.
+	 */
 	public XMLFormatReader(final boolean writeQueryTriples) {
 		super("XML", XMLFormatReader.MIMETYPE+(writeQueryTriples?"+querytriples":""));
 		this.writeQueryTriples = writeQueryTriples;
 	}
 
+	/**
+	 * <p>Constructor for XMLFormatReader.</p>
+	 */
 	public XMLFormatReader(){
 		this(false);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType() {
 		return XMLFormatReader.MIMETYPE+(this.writeQueryTriples?"+querytriples":"");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getQueryResult(final InputStream inputStream, final BindingsFactory bindingsFactory) {
 		final BoundedBuffer<Bindings> boundedBuffer = new BoundedBuffer<Bindings>(BUFFERSIZE);

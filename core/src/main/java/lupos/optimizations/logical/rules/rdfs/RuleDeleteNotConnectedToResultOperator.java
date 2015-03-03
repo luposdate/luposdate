@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -36,9 +40,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
 import lupos.optimizations.logical.rules.RuleEngine;
-
 public class RuleDeleteNotConnectedToResultOperator extends Rule {
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final BasicOperator bo = new TriplePattern();
@@ -49,10 +53,12 @@ public class RuleDeleteNotConnectedToResultOperator extends Rule {
 		startNode = bo;
 	}
 
+	/** {@inheritDoc} */
 	public Rule[] getRulesToApply(final RuleEngine ruleEngine) {
 		return new Rule[] {};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final BasicOperator bo = mso.get("bo");
@@ -61,6 +67,7 @@ public class RuleDeleteNotConnectedToResultOperator extends Rule {
 		return !frov.found();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,

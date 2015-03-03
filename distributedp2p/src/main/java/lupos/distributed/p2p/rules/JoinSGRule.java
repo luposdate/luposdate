@@ -46,11 +46,11 @@ import org.json.JSONException;
 
 
 /**
- * This is a {@link Rule} that optimizes joins, where subgraphs with the same keys, are only asked once via
+ * This is a {@link lupos.optimizations.logical.rules.generated.runtime.Rule} that optimizes joins, where subgraphs with the same keys, are only asked once via
  * a new subgraph request, where both information is put into.
- * 
- * @author Bjoern
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public class JoinSGRule extends Rule {
 
@@ -199,15 +199,18 @@ public class JoinSGRule extends Rule {
 		this.ruleName = "Join Subgraphcontainer with same key";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(BasicOperator _op) {
 		return this._checkPrivate0(_op);
 	}
 
 	
+	/** Constant <code>subgraphExecutor</code> */
 	public static ISubgraphExecutor<?> subgraphExecutor;
 
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
 		/*
@@ -248,6 +251,11 @@ public class JoinSGRule extends Rule {
 		 this.deleteOperatorWithoutParentsRecursive(this.sg2, _startNodes);
 	}
 
+	/**
+	 * <p>replace2.</p>
+	 *
+	 * @param _startNodes a {@link java.util.HashMap} object.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void replace2(
 			HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {

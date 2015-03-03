@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.generate;
 
@@ -34,22 +38,40 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
 public class GenerateAddEnv extends SingleInputOperator {
 	private HashMap<Variable, Literal> constants;
 	private HashMap<Variable, Literal> conditions;
 
+	/**
+	 * <p>Constructor for GenerateAddEnv.</p>
+	 */
 	public GenerateAddEnv() {
 	}
 
+	/**
+	 * <p>Getter for the field <code>constants</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<Variable, Literal> getConstants() {
 		return constants;
 	}
 
+	/**
+	 * <p>Getter for the field <code>conditions</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<Variable, Literal> getConditions() {
 		return conditions;
 	}
 
+	/**
+	 * <p>Constructor for GenerateAddEnv.</p>
+	 *
+	 * @param conditions a {@link java.util.HashMap} object.
+	 * @param constants a {@link java.util.HashMap} object.
+	 */
 	public GenerateAddEnv(final HashMap<Variable, Literal> conditions,
 			final HashMap<Variable, Literal> constants) {
 		this.constants = constants;
@@ -57,6 +79,7 @@ public class GenerateAddEnv extends SingleInputOperator {
 	}
 
 	// bindings should contain exactly one element!
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final QueryResult result = QueryResult.createInstance();
@@ -95,6 +118,7 @@ public class GenerateAddEnv extends SingleInputOperator {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		msg.getVariables().addAll(constants.keySet());
@@ -105,6 +129,7 @@ public class GenerateAddEnv extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + conditions + "," + constants;

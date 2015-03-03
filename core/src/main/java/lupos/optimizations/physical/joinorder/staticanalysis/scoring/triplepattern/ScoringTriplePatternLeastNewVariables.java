@@ -30,7 +30,10 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This class implements the scoring for least new variables by determining the number of new variables in a triple pattern 
+ * This class implements the scoring for least new variables by determining the number of new variables in a triple pattern
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ScoringTriplePatternLeastNewVariables implements ScoringTriplePattern<HashSet<Variable>>{
 	
@@ -39,6 +42,7 @@ public class ScoringTriplePatternLeastNewVariables implements ScoringTriplePatte
 	 */
 	public static final int PUNISHMENT_FOR_CARTESIAN_PRODUCT = 100;
 
+	/** {@inheritDoc} */
 	@Override
 	public int determineScore(BasicIndexScan indexScan,
 			TriplePattern triplePattern, HashSet<Variable> additionalInformation) {
@@ -48,6 +52,7 @@ public class ScoringTriplePatternLeastNewVariables implements ScoringTriplePatte
 		return v.size() + ((flag)? 0 : ScoringTriplePatternLeastNewVariables.PUNISHMENT_FOR_CARTESIAN_PRODUCT);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean scoreIsAscending() {
 		return true;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -34,20 +38,29 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.util.ImmutableIterator;
-
 public class AddBinding extends SingleInputOperator {
 	private static final long serialVersionUID = -1619006408122462537L;
 	private Variable var;
 	private Literal literalName;
 
+	/**
+	 * <p>Constructor for AddBinding.</p>
+	 */
 	public AddBinding() {}
 
+	/**
+	 * <p>Constructor for AddBinding.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public AddBinding(final Variable var, final Literal literal) {
 		this.var = var;
 		this.literalName = literal;
 	}
 
 	// bindings should contain exactly one element!
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult oldBindings,
 			final int operandID) {
@@ -82,6 +95,7 @@ public class AddBinding extends SingleInputOperator {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		msg.getVariables().add(this.var);
@@ -91,33 +105,56 @@ public class AddBinding extends SingleInputOperator {
 		return msg;
 	}
 
+	/**
+	 * <p>Getter for the field <code>var</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getVar() {
 		return this.var;
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getLiteral() {
 		return this.literalName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>var</code>.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public void setVar(final Variable var) {
 		this.var = var;
 	}
 
+	/**
+	 * <p>setLiteral.</p>
+	 *
+	 * @param literalName a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public void setLiteral(final Literal literalName) {
 		this.literalName = literalName;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Add (" + this.var.toString() + "=" + this.literalName + ")";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return "Add (" + this.var.toString() + "="
 		+ prefixInstance.add(this.literalName.toString()) + ")";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return !sortCriterium.contains(this.getVar());

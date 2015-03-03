@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,17 +21,23 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.optional;
 
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.multiinput.join.NestedLoopJoin;
-
 public class NaiveOptional extends UsingJoinOptional {
+		/**
+		 * <p>Constructor for NaiveOptional.</p>
+		 */
 		public NaiveOptional() {
 			super(new NestedLoopJoin(2));
 		}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(BasicOperator op) {
 		super.cloneFrom(op);

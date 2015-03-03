@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph;
 
@@ -29,8 +33,18 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.util.LinkedList;
 import java.util.List;
-
 public class DrawObject {
+	/**
+	 * <p>drawSimpleBoxOuterLines.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 */
 	public static void drawSimpleBoxOuterLines(final Graphics2D g, final int x,
 			final int y, final int width, final int height, final Color color1,
 			final Color color2) {
@@ -41,6 +55,18 @@ public class DrawObject {
 		g.drawRect(x, y, width, height);
 	}
 
+	/**
+	 * <p>drawSimpleBoxShade.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param shadewidth a int.
+	 */
 	public static void drawSimpleBoxShade(final Graphics2D g, final int x,
 			final int y, final int width, final int height, final Color color1,
 			final Color color2, final int shadewidth) {
@@ -51,6 +77,16 @@ public class DrawObject {
 		drawSimpleBox(g, x, y, width, height, color1);
 	}
 
+	/**
+	 * <p>drawSimpleBox.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 */
 	public static void drawSimpleBox(final Graphics2D g, final int x,
 			final int y, final int width, final int height, final Color color1) {
 		// fill the object...
@@ -58,6 +94,18 @@ public class DrawObject {
 		g.fillRect(x, y, width, height);
 	}
 
+	/**
+	 * <p>drawGradientPaintBoxOuterLines.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintBoxOuterLines(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3) {
@@ -68,6 +116,19 @@ public class DrawObject {
 		g.drawRect(x, y, width, height);
 	}
 
+	/**
+	 * <p>drawGradientPaintBoxShade.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 * @param shadewidth a int.
+	 */
 	public static void drawGradientPaintBoxShade(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3,
@@ -79,6 +140,17 @@ public class DrawObject {
 		drawGradientPaintBox(g, x, y, width, height, color1, color2);
 	}
 
+	/**
+	 * <p>drawGradientPaintBox.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintBox(final Graphics2D g, final int x,
 			final int y, final int width, final int height, final Color color1,
 			final Color color2) {
@@ -89,6 +161,17 @@ public class DrawObject {
 		g.fillRect(x, y, width, height);
 	}
 
+	/**
+	 * <p>drawSimpleRoundBoxOuterLines.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 */
 	public static void drawSimpleRoundBoxOuterLines(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2) {
@@ -99,6 +182,18 @@ public class DrawObject {
 		g.drawRoundRect(x, y, width, height, 15, 15);
 	}
 
+	/**
+	 * <p>drawSimpleRoundBoxShade.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param shadewidth a int.
+	 */
 	public static void drawSimpleRoundBoxShade(final Graphics2D g, final int x,
 			final int y, final int width, final int height, final Color color1,
 			final Color color2, final int shadewidth) {
@@ -110,6 +205,16 @@ public class DrawObject {
 		drawSimpleRoundBox(g, x, y, width, height, color1);
 	}
 
+	/**
+	 * <p>drawSimpleRoundBox.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 */
 	public static void drawSimpleRoundBox(final Graphics2D g, final int x,
 			final int y, final int width, final int height, final Color color1) {
 		// fill the object...
@@ -117,6 +222,18 @@ public class DrawObject {
 		g.fillRoundRect(x, y, width, height, 15, 15);
 	}
 
+	/**
+	 * <p>drawGradientPaintRoundBoxOuterLines.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintRoundBoxOuterLines(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3) {
@@ -127,6 +244,19 @@ public class DrawObject {
 		g.drawRoundRect(x, y, width, height, 15, 15);
 	}
 
+	/**
+	 * <p>drawGradientPaintRoundBoxShade.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 * @param shadewidth a int.
+	 */
 	public static void drawGradientPaintRoundBoxShade(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3,
@@ -139,6 +269,17 @@ public class DrawObject {
 		drawGradientPaintRoundBox(g, x, y, width, height, color1, color2);
 	}
 
+	/**
+	 * <p>drawGradientPaintRoundBox.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintRoundBox(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2) {
@@ -164,6 +305,18 @@ public class DrawObject {
 		return p;
 	}
 
+	/**
+	 * <p>drawGradientPaintOctagonOuterLines.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintOctagonOuterLines(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3) {
@@ -177,6 +330,19 @@ public class DrawObject {
 		g.drawPolygon(p);
 	}
 
+	/**
+	 * <p>drawGradientPaintOctagonShade.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 * @param shadewidth a int.
+	 */
 	public static void drawGradientPaintOctagonShade(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3,
@@ -189,6 +355,17 @@ public class DrawObject {
 		drawGradientPaintOctagon(g, x, y, width, height, color1, color2);
 	}
 
+	/**
+	 * <p>drawGradientPaintOctagon.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintOctagon(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2) {
@@ -213,6 +390,18 @@ public class DrawObject {
 		return p;
 	}
 
+	/**
+	 * <p>drawGradientPaintHexagonOuterLines.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintHexagonOuterLines(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3) {
@@ -226,6 +415,19 @@ public class DrawObject {
 		g.drawPolygon(p);
 	}
 
+	/**
+	 * <p>drawGradientPaintHexagonShade.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 * @param color3 a {@link java.awt.Color} object.
+	 * @param shadewidth a int.
+	 */
 	public static void drawGradientPaintHexagonShade(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2, final Color color3,
@@ -238,6 +440,17 @@ public class DrawObject {
 		drawGradientPaintHexagon(g, x, y, width, height, color1, color2);
 	}
 
+	/**
+	 * <p>drawGradientPaintHexagon.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 * @param color1 a {@link java.awt.Color} object.
+	 * @param color2 a {@link java.awt.Color} object.
+	 */
 	public static void drawGradientPaintHexagon(final Graphics2D g,
 			final int x, final int y, final int width, final int height,
 			final Color color1, final Color color2) {
@@ -266,6 +479,14 @@ public class DrawObject {
 	private final InnerAttribute innerAttribute;
 	private final List<Color> colorList;
 
+	/**
+	 * <p>Constructor for DrawObject.</p>
+	 *
+	 * @param type a {@link lupos.gui.operatorgraph.DrawObject.Type} object.
+	 * @param innerAttribute a {@link lupos.gui.operatorgraph.DrawObject.InnerAttribute} object.
+	 * @param outerAttribute a {@link lupos.gui.operatorgraph.DrawObject.OuterAttribute} object.
+	 * @param colorlist a {@link java.awt.Color} object.
+	 */
 	public DrawObject(final Type type, final InnerAttribute innerAttribute,
 			final OuterAttribute outerAttribute, final Color... colorlist) {
 		this.type = type;
@@ -297,6 +518,15 @@ public class DrawObject {
 		}
 	}
 
+	/**
+	 * <p>draw.</p>
+	 *
+	 * @param g a {@link java.awt.Graphics2D} object.
+	 * @param x a int.
+	 * @param y a int.
+	 * @param width a int.
+	 * @param height a int.
+	 */
 	public void draw(final Graphics2D g, final int x, final int y,
 			final int width, final int height) {
 		switch (this.type) {

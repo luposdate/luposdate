@@ -27,20 +27,35 @@ import lupos.datastructures.items.literal.URILiteral;
 
 /**
  * Wraps an URILiteral and overrides toString to return to return its string representation without the prefix
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class URILiteralWrapper {
 
 	private URILiteral literal;
 	
+	/**
+	 * <p>Constructor for URILiteralWrapper.</p>
+	 *
+	 * @param literal a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteralWrapper(URILiteral literal) {
 		this.literal = literal;
 	}
 	
+	/**
+	 * <p>getWrappedLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getWrappedLiteral() {
 		return this.literal;
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the URI without the prefix
 	 */
 	@Override

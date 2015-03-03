@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,20 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
 
 import java.util.concurrent.locks.ReentrantLock;
-
 public class StringIntegerMapLock implements StringIntegerMap{
 	private final ReentrantLock lock;
 	private final StringIntegerMap map;
 
+	/**
+	 * <p>Constructor for StringIntegerMapLock.</p>
+	 *
+	 * @param lock a {@link java.util.concurrent.locks.ReentrantLock} object.
+	 * @param map a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public StringIntegerMapLock(final ReentrantLock lock, final StringIntegerMap map){
 		this.lock=lock;
 		this.map=map;
 	}
 
+	/** {@inheritDoc} */
 	public Integer get(String s) {
 		lock.lock();
 		try{
@@ -43,6 +53,7 @@ public class StringIntegerMapLock implements StringIntegerMap{
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void put(String s, int value) {
 		lock.lock();
 		try{
@@ -52,6 +63,9 @@ public class StringIntegerMapLock implements StringIntegerMap{
 		}
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		lock.lock();
 		try{
@@ -61,6 +75,11 @@ public class StringIntegerMapLock implements StringIntegerMap{
 		}
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		lock.lock();
 		try{

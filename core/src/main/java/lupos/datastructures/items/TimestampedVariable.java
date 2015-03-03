@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,18 +21,31 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
-
 public class TimestampedVariable extends Variable {
 
 	private final long timestamp;
 
+	/**
+	 * <p>Constructor for TimestampedVariable.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param timestamp a long.
+	 */
 	public TimestampedVariable(final Variable var, final long timestamp) {
 		super(var.name);
 		this.timestamp = timestamp;
 	}
 
+	/**
+	 * <p>Getter for the field <code>timestamp</code>.</p>
+	 *
+	 * @return a long.
+	 */
 	public long getTimestamp() {
 		return timestamp;
 	}

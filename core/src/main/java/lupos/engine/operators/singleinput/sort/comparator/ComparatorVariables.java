@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort.comparator;
 
@@ -28,15 +32,20 @@ import java.util.Collection;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
-
 public class ComparatorVariables implements ComparatorBindings {
 	
 	protected final Collection<Variable> vars;
 	
+	/**
+	 * <p>Constructor for ComparatorVariables.</p>
+	 *
+	 * @param vars a {@link java.util.Collection} object.
+	 */
 	public ComparatorVariables(final Collection<Variable> vars){
 		this.vars = vars;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(Bindings o1, Bindings o2) {
 		for(Variable v: vars){
@@ -49,6 +58,7 @@ public class ComparatorVariables implements ComparatorBindings {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<Variable> getSortCriterium() {
 		return vars;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -40,11 +44,15 @@ import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.visitor.ReplaceVarsVisitor;
 
 import com.google.common.collect.Multimap;
-
 public class RuleList extends AbstractRuleNode implements IExpression, Item {
 	private final ArrayList<IExpression> items = new ArrayList<IExpression>();
 	public boolean isOpen = false;
 
+	/**
+	 * <p>addItem.</p>
+	 *
+	 * @param expr a {@link lupos.rif.IExpression} object.
+	 */
 	public void addItem(final IExpression expr) {
 		if (!(expr instanceof AbstractExpressionContainer)) {
 			this.items.add(expr);
@@ -53,10 +61,16 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>items</code>.</p>
+	 *
+	 * @return a {@link java.util.ArrayList} object.
+	 */
 	public ArrayList<IExpression> getItems() {
 		return this.items;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj != null && obj instanceof RuleList) {
@@ -78,21 +92,25 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getLabel() {
 		return this.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <R, A> R accept(final IRuleVisitor<R, A> visitor, final A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsOnlyVariables() {
 		for (final IExpression expr : this.items) {
@@ -103,6 +121,7 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<RuleVariable> getVariables() {
 		final Set<RuleVariable> vars = new HashSet<RuleVariable>();
@@ -112,6 +131,7 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return vars;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Uniterm> getPredicates() {
 		final List<Uniterm> vars = new ArrayList<Uniterm>();
@@ -121,16 +141,19 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return vars;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final Bindings binding) {
 		return this.evaluate(binding, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final Bindings binding, final Object optionalResult) {
 		return this.evaluate(binding, optionalResult, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final Bindings binding, final Object result, final Multimap<IExpression, IExpression> equalities) {
 		final ReplaceVarsVisitor replace = new ReplaceVarsVisitor();
@@ -138,6 +161,7 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return this.accept(replace, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isBound(final RuleVariable var, final Collection<RuleVariable> boundVars) {
 		for (final IExpression expr : this.items) {
@@ -151,11 +175,13 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPossibleAssignment() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder str = new StringBuilder("List(");
@@ -168,6 +194,7 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuilder str = new StringBuilder("List(");
@@ -181,21 +208,25 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isVariable() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal getLiteral(final Bindings b) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return this.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public RuleList clone(){
 		final RuleList rl2 = new RuleList();
@@ -204,6 +235,11 @@ public class RuleList extends AbstractRuleNode implements IExpression, Item {
 		return rl2;
 	}
 
+	/**
+	 * <p>createListLiteral.</p>
+	 *
+	 * @return a {@link lupos.rif.datatypes.ListLiteral} object.
+	 */
 	public ListLiteral createListLiteral(){
 		final ArrayList<Literal> al = new ArrayList<Literal>(this.items.size());
 		for(final IExpression ie: this.items){

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.misc;
 
@@ -27,16 +31,21 @@ import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-
 public class RIFParserHelper implements ILuposParser {
 
 	protected final ILuposParser parser;
 	protected ILuposToken token = null;
 
+	/**
+	 * <p>Constructor for RIFParserHelper.</p>
+	 *
+	 * @param parser a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public RIFParserHelper(final ILuposParser parser) {
 		this.parser = parser;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken getNextToken(String content) {
 		if (this.token != null) {
@@ -61,26 +70,31 @@ public class RIFParserHelper implements ILuposParser {
 						+ next.getContents().length()), current.getBeginChar());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setReader(LuposDocumentReader stream, int beginChar, int endChar) {
 		this.parser.setReader(stream, beginChar, endChar);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setReader(LuposDocumentReader s) {
 		this.parser.setReader(s);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LuposDocumentReader getReader() {
 		return this.parser.getReader();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEOF() {
 		return this.parser.isEOF();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setReaderTokenFriendly(LuposDocumentReader stream,
 			int beginChar, int endChar) {

@@ -45,7 +45,9 @@ import org.json.JSONObject;
  * This container contains all operators that shall be send to a node for execution.
  *
  * @param <K> the type of key used to address the node where this operator graph is sent to.
- * @since 12/2013 - added support for retrieving variables via {@link BoundVariablesMessage}
+ * @since 12/2013 - added support for retrieving variables via {@link lupos.engine.operators.messages.BoundVariablesMessage}
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SubgraphContainer<K> extends RootChild {
 
@@ -76,7 +78,8 @@ public class SubgraphContainer<K> extends RootChild {
 	 * @param rootNodeOfSubGraph
 	 * 		the root node of sub graph
 	 * @param key the key which identifies to which node the operator graph is sent to
-	 * @throws JSONException
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @throws org.json.JSONException if any.
 	 */
 	public SubgraphContainer(final Root rootNodeOfSubGraph, final K key, final ISubgraphExecutor<K> subgraphExecutor) throws JSONException {
 		this.key = key;
@@ -84,6 +87,7 @@ public class SubgraphContainer<K> extends RootChild {
 		this.subgraphExecutor = subgraphExecutor;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
@@ -92,13 +96,10 @@ public class SubgraphContainer<K> extends RootChild {
 
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Gets called when the operator is to be executed. When called this method sends the sub graph to the responsible
 	 * nodes for execution and waits for the result to return.
-	 *
-	 * @param dataset
-	 * 		the data set
-	 *
-	 * @return the result of the query execution
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {
@@ -118,7 +119,8 @@ public class SubgraphContainer<K> extends RootChild {
 
 
 	/**
-	 * Returns the key of the {@link SubgraphContainer}
+	 * Returns the key of the {@link lupos.distributed.operator.SubgraphContainer}
+	 *
 	 * @return the key used for distribution
 	 */
 	public K getKey() {
@@ -126,6 +128,7 @@ public class SubgraphContainer<K> extends RootChild {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		if (this.key instanceof KeyContainer) {
@@ -140,19 +143,22 @@ public class SubgraphContainer<K> extends RootChild {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return this.toString();
 	}
 
 	/**
-	 * Returns the inner root of the {@link SubgraphContainer}
+	 * Returns the inner root of the {@link lupos.distributed.operator.SubgraphContainer}
+	 *
 	 * @return the root
 	 */
 	public Root getRootOfSubgraph(){
 		return this.rootNodeOfSubGraph;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage newMsg = new BoundVariablesMessage(msg);
@@ -177,6 +183,7 @@ public class SubgraphContainer<K> extends RootChild {
 
 	/**
 	 * Allows to change the Key of the SubgraphContainer, used in optimization if a better key could be used
+	 *
 	 * @param newKey the new key
 	 */
 	public void changeKey(final K newKey) {
@@ -185,6 +192,7 @@ public class SubgraphContainer<K> extends RootChild {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator getContainedGraph(){
 		return this.rootNodeOfSubGraph;

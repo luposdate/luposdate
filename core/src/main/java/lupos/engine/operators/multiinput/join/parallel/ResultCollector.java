@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join.parallel;
 
@@ -34,7 +38,6 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.Operator;
-
 public class ResultCollector extends Operator implements
 		ParallelIterator<Bindings> {
 
@@ -52,6 +55,7 @@ public class ResultCollector extends Operator implements
 
 	private Iterator<Bindings> currentIter;
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult res, final int arg1) {
 		this.lock.lock();
@@ -64,10 +68,18 @@ public class ResultCollector extends Operator implements
 		return null;
 	}
 
+	/**
+	 * <p>getResult.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getResult() {
 		return QueryResult.createInstance(this);
 	}
 
+	/**
+	 * <p>incNumberOfThreads.</p>
+	 */
 	public void incNumberOfThreads() {
 		this.lock.lock();
 		try {
@@ -78,6 +90,11 @@ public class ResultCollector extends Operator implements
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>numberOfThreads</code>.</p>
+	 *
+	 * @param numberOfThreads a int.
+	 */
 	public void setNumberOfThreads(final int numberOfThreads) {
 		this.numberOfThreads = numberOfThreads;
 		// does not work for optional: resultList.clear();
@@ -86,6 +103,8 @@ public class ResultCollector extends Operator implements
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * If the list is empty and not all threads are ready, wait. If all threads
 	 * are done, move to the last element.
 	 */
@@ -129,6 +148,7 @@ public class ResultCollector extends Operator implements
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Bindings next() {
 		if (hasNext()) {
@@ -138,12 +158,16 @@ public class ResultCollector extends Operator implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException(
 				"can not remove from QueryResults");
 	}
 
+	/**
+	 * <p>waitForAllThreads.</p>
+	 */
 	protected void waitForAllThreads() {
 		this.lock.lock();
 		try {
@@ -159,11 +183,13 @@ public class ResultCollector extends Operator implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close() {
 		waitForAllThreads();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void finalize() {
 		close();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.AnnotationPanel;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator;
-
 public class ConnectionContainer {
 	private AbstractRuleOperator parent = null;
 	private AbstractRuleOperator child = null;
@@ -34,6 +37,11 @@ public class ConnectionContainer {
 	private String opLabel = "";
 	private ModeEnum mode = null;
 
+	/**
+	 * <p>Constructor for ConnectionContainer.</p>
+	 *
+	 * @param ap a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.AnnotationPanel} object.
+	 */
 	public ConnectionContainer(AnnotationPanel ap) {
 		this.parent = (AbstractRuleOperator) ap.getOperator();
 		this.child = (AbstractRuleOperator) ap.getChild();
@@ -43,6 +51,11 @@ public class ConnectionContainer {
 		this.mode = ap.getMode();
 	}
 
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		long hashCode = (long) this.parent.getName().hashCode() + (long) this.child.getName().hashCode() + this.isActive.hashCode() + this.mode.hashCode();
 
@@ -54,6 +67,7 @@ public class ConnectionContainer {
 		return (int) (hashCode % Integer.MAX_VALUE);
 	}
 
+	/** {@inheritDoc} */
 	public boolean equals(Object element) {
 		if(element instanceof ConnectionContainer) {
 			ConnectionContainer conn = (ConnectionContainer) element;
@@ -84,26 +98,56 @@ public class ConnectionContainer {
 		return false;
 	}
 
+	/**
+	 * <p>Getter for the field <code>parent</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 */
 	public AbstractRuleOperator getParent() {
 		return this.parent;
 	}
 
+	/**
+	 * <p>Getter for the field <code>child</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 */
 	public AbstractRuleOperator getChild() {
 		return this.child;
 	}
 
+	/**
+	 * <p>Getter for the field <code>isActive</code>.</p>
+	 *
+	 * @return a {@link java.lang.Boolean} object.
+	 */
 	public Boolean getIsActive() {
 		return this.isActive;
 	}
 
+	/**
+	 * <p>Getter for the field <code>opID</code>.</p>
+	 *
+	 * @return a {@link java.lang.Integer} object.
+	 */
 	public Integer getOpID() {
 		return this.opID;
 	}
 
+	/**
+	 * <p>getOpIDLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOpIDLabel() {
 		return this.opLabel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>mode</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.ModeEnum} object.
+	 */
 	public ModeEnum getMode() {
 		return this.mode;
 	}

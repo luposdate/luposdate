@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,31 +21,54 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph;
 
 import java.io.Serializable;
 
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public class GraphWrapperIDTuple implements Serializable {
 	private static final long serialVersionUID = 1290984783247779070L;
 	private GraphWrapper op;
 	private int id;
 
+	/**
+	 * <p>Constructor for GraphWrapperIDTuple.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param id a int.
+	 */
 	public GraphWrapperIDTuple(GraphWrapper op, int id) {
 		this.op = op;
 		this.id = id;
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return id + ": " + op;
 	}
 
+	/**
+	 * <p>getOperator.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public GraphWrapper getOperator() {
 		return this.op;
 	}
 
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getId() {
 		return this.id;
 	}

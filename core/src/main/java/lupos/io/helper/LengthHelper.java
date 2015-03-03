@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.helper;
 
@@ -50,8 +54,14 @@ import lupos.engine.operators.multiinput.join.NodeInPartitionTree;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.Registration;
 import lupos.optimizations.logical.statistics.VarBucket;
-
 public final class LengthHelper {
+	/**
+	 * <p>lengthLuposTriple.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @param previousTriple a {@link lupos.datastructures.items.Triple} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposTriple(final Triple t, final Triple previousTriple) {
 		int result = 1;
 		if (previousTriple.getSubject() == null
@@ -81,12 +91,25 @@ public final class LengthHelper {
 		return result;
 	}
 
+	/**
+	 * <p>lengthLuposTriple.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposTriple(final Triple t) {
 		return 	LengthHelper.lengthLuposLiteral(t.getSubject()) +
 				LengthHelper.lengthLuposLiteral(t.getPredicate()) +
 				LengthHelper.lengthLuposLiteral(t.getObject());
 	}
 
+	/**
+	 * <p>lengthLuposString.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @param previousString a {@link java.lang.String} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposString(final String s, final String previousString) {
 		try {
 			return LengthHelper.lengthLuposDifferenceString(s, previousString.getBytes(LuposObjectInputStream.UTF8));
@@ -99,9 +122,10 @@ public final class LengthHelper {
 
 
 	/**
+	 * <p>lengthLuposDifferenceString.</p>
 	 *
-	 * @param s
-	 * @param previousString
+	 * @param s a {@link java.lang.String} object.
+	 * @param previousString an array of byte.
 	 * @return the byte array of the just written string (to be kept and used for next call to this method)
 	 */
 	public final static int lengthLuposDifferenceString(final String s, final byte[] previousString) {
@@ -128,6 +152,12 @@ public final class LengthHelper {
 			return 0;
 		}	}
 
+	/**
+	 * <p>lengthLuposString.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposString(final String s) {
 		if (s == null){
 			return 0;
@@ -143,37 +173,84 @@ public final class LengthHelper {
 		}
 	}
 
+	/**
+	 * <p>lengthLuposBoolean.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposBoolean() {
 		return 1;
 	}
 
+	/**
+	 * <p>lengthLuposInt.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposInt() {
 		return 4;
 	}
 
+	/**
+	 * <p>lengthLuposBigInteger.</p>
+	 *
+	 * @param numberOfBits a int.
+	 * @return a int.
+	 */
 	public final static int lengthLuposBigInteger(final int numberOfBits) {
 		return (numberOfBits / 8) + ((numberOfBits%8==0)?0:1);
 	}
 
+	/**
+	 * <p>lengthLuposInt1Byte.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposInt1Byte() {
 		return 1;
 	}
 
+	/**
+	 * <p>lengthLuposInt2Bytes.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposInt2Bytes() {
 		return 2;
 	}
 
+	/**
+	 * <p>lengthLuposInt3Bytes.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposInt3Bytes() {
 		return 3;	}
 
+	/**
+	 * <p>lengthLuposLong.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposLong() {
 		return 8;
 	}
 
+	/**
+	 * <p>lengthLuposByte.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthLuposByte() {
 		return 1;
 	}
 
+	/**
+	 * <p>lengthLuposIntVariableBytes.</p>
+	 *
+	 * @param i_par a int.
+	 * @return a int.
+	 */
 	public final static int lengthLuposIntVariableBytes(final int i_par) {
 		int i = i_par;
 		if (i <= 251) {
@@ -188,6 +265,12 @@ public final class LengthHelper {
 		}
 	}
 
+	/**
+	 * <p>lengthLuposInt.</p>
+	 *
+	 * @param i_par a int.
+	 * @return a int.
+	 */
 	public final static int lengthLuposInt(final int i_par) {
 		int i = i_par;
 		if (i <= 251) {
@@ -202,6 +285,12 @@ public final class LengthHelper {
 		}
 	}
 
+	/**
+	 * <p>lengthLuposLiteralDataOutputStream.</p>
+	 *
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposLiteralDataOutputStream(final Literal literal) {
 		if (literal instanceof StringLiteral) {
 			return LengthHelper.lengthLuposString(((StringLiteral) literal).originalString());
@@ -210,10 +299,24 @@ public final class LengthHelper {
 		}
 	}
 
+	/**
+	 * <p>lengthLuposLiteral.</p>
+	 *
+	 * @param literal a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposLiteral(final Literal literal) {
 		return LiteralFactory.lengthLuposLiteral(literal);
 	}
 
+	/**
+	 * <p>lengthLuposMapEntry.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.dbmergesortedds.MapEntry} object.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
+	 * @return a int.
+	 */
 	public final static<K, V> int lengthLuposMapEntry(final lupos.datastructures.dbmergesortedds.MapEntry<K, V> t) {
 		final int result = 2*LengthHelper.lengthLuposByte();
 		if (t.getKey() instanceof String && (t.getValue() instanceof Triple)) {
@@ -223,6 +326,13 @@ public final class LengthHelper {
 		}
 	}
 
+	/**
+	 * <p>lengthStringKey.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @return a int.
+	 */
 	protected final static int lengthStringKey(final String s, final Triple t) {
 		if (s.startsWith(t.getSubject().toString())) {
 			if (s.compareTo(t.getSubject().toString() + t.getPredicate().toString() + t.getObject().toString()) == 0) {
@@ -246,6 +356,13 @@ public final class LengthHelper {
 		return 1 + LengthHelper.lengthLuposString(s);
 	}
 
+	/**
+	 * <p>lengthLuposBindings.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param previousBindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposBindings(final Bindings t, final Bindings previousBindings) {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
@@ -312,6 +429,12 @@ public final class LengthHelper {
 		}
 	}
 
+	/**
+	 * <p>lengthLuposBindings.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposBindings(final Bindings t) {
 		if (t instanceof BindingsArray) {
 			final BindingsArray ba = (BindingsArray) t;
@@ -372,14 +495,33 @@ public final class LengthHelper {
 		return result;
 	}
 
+	/**
+	 * <p>lengthLuposTripleKey.</p>
+	 *
+	 * @param tk a {@link lupos.datastructures.items.TripleKey} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposTripleKey(final TripleKey tk){
 		return LengthHelper.lengthLuposByte() + LengthHelper.lengthLuposTriple(tk.getTriple());
 	}
 
+	/**
+	 * <p>lengthLuposTripleKey.</p>
+	 *
+	 * @param tk a {@link lupos.datastructures.items.TripleKey} object.
+	 * @param previousTripleKey a {@link lupos.datastructures.items.TripleKey} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposTripleKey(final TripleKey tk, final TripleKey previousTripleKey){
 		return LengthHelper.lengthLuposByte() + LengthHelper.lengthLuposTriple(tk.getTriple(), previousTripleKey.getTriple());
 	}
 
+	/**
+	 * <p>lengthLuposCollection.</p>
+	 *
+	 * @param t a {@link java.util.Collection} object.
+	 * @return a int.
+	 */
 	@SuppressWarnings("rawtypes")
 	public final static int lengthLuposCollection(final Collection t){
 		int result = 1;
@@ -400,6 +542,12 @@ public final class LengthHelper {
 		return result;
 	}
 
+	/**
+	 * <p>lengthLuposSet.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.smallerinmemorylargerondisk.SetImplementation} object.
+	 * @return a int.
+	 */
 	@SuppressWarnings("rawtypes")
 	public final static int lengthLuposSet(final SetImplementation t){
 		int result = LengthHelper.lengthLuposInt();
@@ -412,6 +560,12 @@ public final class LengthHelper {
 		return result;
 	}
 
+	/**
+	 * <p>lengthLuposNodeInPartitionTree.</p>
+	 *
+	 * @param t a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposNodeInPartitionTree(final NodeInPartitionTree t){
 		int result = LengthHelper.lengthLuposByte();
 		if (t instanceof LeafNodeInPartitionTree) {
@@ -422,6 +576,12 @@ public final class LengthHelper {
 		return result;
 	}
 
+	/**
+	 * <p>lengthLuposVarBucket.</p>
+	 *
+	 * @param vb a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 * @return a int.
+	 */
 	public final static int lengthLuposVarBucket(final VarBucket vb) {
 		int result = LengthHelper.lengthLuposInt(vb.selectivityOfInterval.size());
 		if (vb.minimum == null) {
@@ -444,6 +604,12 @@ public final class LengthHelper {
 		return result;
 	}
 
+	/**
+	 * <p>lengthLuposVarBucketArray.</p>
+	 *
+	 * @param t an array of {@link lupos.optimizations.logical.statistics.VarBucket} objects.
+	 * @return a int.
+	 */
 	public final static int lengthLuposVarBucketArray(final VarBucket[] t) {
 		int result = LengthHelper.lengthLuposIntVariableBytes(t.length);
 		int nulls = 0;

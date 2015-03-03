@@ -31,9 +31,27 @@ import lupos.datastructures.items.literal.Literal;
 /**
  * Interface for items that can be part of triple patterns.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface Item extends Serializable {
+	/**
+	 * <p>isVariable.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isVariable();
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getLiteral(Bindings b);
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName();
 }

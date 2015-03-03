@@ -33,12 +33,14 @@ import lupos.engine.operators.multiinput.optional.Optional;
 import lupos.engine.operators.singleinput.parallel.ParallelOperand;
 
 /**
- * Implements a graph transformation which inserts a {@link ParallelOperand}
- * between each {@link Join} operator and its arguments, effectively evaluating
+ * Implements a graph transformation which inserts a {@link lupos.engine.operators.singleinput.parallel.ParallelOperand}
+ * between each {@link lupos.engine.operators.multiinput.join.Join} operator and its arguments, effectively evaluating
  * in a separate thread and thus distributing it across possibly multiple
  * processors.
- * 
+ *
  * @see ParallelOperand
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RuleJoinLastParallelOperands extends RuleJoinWithParallelOperands {
 
@@ -52,6 +54,7 @@ public class RuleJoinLastParallelOperands extends RuleJoinWithParallelOperands {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final BasicOperator join = mso.get("join");
@@ -60,6 +63,7 @@ public class RuleJoinLastParallelOperands extends RuleJoinWithParallelOperands {
 				&& super.checkPrecondition(mso);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return "JoinLastParallelOperands";

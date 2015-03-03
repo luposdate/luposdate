@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.graphwrapper;
 
@@ -37,16 +41,28 @@ import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.viewer.ElementPanel;
 import lupos.sparql1_1.*;
 import xpref.datatypes.BooleanDatatype;
-
 public class GraphWrapperAST extends GraphWrapper {
 	
+	/** Constant <code>queryHeads</code> */
 	public final static Class<?>[] queryHeads = new Class<?>[]{ASTSelectQuery.class, ASTAskQuery.class, ASTConstructQuery.class, ASTDescribeQuery.class, ASTQuery.class, ASTLoad.class, ASTClear.class, ASTDrop.class, ASTCreate.class, ASTAdd.class, ASTMove.class, ASTCopy.class, ASTInsert.class, ASTDelete.class, ASTModify.class };
+	/** Constant <code>operatorNodes</code> */
 	public final static Class<?>[] operatorNodes = new Class<?>[]{ASTAscOrder.class, ASTDescOrder.class, ASTOrNode.class, ASTAndNode.class, ASTEqualsNode.class, ASTNotEqualsNode.class, ASTLessThanNode.class, ASTLessThanEqualsNode.class, ASTGreaterThanNode.class, ASTGreaterThanEqualsNode.class, ASTInNode.class, ASTNotInNode.class, ASTAdditionNode.class, ASTSubtractionNode.class, ASTMultiplicationNode.class, ASTDivisionNode.class, ASTNotNode.class, ASTPlusNode.class, ASTMinusNode.class,ASTPathAlternative.class, ASTPathSequence.class, ASTInvers.class, ASTArbitraryOccurences.class, ASTOptionalOccurence.class, ASTArbitraryOccurencesNotZero.class, ASTNegatedPath.class, ASTNamed.class, ASTDefault.class, ASTAll.class }; 
+	/** Constant <code>functionNodes</code> */
 	public final static Class<?>[] functionNodes = new Class<?>[]{ASTStrFuncNode.class, ASTLangFuncNode.class, ASTLangMatchesFuncNode.class, ASTDataTypeFuncNode.class, ASTBoundFuncNode.class, ASTIriFuncNode.class, ASTUriFuncNode.class, ASTBnodeFuncNode.class, ASTRandFuncNode.class, ASTABSFuncNode.class, ASTCeilFuncNode.class, ASTFloorFuncNode.class, ASTRoundFuncNode.class, ASTConcatFuncNode.class, ASTStrlenFuncNode.class, ASTUcaseFuncNode.class, ASTLcaseFuncNode.class, ASTEncodeForUriFuncNode.class, ASTContainsFuncNode.class, ASTStrstartsFuncNode.class, ASTStrEndsFuncNode.class, ASTStrBeforeFuncNode.class, ASTStrAfterFuncNode.class, ASTYearFuncNode.class, ASTMonthFuncNode.class, ASTDayFuncNode.class, ASTHoursFuncNode.class, ASTMinutesFuncNode.class, ASTSecondsFuncNode.class, ASTTimeZoneFuncNode.class, ASTTzFuncNode.class, ASTNowFuncNode.class, ASTUUIDFuncNode.class, ASTSTRUUIDFuncNode.class, ASTMD5FuncNode.class, ASTSHA1FuncNode.class, ASTSHA256FuncNode.class, ASTSHA384FuncNode.class, ASTSHA512FuncNode.class, ASTCoalesceFuncNode.class, ASTIfFuncNode.class, ASTStrLangFuncNode.class, ASTStrdtFuncNode.class, ASTSameTermFuncNode.class, ASTisIRIFuncNode.class, ASTisURIFuncNode.class, ASTisBlankFuncNode.class, ASTisLiteralFuncNode.class, ASTisNumericFuncNode.class, ASTRegexFuncNode.class, ASTSubstringFuncNode.class, ASTStrReplaceFuncNode.class, ASTFunctionCall.class, ASTArguments.class }; 
+	/** Constant <code>highLevelOperators</code> */
 	public final static Class<?>[] highLevelOperators = new Class<?>[]{ASTBaseDecl.class, ASTPrefixDecl.class, ASTAs.class, ASTDefaultGraph.class, ASTNamedGraph.class, ASTHaving.class, ASTLimit.class, ASTOffset.class, ASTBindings.class, ASTExists.class, ASTNotExists.class, ASTAggregation.class, ASTService.class, ASTBind.class, ASTMinus.class, ASTUnionConstraint.class, ASTFilterConstraint.class, ASTConstructTemplate.class, ASTOptionalConstraint.class, ASTGraphConstraint.class }; 
+	/** Constant <code>terminalNodes</code> */
 	public final static Class<?>[] terminalNodes = new Class<?>[]{ASTAVerbType.class, ASTRDFLiteral.class, ASTDoubleCircumflex.class, ASTLangTag.class, ASTFloatingPoint.class, ASTBooleanLiteral.class, ASTStringLiteral.class, ASTQuotedURIRef.class, ASTQName.class, ASTBlankNode.class, ASTEmptyNode.class, ASTInteger.class, ASTVar.class, ASTNIL.class, ASTUndef.class }; 
+	/** Constant <code>nonTerminalNodes</code> */
 	public final static Class<?>[] nonTerminalNodes = new Class<?>[]{ASTGroup.class, ASTOrderConditions.class, ASTBlankNodePropertyList.class, ASTCollection.class, ASTNodeSet.class, ASTObjectList.class, ASTGroupConstraint.class }; 
 	
+	/**
+	 * <p>isContained.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @param classes an array of {@link java.lang.Class} objects.
+	 * @return a boolean.
+	 */
 	public static boolean isContained(Class<?> nodeClass, Class<?>[] classes){
 		for(Class<?> classToCheck: classes){
 			if(classToCheck.equals(nodeClass))
@@ -55,39 +71,83 @@ public class GraphWrapperAST extends GraphWrapper {
 		return false;
 	}
 		
+	/**
+	 * <p>isQueryHead.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public static boolean isQueryHead(Class<?> nodeClass){
 		return isContained(nodeClass, queryHeads);
 	}
+	/**
+	 * <p>isOperatorNode.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public static boolean isOperatorNode(Class<?> nodeClass){
 		return isContained(nodeClass, operatorNodes);
 	}
+	/**
+	 * <p>isFunctionNode.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public static boolean isFunctionNode(Class<?> nodeClass){
 		return isContained(nodeClass, functionNodes);
 	}
+	/**
+	 * <p>isHighLevelOperator.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public static boolean isHighLevelOperator(Class<?> nodeClass){
 		return isContained(nodeClass, highLevelOperators);
 	}
+	/**
+	 * <p>isTerminalNode.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public static boolean isTerminalNode(Class<?> nodeClass){
 		return isContained(nodeClass, terminalNodes);
 	}
+	/**
+	 * <p>isNonTerminalNode.</p>
+	 *
+	 * @param nodeClass a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public static boolean isNonTerminalNode(Class<?> nodeClass){
 		return isContained(nodeClass, nonTerminalNodes);
 	}
 	
+	/**
+	 * <p>Constructor for GraphWrapperAST.</p>
+	 *
+	 * @param element a {@link lupos.sparql1_1.Node} object.
+	 */
 	public GraphWrapperAST(final Node element) {
 		super(element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
 		return new ElementPanel(parent, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d,
 			final Dimension size) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -134,17 +194,20 @@ public class GraphWrapperAST extends GraphWrapper {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(
 			final OperatorGraph parent) {
 		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
 		final LinkedList<GraphWrapper> precedingElements = new LinkedList<GraphWrapper>();
@@ -157,6 +220,7 @@ public class GraphWrapperAST extends GraphWrapper {
 		return precedingElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
 		final Node[] children = ((Node) this.element).getChildren();
@@ -173,31 +237,37 @@ public class GraphWrapperAST extends GraphWrapper {
 		return succedingElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return new StringBuffer();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return this.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Node getElement() {
 		return (Node) this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean usePrefixesActive() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "ast_useStyledBoxes";

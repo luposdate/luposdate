@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.operators;
 
@@ -29,18 +33,29 @@ import lupos.gui.operatorgraph.visualeditor.operators.RDFTerm;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
-
 public class DataRDFTerm extends RDFTerm {
+	/**
+	 * <p>Constructor for DataRDFTerm.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public DataRDFTerm(Prefix prefix) {
 		super(prefix);
 	}
 
+	/**
+	 * <p>Constructor for DataRDFTerm.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 */
 	public DataRDFTerm(Prefix prefix, Item item) {
 		super(prefix);
 
 		this.item = item;
 	}
 
+	/** {@inheritDoc} */
 	public void addPredicate(RDFTerm child, String predicate) throws ModificationException {
 		try {
 			SimpleNode node = SPARQL1_1Parser.parseVerbWithoutVar(predicate, this.prefix.getPrefixNames());
@@ -52,6 +67,7 @@ public class DataRDFTerm extends RDFTerm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void setPredicate(RDFTerm child, String predicate, int index) throws ModificationException {
 		try {
 			// new element...
@@ -75,6 +91,7 @@ public class DataRDFTerm extends RDFTerm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void applyChange(String value) throws ModificationException {
 		try {
 			SimpleNode node = SPARQL1_1Parser.parseGraphTerm(value, this.prefix.getPrefixNames());
@@ -86,11 +103,13 @@ public class DataRDFTerm extends RDFTerm {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefID(){
 		return "dataEditor_style_rdfterm";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefIDForAnnotation(){		
 		return "dataEditor_style_predicate";

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -52,7 +56,6 @@ import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.gui.operatorgraph.visualeditor.util.JCheckBoxOwnIcon;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.misc.Triple;
-
 public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 	private final AnnotationPanel that = this;
@@ -67,6 +70,14 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 	private JRadioButton jRB_mode_only_succeeding = null;
 	private JRadioButton jRB_mode_only_preceding_and_succeeding = null;
 
+	/**
+	 * <p>Constructor for AnnotationPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 * @param child a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 * @param data a {@link lupos.misc.Triple} object.
+	 */
 	public AnnotationPanel(final VisualGraph<Operator> parent, final AbstractRuleOperator operator, final AbstractRuleOperator child, final Triple<Boolean, String, ModeEnum> data) {
 		super(parent, new GraphWrapperOperator(operator), operator, false);
 
@@ -269,6 +280,7 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		this.setBackground(new Color(255, 165, 0));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize() {
 		final int objWidth = (int) (4*this.parent.PADDING) + this.jCB_activate.getPreferredSize().width + this.jL_id.getPreferredSize().width + this.jTF_id.getPreferredSize().width;
@@ -298,6 +310,7 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
@@ -345,10 +358,20 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		return true;
 	}
 
+	/**
+	 * <p>isActive.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isActive() {
 		return this.jCB_activate.isSelected();
 	}
 
+	/**
+	 * <p>getOpID.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getOpID() {
 		try {
 			return Integer.parseInt(this.jTF_id.getText());
@@ -358,6 +381,11 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>getOpLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOpLabel() {
 		final String labelText = this.jTF_id.getText();
 
@@ -371,6 +399,11 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/**
+	 * <p>getMode.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.ModeEnum} object.
+	 */
 	public ModeEnum getMode() {
 		if(this.jRB_mode_exists.isSelected()) {
 			return ModeEnum.EXISTS;
@@ -395,6 +428,7 @@ public class AnnotationPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setBackground(final Color bg){
 		super.setBackground(bg);

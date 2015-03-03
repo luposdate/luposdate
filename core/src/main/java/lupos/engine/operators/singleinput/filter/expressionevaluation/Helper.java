@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.filter.expressionevaluation;
 
@@ -42,9 +46,15 @@ import lupos.engine.operators.singleinput.TypeErrorException;
 
 import org.apache.xerces.impl.xpath.regex.Match;
 import org.apache.xerces.impl.xpath.regex.RegularExpression;
-
 public class Helper {
 
+	/**
+	 * <p>booleanEffectiveValue.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static boolean booleanEffectiveValue(Object o)
 			throws TypeErrorException {
 		if(o instanceof LazyLiteral){
@@ -75,6 +85,12 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>isNumeric.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean isNumeric(final String type) {
 		if (isInteger(type)) {
 			return true;
@@ -83,6 +99,12 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>isFloatingPoint.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean isFloatingPoint(final String type) {
 		if (type.compareTo("<http://www.w3.org/2001/XMLSchema#double>") == 0
 				|| type.compareTo("<http://www.w3.org/2001/XMLSchema#float>") == 0
@@ -93,6 +115,12 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>isInteger.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean isInteger(final String type) {
 		return (type.compareTo("<http://www.w3.org/2001/XMLSchema#integer>") == 0
 				|| type
@@ -116,6 +144,13 @@ public class Helper {
 				.compareTo("<http://www.w3.org/2001/XMLSchema#positiveInteger>") == 0);
 	}
 
+	/**
+	 * <p>getInteger.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.math.BigInteger} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static BigInteger getInteger(Object a)
 			throws TypeErrorException {
 		if (a instanceof BigInteger) {
@@ -138,6 +173,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getFloat.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Float} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Float getFloat(Object a) throws TypeErrorException {
 		if (a instanceof Float) {
 			return (Float) a;
@@ -176,6 +218,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getDouble.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Double} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Double getDouble(Object a) throws TypeErrorException {
 		if (a instanceof Double) {
 			return (Double) a;
@@ -216,6 +265,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getBigDecimal.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.math.BigDecimal} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static BigDecimal getBigDecimal(Object a) throws TypeErrorException {
 		if (a instanceof BigDecimal) {
 			return (BigDecimal) a;
@@ -258,6 +314,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getDate.</p>
+	 *
+	 * @param a a {@link java.lang.String} object.
+	 * @return a {@link java.util.Date} object.
+	 * @throws java.text.ParseException if any.
+	 */
 	public static Date getDate(final String a) throws java.text.ParseException {
 		final SimpleDateFormat sdf = new SimpleDateFormat();
 		try {
@@ -284,6 +347,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getTz.</p>
+	 *
+	 * @param a a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.text.ParseException if any.
+	 */
 	public static String getTz(final String a) throws java.text.ParseException {
 		final SimpleDateFormat sdf = new SimpleDateFormat();
 		try {
@@ -319,6 +389,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getTzAndTypeCheck.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static String getTzAndTypeCheck(final Object a)
 			throws TypeErrorException {
 		try {
@@ -329,6 +406,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getTimezoneAndTypeCheck.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static String getTimezoneAndTypeCheck(final Object a)
 			throws TypeErrorException {
 		try {
@@ -371,6 +455,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getDateString.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static String getDateString(final Object a)
 			throws TypeErrorException {
 		try {
@@ -389,6 +480,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getContent.</p>
+	 *
+	 * @param a a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static String getContent(final TypedLiteral a) throws TypeErrorException {
 		try {
 			return (a).getContent().substring(1, (a).getContent().length() - 1);
@@ -397,6 +495,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getDate.</p>
+	 *
+	 * @param a a {@link lupos.datastructures.items.literal.TypedLiteral} object.
+	 * @return a {@link java.util.Date} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Date getDate(final TypedLiteral a) throws TypeErrorException {
 		try {
 			return getDate(getContent(a));
@@ -405,6 +510,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getDateAndTypeCheck.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.util.Date} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Date getDateAndTypeCheck(final Object a)
 			throws TypeErrorException {
 		if (isDate(a)) {
@@ -426,7 +538,7 @@ public class Helper {
 	 * @param bb
 	 *            : second value to compare
 	 * @return boolean: true if a=b, else false
-	 * @throws TypeErrorException
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
 	 */
 	public static boolean equals(final Object aa, final Object bb) throws TypeErrorException {
 		Object a = aa;
@@ -515,6 +627,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>typeCheck.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @param b a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static void typeCheck(final Object a, final Object b)
 			throws TypeErrorException {
 		if ((a instanceof BigInteger || a instanceof BigDecimal
@@ -593,6 +712,14 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getCoercionType.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @param b a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object getCoercionType(final Object a, final Object b)
 			throws TypeErrorException {
 		final Object typea = getType(a);
@@ -614,6 +741,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>getType.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object getType(Object a) throws TypeErrorException {
 		if (a instanceof BigInteger) {
 			return BigInteger.class;
@@ -651,6 +785,14 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>NOTequals.</p>
+	 *
+	 * @param aa a {@link java.lang.Object} object.
+	 * @param bb a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static boolean NOTequals(final Object aa, final Object bb) throws TypeErrorException {
 		Object a = aa;
 		Object b = bb;
@@ -713,21 +855,53 @@ public class Helper {
 		return !equals(a, b);
 	}
 
+	/**
+	 * <p>le.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @param b a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static boolean le(final Object a, final Object b)
 			throws TypeErrorException {
 		return equals(a, b) || less(a, b);
 	}
 
+	/**
+	 * <p>ge.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @param b a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static boolean ge(final Object a, final Object b)
 			throws TypeErrorException {
 		return equals(a, b) || greater(a, b);
 	}
 
+	/**
+	 * <p>less.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @param b a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static boolean less(final Object a, final Object b)
 			throws TypeErrorException {
 		return greater(b, a);
 	}
 
+	/**
+	 * <p>greater.</p>
+	 *
+	 * @param aa a {@link java.lang.Object} object.
+	 * @param bb a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static boolean greater(final Object aa, final Object bb) throws TypeErrorException {
 		Object a = aa;
 		Object b = bb;
@@ -839,6 +1013,12 @@ public class Helper {
 		return false;
 	}
 
+	/**
+	 * <p>getString.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getString(final Object o) {
 		if (o instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) o;
@@ -866,6 +1046,12 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param resultOfEvalTree a {@link java.lang.Object} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final Object resultOfEvalTree) {
 		if (resultOfEvalTree instanceof Literal) {
 			return (Literal) resultOfEvalTree;
@@ -908,6 +1094,14 @@ public class Helper {
 		return null;
 	}
 
+	/**
+	 * <p>matchXerces.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @param pattern a {@link java.lang.String} object.
+	 * @param flags a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean matchXerces(final String s, final String pattern,
 			final String flags) {
 		final RegularExpression regexPattern = makePatternXerces(pattern, flags);
@@ -918,6 +1112,15 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>replaceXerces.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param pattern a {@link java.lang.String} object.
+	 * @param flags a {@link java.lang.String} object.
+	 * @param replacement a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String replaceXerces(final String content, final String pattern,
 			final String flags, final String replacement) {
 		String s = content;
@@ -967,6 +1170,14 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>cast.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 * @param content a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	@SuppressWarnings("unused")
 	public static Object cast(final String type, Object content)
 			throws TypeErrorException {
@@ -1103,6 +1314,12 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>isDate.</p>
+	 *
+	 * @param a a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public static boolean isDate(final Object a) {
 		if (a instanceof Date) {
 			return true;
@@ -1128,6 +1345,12 @@ public class Helper {
 		return false;
 	}
 
+	/**
+	 * <p>trim.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String trim(final String s) {
 		if (s.startsWith("'''") && s.endsWith("'''")) {
 			return s.substring(3, s.length() - 3);
@@ -1142,6 +1365,12 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getOriginalValueString.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getOriginalValueString(final Object o) {
 		if (o instanceof Literal) {
 			return ((Literal) o).originalString();
@@ -1150,6 +1379,14 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>addNumericValues.</p>
+	 *
+	 * @param leftObject a {@link java.lang.Object} object.
+	 * @param rightObject a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object addNumericValues(final Object leftObject, final Object rightObject)
 			throws TypeErrorException {
 		final Object type = Helper.getCoercionType(leftObject, rightObject);
@@ -1173,6 +1410,14 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>subtractNumericValues.</p>
+	 *
+	 * @param leftObject a {@link java.lang.Object} object.
+	 * @param rightObject a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object subtractNumericValues(final Object leftObject,
 			final Object rightObject) throws TypeErrorException {
 		final Object type = Helper.getCoercionType(leftObject, rightObject);
@@ -1196,6 +1441,14 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>multiplyNumericValues.</p>
+	 *
+	 * @param leftObject a {@link java.lang.Object} object.
+	 * @param rightObject a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object multiplyNumericValues(final Object leftObject,
 			final Object rightObject) throws TypeErrorException {
 		final Object type = Helper.getCoercionType(leftObject, rightObject);
@@ -1223,10 +1476,10 @@ public class Helper {
 	 * Divide two Values and returns the result as an BigDecimal for BigInteger
 	 * and BigDecimal and as Float for Float and as Double for Double
 	 *
-	 * @param leftObject
-	 * @param rightObject
-	 * @return
-	 * @throws TypeErrorException
+	 * @param leftObject a {@link java.lang.Object} object.
+	 * @param rightObject a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 * @return a {@link java.lang.Object} object.
 	 */
 	public static Object divideNumericValues(final Object leftObject,
 			final Object rightObject) throws TypeErrorException {
@@ -1255,6 +1508,12 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>unlazy.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public final static Object unlazy(final Object o) {
 		if (o instanceof LazyLiteral) {
 			return ((LazyLiteral) o).getLiteral();
@@ -1263,6 +1522,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>getSimpleString.</p>
+	 *
+	 * @param arg0 a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static String getSimpleString(final Object arg0)
 			throws TypeErrorException {
 		if (!(arg0.getClass() == Literal.class
@@ -1274,10 +1540,22 @@ public class Helper {
 		return getString(arg0);
 	}
 
+	/**
+	 * <p>quote.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String quote(final String s) {
 		return "\"" + s + "\"";
 	}
 
+	/**
+	 * <p>isNumeric.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public static boolean isNumeric(final Object o) {
 		if (o instanceof Number) {
 			return true;
@@ -1288,6 +1566,12 @@ public class Helper {
 		return false;
 	}
 
+	/**
+	 * <p>unquote.</p>
+	 *
+	 * @param quotedString a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String unquote(final String quotedString) {
 		if((quotedString.startsWith("\"\"\"") || quotedString.startsWith("\'\'\'")) &&
 				(quotedString.endsWith("\"\"\"") || quotedString.endsWith("\'\'\'"))){
@@ -1296,6 +1580,13 @@ public class Helper {
 		return quotedString.substring(1, quotedString.length() - 1);
 	}
 
+	/**
+	 * <p>getContent.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static String getContent(final Object o) throws TypeErrorException {
 		if (o instanceof String || o instanceof StringLiteral
 				|| o instanceof CodeMapLiteral) {
@@ -1308,6 +1599,14 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
+	/**
+	 * <p>createWithSameType.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param literal a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public static Object createWithSameType(final String content, final Object literal)
 			throws TypeErrorException {
 		if (literal instanceof TypedLiteral) {
@@ -1325,6 +1624,13 @@ public class Helper {
 		}
 	}
 
+	/**
+	 * <p>applyHashFunction.</p>
+	 *
+	 * @param hashFunction a {@link java.lang.String} object.
+	 * @param inputParameter a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String applyHashFunction(final String hashFunction, final String inputParameter) {
 		try {
 			final MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
@@ -1350,6 +1656,12 @@ public class Helper {
 
 	}
 
+	/**
+	 * <p>getLengthOfHashFunction.</p>
+	 *
+	 * @param hashFunction a {@link java.lang.String} object.
+	 * @return a int.
+	 */
 	public static int getLengthOfHashFunction(final String hashFunction) {
 		try {
 			final MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);

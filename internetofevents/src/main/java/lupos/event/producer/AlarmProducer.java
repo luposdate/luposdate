@@ -60,9 +60,8 @@ import lupos.sparql1_1.SimpleNode;
 
 /**
  * Asks for a producer type and lets choose an event to return in the Console.
- * 
- * @author Anderson, Kutzner
- * 
+ *
+ * @version $Id: $Id
  */
 public class AlarmProducer extends ProducerBase {
 
@@ -77,6 +76,12 @@ public class AlarmProducer extends ProducerBase {
 
 	/**
 	 * Constructor
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @param listOfTriples a {@link java.util.List} object.
+	 * @param periodic a boolean.
+	 * @param waitingTime a long.
+	 * @throws java.lang.Exception if any.
 	 */
 	public AlarmProducer(SerializingMessageService msgService,
 			List<List<Triple>> listOfTriples, boolean periodic, long waitingTime)
@@ -87,6 +92,7 @@ public class AlarmProducer extends ProducerBase {
 		this.waitingTime = waitingTime;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produce() {
 		if (!periodic && alreadySent) {
@@ -124,10 +130,10 @@ public class AlarmProducer extends ProducerBase {
 	/**
 	 * Main-method that starts the AlarmProducer and asks for an event to alarm
 	 * to.
-	 * 
+	 *
 	 * @param args
 	 *            command line parameter
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 

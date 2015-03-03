@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node;
 
@@ -36,7 +40,6 @@ import lupos.datastructures.buffermanager.PageManager;
 import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.io.helper.OutHelper;
-
 public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializable> extends Node<K, V> {
 
 	public List<V> readValues = new LinkedList<V>();
@@ -45,6 +48,15 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 	protected final PageManager pageManager;
 	protected final NodeDeSerializer<K, V> nodeDeSerializer;
 
+	/**
+	 * <p>Constructor for LeafNode.</p>
+	 *
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 * @param k_ a int.
+	 * @param pageManager a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 */
 	public LeafNode(final Class<? super K> keyClass,
 			final Class<? super V> valueClass, final int k_,
 			final PageManager pageManager,
@@ -55,6 +67,7 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final String result = "Node stored in " + this.filename + "\n";
@@ -73,6 +86,11 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 		return result + s + "\n-> " + this.nextLeafNode;
 	}
 
+	/**
+	 * <p>writeLeafNode.</p>
+	 *
+	 * @param overwrite a boolean.
+	 */
 	public void writeLeafNode(final boolean overwrite) {
 		try {
 			final OutputStream out = new PageOutputStream(this.filename, this.pageManager, !overwrite);
@@ -96,30 +114,66 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 		}
 	}
 
+	/**
+	 * <p>getValues.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<V> getValues() {
 		return this.readValues;
 	}
 
+	/**
+	 * <p>setValues.</p>
+	 *
+	 * @param readValues a {@link java.util.List} object.
+	 */
 	public void setValues(final List<V> readValues) {
 		this.readValues = readValues;
 	}
 
+	/**
+	 * <p>Getter for the field <code>nextLeafNode</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getNextLeafNode() {
 		return this.nextLeafNode;
 	}
 
+	/**
+	 * <p>Setter for the field <code>nextLeafNode</code>.</p>
+	 *
+	 * @param nextLeafNode a int.
+	 */
 	public void setNextLeafNode(final int nextLeafNode) {
 		this.nextLeafNode = nextLeafNode;
 	}
 
+	/**
+	 * <p>isFound.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isFound() {
 		return this.found;
 	}
 
+	/**
+	 * <p>Setter for the field <code>found</code>.</p>
+	 *
+	 * @param found a boolean.
+	 */
 	public void setFound(final boolean found) {
 		this.found = found;
 	}
 
+	/**
+	 * <p>getNextLeafEntry.</p>
+	 *
+	 * @param index a int.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry} object.
+	 */
 	public DBBPTreeEntry<K, V> getNextLeafEntry(final int index) {
 		if (index >= this.readValues.size()) {
 			if (this.nextLeafNode != null) {
@@ -148,6 +202,9 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 		}
 	}
 
+	/**
+	 * <p>readFullLeafNode.</p>
+	 */
 	public void readFullLeafNode() {
 		final int posKey=this.readKeys.size();
 		K lastKey=(posKey == 0) ? null : this.readKeys.get(posKey - 1);
@@ -173,12 +230,30 @@ public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializ
 		}
 	}
 
+	/**
+	 * <p>writeLeafEntry.</p>
+	 *
+	 * @param k a K object.
+	 * @param v a V object.
+	 * @param lastKey a K object.
+	 * @param lastValue a V object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	protected void writeLeafEntry(final K k, final V v, final K lastKey,
 			final V lastValue, final OutputStream out)
 			throws IOException {
 		this.nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
 	}
 
+	/**
+	 * <p>getNextLeafEntry.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param lastKey a K object.
+	 * @param lastValue a V object.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry} object.
+	 */
 	protected DBBPTreeEntry<K, V> getNextLeafEntry(
 			final InputStream in, final K lastKey,
 			final V lastValue) {

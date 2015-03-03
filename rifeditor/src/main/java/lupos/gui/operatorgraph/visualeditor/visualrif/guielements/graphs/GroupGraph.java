@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 
@@ -36,12 +40,16 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualGraphOperator;
-
 public class GroupGraph extends VisualGraphOperator{
 
 	private static final long serialVersionUID = -2936295936044533187L;
 
 	// Constructor
+	/**
+	 * <p>Constructor for GroupGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public GroupGraph(final VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
 
@@ -51,6 +59,7 @@ public class GroupGraph extends VisualGraphOperator{
 		this.construct();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Operator createOperator(final Class<? extends Operator> clazz, final Item content) throws Exception {
 
@@ -61,9 +70,11 @@ public class GroupGraph extends VisualGraphOperator{
 		return newOp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void handleAddOperator(final Operator arg0) {}
 
+	/** {@inheritDoc} */
 	@Override
 	public String serializeGraph() {
 		final String graph = super.serializeSuperGraph();
@@ -77,43 +88,53 @@ public class GroupGraph extends VisualGraphOperator{
 		return ret.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean validateAddOperator(final int arg0, final int arg1, final String arg2) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewRule(final RuleOperator ro) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewPrefix(final PrefixOperator po) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewImport(final ImportOperator io) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewUniterm(final UnitermOperator fo) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewOperatorContainer(final AbstractContainer oc) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewListOperator(final ListOperator lo) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewFrameOperator(final FrameOperator fo) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewConstantOperator(final ConstantOperator co) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewVariableOperator(final VariableOperator vo) {
 	}

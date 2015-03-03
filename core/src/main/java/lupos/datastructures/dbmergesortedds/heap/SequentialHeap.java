@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,34 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
 
 import java.util.Arrays;
-
 public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	protected int length = 0;
 	protected Object[] arr;
 	protected int height;
 
+	/**
+	 * <p>Constructor for SequentialHeap.</p>
+	 *
+	 * @param height a int.
+	 */
 	public SequentialHeap(final int height) {
 		this.arr = new Object[(1 << (height + 1)) - 1];
 		this.height = height;
 	}
 
+	/**
+	 * <p>Constructor for SequentialHeap.</p>
+	 *
+	 * @param arr an array of {@link java.lang.Object} objects.
+	 * @param length a int.
+	 */
 	public SequentialHeap(final Object[] arr, final int length) {
 		this.arr = new Object[arr.length];
 		this.length = (length < arr.length) ? length : arr.length;
@@ -42,6 +56,12 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		determineHeight(arr.length);
 	}
 
+	/**
+	 * <p>Constructor for SequentialHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 */
 	public SequentialHeap(final int length_or_height, final boolean length) {
 		if (length) {
 			this.arr = new Object[length_or_height];
@@ -52,6 +72,11 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		}
 	}
 
+	/**
+	 * <p>determineHeight.</p>
+	 *
+	 * @param length a int.
+	 */
 	protected void determineHeight(final int length) {
 		this.height = 0;
 		while (((1 << (this.height + 1)) - 1) <= length) {
@@ -65,6 +90,7 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#maxLength()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int maxLength() {
 		return arr.length;
@@ -75,6 +101,7 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#clear()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		length = 0;
@@ -85,6 +112,7 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#isFull()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFull() {
 		return size() == arr.length;
@@ -95,11 +123,17 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#peek()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public E peek() {
 		return get(0);
 	}
 
+	/**
+	 * <p>peekObject.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object peekObject() {
 		return arr[0];
 	}
@@ -109,6 +143,7 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#pop()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public E pop() {
 		if (length == 0)
@@ -117,6 +152,12 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 			return deleteIndex(0);
 	}
 
+	/**
+	 * <p>deleteIndex.</p>
+	 *
+	 * @param i a int.
+	 * @return a E object.
+	 */
 	protected E deleteIndex(final int i) {
 		if (i < 0)
 			return null;
@@ -132,6 +173,12 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#delete(E)
 	 */
+	/**
+	 * <p>delete.</p>
+	 *
+	 * @param e a E object.
+	 * @return a E object.
+	 */
 	public E delete(final E e) {
 		return deleteIndex(indexOf(e, 0));
 	}
@@ -141,6 +188,7 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#add(E)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		arr[length] = elem;
@@ -152,6 +200,12 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#contains(E)
 	 */
+	/**
+	 * <p>contains.</p>
+	 *
+	 * @param ele a E object.
+	 * @return a boolean.
+	 */
 	public boolean contains(final E ele) {
 		if (length == 0)
 			return false;
@@ -159,6 +213,13 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 			return contains(ele, 0);
 	}
 
+	/**
+	 * <p>contains.</p>
+	 *
+	 * @param ele a E object.
+	 * @param i a int.
+	 * @return a boolean.
+	 */
 	protected boolean contains(final E ele, final int i) {
 		if (ele.equals(get(i))) {
 			return true;
@@ -169,6 +230,13 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 					|| rightChild(i) > -1 && contains(ele, rightChild(i));
 	}
 
+	/**
+	 * <p>indexOf.</p>
+	 *
+	 * @param ele a E object.
+	 * @param i a int.
+	 * @return a int.
+	 */
 	protected int indexOf(final E ele, final int i) {
 		if (ele.compareTo(get(i)) == 0)
 			return i;
@@ -194,17 +262,26 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#isEmpty()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return length == 0;
 	}
 
+	/**
+	 * <p>buildHeap.</p>
+	 */
 	protected void buildHeap() {
 		for (int i = length / 2 - 1; i >= 0; i--) {
 			bubbleDown(i);
 		}
 	}
 
+	/**
+	 * <p>bubbleDown.</p>
+	 *
+	 * @param i a int.
+	 */
 	protected void bubbleDown(int i) {
 		while (true) {
 			final int left = leftChild(i);
@@ -224,6 +301,11 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		}
 	}
 
+	/**
+	 * <p>bubbleUp.</p>
+	 *
+	 * @param i a int.
+	 */
 	protected void bubbleUp(int i) {
 		while (true) {
 			if (i == 0)
@@ -237,23 +319,47 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		}
 	}
 
+	/**
+	 * <p>swap.</p>
+	 *
+	 * @param i a int.
+	 * @param j a int.
+	 */
 	protected void swap(final int i, final int j) {
 		final E tmp = get(i);
 		arr[i] = arr[j];
 		arr[j] = tmp;
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param i a int.
+	 * @return a E object.
+	 */
 	@SuppressWarnings("unchecked")
 	protected E get(final int i) {
 		return (E) arr[i];
 	}
 
+	/**
+	 * <p>parent.</p>
+	 *
+	 * @param i a int.
+	 * @return a int.
+	 */
 	protected int parent(final int i) {
 		if (i <= 0)
 			return -1;
 		return (i - 1) / 2;
 	}
 
+	/**
+	 * <p>leftChild.</p>
+	 *
+	 * @param i a int.
+	 * @return a int.
+	 */
 	protected int leftChild(final int i) {
 		final int c = 2 * i + 1;
 		if (c < length)
@@ -262,6 +368,12 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 			return -1;
 	}
 
+	/**
+	 * <p>rightChild.</p>
+	 *
+	 * @param i a int.
+	 * @return a int.
+	 */
 	protected int rightChild(final int i) {
 		final int c = 2 * i + 2;
 		if (c < length)
@@ -275,6 +387,7 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#toString()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return Arrays.toString(arr);
@@ -285,6 +398,11 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 	 * 
 	 * @see
 	 * lupos.datastructures.dbmergesortedds.HeapInterface#checkHeapProperty()
+	 */
+	/**
+	 * <p>checkHeapProperty.</p>
+	 *
+	 * @return a boolean.
 	 */
 	public boolean checkHeapProperty() {
 		for (int i = 0; i < length; i++) {
@@ -302,16 +420,23 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Object[] getContent() {
 		return arr;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return length;
 	}
 
+	/**
+	 * <p>addByUpdating.</p>
+	 *
+	 * @param elem a E object.
+	 */
 	protected void addByUpdating(E elem) {
 		final int[] ia = getPathToFreeSpace();
 		for (int index = ia[0]; index > 0; index--) {
@@ -327,10 +452,21 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		arr[length++] = elem;
 	}
 
+	/**
+	 * <p>getPathToFreeSpace.</p>
+	 *
+	 * @return an array of int.
+	 */
 	protected int[] getPathToFreeSpace() {
 		return getPathToElement(length);
 	}
 
+	/**
+	 * <p>getPathToElement.</p>
+	 *
+	 * @param i a int.
+	 * @return an array of int.
+	 */
 	protected int[] getPathToElement(int i) {
 		final int[] path = new int[height + 2];
 		for (int index = 1; index < path.length; index++) {
@@ -345,6 +481,11 @@ public class SequentialHeap<E extends Comparable<E>> extends Heap<E> {
 		return path;
 	}
 
+	/**
+	 * <p>updateAfterBecomingSmaller.</p>
+	 *
+	 * @param elem a E object.
+	 */
 	public void updateAfterBecomingSmaller(final E elem) {
 		int i = 0;
 		for (; i < length; i++) {

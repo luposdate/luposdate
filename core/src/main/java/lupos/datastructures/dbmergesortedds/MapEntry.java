@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -31,10 +35,21 @@ public class MapEntry<K, V> implements Entry<K, V>, Serializable,
 		Comparable<Entry<K, V>> {
 	private static final long serialVersionUID = -1799734392680458236L;
 
+	/**
+	 * <p>Constructor for MapEntry.</p>
+	 *
+	 * @param key a K object.
+	 */
 	public MapEntry(final K key) {
 		this.k = key;
 	}
 
+	/**
+	 * <p>Constructor for MapEntry.</p>
+	 *
+	 * @param key a K object.
+	 * @param value a V object.
+	 */
 	public MapEntry(final K key, final V value) {
 		this.k = key;
 		this.v = value;
@@ -43,16 +58,19 @@ public class MapEntry<K, V> implements Entry<K, V>, Serializable,
 	private final K k;
 	private V v;
 
+	/** {@inheritDoc} */
 	@Override
 	public K getKey() {
 		return this.k;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V getValue() {
 		return this.v;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V setValue(final V value) {
 		final V res = this.v;
@@ -60,21 +78,25 @@ public class MapEntry<K, V> implements Entry<K, V>, Serializable,
 		return res;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object other) {
 		return this.k.equals(((MapEntry<K, V>) other).k);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final Entry<K, V> other) {
 		return ((Comparable<K>) this.k).compareTo(other.getKey());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.k + " => " + this.v;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return (int)(((long)this.k.hashCode() + this.v.hashCode())%Integer.MAX_VALUE);

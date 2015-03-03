@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributedendpoints.storage;
 
@@ -28,21 +32,28 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 import lupos.distributedendpoints.storage.util.EndpointManagement;
-
 public class DistributionHistogramExecutor extends AbstractDistributionHistogramExecutor<KeyContainer<Integer>> {
 
 	protected final EndpointManagement endpointManagement;
 
+	/**
+	 * <p>Constructor for DistributionHistogramExecutor.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param endpointManagement a {@link lupos.distributedendpoints.storage.util.EndpointManagement} object.
+	 */
 	public DistributionHistogramExecutor(final IDistribution<KeyContainer<Integer>> distribution, final EndpointManagement endpointManagement) {
 		super(distribution);
 		this.endpointManagement = endpointManagement;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String sendJSONRequest(final String request, final KeyContainer<Integer> key) {
 		return this.endpointManagement.submitHistogramRequest(request, key);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] sendJSONRequest(final String request){
 		if(this.distribution instanceof IDistributionKeyContainer){

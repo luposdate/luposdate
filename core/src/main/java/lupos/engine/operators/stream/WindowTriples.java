@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -30,7 +34,6 @@ import lupos.datastructures.items.Triple;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.messages.StartOfEvaluationMessage;
 import lupos.misc.debug.DebugStep;
-
 public class WindowTriples extends Window {
 
 	private int numberOfTriples = 0;
@@ -39,6 +42,11 @@ public class WindowTriples extends Window {
 	private int start = -1;
 	private int end = 0;
 
+	/**
+	 * <p>Constructor for WindowTriples.</p>
+	 *
+	 * @param numberOfTriples a int.
+	 */
 	public WindowTriples(final int numberOfTriples) {
 		if (numberOfTriples < 1) {
 			System.err
@@ -49,6 +57,7 @@ public class WindowTriples extends Window {
 			this.numberOfTriples = numberOfTriples;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final StartOfEvaluationMessage message) {
 		this.triplesInWindow = new TimestampedTriple[this.numberOfTriples];
@@ -57,6 +66,7 @@ public class WindowTriples extends Window {
 		return message;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		if (this.end == this.start) {
@@ -74,6 +84,7 @@ public class WindowTriples extends Window {
 		super.consume(t);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		if (this.end == this.start) {
@@ -92,6 +103,7 @@ public class WindowTriples extends Window {
 		super.consumeDebug(t, debugstep);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" " + this.numberOfTriples;

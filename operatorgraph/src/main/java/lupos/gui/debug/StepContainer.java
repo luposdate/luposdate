@@ -28,9 +28,9 @@ import lupos.engine.operators.BasicOperator;
 /**
  * The class StepContainer just contains all neccessary values of a single step
  * in order to reproduce it through the use of the RingBuffer
- * 
+ *
  * @author Markus & Peter
- * 
+ * @version $Id: $Id
  */
 public class StepContainer {
 	private final BasicOperator from;
@@ -40,10 +40,11 @@ public class StepContainer {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param from
-	 * @param to
-	 * @param object
+	 *
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param to a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param object a {@link java.lang.Object} object.
+	 * @param deleteStep a boolean.
 	 */
 	public StepContainer(final BasicOperator from, final BasicOperator to,
 			final Object object, final boolean deleteStep) {
@@ -54,18 +55,38 @@ public class StepContainer {
 		this.deleteStep = deleteStep;
 	}
 
+	/**
+	 * <p>Getter for the field <code>from</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator getFrom() {
 		return from;
 	}
 
+	/**
+	 * <p>Getter for the field <code>to</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator getTo() {
 		return to;
 	}
 
+	/**
+	 * <p>Getter for the field <code>object</code>.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object getObject() {
 		return object;
 	}
 
+	/**
+	 * <p>isDeleteStep.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isDeleteStep() {
 		return deleteStep;
 	}

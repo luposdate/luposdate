@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.queryresult;
 
@@ -45,7 +49,6 @@ import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
-
 public class QueryResult implements Iterable<Bindings>, Serializable {
 
 	/**
@@ -55,61 +58,132 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 
 	public enum TYPE {DISKBASED,ADAPTIVE, MEMORY}
 
+	/** Constant <code>type</code> */
 	public static TYPE type=TYPE.MEMORY;
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance() {
 			return new QueryResult(type);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final Bindings bindings){
 		final QueryResult result = QueryResult.createInstance();
 		result.add(bindings);
 		return result;
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param bindings a {@link java.util.Collection} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final Collection<Bindings> bindings){
 		return new QueryResult(bindings);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param memoryLimit a int.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final int memoryLimit) {
 		return new QueryResult(memoryLimit);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param type a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final TYPE type) {
 		return new QueryResult(type);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param itb a {@link java.util.Iterator} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(
 			final Iterator<? extends Bindings> itb) {
 		return new IteratorQueryResult(itb);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param itb a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(
 			final ParallelIterator<Bindings> itb) {
 		return new ParallelIteratorQueryResult(itb);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param itt a {@link java.util.Iterator} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final Iterator<Triple> itt,
 			final TriplePattern tp,
 			final RDF3XIndexScan.CollationOrder order) {
 		return new IteratorQueryResult(itt, tp, order);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param itt a {@link lupos.engine.operators.index.adaptedRDF3X.MergeIndicesTripleIterator} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(
 			final MergeIndicesTripleIterator itt, final TriplePattern tp) {
 		return new IdIteratorQueryResult(itt, tp);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param queue a {@link lupos.datastructures.parallel.BoundedBuffer} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final BoundedBuffer<Bindings> queue) {
 		return new ParallelIteratorQueryResult(queue);
 	}
 
 	protected Collection<Bindings> bindings;
 
+	/**
+	 * <p>Constructor for QueryResult.</p>
+	 */
 	public QueryResult() {
 		this.reset();
 	}
 
+	/**
+	 * <p>Constructor for QueryResult.</p>
+	 *
+	 * @param type a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 */
 	public QueryResult(final TYPE type) {
 		switch (type) {
 		default:
@@ -130,10 +204,20 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>Constructor for QueryResult.</p>
+	 *
+	 * @param bindings a {@link java.util.Collection} object.
+	 */
 	public QueryResult(final Collection<Bindings> bindings) {
 		this.bindings = bindings;
 	}
 
+	/**
+	 * <p>Constructor for QueryResult.</p>
+	 *
+	 * @param memoryLimit a int.
+	 */
 	public QueryResult(final int memoryLimit) {
 		if (memoryLimit == 0) {
 			try {
@@ -147,6 +231,9 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>reset.</p>
+	 */
 	public void reset() {
 		if (type == TYPE.MEMORY) {
 			this.bindings = new LinkedList<Bindings>();
@@ -162,22 +249,51 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>getCollection.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Bindings> getCollection() {
 		return this.bindings;
 	}
 
+	/**
+	 * <p>contains.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public boolean contains(final Bindings b) {
 		return this.bindings.contains(b);
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public boolean add(final Bindings b) {
 		return this.bindings.add(b);
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean add(final QueryResult qr) {
 		return this.addAll(qr);
 	}
 
+	/**
+	 * <p>containsAll.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean containsAll(final QueryResult qr) {
 		if (qr == null) {
 			return false;
@@ -243,30 +359,72 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 	}
 
 
+	/**
+	 * <p>containsAllExceptAnonymousLiterals.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean containsAllExceptAnonymousLiterals(final QueryResult qr) {
 		return this.containsAll(qr, TYPE_OF_TEST.NORMALEXCEPTBLANKS);
 	}
 
+	/**
+	 * <p>semanticallyContainsAllExceptAnonymousLiteralsAndInlineDataIRIs.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean semanticallyContainsAllExceptAnonymousLiteralsAndInlineDataIRIs(final QueryResult qr) {
 		return this.containsAll(qr, TYPE_OF_TEST.NORMALEXCEPTBLANKSANDIRIRS);
 	}
 
+	/**
+	 * <p>semanticallyContainsAll.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean semanticallyContainsAll(final QueryResult qr) {
 		return this.containsAll(qr, TYPE_OF_TEST.SEMANTICINTERPRETATION);
 	}
 
+	/**
+	 * <p>semanticallyContainsAllExceptAnonymousLiterals.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean semanticallyContainsAllExceptAnonymousLiterals(final QueryResult qr) {
 		return this.containsAll(qr, TYPE_OF_TEST.SEMANTICINTERPRETATIONEXCEPTBLANKS);
 	}
 
+	/**
+	 * <p>containsAllExceptAnonymousLiteralsAndInlineDataIRIs.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean containsAllExceptAnonymousLiteralsAndInlineDataIRIs(final QueryResult qr) {
 		return this.containsAll(qr, TYPE_OF_TEST.SEMANTICINTERPRETATIONEXCEPTBLANKSANDIRIRS);
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public boolean remove(final Bindings b) {
 		return this.bindings.remove(b);
 	}
 
+	/**
+	 * <p>removeAll.</p>
+	 *
+	 * @param res a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean removeAll(final QueryResult res) {
 		if (res == null) {
 			return false;
@@ -280,6 +438,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return success;
 	}
 
+	/**
+	 * <p>addFirst.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public boolean addFirst(final Bindings b) {
 		if (this.bindings instanceof HashSet) {
 			return this.bindings.add(b);
@@ -294,6 +458,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return false;
 	}
 
+	/**
+	 * <p>addLast.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public boolean addLast(final Bindings b) {
 		if (this.bindings instanceof HashSet) {
 			return this.bindings.add(b);
@@ -308,6 +478,13 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return false;
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param pos a int.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public boolean add(final int pos, final Bindings b) {
 		if (this.bindings instanceof HashSet) {
 			return this.bindings.add(b);
@@ -322,11 +499,21 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return false;
 	}
 
+	/**
+	 * <p>getFirst.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public Bindings getFirst() {
 		final Iterator<Bindings> iter = this.bindings.iterator();
 		return iter.next();
 	}
 
+	/**
+	 * <p>getLast.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public Bindings getLast() {
 		final Iterator<Bindings> iter = this.bindings.iterator();
 		Bindings ret = null;
@@ -336,6 +523,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return ret;
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param pos a int.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public Bindings get(final int pos) {
 		if (this.bindings instanceof LinkedList) {
 			return ((LinkedList<Bindings>) this.bindings).get(pos);
@@ -350,6 +543,7 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult clone() {
 		final QueryResult ret = createInstance();
@@ -358,10 +552,20 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return ret;
 	}
 
+	/**
+	 * <p>oneTimeSize.</p>
+	 *
+	 * @return a int.
+	 */
 	public int oneTimeSize() {
 		return this.size();
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		return this.bindings.size();
 	}
@@ -372,20 +576,34 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 	 * bindings. This is not the case for this QueryResult class, but for some
 	 * derived classes like IteratorQueryResult, which are used in order not to
 	 * store unnecessarily intermediate data on disk!
+	 *
+	 * @return a {@link java.util.Iterator} object.
 	 */
 	public Iterator<Bindings> oneTimeIterator() {
 		return this.iterator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Bindings> iterator() {
 		return this.bindings.iterator();
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return this.bindings.isEmpty();
 	}
 
+	/**
+	 * <p>addAll.</p>
+	 *
+	 * @param res a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean addAll(final QueryResult res) {
 		if (res == null) {
 			return false;
@@ -397,11 +615,18 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return success;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.bindings.toString();
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefix a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(final Prefix prefix) {
 		String result="[";
 		boolean firstTime=true;
@@ -416,6 +641,7 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return result+"]";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof QueryResult) {
@@ -425,6 +651,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>sameOrder.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean sameOrder(final QueryResult qr) {
 		if (this.equals(qr)) {
 			if ((this instanceof BooleanResult && qr instanceof BooleanResult)
@@ -448,6 +680,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>sameOrderExceptAnonymousLiterals.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean sameOrderExceptAnonymousLiterals(final QueryResult qr) {
 		if (this.containsAllExceptAnonymousLiterals(qr) && qr.containsAllExceptAnonymousLiterals(this) && this.size()==qr.size()) {
 			if ((this instanceof BooleanResult && qr instanceof BooleanResult)
@@ -471,6 +709,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>getTriples.</p>
+	 *
+	 * @param lct a {@link java.util.LinkedList} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Collection<Triple>> getTriples(
 			final LinkedList<Collection<Triple>> lct) {
 		for (final Bindings b : this.bindings) {
@@ -479,6 +723,9 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return lct;
 	}
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 		if (this.bindings.size() > 0) {
 			if (this.bindings instanceof CollectionImplementation) {
@@ -494,9 +741,21 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>materialize.</p>
+	 */
 	public void materialize() {
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param it a {@link java.util.Iterator} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param collationOrder a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @param considerBloomFilters a boolean.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult createInstance(final Iterator<Triple> it,
 			final TriplePattern tp, final CollationOrder collationOrder,
 			final boolean considerBloomFilters) {
@@ -513,6 +772,12 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		}
 	}
 
+	/**
+	 * <p>removeBindingsBasedOnTriple.</p>
+	 *
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
+	 * @return a boolean.
+	 */
 	public boolean removeBindingsBasedOnTriple(final Triple triple) {
 		final boolean deleted = false;
 		final QueryResult toDelete = QueryResult.createInstance();
@@ -525,6 +790,11 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 		return toDelete.size() > 0;
 	}
 
+	/**
+	 * <p>getVariableSet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getVariableSet() {
 		final HashSet<Variable> variables = new HashSet<Variable>();
 		for (final Bindings b : this) {

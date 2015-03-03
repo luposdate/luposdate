@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,29 +21,36 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sort.sorter;
 
 import java.io.InputStream;
 
 import lupos.datastructures.sort.run.Run;
-
 public interface Sorter {
 	/**
 	 * sorting algorithm
+	 *
 	 * @param dataFiles the data
 	 * @param format the format of the data
 	 * @return the final sorted run
-	 * @throws Exception if something went wrong
+	 * @throws java.lang.Exception if something went wrong
 	 */
 	public Run sort(final InputStream dataFiles, final String format) throws Exception;
 
 	/**
+	 * <p>getNumberOfRunsOnDisk.</p>
+	 *
 	 * @return the number of runs currently swapped to disk...
 	 */
 	public int getNumberOfRunsOnDisk();
 
 	/**
+	 * <p>parametersToString.</p>
+	 *
 	 * @return a string describing the current parameters of this object
 	 */
 	public String parametersToString();

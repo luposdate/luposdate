@@ -41,8 +41,9 @@ import org.jfree.chart.ChartPanel;
 /**
  * Class for displaying input elements for XY charts and display
  * of the chart itself.
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class XYChart extends ChartHandler{
 
@@ -52,6 +53,8 @@ public class XYChart extends ChartHandler{
 
 	/**
 	 * Constructor. Creates an appropriate DataModel and initializes all required GUI-Elements.
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
 	 */
 	public XYChart(final ChartTyp type)
 	{
@@ -82,6 +85,7 @@ public class XYChart extends ChartHandler{
 		this.model = new XYChartModel(type);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(final TimedWrapper<QueryResult> l)
 	{
@@ -93,11 +97,13 @@ public class XYChart extends ChartHandler{
 		this.getModel().fillDataset(l.getWrappedObject());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected XYChartModel getModel(){
 		return (XYChartModel) super.getModel();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clearFields(){
 

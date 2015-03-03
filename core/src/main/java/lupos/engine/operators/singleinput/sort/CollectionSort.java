@@ -33,9 +33,15 @@ import lupos.datastructures.queryresult.QueryResult;
  * instaciated in operatorPipe it is not. Nevertheless it should not be
  * instaniated, as no useful results will be created.
  * DO ONLY USE EXTENDING CLASSES
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class CollectionSort extends Sort {
 
+	/**
+	 * <p>Constructor for CollectionSort.</p>
+	 */
 	public CollectionSort() {
 		// nothing to init...
 	}
@@ -52,14 +58,12 @@ public abstract class CollectionSort extends Sort {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Processes ( => Sorts ) a given QueryResult by forwarding it to post
 	 * process, which will be overritten by almost every extending class. If qr
 	 * is already sorted, qr will imediatly returned or merged with an existing
 	 * list.
-	 *
-	 * @param bindings
-	 *            the QueryResult to sort
-	 * @return the sorted and propably merged QueryResult
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,
@@ -73,14 +77,17 @@ public abstract class CollectionSort extends Sort {
 	 * in this method every subclass will have its sorting-algorithms, here
 	 * sorting will be done
 	 *
-	 * @param qr
-	 * @return
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param id a int.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	protected QueryResult postProcess(final QueryResult qr, final int id) {
 		return qr;
 	}
 
 	/**
+	 * <p>getQR.</p>
+	 *
 	 * @return a QueryResult working correctly for each subclass purposes.
 	 *         Therefor ervery subclass needing another type of QueryResult (so
 	 *         far only DiskBasedQueryResult is an alternative) will overwrite
@@ -93,8 +100,8 @@ public abstract class CollectionSort extends Sort {
 	/**
 	 * Do only use in InsertionSort and DiskBasedInsertionSort
 	 *
-	 * @param bind
-	 * @return
+	 * @param bind a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	protected QueryResult merge(final QueryResult bind) {
 		return bind;

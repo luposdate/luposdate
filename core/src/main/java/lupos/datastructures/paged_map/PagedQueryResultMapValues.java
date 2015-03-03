@@ -35,12 +35,12 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 
 /**
- * PagedQueryResultMapValues is a wrapper class of {@link PagedHashMultiMap}
+ * PagedQueryResultMapValues is a wrapper class of {@link lupos.datastructures.paged_map.PagedHashMultiMap}
  *
  * @author K. Knof
- *
  * @param <K>
  * class of keys
+ * @version $Id: $Id
  */
 public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 
@@ -57,8 +57,9 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	}
 
 	/**
-	 * @return
-	 * PagedHashMultiMap
+	 * <p>returnMap.</p>
+	 *
+	 * @return a {@link lupos.datastructures.paged_map.PagedHashMultiMap} object.
 	 */
 	public PagedHashMultiMap<K, Bindings> returnMap(){
 		return this.map;
@@ -67,6 +68,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#entrySet()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, QueryResult>> entrySet() {
 		final Set<Entry<K, QueryResult>> mapSet = new HashSet<Entry<K, QueryResult>>();
@@ -91,6 +93,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#clear()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.map.clear();
@@ -99,6 +102,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#get(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public QueryResult get(final Object key){
@@ -126,6 +130,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#isEmpty()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		if (this.map.isEmpty()){
@@ -138,16 +143,18 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#keySet()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		return this.map.keySet();
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * this method puts a value to the elements list of a key
 	 *
 	 * before putting data the method checks if the data are from the last get call
-	 *
 	 * @see java.util.AbstractMap#put(java.lang.Object, java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
@@ -183,6 +190,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#remove(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult remove(final Object key) {
 		this.map.remove(key);
@@ -192,6 +200,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#size()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.map.size();
@@ -200,6 +209,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#toString()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return this.map.toString();
@@ -209,6 +219,7 @@ public class PagedQueryResultMapValues<K> extends AbstractMap<K, QueryResult>{
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#values()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public Collection<QueryResult> values() {
 		final Collection<QueryResult> values = new ArrayList<QueryResult>();

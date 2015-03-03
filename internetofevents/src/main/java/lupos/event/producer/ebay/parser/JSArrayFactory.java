@@ -27,6 +27,9 @@ import java.util.LinkedList;
 
 /**
  * Factory for incremental construction of an array of JSON data structures.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSArrayFactory extends JSONFactory {
 
@@ -35,6 +38,7 @@ public class JSArrayFactory extends JSONFactory {
 	 */
 	private LinkedList<JSObject> list = new LinkedList<JSObject>();
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean append(char c) {
 		boolean next = !this.finished;
@@ -76,6 +80,7 @@ public class JSArrayFactory extends JSONFactory {
 		return next;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSObject create() {
 		return new JSOArray(this.list.toArray(new JSObject[this.list.size()]));

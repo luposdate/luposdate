@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph;
 
@@ -35,14 +39,15 @@ import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
-
 public class ServiceGeneratorTrivialApproach extends ServiceGenerator {
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean countsAsJoinPartner(final ASTService node){
 		return !(node.jjtGetChild(0) instanceof ASTVar);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void insertIndependantFederatedQueryOperator(final ASTService node, final OperatorConnection connection, final IndexScanCreatorInterface indexScanCreator){
 		FederatedQueryTrivialApproach federatedQuery = new FederatedQueryTrivialApproach(node);
@@ -51,6 +56,7 @@ public class ServiceGeneratorTrivialApproach extends ServiceGenerator {
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	public void insertFederatedQueryOperator(final ASTService node, final OperatorConnection connection){
 		Node child0 = node.jjtGetChild(0);

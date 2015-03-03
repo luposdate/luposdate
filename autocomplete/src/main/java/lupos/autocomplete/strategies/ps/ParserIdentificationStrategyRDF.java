@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.ps;
 
@@ -38,9 +42,14 @@ import com.hp.hpl.jena.n3.turtle.TurtleEventHandler;
 import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParserConstants;
-
 public class ParserIdentificationStrategyRDF extends ParserIdentificationStrategy {
 
+	/**
+	 * <p>Constructor for ParserIdentificationStrategyRDF.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public ParserIdentificationStrategyRDF(final LuposDocumentReader r, final ILuposParser p) {
 		super(r, p);
 	}
@@ -52,6 +61,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 	/*
 	 * fuellt die hashmap mit den Beispielen die ausprobiert werden
 	 */
+	/** {@inheritDoc} */
 	@Override
 	protected void fillMap() {
 		this.hashmap.put("<IRIref>", "<a>");
@@ -76,6 +86,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 	 * bei ParseException wird ein "PE" vor die Fehlermeldung angehaengt,
 	 * bei lexikalischem Fehler wird ein "LE" vor die Fehlermeldung angehaengt
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public String handleException(final String document) {
 		try {
@@ -113,6 +124,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 	 * hier werden fuer den Fall NoError die Tokens
 	 * auf Validitaet als naechstes Wort geprueft
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public ArrayList<Item> testforTokensNE(final String doc,
 			final TYPE__SemanticWeb[] tokenMap, final int cursorPosition) {
@@ -222,6 +234,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 	/*
 	 * extrahiert existierende Elemente des gegebenen Typs aus dem Dokument
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Item> findExistingElements(final String hashmapKey,
 			final String hashmapValue, final int indexBeforeCurrentWord,
@@ -288,6 +301,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 	 * hier werden fuer den Fall ParserError die Tokens
 	 * auf Validitaet als naechstes Wort geprueft
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public ArrayList<Item> testforTokensPE(final String exception, final String doc,
 			final TYPE__SemanticWeb[] tokenMap, final int cursorPosition) {
@@ -414,6 +428,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TYPE__SemanticWeb[] getTokenMap() {
 		return this.tokenMap;
@@ -423,6 +438,7 @@ public class ParserIdentificationStrategyRDF extends ParserIdentificationStrateg
 	 * hier werden fuer den Fall LexicalError die Tokens
 	 * auf Validitaet als naechstes Wort geprueft
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public ArrayList<Item> testForTokensLE(final String exception, final String doc,
 			final TYPE__SemanticWeb[] tokenMap, final int cursorPosition) {

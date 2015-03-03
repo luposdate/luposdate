@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -39,9 +43,9 @@ import lupos.engine.operators.singleinput.generate.GenerateAddEnv;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-
 public class RuleInsertGenerateAddEnv extends Rule {
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final TriplePattern pat1 = new TriplePattern();
@@ -68,6 +72,7 @@ public class RuleInsertGenerateAddEnv extends Rule {
 		startNode = repLit;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final ReplaceLit repLit = (ReplaceLit) mso.get("repLit");
@@ -98,6 +103,7 @@ public class RuleInsertGenerateAddEnv extends Rule {
 		return (equal(succsRepLit, succsPat2));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -193,6 +199,13 @@ public class RuleInsertGenerateAddEnv extends Rule {
 		return true;
 	}
 
+	/**
+	 * <p>equal.</p>
+	 *
+	 * @param list1 a {@link java.util.LinkedList} object.
+	 * @param list2 a {@link java.util.LinkedList} object.
+	 * @return a boolean.
+	 */
 	public boolean equal(final LinkedList<OperatorIDTuple> list1,
 			final LinkedList<OperatorIDTuple> list2) {
 		final LinkedList<String> l1 = new LinkedList<String>();

@@ -38,10 +38,14 @@ import lupos.misc.Tuple;
 import lupos.optimizations.physical.joinorder.RearrangeJoinOrder;
 
 /**
- * This class is the abstract super class for all join ordering algorithms, which optimize the join order by generating a good join tree according to some certain criteria. The "some certain criteria" have to be defined in its subclasses. These join ordering algorithms are useful for evaluators (e.g. in p2p networks), which do not have any access to histograms and must use a static analysis to obtain a join tree. 
+ * This class is the abstract super class for all join ordering algorithms, which optimize the join order by generating a good join tree according to some certain criteria. The "some certain criteria" have to be defined in its subclasses. These join ordering algorithms are useful for evaluators (e.g. in p2p networks), which do not have any access to histograms and must use a static analysis to obtain a join tree.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BuildJoinTree<T> implements RearrangeJoinOrder {
 	
+	/** {@inheritDoc} */
 	@Override
 	public void rearrangeJoinOrder(final Root newRoot, final BasicIndexScan indexScan) {
 		
@@ -107,22 +111,26 @@ public abstract class BuildJoinTree<T> implements RearrangeJoinOrder {
 		op.setSucceedingOperators(indexScan.getSucceedingOperators());
 	}
 	
-	 /**
+	/**
 	 * This method determines the best sub graphs which should be joined next...
-	 * @param indexScan the IndexScan operator to optimize 
-	  * @param jointree
-	  * @return the indices in jointree of the two best subgraphs to be joined next...
-	  */
+	 *
+	 * @param indexScan the IndexScan operator to optimize
+	 * @param jointree a {@link java.util.List} object.
+	 * @return the indices in jointree of the two best subgraphs to be joined next...
+	 */
 	protected abstract Tuple<Integer, Integer> getBestNextSubgraphsToJoin(final BasicIndexScan indexScan, final List<Tuple<BasicOperator, T>> jointree);
 	
 	/**
 	 * This method initializes the additional information and returns it...
+	 *
 	 * @param tp the triple pattern according to which the additional information is initialized...
 	 * @return the initialized additional information (depending on the concrete join order algorithm)
 	 */
 	protected abstract T initAdditionalInformation(final TriplePattern tp);
 	
 	/**
+	 * <p>mergeInitialInformations.</p>
+	 *
 	 * @param additionalInformation1 the additional information from the first subgraph
 	 * @param additionalInformation2 the additional information from the second subgraph
 	 * @return the merged additional information from two subgraphs

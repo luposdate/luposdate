@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting.javacc;
 
@@ -32,7 +36,6 @@ import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
 import lupos.rif.generated.parser.RIFParserConstants;
 import lupos.rif.generated.parser.Token;
-
 public class RIFParser extends SemanticWebParser {
 
 	private static TYPE__SemanticWeb[] TOKEN_MAP;
@@ -42,10 +45,17 @@ public class RIFParser extends SemanticWebParser {
 		this.parser = new lupos.rif.generated.parser.RIFParser(reader);
 	}
 
+	/**
+	 * <p>createILuposParser.</p>
+	 *
+	 * @param reader a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @return a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public static ILuposParser createILuposParser(final LuposDocumentReader reader){
 		return new JAVACCParser(reader, new RIFParser(reader));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TOKEN getNextToken() {
 		final Token token = this.parser.getNextToken();
@@ -56,30 +66,40 @@ public class RIFParser extends SemanticWebParser {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TYPE__SemanticWeb[] getTokenMap() {
 		return RIFParser.TOKEN_MAP;
 	}
 
+	/**
+	 * <p>getStaticTokenMap.</p>
+	 *
+	 * @return an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb} objects.
+	 */
 	public static TYPE__SemanticWeb[] getStaticTokenMap() {
 		return RIFParser.TOKEN_MAP;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void ReInit(final Reader reader) {
 		this.parser.ReInit(reader);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void ReInit(final InputStream inputstream) {
 		this.parser.ReInit(inputstream);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isStartOfComment(final String content, final int beginChar){
 		return content.length()>beginChar+1 && content.charAt(beginChar)=='(' && content.charAt(beginChar+1)=='*';
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SemanticWebToken handleComment(final String content, final int beginChar){
 		int endOfComment = beginChar+1;
@@ -92,6 +112,7 @@ public class RIFParser extends SemanticWebParser {
 		return new SemanticWebToken(TYPE__SemanticWeb.COMMENT, content.substring(beginChar, endOfComment), beginChar);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean endOfSearchOfComment(final String content, final int beginChar){
 		return content.length()>beginChar+1 && content.charAt(beginChar)=='*' && content.charAt(beginChar+1)==')';
@@ -151,10 +172,19 @@ public class RIFParser extends SemanticWebParser {
 		checkTopicMap();
 	}
 
+	/**
+	 * <p>insertIntoTokenMap.</p>
+	 *
+	 * @param imagesToSet an array of {@link java.lang.String} objects.
+	 * @param type a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__SemanticWeb} object.
+	 */
 	protected static void insertIntoTokenMap(final String[] imagesToSet, final TYPE__SemanticWeb type){
 		JAVACCParser.insertIntoTokenMap(RIFParserConstants.tokenImage, RIFParser.TOKEN_MAP, imagesToSet, type);
 	}
 
+	/**
+	 * <p>checkTopicMap.</p>
+	 */
 	protected static void checkTopicMap(){
 		JAVACCParser.checkTopicMap(RIFParserConstants.tokenImage, RIFParser.TOKEN_MAP);
 	}

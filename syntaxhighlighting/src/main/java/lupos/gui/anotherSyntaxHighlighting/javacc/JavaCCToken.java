@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting.javacc;
 
 import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM;
-
 public abstract class JavaCCToken implements ILuposToken {
 	protected final int ID;
 	protected final String contents;
@@ -40,6 +43,8 @@ public abstract class JavaCCToken implements ILuposToken {
 	 *            the id number of the token
 	 * @param contents
 	 *            A string representing the text of the token
+	 * @param beginChar a int.
+	 * @param endChar a int.
 	 */
 	public JavaCCToken(final int ID, final String contents, final int beginChar, final int endChar) {
 		this.ID = ID;
@@ -49,16 +54,22 @@ public abstract class JavaCCToken implements ILuposToken {
 	}
 
 
+	/**
+	 * <p>Constructor for JavaCCToken.</p>
+	 *
+	 * @param description a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} object.
+	 * @param contents a {@link java.lang.String} object.
+	 * @param beginChar a int.
+	 */
 	public JavaCCToken(final TYPE_ENUM description, final String contents, final int beginChar) {
 		this(description.ordinal(), contents, beginChar, beginChar + contents.length());
 	}
 
 
 	/**
-	 * get a String that explains the error, if this token is an error.
+	 * {@inheritDoc}
 	 *
-	 * @return a String that explains the error, if this token is an error, null
-	 *         otherwise.
+	 * get a String that explains the error, if this token is an error.
 	 */
 	@Override
 	public String errorString() {
@@ -72,11 +83,11 @@ public abstract class JavaCCToken implements ILuposToken {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * get a representation of this token as a human readable string. The format
 	 * of this string is subject to change and should only be used for debugging
 	 * purposes.
-	 *
-	 * @return a string representation of this token
 	 */
 	@Override
 	public String toString() {
@@ -84,29 +95,29 @@ public abstract class JavaCCToken implements ILuposToken {
 	}
 
 	/**
+	 * <p>getID.</p>
+	 *
 	 * @return the iD
 	 */
 	public int getID() {
 		return this.ID;
 	}
 
-	/**
-	 * @return the contents
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String getContents() {
 		return this.contents;
 	}
 
-	/**
-	 * @return the beginChar
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public int getBeginChar() {
 		return this.beginChar;
 	}
 
 	/**
+	 * <p>Getter for the field <code>endChar</code>.</p>
+	 *
 	 * @return the endChar
 	 */
 	public int getEndChar() {

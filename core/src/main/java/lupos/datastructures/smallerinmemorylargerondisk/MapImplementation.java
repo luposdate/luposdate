@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -34,22 +38,31 @@ import java.util.Set;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.misc.util.ImmutableIterator;
-
 public class MapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> implements Map<K, V>{
 
 	protected final Map<K,V> memoryMap;
 	protected Map<K,V> diskMap=null;
 
+	/** Constant <code>MAXMEMORYMAPENTRIES=3000000</code> */
 	protected final static int MAXMEMORYMAPENTRIES = 3000000;
 
+	/**
+	 * <p>Constructor for MapImplementation.</p>
+	 */
 	public MapImplementation(){
 		this(new HashMap<K,V>());
 	}
 
+	/**
+	 * <p>Constructor for MapImplementation.</p>
+	 *
+	 * @param memoryMap a {@link java.util.Map} object.
+	 */
 	public MapImplementation(final Map<K,V> memoryMap){
 		this.memoryMap = memoryMap;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.memoryMap.clear();
@@ -58,6 +71,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object arg0) {
 		if(this.memoryMap.containsKey(arg0)) {
@@ -69,6 +83,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object arg0) {
 		if(this.memoryMap.containsValue(arg0)) {
@@ -80,6 +95,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new Set<java.util.Map.Entry<K, V>>(){
@@ -210,6 +226,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object arg0) {
 		final V v=this.memoryMap.get(arg0);
@@ -222,6 +239,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		if(this.memoryMap.size()>0) {
@@ -233,6 +251,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		return new Set<K>(){
@@ -317,6 +336,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		};
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V put(final K arg0, final V arg1) {
@@ -338,6 +358,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return this.diskMap.put(arg0, arg1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final java.util.Map<? extends K, ? extends V> arg0) {
 		for(final java.util.Map.Entry<? extends K, ? extends V> me:arg0.entrySet()){
@@ -345,6 +366,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object arg0) {
 		V v=this.memoryMap.remove(arg0);
@@ -356,6 +378,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return v;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		int size=this.memoryMap.size();
@@ -365,6 +388,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		return size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> values() {
 		return new Collection<V>(){
@@ -442,6 +466,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		String result = "Map in memory: " + this.memoryMap.toString();

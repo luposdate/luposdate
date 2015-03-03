@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,13 +21,15 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 public class TimedWrapper<T> {
 	
 	private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -34,6 +37,11 @@ public class TimedWrapper<T> {
 	private T obj;
 
 	
+	/**
+	 * <p>Constructor for TimedWrapper.</p>
+	 *
+	 * @param obj a T object.
+	 */
 	public TimedWrapper(T obj) {
 		if(obj == null)
 			throw new IllegalArgumentException();
@@ -42,14 +50,25 @@ public class TimedWrapper<T> {
 		this.obj = obj;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>date</code>.</p>
+	 *
+	 * @return a {@link java.util.Date} object.
+	 */
 	public Date getDate() {
 		return this.date;
 	}
 	
+	/**
+	 * <p>getWrappedObject.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getWrappedObject() {
 		return this.obj;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "[" + this.dateFormat.format(this.date) + "] " + this.obj.toString();

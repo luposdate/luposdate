@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers.distinct;
 
@@ -36,15 +40,20 @@ import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
-
 public class BlockingDistinct extends Distinct {
 
 	protected Set<Bindings> bindings;
 
+	/**
+	 * <p>Constructor for BlockingDistinct.</p>
+	 *
+	 * @param bindings a {@link java.util.Set} object.
+	 */
 	public BlockingDistinct(final Set<Bindings> bindings) {
 		this.bindings = bindings;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -55,6 +64,11 @@ public class BlockingDistinct extends Distinct {
 		return null;
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	protected ParallelIterator<Bindings> getIterator() {
 		final Iterator<Bindings> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
@@ -83,12 +97,16 @@ public class BlockingDistinct extends Distinct {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		this.computeResult();
 		return msg;
 	}
 
+	/**
+	 * <p>computeResult.</p>
+	 */
 	protected void computeResult(){
 		final QueryResult qr = QueryResult.createInstance(this.getIterator());
 		if (this.succeedingOperators.size() > 1) {
@@ -102,12 +120,14 @@ public class BlockingDistinct extends Distinct {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.computeResult();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
@@ -121,28 +141,37 @@ public class BlockingDistinct extends Distinct {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		this.bindings.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		this.computeDebugStep(debugstep);
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		this.computeDebugStep(debugstep);
 		return msg;
 	}
 
+	/**
+	 * <p>computeDebugStep.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	protected void computeDebugStep(final DebugStep debugstep){
 		final QueryResult qr = QueryResult.createInstance(this.getIterator());
 		if (this.succeedingOperators.size() > 1) {

@@ -63,7 +63,7 @@ import lupos.misc.FileHelper;
  * methods are rather slow.
  *
  * @author groppe
- *
+ * @version $Id: $Id
  */
 public class DiskCollection<E extends Serializable> implements Collection<E>,
 		Serializable {
@@ -99,6 +99,11 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
+	/**
+	 * <p>setTmpDir.</p>
+	 *
+	 * @param dir an array of {@link java.lang.String} objects.
+	 */
 	public static void setTmpDir(final String[] dir) {
 		lock.lock();
 		try {
@@ -120,10 +125,18 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
+	/**
+	 * <p>getTmpDir.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public static String[] getTmpDir() {
 		return folder;
 	}
 
+	/**
+	 * <p>removeCollectionsFromDisk.</p>
+	 */
 	public static void removeCollectionsFromDisk() {
 		lock.lock();
 		try {
@@ -135,6 +148,9 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
+	/**
+	 * <p>makeFolders.</p>
+	 */
 	public static void makeFolders(){
 		lock.lock();
 		try {
@@ -147,18 +163,37 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
+	/**
+	 * <p>Constructor for DiskCollection.</p>
+	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 */
 	public DiskCollection(final Class<? extends E> classOfElements) {
 		DiskCollection.makeFolders();
 		this.makeNewFile();
 		this.classOfElements = classOfElements;
 	}
 
+	/**
+	 * <p>Constructor for DiskCollection.</p>
+	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 * @param filename a {@link java.lang.String} object.
+	 */
 	public DiskCollection(final Class<? extends E> classOfElements, final String filename) {
 		DiskCollection.makeFolders();
 		this.makeNewFile(filename);
 		this.classOfElements = classOfElements;
 	}
 
+	/**
+	 * <p>Constructor for DiskCollection.</p>
+	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 * @param size a long.
+	 * @param filename a {@link java.lang.String} object.
+	 * @param numberFiles a int.
+	 */
 	public DiskCollection(final Class<? extends E> classOfElements,
 			final long size, final String filename, final int numberFiles) {
 		this.size = size;
@@ -167,10 +202,21 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		this.numberFiles = numberFiles;
 	}
 
+	/**
+	 * <p>newBaseFilename.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String newBaseFilename() {
 		return DiskCollection.newBaseFilename("DiskCollection");
 	}
 
+	/**
+	 * <p>newBaseFilename.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String newBaseFilename(final String prefix) {
 		lock.lock();
 		try {
@@ -211,6 +257,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#add(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E arg0) {
 		try {
@@ -247,6 +294,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#addAll(java.util.Collection)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag = true;
@@ -261,6 +309,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#clear()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		if (this.out != null) {
@@ -286,6 +335,9 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		}
 	}
 
+	/**
+	 * <p>close.</p>
+	 */
 	public void close() {
 		if (this.out != null) {
 			try {
@@ -298,6 +350,9 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	}
 
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 		if (this.out != null) {
 			try {
@@ -315,6 +370,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#contains(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object arg0) {
 		try {
@@ -363,6 +419,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#containsAll(java.util.Collection)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(final Collection<?> arg0) {
 		final HashSet<E> hs = new HashSet<E>();
@@ -417,6 +474,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#isEmpty()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return (this.size == 0);
@@ -427,6 +485,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#iterator()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public ParallelIterator<E> iterator() {
 		try {
@@ -590,6 +649,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#remove(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object arg0) {
 		final String oldFilename = this.filename;
@@ -627,6 +687,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#removeAll(java.util.Collection)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeAll(final Collection<?> arg0) {
 		final String oldFilename = this.filename;
@@ -664,6 +725,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#retainAll(java.util.Collection)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		final String oldFilename = this.filename;
@@ -701,6 +763,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#size()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return (int) this.size;
@@ -711,6 +774,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#toArray()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
@@ -722,17 +786,30 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 *
 	 * @see java.util.Collection#toArray(T[])
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"This Collection does not support toArray."));
 	}
 
+	/**
+	 * <p>writeLuposObject.</p>
+	 *
+	 * @param out a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposObject(final LuposObjectOutputStream out) throws IOException {
 		this.writeCommonPart(out);
 		Registration.serializeClass(this.classOfElements, out);
 	}
 
+	/**
+	 * <p>writeLuposObject.</p>
+	 *
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposObject(final OutputStream out) throws IOException {
 		this.writeCommonPart(out);
 		Registration.serializeClass(this.classOfElements, out);
@@ -749,6 +826,14 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		this.wroteOnDisk = true;
 	}
 
+	/**
+	 * <p>readAndCreateLuposObject.</p>
+	 *
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.DiskCollection} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public static DiskCollection readAndCreateLuposObject(
 			final LuposObjectInputStream in) throws IOException,
 			ClassNotFoundException {
@@ -768,6 +853,14 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		return dc;
 	}
 
+	/**
+	 * <p>readAndCreateLuposObject.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.DiskCollection} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public static DiskCollection readAndCreateLuposObject(final InputStream in) throws IOException, ClassNotFoundException {
 		final long size = InputHelper.readLuposLong(in);
 		final String filename = InputHelper.readLuposString(in);
@@ -785,10 +878,21 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		return dc;
 	}
 
+	/**
+	 * <p>lengthLuposObject.</p>
+	 *
+	 * @return a int.
+	 */
 	public int lengthLuposObject() {
 		return DiskCollection.lengthLuposObject(this.filename);
 	}
 
+	/**
+	 * <p>lengthLuposObject.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @return a int.
+	 */
 	public static int lengthLuposObject(final String filename){
 		return	LengthHelper.lengthLuposLong() +
 				LengthHelper.lengthLuposString(filename) +
@@ -796,10 +900,16 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 				LengthHelper.lengthLuposByte();
 	}
 
+	/**
+	 * <p>lengthLuposObjectOfNextDiskCollection.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int lengthLuposObjectOfNextDiskCollection(){
 		return DiskCollection.lengthLuposObject(folder[id % folder.length] + "DiskCollection" + (id+1) + "_");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = "";
@@ -812,6 +922,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 		return "[ " + s + " ]";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void finalize() throws Throwable {
 		try {

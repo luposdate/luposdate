@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,20 +21,26 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.parallel;
 
 import lupos.optimizations.logical.rules.Rule;
 import lupos.optimizations.logical.rules.RuleEngine;
-
 public class RuleEngineForParallelOperator extends RuleEngine {
 
+	/**
+	 * <p>Constructor for RuleEngineForParallelOperator.</p>
+	 */
 	public RuleEngineForParallelOperator() {
 		createRules();
 	}
 
 	private static boolean lastJoin;
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createRules() {
 		if (lastJoin) {
@@ -45,10 +52,20 @@ public class RuleEngineForParallelOperator extends RuleEngine {
 		}
 	}
 
+	/**
+	 * <p>isLastJoin.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public static boolean isLastJoin() {
 		return lastJoin;
 	}
 
+	/**
+	 * <p>Setter for the field <code>lastJoin</code>.</p>
+	 *
+	 * @param lastJoin a boolean.
+	 */
 	public static void setLastJoin(final boolean lastJoin) {
 		RuleEngineForParallelOperator.lastJoin = lastJoin;
 	}

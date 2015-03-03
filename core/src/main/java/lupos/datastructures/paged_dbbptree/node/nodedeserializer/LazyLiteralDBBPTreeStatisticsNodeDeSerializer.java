@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
@@ -36,18 +40,23 @@ import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.misc.BitVector;
 import lupos.misc.Tuple;
-
 public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 		LazyLiteralNodeDeSerializer implements
 		NodeDeSerializer<TripleKey, Triple> {
 
 	private final static String UnsupportedOperationExceptionMessage = "Currently no updates allowed on DBBPTree for fast histogram computation!";
 
+	/**
+	 * <p>Constructor for LazyLiteralDBBPTreeStatisticsNodeDeSerializer.</p>
+	 *
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public LazyLiteralDBBPTreeStatisticsNodeDeSerializer(
 			final RDF3XIndexScan.CollationOrder order) {
 		super(order);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<TripleKey, Integer> getNextInnerNodeEntry(
 			final TripleKey lastKey, final InputStream in) {
@@ -175,6 +184,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final TripleKey key,
 			final OutputStream out, final TripleKey lastKey)
@@ -184,6 +194,7 @@ public class LazyLiteralDBBPTreeStatisticsNodeDeSerializer extends
 				UnsupportedOperationExceptionMessage);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName,
 			final OutputStream out) throws IOException {

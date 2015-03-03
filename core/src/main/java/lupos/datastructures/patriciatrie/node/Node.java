@@ -25,6 +25,9 @@ package lupos.datastructures.patriciatrie.node;
 
 /**
  * This class implements some of the base algorithms that can be executed on Patricia Tries.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Node {
 
@@ -58,6 +61,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>hasChild.</p>
+	 *
 	 * @param i
 	 *            Array index of the child
 	 * @return <strong>true</strong> if there is a child at index i<br />
@@ -66,6 +71,8 @@ public abstract class Node {
 	public abstract boolean hasChild(int i);
 
 	/**
+	 * <p>getChild.</p>
+	 *
 	 * @param i
 	 *            Array index of the child
 	 * @return The node instance if available, <strong>null</strong> otherwise
@@ -148,6 +155,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>Getter for the field <code>content</code>.</p>
+	 *
 	 * @param i
 	 *            Array index of the content
 	 * @return The key if available, <strong>null</strong> otherwise
@@ -249,6 +258,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>getContentLength.</p>
+	 *
 	 * @return The length of the content array if it is initialized, 0 otherwise
 	 */
 	public final int getContentLength() {
@@ -256,11 +267,15 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>getChildrenLength.</p>
+	 *
 	 * @return The length of the children array if it is initialized, 0 otherwise
 	 */
 	public abstract int getChildrenLength();
 
 	/**
+	 * <p>Getter for the field <code>numberOfEntries</code>.</p>
+	 *
 	 * @return The number of entries stored in this sub-trie
 	 */
 	public final int getNumberOfEntries() {
@@ -269,6 +284,7 @@ public abstract class Node {
 
 	/**
 	 * Sets the number of entries
+	 *
 	 * @param numberOfEntries the number of entries to be set
 	 */
 	public final void setNumberOfEntries(final int numberOfEntries){
@@ -306,11 +322,13 @@ public abstract class Node {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return NodeHelper.toString(this, "");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Node)){
@@ -362,6 +380,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>Setter for the field <code>changed</code>.</p>
+	 *
 	 * @param changed the changed to set
 	 */
 	public final void setChanged(final boolean changed) {
@@ -369,6 +389,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>isChanged.</p>
+	 *
 	 * @return the changed
 	 */
 	public final boolean isChanged() {
@@ -376,6 +398,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>Setter for the field <code>content</code>.</p>
+	 *
 	 * @param content the content to set
 	 */
 	public final void setContent(final String[] content) {
@@ -383,6 +407,8 @@ public abstract class Node {
 	}
 
 	/**
+	 * <p>Getter for the field <code>content</code>.</p>
+	 *
 	 * @return the content
 	 */
 	public final String[] getContent() {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.findsubgraph;
 
@@ -35,7 +39,6 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.multiinput.optional.Optional;
 import lupos.engine.operators.singleinput.Projection;
-
 public class FindSubGraph {
 
 	/**
@@ -46,11 +49,11 @@ public class FindSubGraph {
 	 * operators. In order to deal with special cases: If the operand id in S is
 	 * -1 then any operand id in T can occur. If the operator in S is of type
 	 * Operator, then any operator can be in T in the corresponding node.
-	 ** 
+	 **
 	 ** The method is not perfect as it returns only one solution in ambiguous
 	 * cases (and may not find any solution in ambiguous cases). However, most
 	 * probably, this method will work for our rules (to be checked!).
-	 ** 
+	 **
 	 ** @param graph
 	 *            The start node of the graph which is checked for containment
 	 *            of the other subgraph.
@@ -64,7 +67,9 @@ public class FindSubGraph {
 	 ** @return If graph does not contain startNode, then null is returned,
 	 *         otherwise a map is returned, which associates the names to the
 	 *         nodes in the whole graph.
-	 **/
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public static Map<String, BasicOperator> checkSubGraph(
 			final BasicOperator graph,
 			final Map<BasicOperator, String> subGraphMap,
@@ -183,6 +188,14 @@ public class FindSubGraph {
 			return null;
 	}
 
+	/**
+	 * <p>checkSubGraphGetAll.</p>
+	 *
+	 * @param graph a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param subGraphMap a {@link java.util.Map} object.
+	 * @param startNode a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public static List<Map<String, BasicOperator>> checkSubGraphGetAll(
 			final BasicOperator graph,
 			final Map<BasicOperator, String> subGraphMap,
@@ -334,6 +347,14 @@ public class FindSubGraph {
 		return false;
 	}
 
+	/**
+	 * <p>findSubGraphs.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNode a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param subGraphMap a {@link java.util.Map} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public static Collection<Map<String, BasicOperator>> findSubGraphs(
 			final BasicOperator root, final BasicOperator startNode,
 			final Map<BasicOperator, String> subGraphMap) {
@@ -343,6 +364,11 @@ public class FindSubGraph {
 		return sogv.getFoundSubGraphs();
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		// The whole graph:
 		final Operator wa = new Join();

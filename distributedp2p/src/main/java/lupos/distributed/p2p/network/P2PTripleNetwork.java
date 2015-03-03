@@ -26,16 +26,17 @@ package lupos.distributed.p2p.network;
 import lupos.datastructures.items.Triple;
 
 /**
- * This is a p2p network for distributing {@link Triple}s,
- * and gives access to helper functions to use with {@link Triple}.
- * 
+ * This is a p2p network for distributing {@link lupos.datastructures.items.Triple}s,
+ * and gives access to helper functions to use with {@link lupos.datastructures.items.Triple}.
+ *
  * @author Bjoern
- * 
+ * @version $Id: $Id
  */
 public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the subject of a triple
+	 *
 	 * @param triple triple
 	 * @return subject
 	 */
@@ -45,6 +46,7 @@ public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the predicate of a triple
+	 *
 	 * @param triple triple
 	 * @return predicate
 	 */
@@ -54,6 +56,7 @@ public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the object of a triple
+	 *
 	 * @param triple the triple
 	 * @return object
 	 */
@@ -63,6 +66,7 @@ public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the subject+predicate of a triple
+	 *
 	 * @param triple triple
 	 * @return subject+predicate
 	 */
@@ -73,6 +77,7 @@ public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the subject+object of a triple
+	 *
 	 * @param triple triple
 	 * @return subject+object
 	 */
@@ -83,6 +88,7 @@ public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the predicate+object of a triple
+	 *
 	 * @param triple triple
 	 * @return predicate+object
 	 */
@@ -93,6 +99,7 @@ public abstract class P2PTripleNetwork extends AbstractP2PNetwork<Triple> {
 
 	/**
 	 * Gets the subject+predicate+object of a triple
+	 *
 	 * @param triple triple
 	 * @return subject+predicate+object
 	 */

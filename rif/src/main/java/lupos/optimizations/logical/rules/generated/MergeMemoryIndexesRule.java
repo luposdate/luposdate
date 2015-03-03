@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated;
 
@@ -30,10 +34,6 @@ import java.util.List;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.optimizations.logical.rules.generated.runtime.Rule;
-
-
-
-
 public class MergeMemoryIndexesRule extends Rule {
 
     private lupos.engine.operators.BasicOperator o2 = null;
@@ -110,11 +110,15 @@ public class MergeMemoryIndexesRule extends Rule {
     }
 
 
+    /**
+     * <p>Constructor for MergeMemoryIndexesRule.</p>
+     */
     public MergeMemoryIndexesRule() {
         this.startOpClass = lupos.engine.operators.multiinput.join.Join.class;
         this.ruleName = "Merge Memory Indexes";
     }
 
+    /** {@inheritDoc} */
     @Override
 	protected boolean check(final BasicOperator _op) {
         final boolean _result = this._checkPrivate0(_op);
@@ -129,6 +133,7 @@ public class MergeMemoryIndexesRule extends Rule {
         return _result;
     }
 
+    /** {@inheritDoc} */
     @Override
 	protected void replace(final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
                 // remove obsolete connections...

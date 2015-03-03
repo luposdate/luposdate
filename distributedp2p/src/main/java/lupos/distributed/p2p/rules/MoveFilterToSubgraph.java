@@ -40,11 +40,11 @@ import org.apache.log4j.Logger;
 
 
 /**
- * This rule moves a filter into a subgraph, because the {@link PushFilterRule} does not
+ * This rule moves a filter into a subgraph, because the {@link lupos.optimizations.logical.rules.generated.PushFilterRule} does not
  * access the subgraph.
  *
  * @author Bjoern
- *
+ * @version $Id: $Id
  */
 public class MoveFilterToSubgraph extends Rule {
 
@@ -89,11 +89,13 @@ public class MoveFilterToSubgraph extends Rule {
         this.ruleName = "MoveFilterToSubgraph";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean check(final BasicOperator _op) {
         return this._checkPrivate0(_op);
     }
 
+ 	/** {@inheritDoc} */
  	@Override
     protected void replace(final HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
     	/*

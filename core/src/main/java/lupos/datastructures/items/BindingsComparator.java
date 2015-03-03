@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
 
@@ -28,15 +32,20 @@ import java.util.Comparator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.literal.Literal;
-
 public class BindingsComparator implements Comparator<Bindings>{
 	
 	private Collection<Variable> variables;
 	
+	/**
+	 * <p>Setter for the field <code>variables</code>.</p>
+	 *
+	 * @param variables_par a {@link java.util.Collection} object.
+	 */
 	public void setVariables(final Collection<Variable> variables_par){
 		this.variables = variables_par;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(Bindings o1, Bindings o2) {
 		for (final Variable var : this.variables) {

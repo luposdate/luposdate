@@ -36,13 +36,13 @@ import lupos.engine.operators.index.Root;
 
 /**
  * This is a {@link lupos.optimizations.logical.rules.generated.runtime.Rule},
- * that replaces all {@link SubgraphContainer} with the asynchron working
- * {@link AsynchronSubgraphContainer}. Note: This class replaces the
- * {@link SubgraphContainer} which are already packed into another
- * {@link SubgraphContainer}, too.
- * 
+ * that replaces all {@link lupos.distributed.operator.SubgraphContainer} with the asynchron working
+ * {@link lupos.distributed.operator.AsynchronSubgraphContainer}. Note: This class replaces the
+ * {@link lupos.distributed.operator.SubgraphContainer} which are already packed into another
+ * {@link lupos.distributed.operator.SubgraphContainer}, too.
+ *
  * @author Bjoern
- * 
+ * @version $Id: $Id
  */
 public class AsynchronSubgraphContainerRule extends
 		lupos.optimizations.logical.rules.generated.runtime.Rule {
@@ -59,6 +59,7 @@ public class AsynchronSubgraphContainerRule extends
 		this.ruleName = "ReplaceSubgraphContainerWithAsynchronSubgraphContainer";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(BasicOperator _rootOp) {
 		/*
@@ -75,6 +76,7 @@ public class AsynchronSubgraphContainerRule extends
 				.getClass() != AsynchronSubgraphContainer.class);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
 		/*

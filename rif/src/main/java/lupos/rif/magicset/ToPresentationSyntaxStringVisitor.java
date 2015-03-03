@@ -28,6 +28,9 @@ package lupos.rif.magicset;
  * Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
  * http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
  * http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import lupos.rif.IExpression;
@@ -44,9 +47,9 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, Object> {
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Document obj, final Object arg) throws RIFException {
 		final StringBuilder builder = new StringBuilder();
@@ -67,6 +70,7 @@ public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, O
 		return builder.append(")\n").toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final Conjunction obj, final Object arg) throws RIFException {
 		final StringBuilder str = new StringBuilder();
@@ -77,6 +81,7 @@ public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, O
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final Disjunction obj, final Object arg) throws RIFException {
 		final StringBuilder str = new StringBuilder();
@@ -87,11 +92,13 @@ public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, O
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ExistExpression obj, final Object arg) throws RIFException {
 		return "Exists(" + obj.expr.accept(this, arg) + ")";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final Rule obj, final Object arg) throws RIFException {
 		final StringBuilder str = new StringBuilder();
@@ -115,6 +122,7 @@ public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, O
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final RulePredicate obj, final Object arg) throws RIFException {
 		if (obj.isTriple()) {
@@ -133,6 +141,7 @@ public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, O
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final External obj, final Object arg) throws RIFException {
 		final StringBuilder str = new StringBuilder();
@@ -144,22 +153,26 @@ public class ToPresentationSyntaxStringVisitor implements IRuleVisitor<Object, O
 		return str.append("))").toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final Equality obj, final Object arg) throws RIFException {
 		return obj.leftExpr.accept(this, arg) + " " + "=" + " "
 		+ obj.rightExpr.accept(this, arg);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final Constant obj, final Object arg) throws RIFException {
 		return obj.getLiteral().toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final RuleVariable obj, final Object arg) throws RIFException {
 		return obj.getVariable().toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final RuleList obj, final Object arg) throws RIFException {
 		throw new RIFException("Format not supported");

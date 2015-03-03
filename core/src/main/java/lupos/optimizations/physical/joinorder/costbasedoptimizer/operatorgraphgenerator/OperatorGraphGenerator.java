@@ -41,12 +41,16 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePl
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.Plan;
 
 /**
- * This class is used for generating the operator graph from a plan 
+ * This class is used for generating the operator graph from a plan
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class OperatorGraphGenerator {
 	
 	/**
 	 * This method is used to generate a join. It is overridden by subclasses for the different evaluators...
+	 *
 	 * @param inp the inner node plan for the join to be generated
 	 * @param root the root of the operator graph
 	 * @param left the left operand of the join
@@ -59,8 +63,9 @@ public abstract class OperatorGraphGenerator {
 
 	/**
 	 * This method is used to generate an index scan operator. It is overridden by subclasses for the different evaluators...
+	 *
 	 * @param plan the leaf node from which the index scan operator is generated
-	 * @param indexScan the original index scan operator which will be replaced with a join tree 
+	 * @param indexScan the original index scan operator which will be replaced with a join tree
 	 * @param sortCriterium the sort criteria the result of the new index scan operator must follow
 	 * @param minima the minimum values of the variables
 	 * @param maxima the maximum values of the variables
@@ -70,6 +75,7 @@ public abstract class OperatorGraphGenerator {
 	
 	/**
 	 * This method generates the operator graph from a plan
+	 *
 	 * @param plan the plan from which the operator graph is generated
 	 * @param root the root of the operator graph
 	 * @param indexScan the index scan operator with many triple patterns to be replaced with a join tree
@@ -77,7 +83,7 @@ public abstract class OperatorGraphGenerator {
 	 * @param minima the minimum values of the variables
 	 * @param maxima the maximum values of the variables
 	 * @param selectivity the histograms of the values of the variables
-	 * @return
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
 	 */
 	public BasicOperator generateOperatorGraph(
 			final Plan plan, final Root root,
@@ -102,6 +108,7 @@ public abstract class OperatorGraphGenerator {
 
 	/**
 	 * This method moves all index scan operators, which contain certain triple patterns to the left in the operator graph, such that they are evaluated before the others
+	 *
 	 * @param triplePatterns the triple patterns, which are contained in the index scan operators to be moved to the left
 	 * @param root the root of the operator graph
 	 */
@@ -138,6 +145,7 @@ public abstract class OperatorGraphGenerator {
 	
 	/**
 	 * This method checks if two given sort criteria are equal
+	 *
 	 * @param sortCriterium1 the first sort criteria to compare
 	 * @param sortCriterium2 the second sort criteria to compare
 	 * @return true if sortCriterium=sortCriterium2, otherwise false

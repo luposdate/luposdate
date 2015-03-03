@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -37,21 +41,72 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.memoryindex.MemoryIndexRoot;
 import lupos.engine.operators.index.memoryindex.SevenMemoryIndices;
 import lupos.misc.Tuple;
-
 public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 
 	public enum Optimizations {
 		NONE, MOSTRESTRICTIONS, MOSTRESTRICTIONSLEASTENTRIES, LEASTENTRIES, BINARY, BINARYSTATICANALYSIS;
 	}
 
+	/**
+	 * <p>Constructor for MemoryIndexQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public MemoryIndexQueryEvaluator() throws Exception {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for MemoryIndexQueryEvaluator.</p>
+	 *
+	 * @param arguments an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public MemoryIndexQueryEvaluator(final String[] arguments) throws Exception {
 		super(arguments);
 	}
 	
+	/**
+	 * <p>Constructor for MemoryIndexQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param externalontology a {@link java.lang.String} object.
+	 * @param inmemoryexternalontologyinference a boolean.
+	 * @param rdfs a RDFS object.
+	 * @param codemap a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 * @param tmpDirs an array of {@link java.lang.String} objects.
+	 * @param loadindexinfo a boolean.
+	 * @param parallelOperands a PARALLELOPERANDS object.
+	 * @param blockwise a boolean.
+	 * @param limit a int.
+	 * @param jointhreads a int.
+	 * @param joinbuffer a int.
+	 * @param heap a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param indexheap a int.
+	 * @param mergeheapheight a int.
+	 * @param mergeheaptype a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param chunk a int.
+	 * @param mergethreads a int.
+	 * @param yagomax a int.
+	 * @param resulttype a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 * @param storage a STORAGE object.
+	 * @param join a JOIN object.
+	 * @param optional a JOIN object.
+	 * @param sort a SORT object.
+	 * @param distinct a DISTINCT object.
+	 * @param merge_join_optional a MERGE_JOIN_OPTIONAL object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @param datastructure a {@link lupos.engine.operators.index.Indices.DATA_STRUCT} object.
+	 * @param datasetsort a {@link lupos.engine.operators.index.Dataset.SORT} object.
+	 * @param optimization a {@link lupos.engine.evaluators.MemoryIndexQueryEvaluator.Optimizations} object.
+	 */
 	public MemoryIndexQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
@@ -106,6 +161,7 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -115,12 +171,14 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 				(Optimizations) this.args.getEnum("optimization"));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		this.defaultOptimization = Optimizations.MOSTRESTRICTIONSLEASTENTRIES;
 		super.setupArguments();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -145,14 +203,25 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		return prepareTime;
 	}
 
+	/**
+	 * <p>getRoot.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.memoryindex.MemoryIndexRoot} object.
+	 */
 	public MemoryIndexRoot getRoot() {
 		return (MemoryIndexRoot) this.root;
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		_main(args, MemoryIndexQueryEvaluator.class);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public lupos.engine.operators.index.Root createRoot() {
 		MemoryIndexRoot ic=new MemoryIndexRoot();
@@ -160,6 +229,7 @@ public class MemoryIndexQueryEvaluator extends BasicIndexQueryEvaluator {
 		return ic;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			Collection<URILiteral> defaultGraphs,

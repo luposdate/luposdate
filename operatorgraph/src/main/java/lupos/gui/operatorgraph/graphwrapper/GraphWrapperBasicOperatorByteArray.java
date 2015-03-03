@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.graphwrapper;
 
@@ -39,7 +43,6 @@ import lupos.gui.operatorgraph.viewer.ElementPanel;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.misc.util.OperatorIDTuple;
 import xpref.datatypes.BooleanDatatype;
-
 public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 
 	private final static String[] MAPPING_OPERATORTYPE_TO_PREFERENCES = {
@@ -47,15 +50,22 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 			"sort", "result", "filter", "projection", "limit", "offset",
 			"basicoperator" };
 
+	/**
+	 * <p>Constructor for GraphWrapperBasicOperatorByteArray.</p>
+	 *
+	 * @param element a {@link lupos.misc.debug.BasicOperatorByteArray} object.
+	 */
 	public GraphWrapperBasicOperatorByteArray(final BasicOperatorByteArray element) {
 		super(element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
 		return new ElementPanel(parent, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -71,6 +81,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -98,6 +109,7 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(
 			final OperatorGraph parent) {
@@ -119,16 +131,17 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 		return annotations;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns a list of GraphWrapper elements which are the preceding elements
 	 * of the current element.
-	 *
-	 * @return List of preceding elements
 	 */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
@@ -146,10 +159,10 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns a list of GraphWrapperIdTuple elements which are the succeeding
 	 * elements of the current element.
-	 *
-	 * @return List of succeeding elements
 	 */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
@@ -170,46 +183,55 @@ public class GraphWrapperBasicOperatorByteArray extends GraphWrapper {
 		return succedingElements; // return succeeding elements
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return new StringBuffer();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return ((BasicOperatorByteArray) this.element).toString(prefixInstance);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.element.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean usePrefixesActive() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperatorByteArray getElement() {
 		return (BasicOperatorByteArray) this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "operatorGraph_useStyledBoxes";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return ((BasicOperatorByteArray) this.element).hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object element) {
 		if (element instanceof GraphWrapper) {

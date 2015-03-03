@@ -33,8 +33,9 @@ import lupos.engine.operators.BasicOperator;
 /**
  * {@link lupos.optimizations.logical.rules.Rule} for LuposDate, that removes operators, that need multi input, but only have single input data.
  * The optimization would be, to remove the operator.
- * @author Bjoern
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public class MultiInputRule extends Rule {
 
@@ -59,11 +60,13 @@ public class MultiInputRule extends Rule {
 		this.ruleName = "Remove multi input operators with single input";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean check(BasicOperator _op) {
 		return this._checkPrivate0(_op);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes) {
 		

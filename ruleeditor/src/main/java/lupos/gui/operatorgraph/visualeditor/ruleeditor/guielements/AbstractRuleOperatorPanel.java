@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -51,7 +55,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleMouseListener;
 import lupos.gui.operatorgraph.visualeditor.util.FocusThread;
 import lupos.gui.operatorgraph.visualeditor.util.JCheckBoxOwnIcon;
 import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
-
 public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 2525787949536056772L;
 	private final AbstractRuleOperatorPanel that = this;
@@ -60,6 +63,16 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 	private JTextField textField = null;
 	private JCheckBoxOwnIcon cB_subClasses = null;
 
+	/**
+	 * <p>Constructor for AbstractRuleOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 * @param classType a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleEnum} object.
+	 * @param name a {@link java.lang.String} object.
+	 * @param alsoSubClasses a boolean.
+	 */
 	public AbstractRuleOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw, final AbstractRuleOperator operator, final RuleEnum classType, final String name, final boolean alsoSubClasses) {
 		super(parent, gw, operator, true);
 
@@ -148,6 +161,7 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.setBackground(new Color(211, 211, 211));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
@@ -183,6 +197,7 @@ public class AbstractRuleOperatorPanel extends AbstractGuiComponent<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setBackground(final Color bg){
 		super.setBackground(bg);

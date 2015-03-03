@@ -35,19 +35,19 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 
 /**
  * The class Sugiyama implements the Sudiyama - Algorithm
- * which is used in the LUPOSDATE- Project 
- * 
- * @author Tobias Bielfeld
+ * which is used in the LUPOSDATE- Project
  *
+ * @author Tobias Bielfeld
+ * @version $Id: $Id
  */
 public final class Sugiyama {
 	
 	/**
 	 * Method gets a HashMap with the levels of the layout as keys
 	 * and lists of GraphWrapper which belong to the level
-	 * 
+	 *
 	 * @param operatorgraph		all nodes of the graph
-	 * @return	HashMap with layout-levels and their nodes
+	 * @return a {@link java.util.LinkedHashMap} object.
 	 */
 	protected static LinkedHashMap<Integer, LinkedList<GraphWrapper>> fillAllLevels(
 			final OperatorGraph operatorgraph) {
@@ -89,9 +89,16 @@ public final class Sugiyama {
 	}
 	
 	/**
-	 * Method computes recursively the level 
-	 * of a node and his children by depth-search 
-	 **/
+	 * Method computes recursively the level
+	 * of a node and his children by depth-search
+	 *
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @param visitedNotCloned a {@link java.util.HashSet} object.
+	 * @param op a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param level a int.
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param levels a {@link java.util.HashMap} object.
+	 */
 	protected static void computeLevel(
 			final HashSet<GraphWrapper> visited,
 			final HashSet<GraphWrapper> visitedNotCloned,
@@ -119,9 +126,12 @@ public final class Sugiyama {
 
 	/**
 	 * Method uses the barycenter-method to compute new positions for nodes in the graph
-	 * and minimizes edge-crossings. 
+	 * and minimizes edge-crossings.
+	 *
+	 * @param levels	HashMap with layout levels and their nodes
 	 * @param levels	HashMap with layout levels and their nodes
 	 * @param level		current level
+	 * @return a int.
 	 */
 	protected static int baryCenter (LinkedHashMap <Integer, LinkedList<GraphWrapper>>levels,
 									 int level) {
@@ -181,10 +191,12 @@ public final class Sugiyama {
 	
 	/**
 	 * Method gets the position of a node in his level
+	 *
 	 * @param levels	HashMap with layout levels and their nodes
 	 * @param a			node to get position
+	 * @param levels	HashMap with layout levels and their nodes
 	 * @param level		the level to the node belongs
-	 * @return			position of the node or -1, if node isn't in the level
+	 * @return a int.
 	 */
 	protected static int getGridPosition (LinkedHashMap <Integer, LinkedList<GraphWrapper>>levels,
 									  GraphWrapper a, int level) {
@@ -198,6 +210,11 @@ public final class Sugiyama {
 	}
 	
 	
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public static void arrange(final OperatorGraph operatorgraph){
 
 		//long time1 = System.currentTimeMillis();

@@ -46,12 +46,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This class is an implementation of the simplified fractaltree.
- * @author Denis F�cke
  *
+ * @author Denis F�cke
  * @param <K> Key
  * @param <V> Value
  * @see BufferedList_LuposSerialization
  * @see FractalTreeEntry
+ * @version $Id: $Id
  */
 public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V extends Serializable> implements SortedMap<K, V>, Serializable,
 		PrefixSearchMinMax<K, V> {
@@ -73,7 +74,10 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 
 	/**
 	 * Must be called before any FractalTree is constructed to take any effect
-	 * @param fractalTreeEntryDeSerializer
+	 *
+	 * @param fractalTreeEntryDeSerializer a {@link lupos.io.Registration.DeSerializerConsideringSubClasses} object.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static<K extends Comparable<K>, V> void setDeSerializerForFractalTreeEntry(final DeSerializerConsideringSubClasses<FractalTreeEntry<K, V>> fractalTreeEntryDeSerializer){
@@ -104,7 +108,6 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	 * Constructs am empty fractal tree using a default page size of 8192.
 	 *
 	 * @param file a file specifying the name and the storage location on the disk.
-	 *
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree(final File file) {
@@ -120,9 +123,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	 *
 	 * @param file a file specifying the name and the storage location on the disk.
 	 * @param pageSize the size of a page; greater than <tt>0</tt>
-	 *
-	 * @throws NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
-	 *
+	 * @throws java.lang.NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree(final File file, final int pageSize) {
@@ -139,9 +140,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	 * Constructs am empty fractal tree.
 	 *
 	 * @param pageSize the size of a page; greater than <tt>0</tt>
-	 *
-	 * @throws NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
-	 *
+	 * @throws java.lang.NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree(final int pageSize) {
@@ -154,6 +153,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		this.removeList = new BufferedList_LuposSerialization<>(pageSize, this.file3.getAbsoluteFile(), entry);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.bufferedList.clear();
@@ -161,6 +161,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		this.removeList.clear();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean containsKey(final Object key) {
@@ -169,6 +170,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return this.indexOf(0, (K) key, new FractalTreeEntry<K, V>(), 0) > -1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object value) {
 		for (final V v : this.values()) {
@@ -179,6 +181,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object key) {
 		assert key != null;
@@ -192,11 +195,13 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return this.size() == 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K key, final V value) {
 		assert key != null;
@@ -216,6 +221,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return oldValue;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final Map<? extends K, ? extends V> map) {
 		for (final K key : map.keySet()) {
@@ -223,6 +229,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object key) {
 		assert key != null;
@@ -274,6 +281,12 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return oldValue;
 	}
 
+	/**
+	 * <p>getDeepth.</p>
+	 *
+	 * @param index a int.
+	 * @return a int.
+	 */
 	protected int getDeepth(final int index) {
 		return (int) Math.floor(Math.log10(index + 1) / Math.log10(2));
 	}
@@ -297,6 +310,11 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>calcPointers.</p>
+	 *
+	 * @param index a int.
+	 */
 	protected void calcPointers(final int index) {
 		if (this.bufferedList.get(index).key == null) {
 			return;
@@ -456,6 +474,12 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>getHeigth.</p>
+	 *
+	 * @param size a int.
+	 * @return a int.
+	 */
 	protected int getHeigth(final int size) {
 		if(size == 0) {
 			return 0;
@@ -463,6 +487,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return (int) Math.ceil(Math.log10(size) / Math.log10(2));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		int index = 0;
@@ -481,6 +506,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] getClosestElements(final K key) {
 		assert key != null;
@@ -608,17 +634,13 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Searches all values whose corresponded entrys matching the specified prefix. Returns an Iterator of these values.
 	 *
 	 * <p>
 	 * The user must ensure <tt>prefix.compareTo(anOtherKey) == 0</tt> if the prefix is matching another key by implementing a class that allows to
 	 * specify a <tt>Comparator</tt> that is used for the implementation of the <tt>compareTo</tt> method.
-	 *
-	 * @param prefix a prefix
-	 * @return an Iterator containing all values whose entrys having the specified prefix.
-	 *
-	 * @throws NullPointerException if the specified key is null
-	 *
 	 * @see Comparator
 	 * @see Comparable
 	 */
@@ -633,18 +655,13 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Searches all values whose corresponded entrys matching the specified prefix and minimum. Returns an Iterator of these values.
 	 *
 	 * <p>
 	 * The user must ensure <tt>prefix.compareTo(anOtherKey) == 0</tt> if the prefix is matching another key by implementing a class that allows to
 	 * specify a <tt>Comparator</tt> that is used for the implementation of the <tt>compareTo</tt> method.
-	 *
-	 * @param prefix a prefix
-	 * @param min a key specifying a minimum
-	 * @return an Iterator containing all values whose entrys having the specified prefix.
-	 *
-	 * @throws NullPointerException if the specified key is null
-	 *
 	 * @see Comparator
 	 * @see Comparable
 	 */
@@ -660,19 +677,13 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Searches all values whose corresponded entrys matching the specified prefix, minimum and maximum. Returns an Iterator of these values.
 	 *
 	 * <p>
 	 * The user must ensure <tt>prefix.compareTo(anOtherKey) == 0</tt> if the prefix is matching another key by implementing a class that allows to
 	 * specify a <tt>Comparator</tt> that is used for the implementation of the <tt>compareTo</tt> method.
-	 *
-	 * @param prefix a prefix
-	 * @param min a key specifying a minimum
-	 * @param max a key specifying a maximum
-	 * @return an Iterator containing all values whose entrys having the specified prefix.
-	 *
-	 * @throws NullPointerException if the specified key is null
-	 *
 	 * @see Comparator
 	 * @see Comparable
 	 */
@@ -689,18 +700,13 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Searches all values whose corresponded entrys matching the specified prefix and maximum. Returns an Iterator of these values.
 	 *
 	 * <p>
 	 * The user must ensure <tt>prefix.compareTo(anOtherKey) == 0</tt> if the prefix is matching another key by implementing a class that allows to
 	 * specify a <tt>Comparator</tt> that is used for the implementation of the <tt>compareTo</tt> method.
-	 *
-	 * @param prefix a prefix
-	 * @param max a key specifying a maximum
-	 * @return an Iterator containing all values whose entrys having the specified prefix.
-	 *
-	 * @throws NullPointerException if the specified key is null
-	 *
 	 * @see Comparator
 	 * @see Comparable
 	 */
@@ -746,6 +752,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		return new Comparator<K>() {
@@ -756,6 +763,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new EntrySet();
@@ -884,6 +892,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		K firstKey = null;
@@ -937,11 +946,13 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(final K toKey) {
 		throw new NotImplementedException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		return new KeySet();
@@ -1029,6 +1040,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		K lastKey = null;
@@ -1045,16 +1057,19 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return lastKey;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(final K fromKey, final K toKey) {
 		throw new NotImplementedException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(final K arg0) {
 		throw new NotImplementedException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> values() {
 		final ArrayList<V> values = new ArrayList<>();
@@ -1176,12 +1191,24 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return 0;
 	}
 
+	/**
+	 * <p>getNextPosition.</p>
+	 *
+	 * @param index a int.
+	 * @return a int.
+	 */
 	protected int getNextPosition(final int index) {
 		final double a = Math.pow(2, Math.floor(Math.log10(index + 1) / Math.log10(2)));
 		final int nextArrayIndex = (int) (((index + 1) - ((index + 1) % a)) * 2 - 1);
 		return nextArrayIndex;
 	}
 
+	/**
+	 * <p>getArrayStart.</p>
+	 *
+	 * @param index a int.
+	 * @return a int.
+	 */
 	protected int getArrayStart(final int index) {
 		if (index == 0) {
 			return 0;
@@ -1189,6 +1216,15 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return (this.getNextPosition(index) - 1) / 2;
 	}
 
+	/**
+	 * <p>indexOf.</p>
+	 *
+	 * @param index a int.
+	 * @param key a K object.
+	 * @param entry a {@link lupos.datastructures.simplifiedfractaltree.FractalTreeEntry} object.
+	 * @param nextArrayIndex a int.
+	 * @return a int.
+	 */
 	public int indexOf(final int index, final K key, FractalTreeEntry<K, V> entry, int nextArrayIndex) {
 		if (index >= this.bufferedList.size()) {
 			return -1;
@@ -1258,6 +1294,14 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>binarySearch.</p>
+	 *
+	 * @param imin a int.
+	 * @param imax a int.
+	 * @param key a K object.
+	 * @return a int.
+	 */
 	protected int binarySearch(final int imin, final int imax, final K key) {
 		if (imax == imin) {
 			return imax;
@@ -1279,6 +1323,11 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return (int) (imin + Math.ceil((double) (imax - imin) / 2));
 	}
 
+	/**
+	 * <p>merge.</p>
+	 *
+	 * @param index a int.
+	 */
 	protected void merge(final int index) {
 		if (this.bufferedList.size() <= index || this.bufferedList.get(index).key == null) {
 			final int imax = 2 * index;
@@ -1394,10 +1443,23 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>getPreviousPosition.</p>
+	 *
+	 * @param index a int.
+	 * @return a int.
+	 */
 	protected int getPreviousPosition(final int index) {
 		return (index - 1) / 2;
 	}
 
+	/**
+	 * <p>calcPointer.</p>
+	 *
+	 * @param index a int.
+	 * @param key a K object.
+	 * @return a int.
+	 */
 	protected int calcPointer(final int index, final K key) {
 		int j = this.getNextPosition(index); // Startposition des nächsten Arrays ermitteln
 		final int size = this.bufferedList.size(); // Größe zwischenspeichern
@@ -1433,6 +1495,11 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		return -1;
 	}
 
+	/**
+	 * <p>merge.</p>
+	 *
+	 * @param element a {@link lupos.datastructures.simplifiedfractaltree.FractalTreeEntry} object.
+	 */
 	protected void merge(final FractalTreeEntry<K, V> element) {
 		if (this.bufferedList.size() == 0) {
 			this.bufferedList.add(0, element);
@@ -1446,6 +1513,9 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>print2.</p>
+	 */
 	public void print2() {
 		System.out.print("fractal list (" + this.bufferedList.size() + "): ");
 		for (int i = 0; i < this.bufferedList.size(); i++) {
@@ -1454,6 +1524,9 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		System.out.println("");
 	}
 
+	/**
+	 * <p>print3.</p>
+	 */
 	public void print3() {
 		System.out.print("remove list (" + this.removeList.size() + "): ");
 		for (int i = 0; i < this.removeList.size(); i++) {
@@ -1462,6 +1535,9 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		System.out.println("");
 	}
 
+	/**
+	 * <p>printMergelist.</p>
+	 */
 	public void printMergelist() {
 		System.out.print("merge list: ");
 		final int size = this.mergeList.size();
@@ -1549,6 +1625,12 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		}
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public static void main(final String[] args) throws InterruptedException {
 
 		final SimplifiedFractalTree<StringKey, Integer> fractalTree = new SimplifiedFractalTree<StringKey, Integer>(new File("fttest"));

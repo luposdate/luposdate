@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -81,7 +85,6 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
 public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 	protected final String VARIABLE_PREDICATE = "?";
 
@@ -281,11 +284,17 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 	}
 
+	/**
+	 * <p>Constructor for BuildOperatorGraphRuleVisitor.</p>
+	 *
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	public BuildOperatorGraphRuleVisitor(final IndexScanCreatorInterface indexScanCreator) {
 		super(indexScanCreator);
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Document obj, final Object arg) throws RIFException {
 		this.tripleProducer.clear();
@@ -514,6 +523,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Rule obj, final Object arg) throws RIFException {
 		// Bestimmen, ob Triple, Predicates oder Equalities erstellt werden sollen
@@ -662,6 +672,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		set.add(toAdd);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Conjunction obj, final Object arg) throws RIFException {
 		// Vorgehensweise: erstmal alle Sub-Operatoren sammeln -> Danach:
@@ -801,6 +812,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		return headOperator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final Disjunction obj, final Object arg) throws RIFException {
 		// Einf�hrung eines Union Operators, der alle Untergeordneten
@@ -818,6 +830,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		return union;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ExistExpression obj, final Object arg) throws RIFException {
 		if (obj.getVariables().isEmpty()) {
@@ -835,6 +848,13 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 	}
 
+	/**
+	 * <p>generatePattern.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.RulePredicate} object.
+	 * @param arg a {@link java.lang.Object} object.
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator generatePattern(final RulePredicate obj, final Object arg){
 		// Unterscheidung:
 		// Wenn Pr�dikat, also kein Tripel
@@ -851,6 +871,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		return this.unitermToTriplePattern(obj);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final RulePredicate obj, final Object arg) throws RIFException {
 		final BasicOperator zpattern = this.generatePattern(obj, arg);
@@ -925,6 +946,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final External obj, final Object arg) throws RIFException {
 		// Wenn iterierbar, dann Index erstellen
@@ -944,6 +966,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected RuleFilter buildRuleFilter(final IExpression expr, final Object arg) {
 		if (this.booleanIndex == null) {

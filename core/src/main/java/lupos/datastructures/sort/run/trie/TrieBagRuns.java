@@ -35,10 +35,14 @@ import lupos.datastructures.sort.run.Runs;
 
 /**
  * Tries are used to generate the initial runs.
- * Merging and swapping is done node-based.  
+ * Merging and swapping is done node-based.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TrieBagRuns implements Runs {
 
+	/** {@inheritDoc} */
 	@Override
 	public Run merge(List<Run> runs, final boolean inmemory) {
 		ArrayList<TrieBag> triestoBeMerged = new ArrayList<TrieBag>(runs.size());
@@ -55,11 +59,13 @@ public class TrieBagRuns implements Runs {
 		return new TrieBagRun(result);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run createRun() {
 		return new TrieBagRun(TrieBag.createRamBasedTrieBag());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "Initial runs generated using trie bags (node-based merging)";

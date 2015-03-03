@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.action;
 
@@ -30,7 +34,6 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.event.action.send.Send;
 import lupos.event.action.send.SlidingWindow;
-
 public class SlideOutAction extends Action {
 
 	private Send slidingWindow = new SlidingWindow();
@@ -43,17 +46,29 @@ public class SlideOutAction extends Action {
 		this.slidingWindow.init();
 	}
 
+	/**
+	 * <p>Constructor for SlideOutAction.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	protected SlideOutAction(String name) {
 		super(name);
 		this.slidingWindow.init();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void execute(QueryResult queryResult) {
 		String msg = getMessage(queryResult);
 		this.slidingWindow.sendContent(msg);
 	}
 
+	/**
+	 * <p>getMessage.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String getMessage(QueryResult qr) {
 		String msg = new String();
 

@@ -78,6 +78,9 @@ import xpref.datatypes.IntegerDatatype;
 /**
  * This Class represents a Viewer for the OperatorGraph. It can also be used to
  * show the Abstract Syntax Tree.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Viewer extends JFrame implements IXPref {
 	/**
@@ -151,6 +154,14 @@ public class Viewer extends JFrame implements IXPref {
 				fromJar);
 	}
 
+	/**
+	 * <p>Constructor for Viewer.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param debugContainerList a {@link java.util.List} object.
+	 * @param standAlone a boolean.
+	 * @param fromJar a boolean.
+	 */
 	public Viewer(
 			final String title,
 			final List<DebugContainer<BasicOperatorByteArray>> debugContainerList,
@@ -197,6 +208,15 @@ public class Viewer extends JFrame implements IXPref {
 		this.finalizeFrame(topToolBar, bottomToolBar);
 	}
 
+	/**
+	 * <p>Constructor for Viewer.</p>
+	 *
+	 * @param debugContainerList a {@link java.util.List} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param standAlone a boolean.
+	 * @param fromJar a boolean.
+	 * @param prefix a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 */
 	public Viewer(
 			final List<DebugContainer<BasicOperatorByteArray>> debugContainerList,
 			final String title, final boolean standAlone,
@@ -219,6 +239,16 @@ public class Viewer extends JFrame implements IXPref {
 		this.finalizeFrame(topToolBar, bottomToolBar);
 	}
 
+	/**
+	 * <p>Constructor for Viewer.</p>
+	 *
+	 * @param startGW a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param standAlone a boolean.
+	 * @param fromJar a boolean.
+	 * @param toolbar a {@link javax.swing.JPanel} object.
+	 */
 	public Viewer(final GraphWrapper startGW, final ViewerPrefix prefix,
 			final String title, final boolean standAlone,
 			final boolean fromJar, final JPanel toolbar) {
@@ -240,6 +270,16 @@ public class Viewer extends JFrame implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>Constructor for Viewer.</p>
+	 *
+	 * @param startGW a {@link java.util.LinkedList} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 * @param title a {@link java.lang.String} object.
+	 * @param standAlone a boolean.
+	 * @param fromJar a boolean.
+	 * @param toolbar a {@link javax.swing.JPanel} object.
+	 */
 	public Viewer(final LinkedList<GraphWrapper> startGW,
 			final ViewerPrefix prefix, final String title,
 			final boolean standAlone, final boolean fromJar,
@@ -269,7 +309,7 @@ public class Viewer extends JFrame implements IXPref {
 	 *            the first node of the graph
 	 * @param filename
 	 *            the filename to save the graph as image to
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public Viewer(final GraphWrapper startGW, String filename) throws IOException {
 		super();
@@ -295,7 +335,7 @@ public class Viewer extends JFrame implements IXPref {
 	 *            the root nodes of the graph
 	 * @param filename
 	 *            the filename to save the graph as image to
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public Viewer(final LinkedList<GraphWrapper> startGWs, String filename) throws IOException {
 		super();
@@ -501,6 +541,9 @@ public class Viewer extends JFrame implements IXPref {
 		this.setupContextMenus();
 	}
 
+	/**
+	 * <p>setupContextMenus.</p>
+	 */
 	public void setupContextMenus(){
 		// deal with context menus
 		final HashSet<GraphWrapper> visited = new HashSet<GraphWrapper>();
@@ -509,6 +552,7 @@ public class Viewer extends JFrame implements IXPref {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void processWindowEvent(final WindowEvent e) {
 		super.processWindowEvent(e);
@@ -582,6 +626,11 @@ public class Viewer extends JFrame implements IXPref {
 		this.operatorGraph.updateMainPanel(opGraph);
 	}
 
+	/**
+	 * <p>createGraphElement.</p>
+	 *
+	 * @param startGW a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void createGraphElement(final GraphWrapper startGW) {
 		this.startGWs = new LinkedList<GraphWrapper>();
 		this.startGWs.add(startGW);
@@ -782,6 +831,7 @@ public class Viewer extends JFrame implements IXPref {
 
 	/**
 	 * Displays a window with the given String.
+	 *
 	 * @param content the string to be displayed
 	 * @param title the title of the window
 	 */
@@ -881,6 +931,7 @@ public class Viewer extends JFrame implements IXPref {
 		return preferencesButton;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void preferencesChanged() {
 		try {
@@ -892,6 +943,11 @@ public class Viewer extends JFrame implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>operatorGraph</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix} object.
+	 */
 	public OperatorGraphWithPrefix getOperatorGraph() {
 		return this.operatorGraph;
 	}

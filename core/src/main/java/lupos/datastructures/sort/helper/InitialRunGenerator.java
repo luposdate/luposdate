@@ -28,7 +28,10 @@ import lupos.datastructures.sort.run.Run;
 import lupos.datastructures.sort.run.Runs;
 
 /**
- * Thread for generating the initial runs... 
+ * Thread for generating the initial runs...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class InitialRunGenerator extends Thread {
 	
@@ -38,6 +41,14 @@ public class InitialRunGenerator extends Thread {
 	private final int NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 	private final Runs runs;
 	
+	/**
+	 * <p>Constructor for InitialRunGenerator.</p>
+	 *
+	 * @param buffer a {@link lupos.datastructures.parallel.BoundedBuffer} object.
+	 * @param initialRunsLevel0 a {@link lupos.datastructures.parallel.BoundedBuffer} object.
+	 * @param NUMBER_ELEMENTS_IN_INITIAL_RUNS a int.
+	 * @param runs a {@link lupos.datastructures.sort.run.Runs} object.
+	 */
 	public InitialRunGenerator(final BoundedBuffer<String> buffer, final BoundedBuffer<Run> initialRunsLevel0, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS, final Runs runs){
 		this.buffer = buffer;
 		this.runs = runs;
@@ -46,6 +57,7 @@ public class InitialRunGenerator extends Thread {
 		this.NUMBER_ELEMENTS_IN_INITIAL_RUNS = NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void run(){
 		try {
@@ -72,6 +84,11 @@ public class InitialRunGenerator extends Thread {
 		}
 	}
 	
+	/**
+	 * <p>finishInitialRun.</p>
+	 *
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	public void finishInitialRun() throws InterruptedException{
 		if(!this.run.isEmpty()){
 			Run sortedRun = this.run.sort();

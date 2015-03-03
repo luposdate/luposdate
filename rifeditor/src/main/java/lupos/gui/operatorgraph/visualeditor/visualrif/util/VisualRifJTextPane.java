@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -38,7 +42,6 @@ import javax.swing.text.TabStop;
 
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
 import lupos.gui.anotherSyntaxHighlighting.LuposJTextPane;
-
 public class VisualRifJTextPane extends LuposJTextPane {
 	private static final long serialVersionUID = 1L;
 	private LuposDocument doc = null;
@@ -54,6 +57,7 @@ public class VisualRifJTextPane extends LuposJTextPane {
 
 	/**
 	 * Constructor for LuposJTextPane
+	 *
 	 * @param doc StyledDocument
 	 */
 	public VisualRifJTextPane(final StyledDocument doc) {
@@ -62,7 +66,8 @@ public class VisualRifJTextPane extends LuposJTextPane {
 
 	/**
 	 * Constructor for LuposJTextPane
-	 * @param doc {@link LuposDocument}
+	 *
+	 * @param doc {@link lupos.gui.anotherSyntaxHighlighting.LuposDocument}
 	 */
 	public VisualRifJTextPane(final LuposDocument doc) {
 		super(doc);
@@ -72,6 +77,11 @@ public class VisualRifJTextPane extends LuposJTextPane {
 		this.doc.setLuposJTextPane(this);
 	}
 
+	/**
+	 * <p>Setter for the field <code>tabWidth</code>.</p>
+	 *
+	 * @param charactersPerTab a int.
+	 */
 	public void setTabWidth(int charactersPerTab) {
 		this.tabWidth = charactersPerTab;
 		FontMetrics fm = getFontMetrics(getFont());
@@ -92,6 +102,7 @@ public class VisualRifJTextPane extends LuposJTextPane {
 		getStyledDocument().setParagraphAttributes(0, length, attributes, false);
 	}
 	
+	/** {@inheritDoc} */
 	public void setText(String text){
 
 		final StringBuffer sb = new StringBuffer();

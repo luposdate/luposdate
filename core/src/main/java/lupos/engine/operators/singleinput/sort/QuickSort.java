@@ -25,6 +25,9 @@ package lupos.engine.operators.singleinput.sort;
 
 /**
  * This class is a subclass of Sort. It realsies sorting by using the quicksort algorithm
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import java.util.Iterator;
@@ -40,24 +43,31 @@ import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
-
 public class QuickSort extends CollectionSort {
 
 	// Here all incoming bindings are stored
 	protected ParallelIteratorMultipleQueryResults _bindings = new ParallelIteratorMultipleQueryResults();
 
+	/**
+	 * <p>Constructor for QuickSort.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public QuickSort(final lupos.sparql1_1.Node node) {
 		super(node);
 	}
 
+	/**
+	 * <p>Constructor for QuickSort.</p>
+	 */
 	public QuickSort() {
 		// nothing to init...
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * simply adds bindings to storage (_bindings)
-	 * 
-	 * @return always null
 	 */
 	@Override
 	protected QueryResult postProcess(final QueryResult queryResult, final int id) {
@@ -69,10 +79,9 @@ public class QuickSort extends CollectionSort {
 	 * This Method checks if the incoming QueryResult is already sorted. If not
 	 * out_postProcess will be called to order the given QueryResult and its
 	 * results will be returned
-	 * 
-	 * @param bindings
-	 *            , QueryResult to check
+	 *
 	 * @return the correctly sorted QueryResult
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	protected QueryResult checkIfAlreadySorted(final QueryResult bindings) {
 		// check if already sorted
@@ -92,9 +101,10 @@ public class QuickSort extends CollectionSort {
 
 	/**
 	 * Implementation of the quicksort algorithm
-	 * 
-	 * @param bindings
+	 *
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 * @return the given QueryResult in correct order
+	 * @param size a int.
 	 */
 	protected QueryResult out_postProcess(final QueryResult bindings, int size) {
 
@@ -161,6 +171,12 @@ public class QuickSort extends CollectionSort {
 		return _LowEnd;
 	}
 
+	/**
+	 * <p>checkIfSorted.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	protected boolean checkIfSorted(final QueryResult bindings) {
 		boolean b = true;
 		for (int i = 0; i < bindings.size() - 1; i++) {
@@ -172,6 +188,7 @@ public class QuickSort extends CollectionSort {
 		return b;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		QueryResult result = checkIfAlreadySorted(this._bindings.getQueryResult());
@@ -182,6 +199,7 @@ public class QuickSort extends CollectionSort {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		preProcessMessage(new EndOfEvaluationMessage());
@@ -198,23 +216,27 @@ public class QuickSort extends CollectionSort {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		this._bindings.removeAll(queryResult);
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		this._bindings.release();
 		this._bindings = new ParallelIteratorMultipleQueryResults();	
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -223,6 +245,7 @@ public class QuickSort extends CollectionSort {
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

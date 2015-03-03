@@ -30,43 +30,55 @@ import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
 /**
- * Super class for all nodes in the huffman tree 
+ * Super class for all nodes in the huffman tree
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Node {
 
 	/**
-	 * Method to write out this huffman tree into the given bit output stream 
+	 * Method to write out this huffman tree into the given bit output stream
+	 *
 	 * @param out the bit output stream into which this huffman tree is written
-	 * @throws IOException if something fails during writing out this huffman tree
+	 * @throws java.io.IOException if something fails during writing out this huffman tree
 	 */
 	public abstract void encode(final BitOutputStream out) throws IOException;
 
 	/**
+	 * <p>getDepth.</p>
+	 *
 	 * @return the depth of this tree
 	 */
 	public abstract int getDepth();
 	
 	/**
+	 * <p>getMin.</p>
+	 *
 	 * @return the minimum symbol in this huffman tree
 	 */
 	public abstract int getMin();
 
 	/**
+	 * <p>getMax.</p>
+	 *
 	 * @return the maximum symbol in this huffman tree
 	 */
 	public abstract int getMax();
 	
 	/**
 	 * This method reads in the next symbol from a given bit input stream.
+	 *
 	 * @param in the underlying bit input stream
 	 * @return the next symbol
-	 * @throws IOException is something fails when reading from the underlying bit input stream
+	 * @throws java.io.IOException is something fails when reading from the underlying bit input stream
 	 */
 	public abstract int getSymbol(final BitInputStream in) throws IOException ;
 
 	/**
 	 * This method starts to fill the code array with the codes of the symbols in the huffman tree.
 	 * It is usually only called at the root node of a huffman tree.
+	 *
 	 * @param codeArray the code array, which is filled with the codes of the symbols in the huffman tree
 	 * @param min the minimum symbol in the huffman tree (used to avoid handling larger code arrays, the code array starts at position 0 with the code of the minimum symbol)
 	 */
@@ -76,6 +88,7 @@ public abstract class Node {
 
 	/**
 	 * This method fills the code array with the codes of the symbols in the huffman tree.
+	 *
 	 * @param currentCode the current code prefix
 	 * @param codeArray the code array to be filled
 	 * @param min the minimum symbol in the huffman tree (used to avoid handling larger code arrays, the code array starts at position 0 with the code of the minimum symbol)
@@ -84,6 +97,7 @@ public abstract class Node {
 
 	/**
 	 * Method to store the current code into the code array
+	 *
 	 * @param currentCode the current code to be stored
 	 * @param codeArray the code array for storing he codes of the symbols in the huffman tree
 	 * @param pos the position in the code array
@@ -98,9 +112,10 @@ public abstract class Node {
 	
 	/**
 	 * Static method to read in a huffman tree.
+	 *
 	 * @param in the bit input stream form which the huffman tree is read.
 	 * @return the root of the read huffman tree
-	 * @throws IOException if something fails in the underlying bit input stream
+	 * @throws java.io.IOException if something fails in the underlying bit input stream
 	 */
 	public static Node readInHuffmanTree(final BitInputStream in) throws IOException {
 		if(in.readBit()){
@@ -121,9 +136,10 @@ public abstract class Node {
 	
 	/**
 	 * Reads in one symbol (one byte consisting of eight bits)
+	 *
 	 * @param in the underlying bit input stream
 	 * @return the symbol
-	 * @throws IOException if something fails in the underlying bit input stream
+	 * @throws java.io.IOException if something fails in the underlying bit input stream
 	 */
 	protected static int readSymbol(final BitInputStream in) throws IOException {
 		int value = 0;

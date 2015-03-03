@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -44,16 +48,21 @@ import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
-
 public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Constructor for BooleanIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public BooleanIndexScan(final Root root) {
 		super(root);
 		this.triplePatterns = Arrays.asList();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage result = new BoundVariablesMessage(msg);
@@ -63,6 +72,7 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
@@ -77,22 +87,26 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		// leitet ein QueryResult mit einem Binding weiter
 		return this.createQueryResult();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "BooleanIndex";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return this.toString();
@@ -100,14 +114,17 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 
 	private boolean firstTime = true;
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTriple(final Triple triple) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		if(this.firstTime){
@@ -116,6 +133,7 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		if(this.firstTime){
@@ -124,6 +142,7 @@ public class BooleanIndexScan extends BasicIndexScan implements TripleConsumer, 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean joinOrderToBeOptimized(){
 		return false;

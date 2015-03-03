@@ -35,16 +35,31 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * The indices class for accessing the data of the distributed query evaluator.
  * It just forwards the calls to an instance of IStorage to be given in the constructor.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClientIndices extends Indices {
 	
 	protected final IStorage storage;
 
+	/**
+	 * <p>Constructor for QueryClientIndices.</p>
+	 *
+	 * @param uriLiteral a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 */
 	public QueryClientIndices(final URILiteral uriLiteral, final IStorage storage) {
 		this.rdfName = uriLiteral;
 		this.storage = storage;
 	}
 
+	/**
+	 * <p>evaluateTriplePattern.</p>
+	 *
+	 * @param triplePattern a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern){
 		try {
 			return this.storage.evaluateTriplePattern(triplePattern);
@@ -55,30 +70,36 @@ public class QueryClientIndices extends Indices {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void add(Triple triple) {
 		this.storage.addTriple(triple);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(Triple triple) {
 		this.storage.remove(triple);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(Triple triple) {
 		return this.storage.containsTriple(triple);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init(DATA_STRUCT ds) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void constructCompletely() {
 		this.storage.endImportData();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeOutAllModifiedPages() throws IOException {
 	}

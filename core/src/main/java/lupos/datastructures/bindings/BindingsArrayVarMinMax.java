@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.bindings;
 
@@ -31,11 +35,15 @@ import lupos.datastructures.items.Variable;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.LengthHelper;
 import lupos.io.helper.OutHelper;
-
 public class BindingsArrayVarMinMax extends BindingsArray {
 	protected int[] minArray = new int[this.literals.length];
 	protected int[] maxArray = new int[this.literals.length];
 
+	/**
+	 * <p>Constructor for BindingsArrayVarMinMax.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsArrayVarMinMax(final BindingsFactory bindingsFactory) {
 		super(bindingsFactory);
 		for (int i = 0; i < this.literals.length; i++) {
@@ -44,28 +52,60 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		}
 	}
 
+	/**
+	 * <p>addMinMax.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @param min a int.
+	 * @param max a int.
+	 */
 	public void addMinMax(final Variable v, final int min, final int max) {
 		final int pos = this.bindingsFactory.posVariables.get(v);
 		this.minArray[pos] = min;
 		this.maxArray[pos] = max;
 	}
 
+	/**
+	 * <p>getMin.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @return a int.
+	 */
 	public int getMin(final Variable v) {
 		return this.minArray[this.bindingsFactory.posVariables.get(v)];
 	}
 
+	/**
+	 * <p>getMax.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @return a int.
+	 */
 	public int getMax(final Variable v) {
 		return this.maxArray[this.bindingsFactory.posVariables.get(v)];
 	}
 
+	/**
+	 * <p>getMin.</p>
+	 *
+	 * @param varCode a int.
+	 * @return a int.
+	 */
 	public int getMin(final int varCode) {
 		return this.minArray[varCode];
 	}
 
+	/**
+	 * <p>getMax.</p>
+	 *
+	 * @param varCode a int.
+	 * @return a int.
+	 */
 	public int getMax(final int varCode) {
 		return this.maxArray[varCode];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArrayVarMinMax clone() {
 		final BindingsArrayVarMinMax other = new BindingsArrayVarMinMax(this.bindingsFactory);
@@ -78,6 +118,7 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		return other;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addAllPresortingNumbers(final Bindings bindings) {
 		if (!(bindings instanceof BindingsArrayVarMinMax)) {
@@ -97,6 +138,12 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		}
 	}
 
+	/**
+	 * <p>writePresortingNumbers.</p>
+	 *
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writePresortingNumbers(final OutputStream out)
 			throws IOException {
 		for (int i = 0; i < this.minArray.length; i++) {
@@ -105,6 +152,12 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		}
 	}
 
+	/**
+	 * <p>readPresortingNumbers.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void readPresortingNumbers(final InputStream in)
 			throws IOException {
 		for (int i = 0; i < this.minArray.length; i++) {
@@ -113,6 +166,11 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		}
 	}
 
+	/**
+	 * <p>lengthPresortingNumbers.</p>
+	 *
+	 * @return a int.
+	 */
 	public int lengthPresortingNumbers() {
 		int result = 0;
 		for (int i = 0; i < this.minArray.length; i++) {
@@ -122,6 +180,7 @@ public class BindingsArrayVarMinMax extends BindingsArray {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsArrayVarMinMax createInstance(){
 		return new BindingsArrayVarMinMax(this.bindingsFactory);

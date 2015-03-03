@@ -108,6 +108,9 @@ import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
 
 /**
  * This is an editor to build visual queries for SPARQL.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryEditor extends VisualEditor<Operator> implements Suggester<Operator> {
 	private static final long serialVersionUID = 1L;
@@ -120,6 +123,8 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 	/**
 	 * This Methods creates the GUI for the visual query editor.
+	 *
+	 * @param image a {@link java.awt.Image} object.
 	 */
 	public QueryEditor(final Image image) {
 		super(true);
@@ -129,12 +134,25 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		this.create("", image);
 	}
 
+	/**
+	 * <p>Constructor for QueryEditor.</p>
+	 *
+	 * @param standalone a boolean.
+	 */
 	public QueryEditor(final boolean standalone) {
 		super(standalone);
 
 		LANGUAGE.SEMANTIC_WEB.setStyles();
 	}
 
+	/**
+	 * <p>Constructor for QueryEditor.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param data a {@link java.lang.String} object.
+	 * @param component a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.IQueryEditor} object.
+	 * @param image a {@link java.awt.Image} object.
+	 */
 	public QueryEditor(final String query, final String data,
 			final IQueryEditor component, final Image image) {
 		super(false);
@@ -144,6 +162,14 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		init(query, data, component, image);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param data a {@link java.lang.String} object.
+	 * @param component a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.IQueryEditor} object.
+	 * @param image a {@link java.awt.Image} object.
+	 */
 	protected void init(final String query, final String data,
 			final IQueryEditor component, final Image image) {
 
@@ -170,6 +196,13 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		});
 	}
 
+	/**
+	 * <p>create.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param image a {@link java.awt.Image} object.
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	protected JFrame create(final String query, final Image image) {
 		this.visualGraphs.add(new QueryGraph(this, new VEPrefix(true)));
 
@@ -305,9 +338,9 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This is the method, that creates the JMenuBar for the GUI.
-	 * 
-	 * @return JMenuBar The created JMenuBar
 	 */
 	@Override
 	public JMenuBar buildMenuBar() {
@@ -420,6 +453,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		return fileMenu;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JMenu buildEditMenu() {
 		final JMenu editMenu = super.buildEditMenu();
@@ -663,7 +697,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 	/**
 	 * This method parses the given query and creates the VisualQuery.
-	 * 
+	 *
 	 * @param query
 	 *            the query to parse
 	 */
@@ -744,6 +778,9 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		}
 	}
 
+	/**
+	 * <p>loadData.</p>
+	 */
 	protected void loadData() {
 		this.statusBar.setText("Loading N3 data ...");
 
@@ -784,6 +821,12 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		this.statusBar.clear();
 	}
 
+	/**
+	 * <p>queryForSuggestions.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	protected QueryResult queryForSuggestions(final String query) {
 		try {
 			if (this.evaluator == null)
@@ -819,6 +862,11 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		}
 	}
 
+	/**
+	 * <p>makeSuggestions.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.operators.QueryRDFTerm} object.
+	 */
 	public void makeSuggestions(final QueryRDFTerm op) {
 		this.isInSuggestionMode = false;
 
@@ -1008,10 +1056,16 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		this.repaint();
 	}
 
+	/**
+	 * <p>isInSuggestionMode.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isInSuggestionMode() {
 		return this.isInSuggestionMode;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void pasteElements(final String content) {
 		final int rowY = this.visualGraphs.getFirst().getMaxY() + (int) this.visualGraphs.get(0).SPACING_Y;
@@ -1157,6 +1211,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cancelModi() {
 		super.cancelModi();
@@ -1166,13 +1221,14 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 
 	/**
 	 * The main method to initialize the VisualEditor.
-	 * 
-	 * @param args
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
 	 */
 	public static void main(final String[] args) {
 		new QueryEditor(null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void makeSuggestions(Operator operator) {
 		if(operator instanceof QueryRDFTerm){
@@ -1180,6 +1236,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isInSuggestionMode(Operator operator) {
 		return (this.isInSuggestionMode() && operator instanceof QueryRDFTerm);

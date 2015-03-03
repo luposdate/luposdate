@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer;
 
@@ -83,6 +87,12 @@ public class CondensedViewToolBar extends JPanel {
 	private Collection<HyperTriple> originalresultlevel0 = null;
 	private final Collection<HyperTriple>[] result = new Collection[this.maxLevel + 1];
 
+	/**
+	 * <p>Constructor for CondensedViewToolBar.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 * @param viewerPrefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public CondensedViewToolBar(final String text, final Prefix viewerPrefix) {
 		this.prefix = viewerPrefix;
 		// try {
@@ -231,6 +241,11 @@ public class CondensedViewToolBar extends JPanel {
 		this.displayHyperNodes(this.getRootList());
 	}
 
+	/**
+	 * <p>getRootList.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<GraphWrapper> getRootList() {
 		if (this.result[0] == null) {
 			// Level 0: put all objects ?o of (s, ?p, ?o) into one node, which
@@ -563,16 +578,32 @@ public class CondensedViewToolBar extends JPanel {
 		}
 	}
 
+	/**
+	 * <p>getOperatorGraphViewer.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.CondensedViewViewer} object.
+	 */
 	public CondensedViewViewer getOperatorGraphViewer() {
 		return this.condensedViewViewer;
 	}
 
+	/**
+	 * <p>setOperatorGraphViewer.</p>
+	 *
+	 * @param operatorGraphViewer a {@link lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.CondensedViewViewer} object.
+	 */
 	public void setOperatorGraphViewer(
 			final CondensedViewViewer operatorGraphViewer) {
 		this.condensedViewViewer = operatorGraphViewer;
 		this.drawNewCondensedView();
 	}
 
+	/**
+	 * <p>getVariable.</p>
+	 *
+	 * @param hypernode a {@link lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer.CondensedViewToolBar.HyperNode} object.
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Variable getVariable(final HyperNode hypernode) {
 		Variable var = this.variableMap.get(hypernode);
 		if (var == null) {

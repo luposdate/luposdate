@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -33,7 +37,6 @@ import java.util.SortedMap;
 
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.sorteddata.SortedMapOfCollections;
-
 public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Serializable, CV extends Collection<V>>
 		implements SortedMapOfCollections<K, V, CV>, Iterable<MapEntry<K, V>> {
 	private final DBMergeSortedBag<MapEntry<K, V>> bag;
@@ -49,6 +52,8 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	 *            The class object used to create the collections that are
 	 *            returned by this map. This should be the same collection class
 	 *            that this map is parametrisized with.
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedMapOfCollections(final Class<?> collectionClass,
 			final SortConfiguration sortConfiguration,
@@ -67,6 +72,8 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 	 *            that this map is parametrisized with.
 	 * @param comp
 	 *            The Comparator to use for sorting.
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedMapOfCollections(final Class<?> collectionClass,
 			final SortConfiguration sortConfiguration, final Comparator<? super K> comp,
@@ -98,6 +105,11 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		this.bag = bag;
 	}
 
+	/**
+	 * <p>createCollection.</p>
+	 *
+	 * @return a CV object.
+	 */
 	@SuppressWarnings("unchecked")
 	protected CV createCollection() {
 		try {
@@ -110,44 +122,52 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		return this.comp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		return this.bag.first().getKey();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, CV> headMap(final K toKey) {
 		return new DBMergeSortedMapOfCollections<K, V, CV>(this.bag
 				.headBag(new MapEntry<K, V>(toKey)));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		return this.bag.last().getKey();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, CV> subMap(final K fromKey, final K toKey) {
 		return new DBMergeSortedMapOfCollections<K, V, CV>(this.bag.subBag(
 				new MapEntry<K, V>(fromKey), new MapEntry<K, V>(toKey)));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, CV> tailMap(final K fromKey) {
 		return new DBMergeSortedMapOfCollections<K, V, CV>(this.bag
 				.tailBag(new MapEntry<K, V>(fromKey)));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.bag.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object key) {
 		for (final K k : this.keySet()) {
@@ -158,11 +178,13 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object value) {
 		return this.values().contains(value);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, CV>> entrySet() {
 		return new Set<Map.Entry<K, CV>>() {
@@ -302,6 +324,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public CV get(final Object key) {
 		for (final Map.Entry<K, CV> entry : this.entrySet()) {
@@ -312,11 +335,13 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return this.bag.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		return new Set<K>() {
@@ -429,6 +454,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public CV put(final K key, final CV values) {
 		// Do we want to remove the old values when inserting a new
@@ -441,6 +467,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final Map<? extends K, ? extends CV> t) {
 		// Do we want to remove the old values when inserting a new
@@ -454,6 +481,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public CV remove(final Object key) {
@@ -467,6 +495,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return res;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		if (this.size < 0) {
@@ -475,6 +504,7 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		return this.size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<CV> values() {
 		return new Collection<CV>() {
@@ -602,11 +632,13 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValueInCollections(final Object arg0) {
 		return this.bag.contains(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAllIntoCollections(final Map<? extends K, ? extends CV> arg0) {
 		for (final K key : arg0.keySet()) {
@@ -616,21 +648,25 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putToCollection(final K key, final V value) {
 		this.bag.add(new MapEntry<K, V>(key, value));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeFromCollection(final K key, final V value) {
 		return this.bag.remove(new MapEntry<K, V>(key, value));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int sizeOfElementsInCollections() {
 		return this.bag.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> valuesInCollections() {
 		return new Collection<V>() {
@@ -750,16 +786,21 @@ public class DBMergeSortedMapOfCollections<K extends Serializable, V extends Ser
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> valuesInCollectionsIterator() {
 		return this.valuesInCollections().iterator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<MapEntry<K, V>> iterator() {
 		return this.bag.iterator();
 	}
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 		if (this.bag != null) {
 			this.bag.release();

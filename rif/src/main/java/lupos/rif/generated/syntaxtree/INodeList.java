@@ -30,7 +30,10 @@ import lupos.rif.generated.visitor.IVoidArguVisitor;
 import lupos.rif.generated.visitor.IVoidVisitor;
 
 /**
- * The interface which {@link NodeList}, {@link NodeListOptional} and {@link NodeSequence} must implement.
+ * The interface which {@link lupos.rif.generated.syntaxtree.NodeList}, {@link lupos.rif.generated.syntaxtree.NodeListOptional} and {@link lupos.rif.generated.syntaxtree.NodeSequence} must implement.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface INodeList extends INode {
 
@@ -42,23 +45,29 @@ public interface INodeList extends INode {
   public void addNode(final INode n);
 
   /**
+   * <p>elementAt.</p>
+   *
    * @param i the element index
    * @return the element at the given index
    */
   public INode elementAt(int i);
 
   /**
+   * <p>elements.</p>
+   *
    * @return the iterator on the node list
    */
   public java.util.Iterator<INode> elements();
 
   /**
+   * <p>size.</p>
+   *
    * @return the list size
    */
   public int size();
 
   /**
-   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetArguVisitor} visitor with user Return and Argument data.
    *
    * @param <R> the user Return type
    * @param <A> the user Argument type
@@ -69,7 +78,7 @@ public interface INodeList extends INode {
   public <R, A> R accept(final IRetArguVisitor<R, A> vis, final A argu);
 
   /**
-   * Accepts a {@link IRetVisitor} visitor with user Return data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetVisitor} visitor with user Return data.
    *
    * @param <R> the user Return type
    * @param vis the visitor
@@ -78,7 +87,7 @@ public interface INodeList extends INode {
   public <R> R accept(final IRetVisitor<R> vis);
 
   /**
-   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IVoidArguVisitor} visitor with user Argument data.
    *
    * @param <A> the user Argument type
    * @param vis the visitor
@@ -87,9 +96,9 @@ public interface INodeList extends INode {
   public <A> void accept(final IVoidArguVisitor<A> vis, final A argu);
 
   /**
-   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
    */
   public void accept(final IVoidVisitor vis);
 

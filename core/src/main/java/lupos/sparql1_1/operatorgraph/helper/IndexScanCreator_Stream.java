@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph.helper;
 
@@ -34,15 +38,18 @@ import lupos.engine.operators.stream.Stream;
 import lupos.engine.operators.tripleoperator.TriggerOneTime;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher;
-
 public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
 
 	protected PatternMatcher currentPatternMatcher = new PatternMatcher();
 	protected Stream stream = null;
 
+	/**
+	 * <p>Constructor for IndexScanCreator_Stream.</p>
+	 */
 	public IndexScanCreator_Stream(){
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator getRoot() {
 		if(this.stream != null) {
@@ -52,22 +59,43 @@ public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>stream</code>.</p>
+	 *
+	 * @param stream a {@link lupos.engine.operators.stream.Stream} object.
+	 */
 	public void setStream(final Stream stream){
 		this.stream = stream;
 	}
 
+	/**
+	 * <p>Getter for the field <code>stream</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.stream.Stream} object.
+	 */
 	public Stream getStream(){
 		return this.stream;
 	}
 
+	/**
+	 * <p>Getter for the field <code>currentPatternMatcher</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 */
 	public PatternMatcher getCurrentPatternMatcher() {
 		return this.currentPatternMatcher;
 	}
 
+	/**
+	 * <p>Setter for the field <code>currentPatternMatcher</code>.</p>
+	 *
+	 * @param currentPatternMatcher a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 */
 	public void setCurrentPatternMatcher(final PatternMatcher currentPatternMatcher) {
 		this.currentPatternMatcher = currentPatternMatcher;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator createIndexScanAndConnectWithRoot(final OperatorIDTuple opID, final Collection<TriplePattern> triplePatterns, final Item graphConstraint) {
 		if(triplePatterns.size()>1){
@@ -94,6 +122,7 @@ public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void createEmptyIndexScanSubmittingQueryResultWithOneEmptyBindingsAndConnectWithRoot(final OperatorIDTuple opID, final Item graphConstraint) {
 		if(graphConstraint!=null) {
@@ -106,6 +135,7 @@ public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void createEmptyIndexScanAndConnectWithRoot(final OperatorIDTuple opID) {
 		final TriggerOneTime trigger = new TriggerOneTime(false);
@@ -115,16 +145,19 @@ public class IndexScanCreator_Stream implements IndexScanCreatorInterface {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Dataset getDataset() {
 		throw new UnsupportedOperationException("This evaluator does not support index structures!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addDefaultGraph(final String defaultgraph) {
 		throw new UnsupportedOperationException("This evaluator does not support different default graphs!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addNamedGraph(final String namedgraph) {
 		throw new UnsupportedOperationException("This evaluator does not support named graphs!");

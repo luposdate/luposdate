@@ -72,6 +72,7 @@ import xpref.datatypes.IntegerDatatype;
  * on it.
  *
  * @author schleife
+ * @version $Id: $Id
  */
 public class OperatorGraph extends JPanel implements IXPref {
 	/**
@@ -140,6 +141,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 	public GraphBoxCreator graphBoxCreator = new StandardGraphBoxCreator();
 
+	/**
+	 * <p>Constructor for OperatorGraph.</p>
+	 */
 	protected OperatorGraph() {
 		try {
 			this.setLayout(null); // we don't want any LayoutManager
@@ -153,11 +157,12 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
-	/**
-	 * Sets a new root list of GraphWrapper objects to be displayed...
-	 * (Root elements are top elements of graphs, if they are in a cycle, one of them must be the root element.)
-	 * @param newRootList the new root list
-	 */
+    /**
+     * Sets a new root list of GraphWrapper objects to be displayed...
+     * (Root elements are top elements of graphs, if they are in a cycle, one of them must be the root element.)
+     *
+     * @param newRootList the new root list
+     */
     public void setRootList(final LinkedList<GraphWrapper> newRootList) {
         this.rootList = newRootList;
     }
@@ -168,8 +173,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *
 	 * @param root
 	 *            the root element
-	 *
 	 * @return the JPanel with the QueryGraph on it
+	 * @param arrange a {@link lupos.gui.operatorgraph.arrange.Arrange} object.
 	 */
 	public JPanel createGraph(final GraphWrapper root, final Arrange arrange) {
 		// create rootList for the one root operator...
@@ -185,8 +190,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *
 	 * @param newRootList
 	 *            the List of root elements
-	 *
 	 * @return the JPanel with the QueryGraph on it
+	 * @param arrange a {@link lupos.gui.operatorgraph.arrange.Arrange} object.
 	 */
 	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
 			final Arrange arrange) {
@@ -200,8 +205,10 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *
 	 * @param newRootList
 	 *            the List of root elements
-	 *
 	 * @return the JPanel with the QueryGraph on it
+	 * @param arrange a {@link lupos.gui.operatorgraph.arrange.Arrange} object.
+	 * @param factor a double.
+	 * @param oldBoxes a {@link java.util.Map} object.
 	 */
 	public JPanel createGraph(final LinkedList<GraphWrapper> newRootList,
 			final Arrange arrange, final double factor, final Map<GraphWrapper, GraphBox> oldBoxes) {
@@ -244,6 +251,14 @@ public class OperatorGraph extends JPanel implements IXPref {
 		return this;
 	}
 
+	/**
+	 * <p>rotate.</p>
+	 *
+	 * @param degree a int.
+	 * @param newRootList a {@link java.util.LinkedList} object.
+	 * @param oldBoxes a {@link java.util.Map} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	public JPanel rotate(final int degree, final LinkedList<GraphWrapper> newRootList, final Map<GraphWrapper, GraphBox> oldBoxes){
 		if(degree==0){
 			return this;
@@ -284,11 +299,22 @@ public class OperatorGraph extends JPanel implements IXPref {
 		return this;
 	}
 
+	/**
+	 * <p>createInternalNewGraph.</p>
+	 *
+	 * @param arrange a {@link lupos.gui.operatorgraph.arrange.Arrange} object.
+	 */
 	protected void createInternalNewGraph(final Arrange arrange) {
 		this.createGraph(new LinkedList<GraphWrapper>(), arrange);
 		// create the QueryGraph and return it
 	}
 
+	/**
+	 * <p>getMax.</p>
+	 *
+	 * @param X a boolean.
+	 * @return a int.
+	 */
 	public int getMax(final boolean X) {
 		int max = 0;
 		for (final Map.Entry<GraphWrapper, GraphBox> entry : this.boxes
@@ -303,6 +329,12 @@ public class OperatorGraph extends JPanel implements IXPref {
 		return max;
 	}
 
+	/**
+	 * <p>addNewBoxes.</p>
+	 *
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @param op a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void addNewBoxes(final HashSet<GraphWrapper> visited,
 			final GraphWrapper op) {
 		if (visited.contains(op)) { // if current operator was visited before...
@@ -321,6 +353,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>addNewBoxes.</p>
+	 */
 	public void addNewBoxes() {
 		final HashSet<GraphWrapper> visited = new HashSet<GraphWrapper>();
 		for (final GraphWrapper op : this.rootList) {
@@ -328,6 +363,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param arrange a {@link lupos.gui.operatorgraph.arrange.Arrange} object.
+	 */
 	public synchronized void arrange(final Arrange arrange) {
 
 		this.addNewBoxes();
@@ -352,6 +392,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 	}
 
 
+	/**
+	 * <p>serializeGraph.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String serializeGraph() {
 		final StringBuffer ret = new StringBuffer();
 
@@ -368,6 +413,9 @@ public class OperatorGraph extends JPanel implements IXPref {
 
 
 
+	/**
+	 * <p>clearAll.</p>
+	 */
 	public void clearAll() {
 		this.removeAll();
 		this.rootList.clear();
@@ -378,6 +426,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.createInternalNewGraph(Arrange.values()[0]);
 	}
 
+	/**
+	 * <p>hasElements.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean hasElements() {
 		return !this.boxes.isEmpty();
 	}
@@ -391,10 +444,20 @@ public class OperatorGraph extends JPanel implements IXPref {
 		return this.boxes;
 	}
 
+	/**
+	 * <p>removeFromRootList.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void removeFromRootList(final GraphWrapper gw) {
 		this.rootList.remove(gw);
 	}
 
+	/**
+	 * <p>addToRootList.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void addToRootList(final GraphWrapper gw) {
 		if(!this.rootList.contains(gw)){
 			this.rootList.add(gw);
@@ -402,6 +465,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This overrides the paintComponent() method from JComponent to add redraw
 	 * features for the GraphBox elements in the GraphRows that need the
 	 * Graphics2D component.
@@ -442,6 +507,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * lock the paint call, such that no comment panels are added or removed
 	 * during painting the child components...
 	 */
@@ -455,6 +522,13 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>annotationWasProcessed.</p>
+	 *
+	 * @param from a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param to a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @return a boolean.
+	 */
 	public boolean annotationWasProcessed(final GraphWrapper from,
 			final GraphWrapper to) {
 		if (!this.drawnLineAnnotations.containsKey(from)) {
@@ -468,6 +542,12 @@ public class OperatorGraph extends JPanel implements IXPref {
 		return true;
 	}
 
+	/**
+	 * <p>addProcessedAnnotation.</p>
+	 *
+	 * @param from a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param to a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	public void addProcessedAnnotation(final GraphWrapper from,
 			final GraphWrapper to) {
 		if (!this.drawnLineAnnotations.containsKey(from)) {
@@ -479,6 +559,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>getMaxY.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getMaxY() {
 		int y = 0;
 		for (final Map.Entry<GraphWrapper, GraphBox> entry : this.boxes
@@ -544,9 +629,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *
 	 * @param zFactor
 	 *            the new zoom factor
-	 *
-	 * @return true, if the zoom factor was different then the previous, false
-	 *         otherwise
+	 * @return a boolean.
 	 */
 	public boolean updateZoomFactor(final double zFactor) {
 		// disable zoom to 0%...
@@ -593,22 +676,47 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.FONT = new Font(this.FONT.getFontName(), this.FONT.getStyle(), (int) Math.ceil(this.FONTSIZE));
 	}
 
+	/**
+	 * <p>getSPACING_X.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getSPACING_X() {
 		return this.SPACING_X;
 	}
 
+	/**
+	 * <p>getSPACING_Y.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getSPACING_Y() {
 		return this.SPACING_Y;
 	}
 
+	/**
+	 * <p>getFONT.</p>
+	 *
+	 * @return a {@link java.awt.Font} object.
+	 */
 	public Font getFONT() {
 		return this.FONT;
 	}
 
+	/**
+	 * <p>getFONTSize.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getFONTSize() {
 		return this.FONTSIZE;
 	}
 
+	/**
+	 * <p>Getter for the field <code>zoomFactor</code>.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getZoomFactor() {
 		return this.zoomFactor;
 	}
@@ -618,7 +726,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *
 	 * @param clone
 	 *            true if the list should be cloned (needed for zoom update).
-	 *
 	 * @return list of root GraphWrapper elements
 	 */
 	@SuppressWarnings("unchecked")
@@ -631,6 +738,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>addChildComponent.</p>
+	 *
+	 * @param child a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public void addChildComponent(final OperatorGraph child) {
 		this.childComponents.add(child);
 
@@ -638,6 +750,11 @@ public class OperatorGraph extends JPanel implements IXPref {
 		child.setZoomFactors(this.zoomFactor);
 	}
 
+	/**
+	 * <p>setLineColorStatus.</p>
+	 *
+	 * @param newStatus a boolean.
+	 */
 	public void setLineColorStatus(final boolean newStatus) {
 		this.useLineColors = newStatus;
 
@@ -646,10 +763,16 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>useLineColors.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean useLineColors() {
 		return this.useLineColors;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void preferencesChanged() {
 		try {
@@ -689,6 +812,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	/**
 	 * Internal method to create the graph from the given start node and wrap it
 	 * in a JScrollPane.
+	 *
+	 * @param mainPanel a {@link javax.swing.JPanel} object.
 	 */
 	public void updateMainPanel(final JPanel mainPanel) {
 		final JComponent containingMainPanel = (JComponent) mainPanel.getParent().getParent().getParent();
@@ -721,6 +846,12 @@ public class OperatorGraph extends JPanel implements IXPref {
 		this.updateSize();
 	}
 
+	/**
+	 * <p>getPositionAndDimension.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	public Tuple<Point, Dimension> getPositionAndDimension(final GraphWrapper gw) {
 		if (this.boxes.containsKey(gw)) {
 			final AbstractSuperGuiComponent panel = this.boxes.get(gw)
@@ -819,7 +950,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 *
 	 * @param filename
 	 *            filename to save the file to
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void saveGraph(String filename) throws IOException {
 		// add file extension, if necessary...
@@ -862,10 +993,20 @@ public class OperatorGraph extends JPanel implements IXPref {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>drawnLineAnnotations</code>.</p>
+	 *
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public Hashtable<GraphWrapper, LinkedList<GraphWrapper>> getDrawnLineAnnotations() {
 		return this.drawnLineAnnotations;
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return this.boxes.size() == 0;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.debug;
 
@@ -53,7 +57,6 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.gui.operatorgraph.util.VEImageIcon;
 import lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix;
 import lupos.misc.Tuple;
-
 public class CommentLabelElement extends AbstractCommentPanel {
 	private static final long serialVersionUID = -4304918759737643079L;
 
@@ -192,6 +195,10 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	 *            the operatorgraph
 	 * @param fromBasicOperator
 	 *            The operator to which this CommentLabelElement is attached to
+	 * @param toBasicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param data a {@link java.util.Vector} object.
+	 * @param columnNames a {@link java.util.Vector} object.
+	 * @param stepDelete a boolean.
 	 */
 	public CommentLabelElement(final OperatorGraph operatorGraph,
 			final BasicOperator fromBasicOperator,
@@ -242,6 +249,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.finalizeComponent();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void finalizeComponent() {
 		this.setBackground(new Color(0, 0, 0, 0));
@@ -251,6 +259,14 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		// operatorgraph
 	}
 
+	/**
+	 * <p>Constructor for CommentLabelElement.</p>
+	 *
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix} object.
+	 * @param lastCommentLabelElement a {@link lupos.gui.debug.CommentLabelElement} object.
+	 * @param result a {@link lupos.engine.operators.singleinput.Result} object.
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public CommentLabelElement(final OperatorGraphWithPrefix operatorGraph,
 			final CommentLabelElement lastCommentLabelElement,
 			final Result result, final String content) {
@@ -280,6 +296,15 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.finalizeComponent(lastCommentLabelElement);
 	}
 
+	/**
+	 * <p>Constructor for CommentLabelElement.</p>
+	 *
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix} object.
+	 * @param lastCommentLabelElement a {@link lupos.gui.debug.CommentLabelElement} object.
+	 * @param result a {@link lupos.engine.operators.singleinput.Result} object.
+	 * @param data a {@link java.util.Vector} object.
+	 * @param columnNames a {@link java.util.Vector} object.
+	 */
 	public CommentLabelElement(final OperatorGraphWithPrefix operatorGraph,
 			final CommentLabelElement lastCommentLabelElement,
 			final Result result, final Vector<Vector<String>> data,
@@ -318,6 +343,14 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.finalizeComponent(lastCommentLabelElement);
 	}
 
+	/**
+	 * <p>Constructor for CommentLabelElement.</p>
+	 *
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix} object.
+	 * @param lastCommentLabelElement a {@link lupos.gui.debug.CommentLabelElement} object.
+	 * @param result a {@link lupos.engine.operators.singleinput.Result} object.
+	 * @param resultPanel a {@link javax.swing.JPanel} object.
+	 */
 	public CommentLabelElement(final OperatorGraphWithPrefix operatorGraph,
 			final CommentLabelElement lastCommentLabelElement,
 			final Result result, final JPanel resultPanel) {
@@ -373,6 +406,14 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		return gbc;
 	}
 
+	/**
+	 * <p>getTable.</p>
+	 *
+	 * @param data a {@link java.util.Vector} object.
+	 * @param columnNames a {@link java.util.Vector} object.
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link javax.swing.JTable} object.
+	 */
 	public static JTable getTable(final Vector data,
 			final Vector<String> columnNames, final OperatorGraph operatorGraph) {
 		final JTable table = new JTable(data, columnNames);
@@ -387,14 +428,30 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		return table;
 	}
 
+	/**
+	 * <p>Getter for the field <code>animationSpeedMode</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.debug.CommentLabelElement.AnimationSpeedMode} object.
+	 */
 	public static AnimationSpeedMode getAnimationSpeedMode() {
 		return animationSpeedMode;
 	}
 
+	/**
+	 * <p>Setter for the field <code>animationSpeedMode</code>.</p>
+	 *
+	 * @param animationSpeedMode a {@link lupos.gui.debug.CommentLabelElement.AnimationSpeedMode} object.
+	 */
 	public static void setAnimationSpeedMode(final AnimationSpeedMode animationSpeedMode) {
 		CommentLabelElement.animationSpeedMode = animationSpeedMode;
 	}
 
+	/**
+	 * <p>updateTable.</p>
+	 *
+	 * @param table a {@link javax.swing.JTable} object.
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public static void updateTable(final JTable table,
 			final OperatorGraph operatorGraph) {
 		table.setFont(operatorGraph.getFONT());
@@ -456,6 +513,8 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This function is called, when the operator graph was zoomed.
 	 */
 	@Override
@@ -546,28 +605,50 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	/**
 	 * getter for animationgraph
 	 *
+	 * @return a {@link java.lang.Thread} object.
 	 */
 	public Thread getAnimationthread() {
 		return this.animationthread;
 	}
 
+	/**
+	 * <p>Getter for the field <code>pause</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static synchronized int getPause() {
 		return pause;
 	}
 
+	/**
+	 * <p>Setter for the field <code>pause</code>.</p>
+	 *
+	 * @param pause a int.
+	 */
 	public static synchronized void setPause(final int pause) {
 		CommentLabelElement.pause = pause;
 	}
 
+	/**
+	 * <p>Getter for the field <code>percentageSteps</code>.</p>
+	 *
+	 * @return a double.
+	 */
 	public static synchronized double getPercentageSteps() {
 		return percentageSteps;
 	}
 
+	/**
+	 * <p>Setter for the field <code>percentageSteps</code>.</p>
+	 *
+	 * @param percentageSteps a double.
+	 */
 	public static synchronized void setPercentageSteps(
 			final double percentageSteps) {
 		CommentLabelElement.percentageSteps = percentageSteps;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void paintComponent(final Graphics g) {
 		super.paintComponent(g);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.parsing;
 
@@ -36,7 +40,6 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class Scout implements IRuleVisitor<Object, Object>{
 
 	final static int DOCUMENT = 0;
@@ -51,66 +54,77 @@ public class Scout implements IRuleVisitor<Object, Object>{
 	final static int RULEVARIABLE = 9;
 	final static int CONSTANT = 10;
 	
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Document obj, Object arg) throws RIFException {
 		
 		return  DOCUMENT;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Rule obj, Object arg) throws RIFException {
 		
 		return RULE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(ExistExpression obj, Object arg) throws RIFException {
 
 		return EXISTEXPRESSION;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Conjunction obj, Object arg) throws RIFException {
 		
 		return CONJUNCTION;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Disjunction obj, Object arg) throws RIFException {
 		
 		return DISJUNCTION;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(RulePredicate obj, Object arg) throws RIFException {
 
 		return RULEPREDICATE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Equality obj, Object arg) throws RIFException {
 
 		return EQUALITY;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(External obj, Object arg) throws RIFException {
 
 		return EXTERNAL;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(RuleList obj, Object arg) throws RIFException {
 
 		return RULELIST;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(RuleVariable obj, Object arg) throws RIFException {
 
 		return RULEVARIABLE;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Constant obj, Object arg) throws RIFException {
 

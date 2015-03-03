@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -39,15 +43,18 @@ import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
 import lupos.misc.debug.DebugStep;
-
 public class HashJoin extends Join {
 
 	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
 																	new ParallelIteratorMultipleQueryResults()};
 
+	/**
+	 * <p>init.</p>
+	 */
 	public void init() { // add init code here
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -55,6 +62,7 @@ public class HashJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized OptionalResult processJoin(final QueryResult queryResult,
 			final int operandID) {
@@ -62,6 +70,7 @@ public class HashJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public OptionalResult joinBeforeEndOfStream() {
 		if (!this.operands[0].isEmpty()) {
@@ -78,6 +87,7 @@ public class HashJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
@@ -96,6 +106,13 @@ public class HashJoin extends Join {
 		return msg;
 	}
 
+	/**
+	 * <p>join.</p>
+	 *
+	 * @param left a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param right a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult join(final QueryResult left, final QueryResult right) {
 		final QueryResult smaller;
 		final QueryResult larger;
@@ -127,6 +144,14 @@ public class HashJoin extends Join {
 		}
 	}
 
+	/**
+	 * <p>buildPartitionsOfSmallerBag.</p>
+	 *
+	 * @param smaller a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param hashFunctions a {@link java.util.List} object.
+	 * @param position a int.
+	 * @return a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 */
 	protected NodeInPartitionTree buildPartitionsOfSmallerBag(
 			final QueryResult smaller, final List<HashFunction> hashFunctions,
 			final int position) {
@@ -174,6 +199,15 @@ public class HashJoin extends Join {
 		return innerNode;
 	}
 
+	/**
+	 * <p>buildPartitionsOfLargerBag.</p>
+	 *
+	 * @param larger a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param rootSmaller a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @param hashFunctions a {@link java.util.List} object.
+	 * @param position a int.
+	 * @return a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 */
 	protected NodeInPartitionTree buildPartitionsOfLargerBag(
 			final QueryResult larger, final NodeInPartitionTree rootSmaller,
 			final List<HashFunction> hashFunctions, final int position) {
@@ -211,6 +245,13 @@ public class HashJoin extends Join {
 		return innerNode;
 	}
 
+	/**
+	 * <p>probe.</p>
+	 *
+	 * @param rootSmaller a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @param rootLarger a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @param result a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	protected void probe(final NodeInPartitionTree rootSmaller,
 			final NodeInPartitionTree rootLarger, final QueryResult result) {
 		if (rootSmaller instanceof LeafNodeInPartitionTree) {
@@ -249,6 +290,14 @@ public class HashJoin extends Join {
 		}
 	}
 
+	/**
+	 * <p>probeOptional.</p>
+	 *
+	 * @param rootSmaller a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @param rootLarger a {@link lupos.engine.operators.multiinput.join.NodeInPartitionTree} object.
+	 * @param smallerIsLeftOperand a boolean.
+	 * @param or a {@link lupos.engine.operators.multiinput.optional.OptionalResult} object.
+	 */
 	protected void probeOptional(final NodeInPartitionTree rootSmaller,
 			final NodeInPartitionTree rootLarger,
 			final boolean smallerIsLeftOperand, final OptionalResult or) {
@@ -325,23 +374,27 @@ public class HashJoin extends Join {
 		return or;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		this.operands[operandID].removeAll(queryResult);
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		this.operands[operandID].release();
 		this.operands[operandID]= new ParallelIteratorMultipleQueryResults();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

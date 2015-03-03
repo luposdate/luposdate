@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributedendpoints.storage.util;
 
@@ -38,7 +42,6 @@ import lupos.endpoint.client.Client;
 import lupos.engine.operators.multiinput.join.parallel.ResultCollector;
 import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
-
 public class EndpointManagement {
 
 	/**
@@ -70,6 +73,7 @@ public class EndpointManagement {
 
 	/**
 	 * Returns the number of registered endpoints
+	 *
 	 * @return the number of registered endpoints
 	 */
 	public int numberOfEndpoints(){
@@ -78,7 +82,9 @@ public class EndpointManagement {
 
 	/**
 	 * submits a SPARUL query to all registered SPARQL endpoints
+	 *
 	 * @param query the query to be submitted
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public void submitSPARULQuery(final String query, final BindingsFactory bindingsFactory){
 		for(int i=0; i<this.urlsOfEndpoints.length; i++){
@@ -88,7 +94,9 @@ public class EndpointManagement {
 
 	/**
 	 * submits asynchronously a SPARUL query to an arbitrary of the registered SPARQL endpoints
+	 *
 	 * @param query the query to be submitted
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public void submitSPARULQueryToArbitraryEndpoint(final String query, final BindingsFactory bindingsFactory){
 		// choose randomly one endpoint to which the sparul request is submitted to
@@ -97,8 +105,10 @@ public class EndpointManagement {
 
 	/**
 	 * submits asynchronously a SPARUL query to a specific registered SPARQL endpoint
+	 *
 	 * @param query the query to be submitted
 	 * @param number the number of the endpoint to which the query is sent to
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public void submitSPARULQuery(final String query, final int number, final BindingsFactory bindingsFactory){
 		this.submitSPARULQuery(query, this.urlsOfEndpoints[number], bindingsFactory);
@@ -106,8 +116,10 @@ public class EndpointManagement {
 
 	/**
 	 * submits asynchronously a SPARUL query to a specific registered SPARQL endpoint
+	 *
 	 * @param query the query to be submitted
 	 * @param key the key container containing the number of the endpoint to which the query is sent to
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public void submitSPARULQuery(final String query, final KeyContainer<Integer> key, final BindingsFactory bindingsFactory){
 		this.submitSPARULQuery(query, EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key), bindingsFactory);
@@ -116,8 +128,10 @@ public class EndpointManagement {
 
 	/**
 	 * submits asynchronously a SPARUL query to a specific SPARQL endpoint
+	 *
 	 * @param query the query to be submitted
 	 * @param url the url of the endpoint to which the query is sent to
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	protected void submitSPARULQuery(final String query, final String url, final BindingsFactory bindingsFactory){
 		final Thread thread = new Thread(){
@@ -152,9 +166,11 @@ public class EndpointManagement {
 
 	/**
 	 * submits a SPARQL query to a specific registered SPARQL endpoint
+	 *
 	 * @param query the given query to be submitted
 	 * @param number the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted query
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public QueryResult submitSPARQLQuery(final String query, final int number, final BindingsFactory bindingsFactory){
 		final String url = this.urlsOfEndpoints[number];
@@ -169,9 +185,11 @@ public class EndpointManagement {
 
 	/**
 	 * submits a SPARQL query to a specific registered SPARQL endpoint
+	 *
 	 * @param query the given query to be submitted
 	 * @param key the key container containing the the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted query
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public QueryResult submitSPARQLQuery(final String query, final KeyContainer<Integer> key, final BindingsFactory bindingsFactory){
 		final String url = EndpointManagement.addContext(this.urlsOfEndpoints[key.key], key);
@@ -186,9 +204,11 @@ public class EndpointManagement {
 
 	/**
 	 * submits a subgraph to a specific registered SPARQL endpoint
+	 *
 	 * @param subgraph the given subgraph to be submitted
 	 * @param key the key container containing the the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted subgraph
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public QueryResult submitSubgraphQuery(final String subgraph, final KeyContainer<Integer> key, final BindingsFactory bindingsFactory){
 		final String url = EndpointManagement.addContext(EndpointManagement.addContext(this.urlsOfEndpoints[key.key], "subgraph/"), key);
@@ -203,6 +223,7 @@ public class EndpointManagement {
 
 	/**
 	 * submits a histogram request to a specific registered SPARQL endpoint
+	 *
 	 * @param histogram the given subgraph to be submitted
 	 * @param key the key container containing the the number of the endpoint to which the query is sent to
 	 * @return the query result of the submitted subgraph
@@ -235,7 +256,7 @@ public class EndpointManagement {
 	 *
 	 * @param in the input stream from which the string is read
 	 * @return the string
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public static String getStringFromInputStream(final InputStream in) throws IOException {
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -252,8 +273,10 @@ public class EndpointManagement {
 
 	/**
 	 * submits a query parallel to all registered endpoints
+	 *
 	 * @param query the query to be submitted
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public QueryResult submitSPARQLQuery(final String query, final BindingsFactory bindingsFactory){
 		return EndpointManagement.submitSPARQLQuery(query, this.urlsOfEndpoints, bindingsFactory);
@@ -261,9 +284,11 @@ public class EndpointManagement {
 
 	/**
 	 * submits a query parallel to all given endpoints
+	 *
 	 * @param query the query to be submitted
 	 * @param urlsOfEndpoints the urls of the endpoints to which the query will be submitted
 	 * @return the query result containing the result of all given endpoints (collected in an asynchronous way)
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	protected static QueryResult submitSPARQLQuery(final String query, final String[] urlsOfEndpoints, final BindingsFactory bindingsFactory){
 		final ResultCollector resultCollector = new ResultCollector();
@@ -352,9 +377,11 @@ public class EndpointManagement {
 
 	/**
 	 * submits a query parallel to all registered endpoints (according to one key type to avoid duplicates)
+	 *
 	 * @param query the query to be submitted
 	 * @param keyType the key type to be used
 	 * @return the query result containing the result of all endpoints (collected in an asynchronous way)
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
 	 */
 	public QueryResult submitSPARQLQueryWithKeyType(final String query, final String keyType, final BindingsFactory bindingsFactory){
 		final String[] urls = new String[this.urlsOfEndpoints.length];

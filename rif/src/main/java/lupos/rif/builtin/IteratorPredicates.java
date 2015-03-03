@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -28,9 +32,14 @@ import java.util.Iterator;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.misc.util.ImmutableIterator;
-
 public class IteratorPredicates {
 
+	/**
+	 * <p>numeric_less_than.</p>
+	 *
+	 * @param start a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-less-than")
 	public static Iterator<Literal> numeric_less_than(final Literal start) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
@@ -49,6 +58,12 @@ public class IteratorPredicates {
 		};
 	}
 
+	/**
+	 * <p>numeric_less_than_or_equal.</p>
+	 *
+	 * @param start a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-less-than-or-equal")
 	public static Iterator<Literal> numeric_less_than_or_equal(
 			final Literal start) {
@@ -68,6 +83,12 @@ public class IteratorPredicates {
 		};
 	}
 
+	/**
+	 * <p>numeric_greater_than.</p>
+	 *
+	 * @param start a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-greater-than")
 	public static Iterator<Literal> numeric_greater_than(final Literal start) {
 		final int startValue = BuiltinHelper.getInteger((TypedLiteral) start);
@@ -86,6 +107,12 @@ public class IteratorPredicates {
 		};
 	}
 
+	/**
+	 * <p>numeric_greater_than_or_equal.</p>
+	 *
+	 * @param start a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-greater-than-or-equal")
 	public static Iterator<Literal> numeric_greater_than_or_equal(
 			final Literal start) {
@@ -105,6 +132,13 @@ public class IteratorPredicates {
 		};
 	}
 
+	/**
+	 * <p>numeric_between.</p>
+	 *
+	 * @param start a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param stop a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-between")
 	public static Iterator<Literal> numeric_between(final Literal start,
 			final Literal stop) {
@@ -128,6 +162,13 @@ public class IteratorPredicates {
 		};
 	}
 
+	/**
+	 * <p>numeric_between_enclosing.</p>
+	 *
+	 * @param start a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param stop a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	@Builtin(Name = "http://www.w3.org/2007/rif-builtin-predicate#numeric-between-enclosing")
 	public static Iterator<Literal> numeric_between_enclosing(
 			final Literal start, final Literal stop) {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.pubsub;
 
@@ -28,7 +32,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
-
 public class Subscription implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -62,10 +65,21 @@ public class Subscription implements Serializable {
 		return " (" + computername + ") " + rn.nextLong();
 	}
 
+	/**
+	 * <p>Constructor for Subscription.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 */
 	public Subscription(final String query) {
 		this("NO_NAME", query);
 	}
 
+	/**
+	 * <p>Constructor for Subscription.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 */
 	public Subscription(final String name, final String query) {
 		this();
 		this.name = name;
@@ -82,19 +96,47 @@ public class Subscription implements Serializable {
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(final String name) { this.name = name; }
+	/**
+	 * <p>Setter for the field <code>query</code>.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 */
 	public void setQuery(final String query) { this.query = query; }
 
+	/**
+	 * <p>Getter for the field <code>query</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getQuery() { return this.query; }
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() { return this.name; }
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getId() { return this.id; }
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.name;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Checks for equality of this Subscription and another Subscription OR a String.
 	 * In case of obj being a String, it gets directly compared with the id of this Subscription instance.
 	 */
@@ -111,6 +153,7 @@ public class Subscription implements Serializable {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.id.hashCode();

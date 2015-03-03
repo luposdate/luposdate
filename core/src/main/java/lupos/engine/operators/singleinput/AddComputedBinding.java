@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -47,7 +51,6 @@ import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
 import lupos.sparql1_1.ASTAggregation;
 import lupos.sparql1_1.Node;
-
 public class AddComputedBinding extends SingleInputOperator {
 
 	/**
@@ -61,6 +64,12 @@ public class AddComputedBinding extends SingleInputOperator {
 
 	private BindingsFactory bindingsFactory = null;
 
+	/**
+	 * <p>addProjectionElement.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param constraint a {@link lupos.sparql1_1.Node} object.
+	 */
 	public void addProjectionElement(final Variable var, final Node constraint) {
 		final Filter filter = new Filter(constraint);
 		this.projections.put(var, filter);
@@ -69,6 +78,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		for (final Map.Entry<Variable, Filter> entry : this.projections.entrySet()) {
@@ -81,6 +91,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		boolean aggregationFunctions = false;
@@ -147,6 +158,12 @@ public class AddComputedBinding extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>getQueryResultForAggregatedFilter.</p>
+	 *
+	 * @param queryResultParameter a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	protected QueryResult getQueryResultForAggregatedFilter(QueryResult queryResultParameter) {
 		if(queryResultParameter==null){
 			queryResultParameter = QueryResult.createInstance();
@@ -228,6 +245,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		final QueryResult qr = this.getQueryResultForAggregatedFilter(this.queryResult);
@@ -242,6 +260,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg) {
 		this.bindingsFactory  = msg.getBindingsFactory();
@@ -249,6 +268,7 @@ public class AddComputedBinding extends SingleInputOperator {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.deleteAllAtSucceedingOperators();
@@ -256,6 +276,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResultToDelete, final int operandID) {
 		if (this.queryResult != null) {
@@ -264,6 +285,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return queryResultToDelete;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteQueryResult(final int operandID) {
 		if (this.queryResult != null) {
@@ -272,6 +294,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		this.queryResult = null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = super.toString();
@@ -286,6 +309,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return s;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		String s = super.toString();
@@ -301,15 +325,22 @@ public class AddComputedBinding extends SingleInputOperator {
 		return s;
 	}
 
+	/**
+	 * <p>Getter for the field <code>projections</code>.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, Filter> getProjections() {
 		return this.projections;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPipelineBreaker() {
 		return this.pipelineBreaker;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -319,6 +350,7 @@ public class AddComputedBinding extends SingleInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

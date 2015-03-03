@@ -40,10 +40,14 @@ import lupos.optimizations.logical.statistics.VarBucket;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
 
 /**
- * This class splits a huge star-shaped join or a path 
+ * This class splits a huge star-shaped join or a path
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SplitStarShapedJoinOrPath implements SplitHeuristic {
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<LeafNodePlan>> split(List<LeafNodePlan> initialPlans) {
 		// We split the plan at star-shaped joins!

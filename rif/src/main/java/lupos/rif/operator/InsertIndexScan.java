@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -33,13 +37,18 @@ import lupos.engine.operators.stream.TripleDeleter;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
-
 public abstract class InsertIndexScan extends BasicIndexScan implements TripleConsumer, TripleConsumerDebug, TripleDeleter {
 
+	/**
+	 * <p>Constructor for InsertIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public InsertIndexScan(final Root root) {
 		super(root);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
@@ -47,16 +56,19 @@ public abstract class InsertIndexScan extends BasicIndexScan implements TripleCo
 
 	private boolean firstTime = true;
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTriple(final Triple triple) {
 		// no triple to delete as fixed triples or facts are only submitted
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 		// no triple to delete as fixed triples or facts are only submitted
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		if(this.firstTime){
@@ -65,6 +77,7 @@ public abstract class InsertIndexScan extends BasicIndexScan implements TripleCo
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		if(this.firstTime){
@@ -73,11 +86,20 @@ public abstract class InsertIndexScan extends BasicIndexScan implements TripleCo
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean joinOrderToBeOptimized(){
 		return false;
 	}
 
+	/**
+	 * <p>consumeOnce.</p>
+	 */
 	protected abstract void consumeOnce();
+	/**
+	 * <p>consumeDebugOnce.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	protected abstract void consumeDebugOnce(final DebugStep debugstep);
 }

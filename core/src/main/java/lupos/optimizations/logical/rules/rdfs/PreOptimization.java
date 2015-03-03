@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -33,17 +37,25 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class PreOptimization {
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>Constructor for PreOptimization.</p>
+	 */
 	public PreOptimization() {
 
 	}
 
+	/**
+	 * <p>calculateGenerates.</p>
+	 *
+	 * @param rootOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Generate> calculateGenerates(
 			final BasicOperator rootOperator) {
 		final LinkedList<Generate> generates = new LinkedList<Generate>();
@@ -51,6 +63,11 @@ public class PreOptimization {
 		return generates;
 	}
 
+	/**
+	 * <p>connectGenPat.</p>
+	 *
+	 * @param rootOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public void connectGenPat(final BasicOperator rootOperator) {
 		final List<OperatorIDTuple> pats = rootOperator
 				.getSucceedingOperators();

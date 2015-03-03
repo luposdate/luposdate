@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.query.operator.histogramsubmission;
 
@@ -31,10 +35,25 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.statistics.VarBucket;
-
 public interface IHistogramExecutor {
 
+	/**
+	 * <p>getMinMax.</p>
+	 *
+	 * @param triplePattern a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param variables a {@link java.util.Collection} object.
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, Tuple<Literal, Literal>> getMinMax(TriplePattern triplePattern, Collection<Variable> variables);
 
+	/**
+	 * <p>getHistograms.</p>
+	 *
+	 * @param triplePattern a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param variables a {@link java.util.Collection} object.
+	 * @param minima a {@link java.util.Map} object.
+	 * @param maxima a {@link java.util.Map} object.
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, VarBucket> getHistograms(TriplePattern triplePattern, Collection<Variable> variables, Map<Variable, Literal> minima, Map<Variable, Literal> maxima);
 }

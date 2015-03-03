@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,19 +21,27 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
 
 import java.util.Comparator;
-
 public class TripleKeyComparator implements Comparator<TripleKey> {
 	
 	private final TripleComparator tripleComparator;
 	
+	/**
+	 * <p>Constructor for TripleKeyComparator.</p>
+	 *
+	 * @param tripleComparator a {@link lupos.datastructures.items.TripleComparator} object.
+	 */
 	public TripleKeyComparator(TripleComparator tripleComparator){
 		this.tripleComparator = tripleComparator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(TripleKey o1, TripleKey o2) {
 		return tripleComparator.compare(o1.getTriple(), o2.getTriple());

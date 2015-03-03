@@ -25,6 +25,9 @@ package lupos.event.producer.ebay;
 
 /**
  * Parser for durations based on the ISO 8601.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Duration {
 	
@@ -65,8 +68,6 @@ public class Duration {
 	
 	/**
 	 * Parses the given string and stores the retrieved values in the corresponding properties
-	 * 
-	 * @param	duration	Duration string that fulfills the syntax structure given by ISO 8601
 	 */
 	public Duration(String duration) {
 		int len = duration.length();
@@ -132,8 +133,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of years
-	 * 
-	 * @return	Number of years
+	 *
+	 * @return a int.
 	 */
 	public int getYears() {
 		return this.years;
@@ -141,8 +142,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of months
-	 * 
-	 * @return	Number of months
+	 *
+	 * @return a int.
 	 */
 	public int getMonths() {
 		return this.months;
@@ -150,8 +151,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of weeks
-	 * 
-	 * @return	Number of weeks
+	 *
+	 * @return a int.
 	 */
 	public int getWeeks() {
 		return this.weeks;
@@ -159,8 +160,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of days
-	 * 
-	 * @return	Number of days
+	 *
+	 * @return a int.
 	 */
 	public int getDays() {
 		return this.days;
@@ -168,8 +169,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of hours
-	 * 
-	 * @return	Number of hours
+	 *
+	 * @return a int.
 	 */
 	public int getHours() {
 		return this.hours;
@@ -177,8 +178,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of minutes
-	 * 
-	 * @return	Number of minutes
+	 *
+	 * @return a int.
 	 */
 	public int getMinutes() {
 		return this.minutes;
@@ -186,8 +187,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of seconds
-	 * 
-	 * @return	Number of seconds
+	 *
+	 * @return a int.
 	 */
 	public int getSeconds() {
 		return this.seconds;
@@ -195,9 +196,8 @@ public class Duration {
 
 	/**
 	 * Returns the number of seconds this duration totally longs.
-	 * 
-	 * @return	The total number of seconds this duration longs, or <strong>-1</strong>, if this
-	 * 			duration includes whole weeks, months or years
+	 *
+	 * @return a int.
 	 */
 	public int toTimestamp() {
 		int secs = -1;
@@ -211,8 +211,8 @@ public class Duration {
 	
 	/**
 	 * Returns the duration values concatinated to a legible string together with their units.
-	 * 
-	 * @return	The duration values concatinated to a legible string
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String toLegibleString() {
 		/* Weeks and years are ignored in this method because eBay does
@@ -226,6 +226,7 @@ public class Duration {
 				.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return toTimestamp() + "";

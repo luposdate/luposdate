@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
@@ -39,7 +43,6 @@ import lupos.misc.util.OperatorIDTuple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class UnitermOperator  extends AbstractTermOperator {
 
 	
@@ -48,6 +51,7 @@ public class UnitermOperator  extends AbstractTermOperator {
 	
 
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw,
 			VisualGraph<Operator> parent) {
@@ -58,6 +62,7 @@ public class UnitermOperator  extends AbstractTermOperator {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 	
@@ -152,6 +157,7 @@ public class UnitermOperator  extends AbstractTermOperator {
 	}
 
 	
+	/** {@inheritDoc} */
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		StringBuffer sb = new StringBuffer("");
 
@@ -263,6 +269,14 @@ public class UnitermOperator  extends AbstractTermOperator {
 
 
 	
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param operatorObject a {@link org.json.JSONObject} object.
+	 * @param unitermOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void fromJSON(JSONObject operatorObject, UnitermOperator unitermOperator,RuleGraph parent) throws JSONException {
 		
 		this.setVisualRifEditor(parent.getVisualRifEditor());

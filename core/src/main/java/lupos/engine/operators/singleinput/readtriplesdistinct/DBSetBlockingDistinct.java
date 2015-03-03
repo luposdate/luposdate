@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.readtriplesdistinct;
 
@@ -35,9 +39,13 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-
 public class DBSetBlockingDistinct extends BlockingDistinct {
 
+	/**
+	 * <p>Constructor for DBSetBlockingDistinct.</p>
+	 *
+	 * @throws java.rmi.RemoteException if any.
+	 */
 	public DBSetBlockingDistinct() throws RemoteException {
 		super(new DBMergeSortedSet<BindingsArrayReadTriples>(new SortConfiguration(),
 				new Comparator<BindingsArrayReadTriples>() {
@@ -67,6 +75,7 @@ public class DBSetBlockingDistinct extends BlockingDistinct {
 				}, BindingsArrayReadTriples.class));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected ParallelIterator<Bindings> getIterator() {
 		final Iterator<BindingsArrayReadTriples> itb = this.bindings.iterator();
@@ -95,6 +104,7 @@ public class DBSetBlockingDistinct extends BlockingDistinct {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" for read triples";

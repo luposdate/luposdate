@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.heap;
 
@@ -27,19 +31,30 @@ import java.util.Iterator;
 
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.misc.util.ImmutableIterator;
-
 public class ParallelHeap<E extends Comparable<E>> extends
 		OptimizedSequentialHeap<E> {
 
+	/** Constant <code>firstHeapHeight=2</code> */
 	protected static final int firstHeapHeight = 2;
 	protected int localFirstHeapHeight = firstHeapHeight;
 
+	/**
+	 * <p>Constructor for ParallelHeap.</p>
+	 *
+	 * @param height a int.
+	 */
 	public ParallelHeap(final int height) {
 		super(firstHeapHeight);
 		this.height = height;
 		this.initParallelHeaps();
 	}
 
+	/**
+	 * <p>Constructor for ParallelHeap.</p>
+	 *
+	 * @param height a int.
+	 * @param localFirstHeapHeight a int.
+	 */
 	public ParallelHeap(final int height, final int localFirstHeapHeight) {
 		super(localFirstHeapHeight);
 		this.localFirstHeapHeight = localFirstHeapHeight;
@@ -47,6 +62,12 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		this.initParallelHeaps();
 	}
 
+	/**
+	 * <p>Constructor for ParallelHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param size a int.
+	 */
 	public ParallelHeap(final Object[] content, final int size) {
 		super(content, size);
 		this.length = (content[0] == null && size > 0) ? size + 1 : size;
@@ -54,6 +75,13 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		this.determineHeight(this.maxLength());
 	}
 
+	/**
+	 * <p>Constructor for ParallelHeap.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 * @param size a int.
+	 * @param localFirstHeapHeight a int.
+	 */
 	public ParallelHeap(final Object[] content, final int size,
 			final int localFirstHeapHeight) {
 		super(content, size);
@@ -63,6 +91,12 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		this.determineHeight(this.maxLength());
 	}
 
+	/**
+	 * <p>Constructor for ParallelHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 */
 	public ParallelHeap(final int length_or_height, final boolean length) {
 		super(firstHeapHeight);
 		if (length) {
@@ -73,6 +107,13 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		this.initParallelHeaps();
 	}
 
+	/**
+	 * <p>Constructor for ParallelHeap.</p>
+	 *
+	 * @param length_or_height a int.
+	 * @param length a boolean.
+	 * @param localFirstHeapHeight a int.
+	 */
 	public ParallelHeap(final int length_or_height, final boolean length,
 			final int localFirstHeapHeight) {
 		super(localFirstHeapHeight);
@@ -85,6 +126,9 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		this.initParallelHeaps();
 	}
 
+	/**
+	 * <p>initParallelHeaps.</p>
+	 */
 	protected void initParallelHeaps() {
 		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			final InnerParallelHeap<E> ihe_new = new InnerParallelHeap<E>(
@@ -94,6 +138,11 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/**
+	 * <p>cloneParallelHeaps.</p>
+	 *
+	 * @param content an array of {@link java.lang.Object} objects.
+	 */
 	protected void cloneParallelHeaps(final Object[] content) {
 		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
 			final InnerParallelHeap<E> ihe = ((InnerParallelHeap<E>) content[i]);
@@ -107,6 +156,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		for (int i = (1 << this.localFirstHeapHeight) - 1; i < this.arr.length; i++) {
@@ -120,6 +170,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 	 *
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#maxLength()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int maxLength() {
 		int maxLength = (1 << this.localFirstHeapHeight) - 1;
@@ -129,6 +180,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		return maxLength;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		super.clear();
@@ -143,11 +195,13 @@ public class ParallelHeap<E extends Comparable<E>> extends
 	 *
 	 * @see lupos.datastructures.dbmergesortedds.HeapInterface#isFull()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isFull() {
 		return this.arr[0] != null && this.size() >= (1 << (this.height + 1)) - 1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean contains(final E ele, final int i) {
 		if (ele.equals(this.get(i))) {
@@ -183,6 +237,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void bubbleDown(int i) {
 		while (true) {
@@ -212,6 +267,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	protected E get(final int i) {
@@ -222,6 +278,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void addByUpdating(E elem) {
 		final int[] ia = this.getPathToFreeSpace();
@@ -244,6 +301,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		this.arr[this.length++] = elem;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final E elem) {
 		if (this.arr[0] == null) {
@@ -273,6 +331,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 
 	}
 
+	/** Constant <code>HEAPREPLACEMENTS=false</code> */
 	public static boolean HEAPREPLACEMENTS = false;
 
 	private class MakeEmptyRunner extends Thread {
@@ -326,6 +385,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 
 	private final static int MAXBUFFER = 100;
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> emptyDatastructure() {
 		if (this.length <= (1 << this.localFirstHeapHeight) - 1) {
@@ -398,6 +458,7 @@ public class ParallelHeap<E extends Comparable<E>> extends
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E pop() {
 		if (this.arr[0] == null) {

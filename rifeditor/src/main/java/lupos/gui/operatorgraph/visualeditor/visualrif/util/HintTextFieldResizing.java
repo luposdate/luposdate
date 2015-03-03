@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -30,7 +34,6 @@ import java.awt.event.FocusListener;
 
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
-
 public class HintTextFieldResizing extends JTextFieldResizing implements FocusListener {
 
 
@@ -39,6 +42,14 @@ public class HintTextFieldResizing extends JTextFieldResizing implements FocusLi
 	
 	
 	
+	/**
+	 * <p>Constructor for HintTextFieldResizing.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 * @param hint a {@link java.lang.String} object.
+	 * @param font a {@link java.awt.Font} object.
+	 * @param holder a {@link lupos.gui.operatorgraph.AbstractSuperGuiComponent} object.
+	 */
 	public HintTextFieldResizing(String text,String hint, Font font,
 			AbstractSuperGuiComponent holder) {
 		super(text, font, holder);
@@ -51,6 +62,7 @@ public class HintTextFieldResizing extends JTextFieldResizing implements FocusLi
 
 
 
+    /** {@inheritDoc} */
     @Override
     public void focusGained(FocusEvent e) {
         if(this.getText().isEmpty()) {
@@ -58,6 +70,7 @@ public class HintTextFieldResizing extends JTextFieldResizing implements FocusLi
             super.setText("");
         }
     }
+    /** {@inheritDoc} */
     @Override
     public void focusLost(FocusEvent e) {
         if(this.getText().isEmpty()) {
@@ -66,12 +79,14 @@ public class HintTextFieldResizing extends JTextFieldResizing implements FocusLi
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getText() {
         String typed = super.getText();
         return typed.equals(hint) ? "" : typed;
     }
 
+    /** {@inheritDoc} */
     public void setText(String text){
     	super.setText(text);
     }

@@ -24,7 +24,10 @@
 package lupos.optimizations.physical.joinorder.costbasedoptimizer.plan;
 
 /**
- * the type of join of an inner node in the plan 
+ * the type of join of an inner node in the plan
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public enum JoinType {
 	DEFAULT, MERGEJOIN

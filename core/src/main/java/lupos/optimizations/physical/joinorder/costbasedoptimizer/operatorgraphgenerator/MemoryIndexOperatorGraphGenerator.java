@@ -45,11 +45,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class generated an operator graph for the memory index query evaluator
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MemoryIndexOperatorGraphGenerator extends OperatorGraphGenerator {
 
 	private static final Logger log = LoggerFactory.getLogger(MemoryIndexOperatorGraphGenerator.class);
 
+	/** {@inheritDoc} */
 	@Override
 	protected BasicIndexScan getIndex(final LeafNodePlan plan,
 			final BasicIndexScan indexScan,
@@ -60,6 +64,7 @@ public class MemoryIndexOperatorGraphGenerator extends OperatorGraphGenerator {
 		return index1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected BasicOperator generateJoin(final InnerNodePlan inp, final Root root, final BasicOperator left, final BasicOperator right, final Collection<Variable> sortCriterium, final Map<TriplePattern, Map<Variable, VarBucket>> selectivity){
 		// left-deep-tree or right-deep-tree?

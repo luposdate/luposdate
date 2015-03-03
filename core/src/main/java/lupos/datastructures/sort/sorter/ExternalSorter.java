@@ -40,6 +40,9 @@ import lupos.datastructures.sort.run.trie.TrieBagRuns;
  * Finally all swapped runs are merged into one run...
  *
  * Runs can be trie sets, bags (using trie merge), or arrays (using normal merge or with duplicate elimination)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ExternalSorter implements Sorter {
 	private final int NUMBER_ELEMENTS_IN_INITIAL_RUNS;
@@ -47,15 +50,25 @@ public class ExternalSorter implements Sorter {
 	private final Runs runs;
 	private final static int NUMBER_OF_RUNS_IN_BUFFER_FOR_SWAPPING = 3;
 
+	/**
+	 * <p>Constructor for ExternalSorter.</p>
+	 *
+	 * @param runs a {@link lupos.datastructures.sort.run.Runs} object.
+	 * @param NUMBER_ELEMENTS_IN_INITIAL_RUNS a int.
+	 */
 	public ExternalSorter(final Runs runs, final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 		this.NUMBER_ELEMENTS_IN_INITIAL_RUNS = NUMBER_ELEMENTS_IN_INITIAL_RUNS;
 		this.runs = runs;
 	}
 
+	/**
+	 * <p>Constructor for ExternalSorter.</p>
+	 */
 	public ExternalSorter(){
 		this(new TrieBagRuns(), 1000);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run sort(final InputStream dataFiles, final String format) throws Exception {
 		final BoundedBuffer<String> buffer = new BoundedBuffer<String>();
@@ -114,11 +127,13 @@ public class ExternalSorter implements Sorter {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getNumberOfRunsOnDisk(){
 		return this.runsOnDisk.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String parametersToString(){
 		return "Run-/Merging-Strategy:" + this.runs + "\nNUMBER_ELEMENTS_IN_INITIAL_RUNS      :" + this.NUMBER_ELEMENTS_IN_INITIAL_RUNS;

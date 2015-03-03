@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -43,13 +47,13 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class SubstituteFunctionCallsVisitor implements
 		IRuleVisitor<IRuleNode, Object> {
 	private String aliasString = "ALIASVAR_";
 	private int aliasCtr = 0;
 	private IVariableScope currentVariableScope = null;
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(Document obj, Object arg) throws RIFException {
 		for (Rule rule : obj.getRules())
 			if (rule.isImplication())
@@ -57,6 +61,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(Conjunction obj, Object arg) throws RIFException {
 		// Conjunction koennen Rueckgabe sein, neu berechen
 		List<IExpression> exprs = new ArrayList<IExpression>(obj.exprs);
@@ -70,6 +75,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(Disjunction obj, Object arg) throws RIFException {
 		// Conjunction koennen Rueckgabe sein, neu berechen
 		List<IExpression> exprs = new ArrayList<IExpression>(obj.exprs);
@@ -83,6 +89,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(ExistExpression obj, Object arg) throws RIFException {
 		IVariableScope temp = currentVariableScope;
 		currentVariableScope = obj;
@@ -92,6 +99,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(Rule obj, Object arg) throws RIFException {
 		currentVariableScope = obj;
 		aliasCtr = 0;
@@ -130,6 +138,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(External obj, Object arg) throws RIFException {
 		final Conjunction conjunction = new Conjunction();
 		conjunction.setParent((IRuleNode) arg);
@@ -148,6 +157,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return conjunction;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(RulePredicate obj, Object arg) throws RIFException {
 		Conjunction conjunction = null;
 		// Funktionsaufrufe mit Variable ersetzen
@@ -172,6 +182,7 @@ public class SubstituteFunctionCallsVisitor implements
 		return conjunction == null ? obj : conjunction;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(RuleList obj, Object arg) throws RIFException {
 		Conjunction conjunction = null;
 		ArrayList<IExpression> items = new ArrayList<IExpression>(
@@ -195,14 +206,17 @@ public class SubstituteFunctionCallsVisitor implements
 		return conjunction != null ? conjunction : obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(Equality obj, Object arg) throws RIFException {
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(Constant obj, Object arg) throws RIFException {
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	public IRuleNode visit(RuleVariable obj, Object arg) throws RIFException {
 		return obj;
 	}

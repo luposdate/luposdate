@@ -34,18 +34,28 @@ import lupos.event.util.Literals;
 
 /**
  * Creates an event without additional properties every second.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EmptyProducer extends ProducerBase {
 
+	/** Constant <code>NAMESPACE="http://localhost/events/Empty/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/Empty/";
 	private static final int INTERVAL = 1000;	
 
 	private static final Literal TYPE = Literals.createURI(EmptyProducer.NAMESPACE, "EmptyEvent");
 	
+	/**
+	 * <p>Constructor for EmptyProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public EmptyProducer(SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produce() {
 		List<Triple> triples = new ArrayList<Triple>();
@@ -54,6 +64,12 @@ public class EmptyProducer extends ProducerBase {
 	}
 	
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

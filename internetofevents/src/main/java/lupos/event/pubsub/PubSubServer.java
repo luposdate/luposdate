@@ -31,6 +31,9 @@ import lupos.event.communication.*;
 
 /**
  * Server of the publish/subscribe-architecture.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PubSubServer extends Observable implements IMessageReceivedHandler<Serializable>, Observer {
 
@@ -39,6 +42,12 @@ public class PubSubServer extends Observable implements IMessageReceivedHandler<
 	private final SerializingMessageService msgService;
 	
 	
+	/**
+	 * <p>Constructor for PubSubServer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public PubSubServer(SerializingMessageService msgService) throws Exception {
 		this.subscriptions = new ArrayList<Subscription>();
 		this.subscriptionChangedHandlers = new SubscriptionChangedHandlerList();
@@ -47,14 +56,25 @@ public class PubSubServer extends Observable implements IMessageReceivedHandler<
 		this.msgService.addObserver(this);
 	}
 	
+	/**
+	 * <p>Getter for the field <code>subscriptions</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Subscription> getSubscriptions() {
 		return this.subscriptions;
 	}
 	
+	/**
+	 * <p>getMessageService.</p>
+	 *
+	 * @return a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public SerializingMessageService getMessageService() {
 		return this.msgService;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void messageReceived(Object src, Serializable msg) {
 		if(msg instanceof Subscription)
@@ -73,16 +93,27 @@ public class PubSubServer extends Observable implements IMessageReceivedHandler<
 		}
 	}
 
+	/**
+	 * <p>addHandler.</p>
+	 *
+	 * @param handler a {@link lupos.event.pubsub.ISubscriptionChangedHandler} object.
+	 */
 	public void addHandler(ISubscriptionChangedHandler handler) {
 		this.subscriptionChangedHandlers.add(handler);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void update(Observable o, Object obj) {
 		this.setChanged();
 		this.notifyObservers();
 	}
 
+	/**
+	 * <p>isConnected.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isConnected() {
 		return this.msgService.isConnected();
 	}

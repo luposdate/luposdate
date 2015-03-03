@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -33,14 +37,20 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.BitVector;
-
 public class SIPFilterOperator extends SingleInputOperator {
 
 	protected final Collection<TriplePattern> ctp;
 	protected final Collection<Variable> vars;
 	protected final Collection<BitVector> bloomFilters;
+	/** Constant <code>NUMBEROFBITSFORBLOOMFILTER=1024 * 8</code> */
 	public static int NUMBEROFBITSFORBLOOMFILTER = 1024 * 8;
 
+	/**
+	 * <p>Constructor for SIPFilterOperator.</p>
+	 *
+	 * @param ctp a {@link java.util.Collection} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 */
 	public SIPFilterOperator(final Collection<TriplePattern> ctp,
 			final Collection<Variable> vars) {
 		super();
@@ -58,6 +68,7 @@ public class SIPFilterOperator extends SingleInputOperator {
 			bloomFilters.add(new BitVector(NUMBEROFBITSFORBLOOMFILTER));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult res,
 			final int operandID) {
@@ -108,12 +119,14 @@ public class SIPFilterOperator extends SingleInputOperator {
 		return res;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + "\nBloom Filters on " + vars
 				+ "\ninforming triple patterns " + ctp;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		String s = super.toString() + "\nBloom Filters on " + vars

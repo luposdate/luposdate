@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -38,7 +42,6 @@ import java.util.Iterator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
-
 public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 
 	protected final DBMergeSortedBag<E> dbmergesortedbag;
@@ -50,17 +53,36 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	protected File file;
 	private LuposObjectOutputStream os;
 
+	/** Constant <code>STORAGELIMIT=1000000000</code> */
 	public static final int STORAGELIMIT = 1000000000; // 1 GByte
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param dbmergesortedbag a {@link lupos.datastructures.dbmergesortedds.DBMergeSortedBag} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Run} object.
+	 */
 	public static Run createInstance(final DBMergeSortedBag dbmergesortedbag) {
 		return new Run(dbmergesortedbag);
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param dbmergesortedbag a {@link lupos.datastructures.dbmergesortedds.DBMergeSortedBag} object.
+	 * @param tmp a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Run} object.
+	 */
 	public static Run createInstance(final DBMergeSortedBag dbmergesortedbag,
 			final String tmp) {
 		return new Run(dbmergesortedbag, tmp);
 	}
 
+	/**
+	 * <p>Constructor for Run.</p>
+	 *
+	 * @param dbmergesortedbag a {@link lupos.datastructures.dbmergesortedds.DBMergeSortedBag} object.
+	 */
 	public Run(final DBMergeSortedBag<E> dbmergesortedbag) {
 		this.dbmergesortedbag = dbmergesortedbag;
 		try {
@@ -76,6 +98,12 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		}
 	}
 
+	/**
+	 * <p>Constructor for Run.</p>
+	 *
+	 * @param dbmergesortedbag a {@link lupos.datastructures.dbmergesortedds.DBMergeSortedBag} object.
+	 * @param tmp a {@link java.lang.String} object.
+	 */
 	public Run(final DBMergeSortedBag<E> dbmergesortedbag, final String tmp) {
 		this.dbmergesortedbag = dbmergesortedbag;
 		try {
@@ -249,6 +277,11 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		return false;
 	}
 
+	/**
+	 * <p>iterator.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public ParallelIterator<Entry<E>> iterator() {
 		try {
 			this.os.close();
@@ -371,10 +404,16 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		}
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final Iterator<Entry<E>> iter = iterator();
@@ -388,6 +427,7 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -398,11 +438,21 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		}
 	}
 
+	/**
+	 * <p>close.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public void close() throws IOException {
 		if (os != null)
 			os.close();
 	}
 
+	/**
+	 * <p>flush.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public void flush() throws IOException {
 		if (os != null)
 			os.flush();

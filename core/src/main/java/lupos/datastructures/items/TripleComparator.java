@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
 
@@ -31,7 +35,6 @@ import java.util.Comparator;
 
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
-
 public class TripleComparator implements Comparator<Triple>, Externalizable {
 
 	/**
@@ -47,18 +50,39 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 	protected COMPARE secondary = COMPARE.NONE;
 	protected COMPARE tertiary = COMPARE.NONE;
 
+	/**
+	 * <p>Constructor for TripleComparator.</p>
+	 */
 	public TripleComparator() {
 	}
 
+	/**
+	 * <p>Constructor for TripleComparator.</p>
+	 *
+	 * @param primary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public TripleComparator(final COMPARE primary) {
 		this.primary = primary;
 	}
 
+	/**
+	 * <p>Constructor for TripleComparator.</p>
+	 *
+	 * @param primary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @param secondary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public TripleComparator(final COMPARE primary, final COMPARE secondary) {
 		this.primary = primary;
 		this.secondary = secondary;
 	}
 
+	/**
+	 * <p>Constructor for TripleComparator.</p>
+	 *
+	 * @param primary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @param secondary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @param tertiary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public TripleComparator(final COMPARE primary, final COMPARE secondary,
 			final COMPARE tertiary) {
 		this.primary = primary;
@@ -66,6 +90,11 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		this.tertiary = tertiary;
 	}
 
+	/**
+	 * <p>Constructor for TripleComparator.</p>
+	 *
+	 * @param orderPattern a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public TripleComparator(final RDF3XIndexScan.CollationOrder orderPattern) {
 		switch (orderPattern) {
 		default:
@@ -102,10 +131,20 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		}
 	}
 
+	/**
+	 * <p>Constructor for TripleComparator.</p>
+	 *
+	 * @param readByte a byte.
+	 */
 	public TripleComparator(final byte readByte) {
 		init(readByte);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param readByte a byte.
+	 */
 	protected void init(final byte readByte) {
 		this.primary = COMPARE.values()[readByte % COMPARE.values().length];
 		this.secondary = COMPARE.values()[(readByte / COMPARE.values().length)
@@ -115,6 +154,13 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 				% COMPARE.values().length];
 	}
 
+	/**
+	 * <p>compare.</p>
+	 *
+	 * @param t0 a {@link lupos.datastructures.items.Triple} object.
+	 * @param t1 a {@link lupos.datastructures.items.Triple} object.
+	 * @return a int.
+	 */
 	public int compare(final Triple t0, final Triple t1) {
 		try {
 			if (primary != COMPARE.NONE) {
@@ -162,6 +208,13 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		}
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param comp a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final COMPARE comp, final Triple t) {
 		switch (comp) {
 		case SUBJECT:
@@ -175,6 +228,13 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		}
 	}
 
+	/**
+	 * <p>getObject.</p>
+	 *
+	 * @param comp a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @param items an array of {@link java.lang.Object} objects.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public static Object getObject(final COMPARE comp, final Object[] items) {
 		switch (comp) {
 		case SUBJECT:
@@ -188,6 +248,13 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		}
 	}
 
+	/**
+	 * <p>getItem.</p>
+	 *
+	 * @param comp a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @param items an array of {@link lupos.datastructures.items.Item} objects.
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public static Item getItem(final COMPARE comp, final Item[] items) {
 		switch (comp) {
 		case SUBJECT:
@@ -201,12 +268,22 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		}
 	}
 
+	/**
+	 * <p>getBytePattern.</p>
+	 *
+	 * @return a byte.
+	 */
 	public byte getBytePattern() {
 		return (byte) ((byte) primary.ordinal() + COMPARE.values().length
 				* (secondary.ordinal() + COMPARE.values().length
 						* tertiary.ordinal()));
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param c a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public void add(final COMPARE c) {
 		if (primary == COMPARE.NONE)
 			primary = c;
@@ -219,30 +296,65 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 					.println("TripleComparator: TripleComparator-Comparisons already full up!");
 	}
 
+	/**
+	 * <p>Getter for the field <code>primary</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public COMPARE getPrimary() {
 		return primary;
 	}
 
+	/**
+	 * <p>Setter for the field <code>primary</code>.</p>
+	 *
+	 * @param primary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public void setPrimary(final COMPARE primary) {
 		this.primary = primary;
 	}
 
+	/**
+	 * <p>Getter for the field <code>secondary</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public COMPARE getSecondary() {
 		return secondary;
 	}
 
+	/**
+	 * <p>Setter for the field <code>secondary</code>.</p>
+	 *
+	 * @param secondary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public void setSecondary(final COMPARE secondary) {
 		this.secondary = secondary;
 	}
 
+	/**
+	 * <p>Getter for the field <code>tertiary</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public COMPARE getTertiary() {
 		return tertiary;
 	}
 
+	/**
+	 * <p>Setter for the field <code>tertiary</code>.</p>
+	 *
+	 * @param tertiary a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 */
 	public void setTertiary(final COMPARE tertiary) {
 		this.tertiary = tertiary;
 	}
 
+	/**
+	 * <p>makeNoneForNull.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 */
 	public void makeNoneForNull(final Triple t) {
 		if (primary != null && primary != COMPARE.NONE) {
 			if (t.getPos(primary.ordinal() - 1) == null) {
@@ -261,12 +373,19 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Compare triple by " + toString(primary) + " "
 				+ toString(secondary) + " " + toString(tertiary);
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param compare a {@link lupos.datastructures.items.TripleComparator.COMPARE} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String toString(final COMPARE compare) {
 		if (compare == null)
 			return "null";
@@ -274,11 +393,13 @@ public class TripleComparator implements Comparator<Triple>, Externalizable {
 			return compare.toString();
 	}
 
+	/** {@inheritDoc} */
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
 		init((byte) in.read());
 	}
 
+	/** {@inheritDoc} */
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		out.writeByte(this.getBytePattern());
 	}

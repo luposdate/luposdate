@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -32,16 +36,26 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class AssociationsContainer {
 	private HashMap<String, LinkedList<String>> associations = new HashMap<String, LinkedList<String>>();
 
 	private RuleEditor editor = null;
 
+	/**
+	 * <p>Constructor for AssociationsContainer.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public AssociationsContainer(RuleEditor editor) {
 		this.editor = editor;
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void add(String rulePackageName, String ruleName) {
 		if(!this.associations.containsKey(rulePackageName)) {
 			this.associations.put(rulePackageName, new LinkedList<String>());
@@ -52,6 +66,12 @@ public class AssociationsContainer {
 		this.editor.getTreePane().addAssociation(rulePackageName, ruleName);
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void remove(String rulePackageName, String ruleName) {
 		if(!this.associations.containsKey(rulePackageName)) {
 			return;
@@ -66,6 +86,13 @@ public class AssociationsContainer {
 		this.editor.getTreePane().removeAssociation(rulePackageName, ruleName);
 	}
 
+	/**
+	 * <p>check.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public boolean check(String rulePackageName, String ruleName) {
 		boolean status = false;
 
@@ -78,6 +105,12 @@ public class AssociationsContainer {
 		return status;
 	}
 
+	/**
+	 * <p>check.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<String> check(String rulePackageName) {
 		LinkedList<String> ret = this.associations.get(rulePackageName);
 
@@ -89,6 +122,13 @@ public class AssociationsContainer {
 		}
 	}
 
+	/**
+	 * <p>update.</p>
+	 *
+	 * @param e a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TypeEnum} object.
+	 * @param oldName a {@link java.lang.String} object.
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void update(TypeEnum e, String oldName, String newName) {
 		if(e == TypeEnum.Rule) { // Rule name changed...
 			for(LinkedList<String> rules : this.associations.values()) {
@@ -106,6 +146,12 @@ public class AssociationsContainer {
 		}
 	}
 
+	/**
+	 * <p>getAssociationsToRulePackage.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<String> getAssociationsToRulePackage(String rulePackageName) {
 		if(this.associations.containsKey(rulePackageName)) {
 			return this.associations.get(rulePackageName);
@@ -115,18 +161,36 @@ public class AssociationsContainer {
 		}
 	}
 
+	/**
+	 * <p>moveRule.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param index a int.
+	 * @param difference a int.
+	 */
 	public void moveRule(String rulePackageName, int index, int difference) {
 		String ruleName = this.associations.get(rulePackageName).remove(index);
 
 		this.associations.get(rulePackageName).add(index + difference, ruleName);
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, LinkedList<String>> toJSON() {
 		System.out.println(":: saving associations...");
 
 		return this.associations;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public void fromJSON(JSONObject loadObject) throws JSONException {
 		System.out.println(":: loading associations...");

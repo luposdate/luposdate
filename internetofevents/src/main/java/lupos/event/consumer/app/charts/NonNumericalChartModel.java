@@ -41,10 +41,11 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
- * Wrapper for CategoryDatasets that accepts non-numerical 
+ * Wrapper for CategoryDatasets that accepts non-numerical
  * y-values
- * @author heidemey
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class NonNumericalChartModel extends DataModel {
 	
@@ -53,6 +54,11 @@ public class NonNumericalChartModel extends DataModel {
 	private HashMap<Integer,Integer> hashMap;
 	private ArrayList<String> stringList;
 	
+	/**
+	 * <p>Constructor for NonNumericalChartModel.</p>
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 */
 	public NonNumericalChartModel(ChartTyp type){
 		super(type);
 		
@@ -63,6 +69,12 @@ public class NonNumericalChartModel extends DataModel {
 		
 	}
 	
+	/**
+	 * <p>Constructor for NonNumericalChartModel.</p>
+	 *
+	 * @param type a {@link lupos.event.consumer.app.charts.ChartTyp} object.
+	 * @param vars an array of {@link java.lang.String} objects.
+	 */
 	public NonNumericalChartModel(ChartTyp type, String[] vars){
 		this(type);
 		valueVar = new Variable(vars[1]);
@@ -70,6 +82,7 @@ public class NonNumericalChartModel extends DataModel {
 		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void fillDataset(QueryResult l) {
 		
@@ -138,13 +151,15 @@ public class NonNumericalChartModel extends DataModel {
 	
 	/**
 	 * Sets the variable containing the y-values
-	 * @param var
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
 	 */
 	public void setValueVar(Variable var){
 		valueVar = var;
 		
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public DefaultCategoryDataset getDataset(){
 		
@@ -152,6 +167,7 @@ public class NonNumericalChartModel extends DataModel {
 		
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getLegend(){
 
@@ -167,6 +183,7 @@ public class NonNumericalChartModel extends DataModel {
 		return legend;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JFreeChart makeChart() {
 		

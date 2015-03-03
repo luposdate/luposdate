@@ -51,6 +51,9 @@ import java.util.Date;
 
 /**
  * This class is for creating an empty index on disk for the RDF3X query evaluator
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RDF3XEmptyIndexConstruction {
 
@@ -62,6 +65,7 @@ public class RDF3XEmptyIndexConstruction {
 
 	/**
 	 * Entry point to create an empty RDF3X disk-based index
+	 *
 	 * @param args the first command line argument should contain the directory in which the index is created...
 	 */
 	public static void main(final String[] args) {

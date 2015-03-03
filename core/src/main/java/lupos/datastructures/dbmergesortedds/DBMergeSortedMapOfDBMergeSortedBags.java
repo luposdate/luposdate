@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,18 +21,23 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
 import java.io.Serializable;
 import java.util.Comparator;
-
 public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extends Serializable> extends DBMergeSortedMapOfCollections<K,V, DBMergeSortedBag<V>> {
 
 	protected final SortConfiguration sortConfiguration;
 
 	/**
 	 * Create a new DBMergeSortedMapOfDBMergeSortedBags that sorts according to the elements' natural order. Both the map's and each bag's heap will have the same height.
+	 *
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfiguration, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfiguration,classOfElements);
@@ -40,7 +46,10 @@ public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extend
 
 	/**
 	 * Create a new DBMergeSortedMap that sorts using the specified Comparator. Both the map's and each bag's heap will have the same height.
+	 *
 	 * @param comp The Comparator to use for sorting.
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfiguration, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfiguration, comp, classOfElements);
@@ -49,6 +58,10 @@ public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extend
 
 	/**
 	 * Create a new DBMergeSortedMapOfCollections that sorts according to the elements' natural order.
+	 *
+	 * @param sortConfigurationForMap a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param sortConfigurationForBag a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfigurationForMap, final SortConfiguration sortConfigurationForBag, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfigurationForMap,classOfElements);
@@ -57,13 +70,23 @@ public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extend
 
 	/**
 	 * Create a new DBMergeSortedMap that sorts using the specified Comparator.
+	 *
 	 * @param comp The Comparator to use for sorting.
+	 * @param sortConfigurationForMap a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param sortConfigurationForBag a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfigurationForMap, final SortConfiguration sortConfigurationForBag, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfigurationForMap, comp,classOfElements);
 		this.sortConfiguration = sortConfigurationForBag;
 	}
 
+	/**
+	 * <p>createCollection.</p>
+	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.DBMergeSortedBag} object.
+	 */
 	protected DBMergeSortedBag<V> createCollection(final Class<? extends V> classOfElements) {
 		return new DBMergeSortedBag<V>(this.sortConfiguration, classOfElements);
 	}

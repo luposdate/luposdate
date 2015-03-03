@@ -27,50 +27,82 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 
 /**
- * This class holds the operator to which a new operator will be connected. 
+ * This class holds the operator to which a new operator will be connected.
  * Additionally this class holds which operandID (0 = left operand, 1 = right operand, ...)
  * will be used for the new connection.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class OperatorConnection {
 
 	private int operandID = 0;
 	private BasicOperator operator;
 	
+	/**
+	 * <p>Constructor for OperatorConnection.</p>
+	 *
+	 * @param operator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param operandID a int.
+	 */
 	public OperatorConnection(final BasicOperator operator, final int operandID){
 		this.setOperatorConnection(operator, operandID);
 	}
 	
+	/**
+	 * <p>Constructor for OperatorConnection.</p>
+	 *
+	 * @param operator a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public OperatorConnection(final BasicOperator operator){
 		this(operator, 0);
 	}
 	
+	/**
+	 * <p>setOperatorConnection.</p>
+	 *
+	 * @param operator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param operandID a int.
+	 */
 	public void setOperatorConnection(final BasicOperator operator, final int operandID){
 		this.operandID = operandID;
 		this.operator = operator;		
 	}
 
 	/**
-	 * Per default, operandID = 0 is assumed. 
+	 * Per default, operandID = 0 is assumed.
+	 *
+	 * @param operator a {@link lupos.engine.operators.BasicOperator} object.
 	 */
 	public void setOperatorConnection(final BasicOperator operator){
 		this.setOperatorConnection(operator, 0);
 	}
 	
+	/**
+	 * <p>getOperatorIDTuple.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 */
 	public OperatorIDTuple getOperatorIDTuple(){
 		return new OperatorIDTuple(operator, operandID);
 	}
 
 	/**
-	 * Creates a connection between the given operator and the operator held in this object 
+	 * Creates a connection between the given operator and the operator held in this object
+	 *
+	 * @param newOperator a {@link lupos.engine.operators.BasicOperator} object.
 	 */
 	public void connect(BasicOperator newOperator){
 		newOperator.addSucceedingOperator(this.getOperatorIDTuple());
 	}
 	
 	/**
-	 * Creates a connection between the given operator and the operator held in this object 
+	 * Creates a connection between the given operator and the operator held in this object
 	 * Additionally the given operator and operandID is stored in this object for later
-	 * connections. 
+	 * connections.
+	 *
+	 * @param newOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param operandID a int.
 	 */
 	public void connectAndSetAsNewOperatorConnection(BasicOperator newOperator, final int operandID){
 		this.connect(newOperator);
@@ -78,14 +110,21 @@ public class OperatorConnection {
 	}
 
 	/**
-	 * Creates a connection between the given operator and the operator held in this object 
+	 * Creates a connection between the given operator and the operator held in this object
 	 * Additionally the given operator (and per default operandID = 0) is stored in this object for later
-	 * connections. 
+	 * connections.
+	 *
+	 * @param newOperator a {@link lupos.engine.operators.BasicOperator} object.
 	 */
 	public void connectAndSetAsNewOperatorConnection(BasicOperator newOperator){
 		this.connectAndSetAsNewOperatorConnection(newOperator, 0);
 	}
 	
+	/**
+	 * <p>clone.</p>
+	 *
+	 * @return a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 */
 	public OperatorConnection clone(){
 		return new OperatorConnection(operator, operandID);
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -43,10 +47,14 @@ import lupos.misc.debug.DebugStep;
 import lupos.rdf.Prefix;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
-
 public class InsertTripleIndexScan extends InsertIndexScan {
 	final protected Set<Triple> facts = new HashSet<Triple>();
 
+	/**
+	 * <p>Constructor for InsertTripleIndexScan.</p>
+	 *
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	public InsertTripleIndexScan(final IndexScanCreatorInterface indexScanCreator) {
 		super((indexScanCreator.getRoot() instanceof Root)?(Root)indexScanCreator.getRoot() : null);
 		this.triplePatterns = Arrays.asList();
@@ -58,10 +66,16 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 		}
 	}
 
+	/**
+	 * <p>addTripleFact.</p>
+	 *
+	 * @param fact a {@link lupos.datastructures.items.Triple} object.
+	 */
 	public void addTripleFact(final Triple fact) {
 		this.facts.add(fact);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		// Leitet ein GraphResult mit den Triple-Fakten weiter
@@ -74,6 +88,7 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer str = new StringBuffer("TripleFacts").append("\n");
@@ -83,6 +98,7 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuffer str = new StringBuffer("TripleFacts").append("\n");
@@ -93,6 +109,7 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeOnce() {
 		for (final Triple t : this.facts){
@@ -102,6 +119,7 @@ public class InsertTripleIndexScan extends InsertIndexScan {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebugOnce(final DebugStep debugstep) {
 		for (final Triple t : this.facts){

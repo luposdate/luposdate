@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.client;
 
@@ -53,20 +57,24 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
 public class Client {
 
+	/** Constant <code>DEFAULT_FORMAT="XMLFormatReader.MIMETYPE"</code> */
 	public static String DEFAULT_FORMAT = XMLFormatReader.MIMETYPE;
 
+	/** Constant <code>LIMIT_OF_BYTES_FOR_GET=4*1024</code> */
 	public final static int LIMIT_OF_BYTES_FOR_GET = 4*1024;
 
 	// enable or disable logging into console
 	private final static boolean log = false;
 
+	/** Constant <code>registeredFormatReaders</code> */
 	protected static HashMap<String, MIMEFormatReader> registeredFormatReaders;
 
 	/**
 	 * register the different MIME type format readers...
+	 *
+	 * @param formatReader a {@link lupos.endpoint.client.formatreader.MIMEFormatReader} object.
 	 */
 	static {
 		Client.registeredFormatReaders = new HashMap<String, MIMEFormatReader>();
@@ -80,15 +88,33 @@ public class Client {
 		Client.registerFormatReader(new TripleFormatReader("Turtle", "text/turtle", "Turtle"));
 		Client.registerFormatReader(new TripleFormatReader("RDF XML", "application/rdf+xml", "Rdfxml"));
 	}
-
 	public static void registerFormatReader(final MIMEFormatReader formatReader){
 		Client.registeredFormatReaders.put(formatReader.getMIMEType(), formatReader);
 	}
 
+	/**
+	 * <p>submitQuery.</p>
+	 *
+	 * @param url a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static QueryResult submitQuery(final String url, final String query, final BindingsFactory bindingsFactory) throws IOException {
 		return Client.submitQuery(url, query, DEFAULT_FORMAT, bindingsFactory);
 	}
 
+	/**
+	 * <p>submitQuery.</p>
+	 *
+	 * @param url a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @param formatKey a {@link java.lang.String} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static QueryResult submitQuery(final String url, final String query, final String formatKey, final BindingsFactory bindingsFactory) throws IOException {
 		final Tuple<String, InputStream> response = submitQueryAndRetrieveStream(url, query, formatKey);
 		final String contentType = response.getFirst();
@@ -118,6 +144,15 @@ public class Client {
 		return reader.getQueryResult(response.getSecond(), query, bindingsFactory);
 	}
 
+	/**
+	 * <p>submitQueryAndRetrieveStream.</p>
+	 *
+	 * @param url a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @param formatKey a {@link java.lang.String} object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Tuple<String, InputStream> submitQueryAndRetrieveStream(final String url, final String query, final String formatKey) throws IOException {
 		final List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("query", query));
@@ -125,6 +160,15 @@ public class Client {
 		return doSubmit(url, params, formatKey);
 	}
 
+	/**
+	 * <p>doSubmit.</p>
+	 *
+	 * @param url a {@link java.lang.String} object.
+	 * @param content a {@link java.util.List} object.
+	 * @param requestHeader a {@link java.lang.String} object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Tuple<String, InputStream> doSubmit(final String url, final List<NameValuePair> content, final String requestHeader) throws IOException {
 		int size=url.length();
 		for(final NameValuePair entry: content){
@@ -134,6 +178,16 @@ public class Client {
 	}
 
 
+	/**
+	 * <p>doSubmit.</p>
+	 *
+	 * @param url a {@link java.lang.String} object.
+	 * @param content a {@link java.util.List} object.
+	 * @param requestHeader a {@link java.lang.String} object.
+	 * @param useMethodGET a boolean.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Tuple<String, InputStream> doSubmit(final String url, final List<NameValuePair> content, final String requestHeader, final boolean useMethodGET) throws IOException {
 		final HttpClient httpclient = new DefaultHttpClient();
 		final HttpUriRequest httpurirequest;
@@ -169,12 +223,13 @@ public class Client {
 	}
 
 	/**
-	 * Sends an {@link InputStream} to a Endpoint-URL
+	 * Sends an {@link java.io.InputStream} to a Endpoint-URL
+	 *
 	 * @param url the url
 	 * @param stream the stream to be sent
 	 * @param requestHeader the header for the request
 	 * @return Tuple with content type and the answer as stream
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public static Tuple<String, InputStream> doSubmitStream(final String url, final InputStream stream, final String requestHeader) throws IOException {
 		final HttpClient httpclient = new DefaultHttpClient();

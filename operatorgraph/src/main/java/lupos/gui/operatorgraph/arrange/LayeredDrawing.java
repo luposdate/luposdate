@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.arrange;
 
@@ -37,9 +41,18 @@ import lupos.gui.operatorgraph.GraphBox;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public final class LayeredDrawing {
 
+	/**
+	 * <p>updateX.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param box a {@link lupos.gui.operatorgraph.GraphBox} object.
+	 * @param levels a {@link java.util.HashMap} object.
+	 * @param level a int.
+	 * @param x a int.
+	 * @param visited a {@link java.util.HashSet} object.
+	 */
 	public static void updateX(final OperatorGraph operatorgraph,
 			final GraphBox box,
 			final HashMap<GraphWrapper, Integer> levels, final int level,
@@ -68,6 +81,16 @@ public final class LayeredDrawing {
 		// --- update position of subtree - end ---
 	}
 
+	/**
+	 * <p>updateXWithoutUpdatingParentsSize.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param box a {@link lupos.gui.operatorgraph.GraphBox} object.
+	 * @param levels a {@link java.util.HashMap} object.
+	 * @param level a int.
+	 * @param x a int.
+	 * @param visited a {@link java.util.HashSet} object.
+	 */
 	public static void updateXWithoutUpdatingParentsSize(
 			final OperatorGraph operatorgraph, final GraphBox box,
 			final HashMap<GraphWrapper, Integer> levels, final int level,
@@ -95,6 +118,12 @@ public final class LayeredDrawing {
 		// --- update position of subtree - end ---
 	}
 
+	/**
+	 * <p>generateGraph.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	protected static HashMap<GraphWrapper, Integer> generateGraph(
 			final OperatorGraph operatorgraph) {
 		final HashMap<GraphWrapper, Integer> levels = new HashMap<GraphWrapper, Integer>();
@@ -107,6 +136,16 @@ public final class LayeredDrawing {
 		return levels;
 	}
 
+	/**
+	 * <p>depthFirstDetermineLevel.</p>
+	 *
+	 * @param visited a {@link java.util.HashSet} object.
+	 * @param visitedNotCloned a {@link java.util.HashSet} object.
+	 * @param op a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param level a int.
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param levels a {@link java.util.HashMap} object.
+	 */
 	@SuppressWarnings("unchecked")
 	protected static void depthFirstDetermineLevel(
 			final HashSet<GraphWrapper> visited,
@@ -146,6 +185,11 @@ public final class LayeredDrawing {
 		}
 	}
 
+	/**
+	 * <p>arrange.</p>
+	 *
+	 * @param operatorgraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public static void arrange(final OperatorGraph operatorgraph) {
 
 		final HashMap<GraphWrapper, Integer> levels = generateGraph(operatorgraph);

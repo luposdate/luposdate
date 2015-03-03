@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -37,22 +41,45 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RuleConnection extends Connection<Operator> {
+	/**
+	 * <p>Constructor for RuleConnection.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public RuleConnection(VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
 	}
 
+	/**
+	 * <p>Constructor for RuleConnection.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param queryGraph a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public RuleConnection(VisualEditor<Operator> visualEditor, VisualGraph<Operator> queryGraph) {
 		this(visualEditor);
 
 		this.queryGraph = queryGraph;
 	}
 
+	/**
+	 * <p>validateConnection.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String validateConnection() {
 		return "";
 	}
 
+	/**
+	 * <p>createConnection.</p>
+	 *
+	 * @param firstOp a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @param tmp a {@link java.util.HashMap} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void createConnection(GraphWrapperEditable firstOp, JSONObject loadObject, HashMap<String, GraphWrapperEditable> tmp) throws JSONException {
 		this.firstOp = firstOp;
 		this.secondOp = tmp.get(loadObject.getString("to"));

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,11 +21,22 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.prefix;
-
 public interface IPrefixPanel {
+	/**
+	 * <p>createPrefixRow.</p>
+	 *
+	 * @param prefixString a {@link java.lang.String} object.
+	 * @param namespaceString a {@link java.lang.String} object.
+	 */
 	public void createPrefixRow(final String prefixString, final String namespaceString);
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	public void updateSize();
 }

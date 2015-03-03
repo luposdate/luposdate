@@ -36,6 +36,9 @@ import java.util.TreeSet;
  * arguments and getFoo(name) to retrieve a given argument. Argument names are
  * case insensitive. The argument --help will always be accepted and cause the
  * application to display the helptext and do nothing else.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ArgumentParser {
 	@SuppressWarnings("serial")
@@ -52,10 +55,20 @@ public class ArgumentParser {
 
 	private String appDescription;
 
+	/**
+	 * <p>Getter for the field <code>appDescription</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAppDescription() {
 		return appDescription;
 	}
 
+	/**
+	 * <p>Setter for the field <code>appDescription</code>.</p>
+	 *
+	 * @param appDescription a {@link java.lang.String} object.
+	 */
 	public void setAppDescription(final String appDescription) {
 		this.appDescription = appDescription;
 	}
@@ -65,7 +78,7 @@ public class ArgumentParser {
 
 	/**
 	 * Creates a new argument parser.
-	 * 
+	 *
 	 * @param appDescription
 	 *            A description of the application and how to call it, which
 	 *            will be printed as part of the helptext.
@@ -90,7 +103,7 @@ public class ArgumentParser {
 	/**
 	 * Add a string argument with a default of "" Will accept arguments of the
 	 * form --name value or --name=value
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -103,7 +116,7 @@ public class ArgumentParser {
 	/**
 	 * Add a string argument with the specified default value Will accept
 	 * arguments of the form --name value or --name=value
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -120,7 +133,7 @@ public class ArgumentParser {
 	 * Add an integer argument with a default value of 0 Will accept arguments
 	 * of the form --name value or --name=value where value is a valid integer
 	 * representation.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -134,7 +147,7 @@ public class ArgumentParser {
 	 * Add an integer argument with the specified default value Will accept
 	 * arguments of the form --name value or --name=value where value is a valid
 	 * integer representation.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -150,7 +163,7 @@ public class ArgumentParser {
 	/**
 	 * Add a boolean argument with a default of false. Will accept arguments of
 	 * the form --name to set it to true or --no-name to set it to false
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -164,7 +177,7 @@ public class ArgumentParser {
 	 * Add a boolean argument with the specified default value. Will accept
 	 * arguments of the form --name to set it to true or --no-name to set it to
 	 * false
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -182,7 +195,7 @@ public class ArgumentParser {
 	 * arguments of the form --name value or --name=value where value is one of
 	 * the values defined by the default value's enum type. The value name will
 	 * be uppercased, so the enum type should only define upper case values.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument
 	 * @param helptext
@@ -196,6 +209,13 @@ public class ArgumentParser {
 		add(name, helptext, defaultValue);
 	}
 
+	/**
+	 * <p>set.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param value a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public boolean set(final String name, final Object value) {
 		final Object oldValue = values.get(name.toLowerCase());
 		boolean result = true;
@@ -216,7 +236,7 @@ public class ArgumentParser {
 	 * Get the argument with the given name. Note: this returns an object, you
 	 * should use one of getString, getEnum, getBool or getInt to retrieve
 	 * arguments.
-	 * 
+	 *
 	 * @param name
 	 *            Name of the argument
 	 * @return The argument with the given name
@@ -227,7 +247,7 @@ public class ArgumentParser {
 
 	/**
 	 * Get the string argument with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument.
 	 * @return The argument with the given name.
@@ -238,7 +258,7 @@ public class ArgumentParser {
 
 	/**
 	 * Get the integer argument with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument.
 	 * @return The argument with the given name.
@@ -249,7 +269,7 @@ public class ArgumentParser {
 
 	/**
 	 * Get the boolean argument with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument.
 	 * @return The argument with the given name.
@@ -260,7 +280,7 @@ public class ArgumentParser {
 
 	/**
 	 * Get the enum argument with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the argument.
 	 * @return The argument with the given name.
@@ -274,7 +294,7 @@ public class ArgumentParser {
 	 * Returns the complete helptext. If the app description contains the
 	 * substring [arguments], but no arguments were registered, it will be
 	 * removed.
-	 * 
+	 *
 	 * @return The helptext.
 	 */
 	@SuppressWarnings("unchecked")
@@ -312,7 +332,7 @@ public class ArgumentParser {
 	/**
 	 * Check the given array of strings for arguments parsed by this
 	 * ArgumentParser and set the appropriate values accordingly.
-	 * 
+	 *
 	 * @param args
 	 *            The strings to be parsed.
 	 * @param ignoreUnknownArguments
@@ -439,11 +459,13 @@ public class ArgumentParser {
 		return rest;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "The values of the arguments are: " + values;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ArgumentParser clone() {
 		final ArgumentParser ap = new ArgumentParser(appDescription);

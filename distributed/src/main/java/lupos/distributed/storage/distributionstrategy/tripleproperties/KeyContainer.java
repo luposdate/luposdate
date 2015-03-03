@@ -28,6 +28,8 @@ package lupos.distributed.storage.distributionstrategy.tripleproperties;
  * and the real key.
  *
  * @param <K> the java type of the real key
+ * @author groppe
+ * @version $Id: $Id
  */
 public class KeyContainer<K> {
 
@@ -42,6 +44,7 @@ public class KeyContainer<K> {
 
 	/**
 	 * constructor to set the type and the key
+	 *
 	 * @param type the type of the key
 	 * @param key the real key
 	 */
@@ -52,11 +55,13 @@ public class KeyContainer<K> {
 
 	// the following methods "int hashCode()" and "boolean equals(Object o)" are overridden such that KeyContainers can be put into hash sets for duplicate elimination
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode(){
 		return this.key.hashCode() + this.type.hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o){
 		if(o instanceof KeyContainer){

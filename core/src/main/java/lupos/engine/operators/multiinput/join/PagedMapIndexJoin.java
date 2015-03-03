@@ -27,10 +27,10 @@ import lupos.datastructures.paged_map.PagedHashMultiMap;
 import lupos.datastructures.paged_map.PagedQueryResultMapValues;
 
 /**
- * PagedMapIndexJoin uses {@link PagedQueryResultMapValues} with {@link PagedHashMultiMap} for initialization
+ * PagedMapIndexJoin uses {@link lupos.datastructures.paged_map.PagedQueryResultMapValues} with {@link lupos.datastructures.paged_map.PagedHashMultiMap} for initialization
  *
  * @author K. Knof
- *
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class PagedMapIndexJoin extends IndexJoinWithoutDuplicateElimination{
@@ -38,6 +38,7 @@ public class PagedMapIndexJoin extends IndexJoinWithoutDuplicateElimination{
 	/*
 	 * @see lupos.engine.operators.multiinput.join.IndexJoin#init()
 	 */
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init() {

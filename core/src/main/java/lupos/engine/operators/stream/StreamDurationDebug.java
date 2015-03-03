@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.stream;
 
@@ -27,11 +31,16 @@ import java.util.Date;
 
 import lupos.datastructures.items.Triple;
 import lupos.misc.debug.DebugStep;
-
 public class StreamDurationDebug extends StreamDuration {
 	
 	private final DebugStep debugstep;
 
+	/**
+	 * <p>Constructor for StreamDurationDebug.</p>
+	 *
+	 * @param stream a {@link lupos.engine.operators.stream.StreamDuration} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public StreamDurationDebug(final StreamDuration stream,
 			final DebugStep debugstep) {
 		super(stream.collectResult, stream.duration);
@@ -41,6 +50,7 @@ public class StreamDurationDebug extends StreamDuration {
 		this.succeedingOperators = stream.getSucceedingOperators();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		super.consumeDebug(triple, this.debugstep);

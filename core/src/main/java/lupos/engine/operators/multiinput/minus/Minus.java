@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.minus;
 
@@ -40,7 +44,6 @@ import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.misc.debug.DebugStep;
-
 public class Minus extends MultiInputOperator {
 
 	protected ParallelIteratorMultipleQueryResults[] operands = {	new ParallelIteratorMultipleQueryResults(),
@@ -50,14 +53,23 @@ public class Minus extends MultiInputOperator {
 
 	protected final boolean considerEmptyIntersection;
 
+	/**
+	 * <p>Constructor for Minus.</p>
+	 */
 	public Minus(){
 		this(true);
 	}
 
+	/**
+	 * <p>Constructor for Minus.</p>
+	 *
+	 * @param considerEmptyIntersection a boolean.
+	 */
 	public Minus(final boolean considerEmptyIntersection){
 		this.considerEmptyIntersection = considerEmptyIntersection;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
 		// wait for all query results and process them when
@@ -119,6 +131,7 @@ public class Minus extends MultiInputOperator {
 		return isEqual;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
@@ -160,6 +173,7 @@ public class Minus extends MultiInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		if (!this.operands[0].isEmpty() && !this.operands[1].isEmpty()) {
@@ -190,6 +204,7 @@ public class Minus extends MultiInputOperator {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		final BoundVariablesMessage msg_result = new BoundVariablesMessage(msg);
@@ -222,6 +237,7 @@ public class Minus extends MultiInputOperator {
 		return msg_result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return super.toString()+" "+this.intersectionVariables;

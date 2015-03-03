@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,33 +21,53 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.application;
 
 import lupos.datastructures.queryresult.QueryResult;
-
 public class CountResult implements Application {
 
 	private int numberResults = 0;
 
+	/** {@inheritDoc} */
 	public void call(final QueryResult res) {
 		numberResults += res.oneTimeSize();
 	}
 
+	/**
+	 * <p>start.</p>
+	 *
+	 * @param type a Type object.
+	 */
 	public void start(final Type type) {
 		numberResults = 0;
 	}
 
+	/**
+	 * <p>stop.</p>
+	 */
 	public void stop() {
 	}
 
+	/**
+	 * <p>Getter for the field <code>numberResults</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getNumberResults() {
 		return numberResults;
 	}
 
+	/** {@inheritDoc} */
 	public void deleteResult(final QueryResult res) {
 	}
 
+	/**
+	 * <p>deleteResult.</p>
+	 */
 	public void deleteResult() {
 	}
 }

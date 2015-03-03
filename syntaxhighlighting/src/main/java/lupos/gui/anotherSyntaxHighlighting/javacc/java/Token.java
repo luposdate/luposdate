@@ -27,8 +27,10 @@ package lupos.gui.anotherSyntaxHighlighting.javacc.java;
 
 /**
  * Describes the input token stream.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
-
 public class Token implements java.io.Serializable {
 
   /**
@@ -90,6 +92,8 @@ public class Token implements java.io.Serializable {
    * interpreter. This attribute value is often different from the image.
    * Any subclass of Token that actually wants to return a non-null value can
    * override this method as appropriate.
+   *
+   * @return a {@link java.lang.Object} object.
    */
   public Object getValue() {
     return null;
@@ -102,6 +106,8 @@ public class Token implements java.io.Serializable {
 
   /**
    * Constructs a new token for the specified Image.
+   *
+   * @param kind a int.
    */
   public Token(int kind)
   {
@@ -110,6 +116,9 @@ public class Token implements java.io.Serializable {
 
   /**
    * Constructs a new token for the specified Image and Kind.
+   *
+   * @param kind a int.
+   * @param image a {@link java.lang.String} object.
    */
   public Token(int kind, String image)
   {
@@ -119,6 +128,8 @@ public class Token implements java.io.Serializable {
 
   /**
    * Returns the image.
+   *
+   * @return a {@link java.lang.String} object.
    */
   public String toString()
   {
@@ -136,6 +147,10 @@ public class Token implements java.io.Serializable {
    *
    * to the following switch statement. Then you can cast matchedToken
    * variable to the appropriate type and use sit in your lexical actions.
+   *
+   * @param ofKind a int.
+   * @param image a {@link java.lang.String} object.
+   * @return a {@link lupos.gui.anotherSyntaxHighlighting.javacc.java.Token} object.
    */
   public static Token newToken(int ofKind, String image)
   {
@@ -145,6 +160,12 @@ public class Token implements java.io.Serializable {
     }
   }
 
+  /**
+   * <p>newToken.</p>
+   *
+   * @param ofKind a int.
+   * @return a {@link lupos.gui.anotherSyntaxHighlighting.javacc.java.Token} object.
+   */
   public static Token newToken(int ofKind)
   {
     return newToken(ofKind, null);

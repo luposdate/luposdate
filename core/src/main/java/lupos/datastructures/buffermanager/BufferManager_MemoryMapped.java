@@ -34,6 +34,9 @@ import lupos.misc.Tuple;
 /**
  * This class is a buffer manager, which uses memory mapped files.
  * However, it seems to be that there is no advantage in comparison to BufferManager_RandomAccess
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BufferManager_MemoryMapped extends BufferManager_CachedFiles {
 
@@ -43,6 +46,7 @@ public class BufferManager_MemoryMapped extends BufferManager_CachedFiles {
 		return new Tuple<MappedByteBuffer, Integer>(mbb, fileData.getThird());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public byte[] getPage(final int pagesize, final PageAddress pageaddress) throws IOException {
 		BufferManager_CachedFiles.lock.lock();
@@ -56,6 +60,7 @@ public class BufferManager_MemoryMapped extends BufferManager_CachedFiles {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void modifyPage(final int pagesize, final PageAddress pageaddress, final byte[] pageContent) throws IOException {
 		BufferManager_CachedFiles.lock.lock();
@@ -67,26 +72,31 @@ public class BufferManager_MemoryMapped extends BufferManager_CachedFiles {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void releasePage(final PageAddress pageaddress) {
 		// do nothing, buffering is done by os for memory mapped files...
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void releaseAllPages() {
 		// do nothing, buffering is done by os for memory mapped files...
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeAllModifiedPages(final String filename) throws IOException {
 		// do nothing, buffering is done by os for memory mapped files...
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeAllModifiedPages() throws IOException {
 		// do nothing, buffering is done by os for memory mapped files...
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void releaseAllPages(final String filename) {
 		// do nothing, buffering is done by os for memory mapped files...

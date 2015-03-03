@@ -28,11 +28,15 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * This interface specifies the basic methods for distribution strategies.
+ *
  * @param <K> the type of the keys
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IDistribution<K> {
 	/**
 	 * This method returns the keys under which the given triple is stored...
+	 *
 	 * @param triple the triple from which the keys are determined
 	 * @return an array of keys for this triple
 	 */
@@ -40,8 +44,10 @@ public interface IDistribution<K> {
 
 	/**
 	 * This method returns the keys under which the results of a triple pattern are determined.
+	 *
 	 * @param triplePattern the triple pattern the result of which will be determined
 	 * @return the keys which are used to retrieve the results of the given triple pattern
+	 * @throws lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError if any.
 	 */
 	public K[] getKeysForQuerying(TriplePattern triplePattern) throws TriplePatternNotSupportedError;
 }

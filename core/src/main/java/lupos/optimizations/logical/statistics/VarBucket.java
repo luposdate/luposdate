@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.statistics;
 
@@ -29,13 +33,17 @@ import java.util.List;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.misc.Tuple;
-
 public class VarBucket implements Cloneable {
 
 	public Literal minimum = null;
 	public Literal maximum = null;
 	public List<Entry> selectivityOfInterval = new ArrayList<Entry>();
 
+	/**
+	 * <p>getSum.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getSum() {
 		double sum = 0.0;
 		for (final Entry e : selectivityOfInterval) {
@@ -44,6 +52,11 @@ public class VarBucket implements Cloneable {
 		return sum;
 	}
 
+	/**
+	 * <p>getSumDistinctLiterals.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getSumDistinctLiterals() {
 		double sum = 0.0;
 		for (final Entry e : selectivityOfInterval) {
@@ -52,6 +65,11 @@ public class VarBucket implements Cloneable {
 		return sum;
 	}
 
+	/**
+	 * <p>multiplySelectivities.</p>
+	 *
+	 * @param d a double.
+	 */
 	public void multiplySelectivities(final double d) {
 		for (final Entry e : selectivityOfInterval) {
 			e.selectivity *= d;
@@ -59,6 +77,12 @@ public class VarBucket implements Cloneable {
 		}
 	}
 
+	/**
+	 * <p>multiplySelectivities.</p>
+	 *
+	 * @param vb a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 * @param factor a int.
+	 */
 	public void multiplySelectivities(final VarBucket vb, final int factor) {
 		Literal lowerLimit = null;
 		boolean first = true;
@@ -116,6 +140,14 @@ public class VarBucket implements Cloneable {
 		}
 	}
 
+	/**
+	 * <p>getEstimatedSelectivity.</p>
+	 *
+	 * @param vb a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 * @param e a {@link lupos.optimizations.logical.statistics.Entry} object.
+	 * @param lowerLimit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	protected Tuple<Integer, Double> getEstimatedSelectivity(
 			final VarBucket vb, final Entry e, final Literal lowerLimit) {
 		double result = 0.0;
@@ -204,6 +236,15 @@ public class VarBucket implements Cloneable {
 		return new Tuple<Integer, Double>(index, result);
 	}
 
+	/**
+	 * <p>getEstimatedSelectivity.</p>
+	 *
+	 * @param vb a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 * @param e a {@link lupos.optimizations.logical.statistics.Entry} object.
+	 * @param lowerLimit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param overlappedInterval a int.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	protected Tuple<Integer, Double> getEstimatedSelectivity(
 			final VarBucket vb, final Entry e, final Literal lowerLimit,
 			int overlappedInterval) {
@@ -292,6 +333,13 @@ public class VarBucket implements Cloneable {
 		return new Tuple<Integer, Double>(index, result);
 	}
 
+	/**
+	 * <p>distance.</p>
+	 *
+	 * @param la a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @param lb a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a int.
+	 */
 	public int distance(final Literal la, final Literal lb) {
 		if (la == null) {
 			if (lb == null)
@@ -320,6 +368,7 @@ public class VarBucket implements Cloneable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object clone() {
 		final VarBucket vb = new VarBucket();
@@ -331,6 +380,11 @@ public class VarBucket implements Cloneable {
 		return vb;
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param vb a {@link lupos.optimizations.logical.statistics.VarBucket} object.
+	 */
 	public void add(final VarBucket vb) {
 		Literal lowerLimit = null;
 		boolean first = true;

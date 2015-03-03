@@ -28,11 +28,16 @@ import lupos.geo.stsparql.functions.StFunctionRegisterer;
 
 /**
  * Just to register the geo functions and call the demo applet...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Geo_Demo_Applet {
 
 	/**
-	 * @param args
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
 	 */
 	public static void main(final String[] args) {
 		// register geo functions

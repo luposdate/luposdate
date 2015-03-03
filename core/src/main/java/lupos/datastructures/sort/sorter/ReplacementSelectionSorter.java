@@ -35,7 +35,10 @@ import lupos.datastructures.sort.helper.DataToBoundedBuffer;
 import lupos.datastructures.sort.run.Run;
 
 /**
- * This sorting strategy implements Replacement Selection 
+ * This sorting strategy implements Replacement Selection
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ReplacementSelectionSorter implements Sorter {
 	
@@ -44,6 +47,13 @@ public class ReplacementSelectionSorter implements Sorter {
 	private final int mergeHeapHeight_param; // the height of the heap used during merging (number of elements in main memory: 2^(mergeHeapHeight_param+1) - 1)
 	private int numberOfRunsOndisk = 0; // the number of runs stored on disk (updated after sorting)
 	
+	/**
+	 * <p>Constructor for ReplacementSelectionSorter.</p>
+	 *
+	 * @param set a boolean.
+	 * @param height a int.
+	 * @param mergeHeapHeight_param a int.
+	 */
 	public ReplacementSelectionSorter(final boolean set, final int height, final int mergeHeapHeight_param){
 		this.set = set;
 		this.height = height;
@@ -51,6 +61,7 @@ public class ReplacementSelectionSorter implements Sorter {
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	public Run sort(InputStream dataFiles, String format) throws Exception {
 		// initialize the data structure for replacement selection!
@@ -119,11 +130,13 @@ public class ReplacementSelectionSorter implements Sorter {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getNumberOfRunsOnDisk() {
 		return this.numberOfRunsOndisk;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String parametersToString() {
 		return (this.set?"SET":"BAG")+"\nHeight of the heap:"+this.height+"\nHeight of the merge heap:"+this.mergeHeapHeight_param;

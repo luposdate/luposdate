@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort.comparator;
 
@@ -42,7 +46,6 @@ import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.sparql1_1.ASTAs;
 import lupos.sparql1_1.SimpleNode;
-
 public class ComparatorAST implements ComparatorBindings {
 
 	/**
@@ -51,6 +54,11 @@ public class ComparatorAST implements ComparatorBindings {
 
 	protected lupos.sparql1_1.Node node;
 
+	/**
+	 * <p>Constructor for ComparatorAST.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public ComparatorAST(final lupos.sparql1_1.Node node) {
 		this.node = node;
 	}
@@ -59,7 +67,7 @@ public class ComparatorAST implements ComparatorBindings {
 	 * This method is used in order to check whether or not a previous join can
 	 * replace this sort operator by using MergeJoinSort (for optional
 	 * analogous).
-	 * 
+	 *
 	 * @return the sort criterium as collection of variables or null if the sort
 	 *         criterium is not so simple!
 	 */
@@ -82,7 +90,7 @@ public class ComparatorAST implements ComparatorBindings {
 
 	/**
 	 * Compares two bindings considering SPARQL-specifications
-	 * 
+	 *
 	 * @param arg0
 	 *            first Bindings to compare
 	 * @param arg1
@@ -136,6 +144,12 @@ public class ComparatorAST implements ComparatorBindings {
 		return 0;
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final Object o) {
 		if (o instanceof Literal)
 			return (Literal) o;
@@ -176,7 +190,7 @@ public class ComparatorAST implements ComparatorBindings {
 
 	/**
 	 * Does the dirty work for compare
-	 * 
+	 *
 	 * @param l0
 	 *            first binding to compare
 	 * @param l1
@@ -335,9 +349,7 @@ public class ComparatorAST implements ComparatorBindings {
 		return l0.toString().compareTo(l1.toString());
 	}
 
-	/**
-	 * @return returns a String-representation of this comperator
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final SPARQLParserVisitorImplementationDumper filterDumper = new SPARQLParserVisitorImplementationDumper();

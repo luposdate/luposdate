@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
@@ -45,7 +49,6 @@ import lupos.misc.util.OperatorIDTuple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class ConstantOperator extends Operator  {
 
 	private VisualRifEditor visualRifEditor;
@@ -59,27 +62,36 @@ public class ConstantOperator extends Operator  {
 	private FocusListener comboBoxFocusListener;
 
 	//Constructor
+	/**
+	 * <p>Constructor for ConstantOperator.</p>
+	 */
 	public ConstantOperator(){}
 
+	/** {@inheritDoc} */
 	@Override
 	public void prefixAdded() {}
 
+	/** {@inheritDoc} */
 	@Override
 	public void prefixModified(final String arg0, final String arg1) {}
 
+	/** {@inheritDoc} */
 	@Override
 	public void prefixRemoved(final String arg0, final String arg1) {}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean variableInUse(final String arg0, final HashSet<Operator> arg1) {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperator(final boolean showErrors, final HashSet<Operator> visited, final Object data) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw,
 			final VisualGraph<Operator> parent) {
@@ -87,6 +99,12 @@ public class ConstantOperator extends Operator  {
 		return this.panel;
 	}
 
+	/**
+	 * <p>drawAnnotations.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph} object.
+	 * @return a {@link java.util.Hashtable} object.
+	 */
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(final VisualRIFGraph<Operator> parent) {
 		final Hashtable<GraphWrapper, AbstractSuperGuiComponent> predicates = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 		// walk through children
@@ -131,6 +149,7 @@ public class ConstantOperator extends Operator  {
 		return predicates;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 		final StringBuffer sb = new StringBuffer();
@@ -148,6 +167,7 @@ public class ConstantOperator extends Operator  {
 		return sb;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperatorAndTree(final HashSet<Operator> visited) {
 		final StringBuffer sb = new StringBuffer();
@@ -176,6 +196,12 @@ public class ConstantOperator extends Operator  {
 		return sb;
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		final JSONObject saveObject = new JSONObject();
 
@@ -220,6 +246,14 @@ public class ConstantOperator extends Operator  {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param operatorObject a {@link org.json.JSONObject} object.
+	 * @param constantOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void fromJSON(final JSONObject operatorObject, final ConstantOperator constantOperator,final VisualRIFGraph<Operator> parent) throws JSONException {
 		constantOperator.setConstant(operatorObject.get("VALUE").toString());
 		final boolean isConnected = operatorObject.getBoolean("ISCONNECTED");
@@ -271,81 +305,182 @@ public class ConstantOperator extends Operator  {
 
 	}
 
+	/**
+	 * <p>setOpID.</p>
+	 *
+	 * @param opIDLabel a {@link java.lang.String} object.
+	 * @param boolean1 a boolean.
+	 */
 	public void setOpID(final String opIDLabel, final boolean boolean1) {
 	}
 
+	/**
+	 * <p>Setter for the field <code>selectedClassification</code>.</p>
+	 *
+	 * @param selectedClassification a {@link java.lang.String} object.
+	 */
 	public void setSelectedClassification(final String selectedClassification) {
 		this.selectedClassification = selectedClassification;
 	}
 
+	/**
+	 * <p>Getter for the field <code>selectedClassification</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSelectedClassification() {
 		return this.selectedClassification;
 	}
 
+	/**
+	 * <p>Setter for the field <code>constant</code>.</p>
+	 *
+	 * @param constant a {@link java.lang.String} object.
+	 */
 	public void setConstant(final String constant) {
 		this.constant = constant;
 	}
 
+	/**
+	 * <p>Getter for the field <code>constant</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getConstant() {
 		return this.constant;
 	}
 
+	/**
+	 * <p>Setter for the field <code>selectedRadioButton</code>.</p>
+	 *
+	 * @param selectedRadioButton an array of boolean.
+	 */
 	public void setSelectedRadioButton(final boolean[] selectedRadioButton) {
 		this.selectedRadioButton = selectedRadioButton;
 	}
 
+	/**
+	 * <p>Getter for the field <code>selectedRadioButton</code>.</p>
+	 *
+	 * @return an array of boolean.
+	 */
 	public boolean[] getSelectedRadioButton() {
 		return this.selectedRadioButton;
 	}
 
+	/**
+	 * <p>setChild.</p>
+	 *
+	 * @param isChild a boolean.
+	 */
 	public void setChild(final boolean isChild) {
 		this.isChild = isChild;
 	}
 
+	/**
+	 * <p>isChild.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isChild() {
 		return this.isChild;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Getter for the field <code>constantComboBox</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JComboBox} object.
+	 */
 	public JComboBox getConstantComboBox() {
 		return this.constantComboBox;
 	}
 
+	/**
+	 * <p>Setter for the field <code>constantComboBox</code>.</p>
+	 *
+	 * @param constantComboBox a {@link javax.swing.JComboBox} object.
+	 */
 	public void setConstantComboBox(final JComboBox constantComboBox) {
 		this.constantComboBox = constantComboBox;
 	}
 
+	/**
+	 * <p>Setter for the field <code>selectedPrefix</code>.</p>
+	 *
+	 * @param string a {@link java.lang.String} object.
+	 */
 	public void setSelectedPrefix(final String string) {
 		this.selectedPrefix = string;
 	}
 
+	/**
+	 * <p>Getter for the field <code>selectedPrefix</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSelectedPrefix() {
 		return this.selectedPrefix;
 	}
 
+	/**
+	 * <p>Getter for the field <code>comboBoxEntries</code>.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getComboBoxEntries() {
 		return this.comboBoxEntries;
 	}
 
+	/**
+	 * <p>Setter for the field <code>comboBoxEntries</code>.</p>
+	 *
+	 * @param comboBoxEntries an array of {@link java.lang.String} objects.
+	 */
 	public void setComboBoxEntries(final String[] comboBoxEntries) {
 		this.comboBoxEntries = comboBoxEntries;
 	}
 
+	/**
+	 * <p>setConstantCombo.</p>
+	 *
+	 * @param constCombo a {@link javax.swing.JComboBox} object.
+	 */
 	public void setConstantCombo(final JComboBox constCombo) {
 		this.constantComboBox = constCombo;
 	}
 
+	/**
+	 * <p>Getter for the field <code>comboBoxFocusListener</code>.</p>
+	 *
+	 * @return a {@link java.awt.event.FocusListener} object.
+	 */
 	public FocusListener getComboBoxFocusListener() {
 		return this.comboBoxFocusListener;
 	}
 
+	/**
+	 * <p>Setter for the field <code>comboBoxFocusListener</code>.</p>
+	 *
+	 * @param comboBoxFocusListener a {@link java.awt.event.FocusListener} object.
+	 */
 	public void setComboBoxFocusListener(final FocusListener comboBoxFocusListener) {
 		this.comboBoxFocusListener = comboBoxFocusListener;
 	}

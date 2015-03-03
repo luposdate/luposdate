@@ -25,14 +25,15 @@ package lupos.misc;
 
 /**
  * Useful helper functions for byte operations.
- * 
+ *
  * @author Florian Kalis
+ * @version $Id: $Id
  */
 public class ByteHelper {
 
 	/**
 	 * Converts a given integer value to a byte array
-	 * 
+	 *
 	 * @param i
 	 *            Integer value to convert
 	 * @return Byte array
@@ -49,7 +50,7 @@ public class ByteHelper {
 	
 	/**
 	 * Converts a given long value to a byte array
-	 * 
+	 *
 	 * @param l
 	 *            Long value to convert
 	 * @return Byte array
@@ -66,7 +67,7 @@ public class ByteHelper {
 	
 	/**
 	 * Converts a given byte array to an integer value
-	 * 
+	 *
 	 * @param b
 	 *            Byte array to convert
 	 * @return Integer value
@@ -83,7 +84,7 @@ public class ByteHelper {
 
 	/**
 	 * Converts a given byte array to a long value
-	 * 
+	 *
 	 * @param b
 	 *            Byte array to convert
 	 * @return Long value

@@ -32,7 +32,10 @@ import lupos.compression.huffman.tree.Node;
 /**
  * The block-wise huffman input stream for reading in a huffman encoded stream.
  * In comparison to the adaptive huffman tree, we choose a block-wise encoding scheme due to performance reasons.
- * In the block-wise encoding scheme, each block contains a huffman tree and a huffman tree is valid (and is not changed) for a complete block.  
+ * In the block-wise encoding scheme, each block contains a huffman tree and a huffman tree is valid (and is not changed) for a complete block.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class HuffmanInputStream extends InputStream {
 
@@ -53,6 +56,7 @@ public class HuffmanInputStream extends InputStream {
 	
 	/**
 	 * Constructor
+	 *
 	 * @param in the underlying bit input stream from which for each block the huffman tree is read and the huffman encoded block
 	 */
 	public HuffmanInputStream(final BitInputStream in){
@@ -61,12 +65,14 @@ public class HuffmanInputStream extends InputStream {
 	
 	/**
 	 * Constructor
+	 *
 	 * @param in the underlying input stream, from which a bit input stream is created and from which for each block the huffman tree is read and the huffman encoded block
 	 */
 	public HuffmanInputStream(final InputStream in){
 		this.in = new BitInputStream(in);
 	}
 		
+	/** {@inheritDoc} */
 	@Override
 	public int read() throws IOException {
 		if(this.current == 0){
@@ -84,6 +90,7 @@ public class HuffmanInputStream extends InputStream {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
 		// close underlying bit input stream...

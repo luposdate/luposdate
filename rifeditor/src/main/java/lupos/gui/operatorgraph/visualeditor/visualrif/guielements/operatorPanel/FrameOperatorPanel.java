@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -59,7 +63,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.HintTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.Term;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.TermConnection;
-
 public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 
 	private static final long serialVersionUID = 8238554719560169292L;
@@ -76,6 +79,16 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 	String[] typComboEntries = {"Const","Var","Expr","List"};
 
 	// Constructor
+	/**
+	 * <p>Constructor for FrameOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param frameOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator} object.
+	 * @param startNode a boolean.
+	 * @param alsoSubClasses a boolean.
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public FrameOperatorPanel(final VisualGraph<Operator> parent,
 			final GraphWrapper gw, final FrameOperator frameOperator,
 			final boolean startNode, final boolean alsoSubClasses, final VisualRifEditor visualRifEditor) {
@@ -1240,7 +1253,8 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 	/**
 	 * Sets the ComboBox entries for UniTermComboBox and the
 	 * ConstantComboBox
-	 * @param comboBoxEntries
+	 *
+	 * @param comboBoxEntries an array of {@link java.lang.String} objects.
 	 */
 	public void setConstantComboBoxEntries(final String[] comboBoxEntries){
 		this.comboBoxEntries = comboBoxEntries;
@@ -1294,6 +1308,7 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize() {
 		this.setMinimumSize(this.termRowsPanel.getSize());
@@ -1342,6 +1357,7 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.revalidate(); // re-validate the PrefixPanel
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
@@ -1374,34 +1390,74 @@ public class FrameOperatorPanel extends AbstractGuiComponent<Operator> {
 	/* ***************** **
 	 * Getter and Setter **
 	 * ***************** */
+	/**
+	 * <p>Getter for the field <code>frameOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator} object.
+	 */
 	public FrameOperator getFrameOperator() {
 		return this.frameOperator;
 	}
 
+	/**
+	 * <p>setFactOperator.</p>
+	 *
+	 * @param frameOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator} object.
+	 */
 	public void setFactOperator(final FrameOperator frameOperator) {
 		this.frameOperator = frameOperator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>selectedChoiceString</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSelectedChoiceString() {
 		return this.selectedChoiceString;
 	}
 
+	/**
+	 * <p>Setter for the field <code>selectedChoiceString</code>.</p>
+	 *
+	 * @param selectedChoiceString a {@link java.lang.String} object.
+	 */
 	public void setSelectedChoiceString(final String selectedChoiceString) {
 		this.selectedChoiceString = selectedChoiceString;
 	}
 
+	/**
+	 * <p>Getter for the field <code>comboBoxEntries</code>.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getComboBoxEntries() {
 		return this.comboBoxEntries;
 	}
 
+	/**
+	 * <p>setFocusListener.</p>
+	 *
+	 * @param fL a {@link java.awt.event.FocusListener} object.
+	 */
 	public void setFocusListener(final FocusListener fL) {
 		this.comboBoxFocusListener = fL;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}

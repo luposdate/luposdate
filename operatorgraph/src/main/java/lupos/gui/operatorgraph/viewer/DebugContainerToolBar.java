@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.viewer;
 
@@ -41,7 +45,6 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperator;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapperBasicOperatorByteArray;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.optimizations.logical.rules.DebugContainer;
-
 public class DebugContainerToolBar<T> extends JPanel {
 	private static final long serialVersionUID = -6983017259818782269L;
 	private final DebugContainerToolBar<T> that = this;
@@ -55,6 +58,13 @@ public class DebugContainerToolBar<T> extends JPanel {
 	private JButton nextButton;
 	private JButton lastButton;
 
+	/**
+	 * <p>Constructor for DebugContainerToolBar.</p>
+	 *
+	 * @param operatorGraphViewer a {@link lupos.gui.operatorgraph.viewer.Viewer} object.
+	 * @param debugContainerList a {@link java.util.List} object.
+	 * @param fromJar a boolean.
+	 */
 	public DebugContainerToolBar(final Viewer operatorGraphViewer, final List<DebugContainer<T>> debugContainerList, final boolean fromJar) {
 		super();
 

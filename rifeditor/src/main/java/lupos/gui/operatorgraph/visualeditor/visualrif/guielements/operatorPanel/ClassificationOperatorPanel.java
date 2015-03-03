@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -42,7 +46,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.util.GraphWrapperOperator;
-
 public class ClassificationOperatorPanel extends AbstractGuiComponent<Operator> {
 
 	private static final long serialVersionUID = 3163766913198444249L;
@@ -59,6 +62,13 @@ public class ClassificationOperatorPanel extends AbstractGuiComponent<Operator> 
 	private boolean variable, constant, uniterm, list;
 
 	// Constructor
+	/**
+	 * <p>Constructor for ClassificationOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param parentOp a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 * @param childOp a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public ClassificationOperatorPanel(final VisualGraph<Operator> parent, final Operator parentOp, final Operator childOp){
 		super(parent, new GraphWrapperOperator(parentOp), childOp, false);
 
@@ -428,11 +438,17 @@ public class ClassificationOperatorPanel extends AbstractGuiComponent<Operator> 
 		this.add(rb3,this.gbc);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return true;
 	}
 
+	/**
+	 * <p>setSelectedClassification.</p>
+	 *
+	 * @param selectedClassification a {@link java.lang.String} object.
+	 */
 	public void setSelectedClassification(final String selectedClassification) {
 		if ( this.isVariable() ){
 			final VariableOperator vp = ( VariableOperator ) this.parentOp;
@@ -455,66 +471,146 @@ public class ClassificationOperatorPanel extends AbstractGuiComponent<Operator> 
 	/* *************** **
 	 * Getter + Setter **
 	 * *************** */
+	/**
+	 * <p>Setter for the field <code>variableOperator</code>.</p>
+	 *
+	 * @param variableOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator} object.
+	 */
 	public void setVariableOperator(final VariableOperator variableOperator) {
 		this.variableOperator = variableOperator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>variableOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator} object.
+	 */
 	public VariableOperator getVariableOperator() {
 		return this.variableOperator;
 	}
 
+    /**
+     * <p>Setter for the field <code>constantOperator</code>.</p>
+     *
+     * @param constantOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+     */
     public void setConstantOperator(final ConstantOperator constantOperator) {
 		this.constantOperator = constantOperator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>constantOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+	 */
 	public ConstantOperator getConstantOperator() {
 		return this.constantOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>variable</code>.</p>
+	 *
+	 * @param variable a boolean.
+	 */
 	public void setVariable(final boolean variable) {
 		this.variable = variable;
 	}
 
+	/**
+	 * <p>isVariable.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isVariable() {
 		return this.variable;
 	}
 
+	/**
+	 * <p>Setter for the field <code>constant</code>.</p>
+	 *
+	 * @param constant a boolean.
+	 */
 	public void setConstant(final boolean constant) {
 		this.constant = constant;
 	}
 
+	/**
+	 * <p>isConstant.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isConstant() {
 		return this.constant;
 	}
 
+	/**
+	 * <p>Getter for the field <code>listOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 */
 	public ListOperator getListOperator() {
 		return this.listOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>listOperator</code>.</p>
+	 *
+	 * @param listOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 */
 	public void setListOperator(final ListOperator listOperator) {
 		this.listOperator = listOperator;
 	}
 
+	/**
+	 * <p>isList.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isList() {
 		return this.list;
 	}
 
+	/**
+	 * <p>Setter for the field <code>list</code>.</p>
+	 *
+	 * @param list a boolean.
+	 */
 	public void setList(final boolean list) {
 		this.list = list;
 	}
 
+	/**
+	 * <p>Getter for the field <code>unitermOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+	 */
 	public UnitermOperator getUnitermOperator() {
 		return this.unitermOperator;
 	}
 
+    /**
+     * <p>Setter for the field <code>unitermOperator</code>.</p>
+     *
+     * @param unitermOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+     */
     public void setUnitermOperator(final UnitermOperator unitermOperator) {
 		this.unitermOperator = unitermOperator;
 	}
 
+	/**
+	 * <p>isUniterm.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isUniterm() {
 		return this.uniterm;
 	}
 
+	/**
+	 * <p>Setter for the field <code>uniterm</code>.</p>
+	 *
+	 * @param uniterm a boolean.
+	 */
 	public void setUniterm(final boolean uniterm) {
 		this.uniterm = uniterm;
 	}

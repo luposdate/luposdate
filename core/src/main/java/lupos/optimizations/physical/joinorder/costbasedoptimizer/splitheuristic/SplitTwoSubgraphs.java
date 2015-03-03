@@ -29,10 +29,14 @@ import java.util.List;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
 
 /**
- * This strategy splits the plans at an edge, which connects two subgraphs and which are not connected any more without this edge...  
+ * This strategy splits the plans at an edge, which connects two subgraphs and which are not connected any more without this edge...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SplitTwoSubgraphs implements SplitHeuristic {
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("null")
 	@Override
 	public List<List<LeafNodePlan>> split(List<LeafNodePlan> initialPlans) {

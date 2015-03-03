@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -29,6 +33,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class BooleanPredicates {
 
+	/**
+	 * <p>is_boolean.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-boolean")
 	public static BooleanLiteral is_boolean(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -39,12 +49,24 @@ public class BooleanPredicates {
 			return BooleanLiteral.FALSE;
 	}
 
+	/**
+	 * <p>is_not_boolean.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-boolean")
 	public static BooleanLiteral is_not_boolean(final Argument arg) {
 		return BooleanFunctions.not(RIFBuiltinFactory
 				.createArgument(is_boolean(arg)));
 	}
 
+	/**
+	 * <p>is_boolean_equal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "boolean-equal")
 	public static BooleanLiteral is_boolean_equal(final Argument arg) {
 		if (arg.arguments.size() == 2
@@ -58,6 +80,12 @@ public class BooleanPredicates {
 			return BooleanLiteral.FALSE;
 	}
 
+	/**
+	 * <p>is_boolean_less.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "boolean-less-than")
 	public static BooleanLiteral is_boolean_less(final Argument arg) {
 		if (arg.arguments.size() == 2
@@ -71,6 +99,12 @@ public class BooleanPredicates {
 			return BooleanLiteral.FALSE;
 	}
 
+	/**
+	 * <p>is_boolean_greater.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "boolean-greater-than")
 	public static BooleanLiteral is_boolean_greater(final Argument arg) {
 		if (arg.arguments.size() == 2

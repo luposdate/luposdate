@@ -24,17 +24,23 @@
 package lupos.gui.operatorgraph.arrange;
 
 /**
- * /**
- * The class Force represents the repulsion- and attraction- forces in
+/**
+ * * The class Force represents the repulsion- and attraction- forces in
  * the Spring-Embedder Layout .
+ *
  * @author Tobias Bielfeld
- *
- *
+ * @version $Id: $Id
  */
 public class Force {
 	private double x;
 	private double y;
 	
+	/**
+	 * <p>Constructor for Force.</p>
+	 *
+	 * @param x a double.
+	 * @param y a double.
+	 */
 	public Force (double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -43,6 +49,8 @@ public class Force {
 	/**
 	 * Method gets the force, which is taking
 	 * effect on the x-coordinate of an node
+	 *
+	 * @return a double.
 	 */
 	protected double getX_Force(){
 		return this.x;
@@ -51,6 +59,8 @@ public class Force {
 	/**
 	 * Method gets the force, which is taking
 	 * effect on the y-coordinate of an node
+	 *
+	 * @return a double.
 	 */
 	protected double getY_Force(){
 		return this.y;
@@ -59,6 +69,8 @@ public class Force {
 	/**
 	 * Method sets the force, which is taking
 	 * effect on the x-coordinate of an node
+	 *
+	 * @param x a double.
 	 */
 	protected void setX_Force(double x) {
 		this.x = x;
@@ -67,6 +79,8 @@ public class Force {
 	/**
 	 * Method sets the force, which is taking
 	 * effect on the y-coordinate of an node
+	 *
+	 * @param y a double.
 	 */
 	protected void setY_Force(double y) {
 		this.y = y;

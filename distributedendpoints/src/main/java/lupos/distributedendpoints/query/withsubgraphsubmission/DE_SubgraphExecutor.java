@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributedendpoints.query.withsubgraphsubmission;
 
@@ -28,15 +32,20 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.distributed.operator.ISubgraphExecutor;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 import lupos.distributedendpoints.storage.util.EndpointManagement;
-
 public class DE_SubgraphExecutor implements ISubgraphExecutor<KeyContainer<Integer>> {
 
 	protected final EndpointManagement endpointManagement;
 
+	/**
+	 * <p>Constructor for DE_SubgraphExecutor.</p>
+	 *
+	 * @param endpointManagement a {@link lupos.distributedendpoints.storage.util.EndpointManagement} object.
+	 */
 	public DE_SubgraphExecutor(final EndpointManagement endpointManagement) {
 		this.endpointManagement = endpointManagement;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluate(final KeyContainer<Integer> key, final String subgraphSerializedAsJSON, final BindingsFactory bindingsFactory) {
 		return this.endpointManagement.submitSubgraphQuery(subgraphSerializedAsJSON, key, bindingsFactory);

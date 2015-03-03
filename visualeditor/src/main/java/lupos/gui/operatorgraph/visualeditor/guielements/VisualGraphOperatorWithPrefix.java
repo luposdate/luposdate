@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -29,7 +33,6 @@ import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.DummyItem;
 import lupos.gui.operatorgraph.visualeditor.util.VEPrefix;
-
 public abstract class VisualGraphOperatorWithPrefix extends VisualGraphOperator {
 	private static final long serialVersionUID = 8089073150957057614L;
 
@@ -39,6 +42,12 @@ public abstract class VisualGraphOperatorWithPrefix extends VisualGraphOperator 
 	 */
 	public Prefix prefix = null;
 
+	/**
+	 * <p>Constructor for VisualGraphOperatorWithPrefix.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public VisualGraphOperatorWithPrefix(VisualEditor<Operator> visualEditor, Prefix prefix) {
 		super(visualEditor);
 
@@ -47,14 +56,25 @@ public abstract class VisualGraphOperatorWithPrefix extends VisualGraphOperator 
 		this.construct();
 	}
 	
+	/**
+	 * <p>newInstance.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraphOperatorWithPrefix} object.
+	 */
 	public abstract VisualGraphOperatorWithPrefix newInstance(VisualEditor<Operator> visualEditor, Prefix prefix);
 
+	/**
+	 * <p>clearAll.</p>
+	 */
 	public void clearAll() {
 		this.prefix = new VEPrefix(true);
 
 		this.clear();
 	}
 
+	/** {@inheritDoc} */
 	protected Operator createOperator(Class<? extends Operator> clazz, Item content) throws Exception {
 		// get some class names...
 		String newClassName = clazz.getSimpleName();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -28,18 +32,29 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AndContainer;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
-
 public class ClassificationConnection  extends ConnectionRIF<Operator>{
 
+	/**
+	 * <p>Constructor for ClassificationConnection.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public ClassificationConnection(final VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
 	}
 
+	/**
+	 * <p>Constructor for ClassificationConnection.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param ruleGraph a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph} object.
+	 */
 	public ClassificationConnection(final VisualEditor<Operator> visualEditor, final VisualRIFGraph<Operator> ruleGraph) {
 		super(visualEditor);
 		this.queryGraph = ruleGraph;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected String validateConnection() {
 		String errorString = "";

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.operators;
 
@@ -34,14 +38,12 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph;
-
-
-
-
-
 public class OrContainer extends AbstractContainer {
 	
 	
+	/**
+	 * <p>Constructor for OrContainer.</p>
+	 */
 	public OrContainer() { // needed for insertOperator()...
 		super();
 		
@@ -49,11 +51,17 @@ public class OrContainer extends AbstractContainer {
 	}
 
 
+	/** {@inheritDoc} */
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
 		return this.drawPanel(gw, (RuleGraph) parent, Color.blue, "Or");
 	}  
 	
 	
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeOperator() {
 		final StringBuffer ret = new StringBuffer();
 		for(final Operator op : this.getOperators()) {
@@ -63,6 +71,7 @@ public class OrContainer extends AbstractContainer {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		final StringBuffer ret = new StringBuffer();

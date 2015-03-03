@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
@@ -30,16 +34,27 @@ import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.guielements.PrefixPanel;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
-
 public class VEPrefix extends Prefix {
+	/**
+	 * <p>Constructor for VEPrefix.</p>
+	 *
+	 * @param active a boolean.
+	 */
 	public VEPrefix(boolean active) {
 		super(active);
 	}
 
+	/**
+	 * <p>Constructor for VEPrefix.</p>
+	 *
+	 * @param active a boolean.
+	 * @param prefixReference a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public VEPrefix(boolean active, Prefix prefixReference) {
 		super(active, prefixReference);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public AbstractSuperGuiComponent draw(GraphWrapper gw, OperatorGraph parent) {
 		this.panel = new PrefixPanel(this, gw, (VisualGraph<Operator>) parent);

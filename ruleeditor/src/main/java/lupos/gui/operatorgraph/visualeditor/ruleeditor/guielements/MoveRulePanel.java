@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -38,7 +42,6 @@ import javax.swing.tree.TreePath;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.AssociationsContainer;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.Tree;
-
 public class MoveRulePanel extends JPanel {
 	private static final long serialVersionUID = 5162659603147323428L;
 
@@ -53,6 +56,12 @@ public class MoveRulePanel extends JPanel {
 
 	private AssociationsContainer associationsContainer = null;
 
+	/**
+	 * <p>Constructor for MoveRulePanel.</p>
+	 *
+	 * @param associationsContainer a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.AssociationsContainer} object.
+	 * @param tree a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.Tree} object.
+	 */
 	public MoveRulePanel(AssociationsContainer associationsContainer, Tree tree) {
 		super(new FlowLayout(FlowLayout.CENTER));
 
@@ -80,11 +89,21 @@ public class MoveRulePanel extends JPanel {
 		this.add(this.downButton);
 	}
 
+	/**
+	 * <p>disableButtons.</p>
+	 */
 	public void disableButtons() {
 		this.upButton.setEnabled(false);
 		this.downButton.setEnabled(false);
 	}
 
+	/**
+	 * <p>update.</p>
+	 *
+	 * @param treeNode a {@link javax.swing.tree.TreeNode} object.
+	 * @param index a int.
+	 * @param count a int.
+	 */
 	public void update(TreeNode treeNode, int index, int count) {
 		this.treeNode = (DefaultMutableTreeNode) treeNode;
 

@@ -34,6 +34,9 @@ import lupos.misc.util.ImmutableIterator;
  * This run represents an already sorted run in main memory.
  * It is saving main memory as it uses difference encoding
  * in order to avoid storing common prefixes of succeeding elements.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MemorySortSortedRun extends Run {
 
@@ -59,6 +62,7 @@ public class MemorySortSortedRun extends Run {
 
 	/**
 	 * This method computes a difference encoded string
+	 *
 	 * @param content the string to be encoded with difference encoding
 	 * @param lastString the previously stored string with which content is checked to have a common prefix
 	 * @return the difference encoded string equivalent to content
@@ -80,6 +84,13 @@ public class MemorySortSortedRun extends Run {
 
 	protected final StringWithoutCommonPrefix[] runContent;
 
+	/**
+	 * <p>Constructor for MemorySortSortedRun.</p>
+	 *
+	 * @param emptyDatastructure a {@link java.util.Iterator} object.
+	 * @param maxsize a int.
+	 * @param set a boolean.
+	 */
 	public MemorySortSortedRun(final Iterator<String> emptyDatastructure, final int maxsize, final boolean set) {
 		if(set){
 			final ArrayList<String> contents = new ArrayList<String>(maxsize);
@@ -115,27 +126,32 @@ public class MemorySortSortedRun extends Run {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final String toBeAdded) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run sort() {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run swapRun() {
 		return new MemorySortSortedRunOnDisk(this.runContent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		// empty runs are not going to become sorted runs!
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<String> iterator() {
 		return new ImmutableIterator<String>(){
@@ -162,6 +178,7 @@ public class MemorySortSortedRun extends Run {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.runContent.length;

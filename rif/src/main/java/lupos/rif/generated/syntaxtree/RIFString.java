@@ -33,6 +33,9 @@ import lupos.rif.generated.visitor.*;
  * .. .. | %1 < STRING_LITERAL2 ><br>
  * .. .. | %2 < STRING_LITERALLONG1 ><br>
  * .. .. | %3 < STRING_LITERALLONG2 ><br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFString implements INode {
 
@@ -92,18 +95,18 @@ public class RIFString implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

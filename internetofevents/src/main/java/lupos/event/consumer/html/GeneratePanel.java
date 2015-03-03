@@ -47,8 +47,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * GUI class for creating a template with {@link JButton}s,{@link JComboBox}es
+ * GUI class for creating a template with {@link javax.swing.JButton}s,{@link javax.swing.JComboBox}es
  * and JListss.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeneratePanel implements ActionListener {
 
@@ -281,10 +284,9 @@ public class GeneratePanel implements ActionListener {
 	}
 
 	/**
-	 * Handles the actions of the Buttons
+	 * {@inheritDoc}
 	 *
-	 * @param e
-	 *            the triggered action
+	 * Handles the actions of the Buttons
 	 */
 	@Override
 	public void actionPerformed(final ActionEvent e) {

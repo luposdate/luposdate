@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 public class InputStreamLogger extends InputStream {
 	
 	protected final InputStream inputstream;
 
+	/**
+	 * <p>Constructor for InputStreamLogger.</p>
+	 *
+	 * @param inputstream a {@link java.io.InputStream} object.
+	 */
 	public InputStreamLogger(final InputStream inputstream){
 		this.inputstream = inputstream;
 		System.out.println("Stream opened!");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int read() throws IOException {
 		int result = this.inputstream.read();
@@ -42,6 +51,7 @@ public class InputStreamLogger extends InputStream {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close(){
 		System.out.println("\nStream closed!");

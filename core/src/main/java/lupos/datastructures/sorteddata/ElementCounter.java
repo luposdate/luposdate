@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,23 +21,40 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sorteddata;
 
 import java.util.LinkedList;
 import java.util.List;
-
 public class ElementCounter<E> {
 	protected final LinkedList<E> elements = new LinkedList<E>();
 
+	/**
+	 * <p>Constructor for ElementCounter.</p>
+	 *
+	 * @param element a E object.
+	 */
 	public ElementCounter(final E element) {
 		this.elements.add(element);
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param element a E object.
+	 */
 	public void add(final E element) {
 		this.elements.add(element);
 	}
 
+	/**
+	 * <p>Getter for the field <code>elements</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<E> getElements() {
 		return elements;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.operators;
 
@@ -35,27 +39,38 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.JumpOverOpera
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class JumpOverOperator extends AbstractRuleOperator {
 	private String cardinality;
 	private String conditions;
 
+	/**
+	 * <p>Constructor for JumpOverOperator.</p>
+	 */
 	public JumpOverOperator() {
 		super();
 		this.cardinality = "*";
 		this.conditions = "";
 	}
 
+	/**
+	 * <p>Constructor for JumpOverOperator.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JumpOverOperator(final String name, final JSONObject loadObject) throws JSONException {
 		super(name, loadObject);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void fromJSON(final JSONObject loadObject) throws JSONException {
 		this.cardinality = loadObject.getString("cardinality");
 		this.conditions = loadObject.getString("conditions");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractGuiComponent<Operator> draw(final GraphWrapper gw, final VisualGraph<Operator> parent) {
 		this.panel = new JumpOverOperatorPanel(parent, gw, this, this.classType, this.determineNameForDrawing(), this.alsoSubClasses, this.cardinality);
@@ -63,6 +78,7 @@ public class JumpOverOperator extends AbstractRuleOperator {
 		return this.panel;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JSONObject toJSON(final JSONObject connectionsObject) throws JSONException {
 		final JSONObject saveObject = this.internalToJSON(connectionsObject);
@@ -73,22 +89,43 @@ public class JumpOverOperator extends AbstractRuleOperator {
 		return saveObject;
 	}
 
+	/**
+	 * <p>Setter for the field <code>cardinality</code>.</p>
+	 *
+	 * @param cardinality a {@link java.lang.String} object.
+	 */
 	public void setCardinality(final String cardinality) {
 		this.cardinality = cardinality;
 	}
 
+	/**
+	 * <p>Getter for the field <code>cardinality</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getCardinality() {
 		return this.cardinality;
 	}
 
+	/**
+	 * <p>Getter for the field <code>conditions</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getConditions() {
 		return this.conditions;
 	}
 
+	/**
+	 * <p>Setter for the field <code>conditions</code>.</p>
+	 *
+	 * @param conditions a {@link java.lang.String} object.
+	 */
 	public void setConditions(final String conditions) {
 		this.conditions = conditions;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperator(final boolean showErrors, final HashSet<Operator> visited, final Object data) {
 		final boolean ret = super.validateOperator(showErrors, visited, data);
@@ -108,6 +145,7 @@ public class JumpOverOperator extends AbstractRuleOperator {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefID(){
 		return "ruleEditorPane_style_jumpoveroperator";

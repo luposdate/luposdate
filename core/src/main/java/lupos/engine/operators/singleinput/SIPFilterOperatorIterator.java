@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -34,14 +38,20 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.BitVector;
-
 public class SIPFilterOperatorIterator extends SIPFilterOperator {
 
+	/**
+	 * <p>Constructor for SIPFilterOperatorIterator.</p>
+	 *
+	 * @param ctp a {@link java.util.Collection} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 */
 	public SIPFilterOperatorIterator(final Collection<TriplePattern> ctp,
 			final Collection<Variable> vars) {
 		super(ctp, vars);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult res,
 			final int operandID) {

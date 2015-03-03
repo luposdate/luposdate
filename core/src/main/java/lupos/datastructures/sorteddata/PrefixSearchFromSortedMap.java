@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sorteddata;
 
@@ -33,16 +37,21 @@ import java.util.SortedMap;
 
 import lupos.datastructures.paged_dbbptree.PrefixSearchMinMax;
 import lupos.misc.util.ImmutableIterator;
-
 public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 		PrefixSearchMinMax<K, V> {
 
 	private final SortedMap<K, V> sm;
 
+	/**
+	 * <p>Constructor for PrefixSearchFromSortedMap.</p>
+	 *
+	 * @param sm a {@link java.util.SortedMap} object.
+	 */
 	public PrefixSearchFromSortedMap(final SortedMap<K, V> sm) {
 		this.sm = Collections.synchronizedSortedMap(sm);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
 		return new ImmutableIterator<V>() {
@@ -170,96 +179,115 @@ public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 		return i1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		return this.sm.comparator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		return this.sm.firstKey();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(final K arg0) {
 		return this.sm.headMap(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		return this.sm.lastKey();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(final K arg0, final K arg1) {
 		return this.sm.subMap(arg0, arg1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(final K arg0) {
 		return this.sm.tailMap(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.sm.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object arg0) {
 		return this.sm.containsKey(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object arg0) {
 		return this.sm.containsValue(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return this.sm.entrySet();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object arg0) {
 		return this.sm.get(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return this.sm.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		return this.sm.keySet();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K arg0, final V arg1) {
 		return this.sm.put(arg0, arg1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final Map<? extends K, ? extends V> arg0) {
 		this.sm.putAll(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object arg0) {
 		return this.sm.remove(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.sm.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> values() {
 		return this.sm.values();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] getClosestElements(final K arg0) {
 		final Object[] entries = this.sm.entrySet().toArray();
@@ -289,18 +317,21 @@ public class PrefixSearchFromSortedMap<K extends Comparable<K>, V> implements
 		return closestElements;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
 		// TODO consider min argument really
 		return this.prefixSearch(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min, final K max) {
 		// TODO consider min and max arguments really
 		return this.prefixSearch(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K max) {
 		// TODO consider max argument really

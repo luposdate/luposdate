@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.guielements;
 
@@ -37,12 +41,19 @@ import lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler.ComboI
 import lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler.ComboListener;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.comboItemDisabler.ComboRenderer;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
-
 public class SuggestionPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = 1L;
 	private final LinkedList<ComboItem> elements;
 	private final JComboBox jCoBo;
 
+	/**
+	 * <p>Constructor for SuggestionPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 * @param elements a {@link java.util.LinkedList} object.
+	 * @param rowPanel a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.SuggestionRowPanel} object.
+	 */
 	public SuggestionPanel(final VisualGraph<Operator> parent,
 			final Operator op, final LinkedList<ComboItem> elements,
 			final SuggestionRowPanel rowPanel) {
@@ -65,6 +76,14 @@ public class SuggestionPanel extends AbstractGuiComponent<Operator> {
 				+ (int) (2 * parent.PADDING)));
 	}
 
+	/**
+	 * <p>Constructor for SuggestionPanel.</p>
+	 *
+	 * @param PADDING a int.
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 * @param elements a {@link java.util.LinkedList} object.
+	 * @param rowPanel a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.SuggestionRowPanel} object.
+	 */
 	public SuggestionPanel(final int PADDING, final Operator op,
 			final LinkedList<ComboItem> elements,
 			final SuggestionRowPanel rowPanel) {
@@ -86,14 +105,25 @@ public class SuggestionPanel extends AbstractGuiComponent<Operator> {
 				* PADDING));
 	}
 
+	/**
+	 * <p>Getter for the field <code>elements</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<ComboItem> getElements() {
 		return this.elements;
 	}
 
+	/**
+	 * <p>getSelectedElement.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getSelectedElement() {
 		return (Item) ((ComboItem) this.jCoBo.getSelectedItem()).getObject();
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperatorPanel(final boolean showErrors, Object data) {
 		return true;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.guielements;
 
@@ -31,22 +35,40 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable;
 import lupos.gui.operatorgraph.visualeditor.VisualEditor;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
-
 public abstract class VisualGraphOperator extends VisualGraph<Operator> {
 	private static final long serialVersionUID = 7449846681888858372L;
 
+	/**
+	 * <p>Constructor for VisualGraphOperator.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	public VisualGraphOperator(VisualEditor<Operator> visualEditor) {
 		super(visualEditor);
 	}
 
+	/**
+	 * <p>createGraphWrapper.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapperEditable} object.
+	 */
 	public GraphWrapperEditable createGraphWrapper(Operator op) {
 		return new GraphWrapperOperator(op);
 	}
 
+	/**
+	 * <p>createDummyOperator.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public Operator createDummyOperator() {
 		return new DummyOperator();
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		super.clearAll();
 	}

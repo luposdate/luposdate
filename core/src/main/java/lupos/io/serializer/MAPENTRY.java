@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -38,39 +42,46 @@ import lupos.io.helper.OutHelper;
 
 @SuppressWarnings("rawtypes")
 public class MAPENTRY extends DeSerializerConsideringSubClasses<lupos.datastructures.dbmergesortedds.MapEntry> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof MapEntry;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public MapEntry deserialize(final LuposObjectInputStream<MapEntry> in) throws IOException, ClassNotFoundException, URISyntaxException {
 		return InputHelper.readLuposMapEntry(in);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<MapEntry>[] getRegisteredClasses() {
 		return new Class[] { MapEntry.class };
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void serialize(final MapEntry t, final LuposObjectOutputStream out) throws IOException {
 		OutHelper.writeLuposMapEntry(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public MapEntry deserialize(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
 		return InputHelper.readLuposMapEntry(in);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void serialize(final MapEntry t, final OutputStream out) throws IOException {
 		OutHelper.writeLuposMapEntry(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public int length(final MapEntry t) {

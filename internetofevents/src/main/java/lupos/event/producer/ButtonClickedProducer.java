@@ -40,16 +40,25 @@ import lupos.event.communication.SerializingMessageService;
 import lupos.event.util.Literals;
 
 /**
- * Shows a button and creates an event when it's clicked. 
+ * Shows a button and creates an event when it's clicked.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ButtonClickedProducer extends ProducerBase {
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/ButtonClicked/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/ButtonClicked/";
 	private final Literal TYPE = Literals.createURI(NAMESPACE, "ButtonClickedEvent");
 	
 	private boolean buttonClicked = false;
 	
 	
+	/**
+	 * <p>Constructor for ButtonClickedProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public ButtonClickedProducer(SerializingMessageService msgService) {
 		super(msgService, 100);
 	}
@@ -58,6 +67,7 @@ public class ButtonClickedProducer extends ProducerBase {
 		this.buttonClicked = true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	synchronized public List<List<Triple>> produce() {
 		if(!this.buttonClicked)
@@ -70,6 +80,12 @@ public class ButtonClickedProducer extends ProducerBase {
 	}
 	
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

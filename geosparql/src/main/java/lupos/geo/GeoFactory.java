@@ -28,11 +28,16 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeoFactory
 {
     /**
      * The default JTS factory for creating geometries.
+     *
+     * @return a {@link com.vividsolutions.jts.geom.GeometryFactory} object.
      */
     public static GeometryFactory getDefaultGeometryFactory()
     {

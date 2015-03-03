@@ -55,13 +55,23 @@ import com.sun.net.httpserver.HttpExchange;
  * The operatorgraph can be returned (instead of the query result).
  * Furthermore, in the context /sparqldebug (instead of the normal /sparql context),
  * queries, their result, the sent message and the operator graph is stored in log files...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DebugEndpoint {
 
 	private static int queryNumber = 0;
 	// directory in which the logs are written
+	/** Constant <code>logDirectory="c:/luposdate/log/"</code> */
 	public static String logDirectory = "c:/luposdate/log/";
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(final String[] args) throws Exception {
 		final int port = Endpoint.init(args);
 		final File file = new File(logDirectory);

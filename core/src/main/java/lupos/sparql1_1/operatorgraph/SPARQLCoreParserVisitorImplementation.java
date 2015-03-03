@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph;
 
@@ -121,16 +125,17 @@ import lupos.sparql1_1.SimpleNode;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_BasicIndex;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
-
 public abstract class SPARQLCoreParserVisitorImplementation implements
 		SPARQL1_1OperatorgraphGeneratorVisitor {
 
 	protected Result result;
 	protected int var = 0;
+	/** Constant <code>useSortedMinus=true</code> */
 	protected static boolean useSortedMinus = true;
 	protected CommonCoreQueryEvaluator<Node> evaluator;
 	protected IndexScanCreatorInterface indexScanCreator;
 
+	/** Constant <code>serviceGeneratorClass</code> */
 	public static Class<? extends ServiceGenerator> serviceGeneratorClass = ServiceGenerator.class;
 	protected ServiceGenerator serviceGenerator;
 
@@ -139,6 +144,14 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	 */
 	public static boolean USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS = true;
 
+	/**
+	 * <p>getVariable.</p>
+	 *
+	 * @param subject a {@link java.lang.String} object.
+	 * @param object a {@link java.lang.String} object.
+	 * @param variable a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.Variable} object.
+	 */
 	protected Variable getVariable(String subject, String object, String variable){
 		while(subject.startsWith("?") || subject.startsWith("$")) {
 			subject=subject.substring(1);
@@ -157,14 +170,27 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return new Variable(newVariable);
 	}
 
+	/**
+	 * <p>Getter for the field <code>result</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public Result getResult() {
 		return this.result;
 	}
 
+	/**
+	 * <p>getOperatorgraphRoot.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public BasicOperator getOperatorgraphRoot(){
 		return this.indexScanCreator.getRoot();
 	}
 
+	/**
+	 * <p>Constructor for SPARQLCoreParserVisitorImplementation.</p>
+	 */
 	public SPARQLCoreParserVisitorImplementation() {
 		this.result = new Result();
 		try {
@@ -180,20 +206,37 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/**
+	 * <p>setIndexScanGenerator.</p>
+	 *
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	public void setIndexScanGenerator(final IndexScanCreatorInterface indexScanCreator){
 		this.indexScanCreator = indexScanCreator;
 	}
 
+	/**
+	 * <p>getIndexScanGenerator.</p>
+	 *
+	 * @return a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	public IndexScanCreatorInterface getIndexScanGenerator(){
 		return this.indexScanCreator;
 	}
 
+	/**
+	 * <p>visitChildrenWithoutStringConcatenation.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 */
 	public void visitChildrenWithoutStringConcatenation(final Node n, final OperatorConnection connection) {
 		for (int i = 0; i < n.jjtGetNumChildren(); i++) {
 			n.jjtGetChild(i).accept(this, connection);
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTConstructQuery node, final OperatorConnection connection) {
 		// Dealing with the STREAM clause
@@ -229,6 +272,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/**
+	 * <p>setGraphConstraints.</p>
+	 *
+	 * @param constructTemplate a {@link lupos.sparql1_1.Node} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 */
 	protected void setGraphConstraints(final Node constructTemplate,final OperatorConnection connection){
 		final LinkedList<Tuple<Construct, Item>> graphConstraints = this.getGraphConstructs(constructTemplate);
 		// there should be only one graphConstraint (for "default graph")!
@@ -237,6 +286,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTAskQuery node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new MakeBooleanResult());
@@ -244,26 +294,31 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		this.visitQueryNode(node, connection, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTOrderConditions node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new Sort(node));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTLimit node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new Limit(node.getLimit()));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTOffset node, final OperatorConnection connection) {
 		connection.connectAndSetAsNewOperatorConnection(new Offset(node.getOffset()));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTOptionalConstraint node, final OperatorConnection connection, final Item graphConstraint) {
 		node.jjtGetChild(0).accept(this, connection, graphConstraint);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTUnionConstraint node, final OperatorConnection connection, final Item graphConstraint) {
 		final Union union = new Union();
@@ -273,6 +328,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		node.jjtGetChild(1).accept(this, connection, graphConstraint);
 	}
 
+	/**
+	 * <p>getGraphConstructs.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Tuple<Construct, Item>> getGraphConstructs(final Node node) {
 		final LinkedList<Tuple<Construct, Item>> graphConstructs = new LinkedList<Tuple<Construct, Item>>();
 		final Collection<TriplePattern> operators = this.collectTriplePatternOfChildren(node);
@@ -306,6 +367,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return graphConstructs;
 	}
 
+	/**
+	 * <p>collectTriplePatternOfChildren.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<TriplePattern> collectTriplePatternOfChildren(final Node node){
 		final Collection<TriplePattern> resultantTriplePatterns = new LinkedList<TriplePattern>();
 		for(int i=0; i<node.jjtGetNumChildren(); i++){
@@ -317,6 +384,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return resultantTriplePatterns;
 	}
 
+	/**
+	 * <p>getItem.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public static Item getItem(final Node n) {
 		if(n instanceof ASTObjectList) {
 			return getItem(n.jjtGetChild(0));
@@ -330,6 +403,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/**
+	 * <p>getTriplePattern.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTTripleSet} object.
+	 * @return a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	public TriplePattern getTriplePattern(final ASTTripleSet node) {
 		final Item[] item = { null, null, null };
 
@@ -345,6 +424,12 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return tpe;
 	}
 
+	/**
+	 * <p>isHigherConstructToJoin.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @return a boolean.
+	 */
 	protected boolean isHigherConstructToJoin(final Node n){
 		return (n instanceof ASTUnionConstraint
 				|| n instanceof ASTGraphConstraint
@@ -355,6 +440,14 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				|| n instanceof ASTBindings);
 	}
 
+	/**
+	 * <p>handleHigherConstructToJoin.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 * @param graphConstraint a {@link lupos.datastructures.items.Item} object.
+	 * @return a boolean.
+	 */
 	protected boolean handleHigherConstructToJoin(final Node n, final OperatorConnection connection, final Item graphConstraint){
 		if (this.isHigherConstructToJoin(n)) {
 			if(n instanceof ASTService){
@@ -382,6 +475,13 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/**
+	 * <p>createMultipleOccurence.</p>
+	 *
+	 * @param tripleSet a {@link lupos.sparql1_1.ASTTripleSet} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 * @param graphConstraint a {@link lupos.datastructures.items.Item} object.
+	 */
 	protected void createMultipleOccurence(final ASTTripleSet tripleSet, final OperatorConnection connection, final Item graphConstraint) {
 		if(USE_CLOSURE_AND_PATHLENGTHZERO_OPERATORS){
 			try{
@@ -634,6 +734,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTOptionalOccurence node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -694,6 +795,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTArbitraryOccurences node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -864,6 +966,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return allowedLiterals;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTArbitraryOccurencesNotZero node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -940,6 +1043,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTInvers node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -947,6 +1051,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return node.jjtGetChild(0).accept(this, connection, graphConstraint, object, subject, subjectNode, objectNode);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTNegatedPath node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -990,6 +1095,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTQuotedURIRef node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -1002,6 +1108,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTPathAlternative node,
 			final OperatorConnection connection, final Item graphConstraint,
@@ -1021,6 +1128,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		return projection;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator visit(final ASTPathSequence node, final OperatorConnection connection,
 			final Item graphConstraint, final Variable subject, final Variable object, final Node subjectNode, final Node objectNode) {
@@ -1050,21 +1158,31 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTSelectQuery node, final OperatorConnection connection) {
 		this.visit(node, connection, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTMinus node, final OperatorConnection connection, final Item graphConstraint) {
 		node.jjtGetChild(0).accept(this, connection, graphConstraint);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTSelectQuery node, final OperatorConnection connection, final Item graphConstraint) {
 		this.visitQueryNode(node, connection, graphConstraint);
 	}
 
+	/**
+	 * <p>visitQueryNode.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 * @param graphConstraint a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void visitQueryNode(final Node node, final OperatorConnection connection, Item graphConstraint) {
 
 		// the graph variable is not bound if it is not selected in the subquery
@@ -1388,6 +1506,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTFilterConstraint node,
 			final OperatorConnection connection, final Item graphConstraint) {
@@ -1507,6 +1626,11 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/**
+	 * <p>prooveBoundedGroup.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 */
 	public void prooveBoundedGroup(final lupos.sparql1_1.Node node) {
 		if (node.jjtGetChild(0) instanceof ASTAggregation) {
 			for (int index = 0; index < node.jjtGetNumChildren(); index++) {
@@ -1619,20 +1743,24 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		root.sendMessage(new BoundVariablesMessage());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTQuery node, final OperatorConnection connection) {
 		this.visit(node);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTService node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("Service currently not supported (but add-ons on LUPOSDATE Core support Service)!");
 	}
 
+	/** {@inheritDoc} */
 	public void visit(final ASTGroupConstraint node, final OperatorConnection connection){
 		this.visit(node, connection, null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTGroupConstraint node, final OperatorConnection connection, final Item graphConstraint) {
 		try {
@@ -1762,11 +1890,17 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void visit(final ASTGraphConstraint node, final OperatorConnection connection) {
 		throw new UnsupportedOperationException("Named graphs are not supported by this evaluator!");
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTStream} object.
+	 */
 	@SuppressWarnings("unused")
 	public void visit(final ASTStream node) {
 		throw new UnsupportedOperationException("Streams are not supported by this evaluator!");

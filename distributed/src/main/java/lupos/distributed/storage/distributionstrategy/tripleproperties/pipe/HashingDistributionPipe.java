@@ -36,7 +36,10 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * This class can be used whenever the number of storage nodes is known
  * and under control of LUPOSDATE. Storage nodes must be then accessed via
  * their ids.
+ *
  * @param <K> the type of keys to be transformed to ids of the storage node
+ * @author groppe
+ * @version $Id: $Id
  */
 public class HashingDistributionPipe<K> implements IDistributionKeyContainer<Integer> {
 
@@ -52,6 +55,7 @@ public class HashingDistributionPipe<K> implements IDistributionKeyContainer<Int
 
 	/**
 	 * Constructor
+	 *
 	 * @param distribution the underlying distribution strategy
 	 * @param maximumNodes the maximum number of storage nodes
 	 */
@@ -60,11 +64,13 @@ public class HashingDistributionPipe<K> implements IDistributionKeyContainer<Int
 		this.maximumNodes = maximumNodes;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public KeyContainer<Integer>[] getKeysForStoring(final Triple triple) {
 		return HashingDistributionPipe.transformsKeys(this.distribution.getKeysForStoring(triple), this.maximumNodes);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public KeyContainer<Integer>[] getKeysForQuerying(final TriplePattern triplePattern)
 			throws TriplePatternNotSupportedError {
@@ -73,9 +79,11 @@ public class HashingDistributionPipe<K> implements IDistributionKeyContainer<Int
 
 	/**
 	 * transforms a key array to an array of ids of the storage node (in the range of 0 to maximumNodes - 1)
+	 *
 	 * @param keys the key array to be transformed to an id array of storage nodes
 	 * @param maximumNodes the maximum number of nodes
 	 * @return the id array of storage nodes
+	 * @param <K> a K object.
 	 */
 	@SuppressWarnings("unchecked")
 	protected static<K> KeyContainer<Integer>[] transformsKeys(final KeyContainer<K>[] keys, final int maximumNodes) {
@@ -87,6 +95,7 @@ public class HashingDistributionPipe<K> implements IDistributionKeyContainer<Int
 		return set.toArray(new KeyContainer[0]);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeyTypes() {
 		return this.distribution.getKeyTypes();

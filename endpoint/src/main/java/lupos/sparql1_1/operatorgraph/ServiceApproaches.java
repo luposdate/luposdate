@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,9 +21,11 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.sparql1_1.operatorgraph;
-
 public enum ServiceApproaches {
 	No_Support(){
 		@Override
@@ -62,14 +65,27 @@ public enum ServiceApproaches {
 			return ServiceGeneratorJoinAtEndpoint.class;
 		}
 	};
+	/**
+	 * <p>serviceGeneratorClass.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public abstract Class<? extends ServiceGenerator> serviceGeneratorClass();
 	
+	/**
+	 * <p>setup.</p>
+	 */
 	public void setup(){
 		SPARQLCoreParserVisitorImplementation.serviceGeneratorClass = this.serviceGeneratorClass();
 	}
 	
 	private static boolean nonStandardSPARQLBitVectorJoin = false;
 	
+	/**
+	 * <p>Setter for the field <code>nonStandardSPARQLBitVectorJoin</code>.</p>
+	 *
+	 * @param nonStandardSPARQLBitVectorJoin a boolean.
+	 */
 	public static void setNonStandardSPARQLBitVectorJoin(final boolean nonStandardSPARQLBitVectorJoin){
 		ServiceApproaches.nonStandardSPARQLBitVectorJoin = nonStandardSPARQLBitVectorJoin;
 	}

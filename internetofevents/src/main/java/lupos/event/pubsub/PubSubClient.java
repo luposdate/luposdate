@@ -33,6 +33,9 @@ import lupos.event.util.TimedWrapper;
 
 /**
  * Client of the publish/subscribe-architecture.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PubSubClient extends Observable implements IMessageReceivedHandler<Serializable> {
 	
@@ -51,6 +54,11 @@ public class PubSubClient extends Observable implements IMessageReceivedHandler<
 	private QueryResultReceivedHandlerList queryResultReceivedHandlers;
 	
 
+	/**
+	 * <p>Constructor for PubSubClient.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public PubSubClient(SerializingMessageService msgService) {
 		this.subscriptions = new HashMap<String, Subscription>();
 		this.queryResults = new HashMap<Subscription, List<TimedWrapper<QueryResult>>>();
@@ -59,10 +67,16 @@ public class PubSubClient extends Observable implements IMessageReceivedHandler<
 		this.msgService.addHandler2(this);
 	}
 	
+	/**
+	 * <p>addHandler.</p>
+	 *
+	 * @param handler a {@link lupos.event.pubsub.IQueryResultReceivedHandler} object.
+	 */
 	public void addHandler(IQueryResultReceivedHandler handler) {
 		this.queryResultReceivedHandlers.add(handler);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void messageReceived(Object src, Serializable msg) {
 		if(msg instanceof SerializedQueryResult) {			
@@ -87,8 +101,9 @@ public class PubSubClient extends Observable implements IMessageReceivedHandler<
 
 	/**
 	 * Sends a subscription via the underlying message service to the broker.
-	 * @param sub
-	 * @throws IOException
+	 *
+	 * @param sub a {@link lupos.event.pubsub.Subscription} object.
+	 * @throws java.io.IOException if any.
 	 */
 	public void subscribe(Subscription sub) throws IOException {
 		// store id and subscription itself in a map to be able to lookup a subscription by its id later
@@ -102,8 +117,9 @@ public class PubSubClient extends Observable implements IMessageReceivedHandler<
 	
 	/**
 	 * Returns the QueryResults for a given subscription
+	 *
 	 * @param sub The subscription for which all queryresults should be returned
-	 * @return
+	 * @return a {@link java.util.List} object.
 	 */
 	public List<TimedWrapper<QueryResult>> getQueryResults(Subscription sub) {
 		return this.queryResults.get(sub);
@@ -127,6 +143,7 @@ public class PubSubClient extends Observable implements IMessageReceivedHandler<
 	/**
 	 * Changes the message service which is necessary
 	 * to realise runtime reconnects
+	 *
 	 * @param msgService_param the new message service
 	 */
 	public void changeMessageService(SerializingMessageService msgService_param){

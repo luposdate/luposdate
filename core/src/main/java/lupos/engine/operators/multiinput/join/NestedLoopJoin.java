@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -29,18 +33,28 @@ import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
-
 public class NestedLoopJoin extends Join {
 	private QueryResult[] lba;
 
+	/**
+	 * <p>Constructor for NestedLoopJoin.</p>
+	 */
 	public NestedLoopJoin() { // noting to init
 	}
 
+	/**
+	 * <p>Constructor for NestedLoopJoin.</p>
+	 *
+	 * @param numberOfOperands a int.
+	 */
 	public NestedLoopJoin(@SuppressWarnings("unused") final int numberOfOperands) {
 		super();
 		init();
 	}
 
+	/**
+	 * <p>init.</p>
+	 */
 	public void init() {
 		this.lba = new QueryResult[this.getNumberOfOperands()];
 		for (int i = 0; i < this.getNumberOfOperands(); i++) {
@@ -48,12 +62,14 @@ public class NestedLoopJoin extends Join {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
 		init();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		final QueryResult qr = QueryResult.createInstance();
@@ -77,6 +93,7 @@ public class NestedLoopJoin extends Join {
 			return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public OptionalResult processJoin(final QueryResult bindings,
 			final int operandID) {

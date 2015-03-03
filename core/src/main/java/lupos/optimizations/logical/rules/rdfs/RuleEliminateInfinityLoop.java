@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -39,12 +43,12 @@ import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-
 public class RuleEliminateInfinityLoop extends Rule {
 
 	private LinkedList<BasicOperator> disconnect;
 	private LinkedList<BasicOperator> instead;
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final Generate generate = new Generate();
@@ -55,6 +59,12 @@ public class RuleEliminateInfinityLoop extends Rule {
 		startNode = generate;
 	}
 
+	/**
+	 * <p>checkInfinityLoop.</p>
+	 *
+	 * @param start a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	protected LinkedList<LinkedList<BasicOperator>> checkInfinityLoop(
 			final BasicOperator start) {
 		final LinkedList<LinkedList<BasicOperator>> resultList = new LinkedList<LinkedList<BasicOperator>>();
@@ -63,6 +73,12 @@ public class RuleEliminateInfinityLoop extends Rule {
 		return resultList;
 	}
 
+	/**
+	 * <p>simulate.</p>
+	 *
+	 * @param path a {@link java.util.LinkedList} object.
+	 * @return a boolean.
+	 */
 	protected boolean simulate(final LinkedList<BasicOperator> path) {
 		// simulate an execution on the given path in order to find out if
 		// a constant triple will be generated somewhere...
@@ -155,6 +171,7 @@ public class RuleEliminateInfinityLoop extends Rule {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final Generate generate = (Generate) mso.get("generate");
@@ -183,6 +200,12 @@ public class RuleEliminateInfinityLoop extends Rule {
 		return transform;
 	}
 
+	/**
+	 * <p>onlyOneGenerateAndTriplePattern.</p>
+	 *
+	 * @param pathToCheck a {@link java.util.LinkedList} object.
+	 * @return a boolean.
+	 */
 	protected boolean onlyOneGenerateAndTriplePattern(
 			final LinkedList<BasicOperator> pathToCheck) {
 		int generates = 0;
@@ -199,6 +222,7 @@ public class RuleEliminateInfinityLoop extends Rule {
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -236,6 +260,12 @@ public class RuleEliminateInfinityLoop extends Rule {
 			return null;
 	}
 
+	/**
+	 * <p>recursiveDelete.</p>
+	 *
+	 * @param bo a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param deleted a {@link java.util.Collection} object.
+	 */
 	protected void recursiveDelete(final BasicOperator bo,
 			final Collection<BasicOperator> deleted) {
 		if (bo.getSucceedingOperators() == null
@@ -248,6 +278,15 @@ public class RuleEliminateInfinityLoop extends Rule {
 		}
 	}
 
+	/**
+	 * <p>findCircle.</p>
+	 *
+	 * @param start a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param currentPath a {@link java.util.LinkedList} object.
+	 * @param resultList a {@link java.util.LinkedList} object.
+	 * @param alreadyVisited a {@link java.util.HashSet} object.
+	 */
 	protected void findCircle(final BasicOperator start,
 			final BasicOperator basicOperator,
 			final LinkedList<BasicOperator> currentPath,

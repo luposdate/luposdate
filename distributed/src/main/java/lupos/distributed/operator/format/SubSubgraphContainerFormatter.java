@@ -50,6 +50,8 @@ import com.cedarsoftware.util.io.JsonWriter;
 /**
  * Implements the formatter for the Subgraph-Container (in a Subgraph-Container)
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SubSubgraphContainerFormatter implements OperatorFormatter {
 
@@ -87,6 +89,8 @@ public class SubSubgraphContainerFormatter implements OperatorFormatter {
 	 *            the dataset
 	 * @param executer
 	 *            subgraph executer
+	 * @param operatorCreator a {@link lupos.distributed.operator.format.operatorcreator.IOperatorCreator} object.
+	 * @param application a {@link lupos.engine.operators.application.Application} object.
 	 */
 	public SubSubgraphContainerFormatter(final Dataset dataset,
 			final IOperatorCreator operatorCreator,
@@ -103,6 +107,7 @@ public class SubSubgraphContainerFormatter implements OperatorFormatter {
 	public SubSubgraphContainerFormatter() {
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public JSONObject serialize(final BasicOperator operator, final int node_id)
@@ -161,6 +166,7 @@ public class SubSubgraphContainerFormatter implements OperatorFormatter {
 		return json;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator deserialize(final JSONObject serializedOperator)
 			throws JSONException {

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,18 +21,21 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join.parallel;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.multiinput.mergeunion.MergeUnionIterator;
-
 public class MergeResultCollector extends ResultCollector {
 
 	/**
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult res, final int arg1) {
 		this.lock.lock();
@@ -43,12 +47,14 @@ public class MergeResultCollector extends ResultCollector {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getResult() {
 		waitForAllThreads();
 		return QueryResult.createInstance(new MergeUnionIterator(this.resultList, false, this.intersectionVariables));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void incNumberOfThreads() {
 		this.lock.lock();

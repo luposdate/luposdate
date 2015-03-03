@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.sort;
 
@@ -31,18 +35,26 @@ import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
-
 public class DBMergeSortedBagSort extends SortedBagSort {
 
+	/**
+	 * <p>Constructor for DBMergeSortedBagSort.</p>
+	 */
 	public DBMergeSortedBagSort() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for DBMergeSortedBagSort.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 */
 	public DBMergeSortedBagSort(final lupos.sparql1_1.Node node) {
 		super(new DBMergeSortedBag<Bindings>(new SortConfiguration(), new ComparatorAST(node),
 				Bindings.class), node);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
@@ -50,6 +62,7 @@ public class DBMergeSortedBagSort extends SortedBagSort {
 				.getComparator(), Bindings.class);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected ParallelIterator<Bindings> getIterator() {
 		final Iterator<Bindings> itb = sswd.iterator();
@@ -80,6 +93,7 @@ public class DBMergeSortedBagSort extends SortedBagSort {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void finalize() {
 		((DBMergeSortedBag) sswd).release();

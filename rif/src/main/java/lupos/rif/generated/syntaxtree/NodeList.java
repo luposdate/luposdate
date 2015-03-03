@@ -33,6 +33,9 @@ import java.util.*;
 /**
  * Represents a grammar list (+), e.g. ' ( A )+ '.<br>
  * The class stores the nodes list in an ArrayList.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class NodeList implements INodeList {
 
@@ -89,9 +92,9 @@ public class NodeList implements INodeList {
   }
 
   /**
-   * Adds a node to the list of nodes, managing progressive allocation increments.
+   * {@inheritDoc}
    *
-   * @param n the node to add
+   * Adds a node to the list of nodes, managing progressive allocation increments.
    */
   public void addNode(final INode n) {
     if (++allocNb < allocTb.length)
@@ -104,10 +107,9 @@ public class NodeList implements INodeList {
   }
 
   /**
-   * Gets the node in the list at a given position.
+   * {@inheritDoc}
    *
-   * @param i the node's position
-   * @return the node
+   * Gets the node in the list at a given position.
    */
   public INode elementAt(final int i) {
     return nodes.get(i); }
@@ -129,7 +131,7 @@ public class NodeList implements INodeList {
     return nodes.size(); }
 
   /**
-   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetArguVisitor} visitor with user Return and Argument data.
    *
    * @param <R> the user Return type
    * @param <A> the user Argument type
@@ -142,18 +144,16 @@ public class NodeList implements INodeList {
   }
 
   /**
-   * Accepts a {@link IRetVisitor} visitor with user Return data.
+   * {@inheritDoc}
    *
-   * @param <R> the user Return type
-   * @param vis the visitor
-   * @return the user Return data
+   * Accepts a {@link IRetVisitor} visitor with user Return data.
    */
   public <R> R accept(final IRetVisitor<R> vis) {
     return vis.visit(this);
   }
 
   /**
-   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IVoidArguVisitor} visitor with user Argument data.
    *
    * @param <A> the user Argument type
    * @param vis the visitor
@@ -164,18 +164,18 @@ public class NodeList implements INodeList {
   }
 
   /**
-   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Sets the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Sets the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

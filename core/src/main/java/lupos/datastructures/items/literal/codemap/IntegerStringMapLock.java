@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,30 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
 
 import java.util.concurrent.locks.ReentrantLock;
-
 public class IntegerStringMapLock implements IntegerStringMap {
 
 	private final ReentrantLock lock;
 	private final IntegerStringMap map;
 
+	/**
+	 * <p>Constructor for IntegerStringMapLock.</p>
+	 *
+	 * @param lock a {@link java.util.concurrent.locks.ReentrantLock} object.
+	 * @param map a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public IntegerStringMapLock(final ReentrantLock lock, final IntegerStringMap map){
 		this.lock=lock;
 		this.map=map;
 	}
 
+	/** {@inheritDoc} */
 	public String get(int key) {
 		lock.lock();
 		try{
@@ -44,6 +54,7 @@ public class IntegerStringMapLock implements IntegerStringMap {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void put(int key, String s) {
 		lock.lock();
 		try{
@@ -53,6 +64,9 @@ public class IntegerStringMapLock implements IntegerStringMap {
 		}
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		lock.lock();
 		try{
@@ -62,6 +76,11 @@ public class IntegerStringMapLock implements IntegerStringMap {
 		}
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		lock.lock();
 		try{
@@ -71,6 +90,7 @@ public class IntegerStringMapLock implements IntegerStringMap {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void forEachValue(TProcedureValue<String> arg0) {
 		lock.lock();
 		try{
@@ -80,6 +100,7 @@ public class IntegerStringMapLock implements IntegerStringMap {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void forEachEntry(TProcedureEntry<Integer, String> arg0) {
 		lock.lock();
 		try{

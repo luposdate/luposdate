@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui;
 
@@ -59,10 +63,15 @@ import lupos.sparql1_1.ASTAs;
 import lupos.sparql1_1.ASTSelectQuery;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
-
 public final class ResultPanelHelper {
 	/**
-	 * This is just for external use an easy way to display the result of a RIF rules application... 
+	 * This is just for external use an easy way to display the result of a RIF rules application...
+	 *
+	 * @param ruleset a {@link java.lang.String} object.
+	 * @param resultpanel a {@link javax.swing.JPanel} object.
+	 * @param usePrefixes a {@link lupos.gui.BooleanReference} object.
+	 * @param prefixInstance a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void appyRIFRules(final String ruleset, final JPanel resultpanel, final BooleanReference usePrefixes,  final ViewerPrefix prefixInstance) throws Exception {		
 		final BasicIndexRuleEvaluator ruleEvaluator = new BasicIndexRuleEvaluator();
@@ -75,6 +84,21 @@ public final class ResultPanelHelper {
 		ResultPanelHelper.setupResultPanel(resultpanel, resultQueryEvaluator, null, null, null, null, null, usePrefixes, prefixInstance, resultpanel);
 	}
 
+	/**
+	 * <p>setupResultPanel.</p>
+	 *
+	 * @param resultpanel a {@link javax.swing.JPanel} object.
+	 * @param resultQueryEvaluator an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @param debugViewerCreator a {@link lupos.gui.DebugViewerCreator} object.
+	 * @param materializationInfo a {@link lupos.gui.DebugViewerCreator} object.
+	 * @param inferenceRules a {@link java.lang.String} object.
+	 * @param ruleApplicationsForMaterialization a {@link java.util.List} object.
+	 * @param errorsInOntology a {@link lupos.rif.datatypes.RuleResult} object.
+	 * @param usePrefixes a {@link lupos.gui.BooleanReference} object.
+	 * @param prefixInstance a {@link lupos.gui.operatorgraph.viewer.ViewerPrefix} object.
+	 * @param contentPane a {@link java.awt.Container} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void setupResultPanel(final JPanel resultpanel, final QueryResult[] resultQueryEvaluator, final DebugViewerCreator debugViewerCreator, final DebugViewerCreator materializationInfo, final String inferenceRules,  final List<DebugContainer<BasicOperatorByteArray>> ruleApplicationsForMaterialization, final RuleResult errorsInOntology, final BooleanReference usePrefixes,  final ViewerPrefix prefixInstance, final Container contentPane) throws Exception {
 		resultpanel.removeAll();
 		final FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);

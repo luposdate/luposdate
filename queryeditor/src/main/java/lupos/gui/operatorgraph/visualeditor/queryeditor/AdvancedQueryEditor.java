@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor;
 
@@ -108,7 +112,6 @@ import lupos.sparql1_1.Node;
 import lupos.sparql1_1.ParseException;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
-
 public class AdvancedQueryEditor extends QueryEditor {
 	private static final long serialVersionUID = 4969382663465698208L;
 	protected LuposJTextPane tp_queryInput;
@@ -131,11 +134,28 @@ public class AdvancedQueryEditor extends QueryEditor {
 
 	private EDITORTYPE editorType;
 
+	/**
+	 * <p>Constructor for AdvancedQueryEditor.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param data a {@link java.lang.String} object.
+	 * @param component a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.IQueryEditor} object.
+	 * @param image a {@link java.awt.Image} object.
+	 */
 	public AdvancedQueryEditor(final String query, final String data,
 			final IQueryEditor component, final Image image) {
 		this(query, data, component, image, EDITORTYPE.ADVANCED);
 	}
 
+	/**
+	 * <p>Constructor for AdvancedQueryEditor.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param data a {@link java.lang.String} object.
+	 * @param component a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.IQueryEditor} object.
+	 * @param image a {@link java.awt.Image} object.
+	 * @param editorType a {@link lupos.gui.operatorgraph.visualeditor.queryeditor.AdvancedQueryEditor.EDITORTYPE} object.
+	 */
 	public AdvancedQueryEditor(final String query, final String data,
 			final IQueryEditor component, final Image image,
 			final EDITORTYPE editorType) {
@@ -239,6 +259,7 @@ public class AdvancedQueryEditor extends QueryEditor {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected JFrame createMainWindowSingleGraph(final String title, final boolean showTopToolBar, final Image image) {
 		JFrame frame;
@@ -298,6 +319,13 @@ public class AdvancedQueryEditor extends QueryEditor {
 		return frame;
 	}
 
+	/**
+	 * <p>createMainWindow.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 * @param image a {@link java.awt.Image} object.
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	protected JFrame createMainWindow(final String title, final Image image) {
 		final JFrame frame = new JFrame();
 
@@ -326,6 +354,13 @@ public class AdvancedQueryEditor extends QueryEditor {
 		return frame;
 	}
 
+	/**
+	 * <p>getVisualQueryComponent.</p>
+	 *
+	 * @param showTopToolBar a boolean.
+	 * @param applyButton a boolean.
+	 * @return a {@link javax.swing.JComponent} object.
+	 */
 	protected JComponent getVisualQueryComponent(final boolean showTopToolBar,
 			final boolean applyButton) {
 		final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -362,6 +397,12 @@ public class AdvancedQueryEditor extends QueryEditor {
 		return mainPanel;
 	}
 
+	/**
+	 * <p>getTextualQueryComponent.</p>
+	 *
+	 * @param applyButton a boolean.
+	 * @return a {@link javax.swing.JComponent} object.
+	 */
 	protected JComponent getTextualQueryComponent(final boolean applyButton) {
 		final JPanel mainPanel = new JPanel(new BorderLayout());
 
@@ -389,6 +430,12 @@ public class AdvancedQueryEditor extends QueryEditor {
 		return mainPanel;
 	}
 
+	/**
+	 * <p>getQueryFromVisualQuery.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected String getQueryFromVisualQuery() throws Exception {
 		this.statusBar.setText("Validating query ...");
 
@@ -981,10 +1028,21 @@ public class AdvancedQueryEditor extends QueryEditor {
 		updateBrowserContent(queryResult);
 	}
 
+	/**
+	 * <p>updateAll.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 */
 	public void updateAll(final String query) {
 		updateAll(query, true);
 	}
 
+	/**
+	 * <p>updateAll.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param updateLists a boolean.
+	 */
 	public void updateAll(final String query, final boolean updateLists) {
 		if (updateLists
 				&& (editorType == EDITORTYPE.ADVANCED || editorType == EDITORTYPE.BROWSERLIKE)) {
@@ -1056,6 +1114,13 @@ public class AdvancedQueryEditor extends QueryEditor {
 		});
 	}
 
+	/**
+	 * <p>determineNewQueryChangeDistinct.</p>
+	 *
+	 * @param oldQuery a {@link java.lang.String} object.
+	 * @param distinct a boolean.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected static String determineNewQueryChangeDistinct(
 			final String oldQuery, final boolean distinct) {
 		return determineNewQuery(oldQuery,
@@ -1268,6 +1333,14 @@ public class AdvancedQueryEditor extends QueryEditor {
 		});
 	}
 
+	/**
+	 * <p>determineNewQuery.</p>
+	 *
+	 * @param oldQuery a {@link java.lang.String} object.
+	 * @param toBeAddedInWhereClause a {@link java.lang.String} object.
+	 * @param var a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String determineNewQuery(final String oldQuery,
 			final String toBeAddedInWhereClause, final String var) {
 		return determineNewQuery(oldQuery,
@@ -1317,6 +1390,13 @@ public class AdvancedQueryEditor extends QueryEditor {
 		});
 	}
 
+	/**
+	 * <p>determineNewQuerySortAccordingToVariable.</p>
+	 *
+	 * @param oldQuery a {@link java.lang.String} object.
+	 * @param toBeSorted a {@link lupos.datastructures.items.Variable} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String determineNewQuerySortAccordingToVariable(
 			final String oldQuery, final Variable toBeSorted) {
 		return determineNewQuery(oldQuery,
@@ -1453,10 +1533,21 @@ public class AdvancedQueryEditor extends QueryEditor {
 		return -1;
 	}
 
+	/**
+	 * <p>Getter for the field <code>currentBrowserQuery</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getCurrentBrowserQuery() {
 		return this.currentBrowserQuery;
 	}
 
+	/**
+	 * <p>getUniqueVariableName.</p>
+	 *
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getUniqueVariableName(final Item item) {
 		if (!item.isVariable())
 			return null;
@@ -1754,10 +1845,16 @@ public class AdvancedQueryEditor extends QueryEditor {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>frame</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JFrame} object.
+	 */
 	public JFrame getFrame() {
 		return this.frame;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefPrefix() {
 		return this.getClass().getSuperclass().getSimpleName();

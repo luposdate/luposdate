@@ -30,7 +30,10 @@ import lupos.compression.bitstream.BitInputStream;
 import lupos.compression.bitstream.BitOutputStream;
 
 /**
- * An inner node of the huffman tree 
+ * An inner node of the huffman tree
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class InnerNode extends Node {
 	
@@ -46,6 +49,7 @@ public class InnerNode extends Node {
 	
 	/**
 	 * Constructor
+	 *
 	 * @param left the left child
 	 * @param right the right child
 	 */
@@ -54,6 +58,7 @@ public class InnerNode extends Node {
 		this.right = right;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void encode(final BitOutputStream out) throws IOException{
 		out.write(true); // bit set for inner node!
@@ -62,21 +67,25 @@ public class InnerNode extends Node {
 		this.right.encode(out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getDepth() {
 		return Math.max(this.left.getDepth() + 1, this.right.getDepth() + 1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getMin() {
 		return Math.min(this.left.getMin(), this.right.getMin());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getMax() {
 		return Math.max(this.left.getMax(), this.right.getMax());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void fillCodeArray(final LinkedList<Boolean> currentCode, final Boolean[][] codeArray, final int min) {
 		// the codes of the symbols in the left child start with a cleared bit!
@@ -89,6 +98,7 @@ public class InnerNode extends Node {
 		currentCode.removeLast();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getSymbol(BitInputStream in) throws IOException {
 		if(in.readBit()){
@@ -100,6 +110,7 @@ public class InnerNode extends Node {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "(" + this.left.toString() + ", " + this.right.toString() + ")";

@@ -22,7 +22,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * 
+ * <p>ParallelJoin class.</p>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join.parallel;
 
@@ -44,7 +47,6 @@ import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.join.HashFunction;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.misc.debug.DebugStep;
-
 public class ParallelJoin extends Join {
 
 	// contains all ParallelJoiner-threads
@@ -55,8 +57,10 @@ public class ParallelJoin extends Join {
 
 	private static final long serialVersionUID = 1L;
 
+	/** Constant <code>DEFAULT_NUMBER_THREADS=8</code> */
 	protected static int DEFAULT_NUMBER_THREADS = 8;
 
+	/** Constant <code>MAXBUFFER=50</code> */
 	protected static int MAXBUFFER = 50;
 
 	private static final int LEFT = 0;
@@ -78,12 +82,25 @@ public class ParallelJoin extends Join {
 
 	private final boolean optional;
 
+	/**
+	 * <p>Constructor for ParallelJoin.</p>
+	 *
+	 * @param operators a {@link java.util.Collection} object.
+	 * @param optional a boolean.
+	 */
 	public ParallelJoin(
 			final Collection<? extends MultiInputOperator> operators,
 			final boolean optional) {
 		this(operators, new ResultCollector(), optional);
 	}
 
+	/**
+	 * <p>Constructor for ParallelJoin.</p>
+	 *
+	 * @param operators a {@link java.util.Collection} object.
+	 * @param col a {@link lupos.engine.operators.multiinput.join.parallel.ResultCollector} object.
+	 * @param optional a boolean.
+	 */
 	public ParallelJoin(
 			final Collection<? extends MultiInputOperator> operators,
 			final ResultCollector col, final boolean optional) {
@@ -97,6 +114,9 @@ public class ParallelJoin extends Join {
 		this.optional = optional;
 	}
 
+	/**
+	 * <p>waitForJoinThreads.</p>
+	 */
 	public static void waitForJoinThreads() {
 		final Thread[] threads = new Thread[ParallelJoin.toJoinBeforeNewQuery
 				.activeCount()];
@@ -112,6 +132,7 @@ public class ParallelJoin extends Join {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operatorID) {
@@ -119,6 +140,7 @@ public class ParallelJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		this.endOfStreamMsg = msg;
@@ -139,6 +161,7 @@ public class ParallelJoin extends Join {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		this.endOfStreamMsg = msg;
@@ -164,6 +187,8 @@ public class ParallelJoin extends Join {
 
 	/**
 	 * the actual join
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	protected QueryResult join() {
 		// compute intersection variables
@@ -259,19 +284,39 @@ public class ParallelJoin extends Join {
 		return res;
 	}
 
+	/**
+	 * <p>getDEFAULT_NUMBER_THREADS.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getDEFAULT_NUMBER_THREADS() {
 		return DEFAULT_NUMBER_THREADS;
 	}
 
+	/**
+	 * <p>setDEFAULT_NUMBER_THREADS.</p>
+	 *
+	 * @param default_number_threads a int.
+	 */
 	public static void setDEFAULT_NUMBER_THREADS(
 			final int default_number_threads) {
 		DEFAULT_NUMBER_THREADS = default_number_threads;
 	}
 
+	/**
+	 * <p>getMAXBUFFER.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getMAXBUFFER() {
 		return MAXBUFFER;
 	}
 
+	/**
+	 * <p>setMAXBUFFER.</p>
+	 *
+	 * @param maxbuffer a int.
+	 */
 	public static void setMAXBUFFER(final int maxbuffer) {
 		MAXBUFFER = maxbuffer;
 	}

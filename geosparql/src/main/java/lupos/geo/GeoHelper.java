@@ -35,19 +35,37 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeoHelper
 {
+    /** Constant <code>geoSPARQLFunctionUri="http://www.opengis.net/def/function/geo"{trunked}</code> */
     public static final String geoSPARQLFunctionUri = "http://www.opengis.net/def/function/geosparql/";
+    /** Constant <code>geoSPARQLwktDataTypeURI="http://www.opengis.net/ont/geosparql#wk"{trunked}</code> */
     public static final String geoSPARQLwktDataTypeURI = "http://www.opengis.net/ont/geosparql#wktLiteral";
+    /** Constant <code>geoSPARQLgmlDataTypeURI="http://www.opengis.net/ont/geosparql#gm"{trunked}</code> */
     public static final String geoSPARQLgmlDataTypeURI = "http://www.opengis.net/ont/geosparql#gmlLiteral";
 
+    /** Constant <code>stURI="http://strdf.di.uoa.gr/ontology#"</code> */
     public static final String stURI = "http://strdf.di.uoa.gr/ontology#";
+    /** Constant <code>stWktDataTypeURI="stURI + WKT"</code> */
     public static final String stWktDataTypeURI = stURI + "WKT";
+    /** Constant <code>stGeometryDataTypeURI="stURI + geometry"</code> */
     public static final String stGeometryDataTypeURI = stURI + "geometry";
+    /** Constant <code>stGmlDataTypeURI="stURI + GML"</code> */
     public static final String stGmlDataTypeURI = stURI + "GML";
+    /** Constant <code>stSPARQLFunctionUri="stURI"</code> */
     public static final String stSPARQLFunctionUri = stURI;
 
+    /**
+     * <p>getGeoSPARQLGeometry.</p>
+     *
+     * @param a a {@link java.lang.Object} object.
+     * @return a {@link com.vividsolutions.jts.geom.Geometry} object.
+     * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+     */
     public static Geometry getGeoSPARQLGeometry(Object a) throws TypeErrorException
     {
     	a = Helper.unlazy(a);
@@ -69,6 +87,13 @@ public class GeoHelper
         throw new TypeErrorException();
     }
 
+    /**
+     * <p>getStSPARQLGeometry.</p>
+     *
+     * @param a a {@link java.lang.Object} object.
+     * @return a {@link com.vividsolutions.jts.geom.Geometry} object.
+     * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+     */
     public static Geometry getStSPARQLGeometry(Object a) throws TypeErrorException {
     	a = Helper.unlazy(a);
         if (a instanceof TypedLiteral) {

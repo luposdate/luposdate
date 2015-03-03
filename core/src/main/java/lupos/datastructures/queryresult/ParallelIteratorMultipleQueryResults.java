@@ -33,6 +33,9 @@ import lupos.datastructures.bindings.Bindings;
  * This class collects QueryResults.
  * Afterwards it can be used to iterate through all the collected QueryResults.
  * It can be used to instantiate an IteratorQueryResult (and therefore serve as basis for a new QueryResult integrating all collected QueryResult, but iterating through them only once via oneTimeIterator())
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bindings>{
 
@@ -41,12 +44,19 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 	protected Iterator<Bindings> currentIterator = null;
 
 	/**
+	 * <p>isIterating.</p>
+	 *
 	 * @return true if ParallelIteratorMultipleQueryResults is already used for iterating, otherwise false
 	 */
 	public boolean isIterating(){
 		return this.currentQueryResult!=null;
 	}
 
+	/**
+	 * <p>addQueryResult.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void addQueryResult(final QueryResult queryResult){
 		if(this.currentQueryResult!=null){
 			throw new RuntimeException("Adding a queryresult, but ParallelIteratorMultipleQueryResults is already used for iterating...");
@@ -54,10 +64,16 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		this.queryResults.add(queryResult);
 	}
 
+	/**
+	 * <p>addQueryResultAllowingAddingAfterIterating.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void addQueryResultAllowingAddingAfterIterating(final QueryResult queryResult) {
 		this.queryResults.add(queryResult);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasNext() {
 		if(this.currentIterator==null){
@@ -79,6 +95,7 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Bindings next() {
 		if(this.hasNext()){
@@ -89,11 +106,15 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		}
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear(){
 		this.reset();
 		this.queryResults.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove() {
 		if(this.currentIterator!=null){
@@ -101,6 +122,7 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close() {
 		if(this.currentIterator!=null){
@@ -110,6 +132,11 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		}
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty(){
 		return this.queryResults.isEmpty();
 	}
@@ -127,34 +154,57 @@ public class ParallelIteratorMultipleQueryResults implements ParallelIterator<Bi
 		return QueryResult.createInstance(this);
 	}
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release(){
 		for(final QueryResult qr: this.queryResults){
 			qr.release();
 		}
 	}
 
+	/**
+	 * <p>removeAll.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void removeAll(final QueryResult queryResult){
 		for(final QueryResult qr: this.queryResults){
 			qr.removeAll(queryResult);
 		}
 	}
 
+	/**
+	 * <p>reset.</p>
+	 */
 	public void reset(){
 		this.currentQueryResult = null;
 		this.currentIterator = null;
 	}
 
+	/**
+	 * <p>removeAll.</p>
+	 */
 	public void removeAll(){
 		this.reset();
 		this.queryResults.clear();
 	}
 
+	/**
+	 * <p>materialize.</p>
+	 */
 	public void materialize(){
 		for(final QueryResult qr: this.queryResults){
 			qr.materialize();
 		}
 	}
 
+	/**
+	 * <p>contains.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a boolean.
+	 */
 	public boolean contains(final QueryResult queryResult) {
 		this.materialize();
 		for(final Bindings b: queryResult){

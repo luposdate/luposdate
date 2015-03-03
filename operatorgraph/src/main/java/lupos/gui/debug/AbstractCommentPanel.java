@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.debug;
 
@@ -38,7 +42,6 @@ import lupos.engine.operators.BasicOperator;
 import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public abstract class AbstractCommentPanel extends JPanel implements
 		MouseMotionListener, MouseListener {
 	private static final long serialVersionUID = -2094761391105187397L;
@@ -47,6 +50,11 @@ public abstract class AbstractCommentPanel extends JPanel implements
 	private int positionY = 0;
 	private final boolean movable = true;
 
+	/**
+	 * <p>Constructor for AbstractCommentPanel.</p>
+	 *
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 */
 	public AbstractCommentPanel(final OperatorGraph operatorGraph) {
 		super();
 
@@ -58,6 +66,7 @@ public abstract class AbstractCommentPanel extends JPanel implements
 		this.addMouseMotionListener(this);
 	}
 
+	/** {@inheritDoc} */
 	public void setFont(final Font newFont) {
 		super.setFont(newFont);
 
@@ -68,11 +77,20 @@ public abstract class AbstractCommentPanel extends JPanel implements
 		}
 	}
 
+	/**
+	 * <p>updateSize.</p>
+	 */
 	protected void updateSize() {
 		if (this.getPreferredSize() != this.getSize())
 			this.setSize(this.getPreferredSize());
 	}
 
+	/**
+	 * <p>updateFont.</p>
+	 *
+	 * @param component a {@link java.awt.Container} object.
+	 * @param newFont a {@link java.awt.Font} object.
+	 */
 	protected void updateFont(final Container component, final Font newFont) {
 		for (int i = 0; i < component.getComponentCount(); i += 1) {
 			final Component child = component.getComponent(i);
@@ -85,6 +103,9 @@ public abstract class AbstractCommentPanel extends JPanel implements
 		}
 	}
 
+	/**
+	 * <p>finalizeComponent.</p>
+	 */
 	protected void finalizeComponent() {
 		this.determinePosition(); // determine the position
 
@@ -135,7 +156,7 @@ public abstract class AbstractCommentPanel extends JPanel implements
 
 	/**
 	 * This method finds the GraphWrapper for a BasicOperator
-	 * 
+	 *
 	 * @param basicOperator
 	 *            The BasicOperator for which the corresponding GraphWrapper
 	 *            object should be found
@@ -163,6 +184,7 @@ public abstract class AbstractCommentPanel extends JPanel implements
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public void mouseDragged(final MouseEvent me) {
 		if (!this.movable) {
 			return;
@@ -193,24 +215,30 @@ public abstract class AbstractCommentPanel extends JPanel implements
 		// --- move the component - end ---
 	}
 
+	/** {@inheritDoc} */
 	public void mousePressed(final MouseEvent me) {
 		// save position of click...
 		this.positionX = me.getX();
 		this.positionY = me.getY();
 	}
 
+	/** {@inheritDoc} */
 	public void mouseMoved(final MouseEvent me) {
 	}
 
+	/** {@inheritDoc} */
 	public void mouseEntered(final MouseEvent me) {
 	}
 
+	/** {@inheritDoc} */
 	public void mouseExited(final MouseEvent me) {
 	}
 
+	/** {@inheritDoc} */
 	public void mouseReleased(final MouseEvent me) {
 	}
 
+	/** {@inheritDoc} */
 	public void mouseClicked(final MouseEvent arg0) {
 	}
 

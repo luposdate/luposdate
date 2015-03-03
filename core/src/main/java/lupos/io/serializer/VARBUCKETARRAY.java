@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -33,29 +37,33 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.LengthHelper;
 import lupos.io.helper.OutHelper;
 import lupos.optimizations.logical.statistics.VarBucket;
-
 public class VARBUCKETARRAY extends DeSerializerConsideringSubClasses<VarBucket[]> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof VarBucket[];
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<VarBucket[]>[] getRegisteredClasses() {
 		return new Class[] { VarBucket[].class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final VarBucket[] t) {
 		return LengthHelper.lengthLuposVarBucketArray(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final VarBucket[] t, final OutputStream out) throws IOException {
 		OutHelper.writeLuposVarBucketArray(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public VarBucket[] deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		return InputHelper.readLuposVarBucketArray(in);

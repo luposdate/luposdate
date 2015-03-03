@@ -34,6 +34,9 @@ import lupos.rif.generated.visitor.*;
  * f2 -> ( %0 < RPAREN ><br>
  * .. .. | %1 #0 ( RIFTerm() )+<br>
  * .. .. . .. #1 ( $0 < S > $1 RIFTerm() )? #2 < RPAREN > )<br>
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RIFList implements INode {
 
@@ -124,18 +127,18 @@ public class RIFList implements INode {
   }
 
   /**
-   * Accepts the IVoidVisitor visitor.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts the IVoidVisitor visitor.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Setter for the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Setter for the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

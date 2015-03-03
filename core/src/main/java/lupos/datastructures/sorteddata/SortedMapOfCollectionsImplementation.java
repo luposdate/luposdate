@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sorteddata;
 
@@ -29,24 +33,37 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-
 public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>> implements
 		SortedMapOfCollections<K, V, CV> {
 
 	protected SortedMap<K, CV> sortedMap;
 	protected Class<? extends CV> klass;
 	
+	/**
+	 * <p>Constructor for SortedMapOfCollectionsImplementation.</p>
+	 *
+	 * @param sortedMap a {@link java.util.SortedMap} object.
+	 * @param klass a {@link java.lang.Class} object.
+	 */
 	public SortedMapOfCollectionsImplementation(final SortedMap<K, CV> sortedMap, final Class<? extends CV> klass){
 		this.sortedMap=sortedMap;
 		this.klass=klass;
 	}
 	
 
+	/**
+	 * <p>getNewCollection.</p>
+	 *
+	 * @return a CV object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	protected CV getNewCollection() throws InstantiationException, IllegalAccessException{
 		return klass.newInstance();
 	}
 	
 	
+	/** {@inheritDoc} */
 	public boolean containsValueInCollections(final Object arg0) {
 		for(final K key: keySet()){
 			final CV cv=get(key);
@@ -56,6 +73,7 @@ public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>
 	}
 
 	
+	/** {@inheritDoc} */
 	public void putAllIntoCollections(
 			final Map<? extends K, ? extends CV> arg0) {
 		for(final K key: arg0.keySet()){
@@ -66,6 +84,13 @@ public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>
 		}		
 	}
 
+	/**
+	 * <p>removeFromCollection.</p>
+	 *
+	 * @param key a K object.
+	 * @param value a V object.
+	 * @return a boolean.
+	 */
 	public boolean removeFromCollection(final K key, final V value){
 		final CV cv=sortedMap.get(key);
 		if(cv!=null) return cv.remove(value);
@@ -73,6 +98,14 @@ public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>
 	}
 
 	
+	/**
+	 * <p>putToCollection.</p>
+	 *
+	 * @param key a K object.
+	 * @param value a V object.
+	 * @throws java.lang.InstantiationException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 */
 	public void putToCollection(final K key, final V value) throws InstantiationException, IllegalAccessException {
 		CV cv=get(key);
 		if(cv==null)cv=getNewCollection();
@@ -81,6 +114,11 @@ public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>
 	}
 
 	
+	/**
+	 * <p>sizeOfElementsInCollections.</p>
+	 *
+	 * @return a int.
+	 */
 	public int sizeOfElementsInCollections() {
 		int size=0;
 		for(final K key: keySet()){
@@ -91,6 +129,11 @@ public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>
 	}
 
 	
+	/**
+	 * <p>valuesInCollectionsIterator.</p>
+	 *
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public Iterator<V> valuesInCollectionsIterator(){
 		try {
 			final CV cvAll=getNewCollection();
@@ -107,95 +150,174 @@ public class SortedMapOfCollectionsImplementation<K, V, CV extends Collection<V>
 	}
 
 	
+	/**
+	 * <p>comparator.</p>
+	 *
+	 * @return a {@link java.util.Comparator} object.
+	 */
 	public Comparator<? super K> comparator() {
 		return sortedMap.comparator();
 	}
 
 	
+	/**
+	 * <p>entrySet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<java.util.Map.Entry<K, CV>> entrySet() {
 		return sortedMap.entrySet();
 	}
 
 	
+	/**
+	 * <p>firstKey.</p>
+	 *
+	 * @return a K object.
+	 */
 	public K firstKey() {
 		return sortedMap.firstKey();
 	}
 
 	
+	/**
+	 * <p>headMap.</p>
+	 *
+	 * @param toKey a K object.
+	 * @return a {@link java.util.SortedMap} object.
+	 */
 	public SortedMap<K, CV> headMap(final K toKey) {
 		return sortedMap.headMap(toKey);
 	}
 
 	
+	/**
+	 * <p>keySet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<K> keySet() {
 		return sortedMap.keySet();
 	}
 
 	
+	/**
+	 * <p>lastKey.</p>
+	 *
+	 * @return a K object.
+	 */
 	public K lastKey() {
 		return sortedMap.lastKey();
 	}
 
 	
+	/**
+	 * <p>subMap.</p>
+	 *
+	 * @param fromKey a K object.
+	 * @param toKey a K object.
+	 * @return a {@link java.util.SortedMap} object.
+	 */
 	public SortedMap<K, CV> subMap(final K fromKey, final K toKey) {
 		return sortedMap.subMap(fromKey, toKey);
 	}
 
 	
+	/**
+	 * <p>tailMap.</p>
+	 *
+	 * @param fromKey a K object.
+	 * @return a {@link java.util.SortedMap} object.
+	 */
 	public SortedMap<K, CV> tailMap(final K fromKey) {
 		return sortedMap.tailMap(fromKey);
 	}
 
 	
+	/**
+	 * <p>values.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<CV> values() {
 		return sortedMap.values();
 	}
 
 	
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		sortedMap.clear();
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean containsKey(final Object key) {
 		return sortedMap.containsKey(key);
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean containsValue(final Object value) {
 		return sortedMap.containsValue(value);
 	}
 
 	
+	/** {@inheritDoc} */
 	public CV get(final Object key) {
 		return sortedMap.get(key);
 	}
 
 	
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return sortedMap.isEmpty();
 	}
 
 	
+	/**
+	 * <p>put.</p>
+	 *
+	 * @param key a K object.
+	 * @param value a CV object.
+	 * @return a CV object.
+	 */
 	public CV put(final K key, final CV value) {
 		return sortedMap.put(key, value);
 	}
 
 	
+	/** {@inheritDoc} */
 	public void putAll(final Map<? extends K, ? extends CV> m) {
 		sortedMap.putAll(m);
 	}
 
 	
+	/** {@inheritDoc} */
 	public CV remove(final Object key) {
 		return sortedMap.remove(key);
 	}
 
 	
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		return sortedMap.size();
 	}
 
+	/**
+	 * <p>valuesInCollections.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<V> valuesInCollections() {
 		try {
 			final CV cvAll = getNewCollection();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,9 +21,11 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items;
-
 public class BlankNode extends Variable {
 
 	/**
@@ -30,10 +33,16 @@ public class BlankNode extends Variable {
 	 */
 	private static final long serialVersionUID = 3447987827099784338L;
 
+	/**
+	 * <p>Constructor for BlankNode.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public BlankNode(final String name) {
 		super(name);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		// make the hash code different from a "normal" variable with the same
@@ -41,16 +50,19 @@ public class BlankNode extends Variable {
 		return ("_" + name + "_").hashCode();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "_:" + name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		return ((o instanceof BlankNode) && ((BlankNode) o).getName()

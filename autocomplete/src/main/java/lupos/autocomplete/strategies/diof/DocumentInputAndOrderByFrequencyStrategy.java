@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.autocomplete.strategies.diof;
 
@@ -36,25 +40,34 @@ import lupos.gui.anotherSyntaxHighlighting.ILuposParser;
 import lupos.gui.anotherSyntaxHighlighting.ILuposToken;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocument;
 import lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader;
-
 public abstract class DocumentInputAndOrderByFrequencyStrategy extends Strategy {
 
 	protected LuposDocumentReader readerLocal;
 	protected ILuposParser parserLocal;
 	protected LuposDocument document;
 
+	/**
+	 * <p>Constructor for DocumentInputAndOrderByFrequencyStrategy.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public DocumentInputAndOrderByFrequencyStrategy(final LuposDocumentReader r, final ILuposParser p){
 		this.readerLocal = r;
 		this.parserLocal = p;
 		this.initReservedWords();
 	}
 
+	/**
+	 * <p>initReservedWords.</p>
+	 */
 	public abstract void initReservedWords();
 
 	/*
 	 * erstellt die Vorschlagsliste
 	 *
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> createAutoCompletionList(
 			final String textDocument, final int cursorPosition) {
@@ -112,6 +125,14 @@ public abstract class DocumentInputAndOrderByFrequencyStrategy extends Strategy 
 	 * Tokens ueberprueft. Kommen welche vor, werden sie mit der Zahl ihres Vorkommens
 	 * in hashmap geschrieben
 	 */
+	/**
+	 * <p>tokensToMap.</p>
+	 *
+	 * @param r a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @param p a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @param indexBeforeCurrentWord a int.
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<Item, Integer> tokensToMap(final LuposDocumentReader r,
 			final ILuposParser p, final int indexBeforeCurrentWord) {
 		final HashMap<Item, Integer> hashmap = new HashMap<Item, Integer>();
@@ -158,6 +179,12 @@ public abstract class DocumentInputAndOrderByFrequencyStrategy extends Strategy 
 	 *
 	 * @return sortierte Liste<Entry<String,Integer>>
 	 */
+	/**
+	 * <p>hashMapToSortedList.</p>
+	 *
+	 * @param hashMap a {@link java.util.HashMap} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Entry<String, Integer>> hashMapToSortedList(
 			final HashMap<String, Integer> hashMap) {
 		final List<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>();
@@ -176,6 +203,7 @@ public abstract class DocumentInputAndOrderByFrequencyStrategy extends Strategy 
 	}
 
 	//wird hier nicht benötigt
+	/** {@inheritDoc} */
 	@Override
 	public List<Entry<Item, Integer>> generateWeight(final List<Item> list) {
 		return null;

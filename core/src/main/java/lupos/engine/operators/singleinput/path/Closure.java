@@ -48,6 +48,9 @@ import lupos.rdf.Prefix;
 
 /**
  * This operator determines the transitive closure (applied in property paths for * and +)
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Closure extends SingleInputOperator{
 
@@ -58,11 +61,25 @@ public class Closure extends SingleInputOperator{
 	private Set<Literal> allowedObjects;
 	private QueryResult operand = null;
 
+	/**
+	 * <p>Constructor for Closure.</p>
+	 *
+	 * @param subject a {@link lupos.datastructures.items.Variable} object.
+	 * @param object a {@link lupos.datastructures.items.Variable} object.
+	 */
 	public Closure(final Variable subject, final Variable object){
 		this.subject = subject;
 		this.object = object;
 	}
 
+	/**
+	 * <p>Constructor for Closure.</p>
+	 *
+	 * @param subject a {@link lupos.datastructures.items.Variable} object.
+	 * @param object a {@link lupos.datastructures.items.Variable} object.
+	 * @param allowedSubjects a {@link java.util.Set} object.
+	 * @param allowedObjects a {@link java.util.Set} object.
+	 */
 	public Closure(final Variable subject, final Variable object, final Set<Literal> allowedSubjects, final Set<Literal> allowedObjects){
 		this.subject = subject;
 		this.object = object;
@@ -70,12 +87,16 @@ public class Closure extends SingleInputOperator{
 		this.allowedObjects = allowedObjects;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		this.computeResult();
 		return msg;
 	}
 
+	/**
+	 * <p>computeResult.</p>
+	 */
 	public void computeResult(){
 		if(this.operand!=null){
 			final QueryResult result = this.getClosure(this.operand);
@@ -88,6 +109,12 @@ public class Closure extends SingleInputOperator{
 		}
 	}
 
+	/**
+	 * <p>getClosure.</p>
+	 *
+	 * @param input a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult getClosure(final QueryResult input){
 		final Tuple<SetImplementation<Bindings>, ReachabilityMap<Literal, SetImplementation<Literal>>> closureAndReachabilityMap = this.generateClosureAndMap(input);
 		final SetImplementation<Bindings> closure = closureAndReachabilityMap.getFirst();
@@ -103,6 +130,7 @@ public class Closure extends SingleInputOperator{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		String result = "Closure of "+this.subject+" -> "+this.object;
@@ -115,6 +143,7 @@ public class Closure extends SingleInputOperator{
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefix){
 		String result = "Closure of "+this.subject+" -> "+this.object;
@@ -127,6 +156,13 @@ public class Closure extends SingleInputOperator{
 		return result;
 	}
 
+	/**
+	 * <p>setWitPrefix.</p>
+	 *
+	 * @param literals a {@link java.util.Set} object.
+	 * @param prefix a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String setWitPrefix(final Set<Literal> literals, final Prefix prefix){
 		final StringBuilder result = new StringBuilder();
 		result.append("[");
@@ -143,6 +179,7 @@ public class Closure extends SingleInputOperator{
 		return result.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
 		if(this.operand!=null){
@@ -260,6 +297,11 @@ public class Closure extends SingleInputOperator{
 		return this.allowedObjects==null || (this.allowedSubjects!=null && this.allowedSubjects.size()<=this.allowedObjects.size());
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	protected ParallelIterator<Bindings> getIterator() {
 		if(this.operand == null){
 			return new ParallelIterator<Bindings>() {
@@ -309,11 +351,13 @@ public class Closure extends SingleInputOperator{
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		final Iterator<Bindings> itb = queryResult.oneTimeIterator();
@@ -323,12 +367,14 @@ public class Closure extends SingleInputOperator{
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteQueryResult(final int operandID) {
 		this.operand.release();
 		this.operand = null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.computeResult();
@@ -336,18 +382,25 @@ public class Closure extends SingleInputOperator{
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		this.computeDebugStep(debugstep);
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		this.computeDebugStep(debugstep);
 		return msg;
 	}
 
+	/**
+	 * <p>computeDebugStep.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public void computeDebugStep(final DebugStep debugstep){
 		final QueryResult qr = QueryResult.createInstance(this.getIterator());
 		if (this.succeedingOperators.size() > 1){

@@ -36,8 +36,9 @@ import lupos.event.util.Literals;
 
 /**
  * Searches german lotto page  with a keyword and calls the GeneralProducer and forwards the website and search data
- * @author Team 4
  *
+ * @author Team 4
+ * @version $Id: $Id
  */
 public class LottoProducer extends GeneralProducer{
 
@@ -52,13 +53,21 @@ public class LottoProducer extends GeneralProducer{
 	public final static URILiteral TYPE = Literals.createURI(LottoProducer.LOTTOPRODUCER_NAMESPACE, "LottoProducer");
 	
 	// the other predicates
+	/** Constant <code>SIX_FROM_FOURTYNINE_1</code> */
 	public final static URILiteral SIX_FROM_FOURTYNINE_1 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_1");
+	/** Constant <code>SIX_FROM_FOURTYNINE_2</code> */
 	public final static URILiteral SIX_FROM_FOURTYNINE_2 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_2");
+	/** Constant <code>SIX_FROM_FOURTYNINE_3</code> */
 	public final static URILiteral SIX_FROM_FOURTYNINE_3 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_3");
+	/** Constant <code>SIX_FROM_FOURTYNINE_4</code> */
 	public final static URILiteral SIX_FROM_FOURTYNINE_4 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_4");
+	/** Constant <code>SIX_FROM_FOURTYNINE_5</code> */
 	public final static URILiteral SIX_FROM_FOURTYNINE_5 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_5");
+	/** Constant <code>SIX_FROM_FOURTYNINE_6</code> */
 	public final static URILiteral SIX_FROM_FOURTYNINE_6 = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "6_aus_49_6");
+	/** Constant <code>ZUSATZZAHL</code> */
 	public final static URILiteral ZUSATZZAHL = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "Zusatzzahl");
+	/** Constant <code>SUPERZAHL</code> */
 	public final static URILiteral SUPERZAHL = Literals.createURI(LOTTOPRODUCER_NAMESPACE, "Superzahl");
 	/**
 	 * the page of the referred provider
@@ -80,6 +89,13 @@ public class LottoProducer extends GeneralProducer{
 	}
 
 	
+	/**
+	 * <p>createLottoProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 * @return a {@link lupos.event.producer.webpage.LottoProducer} object.
+	 * @throws java.net.MalformedURLException if any.
+	 */
 	public static LottoProducer createLottoProducer(SerializingMessageService msgService) throws MalformedURLException{
 		/**
 		 * URL data
@@ -149,8 +165,9 @@ public class LottoProducer extends GeneralProducer{
 	/**
 	 * 	sets the xPath commands and corresponding regular expressions, literaltypes and namespaces.
 	 *  After that it starts the producer and with that calls constructor of WeatherProducer.
-	 * @param args
-	 * @throws Exception
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {		
 

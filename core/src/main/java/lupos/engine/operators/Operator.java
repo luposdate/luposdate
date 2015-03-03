@@ -31,6 +31,9 @@ import lupos.misc.debug.DebugStep;
 
 /**
  * This class is the super class for all operators, which process bindings.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Operator extends BasicOperator {
 
@@ -53,12 +56,19 @@ public class Operator extends BasicOperator {
 	 *            The received QueryResult
 	 * @param operandID
 	 *            The operand number
-	 * @return
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
 	 */
 	public QueryResult process(final QueryResult queryResult, final int operandID) {
 		throw (new UnsupportedOperationException("This Operator(" + this + ") should have been replaced before being used."));
 	}
 
+	/**
+	 * <p>deleteQueryResult.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param operandID a int.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult deleteQueryResult(final QueryResult queryResult, final int operandID) {
 		// in the typical case, just apply the normal process method
 		// this works well e.g. for filter operators, but does not work well
@@ -67,6 +77,11 @@ public class Operator extends BasicOperator {
 		return this.process(queryResult, operandID);
 	}
 
+	/**
+	 * <p>deleteQueryResult.</p>
+	 *
+	 * @param operandID a int.
+	 */
 	public void deleteQueryResult(final int operandID) {
 		// to be overriden if an operator intermediately stores a QueryResult (e.g. pipeline-breakers) and a QueryResult must be deleted...
 	}
@@ -148,17 +163,30 @@ public class Operator extends BasicOperator {
 		}
 	}
 
+	/**
+	 * <p>deleteAll.</p>
+	 *
+	 * @param operandID a int.
+	 */
 	public void deleteAll(final int operandID) {
 		this.deleteQueryResult(operandID);
 		this.deleteAllAtSucceedingOperators();
 	}
 
+	/**
+	 * <p>deleteAllAtSucceedingOperators.</p>
+	 */
 	public void deleteAllAtSucceedingOperators() {
 		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			((Operator) opId.getOperator()).deleteAll(opId.getId());
 		}
 	}
 
+	/**
+	 * <p>isPipelineBreaker.</p>
+	 *
+	 * @return a boolean.
+	 */
 	protected boolean isPipelineBreaker() {
 		return false;
 	}
@@ -170,6 +198,7 @@ public class Operator extends BasicOperator {
 	 *
 	 * @param operandID
 	 *            the operand number
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
 	 */
 	public void deleteAllDebug(final int operandID, final DebugStep debugstep) {
 		this.deleteQueryResult(operandID);
@@ -185,6 +214,7 @@ public class Operator extends BasicOperator {
 	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
 	 */
 	public void deleteAllDebug(final QueryResult queryResult,
 			final int operandID, final DebugStep debugstep) {
@@ -211,6 +241,11 @@ public class Operator extends BasicOperator {
 		}
 	}
 
+	/**
+	 * <p>deleteAllDebugAtSucceedingOperators.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public void deleteAllDebugAtSucceedingOperators(final DebugStep debugstep) {
 		for (final OperatorIDTuple opId : this.succeedingOperators) {
 			debugstep.stepDeleteAll(this, opId.getOperator());
@@ -228,6 +263,7 @@ public class Operator extends BasicOperator {
 	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
 	 */
 	public void processAllDebug(final QueryResult queryResult, final int operandID, final DebugStep debugstep) {
 		final QueryResult opp = this.process(queryResult, operandID);

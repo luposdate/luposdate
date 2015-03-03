@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -42,11 +46,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualRifJTextPane;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-
-
-
 public class RifCodeEditor  {
 
 
@@ -56,6 +55,9 @@ public class RifCodeEditor  {
 
 	private JScrollPane rifInputSP;
 
+	/**
+	 * <p>Constructor for RifCodeEditor.</p>
+	 */
 	public RifCodeEditor(){
 		super();
 
@@ -72,6 +74,12 @@ public class RifCodeEditor  {
 
 
 
+	/**
+	 * <p>insertText.</p>
+	 *
+	 * @param position a int.
+	 * @param text a {@link java.lang.String} object.
+	 */
 	public void insertText(final int position, final String text){
 		final StringBuilder oldtext = new StringBuilder(this.tp_rifInput.getText());
 		oldtext.insert(position, text);
@@ -79,6 +87,12 @@ public class RifCodeEditor  {
 		this.tp_rifInput.setText(newText);
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		final JSONObject saveObject = new JSONObject();
 
@@ -93,6 +107,11 @@ public class RifCodeEditor  {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public void fromJSON(final JSONObject loadObject) {
 		try {
 			this.tp_rifInput.setText(loadObject.getString("RIF CODE"));
@@ -104,38 +123,78 @@ public class RifCodeEditor  {
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>tp_rifInput</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualRifJTextPane} object.
+	 */
 	public VisualRifJTextPane getTp_rifInput() {
 		return this.tp_rifInput;
 	}
 
+	/**
+	 * <p>Setter for the field <code>tp_rifInput</code>.</p>
+	 *
+	 * @param tp_rifInput a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualRifJTextPane} object.
+	 */
 	public void setTp_rifInput(final VisualRifJTextPane tp_rifInput) {
 		this.tp_rifInput = tp_rifInput;
 	}
 
+	/**
+	 * <p>Getter for the field <code>lp_rifInput</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.anotherSyntaxHighlighting.LinePainter} object.
+	 */
 	public LinePainter getLp_rifInput() {
 		return this.lp_rifInput;
 	}
 
+	/**
+	 * <p>Setter for the field <code>lp_rifInput</code>.</p>
+	 *
+	 * @param lp_rifInput a {@link lupos.gui.anotherSyntaxHighlighting.LinePainter} object.
+	 */
 	public void setLp_rifInput(final LinePainter lp_rifInput) {
 		this.lp_rifInput = lp_rifInput;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>ta_rifInputErrors</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JTextArea} object.
+	 */
 	public JTextArea getTa_rifInputErrors() {
 		return this.ta_rifInputErrors;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>ta_rifInputErrors</code>.</p>
+	 *
+	 * @param ta_rifInputErrors a {@link javax.swing.JTextArea} object.
+	 */
 	public void setTa_rifInputErrors(final JTextArea ta_rifInputErrors) {
 		this.ta_rifInputErrors = ta_rifInputErrors;
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>rifInputSP</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JScrollPane} object.
+	 */
 	public JScrollPane getRifInputSP() {
 		return this.rifInputSP;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>rifInputSP</code>.</p>
+	 *
+	 * @param rifInputSP a {@link javax.swing.JScrollPane} object.
+	 */
 	public void setRifInputSP(final JScrollPane rifInputSP) {
 		this.rifInputSP = rifInputSP;
 	}

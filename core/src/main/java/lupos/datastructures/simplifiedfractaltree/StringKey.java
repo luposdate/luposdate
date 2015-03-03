@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,12 +21,14 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.simplifiedfractaltree;
 
 import java.io.Serializable;
 import java.util.Comparator;
-
 public class StringKey implements Comparator<StringKey>, Serializable, Comparable<StringKey> {
 	/**
 	 *
@@ -34,15 +37,27 @@ public class StringKey implements Comparator<StringKey>, Serializable, Comparabl
 	public String string = null;
 	transient Comparator<StringKey> comp = null;
 
+	/**
+	 * <p>Constructor for StringKey.</p>
+	 *
+	 * @param string a {@link java.lang.String} object.
+	 */
 	public StringKey(final String string){
 		this.string = string;
 	}
 
+	/**
+	 * <p>Constructor for StringKey.</p>
+	 *
+	 * @param string a {@link java.lang.String} object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 */
 	public StringKey(final String string, final Comparator<StringKey> comp){
 		this.string = string;
 		this.comp = comp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(final StringKey o1, final StringKey o2) {
 		if(this.comp == null){
@@ -52,16 +67,24 @@ public class StringKey implements Comparator<StringKey>, Serializable, Comparabl
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final StringKey o) {
 		return this.compare(this, o);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return this.string;
 	}
 
+	/**
+	 * <p>getBytes.</p>
+	 *
+	 * @param utf8 a {@link java.lang.String} object.
+	 * @return an array of byte.
+	 */
 	public byte[] getBytes(final String utf8) {
 		return this.string.getBytes();
 	}

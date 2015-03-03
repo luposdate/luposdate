@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc.debug;
 
@@ -42,7 +46,6 @@ import lupos.engine.operators.singleinput.modifiers.Offset;
 import lupos.engine.operators.singleinput.sort.Sort;
 import lupos.misc.util.OperatorIDTuple;
 import lupos.rdf.Prefix;
-
 public class BasicOperatorByteArray {
 
 	public enum OPERATORTYPE {
@@ -86,20 +89,42 @@ public class BasicOperatorByteArray {
 	 */
 	private final int[] indexOperators;
 
+	/**
+	 * <p>Constructor for BasicOperatorByteArray.</p>
+	 *
+	 * @param index a int.
+	 * @param graph an array of byte.
+	 * @param indexOperators an array of int.
+	 */
 	public BasicOperatorByteArray(final int index, final byte[] graph, final int[] indexOperators) {
 		this.index = index;
 		this.graph = graph;
 		this.indexOperators = indexOperators;
 	}
 
+	/**
+	 * <p>getType.</p>
+	 *
+	 * @return a {@link lupos.misc.debug.BasicOperatorByteArray.OPERATORTYPE} object.
+	 */
 	public OPERATORTYPE getType() {
 		return OPERATORTYPE.values()[this.graph[this.index]];
 	}
 
+	/**
+	 * <p>getTypeASByte.</p>
+	 *
+	 * @return a byte.
+	 */
 	public byte getTypeASByte() {
 		return this.graph[this.index];
 	}
 
+	/**
+	 * <p>getSucceedingOperators.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<OperatorIDTuple<BasicOperatorByteArray>> getSucceedingOperators() {
 		final int indexSO = this.getIndexSucceedingOperators();
 		final int number = this.get2Bytes(indexSO);
@@ -155,6 +180,11 @@ public class BasicOperatorByteArray {
 		}
 	}
 
+	/**
+	 * <p>isMultiInputOperator.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isMultiInputOperator() {
 		for (final BasicOperatorByteArray prec : this.getPrecedingOperators()) {
 			for (final OperatorIDTuple<BasicOperatorByteArray> opIDt : prec.getSucceedingOperators()) {
@@ -166,6 +196,11 @@ public class BasicOperatorByteArray {
 		return false;
 	}
 
+	/**
+	 * <p>getPrecedingOperators.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BasicOperatorByteArray> getPrecedingOperators() {
 		final int indexPO = this.getIndexPreceedingOperators();
 		final int number = this.get2Bytes(indexPO);
@@ -179,6 +214,11 @@ public class BasicOperatorByteArray {
 		return result;
 	}
 
+	/**
+	 * <p>getContainedGraph.</p>
+	 *
+	 * @return a {@link lupos.misc.debug.BasicOperatorByteArray} object.
+	 */
 	public BasicOperatorByteArray getContainedGraph(){
 		final int indexCG = this.getIndexContainedGraph();
 		final int reference = this.get2Bytes(indexCG);
@@ -189,12 +229,19 @@ public class BasicOperatorByteArray {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final int length = this.get2Bytes(this.index + 1);
 		return new String(this.graph, this.index + 3, length);
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString(final Prefix prefixInstance) {
 		if (prefixInstance.isActive()) {
 			final int indexPS = this.getIndexPrefixedString();
@@ -205,11 +252,13 @@ public class BasicOperatorByteArray {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.index;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object element) {
 		if (element instanceof BasicOperatorByteArray) {
@@ -240,6 +289,13 @@ public class BasicOperatorByteArray {
 	}
 
 
+	/**
+	 * <p>getBasicOperatorByteArray.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link lupos.misc.debug.BasicOperatorByteArray} object.
+	 */
 	public static BasicOperatorByteArray getBasicOperatorByteArray(
 			final BasicOperator root, final Prefix prefixInstance) {
 		final LinkedList<BasicOperator> indexOperatorsList = new LinkedList<BasicOperator>();

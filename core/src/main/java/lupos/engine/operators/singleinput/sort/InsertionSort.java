@@ -39,37 +39,44 @@ import lupos.sparql1_1.Node;
 /**
  * This class represents a static List which is used to sort every incoming
  * binding into a List given by this class.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
-
 public class InsertionSort extends CollectionSort {
 
 	// List to fill
 	protected QueryResult list = getQR();
 
+	/**
+	 * <p>Constructor for InsertionSort.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 */
 	public InsertionSort(final Node node) {
 		super(node);
 	}
 
+	/**
+	 * <p>Constructor for InsertionSort.</p>
+	 */
 	public InsertionSort() {
 		// nothing to init...
 	}
 
 	/**
 	 * this method checks if the static List has already been created,
-	 * 
+	 *
 	 * @return true if the List had already bin created, false if not.
 	 */
-
 	public boolean exists() {
 		return !(this.list == null);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Adds the given binding in correct order to the List (String comparison)
-	 * 
-	 * @param binding
-	 *            the binding to add
-	 * @return true if successfully added
 	 */
 	@Override
 	protected QueryResult postProcess(final QueryResult bindings, final int id) {
@@ -133,6 +140,7 @@ public class InsertionSort extends CollectionSort {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected QueryResult merge(final QueryResult bind) {
 		final Iterator<Bindings> iterBind = bind.iterator();
@@ -153,6 +161,7 @@ public class InsertionSort extends CollectionSort {
 		return getSortedQueryResult();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		for (final Bindings b: this.list) {
@@ -164,6 +173,7 @@ public class InsertionSort extends CollectionSort {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		preProcessMessage(new EndOfEvaluationMessage());
@@ -171,12 +181,15 @@ public class InsertionSort extends CollectionSort {
 	}
 
 	/**
+	 * <p>getSortedQueryResult.</p>
+	 *
 	 * @return the List in descending order
 	 */
 	public QueryResult getSortedQueryResult() {
 		return this.list;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
@@ -189,17 +202,20 @@ public class InsertionSort extends CollectionSort {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		this.list.release();
 		this.list = QueryResult.createInstance();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -208,6 +224,7 @@ public class InsertionSort extends CollectionSort {
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

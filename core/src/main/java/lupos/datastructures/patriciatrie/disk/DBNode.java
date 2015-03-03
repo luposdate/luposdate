@@ -34,10 +34,14 @@ import lupos.datastructures.patriciatrie.node.Node;
 /**
  * This class extends the abstract Node class and implements a disk based
  * behavior.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBNode extends Node implements IDBNode {
 
 
+	/** Constant <code>deserializer</code> */
 	public final static Deserializer deserializer = new Deserializer(){
 		/**
 		 * Deserializes a node from an InputStream.
@@ -129,11 +133,9 @@ public class DBNode extends Node implements IDBNode {
 	}
 
 	/**
-	 * Serializes this node and writes the output to the OutputStream
+	 * {@inheritDoc}
 	 *
-	 * @param nodeOutputStream
-	 *            Stream to write the serialized data to
-	 * @throws IOException
+	 * Serializes this node and writes the output to the OutputStream
 	 */
 	@Override
 	public final void serialize(final NodeOutputStream nodeOutputStream) throws IOException {
@@ -161,9 +163,7 @@ public class DBNode extends Node implements IDBNode {
 		this.setChanged(false);
 	}
 
-	/**
-	 * @return Index for NodeManager
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public final int getNodeIndex() {
 		return this.nodeIndex;
@@ -179,11 +179,13 @@ public class DBNode extends Node implements IDBNode {
 		this.nodeIndex = idx;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final Node createNode() {
 		return new DBNode(this.nodeManager, -1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final void destroyNode(final boolean recursive) {
 //		logger.debug("Destroying node with index " + this.getNodeIndex());
@@ -200,11 +202,13 @@ public class DBNode extends Node implements IDBNode {
 		this.nodeManager.removeNode(this.getNodeIndex());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final boolean hasChild(final int i) {
 		return this.children != null && i < this.children.length && this.children[i] != -1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final Node getChild(final int i) {
 		if (this.children != null && this.children[i] != -1){
@@ -219,6 +223,8 @@ public class DBNode extends Node implements IDBNode {
 	 *
 	 * @param i
 	 *            Array index
+	 * @param idx
+	 *            Node index
 	 * @param idx
 	 *            Node index
 	 */
@@ -244,6 +250,8 @@ public class DBNode extends Node implements IDBNode {
 	}
 
 	/**
+	 * <p>getChildId.</p>
+	 *
 	 * @param i
 	 *            Array index
 	 * @return Node index of the child if it is set, -1 otherwise
@@ -256,6 +264,7 @@ public class DBNode extends Node implements IDBNode {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final void setChild(final int i, final Node node) {
 		if (node != null){
@@ -267,6 +276,7 @@ public class DBNode extends Node implements IDBNode {
 		this.nodeManager.saveDBNode(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final boolean isFromSameTrie(final Node node) {
 		if (node instanceof DBNode) {
@@ -278,6 +288,7 @@ public class DBNode extends Node implements IDBNode {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		if (this.children != null) {
@@ -297,6 +308,7 @@ public class DBNode extends Node implements IDBNode {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected final void removeChildrenArrayElement(final int idx) {
 		if (this.children != null) {
@@ -315,6 +327,7 @@ public class DBNode extends Node implements IDBNode {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final int getChildrenLength() {
 		return (this.children == null ? 0 : this.children.length);

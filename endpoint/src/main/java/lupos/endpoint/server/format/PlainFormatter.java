@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -29,18 +33,22 @@ import java.util.Collection;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
-
 public class PlainFormatter extends Formatter {
 
+	/**
+	 * <p>Constructor for PlainFormatter.</p>
+	 */
 	public PlainFormatter() {
 		super("Plain", "text/plain");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeResult(final OutputStream os, final Collection<Variable> variables, final QueryResult queryResult) throws IOException {
 		os.write(queryResult.toString().getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType(final QueryResult queryResult) {
 		return "text/plain";

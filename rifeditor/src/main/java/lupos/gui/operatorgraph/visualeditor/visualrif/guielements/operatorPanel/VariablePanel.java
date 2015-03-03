@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -46,7 +50,6 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
-
 public class VariablePanel extends AbstractGuiComponent<Operator>{
 
 	private static final long serialVersionUID = -6789368326247215391L;
@@ -54,6 +57,14 @@ public class VariablePanel extends AbstractGuiComponent<Operator>{
 	protected GridBagConstraints gbc = null;
 	private VariableOperator variableOperator;
 
+	/**
+	 * <p>Constructor for VariablePanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator} object.
+	 * @param movable a boolean.
+	 */
 	public VariablePanel(final VisualGraph<Operator> parent, final GraphWrapper gw,
 			final VariableOperator operator, final boolean movable) {
 		super(parent, gw, operator, movable);
@@ -123,6 +134,7 @@ public class VariablePanel extends AbstractGuiComponent<Operator>{
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize(){
 		int maxWidthLeftColumn = 50;
@@ -153,15 +165,26 @@ public class VariablePanel extends AbstractGuiComponent<Operator>{
 				this.revalidate();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return true;
 	}
 
+	/**
+	 * <p>Getter for the field <code>variableOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator} object.
+	 */
 	public VariableOperator getVariableOperator() {
 		return this.variableOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>variableOperator</code>.</p>
+	 *
+	 * @param variableOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator} object.
+	 */
 	public void setVariableOperator(final VariableOperator variableOperator) {
 		this.variableOperator = variableOperator;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,29 +21,48 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
-
 public class LuposDocument extends DefaultStyledDocument {
 
 	protected LuposJTextPane text;
 	protected Colorer colorer;
 	protected volatile boolean ignoreColoring = false;
+	/** Constant <code>WAITINGTIME=1000</code> */
 	protected final static int WAITINGTIME = 1000;
 
+	/**
+	 * <p>Constructor for LuposDocument.</p>
+	 */
 	public LuposDocument() {
 		super();
 		this.init();
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param parser a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @param startColorerThread a boolean.
+	 */
 	public void init(final ILuposParser parser, final boolean startColorerThread){
 		this.colorer = new Colorer(this, parser, LuposDocument.WAITINGTIME, startColorerThread);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param parser a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @param startColorerThread a boolean.
+	 * @param WAITINGTIME_Parameter a int.
+	 */
 	public void init(final ILuposParser parser, final boolean startColorerThread, final int WAITINGTIME_Parameter){
 		this.colorer = new Colorer(this, parser, WAITINGTIME_Parameter, startColorerThread);
 	}
@@ -80,16 +100,25 @@ public class LuposDocument extends DefaultStyledDocument {
 
 	/**
 	 * setting the LuposJTextPane
-	 * @param luposJTextPane the {@link LuposJTextPane} to set
+	 *
+	 * @param luposJTextPane the {@link lupos.gui.anotherSyntaxHighlighting.LuposJTextPane} to set
 	 */
 	public void setLuposJTextPane(final LuposJTextPane luposJTextPane) {
 		this.text = luposJTextPane;
 	}
 
+	/**
+	 * <p>colorOneTimeAll.</p>
+	 */
 	public void colorOneTimeAll(){
 		this.colorer.colorOneTime();
 	}
 
+	/**
+	 * <p>Setter for the field <code>ignoreColoring</code>.</p>
+	 *
+	 * @param ignoreColoring a boolean.
+	 */
 	public void setIgnoreColoring(final boolean ignoreColoring) {
 		this.ignoreColoring = ignoreColoring;
 	}

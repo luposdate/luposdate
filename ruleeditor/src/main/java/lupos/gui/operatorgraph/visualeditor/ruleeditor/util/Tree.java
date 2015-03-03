@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -36,7 +40,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor;
-
 public class Tree extends JTree {
 	private static final long serialVersionUID = 5428177608456900685L;
 
@@ -47,6 +50,12 @@ public class Tree extends JTree {
 	private DefaultTreeModel model = null;
 	private TreePath activePath = null;
 
+	/**
+	 * <p>Constructor for Tree.</p>
+	 *
+	 * @param comp a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.ITree} object.
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public Tree(ITree comp, RuleEditor editor) {
 		super(new TreeNode("root"));
 
@@ -139,6 +148,11 @@ public class Tree extends JTree {
 		return node;
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param element a {@link java.lang.String} object.
+	 */
 	public void add(String element) {
 		DefaultMutableTreeNode childNode = this.add(element, this.rootNode);
 
@@ -147,10 +161,24 @@ public class Tree extends JTree {
 		}
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param element a {@link java.lang.String} object.
+	 * @param rootNodeName a {@link java.lang.String} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TreeNode} object.
+	 */
 	public TreeNode add(String element, String rootNodeName) {
 		return this.add(element, this.getNodeByName(rootNodeName, this.rootNode));
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param element a {@link java.lang.String} object.
+	 * @param rootNode a {@link javax.swing.tree.DefaultMutableTreeNode} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TreeNode} object.
+	 */
 	public TreeNode add(String element, DefaultMutableTreeNode rootNode) {
 		if(this.getNodeByName(element, this.rootNode) != null) {
 			return null;
@@ -163,24 +191,34 @@ public class Tree extends JTree {
 		return childNode;
 	}
 
+	/** {@inheritDoc} */
 	public void setSelectionPath(TreePath path) {
 		this.activePath = path;
 
 		super.setSelectionPath(path);
 	}
 
+	/**
+	 * <p>deSelect.</p>
+	 */
 	public void deSelect() {
 		super.removeSelectionPath(this.activePath);
 
 		this.activePath = null;
 	}
 
+	/**
+	 * <p>edit.</p>
+	 */
 	public void edit() {
 		if(this.activePath != null) {
 			this.startEditingAtPath(this.activePath);
 		}
 	}
 
+	/**
+	 * <p>delete.</p>
+	 */
 	public void delete() {
 		if(this.activePath != null) {
 			int returnValue = JOptionPane.showOptionDialog(
@@ -209,6 +247,13 @@ public class Tree extends JTree {
 		}
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public boolean remove(String ruleName, String rulePackageName) {
 		DefaultMutableTreeNode rootNode = this.getNodeByName(rulePackageName, this.rootNode);
 		DefaultMutableTreeNode node = this.getNodeByName(ruleName, rootNode);
@@ -220,10 +265,18 @@ public class Tree extends JTree {
 		return this.getNodeByName(ruleName, this.rootNode, true) != null;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rootNode</code>.</p>
+	 *
+	 * @return a {@link javax.swing.tree.DefaultMutableTreeNode} object.
+	 */
 	public DefaultMutableTreeNode getRootNode() {
 		return this.rootNode;
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		this.rootNode.removeAllChildren();
 		this.model.reload();

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.tripleoperator.patternmatcher;
 
@@ -29,10 +33,10 @@ import java.util.Vector;
 import lupos.datastructures.items.Triple;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class HashPatternMatcher extends PatternMatcher {
 	protected HashMap<String, Vector<Integer>> keysOfTriplePatterns;
 
+	/** {@inheritDoc} */
 	@Override
 	public void set(final TripleConsumer[] operators) {
 		super.set(operators);
@@ -51,6 +55,7 @@ public class HashPatternMatcher extends PatternMatcher {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 

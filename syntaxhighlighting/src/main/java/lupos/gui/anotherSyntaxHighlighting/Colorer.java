@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting;
 
@@ -35,7 +39,6 @@ import java.util.TreeMap;
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM;
 import lupos.misc.Tuple;
-
 public class Colorer extends Thread {
 	
 	private final ILuposParser parser;
@@ -59,10 +62,25 @@ public class Colorer extends Thread {
 		}
 	}
 		
+	/**
+	 * <p>Constructor for Colorer.</p>
+	 *
+	 * @param doc a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocument} object.
+	 * @param parser a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @param WAITINGTIME a int.
+	 */
 	public Colorer(final LuposDocument doc, final ILuposParser parser, final int WAITINGTIME){		
 		this(doc, parser, WAITINGTIME, true);
 	}
 	
+	/**
+	 * <p>Constructor for Colorer.</p>
+	 *
+	 * @param doc a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocument} object.
+	 * @param parser a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 * @param WAITINGTIME a int.
+	 * @param startThread a boolean.
+	 */
 	public Colorer(final LuposDocument doc, final ILuposParser parser, final int WAITINGTIME, final boolean startThread){		
 		this.parser = parser;
 		this.doc = doc;
@@ -100,14 +118,29 @@ public class Colorer extends Thread {
 		}
 	}
 	
+	/**
+	 * <p>transmitInsertEvent.</p>
+	 *
+	 * @param offset a int.
+	 * @param end a int.
+	 */
 	public void transmitInsertEvent(final int offset, final int end){
 		this.transmitUpdateEvent(true, offset, end);
 	}
 
+	/**
+	 * <p>transmitRemoveEvent.</p>
+	 *
+	 * @param offset a int.
+	 * @param end a int.
+	 */
 	public void transmitRemoveEvent(final int offset, final int end){
 		this.transmitUpdateEvent(false, offset, end);
 	}
 	
+	/**
+	 * <p>colorOneTime.</p>
+	 */
 	public void colorOneTime(){
 		synchronized (this) {
 			this.tokens.clear();
@@ -116,11 +149,13 @@ public class Colorer extends Thread {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void finalize(){
 		this.buffer.endOfData();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void run() {
 		try {

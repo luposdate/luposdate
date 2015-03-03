@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -30,11 +34,17 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator;
-
 public class TermConnection extends ConnectionRIF<Operator> {
 	
 	Term term;
 
+	/**
+	 * <p>Constructor for TermConnection.</p>
+	 *
+	 * @param ruleGraph a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 * @param frameOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator} object.
+	 * @param term a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Term} object.
+	 */
 	public TermConnection(RuleGraph ruleGraph, FrameOperator frameOperator, Term term) {
 		super(ruleGraph.getVisualEditor());
 		this.addOperator(frameOperator);
@@ -45,6 +55,13 @@ public class TermConnection extends ConnectionRIF<Operator> {
 	}
 	
 
+	/**
+	 * <p>Constructor for TermConnection.</p>
+	 *
+	 * @param ruleGraph a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 * @param abstractTermOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractTermOperator} object.
+	 * @param term a {@link lupos.gui.operatorgraph.visualeditor.visualrif.util.Term} object.
+	 */
 	public TermConnection(RuleGraph ruleGraph, AbstractTermOperator abstractTermOperator, Term term) {
 		super(ruleGraph.getVisualEditor());
 		this.addOperator(abstractTermOperator);
@@ -55,6 +72,7 @@ public class TermConnection extends ConnectionRIF<Operator> {
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	protected String validateConnection() {
 		String errorString = "";
@@ -80,6 +98,8 @@ public class TermConnection extends ConnectionRIF<Operator> {
 	/**
 	 * This method checks whether the requested connection is valid or not and
 	 * creates it, if it is.
+	 *
+	 * @return a boolean.
 	 */
 	protected boolean createConnection() {
 		

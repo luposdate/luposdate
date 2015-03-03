@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -46,6 +50,11 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 
 	private static ArrayList<ComparatorDeSerializer<?>> listOfDeSerializer = new ArrayList<ComparatorDeSerializer<?>>();
 
+	/**
+	 * <p>registerDeSerializer.</p>
+	 *
+	 * @param deSerializers a {@link lupos.io.serializer.COMPARATOR.ComparatorDeSerializer} object.
+	 */
 	public static void registerDeSerializer(final ComparatorDeSerializer<?>... deSerializers){
 		for(final ComparatorDeSerializer<?> deSerializer: deSerializers){
 			COMPARATOR.listOfDeSerializer.add(deSerializer);
@@ -67,6 +76,7 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 				new TripleComparatorDeSerializer());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final Comparator<T> t) {
 		@SuppressWarnings("unchecked")
@@ -80,6 +90,7 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final Comparator<T> t, final OutputStream out) throws IOException {
 		@SuppressWarnings("unchecked")
@@ -93,6 +104,7 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<T> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		@SuppressWarnings("unchecked")
@@ -106,6 +118,7 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		}
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends Comparator<T>>[] getRegisteredClasses() {
@@ -115,6 +128,7 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return (o instanceof Comparator);

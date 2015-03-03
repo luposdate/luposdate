@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.generators;
 
@@ -35,7 +39,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.Documentation
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePackagePanel;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePanel;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.File;
-
 public class DocumentationGenerator {
 	private RuleEditor editor = null;
 
@@ -47,10 +50,22 @@ public class DocumentationGenerator {
 	private HashMap<String, String> templates = new HashMap<String, String>();
 	private HashMap<String, JTabbedPane[]> rulePackageAssociations = null;
 
+	/**
+	 * <p>Constructor for DocumentationGenerator.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public DocumentationGenerator(RuleEditor editor) {
 		this.editor = editor;
 	}
 
+	/**
+	 * <p>generate.</p>
+	 *
+	 * @param targetDirectory a {@link java.lang.String} object.
+	 * @param docTitle a {@link java.lang.String} object.
+	 * @param imagePath a {@link java.lang.String} object.
+	 */
 	public void generate(String targetDirectory, String docTitle, String imagePath) {
 		this.ruleFrameNavigation = new StringBuffer("<table style=\"width:100&#37;; border:0;\"><tr><td><a href=\"packagesDescriptionFrame.html\">All Packages</a>");
 		this.allRules_content = new StringBuffer();

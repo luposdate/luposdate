@@ -39,15 +39,19 @@ import lupos.event.util.Literals;
 /**
  * Creates events which contain the computers current CPU usage and uptime.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SysMonProducer extends ProducerBaseNoDuplicates {
 	
+	/** Constant <code>NAMESPACE="http://localhost/events/SysMon/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/SysMon/";
 	private static final int INTERVAL = 1000;
 	
 	private final JavaSysMon monitor = new JavaSysMon();
 	private CpuTimes previousCpuTimes = this.monitor.cpuTimes();
 	
+	/** Constant <code>TYPE</code> */
 	public final static URILiteral TYPE = Literals.createURI(SysMonProducer.NAMESPACE, "SysMonEvent");
 	
 	public static class Predicates {
@@ -64,10 +68,16 @@ public class SysMonProducer extends ProducerBaseNoDuplicates {
 	}
 
 
+	/**
+	 * <p>Constructor for SysMonProducer.</p>
+	 *
+	 * @param msgService a {@link lupos.event.communication.SerializingMessageService} object.
+	 */
 	public SysMonProducer(SerializingMessageService msgService) {
 		super(msgService, INTERVAL);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<List<Triple>> produceWithDuplicates() {
 		try {			
@@ -113,6 +123,12 @@ public class SysMonProducer extends ProducerBaseNoDuplicates {
 		return null;
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel
 		SerializingMessageService msgService = ProducerBase.connectToMaster();

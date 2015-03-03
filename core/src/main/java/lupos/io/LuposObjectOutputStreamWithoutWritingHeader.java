@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,20 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 public class LuposObjectOutputStreamWithoutWritingHeader extends
 		LuposObjectOutputStream {
 
+	/**
+	 * <p>Constructor for LuposObjectOutputStreamWithoutWritingHeader.</p>
+	 *
+	 * @param arg0 a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public LuposObjectOutputStreamWithoutWritingHeader(final OutputStream arg0)
 			throws IOException {
 		os = arg0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
 		try {

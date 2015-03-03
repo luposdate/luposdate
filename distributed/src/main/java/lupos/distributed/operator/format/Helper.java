@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.operator.format;
 
@@ -40,7 +44,6 @@ import lupos.optimizations.logical.statistics.VarBucket;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class Helper {
 
 	/**
@@ -48,7 +51,8 @@ public class Helper {
 	 *
 	 * @param t the object to be transformed into an json object
 	 * @return the json object representing t, or an empty JSON object if the type of t is not supported
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
+	 * @param <T> a T object.
 	 */
 	public static<T> JSONObject createJSONObject(final T t) throws JSONException {
 		if(t instanceof Item) {
@@ -68,7 +72,9 @@ public class Helper {
 	 *
 	 * @param map the map to be represented by a json object
 	 * @return the json object representing the map
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
 	 */
 	public static<K, V> JSONObject createMapJSONObject(final Map<K, V> map) throws JSONException {
 		final JSONObject json = new JSONObject();
@@ -93,7 +99,7 @@ public class Helper {
 	 *
 	 * @param varBucket the histogram
 	 * @return the json object representing the histogram
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static JSONObject createVarBucketJSONObject(final VarBucket varBucket) throws JSONException {
 		final JSONObject json = new JSONObject();
@@ -121,7 +127,7 @@ public class Helper {
 	 *
 	 * @param variables the variables
 	 * @return a JSON object that represents a collection of variables
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static JSONObject createVariablesJSONObject(final Collection<Variable> variables) throws JSONException {
 		final JSONObject json = new JSONObject();
@@ -138,7 +144,7 @@ public class Helper {
 	 *
 	 * @param triplePatterns the triple patterns collection
 	 * @return A JSONObject representing the given collection of triple patterns
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static JSONObject createTriplePatternsJSONObject(final Collection<TriplePattern> triplePatterns) throws JSONException {
 		final JSONObject json = new JSONObject();
@@ -156,7 +162,7 @@ public class Helper {
 	 * @param triplePattern
 	 *            the triple pattern
 	 * @return the json object
-	 * @throws JSONException
+	 * @throws org.json.JSONException
 	 *             the jSON exception
 	 */
 	public static JSONObject createTriplePatternJSONObject(final TriplePattern triplePattern) throws JSONException {
@@ -172,7 +178,7 @@ public class Helper {
 	 * @param triplePattern
 	 *            the triple pattern
 	 * @return the collection
-	 * @throws JSONException
+	 * @throws org.json.JSONException
 	 *             the jSON exception
 	 */
 	public static Collection<JSONObject> createTriplePatternItemsArray(final TriplePattern triplePattern) throws JSONException {
@@ -190,7 +196,7 @@ public class Helper {
 	 * @param item
 	 *            the item
 	 * @return the jSON object
-	 * @throws JSONException
+	 * @throws org.json.JSONException
 	 *             the jSON exception
 	 */
 	public static JSONObject createItemAsJSONObject(final Item item) throws JSONException {
@@ -206,7 +212,7 @@ public class Helper {
 	 *
 	 * @param var the variable
 	 * @return the JSON object representing the variable
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public final static JSONObject createVarAsJSONObject(final Variable var) throws JSONException {
 		final JSONObject varJson = new JSONObject();
@@ -220,7 +226,7 @@ public class Helper {
 	 *
 	 * @param literal the literal
 	 * @return the JSONObject representing the literal
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public final static JSONObject createLiteralAsJSONObject(final Literal literal) throws JSONException {
 		final JSONObject literalJson = new JSONObject();
@@ -234,7 +240,8 @@ public class Helper {
 	 *
 	 * @param json the json object
 	 * @return the object represented by the json object, null if the object type has not been identified
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
+	 * @param <T> a T object.
 	 */
 	@SuppressWarnings("unchecked")
 	public static<T> T createObjectFromJSON(final JSONObject json) throws JSONException {
@@ -255,7 +262,9 @@ public class Helper {
 	 *
 	 * @param mapJson the json object
 	 * @return the map
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
 	 */
 	public static<K, V> Map<K, V> createMapFromJSON(final JSONObject mapJson) throws JSONException {
 		final Map<K, V> result = new HashMap<K, V>();
@@ -276,7 +285,7 @@ public class Helper {
 	 *
 	 * @param varBucketJson the json object containing the histogram
 	 * @return the histogram object
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static VarBucket createVarBucketFromJSON(final JSONObject varBucketJson) throws JSONException {
 		final VarBucket result = new VarBucket();
@@ -305,7 +314,7 @@ public class Helper {
 	 *
 	 * @param varsJson the JSON object
 	 * @return a list of variables
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static List<Variable> createVariablesFromJSON(final JSONObject varsJson) throws JSONException {
 		final List<Variable> result = new LinkedList<Variable>();
@@ -321,7 +330,7 @@ public class Helper {
 	 *
 	 * @param triplePatternsJson the JSON object
 	 * @return a list of triple patterns
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static List<TriplePattern> createTriplePatternsFromJSON(final JSONObject triplePatternsJson) throws JSONException {
 		final List<TriplePattern> result = new LinkedList<TriplePattern>();
@@ -337,7 +346,7 @@ public class Helper {
 	 *
 	 * @param triplePatternJson the JSON object
 	 * @return a triple pattern
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static TriplePattern createTriplePatternFromJSON(final JSONObject triplePatternJson) throws JSONException {
 		final JSONArray itemsJson = (JSONArray) triplePatternJson.get("triple_pattern");
@@ -353,7 +362,7 @@ public class Helper {
 	 *
 	 * @param itemJson the JSON object
 	 * @return the item
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static Item createItemFromJSON(final JSONObject itemJson) throws JSONException {
 		if (itemJson.getString("type").equals("variable")) {
@@ -368,7 +377,7 @@ public class Helper {
 	 *
 	 * @param varJson the JSON object
 	 * @return a variable
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public final static Variable createVariableFromJSON(final JSONObject varJson) throws JSONException {
 		return new Variable(varJson.getString("name"));
@@ -379,7 +388,7 @@ public class Helper {
 	 *
 	 * @param literalJson the JSON object
 	 * @return a literal
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public final static Literal createLiteralFromJSON(final JSONObject literalJson) throws JSONException {
 		return LazyLiteral.getLiteral(literalJson.getString("value"), true);

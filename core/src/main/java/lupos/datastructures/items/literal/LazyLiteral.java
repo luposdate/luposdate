@@ -53,7 +53,9 @@ import lupos.sparql1_1.SimpleNode;
  * This class determines the type of it (like URILiteral, AnonymousLiteral,
  * TypedLiteral, ...) lazy, i.e., only up on request by a special method.
  * Internally, it uses a code for its string representation.
-
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LazyLiteral extends Literal {
 
@@ -64,12 +66,21 @@ public class LazyLiteral extends Literal {
 	private int code;
 	private String materializedContent = null;
 	private Literal materializedLiteral = null;
+	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
 
+	/**
+	 * <p>Constructor for LazyLiteral.</p>
+	 */
 	public LazyLiteral() {
 		// nothing to initialize
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public LazyLiteral(final String content) {
 		final Integer codeFromHashMap = hm.get(content);
 		if (codeFromHashMap != null && codeFromHashMap != 0) {
@@ -89,31 +100,50 @@ public class LazyLiteral extends Literal {
 		}
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteral.</p>
+	 *
+	 * @param code a int.
+	 */
 	public LazyLiteral(final int code) {
 		this.code = code;
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteral.</p>
+	 *
+	 * @param code a int.
+	 * @param materializedLiteral a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public LazyLiteral(final int code, final Literal materializedLiteral) {
 		this.code = code;
 		this.materializedLiteral = materializedLiteral;
 		this.materializedContent = materializedLiteral.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return new String[] { this.toString() };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getKey(){
 		return ""+this.code;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getOriginalKey(){
 		return this.getKey();
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getLiteral() {
 		if (this.materializedLiteral == null) {
 			this.materializedLiteral = getLiteral(this.originalString());
@@ -121,6 +151,7 @@ public class LazyLiteral extends Literal {
 		return this.materializedLiteral;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareToNotNecessarilySPARQLSpecificationConform(final Literal l) {
 		if (l instanceof LazyLiteral) {
@@ -130,6 +161,7 @@ public class LazyLiteral extends Literal {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		if (this.materializedContent == null){
@@ -138,11 +170,13 @@ public class LazyLiteral extends Literal {
 		return this.materializedContent;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return this.code;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object l) {
 		if (!(l instanceof Literal)) {
@@ -151,47 +185,98 @@ public class LazyLiteral extends Literal {
 		return this.compareToNotNecessarilySPARQLSpecificationConform((Literal) l) == 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean valueEquals(final Literal lit) {
 		return this.compareToNotNecessarilySPARQLSpecificationConform(lit) == 0;
 	}
 
+	/**
+	 * <p>Getter for the field <code>code</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getCode() {
 		return this.code;
 	}
 
+	/**
+	 * <p>isMaterialized.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isMaterialized() {
 		return (this.materializedLiteral != null);
 	}
 
+	/** Constant <code>hm</code> */
 	protected static StringIntegerMap hm = null;
+	/** Constant <code>v</code> */
 	protected static IntegerStringMap v = null;
 
+	/**
+	 * <p>maxID.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int maxID() {
 		return v.size();
 	}
 
+	/**
+	 * <p>Getter for the field <code>hm</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public static StringIntegerMap getHm() {
 		return hm;
 	}
 
+	/**
+	 * <p>Setter for the field <code>hm</code>.</p>
+	 *
+	 * @param hm a {@link lupos.datastructures.items.literal.codemap.StringIntegerMap} object.
+	 */
 	public static void setHm(final StringIntegerMap hm) {
 		LazyLiteral.hm = hm;
 	}
 
+	/**
+	 * <p>Getter for the field <code>v</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public static IntegerStringMap getV() {
 		return v;
 	}
 
+	/**
+	 * <p>Setter for the field <code>v</code>.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.literal.codemap.IntegerStringMap} object.
+	 */
 	public static void setV(final IntegerStringMap v) {
 		LazyLiteral.v = v;
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final String content) {
 		return LazyLiteral.getLiteral(content, false);
 	}
 
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param allowLazyLiteral a boolean.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final String content, final boolean allowLazyLiteral) {
 		try {
 			final SimpleNode node = SPARQL1_1Parser.parseGraphTerm(content, null);
@@ -204,10 +289,23 @@ public class LazyLiteral extends Literal {
 		}
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param n a lupos$sparql1_1$Node object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final Node n) {
 		return getLiteral(n, false);
 	}
 
+	/**
+	 * <p>getLiteral.</p>
+	 *
+	 * @param node a lupos$sparql1_1$Node object.
+	 * @param allowLazyLiteral a boolean.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public static Literal getLiteral(final Node node, final boolean allowLazyLiteral) {
 		Literal literal = null;
 		Node n = node;
@@ -380,46 +478,55 @@ public class LazyLiteral extends Literal {
 		return literal;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
 		this.code =InputHelper.readLuposInt(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		OutHelper.writeLuposInt(this.code, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isBlank() {
 		return this.getLiteral().isBlank();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isURI() {
 		return this.getLiteral().isURI();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isTypedLiteral(){
 		return this.getLiteral().isTypedLiteral();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isLanguageTaggedLiteral(){
 		return this.getLiteral().isLanguageTaggedLiteral();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isSimpleLiteral(){
 		return this.getLiteral().isSimpleLiteral();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isXMLSchemaStringLiteral(){
 		return this.getLiteral().isXMLSchemaStringLiteral();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew() {
 		return this.getLiteral().createThisLiteralNew();

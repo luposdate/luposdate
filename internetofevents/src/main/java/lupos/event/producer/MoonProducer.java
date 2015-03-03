@@ -40,13 +40,13 @@ import lupos.event.util.Utils;
 
 /**
  * Produces events which contain current moon-related information gathered from http://www.wunderground.com.
- * 
- * @author  Anderson, Kutzner
  *
+ * @version $Id: $Id
  */
 public class MoonProducer extends ProducerBaseNoDuplicates {
 	
 	// Defines the name of the event
+	/** Constant <code>NAMESPACE="http://localhost/events/Moon/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/Moon/";
 	// Defines the interval 
 	private static final int INTERVAL = 10000;
@@ -87,15 +87,17 @@ public class MoonProducer extends ProducerBaseNoDuplicates {
 	
 	/**
 	 * Constructor of the MoonProducer.
-	 * 
+	 *
 	 * @param msgService The message service that the producer should use to communicate.
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public MoonProducer(SerializingMessageService msgService) throws Exception {
 		super(msgService, INTERVAL);
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Creates and returns triples with the moon information.
 	 */
 	@Override
@@ -173,9 +175,9 @@ public class MoonProducer extends ProducerBaseNoDuplicates {
 	
 	/**
 	 * Main-method that starts the MoonProducer and asks for the country and city to get information about.
-	 * 
+	 *
 	 * @param args command line parameter
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel

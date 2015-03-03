@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -35,37 +39,44 @@ import lupos.io.Registration.DeSerializerConsideringSubClasses;
 
 @SuppressWarnings("rawtypes")
 public class DISKCOLLECTION extends DeSerializerConsideringSubClasses<DiskCollection> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof DiskCollection;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DiskCollection deserialize(final LuposObjectInputStream<DiskCollection> in) throws IOException, ClassNotFoundException, URISyntaxException {
 		return in.readLuposDiskCollection();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<DiskCollection>[] getRegisteredClasses() {
 		return new Class[] { DiskCollection.class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final DiskCollection t, final LuposObjectOutputStream out) throws IOException {
 		out.writeLuposDiskCollection(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final DiskCollection t) {
 		return t.lengthLuposObject();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final DiskCollection t, final OutputStream out) throws IOException {
 		t.writeLuposObject(out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DiskCollection deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		return DiskCollection.readAndCreateLuposObject(in);

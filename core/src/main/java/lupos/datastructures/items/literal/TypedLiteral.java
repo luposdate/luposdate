@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -35,7 +39,6 @@ import lupos.datastructures.items.literal.string.StringURILiteral;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
-
 public class TypedLiteral extends Literal {
 
 	/**
@@ -45,15 +48,31 @@ public class TypedLiteral extends Literal {
 	protected Literal content;
 	protected URILiteral type;
 
+	/**
+	 * <p>Constructor for TypedLiteral.</p>
+	 */
 	public TypedLiteral() {
 		// nothing to initialize in the default constructor
 	}
 
+	/**
+	 * <p>Constructor for TypedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	protected TypedLiteral(final String content, final String type)
 			throws java.net.URISyntaxException {
 		this(content, LiteralFactory.createURILiteralWithoutLazyLiteral(type));
 	}
 
+	/**
+	 * <p>Constructor for TypedLiteral.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param type a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	protected TypedLiteral(final String content, final URILiteral type) {
 		this.type = type;
 		final String uniqueRepresentation = checkContent(content, this.type);
@@ -61,16 +80,36 @@ public class TypedLiteral extends Literal {
 				.createLiteralWithoutLazyLiteral(uniqueRepresentation);
 	}
 
+	/**
+	 * <p>Constructor for TypedLiteral.</p>
+	 *
+	 * @param codeContent a int.
+	 * @param type a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	protected TypedLiteral(final int codeContent, final URILiteral type) {
 		this.type = type;
 		this.content = new CodeMapLiteral(codeContent);
 	}
 
+	/**
+	 * <p>checkContent.</p>
+	 *
+	 * @param content2 a {@link java.lang.String} object.
+	 * @param type a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected static String checkContent(final String content2,
 			final URILiteral type) {
 		return checkContent(content2, type.toString());
 	}
 
+	/**
+	 * <p>checkContent.</p>
+	 *
+	 * @param originalContent a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected static String checkContent(final String originalContent, final String type) {
 		if(LiteralFactory.semanticInterpretationOfLiterals==false){
 			return originalContent;
@@ -146,26 +185,57 @@ public class TypedLiteral extends Literal {
 		return "^^" + this.type.toString(prefixInstance);
 	}
 
+	/**
+	 * <p>Getter for the field <code>type</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getType() {
 		return this.type.toString();
 	}
 
+	/**
+	 * <p>getTypeLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public URILiteral getTypeLiteral() {
 		return this.type;
 	}
 
+	/**
+	 * <p>Getter for the field <code>content</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getContent() {
 		return this.content.toString();
 	}
 
+	/**
+	 * <p>getContentLiteral.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public Literal getContentLiteral() {
 		return this.content;
 	}
 
+	/**
+	 * <p>getOriginalContent.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOriginalContent() {
 		return this.content.toString();
 	}
 
+	/**
+	 * <p>commonToString.</p>
+	 *
+	 * @param superToString a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String commonToString(final String superToString) {
 		if (LiteralFactory.semanticInterpretationOfLiterals && this.type.toString().compareTo("<http://www.w3.org/2001/XMLSchema#string>") == 0){
 			// according to RDF Semantics document "text" and "text"^^xsd:string is the same, but only do this if semantic interpretation of literals is enabled...
@@ -175,26 +245,42 @@ public class TypedLiteral extends Literal {
 		}
 	}
 
+	/**
+	 * <p>commonToOriginalString.</p>
+	 *
+	 * @param superToString a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String commonToOriginalString(final String superToString) {
 		return superToString + this.getTypeString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String originalString() {
 		return this.commonToOriginalString(this.content.toString());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String printYagoStringWithPrefix() {
 		return this.content.printYagoStringWithPrefix() + "^^"
 				+ this.type.printYagoStringWithPrefix();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.commonToString(this.content.toString());
 	}
 
+	/**
+	 * <p>commonToOriginalString.</p>
+	 *
+	 * @param superToString a {@link java.lang.String} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String commonToOriginalString(final String superToString, final lupos.rdf.Prefix prefixInstance) {
 		if (LiteralFactory.semanticInterpretationOfLiterals && this.type.toString().compareTo("<http://www.w3.org/2001/XMLSchema#string>") == 0){
 			// according to RDF Semantics document "text" and "text"^^xsd:string is the same, but only do this if semantic interpretation of literals is enabled...
@@ -204,11 +290,13 @@ public class TypedLiteral extends Literal {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return this.commonToOriginalString(this.content.toString(), prefixInstance);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof TypedLiteral) {
@@ -226,12 +314,14 @@ public class TypedLiteral extends Literal {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		final String[] typeRepr = this.type.getUsedStringRepresentations();
 		return new String[] { this.content.toString(), typeRepr[0], typeRepr[1] };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
@@ -245,17 +335,20 @@ public class TypedLiteral extends Literal {
 		this.content = InputHelper.readLuposLiteral(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		this.type.writeExternal(out);
 		OutHelper.writeLuposLiteral(this.content, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isXMLSchemaStringLiteral(){
 		return this.type.toString().compareTo("<http://www.w3.org/2001/XMLSchema#string>")==0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal createThisLiteralNew() {
 		return LiteralFactory.createTypedLiteralWithoutException(this.content.originalString(), this.type.originalString());

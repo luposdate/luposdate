@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -33,7 +37,6 @@ import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator;
-
 public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
 	protected GridBagConstraints gbc = null;
 	private GroupOperator groupOperator;
@@ -41,6 +44,14 @@ public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
 	private static final long serialVersionUID = -9204167792670922418L;
 
 	// Constructor
+	/**
+	 * <p>Constructor for GroupOperatorPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator} object.
+	 * @param movable a boolean.
+	 */
 	public GroupOperatorPanel(final VisualGraph<Operator> parent, final GraphWrapper gw,
 			final GroupOperator operator, final boolean movable) {
 		super(parent, gw, operator, movable);
@@ -68,19 +79,31 @@ public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.add(this.label,this.gbc);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return false;
 	}
 
+	/**
+	 * <p>Getter for the field <code>groupOperator</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator} object.
+	 */
 	public GroupOperator getGroupOperator() {
 		return this.groupOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>groupOperator</code>.</p>
+	 *
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.GroupOperator} object.
+	 */
 	public void setGroupOperator(final GroupOperator operator) {
 		this.groupOperator = operator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize(){
 		this.setMinimumSize(this.label.getSize());
@@ -88,10 +111,20 @@ public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.revalidate();
 	}
 
+	/**
+	 * <p>getGroupLabelName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getGroupLabelName() {
 		return this.groupOperator.getGroupLabelName();
 	}
 
+	/**
+	 * <p>setGroupLabelName.</p>
+	 *
+	 * @param groupLabelName a {@link java.lang.String} object.
+	 */
 	public void setGroupLabelName(final String groupLabelName) {
 		this.groupOperator.setGroupLabelName(groupLabelName);
 
@@ -103,10 +136,20 @@ public class GroupOperatorPanel extends AbstractGuiComponent<Operator> {
 		this.updateSize();
 	}
 
+	/**
+	 * <p>setGroupName.</p>
+	 *
+	 * @param groupName a {@link java.lang.String} object.
+	 */
 	public void setGroupName(final String groupName){
 		this.groupOperator.setGroupName(groupName);
 	}
 
+	/**
+	 * <p>getGroupName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getGroupName(){
 		return this.groupOperator.getGroupName();
 	}

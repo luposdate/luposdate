@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -59,7 +63,6 @@ import xpref.datatypes.EnumDatatype;
 import xpref.datatypes.FileChooseDatatype;
 import xpref.datatypes.IntegerDatatype;
 import xpref.datatypes.StringDatatype;
-
 public final class EvaluatorCreator {
 
 	public enum EVALUATORS{
@@ -93,6 +96,23 @@ public final class EvaluatorCreator {
 		public abstract QueryEvaluator create() throws Exception;
 	}
 	
+	/**
+	 * <p>createRDF3XQueryEvaluator.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.RDF3XQueryEvaluator} object.
+	 * @throws javax.xml.xpath.XPathExpressionException if any.
+	 * @throws java.lang.SecurityException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws org.xml.sax.SAXException if any.
+	 * @throws javax.xml.parsers.ParserConfigurationException if any.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.NoSuchFieldException if any.
+	 * @throws java.lang.NoSuchMethodException if any.
+	 * @throws java.lang.instrument.IllegalClassFormatException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 * @throws java.lang.reflect.InvocationTargetException if any.
+	 */
 	public static RDF3XQueryEvaluator createRDF3XQueryEvaluator() throws XPathExpressionException, SecurityException, IllegalArgumentException, ClassNotFoundException, SAXException, ParserConfigurationException, IOException, NoSuchFieldException, NoSuchMethodException, IllegalClassFormatException, IllegalAccessException, InvocationTargetException{
 		return new RDF3XQueryEvaluator(
 				(DEBUG) Helper.castEnum(EnumDatatype.getValues("debug").get(0)),
@@ -153,6 +173,23 @@ public final class EvaluatorCreator {
 				 (Optimizations) Helper.castEnum(EnumDatatype.getValues("optimizationRDF3X").get(0)));
 	}
 	
+	/**
+	 * <p>createMemoryIndexQueryEvaluator.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.MemoryIndexQueryEvaluator} object.
+	 * @throws javax.xml.xpath.XPathExpressionException if any.
+	 * @throws java.lang.SecurityException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws org.xml.sax.SAXException if any.
+	 * @throws javax.xml.parsers.ParserConfigurationException if any.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.NoSuchFieldException if any.
+	 * @throws java.lang.NoSuchMethodException if any.
+	 * @throws java.lang.instrument.IllegalClassFormatException if any.
+	 * @throws java.lang.IllegalAccessException if any.
+	 * @throws java.lang.reflect.InvocationTargetException if any.
+	 */
 	public static MemoryIndexQueryEvaluator createMemoryIndexQueryEvaluator() throws XPathExpressionException, SecurityException, IllegalArgumentException, ClassNotFoundException, SAXException, ParserConfigurationException, IOException, NoSuchFieldException, NoSuchMethodException, IllegalClassFormatException, IllegalAccessException, InvocationTargetException{
 		return new MemoryIndexQueryEvaluator((DEBUG) Helper.castEnum(EnumDatatype.getValues("debug").get(0)),
 				BooleanDatatype.getValues("multiplequeries").get(0),
@@ -211,6 +248,12 @@ public final class EvaluatorCreator {
 				);
 	}
 	
+	/**
+	 * <p>createStreamQueryEvaluator.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.StreamQueryEvaluator} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static StreamQueryEvaluator createStreamQueryEvaluator() throws Exception{
 		return new StreamQueryEvaluator((DEBUG) Helper.castEnum(EnumDatatype.getValues("debug").get(0)),
 				BooleanDatatype.getValues("multiplequeries").get(0),
@@ -265,6 +308,12 @@ public final class EvaluatorCreator {
 						(MATCHER) Helper.castEnum(EnumDatatype.getValues("matcher").get(0)));
 	}
 
+	/**
+	 * <p>createJenaQueryEvaluator.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.JenaQueryEvaluator} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static JenaQueryEvaluator createJenaQueryEvaluator() throws Exception{
 		return new JenaQueryEvaluator((DEBUG) Helper.castEnum(EnumDatatype.getValues("debug").get(0)),
 		BooleanDatatype.getValues("multiplequeries").get(0),
@@ -277,6 +326,12 @@ public final class EvaluatorCreator {
 				(FORMAT) Helper.castEnum(EnumDatatype.getFirstValue("formatJena")));
 	}
 	
+	/**
+	 * <p>createSesameQueryEvaluator.</p>
+	 *
+	 * @return a {@link lupos.engine.evaluators.SesameQueryEvaluator} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static SesameQueryEvaluator createSesameQueryEvaluator() throws Exception{
 		return new SesameQueryEvaluator((DEBUG) Helper.castEnum(EnumDatatype.getValues("debug").get(0)),
 				BooleanDatatype.getValues("multiplequeries").get(0),

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,43 +21,68 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.application;
 
 import java.util.Date;
 
 import lupos.datastructures.queryresult.QueryResult;
-
 public class MeasureTime implements Application {
 	private long start;
 	private long time;
 	private long firstResult = -1;
 
+	/** {@inheritDoc} */
 	public void call(final QueryResult res) {
 		if (firstResult == -1) {
 			firstResult = new Date().getTime() - start;
 		}
 	}
 
+	/**
+	 * <p>start.</p>
+	 *
+	 * @param type a Type object.
+	 */
 	public void start(final Type type) {
 		start = new Date().getTime();
 	}
 
+	/**
+	 * <p>stop.</p>
+	 */
 	public void stop() {
 		time = new Date().getTime() - start;
 	}
 
+	/**
+	 * <p>getTimeForFirstResult.</p>
+	 *
+	 * @return a long.
+	 */
 	public long getTimeForFirstResult() {
 		return firstResult;
 	}
 
+	/**
+	 * <p>getTimeForQuery.</p>
+	 *
+	 * @return a long.
+	 */
 	public long getTimeForQuery() {
 		return time;
 	}
 
+	/** {@inheritDoc} */
 	public void deleteResult(final QueryResult res) {
 	}
 
+	/**
+	 * <p>deleteResult.</p>
+	 */
 	public void deleteResult() {
 	}
 }

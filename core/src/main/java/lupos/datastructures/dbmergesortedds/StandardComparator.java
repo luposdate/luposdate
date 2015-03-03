@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,22 +21,34 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
 import java.io.Serializable;
 import java.util.Comparator;
-
 public class StandardComparator<K> implements Comparator<K>, Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7910414506074836272L;
 
+	/**
+	 * <p>compare.</p>
+	 *
+	 * @param k1 a K object.
+	 * @param k2 a K object.
+	 * @return a int.
+	 */
 	public int compare(final K k1, final K k2) {
 		return ((Comparable<K>) k1).compareTo(k2);
 	}
 
+	/**
+	 * <p>Constructor for StandardComparator.</p>
+	 */
 	public StandardComparator() {
 	}
 }

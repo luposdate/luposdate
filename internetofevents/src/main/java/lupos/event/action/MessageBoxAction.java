@@ -31,13 +31,20 @@ import lupos.datastructures.queryresult.QueryResult;
 
 /**
  * Action that pop ups a message dialog...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MessageBoxAction extends Action {
 
+	/**
+	 * <p>Constructor for MessageBoxAction.</p>
+	 */
 	public MessageBoxAction() {
 		super("MessageBoxAction");
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void execute(QueryResult queryResult) {
 		// Do not use JOptionPane.showMessageDialog(null, "QueryResult: " + queryResult);,

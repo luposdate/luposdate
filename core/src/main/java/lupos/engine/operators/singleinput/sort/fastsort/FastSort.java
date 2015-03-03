@@ -37,16 +37,24 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This class sorts its input according to presorting numbers or according to
  * the code of LazyLiterals.
- * 
+ *
  * It is used for the optimizations MergeJoinSort, MergeJoinSortSimple and
  * MergeJoinSortLazyLiteral
- * 
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class FastSort extends SingleInputOperator {
 
 	protected List<TriplePattern> triplePatterns;
 	protected Collection<Variable> sortCriterium;
 
+	/**
+	 * <p>Constructor for FastSort.</p>
+	 *
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 */
 	public FastSort(final Collection<TriplePattern> triplePatterns,
 			final Collection<Variable> sortCriterium) {
 		super();
@@ -62,15 +70,29 @@ public abstract class FastSort extends SingleInputOperator {
 		this.sortCriterium = sortCriterium;
 	}
 
+	/**
+	 * <p>Getter for the field <code>sortCriterium</code>.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Variable> getSortCriterium() {
 		return sortCriterium;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + " on " + this.sortCriterium;
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a {@link lupos.engine.operators.singleinput.sort.fastsort.FastSort} object.
+	 */
 	public static FastSort createInstance(final BasicOperator root,
 			final Collection<TriplePattern> triplePatterns,
 			final Collection<Variable> sortCriterium) {

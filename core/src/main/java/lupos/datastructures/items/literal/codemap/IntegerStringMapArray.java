@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,13 +21,16 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
-
 public class IntegerStringMapArray implements IntegerStringMap {
 	
 	protected String[] values = new String[0]; 
 
+	/** {@inheritDoc} */
 	@Override
 	public String get(int key) {
 		if(key >= this.values.length){
@@ -36,6 +40,7 @@ public class IntegerStringMapArray implements IntegerStringMap {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void put(int key, String s) {
 		if(key >= this.values.length){
@@ -46,16 +51,19 @@ public class IntegerStringMapArray implements IntegerStringMap {
 		this.values[key] = s;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.values = new String[0];
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.values.length;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void forEachValue(TProcedureValue<String> arg0) {
 		for (final String value: this.values) {
@@ -63,6 +71,7 @@ public class IntegerStringMapArray implements IntegerStringMap {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void forEachEntry(TProcedureEntry<Integer, String> arg0) {
 		int i=0;

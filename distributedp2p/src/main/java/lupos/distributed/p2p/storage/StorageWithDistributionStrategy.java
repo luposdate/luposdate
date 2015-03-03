@@ -43,14 +43,14 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer;
 
 /**
- * This is the {@link IStorage} used for P2P distribution. The class holds
+ * This is the {@link lupos.distributed.storage.IStorage} used for P2P distribution. The class holds
  * connection to the p2p network for adding, removing and getting items.
- * 
+ *
  * @author Bjoern
- * 
  * @param <T>
- *            The type of distribution used in {@link KeyContainer}.
+ *            The type of distribution used in {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}.
  * @see BlockStorageWithDistributionStrategy
+ * @version $Id: $Id
  */
 public class StorageWithDistributionStrategy<T> implements IStorage {
 
@@ -65,7 +65,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 
 	/**
 	 * Returns the used distribution strategy
-	 * 
+	 *
 	 * @return the distribution strategy
 	 */
 	public IDistribution<KeyContainer<T>> getDistribution() {
@@ -75,7 +75,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 	/**
 	 * New storage for luposdate connected with a p2p-network implementation and
 	 * the used distribution strategy with new bindings factory
-	 * 
+	 *
 	 * @param p2pImplementation
 	 *            the p2p implementation
 	 * @param distribution
@@ -96,7 +96,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 	/**
 	 * New storage for luposdate connected with a p2p-network implementation and
 	 * the used distribution strategy.
-	 * 
+	 *
 	 * @param p2pImplementation
 	 *            the p2p implementation
 	 * @param distribution
@@ -116,6 +116,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 	}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	public void endImportData() {
 		/*
@@ -123,6 +124,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 		 */
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addTriple(Triple triple) {
 		KeyContainer<T>[] keys = this.distribution.getKeysForStoring(triple);
@@ -135,10 +137,17 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 		}
 	}
 
+	/**
+	 * <p>addTriple.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected void addTriple(String key, Triple t) {
 		this.p2p.add(key, t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsTriple(Triple triple) {
 		KeyContainer<T>[] keys = this.distribution.getKeysForStoring(triple);
@@ -150,6 +159,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(Triple triple) {
 		KeyContainer<T>[] keys = this.distribution.getKeysForStoring(triple);
@@ -164,10 +174,17 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 		}
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 */
 	protected void remove(String key, Triple t) {
 		this.p2p.remove(key, t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult evaluateTriplePattern(final TriplePattern triplePattern)
 			throws Exception {
@@ -211,6 +228,13 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 
 	}
 
+	/**
+	 * <p>evaluateTriplePatternAfterAdding.</p>
+	 *
+	 * @param triplePattern a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws lupos.distributed.storage.distributionstrategy.TriplePatternNotSupportedError if any.
+	 */
 	public QueryResult evaluateTriplePatternAfterAdding(
 			final TriplePattern triplePattern)
 			throws TriplePatternNotSupportedError {
@@ -220,7 +244,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 
 	/**
 	 * produces a new key with the given keycontainer
-	 * 
+	 *
 	 * @param keyContainer
 	 *            the key container
 	 * @return new key = %type%.concat(%key%)
@@ -278,6 +302,7 @@ public class StorageWithDistributionStrategy<T> implements IStorage {
 	protected BindingsFactory bindingsFactory;
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	public void setBindingsFactory(BindingsFactory bindingsFactory) {
 		this.bindingsFactory = bindingsFactory;

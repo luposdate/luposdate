@@ -31,11 +31,14 @@ import lupos.rif.generated.visitor.IVoidVisitor;
 
 /**
  * The interface which all syntax tree classes must implement.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface INode extends java.io.Serializable {
 
   /**
-   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetArguVisitor} visitor with user Return and Argument data.
    *
    * @param <R> the user Return type
    * @param <A> the user Argument type
@@ -46,7 +49,7 @@ public interface INode extends java.io.Serializable {
   public <R, A> R accept(final IRetArguVisitor<R, A> vis, final A argu);
 
   /**
-   * Accepts a {@link IRetVisitor} visitor with user Return data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetVisitor} visitor with user Return data.
    *
    * @param <R> the user Return type
    * @param vis the visitor
@@ -55,7 +58,7 @@ public interface INode extends java.io.Serializable {
   public <R> R accept(final IRetVisitor<R> vis);
 
   /**
-   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IVoidArguVisitor} visitor with user Argument data.
    *
    * @param <A> the user Argument type
    * @param vis the visitor
@@ -64,7 +67,7 @@ public interface INode extends java.io.Serializable {
   public <A> void accept(final IVoidArguVisitor<A> vis, final A argu);
 
   /**
-   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IVoidVisitor} visitor with no user Return nor Argument data.
    *
    * @param vis the visitor
    */

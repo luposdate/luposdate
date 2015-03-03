@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -28,18 +32,24 @@ import java.util.LinkedList;
 import lupos.engine.operators.singleinput.generate.Generate;
 import lupos.optimizations.logical.rules.Rule;
 import lupos.optimizations.logical.rules.RuleEngine;
-
 public class RDFSRuleEngine0 extends RuleEngine {
 
+	/** Constant <code>generates</code> */
 	public static LinkedList<Generate> generates = null;
 	private final boolean doNotConnectInferenceRules;
 
+	/**
+	 * <p>Constructor for RDFSRuleEngine0.</p>
+	 *
+	 * @param doNotConnectInferenceRules a boolean.
+	 */
 	public RDFSRuleEngine0(final boolean doNotConnectInferenceRules) {
 		this.doNotConnectInferenceRules = doNotConnectInferenceRules;
 		createRules();
 		generates = new LinkedList<Generate>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createRules() {
 		// rules.add(new RuleFindAllGenerates());

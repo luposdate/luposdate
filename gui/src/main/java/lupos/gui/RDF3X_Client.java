@@ -49,11 +49,19 @@ import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 
 /**
  * A client for RDF3X with permanent data
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RDF3X_Client extends Demo_Applet {
 
 	protected final JFileChooser fc;
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String args[]) {
 		final Demo_Applet applet = new RDF3X_Client();
 		if (args.length > 0) {
@@ -63,6 +71,9 @@ public class RDF3X_Client extends Demo_Applet {
 		}
 	}
 
+	/**
+	 * <p>Constructor for RDF3X_Client.</p>
+	 */
 	public RDF3X_Client(){
 		 this.fc = new JFileChooser();
 		 this.fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -90,6 +101,7 @@ public class RDF3X_Client extends Demo_Applet {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected JPanel generateDataTab() {
 		// just for initialization of some variables in the super class
@@ -116,6 +128,7 @@ public class RDF3X_Client extends Demo_Applet {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void generateEvaluatorChooseAndPreferences() {
 		// just for initialization of some variables in the super class
@@ -130,6 +143,7 @@ public class RDF3X_Client extends Demo_Applet {
 		this.masterpanel.add(rowpanel, BorderLayout.NORTH);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryEvaluator<Node> setupEvaluator(final EvaluationMode mode) throws Throwable {
 		final ServiceApproaches serviceApproach = xpref.datatypes.EnumDatatype.getFirstValue("serviceCallApproach");
@@ -149,6 +163,7 @@ public class RDF3X_Client extends Demo_Applet {
 		return evaluator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void evaluate(final Evaluation evaluation, final EvaluationMode mode) {
 		super.evaluate(new Evaluation_DisablePrepareInputData(evaluation), mode);

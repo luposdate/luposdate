@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.dataeditor.datageneralizer;
 
@@ -40,16 +44,22 @@ import lupos.gui.operatorgraph.visualeditor.util.ModificationException;
 import lupos.misc.util.OperatorIDTuple;
 import lupos.sparql1_1.SPARQL1_1Parser;
 import lupos.sparql1_1.SimpleNode;
-
 public class CondensedRDFTerm extends RDFTerm {
 	private LinkedHashSet<Item> items;
 
+	/**
+	 * <p>Constructor for CondensedRDFTerm.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param items a {@link java.util.LinkedHashSet} object.
+	 */
 	public CondensedRDFTerm(Prefix prefix, LinkedHashSet<Item> items) {
 		super(prefix);
 
 		this.items = items;
 	}
 
+	/** {@inheritDoc} */
 	public void addPredicate(RDFTerm child, String predicate) throws ModificationException {
 		try {
 			SimpleNode node = SPARQL1_1Parser.parseVerbWithoutVar(predicate, this.prefix.getPrefixNames());
@@ -61,16 +71,23 @@ public class CondensedRDFTerm extends RDFTerm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
 		this.panel = new MultiElementsPanel(this, gw, parent);
 
 		return this.panel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>items</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedHashSet} object.
+	 */
 	public LinkedHashSet<Item> getItems() {
 		return this.items;
 	}
 
+	/** {@inheritDoc} */
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(VisualGraph<Operator> parent) {
 		Hashtable<GraphWrapper, AbstractSuperGuiComponent> predicates = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 
@@ -90,6 +107,11 @@ public class CondensedRDFTerm extends RDFTerm {
 		return predicates;
 	}
 
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeOperator() {
 		if(this.items.size() == 1) {
 			return new StringBuffer(this.items.iterator().next().toString());
@@ -99,15 +121,19 @@ public class CondensedRDFTerm extends RDFTerm {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void setPredicate(RDFTerm child, String predicate, int index) throws ModificationException {}
 
+	/** {@inheritDoc} */
 	public void applyChange(String value) throws ModificationException {}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefID(){
 		return "condensedViewViewer_style_rdfterm";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefIDForAnnotation(){		
 		return "condensedViewViewer_style_predicate";

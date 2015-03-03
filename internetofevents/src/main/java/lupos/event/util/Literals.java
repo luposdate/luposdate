@@ -31,6 +31,9 @@ import lupos.datastructures.items.literal.URILiteral;
 
 /**
  * Helper class which contains constants for some common literals and methods to create literals.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Literals {
 
@@ -66,8 +69,9 @@ public abstract class Literals {
 
 	/**
 	 * Creates a URILiteral.
-	 * @param uri
-	 * @return
+	 *
+	 * @param uri a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
 	 */
 	public static URILiteral createURI(final String uri) {
 		return LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException(uri);
@@ -75,15 +79,24 @@ public abstract class Literals {
 
 	/**
 	 * Creates a URILiteral.
-	 * @param namespace
-	 * @param str
-	 * @return
+	 *
+	 * @param namespace a {@link java.lang.String} object.
+	 * @param str a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.items.literal.URILiteral} object.
 	 */
 	public static URILiteral createURI(final String namespace, final String str) {
 		final String uri = Utils.createURIString(namespace, str);
 		return LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException(uri);
 	}
 
+	/**
+	 * <p>createTyped.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 * @param typeLiteral a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @throws java.net.URISyntaxException if any.
+	 */
 	public static Literal createTyped(final String value, final URILiteral typeLiteral) throws URISyntaxException {
 		return LiteralFactory.createTypedLiteral("\"" + value + "\"", typeLiteral);
 	}
@@ -107,7 +120,7 @@ public abstract class Literals {
 	 *            Number of seconds.
 	 * @return A new Literal of type Duration, containing the respective
 	 *         encoding of the specified duration.
-	 * @throws URISyntaxException
+	 * @throws java.net.URISyntaxException if any.
 	 */
 	public static Literal createDurationLiteral(final int years,
 			final int months, final int days, final int hours,

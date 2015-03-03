@@ -55,7 +55,9 @@ import lupos.misc.Tuple;
  *
  * Preconditions: - the filter should contain an expression like ?X=constant
  *
- **/
+ * @author groppe
+ * @version $Id: $Id
+ */
 public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 
 	private Variable var;
@@ -63,10 +65,14 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 	private Literal constant;
 	private TriplePattern triplePattern;
 
+	/**
+	 * <p>Constructor for RuleReplaceConstantOfFilterInTriplePattern.</p>
+	 */
 	public RuleReplaceConstantOfFilterInTriplePattern() {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		// Define left side of rule
@@ -78,6 +84,7 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 		this.startNode = a;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final Filter filter = (Filter) mso.get("filter");
@@ -154,6 +161,7 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
@@ -191,6 +199,7 @@ public class RuleReplaceConstantOfFilterInTriplePattern extends Rule {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return "Constant Propagation";

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,15 +21,20 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie.node;
-
 public abstract class NodeWithValue<T> extends Node {
 	
 	/** the values of leaf nodes (only for bags or maps) */
 	private T[] values;
 
 
+	/**
+	 * <p>Constructor for NodeWithValue.</p>
+	 */
 	public NodeWithValue() {
 		super();
 		this.setValues(null);
@@ -36,6 +42,8 @@ public abstract class NodeWithValue<T> extends Node {
 	
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * overrides method of Node because of more precise return type
 	 */
 	@Override
@@ -43,6 +51,8 @@ public abstract class NodeWithValue<T> extends Node {
 
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * overrides method of Node because of more precise return type
 	 */
 	@Override
@@ -51,7 +61,7 @@ public abstract class NodeWithValue<T> extends Node {
 	/**
 	 * Sets the i-th element of the children array to the node. If necessary, the children array will be
 	 * initialized first. It will not be initialized, if node is null.
-	 * 
+	 *
 	 * @param i
 	 *            Array index of the node
 	 * @param node
@@ -59,6 +69,7 @@ public abstract class NodeWithValue<T> extends Node {
 	 */
 	protected abstract void setChild(int i, NodeWithValue<T> node);
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected final void setChild(int i, Node node){
@@ -66,6 +77,8 @@ public abstract class NodeWithValue<T> extends Node {
 	}
 
 	/**
+	 * <p>getValue.</p>
+	 *
 	 * @param i
 	 *            Array index of the value
 	 * @return The value if available, <strong>null</strong> otherwise
@@ -81,7 +94,7 @@ public abstract class NodeWithValue<T> extends Node {
 	/**
 	 * Sets the i-th element of the values array to the value. If necessary, the values array will be
 	 * initialized first.
-	 * 
+	 *
 	 * @param i
 	 *            Array index of the value
 	 * @param value
@@ -100,7 +113,7 @@ public abstract class NodeWithValue<T> extends Node {
 	
 	/**
 	 * Increases the size of the values array by inserting <i>amount</i> null elements, starting at the given index
-	 * 
+	 *
 	 * @param idx
 	 *            Index for the new element
 	 * @param amount
@@ -124,7 +137,7 @@ public abstract class NodeWithValue<T> extends Node {
 	
 	/**
 	 * Decreases the size of the values array by removing the <i>idx</i>-th element.
-	 * 
+	 *
 	 * @param idx
 	 *            Index of the element to remove
 	 */
@@ -143,12 +156,9 @@ public abstract class NodeWithValue<T> extends Node {
 	}	
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Increases the size of the content and the children array by <i>amount</i>.
-	 * 
-	 * @param idx
-	 *            Index for the new element
-	 * @param amount
-	 *            Amount of entries to add
 	 */
 	@Override
 	protected final void increaseArraySizes(final int idx, final int amount) {
@@ -157,10 +167,9 @@ public abstract class NodeWithValue<T> extends Node {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Decreases the size of the content and the children array by 1.
-	 * 
-	 * @param idx
-	 *            Index of the element to remove
 	 */
 	@Override
 	protected final void decreaseArraySizes(final int idx) {
@@ -169,17 +178,21 @@ public abstract class NodeWithValue<T> extends Node {
 	}
 	
 	/**
+	 * <p>getValuesLength.</p>
+	 *
 	 * @return The length of the values array if it is initialized, 0 otherwise
 	 */
 	public final int getValuesLength() {
 		return (this.getValues() == null ? 0 : this.getValues().length);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final String toString() {
 		return NodeHelper.toString(this, "");
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public final boolean equals(final Object obj) {
 		if (!(obj instanceof NodeWithValue)){
@@ -208,6 +221,8 @@ public abstract class NodeWithValue<T> extends Node {
 
 
 	/**
+	 * <p>Setter for the field <code>values</code>.</p>
+	 *
 	 * @param values the values to set
 	 */
 	public final void setValues(T[] values) {
@@ -216,6 +231,8 @@ public abstract class NodeWithValue<T> extends Node {
 
 
 	/**
+	 * <p>Getter for the field <code>values</code>.</p>
+	 *
 	 * @return the values
 	 */
 	public final T[] getValues() {

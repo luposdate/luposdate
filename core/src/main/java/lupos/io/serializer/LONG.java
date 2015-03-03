@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -32,29 +36,33 @@ import lupos.io.Registration.DeSerializerConsideringSubClasses;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.LengthHelper;
 import lupos.io.helper.OutHelper;
-
 public class LONG extends DeSerializerConsideringSubClasses<Long> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof Long;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Long>[] getRegisteredClasses() {
 		return new Class[] { Long.class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final Long t) {
 		return LengthHelper.lengthLuposLong();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final Long t, final OutputStream out) throws IOException {
 		OutHelper.writeLuposLong(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Long deserialize(final InputStream in) throws IOException,
 			URISyntaxException, ClassNotFoundException {

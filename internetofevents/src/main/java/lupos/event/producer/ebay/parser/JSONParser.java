@@ -25,6 +25,9 @@ package lupos.event.producer.ebay.parser;
 
 /**
  * Parser to interpret JSON data.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class JSONParser {
 
@@ -38,9 +41,8 @@ public class JSONParser {
 	/**
 	 * Parses the JSON data contained in the string <code>str</code>, building an object
 	 * model of the data.
-	 * 
-	 * @param	str		JSON data
-	 * @return	Root element of the object model
+	 *
+	 * @return a {@link lupos.event.producer.ebay.parser.JSObject} object.
 	 */
 	public static JSObject parse(String str) {
 		JSONFactory model = null;

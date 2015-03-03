@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -50,7 +54,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-
 public class MagicSetTransformationVisitor implements
 		IRuleVisitor<Object, Object> {
 	private boolean doDebug = false;
@@ -62,9 +65,17 @@ public class MagicSetTransformationVisitor implements
 	private Set<String> goals = new HashSet<String>();
 	private Stack<String> goalStack = new Stack<String>();
 
+	/**
+	 * <p>Constructor for MagicSetTransformationVisitor.</p>
+	 */
 	public MagicSetTransformationVisitor() {
 	}
 
+	/**
+	 * <p>Constructor for MagicSetTransformationVisitor.</p>
+	 *
+	 * @param debug a boolean.
+	 */
 	public MagicSetTransformationVisitor(final boolean debug) {
 		this();
 		this.doDebug = debug;
@@ -75,6 +86,7 @@ public class MagicSetTransformationVisitor implements
 			System.out.println("MS-Transformation: " + str);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Document obj, Object arg) throws RIFException {
 		this.rifDoc = obj;
@@ -99,6 +111,7 @@ public class MagicSetTransformationVisitor implements
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Rule obj, Object arg) throws RIFException {
 		final Map<RuleVariable, Boolean> boundVariables = new HashMap<RuleVariable, Boolean>();
@@ -145,6 +158,7 @@ public class MagicSetTransformationVisitor implements
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(RulePredicate obj, Object arg) throws RIFException {
 		String goal = obj.termName.toString() + "_" + arg.toString();
@@ -159,41 +173,49 @@ public class MagicSetTransformationVisitor implements
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Conjunction obj, Object arg) throws RIFException {
 		return obj.exprs;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(ExistExpression obj, Object arg) throws RIFException {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Disjunction obj, Object arg) throws RIFException {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Equality obj, Object arg) throws RIFException {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(External obj, Object arg) throws RIFException {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(RuleList obj, Object arg) throws RIFException {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(RuleVariable obj, Object arg) throws RIFException {
 		return obj;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(Constant obj, Object arg) throws RIFException {
 		return obj;

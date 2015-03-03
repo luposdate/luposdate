@@ -39,13 +39,13 @@ import org.json.JSONObject;
 
 /**
  * Produces events which contain current weather-related information gathered from http://www.wunderground.com.
- * 
- * @author  Anderson, Kutzner
  *
+ * @version $Id: $Id
  */
 public class WeatherProducer extends ProducerBaseNoDuplicates {
 
 	// Defines the name of the event
+	/** Constant <code>NAMESPACE="http://localhost/events/Weather/"</code> */
 	public static final String NAMESPACE = "http://localhost/events/Weather/";
 	// Defines the interval 
 	private static final int INTERVAL = 10000;
@@ -152,9 +152,9 @@ public class WeatherProducer extends ProducerBaseNoDuplicates {
 	
 	/**
 	 * Constructor of the WeatherProducer.
-	 * 
+	 *
 	 * @param msgService The message service that the producer should use to communicate.
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public WeatherProducer(SerializingMessageService msgService) throws Exception {
 		super(msgService, INTERVAL);
@@ -162,6 +162,8 @@ public class WeatherProducer extends ProducerBaseNoDuplicates {
 
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Creates and returns triples with the weather information.
 	 */
 	@Override
@@ -333,9 +335,9 @@ public class WeatherProducer extends ProducerBaseNoDuplicates {
 		
 	/**
 	 * Main-method that starts the WeatherProducer and asks for the country and city to get information about.
-	 * 
+	 *
 	 * @param args command line parameter
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(String[] args) throws Exception {
 		// create communication channel

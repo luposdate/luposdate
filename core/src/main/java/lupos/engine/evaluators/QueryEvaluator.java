@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -50,7 +54,6 @@ import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.rdf.Prefix;
 import lupos.sparql1_1.Node;
-
 public abstract class QueryEvaluator<A> {
 
 	private String queryString;
@@ -62,17 +65,38 @@ public abstract class QueryEvaluator<A> {
 		NONE, RDF3X, MEMORYINDEX, STREAM
 	};
 
+	/**
+	 * <p>Constructor for QueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryEvaluator() throws Exception {
 		setupArguments();
 		init();
 	}
 
+	/**
+	 * <p>Constructor for QueryEvaluator.</p>
+	 *
+	 * @param arguments an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryEvaluator(final String[] arguments) throws Exception {
 		setupArguments();
 		args.parse(arguments, false);
 		init();
 	}
 	
+	/**
+	 * <p>Constructor for QueryEvaluator.</p>
+	 *
+	 * @param debug a {@link lupos.engine.evaluators.QueryEvaluator.DEBUG} object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a {@link lupos.engine.evaluators.QueryEvaluator.compareEvaluator} object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 */
 	public QueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset){
 		init(debug, multiplequeries, compare, compareoptions, times, dataset);
 	}
@@ -86,14 +110,23 @@ public abstract class QueryEvaluator<A> {
 
 	/**
 	 * Code that should execute after the arguments have been parsed
-	 * 
-	 * @throws Exception
-	 * 
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	public void init() throws Exception {
 		init((DEBUG) args.getEnum("debug"),args.getBool("multiplequeries"),(compareEvaluator) args.getEnum("compare"),args.getString("compareoptions"),args.getInt("times"),args.getString("dataset"));
 	}
 	
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param debug a {@link lupos.engine.evaluators.QueryEvaluator.DEBUG} object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a {@link lupos.engine.evaluators.QueryEvaluator.compareEvaluator} object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 */
 	public void init(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset){
 		this.debug = debug;
 		this.multiplequeries = multiplequeries;
@@ -103,6 +136,11 @@ public abstract class QueryEvaluator<A> {
 		this.dataset = dataset;
 	}
 
+	/**
+	 * <p>Getter for the field <code>args</code>.</p>
+	 *
+	 * @return a {@link lupos.misc.ArgumentParser} object.
+	 */
 	public ArgumentParser getArgs() {
 		return args;
 	}
@@ -145,6 +183,13 @@ public abstract class QueryEvaluator<A> {
 		args.addStringOption("dataset", "Specify a dataset", "");
 	}
 
+	/**
+	 * <p>compileQueryFromFile.</p>
+	 *
+	 * @param queryFile a {@link java.lang.String} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long compileQueryFromFile(final String queryFile) throws Exception {
 		final Date a = new Date();
 		queryString = FileHelper.fastReadFile(queryFile);
@@ -152,24 +197,58 @@ public abstract class QueryEvaluator<A> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/**
+	 * <p>Getter for the field <code>queryString</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getQueryString() {
 		return queryString;
 	}
 
+	/**
+	 * <p>compileQuery.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public abstract long compileQuery(String query) throws Exception;
 	
+	/**
+	 * <p>compileQueryDebugByteArray.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link lupos.engine.evaluators.DebugContainerQuery} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public DebugContainerQuery<BasicOperatorByteArray, A> compileQueryDebugByteArray(
 			final String query, final Prefix prefixInstance) throws Exception{
 		compileQuery(query);
 		return null;
 	}
 
+	/**
+	 * <p>compileQueryDebug.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @return a {@link lupos.engine.evaluators.DebugContainerQuery} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public DebugContainerQuery<BasicOperator, A> compileQueryDebug(
 			final String query) throws Exception {
 		compileQuery(query);
 		return null;
 	}
 
+	/**
+	 * <p>prepareInputData.</p>
+	 *
+	 * @param inputFile a {@link java.lang.String} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long prepareInputData(final String inputFile) throws Exception {
 		final Collection<URILiteral> cu = new LinkedList<URILiteral>();
 		cu.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:"
@@ -177,38 +256,108 @@ public abstract class QueryEvaluator<A> {
 		return prepareInputData(cu, new LinkedList<URILiteral>());
 	}
 
+	/**
+	 * <p>logicalOptimization.</p>
+	 *
+	 * @return a long.
+	 */
 	public abstract long logicalOptimization();
 	
+	/**
+	 * <p>logicalOptimizationDebugByteArray.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
 		logicalOptimization();
 		return null;
 	}
 
+	/**
+	 * <p>physicalOptimization.</p>
+	 *
+	 * @return a long.
+	 */
 	public abstract long physicalOptimization();
 
+	/**
+	 * <p>physicalOptimizationDebugByteArray.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
 		physicalOptimization();
 		return null;
 	}
 
+	/**
+	 * <p>prepareInputData.</p>
+	 *
+	 * @param defaultGraphs a {@link java.util.Collection} object.
+	 * @param namedGraphs a {@link java.util.Collection} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public abstract long prepareInputData(Collection<URILiteral> defaultGraphs,
 			Collection<URILiteral> namedGraphs) throws Exception;
 	
+	/**
+	 * <p>prepareInputDataWithSourcesOfNamedGraphs.</p>
+	 *
+	 * @param defaultGraphs a {@link java.util.Collection} object.
+	 * @param namedGraphs a {@link java.util.Collection} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public abstract long prepareInputDataWithSourcesOfNamedGraphs(Collection<URILiteral> defaultGraphs,
 			Collection<Tuple<URILiteral, URILiteral>> namedGraphs) throws Exception;
 
+	/**
+	 * <p>evaluateQuery.</p>
+	 *
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public abstract long evaluateQuery() throws Exception;
 
+	/**
+	 * <p>evaluateQueryDebugSteps.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @param application a {@link lupos.engine.operators.application.Application} object.
+	 * @return a long.
+	 * @throws java.lang.Exception if any.
+	 */
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, Application application) throws Exception {
 		return evaluateQuery();
 	}
 
+	/**
+	 * <p>prepareForQueryDebugSteps.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 	}
 	
+	/**
+	 * <p>getResult.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public abstract QueryResult getResult() throws Exception;
 
+	/**
+	 * <p>getResult.</p>
+	 *
+	 * @param query a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResult(final String query) throws Exception {
 		compileQuery(query);
 		logicalOptimization();
@@ -216,6 +365,14 @@ public abstract class QueryEvaluator<A> {
 		return getResult();
 	}
 
+	/**
+	 * <p>getResult.</p>
+	 *
+	 * @param inputFile a {@link java.lang.String} object.
+	 * @param query a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryResult getResult(final String inputFile, final String query)
 			throws Exception {
 		prepareInputData(inputFile);
@@ -225,18 +382,35 @@ public abstract class QueryEvaluator<A> {
 		return getResult();
 	}
 
+	/**
+	 * <p>displayOperatorGraph.</p>
+	 *
+	 * @param title a {@link java.lang.String} object.
+	 */
 	public void displayOperatorGraph(final String title) {
 		System.out.println("Printing the operator graph is not supported!");
 	}
 
 	/**
-	 * @deprecated Use {@link FileHelper#readFileToCollection(String)} instead
+	 * <p>readFileToCollection.</p>
+	 *
+	 * @deprecated Use {@link lupos.misc.FileHelper#readFileToCollection(String)} instead
+	 * @param filename a {@link java.lang.String} object.
+	 * @return a {@link java.util.Collection} object.
 	 */
 	@Deprecated
 	public static Collection<String> readFileToCollection(final String filename) {
 		return FileHelper.readFileToCollection(filename);
 	}
 
+	/**
+	 * <p>getQueryEvaluator.</p>
+	 *
+	 * @param ce a {@link lupos.engine.evaluators.QueryEvaluator.compareEvaluator} object.
+	 * @param arguments an array of {@link java.lang.String} objects.
+	 * @return a {@link lupos.engine.evaluators.QueryEvaluator} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static QueryEvaluator getQueryEvaluator(final compareEvaluator ce,
 			final String[] arguments) throws Exception {
 		if (ce == compareEvaluator.MEMORYINDEX)
@@ -253,12 +427,12 @@ public abstract class QueryEvaluator<A> {
 
 	/**
 	 * Code to be executed in the main method of any QueryEvaluator
-	 * 
+	 *
 	 * @param arguments
 	 *            The arguments to the query evaluator
 	 * @param klass
 	 *            The QueryEvaluator class which should be used
-	 **/
+	 */
 	public static void _main(final String[] arguments,
 			final Class<? extends QueryEvaluator> klass) {
 
@@ -291,6 +465,13 @@ public abstract class QueryEvaluator<A> {
 		}
 	}
 
+	/**
+	 * <p>_main.</p>
+	 *
+	 * @param evaluator a {@link lupos.engine.evaluators.QueryEvaluator} object.
+	 * @param datafile a {@link java.lang.String} object.
+	 * @param queryfile a {@link java.lang.String} object.
+	 */
 	@SuppressWarnings("unchecked")
 	public static void _main(final QueryEvaluator evaluator,
 			final String datafile, final String queryfile) {
@@ -734,7 +915,8 @@ public abstract class QueryEvaluator<A> {
 
 	/**
 	 * write out all modified pages of the dictionary in the buffer manager
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public static void writeOutModifiedPagesOfDictionary()
 			throws IOException {
@@ -760,13 +942,22 @@ public abstract class QueryEvaluator<A> {
 	
 	/**
 	 * write out all pages in buffer managers including dictionary and RDF data indices
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
+	 * @param evaluator a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
+	 * @param dir a {@link java.lang.String} object.
 	 */
 	public static void writeOutModifiedPages(BasicIndexQueryEvaluator evaluator, String dir) throws IOException{
 		QueryEvaluator.writeOutModifiedPagesOfDictionary();
 		evaluator.writeOutAllModifiedPagesInRDFDataIndices(dir);
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param oa an array of long.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String toString(final long[] oa) {
 		String s = "(";
 		boolean first = true;
@@ -780,10 +971,22 @@ public abstract class QueryEvaluator<A> {
 		return s + ")";
 	}
 
+	/**
+	 * <p>computeStandardDeviationOfTheSample.</p>
+	 *
+	 * @param array an array of long.
+	 * @return a double.
+	 */
 	public static double computeStandardDeviationOfTheSample(final long[] array) {
 		return Math.sqrt(computeInnerTerm(array) / (array.length));
 	}
 
+	/**
+	 * <p>computeSampleStandardDeviation.</p>
+	 *
+	 * @param array an array of long.
+	 * @return a double.
+	 */
 	public static double computeSampleStandardDeviation(final long[] array) {
 		return Math.sqrt(computeInnerTerm(array) / ((double) array.length - 1));
 	}

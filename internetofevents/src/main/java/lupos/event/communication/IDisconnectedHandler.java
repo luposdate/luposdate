@@ -25,7 +25,13 @@ package lupos.event.communication;
 
 /**
  * Classes which implement this interface can be used as disconnect handlers.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IDisconnectedHandler {
+	/**
+	 * <p>disconnected.</p>
+	 */
 	void disconnected();
 }

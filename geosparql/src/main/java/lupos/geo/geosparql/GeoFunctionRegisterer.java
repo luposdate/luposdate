@@ -55,9 +55,15 @@ import lupos.geo.geosparql.functions.sf_eh.GeofSfTouchesEhMeet;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class GeoFunctionRegisterer {
 
+    /**
+     * <p>registerGeoFunctions.</p>
+     */
     public static void registerGeoFunctions() {
         GeofBoundary.register();
         GeofConvexHull.register();

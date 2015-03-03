@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -61,7 +65,6 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.NotifyingSail;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.memory.MemoryStore;
-
 public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 	private Repository repo;
 	private RepositoryConnection con;
@@ -80,25 +83,51 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 	private ONTOLOGY ontology;
 	private FORMAT type;
 
+	/**
+	 * <p>Constructor for SesameQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public SesameQueryEvaluator() throws Exception {
 	}
 
+	/**
+	 * <p>Constructor for SesameQueryEvaluator.</p>
+	 *
+	 * @param arguments an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public SesameQueryEvaluator(final String[] arguments) throws Exception {
 		super(arguments);
 	}
 	
+	/**
+	 * <p>Constructor for SesameQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param ontology a {@link lupos.engine.evaluators.SesameQueryEvaluator.ONTOLOGY} object.
+	 * @param type a {@link lupos.engine.evaluators.SesameQueryEvaluator.FORMAT} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public SesameQueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset, ONTOLOGY ontology, FORMAT type) throws Exception{
 		super.init(debug, multiplequeries, compare, compareoptions, times, dataset);
 		this.ontology = ontology;
 		this.type = type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		defaultRDFS = ONTOLOGY.NONE;
 		super.setupArguments();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -106,10 +135,16 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 		type = FORMAT.valueOf(FORMAT.class, args.getString("type"));
 	}
 	
+	/**
+	 * <p>Setter for the field <code>ontology</code>.</p>
+	 *
+	 * @param ontology a {@link lupos.engine.evaluators.SesameQueryEvaluator.ONTOLOGY} object.
+	 */
 	public void setOntology(final ONTOLOGY ontology){
 		this.ontology = ontology;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long compileQuery(final String query) throws Exception {
 		final Date a = new Date();
@@ -117,6 +152,7 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQuery() throws Exception {
 		final Date a = new Date();
@@ -130,6 +166,7 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getResult() throws Exception {
 		evaluateQuery();
@@ -185,16 +222,19 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 		return qr;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long physicalOptimization() {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -227,6 +267,7 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			Collection<URILiteral> defaultGraphs,
@@ -235,6 +276,11 @@ public class SesameQueryEvaluator extends QueryEvaluator<Node> {
 		return this.prepareInputData(defaultGraphs, null);
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		_main(args, SesameQueryEvaluator.class);
 	}

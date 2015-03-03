@@ -25,27 +25,44 @@ package lupos.event.consumer.html;
 
 /**
  * Class for handling the functions of Templates by Strings.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Encode {
 
+	/** Constant <code>VARNOTATION="?"</code> */
 	public final static String VARNOTATION = "?";
+	/** Constant <code>START="%-"</code> */
 	public final static String START = "%-";
+	/** Constant <code>END="-%"</code> */
 	public final static String END = "-%";
+	/** Constant <code>FORSTART="START + FOR + END"</code> */
 	public final static String FORSTART = START + "FOR" + END;
+	/** Constant <code>FOREND="START + ENDFOR + END"</code> */
 	public final static String FOREND = START + "ENDFOR" + END;
+	/** Constant <code>CONTENT="CONTENT"</code> */
 	public final static String CONTENT = "CONTENT";
+	/** Constant <code>ESCAPE="ESCAPE"</code> */
 	public final static String ESCAPE = "ESCAPE";
+	/** Constant <code>PREDICATE="PREDICATE"</code> */
 	public final static String PREDICATE = "PREDICATE";
+ 	/** Constant <code>REFRESH="REFRESH(time in seconds)"</code> */
  	public final static String REFRESH = "REFRESH(time in seconds)";
+	/** Constant <code>CHARTSTART="START + CHART + END"</code> */
 	public final static String CHARTSTART = START + "CHART" + END;
+ 	/** Constant <code>CHARTEND="START + ENDCHART + END"</code> */
  	public final static String CHARTEND = START + "ENDCHART" + END; 	
+ 	/** Constant <code>OPTIONS="START + OPTIONS"</code> */
  	public final static String OPTIONS = START + "OPTIONS";
+ 	/** Constant <code>LEGEND="START + LEGEND + END"</code> */
  	public final static String LEGEND = START + "LEGEND" + END;
+ 	/** Constant <code>IMAGE="START + IMAGE + END"</code> */
  	public final static String IMAGE = START + "IMAGE" + END;
 
 	/**
 	 * Creates the String for the Content function.
-	 * 
+	 *
 	 * @param varName name of the variable to get content of
 	 * @return the construct of the content
 	 */
@@ -55,7 +72,7 @@ public class Encode {
 	
 	/**
 	 * Creates the String for the Predicate function.
-	 * 
+	 *
 	 * @param varName name of the variable to get predicate of
 	 * @return the construct of the content
 	 */
@@ -65,7 +82,7 @@ public class Encode {
 	
 	/**
 	 * Creates the String for escape declaration.
-	 * 
+	 *
 	 * @param varName name of the variable for expression
 	 * @return the construct of escape declaration
 	 */
@@ -75,7 +92,7 @@ public class Encode {
 
 	/**
 	 * Creates the String for variable definition.
-	 * 
+	 *
 	 * @param varName name of the variable for definition
 	 * @return the construct of variable definition
 	 */
@@ -85,7 +102,7 @@ public class Encode {
 
 	/**
 	 * Creates the String for the for function.
-	 * 
+	 *
 	 * @param content name the inner content between the for operation
 	 * @return the construct of for function
 	 */
@@ -95,9 +112,9 @@ public class Encode {
 
 	/**
 	 * Creates the String for the regular content.
-	 * 
+	 *
 	 * @param varName name of the regular variable to get content of
-	 * @return the regular construct of the content 
+	 * @return the regular construct of the content
 	 */
 	public static String REG_CONTENT_OF(String varName) {
 		return START + CONTENT + "\\(\\" + VARNOTATION + varName + "\\)" + END;
@@ -105,7 +122,7 @@ public class Encode {
 		
 	/**
 	 * Creates the String for escape regular expression.
-	 * 
+	 *
 	 * @param varName name of the variable for expression
 	 * @return the construct of escape regular expression
 	 */
@@ -115,7 +132,7 @@ public class Encode {
 
 	/**
 	 * Creates the regular expression String for the variable .
-	 * 
+	 *
 	 * @param varName name of the variable
 	 * @return the regular expression construct of variable
 	 */
@@ -125,7 +142,7 @@ public class Encode {
 	
 	/**
 	 * Creates the String for predicate regular expression.
-	 * 
+	 *
 	 * @param varName name of the variable for expression
 	 * @return the regular construct of the predicate
 	 */

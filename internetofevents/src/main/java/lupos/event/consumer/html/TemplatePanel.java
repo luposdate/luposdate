@@ -45,8 +45,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * {@link JPanel} for the {@link JButton}s and {@link JTextArea}s handling of
+ * {@link javax.swing.JPanel} for the {@link javax.swing.JButton}s and {@link javax.swing.JTextArea}s handling of
  * the generated Templates Queries.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class TemplatePanel extends JSplitPane implements ActionListener {
@@ -65,6 +68,9 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 	private JButton addRefreshButton;
 	private JButton addPredicateButton;
 
+	/**
+	 * <p>Constructor for TemplatePanel.</p>
+	 */
 	public TemplatePanel() {
 		initComponents();
 		initLayout();
@@ -192,10 +198,9 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Handles the actions of the generated {@link JButton}s.
-	 * 
-	 * @param e
-	 *            as the triggered action
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -242,23 +247,23 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 	}
 
 	/**
-	 * Creates a empty {@link JSONObject}.
-	 * 
+	 * Creates a empty {@link org.json.JSONObject}.
+	 *
 	 * @return empty JSONObject
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public JSONObject toJSON() throws JSONException {
 		return toJSON("");
 	}
 
 	/**
-	 * Creates a {@link JSONObject} out of the read information of the query and
+	 * Creates a {@link org.json.JSONObject} out of the read information of the query and
 	 * the template.
-	 * 
+	 *
 	 * @param path
 	 *            to save the file at given location
 	 * @return saveObject as created JSONObject.
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public JSONObject toJSON(String path) throws JSONException {
 		final JSONObject saveObject = new JSONObject();
@@ -274,7 +279,7 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 
 	/**
 	 * Writes the template as HTML file.
-	 * 
+	 *
 	 * @param path
 	 *            the location to save the file
 	 */
@@ -283,8 +288,8 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 	}
 
 	/**
-	 * Reads of a {@link JSONObject} the needed information to it on panel.
-	 * 
+	 * Reads of a {@link org.json.JSONObject} the needed information to it on panel.
+	 *
 	 * @param loadObject
 	 *            the JSONObject to read
 	 */
@@ -313,8 +318,8 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 	}
 
 	/**
-	 * For getting the {@link JTextField} of templateNameField.
-	 * 
+	 * For getting the {@link javax.swing.JTextField} of templateNameField.
+	 *
 	 * @return the textfield of the templatename
 	 */
 	public JTextField getTemplateNameField() {
@@ -323,7 +328,7 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 
 	/**
 	 * For setting the name of templateNameField.
-	 * 
+	 *
 	 * @param templateName
 	 *            the text to set
 	 */
@@ -333,7 +338,7 @@ public class TemplatePanel extends JSplitPane implements ActionListener {
 
 	/**
 	 * For getting the written template HTML code.
-	 * 
+	 *
 	 * @return the templateTextArea content
 	 */
 	public String getHTMLCode() {

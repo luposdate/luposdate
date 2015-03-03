@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.queryresult;
 
@@ -35,7 +39,6 @@ import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.Literal;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class GraphResult extends QueryResult {
 	private static final long serialVersionUID = -8408070282837185178L;
 
@@ -47,10 +50,14 @@ public class GraphResult extends QueryResult {
 	private final HashSet<AnonymousLiteral> alreadyUsedBlankNodes = new HashSet<AnonymousLiteral>();
 	private int bnodeid = 0;
 
+	/**
+	 * <p>Constructor for GraphResult.</p>
+	 */
 	public GraphResult() {
 		reset();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void reset() {
 		super.reset();
@@ -58,6 +65,11 @@ public class GraphResult extends QueryResult {
 		triples = new LinkedList<Triple>();
 	}
 
+	/**
+	 * <p>Constructor for GraphResult.</p>
+	 *
+	 * @param template a {@link java.util.Collection} object.
+	 */
 	public GraphResult(final Collection<TriplePattern> template/*
 																 * , boolean
 																 * sorted
@@ -67,6 +79,9 @@ public class GraphResult extends QueryResult {
 		addConstantTriples();
 	}
 
+	/**
+	 * <p>addConstantTriples.</p>
+	 */
 	protected void addConstantTriples() {
 		for (final TriplePattern tp : template) {
 			if (!tp.getPos(0).isVariable() && !tp.getPos(1).isVariable()
@@ -76,6 +91,7 @@ public class GraphResult extends QueryResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GraphResult clone() {
 		final GraphResult result = new GraphResult();
@@ -86,6 +102,7 @@ public class GraphResult extends QueryResult {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final Bindings bindings) {
 		final HashMap<BlankNode, AnonymousLiteral> assignedBlankNodes = new HashMap<BlankNode, AnonymousLiteral>();
@@ -115,6 +132,7 @@ public class GraphResult extends QueryResult {
 		return super.add(bindings);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final QueryResult qr) {
 		// first determine already used blank nodes!
@@ -131,6 +149,11 @@ public class GraphResult extends QueryResult {
 		return flag;
 	}
 
+	/**
+	 * <p>addAll.</p>
+	 *
+	 * @param gr a {@link lupos.datastructures.queryresult.GraphResult} object.
+	 */
 	public void addAll(final GraphResult gr) {
 		this.template = null;
 		add(gr);
@@ -141,20 +164,32 @@ public class GraphResult extends QueryResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return triples.toString();
 	}
 
+	/**
+	 * <p>getGraphResultTriples.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Triple> getGraphResultTriples() {
 		return triples;
 	}
 
+	/**
+	 * <p>addGraphResultTriple.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 */
 	public void addGraphResultTriple(final Triple t) {
 		if (t.getPos(0) != null && t.getPos(1) != null && t.getPos(2) != null)
 			triples.add(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof GraphResult) {
@@ -165,19 +200,31 @@ public class GraphResult extends QueryResult {
 			return false;
 	}
 
+	/**
+	 * <p>Getter for the field <code>template</code>.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<TriplePattern> getTemplate() {
 		return template;
 	}
 
+	/**
+	 * <p>Setter for the field <code>template</code>.</p>
+	 *
+	 * @param template a {@link java.util.Collection} object.
+	 */
 	public void setTemplate(Collection<TriplePattern> template) {
 		this.template=template;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return triples.size();
 	}
 
+	/** {@inheritDoc} */
 	public boolean containsAllExceptAnonymousLiterals(final QueryResult o) {
 		if (o instanceof GraphResult) {
 			final Collection<Triple> triples2 = ((GraphResult) o).triples;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -34,9 +38,9 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.singleinput.ReplaceLit;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-
 public class RuleDeleteEmptyReplaceLit extends Rule {
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final ReplaceLit replaceLit = new ReplaceLit();
@@ -47,6 +51,7 @@ public class RuleDeleteEmptyReplaceLit extends Rule {
 		startNode = replaceLit;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final ReplaceLit replaceLit = (ReplaceLit) mso.get("replaceLit");
@@ -54,6 +59,7 @@ public class RuleDeleteEmptyReplaceLit extends Rule {
 		return (replaceLit.getSubstitutionsLiteralLeft().size() == 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,

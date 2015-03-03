@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.parsing;
 
@@ -110,12 +114,18 @@ import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SPARQL1_1ParserVisitor;
 import lupos.sparql1_1.SimpleNode;
-
 public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1ParserVisitor {
 	protected HashMap<String, String> prefixList = new HashMap<String, String>();
 	protected Prefix prefix;
 
 	// helper method: visits all children of the current node
+	/**
+	 * <p>visitChildren.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @param data a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String visitChildren(final Node n, final Object data) {
 		final int numberChildren = n.jjtGetNumChildren();
 
@@ -131,16 +141,27 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return value;
 	}
 
+	/**
+	 * <p>visitChild.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @param data a {@link java.lang.Object} object.
+	 * @param index a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String visitChild(final Node n, final Object data, final int index) {
 		return (String) (n.jjtGetChild(index).jjtAccept(this, data));
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final SimpleNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public abstract Object visit(ASTQuery node, Object data);
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTBaseDecl node, final Object data) {
 		if (node.jjtGetChild(0) instanceof ASTQuotedURIRef)
 			prefixList.put("", visitChildren(node, data));
@@ -148,6 +169,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTPrefixDecl node, final Object data) {
 		if (node.jjtGetChild(0) instanceof ASTQuotedURIRef)
 			prefixList.put(node.getPrefix(), visitChildren(node, data));
@@ -155,6 +177,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTSelectQuery node, final Object data) {
 		final Select s = new Select(this.prefix);
 
@@ -258,6 +281,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		}
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTConstructQuery node, final Object data) {
 		final Construct c = new Construct(this.prefix);
 
@@ -273,6 +297,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return c;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTConstructTemplate node, final Object data) {
 		final LinkedHashSet<Operator> templates = new LinkedHashSet<Operator>();
 
@@ -292,6 +317,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return oc;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTDescribeQuery node, final Object data) {
 		final Describe d = new Describe(this.prefix);
 
@@ -306,6 +332,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return d;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTAskQuery node, final Object data) {
 		final Ask a = new Ask(this.prefix);
 
@@ -315,14 +342,17 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return a;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTDefaultGraph node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTNamedGraph node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTOrderConditions node, final Object data) {
 		// create list for SortContainers...
 		final LinkedList<SortContainer> scl = new LinkedList<SortContainer>();
@@ -361,32 +391,40 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return scl; // return list of SortContainers
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTAscOrder node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTDescOrder node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTLimit node, final Object data) {
 		return node.getLimit();
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTOffset node, final Object data) {
 		return node.getOffset();
 	}
 
+	/** {@inheritDoc} */
 	public abstract Object visit(ASTGroupConstraint node, Object data);
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTOptionalConstraint node, final Object data) {
 		return node.jjtGetChild(0).jjtAccept(this, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTGraphConstraint node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTUnionConstraint node, final Object data) {
 		final Union unionOp = new Union();
 
@@ -403,6 +441,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return unionOp;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTFilterConstraint node, final Object data) {
 		final SPARQLParserVisitorImplementationDumper filterDumper = new SPARQLParserVisitorImplementationDumper();
 
@@ -413,14 +452,17 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return filterOp;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTFunctionCall node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTArguments node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public Object visit(final ASTTripleSet node, final Object data) {
 		final Item[] item = { null, null, null };
@@ -456,110 +498,137 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return rdfTermSubject;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTVar node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTOrNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTAndNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTEqualsNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTNotEqualsNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTLessThanNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTLessThanEqualsNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTGreaterThanNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTGreaterThanEqualsNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTAdditionNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTSubtractionNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTMultiplicationNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTDivisionNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTNotNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTPlusNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTMinusNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTStrFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTLangFuncNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTLangMatchesFuncNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTDataTypeFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTBoundFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTUriFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTBnodeFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTRegexFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTLangTag node, final Object data) {
 		return visitChildren(node, data) + node.getLangTag();
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTDoubleCircumflex node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTBooleanLiteral node, final Object data) {
 		if (node.getState())
 			return "true";
@@ -567,6 +636,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 			return "false";
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTStringLiteral node, final Object data) {
 		String stringLiteral = node.getStringLiteral();
 
@@ -577,38 +647,47 @@ public abstract class SPARQLCoreParserVisitorImplementation implements SPARQL1_1
 		return stringLiteral;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTEmptyNode node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTQuotedURIRef node, final Object data) {
 		return node.getQRef();
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTInteger node, final Object data) {
 		return String.valueOf(node.getValue());
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTFloatingPoint node, final Object data) {
 		return String.valueOf(node.getValue());
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTSameTermFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTIriFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTRDFLiteral node, final Object data) {
 		return visitChildren(node, data);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTBlankNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(final ASTAs node, final Object data) {
 		return null;
 	}

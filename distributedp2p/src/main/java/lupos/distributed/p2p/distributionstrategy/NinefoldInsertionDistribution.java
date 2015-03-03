@@ -34,6 +34,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  * This class implements the distribution strategy with ninefold insertion,
  * where the last item of the key is hashed, so that all triples are stored in
  * partition by key only and not by the p2p implementation.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class NinefoldInsertionDistribution implements
 		IDistributionKeyContainer<String> {
@@ -41,14 +44,23 @@ public class NinefoldInsertionDistribution implements
 	/*
 	 * The needed keys
 	 */
+	/** Constant <code>TYPE_POS="POS"</code> */
 	protected final static String TYPE_POS = "POS";
+	/** Constant <code>TYPE_SOP="SOP"</code> */
 	protected final static String TYPE_SOP = "SOP";
+	/** Constant <code>TYPE_SPO="SPO"</code> */
 	protected final static String TYPE_SPO = "SPO";
+	/** Constant <code>TYPE_SP="SP"</code> */
 	protected final static String TYPE_SP = "SP";
+	/** Constant <code>TYPE_SO="SO"</code> */
 	protected final static String TYPE_SO = "SO";
+	/** Constant <code>TYPE_PS="PS"</code> */
 	protected final static String TYPE_PS = "PS";
+	/** Constant <code>TYPE_PO="PO"</code> */
 	protected final static String TYPE_PO = "PO";
+	/** Constant <code>TYPE_OS="OS"</code> */
 	protected final static String TYPE_OS = "OS";
+	/** Constant <code>TYPE_OP="OP"</code> */
 	protected final static String TYPE_OP = "OP";
 
 	/**
@@ -59,7 +71,7 @@ public class NinefoldInsertionDistribution implements
 
 	/**
 	 * New instance with given bagSize
-	 * 
+	 *
 	 * @param bagSize
 	 *            the among of partitions to be used for distribution
 	 */
@@ -75,7 +87,7 @@ public class NinefoldInsertionDistribution implements
 
 	/**
 	 * Returns the bag size
-	 * 
+	 *
 	 * @return the bag size
 	 */
 	public int getBagsize() {
@@ -138,6 +150,7 @@ public class NinefoldInsertionDistribution implements
 		return s.charAt(2) + "";
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public KeyContainer<String>[] getKeysForStoring(final Triple triple) {
@@ -186,6 +199,7 @@ public class NinefoldInsertionDistribution implements
 						+ getHashedComponent(0, triple)) };
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public KeyContainer<String>[] getKeysForQuerying(
@@ -341,16 +355,23 @@ public class NinefoldInsertionDistribution implements
 		throw new TriplePatternNotSupportedError(this, triplePattern);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "P2P distribution strategy with 9-fold insertion (triple (s, p, o) has keys { 'SP' , 'PO', 'SO' , 'OS' , 'OP' , 'PS', 'SPO', 'SOP', 'POS' }, where the last item is hashed.)";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeyTypes() {
 		return NinefoldInsertionDistribution.getPossibleKeyTypes();
 	}
 
+	/**
+	 * <p>getPossibleKeyTypes.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public static String[] getPossibleKeyTypes() {
 		return new String[] { TYPE_SP, TYPE_SO, TYPE_PO, TYPE_OP, TYPE_OS,
 				TYPE_PS, TYPE_SPO, TYPE_SOP, TYPE_POS };

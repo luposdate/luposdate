@@ -73,14 +73,14 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 /**
- * This is an implementation of {@link ISubgraphExecutor} which is used in
+ * This is an implementation of {@link lupos.distributed.operator.ISubgraphExecutor} which is used in
  * P2P-QueryClients for receiving subgraph messages, evaluating these subgraphs
  * and answering the request with the local result.
  *
  * @author Bjoern
- *
  * @param <T>
  *            The key container type
+ * @version $Id: $Id
  */
 public class P2P_SubgraphExecuter<T> implements
 		ISubgraphExecutor<KeyContainer<T>>, IP2PMessageListener {
@@ -303,9 +303,10 @@ public class P2P_SubgraphExecuter<T> implements
 	private final Logger l = Logger.getLogger(this.getClass());
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This is called by the {@link QueryClient} in LuposDate, because this is
 	 * registered as {@link ISubgraphExecutor}, for evaluation subgraphs.
-	 *
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@Override
@@ -500,20 +501,20 @@ public class P2P_SubgraphExecuter<T> implements
 	}
 
 	/**
-	 * Is any p2p network ( {@link AbstractP2PNetwork} ) instance connected with
-	 * this {@link ISubgraphExecutor}
+	 * Is any p2p network ( {@link lupos.distributed.p2p.network.AbstractP2PNetwork} ) instance connected with
+	 * this {@link lupos.distributed.operator.ISubgraphExecutor}
 	 *
-	 * @return yes, if p2p conntection established
+	 * @return a boolean.
 	 */
 	protected boolean hasP2PNetwork() {
 		return this.p2pNetwork != null;
 	}
 
 	/**
-	 * Is any {@link IStorage} instance connected with this
-	 * {@link ISubgraphExecutor}
+	 * Is any {@link lupos.distributed.storage.IStorage} instance connected with this
+	 * {@link lupos.distributed.operator.ISubgraphExecutor}
 	 *
-	 * @return yes, if p2p conntection established
+	 * @return a boolean.
 	 */
 	protected boolean hasStorage() {
 		return this.storage != null;
@@ -529,8 +530,8 @@ public class P2P_SubgraphExecuter<T> implements
 	}
 
 	/**
-	 * Sets a new p2p-network ( {@link AbstractP2PNetwork} ) for this
-	 * {@link ISubgraphExecutor}.
+	 * Sets a new p2p-network ( {@link lupos.distributed.p2p.network.AbstractP2PNetwork} ) for this
+	 * {@link lupos.distributed.operator.ISubgraphExecutor}.
 	 *
 	 * @param p2pNetwork
 	 *            The new network to set.
@@ -557,7 +558,7 @@ public class P2P_SubgraphExecuter<T> implements
 	}
 
 	/**
-	 * Gets the {@link IStorage} for resolving key as node in p2p-network.
+	 * Gets the {@link lupos.distributed.storage.IStorage} for resolving key as node in p2p-network.
 	 *
 	 * @return the storage
 	 */
@@ -566,7 +567,7 @@ public class P2P_SubgraphExecuter<T> implements
 	}
 
 	/**
-	 * Sets / Connects the {@link IStorage} used in {@link QueryClient}.
+	 * Sets / Connects the {@link lupos.distributed.storage.IStorage} used in {@link lupos.distributed.query.QueryClient}.
 	 *
 	 * @param storage
 	 *            the new storage
@@ -601,9 +602,9 @@ public class P2P_SubgraphExecuter<T> implements
 
 	/**
 	 * Is any evaluater for evaluating local subgraphs connected with this
-	 * {@link ISubgraphExecutor}?
+	 * {@link lupos.distributed.operator.ISubgraphExecutor}?
 	 *
-	 * @return Yes, if evaluator is given/set.
+	 * @return a boolean.
 	 */
 	protected boolean hasEvaluator() {
 		return this.getEvaluator() != null;
@@ -667,6 +668,7 @@ public class P2P_SubgraphExecuter<T> implements
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void onMessage(final String message, final String from) {
 		this.l.debug(String.format(
@@ -845,6 +847,7 @@ public class P2P_SubgraphExecuter<T> implements
 
 	private final AtomicInteger taskCounter = new AtomicInteger();
 
+	/** {@inheritDoc} */
 	@Override
 	public void onMessage(InputStream in, final String from) {
 

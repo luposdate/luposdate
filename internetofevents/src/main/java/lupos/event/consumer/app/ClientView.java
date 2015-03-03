@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.consumer.app;
 
@@ -74,6 +78,11 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
 	private SubscriptionChartView subscriptionChartView;
 	private JTabbedPane subscriptionTabbedPane;	
 	
+	/**
+	 * <p>Constructor for ClientView.</p>
+	 *
+	 * @param consumer a {@link lupos.event.consumer.Consumer} object.
+	 */
 	public ClientView(Consumer consumer) {		
 		this.consumer = consumer;
 		initComponents();
@@ -141,6 +150,11 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
 	}
 	
 	
+	/**
+	 * <p>setActiveSubscription.</p>
+	 *
+	 * @param sub a {@link lupos.event.pubsub.Subscription} object.
+	 */
 	public void setActiveSubscription(Subscription sub) {
 		this.subscriptionResultsView.setSubscription(sub);
 		this.subscriptionChartView.setSubscription(sub);		
@@ -155,6 +169,7 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	public void resultReceived(QueryResult result) {
 		this.label.setText(result.toString());		
@@ -164,38 +179,79 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
         JOptionPane.showMessageDialog(this, errMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+	/**
+	 * <p>addConnectActionListener.</p>
+	 *
+	 * @param al a {@link java.awt.event.ActionListener} object.
+	 */
 	public void addConnectActionListener(ActionListener al) {
 		this.connectButton.addActionListener(al);
 	}
 	
+	/**
+	 * <p>addNewSubscriptionActionListener.</p>
+	 *
+	 * @param al a {@link java.awt.event.ActionListener} object.
+	 */
 	public void addNewSubscriptionActionListener(ActionListener al) {
 		this.newSubscription.addActionListener(al);
 	}
 	
+	/**
+	 * <p>addSubmitActionListener.</p>
+	 *
+	 * @param al a {@link java.awt.event.ActionListener} object.
+	 */
 	public void addSubmitActionListener(ActionListener al) {
 		this.subscriptionEditView.addSubmitActionListener(al);
 	}
 	
+	/**
+	 * <p>getHost.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getHost() {
 		return this.hostField.getText();
 	}
 	
+	/**
+	 * <p>getPort.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPort() {
 		return Integer.parseInt(this.portField.getText());
 	}
 	
+	/**
+	 * <p>getSubscriptionName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSubscriptionName() {
 		return this.subscriptionEditView.getSubscriptionName();
 	}
 	
+	/**
+	 * <p>getSubscriptionQuery.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSubscriptionQuery() {
 		return this.subscriptionEditView.getSubscriptionQuery();
 	}
 	
+	/**
+	 * <p>getAction.</p>
+	 *
+	 * @return a {@link lupos.event.action.Action} object.
+	 */
 	public Action getAction() {
 		return this.subscriptionEditView.getAction();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void update(Observable o, Object arg) {
 		boolean connected = this.consumer.isConnected();
@@ -208,10 +264,20 @@ public class ClientView extends JFrame implements Observer, IResultReceivedHandl
 		this.mainPanelCardLayout.show(this.mainPanel, Boolean.toString(connected));
 	}	
 
+	/**
+	 * <p>setSubscriptionListModel.</p>
+	 *
+	 * @param model a {@link javax.swing.DefaultListModel} object.
+	 */
 	public void setSubscriptionListModel(DefaultListModel model) {
 		this.subscriptionList.setModel(model);
 	}
 	
+	/**
+	 * <p>addSubscriptionSelectionListModel.</p>
+	 *
+	 * @param l a {@link javax.swing.event.ListSelectionListener} object.
+	 */
 	public void addSubscriptionSelectionListModel(ListSelectionListener l) {
 		this.subscriptionList.addListSelectionListener(l);
 	}	

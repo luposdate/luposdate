@@ -60,12 +60,16 @@ import lupos.optimizations.physical.PhysicalOptimizations;
  * use {@link #lock()} and finally {@link #unlock()} to block and set the configuration.
  * With {@link #newInstance()} or {@link #newInstance(String[])} you can create the query client instance
  * that can be used.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.sparql1_1.Node>{
 
 	/**
 	 * new instance (not allowed to call)
-	 * @throws Exception throws always a RuntimeException
+	 *
+	 * @throws java.lang.Exception throws always a Runtimejava.lang.Exception
 	 */
 	@Deprecated
 	public P2P_QueryClient_Instanciator() throws Exception {
@@ -84,6 +88,7 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Sets the configuration for the storage
+	 *
 	 * @param cfg the configuration
 	 */
 	@SuppressWarnings("rawtypes")
@@ -159,6 +164,11 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 		return null;
 	}
 	
+	/**
+	 * <p>newInstance.</p>
+	 *
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
+	 */
 	public static QueryClient newInstance() {
 		return newInstance(new String[0]);
 	}
@@ -167,7 +177,9 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Creates a new instance of a query client
+	 *
 	 * @return a new instance
+	 * @param args an array of {@link java.lang.String} objects.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static QueryClient newInstance(String[] args) {
@@ -306,6 +318,7 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Returns the map of configuration to be used for instanciation
+	 *
 	 * @return the map
 	 */
 	public static Map<String, Object> getP2PImplementationConfiguration() {
@@ -329,7 +342,8 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	}
 	
 	/**
-	 * Sets, whether subgraph submission is to be used or without 
+	 * Sets, whether subgraph submission is to be used or without
+	 *
 	 * @param enabled subgraph submission enabled
 	 */
 	public static void setSubgraphSubmission(boolean enabled) {
@@ -338,7 +352,8 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Sets the P2P implementation constant
-	 * @param p2pNetworkConstant the unique P2P key to be used in {@link P2PNetworkCreator#get(String)}
+	 *
+	 * @param p2pNetworkConstant the unique P2P key to be used in {@link lupos.distributed.p2p.network.P2PNetworkCreator#get(String)}
 	 */
 	public static void setP2PImplementationConstant(String p2pNetworkConstant) {
 		p2pImplementationConstant = p2pNetworkConstant;
@@ -346,6 +361,7 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Sets the P2P configuration for the network
+	 *
 	 * @param cfg the configuration to set!
 	 */
 	public static void setP2PImplementationConfiguration(Map<String,Object> cfg) {
@@ -354,6 +370,7 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Sets the distribution used in this query client.
+	 *
 	 * @param p2pDistributionType the distribution strategy
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -362,6 +379,11 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	}
 	
 	
+	/**
+	 * <p>setStorageType.</p>
+	 *
+	 * @param storage a {@link java.lang.Class} object.
+	 */
 	@SuppressWarnings("rawtypes")
 	public static void setStorageType(Class<? extends StorageWithDistributionStrategy> storage) {
 		if (storage != null)
@@ -386,6 +408,7 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 
 	/**
 	 * Sets the network implementation to be used
+	 *
 	 * @param p2pNetwork the p2p network
 	 */
 	public static void setP2PNetwork(AbstractP2PNetwork<?> p2pNetwork) {
@@ -395,6 +418,8 @@ public abstract class P2P_QueryClient_Instanciator extends QueryEvaluator<lupos.
 	
 	/**
 	 * Sets the needed bindings class to be used
+	 *
+	 * @param b a {@link java.lang.Class} object.
 	 */
 	public static void setBindings(Class<? extends Bindings> b) {
 		bindings = b;

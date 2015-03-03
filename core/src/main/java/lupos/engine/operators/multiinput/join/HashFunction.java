@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -29,7 +33,6 @@ import java.util.LinkedList;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
-
 public class HashFunction {
 	private final static int MAXCOMPONENTS = 100;
 
@@ -37,10 +40,18 @@ public class HashFunction {
 
 	private final long[] functionElements;
 
+	/**
+	 * <p>Constructor for HashFunction.</p>
+	 *
+	 * @param initValues an array of long.
+	 */
 	public HashFunction(final long[] initValues) {
 		this.functionElements = initValues;
 	}
 
+	/**
+	 * <p>Constructor for HashFunction.</p>
+	 */
 	public HashFunction() {
 		this.functionElements = new long[MAXCOMPONENTS];
 		for (int i = 0; i < this.functionElements.length; i++) {
@@ -48,10 +59,21 @@ public class HashFunction {
 		}
 	}
 
+	/**
+	 * <p>getInitValues.</p>
+	 *
+	 * @return an array of long.
+	 */
 	public long[] getInitValues() {
 		return this.functionElements;
 	}
 
+	/**
+	 * <p>getInitValues.</p>
+	 *
+	 * @param intersectionVariables a {@link java.util.Collection} object.
+	 * @return an array of long.
+	 */
 	public long[] getInitValues(final Collection<Variable> intersectionVariables) {
 		final long[] la = new long[Math.min(intersectionVariables.size(),
 				this.functionElements.length)];
@@ -59,6 +81,12 @@ public class HashFunction {
 		return la;
 	}
 
+	/**
+	 * <p>hash.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @return a long.
+	 */
 	public long hash(final String s) {
 		long hash = 0;
 		for (int i = 0; i < Math.min(s.length(), this.functionElements.length); i++) {
@@ -69,6 +97,9 @@ public class HashFunction {
 
 	/**
 	 * the key is always greater then zero
+	 *
+	 * @param key a {@link java.util.Collection} object.
+	 * @return a long.
 	 */
 	public long hash(final Collection<Literal> key) {
 		long hash = 0;
@@ -85,6 +116,12 @@ public class HashFunction {
 		return hash;
 	}
 
+	/**
+	 * <p>hash.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a long.
+	 */
 	public long hash(final Literal lit) {
 		long hash = (lit.hashCode() * this.functionElements[0]) % prim;
 		if (hash < 0)
@@ -92,6 +129,13 @@ public class HashFunction {
 		return hash;
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param intersectionVariables a {@link java.util.Collection} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public static Collection<Literal> getKey(final Bindings b,
 			final Collection<Variable> intersectionVariables) {
 		final Collection<Literal> key = new LinkedList<Literal>();
@@ -104,6 +148,13 @@ public class HashFunction {
 		return key;
 	}
 
+	/**
+	 * <p>hash.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param intersectionVariables a {@link java.util.Collection} object.
+	 * @return a long.
+	 */
 	public long hash(final Bindings b,
 			final Collection<Variable> intersectionVariables) {
 		return hash(getKey(b, intersectionVariables));

@@ -39,6 +39,9 @@ import lupos.event.producer.ebay.parser.JSObject;
 
 /**
  * Content retriever for auction data from eBay
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ContentRetriever extends Thread {
 
@@ -59,9 +62,6 @@ public class ContentRetriever extends Thread {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param	config		Current configuration set
-	 * @param	buffer		Bounded buffer that stores the retrieved auctions
 	 */
 	public ContentRetriever(Configuration config, BoundedBuffer<Auction> buffer) {
 		this.config = config;
@@ -71,12 +71,8 @@ public class ContentRetriever extends Thread {
 
 	/**
 	 * Retrieves the content from the host name given in the constructor
-	 * 
-	 * @param	pageNumber		Current page number 
-	 * 
-	 * @return	String source code of the requested page
-	 * 
-	 * @throws	IOException	if no connection to eBay could be established
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String getContent(final int pageNumber) throws IOException {
 		final StringBuilder getStr = new StringBuilder(this.config.toString());
@@ -122,7 +118,8 @@ public class ContentRetriever extends Thread {
 	
 	/**
 	 * Contacts the ebay server, retrieves current auctions and returns them...
-	 * @return the retrieved auctions after contacting the ebay server 
+	 *
+	 * @return the retrieved auctions after contacting the ebay server
 	 */
 	public List<Auction> retrieveAuctions() {
 		List<Auction> auctions = new ArrayList<Auction>();
@@ -158,6 +155,7 @@ public class ContentRetriever extends Thread {
 		return auctions;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void run() {
 		int counter = 0;

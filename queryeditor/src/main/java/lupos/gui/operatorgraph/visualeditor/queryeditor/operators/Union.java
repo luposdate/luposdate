@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.operators;
 
@@ -35,8 +39,8 @@ import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import lupos.gui.operatorgraph.visualeditor.operators.MultiInputOperator;
 import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.misc.util.OperatorIDTuple;
-
 public class Union extends MultiInputOperator {
+	/** {@inheritDoc} */
 	public void addAvailableOperators(JPopupMenu popupMenu, final VisualGraph<Operator> parent, final GraphWrapper oldGW) {
 		JMenuItem joinOpMI = new JMenuItem("change operator to JOIN");
 		joinOpMI.addActionListener(new ActionListener() {
@@ -57,6 +61,11 @@ public class Union extends MultiInputOperator {
 		popupMenu.add(optionalOpMI);
 	}
 
+	/**
+	 * <p>serializeOperator.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeOperator() {
 		StringBuffer ret = new StringBuffer();
 
@@ -69,6 +78,7 @@ public class Union extends MultiInputOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public StringBuffer serializeOperatorAndTree(HashSet<Operator> visited) {
 		StringBuffer ret = new StringBuffer();
 
@@ -85,14 +95,25 @@ public class Union extends MultiInputOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	public boolean validateOperator(boolean showErrors, HashSet<Operator> visited, Object data) {
 		return super.validateOperator(showErrors, visited, data);
 	}
 
+	/**
+	 * <p>canAddSucceedingOperator.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean canAddSucceedingOperator() {
 		return true;
 	}
 
+	/**
+	 * <p>getFreeOpID.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getFreeOpID() {
 		int prevID = -1;
 

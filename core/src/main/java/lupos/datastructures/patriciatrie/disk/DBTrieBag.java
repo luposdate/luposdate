@@ -32,6 +32,9 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
 
 /**
  * This class implements the disk based behavior for a trie for a bag of strings.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBTrieBag extends TrieBag {
 
@@ -50,7 +53,7 @@ public class DBTrieBag extends TrieBag {
 	 *            Amount of nodes that are simultaneously kept in memory
 	 * @param pageSize
 	 *            The size of a page to be stored on disk
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public DBTrieBag(final String fileName, final int bufferSize, final int pageSize) throws IOException {
 		super();
@@ -69,13 +72,15 @@ public class DBTrieBag extends TrieBag {
 	 *
 	 * @param fileName
 	 *            Base filename for the trie
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public DBTrieBag(final String fileName) throws IOException {
 		this(fileName, NodeManager.NODES_TO_BUFFER, NodeManager.DEFAULT_PAGESIZE);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Saves all unsaved changes to disk and closes the underlying node manager.
 	 * After this method has been called, the trie should not be accessed
 	 * anymore.
@@ -95,16 +100,19 @@ public class DBTrieBag extends TrieBag {
 		super.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<Integer> createNodeInstance() {
 		return new DBNodeWithValue<Integer>(this.nodeManager, -1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected NodeWithValue<Integer> createRootNodeInstance() {
 		return new DBNodeWithValue<Integer>(this.nodeManager, 1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void changeRootNode(final Node rootNode_local) {
 		this.setRootNode(rootNode_local);

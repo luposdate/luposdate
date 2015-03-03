@@ -32,21 +32,29 @@ import java.net.URLConnection;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * Class to implement reading from a data URI 
- * @author heidemey
+ * Class to implement reading from a data URI
  *
+ * @author heidemey
+ * @version $Id: $Id
  */
 public class DataConnection extends URLConnection {
 
+    /**
+     * <p>Constructor for DataConnection.</p>
+     *
+     * @param u a {@link java.net.URL} object.
+     */
     public DataConnection(URL u) {
         super(u);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void connect() throws IOException {
         connected = true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public InputStream getInputStream() throws IOException {
         String data = url.toString();

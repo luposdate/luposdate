@@ -72,11 +72,11 @@ import lupos.misc.Triple;
  * see PagedHashMultiMap.pdf in folder documentation of this project
  *
  * @author K. Knof
- *
  * @param <K>
  * keys
  * @param <V>
  * values
+ * @version $Id: $Id
  */
 public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 
@@ -106,6 +106,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	static int fileID = 0;
 
 	// the lock for getting a new id
+	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
 
 	// the initial table size
@@ -118,6 +119,8 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	private final int TABLEPAGESIZE = INITIALTABLESIZE * 8;
 
 	/**
+	 * <p>Constructor for PagedHashMultiMap.</p>
+	 *
 	 * @param classOfKeys
 	 * class of keys
 	 * @param classOfValues
@@ -148,6 +151,8 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	}
 
 	/**
+	 * <p>Constructor for PagedHashMultiMap.</p>
+	 *
 	 * @param classOfKeys
 	 * the class of keys
 	 * @param classOfValues
@@ -166,7 +171,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 * the next free byte in the keys file
 	 * @param lastValue
 	 * the next free byte in the values file
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	protected PagedHashMultiMap(final Class<K> classOfKeys, final Class<V> classOfValues, final String pointersFilename, final String keysFilename, final String valuesFilename, final long sizeKeys, final long sizeValues, final long lastKey, final long lastValue) throws IOException {
 		this.classOfKeys = classOfKeys;
@@ -185,9 +190,10 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param lois
 	 * input stream
-	 * @return
-	 * PagedHashMultiMap&lt;K,V&gt;
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
+	 * @return a {@link lupos.datastructures.paged_map.PagedHashMultiMap} object.
 	 */
 	public static<K,V> PagedHashMultiMap<K,V> readLuposPagedHashMap(final InputStream lois) throws IOException{
 		final String pointersFilename = InputHelper.readLuposString(lois);
@@ -209,7 +215,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param loos
 	 * output stream
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void writeLuposPagedHashMap(final OutputStream loos) throws IOException{
 		BufferManager.getBufferManager().writeAllModifiedPages();
@@ -225,16 +231,10 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * put a key and an element referring to the key to PagedHashMultiMap
-	 *
 	 * @see java.util.AbstractMap#put(java.lang.Object, java.lang.Object)
-	 *
-	 * @param key
-	 * key
-	 * @param element
-	 * element referring to the key
-	 * @return
-	 * element
 	 */
 	@Override
 	public V put(final K key, final V element) {
@@ -307,14 +307,10 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * this method completely removes a key from PagedHashMultiMap
-	 *
 	 * @see java.util.AbstractMap#remove(java.lang.Object)
-	 *
-	 * @param key
-	 * key
-	 * @return
-	 * element
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -426,8 +422,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 * key
 	 * @param element
 	 * element
-	 * @return
-	 * element
+	 * @return a V object.
 	 */
 	public V removeKeyWithValue(final K key, final V element){
 		final ResSet resultKey = this.containKeyGetAddressOfFoundKeyGetAddressOfLastKey(key);
@@ -510,8 +505,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 * key
 	 * @param element
 	 * element
-	 * @return
-	 * remove status
+	 * @return a boolean.
 	 */
 	public boolean removeAllDuplicates(final K key, final V element) {
 		final ResSet resultKey = this.containKeyGetAddressOfFoundKeyGetAddressOfLastKey(key);
@@ -549,8 +543,9 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	}
 
 	/**
-	 * set of entries without duplicates
+	 * {@inheritDoc}
 	 *
+	 * set of entries without duplicates
 	 * @see java.util.AbstractMap#entrySet()
 	 */
 	@Override
@@ -575,8 +570,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	/**
 	 * list of entries with duplicates
 	 *
-	 * @return
-	 * list of entries
+	 * @return a {@link java.util.List} object.
 	 */
 	public List<java.util.Map.Entry<K, V>> entryList() {
 		final List<Entry<K, V>> mapSet = new ArrayList<Entry<K, V>>();
@@ -599,6 +593,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#keySet()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		final Set<K> keySet = new HashSet<K>();
@@ -617,8 +612,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param key
 	 * key
-	 * @return
-	 * values list
+	 * @return a {@link java.util.Collection} object.
 	 */
 	public Collection<V> getValuesList(final K key){
 		final List<V> valuesList = new ArrayList<V>();
@@ -637,9 +631,8 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param key
 	 * key
-	 * @return
-	 * collection of elements
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
+	 * @return a {@link java.util.Collection} object.
 	 */
 	public Collection<V> getCollection(final K key) throws IOException{
 
@@ -652,8 +645,9 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	}
 
 	/**
-	 * collection of values with duplicates
+	 * {@inheritDoc}
 	 *
+	 * collection of values with duplicates
 	 * @see java.util.AbstractMap#values()
 	 */
 	@Override
@@ -678,8 +672,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param key
 	 * key
-	 * @return
-	 * result set contain key, address of found key, addres of last key
+	 * @return a {@link lupos.datastructures.paged_map.ResSet} object.
 	 */
 	public ResSet containKeyGetAddressOfFoundKeyGetAddressOfLastKey(final K key) {
 		try {
@@ -724,8 +717,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 * element
 	 * @param addressOfValues
 	 * address of values list of key
-	 * @return
-	 * result set contain element, address of found element, address of last element
+	 * @return a {@link lupos.datastructures.paged_map.ResSet} object.
 	 */
 	public ResSet containElementGetAddressOfFoundElementGetAddressOfLastElement(final V element, final long addressOfValues) {
 		long pointer = addressOfValues;
@@ -939,6 +931,8 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param addressOfNextEntry
 	 * address of next element
+	 * @param addressOfNextEntry
+	 * address of next element
 	 * @param address
 	 * address
 	 */
@@ -951,8 +945,7 @@ public class PagedHashMultiMap<K,V> extends AbstractMap<K,V> {
 	 *
 	 * @param address
 	 * address of key
-	 * @return
-	 * Quadruple of key informations
+	 * @return a {@link lupos.misc.Quadruple} object.
 	 */
 	public final Quadruple<K, Long, Long, Long> getKey(final long address) {
 		final int pagenumber = (int) (address / PageManager.getDefaultPageSize());
@@ -1083,8 +1076,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	 *
 	 * @param addressKey
 	 * address of key
-	 * @return
-	 * address
+	 * @return a long.
 	 */
 	public final long setNumberOfKeyElementsTo0(final long addressKey){
 		final int pagenumber = (int) (addressKey / PageManager.getDefaultPageSize());
@@ -1117,8 +1109,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	 *
 	 * @param addressElement
 	 * address of element
-	 * @return
-	 * address
+	 * @return a long.
 	 */
 	public final long setNumberOfElementsTo0(final long addressElement){
 		final int pagenumber = (int) (addressElement / PageManager.getDefaultPageSize());
@@ -1149,8 +1140,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	 *
 	 * @param key
 	 * key
-	 * @return
-	 * Iterator
+	 * @return a {@link java.util.Iterator} object.
 	 */
 	public Iterator<V> iteratorWithDuplicates(final K key) {
 
@@ -1228,8 +1218,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/**
 	 * iterator of keys
 	 *
-	 * @return
-	 * Iterator
+	 * @return a {@link java.util.Iterator} object.
 	 */
 	public Iterator<K> iteratorKeys() {
 
@@ -1318,8 +1307,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	 *
 	 * @param key
 	 * key
-	 * @return
-	 * Iterator
+	 * @return a {@link java.util.Iterator} object.
 	 */
 	public Iterator<V> iteratorElements(final K key) {
 
@@ -1394,10 +1382,11 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	}
 
 	/**
+	 * <p>getAddressOfKey.</p>
+	 *
 	 * @param key
 	 * key
-	 * @return
-	 * address of key
+	 * @return a long.
 	 */
 	public long getAddressOfKey(final K key){
 		final ResSet resultKey = this.containKeyGetAddressOfFoundKeyGetAddressOfLastKey(key);
@@ -1411,10 +1400,11 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	}
 
 	/**
+	 * <p>getAddressOfValues.</p>
+	 *
 	 * @param addressKey
 	 * address of key
-	 * @return
-	 * address of values
+	 * @return a long.
 	 */
 	public long getAddressOfValues(final long addressKey){
 		final int pagenumber = (int) (addressKey / PageManager.getDefaultPageSize());
@@ -1432,10 +1422,11 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	}
 
 	/**
+	 * <p>getNumberOfKeyElements.</p>
+	 *
 	 * @param addressKey
 	 * address of key
-	 * @return
-	 * number of key elements
+	 * @return a long.
 	 */
 	public long getNumberOfKeyElements(final long addressKey){
 		final int pagenumber = (int) (addressKey / PageManager.getDefaultPageSize());
@@ -1479,12 +1470,13 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	}
 
 	/**
+	 * <p>getAddressOfElement.</p>
+	 *
 	 * @param key
 	 * key
 	 * @param element
 	 * element
-	 * @return
-	 * address of element
+	 * @return a long.
 	 */
 	public long getAddressOfElement(final K key, final V element){
 		final ResSet resultKey = this.containKeyGetAddressOfFoundKeyGetAddressOfLastKey(key);
@@ -1553,6 +1545,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#size()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return (int) this.sizeValues;
@@ -1561,6 +1554,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#isEmpty()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		if (this.sizeValues == 0) {
@@ -1571,8 +1565,9 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	}
 
 	/**
-	 * @return
-	 * file ID
+	 * <p>Getter for the field <code>fileID</code>.</p>
+	 *
+	 * @return a int.
 	 */
 	public int getFileID() {
 		return PagedHashMultiMap.fileID;
@@ -1591,6 +1586,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#clear()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		final PageAddress pageAddress = new PageAddress(0, this.pointersFilename);
@@ -1614,7 +1610,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/**
 	 * this method releases all
 	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void release() throws IOException {
 		BufferManager.getBufferManager().releaseAllPages(this.pointersFilename);
@@ -1624,8 +1620,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/**
 	 * String presentation without duplicates of PagedHashMultiMap
 	 *
-	 * @return
-	 * String of map
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String toStringWithoutDuplicates() {
 		String result = "Paged Hash Map: { ";
@@ -1657,6 +1652,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	/* (non-Javadoc)
 	 * @see java.util.AbstractMap#toString()
 	 */
+	/** {@inheritDoc} */
 	@ Override
 	public String toString(){
 		String result = "Paged Hash Map: { ";
@@ -1690,6 +1686,7 @@ private final Triple<V, Long, Long> getElement(final long address) {
 	 *
 	 * @param args
 	 * console arguments
+	 * @throws java.io.IOException if any.
 	 */
 	public static void main(final String[] args) throws IOException {
 		final PagedHashMultiMap<String, String> m = new PagedHashMultiMap<String, String>(String.class, String.class);

@@ -28,13 +28,16 @@ import lupos.optimizations.logical.rules.generated.runtime.Rule;
 import lupos.optimizations.logical.rules.generated.runtime.RulePackage;
 
 /**
- * This is the {@link RulePackage} used for optimization of the p2p component
- * in {@link BasicIndexQueryEvaluator}.
- * 
- * @author Bjoern
+ * This is the {@link lupos.optimizations.logical.rules.generated.runtime.RulePackage} used for optimization of the p2p component
+ * in {@link lupos.engine.evaluators.BasicIndexQueryEvaluator}.
  *
+ * @author Bjoern
+ * @version $Id: $Id
  */
 public class HierachialDistributionRulePackage extends RulePackage {
+	    /**
+	     * <p>Constructor for HierachialDistributionRulePackage.</p>
+	     */
 	    public HierachialDistributionRulePackage() {
 	        this.rules = new Rule[] {
 	        		new PartitionSubgraphRule(), /*new JoinSGRule(),*//*new UnionRule(),*/new MultiInputRule(),new AsynchronSubgraphContainerRule(),new CheckRule()

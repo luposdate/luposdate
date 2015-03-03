@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.operators;
 
@@ -42,8 +46,8 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.queryeditor.guielements.OptionalPanel;
 import lupos.gui.operatorgraph.visualeditor.util.GraphWrapperOperator;
 import lupos.misc.util.OperatorIDTuple;
-
 public class Optional extends MultiInputOperator {
+	/** {@inheritDoc} */
 	@Override
 	public void addAvailableOperators(final JPopupMenu popupMenu, final VisualGraph<Operator> parent, final GraphWrapper oldGW) {
 		final JMenuItem joinOpMI = new JMenuItem("change operator to JOIN");
@@ -66,6 +70,7 @@ public class Optional extends MultiInputOperator {
 		popupMenu.add(optionalOpMI);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 		final StringBuffer ret = new StringBuffer();
@@ -85,6 +90,7 @@ public class Optional extends MultiInputOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperatorAndTree(final HashSet<Operator> visited) {
 		final StringBuffer ret = new StringBuffer();
@@ -104,6 +110,7 @@ public class Optional extends MultiInputOperator {
 		return ret;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(final VisualGraph<Operator> parent) {
 		final Hashtable<GraphWrapper, AbstractSuperGuiComponent> lineLables = new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
@@ -123,6 +130,11 @@ public class Optional extends MultiInputOperator {
 		return lineLables;
 	}
 
+	/**
+	 * <p>switchChildrenPositions.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 */
 	public void switchChildrenPositions(final VisualGraph<Operator> parent) {
 		for(final OperatorIDTuple<Operator> opIDt : this.succeedingOperators) {
 			if(opIDt.getId() == 0)
@@ -137,6 +149,7 @@ public class Optional extends MultiInputOperator {
 		parent.arrange(Arrange.values()[0]);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getFreeOpID() {
 		if(this.succeedingOperators.size() == 0)
@@ -148,6 +161,7 @@ public class Optional extends MultiInputOperator {
 			return 0;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getXPrefIDForAnnotation(){		
 		return "queryEditor_style_optionallabel";

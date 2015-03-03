@@ -36,6 +36,9 @@ import lupos.io.helper.OutHelper;
  * Internally, it uses a code for its string representation. Furthermore, it
  * stores a code for the original content, too, such that the original content
  * can be retrieved (as required by the DAWG test cases)!
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LazyLiteralOriginalContent extends LazyLiteral {
 
@@ -46,10 +49,19 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 	private int codeOriginalContent;
 	private String originalString = null;
 
+	/**
+	 * <p>Constructor for LazyLiteralOriginalContent.</p>
+	 */
 	public LazyLiteralOriginalContent() {
 		// nothing to initialize...
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteralOriginalContent.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @param originalContent a {@link java.lang.String} object.
+	 */
 	public LazyLiteralOriginalContent(final String content,
 			final String originalContent) {
 		super(content);
@@ -71,6 +83,12 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		}
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteralOriginalContent.</p>
+	 *
+	 * @param code a int.
+	 * @param originalContent a {@link java.lang.String} object.
+	 */
 	public LazyLiteralOriginalContent(final int code,
 			final String originalContent) {
 		super(code);
@@ -92,12 +110,25 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		}
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteralOriginalContent.</p>
+	 *
+	 * @param code a int.
+	 * @param codeOriginalContent a int.
+	 */
 	public LazyLiteralOriginalContent(final int code,
 			final int codeOriginalContent) {
 		super(code);
 		this.codeOriginalContent = codeOriginalContent;
 	}
 
+	/**
+	 * <p>Constructor for LazyLiteralOriginalContent.</p>
+	 *
+	 * @param code a int.
+	 * @param codeOriginalContent a int.
+	 * @param materializedLiteral a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public LazyLiteralOriginalContent(final int code,
 			final int codeOriginalContent, final Literal materializedLiteral) {
 		super(code, materializedLiteral);
@@ -105,16 +136,19 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		this.originalString = materializedLiteral.originalString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getUsedStringRepresentations() {
 		return new String[] { this.toString(), this.originalString() };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getOriginalKey(){
 		return ""+this.codeOriginalContent;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String originalString() {
 		if (this.originalString == null) {
@@ -123,15 +157,22 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		return this.originalString;
 	}
 
+	/**
+	 * <p>Getter for the field <code>codeOriginalContent</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getCodeOriginalContent() {
 		return this.codeOriginalContent;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean originalStringDiffers() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void readExternal(final ObjectInput in) throws IOException,
 			ClassNotFoundException {
@@ -139,6 +180,7 @@ public class LazyLiteralOriginalContent extends LazyLiteral {
 		this.codeOriginalContent = InputHelper.readLuposInt(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException {
 		super.writeExternal(out);

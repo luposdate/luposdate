@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput;
 
@@ -34,7 +38,6 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class Construct extends SingleInputOperator {
 	private static final long serialVersionUID = 1L;
 	protected Collection<TriplePattern> ctp;
@@ -42,6 +45,11 @@ public class Construct extends SingleInputOperator {
 	protected int id=0; // used for reification of blank nodes...
 	protected boolean containsBlankNodes = false;
 
+	/**
+	 * <p>setTemplates.</p>
+	 *
+	 * @param ctp a {@link java.util.Collection} object.
+	 */
 	public void setTemplates(final Collection<TriplePattern> ctp) {
 		this.ctp = ctp;
 		for(TriplePattern tp: ctp){
@@ -57,10 +65,16 @@ public class Construct extends SingleInputOperator {
 		}
 	}
 
+	/**
+	 * <p>getTemplates.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<TriplePattern> getTemplates() {
 		return ctp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult qr, final int operandID) {
 		if(this.containsBlankNodes){
@@ -94,11 +108,13 @@ public class Construct extends SingleInputOperator {
 		} else return item;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString() + ctp;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(lupos.rdf.Prefix prefixInstance) {
 		StringBuffer result = new StringBuffer("Construct: ");

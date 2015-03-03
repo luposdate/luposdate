@@ -26,8 +26,17 @@ package lupos.event.communication;
 
 /**
  * Classes that implement this interface can be used as handlers for notification of received messages.
+ *
  * @param <T> The type of the messages.
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IMessageReceivedHandler<T> {
+	/**
+	 * <p>messageReceived.</p>
+	 *
+	 * @param src a {@link java.lang.Object} object.
+	 * @param msg a T object.
+	 */
 	void messageReceived(Object src, T msg);
 }

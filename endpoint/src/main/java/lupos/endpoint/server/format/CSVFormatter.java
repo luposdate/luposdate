@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -28,18 +32,22 @@ import java.io.OutputStream;
 
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
-
 public class CSVFormatter extends SeparatorFormatter {
 
+	/**
+	 * <p>Constructor for CSVFormatter.</p>
+	 */
 	public CSVFormatter() {
 		super("Comma Separated Values (CSV)", "text/csv");
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeSeparator(OutputStream os) throws IOException{
 		os.write(",".getBytes());		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType(QueryResult queryResult) {
 		if (queryResult instanceof GraphResult) {

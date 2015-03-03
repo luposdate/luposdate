@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.query.operator.histogramsubmission;
 
@@ -38,9 +42,9 @@ import lupos.optimizations.logical.statistics.VarBucket;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public abstract class AbstractHistogramExecutor implements IHistogramExecutor {
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<Variable, Tuple<Literal, Literal>> getMinMax(final TriplePattern triplePattern, final Collection<Variable> variables) {
 		try {
@@ -101,6 +105,7 @@ public abstract class AbstractHistogramExecutor implements IHistogramExecutor {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<Variable, VarBucket> getHistograms(
 			final TriplePattern triplePattern,

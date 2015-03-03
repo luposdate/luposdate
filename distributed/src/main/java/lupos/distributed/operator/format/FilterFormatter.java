@@ -32,6 +32,9 @@ import org.json.JSONObject;
 
 /**
  * Implements the formatter for the Filter Operator.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class FilterFormatter implements OperatorFormatter {
 
@@ -42,6 +45,7 @@ public class FilterFormatter implements OperatorFormatter {
 	 * luposdate.operators.formatter.OperatorFormatter#serialize(lupos.engine
 	 * .operators.BasicOperator, int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public JSONObject serialize(final BasicOperator operator, final int node_id)
 			throws JSONException {
@@ -58,6 +62,7 @@ public class FilterFormatter implements OperatorFormatter {
 	 * @see
 	 * luposdate.operators.formatter.OperatorFormatter#deserialize(org.json.JSONObject)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BasicOperator deserialize(final JSONObject serializedOperator) throws JSONException {
 		final JSONObject json = serializedOperator;

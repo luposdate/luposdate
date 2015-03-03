@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.rdfs;
 
@@ -28,27 +32,33 @@ import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.index.Root;
 import lupos.engine.operators.tripleoperator.TripleOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class RDFSchemaInference extends RudimentaryRDFSchemaInference {
 
+	/**
+	 * <p>Constructor for RDFSchemaInference.</p>
+	 */
 	public RDFSchemaInference() {
 	}
 
+	/** {@inheritDoc} */
 	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp) {
 		addInferenceRules(ic, tp, null);
 	}
 
+	/** {@inheritDoc} */
 	public static void addInferenceRulesForInstanceData(
 			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForInstanceData(ic, tp, null);
 	}
 
+	/** {@inheritDoc} */
 	public static void addInferenceRulesForExternalOntology(
 			final Root ic, final TripleOperator tp) {
 		addInferenceRulesForExternalOntology(ic, tp, null);
 	}
 
+	/** {@inheritDoc} */
 	public static void addInferenceRulesForExternalOntology(
 			final Root ic, final TripleOperator tp, final Item data) {
 		RudimentaryRDFSchemaInference.addInferenceRulesForExternalOntology(ic,
@@ -194,6 +204,7 @@ public class RDFSchemaInference extends RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public static void addInferenceRulesForInstanceData(
 			final Root ic, final TripleOperator tp, final Item data) {
 		RudimentaryRDFSchemaInference.addInferenceRulesForInstanceData(ic, tp,
@@ -241,6 +252,7 @@ public class RDFSchemaInference extends RudimentaryRDFSchemaInference {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public static void addInferenceRules(final Root ic,
 			final TripleOperator tp, final Item data) {
 		addInferenceRulesForExternalOntology(ic, tp, data);

@@ -27,6 +27,9 @@ package lupos.datastructures.patriciatrie.exception;
  * Exception, that will be thrown, when a trie, that does not contain all
  * necessary metadata, is used as input for the copy method of a trie, that
  * needs all metadata
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TrieNotCopyableException extends Exception {
 

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -42,11 +46,15 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor;
-
 public class JavaCodeFrame extends JFrame {
 	private static final long serialVersionUID = -1940658657594698414L;
 	private JFrame that = this;
 
+	/**
+	 * <p>Constructor for JavaCodeFrame.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public JavaCodeFrame(final RuleEditor parent) {
 		super();
 

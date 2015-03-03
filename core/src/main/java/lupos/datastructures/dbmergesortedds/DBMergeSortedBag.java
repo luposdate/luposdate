@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds;
 
@@ -55,27 +59,44 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	protected ReentrantLock mergeLock = new ReentrantLock();
 	protected ReentrantLock newRunsLock = new ReentrantLock();
 
+	/** Constant <code>mainFolder="new String[] { tmp//DBMergeSortedBag// "{trunked}</code> */
 	protected static String[] mainFolder = new String[] { "tmp//DBMergeSortedBag//" };
+	/** Constant <code>folderId=0</code> */
 	protected static volatile int folderId = 0;
 	protected final String[] folder;
 	protected int unsortedID = 1;
+	/** Constant <code>parallelMerging=false</code> */
 	protected static boolean parallelMerging = false;
+	/** Constant <code>numberOfThreads=1</code> */
 	protected static int numberOfThreads = 1;
 
 	static {
 		DBMergeSortedBag.removeBagsFromDisk();
 	}
 
+	/**
+	 * <p>removeBagsFromDisk.</p>
+	 */
 	public static void removeBagsFromDisk(){
 		for (final String mf : mainFolder) {
 			FileHelper.deleteDirectory(new File(mf));
 		}
 	}
 
+	/**
+	 * <p>getNewId.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getNewId() {
 		return this.id++;
 	}
 
+	/**
+	 * <p>setTmpDir.</p>
+	 *
+	 * @param dir an array of {@link java.lang.String} objects.
+	 */
 	public static void setTmpDir(final String[] dir) {
 		if (dir == null || dir.length == 0
 				|| (dir.length == 1 && dir[0].compareTo("") == 0)) {
@@ -93,18 +114,38 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 	}
 
+	/**
+	 * <p>isParallelMerging.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public static boolean isParallelMerging() {
 		return parallelMerging;
 	}
 
+	/**
+	 * <p>Setter for the field <code>parallelMerging</code>.</p>
+	 *
+	 * @param parallelMerging a boolean.
+	 */
 	public static void setParallelMerging(final boolean parallelMerging) {
 		DBMergeSortedBag.parallelMerging = parallelMerging;
 	}
 
+	/**
+	 * <p>Getter for the field <code>numberOfThreads</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getNumberOfThreads() {
 		return numberOfThreads;
 	}
 
+	/**
+	 * <p>Setter for the field <code>numberOfThreads</code>.</p>
+	 *
+	 * @param numberOfThreads a int.
+	 */
 	public static void setNumberOfThreads(final int numberOfThreads) {
 		DBMergeSortedBag.numberOfThreads = numberOfThreads;
 	}
@@ -119,8 +160,14 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 	protected final SortConfiguration<Entry<E>> sortConfiguration;
 
+	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
 
+	/**
+	 * <p>Getter for the field <code>classOfElements</code>.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public Class<? extends E> getClassOfElements() {
 		return this.classOfElements;
 	}
@@ -128,6 +175,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	/**
 	 * Create a new DBMergeSortedBag that sorts according to the elements'
 	 * natural order.
+	 *
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedBag(final SortConfiguration<Entry<E>> sortConfiguration,
 			final Class<? extends E> classOfElements) {
@@ -139,6 +189,8 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	 *
 	 * @param comp
 	 *            The Comparator to use for sorting.
+	 * @param sortConfiguration a {@link lupos.datastructures.dbmergesortedds.SortConfiguration} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
 	 */
 	public DBMergeSortedBag(
 			final SortConfiguration<Entry<E>> sortConfiguration,
@@ -180,11 +232,13 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super E> comparator() {
 		return this.comp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E first() {
 		this.sort();
@@ -194,6 +248,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return this.currentRun.getIndex(0).e;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBMergeSortedBag<E> headBag(final E arg0) {
 		final DBMergeSortedBag<E> headBag = new DBMergeSortedBag<E>(this.sortConfiguration, this.comp, this.classOfElements);
@@ -206,6 +261,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return headBag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E last() {
 		this.sort();
@@ -219,6 +275,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBMergeSortedBag<E> subBag(final E arg0, final E arg1) {
 		final DBMergeSortedBag<E> subBag = new DBMergeSortedBag<E>(this.sortConfiguration, this.comp, this.classOfElements);
@@ -233,6 +290,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return subBag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBMergeSortedBag<E> tailBag(final E arg0) {
 		final DBMergeSortedBag<E> tailBag = new DBMergeSortedBag<E>(this.sortConfiguration, this.comp, this.classOfElements);
@@ -244,6 +302,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return tailBag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E ele) {
 		if (this.tosort.isFull()) {
@@ -265,6 +324,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return true;
 	}
 
+	/**
+	 * <p>closeAndNewCurrentRun.</p>
+	 */
 	protected void closeAndNewCurrentRun() {
 		try {
 			this.currentRun.close();
@@ -278,6 +340,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 	/**
 	 * This method adds an entry to the current run.
 	 * This method is overridden by DBMergeSortedSet to eliminate duplicates already in the initial runs...
+	 *
 	 * @param e the entry to write into the current run!
 	 */
 	protected void addToRun(final Entry<E> e){
@@ -328,6 +391,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(final Collection<? extends E> c) {
 		for (final E e : c) {
@@ -336,6 +400,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.tosort.clear();
@@ -363,11 +428,19 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		this.size = 0;
 	}
 
+	/**
+	 * <p>sorted.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean sorted() {
 		return this.tosort.isEmpty()
 				&& (this.currentRun == null || this.unsortedID == this.currentRun.runID);
 	}
 
+	/**
+	 * <p>sort.</p>
+	 */
 	public void sort() {
 		if (this.sorted() || this.currentRun == null
 				|| (this.unsortedID == this.currentRun.runID && this.currentRun.size == 0)) {
@@ -381,6 +454,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		System.out.println("Run ID after sorting:" + this.currentRun.runID);
 	}
 
+	/**
+	 * <p>parallelSort.</p>
+	 */
 	protected void parallelSort() {
 		while (!this.tosort.isEmpty()) {
 			this.popHeap();
@@ -443,6 +519,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 	}
 
+	/**
+	 * <p>sequentialSort.</p>
+	 */
 	protected void sequentialSort() {
 		while (!this.tosort.isEmpty()) {
 			this.popHeap();
@@ -619,6 +698,14 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 	}
 
+	/**
+	 * <p>getNext.</p>
+	 *
+	 * @param iters an array of {@link java.util.Iterator} objects.
+	 * @param basisID a int.
+	 * @param mergeheap a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 */
 	protected Entry<E> getNext(final Iterator<Entry<E>>[] iters,
 			final int basisID, final Heap<Entry<E>> mergeheap) {
 		final Entry<E> res = mergeheap.pop();
@@ -632,6 +719,14 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 
 	// this method has the same functionality to the previous one, except that a
 	// map defines which iterator id is the right one for which run ID
+	/**
+	 * <p>getNext.</p>
+	 *
+	 * @param iters an array of {@link java.util.Iterator} objects.
+	 * @param hm a {@link java.util.Map} object.
+	 * @param mergeheap a {@link lupos.datastructures.dbmergesortedds.heap.Heap} object.
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 */
 	protected Entry<E> getNext(final Iterator<Entry<E>>[] iters,
 			final Map<Integer, Integer> hm, final Heap<Entry<E>> mergeheap) {
 		final Entry<E> res = mergeheap.pop();
@@ -643,6 +738,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return res;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object o) {
 		this.sort();
@@ -661,6 +757,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(final Collection<?> c) {
 		for (final Object o : c) {
@@ -671,6 +768,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		if (!this.tosort.isEmpty()) {
@@ -686,6 +784,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ParallelIterator<E> iterator() {
 		// Do we have a small sorted bag? In other words:
@@ -756,6 +855,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object arg0) {
 		this.sort();
@@ -788,6 +888,12 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return false;
 	}
 
+	/**
+	 * <p>removeAndReturn.</p>
+	 *
+	 * @param e a E object.
+	 * @return a E object.
+	 */
 	public E removeAndReturn(final E e) {
 		this.sort();
 		if (this.currentRun == null) {
@@ -818,6 +924,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeAll(final Collection<?> arg0) {
 		this.sort();
@@ -856,29 +963,34 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		throw (new UnsupportedOperationException(
 				"We don't do that kind of thing around here - a.k.a. ProgrammerWasTooLazyToImplementThisException."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
 		throw (new UnsupportedOperationException(
 				"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw (new UnsupportedOperationException(
 				"If the contents of this datastructure were small enough to fit into RAM, it wouldn't be disk based."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final Iterator<E> iter = this.iterator();
@@ -893,6 +1005,9 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		return result;
 	}
 
+	/**
+	 * <p>release.</p>
+	 */
 	public void release() {
 		this.tosort.release();
 		if (this.currentRun != null) {
@@ -1039,6 +1154,11 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 		}
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param arg an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] arg){
 		final SortConfiguration sortConfig = new SortConfiguration();
 		sortConfig.setHuffmanCompression();

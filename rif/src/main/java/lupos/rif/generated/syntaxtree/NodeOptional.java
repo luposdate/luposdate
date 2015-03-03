@@ -32,6 +32,9 @@ import lupos.rif.generated.visitor.IVoidVisitor;
 /**
  * Represents a grammar optional node (? or []), e.g. ' ( A )? ' or ' [ A ] '.<br>
  * The class stores the node.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class NodeOptional implements INode {
 
@@ -45,14 +48,14 @@ public class NodeOptional implements INode {
   private static final long serialVersionUID = 144L;
 
   /**
-   * Initializes an empty {@link NodeOptional}.
+   * Initializes an empty {@link lupos.rif.generated.syntaxtree.NodeOptional}.
    */
   public NodeOptional() {
     node = null;
   }
 
   /**
-   * Initializes a {@link NodeOptional} with a node.
+   * Initializes a {@link lupos.rif.generated.syntaxtree.NodeOptional} with a node.
    *
    * @param n the node
    */
@@ -61,7 +64,7 @@ public class NodeOptional implements INode {
   }
 
   /**
-   * Adds a node to the {@link NodeOptional}.
+   * Adds a node to the {@link lupos.rif.generated.syntaxtree.NodeOptional}.
    *
    * @param n the node to add
    */
@@ -74,13 +77,15 @@ public class NodeOptional implements INode {
   }
 
   /**
+   * <p>present.</p>
+   *
    * @return true if the node exists, false otherwise
    */
   public boolean present() {
     return (node != null); }
 
   /**
-   * Accepts a {@link IRetArguVisitor} visitor with user Return and Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetArguVisitor} visitor with user Return and Argument data.
    *
    * @param <R> the user Return type
    * @param <A> the user Argument type
@@ -93,7 +98,7 @@ public class NodeOptional implements INode {
   }
 
   /**
-   * Accepts a {@link IRetVisitor} visitor with user Return data.
+   * Accepts a {@link lupos.rif.generated.visitor.IRetVisitor} visitor with user Return data.
    *
    * @param <R> the user Return type
    * @param vis the visitor
@@ -104,7 +109,7 @@ public class NodeOptional implements INode {
   }
 
   /**
-   * Accepts a {@link IVoidArguVisitor} visitor with user Argument data.
+   * Accepts a {@link lupos.rif.generated.visitor.IVoidArguVisitor} visitor with user Argument data.
    *
    * @param <A> the user Argument type
    * @param vis the visitor
@@ -115,18 +120,18 @@ public class NodeOptional implements INode {
   }
 
   /**
-   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
+   * {@inheritDoc}
    *
-   * @param vis the visitor
+   * Accepts a {@link IVoidVisitor} visitor with no user Return nor Argument data.
    */
   public void accept(final IVoidVisitor vis) {
     vis.visit(this);
   }
 
   /**
-   * Sets the parent node.
+   * {@inheritDoc}
    *
-   * @param n the parent node
+   * Sets the parent node.
    */
   public void setParent(final INode n) {
     parent = n;

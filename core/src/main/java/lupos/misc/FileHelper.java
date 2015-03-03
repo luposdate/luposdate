@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.misc;
 
@@ -31,11 +35,16 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
-
 public class FileHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(FileHelper.class);
 
+	/**
+	 * <p>deleteDirectory.</p>
+	 *
+	 * @param path a {@link java.io.File} object.
+	 * @return a boolean.
+	 */
 	static public boolean deleteDirectory(final File path) {
 		try {
 			if (path.exists()) {
@@ -55,6 +64,12 @@ public class FileHelper {
 		}
 	}
 
+	/**
+	 * <p>deleteFile.</p>
+	 *
+	 * @param path a {@link java.io.File} object.
+	 * @return a boolean.
+	 */
 	static public boolean deleteFile(final File path) {
 		try {
 			if (path.exists()) {
@@ -66,10 +81,23 @@ public class FileHelper {
 		return false;
 	}
 
+	/**
+	 * <p>deleteFile.</p>
+	 *
+	 * @param path a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	static public boolean deleteFile(final String path) {
 		return deleteFile(new File(path));
 	}
 
+	/**
+	 * <p>deleteFilesStartingWithPattern.</p>
+	 *
+	 * @param dir a {@link java.lang.String} object.
+	 * @param pattern a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	static public boolean deleteFilesStartingWithPattern(final String dir, final String pattern){
 		File dirFile = new File(dir);
 		String filesToDelete[] = dirFile.list(new FilenameFilter(){
@@ -89,10 +117,9 @@ public class FileHelper {
 
 	/**
 	 * Opens a file.
-	 * 
+	 *
 	 * @param filename
 	 *            filename of file to open
-	 * 
 	 * @return file as string
 	 */
 	public static String readFile(final String filename) {
@@ -107,6 +134,13 @@ public class FileHelper {
 		});
 	}
 
+	/**
+	 * <p>readFile.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @param fromJar a boolean.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String readFile(final String filename, final boolean fromJar) {
 		return FileHelper.readFile(filename, new FileHelper.GetReader() {
 
@@ -123,6 +157,12 @@ public class FileHelper {
 		});
 	}
 
+	/**
+	 * <p>readFileFromJarOrFile.</p>
+	 *
+	 * @param resourceName a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String readFileFromJarOrFile(final String resourceName) {
 		return FileHelper.readFile(resourceName, new FileHelper.GetReader() {
 
@@ -133,6 +173,13 @@ public class FileHelper {
 		});
 	}
 	
+	/**
+	 * <p>getInputStreamFromJarOrFile.</p>
+	 *
+	 * @param resourceName a {@link java.lang.String} object.
+	 * @return a {@link java.io.InputStream} object.
+	 * @throws java.io.FileNotFoundException if any.
+	 */
 	public static InputStream getInputStreamFromJarOrFile(final String resourceName) throws FileNotFoundException {
 		try {
 			return FileHelper.class.getResource(resourceName).openStream();
@@ -141,6 +188,13 @@ public class FileHelper {
 		}		
 	}
 	
+	/**
+	 * <p>readFile.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @param getReader a {@link lupos.misc.FileHelper.GetReader} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String readFile(final String filename,
 			final GetReader getReader) {
 		log.debug("read file: {}", filename);
@@ -177,6 +231,12 @@ public class FileHelper {
 		return null;
 	}
 
+	/**
+	 * <p>fastReadFile.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String fastReadFile(final String filename) {
 		String s = "";
 		FileChannel fc = null;
@@ -216,6 +276,12 @@ public class FileHelper {
 		Reader getReader(String filename) throws FileNotFoundException;
 	}
 
+	/**
+	 * <p>readInputStreamToCollection.</p>
+	 *
+	 * @param inputStream a {@link java.io.InputStream} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public static List<String> readInputStreamToCollection(
 			final InputStream inputStream) {
 		final List<String> content = new LinkedList<String>();
@@ -244,6 +310,12 @@ public class FileHelper {
 		return content;
 	}
 	
+	/**
+	 * <p>readInputStreamToString.</p>
+	 *
+	 * @param inputStream a {@link java.io.InputStream} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String readInputStreamToString(
 			final InputStream inputStream) {
 		final StringBuilder content = new StringBuilder();
@@ -270,6 +342,12 @@ public class FileHelper {
 		return content.toString();
 	}
 
+	/**
+	 * <p>readFileToCollection.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public static List<String> readFileToCollection(final String filename) {
 		final List<String> content = new LinkedList<String>();
 		BufferedReader reader = null;
@@ -300,6 +378,13 @@ public class FileHelper {
 		return content;
 	}
 
+	/**
+	 * <p>printFileContent.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @param lineNumber a int.
+	 * @param removeLine a boolean.
+	 */
 	public static void printFileContent(final String filename, final int lineNumber, final boolean removeLine) {
 		BufferedReader reader = null;
 		try {
@@ -333,6 +418,12 @@ public class FileHelper {
 		}
 	}
 	
+	/**
+	 * <p>searchFile.</p>
+	 *
+	 * @param filename a {@link java.lang.String} object.
+	 * @param searchText a {@link java.lang.String} object.
+	 */
 	public static void searchFile(final String filename, final String searchText) {
 		BufferedReader reader = null;
 		try {
@@ -360,6 +451,12 @@ public class FileHelper {
 		}
 	}
 
+	/**
+	 * <p>writeFile.</p>
+	 *
+	 * @param fileName a {@link java.lang.String} object.
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public static void writeFile(final String fileName, final String content) {
 		try {
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -370,6 +467,11 @@ public class FileHelper {
 		}
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String args[]) {
 		if (args.length < 2){
 			log.error("Usage: java lupos.misc.FileHelper command commandoptions[-r] Filename linenumber");

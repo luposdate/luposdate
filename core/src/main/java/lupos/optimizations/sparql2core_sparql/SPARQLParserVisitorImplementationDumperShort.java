@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,29 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.sparql2core_sparql;
 
 import lupos.rdf.Prefix;
 import lupos.sparql1_1.ASTQuotedURIRef;
-
 public class SPARQLParserVisitorImplementationDumperShort extends SPARQLParserVisitorImplementationDumper {
 	Prefix prefixInstance = null;
 
+	/**
+	 * <p>Constructor for SPARQLParserVisitorImplementationDumperShort.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 */
 	public SPARQLParserVisitorImplementationDumperShort(Prefix prefixInstance) {
 		super();
 
 		this.prefixInstance = prefixInstance;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String visit(final ASTQuotedURIRef node) {
 		return this.prefixInstance.add("<" + node.getQRef() + ">");

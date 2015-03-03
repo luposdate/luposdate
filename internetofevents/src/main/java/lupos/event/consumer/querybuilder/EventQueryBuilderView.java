@@ -59,6 +59,8 @@ import lupos.event.util.Literals;
 /**
  * A Panel which offers a graphical way to build stream-based SPARQL queries.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EventQueryBuilderView extends JPanel {
 
@@ -216,6 +218,9 @@ public class EventQueryBuilderView extends JPanel {
 	private JPanel eventsPanel;
 	
 	
+	/**
+	 * <p>Constructor for EventQueryBuilderView.</p>
+	 */
 	public EventQueryBuilderView() {
 		initComponents();
 	}
@@ -311,6 +316,11 @@ public class EventQueryBuilderView extends JPanel {
 		this.eventWindows.remove(ewv);
 	}
 	
+	/**
+	 * <p>getQuery.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getQuery() {
 		int imd = (Integer)this.intermediateSpinner.getValue();
 		
@@ -332,6 +342,11 @@ public class EventQueryBuilderView extends JPanel {
 	}
 	
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Query Generator");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

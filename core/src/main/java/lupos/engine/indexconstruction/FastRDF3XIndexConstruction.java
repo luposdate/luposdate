@@ -85,6 +85,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This class constructs the RDF3X indices on disk using a dictionary, which is
  * also constructed on disk...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class FastRDF3XIndexConstruction {
 
@@ -97,9 +100,11 @@ public class FastRDF3XIndexConstruction {
 	private static final int NUMBER_OF_THREADS = 8;
 
 	// how many triples are loaded into main memory to be sorted in the initial runs?
+	/** Constant <code>LIMIT_TRIPLES_IN_MEMORY=50000000</code> */
 	public static int LIMIT_TRIPLES_IN_MEMORY = 50000000;
 
 	// just for mapping from 0 to 2 to S, P and O
+	/** Constant <code>map="new String[]{S, P, O}"</code> */
 	protected final static String[] map = new String[]{"S", "P", "O"};
 
 
@@ -359,13 +364,14 @@ public class FastRDF3XIndexConstruction {
 
 	/**
 	 * merges the initial runs into a final run...
-	 * @param prefixFilename
-	 * @param numberOfRuns
-	 * @param primaryPos
-	 * @param secondaryPos
-	 * @param tertiaryPos
-	 * @return
-	 * @throws IOException
+	 *
+	 * @param prefixFilename a {@link java.lang.String} object.
+	 * @param numberOfRuns a int.
+	 * @param primaryPos a int.
+	 * @param secondaryPos a int.
+	 * @param tertiaryPos a int.
+	 * @throws java.io.IOException if any.
+	 * @return a int.
 	 */
 	public static int mergeRuns(final String prefixFilename, final int numberOfRuns, final int primaryPos, final int secondaryPos, final int tertiaryPos) throws IOException {
 		int size = 0;

@@ -41,6 +41,9 @@ import lupos.datastructures.buffermanager.BufferManager.PageAddress;
  * Byte 10 of page 0 stores if free pages are only in the end (and new pages must be appended) (value=0),
  * or if page 0 stores some free pages (value=1), which should be used for the new pages...
  * Afterwards page 0 (and maybe its following sequence) stores the free pages.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class PageManager {
 
@@ -76,38 +79,84 @@ public class PageManager {
 	protected static int DEFAULTPAGESIZE = 8 * 1024;
 
 	/**
-	* creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
-	* The default page size (8 KBytes) is used.
-	*/
+	 * creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
+	 * The default page size (8 KBytes) is used.
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @return a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static PageManager createPageManager(final String name) throws IOException{
 		return PageManager.createPageManager(name, PageManager.DEFAULTPAGESIZE);
 	}
 
 	/**
-	* creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
-	* The page size used can be specified.
-	*/
+	 * creates a new PageManager object, which reuses a given file if it exists and creates a new file otherwise...
+	 * The page size used can be specified.
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param pagesize a int.
+	 * @return a {@link lupos.datastructures.buffermanager.PageManager} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static PageManager createPageManager(final String name, final int pagesize) throws IOException{
 		final File f = new File(name + "_0");
 		return new PageManager(name, !f.exists(), true, pagesize);
 	}
 
+	/**
+	 * <p>Constructor for PageManager.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageManager(final String name) throws IOException {
 		this(name, PageManager.DEFAULTPAGESIZE);
 	}
 
+	/**
+	 * <p>Constructor for PageManager.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param pagesize a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageManager(final String name, final int pagesize) throws IOException {
 		this(name, true, true, pagesize);
 	}
 
+	/**
+	 * <p>Constructor for PageManager.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param overwriteExistingFile a boolean.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageManager(final String name, final boolean overwriteExistingFile) throws IOException {
 		this(name, overwriteExistingFile, true, PageManager.DEFAULTPAGESIZE);
 	}
 
+	/**
+	 * <p>Constructor for PageManager.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param overwriteExistingFile a boolean.
+	 * @param init a boolean.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageManager(final String name, final boolean overwriteExistingFile, final boolean init) throws IOException {
 		this(name, overwriteExistingFile, init, PageManager.DEFAULTPAGESIZE);
 	}
 
+	/**
+	 * <p>Constructor for PageManager.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param overwriteExistingFile a boolean.
+	 * @param init a boolean.
+	 * @param pagesize a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public PageManager(final String name, final boolean overwriteExistingFile, final boolean init, final int pagesize) throws IOException {
 		this.bufferManager = BufferManager.getBufferManager();
 		this.filename = name;
@@ -129,8 +178,7 @@ public class PageManager {
 	 * @param pagenumber
 	 *            The number of the page to be retrieved.
 	 * @return The content of the page
-	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public byte[] getPage(final int pagenumber) throws IOException {
 		return this.bufferManager.getPage(this.pagesize, new PageAddress(pagenumber, this.filename));
@@ -144,8 +192,7 @@ public class PageManager {
 	 *            The number of the modified page
 	 * @param pageContent
 	 *            The modified page
-	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void modifyPage(final int pagenumber, final byte[] pageContent)
 			throws IOException {
@@ -155,7 +202,7 @@ public class PageManager {
 	/**
 	 * This method writes all modified pages (in the buffer) to disk
 	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void writeAllModifiedPages() throws IOException {
 		this.bufferManager.writeAllModifiedPages(this.filename);
@@ -195,6 +242,8 @@ public class PageManager {
 	/**
 	 * This method closes the underlying file. This method should only be called
 	 * if the page manager is not used any more...
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public void close() throws IOException {
 		this.bufferManager.close(this.filename);
@@ -203,7 +252,8 @@ public class PageManager {
 	/**
 	 * This method releases all pages, deletes the buffered file from disk and starts with a new file,
 	 * i.e. all content of the buffered file is deleted.
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public void reset() throws IOException{
 		this.bufferManager.reset(this.filename);
@@ -212,7 +262,8 @@ public class PageManager {
 
 	/**
 	 * This method releases all pages and deletes the buffered file from disk.
-	 * @throws IOException
+	 *
+	 * @throws java.io.IOException if any.
 	 */
 	public void release() throws IOException {
 		this.bufferManager.releaseAllPages(this.filename);
@@ -379,8 +430,7 @@ public class PageManager {
 	 *
 	 * @param pagenumber
 	 *            the starting page of the sequence to be released...
-	 *
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public void releaseSequenceOfPages(final int pagenumber) throws IOException {
 		int pagenumber_tmp = pagenumber;
@@ -406,6 +456,8 @@ public class PageManager {
 	}
 
 	/**
+	 * <p>getDefaultPageSize.</p>
+	 *
 	 * @return the default page size in bytes
 	 */
 	public final static int getDefaultPageSize() {
@@ -414,6 +466,7 @@ public class PageManager {
 
 	/**
 	 * sets the default page size
+	 *
 	 * @param defaultpagesize the default page size in bytes
 	 */
 	public final static void setDefaultPageSize(final int defaultpagesize) {
@@ -421,6 +474,8 @@ public class PageManager {
 	}
 
 	/**
+	 * <p>getPageSize.</p>
+	 *
 	 * @return the current page size of all pages of this page manager
 	 */
 	public int getPageSize() {

@@ -38,10 +38,14 @@ import lupos.event.util.HandlerList;
 
 /**
  * Implements a TCP-based message transport.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TcpMessageTransport implements IMessageTransport {
 	
 	//Quickfix for serverports:
+	/** Constant <code>SERVER_PORT=4444</code> */
 	public static int SERVER_PORT = 4444;
 	
 	private Socket socket = null;
@@ -54,11 +58,19 @@ public class TcpMessageTransport implements IMessageTransport {
 	private final HandlerList<IDisconnectedHandler> disconnectedHandlers;
 	
 	
+	/**
+	 * <p>Constructor for TcpMessageTransport.</p>
+	 *
+	 * @throws java.lang.SecurityException if any.
+	 * @throws java.lang.NoSuchMethodException if any.
+	 */
 	public TcpMessageTransport() throws SecurityException, NoSuchMethodException {
 		this.disconnectedHandlers = new HandlerList<IDisconnectedHandler>(IDisconnectedHandler.class.getMethod("disconnected"));
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Adds a handler object, which gets notified when a message was received.
 	 */
 	@Override
@@ -67,6 +79,8 @@ public class TcpMessageTransport implements IMessageTransport {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Adds a handler object, which gets notified when the underlying socket got disconnected.
 	 */
 	@Override
@@ -89,8 +103,9 @@ public class TcpMessageTransport implements IMessageTransport {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Connects the underlying socket with given connection info.
-	 * @param connectInfo Has to be an instance of {@link TcpConnectInfo}
 	 */
 	@Override
 	public void connect(IConnectInfo connectInfo) throws Exception {
@@ -107,6 +122,8 @@ public class TcpMessageTransport implements IMessageTransport {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Closes the underlying socket.
 	 */
 	@Override
@@ -144,6 +161,8 @@ public class TcpMessageTransport implements IMessageTransport {
 
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Waits for a connection and accepts it. The method blocks until a connection is made.
 	 */
 	@Override
@@ -162,8 +181,9 @@ public class TcpMessageTransport implements IMessageTransport {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Sends a message.
-	 * @param msg The message to be sent.
 	 */
 	@Override
 	public void sendMessage(ByteBuffer msg) {
@@ -174,6 +194,7 @@ public class TcpMessageTransport implements IMessageTransport {
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	public void messageReceived(ByteBuffer msg) {
 		this.msgReceivedHandlers.callAll(this, msg);
@@ -249,12 +270,14 @@ public class TcpMessageTransport implements IMessageTransport {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getHost(){
 		return ((InetSocketAddress)this.socket.getRemoteSocketAddress()).getHostName();
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isConnected() {
 		return this.isConnected;

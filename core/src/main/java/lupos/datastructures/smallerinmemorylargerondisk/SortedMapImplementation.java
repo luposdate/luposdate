@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -35,17 +39,25 @@ import java.util.TreeMap;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.misc.util.ImmutableIterator;
-
 public class SortedMapImplementation<K extends Comparable<K> & Serializable, V extends Serializable> extends MapImplementation<K,V> implements SortedMap<K, V>{
 
+	/**
+	 * <p>Constructor for SortedMapImplementation.</p>
+	 */
 	public SortedMapImplementation(){
 		super(new TreeMap<K,V>());
 	}
 
+	/**
+	 * <p>Constructor for SortedMapImplementation.</p>
+	 *
+	 * @param memoryMap a {@link java.util.SortedMap} object.
+	 */
 	public SortedMapImplementation(final SortedMap<K,V> memoryMap){
 		super(memoryMap);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new Set<java.util.Map.Entry<K, V>>(){
@@ -196,6 +208,7 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K arg0, final V arg1) {
 		if(this.memoryMap.size()<MAXMEMORYMAPENTRIES) {
@@ -216,11 +229,13 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 		return this.diskMap.put(arg0, arg1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		return ((SortedMap<K,V>)this.memoryMap).comparator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		final K key1=((SortedMap<K,V>)this.memoryMap).firstKey();
@@ -241,11 +256,13 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(final K arg0) {
 		throw(new UnsupportedOperationException("This SortedMap does not support headMap."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		final K key1=((SortedMap<K,V>)this.memoryMap).lastKey();
@@ -266,11 +283,13 @@ public class SortedMapImplementation<K extends Comparable<K> & Serializable, V e
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(final K arg0, final K arg1) {
 		throw(new UnsupportedOperationException("This SortedMap does not support subMap."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(final K arg0) {
 		throw(new UnsupportedOperationException("This SortedMap does not support tailMap."));

@@ -27,8 +27,9 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 
 /**
  * The class Edge represents an edge between a source-node and a target-node.
- * @author Tobias Bielfeld
  *
+ * @author Tobias Bielfeld
+ * @version $Id: $Id
  */
 public class Edge {
 	
@@ -38,6 +39,13 @@ public class Edge {
 	private boolean visited;
 	private int type;
 
+	/**
+	 * <p>Constructor for Edge.</p>
+	 *
+	 * @param source a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param target a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param type a int.
+	 */
 	public Edge(GraphWrapper source, GraphWrapper target, int type){
 		this.source = source;
 		this.target = target;
@@ -45,18 +53,38 @@ public class Edge {
 		this.type = type;
 	}
 		
+	/**
+	 * <p>Getter for the field <code>target</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	protected GraphWrapper getTarget() {
 		return this.target;
 	}
 
+	/**
+	 * <p>Getter for the field <code>source</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 */
 	protected GraphWrapper getSource() {
 		return this.source;
 	}
 	
+	/**
+	 * <p>getEdgeType.</p>
+	 *
+	 * @return a int.
+	 */
 	protected int getEdgeType() {
 		return this.type;
 	}
 	
+	/**
+	 * <p>isVisited.</p>
+	 *
+	 * @return a boolean.
+	 */
 	protected boolean isVisited() {
 		return this.visited;
 	}	

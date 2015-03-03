@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.tripleoperator.patternmatcher;
 
@@ -27,11 +31,16 @@ import lupos.datastructures.items.Triple;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.tripleoperator.TripleConsumerDebug;
 import lupos.misc.debug.DebugStep;
-
 public class SimplePatternMatcherDebug extends SimplePatternMatcher {
 	private final SimplePatternMatcher original;
 	private final DebugStep debugstep;
 
+	/**
+	 * <p>Constructor for SimplePatternMatcherDebug.</p>
+	 *
+	 * @param original a {@link lupos.engine.operators.tripleoperator.patternmatcher.SimplePatternMatcher} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public SimplePatternMatcherDebug(final SimplePatternMatcher original,
 			final DebugStep debugstep) {
 		this.succeedingOperators = original.getSucceedingOperators();
@@ -39,6 +48,7 @@ public class SimplePatternMatcherDebug extends SimplePatternMatcher {
 		this.debugstep = debugstep;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		for (final OperatorIDTuple opOuter : original.getSucceedingOperators()) {

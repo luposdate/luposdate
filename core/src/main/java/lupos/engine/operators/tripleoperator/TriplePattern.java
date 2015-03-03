@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.tripleoperator;
 
@@ -51,7 +55,6 @@ import lupos.engine.operators.stream.TripleDeleter;
 import lupos.misc.BitVector;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
-
 public class TriplePattern extends TripleOperator implements TripleConsumer, TripleDeleter, Iterable<Item> {
 
 	private static final long serialVersionUID = 6269668218008457381L;
@@ -62,14 +65,27 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 
 	protected BindingsFactory bindingsFactory;
 
+	/**
+	 * <p>Getter for the field <code>bloomFilters</code>.</p>
+	 *
+	 * @return an array of {@link lupos.misc.BitVector} objects.
+	 */
 	public BitVector[] getBloomFilters() {
 		return this.bloomFilters;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bloomFilters</code>.</p>
+	 *
+	 * @param bloomFilters an array of {@link lupos.misc.BitVector} objects.
+	 */
 	public void setBloomFilters(final BitVector[] bloomFilters) {
 		this.bloomFilters = bloomFilters;
 	}
 
+	/**
+	 * <p>recomputeVariables.</p>
+	 */
 	public void recomputeVariables(){
 		this.intersectionVariables = new HashSet<Variable>();
 		this.unionVariables = new HashSet<Variable>();
@@ -81,6 +97,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.recomputeVariables();
@@ -94,6 +111,9 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return result;
 	}
 
+	/**
+	 * <p>computeVariables.</p>
+	 */
 	protected void computeVariables() {
 		this.intersectionVariables = new HashSet<Variable>();
 		this.unionVariables = new HashSet<Variable>();
@@ -132,6 +152,13 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		public int max;
 	}
 
+	/**
+	 * <p>Constructor for TriplePattern.</p>
+	 *
+	 * @param variable an array of boolean.
+	 * @param literal an array of {@link lupos.datastructures.items.literal.Literal} objects.
+	 * @param varname an array of {@link java.lang.String} objects.
+	 */
 	public TriplePattern(final boolean[] variable, final Literal[] literal,
 			final String[] varname) {
 		for (int i = 0; i < 3; i++) {
@@ -144,6 +171,13 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		this.computeVariables();
 	}
 
+	/**
+	 * <p>Constructor for TriplePattern.</p>
+	 *
+	 * @param i1 a {@link lupos.datastructures.items.Item} object.
+	 * @param i2 a {@link lupos.datastructures.items.Item} object.
+	 * @param i3 a {@link lupos.datastructures.items.Item} object.
+	 */
 	public TriplePattern(final Item i1, final Item i2, final Item i3) {
 		this.items[0] = i1;
 		this.items[1] = i2;
@@ -151,14 +185,23 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		this.computeVariables();
 	}
 
+	/**
+	 * <p>Constructor for TriplePattern.</p>
+	 */
 	public TriplePattern() {
 	}
 
+	/**
+	 * <p>Constructor for TriplePattern.</p>
+	 *
+	 * @param items2 an array of {@link lupos.datastructures.items.Item} objects.
+	 */
 	public TriplePattern(final Item[] items2) {
 		this.items = items2;
 		this.computeVariables();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TriplePattern clone() {
 		final TriplePattern clone = new TriplePattern(this.items[0],
@@ -175,31 +218,64 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return clone;
 	}
 
+	/**
+	 * <p>getPos.</p>
+	 *
+	 * @param i a int.
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getPos(final int i) {
 		return this.items[i];
 	}
 
+	/**
+	 * <p>getSubject.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getSubject(){
 		return this.items[0];
 	}
 
+	/**
+	 * <p>getPredicate.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getPredicate(){
 		return this.items[1];
 	}
 
+	/**
+	 * <p>getObject.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getObject(){
 		return this.items[2];
 	}
 
+	/**
+	 * <p>setPos.</p>
+	 *
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 * @param i a int.
+	 */
 	public void setPos(final Item item, final int i) {
 		this.items[i] = item;
 		this.computeVariables();
 	}
 
+	/**
+	 * <p>Getter for the field <code>items</code>.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.items.Item} objects.
+	 */
 	public Item[] getItems() {
 		return this.items;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Item> iterator() {
 		return new ImmutableIterator<Item>() {
@@ -244,6 +320,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 	 * return null; } } } if (altered){ bindings.addTriple(triple);
 	 * qresult.add(bindings); } return bindings; }
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		final Bindings b = this.process(triple, false);
@@ -257,20 +334,41 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		}
 	}
 
+	/**
+	 * <p>process.</p>
+	 *
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
+	 * @param failOnBlank a boolean.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public Bindings process(final Triple triple, final boolean failOnBlank) {
 		return this.process(triple, failOnBlank, 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public void setBindingsFactory(final BindingsFactory bindingsFactory){
 		this.bindingsFactory = bindingsFactory;
 	}
 
+	/**
+	 * <p>process.</p>
+	 *
+	 * @param triple a {@link lupos.datastructures.items.Triple} object.
+	 * @param failOnBlank a boolean.
+	 * @param id a int.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public Bindings process(final Triple triple, final boolean failOnBlank,
 			final int id) {
 
@@ -386,6 +484,12 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return size;
 	}
 
+	/**
+	 * <p>addProjectionPresortingNumbers.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @param basicoperator a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public void addProjectionPresortingNumbers(final Variable v,
 			final BasicOperator basicoperator) {
 		if (this.projectionPresortingNumbers == null) {
@@ -402,10 +506,20 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		this.projectionPresortingNumbers.put(basicoperator, li);
 	}
 
+	/**
+	 * <p>resetProjectionPresortingNumbers.</p>
+	 */
 	public void resetProjectionPresortingNumbers() {
 		this.projectionPresortingNumbers = null;
 	}
 
+	/**
+	 * <p>addMinMaxLazyLiteral.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @param min a int.
+	 * @param max a int.
+	 */
 	public void addMinMaxLazyLiteral(final Variable v, final int min,
 			final int max) {
 		if (this.minMaxPresortingNumbers == null) {
@@ -418,6 +532,13 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 				container);
 	}
 
+	/**
+	 * <p>addMinMaxLazyLiteral.</p>
+	 *
+	 * @param varcode a int.
+	 * @param min a int.
+	 * @param max a int.
+	 */
 	public void addMinMaxLazyLiteral(final int varcode, final int min,
 			final int max) {
 		if (this.minMaxPresortingNumbers == null) {
@@ -429,6 +550,15 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		this.minMaxPresortingNumbers.put(varcode, container);
 	}
 
+	/**
+	 * <p>addMinMaxPresortingNumbers.</p>
+	 *
+	 * @param order a int.
+	 * @param ordermax a int.
+	 * @param id a int.
+	 * @param min a int.
+	 * @param max a int.
+	 */
 	public void addMinMaxPresortingNumbers(final int order, final int ordermax,
 			final int id, final int min, final int max) {
 		if (this.minMaxPresortingNumbers == null) {
@@ -443,6 +573,11 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		}
 	}
 
+	/**
+	 * <p>getVariableNames.</p>
+	 *
+	 * @return a {@link java.util.HashSet} object.
+	 */
 	public HashSet<String> getVariableNames() {
 		final HashSet<String> h = new HashSet<String>();
 		for (final Item i : this.items) {
@@ -453,6 +588,11 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return h;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.HashSet} object.
+	 */
 	public HashSet<Variable> getVariables() {
 		final HashSet<Variable> h = new HashSet<Variable>();
 		for (final Item i : this.items) {
@@ -463,10 +603,22 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return h;
 	}
 
+	/**
+	 * <p>getVariableName.</p>
+	 *
+	 * @param i a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getVariableName(final int i) {
 		return this.items[i].getName();
 	}
 
+	/**
+	 * <p>getPos.</p>
+	 *
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 * @return a int.
+	 */
 	public int getPos(final Item item) {
 		int pos = 0;
 		for (final Item i : this.items) {
@@ -478,6 +630,11 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return -1;
 	}
 
+	/**
+	 * <p>getLiteralKey.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLiteralKey() {
 		String key = "";
 		for (int i = 0; i < 3; i++) {
@@ -491,6 +648,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return key;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuffer result = new StringBuffer(super.toString()+" (");
@@ -506,6 +664,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return result.toString() + ")" + this.getCardinalityString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final StringBuffer result = new StringBuffer(super.toString()+" ("); // start result string
@@ -524,6 +683,11 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return result.toString() + ")" + this.getCardinalityString();
 	}
 
+	/**
+	 * <p>toN3String.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toN3String() {
 		final StringBuffer result = new StringBuffer();
 
@@ -537,6 +701,12 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return result.toString();
 	}
 
+	/**
+	 * <p>toN3String.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toN3String(final lupos.rdf.Prefix prefixInstance) {
 		final StringBuffer result = new StringBuffer(); // start result string
 
@@ -580,6 +750,13 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 	 * true; }
 	 */
 
+	/**
+	 * <p>replace.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> replace(final Variable var, final Item item) {
 		final HashSet<Variable> vars = new HashSet<Variable>();
 
@@ -596,6 +773,13 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return vars;
 	}
 
+	/**
+	 * <p>addHistogram.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @param buckets an array of {@link lupos.datastructures.items.literal.Literal} objects.
+	 * @param selectivity a double.
+	 */
 	public void addHistogram(final Variable v, final Literal[] buckets,
 			final double selectivity) {
 		if (this.histogram == null) {
@@ -606,6 +790,12 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		this.histogramSel.put(v, selectivity);
 	}
 
+	/**
+	 * <p>Getter for the field <code>histogram</code>.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @return an array of {@link lupos.datastructures.items.literal.Literal} objects.
+	 */
 	public Literal[] getHistogram(final Variable v) {
 		if (this.histogram == null) {
 			return null;
@@ -613,6 +803,12 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return this.histogram.get(v);
 	}
 
+	/**
+	 * <p>getSel.</p>
+	 *
+	 * @param v a {@link lupos.datastructures.items.Variable} object.
+	 * @return a {@link java.lang.Double} object.
+	 */
 	public Double getSel(final Variable v) {
 		if (this.histogram == null) {
 			return null;
@@ -620,23 +816,50 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return this.histogramSel.get(v);
 	}
 
+	/**
+	 * <p>Getter for the field <code>objectOriginalStringMayDiffer</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.tripleoperator.TriplePattern.BooleanAndUnknown} object.
+	 */
 	public BooleanAndUnknown getObjectOriginalStringMayDiffer() {
 		return this.objectOriginalStringMayDiffer;
 	}
 
+	/**
+	 * <p>Setter for the field <code>objectOriginalStringMayDiffer</code>.</p>
+	 *
+	 * @param objectOriginalStringMayDiffer a {@link lupos.engine.operators.tripleoperator.TriplePattern.BooleanAndUnknown} object.
+	 */
 	public void setObjectOriginalStringMayDiffer(
 			final BooleanAndUnknown objectOriginalStringMayDiffer) {
 		this.objectOriginalStringMayDiffer = objectOriginalStringMayDiffer;
 	}
 
+	/**
+	 * <p>Getter for the field <code>cardinality</code>.</p>
+	 *
+	 * @return a long.
+	 */
 	public long getCardinality() {
 		return this.cardinality;
 	}
 
+	/**
+	 * <p>Setter for the field <code>cardinality</code>.</p>
+	 *
+	 * @param cardinality a long.
+	 */
 	public void setCardinality(final long cardinality) {
 		this.cardinality = cardinality;
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param k a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @return a {@link lupos.datastructures.items.TripleKey} object.
+	 */
 	public TripleKey getKey(final Bindings k, final RDF3XIndexScan.CollationOrder order) {
 		final Literal[] literals = new Literal[3];
 		for (int i = 0; i < 3; i++) {
@@ -651,6 +874,13 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return tk;
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param t an array of {@link lupos.datastructures.items.literal.Literal} objects.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @return a {@link lupos.datastructures.items.TripleKey} object.
+	 */
 	public TripleKey getKey(final Literal[] t, final RDF3XIndexScan.CollationOrder order) {
 		final Literal[] literals = new Literal[3];
 		for (int i = 0; i < 3; i++) {
@@ -665,6 +895,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		return tk;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTriple(final Triple triple) {
 		final Bindings b = this.process(triple, false);
@@ -678,6 +909,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void consumeDebug(final Triple triple, final DebugStep debugstep) {
 		final Bindings b = this.process(triple, false);
@@ -693,6 +925,7 @@ public class TriplePattern extends TripleOperator implements TripleConsumer, Tri
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteTripleDebug(final Triple triple, final DebugStep debugstep) {
 		final Bindings b = this.process(triple, false);

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,11 +21,13 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.owlToRif;
 
 import lupos.owl2rl.parser.PatternQueryType;
-
 public class TemplateRule {
 	
 	private String pattern="";
@@ -38,15 +41,32 @@ public class TemplateRule {
 	private String className="";
 	
 	
+	/**
+	 * <p>Setter for the field <code>pattern</code>.</p>
+	 *
+	 * @param pattern a {@link java.lang.String} object.
+	 * @return a {@link lupos.owl2rl.owlToRif.TemplateRule} object.
+	 */
 	public TemplateRule setPattern(String pattern){
 		this.pattern=pattern;
 		return this;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>methodName</code>.</p>
+	 *
+	 * @param methodName a {@link java.lang.String} object.
+	 */
 	public void setMethodName(String methodName){
 		this.methodName=methodName;
 	}
 	
+	/**
+	 * <p>setName.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @return a {@link lupos.owl2rl.owlToRif.TemplateRule} object.
+	 */
 	public TemplateRule setName(String name){
 		this.template_Name=name;
 		return this;
@@ -80,29 +100,61 @@ public class TemplateRule {
 		this.patternQuery=ret;
 	}
 
+	/**
+	 * <p>Setter for the field <code>template</code>.</p>
+	 *
+	 * @param template a {@link java.lang.String} object.
+	 * @return a {@link lupos.owl2rl.owlToRif.TemplateRule} object.
+	 */
 	public TemplateRule setTemplate(String template){
 		this.template = (template);
 		return this;
 	}
 		
 	
+	/**
+	 * <p>Getter for the field <code>pattern</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getPattern() {
 		return this.pattern;
 	}
 
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return this.template_Name;
 	}
 
+	/**
+	 * <p>Getter for the field <code>template</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getTemplate() {
 		return this.template;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>patternQuery</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getPatternQuery() {
 		return this.patternQuery;
 	}
 
 	
+	/**
+	 * <p>Setter for the field <code>patternQuery</code>.</p>
+	 *
+	 * @param pattern_query a {@link java.lang.String} object.
+	 * @param prefixes a {@link java.lang.String} object.
+	 */
 	public void setPatternQuery(String pattern_query,String prefixes) {
 		this.patternQuery =  pattern_query;
 		this.prefixes=prefixes;
@@ -110,27 +162,55 @@ public class TemplateRule {
 	
 	
 	
+	/**
+	 * <p>getVariablesArray.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getVariablesArray(){
 		return this.vars;	
 	}
 
+	/**
+	 * <p>setVariableArray.</p>
+	 *
+	 * @param vars an array of {@link java.lang.String} objects.
+	 */
 	public void setVariableArray(String[] vars){
 		this.vars=vars;
 	}
 	
+	/**
+	 * <p>create.</p>
+	 */
 	public void create() {
 		makePatternQueryFromType();		
 	}
 
+	/**
+	 * <p>Getter for the field <code>methodName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getMethodName() {
 		return this.methodName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>className</code>.</p>
+	 *
+	 * @param string a {@link java.lang.String} object.
+	 */
 	public void setClassName(String string) {
 		this.className=string;
 		
 	}
 	
+	/**
+	 * <p>Getter for the field <code>className</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getClassName(){
 		return this.className;
 	}

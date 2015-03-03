@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.modifiers.distinct;
 
@@ -28,13 +32,14 @@ import java.util.*;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.SingleInputOperator;
-
 public class Distinct extends SingleInputOperator {
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(QueryResult bindings, int operandID) {
 		throw(new UnsupportedOperationException("This Operator("+this+") should have been replaced before being used."));
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean remainsSortedData(Collection<Variable> sortCriterium){
 		return true;

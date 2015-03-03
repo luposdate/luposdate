@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.rdfs;
 
@@ -35,9 +39,9 @@ import lupos.engine.operators.multiinput.Union;
 import lupos.engine.operators.singleinput.generate.GenerateAddEnv;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-
 public class RuleGenerateAddOverUnion extends Rule {
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final GenerateAddEnv genAdd = new GenerateAddEnv();
@@ -53,11 +57,13 @@ public class RuleGenerateAddOverUnion extends Rule {
 		startNode = genAdd;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,
 			final BasicOperator rootOperator) {

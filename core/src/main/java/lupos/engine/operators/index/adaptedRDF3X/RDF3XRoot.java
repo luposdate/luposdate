@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.adaptedRDF3X;
 
@@ -33,7 +37,6 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.RDF3XCostBasedOptimizer;
-
 public class RDF3XRoot extends
 		lupos.engine.operators.index.Root {
 
@@ -42,25 +45,36 @@ public class RDF3XRoot extends
 	 */
 	private static final long serialVersionUID = -1624295267286626002L;
 
+	/**
+	 * <p>Constructor for RDF3XRoot.</p>
+	 */
 	public RDF3XRoot(){
 	}
 
 
+	/**
+	 * <p>Constructor for RDF3XRoot.</p>
+	 *
+	 * @param dataset_param a {@link lupos.engine.operators.index.Dataset} object.
+	 */
 	public RDF3XRoot(final Dataset dataset_param){
 		super(dataset_param);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan newIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item data) {
 		return new RDF3XIndexScan(succeedingOperator, triplePattern, data, this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public lupos.engine.operators.index.Root newInstance(final Dataset dataset_param) {
 		return new RDF3XRoot(dataset_param);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void optimizeJoinOrder(final int opt) {
 		if (opt == BasicIndexScan.BINARY || opt == BasicIndexScan.MERGEJOIN
@@ -70,6 +84,11 @@ public class RDF3XRoot extends
 		}
 	}
 
+	/**
+	 * <p>makeBinaryJoin.</p>
+	 *
+	 * @param opt a int.
+	 */
 	public void makeBinaryJoin(final int opt) {
 		final List<OperatorIDTuple> c = new LinkedList<OperatorIDTuple>();
 

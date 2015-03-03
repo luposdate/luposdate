@@ -54,9 +54,18 @@ import com.sun.net.httpserver.HttpExchange;
  * which the client did not receive before.
  * The clients just adds the triples, which it receives from the server, and
  * evaluates the query on it.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DeltaEndpoint {
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(final String[] args) throws Exception {
 		// init according to command line arguments
 		final int port = Endpoint.init(args);

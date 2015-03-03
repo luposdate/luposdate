@@ -42,8 +42,10 @@ import lupos.rif.BasicIndexRuleEvaluator;
 
 /**
  * This class shows how to use the RIF Evaluator to process RIF rules
- * 
+ *
  * @author groppe
+ * @version $Id: $Id
+ * @since 1.0
  */
 public class TestRIFEngine {
 
@@ -103,6 +105,11 @@ public class TestRIFEngine {
 			"<http://localhost/publications/articles/Journal1/1940/Article1> swrc:journal <http://localhost/publications/journals/Journal1/1940>.\n" +
 			"_:Adamanta_Schlitt rdf:type foaf:Person.\n";
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		try {
 			

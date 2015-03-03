@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.queryresult;
 
@@ -35,11 +39,15 @@ import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.engine.operators.singleinput.SIPFilterOperator;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.misc.util.ImmutableIterator;
-
 public class IteratorQueryResult extends QueryResult {
 
 	protected Iterator<? extends Bindings> itb;
 
+	/**
+	 * <p>Constructor for IteratorQueryResult.</p>
+	 *
+	 * @param itb a {@link java.util.Iterator} object.
+	 */
 	public IteratorQueryResult(final Iterator<? extends Bindings> itb) {
 		super();
 		this.itb = itb;
@@ -52,6 +60,14 @@ public class IteratorQueryResult extends QueryResult {
 			new int[] { 2, 0, 1 }, // OSP
 			new int[] { 2, 1, 0 } };// OPS
 
+	/**
+	 * <p>Constructor for IteratorQueryResult.</p>
+	 *
+	 * @param itt a {@link lupos.datastructures.queryresult.SIPParallelIterator} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 * @param considerBloomFilters a boolean.
+	 */
 	public IteratorQueryResult(
 			final SIPParallelIterator<Triple, TripleKey> itt,
 			final TriplePattern tp,
@@ -264,6 +280,13 @@ public class IteratorQueryResult extends QueryResult {
 		}
 	}
 
+	/**
+	 * <p>Constructor for IteratorQueryResult.</p>
+	 *
+	 * @param itt a {@link java.util.Iterator} object.
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param order a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan.CollationOrder} object.
+	 */
 	public IteratorQueryResult(final Iterator<Triple> itt,
 			final TriplePattern tp,
 			final RDF3XIndexScan.CollationOrder order) {
@@ -347,6 +370,9 @@ public class IteratorQueryResult extends QueryResult {
 		};
 	}
 
+	/**
+	 * <p>addRemainingFromIterator.</p>
+	 */
 	protected void addRemainingFromIterator() {
 		if (this.itb != null) {
 			while (this.itb.hasNext()) {
@@ -358,6 +384,7 @@ public class IteratorQueryResult extends QueryResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<Bindings> getCollection() {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -366,6 +393,7 @@ public class IteratorQueryResult extends QueryResult {
 		return this.bindings;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Bindings b) {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -374,6 +402,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.contains(b);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Bindings b) {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -382,6 +411,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.remove(b);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addFirst(final Bindings b) {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -390,6 +420,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.addFirst(b);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addLast(final Bindings b) {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -398,6 +429,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.addLast(b);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final int pos, final Bindings b) {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -406,6 +438,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.add(pos, b);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Bindings getFirst() {
 		if (this.bindings.isEmpty()) {
@@ -430,6 +463,7 @@ public class IteratorQueryResult extends QueryResult {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Bindings getLast() {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -438,6 +472,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.getLast();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Bindings get(final int pos) {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -447,6 +482,8 @@ public class IteratorQueryResult extends QueryResult {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Because of optimization purposes, you must call this method only once,
 	 * because the a second call of the method or other methods forgets
 	 * bindings.
@@ -466,6 +503,7 @@ public class IteratorQueryResult extends QueryResult {
 		return size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -474,6 +512,7 @@ public class IteratorQueryResult extends QueryResult {
 		return super.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Bindings> iterator() {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -483,6 +522,8 @@ public class IteratorQueryResult extends QueryResult {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Because of optimization purposes, you must call this method only once,
 	 * because the iterator returned from a second call of the method forgets
 	 * bindings.
@@ -640,6 +681,7 @@ public class IteratorQueryResult extends QueryResult {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		if (this.itb instanceof ParallelIterator) {
@@ -648,11 +690,13 @@ public class IteratorQueryResult extends QueryResult {
 		super.release();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return (this.bindings.isEmpty() && (this.itb == null || !this.itb.hasNext()));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void materialize() {
 		if (this.itb != null && this.itb.hasNext()) {
@@ -660,6 +704,7 @@ public class IteratorQueryResult extends QueryResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		if (this.itb != null && this.itb.hasNext()) {

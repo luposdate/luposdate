@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server;
 
@@ -64,8 +68,10 @@ import com.sun.net.httpserver.HttpServer;
 public class Endpoint {
 
 	// enable or disable logging into console
+	/** Constant <code>log=false</code> */
 	public static boolean log = false;
 	// enable or disable logging the sizes of the query and its response into console
+	/** Constant <code>sizelog=false</code> */
 	public static boolean sizelog = false;
 
 	private final static Map<String, Formatter> registeredFormatter = Collections.synchronizedMap(new HashMap<String, Formatter>());
@@ -74,29 +80,61 @@ public class Endpoint {
 
 	private static HTMLForm htmlForm = new StandardHTMLForm();
 
+	/** Constant <code>defaultBindingsClass</code> */
 	public static Class<? extends Bindings> defaultBindingsClass = Bindings.instanceClass;
 
+	/**
+	 * <p>registerFormatter.</p>
+	 *
+	 * @param formatter a {@link lupos.endpoint.server.format.Formatter} object.
+	 */
 	public static void registerFormatter(final Formatter formatter){
 		Endpoint.registeredFormatter.put(formatter.getKey().toLowerCase(), formatter);
 		Endpoint.registeredFormatter.put(formatter.getName().toLowerCase(), formatter);
 	}
 
+	/**
+	 * <p>getRegisteredFormatters.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public static Map<String, Formatter> getRegisteredFormatters(){
 		return Endpoint.registeredFormatter;
 	}
 
+	/**
+	 * <p>registerHandler.</p>
+	 *
+	 * @param context a {@link java.lang.String} object.
+	 * @param httpHandler a {@link com.sun.net.httpserver.HttpHandler} object.
+	 */
 	public static void registerHandler(final String context, final HttpHandler httpHandler){
 		Endpoint.registeredhandler.put(context, httpHandler);
 	}
 
+	/**
+	 * <p>getHTMLForm.</p>
+	 *
+	 * @return a {@link lupos.endpoint.server.Endpoint.HTMLForm} object.
+	 */
 	public static HTMLForm getHTMLForm(){
 		return Endpoint.htmlForm;
 	}
 
+	/**
+	 * <p>setHTMLForm.</p>
+	 *
+	 * @param htmlForm a {@link lupos.endpoint.server.Endpoint.HTMLForm} object.
+	 */
 	public static void setHTMLForm(final HTMLForm htmlForm){
 		Endpoint.htmlForm = htmlForm;
 	}
 
+	/**
+	 * <p>Getter for the field <code>defaultBindingsClass</code>.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public static Class<? extends Bindings> getDefaultBindingsClass() {
 		return defaultBindingsClass;
 	}
@@ -106,6 +144,9 @@ public class Endpoint {
 	 * http://localhost:8080/sparql?query=PREFIX+rdf%3A%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E+SELECT+*+WHERE%7B+%3Fs+rdf%3Atype+%3Fo.+%7D&format=application%2Fsparql-results%2Bxml
 	 * for query
 	 * PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{?s rdf:type ?o. }
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
 	 */
 	public static void main(final String[] args) throws Exception {
 		final int port = Endpoint.init(args);
@@ -113,6 +154,12 @@ public class Endpoint {
 		Endpoint.initAndStartServer(port);
 	}
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @return a int.
+	 */
 	public static int init(final String[] args){
 		if (args.length < 1) {
 			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [portX] [output] [size]");
@@ -135,6 +182,11 @@ public class Endpoint {
 		return port;
 	}
 
+	/**
+	 * <p>initAndStartServer.</p>
+	 *
+	 * @param port a int.
+	 */
 	public static void initAndStartServer(final int port){
 		try {
 			final String localHost = InetAddress.getLocalHost().getHostName();
@@ -153,6 +205,12 @@ public class Endpoint {
 		}
 	}
 
+	/**
+	 * <p>createQueryEvaluator.</p>
+	 *
+	 * @param directory a {@link java.lang.String} object.
+	 * @return a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
+	 */
 	public static BasicIndexQueryEvaluator createQueryEvaluator(final String directory){
 		try {
 			final RDF3XQueryEvaluator evaluator = new RDF3XQueryEvaluator();
@@ -168,12 +226,17 @@ public class Endpoint {
 
 	/**
 	 * register the standard formatters and contexts of the server...
+	 *
+	 * @param directory a {@link java.lang.String} object.
 	 */
 	public static void registerStandardFormattersAndContexts(final String directory) {
 		Endpoint.registerStandardFormatter();
 		Endpoint.registerStandardContexts(directory);
 	}
 
+	/**
+	 * <p>registerStandardFormatter.</p>
+	 */
 	public static void registerStandardFormatter(){
 		Endpoint.registerFormatter(new XMLFormatter());
 		Endpoint.registerFormatter(new XMLFormatter(true));
@@ -189,11 +252,21 @@ public class Endpoint {
 		Endpoint.registerFormatter(new QueryTriplesFormatter());
 	}
 
+	/**
+	 * <p>registerStandardContexts.</p>
+	 *
+	 * @param directory a {@link java.lang.String} object.
+	 */
 	public static void registerStandardContexts(final String directory){
 		Endpoint.registerHandler("/sparql", new SPARQLHandler(new SPARQLExecutionImplementation(Endpoint.createQueryEvaluator(directory), directory)));
 		Endpoint.registerHandler("/", new HTMLFormHandler());
 	}
 
+	/**
+	 * <p>startServer.</p>
+	 *
+	 * @param port a int.
+	 */
 	public static void startServer(final int port){
 		try {
 			final HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -210,6 +283,13 @@ public class Endpoint {
 		}
 	}
 
+	/**
+	 * <p>getResponse.</p>
+	 *
+	 * @param t a {@link com.sun.net.httpserver.HttpExchange} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static String getResponse(final HttpExchange t) throws IOException {
 		final String requestMethod = t.getRequestMethod();
 		String response;
@@ -359,6 +439,14 @@ public class Endpoint {
 		}
 	}
 
+	/**
+	 * <p>getParameter.</p>
+	 *
+	 * @param responseParts an array of {@link java.lang.String} objects.
+	 * @param parameter a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	protected static String getParameter(final String[] responseParts, final String parameter) throws UnsupportedEncodingException{
 		for(final String item: responseParts){
 			if(item.startsWith(parameter)){
@@ -368,6 +456,15 @@ public class Endpoint {
 		return null;
 	}
 
+	/**
+	 * <p>getParameter.</p>
+	 *
+	 * @param responseParts an array of {@link java.lang.String} objects.
+	 * @param parameter a {@link java.lang.String} object.
+	 * @param defaultValue a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.io.UnsupportedEncodingException if any.
+	 */
 	protected static String getParameter(final String[] responseParts, final String parameter, final String defaultValue) throws UnsupportedEncodingException{
 		final String result = Endpoint.getParameter(responseParts, parameter);
 		if(result!=null){
@@ -377,6 +474,13 @@ public class Endpoint {
 		}
 	}
 
+	/**
+	 * <p>sendString.</p>
+	 *
+	 * @param t a {@link com.sun.net.httpserver.HttpExchange} object.
+	 * @param toSend a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void sendString(final HttpExchange t, final String toSend) throws IOException{
 		t.sendResponseHeaders(200, toSend.length());
 		final OutputStream os = t.getResponseBody();

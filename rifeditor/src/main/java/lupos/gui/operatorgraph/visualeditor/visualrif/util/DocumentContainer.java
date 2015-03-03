@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.util;
 
@@ -35,7 +39,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class DocumentContainer implements ITree {
 
 
@@ -49,6 +52,11 @@ public class DocumentContainer implements ITree {
 
 
 	// Constructor
+	/**
+	 * <p>Constructor for DocumentContainer.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public DocumentContainer(final VisualRifEditor visualRifEditor) {
 
 		this.visualRifEditor = visualRifEditor;
@@ -56,9 +64,10 @@ public class DocumentContainer implements ITree {
 
 
 	/**
-	 * Creates an new {@link DocumentPanel} and stores it in a HashMap
+	 * Creates an new {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel} and stores it in a HashMap
 	 * see checkName
-	 * @return An active {@link DocumentPanel}
+	 *
+	 * @return An active {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel}
 	 */
 	public DocumentPanel createNewDocument(){
 
@@ -75,9 +84,10 @@ public class DocumentContainer implements ITree {
 	/**
 	 * Checks whether the name of
 	 * the new document is already used.
-	 * @param basename
-	 * @param newname
-	 * @param index
+	 *
+	 * @param basename a {@link java.lang.String} object.
+	 * @param newname a {@link java.lang.String} object.
+	 * @param index a int.
 	 * @return a new auto-generated name for the new document
 	 */
 	public String checkName(final String basename, String newname, int index) {
@@ -103,7 +113,8 @@ public class DocumentContainer implements ITree {
 
 	/**
 	 * Loads the DocumentPanel and shows it on the right side of the GUI
-	 * @param documentName
+	 *
+	 * @param documentName a {@link java.lang.String} object.
 	 */
 	public void showDocument(final String documentName){
 
@@ -115,6 +126,11 @@ public class DocumentContainer implements ITree {
 	}
 
 
+	/**
+	 * <p>deleteDocument.</p>
+	 *
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public void deleteDocument(final String documentName){
 		// delete all rules in the document
 		for (int i = 0; i < this.visualRifEditor.getRuleContainer().getRulePanelList().size(); i++) {
@@ -130,6 +146,7 @@ public class DocumentContainer implements ITree {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public void removeElement(final String elem, final TreeNode parentNode) {
@@ -152,6 +169,7 @@ public class DocumentContainer implements ITree {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean nameChanged(final TypeEnum e, final String oldName, final String newName) {
 
@@ -208,6 +226,12 @@ public class DocumentContainer implements ITree {
 	 * Load + Save
 	 */
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		final JSONObject saveObject = new JSONObject();
 
@@ -220,6 +244,12 @@ public class DocumentContainer implements ITree {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public void fromJSON(final JSONObject loadObject) throws JSONException {
 
@@ -249,6 +279,7 @@ public class DocumentContainer implements ITree {
 	 * Getter + Setter **
 	 * *************** */
 
+	/** {@inheritDoc} */
 	@Override
 	public String getNameOfActiveElement() {
 
@@ -257,6 +288,12 @@ public class DocumentContainer implements ITree {
 
 
 
+	/**
+	 * <p>getDocumentByName.</p>
+	 *
+	 * @param documentName a {@link java.lang.String} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel} object.
+	 */
 	public  DocumentPanel getDocumentByName(final String documentName){
 
 		DocumentPanel tmp = null;
@@ -271,18 +308,38 @@ public class DocumentContainer implements ITree {
 		return tmp;
 	}
 
+	/**
+	 * <p>Getter for the field <code>activeDocument</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel} object.
+	 */
 	public DocumentPanel getActiveDocument() {
 		return this.activeDocument;
 	}
 
+	/**
+	 * <p>Setter for the field <code>activeDocument</code>.</p>
+	 *
+	 * @param activeDocument a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.DocumentPanel} object.
+	 */
 	public void setActiveDocument(final DocumentPanel activeDocument) {
 		this.activeDocument = activeDocument;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documents</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, DocumentPanel> getDocuments() {
 		return this.documents;
 	}
 
+	/**
+	 * <p>Setter for the field <code>documents</code>.</p>
+	 *
+	 * @param documents a {@link java.util.HashMap} object.
+	 */
 	public void setDocuments(final HashMap<String, DocumentPanel> documents) {
 		this.documents = documents;
 	}

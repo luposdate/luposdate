@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -66,10 +70,6 @@ import lupos.rif.model.Rule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-
-
 public class RuleEditorPane extends VisualEditor<Operator> {
 
 
@@ -89,6 +89,12 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 
 	// Constructor
+	/**
+	 * <p>Constructor for RuleEditorPane.</p>
+	 *
+	 * @param statusBar a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 * @param vRE a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	protected RuleEditorPane(final StatusBar statusBar, final VisualRifEditor vRE) {
 		super(true);
 		this.statusBar = statusBar;
@@ -105,12 +111,14 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void pasteElements(final String arg0) {
 		// currently not supported
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public JMenuBar buildMenuBar() {
 		final JMenuBar menuBar = this.createMenuBar();
@@ -267,6 +275,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>serializeRule.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeRule() {
 		final StringBuffer sb = new StringBuffer();
 		// check whether there are operatorPanels on the left panel
@@ -336,6 +349,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>ruleVariableList</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<Term> getRuleVariableList(){
 		final LinkedList<Term> varTerms = this.ruleVariableList;
 		varTerms.clear();
@@ -565,6 +583,12 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 
 	// Rif -> VisualRif
+	/**
+	 * <p>evaluate.</p>
+	 *
+	 * @param unVisitedObject a {@link lupos.rif.model.Rule} object.
+	 * @param vrg a {@link lupos.gui.operatorgraph.visualeditor.visualrif.parsing.VisualRifGenerator} object.
+	 */
 	public void evaluate(final Rule unVisitedObject, final VisualRifGenerator vrg) {
 
 
@@ -761,6 +785,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 	// JSON
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 */
 	public JSONObject toJSON() {
 		final JSONObject saveObject = new JSONObject();
 			try {
@@ -773,6 +802,12 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param jsonObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void fromJSON(final JSONObject jsonObject)  throws JSONException {
 
 
@@ -785,6 +820,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>buildBottomPane.</p>
+	 *
+	 * @return a {@link javax.swing.JTabbedPane} object.
+	 */
 	public JTabbedPane buildBottomPane(){
 
 		this.rifCodeEditor = new RifCodeEditor();
@@ -818,38 +858,83 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	 * *************** */
 
 
+	/**
+	 * <p>Getter for the field <code>ruleGraphLeft</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public RuleGraph getRuleGraphLeft() {
 		return this.ruleGraphLeft;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleGraphLeft</code>.</p>
+	 *
+	 * @param ruleGraphLeft a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public void setRuleGraphLeft(final RuleGraph ruleGraphLeft) {
 		this.ruleGraphLeft = ruleGraphLeft;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ruleGraphRight</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public RuleGraph getRuleGraphRight() {
 		return this.ruleGraphRight;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleGraphRight</code>.</p>
+	 *
+	 * @param ruleGraphRight a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.RuleGraph} object.
+	 */
 	public void setRuleGraphRight(final RuleGraph ruleGraphRight) {
 		this.ruleGraphRight = ruleGraphRight;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Getter for the field <code>that</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RuleEditorPane} object.
+	 */
 	public RuleEditorPane getThat() {
 		return this.that;
 	}
 
+	/**
+	 * <p>Getter for the field <code>componentCnt</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getComponentCnt() {
 		return this.componentCnt;
 	}
 
+	/**
+	 * <p>Setter for the field <code>componentCnt</code>.</p>
+	 *
+	 * @param componentCnt a int.
+	 */
 	public void setComponentCnt(final int componentCnt) {
 		this.componentCnt = componentCnt;
 	}

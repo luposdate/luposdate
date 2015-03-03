@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.queryresult;
 
@@ -27,16 +31,25 @@ import java.util.NoSuchElementException;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.parallel.BoundedBuffer;
-
 public class ParallelIteratorQueryResult extends IteratorQueryResult {
 
 	ParallelIterator<Bindings> parallelitb;
 
+	/**
+	 * <p>Constructor for ParallelIteratorQueryResult.</p>
+	 *
+	 * @param itb a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public ParallelIteratorQueryResult(final ParallelIterator<Bindings> itb) {
 		super(itb);
 		this.parallelitb = itb;
 	}
 
+	/**
+	 * <p>Constructor for ParallelIteratorQueryResult.</p>
+	 *
+	 * @param queueParameter a {@link lupos.datastructures.parallel.BoundedBuffer} object.
+	 */
 	public ParallelIteratorQueryResult(
 			final BoundedBuffer<Bindings> queueParameter) {
 		this(new ParallelIterator<Bindings>() {
@@ -86,6 +99,7 @@ public class ParallelIteratorQueryResult extends IteratorQueryResult {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		if (parallelitb != null) {

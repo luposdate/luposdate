@@ -25,24 +25,22 @@ package lupos.event.producer.ebay.parser;
 
 /**
  * Common interface for all structures possibly occurring in JSON data.
- * 
- * @author	matthias
+ *
+ * @version $Id: $Id
  */
 public abstract class JSObject {
 
 	/**
 	 * Returns the property <code>key</code> of this object.
-	 * 
-	 * @param	key		Name of the requested property
-	 * @return	The property <code>key</code> of this object
+	 *
+	 * @return a {@link lupos.event.producer.ebay.parser.JSObject} object.
 	 */
 	abstract public JSObject get(String key);
 	
 	/**
 	 * Returns the property <code>index</code> of this object.
-	 * 
-	 * @param	index	Name of the requested property (or its index for {@link JSOArray}s)
-	 * @return	The property <code>index</code> of this object
+	 *
+	 * @return a {@link lupos.event.producer.ebay.parser.JSObject} object.
 	 */
 	public JSObject get(int index) {
 		return this.get("" + index);
@@ -50,10 +48,8 @@ public abstract class JSObject {
 	
 	/**
 	 * Returns a property within this object.
-	 * 
-	 * @param	path	Property names separated by dots ('.')
-	 * @return	The string representation of the requested property or <strong>null</strong>, if
-	 * 			it doesn't exist
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String access(String path) {
 		JSObject current = this;
@@ -72,10 +68,9 @@ public abstract class JSObject {
 	}
 	
 	/**
-	 * Returns a indented string representation of this object. 
-	 * 
-	 * @param	indent	Prefix of the string representation (usually some whitespace)
-	 * @return	A indented string representation of this object
+	 * Returns a indented string representation of this object.
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	abstract public String toString(String indent);
 }

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie.disk.nodemanager;
 
@@ -27,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import lupos.misc.ByteHelper;
-
 public class NodeInputStream extends InputStream {
 	
 	/**
@@ -36,6 +39,8 @@ public class NodeInputStream extends InputStream {
 	private final InputStream stream;
 
 	/**
+	 * <p>Constructor for NodeInputStream.</p>
+	 *
 	 * @param stream
 	 *            Stream to use for reading
 	 */
@@ -43,6 +48,7 @@ public class NodeInputStream extends InputStream {
 		this.stream = stream;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int read() throws IOException {
 		return this.stream.read();
@@ -50,9 +56,9 @@ public class NodeInputStream extends InputStream {
 	
 	/**
 	 * Reads the next 4 bytes from the stream and converts them to an integer value
-	 * 
+	 *
 	 * @return Integer representation of the next 4 bytes
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public int readInt() throws IOException {
 		byte[] intVal = new byte[4];
@@ -85,9 +91,9 @@ public class NodeInputStream extends InputStream {
 	
 	/**
 	 * Reads the next 8 bytes from the stream and converts them to a long value
-	 * 
+	 *
 	 * @return Long representation of the next 8 bytes
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public long readLong() throws IOException {
 		byte[] intVal = new byte[8];
@@ -103,6 +109,7 @@ public class NodeInputStream extends InputStream {
 		return ByteHelper.byteToInt(intVal);		
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
 		this.stream.close();

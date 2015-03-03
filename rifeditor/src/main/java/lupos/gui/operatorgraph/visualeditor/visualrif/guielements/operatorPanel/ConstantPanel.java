@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel;
 
@@ -51,13 +55,21 @@ import lupos.gui.operatorgraph.visualeditor.operators.Operator;
 import lupos.gui.operatorgraph.visualeditor.util.JTextFieldResizing;
 import lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator;
-
 public class ConstantPanel extends AbstractGuiComponent<Operator>{
 	private static final long serialVersionUID = -6789368326247215391L;
 	protected GridBagConstraints gbc = null;
 	private ConstantOperator constantOperator;
 	private VisualRifEditor visualRifEditor;
 
+	/**
+	 * <p>Constructor for ConstantPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param operator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+	 * @param movable a boolean.
+	 * @param visualRifEditor2 a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public ConstantPanel(final VisualGraph<Operator> parent, final GraphWrapper gw,
 			final ConstantOperator operator, final boolean movable, final VisualRifEditor visualRifEditor2) {
 		super(parent, gw, operator, movable);
@@ -176,6 +188,7 @@ public class ConstantPanel extends AbstractGuiComponent<Operator>{
 		this.updateSize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSize(){
 
@@ -210,23 +223,44 @@ public class ConstantPanel extends AbstractGuiComponent<Operator>{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateOperatorPanel(final boolean showErrors, final Object data) {
 		return true;
 	}
 
+	/**
+	 * <p>getVariableOperator.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+	 */
 	public ConstantOperator getVariableOperator() {
 		return this.constantOperator;
 	}
 
+	/**
+	 * <p>Setter for the field <code>constantOperator</code>.</p>
+	 *
+	 * @param variableOperator a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+	 */
 	public void setConstantOperator(final ConstantOperator variableOperator) {
 		this.constantOperator = variableOperator;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.runtime;
 
@@ -33,11 +37,11 @@ import lupos.engine.operators.SimpleOperatorGraphVisitor;
 import lupos.misc.debug.BasicOperatorByteArray;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.optimizations.logical.rules.DebugContainer;
-
 public class RulePackageWithStartNodeMap extends AbstractRulePackage {
 	private RulePackageWithStartNodeMap that = this;
 	private HashMap<Class<?>, HashSet<BasicOperator>> startNodes = new HashMap<Class<?>, HashSet<BasicOperator>>();
 
+	/** {@inheritDoc} */
 	public void applyRules(BasicOperator rootOp) {
 		rootOp.visit(new SimpleOperatorGraphVisitor() {
 			private static final long serialVersionUID = 8365441598651188658L;
@@ -66,6 +70,7 @@ public class RulePackageWithStartNodeMap extends AbstractRulePackage {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public List<DebugContainer<BasicOperatorByteArray>> applyRulesDebugByteArray(BasicOperator rootOp, Prefix prefixInstance) {
 		List<DebugContainer<BasicOperatorByteArray>> debug = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
 

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,39 +21,75 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator;
-
 public class VariableContainer {
 	private int dimension = 0;
 	private Class<?> classType = null;
 	private String opName = "";
 	private AbstractRuleOperator countProvider = null;
 
+	/**
+	 * <p>Constructor for VariableContainer.</p>
+	 *
+	 * @param opName a {@link java.lang.String} object.
+	 * @param classType a {@link java.lang.Class} object.
+	 * @param dimension a int.
+	 */
 	public VariableContainer(String opName, Class<?> classType, int dimension) {
 		this.opName = opName;
 		this.classType = classType;
 		this.dimension = dimension;
 	}
 
+	/**
+	 * <p>Setter for the field <code>dimension</code>.</p>
+	 *
+	 * @param dimension a int.
+	 */
 	public void setDimension(int dimension) {
 		this.dimension = Math.max(this.dimension, dimension);
 	}
 
+	/**
+	 * <p>Setter for the field <code>countProvider</code>.</p>
+	 *
+	 * @param countProvider a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 */
 	public void setCountProvider(AbstractRuleOperator countProvider) {
 		this.countProvider = countProvider;
 	}
 
+	/**
+	 * <p>Getter for the field <code>countProvider</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.AbstractRuleOperator} object.
+	 */
 	public AbstractRuleOperator getCountProvider() {
 		return this.countProvider;
 	}
 
+	/**
+	 * <p>Getter for the field <code>opName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOpName() {
 		return this.opName;
 	}
 
+	/**
+	 * <p>declate_variable.</p>
+	 *
+	 * @param spaces a {@link java.lang.StringBuffer} object.
+	 * @param global a boolean.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String declate_variable(StringBuffer spaces, boolean global) {
 		StringBuffer buffer = new StringBuffer(spaces);
 
@@ -73,6 +110,15 @@ public class VariableContainer {
 		return buffer.toString();
 	}
 
+	/**
+	 * <p>initiate_next_dimension.</p>
+	 *
+	 * @param spaces a {@link java.lang.StringBuffer} object.
+	 * @param dimension a int.
+	 * @param countString a {@link java.lang.String} object.
+	 * @param global a boolean.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String initiate_next_dimension(StringBuffer spaces, int dimension, String countString, boolean global) {
 		if(this.dimension == 0) {
 			return "";
@@ -101,6 +147,12 @@ public class VariableContainer {
 		return buffer.toString();
 	}
 
+	/**
+	 * <p>assign_variable.</p>
+	 *
+	 * @param nodeName a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String assign_variable(String nodeName) {
 		StringBuffer buffer = new StringBuffer("this." + this.opName);
 
@@ -113,6 +165,11 @@ public class VariableContainer {
 		return buffer.toString();
 	}
 
+	/**
+	 * <p>Getter for the field <code>dimension</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getDimension() {
 		return this.dimension;
 	}

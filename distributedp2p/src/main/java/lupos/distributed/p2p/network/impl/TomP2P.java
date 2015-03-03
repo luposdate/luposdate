@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * This is the implementation of TomP2P as P2P-Network in LuposDate
  *
  * @author Bjoern
- *
+ * @version $Id: $Id
  */
 public class TomP2P extends P2PTripleNetwork {
 
@@ -164,7 +164,7 @@ public class TomP2P extends P2PTripleNetwork {
 	 * Creates an new peer on port 4000
 	 *
 	 * @return the peer
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             error creating and listening the peer
 	 */
 	public static TomP2P_Peer createPeer() throws IOException {
@@ -269,7 +269,7 @@ public class TomP2P extends P2PTripleNetwork {
 	 * @param masterPeerPort
 	 *            the master-port for discovering
 	 * @return a peer connection
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             error creating the new peer
 	 */
 	public static TomP2P_Peer createPeer(final int port,
@@ -325,7 +325,7 @@ public class TomP2P extends P2PTripleNetwork {
 	 * @param port
 	 *            the port, where to listen to the peer
 	 * @return the peer
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             error creating and listening the peer
 	 */
 	public static TomP2P_Peer createPeer(final int port) throws IOException {
@@ -366,7 +366,7 @@ public class TomP2P extends P2PTripleNetwork {
 	 *
 	 * @param pp
 	 *            the peer
-	 * @throws IOException
+	 * @throws java.io.IOException if any.
 	 */
 	public TomP2P(final TomP2P_Peer pp) throws IOException {
 		if (masterPeer == null) {
@@ -431,6 +431,7 @@ public class TomP2P extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void finalize() throws Throwable {
 		l.log(TYPE_FINALIZED, String.format("Peer %s shutdown.", this.p), 10);
@@ -440,11 +441,13 @@ public class TomP2P extends P2PTripleNetwork {
 		super.finalize();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String locationKey) {
 		return !this.get(locationKey).isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Triple> get(final String locationKey) {
@@ -511,6 +514,7 @@ public class TomP2P extends P2PTripleNetwork {
 		return (path.delete());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final String locationKey, final Triple item) {
 		final Number160 hash = Number160.createHash(locationKey);
@@ -525,6 +529,7 @@ public class TomP2P extends P2PTripleNetwork {
 				hash));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final String locationKey, final Triple... item) {
 		final Number160 hash = Number160.createHash(locationKey);
@@ -550,6 +555,7 @@ public class TomP2P extends P2PTripleNetwork {
 	 */
 	RequestP2PConfiguration reqParam = new RequestP2PConfiguration(1, 2, 0);
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final String locationKey, final Triple t) {
 		l.log(TYPE_ADD, String.format("Peer %s: add item %s in key: %s", this.p, t,
@@ -574,6 +580,7 @@ public class TomP2P extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addAll(final String locationKey, final Triple... values) {
 		final Number160 hash = Number160.createHash(locationKey);
@@ -604,6 +611,12 @@ public class TomP2P extends P2PTripleNetwork {
 	Not used anoymore, only for debugging, because other information
 	can be stored with the Triple, such as the key
 	*/
+	/**
+	 * <p>old_addAll.</p>
+	 *
+	 * @param locationKey a {@link java.lang.String} object.
+	 * @param values a {@link lupos.datastructures.items.Triple} object.
+	 */
 	@Deprecated
 	public void old_addAll(final String locationKey, final Triple... values) {
 		final Number160 hash = Number160.createHash(locationKey);
@@ -629,6 +642,7 @@ public class TomP2P extends P2PTripleNetwork {
 				list.size(), locationKey, hash));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessage(final String key, final String message) {
 		l.log(TYPE_SEND, String.format("Peer %s sends message: %s to key %s",
@@ -665,6 +679,7 @@ public class TomP2P extends P2PTripleNetwork {
 		return builder.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessageTo(final String peer, final String message) {
 		l.log(TYPE_SEND, String.format("Peer %s sends message: %s to peer %s",
@@ -673,6 +688,7 @@ public class TomP2P extends P2PTripleNetwork {
 		this.p.sendDirect(new PeerAddress(recipient)).setObject(message).start();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public IStorage getLocalStorage(final IDistribution<?> distibution) {
@@ -681,6 +697,7 @@ public class TomP2P extends P2PTripleNetwork {
 		return storage;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasLocalStorage() {
 		/**
@@ -689,6 +706,7 @@ public class TomP2P extends P2PTripleNetwork {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void shutdown() {
 		this.p.shutdown();

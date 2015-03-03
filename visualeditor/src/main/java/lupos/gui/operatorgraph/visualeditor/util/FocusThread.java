@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,18 +21,28 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.util;
 
 import javax.swing.JTextField;
-
 public class FocusThread extends Thread {
 	private JTextField jtf;
 
+	/**
+	 * <p>Constructor for FocusThread.</p>
+	 *
+	 * @param jtf a {@link javax.swing.JTextField} object.
+	 */
 	public FocusThread(JTextField jtf) {
 		this.jtf = jtf;
 	}
 
+	/**
+	 * <p>run.</p>
+	 */
 	public void run() {
 		try {
 			Thread.sleep(100);

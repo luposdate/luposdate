@@ -54,7 +54,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 /**
- * A view for configuration of a window for a query. 
+ * A view for configuration of a window for a query.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class EventWindowView extends JPanel implements ActionListener {
 	
@@ -67,6 +70,11 @@ public class EventWindowView extends JPanel implements ActionListener {
 	private JButton removeButton;
 	
 
+	/**
+	 * <p>Constructor for EventWindowView.</p>
+	 *
+	 * @param eventTypes an array of {@link lupos.event.consumer.querybuilder.EventType} objects.
+	 */
 	public EventWindowView(EventType[] eventTypes) {
 		
 		super.setBorder(new EmptyBorder(2,2,2,2));
@@ -250,6 +258,7 @@ public class EventWindowView extends JPanel implements ActionListener {
 		return pane;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void actionPerformed(ActionEvent e) {	
 		if(e.getSource() == this.eventTypesBox) {
@@ -261,18 +270,38 @@ public class EventWindowView extends JPanel implements ActionListener {
 		}
 	}
 	
+	/**
+	 * <p>addRemoveActionListener.</p>
+	 *
+	 * @param al a {@link java.awt.event.ActionListener} object.
+	 */
 	public void addRemoveActionListener(ActionListener al) {
 		this.removeButton.addActionListener(al);
 	}
 	
+	/**
+	 * <p>getEventType.</p>
+	 *
+	 * @return a {@link lupos.event.consumer.querybuilder.EventType} object.
+	 */
 	public EventType getEventType() {
 		return (EventType)this.eventTypesBox.getSelectedItem();
 	}
 
+	/**
+	 * <p>getWinOp.</p>
+	 *
+	 * @return a {@link lupos.event.consumer.querybuilder.WindowOperator} object.
+	 */
 	public WindowOperator getWinOp() {
 		return (WindowOperator)this.winTypeBox.getSelectedItem();
 	}
 
+	/**
+	 * <p>getWinParam.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getWinParam() {
 		switch ((WindowOperator) this.winTypeBox.getSelectedItem()) {
 		case COUNT:
@@ -283,6 +312,11 @@ public class EventWindowView extends JPanel implements ActionListener {
 		return -1;
 	}
 	
+	/**
+	 * <p>getPropertyFilterData.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<PropertyFilterData> getPropertyFilterData() {
 		List<PropertyFilterData> propFilterDataList = new ArrayList<PropertyFilterData>();
 		

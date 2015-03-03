@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.operators;
 
@@ -31,34 +35,51 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RuleOperatorP
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RuleOperator extends AbstractRuleOperator {
 	private boolean startNode;
 
+	/**
+	 * <p>Constructor for RuleOperator.</p>
+	 */
 	public RuleOperator() {
 		super();
 	}
 
+	/**
+	 * <p>Constructor for RuleOperator.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public RuleOperator(String name, JSONObject loadObject) throws JSONException {
 		super(name, loadObject);
 	}
 
+	/** {@inheritDoc} */
 	protected void fromJSON(JSONObject loadObject) throws JSONException {
 		this.startNode = loadObject.has("start node");
 	}
 
+	/** {@inheritDoc} */
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
 		this.panel = new RuleOperatorPanel(parent, gw, this, this.classType, this.determineNameForDrawing(), this.startNode, this.alsoSubClasses);
 
 		return this.panel;
 	}
 
+	/**
+	 * <p>setAsStartNode.</p>
+	 *
+	 * @param state a boolean.
+	 */
 	public void setAsStartNode(boolean state) {
 		this.startNode = state;
 
 		((RuleOperatorPanel) this.panel).setAsStartNode(state);
 	}
 
+	/** {@inheritDoc} */
 	public JSONObject toJSON(JSONObject connectionsObject) throws JSONException {
 		JSONObject saveObject = this.internalToJSON(connectionsObject);
 

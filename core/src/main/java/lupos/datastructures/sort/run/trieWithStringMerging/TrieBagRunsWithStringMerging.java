@@ -32,20 +32,26 @@ import lupos.datastructures.sort.run.memorysort.MemorySortRuns;
 
 /**
  * Tries are used to generate the initial runs.
- * Merging and swapping is done string-based instead of being node-based.  
+ * Merging and swapping is done string-based instead of being node-based.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TrieBagRunsWithStringMerging implements Runs {
 
+	/** {@inheritDoc} */
 	@Override
 	public Run merge(List<Run> runs, boolean inmemory) {		
 		return MemorySortRuns.merge(runs, inmemory, false);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Run createRun() {
 		return new TrieBagRunWithStringMerging(TrieBag.createRamBasedTrieBag());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "Initial runs generated using trie bags (string-based merging)";

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -46,7 +50,6 @@ import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
 import lupos.misc.debug.DebugStep;
 import lupos.misc.util.ImmutableIterator;
-
 public class MergeJoin extends Join {
 
 	protected SortedBag<Bindings> left = null;
@@ -55,13 +58,21 @@ public class MergeJoin extends Join {
 
 	protected BindingsComparator comp = new BindingsComparator();
 
+	/** Constant <code>MEMORYLIMIT=1000</code> */
 	public static int MEMORYLIMIT = 1000;
 
+	/**
+	 * <p>init.</p>
+	 *
+	 * @param left a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 * @param right a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 */
 	public void init(final SortedBag<Bindings> left, final SortedBag<Bindings> right) {
 		this.left = left;
 		this.right = right;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
 		this.comp.setVariables(this.intersectionVariables);
@@ -82,6 +93,7 @@ public class MergeJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public OptionalResult processJoin(final QueryResult bindings,
 			final int operandID) {
@@ -97,6 +109,7 @@ public class MergeJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public OptionalResult joinBeforeEndOfStream() {
 		if (this.left != null && this.right != null) {
@@ -110,12 +123,14 @@ public class MergeJoin extends Join {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		if (this.left != null && this.right != null && this.left.size() > 0
@@ -192,6 +207,14 @@ public class MergeJoin extends Join {
 		return msg;
 	}
 
+	/**
+	 * <p>mergeJoin.</p>
+	 *
+	 * @param ssb1it a {@link java.util.Iterator} object.
+	 * @param ssb2it a {@link java.util.Iterator} object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult mergeJoin(final Iterator<Bindings> ssb1it,
 			final Iterator<Bindings> ssb2it, final Comparator<Bindings> comp) {
 
@@ -263,6 +286,16 @@ public class MergeJoin extends Join {
 		}
 	}
 
+	/**
+	 * <p>mergeJoinIterator.</p>
+	 *
+	 * @param ssb1it a {@link java.util.Iterator} object.
+	 * @param ssb2it a {@link java.util.Iterator} object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public static ParallelIterator<Bindings> mergeJoinIterator(
 			final Iterator<Bindings> ssb1it, final Iterator<Bindings> ssb2it,
 			final Comparator<Bindings> comp, final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
@@ -482,6 +515,15 @@ public class MergeJoin extends Join {
 		};
 	}
 
+	/**
+	 * <p>mergeJoinIterator.</p>
+	 *
+	 * @param ssbit an array of {@link java.util.Iterator} objects.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public static ParallelIterator<Bindings> mergeJoinIterator(
 			final Iterator<Bindings>[] ssbit, final Comparator<Bindings> comp,
 			final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
@@ -701,6 +743,17 @@ public class MergeJoin extends Join {
 		};
 	}
 
+	/**
+	 * <p>mergeJoinIterator.</p>
+	 *
+	 * @param ssbit an array of {@link java.util.Iterator} objects.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 * @param minimum a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param maximum2 a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public static ParallelIterator<Bindings> mergeJoinIterator(
 			final Iterator<Bindings>[] ssbit, final Comparator<Bindings> comp,
 			final Collection<Variable> vars, final Bindings minimum,
@@ -944,6 +997,14 @@ public class MergeJoin extends Join {
 		};
 	}
 
+	/**
+	 * <p>mergeOptionalIterator.</p>
+	 *
+	 * @param ssb1it a {@link java.util.Iterator} object.
+	 * @param ssb2it a {@link java.util.Iterator} object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public static Iterator<Bindings> mergeOptionalIterator(
 			final Iterator<Bindings> ssb1it, final Iterator<Bindings> ssb2it,
 			final Comparator<Bindings> comp) {
@@ -1160,6 +1221,16 @@ public class MergeJoin extends Join {
 		};
 	}
 
+	/**
+	 * <p>mergeJoin.</p>
+	 *
+	 * @param ssb1 a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 * @param ssb2 a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param vars a {@link java.util.Collection} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult mergeJoin(final SortedBag<Bindings> ssb1,
 			final SortedBag<Bindings> ssb2, final Comparator<Bindings> comp,
 			final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
@@ -1253,6 +1324,13 @@ public class MergeJoin extends Join {
 		return or;
 	}
 
+	/**
+	 * <p>cartesianProductIterator.</p>
+	 *
+	 * @param left a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param right a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public static ParallelIterator<Bindings> cartesianProductIterator(
 			final QueryResult left, final QueryResult right) {
 		if (left == null || right == null) {
@@ -1274,6 +1352,13 @@ public class MergeJoin extends Join {
 		return cartesianProductIterator(smaller.oneTimeIterator(), larger);
 	}
 
+	/**
+	 * <p>cartesianProductIterator.</p>
+	 *
+	 * @param left a {@link java.util.Iterator} object.
+	 * @param right a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public static ParallelIterator<Bindings> cartesianProductIterator(
 			final Iterator<Bindings> left, final QueryResult right) {
 		if (left == null || right == null) {
@@ -1358,6 +1443,12 @@ public class MergeJoin extends Join {
 		};
 	}
 
+	/**
+	 * <p>cartesianProductIterator.</p>
+	 *
+	 * @param operands an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	public static ParallelIterator<Bindings> cartesianProductIterator(
 			final QueryResult[] operands) {
 		for (int i = 0; i < operands.length; i++) {
@@ -1439,6 +1530,7 @@ public class MergeJoin extends Join {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
@@ -1455,6 +1547,7 @@ public class MergeJoin extends Join {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAll(final int operandID) {
 		if (operandID == 0) {
@@ -1464,11 +1557,13 @@ public class MergeJoin extends Join {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

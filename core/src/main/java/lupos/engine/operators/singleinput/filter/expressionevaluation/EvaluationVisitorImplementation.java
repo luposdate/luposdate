@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.filter.expressionevaluation;
 
@@ -152,13 +156,14 @@ import lupos.sparql1_1.ASTisNumericFuncNode;
 import lupos.sparql1_1.ASTisURIFuncNode;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SimpleNode;
-
 public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<Node, Object>, Object> {
 
+	/** Constant <code>externalFunctions</code> */
 	protected static HashMap<URILiteral, ExternalFunction> externalFunctions = new HashMap<URILiteral, ExternalFunction>();
 
 	/**
 	 * call this function to register an external function
+	 *
 	 * @param name name of the external function
 	 * @param externalFunction the external function
 	 */
@@ -175,38 +180,45 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	protected Map<SimpleNode, QueryResult> queryResultsForExistNodes = new HashMap<SimpleNode, QueryResult>();
 	private CommonCoreQueryEvaluator<Node> evaluator;
 
+	/** {@inheritDoc} */
 	@Override
 	public void setCollectionForExistNodes(
 			final Map<SimpleNode, Root> collectionForExistNodes) {
 		this.collectionForExistNodes = collectionForExistNodes;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<SimpleNode, Root> getCollectionForExistNodes() {
 		return this.collectionForExistNodes;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public CommonCoreQueryEvaluator<Node> getEvaluator() {
 		return this.evaluator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setEvaluator(final CommonCoreQueryEvaluator<Node> evaluator) {
 		this.evaluator = evaluator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() {
 		EvaluationVisitorImplementation.resetNowDate();
 		this.queryResultsForExistNodes.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void release() {
 		// nothing to release...
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTOrNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		NotBoundException _exceptionNB = null;
@@ -238,6 +250,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTAndNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		try {
@@ -253,66 +266,115 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTEqualsNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.equals(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTNotEqualsNode node, final Bindings b,
 			final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.NOTequals(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTLessThanNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.less(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTLessThanEqualsNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.le(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTGreaterThanNode node, final Bindings b,
 			final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.greater(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTGreaterThanEqualsNode node, final Bindings b,
 			final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return Helper.ge(node.jjtGetChild(0).accept(this, b, d), node.jjtGetChild(1).accept(this, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTDivisionNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.divideNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTAdditionNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.addNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
+	/**
+	 * <p>resultOfChildZero.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected Object resultOfChildZero(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(0).accept(this, b, d);
 	}
 
+	/**
+	 * <p>resultOfChildOne.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected Object resultOfChildOne(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(1).accept(this, b, d);
 	}
 
+	/**
+	 * <p>resultOfChildTwo.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected Object resultOfChildTwo(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(2).accept(this, b, d);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTRDFLiteral node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.resultOfChildZero(node, b, d);
 	}
 
+	/**
+	 * <p>getOperand.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return an array of {@link java.lang.Object} objects.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected Object[] getOperand(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object[] result = new Object[2];
 		result[0] = this.resultOfChildZero(node, b, d);
@@ -320,6 +382,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTMinusNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object[] operand = this.getOperand(node, b, d);
@@ -335,22 +398,26 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTMultiplicationNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.multiplyNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTNotNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		return !Helper.booleanEffectiveValue(this.resultOfChildZero(node, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTPlusNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.resultOfChildZero(node, b, d);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTRegexFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
@@ -372,22 +439,26 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return Helper.matchXerces(cmp, pattern, flags);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStringLiteral node, final Bindings b, final Map<Node, Object> d) {
 		return node.getLiteral(true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTBooleanLiteral node, final Bindings b,
 			final Map<Node, Object> d) {
 		return node.getState();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSubtractionNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return Helper.subtractNumericValues(this.resultOfChildZero(node, b, d), this.resultOfChildOne(node, b, d));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTVar node, final Bindings b, final Map<Node, Object> d) throws NotBoundException {
 		Literal l = b.get(new Variable(node.getName()));
@@ -403,6 +474,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTBoundFuncNode node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException {
 		try {
@@ -413,6 +485,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTLangFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
@@ -425,6 +498,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTLangMatchesFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -450,6 +524,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return (Helper.unquote(s1).compareTo(Helper.unquote(s2)) == 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTDataTypeFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -490,6 +565,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 			throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSameTermFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final String a = Helper.getOriginalValueString(this.resultOfChildZero(node, b, d));
@@ -497,6 +573,16 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return a.compareTo(bs) == 0;
 	}
 
+	/**
+	 * <p>createURI_IRI.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	public Object createURI_IRI(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if(o instanceof URILiteral){
@@ -524,20 +610,24 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTUriFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.createURI_IRI(node, b, d);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTIriFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.createURI_IRI(node, b, d);
 	}
 
+	/** Constant <code>prefixInternalBlankNodes="_:internal!"</code> */
 	protected static final String prefixInternalBlankNodes = "_:internal!";
 	protected int id = 0;
 	protected final HashMap<Object, Integer> mapForBlankNodeGeneration = new HashMap<Object, Integer>();
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTBnodeFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		Integer id_for_o;
@@ -554,6 +644,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return LiteralFactory.createAnonymousLiteral(prefixInternalBlankNodes+(id_for_o));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTisLiteralFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -566,6 +657,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTFunctionCall node, final Bindings b, final Map<Node, Object> d) throws TypeErrorException, NotBoundException {
 		final Literal name = LazyLiteral.getLiteral(node.jjtGetChild(0));
@@ -586,21 +678,25 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTQuotedURIRef node, final Bindings b, final Map<Node, Object> d) {
 		return node.getLiteral(true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTDoubleCircumflex node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.getLiteral(true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTFloatingPoint node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.getLiteral(true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTisBlankFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object parameter = Helper.unlazy(this.resultOfChildZero(node, b, d));
@@ -611,6 +707,16 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/**
+	 * <p>isURI_IRI.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected boolean isURI_IRI(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		if (o instanceof URILiteral) {
@@ -624,32 +730,38 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTisURIFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.isURI_IRI(node, b, d);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTisIRIFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.isURI_IRI(node, b, d);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTInteger node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.getLiteral(true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTLangTag node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.getLiteral(true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTFilterConstraint node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return this.resultOfChildZero(node, b, d);
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTisNumericFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		// TODO check the domain!!!
@@ -663,12 +775,14 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTAggregation node, final Bindings b, final Map<Node, Object> d) {
 		// the result of the aggregation function has already been previously computed...
 		return d.get(node);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object applyAggregationCOUNT(final Iterator<Object> values) {
 		long l=0;
@@ -679,6 +793,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return BigInteger.valueOf(l);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object applyAggregationSUM(final Iterator<Object> values) {
 		Object result=BigInteger.ZERO;
@@ -693,6 +808,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object applyAggregationMIN(final Iterator<Object> values) {
 		Object result = null;
@@ -709,6 +825,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object applyAggregationMAX(final Iterator<Object> values) {
 		Object result = null;
@@ -726,6 +843,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTExists node, final Bindings bindings,
 			final Map<Node, Object> d) {
@@ -733,6 +851,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTNotExists node, final Bindings bindings,
 			final Map<Node, Object> d) {
@@ -741,23 +860,24 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	/**
-	 * Checks whether the subquery represented by the {@link Root}
-	 * and {@link Result} has a non-empty result. Used for processing Exists and
+	 * Checks whether the subquery represented by the {@link lupos.engine.operators.index.Root}
+	 * and {@link lupos.engine.operators.singleinput.Result} has a non-empty result. Used for processing Exists and
 	 * Not Exists.
 	 *
 	 * @param node
 	 *            the node associated with this query, usually an instance of
-	 *            {@link ASTExists} or {@link ASTNotExists}
+	 *            {@link lupos.sparql1_1.ASTExists} or {@link lupos.sparql1_1.ASTNotExists}
 	 * @param bindings
-	 *            a {@link Bindings}, {@link Variable}s, which are bounded in
-	 *            this {@link Bindings}, are replaced by the {@link Literal}s in
+	 *            a {@link lupos.datastructures.bindings.Bindings}, {@link lupos.datastructures.items.Variable}s, which are bounded in
+	 *            this {@link lupos.datastructures.bindings.Bindings}, are replaced by the {@link lupos.datastructures.items.literal.Literal}s in
 	 *            the subquery.
-	 * @param d
+	 * @param d a {@link java.util.Map} object.
 	 * @param collection
-	 *            the {@link Root} for the subquery
+	 *            the {@link lupos.engine.operators.index.Root} for the subquery
 	 * @param evaluator_param
-	 *            the {@link CommonCoreQueryEvaluator} which should be used to
+	 *            the {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
+	 * @return a boolean.
 	 */
 	public boolean processSubquery(final SimpleNode node, final Bindings bindings,
 			final Map<Node, Object> d, final Root collection,
@@ -792,26 +912,27 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	/**
-	 * Checks whether the subquery represented by the {@link Root}
-	 * and {@link Result} has a non-empty result. Used for processing Exists and
+	 * Checks whether the subquery represented by the {@link lupos.engine.operators.index.Root}
+	 * and {@link lupos.engine.operators.singleinput.Result} has a non-empty result. Used for processing Exists and
 	 * Not Exists.<br>
-	 * Implementation note: Contrary to {@link EvaluationVisitorImplementation}
-	 * the subquery is processed once per {@link ASTExists}/{@link ASTNotExists}
+	 * Implementation note: Contrary to {@link lupos.engine.operators.singleinput.filter.expressionevaluation.EvaluationVisitorImplementation}
+	 * the subquery is processed once per {@link lupos.sparql1_1.ASTExists}/{@link lupos.sparql1_1.ASTNotExists}
 	 * node and the evaluation is done by iterating over the result set.
 	 *
 	 * @param node
 	 *            the node associated with this query, usually an instance of
-	 *            {@link ASTExists} or {@link ASTNotExists}
+	 *            {@link lupos.sparql1_1.ASTExists} or {@link lupos.sparql1_1.ASTNotExists}
 	 * @param bindings
-	 *            a {@link Bindings}, {@link Variable}s, which are bounded in
-	 *            this {@link Bindings}, are replaced by the {@link Literal}s in
+	 *            a {@link lupos.datastructures.bindings.Bindings}, {@link lupos.datastructures.items.Variable}s, which are bounded in
+	 *            this {@link lupos.datastructures.bindings.Bindings}, are replaced by the {@link lupos.datastructures.items.literal.Literal}s in
 	 *            the subquery.
-	 * @param d
+	 * @param d a {@link java.util.Map} object.
 	 * @param collection
-	 *            the {@link Root} for the subquery
+	 *            the {@link lupos.engine.operators.index.Root} for the subquery
 	 * @param evaluator_param
-	 *            the {@link CommonCoreQueryEvaluator} which should be used to
+	 *            the {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
+	 * @return a boolean.
 	 */
 	public boolean processSubqueryAndGetWholeResult(final SimpleNode node, final Bindings bindings,
 			final Map<Node, Object> d, final Root collection,
@@ -864,6 +985,13 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 
+	/**
+	 * <p>setupEvaluator.</p>
+	 *
+	 * @param evaluator a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 * @param collection a {@link lupos.engine.operators.index.Root} object.
+	 * @return a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public static Result setupEvaluator(final CommonCoreQueryEvaluator<Node> evaluator, final Root collection){
 		evaluator.setRootNode(collection);
 		collection.deleteParents();
@@ -884,20 +1012,18 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	/**
-	 * Computes the {@link QueryResult} for the subquery with the given node and
-	 * stores it in a {@link HashMap} in this class, so it can be used for
+	 * Computes the {@link lupos.datastructures.queryresult.QueryResult} for the subquery with the given node and
+	 * stores it in a {@link java.util.HashMap} in this class, so it can be used for
 	 * further processing.
 	 *
 	 * @param node
 	 *            the node associated with this query, usually an instance of
-	 *            {@link ASTExists} or {@link ASTNotExists}
+	 *            {@link lupos.sparql1_1.ASTExists} or {@link lupos.sparql1_1.ASTNotExists}
 	 * @param collection
-	 *            the {@link Root} for the subquery
+	 *            the {@link lupos.engine.operators.index.Root} for the subquery
 	 * @param evaluator_param
-	 *            the {@link CommonCoreQueryEvaluator} which should be used to
+	 *            the {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
-	 * @param result
-	 *            the {@link Result} for the subquery
 	 */
 	protected void performSubQueryAndGetWholeResult(final SimpleNode node,
 			final Root collection,
@@ -925,6 +1051,12 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		evaluator_param.getBindingsFactory().setPosVariables(oldBindingsFactory);
 	}
 
+	/**
+	 * <p>transformQueryResult.</p>
+	 *
+	 * @param queryResult a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	protected QueryResult transformQueryResult(final QueryResult queryResult) {
 		final QueryResult result = QueryResult.createInstance();
 		if (queryResult == null) {
@@ -942,6 +1074,16 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/**
+	 * <p>processSimpleSubquery.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.SimpleNode} object.
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @param collection a {@link lupos.engine.operators.index.Root} object.
+	 * @param evaluator a {@link lupos.engine.evaluators.CommonCoreQueryEvaluator} object.
+	 * @return a boolean.
+	 */
 	@SuppressWarnings("serial")
 	public static boolean processSimpleSubquery(final SimpleNode node, final Bindings bindings,
 			final Map<Node, Object> d, final Root collection,
@@ -1040,9 +1182,10 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Method for computing the SAMPLE-statement by returning a random value of
 	 * the given values
-	 *
 	 */
 	@Override
 	public Object applyAggregationSAMPLE(final Iterator<Object> values) {
@@ -1056,9 +1199,10 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Concatenates the values of a group and inserts between the values a separator
 	 * if given
-	 *
 	 */
 	@Override
 	public Object applyAggregationGROUP_CONCAT(final Iterator<Object> values,
@@ -1077,6 +1221,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return Helper.quote(concat);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object applyAggregationAVG(final Iterator<Object> values) {
 		long count = 0;
@@ -1097,6 +1242,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrdtFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1110,6 +1256,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1122,6 +1269,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return o.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrLangFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1132,6 +1280,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return LiteralFactory.createLanguageTaggedLiteral(content, language);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTABSFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1152,6 +1301,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTCeilFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1173,6 +1323,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTFloorFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1194,6 +1345,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTRoundFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1215,6 +1367,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		throw new TypeErrorException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTConcatFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1268,6 +1421,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSubstringFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1289,6 +1443,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return Helper.createWithSameType(resultantContent, wholeString);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrlenFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1300,6 +1455,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return BigInteger.valueOf(content.length());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTUcaseFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1311,6 +1467,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.toUpperCase(), wholeString);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTLcaseFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1323,6 +1480,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	}
 
 	// @SuppressWarnings("deprecation")
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTEncodeForUriFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1337,6 +1495,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTContainsFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1352,6 +1511,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.contains(Helper.unquote(Helper.getContent(containsString))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrstartsFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1367,6 +1527,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.startsWith(Helper.unquote(Helper.getContent(containsString))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrEndsFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1382,6 +1543,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.endsWith(Helper.unquote(Helper.getContent(containsString))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrBeforeFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1404,6 +1566,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrAfterFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1426,6 +1589,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTMD5FuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1433,6 +1597,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSHA1FuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1440,6 +1605,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSHA256FuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1447,6 +1613,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSHA384FuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1454,6 +1621,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSHA512FuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1461,6 +1629,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				.jjtGetChild(0).accept(this, b, d)))));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTYearFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1468,6 +1637,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getYear() + 1900;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTMonthFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1475,6 +1645,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getMonth() + 1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTDayFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1482,6 +1653,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getDate();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTHoursFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1489,6 +1661,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getHours();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTMinutesFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1496,6 +1669,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getMinutes();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSecondsFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1503,6 +1677,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 				Helper.unlazy(node.jjtGetChild(0).accept(this, b, d))).getSeconds());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTTimeZoneFuncNode node, final Bindings b,
 			final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
@@ -1516,6 +1691,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTTzFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1525,16 +1701,21 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 
 	private static Date now = new Date();
 
+	/**
+	 * <p>resetNowDate.</p>
+	 */
 	public static void resetNowDate(){
 		now = new Date();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTNowFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return now;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTUUIDFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
@@ -1545,22 +1726,35 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTSTRUUIDFuncNode node, final Bindings b, final Map<Node, Object> d)
 			throws NotBoundException, TypeErrorException {
 		return "\"" + UUID.randomUUID().toString() + "\"";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTInNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 	    return this.handleInAndNotIn(node, b, d);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTNotInNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 	    return !this.handleInAndNotIn(node, b, d);
 	}
 
+	/**
+	 * <p>handleInAndNotIn.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a boolean.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected boolean handleInAndNotIn(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object arg1 = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		final Node child1 = node.jjtGetChild(1);
@@ -1573,11 +1767,13 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTRandFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 	    return new Double(Math.random());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTIfFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object arg0 = Helper.unlazy(this.resultOfChildZero(node, b, d));
@@ -1588,6 +1784,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTCoalesceFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Node child0 = node.jjtGetChild(0);
@@ -1603,6 +1800,7 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object evaluate(final ASTStrReplaceFuncNode node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		final Object o = Helper.unlazy(this.resultOfChildZero(node, b, d));
@@ -1625,6 +1823,16 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		return Helper.createWithSameType(Helper.replaceXerces(cmp, pattern, flags, replacement), o);
 	}
 
+	/**
+	 * <p>resultOfChildThree.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.Node} object.
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param d a {@link java.util.Map} object.
+	 * @return a {@link java.lang.Object} object.
+	 * @throws lupos.engine.operators.singleinput.NotBoundException if any.
+	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
+	 */
 	protected Object resultOfChildThree(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
 		return node.jjtGetChild(3).accept(this, b, d);
 	}

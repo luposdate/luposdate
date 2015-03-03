@@ -43,6 +43,8 @@ import xpref.datatypes.IntegerDatatype;
 /**
  * Enumeration with all colors for different highlighting.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public enum LANGUAGE {
 	SEMANTIC_WEB() {
@@ -173,12 +175,28 @@ public enum LANGUAGE {
 			addStyle(TYPE__JAVA.OPERATOR, bg, Color.BLACK, false, false, tfFont);
 		}
 	};
+	/**
+	 * <p>getValues.</p>
+	 *
+	 * @return an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} objects.
+	 */
 	public abstract TYPE_ENUM[] getValues();
 
+	/**
+	 * <p>Setter for the field <code>styles</code>.</p>
+	 */
 	public abstract void setStyles();
 
+	/**
+	 * <p>setDefaultStyles.</p>
+	 *
+	 * @param tfFont a {@link java.awt.Font} object.
+	 */
 	public abstract void setDefaultStyles(Font tfFont);
 
+	/**
+	 * <p>setBlankStyles.</p>
+	 */
 	public void setBlankStyles() {
 		initStylesArray(this);
 		final Color foreGround = UIManager.getColor("TextPane.foreground");
@@ -219,6 +237,12 @@ public enum LANGUAGE {
 	 */
 	private static SimpleAttributeSet[][] styles = new SimpleAttributeSet[LANGUAGE.values().length][];
 
+	/**
+	 * <p>getAttributeSet.</p>
+	 *
+	 * @param type a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE_ENUM} object.
+	 * @return a {@link javax.swing.text.AttributeSet} object.
+	 */
 	public static AttributeSet getAttributeSet(final TYPE_ENUM type) {
 		return styles[type.getLanguage().ordinal()][type.ordinal()];
 	}

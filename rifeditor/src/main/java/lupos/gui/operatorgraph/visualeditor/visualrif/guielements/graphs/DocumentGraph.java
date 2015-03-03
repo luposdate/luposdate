@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 
@@ -50,8 +54,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.util.VisualGraphOperator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 public class DocumentGraph  extends VisualGraphOperator{
 	
 	private static final long serialVersionUID = -2936295936044533187L;
@@ -63,6 +65,12 @@ public class DocumentGraph  extends VisualGraphOperator{
 	private  HashMap<String, String> importList;
 	
 	// Constructor
+	/**
+	 * <p>Constructor for DocumentGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public DocumentGraph(VisualEditor<Operator> visualEditor, VisualRifEditor visualRifEditor) {
 		super(visualEditor);
 
@@ -75,6 +83,7 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	protected Operator createOperator(Class<? extends Operator> clazz, Item content) throws Exception {
 		
@@ -89,6 +98,7 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	public void createNewRule(RuleOperator ro) {
 		ro.setVisualRifEditor(visualRifEditor);
@@ -97,18 +107,31 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 
+	/** {@inheritDoc} */
 	public void createNewPrefix(PrefixOperator po) {}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewImport(ImportOperator io) {}
 	
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewUniterm(UnitermOperator fo) {}
 	
+	/**
+	 * <p>handleAddOperator.</p>
+	 *
+	 * @param arg0 a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	protected void handleAddOperator(Operator arg0) {}
 
 	
+	/**
+	 * <p>serializeGraph.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String serializeGraph() {
 		final String graph = super.serializeSuperGraph();
 		final StringBuffer ret = new StringBuffer();
@@ -165,12 +188,19 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 
 	
+	/** {@inheritDoc} */
 	@Override
 	protected boolean validateAddOperator(int arg0, int arg1, String arg2) {
 		return true;
 	}
 
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject saveObject = new JSONObject();
 
@@ -199,6 +229,12 @@ public class DocumentGraph  extends VisualGraphOperator{
 		return saveObject;
 	}
 	
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public void fromJSON(JSONObject loadObject) throws JSONException {
 		Iterator<String> keyIt = loadObject.keys();
@@ -235,6 +271,14 @@ public class DocumentGraph  extends VisualGraphOperator{
 	}
 	
 //	@SuppressWarnings("unchecked")
+	/**
+	 * <p>ruleFromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @param documentName a {@link java.lang.String} object.
+	 * @param ruleOpName a {@link java.lang.String} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public void ruleFromJSON(JSONObject loadObject, String documentName, String ruleOpName) throws JSONException {
 		
 //		Iterator<String> keyIt = loadObject.keys();
@@ -280,6 +324,13 @@ public class DocumentGraph  extends VisualGraphOperator{
 			}
 	}
 	
+	/**
+	 * <p>ruleToJSON.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject ruleToJSON(String ruleName) throws JSONException {
 		JSONObject saveObject = new JSONObject();
 
@@ -317,64 +368,110 @@ public class DocumentGraph  extends VisualGraphOperator{
 	 * *************** */
 	
 	
+	/**
+	 * <p>Getter for the field <code>prefixList</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, String> getPrefixList() {
 		return this.prefixList;
 	}
 
+	/**
+	 * <p>Setter for the field <code>prefixList</code>.</p>
+	 *
+	 * @param prefixList a {@link java.util.HashMap} object.
+	 */
 	public void setPrefixList(HashMap<String, String> prefixList) {
 		this.prefixList = prefixList;
 	}
 
+	/**
+	 * <p>Getter for the field <code>importList</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, String> getImportList() {
 		return this.importList;
 	}
 
+	/**
+	 * <p>Setter for the field <code>importList</code>.</p>
+	 *
+	 * @param importList a {@link java.util.HashMap} object.
+	 */
 	public void setImportList(HashMap<String, String> importList) {
 		this.importList = importList;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public RulePanel getRulePanel() {
 		return this.rulePanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @param rulePanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public void setRulePanel(RulePanel rulePanel) {
 		this.rulePanel = rulePanel;
 	}
 
+	/**
+	 * <p>getVisualRifEditor.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>setVisualRifEditor.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public VisualRIFGraph getVisualGraph(){
 		return super.getVisualGraph();
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewOperatorContainer(AbstractContainer oc) {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewListOperator(ListOperator lo) {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewFrameOperator(FrameOperator fo) {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewConstantOperator(ConstantOperator co) {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void createNewVariableOperator(VariableOperator vo) {
 	}

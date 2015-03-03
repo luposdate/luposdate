@@ -28,6 +28,9 @@ package lupos.rif.magicset;
  * Tekle, K. T., and Liu, Y. A. More Efficient Datalog Queries: Subsumptive Tabling Beats Magic Sets. In Proceedings of the 2011 ACM SIGMOD International Conference on Management of Data (New York, NY, USA, 2011), SIGMOD '11, ACM, pp. 661-672.
  * http://delivery.acm.org/10.1145/1990000/1989393/p661-tekle.pdf?ip=141.83.117.164&id=1989393&acc=ACTIVE%20SERVICE&key=2BA2C432AB83DA15%2E184BABF16494B778%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=619520676&CFTOKEN=61822385&__acm__=1421657747_173e331cd6b13874d6e88db2fed691e7
  * http://www3.cs.stonybrook.edu/~liu/papers/RuleQueryBeat-SIGMOD11.pdf
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 
 import java.util.ArrayList;
@@ -38,7 +41,6 @@ import lupos.rif.IExpression;
 import lupos.rif.model.Constant;
 import lupos.rif.model.Rule;
 import lupos.rif.model.RulePredicate;
-
 public class DemandPattern {
 
 	private Rule rule;
@@ -47,44 +49,105 @@ public class DemandPattern {
 	private RulePredicate predicate;
 	private DemandPattern basedOn;
 
+	/**
+	 * <p>Getter for the field <code>basedOn</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.magicset.DemandPattern} object.
+	 */
 	public DemandPattern getBasedOn() {
 		return this.basedOn;
 	}
+	/**
+	 * <p>Setter for the field <code>basedOn</code>.</p>
+	 *
+	 * @param pattern a {@link lupos.rif.magicset.DemandPattern} object.
+	 */
 	public void setBasedOn(final DemandPattern pattern) {
 		this.basedOn = pattern;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rule</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.model.Rule} object.
+	 */
 	public Rule getRule() {
 		return this.rule;
 	}
+	/**
+	 * <p>Setter for the field <code>rule</code>.</p>
+	 *
+	 * @param rule a {@link lupos.rif.model.Rule} object.
+	 */
 	public void setRule(final Rule rule) {
 		this.rule = rule;
 	}
+	/**
+	 * <p>Getter for the field <code>predicate</code>.</p>
+	 *
+	 * @return a {@link lupos.rif.model.RulePredicate} object.
+	 */
 	public RulePredicate getPredicate() {
 		return this.predicate;
 	}
+	/**
+	 * <p>Setter for the field <code>predicate</code>.</p>
+	 *
+	 * @param predicate a {@link lupos.rif.model.RulePredicate} object.
+	 */
 	public void setPredicate(final RulePredicate predicate) {
 		this.predicate = predicate;
 	}
+	/**
+	 * <p>Getter for the field <code>parametersBindingPattern</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getParametersBindingPattern() {
 		return this.parametersBindingPattern;
 	}
+	/**
+	 * <p>Setter for the field <code>parametersBindingPattern</code>.</p>
+	 *
+	 * @param parametersBindingPattern a {@link java.lang.String} object.
+	 */
 	public void setParametersBindingPattern(final String parametersBindingPattern) {
 		this.parametersBindingPattern = parametersBindingPattern;
 	}
 
+	/**
+	 * <p>getNumberOfParameters.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getNumberOfParameters(){
 		return this.parametersBindingPattern.length();
 	}
 
+	/**
+	 * <p>Getter for the field <code>preceedingHypotheses</code>.</p>
+	 *
+	 * @return a {@link java.util.ArrayList} object.
+	 */
 	public ArrayList<IExpression> getPreceedingHypotheses(){
 		return this.preceedingHypotheses;
 	}
 
+	/**
+	 * <p>isFromConclusion.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isFromConclusion(){
 		return this.rule == null;
 	}
 
+	/**
+	 * <p>subsumes.</p>
+	 *
+	 * @param other a {@link lupos.rif.magicset.DemandPattern} object.
+	 * @return a boolean.
+	 */
 	public boolean subsumes(final DemandPattern other){
 		if (this.parametersBindingPattern.length() != other.parametersBindingPattern.length()) {
 			return false;
@@ -138,6 +201,13 @@ public class DemandPattern {
 		return allParametersSubsumed && otherHypotheses.contains(thisHypotheses);
 	}
 
+	/**
+	 * <p>isBindingPatternSubsuming.</p>
+	 *
+	 * @param pattern a {@link java.lang.String} object.
+	 * @param other a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean isBindingPatternSubsuming(final String pattern, final String other){
 
 		if (pattern.length() != other.length()) {
@@ -155,6 +225,12 @@ public class DemandPattern {
 		return result;
 	}
 
+	/**
+	 * <p>computeAllSubsumingBindingPatterns.</p>
+	 *
+	 * @param bindingPattern a {@link java.lang.String} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	public static List<String> computeAllSubsumingBindingPatterns(final String bindingPattern){
 		final List<String> totalResult = new LinkedList<>();
 		final List<String> lastResult = new LinkedList<>();

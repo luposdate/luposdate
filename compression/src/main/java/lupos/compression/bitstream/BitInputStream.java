@@ -27,7 +27,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * This class converts a byte-oriented input stream into a bit-oriented input stream. 
+ * This class converts a byte-oriented input stream into a bit-oriented input stream.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BitInputStream {
 
@@ -42,6 +45,7 @@ public class BitInputStream {
 	
 	/**
 	 * Constructor
+	 *
 	 * @param in the underlying input stream
 	 */
 	public BitInputStream(final InputStream in){
@@ -50,8 +54,9 @@ public class BitInputStream {
 	
 	/**
 	 * Returns the next bit of the stream
+	 *
 	 * @return the next bit
-	 * @throws IOException if something fails when reading from the underlying input stream
+	 * @throws java.io.IOException if something fails when reading from the underlying input stream
 	 */
 	public boolean readBit() throws IOException {
 		if(this.currentPosInByte>7){
@@ -69,7 +74,8 @@ public class BitInputStream {
 	
 	/**
 	 * Closes this bit input stream (and its underlying input stream)
-	 * @throws IOException if closing the underlying input stream fails...
+	 *
+	 * @throws java.io.IOException if closing the underlying input stream fails...
 	 */
 	public void close() throws IOException{
 		// closes underlying input stream

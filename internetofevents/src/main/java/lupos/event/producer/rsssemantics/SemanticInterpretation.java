@@ -38,12 +38,20 @@ import lupos.datastructures.queryresult.QueryResult;
  *  the DBAnswer resulting from querying for either the substring that
  *         was not on the stoplist and also contained in the FeedMessage's title
  *         or the first one that was found in token list.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SemanticInterpretation {
 
 	private final ArrayList<String> tokens;
 	private final ArrayList<String> foundNames = new ArrayList<String>();
 
+	/**
+	 * <p>Constructor for SemanticInterpretation.</p>
+	 *
+	 * @param tokens a {@link java.util.ArrayList} object.
+	 */
 	public SemanticInterpretation(final ArrayList<String> tokens) {
 		this.tokens = tokens;
 	}
@@ -107,11 +115,11 @@ public class SemanticInterpretation {
 	 * type detection process and checks if substrings are also contained in
 	 * feed title.
 	 *
-	 * @param message
+	 * @param message a {@link lupos.event.producer.rsssemantics.FeedMessage} object.
 	 * @return if exists: DBAnswer for substring that is also contained in title
 	 *         element, else the first substring found in the cleaned feed
 	 *         description.
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public DBAnswer interpret(final FeedMessage message) throws Exception {
 		for (int i = 0; i < (this.tokens.size() - 3); i++) {

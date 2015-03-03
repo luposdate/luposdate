@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -34,45 +38,62 @@ import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
-
 public abstract class BindableIndexScan extends BasicIndexScan {
 	protected final BasicIndexScan index;
 	protected Dataset dataSet;
 
+	/**
+	 * <p>Constructor for BindableIndexScan.</p>
+	 *
+	 * @param index a {@link lupos.engine.operators.index.BasicIndexScan} object.
+	 */
 	public BindableIndexScan(final BasicIndexScan index) {
 		super(index.getRoot());
 		this.index = index;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		this.dataSet = dataset;
 		return null;
 	}
 
+	/**
+	 * <p>processIndexScan.</p>
+	 *
+	 * @param result a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param bind a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	protected abstract void processIndexScan(final QueryResult result, final Bindings bind);
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract Collection<TriplePattern> getTriplePattern();
 
+	/** {@inheritDoc} */
 	@Override
 	public abstract Message preProcessMessage(BoundVariablesMessage msg);
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Bindable - " + this.index.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return "Bindable - " + this.index.toString(prefixInstance);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean joinOrderToBeOptimized(){
 		return false;

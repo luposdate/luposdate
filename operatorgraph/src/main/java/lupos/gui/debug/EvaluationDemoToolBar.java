@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.debug;
 
@@ -71,7 +75,6 @@ import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
 import xpref.datatypes.BooleanDatatype;
 import xpref.datatypes.FontDatatype;
-
 public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOperatorGraphViewer {
 	private static final long serialVersionUID = 2228126871144675159L;
 	/**
@@ -161,16 +164,25 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	 */
 	private LinkedList<JMenuItem> menuItems;
 
+	/** Constant <code>fromJar=</code> */
 	public volatile static boolean fromJar;
 
 	/**
 	 * The constructor of this tool bar generating and adding the "Next step"
 	 * button
+	 *
+	 * @param fromJar a boolean.
 	 */
 	public EvaluationDemoToolBar(final boolean fromJar) {
 		this(fromJar, false);
 	}
 
+	/**
+	 * <p>Constructor for EvaluationDemoToolBar.</p>
+	 *
+	 * @param fromJar a boolean.
+	 * @param infiniteStreams a boolean.
+	 */
 	public EvaluationDemoToolBar(final boolean fromJar,
 			final boolean infiniteStreams) {
 		super();
@@ -569,9 +581,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 		this.add(this.stepBackButton);
 	}
 
-	/**
-	 * @return the OperatorGraphViewer
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public Viewer getOperatorGraphViewer() {
 		return this.operatorGraphViewer;
@@ -580,7 +590,7 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	/**
 	 * This method sets the operatorGraphViewer
 	 *
-	 * @param operatorGraphViewer
+	 * @param operatorGraphViewer a {@link lupos.gui.operatorgraph.viewer.Viewer} object.
 	 */
 	public void setOperatorGraphViewer(final Viewer operatorGraphViewer) {
 		this.operatorGraphViewer = operatorGraphViewer;
@@ -1133,6 +1143,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever the garbage collector removes this object
 	 */
 	@Override
@@ -1282,6 +1294,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever an intermediate result is transmitted
 	 * between two operators
 	 */
@@ -1293,6 +1307,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever a triple is transmitted between two
 	 * operators
 	 */
@@ -1304,6 +1320,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever an intermediate result to be deleted is
 	 * transmitted between two operators
 	 */
@@ -1315,6 +1333,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever a triple to be deleted is transmitted
 	 * between two operators
 	 */
@@ -1326,6 +1346,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever an event for deleting all intermediate
 	 * results is transmitted between two operators
 	 */
@@ -1337,6 +1359,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called whenever a message is transmitted between two
 	 * operators
 	 */
@@ -1358,6 +1382,8 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method is called after the evaluation of the query has ended
 	 */
 	@Override
@@ -1375,12 +1401,14 @@ public class EvaluationDemoToolBar extends JPanel implements DebugStepRIF, GetOp
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void step(final BasicOperator from, final BasicOperator to, final RuleResult rr) {
 		this.waitForAction();
 		this.endOfStep(new StepContainer(from, to, rr, false));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void stepDelete(final BasicOperator from, final BasicOperator to, final RuleResult rr) {
 		this.waitForAction();

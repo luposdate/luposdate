@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,14 +21,28 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.sorteddata;
 
 import java.util.Iterator;
 import java.util.SortedMap;
-
 public interface PrefixSearch<K, V> extends SortedMap<K, V> {
+	/**
+	 * <p>prefixSearch.</p>
+	 *
+	 * @param arg0 a K object.
+	 * @return a {@link java.util.Iterator} object.
+	 */
 	public Iterator<V> prefixSearch(final K arg0);
 
+	/**
+	 * <p>getClosestElements.</p>
+	 *
+	 * @param arg0 a K object.
+	 * @return an array of {@link java.lang.Object} objects.
+	 */
 	public Object[] getClosestElements(final K arg0);
 }

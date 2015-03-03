@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -33,8 +37,8 @@ import lupos.rif.RIFException;
 import lupos.rif.builtin.BooleanLiteral;
 
 import com.google.common.collect.Multimap;
-
 public class Conjunction extends AbstractExpressionContainer {
+	/** {@inheritDoc} */
 	public void addExpr(IExpression expr) {
 		if (expr instanceof Conjunction)
 			for (IExpression obj : ((AbstractExpressionContainer) expr).exprs)
@@ -47,22 +51,40 @@ public class Conjunction extends AbstractExpressionContainer {
 		}
 	}
 
+	/**
+	 * <p>accept.</p>
+	 *
+	 * @param visitor a {@link lupos.rif.IRuleVisitor} object.
+	 * @param arg a A object.
+	 * @param <R> a R object.
+	 * @param <A> a A object.
+	 * @return a R object.
+	 * @throws lupos.rif.RIFException if any.
+	 */
 	public <R, A> R accept(IRuleVisitor<R, A> visitor, A arg) throws RIFException {
 		return visitor.visit(this, arg);
 	}
 
+	/**
+	 * <p>getLabel.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getLabel() {
 		return "And";
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding) {
 		return evaluate(binding, null);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult) {
 		return evaluate(binding, optionalResult, null);
 	}
 
+	/** {@inheritDoc} */
 	public Object evaluate(Bindings binding, Object optionalResult, Multimap<IExpression, IExpression> equalities) {
 		for (IExpression expr : exprs) {
 			Object result = expr.evaluate(binding);
@@ -76,6 +98,7 @@ public class Conjunction extends AbstractExpressionContainer {
 		return BooleanLiteral.create(true);
 	}
 
+	/** {@inheritDoc} */
 	public boolean isBound(RuleVariable var, Collection<RuleVariable> boundVars) {
 		// mind. ein element darf kein scope sein und die variable muss gebunden
 		// sein
@@ -87,6 +110,11 @@ public class Conjunction extends AbstractExpressionContainer {
 		return false;
 	}
 
+	/**
+	 * <p>isPossibleAssignment.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isPossibleAssignment() {
 		return false;
 	}

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index.memoryindex;
 
@@ -33,7 +37,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.sorteddata.MapOfCollections;
 import lupos.datastructures.sorteddata.MapOfCollectionsImplementation;
 import lupos.engine.operators.index.Indices;
-
 public class SevenMemoryIndices extends Indices {
 
 	/**
@@ -94,6 +97,11 @@ public class SevenMemoryIndices extends Indices {
 		this.init(usedDatastructure);
 	}
 
+	/**
+	 * <p>Constructor for SevenMemoryIndices.</p>
+	 *
+	 * @param rdf a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public SevenMemoryIndices(final URILiteral rdf) {
 		this.rdfName = rdf;
 		this.init(usedDatastructure);
@@ -103,11 +111,13 @@ public class SevenMemoryIndices extends Indices {
 	 * Constructor initializing the Maps in either in the main memory or on the
 	 * local hard disk
 	 *
+	 * @param ds a DATA_STRUCT object.
 	 */
 	public SevenMemoryIndices(final DATA_STRUCT ds) {
 		this.init(ds);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init(final DATA_STRUCT ds) {
 		SevenMemoryIndices.usedDatastructure = ds;
@@ -149,13 +159,11 @@ public class SevenMemoryIndices extends Indices {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Inserts an Element into the map which keys are the subject of the triples
 	 * which are stored in a collection
-	 *
-	 * @param e
-	 *            the {@link Triple}
 	 */
-
 	@Override
 	public void add(final Triple e) {
 		try {
@@ -205,6 +213,13 @@ public class SevenMemoryIndices extends Indices {
 		}
 	}
 
+	/**
+	 * <p>getFromMap.</p>
+	 *
+	 * @param mapPattern a MAP_PATTERN object.
+	 * @param keyString a {@link java.lang.String} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Triple> getFromMap(final MAP_PATTERN mapPattern,
 			final String keyString) {
 
@@ -231,7 +246,6 @@ public class SevenMemoryIndices extends Indices {
 
 	/**
 	 * Debugging method which "prints" the size of each map
-	 *
 	 */
 	public void printMapSizes() {
 		System.err.println("subjectMap: " + this.subjectMap.size());
@@ -244,6 +258,7 @@ public class SevenMemoryIndices extends Indices {
 				+ this.subjectPredicateObjectMap.size());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Triple t) {
 		return this.subjectPredicateObjectMap.containsKey(t.getSubject().toString()
@@ -258,6 +273,7 @@ public class SevenMemoryIndices extends Indices {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final Triple t) {
 		try {
@@ -307,10 +323,12 @@ public class SevenMemoryIndices extends Indices {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void constructCompletely() {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeOutAllModifiedPages() throws IOException {
 	}

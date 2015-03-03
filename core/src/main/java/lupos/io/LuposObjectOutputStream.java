@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io;
 
@@ -39,14 +43,24 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
 import lupos.io.helper.OutHelper;
-
 public class LuposObjectOutputStream extends ObjectOutputStream {
 
 	public OutputStream os;
 
+	/**
+	 * <p>Constructor for LuposObjectOutputStream.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public LuposObjectOutputStream() throws IOException {
 	}
 
+	/**
+	 * <p>Constructor for LuposObjectOutputStream.</p>
+	 *
+	 * @param arg0 a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public LuposObjectOutputStream(final OutputStream arg0) throws IOException {
 		super(arg0);
 		this.os = arg0;
@@ -58,33 +72,75 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 
 	protected Bindings previousBindings = null;
 
+	/**
+	 * <p>writeLuposObject.</p>
+	 *
+	 * @param arg0 a {@link java.lang.Object} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposObject(final Object arg0) throws IOException {
 		Registration.serializeWithoutId(arg0, this);
 	}
 
+	/**
+	 * <p>writeLuposTriple.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.items.Triple} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposTriple(final Triple t) throws IOException {
 		OutHelper.writeLuposTriple(t, this.lastTriple, this.os);
 		this.lastTriple = t;
 	}
 
+	/**
+	 * <p>writeLuposTripleKey.</p>
+	 *
+	 * @param tk a {@link lupos.datastructures.items.TripleKey} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposTripleKey(final TripleKey tk) throws IOException {
 		OutHelper.writeLuposTripleKey(tk, this.lastTriple, this.os);
 	}
 
+	/**
+	 * <p>writeLuposDifferenceString.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposDifferenceString(final String s) throws IOException {
 		this.lastString = OutHelper.writeLuposDifferenceString(s, this.lastString, this.os);
 	}
 
+	/**
+	 * <p>writeLuposBindings.</p>
+	 *
+	 * @param bindings a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposBindings(final Bindings bindings) throws IOException {
 		OutHelper.writeLuposBindings(bindings, this.previousBindings, this.os);
 		this.previousBindings = bindings;
 	}
 
+	/**
+	 * <p>writeLuposDiskCollection.</p>
+	 *
+	 * @param dc a {@link lupos.datastructures.dbmergesortedds.DiskCollection} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void writeLuposDiskCollection(final DiskCollection dc) throws IOException {
 		dc.writeLuposObject(this);
 	}
 
+	/**
+	 * <p>writeLuposCollection.</p>
+	 *
+	 * @param t a {@link java.util.Collection} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void writeLuposCollection(final Collection t) throws IOException {
 		if (t.size() > 200) {
@@ -108,6 +164,12 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		}
 	}
 
+	/**
+	 * <p>writeLuposTreeSet.</p>
+	 *
+	 * @param t a {@link java.util.TreeSet} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void writeLuposTreeSet(final TreeSet t) throws IOException {
 		this.writeObject(t.comparator());
@@ -120,6 +182,12 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		}
 	}
 
+	/**
+	 * <p>writeLuposSortedSet.</p>
+	 *
+	 * @param t a {@link java.util.SortedSet} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void writeLuposSortedSet(final SortedSet t) throws IOException {
 		this.writeObject(t.comparator());
@@ -133,6 +201,12 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 
 	}
 
+	/**
+	 * <p>writeLuposSetImplementation.</p>
+	 *
+	 * @param t a {@link lupos.datastructures.smallerinmemorylargerondisk.SetImplementation} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void writeLuposSetImplementation(final SetImplementation t) throws IOException {
 		OutHelper.writeLuposInt(t.size(), this.os);
@@ -144,6 +218,12 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		}
 	}
 
+	/**
+	 * <p>writeLuposSortedMap.</p>
+	 *
+	 * @param t a {@link java.util.SortedMap} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void writeLuposSortedMap(final SortedMap t) throws IOException {
 		OutHelper.writeLuposByte((byte) 1, this.os);
@@ -168,6 +248,12 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		}
 	}
 
+	/**
+	 * <p>writeLuposEntry.</p>
+	 *
+	 * @param e a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void writeLuposEntry(final Entry e) throws IOException {
 		OutHelper.writeLuposEntry(e, this);

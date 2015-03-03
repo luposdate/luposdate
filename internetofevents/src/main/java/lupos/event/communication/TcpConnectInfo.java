@@ -27,6 +27,9 @@ import java.io.Serializable;
 
 /**
  * Holds information required to connect to a TCP endpoint.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TcpConnectInfo implements IConnectInfo, Serializable {
 
@@ -34,20 +37,38 @@ public class TcpConnectInfo implements IConnectInfo, Serializable {
 	private String host;
 	private int port;
 
+	/**
+	 * <p>Constructor for TcpConnectInfo.</p>
+	 *
+	 * @param host a {@link java.lang.String} object.
+	 * @param port a int.
+	 */
 	public TcpConnectInfo(String host, int port) {
 		this.host = host;
 		this.port = port;
 	}
 
+	/**
+	 * <p>Getter for the field <code>host</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getHost() { 
 		return this.host; 
 	}
 
+	/**
+	 * <p>Getter for the field <code>port</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getPort() { 
 		return this.port; 
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Checks whether two TcpConnectInfo
 	 * objects are equal which means the connection
 	 * data are the same
@@ -61,6 +82,7 @@ public class TcpConnectInfo implements IConnectInfo, Serializable {
 		return false;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode(){
 		return this.host.hashCode()+this.port;

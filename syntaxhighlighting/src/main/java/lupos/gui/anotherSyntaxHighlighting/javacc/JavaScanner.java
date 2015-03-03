@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.anotherSyntaxHighlighting.javacc;
 
@@ -35,7 +39,6 @@ import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.PARSER;
 import lupos.gui.anotherSyntaxHighlighting.javacc.JAVACCParser.TOKEN;
 import lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5Constants;
 import lupos.gui.anotherSyntaxHighlighting.javacc.java.Token;
-
 public class JavaScanner implements PARSER {
 
 	private static TYPE__JAVA[] TOKEN_MAP;
@@ -45,10 +48,17 @@ public class JavaScanner implements PARSER {
 		this.parser = new lupos.gui.anotherSyntaxHighlighting.javacc.java.JavaParser1_5(reader);
 	}
 
+	/**
+	 * <p>createILuposParser.</p>
+	 *
+	 * @param reader a {@link lupos.gui.anotherSyntaxHighlighting.LuposDocumentReader} object.
+	 * @return a {@link lupos.gui.anotherSyntaxHighlighting.ILuposParser} object.
+	 */
 	public static ILuposParser createILuposParser(final LuposDocumentReader reader){
 		return new JAVACCParser(reader, new JavaScanner(reader));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TOKEN getNextToken() {
 		final Token token = this.parser.getNextToken();
@@ -59,25 +69,34 @@ public class JavaScanner implements PARSER {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TYPE__JAVA[] getTokenMap() {
 		return JavaScanner.TOKEN_MAP;
 	}
 
+	/**
+	 * <p>getStaticTokenMap.</p>
+	 *
+	 * @return an array of {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__JAVA} objects.
+	 */
 	public static TYPE__JAVA[] getStaticTokenMap() {
 		return JavaScanner.TOKEN_MAP;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void ReInit(final Reader reader) {
 		this.parser.ReInit(reader);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void ReInit(final InputStream inputstream) {
 		this.parser.ReInit(inputstream);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isStartOfComment(final String content, final int beginChar){
 		boolean flag = false;
@@ -91,6 +110,7 @@ public class JavaScanner implements PARSER {
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken handleComment(final String content, final int beginChar){
 		if(content.charAt(beginChar+1)=='*'){
@@ -108,6 +128,7 @@ public class JavaScanner implements PARSER {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean endOfSearchOfComment(final String content, final int beginChar){
 		final boolean flag = content.charAt(beginChar)=='\n';
@@ -273,10 +294,19 @@ public class JavaScanner implements PARSER {
 		checkTopicMap();
 	}
 
+	/**
+	 * <p>insertIntoTokenMap.</p>
+	 *
+	 * @param imagesToSet an array of {@link java.lang.String} objects.
+	 * @param type a {@link lupos.gui.anotherSyntaxHighlighting.LANGUAGE.TYPE__JAVA} object.
+	 */
 	protected static void insertIntoTokenMap(final String[] imagesToSet, final TYPE__JAVA type){
 		JAVACCParser.insertIntoTokenMap(JavaParser1_5Constants.tokenImage, JavaScanner.TOKEN_MAP, imagesToSet, type);
 	}
 
+	/**
+	 * <p>checkTopicMap.</p>
+	 */
 	protected static void checkTopicMap(){
 		JAVACCParser.checkTopicMap(JavaParser1_5Constants.tokenImage, JavaScanner.TOKEN_MAP);
 	}
@@ -300,11 +330,13 @@ public class JavaScanner implements PARSER {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken create(final TYPE_ENUM description, final String contents, final int beginChar) {
 		return new lupos.gui.anotherSyntaxHighlighting.javacc.JavaToken(description, contents, beginChar);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ILuposToken createErrorToken(final String contents, final int beginChar) {
 		return new lupos.gui.anotherSyntaxHighlighting.javacc.JavaToken(TYPE__JAVA.ERROR, contents, beginChar);

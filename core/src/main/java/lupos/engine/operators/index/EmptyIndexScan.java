@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index;
 
@@ -30,9 +34,13 @@ import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.RootChild;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-
 public class EmptyIndexScan extends RootChild implements TripleConsumer {
 
+	/**
+	 * <p>Constructor for EmptyIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 */
 	public EmptyIndexScan(final OperatorIDTuple succeedingOperator) {
 		super();
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
@@ -41,6 +49,7 @@ public class EmptyIndexScan extends RootChild implements TripleConsumer {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected QueryResult process(final Dataset dataset) {
 		return QueryResult.createInstance();
@@ -49,6 +58,7 @@ public class EmptyIndexScan extends RootChild implements TripleConsumer {
 	// just for using this also for the stream engine
 	protected boolean firstTime = true;
 
+	/** {@inheritDoc} */
 	@Override
 	public void consume(final Triple triple) {
 		if(this.firstTime){

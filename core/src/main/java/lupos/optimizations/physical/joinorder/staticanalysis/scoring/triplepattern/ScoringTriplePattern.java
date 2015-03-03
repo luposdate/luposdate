@@ -27,12 +27,16 @@ import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
- * This interface is used in classes to score a triple pattern to be the next best triple pattern to join 
+ * This interface is used in classes to score a triple pattern to be the next best triple pattern to join
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface ScoringTriplePattern<T> {
 	
 	/**
 	 * This method is used in classes to score a triple pattern to be the next best triple pattern to join
+	 *
 	 * @param indexScan the IndexScan operator the join order to optimize
 	 * @param triplePattern the triple pattern to score
 	 * @param additionalInformation additional information (e.g. the variables of already joined triple patterns)
@@ -42,6 +46,7 @@ public interface ScoringTriplePattern<T> {
 	
 	/**
 	 * Whether or not the score ordering is ascending or descending
+	 *
 	 * @return a boolean value (true = minimum score is best, false maximum score is best)
 	 */
 	public boolean scoreIsAscending();

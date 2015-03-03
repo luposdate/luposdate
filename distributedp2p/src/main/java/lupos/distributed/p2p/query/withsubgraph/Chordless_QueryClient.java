@@ -35,6 +35,9 @@ import lupos.sparql1_1.Node;
 /**
  * This is the class for the p2p network "Chordless" which is to be registered
  * via the LuposDate UI
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class Chordless_QueryClient extends QueryEvaluator<Node> {
 	/*
@@ -45,11 +48,14 @@ public abstract class Chordless_QueryClient extends QueryEvaluator<Node> {
 	 * information about the selected distribution strategy (will be improved
 	 * soon)
 	 */
+	/** Constant <code>DISTRIBUTION</code> */
 	protected static final IDistribution DISTRIBUTION = new NinefoldInsertionDistribution(
 			2);
 
 	/**
 	 * don't use
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	@Deprecated
 	public Chordless_QueryClient() throws Exception {
@@ -59,6 +65,8 @@ public abstract class Chordless_QueryClient extends QueryEvaluator<Node> {
 
 	/**
 	 * Returns an already running queryClient or starts a new one
+	 *
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance() {
 		try {
@@ -73,9 +81,10 @@ public abstract class Chordless_QueryClient extends QueryEvaluator<Node> {
 
 	/**
 	 * Returns an already running queryClient or starts a new one
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to be used
+	 * @return a {@link lupos.distributed.query.QueryClient} object.
 	 */
 	public static QueryClient newInstance(Map<String, Object> config) {
 		try {

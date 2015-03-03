@@ -30,41 +30,47 @@ import java.util.SortedMap;
 /**
  * This class provides a skeletal implementation of the <tt>SortedMap</tt>
  * interface, to minimize the effort required to implement this interface.
- * 
+ *
  * @param <K> the type of keys maintained by this sorted map
  * @param <V> the type of mapped values
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class AbstractSortedMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>{
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(K fromKey, K toKey) {
 		return subMap(fromKey, toKey, false);
 	}
 	
 	/**
-	 * Returns a view of the portion of this map whose keys range from fromKey, inclusive, to toKey (inclusive if inclusiveLastKey is true, otherwise exclusive). 
-	 * (If fromKey and toKey are equal and inclusiveLastKey is false, the returned map is empty.) 
-	 * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa. 
-	 * The returned map supports all optional map operations that this map supports. 
+	 * Returns a view of the portion of this map whose keys range from fromKey, inclusive, to toKey (inclusive if inclusiveLastKey is true, otherwise exclusive).
+	 * (If fromKey and toKey are equal and inclusiveLastKey is false, the returned map is empty.)
+	 * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+	 * The returned map supports all optional map operations that this map supports.
 	 * The returned map will throw an IllegalArgumentException on an attempt to insert a key outside its range.
-	 * 
-	 * @param fromKey
-	 * @param toKey
-	 * @param inclusiveLastKey
+	 *
+	 * @param fromKey a K object.
+	 * @param toKey a K object.
+	 * @param inclusiveLastKey a boolean.
 	 * @return the backed map
 	 */
 	public abstract SortedMap<K, V> subMap(K fromKey, K toKey, boolean inclusiveLastKey);
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(K toKey) {
 		return this.subMap(this.firstKey(), toKey);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(K fromKey) {
 		return this.subMap(fromKey, lastKey(), true);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		Iterator<K> it = this.keySet().iterator();
@@ -74,6 +80,7 @@ public abstract class AbstractSortedMap<K, V> extends AbstractMap<K, V> implemen
 		return it.next();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		// This implementation is not efficient!

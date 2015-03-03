@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,13 +21,15 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.dbmergesortedds.tosort;
 
 import java.util.Comparator;
 
 import lupos.datastructures.dbmergesortedds.StandardComparator;
-
 public class QuickSort<E extends Comparable<E>> extends InPlaceSort<E> {
 
 	// this is a quicksort variant, which uses the pivot element as
@@ -36,6 +39,11 @@ public class QuickSort<E extends Comparable<E>> extends InPlaceSort<E> {
 	private static int M = 25;
 	private final Comparator<E> comp;
 
+	/**
+	 * <p>Constructor for QuickSort.</p>
+	 *
+	 * @param length a int.
+	 */
 	public QuickSort(final int length) {
 		this(length, new StandardComparator<E>());
 		// System.out
@@ -46,6 +54,12 @@ public class QuickSort<E extends Comparable<E>> extends InPlaceSort<E> {
 		// );
 	}
 
+	/**
+	 * <p>Constructor for QuickSort.</p>
+	 *
+	 * @param length a int.
+	 * @param comp a {@link java.util.Comparator} object.
+	 */
 	public QuickSort(final int length, final Comparator<E> comp) {
 		super(length);
 		this.comp = comp;
@@ -57,11 +71,13 @@ public class QuickSort<E extends Comparable<E>> extends InPlaceSort<E> {
 		// );
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sort() {
 		sort(0, size() - 1);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sort(final int unten, final int oben) {
 		Object tmp;

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.bindings;
 
@@ -29,9 +33,6 @@ import java.util.Set;
 
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
-
-
-
 public class BindingsMap extends Bindings
 {
 	/**
@@ -41,14 +42,19 @@ public class BindingsMap extends Bindings
 
 	protected HashMap<Variable, Literal> hashMap=new HashMap<Variable, Literal>();
 
+	/** {@inheritDoc} */
 	@Override
 	public void init(){
 		this.hashMap=new HashMap<Variable, Literal>();
 	}
 
+	/**
+	 * <p>Constructor for BindingsMap.</p>
+	 */
 	public BindingsMap(){
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	public Bindings clone()
@@ -58,12 +64,14 @@ public class BindingsMap extends Bindings
 		return bnew;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final Variable var, final Literal lit)
 	{
 		this.hashMap.put(var, lit);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal get(final Variable var)
 	{
@@ -71,8 +79,9 @@ public class BindingsMap extends Bindings
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the set of bound variables
-	 * @return the set of bound variables
 	 */
 	@Override
 	public Set<Variable> getVariableSet(){
@@ -85,6 +94,7 @@ public class BindingsMap extends Bindings
 		return keySet;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BindingsMap createInstance(){
 		return new BindingsMap();

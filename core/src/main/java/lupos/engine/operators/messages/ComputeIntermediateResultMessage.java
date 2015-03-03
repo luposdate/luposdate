@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.messages;
 
@@ -27,7 +31,6 @@ import java.util.Collection;
 
 import lupos.engine.operators.BasicOperator;
 import lupos.misc.debug.DebugStep;
-
 public class ComputeIntermediateResultMessage extends Message {
 
 	/**
@@ -35,27 +38,32 @@ public class ComputeIntermediateResultMessage extends Message {
 	 */
 	private static final long serialVersionUID = -6728210701766994754L;
 
+	/** {@inheritDoc} */
 	@Override
 	public Message postProcess(final BasicOperator op) {
 		return op.postProcessMessage(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcess(final BasicOperator op) {
 		return op.preProcessMessage(this);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message merge(final Collection<Message> msgs, final BasicOperator op) {
 		return op.mergeMessages(msgs, this);
 	}
 
 	// no special content of this class to clone => just return this
+	/** {@inheritDoc} */
 	@Override
 	public Message clone() {
 		return this;
 	}
 	
+	/** {@inheritDoc} */
 	public Message preProcessDebug(final BasicOperator op,
 			final DebugStep debugstep) {
 		return op.preProcessMessageDebug(this, debugstep);

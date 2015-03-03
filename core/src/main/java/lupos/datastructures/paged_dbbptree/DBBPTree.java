@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree;
 
@@ -59,7 +63,6 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
-
 public class DBBPTree<K extends Comparable<K> & Serializable, V extends Serializable>
 implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
@@ -75,8 +78,10 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	protected int rootPage = -1;
 	protected int firstLeafPage = -1;
 
+	/** Constant <code>currentFileID=0</code> */
 	protected static int currentFileID = 0;
 
+	/** Constant <code>mainFolder="tmp//dbbptree//"</code> */
 	protected static String mainFolder = "tmp//dbbptree//";
 
 	protected Class<? super K> keyClass;
@@ -86,11 +91,18 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 	protected final NodeDeSerializer<K, V> nodeDeSerializer;
 
+	/** Constant <code>enableSIP=true</code> */
 	public static boolean enableSIP = true;
 
 	// you can give a name to this dbbptree (e.g. for debugging purposes...)
 	protected String name = "Name not yet given!";
 
+	/**
+	 * <p>setTmpDir.</p>
+	 *
+	 * @param dir a {@link java.lang.String} object.
+	 * @param delete a boolean.
+	 */
 	public static void setTmpDir(String dir, final boolean delete) {
 
 		if (dir.compareTo("") != 0 && (!(dir.endsWith("//") || dir.endsWith("/") || dir.endsWith("\\")))){
@@ -102,34 +114,87 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>mainFolder</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getMainFolder(){
 		return DBBPTree.mainFolder;
 	}
 
+	/**
+	 * <p>Setter for the field <code>currentFileID</code>.</p>
+	 *
+	 * @param fileID a int.
+	 */
 	public static void setCurrentFileID(final int fileID) {
 		currentFileID = fileID;
 	}
 
+	/**
+	 * <p>Getter for the field <code>currentFileID</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getCurrentFileID() {
 		return currentFileID;
 	}
 
+	/**
+	 * <p>Constructor for DBBPTree.</p>
+	 *
+	 * @param comparator a {@link java.util.Comparator} object.
+	 * @param k a int.
+	 * @param k_ a int.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public DBBPTree(final Comparator<? super K> comparator, final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
 		this.init(comparator, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
+	/**
+	 * <p>Constructor for DBBPTree.</p>
+	 *
+	 * @param comparator a {@link java.util.Comparator} object.
+	 * @param k a int.
+	 * @param k_ a int.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public DBBPTree(final Comparator<? super K> comparator, final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer, final Class<? super K> keyClass, final Class<? super V> valueClass) throws IOException {
 		this(comparator, k, k_, nodeDeSerializer);
 		this.keyClass = keyClass;
 		this.valueClass = valueClass;
 	}
 
+	/**
+	 * <p>Constructor for DBBPTree.</p>
+	 *
+	 * @param k a int.
+	 * @param k_ a int.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public DBBPTree(final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer) throws IOException {
 		this.init(null, k, k_);
 		this.nodeDeSerializer = nodeDeSerializer;
 	}
 
+	/**
+	 * <p>Constructor for DBBPTree.</p>
+	 *
+	 * @param k a int.
+	 * @param k_ a int.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public DBBPTree(final int k, final int k_, final NodeDeSerializer<K, V> nodeDeSerializer, final Class<? super K> keyClass, final Class<? super V> valueClass) throws IOException {
 		this(k, k_, nodeDeSerializer);
 		this.keyClass = keyClass;
@@ -137,14 +202,25 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(final String name){
 		this.name=name;
 	}
 
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName(){
 		return this.name;
 	}
 
+	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
 
 	private void init(final Comparator<? super K> comparator, final int k,
@@ -172,11 +248,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super K> comparator() {
 		return this.comparator;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		if (this.firstLeafPage < 0) {
@@ -657,10 +735,18 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/**
+	 * <p>getNextInnerNodeEntry.</p>
+	 *
+	 * @param lastKey2 a K object.
+	 * @param in2 a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 */
 	protected Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2, final InputStream in2) {
 		return this.nodeDeSerializer.getNextInnerNodeEntry(lastKey2, in2);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K firstKey() {
 		final Iterator<K> it = this.keySet().iterator();
@@ -671,11 +757,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> headMap(final K arg0) {
 		throw (new UnsupportedOperationException("headMap is not supported."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<K> keySet() {
 		if (this.firstLeafPage < 0) {
@@ -804,21 +892,25 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public K lastKey() {
 		throw (new UnsupportedOperationException("lastKey is not supported."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> subMap(final K arg0, final K arg1) {
 		throw (new UnsupportedOperationException("subMap is not supported."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedMap<K, V> tailMap(final K arg0) {
 		throw (new UnsupportedOperationException("tailMap is not supported."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<V> values() {
 		if (this.firstLeafPage < 0) {
@@ -938,6 +1030,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		FileHelper.deleteFile(DBBPTree.mainFolder+this.currentID+ ".dbbptree_*");
@@ -956,11 +1049,13 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		this.firstLeafPage = -1;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object arg0) {
 		return (this.get(arg0) != null);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsValue(final Object arg0) {
 		for (final V v : this.values()) {
@@ -971,11 +1066,20 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object arg0) {
 		return this.get(arg0, this.rootPage);
 	}
 
+	/**
+	 * <p>getNextLeafEntry.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param lastKey a K object.
+	 * @param lastValue a V object.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry} object.
+	 */
 	protected DBBPTreeEntry<K, V> getNextLeafEntry(final InputStream in, final K lastKey, final V lastValue) {
 		return this.nodeDeSerializer.getNextLeafEntry(in, lastKey, lastValue);
 	}
@@ -1054,15 +1158,22 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return (this.size == 0);
 	}
 
+	/**
+	 * <p>newFilename.</p>
+	 *
+	 * @return a int.
+	 */
 	protected int newFilename() {
 		return this.pageManager.getNumberOfNewPage();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K arg0, final V arg1) {
 		this.keyClass = (Class<? super K>) arg0.getClass();
@@ -1350,6 +1461,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return rightMostLeaf.readKeys.get(rightMostLeaf.readKeys.size() - 1);
 	}
 
+	/**
+	 * <p>getNode.</p>
+	 *
+	 * @param filename a int.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.node.Node} object.
+	 */
 	public Node<K, V> getNode(final int filename) {
 		final InputStream fis;
 		try {
@@ -1382,12 +1499,27 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	/**
+	 * <p>writeLeafEntry.</p>
+	 *
+	 * @param k a K object.
+	 * @param v a V object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @param lastKey a K object.
+	 * @param lastValue a V object.
+	 * @throws java.io.IOException if any.
+	 */
 	protected void writeLeafEntry(final K k, final V v,
 			final OutputStream out, final K lastKey,
 			final V lastValue) throws IOException {
 		this.nodeDeSerializer.writeLeafEntry(k, v, out, lastKey, lastValue);
 	}
 
+	/**
+	 * <p>closeInputStreams.</p>
+	 *
+	 * @param currentCollection a {@link java.util.Collection} object.
+	 */
 	protected void closeInputStreams(
 			final Collection<Node<K, V>> currentCollection) {
 		for (final Node<K, V> navigateToClass : currentCollection) {
@@ -1400,6 +1532,14 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/**
+	 * <p>navigateTo.</p>
+	 *
+	 * @param arg0 a {@link java.lang.Object} object.
+	 * @param filename a int.
+	 * @param currentCollection a {@link java.util.List} object.
+	 * @return a {@link java.util.List} object.
+	 */
 	protected List<Node<K, V>> navigateTo(final Object arg0,
 			final int filename, final List<Node<K, V>> currentCollection) {
 		if (filename < 0) {
@@ -1495,6 +1635,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void putAll(final Map<? extends K, ? extends V> arg0) {
 		for (final K k : arg0.keySet()) {
@@ -1502,6 +1643,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V remove(final Object arg0) {
 		if (this.rootPage < 0) {
@@ -1852,19 +1994,42 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return this.size;
 	}
 
+	/**
+	 * <p>writeInnerNodeEntry.</p>
+	 *
+	 * @param fileName a int.
+	 * @param key a K object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @param lastKey a K object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeInnerNodeEntry(final int fileName, final K key, final OutputStream out, final K lastKey) throws IOException {
 		this.nodeDeSerializer.writeInnerNodeEntry(fileName, key, out, lastKey);
 	}
 
+	/**
+	 * <p>writeInnerNodeEntry.</p>
+	 *
+	 * @param fileName a int.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeInnerNodeEntry(final int fileName, final OutputStream out) throws IOException {
 		this.nodeDeSerializer.writeInnerNodeEntry(fileName, out);
 	}
 
+	/**
+	 * <p>generateDBBPTree.</p>
+	 *
+	 * @param generator a {@link lupos.datastructures.paged_dbbptree.DBBPTree.Generator} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void generateDBBPTree(final Generator<K, V> generator) throws IOException {
 		this.generateDBBPTree(new SortedMap<K, V>() {
 			@Override
@@ -2024,6 +2189,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		});
 	}
 
+	/**
+	 * <p>generateDBBPTree.</p>
+	 *
+	 * @param sortedMap a {@link java.util.SortedMap} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void generateDBBPTree(final SortedMap<K, V> sortedMap) throws IOException {
 		this.pageManager.reset();
 		final LinkedList<Container> innerNodes = new LinkedList<Container>();
@@ -2200,6 +2371,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/**
+	 * <p>writeLuposObject.</p>
+	 *
+	 * @param loos a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeLuposObject(final OutputStream loos)
 	throws IOException {
 		this.pageManager.writeAllModifiedPages();
@@ -2215,6 +2392,15 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		Registration.serializeWithoutId(this.nodeDeSerializer, loos);
 	}
 
+	/**
+	 * <p>readLuposObject.</p>
+	 *
+	 * @param lois a {@link java.io.InputStream} object.
+	 * @return a {@link lupos.datastructures.paged_dbbptree.DBBPTree} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static DBBPTree readLuposObject(final InputStream lois) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int currentID = InputHelper.readLuposInt(lois);
 		final int k = InputHelper.readLuposInt(lois);
@@ -2231,6 +2417,12 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 
+	/**
+	 * <p>writeLeafEntryNextFileName.</p>
+	 *
+	 * @param filename a int.
+	 * @param out a {@link java.io.OutputStream} object.
+	 */
 	protected void writeLeafEntryNextFileName(final int filename, final OutputStream out) {
 		try {
 			this.nodeDeSerializer.writeLeafEntryNextFileName(filename, out);
@@ -2246,12 +2438,17 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	 *
 	 * @param k
 	 * @param k_
-	 * @param size
-	 * @param comp
-	 * @param rootFilename
-	 * @param firstLeafFileName
 	 * @param keyClass
-	 * @param valueClass
+	 * @param k_ a int.
+	 * @param size a int.
+	 * @param comp a {@link java.util.Comparator} object.
+	 * @param rootFilename a int.
+	 * @param firstLeafFileName a int.
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 * @param currentID a int.
+	 * @param nodeDeSerializer a {@link lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer} object.
+	 * @throws java.io.IOException if any.
 	 */
 	protected DBBPTree(final int k, final int k_, final int size,
 			final Comparator comp, final int rootFilename,
@@ -2750,6 +2947,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0) {
 		if (enableSIP) {
@@ -2759,6 +2957,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K min) {
 		if (enableSIP) {
@@ -2768,6 +2967,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearch(final K arg0, final K smallest,
 			final K largest) {
@@ -2779,6 +2979,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<V> prefixSearchMax(final K arg0, final K largest) {
 		if (enableSIP) {
@@ -2861,10 +3062,17 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		return null;
 	}
 
+	/**
+	 * <p>getMaximum.</p>
+	 *
+	 * @param arg0 a K object.
+	 * @return a V object.
+	 */
 	public V getMaximum(final K arg0) {
 		return this.getMaximum(this.rootPage, arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] getClosestElements(final K arg0) {
 		final List<Node<K, V>> navCol = this.navigateTo(arg0, this.rootPage,
@@ -2988,6 +3196,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		public Iterator<Entry<K2, V2>> iterator();
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		// test the object...
 
@@ -3110,6 +3323,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 		}
 	}
 
+	/**
+	 * <p>writeAllModifiedPages.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeAllModifiedPages() throws IOException {
 		this.pageManager.writeAllModifiedPages();
 	}

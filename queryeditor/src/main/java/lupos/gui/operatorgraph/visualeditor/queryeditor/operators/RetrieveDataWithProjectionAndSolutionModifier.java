@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.operators;
 
@@ -34,17 +38,34 @@ import lupos.misc.util.OperatorIDTuple;
 import lupos.sparql1_1.ASTQuotedURIRef;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.SimpleNode;
-
 public abstract class RetrieveDataWithProjectionAndSolutionModifier extends RetrieveDataWithSolutionModifier {
 	protected LinkedList<String> projectionElements = new LinkedList<String>();
 
+	/**
+	 * <p>Constructor for RetrieveDataWithProjectionAndSolutionModifier.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	protected RetrieveDataWithProjectionAndSolutionModifier(Prefix prefix) {
 		super(prefix);
 	}
 
 
+	/**
+	 * <p>parseProjectionElement.</p>
+	 *
+	 * @param projectionElement a {@link java.lang.String} object.
+	 * @return a {@link lupos.sparql1_1.SimpleNode} object.
+	 * @throws java.lang.Throwable if any.
+	 */
 	protected abstract SimpleNode parseProjectionElement(String projectionElement) throws Throwable;
 
+	/**
+	 * <p>addProjectionElement.</p>
+	 *
+	 * @param projectionElement a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void addProjectionElement(String projectionElement) throws ModificationException {
 		try {
 			SimpleNode node = this.parseProjectionElement(projectionElement);
@@ -61,6 +82,13 @@ public abstract class RetrieveDataWithProjectionAndSolutionModifier extends Retr
 		}
 	}
 
+	/**
+	 * <p>setProjectionElement.</p>
+	 *
+	 * @param index a int.
+	 * @param projectionElement a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public void setProjectionElement(int index, String projectionElement) throws ModificationException {
 		try {
 			// new element...
@@ -89,6 +117,11 @@ public abstract class RetrieveDataWithProjectionAndSolutionModifier extends Retr
 		}
 	}
 
+	/**
+	 * <p>removeProjectionElement.</p>
+	 *
+	 * @param index a int.
+	 */
 	public void removeProjectionElement(int index) {
 		if(index == this.projectionElements.size()) {
 			return;
@@ -97,15 +130,28 @@ public abstract class RetrieveDataWithProjectionAndSolutionModifier extends Retr
 		this.projectionElements.remove(index);
 	}
 
+	/**
+	 * <p>Getter for the field <code>projectionElements</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<String> getProjectionElements() {
 		return this.projectionElements;
 	}
 
+	/**
+	 * <p>clearProjectionList.</p>
+	 */
 	public void clearProjectionList() {
 		this.projectionElements = new LinkedList<String>();
 	}
 
 
+	/**
+	 * <p>serializeProjections.</p>
+	 *
+	 * @return a {@link java.lang.StringBuffer} object.
+	 */
 	public StringBuffer serializeProjections() {
 		StringBuffer ret = new StringBuffer();
 
@@ -124,6 +170,7 @@ public abstract class RetrieveDataWithProjectionAndSolutionModifier extends Retr
 	}
 
 
+	/** {@inheritDoc} */
 	public boolean variableInUse(String variable, HashSet<Operator> visited) {
 		if(visited.contains(this)) {
 			return false;

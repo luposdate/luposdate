@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal.codemap;
 
@@ -32,11 +36,15 @@ import java.util.Map.Entry;
 import lupos.datastructures.items.literal.LiteralFactory.MapType;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.datastructures.smallerinmemorylargerondisk.MapImplementation;
-
 public class IntegerStringMapJava implements IntegerStringMap {
 	private Map<Integer, String> m;
 	private Map<Integer, String> original;
 
+	/**
+	 * <p>Constructor for IntegerStringMapJava.</p>
+	 *
+	 * @param mapType a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 */
 	public IntegerStringMapJava(final MapType mapType) {
 		switch (mapType) {
 		case HASHMAP:
@@ -62,43 +70,70 @@ public class IntegerStringMapJava implements IntegerStringMap {
 			m = Collections.synchronizedMap(original);
 	}
 
+	/**
+	 * <p>Constructor for IntegerStringMapJava.</p>
+	 *
+	 * @param map a {@link java.util.Map} object.
+	 */
 	public IntegerStringMapJava(final Map<Integer, String> map) {
 		original = map;
 		m = Collections.synchronizedMap(map);
 	}
 
+	/** {@inheritDoc} */
 	public String get(final int key) {
 		return m.get(key);
 	}
 
+	/** {@inheritDoc} */
 	public void put(final int key, final String s) {
 		m.put(key, s);
 	}
 
+	/**
+	 * <p>size.</p>
+	 *
+	 * @return a int.
+	 */
 	public int size() {
 		return m.size();
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		m.clear();
 	}
 
+	/**
+	 * <p>getMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Integer, String> getMap() {
 		return m;
 	}
 
+	/** {@inheritDoc} */
 	public void forEachValue(final TProcedureValue<String> arg0) {
 		for (final String s : m.values()) {
 			arg0.execute(s);
 		}
 	}
 
+	/** {@inheritDoc} */
 	public void forEachEntry(final TProcedureEntry<Integer, String> arg0) {
 		for (final Entry<Integer, String> entry : m.entrySet()) {
 			arg0.execute(entry.getKey(), entry.getValue());
 		}
 	}
 
+	/**
+	 * <p>getOriginalMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Integer, String> getOriginalMap() {
 		return original;
 	}

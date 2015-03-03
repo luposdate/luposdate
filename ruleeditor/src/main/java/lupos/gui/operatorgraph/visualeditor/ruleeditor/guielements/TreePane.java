@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -41,7 +45,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleContainer;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RulePackageContainer;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.ScrollPane;
 import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.Tree;
-
 public class TreePane extends JSplitPane {
 	private static final long serialVersionUID = 4608035754670555581L;
 
@@ -59,6 +62,13 @@ public class TreePane extends JSplitPane {
 
 	private MoveRulePanel moveRulePanel = null;
 
+	/**
+	 * <p>Constructor for TreePane.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 * @param ruleContainer a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RuleContainer} object.
+	 * @param rulePackageContainer a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.util.RulePackageContainer} object.
+	 */
 	public TreePane(RuleEditor editor, RuleContainer ruleContainer, RulePackageContainer rulePackageContainer) {
 		super(JSplitPane.VERTICAL_SPLIT);
 
@@ -131,10 +141,18 @@ public class TreePane extends JSplitPane {
 		return topComp;
 	}
 
+	/**
+	 * <p>addNewRulePackage.</p>
+	 *
+	 * @param newRulePackage a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePackagePanel} object.
+	 */
 	public void addNewRulePackage(RulePackagePanel newRulePackage) {
 		this.tree_rulePackages.add(newRulePackage.toString());
 	}
 
+	/**
+	 * <p>clearTopComponent.</p>
+	 */
 	public void clearTopComponent() {
 		this.tree_rulePackages.clear();
 	}
@@ -183,28 +201,55 @@ public class TreePane extends JSplitPane {
 		return bottomComp;
 	}
 
+	/**
+	 * <p>addNewRule.</p>
+	 *
+	 * @param newRule a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePanel} object.
+	 */
 	public void addNewRule(RulePanel newRule) {
 		this.tree_unassigned.add(newRule.toString());
 	}
 
+	/**
+	 * <p>clearBottomComponent.</p>
+	 */
 	public void clearBottomComponent() {
 		this.tree_unassigned.clear();
 	}
 
 
+	/**
+	 * <p>renameElement.</p>
+	 */
 	public void renameElement() {
 		this.currentTree.edit();
 	}
 
+	/**
+	 * <p>deleteElement.</p>
+	 */
 	public void deleteElement() {
 		this.currentTree.delete();
 	}
 
 
+	/**
+	 * <p>addAssociation.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void addAssociation(String rulePackageName, String ruleName) {
 		this.addAssociation(rulePackageName, ruleName, false);
 	}
 
+	/**
+	 * <p>addAssociation.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @param select a boolean.
+	 */
 	public void addAssociation(String rulePackageName, String ruleName, boolean select) {
 		this.tree_unassigned.remove(ruleName, "root");
 		lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TreeNode node = this.tree_rulePackages.add(ruleName, rulePackageName);
@@ -214,6 +259,12 @@ public class TreePane extends JSplitPane {
 		}
 	}
 
+	/**
+	 * <p>removeAssociation.</p>
+	 *
+	 * @param rulePackageName a {@link java.lang.String} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void removeAssociation(String rulePackageName, String ruleName) {
 		boolean ret = this.tree_rulePackages.remove(ruleName, rulePackageName);
 
@@ -223,6 +274,12 @@ public class TreePane extends JSplitPane {
 	}
 
 
+	/**
+	 * <p>updateTopComponent.</p>
+	 *
+	 * @param oldRuleName a {@link java.lang.String} object.
+	 * @param newRuleName a {@link java.lang.String} object.
+	 */
 	public void updateTopComponent(String oldRuleName, String newRuleName) {
 		DefaultMutableTreeNode rootNode = this.tree_rulePackages.getRootNode();
 
@@ -242,6 +299,11 @@ public class TreePane extends JSplitPane {
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>moveRulePanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.MoveRulePanel} object.
+	 */
 	public MoveRulePanel getMoveRulePanel() {
 		return this.moveRulePanel;
 	}

@@ -30,12 +30,30 @@ import lupos.datastructures.patriciatrie.diskseq.nodemanager.SeqNodeManager;
 import lupos.datastructures.patriciatrie.node.Node;
 
 /**
- * Interface for providing methods for (de-) serializing DBSeqNode and DBSeqNodeWithValue 
+ * Interface for providing methods for (de-) serializing DBSeqNode and DBSeqNodeWithValue
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface DeSerializer {
 	
+	/**
+	 * <p>deserialize.</p>
+	 *
+	 * @param nodeManager a {@link lupos.datastructures.patriciatrie.diskseq.nodemanager.SeqNodeManager} object.
+	 * @param inputStream a {@link lupos.datastructures.patriciatrie.disk.nodemanager.NodeInputStream} object.
+	 * @return a {@link lupos.datastructures.patriciatrie.node.Node} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public Node deserialize(final SeqNodeManager nodeManager, final NodeInputStream inputStream) throws IOException;
 	
+	/**
+	 * <p>serialize.</p>
+	 *
+	 * @param node a {@link lupos.datastructures.patriciatrie.node.Node} object.
+	 * @param writer a {@link lupos.datastructures.patriciatrie.diskseq.DeSerializer.Writer} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void serialize(final Node node, final Writer writer) throws IOException;
 	
 	public interface Writer{

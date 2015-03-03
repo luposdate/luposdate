@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -41,16 +45,19 @@ import lupos.io.helper.OutHelper;
 
 @SuppressWarnings("rawtypes")
 public class COLLECTION extends DeSerializerConsideringSubClasses<Collection> {
+	/** {@inheritDoc} */
 	@Override
 	public boolean instanceofTest(final Object o) {
 		return o instanceof Collection;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection deserialize(final LuposObjectInputStream<Collection> in) throws IOException, ClassNotFoundException, URISyntaxException {
 		return in.readLuposCollection();
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Collection>[] getRegisteredClasses() {
@@ -61,21 +68,25 @@ public class COLLECTION extends DeSerializerConsideringSubClasses<Collection> {
 				ArrayList.class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final Collection t, final LuposObjectOutputStream out) throws IOException {
 		out.writeLuposCollection(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final Collection t) {
 		return LengthHelper.lengthLuposCollection(t);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void serialize(final Collection t, final OutputStream out) throws IOException {
 		OutHelper.writeLuposCollection(t, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
 		return InputHelper.readLuposCollection(in);

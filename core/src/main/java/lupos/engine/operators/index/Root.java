@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.index;
 
@@ -38,22 +42,40 @@ import lupos.optimizations.physical.joinorder.staticanalysis.jointree.BuildJoinT
 import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastEntries;
 import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariables;
 import lupos.optimizations.physical.joinorder.staticanalysis.withinindexscan.RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries;
-
 public abstract class Root extends Operator {
 	public List<String> defaultGraphs;
 	public List<String> namedGraphs;
 	public Dataset dataset;
 
+	/**
+	 * <p>Constructor for Root.</p>
+	 */
 	public Root() {
 	}
 
+	/**
+	 * <p>Constructor for Root.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 */
 	public Root(final Dataset dataset) {
 		this.dataset = dataset;
 	}
 
+	/**
+	 * <p>newIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePattern a {@link java.util.Collection} object.
+	 * @param data a {@link lupos.datastructures.items.Item} object.
+	 * @return a {@link lupos.engine.operators.index.BasicIndexScan} object.
+	 */
 	public abstract BasicIndexScan newIndexScan(OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, Item data);
 
+	/**
+	 * <p>startProcessing.</p>
+	 */
 	public void startProcessing() {
 		if (this.succeedingOperators.size() == 0) {
 			return;
@@ -64,11 +86,19 @@ public abstract class Root extends Operator {
 	}
 
 
+	/**
+	 * <p>physicalOptimization.</p>
+	 */
 	public void physicalOptimization() {
 		lupos.optimizations.physical.PhysicalOptimizations.replaceOperators(
 				this, this);
 	}
 
+	/**
+	 * <p>optimizeJoinOrder.</p>
+	 *
+	 * @param opt a int.
+	 */
 	public void optimizeJoinOrder(final int opt) {
 		final List<OperatorIDTuple> c = new LinkedList<OperatorIDTuple>();
 
@@ -114,12 +144,26 @@ public abstract class Root extends Operator {
 		// has already been done before: this.sendMessage(new BoundVariablesMessage());
 	}
 
+	/**
+	 * <p>remove.</p>
+	 *
+	 * @param i a {@link lupos.engine.operators.index.BasicIndexScan} object.
+	 */
 	public void remove(final BasicIndexScan i) {
 		this.removeSucceedingOperator(i);
 	}
 
+	/**
+	 * <p>newInstance.</p>
+	 *
+	 * @param dataset_param a {@link lupos.engine.operators.index.Dataset} object.
+	 * @return a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public abstract Root newInstance(Dataset dataset_param);
 
+	/**
+	 * <p>printGraphURLs.</p>
+	 */
 	public void printGraphURLs() {
 		String graph;
 		System.out.println();
@@ -141,6 +185,11 @@ public abstract class Root extends Operator {
 		System.out.println();
 	}
 
+	/**
+	 * <p>startProcessingDebug.</p>
+	 *
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public void startProcessingDebug(final DebugStep debugstep) {
 		if (this.succeedingOperators.size() == 0) {
 			return;

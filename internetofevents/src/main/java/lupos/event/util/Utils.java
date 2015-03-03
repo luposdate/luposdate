@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.event.util;
 
@@ -42,14 +46,14 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
-
 public final class Utils {
 
 	/**
 	 * Checks, if obj is a list and only contains elements of the same type
-	 * @param obj
-	 * @param elementType
-	 * @return
+	 *
+	 * @param obj a {@link java.lang.Object} object.
+	 * @param elementType a {@link java.lang.Class} object.
+	 * @return a boolean.
 	 */
 	public static boolean isHomogenousList(Object obj, @SuppressWarnings("rawtypes") Class elementType) {
 		if(!(obj instanceof List<?>))
@@ -65,6 +69,12 @@ public final class Utils {
 		return true;
 	}
 	
+	/**
+	 * <p>escape.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String escape(String s){
 		StringBuilder result = new StringBuilder();
 		boolean escaped = false;
@@ -89,11 +99,25 @@ public final class Utils {
 	}
 	
 	
+	/**
+	 * <p>createURIString.</p>
+	 *
+	 * @param namespace a {@link java.lang.String} object.
+	 * @param str a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String createURIString(String namespace, String str) {
 		return "<"+namespace+str+">";
 	}
 	
 	
+	/**
+	 * <p>httpGet.</p>
+	 *
+	 * @param url a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	@SuppressWarnings("deprecation")
 	public static String httpGet(String url) throws Exception {
 		

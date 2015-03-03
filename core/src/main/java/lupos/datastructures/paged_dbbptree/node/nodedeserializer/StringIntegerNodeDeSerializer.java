@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
@@ -31,9 +35,9 @@ import lupos.datastructures.paged_dbbptree.node.DBBPTreeEntry;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
-
 public class StringIntegerNodeDeSerializer implements NodeDeSerializer<String, Integer> {
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<String, Integer> getNextInnerNodeEntry(final String lastKey2, final InputStream in2) {
 		Integer nextFilename;
@@ -65,6 +69,7 @@ public class StringIntegerNodeDeSerializer implements NodeDeSerializer<String, I
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBBPTreeEntry<String, Integer> getNextLeafEntry(final InputStream in, final String lastKey, final Integer lastValue) {
 		try {
@@ -90,23 +95,27 @@ public class StringIntegerNodeDeSerializer implements NodeDeSerializer<String, I
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final String key, final OutputStream out, final String lastKey) throws IOException {
 		OutHelper.writeLuposIntVariableBytes(fileName, out);
 		OutHelper.writeLuposString(key, lastKey, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final OutputStream out) throws IOException {
 		OutHelper.writeLuposIntVariableBytes(fileName, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLeafEntry(final String k, final Integer v, final OutputStream out, final String lastKey, final Integer lastValue) throws IOException {
 		OutHelper.writeLuposIntVariableBytes(v, out);
 		OutHelper.writeLuposString(k, lastKey, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLeafEntryNextFileName(final int filename, final OutputStream out) throws IOException {
 		OutHelper.writeLuposIntVariableBytes(filename, out);

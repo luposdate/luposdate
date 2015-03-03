@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements;
 
@@ -71,7 +75,6 @@ import lupos.misc.FileHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class DocumentEditorPane extends VisualEditor<Operator> {
 
 	private static final long serialVersionUID = 1L;
@@ -98,6 +101,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	private JPanel rifEvaluator;
 
 	// Constructor
+ 	/**
+ 	 * <p>Constructor for DocumentEditorPane.</p>
+ 	 *
+ 	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+ 	 */
  	protected DocumentEditorPane(final VisualRifEditor visualRifEditor) {
 		super(true);
 		this.setVisualRifEditor(visualRifEditor);
@@ -118,6 +126,8 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	 * ************* */
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * <li> EditMenu
 	 * <li> GraphMenu
 	 * <li> OperatorMenu
@@ -344,6 +354,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void manageMenuItems() {
 		super.manageMenuItems();
@@ -360,15 +371,26 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>addJGraphMenu.</p>
+	 *
+	 * @param menu a {@link javax.swing.JMenu} object.
+	 */
 	public void addJGraphMenu(final JMenu menu) {
 		this.jGraphMenus.add(menu);
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	protected void pasteElements(final String arg0) {}
 
 
+	/**
+	 * <p>buildBottomPane.</p>
+	 *
+	 * @return a {@link javax.swing.JTabbedPane} object.
+	 */
 	public JTabbedPane buildBottomPane(){
 
 		this.bottomPane = new JTabbedPane();
@@ -439,6 +461,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public JMenu buildEditMenu() {
 		this.copyMI = new JMenuItem("Copy");
@@ -547,6 +570,9 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	 * Rif -> VisualRif **
 	 * **************** */
 
+	/**
+	 * <p>evaluate.</p>
+	 */
 	public void evaluate() {
 		final String rifCode = this.rifCodeEditor.getTp_rifInput().getText();
 
@@ -650,6 +676,9 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	 * VisualRif -> Rif **
 	 * **************** */
 
+	/**
+	 * <p>generateRif.</p>
+	 */
 	public void generateRif(){
 		this.statusBar.setText("Validating query ...");
 
@@ -715,6 +744,12 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	 * Load + Safe
 	 */
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		final JSONObject saveObject = new JSONObject();
 
@@ -725,6 +760,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	@SuppressWarnings("unchecked")
 	public void fromJSON(final JSONObject loadObject) {
 		if(loadObject != null) {
@@ -780,6 +820,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>deleteRule.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void deleteRule(final String ruleName) {
 		final Component[] c = this.visualGraphs.get(0).getComponents();
 
@@ -791,6 +836,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		rop.delete();
 	}
 
+	/**
+	 * <p>deleteGroup.</p>
+	 *
+	 * @param groupName a {@link java.lang.String} object.
+	 */
 	public void deleteGroup(final String groupName){
 		final Component[] c = this.visualGraphs.get(0).getComponents();
 
@@ -802,6 +852,12 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>updateRuleNameInVisualGraphsComponentArray.</p>
+	 *
+	 * @param oldName a {@link java.lang.String} object.
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void updateRuleNameInVisualGraphsComponentArray(final String oldName, final String newName){
 		final Component[] c = this.visualGraphs.get(0).getComponents();
 		for(int i = 0 ; i < c.length ; i++){
@@ -815,6 +871,12 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 		}
 	}
 
+	/**
+	 * <p>updateGroupNameInVisualGraphsComponentArray.</p>
+	 *
+	 * @param oldName a {@link java.lang.String} object.
+	 * @param newName a {@link java.lang.String} object.
+	 */
 	public void updateGroupNameInVisualGraphsComponentArray(final String oldName, final String newName){
 		final Component[] c = this.visualGraphs.get(0).getComponents();
 
@@ -869,6 +931,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>getPrefixList.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getPrefixList() {
 		final Component[] comp = this.visualGraphs.get(0).getComponents();
 		String[] ret = new String[1];
@@ -917,82 +984,182 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	 * *************** */
 
 
+	/**
+	 * <p>Getter for the field <code>bottomPane</code>.</p>
+	 *
+	 * @return a {@link javax.swing.JTabbedPane} object.
+	 */
 	public JTabbedPane getBottomPane() {
 		return this.bottomPane;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bottomPane</code>.</p>
+	 *
+	 * @param bottomPane a {@link javax.swing.JTabbedPane} object.
+	 */
 	public void setBottomPane(final JTabbedPane bottomPane) {
 		this.bottomPane = bottomPane;
 	}
 
+	/**
+	 * <p>Getter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public VisualRifEditor getVisualRifEditor() {
 		return this.visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>visualRifEditor</code>.</p>
+	 *
+	 * @param visualRifEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.VisualRifEditor} object.
+	 */
 	public void setVisualRifEditor(final VisualRifEditor visualRifEditor) {
 		this.visualRifEditor = visualRifEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>documentName</code>.</p>
+	 *
+	 * @param documentName a {@link java.lang.String} object.
+	 */
 	public void setDocumentName(final String documentName) {
 		this.documentName = documentName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentName() {
 		return this.documentName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>console</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.Console} object.
+	 */
 	public Console getConsole() {
 		return this.console;
 	}
 
+	/**
+	 * <p>Setter for the field <code>console</code>.</p>
+	 *
+	 * @param console a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.Console} object.
+	 */
 	public void setConsole(final Console console) {
 		this.console = console;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public RulePanel getRulePanel() {
 		return this.rulePanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rulePanel</code>.</p>
+	 *
+	 * @param rulePanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RulePanel} object.
+	 */
 	public void setRulePanel(final RulePanel rulePanel) {
 		this.rulePanel = rulePanel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>prefixOperatorPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel} object.
+	 */
 	public PrefixOperatorPanel getPrefixOperatorPanel() {
 		return this.prefixOperatorPanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>prefixOperatorPanel</code>.</p>
+	 *
+	 * @param prefixOperatorPanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.PrefixOperatorPanel} object.
+	 */
 	public void setPrefixOperatorPanel(final PrefixOperatorPanel prefixOperatorPanel) {
 		this.prefixOperatorPanel = prefixOperatorPanel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentGraph</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.DocumentGraph} object.
+	 */
 	public DocumentGraph getDocumentGraph() {
 		return this.documentGraph;
 	}
 
+	/**
+	 * <p>Setter for the field <code>documentGraph</code>.</p>
+	 *
+	 * @param documentGraph a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.DocumentGraph} object.
+	 */
 	public void setDocumentGraph(final DocumentGraph documentGraph) {
 		this.documentGraph = documentGraph;
 	}
 
+	/**
+	 * <p>Setter for the field <code>startNode</code>.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public void setStartNode(final Operator op) {
 		this.startNode = op;
 	}
 
+	/**
+	 * <p>Getter for the field <code>startNode</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.operators.Operator} object.
+	 */
 	public Operator getStartNode() {
 		return this.startNode;
 	}
 
+	/**
+	 * <p>Getter for the field <code>importOperatorPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ImportOperatorPanel} object.
+	 */
 	public ImportOperatorPanel getImportOperatorPanel() {
 		return this.importOperatorPanel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>importOperatorPanel</code>.</p>
+	 *
+	 * @param importOperatorPanel a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.operatorPanel.ImportOperatorPanel} object.
+	 */
 	public void setImportOperatorPanel(final ImportOperatorPanel importOperatorPanel) {
 		this.importOperatorPanel = importOperatorPanel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>rifCodeEditor</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RifCodeEditor} object.
+	 */
 	public RifCodeEditor getRifCodeEditor() {
 		return this.rifCodeEditor;
 	}
 
+	/**
+	 * <p>Setter for the field <code>rifCodeEditor</code>.</p>
+	 *
+	 * @param rifCodeEditor a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.RifCodeEditor} object.
+	 */
 	public void setRifCodeEditor(final RifCodeEditor rifCodeEditor) {
 		this.rifCodeEditor = rifCodeEditor;
 	}

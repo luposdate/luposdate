@@ -35,15 +35,24 @@ import lupos.misc.Tuple;
 
 /**
  * super class for all those rules, the left side of which is
- * 
+ *
  * operator | filter
- **/
+ *
+ * @author groppe
+ * @version $Id: $Id
+ */
 public abstract class RuleFilter extends Rule {
 
+	/**
+	 * <p>Constructor for RuleFilter.</p>
+	 */
 	public RuleFilter() {
 		super();
 	}
 
+	/**
+	 * <p>init.</p>
+	 */
 	protected void init() {
 		// Define left side of rule
 		final Operator a = new Operator();
@@ -58,8 +67,10 @@ public abstract class RuleFilter extends Rule {
 		startNode = b;
 	}
 
+	/** {@inheritDoc} */
 	protected abstract boolean checkPrecondition(Map<String, BasicOperator> mso);
 
+	/** {@inheritDoc} */
 	protected abstract Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			Map<String, BasicOperator> mso, BasicOperator rootOperator);
 }

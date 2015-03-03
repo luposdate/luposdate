@@ -43,21 +43,32 @@ import lupos.misc.debug.DebugStep;
  * This class is similar to BlockingDistinct, but adds bindings to its set only
  * after EndOfStreamMessage or ComputeIntermediateResultMessage. In this way, no
  * errors occur for Stream-processing with windows!
- * 
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LazyBlockingDistinct extends Distinct {
 
 	protected final Set<Bindings> bindings;
 	protected ParallelIteratorMultipleQueryResults operandsData;
 
+	/**
+	 * <p>Constructor for LazyBlockingDistinct.</p>
+	 */
 	public LazyBlockingDistinct() {
 		this.bindings = new HashSet<Bindings>();
 	}
 
+	/**
+	 * <p>Constructor for LazyBlockingDistinct.</p>
+	 *
+	 * @param bindings a {@link java.util.Set} object.
+	 */
 	public LazyBlockingDistinct(final Set<Bindings> bindings) {
 		this.bindings = bindings;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -65,6 +76,11 @@ public class LazyBlockingDistinct extends Distinct {
 		return null;
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	protected ParallelIterator<Bindings> getIterator() {
 		final Iterator<Bindings> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
@@ -93,6 +109,7 @@ public class LazyBlockingDistinct extends Distinct {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		this.bindings.clear();
@@ -110,6 +127,7 @@ public class LazyBlockingDistinct extends Distinct {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		this.deleteAllAtSucceedingOperators();
@@ -117,6 +135,7 @@ public class LazyBlockingDistinct extends Distinct {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult deleteQueryResult(final QueryResult queryResult,
 			final int operandID) {
@@ -124,6 +143,7 @@ public class LazyBlockingDistinct extends Distinct {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteQueryResult(final int operandID) {
 		this.bindings.clear();
@@ -132,11 +152,13 @@ public class LazyBlockingDistinct extends Distinct {
 		this.operandsData = null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean isPipelineBreaker() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(
 			final ComputeIntermediateResultMessage msg,
@@ -146,6 +168,7 @@ public class LazyBlockingDistinct extends Distinct {
 		return msg;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {

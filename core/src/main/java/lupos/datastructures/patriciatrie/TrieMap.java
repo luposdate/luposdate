@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie;
 
@@ -29,11 +33,11 @@ import lupos.datastructures.patriciatrie.exception.TrieNotMergeableException;
 import lupos.datastructures.patriciatrie.node.NodeHelper;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
 import lupos.misc.Tuple;
-
 public abstract class TrieMap<T> extends TrieWithValue<T> {
 
 	/**
 	 * Insert a value for a given key
+	 *
 	 * @param key the key for the value
 	 * @param value the value for a given key
 	 * @return the old value if a value for the given key is overwritten, <strong>null</strong> if no value for the given key was inside the patricia trie so far
@@ -50,6 +54,7 @@ public abstract class TrieMap<T> extends TrieWithValue<T> {
 	
 	/**
 	 * method to get the value of a key
+	 *
 	 * @param key the key of the value to be searched for
 	 * @return the value of the key
 	 */
@@ -65,7 +70,7 @@ public abstract class TrieMap<T> extends TrieWithValue<T> {
 	
 	/**
 	 * Removes a key from the trie.
-	 * 
+	 *
 	 * @param key
 	 *            Key to remove
 	 * @return <strong>null</strong> if the key could not be removed (if the trie did not contain that key),
@@ -82,10 +87,10 @@ public abstract class TrieMap<T> extends TrieWithValue<T> {
 	
 	/**
 	 * Merges a list of tries into this trie.
-	 * 
+	 *
 	 * @param tries
 	 *            List of tries
-	 * @throws TrieNotMergeableException
+	 * @throws lupos.datastructures.patriciatrie.exception.TrieNotMergeableException if any.
 	 */
 	public void merge(final List<Trie> tries) throws TrieNotMergeableException {
 		throw new TrieNotMergeableException();

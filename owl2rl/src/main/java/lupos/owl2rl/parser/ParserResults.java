@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,40 +21,82 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.owl2rl.parser;
 
 import java.util.HashMap;
 
 import lupos.owl2rl.owlToRif.TemplateRule;
-
 public class ParserResults {
 
 	private String fixedrules,prefixes;
 	private HashMap<String, TemplateRule> templateRulesmap= new HashMap<String, TemplateRule>();
 	private String[] names;
 
+	/**
+	 * <p>Getter for the field <code>fixedrules</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getFixedrules() {
 		return this.fixedrules;
 	}
+	/**
+	 * <p>Setter for the field <code>fixedrules</code>.</p>
+	 *
+	 * @param fixedrules a {@link java.lang.String} object.
+	 */
 	public void setFixedrules(String fixedrules) {
 		this.fixedrules = fixedrules;
 	}
+	/**
+	 * <p>Getter for the field <code>prefixes</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getPrefixes() {
 		return this.prefixes;
 	}
+	/**
+	 * <p>Setter for the field <code>prefixes</code>.</p>
+	 *
+	 * @param prefixes a {@link java.lang.String} object.
+	 */
 	public void setPrefixes(String prefixes) {
 		this.prefixes = prefixes;
 	}
+	/**
+	 * <p>Getter for the field <code>templateRulesmap</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, TemplateRule> getTemplateRulesmap() {
 		return this.templateRulesmap;
 	}
+	/**
+	 * <p>Setter for the field <code>templateRulesmap</code>.</p>
+	 *
+	 * @param templateRulesmap a {@link java.util.HashMap} object.
+	 */
 	public void setTemplateRulesmap(HashMap<String, TemplateRule> templateRulesmap) {
 		this.templateRulesmap = templateRulesmap;
 	}
+	/**
+	 * <p>Getter for the field <code>names</code>.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public String[] getNames() {
 		return this.names;
 	}
+	/**
+	 * <p>Setter for the field <code>names</code>.</p>
+	 *
+	 * @param names an array of {@link java.lang.String} objects.
+	 */
 	public void setNames(String[] names) {
 		this.names = names;
 	}

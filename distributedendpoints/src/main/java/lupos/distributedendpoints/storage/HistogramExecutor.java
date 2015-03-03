@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,23 +21,31 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributedendpoints.storage;
 
 import lupos.distributed.query.operator.histogramsubmission.AbstractHistogramExecutor;
 import lupos.distributedendpoints.storage.util.EndpointManagement;
 import lupos.engine.operators.tripleoperator.TriplePattern;
-
 public class HistogramExecutor extends AbstractHistogramExecutor {
 
 	protected final EndpointManagement endpointManagement;
 
+	/**
+	 * <p>Constructor for HistogramExecutor.</p>
+	 *
+	 * @param endpointManagement a {@link lupos.distributedendpoints.storage.util.EndpointManagement} object.
+	 */
 	public HistogramExecutor(final EndpointManagement endpointManagement) {
 		super();
 		this.endpointManagement = endpointManagement;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] sendJSONRequests(final String request, final TriplePattern triplePattern) {
 		// triple pattern is not used as key => just ignore and submit histogram request to all endpoints...

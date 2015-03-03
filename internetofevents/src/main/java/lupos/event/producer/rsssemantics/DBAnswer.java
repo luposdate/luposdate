@@ -38,6 +38,9 @@ import lupos.event.util.Literals;
 
 /**
  * Represents an answer from the database.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DBAnswer {
 
@@ -50,6 +53,7 @@ public class DBAnswer {
 	private Literal label = Literals.createTyped("", Literals.XSD.String);
 	private Literal comment = Literals.createTyped("", Literals.XSD.String);
 	private Literal birthPlace = Literals.createTyped("", Literals.XSD.String);
+	/** Constant <code>NAMESPACE="http://www.ifis.uni-luebeck.de/events/R"{trunked}</code> */
 	public static final String NAMESPACE = "http://www.ifis.uni-luebeck.de/events/RSSSemantics/";
 
 	public static class Predicates {
@@ -75,8 +79,10 @@ public class DBAnswer {
 
 	/**
 	 * read data from input binding and assign them to Object variables
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @throws java.lang.Exception if any.
 	 */
-
 	public DBAnswer(Bindings b) throws Exception {
 		String[] variables = { "thumbnail", "wikiarticle", "subject", "name",
 				"birthDate", "deathDate", "birthPlace", "label",  "comment" };
@@ -118,6 +124,12 @@ public class DBAnswer {
 			this.comment = k;
 	}
 
+	/**
+	 * <p>Getter for the field <code>label</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public String getLabel() throws Exception {
 		if (this.label != Literals.createTyped("", Literals.XSD.String))
 			return this.label.originalString();
@@ -125,6 +137,7 @@ public class DBAnswer {
 			return "undefined";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Thumbnail: " + this.thumbnail + " wikiarticle: " + this.wikiarticle
@@ -132,6 +145,12 @@ public class DBAnswer {
 				+ this.birthDate;
 	}
 
+	/**
+	 * <p>generateTriples.</p>
+	 *
+	 * @return a {@link java.util.ArrayList} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public ArrayList<Triple> generateTriples() throws Exception {
 
 		ArrayList<Triple> t = new ArrayList<Triple>();

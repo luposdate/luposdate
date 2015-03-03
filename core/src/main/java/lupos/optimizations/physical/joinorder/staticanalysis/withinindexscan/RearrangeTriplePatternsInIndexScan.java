@@ -32,10 +32,14 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.optimizations.physical.joinorder.RearrangeJoinOrder;
 
 /**
- * This class is the abstract super class for all join ordering algorithms, which optimize the join order by changing the position in an IndexScan operator according to some certain criteria. The "some certain criteria" have to be defined in its subclasses. These join ordering algorithms are useful for MemoryIndexScan operators, which join the triple patterns one after each other (analogous to a left-deep join tree).  
+ * This class is the abstract super class for all join ordering algorithms, which optimize the join order by changing the position in an IndexScan operator according to some certain criteria. The "some certain criteria" have to be defined in its subclasses. These join ordering algorithms are useful for MemoryIndexScan operators, which join the triple patterns one after each other (analogous to a left-deep join tree).
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class RearrangeTriplePatternsInIndexScan<T> implements RearrangeJoinOrder {
 
+	/** {@inheritDoc} */
 	@Override
 	public void rearrangeJoinOrder(final Root newRoot, final BasicIndexScan indexScan) {
 		
@@ -60,8 +64,9 @@ public abstract class RearrangeTriplePatternsInIndexScan<T> implements Rearrange
 	
 	/**
 	 * This method determines the best triple pattern which should be joined next...
-	 * @param indexScan the IndexScan operator to optimize 
-	 * @param remainingTP the remaining triple patterns among which the best one next to join is chosen 
+	 *
+	 * @param indexScan the IndexScan operator to optimize
+	 * @param remainingTP the remaining triple patterns among which the best one next to join is chosen
 	 * @param additionalInformation some additional information is stored in this variable (e.g. the variables of all triple patterns joined so far)
 	 * @return the best triple pattern from remainingTP, which should be joined next...
 	 */
@@ -69,12 +74,14 @@ public abstract class RearrangeTriplePatternsInIndexScan<T> implements Rearrange
 	
 	/**
 	 * This method initializes the additional information and returns it...
+	 *
 	 * @return the initialized additional information (depending on the concrete join order algorithm)
 	 */
 	protected abstract T initAdditionalInformation();
 	
 	/**
 	 * updates the additional information according to the chosen next best triple pattern
+	 *
 	 * @param additionalInformation the additional information to be updated
 	 * @param bestNextTriplePatternToJoin the chosen triple pattern, which is scored to be the best triple pattern to join next
 	 */

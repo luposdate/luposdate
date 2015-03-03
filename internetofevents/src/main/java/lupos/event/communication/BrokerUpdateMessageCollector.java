@@ -29,8 +29,9 @@ import java.util.List;
 
 /**
  * Collection of Update Messages for Brokers
- * @author Carsten
  *
+ * @author Carsten
+ * @version $Id: $Id
  */
 public class BrokerUpdateMessageCollector implements Serializable {
 	
@@ -39,14 +40,29 @@ public class BrokerUpdateMessageCollector implements Serializable {
 	private List<BrokerUpdateMessage> collectedMessages = new LinkedList<BrokerUpdateMessage>();
 	
 	
+	/**
+	 * <p>Getter for the field <code>collectedMessages</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<BrokerUpdateMessage> getCollectedMessages() {
 		return this.collectedMessages;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>collectedMessages</code>.</p>
+	 *
+	 * @param collectedMessages a {@link java.util.List} object.
+	 */
 	public void setCollectedMessages(List<BrokerUpdateMessage> collectedMessages) {
 		this.collectedMessages = collectedMessages;
 	}
 	
+	/**
+	 * <p>addMessage.</p>
+	 *
+	 * @param message a {@link lupos.event.communication.BrokerUpdateMessage} object.
+	 */
 	public void addMessage(BrokerUpdateMessage message){
 		this.collectedMessages.add(message);
 	}

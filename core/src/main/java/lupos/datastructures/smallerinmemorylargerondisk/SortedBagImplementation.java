@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.smallerinmemorylargerondisk;
 
@@ -32,23 +36,30 @@ import lupos.datastructures.dbmergesortedds.DBMergeSortedBag;
 import lupos.datastructures.dbmergesortedds.SortConfiguration;
 import lupos.datastructures.sorteddata.SortedBag;
 import lupos.misc.util.ImmutableIterator;
-
 public class SortedBagImplementation<E extends Serializable> implements SortedBag<E>{
 
 	private final SortedBag<E> memoryBag;
 	private SortedBag<E> diskBag;
 
+	/** Constant <code>MAXMEMORYMAPENTRIES=30000</code> */
 	protected final static int MAXMEMORYMAPENTRIES=30000;
 
+	/**
+	 * <p>Constructor for SortedBagImplementation.</p>
+	 *
+	 * @param memoryBag a {@link lupos.datastructures.sorteddata.SortedBag} object.
+	 */
 	public SortedBagImplementation(final SortedBag<E> memoryBag){
 		this.memoryBag=memoryBag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comparator<? super E> comparator() {
 		return this.memoryBag.comparator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E first() {
 		final E firstMemory=this.memoryBag.first();
@@ -65,11 +76,13 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return (this.memoryBag.comparator().compare(firstMemory,firstDisk)<=0)?firstMemory:firstDisk;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedBag<E> headBag(final E arg0) {
 		throw(new UnsupportedOperationException("This Bag does not support headBag."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public E last() {
 		final E lastMemory=this.memoryBag.last();
@@ -86,16 +99,19 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return (this.memoryBag.comparator().compare(lastMemory,lastDisk)>0)?lastMemory:lastDisk;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedBag<E> subBag(final E arg0, final E arg1) {
 		throw(new UnsupportedOperationException("This Bag does not support subBag."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public SortedBag<E> tailBag(final E arg0) {
 		throw(new UnsupportedOperationException("This Bag does not support tailBag."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(final E arg0) {
 		if(this.memoryBag.size()<MAXMEMORYMAPENTRIES) {
@@ -110,6 +126,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return this.diskBag.add(arg0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(final Collection<? extends E> arg0) {
 		boolean flag=false;
@@ -119,6 +136,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		this.memoryBag.clear();
@@ -127,6 +145,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final Object arg0) {
 		if(this.memoryBag.contains(arg0)) {
@@ -138,6 +157,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(final Collection<?> arg0) {
 		for(final Object o:arg0) {
@@ -148,6 +168,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		if(!this.memoryBag.isEmpty()) {
@@ -159,6 +180,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		return new ImmutableIterator<E>(){
@@ -209,6 +231,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(final Object arg0) {
 		final boolean flag=this.memoryBag.remove(arg0);
@@ -221,6 +244,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeAll(final Collection<?> arg0) {
 		boolean flag=false;
@@ -230,6 +254,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(final Collection<?> arg0) {
 		boolean flag=false;
@@ -242,6 +267,7 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		int size=this.memoryBag.size();
@@ -251,11 +277,13 @@ public class SortedBagImplementation<E extends Serializable> implements SortedBa
 		return size;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
 		throw(new UnsupportedOperationException("This Bag does not support toArray."));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(final T[] arg0) {
 		throw(new UnsupportedOperationException("This Bag does not support toArray."));

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie.node;
 
@@ -36,7 +40,6 @@ import lupos.datastructures.patriciatrie.ram.RBNode;
 import lupos.datastructures.patriciatrie.ram.RBNodeWithValue;
 import lupos.misc.Triple;
 import lupos.misc.Tuple;
-
 public final class NodeHelper {
 
 	/**
@@ -261,6 +264,7 @@ public final class NodeHelper {
 	 *            Value of the key
 	 * @return null if the key could not be removed (if the trie did not contain that key),
 	 *         the old value otherwise (inside a Tuple-object to distinguish case that the the value itself is a null value).
+	 * @param <T> a T object.
 	 */
 	public final static<T> Tuple<T, Boolean> put(final NodeWithValue<T> node, final String key, final T value) {
 		final int keyLength = key.length();
@@ -470,6 +474,7 @@ public final class NodeHelper {
 	 * @param key
 	 *            Key to get value for
 	 * @return Value of the key (or null if the key does not exist)
+	 * @param <T> a T object.
 	 */
 	public final static<T> T get(final NodeWithValue<T> node, final String key) {
 		final Tuple<Boolean, Integer> mergePartner = NodeHelper.searchMergePartner(node, key);
@@ -558,6 +563,7 @@ public final class NodeHelper {
 	 *            Key to remove
 	 * @return null if the key could not be removed (if the trie did not contain that key),
 	 *         the old value otherwise (inside a Tuple-object to distinguish case that the the value itself is a null value).
+	 * @param <T> a T object.
 	 */
 	public final static<T> Tuple<T, Boolean> removeKey(final NodeWithValue<T> node, final String key) {
 		final Tuple<Boolean, Integer> idx = NodeHelper.searchMergePartner(node, key);
@@ -731,6 +737,7 @@ public final class NodeHelper {
 	 *
 	 * @param node The node in which the other nodes will be merged...
 	 * @param nodesToMerge List of nodes that will be merged.
+	 * @param nodesToMerge List of nodes that will be merged.
 	 */
 	public final static void mergeSet(final Node node, final List<Node> nodesToMerge) {
 
@@ -832,6 +839,7 @@ public final class NodeHelper {
 	 * Merges n trie nodes into one trie node.
 	 *
 	 * @param node The node in which the other nodes will be merged...
+	 * @param nodesToMerge List of nodes that will be merged.
 	 * @param nodesToMerge List of nodes that will be merged.
 	 */
 	public static void mergeSeqSet(final DBSeqNode node, final List<Node> nodesToMerge) {
@@ -1042,6 +1050,7 @@ public final class NodeHelper {
 	 *
 	 * @param node The node in which the other nodes will be merged...
 	 * @param nodesToMerge List of nodes that will be merged.
+	 * @param nodesToMerge List of nodes that will be merged.
 	 */
 	@SuppressWarnings({ "unchecked", "null" })
 	public final static void mergeBag(final NodeWithValue<Integer> node, final List<NodeWithValue<Integer>> nodesToMerge) {
@@ -1165,6 +1174,7 @@ public final class NodeHelper {
 	 * Merges n trie nodes into one trie node.
 	 *
 	 * @param node The node in which the other nodes will be merged...
+	 * @param nodesToMerge List of nodes that will be merged.
 	 * @param nodesToMerge List of nodes that will be merged.
 	 */
 	public static void mergeSeqBag(final DBSeqNodeWithValue<Integer> node, final List<NodeWithValue<Integer>> nodesToMerge) {
@@ -1437,6 +1447,7 @@ public final class NodeHelper {
 	 *            Array index of the node
 	 * @param node
 	 *            Node instance to be cloned and stored
+	 * @param <T> a T object.
 	 */
 	@SuppressWarnings("unchecked")
 	protected final static<T> void setChildCopy(final NodeWithValue<T> parentNode, final int i, final NodeWithValue<T> node) {
@@ -1477,6 +1488,8 @@ public final class NodeHelper {
 	 * @param child
 	 *            Child node that belongs to this key
 	 * @return Temporary node
+	 * @param value a T object.
+	 * @param <T> a T object.
 	 */
 	protected final static<T> NodeWithValue<T> createTemporaryNode(final String key, final T value, final NodeWithValue<T> child) {
 		final RBNodeWithValue<T> temporaryNode = new RBNodeWithValue<T>();
@@ -1503,6 +1516,7 @@ public final class NodeHelper {
 	 * @param child
 	 *            Child node that belongs to this key
 	 * @return Temporary node
+	 * @param <T> a T object.
 	 */
 	protected final static<T> Node createTemporaryNode(final String key, final Node child) {
 		final RBNode temporaryNode = new RBNode();
@@ -1550,6 +1564,7 @@ public final class NodeHelper {
 	 * @param indent
 	 *            Current indention level
 	 * @return Clearly arranged string
+	 * @param <T> a T object.
 	 */
 	protected final static<T> String toString(final NodeWithValue<T> node, final String indent) {
 		String s = indent + "[";

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.readtriplesdistinct;
 
@@ -36,15 +40,20 @@ import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
-
 public class BlockingDistinct extends ReadTriplesDistinct {
 
 	protected Set<BindingsArrayReadTriples> bindings;
 
+	/**
+	 * <p>Constructor for BlockingDistinct.</p>
+	 *
+	 * @param bindings a {@link java.util.Set} object.
+	 */
 	public BlockingDistinct(final Set<BindingsArrayReadTriples> bindings) {
 		this.bindings = bindings;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult queryResult,
 			final int operandID) {
@@ -58,6 +67,11 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 		return null;
 	}
 
+	/**
+	 * <p>getIterator.</p>
+	 *
+	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
+	 */
 	protected ParallelIterator<Bindings> getIterator() {
 		final Iterator<BindingsArrayReadTriples> itb = this.bindings.iterator();
 		return new ParallelIterator<Bindings>() {
@@ -86,6 +100,7 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		final QueryResult qr = QueryResult.createInstance(this.bindings.iterator());
@@ -98,6 +113,7 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
@@ -114,6 +130,7 @@ public class BlockingDistinct extends ReadTriplesDistinct {
 		return msg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return super.toString()+" for read triples";

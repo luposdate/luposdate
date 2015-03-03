@@ -46,6 +46,9 @@ import lupos.misc.debug.DebugStep;
 /**
  * All operators are derived from this class. This class provides fundamental
  * methods for all operators.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BasicOperator implements Cloneable, Serializable {
 
@@ -186,10 +189,21 @@ public class BasicOperator implements Cloneable, Serializable {
 		this.succeedingOperators.add(succeedingOperator);
 	}
 
+	/**
+	 * <p>addSucceedingOperator.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 */
 	public void addSucceedingOperator(final BasicOperator succeedingOperator) {
 		this.addSucceedingOperator(new OperatorIDTuple(succeedingOperator, 0));
 	}
 
+	/**
+	 * <p>addSucceedingOperator.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param operandID a int.
+	 */
 	public void addSucceedingOperator(final BasicOperator succeedingOperator, final int operandID) {
 		this.addSucceedingOperator(new OperatorIDTuple(succeedingOperator, operandID));
 	}
@@ -271,6 +285,11 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 
+	/**
+	 * <p>removeSucceedingOperator.</p>
+	 *
+	 * @param opIDT a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 */
 	public void removeSucceedingOperator(final OperatorIDTuple opIDT) {
 		while(this.succeedingOperators.remove(opIDT)){
 			// action plus break conditions is in the loop head!
@@ -317,6 +336,7 @@ public class BasicOperator implements Cloneable, Serializable {
 
 	/**
 	 * This method returns the first found preceding operator, which is connected to this operator with the given id
+	 *
 	 * @param id the id of the OperatorIDTuple
 	 * @return the first found preceding operator, which is connected to this operator with the given id, otherwise null
 	 */
@@ -505,41 +525,97 @@ public class BasicOperator implements Cloneable, Serializable {
 		return msg;
 	}
 
+	/**
+	 * <p>preProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message preProcessMessageDebug(final Message msg, final DebugStep debugstep) {
 		return this.preProcessMessage(msg);
 	}
 
+	/**
+	 * <p>preProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.StartOfEvaluationMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message preProcessMessageDebug(final StartOfEvaluationMessage msg, final DebugStep debugstep) {
 		return this.preProcessMessage(msg);
 	}
 
+	/**
+	 * <p>preProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.EndOfEvaluationMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		return this.preProcessMessage(msg);
 	}
 
+	/**
+	 * <p>preProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.BoundVariablesMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message preProcessMessageDebug(final BoundVariablesMessage msg, final DebugStep debugstep) {
 		return this.preProcessMessage(msg);
 	}
 
+	/**
+	 * <p>postProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message postProcessMessageDebug(final Message msg, final DebugStep debugstep) {
 		return this.postProcessMessage(msg);
 	}
 
+	/**
+	 * <p>postProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.StartOfEvaluationMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message postProcessMessageDebug(final StartOfEvaluationMessage msg, final DebugStep debugstep) {
 		return this.postProcessMessage(msg);
 	}
 
+	/**
+	 * <p>postProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.EndOfEvaluationMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message postProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		return this.postProcessMessage(msg);
 	}
 
+	/**
+	 * <p>postProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.BoundVariablesMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message postProcessMessageDebug(final BoundVariablesMessage msg, final DebugStep debugstep) {
 		return this.postProcessMessage(msg);
@@ -690,6 +766,12 @@ public class BasicOperator implements Cloneable, Serializable {
 		return msg;
 	}
 
+	/**
+	 * <p>preProcessMessage.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.ComputeIntermediateResultMessage} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		return msg;
 	}
@@ -724,9 +806,9 @@ public class BasicOperator implements Cloneable, Serializable {
 	}
 
 	/**
-	 * The clone method to clone the current operator
+	 * {@inheritDoc}
 	 *
-	 * @return the cloned operator
+	 * The clone method to clone the current operator
 	 */
 	@Override
 	public BasicOperator clone() {
@@ -943,6 +1025,8 @@ public class BasicOperator implements Cloneable, Serializable {
 	 *            The visitor to be applied to each node in the operator graph
 	 * @return The object retrieved from processing the visitor on this
 	 *         operator.
+	 * @param data a T object.
+	 * @param <T> a T object.
 	 */
 	public<T> Object visit(final OperatorGraphVisitor<T> visitor, final T data) {
 		return this.visit(visitor, data, new HashSet<BasicOperator>());
@@ -1023,25 +1107,48 @@ public class BasicOperator implements Cloneable, Serializable {
 		hs.remove(this);
 	}
 
+	/**
+	 * <p>Getter for the field <code>cycleOperands</code>.</p>
+	 *
+	 * @return a {@link java.util.HashSet} object.
+	 */
 	public HashSet<BasicOperator> getCycleOperands() {
 		return this.cycleOperands;
 	}
 
+	/**
+	 * <p>Setter for the field <code>cycleOperands</code>.</p>
+	 *
+	 * @param cycleOperands a {@link java.util.HashSet} object.
+	 */
 	public void setCycleOperands(final HashSet<BasicOperator> cycleOperands) {
 		this.cycleOperands = cycleOperands;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefixInstance a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	@SuppressWarnings("unused")
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		return this.toString();
 	}
 
 
+	/**
+	 * <p>dump.</p>
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 * @param visited a {@link java.util.HashSet} object.
+	 */
 	public void dump(final String prefix, final HashSet<BasicOperator> visited) {
 		if (visited.contains(this)) {
 			return;
@@ -1058,6 +1165,9 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 
+	/**
+	 * <p>removeFromOperatorGraph.</p>
+	 */
 	public void removeFromOperatorGraph() {
 		for (final OperatorIDTuple oidtuple : this.getSucceedingOperators()) {
 			oidtuple.getOperator().removePrecedingOperator(this);
@@ -1070,6 +1180,9 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 
+	/**
+	 * <p>removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators.</p>
+	 */
 	public void removeFromOperatorGraphWithoutConnectingPrecedingWithSucceedingOperators() {
 		for (final OperatorIDTuple oidtuple : this.getSucceedingOperators()) {
 			oidtuple.getOperator().removePrecedingOperator(this);
@@ -1081,6 +1194,13 @@ public class BasicOperator implements Cloneable, Serializable {
 		this.precedingOperators.clear();
 	}
 
+	/**
+	 * <p>forwardMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	protected Message forwardMessageDebug(final Message msg,
 			final DebugStep debugstep) {
 		msg.setVisited(this);
@@ -1094,11 +1214,26 @@ public class BasicOperator implements Cloneable, Serializable {
 		return result;
 	}
 
+	/**
+	 * <p>preProcessMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.ComputeIntermediateResultMessage} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	@SuppressWarnings("unused")
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		return msg;
 	}
 
+	/**
+	 * <p>receiveDebug.</p>
+	 *
+	 * @param message a {@link lupos.engine.operators.messages.Message} object.
+	 * @param from a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message receiveDebug(final Message message, final BasicOperator from, final DebugStep debugstep) {
 		Message msg = message;
 		if (from != null) {
@@ -1132,6 +1267,13 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 
+	/**
+	 * <p>sendMessageDebug.</p>
+	 *
+	 * @param msg a {@link lupos.engine.operators.messages.Message} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.engine.operators.messages.Message} object.
+	 */
 	public Message sendMessageDebug(final Message msg, final DebugStep debugstep) {
 		final Message msgResult = this.forwardMessageDebug(msg.preProcessDebug(this, debugstep), debugstep);
 		// postprocess anyway one message, does not matter if the resultant msg is null or not to allow processing right after initialization
@@ -1165,11 +1307,23 @@ public class BasicOperator implements Cloneable, Serializable {
 		}
 	}
 
+	/**
+	 * <p>remainsSortedData.</p>
+	 *
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a boolean.
+	 */
 	@SuppressWarnings("unused")
 	public boolean remainsSortedData(final Collection<Variable> sortCriterium){
 		return false;
 	}
 
+	/**
+	 * <p>transformSortCriterium.</p>
+	 *
+	 * @param sortCriterium a {@link java.util.Collection} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<Variable> transformSortCriterium(final Collection<Variable> sortCriterium){
 		return sortCriterium;
 	}

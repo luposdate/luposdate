@@ -32,6 +32,8 @@ import java.util.*;
  * In your "VoidArgu" visitors extend this class and override part or all of these methods.
  *
  * @param <A> The user argument type
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
 
@@ -41,7 +43,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
    */
 
   /**
-   * Visits a {@link NodeChoice} node, passing it an argument.
+   * Visits a {@link lupos.rif.generated.syntaxtree.NodeChoice} node, passing it an argument.
    *
    * @param n the node to visit
    * @param argu the user argument
@@ -52,7 +54,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link NodeList} node, passing it an argument.
+   * Visits a {@link lupos.rif.generated.syntaxtree.NodeList} node, passing it an argument.
    *
    * @param n the node to visit
    * @param argu the user argument
@@ -65,7 +67,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link NodeListOptional} node, passing it an argument.
+   * Visits a {@link lupos.rif.generated.syntaxtree.NodeListOptional} node, passing it an argument.
    *
    * @param n the node to visit
    * @param argu the user argument
@@ -81,7 +83,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link NodeOptional} node, passing it an argument.
+   * Visits a {@link lupos.rif.generated.syntaxtree.NodeOptional} node, passing it an argument.
    *
    * @param n the node to visit
    * @param argu the user argument
@@ -95,7 +97,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link NodeSequence} node, passing it an argument.
+   * Visits a {@link lupos.rif.generated.syntaxtree.NodeSequence} node, passing it an argument.
    *
    * @param n the node to visit
    * @param argu the user argument
@@ -108,7 +110,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link NodeToken} node, passing it an argument.
+   * Visits a {@link lupos.rif.generated.syntaxtree.NodeToken} node, passing it an argument.
    *
    * @param n the node to visit
    * @param argu the user argument
@@ -124,7 +126,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
    */
 
   /**
-   * Visits a {@link CompilationUnit} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.CompilationUnit} node, whose children are the following :
    * <p>
    * f0 -> RIFDocument()<br>
    * f1 -> < EOF ><br>
@@ -140,7 +142,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFDocument} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFDocument} node, whose children are the following :
    * <p>
    * f0 -> < DOCUMENT ><br>
    * f1 -> < LPAREN ><br>
@@ -174,7 +176,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFConclusion} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFConclusion} node, whose children are the following :
    * <p>
    * f0 -> < CONC ><br>
    * f1 -> < LPAREN ><br>
@@ -196,7 +198,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFBase} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFBase} node, whose children are the following :
    * <p>
    * f0 -> < BASE ><br>
    * f1 -> < LPAREN ><br>
@@ -218,7 +220,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFPrefix} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFPrefix} node, whose children are the following :
    * <p>
    * f0 -> < PREFIX ><br>
    * f1 -> < LPAREN ><br>
@@ -243,7 +245,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFImport} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFImport} node, whose children are the following :
    * <p>
    * f0 -> < IMPORT ><br>
    * f1 -> < LPAREN ><br>
@@ -268,7 +270,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFGroup} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFGroup} node, whose children are the following :
    * <p>
    * f0 -> < GROUP ><br>
    * f1 -> < LPAREN ><br>
@@ -292,7 +294,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFRule} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFRule} node, whose children are the following :
    * <p>
    * f0 -> . %0 #0 < FORALL ><br>
    * .. .. . .. #1 ( RIFVar() )+ #2 < LPAREN > #3 RIFClause() #4 < RPAREN ><br>
@@ -309,7 +311,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFClause} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFClause} node, whose children are the following :
    * <p>
    * f0 -> ( %0 RIFAtomic()<br>
    * .. .. | %1 #0 < AND > #1 < LPAREN ><br>
@@ -331,7 +333,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFFormula} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFFormula} node, whose children are the following :
    * <p>
    * f0 -> . %0 #0 < AND > #1 < LPAREN ><br>
    * .. .. . .. #2 ( RIFFormula() )* #3 < RPAREN ><br>
@@ -356,7 +358,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFAtomic} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFAtomic} node, whose children are the following :
    * <p>
    * f0 -> RIFTerm()<br>
    * f1 -> ( %0 ( #0 ( &0 < EQUAL ><br>
@@ -378,7 +380,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFUniterm} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFUniterm} node, whose children are the following :
    * <p>
    * f0 -> RIFVarOrURI()<br>
    * f1 -> < LPAREN ><br>
@@ -402,7 +404,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFFrame} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFFrame} node, whose children are the following :
    * <p>
    * f0 -> < LBRACK ><br>
    * f1 -> ( #0 RIFTerm() #1 < TO > #2 RIFTerm() )*<br>
@@ -421,7 +423,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFTerm} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFTerm} node, whose children are the following :
    * <p>
    * f0 -> . %0 RIFUniterm()<br>
    * .. .. | %1 RIFRDFLiteral()<br>
@@ -446,7 +448,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFExternal} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFExternal} node, whose children are the following :
    * <p>
    * f0 -> < EXTERNAL ><br>
    * f1 -> < LPAREN ><br>
@@ -468,7 +470,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFList} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFList} node, whose children are the following :
    * <p>
    * f0 -> < LIST ><br>
    * f1 -> < LPAREN ><br>
@@ -491,7 +493,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFRDFLiteral} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFRDFLiteral} node, whose children are the following :
    * <p>
    * f0 -> . %0 RIFTypedLiteral()<br>
    * .. .. | %1 RIFLiteralWithLangTag()<br>
@@ -508,7 +510,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFTypedLiteral} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFTypedLiteral} node, whose children are the following :
    * <p>
    * f0 -> RIFString()<br>
    * f1 -> < H ><br>
@@ -527,7 +529,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFLiteralWithLangTag} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFLiteralWithLangTag} node, whose children are the following :
    * <p>
    * f0 -> RIFString()<br>
    * f1 -> < LANGTAG ><br>
@@ -543,7 +545,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFNumericLiteral} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFNumericLiteral} node, whose children are the following :
    * <p>
    * f0 -> . %0 RIFInteger()<br>
    * .. .. | %1 RIFFloatingPoint()<br>
@@ -558,7 +560,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFString} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFString} node, whose children are the following :
    * <p>
    * f0 -> . %0 < STRING_LITERAL1 ><br>
    * .. .. | %1 < STRING_LITERAL2 ><br>
@@ -577,7 +579,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFVarOrURI} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFVarOrURI} node, whose children are the following :
    * <p>
    * f0 -> . %0 RIFVar()<br>
    * .. .. | %1 RIFURI()<br>
@@ -592,7 +594,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFURI} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFURI} node, whose children are the following :
    * <p>
    * f0 -> . %0 RIFQuotedURIref()<br>
    * .. .. | %1 RIFQName()<br>
@@ -607,7 +609,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFQName} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFQName} node, whose children are the following :
    * <p>
    * f0 -> < QNAME ><br>
    *
@@ -620,7 +622,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFInteger} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFInteger} node, whose children are the following :
    * <p>
    * f0 -> < INTEGER_10 ><br>
    *
@@ -633,7 +635,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFFloatingPoint} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFFloatingPoint} node, whose children are the following :
    * <p>
    * f0 -> < FLOATING_POINT ><br>
    *
@@ -646,7 +648,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFVar} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFVar} node, whose children are the following :
    * <p>
    * f0 -> < QUESTION ><br>
    * f1 -> RIFNCName()<br>
@@ -662,7 +664,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFNCName} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFNCName} node, whose children are the following :
    * <p>
    * f0 -> < NCNAME ><br>
    *
@@ -675,7 +677,7 @@ public class DepthFirstVoidArguVisitor<A> implements IVoidArguVisitor<A> {
   }
 
   /**
-   * Visits a {@link RIFQuotedURIref} node, whose children are the following :
+   * Visits a {@link lupos.rif.generated.syntaxtree.RIFQuotedURIref} node, whose children are the following :
    * <p>
    * f0 -> < Q_URIref ><br>
    *

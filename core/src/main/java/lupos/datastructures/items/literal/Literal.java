@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.items.literal;
 
@@ -31,7 +35,6 @@ import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.engine.operators.singleinput.sort.comparator.ComparatorAST;
 import lupos.rdf.Prefix;
-
 public abstract class Literal implements Item, Comparable<Literal>, Externalizable {
 
 	/**
@@ -39,10 +42,17 @@ public abstract class Literal implements Item, Comparable<Literal>, Externalizab
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * <p>valueEquals.</p>
+	 *
+	 * @param lit a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a boolean.
+	 */
 	public boolean valueEquals(final Literal lit) {
 		return (toString().compareTo(lit.toString()) == 0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Literal) {
@@ -51,66 +61,123 @@ public abstract class Literal implements Item, Comparable<Literal>, Externalizab
 			return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final Literal other) {
 
 		return ComparatorAST.intComp(this, other);
 	}
 
+	/**
+	 * <p>compareToNotNecessarilySPARQLSpecificationConform.</p>
+	 *
+	 * @param other a {@link lupos.datastructures.items.literal.Literal} object.
+	 * @return a int.
+	 */
 	public int compareToNotNecessarilySPARQLSpecificationConform(final Literal other) {
 		return ComparatorAST.intComp(this, other);
 	}
 	
+	/**
+	 * <p>getUsedStringRepresentations.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public abstract String[] getUsedStringRepresentations();
 
+	/** {@inheritDoc} */
 	@Override
 	public Literal getLiteral(final Bindings b) {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isVariable() {
 		return false;
 	}
 
+	/**
+	 * <p>isBlank.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isBlank() {
 		return (this instanceof AnonymousLiteral);
 	}
 
+	/**
+	 * <p>isURI.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isURI() {
 		return (this instanceof URILiteral);
 	}
 	
+	/**
+	 * <p>isTypedLiteral.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isTypedLiteral(){
 		return (this instanceof TypedLiteral);
 	}
 	
+	/**
+	 * <p>isLanguageTaggedLiteral.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isLanguageTaggedLiteral(){
 		return (this instanceof LanguageTaggedLiteral);
 	}
 	
+	/**
+	 * <p>isSimpleLiteral.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isSimpleLiteral(){
 		return !(this.isBlank() || this.isLanguageTaggedLiteral() || this.isTypedLiteral() || this.isURI());
 	}
 	
+	/**
+	 * <p>isXMLSchemaStringLiteral.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isXMLSchemaStringLiteral(){
 		return false;
 	}
 
+	/**
+	 * <p>originalString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String originalString() {
 		return toString();
 	}
 
+	/**
+	 * <p>originalStringDiffers.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean originalStringDiffers() {
 		return false;
 	}
 	
 	/**
+	 * <p>getKey.</p>
+	 *
 	 * @return A key for this literal. Typically it is the return value of toString(), but LazyLiterals return their code for efficiency reasons.
 	 */
 	public String getKey(){
@@ -118,25 +185,44 @@ public abstract class Literal implements Item, Comparable<Literal>, Externalizab
 	}
 
 	/**
+	 * <p>getOriginalKey.</p>
+	 *
 	 * @return A key for the original representation of this literal. Typically it is the return value of toString(), but LazyLiterals return their code for efficiency reasons.
 	 */
 	public String getOriginalKey(){
 		return this.originalString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
 	}
 
+	/**
+	 * <p>printYagoStringWithPrefix.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String printYagoStringWithPrefix() {
 		return toString();
 	}
 	
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @param prefix a {@link lupos.rdf.Prefix} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	@SuppressWarnings("unused")
 	public String toString(Prefix prefix){
 		return toString();
 	}
 
+	/**
+	 * <p>createThisLiteralNew.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	public abstract Literal createThisLiteralNew();
 }

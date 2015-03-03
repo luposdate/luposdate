@@ -27,7 +27,16 @@ import java.io.Serializable;
 
 /**
  * This is the interface of the simple visitor...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface SimpleOperatorGraphVisitor extends Serializable {
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param basicOperator a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object visit(BasicOperator basicOperator); 
 }

@@ -62,6 +62,9 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.splitheuristic.
  * The cost based optimizer first applies heuristics to split a set of triple patterns into disjunctive sets.
  * Hereby, the cost-based optimizer applies some heuristics always (e.g., splitting at cartesian products) and some only if there are still a large number of triple patterns to join.
  * Afterwards, the cost based optimizer tries out every possible join order of the triple patterns in the smaller sets of triple patterns and between them.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class CostBasedOptimizer implements RearrangeJoinOrder {
 
@@ -72,6 +75,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * Constructor to set all variable parameters
+	 *
 	 * @param operatorGraphGenerator the operator graph generator to be used to generate the operator graph from the plan
 	 * @param applyAlwaysHeuristics the heuristics to be always applied on a set of triple patterns
 	 * @param applyForManyTriplePatternsHeuristics the heuristics to be applied on a set of triple patterns, when the number of triple patterns is more than LIMIT_TRIPLEPATTERNS
@@ -84,6 +88,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * This constructor initializes the cost based optimizer with the default heuristics to be applied on triple patterns
+	 *
 	 * @param operatorGraphGenerator the operator graph generator to be used to generate the operator graph from the plan
 	 */
 	public CostBasedOptimizer(final OperatorGraphGenerator operatorGraphGenerator){
@@ -91,6 +96,8 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 	}
 
 	/**
+	 * <p>Getter for the field <code>applyAlwaysHeuristics</code>.</p>
+	 *
 	 * @return the default heuristics to be applied always on a set of triple patterns to be joined
 	 */
 	protected static List<SplitHeuristic> getApplyAlwaysHeuristics(){
@@ -100,6 +107,8 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 	}
 
 	/**
+	 * <p>Getter for the field <code>applyForManyTriplePatternsHeuristics</code>.</p>
+	 *
 	 * @return the default heuristics to be applied on a set of triple patterns to be joined, if the number of triple patterns is more than LIMIT_TRIPLEPATTERNS
 	 */
 	protected static List<SplitHeuristic> getApplyForManyTriplePatternsHeuristics(){
@@ -147,6 +156,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 	private int numberThreads = 0;
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void rearrangeJoinOrder(final Root newRoot, final BasicIndexScan indexScan) {
 		final Triple<List<LeafNodePlan>, HashMap<Variable, Literal>, HashMap<Variable, Literal>> initialInfo = this.getInitialPlansAndMinimaAndMaxima(indexScan.getTriplePattern(), indexScan);
@@ -157,6 +167,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * Determines the best estimated plan for joining a set of triple patterns
+	 *
 	 * @param initialPlans the plans for the leaf nodes (each for a single triple pattern)
 	 * @return the best estimated plan
 	 */
@@ -177,7 +188,9 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * Check already splitted plans to be further splitted and try out join orders (has effects if we have more than two splitted plans)
-	 * @param splittedPlans
+	 *
+	 * @param splittedPlans a {@link java.util.List} object.
+	 * @return a {@link lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.Plan} object.
 	 */
 	public Plan getPlanBySplittingSplittedPartsForManyTriplePatterns(final List<List<LeafNodePlan>> splittedPlans){
 		final List<Plan> resultingPlans = new LinkedList<Plan>();
@@ -189,6 +202,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * Determines further splitted plans if the number of triple patterns is large (&gt; LIMIT_TRIPLEPATTERNS) and tries out each join order
+	 *
 	 * @param initialPlans the plans to be splitted further
 	 * @return a best estimated plan
 	 */
@@ -207,6 +221,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * try out the join order between a list of plans
+	 *
 	 * @param initialPlans the plans to join
 	 * @return the best estimated join order
 	 */
@@ -339,6 +354,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 
 	/**
 	 * This method determines the initial plans (consisting of leaf nodes) as well as the minimum and maximum values for the variables to be joined
+	 *
 	 * @param triplePatterns the triple patterns to optimize
 	 * @param indexScan the index scan operator, which is utilized to determine the histogram and the minimum and maximum values for the join variables
 	 * @return the initial plans, the minimum and maximum values of the variables to be joined

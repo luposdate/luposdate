@@ -49,6 +49,9 @@ import lupos.event.util.TimedWrapper;
 
 /**
  * The consumer component which is used to connect to a broker and submit subscription.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Consumer extends Observable implements IMessageReceivedHandler<Serializable>, IQueryResultReceivedHandler, IDisconnectedHandler {
 
@@ -69,6 +72,11 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	//final List<IResultReceivedHandler> resultReceivedHandlers = new ArrayList<IResultReceivedHandler>();
 
 
+	/**
+	 * <p>Constructor for Consumer.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public Consumer() throws Exception {
 		Bindings.instanceClass = BindingsMap.class;
 		this.msgService = new SerializingMessageService(this.transportClass);
@@ -79,9 +87,10 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	 * a connection request to get notified about
 	 * a possible subbroker connection (this will
 	 * be handled in messageRecieved())
+	 *
 	 * @param host the host of the master
 	 * @param port the port of the master
-	 * @throws Exception if the connection has
+	 * @throws java.lang.Exception if the connection has
 	 * not been built properly
 	 */
 	public void connect(final String host, final int port) throws Exception {
@@ -112,14 +121,17 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 
 	/**
 	 * Submits a subscription to the broker.
-	 * @param s
-	 * @throws IOException
+	 *
+	 * @param s a {@link lupos.event.pubsub.Subscription} object.
+	 * @param a a {@link lupos.event.action.Action} object.
+	 * @throws java.io.IOException if any.
 	 */
 	public void subscribe(final Subscription s, final Action a) throws IOException {
 		this.pubSubClient.subscribe(s);
 		this.subscriptionActionMap.put(s, a);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void messageReceived(final Object src, final Serializable msg) {
 		if(msg instanceof TcpConnectInfo){
@@ -131,7 +143,8 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 
 	/**
 	 * Checks if the consumer is currently connected.
-	 * @return true, if connected
+	 *
+	 * @return a boolean.
 	 */
 	public boolean isConnected() {
 		return this.msgService.isConnected();
@@ -139,6 +152,7 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 
 	/**
 	 * Get the query results for a particular subscription.
+	 *
 	 * @param s The subscription whose query results should be returned.
 	 * @return A list of query results.
 	 */
@@ -146,6 +160,7 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 		return this.pubSubClient.getQueryResults(s);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void queryResultReceived(final QueryResult qr, final Subscription sub) {
 		System.out.println("QUERY RESULT RECEIVED");
@@ -156,6 +171,8 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * After a disconnect, this could be a sign for
 	 * reconnecting to a new broker. this is done in
 	 * this handler method

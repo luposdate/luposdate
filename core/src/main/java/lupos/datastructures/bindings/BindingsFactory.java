@@ -34,27 +34,53 @@ import lupos.datastructures.items.Variable;
 
 /**
  * This is a factory class to create new instances of Bindings
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BindingsFactory {
 
 	/** The hashmap storing the variables + position in literals for BindinsArray class */
 	protected Map<Variable, Integer> posVariables = null;
 
+	/**
+	 * <p>Constructor for BindingsFactory.</p>
+	 */
 	protected BindingsFactory(){
 	}
 
+	/**
+	 * <p>Constructor for BindingsFactory.</p>
+	 *
+	 * @param variables a {@link java.util.Collection} object.
+	 */
 	protected BindingsFactory(final Collection<Variable> variables){
 		this.setVariables(variables);
 	}
 
+	/**
+	 * <p>Constructor for BindingsFactory.</p>
+	 *
+	 * @param variables an array of {@link lupos.datastructures.items.Variable} objects.
+	 */
 	protected BindingsFactory(final Variable[] variables){
 		this.setVariables(variables);
 	}
 
+	/**
+	 * <p>Constructor for BindingsFactory.</p>
+	 *
+	 * @param posVariables a {@link java.util.Map} object.
+	 */
 	protected BindingsFactory(final Map<Variable, Integer> posVariables){
 		this.setPosVariables(posVariables);
 	}
 
+	/**
+	 * <p>createBindingsFactory.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public static BindingsFactory createBindingsFactory(){
 		if(Bindings.instanceClass==BindingsArray.class){
 			return new ArrayBindingsFactory();
@@ -69,6 +95,12 @@ public class BindingsFactory {
 		}
 	}
 
+	/**
+	 * <p>createBindingsFactory.</p>
+	 *
+	 * @param variables a {@link java.util.Collection} object.
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public static BindingsFactory createBindingsFactory(final Collection<Variable> variables){
 		if(Bindings.instanceClass==BindingsArray.class){
 			return new ArrayBindingsFactory(variables);
@@ -83,6 +115,12 @@ public class BindingsFactory {
 		}
 	}
 
+	/**
+	 * <p>createBindingsFactory.</p>
+	 *
+	 * @param variables an array of {@link lupos.datastructures.items.Variable} objects.
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public static BindingsFactory createBindingsFactory(final Variable[] variables){
 		if(Bindings.instanceClass==BindingsArray.class){
 			return new ArrayBindingsFactory(variables);
@@ -97,6 +135,12 @@ public class BindingsFactory {
 		}
 	}
 
+	/**
+	 * <p>createBindingsFactory.</p>
+	 *
+	 * @param posVariables a {@link java.util.Map} object.
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public static BindingsFactory createBindingsFactory(final Map<Variable, Integer> posVariables){
 		if(Bindings.instanceClass==BindingsArray.class){
 			return new ArrayBindingsFactory(posVariables);
@@ -111,6 +155,11 @@ public class BindingsFactory {
 		}
 	}
 
+	/**
+	 * <p>createInstance.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public Bindings createInstance(){
 		try {
 			return Bindings.instanceClass.newInstance();
@@ -122,6 +171,11 @@ public class BindingsFactory {
 		return new BindingsMap();
 	}
 
+	/**
+	 * <p>setVariables.</p>
+	 *
+	 * @param variables an array of {@link lupos.datastructures.items.Variable} objects.
+	 */
 	public void setVariables(final Variable[] variables){
 		this.posVariables = new HashMap<Variable, Integer>();
 		for (int i = 0; i < variables.length; i++) {
@@ -129,6 +183,11 @@ public class BindingsFactory {
 		}
 	}
 
+	/**
+	 * <p>setVariables.</p>
+	 *
+	 * @param variables a {@link java.util.Collection} object.
+	 */
 	public void setVariables(final Collection<Variable> variables){
 		this.posVariables = new HashMap<Variable, Integer>();
 		final Iterator<Variable> varIt = variables.iterator();
@@ -137,18 +196,38 @@ public class BindingsFactory {
 		}
 	}
 
+	/**
+	 * <p>Setter for the field <code>posVariables</code>.</p>
+	 *
+	 * @param posVariables a {@link java.util.Map} object.
+	 */
 	public void setPosVariables(final Map<Variable, Integer> posVariables){
 		this.posVariables = posVariables;
 	}
 
+	/**
+	 * <p>Getter for the field <code>posVariables</code>.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, Integer> getPosVariables(){
 		return this.posVariables;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getVariables(){
 		return this.posVariables.keySet();
 	}
 
+	/**
+	 * <p>getVariablesInOrder.</p>
+	 *
+	 * @return an array of {@link lupos.datastructures.items.Variable} objects.
+	 */
 	public Variable[] getVariablesInOrder(){
 		final Variable[] vars = new Variable[this.posVariables.size()];
 		for(final Entry<Variable, Integer> entry: this.posVariables.entrySet()){

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -31,6 +35,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2001/XMLSchema#")
 public class SchemaDatatypeBuilders {
 
+	/**
+	 * <p>buildBoolean.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "boolean")
 	public static BooleanLiteral buildBoolean(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -41,6 +51,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildAnyUri.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "anyURI")
 	public static Literal buildAnyUri(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -57,6 +73,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildBase64Binary.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "base64Binary")
 	public static Literal buildBase64Binary(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -69,6 +91,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildDouble.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "double")
 	public static Literal buildDouble(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -81,6 +109,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildFloat.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "float")
 	public static Literal buildFloat(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -93,6 +127,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildHexBinary.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "hexBinary")
 	public static Literal buildHexBinary(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -105,6 +145,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildDecimal.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "decimal")
 	public static Literal buildDecimal(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -117,6 +163,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "integer")
 	public static Literal buildInteger(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -129,6 +181,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildLong.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "long")
 	public static Literal buildLong(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -141,6 +199,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildInt.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "int")
 	public static Literal buildInt(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -153,6 +217,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildShort.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "short")
 	public static Literal buildShort(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -165,6 +235,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildByte.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "byte")
 	public static Literal buildByte(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -177,6 +253,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildNonNegativeInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "nonNegativeInteger")
 	public static Literal buildNonNegativeInteger(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -190,6 +272,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildpositiveInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "positiveInteger")
 	public static Literal buildpositiveInteger(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -203,6 +291,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildUnsignedLong.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "unsignedLong")
 	public static Literal buildUnsignedLong(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -215,6 +309,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildUnsignedInt.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "unsignedInt")
 	public static Literal buildUnsignedInt(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -227,6 +327,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildUnsignedShort.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "unsignedShort")
 	public static Literal buildUnsignedShort(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -241,6 +347,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildUnsignedByte.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "unsignedByte")
 	public static Literal buildUnsignedByte(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -253,6 +365,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildNonPositiveInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "nonPositiveInteger")
 	public static Literal buildNonPositiveInteger(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -266,6 +384,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildNegativeInteger.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "negativeInteger")
 	public static Literal buildNegativeInteger(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -279,6 +403,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildString.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "string")
 	public static Literal buildString(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -291,6 +421,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildNormalizedString.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "normalizedString")
 	public static Literal buildNormalizedString(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -304,6 +440,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildToken.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "token")
 	public static Literal buildToken(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -316,6 +458,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildLanguage.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "language")
 	public static Literal buildLanguage(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -328,6 +476,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildName.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "Name")
 	public static Literal buildName(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -340,6 +494,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildNCName.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "NCName")
 	public static Literal buildNCName(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -352,6 +512,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildNMTOKEN.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "NMTOKEN")
 	public static Literal buildNMTOKEN(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -364,6 +530,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildDate.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "date")
 	public static Literal buildDate(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -376,6 +548,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildDateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "dateTime")
 	public static Literal buildDateTime(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -388,6 +566,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildDateTimeStamp.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "dateTimeStamp")
 	public static Literal buildDateTimeStamp(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -402,6 +586,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "time")
 	public static Literal buildTime(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -414,6 +604,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildDayTimeDuration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "dayTimeDuration")
 	public static Literal buildDayTimeDuration(final Argument arg) {
 		if (arg.arguments.size() == 1
@@ -427,6 +623,12 @@ public class SchemaDatatypeBuilders {
 			return null;
 	}
 
+	/**
+	 * <p>buildYearMonthDuration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "yearMonthDuration")
 	public static Literal buildYearMonthDuration(final Argument arg) {
 		if (arg.arguments.size() == 1

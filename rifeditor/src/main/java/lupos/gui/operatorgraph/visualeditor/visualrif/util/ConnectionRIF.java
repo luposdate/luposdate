@@ -46,14 +46,15 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.OrContainer;
  * operator he wants to create a connection two. After the first click an arrow
  * is drawn to the mouse where it goes. After the second click the connection is
  * added, if it is allowed to make a connection between these two operators.
- * 
+ *
  * @author schleife
+ * @version $Id: $Id
  */
 public abstract class ConnectionRIF<T> extends Connection<T>{
 
 	/**
 	 * Creates a Connection object to connect two operators.
-	 * 
+	 *
 	 * @param visualEditor
 	 *            reference to the main visual editor
 	 */
@@ -63,13 +64,12 @@ public abstract class ConnectionRIF<T> extends Connection<T>{
 
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This methods adds an operator to the Connection class and determines the
 	 * next step. After the second operator is added this method automatically
 	 * cancels the connectionMode of the VisualEditor and adds the connection.
 	 * This method should be called two times during a connectionMode.
-	 * 
-	 * @param op
-	 *            The operator to add to the connection.
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -108,6 +108,8 @@ public abstract class ConnectionRIF<T> extends Connection<T>{
 	/**
 	 * This method checks whether the requested connection is valid or not and
 	 * creates it, if it is.
+	 *
+	 * @return a boolean.
 	 */
 	protected boolean createConnection() {
 		// --- error handling - begin ---

@@ -34,14 +34,19 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * Methods for creating the operators for the Memory Index approach
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class MemoryIndexOperatorCreator implements IOperatorCreator {
 
+	/** {@inheritDoc} */
 	@Override
 	public Root createRoot(final Dataset dataset) {
 		return new MemoryIndexRoot(dataset);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan createIndexScan(final Root root,
 			final Collection<TriplePattern> triplePatterns) {

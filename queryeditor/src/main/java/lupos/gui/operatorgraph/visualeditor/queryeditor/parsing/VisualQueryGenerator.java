@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.queryeditor.parsing;
 
@@ -133,16 +137,21 @@ import lupos.sparql1_1.ASTisNumericFuncNode;
 import lupos.sparql1_1.ASTisURIFuncNode;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.SPARQL1_1ParserVisitor;
-
 public class VisualQueryGenerator extends SPARQLCoreParserVisitorImplementation
 implements SPARQL1_1ParserVisitor {
 
+	/**
+	 * <p>Constructor for VisualQueryGenerator.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public VisualQueryGenerator(final Prefix prefix) {
 		super();
 
 		this.prefix = prefix;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTQuery node, final Object data) {
 		final int numberChildren = node.jjtGetNumChildren();
@@ -161,6 +170,7 @@ implements SPARQL1_1ParserVisitor {
 		return testOP;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTGroupConstraint node, final Object data) {
 		try {
@@ -294,51 +304,61 @@ implements SPARQL1_1ParserVisitor {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTModify node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTDelete node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTInsert node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTLoad node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTClear node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTCreate node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTDrop node, final Object data) {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTDefaultGraph node, final Object data) {
 		return ((ASTQuotedURIRef) node.jjtGetChild(0)).toQueryString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNamedGraph node, final Object data) {
 		return ((ASTQuotedURIRef) node.jjtGetChild(0)).toQueryString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTGraphConstraint node, final Object data) {
 		final int numberChildren = node.jjtGetNumChildren();
@@ -375,376 +395,451 @@ implements SPARQL1_1ParserVisitor {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTAVerbType node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTGroup node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTHaving node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTBindings node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNIL node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTUndef node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTAdd node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTMove node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTCopy node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNamed node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTDefault node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTAll node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTService node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTBind node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTMinus node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNodeSet node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTObjectList node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTPathAlternative node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTPathSequence node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTInvers node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTArbitraryOccurences node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTOptionalOccurence node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTArbitraryOccurencesNotZero node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNegatedPath node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTBlankNodePropertyList node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTCollection node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTInNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNotInNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTRandFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTABSFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTCeilFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTFloorFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTRoundFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTConcatFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrlenFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTUcaseFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTLcaseFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTEncodeForUriFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTContainsFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrstartsFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrEndsFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrBeforeFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrAfterFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTYearFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTMonthFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTDayFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTHoursFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTMinutesFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSecondsFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTTimeZoneFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTTzFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNowFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTUUIDFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSTRUUIDFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTMD5FuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSHA1FuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSHA256FuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSHA384FuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSHA512FuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTCoalesceFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTIfFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrLangFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrdtFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTisIRIFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTisURIFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTisBlankFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTisLiteralFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTisNumericFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTSubstringFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTStrReplaceFuncNode node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTExists node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNotExists node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTAggregation node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTQName node, final Object data) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTExpressionList node, final Object data) {
 		return null;

@@ -48,9 +48,10 @@ import lupos.rdf.Prefix;
 
 /**
  * QueryClient with optimization for P2P network
- * @author Bjoern
  *
- * @param <T> the type of the {@link KeyContainer}
+ * @author Bjoern
+ * @param <T> the type of the {@link lupos.distributed.storage.distributionstrategy.tripleproperties.KeyContainer}
+ * @version $Id: $Id
  */
 public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphTransmission<KeyContainer<T>>{
 
@@ -58,12 +59,14 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 
 	/**
 	 * Sets whether to use subgraph execution and submission
+	 *
 	 * @param enabled enable the option
 	 */
 	public void setUseSubgraphSubmission(boolean enabled) {
 		this.useSG  = enabled;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -71,6 +74,7 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 		Bindings.instanceClass = BindingsMap.class;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		//do no use DistributedRulePackage if not using Subgraph Submission ...
@@ -105,6 +109,7 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 		return ((new Date()).getTime() - a.getTime());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
@@ -179,18 +184,42 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 		return result;
 	}
 	
+	/**
+	 * <p>Constructor for P2P_SG_QueryClient_WithSubgraph.</p>
+	 *
+	 * @param s a {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public P2P_SG_QueryClient_WithSubgraph(final StorageWithDistributionStrategy s,
 			ISubgraphExecutor<KeyContainer<T>> subgraphExecutor)
 			throws Exception {
 		super(s, s.getDistribution(), subgraphExecutor);
 	}
+	/**
+	 * <p>Constructor for P2P_SG_QueryClient_WithSubgraph.</p>
+	 *
+	 * @param s a {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public P2P_SG_QueryClient_WithSubgraph(final StorageWithDistributionStrategy s,
 			ISubgraphExecutor<KeyContainer<T>> subgraphExecutor,String[] args)
 			throws Exception {
 		super(s, s.getDistribution(), subgraphExecutor,args);
 	}
+	/**
+	 * <p>Constructor for P2P_SG_QueryClient_WithSubgraph.</p>
+	 *
+	 * @param p2p a {@link lupos.distributed.p2p.network.AbstractP2PNetwork} object.
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	@SuppressWarnings({ })
 	public P2P_SG_QueryClient_WithSubgraph(final AbstractP2PNetwork<Triple> p2p,
 			IDistribution<KeyContainer<T>> distribution,
@@ -199,6 +228,15 @@ public class P2P_SG_QueryClient_WithSubgraph<T> extends QueryClientWithSubgraphT
 		super(new BlockStorageWithDistributionStrategy<>(p2p, distribution), distribution, subgraphExecutor,args);
 	}
 	
+	/**
+	 * <p>Constructor for P2P_SG_QueryClient_WithSubgraph.</p>
+	 *
+	 * @param s a {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy} object.
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.IDistribution} object.
+	 * @param subgraphExecutor a {@link lupos.distributed.operator.ISubgraphExecutor} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public P2P_SG_QueryClient_WithSubgraph(final StorageWithDistributionStrategy s,
 			IDistribution<KeyContainer<T>> distribution,

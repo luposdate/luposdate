@@ -34,9 +34,12 @@ import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT;
 
 /**
- * This class encapsulates the configuration for the sorting algorithms like DBMergeSortedBag, DBMergeSortedSet, ... 
- * An instance should be first generated and afterwards one of the methods useReplacementSelection, 
+ * This class encapsulates the configuration for the sorting algorithms like DBMergeSortedBag, DBMergeSortedSet, ...
+ * An instance should be first generated and afterwards one of the methods useReplacementSelection,
  * useExternalMergeSort or use ChunksMergeSort should be called in order to set a specific external sorting algorithm.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SortConfiguration<E extends Comparable<E>> {
 
@@ -125,8 +128,9 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	/**
 	 * Sets the compression strategy to be used for storing and reading the runs
+	 *
 	 * @param compression the compression strategy to be used for the runs
-	 */	
+	 */
 	public void setCompression(final Compression compression){
 		this.compression = compression;
 	}
@@ -160,20 +164,22 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 	
 	/**
-	 * Creates an input stream for uncompressing the given input stream according to the current compression strategy 
+	 * Creates an input stream for uncompressing the given input stream according to the current compression strategy
+	 *
 	 * @param inferior the input stream to be uncompressed
 	 * @return the input stream for uncompressed data
-	 * @throws IOException if the creation fails
+	 * @throws java.io.IOException if the creation fails
 	 */
 	public InputStream createInputStream(final InputStream inferior) throws IOException{
 		return this.compression.createInputStream(inferior);
 	}
 	
 	/**
-	 * Creates an output stream for compressing the given output stream according to the current compression strategy 
+	 * Creates an output stream for compressing the given output stream according to the current compression strategy
+	 *
 	 * @param inferior the output stream to be compressed
 	 * @return the output stream with compressed data
-	 * @throws IOException if the creation fails
+	 * @throws java.io.IOException if the creation fails
 	 */
 	public OutputStream createOutputStream(final OutputStream inferior) throws IOException{
 		return this.compression.createOutputStream(inferior);
@@ -187,7 +193,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
-	 * Choose replacement selection as sorting strategy (with default heap type and default merge heap type) 
+	 * Choose replacement selection as sorting strategy (with default heap type and default merge heap type)
+	 *
 	 * @param height the height of the heap
 	 * @param mergeHeapHeight_param the height of the merge heap
 	 */
@@ -196,7 +203,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
-	 * Choose replacement selection as sorting strategy 
+	 * Choose replacement selection as sorting strategy
+	 *
 	 * @param heapType_param the type of heap used to generate the initial runs
 	 * @param height the height of the heap
 	 * @param mergeHeapType_param the type of the merge heap
@@ -220,6 +228,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	/**
 	 * Choose external merge sort as sorting strategy (with default in-memory sorting algorithm and merge heap type)
+	 *
 	 * @param size_param space reserved for the in-memory sorting algorithm
 	 * @param mergeHeapHeight_param the height of the merge heap
 	 */
@@ -229,6 +238,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Choose external merge sort as sorting strategy
+	 *
 	 * @param sortingAlgorithm in memory sorting algorithm
 	 * @param size_param space reserved for the in-memory sorting algorithm
 	 * @param mergeHeapType_param the type of the merge heap
@@ -252,8 +262,9 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Choose chunks merge sort as sorting strategy (use parallel merge sort as in-memory sorting algorithm and the default merge heap type of default height)
+	 *
 	 * @param K number of chunks
-	 * @param size_param main memory space reserved for chunks merge sort 
+	 * @param size_param main memory space reserved for chunks merge sort
 	 */
 	public void useChunksMergeSort(final int K, final int size_param){
 		this.useChunksMergeSort(K, size_param, SortConfiguration.DEFAULT_MERGEHEAP_HEIGHT);
@@ -261,8 +272,9 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Choose chunks merge sort as sorting strategy (use parallel merge sort as in-memory sorting algorithm and the default merge heap type)
+	 *
 	 * @param K number of chunks
-	 * @param size_param main memory space reserved for chunks merge sort 
+	 * @param size_param main memory space reserved for chunks merge sort
 	 * @param mergeHeapHeight_param the height of the merge heap
 	 */
 	public void useChunksMergeSort(final int K, final int size_param, final int mergeHeapHeight_param){
@@ -271,8 +283,9 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Choose chunks merge sort as sorting strategy (use parallel merge sort as in-memory sorting algorithm)
+	 *
 	 * @param K number of chunks
-	 * @param size_param main memory space reserved for chunks merge sort 
+	 * @param size_param main memory space reserved for chunks merge sort
 	 * @param mergeHeapType_param the type of the merge heap
 	 * @param mergeHeapHeight_param the height of the merge heap
 	 */
@@ -282,9 +295,10 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	/**
 	 * Choose chunks merge sort as sorting strategy
+	 *
 	 * @param K number of chunks
-	 * @param useParallelMergeSort true for parallel merge sort as in-memory sorting algorithm, otherwise quicksort is used 
-	 * @param size_param main memory space reserved for chunks merge sort 
+	 * @param useParallelMergeSort true for parallel merge sort as in-memory sorting algorithm, otherwise quicksort is used
+	 * @param size_param main memory space reserved for chunks merge sort
 	 * @param mergeHeapType_param the type of the merge heap
 	 * @param mergeHeapHeight_param the height of the merge heap
 	 */
@@ -299,6 +313,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	/**
 	 * Creates the in-memory sorting algorithm for external merge sorting algrorithms
+	 *
 	 * @return instance for in-memory sorting
 	 */
 	public ToSort<E> createToSort(){
@@ -311,6 +326,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	/**
 	 * Creates the heap for replacement selection
+	 *
 	 * @return the heap for replacement selection
 	 */
 	public Heap<E> createHeap(){
@@ -323,6 +339,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Creates the heap for the merging phase
+	 *
 	 * @return the heap for the merging phase
 	 */
 	public Heap<E> createMergeHeap(){
@@ -331,6 +348,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 	
 	/**
 	 * Returns the elements to pop from a full heap (1 for replacement selection, size of a chunk for chunks merge sort)
+	 *
 	 * @return the elements to pop from a full heap
 	 */
 	public int getElementsToPopWhenHeapIsFull(){
@@ -338,6 +356,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_TOSORT.</p>
+	 *
 	 * @return the default in-memory sorting algorithm used in external merge sort
 	 */
 	public static TOSORT getDEFAULT_TOSORT() {
@@ -346,6 +366,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default in-memory sorting algorithm used in external merge sort
+	 *
 	 * @param dEFAULT_TOSORT the default in-memory sorting algorithm used in external merge sort
 	 */
 	public static void setDEFAULT_TOSORT(TOSORT dEFAULT_TOSORT) {
@@ -353,6 +374,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_TOSORT_SIZE.</p>
+	 *
 	 * @return the default reserved space for the in-memory sorting algorithm used in external merge sort
 	 */
 	public static int getDEFAULT_TOSORT_SIZE() {
@@ -361,6 +384,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default reserved space for the in-memory sorting algorithm used in external merge sort
+	 *
 	 * @param dEFAULT_TOSORT_SIZE the default reserved space for the in-memory sorting algorithm used in external merge sort
 	 */
 	public static void setDEFAULT_TOSORT_SIZE(int dEFAULT_TOSORT_SIZE) {
@@ -368,6 +392,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_HEAP_TYPE.</p>
+	 *
 	 * @return the default heap type in replacement selection
 	 */
 	public static HEAPTYPE getDEFAULT_HEAP_TYPE() {
@@ -376,6 +402,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default heap type in replacement selection
+	 *
 	 * @param dEFAULT_HEAP_TYPE the default heap type in replacement selection
 	 */
 	public static void setDEFAULT_HEAP_TYPE(HEAPTYPE dEFAULT_HEAP_TYPE) {
@@ -383,6 +410,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_HEIGHT.</p>
+	 *
 	 * @return the default heap height of the heap in replacement selection
 	 */
 	public static int getDEFAULT_HEIGHT() {
@@ -391,6 +420,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default heap height of the heap in replacement selection
+	 *
 	 * @param dEFAULT_HEIGHT the default heap height of the heap in replacement selection
 	 */
 	public static void setDEFAULT_HEIGHT(int dEFAULT_HEIGHT) {
@@ -398,6 +428,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_MERGEHEAP_TYPE.</p>
+	 *
 	 * @return the default heap type of the merge heap
 	 */
 	public static HEAPTYPE getDEFAULT_MERGEHEAP_TYPE() {
@@ -406,6 +438,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default heap type of the merge heap
+	 *
 	 * @param dEFAULT_MERGEHEAP_TYPE the default heap type of the merge heap
 	 */
 	public static void setDEFAULT_MERGEHEAP_TYPE(HEAPTYPE dEFAULT_MERGEHEAP_TYPE) {
@@ -413,6 +446,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_MERGE_HEAP_HEIGHT.</p>
+	 *
 	 * @return the default heap height of the merge heap
 	 */
 	public static int getDEFAULT_MERGE_HEAP_HEIGHT() {
@@ -421,6 +456,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default heap height of the merge heap
+	 *
 	 * @param dEFAULT_MERGE_HEAP_HEIGHT the default heap height of the merge heap
 	 */
 	public static void setDEFAULT_MERGE_HEAP_HEIGHT(int dEFAULT_MERGE_HEAP_HEIGHT) {
@@ -428,6 +464,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_K.</p>
+	 *
 	 * @return the number of chunks used in chunks merge sort
 	 */
 	public static int getDEFAULT_K() {
@@ -436,6 +474,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the number of chunks used in chunks merge sort
+	 *
 	 * @param dEFAULT_K the number of chunks used in chunks merge sort
 	 */
 	public static void setDEFAULT_K(int dEFAULT_K) {
@@ -443,6 +482,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>getDEFAULT_COMPRESSION.</p>
+	 *
 	 * @return the default compression strategy for the runs
 	 */
 	public static Compression getDEFAULT_COMPRESSION() {
@@ -451,6 +492,7 @@ public class SortConfiguration<E extends Comparable<E>> {
 
 	/**
 	 * Sets the default compression strategy for the runs
+	 *
 	 * @param dEFAULT_COMPRESSION the default compression strategy for the runs
 	 */
 	public static void setDEFAULT_COMPRESSION(Compression dEFAULT_COMPRESSION) {
@@ -458,6 +500,8 @@ public class SortConfiguration<E extends Comparable<E>> {
 	}
 
 	/**
+	 * <p>Getter for the field <code>mergeHeapHeight</code>.</p>
+	 *
 	 * @return the heap height of the merge heap
 	 */
 	public int getMergeHeapHeight() {

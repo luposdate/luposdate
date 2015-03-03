@@ -29,10 +29,16 @@ import lupos.optimizations.physical.joinorder.staticanalysis.scoring.triplepatte
 import lupos.optimizations.physical.joinorder.staticanalysis.scoring.triplepattern.ScoringTriplePatternLeastNewVariables;
 
 /**
- * Join ordering according to primarily least new variables and secondary least solutions for the next best chosen triple pattern... 
+ * Join ordering according to primarily least new variables and secondary least solutions for the next best chosen triple pattern...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries extends RearrangeJoinOrderWithScoringTriplePatterns {
 	
+	/**
+	 * <p>Constructor for RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries.</p>
+	 */
 	public RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries(){
 		this.scorings.add(new ScoringTriplePatternLeastNewVariables());
 		this.scorings.add(new ScoringTriplePatternLeastEntries());
@@ -40,6 +46,7 @@ public class RearrangeTriplePatternsInIndexScanLeastNewVariablesAndLeastEntries 
 
 	/**
 	 * Static method to call the optimizer for join ordering according to primarily least new variables and secondary least solutions for the next best chosen triple pattern
+	 *
 	 * @param indexScan the IndexScan operator with at least two triple patterns to join....
 	 * @return the root operator under which the subgraph with the reordered joins are inserted
 	 */

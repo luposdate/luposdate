@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -27,14 +31,23 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class SaveLoader {
 	private RuleEditor editor = null;
 
+	/**
+	 * <p>Constructor for SaveLoader.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public SaveLoader(RuleEditor editor) {
 		this.editor = editor;
 	}
 
+	/**
+	 * <p>save.</p>
+	 *
+	 * @param saveFileName a {@link java.lang.String} object.
+	 */
 	public void save(String saveFileName) {
 		System.out.println("Starting to save...");
 
@@ -53,6 +66,11 @@ public class SaveLoader {
 		System.out.println("DONE");
 	}
 
+	/**
+	 * <p>load.</p>
+	 *
+	 * @param loadFileName a {@link java.lang.String} object.
+	 */
 	public void load(String loadFileName) {
 		System.out.println("Starting to load...");
 

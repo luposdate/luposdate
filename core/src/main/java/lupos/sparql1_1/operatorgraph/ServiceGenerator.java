@@ -28,20 +28,42 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 import lupos.sparql1_1.operatorgraph.helper.OperatorConnection;
 
 /**
- * This class is overridden by classes of the module endpoint, which really implement the operatorgraph generation for the service calls...  
+ * This class is overridden by classes of the module endpoint, which really implement the operatorgraph generation for the service calls...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ServiceGenerator { 	
 
+	/**
+	 * <p>insertIndependantFederatedQueryOperator.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTService} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	@SuppressWarnings("unused")
 	public void insertIndependantFederatedQueryOperator(final ASTService node, final OperatorConnection connection, final IndexScanCreatorInterface indexScanCreator){
 		throw new UnsupportedOperationException("To enable service calls in SPARQL queries, please use the endpoint module!");
 	}
 	
+	/**
+	 * <p>countsAsJoinPartner.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTService} object.
+	 * @return a boolean.
+	 */
 	@SuppressWarnings("unused")
 	public boolean countsAsJoinPartner(final ASTService node){
 		return false;
 	}
 		
+	/**
+	 * <p>insertFederatedQueryOperator.</p>
+	 *
+	 * @param node a {@link lupos.sparql1_1.ASTService} object.
+	 * @param connection a {@link lupos.sparql1_1.operatorgraph.helper.OperatorConnection} object.
+	 */
 	@SuppressWarnings("unused")
 	public void insertFederatedQueryOperator(final ASTService node, final OperatorConnection connection){
 		throw new UnsupportedOperationException("To enable service calls in SPARQL queries, please use the endpoint module!");

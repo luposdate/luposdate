@@ -33,6 +33,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 /**
  * This is the distribution with twice usage of partitions with the last and
  * pre-last component of the KeyCombination
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class TwoPartitionsDistribution implements
 		IDistributionKeyContainer<String> {
@@ -40,11 +43,17 @@ public class TwoPartitionsDistribution implements
 	/*
 	 * The needed key combinations
 	 */
+	/** Constant <code>TYPE_SPO="SPO"</code> */
 	protected final static String TYPE_SPO = "SPO";
+	/** Constant <code>TYPE_SOP="SOP"</code> */
 	protected final static String TYPE_SOP = "SOP";
+	/** Constant <code>TYPE_PSO="PSO"</code> */
 	protected final static String TYPE_PSO = "PSO";
+	/** Constant <code>TYPE_POS="POS"</code> */
 	protected final static String TYPE_POS = "POS";
+	/** Constant <code>TYPE_OPS="OPS"</code> */
 	protected final static String TYPE_OPS = "OPS";
+	/** Constant <code>TYPE_OSP="OSP"</code> */
 	protected final static String TYPE_OSP = "OSP";
 
 	/**
@@ -62,7 +71,7 @@ public class TwoPartitionsDistribution implements
 
 	/**
 	 * Returns the bag size (for the first component)
-	 * 
+	 *
 	 * @return the bag size
 	 */
 	public int getFirstBagsize() {
@@ -71,7 +80,7 @@ public class TwoPartitionsDistribution implements
 
 	/**
 	 * Returns the bag size (for the 2nd component)
-	 * 
+	 *
 	 * @return the bag size
 	 */
 	public int getSecondBagsize() {
@@ -139,6 +148,7 @@ public class TwoPartitionsDistribution implements
 		return s.charAt(2) + "";
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public KeyContainer<String>[] getKeysForStoring(final Triple triple) {
@@ -188,6 +198,7 @@ public class TwoPartitionsDistribution implements
 		 */
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public KeyContainer<String>[] getKeysForQuerying(
 			final TriplePattern triplePattern)
@@ -316,16 +327,23 @@ public class TwoPartitionsDistribution implements
 		throw new TriplePatternNotSupportedError(this, triplePattern);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "P2P double hierarchy distribution strategy (triple (s, p, o) has keys { 'SP' , 'PO', 'SO' , 'OS' , 'OP' , 'PS' })";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String[] getKeyTypes() {
 		return TwoPartitionsDistribution.getPossibleKeyTypes();
 	}
 
+	/**
+	 * <p>getPossibleKeyTypes.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
+	 */
 	public static String[] getPossibleKeyTypes() {
 		return new String[] { TYPE_SPO, TYPE_PSO, TYPE_OPS };
 	}

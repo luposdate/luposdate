@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -28,66 +32,138 @@ import lupos.datastructures.items.literal.Literal;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class TimePredicates {
 
+	/**
+	 * <p>is_date.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-date")
 	public static BooleanLiteral is_date(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0), "date",
 				"dateTime");
 	}
 
+	/**
+	 * <p>is_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-dateTime")
 	public static BooleanLiteral is_dateTime(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"dateTime", "date");
 	}
 
+	/**
+	 * <p>is_dateTimeStamp.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-dateTimeStamp")
 	public static BooleanLiteral is_dateTimeStamp(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"dateTimeStamp");
 	}
 
+	/**
+	 * <p>is_time.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-time")
 	public static BooleanLiteral is_time(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0), "time");
 	}
 
+	/**
+	 * <p>is_dayTimeDuration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-dayTimeDuration")
 	public static BooleanLiteral is_dayTimeDuration(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"dayTimeDuration");
 	}
 
+	/**
+	 * <p>is_yearMonthDuration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-yearMonthDuration")
 	public static BooleanLiteral is_yearMonthDuration(final Argument arg) {
 		return BuiltinHelper.isOfXSType((Literal) arg.arguments.get(0),
 				"yearMonthDuration");
 	}
 
+	/**
+	 * <p>is_not_date.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-date")
 	public static BooleanLiteral is_not_date(final Argument arg) {
 		return BooleanLiteral.not(is_date(arg));
 	}
 
+	/**
+	 * <p>is_not_dateTime.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-dateTime")
 	public static BooleanLiteral is_not_dateTime(final Argument arg) {
 		return BooleanLiteral.not(is_dateTime(arg));
 	}
 
+	/**
+	 * <p>is_not_dateTimeStamp.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-dateTimeStamp")
 	public static BooleanLiteral is_not_dateTimeStamp(final Argument arg) {
 		return BooleanLiteral.not(is_dateTimeStamp(arg));
 	}
 
+	/**
+	 * <p>is_not_time.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-time")
 	public static BooleanLiteral is_not_time(final Argument arg) {
 		return BooleanLiteral.not(is_time(arg));
 	}
 
+	/**
+	 * <p>is_not_dayTimeDuration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-dayTimeDuration")
 	public static BooleanLiteral is_not_dayTimeDuration(final Argument arg) {
 		return BooleanLiteral.not(is_dayTimeDuration(arg));
 	}
 
+	/**
+	 * <p>is_not_yearMonthDuration.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.rif.builtin.BooleanLiteral} object.
+	 */
 	@Builtin(Name = "is-literal-not-yearMonthDuration")
 	public static BooleanLiteral is_not_yearMonthDuration(final Argument arg) {
 		return BooleanLiteral.not(is_yearMonthDuration(arg));

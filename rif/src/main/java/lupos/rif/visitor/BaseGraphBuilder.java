@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -38,39 +42,61 @@ import lupos.rif.operator.BooleanIndexScan;
 import lupos.rif.operator.PredicateIndexScan;
 import lupos.rif.operator.RuleFilter;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
-
 public abstract class BaseGraphBuilder implements IRuleVisitor<Object, Object> {
 	protected final IndexScanCreatorInterface indexScanCreator;
 	protected PredicateIndexScan predicateIndex;
 	protected BooleanIndexScan booleanIndex;
 
+	/**
+	 * <p>Constructor for BaseGraphBuilder.</p>
+	 *
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 */
 	public BaseGraphBuilder(final IndexScanCreatorInterface indexScanCreator) {
 		super();
 		this.indexScanCreator = indexScanCreator;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(RuleList obj, Object arg) throws RIFException {
 		throw new RIFException("Lists should be translated to Triples before processing in Operatorgraph!");
 	}
 
+	/**
+	 * <p>buildRuleFilter.</p>
+	 *
+	 * @param expr a {@link lupos.rif.IExpression} object.
+	 * @param arg a {@link java.lang.Object} object.
+	 * @return a {@link lupos.rif.operator.RuleFilter} object.
+	 */
 	protected abstract RuleFilter buildRuleFilter(IExpression expr, Object arg);
 
+	/** {@inheritDoc} */
 	public Object visit(Equality obj, Object arg) throws RIFException {
 		return buildRuleFilter(obj, arg);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(External obj, Object arg) throws RIFException {
 		return buildRuleFilter(obj, arg);
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(Constant obj, Object arg) throws RIFException {
 		return obj.getLiteral();
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(RuleVariable obj, Object arg) throws RIFException {
 		return obj.getVariable();
 	}
 
+	/**
+	 * <p>unitermToTriplePattern.</p>
+	 *
+	 * @param obj a {@link lupos.rif.model.Uniterm} object.
+	 * @return a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 */
 	protected TriplePattern unitermToTriplePattern(Uniterm obj) {
 		Item subject = (Item) obj.termParams.get(0).accept(this, null);
 		Item predicate = (Item) obj.termName.accept(this, null);

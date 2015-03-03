@@ -26,17 +26,20 @@ package lupos.event.communication;
 import java.util.ArrayList;
 
 /**
- * Helper class which extends a {@link ArrayList} holding IMessageReceivedHandler&lt;T&gt; instances.
+ * Helper class which extends a {@link java.util.ArrayList} holding IMessageReceivedHandler&lt;T&gt; instances.
  *
  * @param <T> The type of the messages.
+ * @author groppe
+ * @version $Id: $Id
  */
 @SuppressWarnings("serial")
 public class MessageReceivedHandlerList<T> extends ArrayList<IMessageReceivedHandler<T>> {
 
 	/**
 	 * Calls the {@IMessageReceivedHandler.messageReceived} method of all handlers in the list.
+	 *
 	 * @param src The object from which the call was made.
-	 * @param msg
+	 * @param msg a T object.
 	 */
 	public void callAll(final Object src, final T msg) {
 		for(final IMessageReceivedHandler<T> handler : this) {

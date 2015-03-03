@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,21 +21,44 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.patriciatrie.disk;
 
 import java.io.IOException;
 
 import lupos.datastructures.patriciatrie.disk.nodemanager.NodeOutputStream;
-
 public interface IDBNode {
 
+	/**
+	 * <p>getNodeIndex.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getNodeIndex();
 
+	/**
+	 * <p>serialize.</p>
+	 *
+	 * @param nodeOutputStream a {@link lupos.datastructures.patriciatrie.disk.nodemanager.NodeOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public void serialize(NodeOutputStream nodeOutputStream) throws IOException ;
 
+	/**
+	 * <p>isChanged.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isChanged();
 
+	/**
+	 * <p>isOnRecursionStack.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isOnRecursionStack();
 	
 }

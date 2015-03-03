@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -37,8 +41,8 @@ import lupos.rif.model.Rule;
 import lupos.rif.model.RuleList;
 import lupos.rif.model.RulePredicate;
 import lupos.rif.model.RuleVariable;
-
 public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
+	/** {@inheritDoc} */
 	public String visit(Document obj, Object arg) throws RIFException {
 		StringBuilder str = new StringBuilder();
 		str.append("Document(").append("\n");
@@ -47,6 +51,7 @@ public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(Conjunction obj, Object arg) throws RIFException {
 		StringBuilder str = new StringBuilder();
 		str.append("And").append("(");
@@ -55,6 +60,7 @@ public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(Disjunction obj, Object arg) throws RIFException {
 		StringBuilder str = new StringBuilder();
 		str.append("Or").append("(");
@@ -63,10 +69,12 @@ public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(ExistExpression obj, Object arg) throws RIFException {
 		return "Exists(" + obj.expr.accept(this, arg) + ")";
 	}
 
+	/** {@inheritDoc} */
 	public String visit(Rule obj, Object arg) throws RIFException {
 		StringBuilder str = new StringBuilder();
 		str.append(obj.getHead().accept(this, arg));
@@ -75,6 +83,7 @@ public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
 		return str.toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(RulePredicate obj, Object arg) throws RIFException {
 		StringBuilder str = new StringBuilder();
 		str.append(obj.termName.accept(this, arg)).append("(");
@@ -83,6 +92,7 @@ public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
 		return str.append(")").toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(External obj, Object arg) throws RIFException {
 		StringBuilder str = new StringBuilder();
 		str.append("External(").append(obj.termName.accept(this, arg))
@@ -92,19 +102,23 @@ public class ToStringRuleVisitor implements IRuleVisitor<String, Object> {
 		return str.append("))").toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(Equality obj, Object arg) throws RIFException {
 		return obj.leftExpr.accept(this, arg) + " " + "=" + " "
 		+ obj.rightExpr.accept(this, arg);
 	}
 
+	/** {@inheritDoc} */
 	public String visit(Constant obj, Object arg) throws RIFException {
 		return obj.getLiteral().toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(RuleVariable obj, Object arg) throws RIFException {
 		return obj.getVariable().toString();
 	}
 
+	/** {@inheritDoc} */
 	public String visit(RuleList obj, Object arg) throws RIFException {
 		return "TODO";
 	}

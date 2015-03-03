@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.singleinput.federated;
 
@@ -29,13 +33,18 @@ import lupos.datastructures.items.Variable;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.sparql1_1.Node;
-
 public abstract class FederatedQueryWithoutSucceedingJoin extends FederatedQuery {
 
+	/**
+	 * <p>Constructor for FederatedQueryWithoutSucceedingJoin.</p>
+	 *
+	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
+	 */
 	public FederatedQueryWithoutSucceedingJoin(Node federatedQuery) {
 		super(federatedQuery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.intersectionVariables = new HashSet<Variable>();

@@ -36,15 +36,31 @@ import lupos.distributedendpoints.storage.Storage_DE_DistributionStrategy;
  * This class is the query evaluator for querying distributed SPARQL endpoints based on a given distribution strategy.
  *
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
 
+	/**
+	 * <p>Constructor for QueryClient_DE_DistributionStrategy.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution) throws Exception {
 		// BindingsFactory in Storage_DE_DistributionStrategy is set in the constructor of QueryClient
 		super(Storage_DE_DistributionStrategy.createInstance(distribution, null));
 		this.askForHistogramRequests();
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE_DistributionStrategy.</p>
+	 *
+	 * @param distribution a {@link lupos.distributed.storage.distributionstrategy.tripleproperties.IDistributionKeyContainer} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE_DistributionStrategy(final IDistributionKeyContainer<K> distribution, final String[] args) throws Exception {
 		// BindingsFactory in Storage_DE_DistributionStrategy is set in the constructor of QueryClient
 		super(Storage_DE_DistributionStrategy.createInstance(distribution, null), args);
@@ -59,6 +75,7 @@ public class QueryClient_DE_DistributionStrategy<K> extends QueryClient {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		// just for avoiding problems in distributed scenarios

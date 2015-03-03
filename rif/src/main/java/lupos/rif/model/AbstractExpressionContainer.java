@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.model;
 
@@ -31,22 +35,39 @@ import java.util.Set;
 import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
 import lupos.rif.IRuleNode;
-
 public abstract class AbstractExpressionContainer extends AbstractRuleNode
 implements IExpression {
 
 	public List<IExpression> exprs = new ArrayList<IExpression>();
 
+	/**
+	 * <p>Constructor for AbstractExpressionContainer.</p>
+	 */
 	public AbstractExpressionContainer() {
 		super();
 	}
 
+	/**
+	 * <p>addExpr.</p>
+	 *
+	 * @param expr a {@link lupos.rif.IExpression} object.
+	 */
 	public abstract void addExpr(IExpression expr);
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return exprs.isEmpty();
 	}
 
+	/**
+	 * <p>containsOnlyVariables.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean containsOnlyVariables() {
 		for (IExpression expr : exprs)
 			if (!expr.containsOnlyVariables())
@@ -54,6 +75,11 @@ implements IExpression {
 		return true;
 	}
 
+	/**
+	 * <p>getVariables.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<RuleVariable> getVariables() {
 		Set<RuleVariable> variables = new HashSet<RuleVariable>();
 		for (IExpression expr : exprs)
@@ -61,6 +87,11 @@ implements IExpression {
 		return variables;
 	}
 
+	/**
+	 * <p>getPredicates.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<Uniterm> getPredicates() {
 		List<Uniterm> terms = new ArrayList<Uniterm>();
 		for (IExpression expr : exprs)
@@ -68,10 +99,16 @@ implements IExpression {
 		return terms;
 	}
 
+	/**
+	 * <p>getChildren.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IRuleNode> getChildren() {
 		return new ArrayList<IRuleNode>(exprs);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder str = new StringBuilder(getLabel()).append("(");
@@ -80,6 +117,7 @@ implements IExpression {
 		return str.append(")").toString();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		final StringBuilder str = new StringBuilder(getLabel()).append("(");

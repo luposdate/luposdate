@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -57,7 +61,6 @@ import lupos.misc.util.OperatorIDTuple;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RuleEditorPane extends VisualEditor<Operator> {
 	private static final long serialVersionUID = 2121817683005017716L;
 	private final RuleEditorPane that = this;
@@ -66,6 +69,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	private RuleOperator startNode = null;
 	private LinkedList<HashSet<ConnectionContainer>> connections = null;
 
+	/**
+	 * <p>Constructor for RuleEditorPane.</p>
+	 *
+	 * @param statusBar a {@link lupos.gui.operatorgraph.visualeditor.util.StatusBar} object.
+	 */
 	public RuleEditorPane(final StatusBar statusBar) {
 		super(true);
 
@@ -76,6 +84,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public JMenuBar buildMenuBar() {
 		final JMenuBar menuBar = this.createMenuBar();
@@ -168,6 +177,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		return operatorMenu;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void manageMenuItems() {
 		super.manageMenuItems();
@@ -196,13 +206,24 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void pasteElements(final String content) {}
 
+	/**
+	 * <p>addJGraphMenu.</p>
+	 *
+	 * @param menu a {@link javax.swing.JMenu} object.
+	 */
 	public void addJGraphMenu(final JMenu menu) {
 		this.jGraphMenus.add(menu);
 	}
 
+	/**
+	 * <p>Getter for the field <code>startNode</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.RuleOperator} object.
+	 */
 	public RuleOperator getStartNode() {
 		if(this.startNode != null) {
 			return this.startNode;
@@ -224,6 +245,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		return null;
 	}
 
+	/**
+	 * <p>Setter for the field <code>startNode</code>.</p>
+	 *
+	 * @param op a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.operators.RuleOperator} object.
+	 */
 	public void setStartNode(final RuleOperator op) {
 		this.startNode = op;
 	}
@@ -245,6 +271,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	 * - The connections of equal operators on both sides should have the same active state!
 	 * - The operandID of active connections of equal operators on both sides should be equal!
 	 *
+	 * @return a {@link lupos.misc.Triple} object.
 	 */
 	public Triple<Boolean, HashMap<String, VariableContainer>, HashMap<String, VariableContainer>> validateGraphs() {
 		this.connections = null;
@@ -725,6 +752,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>Getter for the field <code>connections</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<HashSet<ConnectionContainer>> getConnections() {
 		if(this.connections == null) {
 			this.connections = new LinkedList<HashSet<ConnectionContainer>>();
@@ -751,6 +783,12 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	}
 
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		final JSONObject saveObject = new JSONObject();
 		saveObject.put("top toolbar", this.topToolbar.toJSON());
@@ -760,6 +798,11 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public void fromJSON(final JSONObject loadObject) {
 		if(loadObject != null) {
 			try {

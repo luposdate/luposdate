@@ -79,6 +79,9 @@ import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
 
 /**
  * This is an editor to build visual data for RDF N3.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class DataEditor extends VisualEditor<Operator> {
 	private static final long serialVersionUID = 1L;
@@ -88,6 +91,9 @@ public class DataEditor extends VisualEditor<Operator> {
 
 	/**
 	 * This Methods creates the GUI for the visual data editor.
+	 *
+	 * @param n3daten a {@link java.lang.String} object.
+	 * @param image a {@link java.awt.Image} object.
 	 */
 	public DataEditor(final String n3daten, final Image image) {
 		super(true);
@@ -95,6 +101,13 @@ public class DataEditor extends VisualEditor<Operator> {
 		this.create(n3daten, image);
 	}
 
+	/**
+	 * <p>Constructor for DataEditor.</p>
+	 *
+	 * @param n3daten a {@link java.lang.String} object.
+	 * @param component a {@link lupos.gui.operatorgraph.visualeditor.dataeditor.IDataEditor} object.
+	 * @param image a {@link java.awt.Image} object.
+	 */
 	public DataEditor(final String n3daten, final IDataEditor component,
 			final Image image) {
 		super(false);
@@ -301,9 +314,9 @@ public class DataEditor extends VisualEditor<Operator> {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This is the method, that creates the JMenuBar for the GUI.
-	 * 
-	 * @return JMenuBar The created JMenuBar
 	 */
 	@Override
 	public JMenuBar buildMenuBar() {
@@ -440,6 +453,7 @@ public class DataEditor extends VisualEditor<Operator> {
 		this.repaint();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void pasteElements(final String content) {
@@ -549,8 +563,8 @@ public class DataEditor extends VisualEditor<Operator> {
 
 	/**
 	 * The main method to initialize the VisualEditor.
-	 * 
-	 * @param args
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
 	 */
 	public static void main(final String[] args) {
 		new DataEditor("", null);

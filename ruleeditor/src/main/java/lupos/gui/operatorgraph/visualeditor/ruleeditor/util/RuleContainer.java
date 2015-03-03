@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.util;
 
@@ -37,16 +41,25 @@ import lupos.misc.Triple;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RuleContainer implements ITree {
 	private RuleEditor editor = null;
 	private RulePanel activeRule = null;
 	private HashMap<String, RulePanel> rules = new HashMap<String, RulePanel>();
 
+	/**
+	 * <p>Constructor for RuleContainer.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 */
 	public RuleContainer(RuleEditor editor) {
 		this.editor = editor;
 	}
 
+	/**
+	 * <p>createNewRule.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePanel} object.
+	 */
 	public RulePanel createNewRule() {
 		String name = this.checkName("new rule", "new rule", 0);
 
@@ -56,6 +69,14 @@ public class RuleContainer implements ITree {
 		return this.activeRule;
 	}
 
+	/**
+	 * <p>checkName.</p>
+	 *
+	 * @param basename a {@link java.lang.String} object.
+	 * @param newname a {@link java.lang.String} object.
+	 * @param index a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String checkName(String basename, String newname, int index) {
 		boolean exists = false;
 
@@ -76,6 +97,11 @@ public class RuleContainer implements ITree {
 		return newname;
 	}
 
+	/**
+	 * <p>showRule.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void showRule(String ruleName) {
 		this.activeRule = this.rules.get(ruleName);
 		this.activeRule.updateRule();
@@ -83,16 +109,23 @@ public class RuleContainer implements ITree {
 		this.editor.setRightComponent(this.activeRule);
 	}
 
+	/** {@inheritDoc} */
 	public void removeElement(String elem, TreeNode parentNode) {
 		this.activeRule = null;
 		this.rules.remove(elem);
 		this.editor.setRightComponent(new JPanel());
 	}
 
+	/**
+	 * <p>getNameOfActiveElement.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getNameOfActiveElement() {
 		return this.activeRule.toString();
 	}
 
+	/** {@inheritDoc} */
 	public boolean nameChanged(TypeEnum e, String oldName, String newName) {
 		String tmpName = this.checkName(newName, newName, 0);
 
@@ -136,20 +169,40 @@ public class RuleContainer implements ITree {
 		return true;
 	}
 
+	/**
+	 * <p>cancelModi.</p>
+	 */
 	public void cancelModi() {
 		if(this.activeRule != null) {
 			this.activeRule.cancelModi();
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>rules</code>.</p>
+	 *
+	 * @return a {@link java.util.LinkedList} object.
+	 */
 	public LinkedList<RulePanel> getRules() {
 		return new LinkedList<RulePanel>(this.rules.values());
 	}
 
+	/**
+	 * <p>getRule.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RulePanel} object.
+	 */
 	public RulePanel getRule(String ruleName) {
 		return this.rules.get(ruleName);
 	}
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject saveObject = new JSONObject();
 
@@ -175,6 +228,12 @@ public class RuleContainer implements ITree {
 		return saveObject;
 	}
 
+	/**
+	 * <p>fromJSON.</p>
+	 *
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	@SuppressWarnings("unchecked")
 	public void fromJSON(JSONObject loadObject) throws JSONException {
 		this.activeRule = null;

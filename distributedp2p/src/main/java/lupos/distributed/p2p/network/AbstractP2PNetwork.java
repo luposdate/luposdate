@@ -36,9 +36,18 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
 /**
  * Abstract p2p network, that enabled adding, removing and contain-check of data
  * in p2p-network.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class AbstractP2PNetwork<T extends Serializable> {
 
+	/**
+	 * <p>createHashKey.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	@Deprecated
 	public String createHashKey(String key) {
 		return key;
@@ -46,7 +55,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * does the network contains the given key?
-	 * 
+	 *
 	 * @param locationKey
 	 *            the given key
 	 * @return contained in network?
@@ -57,7 +66,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Does the network contains an object on a given key?
-	 * 
+	 *
 	 * @param locationKey
 	 *            the given key
 	 * @param triples
@@ -70,7 +79,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Returns a list of objects stored in the given key
-	 * 
+	 *
 	 * @param locationKey
 	 *            the given key
 	 * @return a list of stored object
@@ -78,7 +87,8 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 	public abstract List<T> get(String locationKey);
 
 	/**
-	 * Removes all values, that were stored at the specified key 
+	 * Removes all values, that were stored at the specified key
+	 *
 	 * @param key the given key
 	 * @param values the values to be removed
 	 */
@@ -91,7 +101,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Removes an object at the given key
-	 * 
+	 *
 	 * @param locationKey
 	 *            the key, where the object is available
 	 * @param triple
@@ -101,7 +111,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Adds an object to the given key
-	 * 
+	 *
 	 * @param key
 	 *            the key where to store the data
 	 * @param value
@@ -111,7 +121,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Adds a few items under the same given key
-	 * 
+	 *
 	 * @param key
 	 *            the key where to store the data
 	 * @param values
@@ -126,7 +136,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Sends a P2P-message to the given location key
-	 * 
+	 *
 	 * @param key
 	 *            the key the message is sent to (not the node-id, only the
 	 *            given key-hash, for sending messages to a given peer, use:
@@ -144,7 +154,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Adds an event message listener for P2P-messages.
-	 * 
+	 *
 	 * @param listener
 	 *            the local listener-interface
 	 */
@@ -154,7 +164,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Removes an event message listener for P2P-messages.
-	 * 
+	 *
 	 * @param listener
 	 *            the local listener-interface
 	 */
@@ -166,7 +176,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 	 * If a message receives a node in the P2P network, the event is fired to
 	 * all listers, which are registered via
 	 * {@link #addMessageListener(IP2PMessageListener)}.
-	 * 
+	 *
 	 * @param message
 	 *            The text message sent via P2P network
 	 * @param from
@@ -206,7 +216,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 	 * If a message receives a node in the P2P network, the event is fired to
 	 * all listers, which are registered via
 	 * {@link #addMessageListener(IP2PMessageListener)}.
-	 * 
+	 *
 	 * @param message
 	 *            The input stream message sent via P2P network
 	 * @param from
@@ -236,7 +246,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Sends an internal P2P message to a given peer-id
-	 * 
+	 *
 	 * @param peer
 	 *            the peer-id (the unique instance of a node, not a content key
 	 *            as in {@link #sendMessage(String, String)} )
@@ -247,7 +257,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Sends an internal P2P message to a given peer-id
-	 * 
+	 *
 	 * @param peer
 	 *            the peer-id
 	 * @param message
@@ -260,7 +270,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 	/**
 	 * Returns the local storage for the P2P implementation if available via
 	 * {@link #hasLocalStorage()}
-	 * 
+	 *
 	 * @param distibution
 	 *            the distribution used for querying
 	 * @return the local storage (only content queryable which is stored local
@@ -272,7 +282,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Is any local storage available?
-	 * 
+	 *
 	 * @return yes/no
 	 */
 	public boolean hasLocalStorage() {
@@ -288,7 +298,7 @@ public abstract class AbstractP2PNetwork<T extends Serializable> {
 
 	/**
 	 * Does the network supports streaming?
-	 * 
+	 *
 	 * @return yes no
 	 */
 	public boolean supportsStreaming() {

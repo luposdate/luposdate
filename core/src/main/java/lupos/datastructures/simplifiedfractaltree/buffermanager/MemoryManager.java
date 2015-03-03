@@ -31,20 +31,25 @@ import lupos.datastructures.simplifiedfractaltree.FractalTreeEntry;
 
 /**
  * A manager that controls the memory usage a paged file.
+ *
  * @author Denis Fäcke
  * @see BufferManager
  * @see PageManager
+ * @version $Id: $Id
  */
 public interface MemoryManager<K extends Comparable<K> & Serializable, V extends Serializable> {
 	/**
 	 * Acquires the specified amount of memory.
+	 *
 	 * @param amount The amount of memory needed
 	 * @return The position in the memory
+	 * @param pageCount a int.
 	 */
 	Pointer acquire(int pageCount, int amount);
 
 	/**
 	 * Releases the specified memory area.
+	 *
 	 * @param leftPage The left page
 	 * @param leftBound The left bound
 	 * @param size The amount of memory to release
@@ -53,6 +58,8 @@ public interface MemoryManager<K extends Comparable<K> & Serializable, V extends
 
 	/**
 	 * Defragments the memory and removes unused areas inside the managed file.
+	 *
+	 * @param bufferedList a {@link lupos.datastructures.simplifiedfractaltree.buffermanager.BufferedList_LuposSerialization} object.
 	 */
 	void defragment(BufferedList_LuposSerialization<FractalTreeEntry<K, V>> bufferedList);
 }

@@ -30,16 +30,18 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * Richard Mietz
  * Date: 21.02.13
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class AbstractDeserializer
 {
     /**
      * Creates a geometry object from the given wktLiteral
      *
-     *
      * @param content The wktLiteral
      * @return The created geometry
-     * @throws TypeErrorException
+     * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
      */
     public abstract Geometry toGeometry(String content) throws TypeErrorException;
 }

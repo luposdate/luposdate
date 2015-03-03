@@ -52,6 +52,9 @@ import lupos.event.util.Utils;
 
 /**
  * This is the central component which acts as a server. It manages the subscriptions from consumers and the stream-based evaluation of their queries.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscriptionChangedHandler, Observer,
 																	IModelChangedListener, IDisconnectedHandler, Runnable{
@@ -90,7 +93,8 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 
 	/**
 	 * Starts the broker and waits for new connections in an infinite loop.
-	 * @throws Exception
+	 *
+	 * @throws java.lang.Exception if any.
 	 */
 	public void start() throws Exception {
 		// add the model changed listener
@@ -107,6 +111,8 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This thread method handles a ping to all connected
 	 * pubsub server to force the message service to be
 	 * closed if the conenction broke
@@ -149,6 +155,8 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 	
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Callback method for {@link SerializingMessageService} which gets called when a message is received.
 	 */
 	@SuppressWarnings("unchecked")
@@ -275,6 +283,8 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Callback method for {@link PubSubServer} which gets called when a subscription message was received.
 	 */
 	@Override
@@ -380,6 +390,7 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void update(Observable o, Object arg) {
 		if(o instanceof PubSubServer) {
@@ -396,6 +407,7 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void modelChanged(Model m) {
 		// sends a message to the master broker if
@@ -408,6 +420,8 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method will be called after a client
 	 * disconnected. In fact, only disconnects by pubsub
 	 * clients (so BConsumer objects) are handled and
@@ -445,6 +459,12 @@ public class SubBroker implements IMessageReceivedHandler<Serializable>, ISubscr
 		} while (disonnectedServer != null);
 	}
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static void main(String[] args) throws Exception{		
 
 		// Request the listening connection port

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.graphwrapper;
 
@@ -35,57 +39,75 @@ import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.prefix.Prefix;
 import xpref.datatypes.BooleanDatatype;
-
 public class GraphWrapperPrefixNonEditable extends GraphWrapper {
+	/**
+	 * <p>Constructor for GraphWrapperPrefixNonEditable.</p>
+	 *
+	 * @param element a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public GraphWrapperPrefixNonEditable(final Prefix element) {
 		super(element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
 		return ((Prefix) this.element).draw(this, parent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
 		return new LinkedList<GraphWrapperIDTuple>();
 	}
 
+	/**
+	 * <p>hasPredicates.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean hasPredicates() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(
 			final OperatorGraph parent) {
 		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return new StringBuffer();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return this.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -110,21 +132,25 @@ public class GraphWrapperPrefixNonEditable extends GraphWrapper {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d,
 			final Dimension size) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean usePrefixesActive() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Prefix getElement() {
 		return (Prefix) this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "";

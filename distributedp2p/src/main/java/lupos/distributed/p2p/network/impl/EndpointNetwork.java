@@ -83,8 +83,7 @@ import com.sun.net.httpserver.HttpHandler;
  * Okay, this is a fake P2P-network, because there is no valid p2p structure,
  * but only a few static configured endpoints that are accessible via URI.
  *
- * @author Bjoern, IFIS
- *
+ * @version $Id: $Id
  */
 public class EndpointNetwork extends P2PTripleNetwork {
 	private BasicIndexQueryEvaluator evaluator;
@@ -336,11 +335,13 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.format("EndpointNetwork on port %d [%s]", this.port, this.dir);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IStorage getLocalStorage(final IDistribution<?> distibution) {
 		if (this.localStorage != null) {
@@ -427,6 +428,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean hasLocalStorage() {
 		return true;
@@ -440,7 +442,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 	 *            the main working directory for disk-based storage
 	 * @param port
 	 *            the port listing to
-	 * @throws BindException
+	 * @throws java.net.BindException
 	 *             error if port already used
 	 */
 	@SuppressWarnings("restriction")
@@ -611,6 +613,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 
 	private static ArrayList<URI> uriList;
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Triple> get(final String key) {
 		/*
@@ -628,6 +631,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		return lst;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final String key, final Triple triple) {
 		/*
@@ -636,6 +640,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		this.sendDirect(key, QueryBuilder.buildDeleteQuery(triple));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addAll(final String key, final Triple... v) {
 		final Set<Triple> values = new HashSet<Triple>();
@@ -645,6 +650,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		this.sendDirect(key, QueryBuilder.buildInsertQuery(values));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final String key, final Triple value) {
 		final Set<Triple> values = new HashSet<Triple>();
@@ -654,6 +660,13 @@ public class EndpointNetwork extends P2PTripleNetwork {
 
 	/**
 	 * Read in the endpoint configuration file once at start
+	 */
+	static {
+		init(null);
+	}
+
+	/*
+	 * retrieve the URI that manages the given key
 	 */
 	static {
 		init(null);
@@ -756,6 +769,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessage(final String key, final String message) {
 		/*
@@ -777,6 +791,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessageTo(String url, final InputStream message) {
 		if (!url.endsWith("/")) {
@@ -791,6 +806,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void sendMessageTo(String uri, final String message) {
 		/*
@@ -835,6 +851,7 @@ public class EndpointNetwork extends P2PTripleNetwork {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean supportsStreaming() {
 		/* yes, we do! */

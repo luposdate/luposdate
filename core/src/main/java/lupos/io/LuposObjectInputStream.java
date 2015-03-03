@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io;
 
@@ -45,20 +49,30 @@ import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleKey;
 import lupos.datastructures.smallerinmemorylargerondisk.SetImplementation;
 import lupos.io.helper.InputHelper;
-
 public class LuposObjectInputStream<E> extends ObjectInputStream {
 
+	/** Constant <code>UTF8="UTF-8"</code> */
 	public static final String UTF8 = "UTF-8";
 
+	/** Constant <code>LITERAL=0</code> */
 	public static final int LITERAL = 0;
+	/** Constant <code>URILITERAL=1</code> */
 	public static final int URILITERAL = 1;
+	/** Constant <code>LANGUAGETAGGEDLITERAL=2</code> */
 	public static final int LANGUAGETAGGEDLITERAL = 2;
+	/** Constant <code>TYPEDLITERAL=3</code> */
 	public static final int TYPEDLITERAL = 3;
+	/** Constant <code>ANONYMOUSLITERAL=4</code> */
 	public static final int ANONYMOUSLITERAL = 4;
+	/** Constant <code>LAZYLITERAL=5</code> */
 	public static final int LAZYLITERAL = 5;
+	/** Constant <code>LAZYLITERALMATERIALIZED=6</code> */
 	public static final int LAZYLITERALMATERIALIZED = 6;
+	/** Constant <code>LAZYLITERALORIGINALCONTENT=7</code> */
 	public static final int LAZYLITERALORIGINALCONTENT = 7;
+	/** Constant <code>LAZYLITERALORIGINALCONTENTMATERIALIZED=8</code> */
 	public static final int LAZYLITERALORIGINALCONTENTMATERIALIZED = 8;
+	/** Constant <code>PLAINSTRINGLITERAL=9</code> */
 	public static final int PLAINSTRINGLITERAL = 9;
 
 	public InputStream is;
@@ -66,19 +80,50 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 
 	private final static int memoryLimit = 10000;
 
+	/**
+	 * <p>Constructor for LuposObjectInputStream.</p>
+	 *
+	 * @throws java.io.IOException if any.
+	 */
 	public LuposObjectInputStream() throws IOException {
 	}
 
+	/**
+	 * <p>Constructor for LuposObjectInputStream.</p>
+	 *
+	 * @param arg0 a {@link java.io.InputStream} object.
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.io.EOFException if any.
+	 */
 	public LuposObjectInputStream(final InputStream arg0, final Class<? extends E> classOfElements) throws IOException, EOFException {
 		super(arg0);
 		this.is = arg0;
 		this.classOfElements = classOfElements;
 	}
 
+	/**
+	 * <p>readLuposObject.</p>
+	 *
+	 * @return a E object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public E readLuposObject() throws IOException, ClassNotFoundException, URISyntaxException {
 		return Registration.deserializeWithoutId(this.classOfElements, this);
 	}
 
+	/**
+	 * <p>readLuposObject.</p>
+	 *
+	 * @param classOfElements a {@link java.lang.Class} object.
+	 * @param <TT> a TT object.
+	 * @return a TT object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public <TT> TT readLuposObject(final Class classOfElements) throws IOException, ClassNotFoundException, URISyntaxException {
 		return (TT) Registration.deserializeWithoutId(classOfElements, this);
 	}
@@ -90,16 +135,37 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 	// the last stored string as byte array...
 	protected byte[] lastString = null;
 
+	/**
+	 * <p>readLuposTriple.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Triple} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public Triple readLuposTriple() throws IOException, URISyntaxException, ClassNotFoundException {
 		this.lastTriple = InputHelper.readLuposTriple(this.lastTriple, this.is);
 		return this.lastTriple;
 	}
+	/**
+	 * <p>readLuposTripleKey.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.TripleKey} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public TripleKey readLuposTripleKey() throws IOException, ClassNotFoundException {
 		// it is expected that the triple key contains the key computed from the
 		// last read triple
 		return InputHelper.readLuposTripleKey(this.lastTriple, this.is);
 	}
 
+	/**
+	 * <p>readLuposDifferenceString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public String readLuposDifferenceString() throws IOException {
 		this.lastString = InputHelper.readLuposDifferenceString(this.lastString, this.is);
 		if(this.lastString==null){
@@ -109,16 +175,37 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		}
 	}
 
+	/**
+	 * <p>readLuposBindings.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public Bindings readLuposBindings() throws IOException, ClassNotFoundException {
 		this.previousBindings = InputHelper.readLuposBindings(this.previousBindings, this.is);
 		return this.previousBindings;
 	}
 
+	/**
+	 * <p>readLuposDiskCollection.</p>
+	 *
+	 * @return a {@link lupos.datastructures.dbmergesortedds.DiskCollection} object.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public DiskCollection readLuposDiskCollection() throws ClassNotFoundException, IOException {
 		return DiskCollection.readAndCreateLuposObject(this);
 	}
 
+	/**
+	 * <p>readLuposCollection.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Collection readLuposCollection() throws IOException, ClassNotFoundException {
 		final int size = this.is.read();
@@ -139,6 +226,13 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		}
 	}
 
+	/**
+	 * <p>readLuposTreeSet.</p>
+	 *
+	 * @return a E object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public E readLuposTreeSet() throws IOException, ClassNotFoundException {
 		final Comparator comparator = (Comparator) this.readObject();
@@ -158,6 +252,13 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return (E) ts;
 	}
 
+	/**
+	 * <p>readLuposSortedSet.</p>
+	 *
+	 * @return a E object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public E readLuposSortedSet() throws IOException, ClassNotFoundException {
 		final Comparator comparator = (Comparator) this.readObject();
@@ -198,6 +299,13 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return (E) ms;
 	}
 
+	/**
+	 * <p>readLuposSetImplementation.</p>
+	 *
+	 * @return a {@link lupos.datastructures.smallerinmemorylargerondisk.SetImplementation} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public SetImplementation readLuposSetImplementation() throws IOException, ClassNotFoundException {
 		final int size = InputHelper.readLuposInt(this.is);
@@ -219,6 +327,14 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return set;
 	}
 
+	/**
+	 * <p>readLuposSortedMap.</p>
+	 *
+	 * @return a E object.
+	 * @throws java.io.IOException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 */
 	public E readLuposSortedMap() throws IOException, URISyntaxException, ClassNotFoundException {
 		final int type = InputHelper.readLuposByte(this.is);
 		if (type == 1) {
@@ -261,6 +377,13 @@ public class LuposObjectInputStream<E> extends ObjectInputStream {
 		return (E) ms;
 	}
 
+	/**
+	 * <p>readLuposEntry.</p>
+	 *
+	 * @return a {@link lupos.datastructures.dbmergesortedds.Entry} object.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	@SuppressWarnings("rawtypes")
 	public Entry readLuposEntry() throws ClassNotFoundException, IOException {
 		return InputHelper.readLuposEntry(this);

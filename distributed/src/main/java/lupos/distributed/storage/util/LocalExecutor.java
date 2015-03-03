@@ -76,6 +76,9 @@ import org.json.JSONObject;
 /**
  * This class provides methods to evaluate a subgraph given as serialized JSON string,
  * as well as to determine the histograms of a triple pattern given as serialized JSON string.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class LocalExecutor {
 
@@ -87,8 +90,8 @@ public class LocalExecutor {
 	 * @param dataset the dataset on which the subgraph must be evaluated
 	 * @param operatorCreator the creator for the operators of the subgraph
 	 * @return a tuple with the mime type of the serialized query result as well as the serialized query result in JSON format
-	 * @throws JSONException
-	 * @throws IOException
+	 * @throws org.json.JSONException if any.
+	 * @throws java.io.IOException if any.
 	 */
 	public static Tuple<String, String> evaluateSubgraphAndReturnSerializedJSONResult(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException, IOException {
 		return LocalExecutor.evaluateSubgraphAndReturnSerializedResult(subgraphSerializedAsJSONString, dataset, operatorCreator, new JSONFormatter());
@@ -102,8 +105,8 @@ public class LocalExecutor {
 	 * @param dataset the dataset on which the subgraph must be evaluated
 	 * @param operatorCreator the creator for the operators of the subgraph
 	 * @return a tuple with the mime type of the serialized query result as well as the serialized query result in XML format
-	 * @throws JSONException
-	 * @throws IOException
+	 * @throws org.json.JSONException if any.
+	 * @throws java.io.IOException if any.
 	 */
 	public static Tuple<String, String> evaluateSubgraphAndReturnSerializedXMLResult(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException, IOException {
 		return LocalExecutor.evaluateSubgraphAndReturnSerializedResult(subgraphSerializedAsJSONString, dataset, operatorCreator, new XMLFormatter());
@@ -119,8 +122,8 @@ public class LocalExecutor {
 	 * @param operatorCreator the creator for the operators of the subgraph
 	 * @param formatter the formatter according to which the query result is serialized
 	 * @return a tuple with the mime type of the serialized query result as well as the serialized query result
-	 * @throws JSONException
-	 * @throws IOException
+	 * @throws org.json.JSONException if any.
+	 * @throws java.io.IOException if any.
 	 */
 	public static Tuple<String, String> evaluateSubgraphAndReturnSerializedResult(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator, final Formatter formatter) throws JSONException, IOException {
 		final Tuple<QueryResult, Set<Variable>> result = LocalExecutor.evaluateSubgraph(subgraphSerializedAsJSONString, dataset, operatorCreator);
@@ -140,7 +143,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset on which the subgraph must be evaluated
 	 * @param operatorCreator the creator for the operators of the subgraph
 	 * @return the query result and the set of variables of the query result of the evaluated operator graph
-	 * @throws JSONException in case of any parse exceptions
+	 * @throws org.json.JSONException in case of any parse exceptions
 	 */
 	public static Tuple<QueryResult, Set<Variable>> evaluateSubgraph(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		final CollectResult collectResult = new CollectResult(true);
@@ -203,6 +206,7 @@ public class LocalExecutor {
 	/**
 	 * Determine the variables of the result operator by just going down the operator graph.
 	 * Take care when extending the functionality: Cycles are currently not considered and will lead to infinite loop!
+	 *
 	 * @param root the root node
 	 * @return the variables of the result operator!
 	 */
@@ -221,7 +225,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the minima and maxima of the given variables serialized as json string
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static String getMinMaxSerializedAsJSONString(final String minMaxRequestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		return LocalExecutor.getMinMaxSerializedAsJSONObject(minMaxRequestSerializedAsJSONString, dataset, operatorCreator).toString();
@@ -234,7 +238,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the minima and maxima of the given variables as JSON object
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static JSONObject getMinMaxSerializedAsJSONObject(final String minMaxRequestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		 final Map<Variable, Tuple<Literal, Literal>> interResult = LocalExecutor.getMinMax(minMaxRequestSerializedAsJSONString, dataset, operatorCreator);
@@ -260,7 +264,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the minima and maxima of the given variables
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static Map<Variable, Tuple<Literal, Literal>> getMinMax(final String minMaxRequestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		final JSONObject json = new JSONObject(minMaxRequestSerializedAsJSONString);
@@ -283,7 +287,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the histograms of the given triple pattern serialized as json string
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static String getHistogramsAsJSONString(final String histogramRequestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		return LocalExecutor.getHistogramsAsJSONObject(histogramRequestSerializedAsJSONString, dataset, operatorCreator).toString();
@@ -296,7 +300,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the histograms of the given triple pattern as json object
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static JSONObject getHistogramsAsJSONObject(final String histogramRequestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		return Helper.createMapJSONObject(LocalExecutor.getHistograms(histogramRequestSerializedAsJSONString, dataset, operatorCreator));
@@ -309,7 +313,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the histograms of the given triple pattern
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static Map<Variable, VarBucket> getHistograms(final String histogramRequestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		final JSONObject json = new JSONObject(histogramRequestSerializedAsJSONString);
@@ -334,7 +338,7 @@ public class LocalExecutor {
 	 * @param dataset the dataset used by the evaluator
 	 * @param operatorCreator the creator for creating operators
 	 * @return the histograms or the min/max values depending on the quest type, serialized as json string
-	 * @throws JSONException
+	 * @throws org.json.JSONException if any.
 	 */
 	public static String getHistogramOrMinMax(final String requestSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator) throws JSONException {
 		final JSONObject json = new JSONObject(requestSerializedAsJSONString);
@@ -354,7 +358,7 @@ public class LocalExecutor {
 	 * After huge updates of the triples, a rebuilding may be necessary to have a precise join order optimization.
 	 *
 	 * @param dataset the dataset the statistics of which needs to be rebuilt
-	 * @return "ready" in case of success
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String buildHistograms(final Dataset dataset){
 		LocalExecutor.buildHistograms(dataset.getDefaultGraphIndices());
@@ -470,9 +474,10 @@ public class LocalExecutor {
 	 * @param operatorCreator the creator for the operators of the subgraph
 	 * @param formatter the formatter according to which the query result is serialized
 	 * @param sgExecuter the subgraph executer which is to be used if the subgraph contains included subgraphs
+	 * @param head an array of byte.
 	 * @return head Header-bytes that are put into the InputStream as header, before data is put into
-	 * @throws JSONException error
-	 * @throws IOException error
+	 * @throws org.json.JSONException error
+	 * @throws java.io.IOException error
 	 */
 	public static InputStream evaluateSubgraphAndGetStream(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator, final Formatter formatter, final ISubgraphExecutor<?> sgExecuter, final byte[] head) throws JSONException, IOException {
 		//Get result
@@ -523,8 +528,8 @@ public class LocalExecutor {
 	 * @param formatter the formatter according to which the query result is serialized
 	 * @param sgExecuter the subgraph executer which is to be used if the subgraph contains included subgraphs
 	 * @return a tuple with the mime type of the serialized query result as well as the serialized query result
-	 * @throws JSONException
-	 * @throws IOException
+	 * @throws org.json.JSONException if any.
+	 * @throws java.io.IOException if any.
 	 */
 	public static Tuple<String, String> evaluateSubgraphAndReturnSerializedResult(final String subgraphSerializedAsJSONString, final Dataset dataset, final IOperatorCreator operatorCreator, final Formatter formatter, final ISubgraphExecutor<?> sgExecuter) throws JSONException, IOException {
 		final Tuple<QueryResult, Set<Variable>> result = LocalExecutor.evaluateSubgraph(subgraphSerializedAsJSONString, dataset, operatorCreator,sgExecuter);

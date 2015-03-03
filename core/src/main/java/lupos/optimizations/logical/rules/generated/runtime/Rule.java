@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.generated.runtime;
 
@@ -30,19 +34,40 @@ import java.util.LinkedList;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.OperatorIDTuple;
 import lupos.engine.operators.SimpleOperatorGraphVisitor;
-
 public abstract class Rule {
 	private Rule that = this;
 	protected Class<?> startOpClass;
 	protected String ruleName = this.getClass().getSimpleName();
 
+	/**
+	 * <p>check.</p>
+	 *
+	 * @param _rootOp a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a boolean.
+	 */
 	protected abstract boolean check(BasicOperator _rootOp);
+	/**
+	 * <p>replace.</p>
+	 *
+	 * @param _startNodes a {@link java.util.HashMap} object.
+	 */
 	protected abstract void replace(HashMap<Class<?>, HashSet<BasicOperator>> _startNodes);
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.ruleName;
 	}
 
+	/**
+	 * <p>apply.</p>
+	 *
+	 * @param rootOp a {@link lupos.engine.operators.BasicOperator} object.
+	 * @return a boolean.
+	 */
 	public boolean apply(BasicOperator rootOp) {
 		// System.out.println("applying rule '" + this.getClass().getSimpleName() + "'...");
 
@@ -63,6 +88,12 @@ public abstract class Rule {
 		return result != null;
 	}
 
+	/**
+	 * <p>apply.</p>
+	 *
+	 * @param startNodes a {@link java.util.HashMap} object.
+	 * @return a boolean.
+	 */
 	public boolean apply(final HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		// System.out.println("applying rule '" + this.getClass().getSimpleName() + "'...");
 
@@ -84,8 +115,9 @@ public abstract class Rule {
 	/**
 	 * Method to delete an operator and its children if it has no preceding operators.
 	 * Also update the start nodes map if it is present.
-	 * 
-	 * @param op
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
 	 */
 	@SuppressWarnings("unchecked")
 	protected void deleteOperatorWithoutParentsRecursive(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
@@ -117,8 +149,9 @@ public abstract class Rule {
 
 	/**
 	 * This method deletes the path in the operator graph in which the operator op is...
-	 * @param op
-	 * @param startNodes
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
 	 */
 	protected void deleteOperatorWithParentsAndChildren(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes){
 		this.deletePrecedingOperators(op, startNodes);
@@ -149,12 +182,24 @@ public abstract class Rule {
 		}		
 	}
 
+	/**
+	 * <p>deleteNodeFromStartNodeMapNullCheck.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
+	 */
 	protected void deleteNodeFromStartNodeMapNullCheck(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		if(startNodes != null) {
 			this.deleteNodeFromStartNodeMap(op, startNodes);
 		}
 	}
 
+	/**
+	 * <p>deleteNodeFromStartNodeMap.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
+	 */
 	protected void deleteNodeFromStartNodeMap(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		Class<?> clazz = op.getClass();
 
@@ -165,12 +210,24 @@ public abstract class Rule {
 		}
 	}
 
+	/**
+	 * <p>addNodeToStartNodeMapNullCheck.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
+	 */
 	protected void addNodeToStartNodeMapNullCheck(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		if(startNodes != null) {
 			this.addNodeToStartNodeMap(op, startNodes);
 		}
 	}
 
+	/**
+	 * <p>addNodeToStartNodeMap.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
+	 */
 	protected void addNodeToStartNodeMap(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		Class<?> clazz = op.getClass();
 
@@ -189,6 +246,12 @@ public abstract class Rule {
 		}
 	}
 
+	/**
+	 * <p>deleteOperator.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param startNodes a {@link java.util.HashMap} object.
+	 */
 	protected void deleteOperator(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		op.removeFromOperatorGraph();
 

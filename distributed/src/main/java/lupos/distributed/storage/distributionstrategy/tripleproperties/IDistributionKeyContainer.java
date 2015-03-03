@@ -29,11 +29,14 @@ import lupos.distributed.storage.distributionstrategy.IDistribution;
  * adds additional methods for distribution strategies using KeyContainer
  *
  * @param <K> the java type of the key
+ * @author groppe
+ * @version $Id: $Id
  */
 public interface IDistributionKeyContainer<K> extends IDistribution<KeyContainer<K>> {
 
 	/**
 	 * Returns all possible types of keys (e.g. for one key distribution {"S, "P", "O"})
+	 *
 	 * @return all possible types of keys
 	 */
 	public String[] getKeyTypes();

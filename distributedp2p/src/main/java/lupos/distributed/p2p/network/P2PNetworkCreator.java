@@ -47,7 +47,7 @@ import de.rwglab.p2pts.DHashService;
  * implemented and registered here.
  *
  * @author Bjoern
- *
+ * @version $Id: $Id
  */
 public class P2PNetworkCreator {
 	/**
@@ -386,6 +386,12 @@ public class P2PNetworkCreator {
 
 
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.InterruptedException if any.
+	 */
 	@Deprecated
 	public static void main(final String[] args) throws InterruptedException {
 		new P2PNetworkCreator();
@@ -433,7 +439,7 @@ public class P2PNetworkCreator {
 	 * @param name
 	 *            the name of the implementation
 	 * @return an instance, which can be used in
-	 *         {@link StorageWithDistributionStrategy}
+	 *         {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy}
 	 */
 	public static AbstractP2PNetwork<?> get(final String name) {
 		return get(name, null);
@@ -445,7 +451,8 @@ public class P2PNetworkCreator {
 	 * @param name
 	 *            the name of the implementation
 	 * @return an instance, which can be used in
-	 *         {@link StorageWithDistributionStrategy}
+	 *         {@link lupos.distributed.p2p.storage.StorageWithDistributionStrategy}
+	 * @param arguments a {@link java.util.Map} object.
 	 */
 	public static AbstractP2PNetwork<?> get(final String name,
 			final Map<String, Object> arguments) {

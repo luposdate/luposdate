@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.endpoint.server.format;
 
@@ -37,7 +41,6 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.singleinput.filter.expressionevaluation.Helper;
-
 public class XMLFormatter extends HeadBodyFormatter {
 	
 	private final static String XML_1 = 	"<?xml version=\"1.0\"?>\n"+
@@ -72,14 +75,23 @@ public class XMLFormatter extends HeadBodyFormatter {
 
 	private final static String indent = "     ";
 
+	/**
+	 * <p>Constructor for XMLFormatter.</p>
+	 *
+	 * @param writeQueryTriples a boolean.
+	 */
 	public XMLFormatter(final boolean writeQueryTriples) {
 		super("XML"+(writeQueryTriples?" with Query Triples":""), "application/sparql-results+xml"+(writeQueryTriples?"+querytriples":""), writeQueryTriples);
 	}
 	
+	/**
+	 * <p>Constructor for XMLFormatter.</p>
+	 */
 	public XMLFormatter() {
 		this(false);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeBooleanResult(final OutputStream os, final boolean result) throws IOException{
 		os.write(XMLFormatter.XML_1.getBytes());
@@ -88,11 +100,13 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_Boolean_3.getBytes());			
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartHead(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_1.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeVariableInHead(final OutputStream os, final Variable v) throws IOException{
 		os.write(XMLFormatter.XML_Var_1.getBytes());
@@ -100,31 +114,37 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_Var_2.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndHead(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_2.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartResult(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Result_1.getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndResult(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Result_2.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleStart(final OutputStream os) throws IOException {
 		os.write("    <querytriple>".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleEnd(final OutputStream os) throws IOException {
 		os.write("\n    </querytriple>\n".getBytes());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleSubject(final OutputStream os, final Literal literal) throws IOException {		
 		// This is in no way standard and a LUPOSDATE proprietary feature!
@@ -136,6 +156,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write("</subject>".getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTriplePredicate(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!		
@@ -147,6 +168,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write("</predicate>".getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeQueryTripleObject(final OutputStream os, final Literal literal) throws IOException {
 		// This is in no way standard and a LUPOSDATE proprietary feature!		
@@ -158,11 +180,13 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write("</object>".getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeEpilogue(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_3.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeStartBinding(final OutputStream os, final Variable v) throws IOException{
 		os.write(XMLFormatter.XML_Binding_1.getBytes());
@@ -170,11 +194,13 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_Binding_2.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeEndBinding(final OutputStream os) throws IOException{
 		os.write(XMLFormatter.XML_Binding_3.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeBlankNode(final OutputStream os, AnonymousLiteral blankNode) throws IOException{
 		// blank node => <bnode>
@@ -183,6 +209,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_BNode_2.getBytes());						
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeURI(final OutputStream os, URILiteral uri) throws IOException{
 		// uri => <uri>
@@ -191,6 +218,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_URI_2.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException{
 		// literal => <literal>
@@ -201,6 +229,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeTypedLiteral(final OutputStream os, TypedLiteral literal) throws IOException{
 		// literal => <literal>
@@ -214,6 +243,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void writeLanguageTaggedLiteral(final OutputStream os, LanguageTaggedLiteral literal) throws IOException{
 		// literal => <literal>
@@ -227,6 +257,7 @@ public class XMLFormatter extends HeadBodyFormatter {
 		os.write(XMLFormatter.XML_LITERAL_3.getBytes());		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMIMEType(final QueryResult queryResult) {
 		if(queryResult instanceof GraphResult){

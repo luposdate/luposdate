@@ -38,15 +38,29 @@ import lupos.distributedendpoints.storage.Storage_DE;
  * can have data for any triple pattern.
  * Also non-luposdate SPARQL endpoints are supported.
  * It uses the super and helper classes of the distributed module for a first and simple example of a distributed scenario.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryClient_DE extends QueryClient {
 
+	/**
+	 * <p>Constructor for QueryClient_DE.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE() throws Exception {
 		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
 		super(new Storage_DE(null));
 		this.askForHistogramRequests();
 	}
 
+	/**
+	 * <p>Constructor for QueryClient_DE.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient_DE(final String[] args) throws Exception {
 		// BindingsFactory in Storage_DE will be set in the constructor of QueryClient
 		super(new Storage_DE(null), args);
@@ -61,6 +75,7 @@ public class QueryClient_DE extends QueryClient {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		// just for avoiding problems in distributed scenarios

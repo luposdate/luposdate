@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.distributed.query;
 
@@ -38,17 +42,29 @@ import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
 import lupos.misc.Tuple;
-
 public class QueryClient extends BasicIndexQueryEvaluator {
 
 	protected final IStorage storage;
 
 	protected IHistogramExecutor histogramExecutor;
 
+	/**
+	 * <p>Constructor for QueryClient.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient(final IStorage storage) throws Exception {
 		this(storage, (IHistogramExecutor) null);
 	}
 
+	/**
+	 * <p>Constructor for QueryClient.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param histogramExecutor a {@link lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient(final IStorage storage, final IHistogramExecutor histogramExecutor) throws Exception {
 		super();
 		this.storage = storage;
@@ -59,10 +75,25 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 		this.storage.setBindingsFactory(this.bindingsFactory);
 	}
 
+	/**
+	 * <p>Constructor for QueryClient.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient(final IStorage storage, final String[] args) throws Exception {
 		this(storage, null, args);
 	}
 
+	/**
+	 * <p>Constructor for QueryClient.</p>
+	 *
+	 * @param storage a {@link lupos.distributed.storage.IStorage} object.
+	 * @param histogramExecutor a {@link lupos.distributed.query.operator.histogramsubmission.IHistogramExecutor} object.
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public QueryClient(final IStorage storage, final IHistogramExecutor histogramExecutor, final String[] args) throws Exception {
 		super(args);
 		this.storage = storage;
@@ -73,6 +104,9 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 		this.storage.setBindingsFactory(this.bindingsFactory);
 	}
 
+	/**
+	 * <p>initOptimization.</p>
+	 */
 	protected void initOptimization() {
 		if(this.histogramExecutor == null){
 			// avoid evaluation of triple patterns for query optimization,
@@ -85,6 +119,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Root createRoot() {
 		if(this.histogramExecutor == null) {
@@ -94,6 +129,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -116,6 +152,7 @@ public class QueryClient extends BasicIndexQueryEvaluator {
 		return prepareTime;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			final Collection<URILiteral> defaultGraphs,

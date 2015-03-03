@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -27,7 +31,6 @@ import java.util.List;
 
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.sparql1_1.Node;
-
 public class DebugContainerQuery<T, A> {
 
 	private A ast;
@@ -36,9 +39,13 @@ public class DebugContainerQuery<T, A> {
 	private List<DebugContainer<T>> correctOperatorGraphRules;
 
 	/**
+	 * <p>Constructor for DebugContainerQuery.</p>
+	 *
 	 * @param ast
 	 * @param astCoreSPARQLQuery
-	 * @param coreSPARQLQuery
+	 * @param astCoreSPARQLQuery a lupos$sparql1_1$Node object.
+	 * @param coreSPARQLQuery a {@link java.lang.String} object.
+	 * @param correctOperatorGraphRules a {@link java.util.List} object.
 	 */
 	public DebugContainerQuery(final A ast, final String coreSPARQLQuery,
 			final Node astCoreSPARQLQuery,
@@ -49,34 +56,74 @@ public class DebugContainerQuery<T, A> {
 		this.correctOperatorGraphRules = correctOperatorGraphRules;
 	}
 
+	/**
+	 * <p>Getter for the field <code>ast</code>.</p>
+	 *
+	 * @return a A object.
+	 */
 	public A getAst() {
 		return ast;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ast</code>.</p>
+	 *
+	 * @param ast a A object.
+	 */
 	public void setAst(final A ast) {
 		this.ast = ast;
 	}
 
+	/**
+	 * <p>Getter for the field <code>coreSPARQLQuery</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getCoreSPARQLQuery() {
 		return coreSPARQLQuery;
 	}
 
+	/**
+	 * <p>Setter for the field <code>coreSPARQLQuery</code>.</p>
+	 *
+	 * @param coreSPARQLQuery a {@link java.lang.String} object.
+	 */
 	public void setCoreSPARQLQuery(final String coreSPARQLQuery) {
 		this.coreSPARQLQuery = coreSPARQLQuery;
 	}
 
+	/**
+	 * <p>Getter for the field <code>astCoreSPARQLQuery</code>.</p>
+	 *
+	 * @return a lupos$sparql1_1$Node object.
+	 */
 	public Node getAstCoreSPARQLQuery() {
 		return astCoreSPARQLQuery;
 	}
 
+	/**
+	 * <p>Setter for the field <code>astCoreSPARQLQuery</code>.</p>
+	 *
+	 * @param astCoreSPARQLQuery a lupos$sparql1_1$Node object.
+	 */
 	public void setAstCoreSPARQLQuery(final Node astCoreSPARQLQuery) {
 		this.astCoreSPARQLQuery = astCoreSPARQLQuery;
 	}
 
+	/**
+	 * <p>Getter for the field <code>correctOperatorGraphRules</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<DebugContainer<T>> getCorrectOperatorGraphRules() {
 		return correctOperatorGraphRules;
 	}
 
+	/**
+	 * <p>Setter for the field <code>correctOperatorGraphRules</code>.</p>
+	 *
+	 * @param correctOperatorGraphRules a {@link java.util.List} object.
+	 */
 	public void setCorrectOperatorGraphRules(
 			final List<DebugContainer<T>> correctOperatorGraphRules) {
 		this.correctOperatorGraphRules = correctOperatorGraphRules;

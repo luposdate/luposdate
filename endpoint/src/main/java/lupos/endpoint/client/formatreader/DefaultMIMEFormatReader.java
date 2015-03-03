@@ -31,21 +31,43 @@ import lupos.datastructures.queryresult.QueryResult;
 /**
  * Most MIMEFormatReader do not need the query for parsing the query result.
  * This class supports the method getQueryResult without a given query.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class DefaultMIMEFormatReader extends MIMEFormatReader{
 
+	/**
+	 * <p>Constructor for DefaultMIMEFormatReader.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	public DefaultMIMEFormatReader(final String formatName, final String key) {
 		super(formatName, key);
 	}
 
+	/**
+	 * <p>Constructor for DefaultMIMEFormatReader.</p>
+	 *
+	 * @param formatName a {@link java.lang.String} object.
+	 */
 	public DefaultMIMEFormatReader(final String formatName) {
 		super(formatName);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult getQueryResult(final InputStream inputStream, final String query, final BindingsFactory bindingsFactory){
 		return this.getQueryResult(inputStream, bindingsFactory);
 	}
 
+	/**
+	 * <p>getQueryResult.</p>
+	 *
+	 * @param inputStream a {@link java.io.InputStream} object.
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public abstract QueryResult getQueryResult(final InputStream inputStream, BindingsFactory bindingsFactory);
 }

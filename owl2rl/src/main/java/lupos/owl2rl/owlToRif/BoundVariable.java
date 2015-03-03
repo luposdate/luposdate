@@ -25,6 +25,9 @@ package lupos.owl2rl.owlToRif;
 
 /**
  * Contains the information that is bound to a variable (e.g. ?x) after a Query
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class BoundVariable {
 	private String variable; // name of variable e.g. ?p
@@ -52,6 +55,7 @@ public class BoundVariable {
 	}
 
 	/**
+	 * <p>Getter for the field <code>className</code>.</p>
 	 *
 	 * @return class name of emitter class
 	 */
@@ -61,6 +65,7 @@ public class BoundVariable {
 	}
 
 	/**
+	 * <p>Getter for the field <code>methodName</code>.</p>
 	 *
 	 * @return name of emitter method
 	 */
@@ -68,34 +73,74 @@ public class BoundVariable {
 		return this.methodName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>variable</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getVariable() {
 		return this.variable;
 	}
 
+	/**
+	 * <p>Setter for the field <code>variable</code>.</p>
+	 *
+	 * @param variable a {@link java.lang.String} object.
+	 */
 	public void setVariable(String variable) {
 		this.variable = variable;
 	}
 
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * <p>Getter for the field <code>partOfList</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getPartOfList() {
 		return this.partOfList;
 	}
 
+	/**
+	 * <p>Setter for the field <code>partOfList</code>.</p>
+	 *
+	 * @param partOfList a {@link java.lang.String} object.
+	 */
 	public void setPartOfList(String partOfList) {
 		this.partOfList = partOfList;
 	}
 
+	/**
+	 * <p>Getter for the field <code>originalString</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getOriginalString() {
 		return this.originalString;
 	}
 
+	/**
+	 * <p>Setter for the field <code>originalString</code>.</p>
+	 *
+	 * @param originalString a {@link java.lang.String} object.
+	 */
 	public void setOriginalString(String originalString) {
 		this.originalString = originalString;
 	}

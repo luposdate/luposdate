@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.io;
 
@@ -114,6 +118,7 @@ public class Registration {
 		 * @param in
 		 *            the input stream from which the object is deserialized
 		 * @return the deserialized object
+		 * @throws ClassNotFoundException
 		 */
 		public T deserialize(LuposObjectInputStream<T> in) throws IOException, ClassNotFoundException, URISyntaxException;
 	}
@@ -298,6 +303,13 @@ public class Registration {
 		deSerializerForId = zdeSerializerForId;
 	}
 
+	/**
+	 * <p>serializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param out a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeWithoutId(final Object o, final LuposObjectOutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -317,6 +329,13 @@ public class Registration {
 		out.writeObject(o);
 	}
 
+	/**
+	 * <p>serializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeWithoutId(final Object o, final OutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -336,6 +355,14 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param previousValue a {@link java.lang.Object} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeWithoutId(final Object o, final Object previousValue, final OutputStream out) throws IOException {
 		if(previousValue==null){
 			serializeWithoutId(o, out);
@@ -359,6 +386,15 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int serializeWithoutId(final Object o, final byte[] page, final int offset) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -376,6 +412,16 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param previousValue a {@link java.lang.Object} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int serializeWithoutId(final Object o, final Object previousValue, final byte[] page, final int offset) throws IOException {
 		if(previousValue==null){
 			return serializeWithoutId(o, page, offset);
@@ -396,6 +442,12 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>lengthSerializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public static int lengthSerializeWithoutId(final Object o) {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -412,6 +464,13 @@ public class Registration {
 		return 0;
 	}
 
+	/**
+	 * <p>lengthSerializeWithoutId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param previousValue a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public static int lengthSerializeWithoutId(final Object o, final Object previousValue) {
 		if(previousValue==null){
 			return lengthSerializeWithoutId(o);
@@ -431,6 +490,13 @@ public class Registration {
 		return 0;
 	}
 
+	/**
+	 * <p>serializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param out a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeWithId(final Object o, final LuposObjectOutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -453,6 +519,13 @@ public class Registration {
 		out.writeObject(o);
 	}
 
+	/**
+	 * <p>serializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeWithId(final Object o, final OutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -474,6 +547,14 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param previousValue a {@link java.lang.Object} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeWithId(final Object o, final Object previousValue, final OutputStream out) throws IOException {
 		if(previousValue==null){
 			serializeWithId(o, out);
@@ -499,6 +580,15 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int serializeWithId(final Object o, final byte[] page, int offset) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -518,6 +608,16 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param previousValue a {@link java.lang.Object} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int serializeWithId(final Object o, final Object previousValue, final byte[] page, int offset) throws IOException {
 		if(previousValue==null){
 			return serializeWithId(o, page, offset);
@@ -540,6 +640,12 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>lengthSerializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public static int lengthSerializeWithId(final Object o){
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -557,6 +663,13 @@ public class Registration {
 	}
 
 
+	/**
+	 * <p>lengthSerializeWithId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param previousValue a {@link java.lang.Object} object.
+	 * @return a int.
+	 */
 	public static int lengthSerializeWithId(final Object o, final Object previousValue){
 		if(previousValue==null){
 			return lengthSerializeWithId(o);
@@ -576,10 +689,22 @@ public class Registration {
 		return 0;
 	}
 
+	/**
+	 * <p>lengthSerializeId.</p>
+	 *
+	 * @return a int.
+	 */
 	public final static int lengthSerializeId() {
 		return LengthHelper.lengthLuposByte();
 	}
 
+	/**
+	 * <p>serializeId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param out a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeId(final Object o, final LuposObjectOutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -599,6 +724,13 @@ public class Registration {
 		out.os.write(deSerializerForId.length);
 	}
 
+	/**
+	 * <p>serializeId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeId(final Object o, final OutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -618,6 +750,15 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeId.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int serializeId(final Object o, final byte[] page, int offset) throws IOException {
 		final Container container = deSerializerForClass.get(o.getClass());
 		if (container == null) {
@@ -637,6 +778,13 @@ public class Registration {
 		throw new IOException(errorText);
 	}
 
+	/**
+	 * <p>serializeClass.</p>
+	 *
+	 * @param o a {@link java.lang.Class} object.
+	 * @param out a {@link lupos.io.LuposObjectOutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeClass(final Class<?> o, final LuposObjectOutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o);
 		if (container == null) {
@@ -648,6 +796,13 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>serializeClass.</p>
+	 *
+	 * @param o a {@link java.lang.Class} object.
+	 * @param out a {@link java.io.OutputStream} object.
+	 * @throws java.io.IOException if any.
+	 */
 	public static void serializeClass(final Class<?> o, final OutputStream out) throws IOException {
 		final Container container = deSerializerForClass.get(o);
 		if (container == null) {
@@ -660,6 +815,15 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>serializeClass.</p>
+	 *
+	 * @param o a {@link java.lang.Class} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return a int.
+	 * @throws java.io.IOException if any.
+	 */
 	public static int serializeClass(final Class<?> o, final byte[] page, int offset) throws IOException {
 		final Container container = deSerializerForClass.get(o);
 		if (container == null) {
@@ -673,6 +837,13 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeId.</p>
+	 *
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @return an array of {@link java.lang.Class} objects.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Class<?>[] deserializeId(final LuposObjectInputStream in) throws IOException {
 		final int index = in.is.read();
 		if (index == -1) {
@@ -687,6 +858,13 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeId.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @return an array of {@link java.lang.Class} objects.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Class<?>[] deserializeId(final InputStream in) throws IOException {
 		final int index = in.read();
 		if (index == -1) {
@@ -702,6 +880,14 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeId.</p>
+	 *
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @return an array of {@link java.lang.Class} objects.
+	 * @throws java.io.IOException if any.
+	 */
 	public static Class<?>[] deserializeId(final byte[] page, final int offset) throws IOException {
 		final int index = 0xFF & page[offset];
 		if (index == -1) {
@@ -717,6 +903,17 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutId.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass,
 			final LuposObjectInputStream<T> in) throws IOException,
@@ -730,6 +927,17 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutId.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass,
 			final InputStream in) throws IOException,
@@ -744,6 +952,18 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutId.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param previousValue a T object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass, final T previousValue,
 			final InputStream in) throws IOException,
@@ -761,6 +981,18 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutId.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass,
 			final byte[] page, final int offset) throws IOException,
@@ -775,6 +1007,19 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutId.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param previousValue a T object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithoutId(
 			final Class<? extends T> registeredClass, final T previousValue,
 			final byte[] page, final int offset) throws IOException,
@@ -792,6 +1037,18 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutIdAndNewOffset.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> Tuple<T, Integer> deserializeWithoutIdAndNewOffset(
 			final Class<? extends T> registeredClass,
 			final byte[] page, final int offset) throws IOException,
@@ -806,6 +1063,19 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithoutIdAndNewOffset.</p>
+	 *
+	 * @param registeredClass a {@link java.lang.Class} object.
+	 * @param previousValue a T object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> Tuple<T, Integer> deserializeWithoutIdAndNewOffset(
 			final Class<? extends T> registeredClass, final T previousValue,
 			final byte[] page, final int offset) throws IOException,
@@ -823,6 +1093,16 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithId.</p>
+	 *
+	 * @param in a {@link lupos.io.LuposObjectInputStream} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithId(final LuposObjectInputStream<T> in) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int index = in.is.read();
 		if (index == -1) {
@@ -837,6 +1117,16 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithId.</p>
+	 *
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithId(final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int index = in.read();
 		if (index == -1) {
@@ -851,6 +1141,17 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithId.</p>
+	 *
+	 * @param previousValue a T object.
+	 * @param in a {@link java.io.InputStream} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithId(final T previousValue, final InputStream in) throws IOException, ClassNotFoundException, URISyntaxException {
 		if(previousValue==null){
 			return deserializeWithId(in);
@@ -868,6 +1169,17 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithId.</p>
+	 *
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithId(final byte[] page, int offset) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int index = 0xFF & page[offset];
 		offset++;
@@ -883,6 +1195,18 @@ public class Registration {
 	}
 
 
+	/**
+	 * <p>deserializeWithId.</p>
+	 *
+	 * @param previousValue a T object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> T deserializeWithId(final T previousValue, final byte[] page, int offset) throws IOException, ClassNotFoundException, URISyntaxException {
 		if(previousValue==null){
 			return deserializeWithId(page, offset);
@@ -900,6 +1224,17 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithIdAndNewOffset.</p>
+	 *
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> Tuple<T, Integer> deserializeWithIdAndNewOffset(final byte[] page, int offset) throws IOException, ClassNotFoundException, URISyntaxException {
 		final int index = 0xFF & page[offset];
 		offset++;
@@ -914,6 +1249,18 @@ public class Registration {
 		}
 	}
 
+	/**
+	 * <p>deserializeWithIdAndNewOffset.</p>
+	 *
+	 * @param previousValue a T object.
+	 * @param page an array of byte.
+	 * @param offset a int.
+	 * @param <T> a T object.
+	 * @return a {@link lupos.misc.Tuple} object.
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException if any.
+	 * @throws java$net$URISyntaxException if any.
+	 */
 	public static<T> Tuple<T, Integer> deserializeWithIdAndNewOffset(final T previousValue, final byte[] page, int offset) throws IOException, ClassNotFoundException, URISyntaxException {
 		if(previousValue==null){
 			return deserializeWithIdAndNewOffset(page, offset);

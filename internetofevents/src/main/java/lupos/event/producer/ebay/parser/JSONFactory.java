@@ -26,8 +26,8 @@ package lupos.event.producer.ebay.parser;
 /**
  * Common interface for a factory for JSON data structures.
  * Here, a factory is an object providing incremental construction of another object.
- * 
- * @author	matthias
+ *
+ * @version $Id: $Id
  */
 public abstract class JSONFactory {
 
@@ -46,10 +46,8 @@ public abstract class JSONFactory {
 	 * The JSON data structure is defined by the first character of its string
 	 * representation. If <code>c</code> doesn't match such a character,
 	 * <strong>null</strong> is returned.
-	 * 
-	 * @param	c	Key character, defining the type of the JSON data structure to be
-	 * 				constructed
-	 * @return	A new Factory for the JSON data structure defined by <code>c</code>
+	 *
+	 * @return a {@link lupos.event.producer.ebay.parser.JSONFactory} object.
 	 */
 	public static JSONFactory openWith(char c) {
 		switch (c) {
@@ -65,20 +63,19 @@ public abstract class JSONFactory {
 	}
 	
 	/**
-	 * Continues the construction of the JSON data structure by adding the next character 
+	 * Continues the construction of the JSON data structure by adding the next character
 	 * <code>c</code> of its string representation.
 	 * If <code>c</code> signals the end of the JSON data structure, the construction is
 	 * terminated and no further appending operation should be possible.
-	 * 
-	 * @param	c	Next character of the JSON data structure's string representation
-	 * @return	<strong>true</strong>, if the construction has not yet been completed
+	 *
+	 * @return a boolean.
 	 */
 	public abstract boolean append(char c);
 	
 	/**
 	 * Returns the constructed JSON data structure
-	 * 
-	 * @return	The constructed JSON data structure
+	 *
+	 * @return a {@link lupos.event.producer.ebay.parser.JSObject} object.
 	 */
 	public abstract JSObject create();
 }

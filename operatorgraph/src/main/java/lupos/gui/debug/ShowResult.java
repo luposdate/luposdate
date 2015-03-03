@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.debug;
 
@@ -64,7 +68,6 @@ import lupos.rif.datatypes.EqualityResult;
 import lupos.rif.datatypes.Predicate;
 import lupos.rif.datatypes.RuleResult;
 import lupos.rif.model.Equality;
-
 public class ShowResult extends CollectRIFResult {
 
 	public interface GetOperatorGraphViewer{
@@ -76,6 +79,12 @@ public class ShowResult extends CollectRIFResult {
 	private final Result result;
 	private static final int MAXIMUM_ROW_WIDTH = 400;
 
+	/**
+	 * <p>Constructor for ShowResult.</p>
+	 *
+	 * @param getOperatorGraphViewer a {@link lupos.gui.debug.ShowResult.GetOperatorGraphViewer} object.
+	 * @param result a {@link lupos.engine.operators.singleinput.Result} object.
+	 */
 	public ShowResult(final GetOperatorGraphViewer getOperatorGraphViewer,
 			final Result result) {
 		super(false);
@@ -83,6 +92,7 @@ public class ShowResult extends CollectRIFResult {
 		this.result = result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void call(final QueryResult res) {
 		if (res != null) {
@@ -158,18 +168,23 @@ public class ShowResult extends CollectRIFResult {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteResult(final QueryResult res) {
 		super.deleteResult(res);
 		this.updateCommentPanel();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteResult() {
 		super.deleteResult();
 		this.updateCommentPanel();
 	}
 
+	/**
+	 * <p>updateCommentPanel.</p>
+	 */
 	public void updateCommentPanel() {
 		try {
 		this.lastCommentLabelElement = new CommentLabelElement(
@@ -183,6 +198,17 @@ public class ShowResult extends CollectRIFResult {
 
 	}
 
+	/**
+	 * <p>getResultPanel.</p>
+	 *
+	 * @param errorsInOntology a boolean.
+	 * @param resultQueryEvaluator an array of {@link lupos.datastructures.queryresult.QueryResult} objects.
+	 * @param prefixInstance a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 * @param resultOrder a {@link java.util.List} object.
+	 * @param operatorGraph a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @return a {@link javax.swing.JPanel} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public static JPanel getResultPanel(final boolean errorsInOntology,
 			final QueryResult[] resultQueryEvaluator,
 			final lupos.gui.operatorgraph.prefix.Prefix prefixInstance,
@@ -447,6 +473,15 @@ public class ShowResult extends CollectRIFResult {
 				operatorGraph == null);
 	}
 
+	/**
+	 * <p>outputTableResult.</p>
+	 *
+	 * @param errorsInOntology a boolean.
+	 * @param tables an array of {@link javax.swing.JTable} objects.
+	 * @param labels an array of {@link javax.swing.JLabel} objects.
+	 * @param transparentColorJTables a boolean.
+	 * @return a {@link javax.swing.JPanel} object.
+	 */
 	public static JPanel outputTableResult(final boolean errorsInOntology, final JTable[] tables,
 			final JLabel[] labels, final boolean transparentColorJTables) {
 
@@ -584,10 +619,21 @@ public class ShowResult extends CollectRIFResult {
 		return resultTable;
 	}
 
+	/**
+	 * <p>updateTable.</p>
+	 *
+	 * @param table a {@link javax.swing.JTable} object.
+	 */
 	public static void updateTable(final JTable table) {
 		updateTable(table, true);
 	}
 
+	/**
+	 * <p>updateTable.</p>
+	 *
+	 * @param table a {@link javax.swing.JTable} object.
+	 * @param considerMaximum a boolean.
+	 */
 	public static void updateTable(final JTable table,
 			final boolean considerMaximum) {
 		// determine the height of a scrollpane!

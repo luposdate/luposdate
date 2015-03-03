@@ -35,10 +35,14 @@ import lupos.misc.Tuple;
 import lupos.optimizations.physical.joinorder.costbasedoptimizer.plan.LeafNodePlan;
 
 /**
- * This class splits the list of leaf nodes whenever there is a cartesian product...  
+ * This class splits the list of leaf nodes whenever there is a cartesian product...
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class SplitCartesianProduct implements SplitHeuristic {
 
+	/** {@inheritDoc} */
 	@Override
 	public List<List<LeafNodePlan>> split(List<LeafNodePlan> initialPlans) {
 		// Are there any cartesian products, where we can split the plan?
@@ -47,8 +51,9 @@ public class SplitCartesianProduct implements SplitHeuristic {
 
 	/**
 	 * Determines all the cartesian products and returns them
+	 *
 	 * @param initialPlans all leaf nodes in the plans representing single triple patterns to join
-	 * @return groups of leaf nodes, if there are several groups, then there exist cartesian products between these groups 
+	 * @return groups of leaf nodes, if there are several groups, then there exist cartesian products between these groups
 	 */
 	protected static List<List<LeafNodePlan>> cartesianProducts(final List<LeafNodePlan> initialPlans) {
 		final List<ListOrReference> listOrReferences = new ArrayList<ListOrReference>();
@@ -100,7 +105,8 @@ public class SplitCartesianProduct implements SplitHeuristic {
 	}
 	
 	/**
-	 * This method is used to unfold the element at position index (with possible references to other lists) 
+	 * This method is used to unfold the element at position index (with possible references to other lists)
+	 *
 	 * @param listOrReferences the list of lists or references to other lists
 	 * @param index the index position in the list to unfold
 	 * @return the unfolded list

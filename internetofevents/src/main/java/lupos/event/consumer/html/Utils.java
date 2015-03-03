@@ -35,12 +35,15 @@ import java.util.Scanner;
 
 /**
  * Class for handling File operations.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class Utils {
 	
 	/**
 	 * Writes a files with a certain path with content.
-	 * 
+	 *
 	 * @param filename the path of the file
 	 * @param content the content of the file
 	 */
@@ -58,7 +61,7 @@ public class Utils {
 
 	/**
 	 * Reads a certain file of a path.
-	 * 
+	 *
 	 * @param filename the path the file to read
 	 * @return content as the read file
 	 */
@@ -85,6 +88,10 @@ public class Utils {
 
 	/**
 	 * Creates a HTML file.
+	 *
+	 * @param outPutFolder a {@link java.lang.String} object.
+	 * @param filename a {@link java.lang.String} object.
+	 * @param mainFrame a boolean.
 	 */
 	public static void createHTMLFile(String outPutFolder, String filename, boolean mainFrame){
 		File file;
@@ -109,7 +116,7 @@ public class Utils {
 	
 	/**
 	 * Handles the data for the options of a GridBagLayout.
-	 * 
+	 *
 	 * @param gridx x position
 	 * @param gridy y position
 	 * @param fill the option to fill

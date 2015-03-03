@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators.multiinput.join;
 
@@ -33,28 +37,50 @@ import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.multiinput.MultiInputOperator;
 import lupos.engine.operators.multiinput.optional.Optional;
 import lupos.engine.operators.multiinput.optional.OptionalResult;
-
 public class Join extends MultiInputOperator {
 
 	protected double estimatedCardinality = -1.0;
 	protected int realCardinality = -1;
 
+	/**
+	 * <p>Constructor for Join.</p>
+	 */
 	public Join() {
 		// no initializations...
 	}
 
+	/**
+	 * <p>Getter for the field <code>estimatedCardinality</code>.</p>
+	 *
+	 * @return a double.
+	 */
 	public double getEstimatedCardinality() {
 		return this.estimatedCardinality;
 	}
 
+	/**
+	 * <p>Setter for the field <code>estimatedCardinality</code>.</p>
+	 *
+	 * @param estimatedCardinality a double.
+	 */
 	public void setEstimatedCardinality(final double estimatedCardinality) {
 		this.estimatedCardinality = estimatedCardinality;
 	}
 
+	/**
+	 * <p>Getter for the field <code>realCardinality</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getRealCardinality() {
 		return this.realCardinality;
 	}
 
+	/**
+	 * <p>Setter for the field <code>realCardinality</code>.</p>
+	 *
+	 * @param realCardinality a int.
+	 */
 	public void setRealCardinality(final int realCardinality) {
 		this.realCardinality = realCardinality;
 	}
@@ -70,7 +96,7 @@ public class Join extends MultiInputOperator {
 	 * Note that the first bindings object is first bindings object provided is
 	 * actually altered if additional bindings were found in the second bindings
 	 * object.
-	 * 
+	 *
 	 * @param bindings1
 	 *            the first bindings object
 	 * @param bindings2
@@ -119,7 +145,7 @@ public class Join extends MultiInputOperator {
 	 * <br>
 	 * Note that the first bindings object provided is actually altered if
 	 * additional bindings were found in the second bindings object.
-	 * 
+	 *
 	 * @param result
 	 *            the query result object which is to be updated
 	 * @param bindings1
@@ -166,6 +192,13 @@ public class Join extends MultiInputOperator {
 		return true;
 	}
 
+	/**
+	 * <p>joinBindingsAndReturnBindings.</p>
+	 *
+	 * @param bindings1 a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param bindings2 a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public static Bindings joinBindingsAndReturnBindings(final Bindings bindings1, final Bindings bindings2) {
 
 		// only the keys of the second bindings object have to be
@@ -197,6 +230,14 @@ public class Join extends MultiInputOperator {
 		return bindings1;
 	}
 	
+	/**
+	 * <p>joinBindings_tmp.</p>
+	 *
+	 * @param result a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param bindings1 a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @param bindings2 a {@link lupos.datastructures.bindings.Bindings} object.
+	 * @return a boolean.
+	 */
 	public static boolean joinBindings_tmp(final QueryResult result,
 			final Bindings bindings1, final Bindings bindings2) {
 
@@ -231,6 +272,12 @@ public class Join extends MultiInputOperator {
 	 * result=QueryResult.createInstance(); result.add(b); return result; }
 	 */
 
+	/**
+	 * <p>joinBindings.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public static QueryResult joinBindings(final QueryResult qr) {
 
 		final QueryResult result = QueryResult.createInstance();
@@ -278,6 +325,10 @@ public class Join extends MultiInputOperator {
 	/**
 	 * This method must be overridden by the specific join algorithms. It
 	 * supports the reuse of code for the Optional operator.
+	 *
+	 * @param bindings a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param operandID a int.
+	 * @return a {@link lupos.engine.operators.multiinput.optional.OptionalResult} object.
 	 */
 	@SuppressWarnings("unused")
 	public OptionalResult processJoin(final QueryResult bindings, final int operandID) {
@@ -285,10 +336,16 @@ public class Join extends MultiInputOperator {
 				+ ") should have been replaced before being used."));
 	}
 
+	/**
+	 * <p>joinBeforeEndOfStream.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.multiinput.optional.OptionalResult} object.
+	 */
 	public OptionalResult joinBeforeEndOfStream() {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void cloneFrom(final BasicOperator op) {
 		super.cloneFrom(op);
@@ -305,6 +362,7 @@ public class Join extends MultiInputOperator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String result = super.toString() + " on " + this.intersectionVariables;

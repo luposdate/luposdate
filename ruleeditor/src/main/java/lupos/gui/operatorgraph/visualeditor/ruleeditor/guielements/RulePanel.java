@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements;
 
@@ -39,7 +43,6 @@ import lupos.gui.operatorgraph.visualeditor.ruleeditor.util.TypeEnum;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class RulePanel extends JTabbedPane {
 	private static final long serialVersionUID = -7897238149968316491L;
 
@@ -66,10 +69,23 @@ public class RulePanel extends JTabbedPane {
 	// --- implementation variables - end ---
 
 
+	/**
+	 * <p>Constructor for RulePanel.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public RulePanel(RuleEditor editor, String ruleName) {
 		this(editor, ruleName, null);
 	}
 
+	/**
+	 * <p>Constructor for RulePanel.</p>
+	 *
+	 * @param editor a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.RuleEditor} object.
+	 * @param ruleName a {@link java.lang.String} object.
+	 * @param loadObject a {@link org.json.JSONObject} object.
+	 */
 	public RulePanel(RuleEditor editor, String ruleName, JSONObject loadObject) {
 		super();
 
@@ -111,14 +127,27 @@ public class RulePanel extends JTabbedPane {
 
 
 	// --- basic functions - begin ---
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		return this.ruleName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>ruleName</code>.</p>
+	 *
+	 * @param ruleName a {@link java.lang.String} object.
+	 */
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
 	}
 
+	/**
+	 * <p>updateRule.</p>
+	 */
 	public void updateRule() {
 		this.assotiationsPanel.rebuildRulePackages(this.editor.getRulePackages());
 		this.documentationPanel.rebuild(this.editor.getRules(), this.editor.getRulePackages());
@@ -171,12 +200,20 @@ public class RulePanel extends JTabbedPane {
 		return visualPanel;
 	}
 
+	/**
+	 * <p>cancelModi.</p>
+	 */
 	public void cancelModi() {
 		if(this.editorPane != null) {
 			this.editorPane.cancelModi();
 		}
 	}
 
+	/**
+	 * <p>getRuleEditorPane.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.RuleEditorPane} object.
+	 */
 	public RuleEditorPane getRuleEditorPane() {
 		return this.editorPane;
 	}
@@ -194,6 +231,11 @@ public class RulePanel extends JTabbedPane {
 		return new ScrollPane(panel);
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentationPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.DocumentationPanel} object.
+	 */
 	public DocumentationPanel getDocumentationPanel() {
 		return this.documentationPanel;
 	}
@@ -206,6 +248,11 @@ public class RulePanel extends JTabbedPane {
 		return this.implementationPanel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>implementationPanel</code>.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.ImplementationPanel} object.
+	 */
 	public ImplementationPanel getImplementationPanel() {
 		return this.implementationPanel;
 	}
@@ -227,11 +274,22 @@ public class RulePanel extends JTabbedPane {
 		return panel;
 	}
 
+	/**
+	 * <p>getAssociationsPanel.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.ruleeditor.guielements.AssociationsPanel} object.
+	 */
 	public AssociationsPanel getAssociationsPanel() {
 		return this.assotiationsPanel;
 	}
 	// --- associations - end ---
 
+	/**
+	 * <p>toJSON.</p>
+	 *
+	 * @return a {@link org.json.JSONObject} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public JSONObject toJSON() throws JSONException {
 		JSONObject saveObject = new JSONObject();
 

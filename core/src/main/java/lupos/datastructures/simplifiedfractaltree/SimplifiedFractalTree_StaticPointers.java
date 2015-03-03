@@ -30,10 +30,11 @@ import lupos.datastructures.simplifiedfractaltree.buffermanager.BufferedList;
 
 /**
  * This class is an implementation of the simplified fractaltree using static pointers.
- * @author Denis Fäcke
  *
+ * @author Denis Fäcke
  * @param <K> Key
  * @param <V> Value
+ * @version $Id: $Id
  */
 public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Serializable, V extends Serializable> extends SimplifiedFractalTree<K, V> {
 
@@ -55,7 +56,6 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 	 * Constructs am empty fractal tree using a default page size of 8192.
 	 *
 	 * @param file a file specifying the name and the storage location on the disk.
-	 *
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree_StaticPointers(final File file) {
@@ -67,9 +67,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 	 *
 	 * @param file a file specifying the name and the storage location on the disk.
 	 * @param pageSize the size of a page; greater than <tt>0</tt>
-	 *
-	 * @throws NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
-	 *
+	 * @throws java.lang.NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree_StaticPointers(final File file, final int pageSize) {
@@ -80,15 +78,14 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 	 * Constructs am empty fractal tree.
 	 *
 	 * @param pageSize the size of a page; greater than <tt>0</tt>
-	 *
-	 * @throws NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
-	 *
+	 * @throws java.lang.NegativeArraySizeException if pageSize is less or equal <tt>0</tt>
 	 * @see BufferedList
 	 */
 	public SimplifiedFractalTree_StaticPointers(final int pageSize) {
 		super(pageSize);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V get(final Object key) {
 		assert key != null;
@@ -96,6 +93,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		return this.get(0, key);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public V put(final K key, final V value) {
 		assert key != null;
@@ -130,6 +128,13 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		}
 	}
 
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param index a int.
+	 * @param key a {@link java.lang.Object} object.
+	 * @return a V object.
+	 */
 	@SuppressWarnings({ "unchecked" })
 	protected V get(final int index, final Object key) {
 		if (this.bufferedList.size() <= index) {
@@ -218,6 +223,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		return entry;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final int index, final K key, FractalTreeEntry<K, V> entry, int nextArrayIndex) {
 		if (index >= this.bufferedList.size()) {
@@ -279,6 +285,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void merge(final int index) {
 		if (this.bufferedList.size() <= index || this.bufferedList.get(index).key == null) {
@@ -337,6 +344,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void merge(final FractalTreeEntry<K, V> element) {
 		if (this.bufferedList.size() == 0) {

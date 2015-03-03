@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.optimizations.logical.rules.externalontology;
 
@@ -39,11 +43,11 @@ import lupos.engine.operators.singleinput.AddBinding;
 import lupos.engine.operators.singleinput.filter.Filter;
 import lupos.misc.Tuple;
 import lupos.optimizations.logical.rules.Rule;
-
 public class RuleEliminateUnsatisfiableFilterAfterAdd extends Rule {
 	
 	private AddBinding add;
 
+	/** {@inheritDoc} */
 	@Override
 	protected void init() {
 		final AddBinding add = new AddBinding(null, null);
@@ -59,6 +63,7 @@ public class RuleEliminateUnsatisfiableFilterAfterAdd extends Rule {
 		startNode = add;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		add = (AddBinding) mso.get("add");
@@ -117,6 +122,7 @@ public class RuleEliminateUnsatisfiableFilterAfterAdd extends Rule {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<Collection<BasicOperator>, Collection<BasicOperator>> transformOperatorGraph(
 			final Map<String, BasicOperator> mso,

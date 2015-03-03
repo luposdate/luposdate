@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.viewer;
 
@@ -30,10 +34,16 @@ import javax.swing.JLabel;
 import lupos.gui.operatorgraph.AbstractSuperGuiComponent;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-
 public class AnnotationPanel extends AbstractSuperGuiComponent {
 	private static final long serialVersionUID = 360669447596005364L;
 
+	/**
+	 * <p>Constructor for AnnotationPanel.</p>
+	 *
+	 * @param parent a {@link lupos.gui.operatorgraph.OperatorGraph} object.
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param annotationText a {@link java.lang.String} object.
+	 */
 	public AnnotationPanel(OperatorGraph parent, GraphWrapper gw, String annotationText) {
 		super(parent, gw, false);
 

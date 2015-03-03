@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node.nodedeserializer;
 
@@ -33,21 +37,29 @@ import lupos.io.Registration;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.Tuple;
-
 public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 
+	/** Constant <code>MOREENTRIES=0</code> */
 	protected final static byte MOREENTRIES = 0;
+	/** Constant <code>FILENAMEOFNEXTLEAFNODE=1</code> */
 	protected final static byte FILENAMEOFNEXTLEAFNODE = 1;
 
 	protected final Class<? extends K> keyClass;
 	protected final Class<? extends V> valueClass;
 
+	/**
+	 * <p>Constructor for StandardNodeDeSerializer.</p>
+	 *
+	 * @param keyClass a {@link java.lang.Class} object.
+	 * @param valueClass a {@link java.lang.Class} object.
+	 */
 	public StandardNodeDeSerializer(final Class<? extends K> keyClass,
 			final Class<? extends V> valueClass) {
 		this.keyClass = keyClass;
 		this.valueClass = valueClass;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple<K, Integer> getNextInnerNodeEntry(final K lastKey2, final InputStream in2) {
 		int nextFilename;
@@ -84,6 +96,7 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DBBPTreeEntry<K, V> getNextLeafEntry(final InputStream in, final K lastKey, final V lastValue) {
 		try {
@@ -122,23 +135,27 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final OutputStream out) throws IOException {
 		OutHelper.writeLuposInt(fileName, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeInnerNodeEntry(final int fileName, final K key, final OutputStream out, final K lastKey) throws IOException {
 		OutHelper.writeLuposInt(fileName, out);
 		Registration.serializeWithoutId(key, lastKey, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLeafEntryNextFileName(final int filename, final OutputStream out) throws IOException {
 		OutHelper.writeLuposByte(FILENAMEOFNEXTLEAFNODE, out);
 		OutHelper.writeLuposInt(filename, out);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void writeLeafEntry(final K k, final V v, final OutputStream out, final K lastKey, final V lastValue) throws IOException {
 		OutHelper.writeLuposByte(MOREENTRIES, out);
@@ -146,10 +163,20 @@ public class StandardNodeDeSerializer<K, V> implements NodeDeSerializer<K, V> {
 		Registration.serializeWithoutId(k, lastKey, out);
 	}
 
+	/**
+	 * <p>Getter for the field <code>keyClass</code>.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public Class<? extends K> getKeyClass(){
 		return this.keyClass;
 	}
 
+	/**
+	 * <p>Getter for the field <code>valueClass</code>.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public Class<? extends V> getValueClass(){
 		return this.valueClass;
 	}

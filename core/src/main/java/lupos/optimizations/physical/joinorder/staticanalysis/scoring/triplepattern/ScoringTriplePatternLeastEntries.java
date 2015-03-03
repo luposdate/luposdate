@@ -34,9 +34,13 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
 
 /**
  * This class implements the scoring for least entries by determining the number of results of a triple pattern
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class ScoringTriplePatternLeastEntries implements ScoringTriplePattern<HashSet<Variable>> {
 
+	/** {@inheritDoc} */
 	@Override
 	public int determineScore(final BasicIndexScan indexScan,
 			final TriplePattern triplePattern, final HashSet<Variable> additonalInformation) {
@@ -51,6 +55,7 @@ public class ScoringTriplePatternLeastEntries implements ScoringTriplePattern<Ha
 		return entries;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean scoreIsAscending() {
 		return true;

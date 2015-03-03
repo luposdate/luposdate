@@ -40,16 +40,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * This class is an adaption of the original {@link SubgraphContainer} that
+ * This class is an adaption of the original {@link lupos.distributed.operator.SubgraphContainer} that
  * processes asynchrony, so that it return immediately {@code null}, but
  * processes the result to its succeeding operators if the result is back in
  * {@link #preProcessMessage(EndOfEvaluationMessage)}.
- * 
+ *
  * @author Bjoern
- * 
+ * @version $Id: $Id
  */
 public class AsynchronSubgraphContainer<K> extends SubgraphContainer<K> {
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return (super.toString().replace("SubgraphContainer",
@@ -58,7 +59,7 @@ public class AsynchronSubgraphContainer<K> extends SubgraphContainer<K> {
 
 	/**
 	 * New asychron working subgraph container
-	 * 
+	 *
 	 * @param rootNodeOfSubGraph
 	 *            the inner root of the subgraph
 	 * @param key
@@ -66,7 +67,7 @@ public class AsynchronSubgraphContainer<K> extends SubgraphContainer<K> {
 	 * @param subgraphExecutor
 	 *            the subgraph executer, for executing inner packed subgraph
 	 *            container.
-	 * @throws JSONException
+	 * @throws org.json.JSONException
 	 *             Error during JSON processing
 	 */
 	public AsynchronSubgraphContainer(Root rootNodeOfSubGraph, K key,
@@ -75,14 +76,14 @@ public class AsynchronSubgraphContainer<K> extends SubgraphContainer<K> {
 	}
 
 	/**
-	 * Creates an {@link AsynchronSubgraphContainer} by an already existing
-	 * {@link SubgraphContainer}, but without connection to preceding and
-	 * succeeding operators of the {@link SubgraphContainer}
-	 * 
+	 * Creates an {@link lupos.distributed.operator.AsynchronSubgraphContainer} by an already existing
+	 * {@link lupos.distributed.operator.SubgraphContainer}, but without connection to preceding and
+	 * succeeding operators of the {@link lupos.distributed.operator.SubgraphContainer}
+	 *
 	 * @param c
-	 *            the {@link SubgraphContainer} to clone to an
-	 *            {@link AsynchronSubgraphContainer}.
-	 * @return the new {@link SubgraphContainer} with asynchrony processing
+	 *            the {@link lupos.distributed.operator.SubgraphContainer} to clone to an
+	 *            {@link lupos.distributed.operator.AsynchronSubgraphContainer}.
+	 * @return the new {@link lupos.distributed.operator.SubgraphContainer} with asynchrony processing
 	 */
 	public static AsynchronSubgraphContainer<?> cloneFrom(SubgraphContainer<?> c) {
 		try {
@@ -108,6 +109,7 @@ public class AsynchronSubgraphContainer<K> extends SubgraphContainer<K> {
 	private Future<QueryResult> waitForResult;
 	private ExecutorService executor;
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		/*
@@ -149,6 +151,7 @@ public class AsynchronSubgraphContainer<K> extends SubgraphContainer<K> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(EndOfEvaluationMessage msg) {
 		/*

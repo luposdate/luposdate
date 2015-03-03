@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.builtin;
 
@@ -30,6 +34,12 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class NumericFunctions {
 
+	/**
+	 * <p>numeric_add.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "numeric-add", Bindable = true)
 	public static Literal numeric_add(final Argument arg) {
 		Double lVal = null;
@@ -60,6 +70,12 @@ public class NumericFunctions {
 		}
 	}
 
+	/**
+	 * <p>numeric_subtract.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "numeric-subtract", Bindable = true)
 	public static Literal numeric_subtract(final Argument arg) {
 		Double lVal = null;
@@ -90,6 +106,12 @@ public class NumericFunctions {
 		}
 	}
 
+	/**
+	 * <p>numeric_multiply.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "numeric-multiply", Bindable = true)
 	public static Literal numeric_multiply(final Argument arg) {
 		Double lVal = null;
@@ -120,6 +142,12 @@ public class NumericFunctions {
 		}
 	}
 
+	/**
+	 * <p>numeric_divide.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "numeric-divide", Bindable = true)
 	public static Literal numeric_divide(final Argument arg) {
 		Double lVal = null;
@@ -150,6 +178,12 @@ public class NumericFunctions {
 		}
 	}
 
+	/**
+	 * <p>numeric_integer_divide.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "numeric-integer-divide", Bindable = true)
 	public static Literal numeric_integer_divide(final Argument arg) {
 		Double lVal = null;
@@ -183,6 +217,12 @@ public class NumericFunctions {
 		}
 	}
 	
+	/**
+	 * <p>numeric_integer_mod.</p>
+	 *
+	 * @param arg a {@link lupos.rif.builtin.Argument} object.
+	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
+	 */
 	@Builtin(Name = "numeric-integer-mod", Bindable = true)
 	public static Literal numeric_integer_mod(final Argument arg) {
 		Double lVal = null;

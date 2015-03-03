@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.operators;
 
@@ -28,28 +32,54 @@ import java.io.Serializable;
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.misc.debug.DebugStep;
-
 public class OperatorIDTuple extends lupos.misc.util.OperatorIDTuple<BasicOperator> implements Serializable {
 	private static final long serialVersionUID = 1416179591924778885L;
 
+	/**
+	 * <p>Constructor for OperatorIDTuple.</p>
+	 *
+	 * @param op a {@link lupos.engine.operators.BasicOperator} object.
+	 * @param id a int.
+	 */
 	public OperatorIDTuple(BasicOperator op, int id) {
 		super(op, id);
 	}
 
+	/**
+	 * <p>Constructor for OperatorIDTuple.</p>
+	 *
+	 * @param opID a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 */
 	public OperatorIDTuple(final OperatorIDTuple opID) {
 		super(opID.op, opID.id);
 	}
 
+	/**
+	 * <p>processAll.</p>
+	 *
+	 * @param b a {@link lupos.datastructures.bindings.Bindings} object.
+	 */
 	public void processAll(final Bindings b) {
 		final QueryResult bindings = QueryResult.createInstance();
 		bindings.add(b);
 		((Operator) this.op).processAll(bindings, this.id);
 	}
 
+	/**
+	 * <p>processAll.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public void processAll(final QueryResult qr) {
 		((Operator) this.op).processAll(qr, this.id);
 	}
 
+	/**
+	 * <p>processAllDebug.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 */
 	public void processAllDebug(final QueryResult qr, final DebugStep debugstep) {
 		((Operator) this.op).processAllDebug(qr, this.id, debugstep);
 	}

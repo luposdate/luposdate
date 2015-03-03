@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -85,7 +89,6 @@ import lupos.sparql1_1.StreamSPARQL1_1Parser;
 import lupos.sparql1_1.operatorgraph.StreamOperatorGraphGenerator;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreator_Stream;
-
 public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 
 	private enum Optimizations {
@@ -96,6 +99,46 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		DEFAULT, SIMPLE, HASH, RDFSSIMPLE;
 	}
 
+	/**
+	 * <p>Constructor for StreamQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param externalontology a {@link java.lang.String} object.
+	 * @param inmemoryexternalontologyinference a boolean.
+	 * @param rdfs a RDFS object.
+	 * @param codemap a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 * @param tmpDirs an array of {@link java.lang.String} objects.
+	 * @param loadindexinfo a boolean.
+	 * @param parallelOperands a PARALLELOPERANDS object.
+	 * @param blockwise a boolean.
+	 * @param limit a int.
+	 * @param jointhreads a int.
+	 * @param joinbuffer a int.
+	 * @param heap a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param indexheap a int.
+	 * @param mergeheapheight a int.
+	 * @param mergeheaptype a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param chunk a int.
+	 * @param mergethreads a int.
+	 * @param yagomax a int.
+	 * @param resulttype a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 * @param storage a STORAGE object.
+	 * @param join a JOIN object.
+	 * @param optional a JOIN object.
+	 * @param sort a SORT object.
+	 * @param distinct a DISTINCT object.
+	 * @param merge_join_optional a MERGE_JOIN_OPTIONAL object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @param matcher a {@link lupos.engine.evaluators.StreamQueryEvaluator.MATCHER} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public StreamQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
@@ -122,6 +165,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		this.init(matcher);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		this.defaultOptimization = Optimizations.NONE;
@@ -209,6 +253,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -218,9 +263,20 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	private Collection<PatternMatcher> patternMatchers;
 	private Collection<URILiteral> defaultGraphs;
 
+	/**
+	 * <p>Constructor for StreamQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public StreamQueryEvaluator() throws Exception {
 	}
 
+	/**
+	 * <p>Constructor for StreamQueryEvaluator.</p>
+	 *
+	 * @param arguments an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public StreamQueryEvaluator(final String[] arguments) throws Exception {
 		super(arguments);
 	}
@@ -248,6 +304,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long compileQuery(final String query) throws ParseException {
 		final Date a = new Date();
@@ -323,6 +380,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DebugContainerQuery<BasicOperatorByteArray, Node> compileQueryDebugByteArray(
 			final String query, final Prefix prefixInstance) throws ParseException {
@@ -449,6 +507,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
@@ -492,6 +551,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public long logicalOptimization() {
 		final Date a = new Date();
@@ -521,6 +581,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long physicalOptimization() {
 		final Date a = new Date();
@@ -730,6 +791,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -742,6 +804,11 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return 0;
 	}
 
+	/**
+	 * <p>addToDefaultGraphs.</p>
+	 *
+	 * @param in a {@link lupos.datastructures.items.literal.URILiteral} object.
+	 */
 	public void addToDefaultGraphs(final URILiteral in){
 		if(this.defaultGraphs == null){
 			this.defaultGraphs = new LinkedList<URILiteral>();
@@ -749,6 +816,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		this.defaultGraphs.add(in);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			final Collection<URILiteral> defaultGraphs,
@@ -763,6 +831,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQuery() throws Exception {
 		final CountResult cr = new CountResult();
@@ -776,6 +845,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 		super.prepareForQueryDebugSteps(debugstep);
@@ -796,6 +866,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application)
 	throws Exception {
@@ -809,10 +880,20 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return ((new Date()).getTime() - a.getTime());
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		_main(args, StreamQueryEvaluator.class);
 	}
 
+	/**
+	 * <p>precompileExternalOntology.</p>
+	 *
+	 * @param zpm a {@link lupos.engine.operators.tripleoperator.patternmatcher.PatternMatcher} object.
+	 */
 	protected void precompileExternalOntology(final PatternMatcher zpm) {
 		if (this.externalOntology != null) {
 			boolean change = true;
@@ -914,6 +995,13 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		YES, NO, GENERALTRIPLEPATTERN
 	};
 
+	/**
+	 * <p>isOntologyTriplePattern.</p>
+	 *
+	 * @param items an array of {@link lupos.datastructures.items.Item} objects.
+	 * @param rdfs a RDFS object.
+	 * @return a {@link lupos.engine.evaluators.StreamQueryEvaluator.ISONTOLOGYTRIPLEPATTERN} object.
+	 */
 	public static ISONTOLOGYTRIPLEPATTERN isOntologyTriplePattern(
 			final Item[] items, final RDFS rdfs) {
 		if (rdfs == RDFS.NONE) {
@@ -970,12 +1058,14 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 		return ISONTOLOGYTRIPLEPATTERN.NO;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setRootNode(final BasicOperator rootNode) {
 		super.setRootNode(rootNode);
 		this.determinePatternMatchers();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IndexScanCreatorInterface createIndexScanCreator() {
 		return new IndexScanCreator_Stream();

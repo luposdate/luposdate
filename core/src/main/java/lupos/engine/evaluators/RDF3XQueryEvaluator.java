@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.engine.evaluators;
 
@@ -42,11 +46,11 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
-
 public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 
 	private static final Logger log = LoggerFactory.getLogger(RDF3XQueryEvaluator.class);
 
+	/** Constant <code>INDICESINFOFILE="indices.info"</code> */
 	public final static String INDICESINFOFILE="indices.info";
 
 	public enum Optimizations {
@@ -57,14 +61,67 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	protected boolean loadindexinfo;
 	protected String writeindexinfo;
 
+	/**
+	 * <p>Constructor for RDF3XQueryEvaluator.</p>
+	 *
+	 * @throws java.lang.Exception if any.
+	 */
 	public RDF3XQueryEvaluator() throws Exception {
 		// initialization must later be done...
 	}
 
+	/**
+	 * <p>Constructor for RDF3XQueryEvaluator.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws java.lang.Exception if any.
+	 */
 	public RDF3XQueryEvaluator(final String[] args) throws Exception {
 		super(args);
 	}
 
+	/**
+	 * <p>Constructor for RDF3XQueryEvaluator.</p>
+	 *
+	 * @param debug a DEBUG object.
+	 * @param multiplequeries a boolean.
+	 * @param compare a compareEvaluator object.
+	 * @param compareoptions a {@link java.lang.String} object.
+	 * @param times a int.
+	 * @param dataset a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param externalontology a {@link java.lang.String} object.
+	 * @param inmemoryexternalontologyinference a boolean.
+	 * @param rdfs a RDFS object.
+	 * @param codemap a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
+	 * @param tmpDirs an array of {@link java.lang.String} objects.
+	 * @param loadindexinfo a boolean.
+	 * @param parallelOperands a PARALLELOPERANDS object.
+	 * @param blockwise a boolean.
+	 * @param limit a int.
+	 * @param jointhreads a int.
+	 * @param joinbuffer a int.
+	 * @param heap a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param tosort a {@link lupos.datastructures.dbmergesortedds.tosort.ToSort.TOSORT} object.
+	 * @param indexheap a int.
+	 * @param mergeheapheight a int.
+	 * @param mergeheaptype a {@link lupos.datastructures.dbmergesortedds.heap.Heap.HEAPTYPE} object.
+	 * @param chunk a int.
+	 * @param mergethreads a int.
+	 * @param yagomax a int.
+	 * @param resulttype a {@link lupos.datastructures.queryresult.QueryResult.TYPE} object.
+	 * @param storage a STORAGE object.
+	 * @param join a JOIN object.
+	 * @param optional a JOIN object.
+	 * @param sort a SORT object.
+	 * @param distinct a DISTINCT object.
+	 * @param merge_join_optional a MERGE_JOIN_OPTIONAL object.
+	 * @param encoding a {@link java.lang.String} object.
+	 * @param datastructure a {@link lupos.engine.operators.index.Indices.DATA_STRUCT} object.
+	 * @param datasetsort a {@link lupos.engine.operators.index.Dataset.SORT} object.
+	 * @param writeindexinfo a {@link java.lang.String} object.
+	 * @param optimization a {@link lupos.engine.evaluators.RDF3XQueryEvaluator.Optimizations} object.
+	 */
 	public RDF3XQueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset,
 			final String type, final String externalontology,
 			final boolean inmemoryexternalontologyinference, final RDFS rdfs,
@@ -112,6 +169,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setupArguments() {
 		this.defaultOptimization = Optimizations.MERGEJOIN;
@@ -127,6 +185,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		super.setupArguments();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -135,6 +194,12 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 				(Optimizations) this.args.getEnum("optimization"));
 	}
 
+	/**
+	 * <p>loadLargeScaleIndices.</p>
+	 *
+	 * @param dir a {@link java.lang.String} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public void loadLargeScaleIndices(final String dir) throws Exception{
 		final String datafile=dir+File.separator+INDICESINFOFILE;
 
@@ -162,6 +227,7 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
@@ -224,16 +290,31 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		return timeUsed;
 	}
 
+	/**
+	 * <p>writeOutIndexFile.</p>
+	 *
+	 * @param dir a {@link java.lang.String} object.
+	 * @throws java.io.FileNotFoundException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeOutIndexFile(final String dir) throws FileNotFoundException, IOException {
 		final OutputStream out = new BufferedOutputStream(new FileOutputStream(dir+File.separator+RDF3XQueryEvaluator.INDICESINFOFILE));
 		this.dataset.writeIndexInfo(out, 13);
 		out.close();
 	}
 
+	/**
+	 * <p>writeOutIndexFileAndModifiedPages.</p>
+	 *
+	 * @param dir a {@link java.lang.String} object.
+	 * @throws java.io.FileNotFoundException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	public void writeOutIndexFileAndModifiedPages(final String dir) throws FileNotFoundException, IOException {
 		CommonCoreQueryEvaluator.writeOutModifiedPages(this, dir);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long prepareInputDataWithSourcesOfNamedGraphs(
 			final Collection<URILiteral> defaultGraphs,
@@ -298,14 +379,25 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 	}
 
 
+	/**
+	 * <p>getRoot.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot} object.
+	 */
 	public RDF3XRoot getRoot() {
 		return (RDF3XRoot) this.root;
 	}
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(final String[] args) {
 		_main(args, RDF3XQueryEvaluator.class);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public lupos.engine.operators.index.Root createRoot() {
 		final RDF3XRoot ic = new RDF3XRoot();

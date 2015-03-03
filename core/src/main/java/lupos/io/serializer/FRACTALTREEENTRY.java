@@ -42,13 +42,14 @@ import lupos.io.Registration.DeSerializerConsideringSubClasses;
  * @author Denis Fäcke
  * @see DeSerializerConsideringSubClasses
  * @see Registration
+ * @version $Id: $Id
  */
 @SuppressWarnings("rawtypes")
 public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalTreeEntry> {
 	/**
-	 * Reads a <tt>FractalTreeEntry</tt> from the <tt>InputStream</tt>.
+	 * {@inheritDoc}
 	 *
-	 * @param in A <tt>InputStream</tt>
+	 * Reads a <tt>FractalTreeEntry</tt> from the <tt>InputStream</tt>.
 	 * @see InputStream
 	 */
 	@Override
@@ -57,8 +58,9 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 	}
 
 	/**
-	 * Returns the registered classes.
+	 * {@inheritDoc}
 	 *
+	 * Returns the registered classes.
 	 * @see Registration
 	 */
 	@SuppressWarnings("unchecked")
@@ -67,16 +69,16 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 		return new Class[] { lupos.datastructures.simplifiedfractaltree.FractalTreeEntry.class };
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int length(final FractalTreeEntry arg0) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Writes the <tt>FractalTreeEntry</tt> to the <tt>OutputStream</tt>.
+	 * {@inheritDoc}
 	 *
-	 * @param entry A <tt>FractalTreeEntry</tt>
-	 * @param outputStream A <tt>OutputStream</tt>
+	 * Writes the <tt>FractalTreeEntry</tt> to the <tt>OutputStream</tt>.
 	 * @see OutputStream
 	 */
 	@SuppressWarnings("unchecked")
@@ -86,10 +88,9 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 	}
 
 	/**
-	 * Tests if the specified <tt>Object</tt> is a instance of <tt>FractalTreeEntry</tt>.
+	 * {@inheritDoc}
 	 *
-	 * @param o A <tt>Object</tt>
-	 * @return True if <tt>instance</tt> is a instance of <tt>FractalTreeEntry</tt>, else false
+	 * Tests if the specified <tt>Object</tt> is a instance of <tt>FractalTreeEntry</tt>.
 	 */
 	@Override
 	public boolean instanceofTest(final Object o) {
@@ -101,10 +102,14 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 	 *
 	 * @param t A <tt>FractalTreeEntry</tt>
 	 * @param os A <tt>OutputStream</tt>
-	 * @throws IOException
+	 * @throws java.io.IOException
+	 * @throws java.io.IOException if any.
 	 * @see FractalTreeEntry
 	 * @see OutputStream
-	 * @throws IOException
+	 * @throws java.io.IOException
+	 * @throws java.io.IOException if any.
+	 * @param <K> a K object.
+	 * @param <V> a V object.
 	 */
 	public final static <K extends Comparable<K>, V> void writeLuposFractalTreeEntry(final lupos.datastructures.simplifiedfractaltree.FractalTreeEntry<K, V> t,
 			final OutputStream os) throws IOException {
@@ -134,12 +139,16 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 	 *
 	 * @param in A <tt>InputStream</tt>
 	 * @return A <tt>FractalTreeEntry</tt>
-	 * @throws IOException
-	 * @throws ClassNotFoundException
+	 * @throws java.io.IOException
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException
+	 * @throws java.lang.ClassNotFoundException if any.
 	 * @see FractalTreeEntry
 	 * @see InputStream
-	 * @throws IOException
-	 * @throws ClassNotFoundException
+	 * @throws java.io.IOException
+	 * @throws java.io.IOException if any.
+	 * @throws java.lang.ClassNotFoundException
+	 * @throws java.lang.ClassNotFoundException if any.
 	 */
 	public final static lupos.datastructures.simplifiedfractaltree.FractalTreeEntry readLuposFractalTreeEntry(final InputStream in) throws IOException,
 			ClassNotFoundException {

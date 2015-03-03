@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs;
 
@@ -42,7 +46,6 @@ import lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator;
 import lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator;
-
 public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	/**
 	 * The serial version UID.
@@ -50,12 +53,19 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	private static final long serialVersionUID = 8524683982131639118L;
 	protected VisualRifEditor visualRifEditor;
 
+	/**
+	 * <p>Constructor for VisualRIFGraph.</p>
+	 *
+	 * @param visualEditor a {@link lupos.gui.operatorgraph.visualeditor.VisualEditor} object.
+	 */
 	protected VisualRIFGraph(final VisualEditor<T> visualEditor) {
 		super(visualEditor);
 		this.visualEditor = visualEditor;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Adds the chosen operator with the given content in it to the
 	 * QueryGraphCanvas. Returns the new added Operator.
 	 */
@@ -104,6 +114,7 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addOperator(final int x, final int y, final T newOp) {
 		this.visualEditor.isInInsertMode = false; // leave insertMode
@@ -197,16 +208,62 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 	/* ******************** **
 	 * Canvas input methods **
 	 * ******************** */
+	/**
+	 * <p>createNewRule.</p>
+	 *
+	 * @param ro a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.RuleOperator} object.
+	 */
 	protected abstract void createNewRule(RuleOperator ro);
+	/**
+	 * <p>createNewPrefix.</p>
+	 *
+	 * @param po a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.PrefixOperator} object.
+	 */
 	protected abstract void createNewPrefix(PrefixOperator po);
+	/**
+	 * <p>createNewImport.</p>
+	 *
+	 * @param io a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ImportOperator} object.
+	 */
 	protected abstract void createNewImport(ImportOperator io);
+	/**
+	 * <p>createNewUniterm.</p>
+	 *
+	 * @param fo a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.UnitermOperator} object.
+	 */
 	protected abstract void createNewUniterm(UnitermOperator fo);
+	/**
+	 * <p>createNewOperatorContainer.</p>
+	 *
+	 * @param oc a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.AbstractContainer} object.
+	 */
 	protected abstract void createNewOperatorContainer(AbstractContainer oc);
+	/**
+	 * <p>createNewListOperator.</p>
+	 *
+	 * @param lo a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ListOperator} object.
+	 */
 	protected abstract void createNewListOperator(ListOperator lo);
+	/**
+	 * <p>createNewFrameOperator.</p>
+	 *
+	 * @param fo a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.FrameOperator} object.
+	 */
 	protected abstract void createNewFrameOperator(FrameOperator fo);
+	/**
+	 * <p>createNewConstantOperator.</p>
+	 *
+	 * @param co a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.ConstantOperator} object.
+	 */
 	protected abstract void createNewConstantOperator(ConstantOperator co);
+	/**
+	 * <p>createNewVariableOperator.</p>
+	 *
+	 * @param vo a {@link lupos.gui.operatorgraph.visualeditor.visualrif.operators.VariableOperator} object.
+	 */
 	protected abstract void createNewVariableOperator(VariableOperator vo);
 
+	/** {@inheritDoc} */
 	@Override
 	public String serializeSuperGraph() {
 		final StringBuffer ret = new StringBuffer();
@@ -224,6 +281,11 @@ public abstract class VisualRIFGraph<T> extends VisualGraph<T> {
 		return ret.toString();
 	}
 
+	/**
+	 * <p>getVisualGraph.</p>
+	 *
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.visualrif.guielements.graphs.VisualRIFGraph} object.
+	 */
 	public VisualRIFGraph<T> getVisualGraph(){
 		return this;
 	}

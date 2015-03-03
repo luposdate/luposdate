@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.visualeditor.operators;
 
@@ -53,34 +57,52 @@ import lupos.sparql1_1.ASTStringLiteral;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.SPARQLCoreParserVisitorImplementation;
-
 public abstract class JTFOperator extends Operator {
 	protected Prefix prefix;
 
+	/**
+	 * <p>Constructor for JTFOperator.</p>
+	 *
+	 * @param prefix a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	protected JTFOperator(Prefix prefix) {
 		this.prefix = prefix;
 	}
 
+	/** {@inheritDoc} */
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, VisualGraph<Operator> parent) {
 		this.panel = new OperatorPanel(this, gw, parent, this.prefix.add(this.toString()));
 
 		return this.panel;
 	}
 
+	/**
+	 * <p>draw.</p>
+	 *
+	 * @param gw a {@link lupos.gui.operatorgraph.graphwrapper.GraphWrapper} object.
+	 * @param PADDING a double.
+	 * @param font a {@link java.awt.Font} object.
+	 * @return a {@link lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent} object.
+	 */
 	public AbstractGuiComponent<Operator> draw(GraphWrapper gw, double PADDING, Font font) {
 		this.panel = new OperatorPanel(this, gw, PADDING, font, this.prefix.add(this.toString()), "");
 
 		return this.panel;
 	}
 
+	/**
+	 * <p>prefixAdded.</p>
+	 */
 	public void prefixAdded() {
 		((OperatorPanel) this.panel).setValue(this.prefix.add(((OperatorPanel) this.panel).getValue()));
 	}
 
+	/** {@inheritDoc} */
 	public void prefixModified(String oldPrefix, String newPrefix) {
 		((OperatorPanel) this.panel).setValue(((OperatorPanel) this.panel).getValue().replaceFirst(oldPrefix + ":", newPrefix + ":"));
 	}
 
+	/** {@inheritDoc} */
 	public void prefixRemoved(String prefix, String namespace) {
 		String replacement = ((OperatorPanel) this.panel).getValue().replaceFirst(prefix + ":", namespace);
 
@@ -89,9 +111,21 @@ public abstract class JTFOperator extends Operator {
 		}
 	}
 
+	/**
+	 * <p>getItem.</p>
+	 *
+	 * @param n a {@link lupos.sparql1_1.Node} object.
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	protected Item getItem(Node n) {
 		return SPARQLCoreParserVisitorImplementation.getItem(n);
 	}
 
+	/**
+	 * <p>applyChange.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 * @throws lupos.gui.operatorgraph.visualeditor.util.ModificationException if any.
+	 */
 	public abstract void applyChange(String value) throws ModificationException;
 }

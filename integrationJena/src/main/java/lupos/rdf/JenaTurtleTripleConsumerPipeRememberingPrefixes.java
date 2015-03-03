@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rdf;
 
@@ -28,12 +32,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lupos.engine.operators.tripleoperator.TripleConsumer;
-
 public class JenaTurtleTripleConsumerPipeRememberingPrefixes extends
 		JenaTurtleTripleConsumerPipe {
 
 	private final HashMap<String, String> map = new HashMap<String, String>();
 
+	/**
+	 * <p>Constructor for JenaTurtleTripleConsumerPipeRememberingPrefixes.</p>
+	 *
+	 * @param arg0 a {@link java.io.Reader} object.
+	 * @param tc a {@link lupos.engine.operators.tripleoperator.TripleConsumer} object.
+	 */
 	public JenaTurtleTripleConsumerPipeRememberingPrefixes(final Reader arg0,
 			final TripleConsumer tc) {
 		super(arg0, tc);
@@ -48,6 +57,11 @@ public class JenaTurtleTripleConsumerPipeRememberingPrefixes extends
 		});
 	}
 
+	/**
+	 * <p>getPrefixMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String, String> getPrefixMap() {
 		return map;
 	}

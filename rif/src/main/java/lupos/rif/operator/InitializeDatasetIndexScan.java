@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.operator;
 
@@ -34,23 +38,38 @@ import lupos.engine.operators.index.Dataset;
 import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.Root;
 import lupos.misc.debug.DebugStep;
-
 public class InitializeDatasetIndexScan extends BasicIndexScan {
 	private final Collection<BindableIndexScan> listenerIndexes = new ArrayList<BindableIndexScan>();
 
+	/**
+	 * <p>Constructor for InitializeDatasetIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public InitializeDatasetIndexScan(final Root root) {
 		super(root);
 		this.triplePatterns = Arrays.asList();
 	}
 
+	/**
+	 * <p>addBindableIndex.</p>
+	 *
+	 * @param index a {@link lupos.rif.operator.BindableIndexScan} object.
+	 */
 	public void addBindableIndex(final BindableIndexScan index) {
 		this.listenerIndexes.add(index);
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return this.listenerIndexes.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final Dataset dataset) {
 		for (final BindableIndexScan index : this.listenerIndexes) {
@@ -59,6 +78,14 @@ public class InitializeDatasetIndexScan extends BasicIndexScan {
 		return null;
 	}
 
+	/**
+	 * <p>processDebug.</p>
+	 *
+	 * @param opt a int.
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult processDebug(final int opt, final Dataset dataset,
 			final DebugStep debugstep) {
 		for (final BindableIndexScan index : this.listenerIndexes) {
@@ -68,16 +95,19 @@ public class InitializeDatasetIndexScan extends BasicIndexScan {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public QueryResult join(final Indices indices, final Bindings bindings) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "DataSetIndex";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean joinOrderToBeOptimized(){
 		return false;

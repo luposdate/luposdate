@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.rif.visitor;
 
@@ -62,18 +66,24 @@ import lupos.rif.operator.PredicateIndexScan;
 import lupos.rif.operator.PredicatePattern;
 import lupos.rif.operator.RuleFilter;
 import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
-
 public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 	private InitializeDatasetIndexScan datasetIndex;
 	
 	private final Root root;
 
+	/**
+	 * <p>Constructor for BackwardChainingGraphBuilder.</p>
+	 *
+	 * @param indexScanCreator a {@link lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface} object.
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public BackwardChainingGraphBuilder(final IndexScanCreatorInterface indexScanCreator, Root root) {
 		super(indexScanCreator);
 		predicateIndex = new PredicateIndexScan();
 		this.root = root;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(Document obj, Object arg) throws RIFException {
 		// Initialisierungen
 		InsertTripleIndexScan insertTripleIndex = null;
@@ -141,6 +151,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(Rule obj, Object arg) throws RIFException {
 		BasicOperator headOperator = (BasicOperator) obj.getHead()
 		.accept(this, null);
@@ -156,6 +167,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		return mbr;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(Conjunction obj, Object arg) throws RIFException {
 		// Vorgehensweise: erstmal alle Sub-Operatoren sammeln -> Danach:
 		Set<BasicOperator> operands = new HashSet<BasicOperator>();
@@ -258,6 +270,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 			return headOperator;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(ExistExpression obj, Object arg) throws RIFException {
 		if (obj.getVariables().isEmpty()) {
 			// keine Variablen zum joinen bzw. vereinen -> BooleanResult
@@ -272,6 +285,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		}
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(Disjunction obj, Object arg) throws RIFException {
 		// jeden einzelnen zweig mit Union zusammenf�hren
 		final Union union = new Union();
@@ -283,6 +297,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 		return union;
 	}
 
+	/** {@inheritDoc} */
 	public Object visit(RulePredicate obj, Object arg) throws RIFException {
 		if (obj.isTriple() && arg instanceof BasicOperator) {
 
@@ -312,6 +327,7 @@ public class BackwardChainingGraphBuilder extends BaseGraphBuilder {
 			return pattern;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected RuleFilter buildRuleFilter(IExpression expr, Object arg) {
 		final RuleFilter filter = new RuleFilter(expr, null);

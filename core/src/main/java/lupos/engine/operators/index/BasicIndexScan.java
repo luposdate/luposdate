@@ -76,17 +76,28 @@ import lupos.optimizations.physical.joinorder.costbasedoptimizer.operatorgraphge
  * structure for enhancement.<br>
  * The index structure has to be initialized previously.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public abstract class BasicIndexScan extends RootChild {
 
+	/** Constant <code>NONE=0</code> */
 	public final static int NONE = 0;
+	/** Constant <code>MOSTRESTRICTIONS=1</code> */
 	public final static int MOSTRESTRICTIONS = 1;
+	/** Constant <code>MOSTRESTRICTIONSLEASTENTRIES=2</code> */
 	public final static int MOSTRESTRICTIONSLEASTENTRIES = 2;
+	/** Constant <code>LEASTENTRIES=3</code> */
 	public final static int LEASTENTRIES = 3;
+	/** Constant <code>MERGEJOIN=4</code> */
 	public final static int MERGEJOIN = 4;
+	/** Constant <code>BINARY=5</code> */
 	public final static int BINARY = 5;
+	/** Constant <code>MERGEJOINSORT=6</code> */
 	public final static int MERGEJOINSORT = 6;
+	/** Constant <code>NARYMERGEJOIN=7</code> */
 	public final static int NARYMERGEJOIN = 7;
+	/** Constant <code>BINARYSTATICANALYSIS=8</code> */
 	public final static int BINARYSTATICANALYSIS = 8;
 
 	protected final Root root;
@@ -98,16 +109,35 @@ public abstract class BasicIndexScan extends RootChild {
 
 	protected Collection<TriplePattern> triplePatterns;
 
+	/**
+	 * <p>Constructor for BasicIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public BasicIndexScan(final Root root) {
 		super();
 		this.root = root;
 	}
 
+	/**
+	 * <p>Constructor for BasicIndexScan.</p>
+	 *
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 */
 	public BasicIndexScan(final Root root, final Collection<TriplePattern> triplePatterns) {
 		this(root);
 		this.setTriplePatterns(triplePatterns);
 	}
 
+	/**
+	 * <p>Constructor for BasicIndexScan.</p>
+	 *
+	 * @param succeedingOperator a {@link lupos.engine.operators.OperatorIDTuple} object.
+	 * @param triplePattern a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public BasicIndexScan(final OperatorIDTuple succeedingOperator,
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root root) {
 		this.succeedingOperators = new LinkedList<OperatorIDTuple>();
@@ -119,6 +149,14 @@ public abstract class BasicIndexScan extends RootChild {
 		this.root = root;
 	}
 
+	/**
+	 * <p>Constructor for BasicIndexScan.</p>
+	 *
+	 * @param succeedingOperators a {@link java.util.List} object.
+	 * @param triplePattern a {@link java.util.Collection} object.
+	 * @param rdfGraph a {@link lupos.datastructures.items.Item} object.
+	 * @param root a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public BasicIndexScan(final List<OperatorIDTuple> succeedingOperators,
 			final Collection<TriplePattern> triplePattern, final Item rdfGraph, final Root root) {
 		this.succeedingOperators = succeedingOperators;
@@ -127,10 +165,16 @@ public abstract class BasicIndexScan extends RootChild {
 		this.root=root;
 	}
 
+	/**
+	 * <p>Getter for the field <code>root</code>.</p>
+	 *
+	 * @return a {@link lupos.engine.operators.index.Root} object.
+	 */
 	public Root getRoot(){
 		return this.root;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
@@ -140,14 +184,27 @@ public abstract class BasicIndexScan extends RootChild {
 		return msg;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @param bindingsFactory a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public void setBindingsFactory(final BindingsFactory bindingsFactory){
 		this.bindingsFactory= bindingsFactory;
 	}
 
+	/**
+	 * <p>Getter for the field <code>bindingsFactory</code>.</p>
+	 *
+	 * @return a {@link lupos.datastructures.bindings.BindingsFactory} object.
+	 */
 	public BindingsFactory getBindingsFactory(){
 		return this.bindingsFactory;
 	}
 
+	/**
+	 * <p>recomputeVariables.</p>
+	 */
 	public void recomputeVariables(){
 		this.intersectionVariables = new HashSet<Variable>();
 		this.unionVariables = new HashSet<Variable>();
@@ -166,6 +223,7 @@ public abstract class BasicIndexScan extends RootChild {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
 		this.recomputeVariables();
@@ -175,10 +233,10 @@ public abstract class BasicIndexScan extends RootChild {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Joins the triple pattern using the index maps and returns the result.<br>
 	 * The succeeding operators are passed to the operator pipe to be processed.
-	 *
-	 * @return the result of the performed join
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {
@@ -189,6 +247,12 @@ public abstract class BasicIndexScan extends RootChild {
 		return queryResult;
 	}
 
+	/**
+	 * <p>join.</p>
+	 *
+	 * @param dataset a {@link lupos.engine.operators.index.Dataset} object.
+	 * @return a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResult join(final Dataset dataset) {
 		try {
 
@@ -288,6 +352,7 @@ public abstract class BasicIndexScan extends RootChild {
 
 	/**
 	 * Performs a join over a collection of triple patterns
+	 *
 	 * @param indicesC all the the index structures which contains the data
 	 * @return the result of the join
 	 */
@@ -316,21 +381,42 @@ public abstract class BasicIndexScan extends RootChild {
 	 */
 	public abstract QueryResult join(Indices indices, Bindings bindings);
 
+	/**
+	 * <p>replace.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @param item a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void replace(final Variable var, final Item item) {
 		for (final TriplePattern tp : this.triplePatterns){
 			tp.replace(var, item);
 		}
 	}
 
+	/**
+	 * <p>getTriplePattern.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<TriplePattern> getTriplePattern() {
 		return this.triplePatterns;
 	}
 
+	/**
+	 * <p>Setter for the field <code>triplePatterns</code>.</p>
+	 *
+	 * @param triplePatterns a {@link java.util.Collection} object.
+	 */
 	public void setTriplePatterns(final Collection<TriplePattern> triplePatterns) {
 		this.triplePatterns = triplePatterns;
 		this.recomputeVariables();
 	}
 
+	/**
+	 * <p>getVarsInTriplePatterns.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<Variable> getVarsInTriplePatterns(){
 		final HashSet<Variable> vars = new HashSet<Variable>();
 		for(final TriplePattern tp: this.getTriplePattern()){
@@ -343,14 +429,25 @@ public abstract class BasicIndexScan extends RootChild {
 		return vars;
 	}
 
+	/**
+	 * <p>setGraphConstraint.</p>
+	 *
+	 * @param graph a {@link lupos.datastructures.items.Item} object.
+	 */
 	public void setGraphConstraint(final Item graph) {
 		this.rdfGraph = graph;
 	}
 
+	/**
+	 * <p>getGraphConstraint.</p>
+	 *
+	 * @return a {@link lupos.datastructures.items.Item} object.
+	 */
 	public Item getGraphConstraint() {
 		return this.rdfGraph;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		String s = "Index Scan on";
@@ -370,6 +467,7 @@ public abstract class BasicIndexScan extends RootChild {
 		return s;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final StringBuffer s = new StringBuffer("Index Scan on");
@@ -389,6 +487,12 @@ public abstract class BasicIndexScan extends RootChild {
 		return s.toString();
 	}
 
+	/**
+	 * <p>occurInSubjectOrPredicateOrObjectOriginalStringDoesNotDiffer.</p>
+	 *
+	 * @param var a {@link lupos.datastructures.items.Variable} object.
+	 * @return a boolean.
+	 */
 	public boolean occurInSubjectOrPredicateOrObjectOriginalStringDoesNotDiffer(
 			final Variable var) {
 		for (final TriplePattern tp : this.triplePatterns) {
@@ -478,6 +582,7 @@ public abstract class BasicIndexScan extends RootChild {
 
 	/**
 	 * This method is overridden by subclasses, e.g. RDF3XIndexScan
+	 *
 	 * @param triplePattern the triple pattern to be considered
 	 * @param variables the variables the minimum and maximum value of which is determined
 	 * @return the minimum and maximum values of the given variables, null if determining the minimum and maximum is not supported
@@ -486,10 +591,17 @@ public abstract class BasicIndexScan extends RootChild {
 		return null;
 	}
 
+	/** Constant <code>MaxNumberBuckets=500</code> */
 	protected static final int MaxNumberBuckets = 500;
 
+	/** Constant <code>histograms</code> */
 	protected final static Map<String, VarBucket[]> histograms = createHistogramMap();
 
+	/**
+	 * <p>createHistogramMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	protected static Map<String, VarBucket[]> createHistogramMap() {
 		try {
 			return (Indices.usedDatastructure != Indices.DATA_STRUCT.DBBPTREE) ? null
@@ -505,10 +617,21 @@ public abstract class BasicIndexScan extends RootChild {
 		return null;
 	}
 
+	/**
+	 * <p>getMaxNumberBuckets.</p>
+	 *
+	 * @return a int.
+	 */
 	public static int getMaxNumberBuckets() {
 		return MaxNumberBuckets;
 	}
 
+	/**
+	 * <p>getKey.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected static String getKey(final TriplePattern tp) {
 		final HashMap<Variable, Variable> alreadyUsedVariables = new HashMap<Variable, Variable>();
 		String key = "";
@@ -535,6 +658,13 @@ public abstract class BasicIndexScan extends RootChild {
 		return key;
 	}
 
+	/**
+	 * <p>getVarBuckets.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param vba an array of {@link lupos.optimizations.logical.statistics.VarBucket} objects.
+	 * @return a {@link java.util.Map} object.
+	 */
 	protected static Map<Variable, VarBucket> getVarBuckets(
 			final TriplePattern tp, final VarBucket[] vba) {
 		final Map<Variable, VarBucket> map = new HashMap<Variable, VarBucket>();
@@ -554,6 +684,13 @@ public abstract class BasicIndexScan extends RootChild {
 		return map;
 	}
 
+	/**
+	 * <p>storeVarBuckets.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param map a {@link java.util.Map} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	protected void storeVarBuckets(final TriplePattern tp,
 			final Map<Variable, VarBucket> map, final String key) {
 		final HashSet<Variable> alreadyUsedVariables = new HashSet<Variable>();
@@ -572,6 +709,16 @@ public abstract class BasicIndexScan extends RootChild {
 		histograms.put(key, vba);
 	}
 
+	/**
+	 * <p>getVarBucketsOriginal.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param classBindings a {@link java.lang.Class} object.
+	 * @param joinPartners a {@link java.util.Collection} object.
+	 * @param minima a {@link java.util.Map} object.
+	 * @param maxima a {@link java.util.Map} object.
+	 * @return a {@link java.util.Map} object.
+	 */
 	public final Map<Variable, VarBucket> getVarBucketsOriginal(
 			final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
@@ -835,6 +982,16 @@ public abstract class BasicIndexScan extends RootChild {
 		return result;
 	}
 
+	/**
+	 * <p>getVarBuckets.</p>
+	 *
+	 * @param tp a {@link lupos.engine.operators.tripleoperator.TriplePattern} object.
+	 * @param classBindings a {@link java.lang.Class} object.
+	 * @param joinPartners a {@link java.util.Collection} object.
+	 * @param minima a {@link java.util.Map} object.
+	 * @param maxima a {@link java.util.Map} object.
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Variable, VarBucket> getVarBuckets(final TriplePattern tp,
 			final Class<? extends Bindings> classBindings,
 			final Collection<Variable> joinPartners,
@@ -846,6 +1003,7 @@ public abstract class BasicIndexScan extends RootChild {
 	/**
 	 * Returns whether or not the join order of the triple patterns inside this index scan operator should be optimized.
 	 * This is for almost all index scan operator types true (but not for PredicateIndexScan)
+	 *
 	 * @return whether or not the join order of the triple patterns inside this index scan operator should be optimized
 	 */
 	public boolean joinOrderToBeOptimized(){
@@ -914,6 +1072,7 @@ public abstract class BasicIndexScan extends RootChild {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BasicIndexScan clone() {
 		final BasicIndexScan bis = (BasicIndexScan) super.clone();

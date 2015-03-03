@@ -39,9 +39,16 @@ import lupos.datastructures.queryresult.QueryResult;
 /**
  * Display the contents of a QueryResult in a table.
  *
+ * @author groppe
+ * @version $Id: $Id
  */
 public class QueryResultView extends JPanel {
 
+	/**
+	 * <p>Constructor for QueryResultView.</p>
+	 *
+	 * @param qr a {@link lupos.datastructures.queryresult.QueryResult} object.
+	 */
 	public QueryResultView(QueryResult qr) {
 		Set<Variable> vars = qr.getVariableSet();
 

@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -20,6 +21,9 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author groppe
+ * @version $Id: $Id
  */
 package lupos.gui.operatorgraph.graphwrapper;
 
@@ -37,62 +41,81 @@ import lupos.gui.operatorgraph.prefix.Prefix;
 import lupos.gui.operatorgraph.visualeditor.guielements.AbstractGuiComponent;
 import lupos.gui.operatorgraph.visualeditor.guielements.VisualGraph;
 import xpref.datatypes.BooleanDatatype;
-
 public class GraphWrapperPrefix extends GraphWrapperEditable {
+	/**
+	 * <p>Constructor for GraphWrapperPrefix.</p>
+	 *
+	 * @param element a {@link lupos.gui.operatorgraph.prefix.Prefix} object.
+	 */
 	public GraphWrapperPrefix(final Prefix element) {
 		super(element);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractSuperGuiComponent createObject(final OperatorGraph parent) {
 		return ((Prefix) this.element).draw(this, parent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getContainerElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapper> getPrecedingElements() {
 		return new LinkedList<GraphWrapper>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public LinkedList<GraphWrapperIDTuple> getSucceedingElements() {
 		return new LinkedList<GraphWrapperIDTuple>();
 	}
 
+	/**
+	 * <p>hasPredicates.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean hasPredicates() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawLineAnnotations(
 			final OperatorGraph parent) {
 		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeObjectAndTree() {
 		return new StringBuffer();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean validateObject(final boolean showErrors, final Object data) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(final Prefix prefixInstance) {
 		return this.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawBackground(final Graphics2D g2d, final Dimension size) {
 		try {
@@ -117,54 +140,65 @@ public class GraphWrapperPrefix extends GraphWrapperEditable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void drawAnnotationsBackground(final Graphics2D g2d,
 			final Dimension size) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean usePrefixesActive() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Prefix getElement() {
 		return (Prefix) this.element;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getWantedPreferencesID() {
 		return "";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean variableInUse(final String string) {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addSucceedingElement(final GraphWrapperIDTuple gwidt) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("rawtypes")
 	public AbstractGuiComponent getGUIComponent() {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addPrecedingElement(final GraphWrapper gw) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean canAddSucceedingElement() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void deleteAnnotation(final GraphWrapper gw) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Hashtable<GraphWrapper, AbstractSuperGuiComponent> drawAnnotations(
@@ -172,20 +206,24 @@ public class GraphWrapperPrefix extends GraphWrapperEditable {
 		return new Hashtable<GraphWrapper, AbstractSuperGuiComponent>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeSucceedingElement(final GraphWrapper gw) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void delete(final boolean subtree) {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	@SuppressWarnings("rawtypes")
 	public AbstractGuiComponent getAnnotationLabel(final GraphWrapper gw) {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public StringBuffer serializeOperator() {
 		return new StringBuffer();
