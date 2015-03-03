@@ -178,7 +178,6 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 	/**
 	 * Check already splitted plans to be further splitted and try out join orders (has effects if we have more than two splitted plans)
 	 * @param splittedPlans
-	 * @return
 	 */
 	public Plan getPlanBySplittingSplittedPartsForManyTriplePatterns(final List<List<LeafNodePlan>> splittedPlans){
 		final List<Plan> resultingPlans = new LinkedList<Plan>();

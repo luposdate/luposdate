@@ -50,8 +50,8 @@ import lupos.engine.operators.singleinput.Result;
 import lupos.gui.operatorgraph.DrawObject;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
-import lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix;
 import lupos.gui.operatorgraph.util.VEImageIcon;
+import lupos.gui.operatorgraph.viewer.OperatorGraphWithPrefix;
 import lupos.misc.Tuple;
 
 public class CommentLabelElement extends AbstractCommentPanel {
@@ -71,7 +71,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	 * the animation thread for this panel
 	 */
 	private Thread animationthread = null;
-	
+
 	/**
 	 * the mode for the speed of the animation for moves of this panel
 	 */
@@ -83,20 +83,20 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	public volatile boolean stopAnimation = false;
 
 	/**
-	 * the mode for an animation 
+	 * the mode for an animation
 	 */
 	public static enum AnimationSpeedMode {
 		/**
 		 * visual element moves with a constant speed on the display
 		 */
 		CONSTANT_SPEED,
-		
+
 		/**
 		 * the element moves with constant time independent of the move distance
 		 */
 		CONSTANT_TIME
 	}
-	
+
 	/**
 	 * Number of milliseconds waited after each animation step
 	 */
@@ -123,18 +123,19 @@ public class CommentLabelElement extends AbstractCommentPanel {
 				|| imageIcons[icon.ordinal()].getIconHeight() != height) {
 			final URL url = CommentLabelElement.class.getResource("/icons/"
 					+ filenames[icon.ordinal()]);
-			if (url != null)
+			if (url != null) {
 				imageIcons[icon.ordinal()] = VEImageIcon.getScaledIcon(url,
 						2 * height);
-			else
+			} else {
 				imageIcons[icon.ordinal()] = VEImageIcon.getScaledIcon(url.getFile(), 2 * height);
+			}
 		}
 		return imageIcons[icon.ordinal()];
 	}
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param operatorGraph
 	 *            The operatorgraph
 	 * @param fromBasicOperator
@@ -158,9 +159,9 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		final GridBagConstraints gbc = this.getGridBagConstraints();
 
 		if (stepDelete) {
-			backgroundColor = new Color(255, 0, 0);
+			this.backgroundColor = new Color(255, 0, 0);
 		} else {
-			backgroundColor = new Color(0, 255, 0);
+			this.backgroundColor = new Color(0, 255, 0);
 		}
 		this.setLayout(new GridBagLayout());
 		final JPanel panel = new JPanel();
@@ -186,7 +187,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 
 	/**
 	 * Alternate constructor
-	 * 
+	 *
 	 * @param operatorGraph
 	 *            the operatorgraph
 	 * @param fromBasicOperator
@@ -204,9 +205,9 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		final GridBagConstraints gbc = this.getGridBagConstraints();
 
 		if (stepDelete) {
-			backgroundColor = new Color(255, 0, 0);
+			this.backgroundColor = new Color(255, 0, 0);
 		} else {
-			backgroundColor = new Color(0, 255, 0);
+			this.backgroundColor = new Color(0, 255, 0);
 		}
 
 		JPanel panel = new JPanel();
@@ -258,7 +259,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.toBasicOperator = null;
 		final GridBagConstraints gbc = this.getGridBagConstraints();
 
-		backgroundColor = new Color(255, 20, 147);
+		this.backgroundColor = new Color(255, 20, 147);
 
 		this.setLayout(new GridBagLayout());
 		final JPanel panel = new JPanel();
@@ -288,7 +289,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.toBasicOperator = null;
 		final GridBagConstraints gbc = this.getGridBagConstraints();
 
-		backgroundColor = new Color(255, 20, 147);
+		this.backgroundColor = new Color(255, 20, 147);
 
 		final JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -325,7 +326,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.toBasicOperator = null;
 		final GridBagConstraints gbc = this.getGridBagConstraints();
 
-		backgroundColor = new Color(255, 20, 147);
+		this.backgroundColor = new Color(255, 20, 147);
 
 		final JPanel mainPanel = new JPanel();
 
@@ -345,9 +346,9 @@ public class CommentLabelElement extends AbstractCommentPanel {
 
 	private void finalizeComponent(
 			final CommentLabelElement lastCommentLabelElement) {
-		if (lastCommentLabelElement == null)
+		if (lastCommentLabelElement == null) {
 			this.finalizeComponent();
-		else {
+		} else {
 			this.setBackground(new Color(0, 0, 0, 0));
 			this.setLocation(lastCommentLabelElement.getLocation());
 
@@ -406,9 +407,10 @@ public class CommentLabelElement extends AbstractCommentPanel {
 			sizeLabel.setFont(operatorGraph.getFONT());
 			int maxWidth = sizeLabel.getPreferredSize().width + 2
 					* table.getIntercellSpacing().width + 2;
-			if (sizeLabel.getPreferredSize().height > maxHeight)
+			if (sizeLabel.getPreferredSize().height > maxHeight) {
 				maxHeight = sizeLabel.getPreferredSize().height
 						+ (int) operatorGraph.PADDING;
+			}
 			for (int j = 0; j < table.getRowCount(); j++) {
 				final Object cell = table.getValueAt(j, i);
 				if (cell != null) {
@@ -421,10 +423,12 @@ public class CommentLabelElement extends AbstractCommentPanel {
 					final int height = sizeLabel2.getPreferredSize().height
 							+ table.getInsets().top + table.getInsets().bottom
 							+ (int) operatorGraph.PADDING;
-					if (width > maxWidth)
+					if (width > maxWidth) {
 						maxWidth = width;
-					if (height > maxHeight)
+					}
+					if (height > maxHeight) {
 						maxHeight = height;
+					}
 				}
 			}
 			table.getColumnModel().getColumn(i).setMinWidth(maxWidth);
@@ -445,7 +449,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 			if (component instanceof Container) {
 				final Container container = (Container) component;
 				for (int i = 0; i < container.getComponentCount(); i++) {
-					updateTable(container.getComponent(i));
+					this.updateTable(container.getComponent(i));
 				}
 			}
 		}
@@ -461,11 +465,11 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		getImageIcon(Icon.MAIL, height);
 		getImageIcon(Icon.TABS, height);
 
-		updateTable(this);
+		this.updateTable(this);
 		this.updateSize();
 
 		if (this.animationthread != null) {
-			stopAnimation = true;
+			this.stopAnimation = true;
 			try {
 				this.animationthread.join();
 			} catch (final InterruptedException e) {
@@ -474,7 +478,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 			}
 		}
 
-		stopAnimation = false;
+		this.stopAnimation = false;
 
 		final GraphWrapper fromGW = this
 				.findGraphWrapper(this.fromBasicOperator);
@@ -516,11 +520,11 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		this.setLocation(midpointFrom.x, midpointFrom.y);
 
 		// --- animation example - begin ---
-		this.animationthread = createAnimationThread(midpointFrom,midpointTo);
+		this.animationthread = this.createAnimationThread(midpointFrom,midpointTo);
 		this.animationthread.start();
 		// --- animation example - end ---
 	}
-	
+
 	/**
 	 * This method removes this CommentLabelElement from the Operatorgraph
 	 */
@@ -541,11 +545,10 @@ public class CommentLabelElement extends AbstractCommentPanel {
 
 	/**
 	 * getter for animationgraph
-	 * 
-	 * @return
+	 *
 	 */
 	public Thread getAnimationthread() {
-		return animationthread;
+		return this.animationthread;
 	}
 
 	public static synchronized int getPause() {
@@ -573,25 +576,25 @@ public class CommentLabelElement extends AbstractCommentPanel {
 		final Graphics2D g2d = (Graphics2D) g;
 		DrawObject.drawSimpleBoxShade(g2d, 0, 0, size.width - 1
 				- (int) this.operatorGraph.PADDING, size.height - 1
-				- (int) this.operatorGraph.PADDING, backgroundColor, new Color(
+				- (int) this.operatorGraph.PADDING, this.backgroundColor, new Color(
 				128, 128, 128, 100), (int) this.operatorGraph.PADDING);
 	}
-	
+
 	private Thread createAnimationThread(final Point midpointFrom,final Point midpointTo){
 		switch(animationSpeedMode){
 		case CONSTANT_SPEED:
-			return createConstSpeedAnimationThread(midpointFrom, midpointTo);
+			return this.createConstSpeedAnimationThread(midpointFrom, midpointTo);
 		case CONSTANT_TIME:
-			return createConstTimeAnimationThread(midpointFrom, midpointTo);
+			return this.createConstTimeAnimationThread(midpointFrom, midpointTo);
 		default: return null;
 		}
 	}
-	
+
 	/**
 	 * Create an animation-thread moving the panel linear between two point with
-	 * constant speed in time: steps*percentageSteps / 100 
+	 * constant speed in time: steps*percentageSteps / 100
 	 * pause
-	 * 
+	 *
 	 * @param midpointFrom
 	 *            the coordinate where the move animation should start
 	 * @param midpointTo
@@ -611,17 +614,18 @@ public class CommentLabelElement extends AbstractCommentPanel {
 			@Override
 			public void run() {
 				for (double i = 0; i < steps; i += 100 / percentageSteps) {
-					if (stopAnimation) {
+					if (CommentLabelElement.this.stopAnimation) {
 						break;
-					} else
+					} else {
 						try {
 							Thread.sleep(pause); // wait some milliseconds
 						} catch (final InterruptedException e) {
 							// no output
 						}
+					}
 
-					int newX = midpointFrom.x + (int) (i * deltaX);
-					int newY = midpointFrom.y + (int) (i * deltaY);
+					final int newX = midpointFrom.x + (int) (i * deltaX);
+					final int newY = midpointFrom.y + (int) (i * deltaY);
 
 					CommentLabelElement.this.setLocation(newX, newY);
 				}
@@ -634,7 +638,7 @@ public class CommentLabelElement extends AbstractCommentPanel {
 	/**
 	 * Create an animation-thread moving the panel linear between two points in
 	 * a constant time:  percentageSteps * pause
-	 * 
+	 *
 	 * @param midpointFrom
 	 *            the coordinate where the move animation should start
 	 * @param midpointTo
@@ -649,17 +653,18 @@ public class CommentLabelElement extends AbstractCommentPanel {
 			@Override
 			public void run() {
 				for (double i = 0; i <= 100; i += 100/percentageSteps) {
-					if (stopAnimation) {
+					if (CommentLabelElement.this.stopAnimation) {
 						break;
-					} else
+					} else {
 						try {
 							Thread.sleep(pause); // wait some milliseconds
 						} catch (final InterruptedException e) {
 							// no output
 						}
+					}
 
-					int newX = midpointFrom.x + (int) (i * deltaX / 100);
-					int newY = midpointFrom.y + (int) (i * deltaY / 100);
+					final int newX = midpointFrom.x + (int) (i * deltaX / 100);
+					final int newY = midpointFrom.y + (int) (i * deltaY / 100);
 
 					CommentLabelElement.this.setLocation(newX, newY);
 				}

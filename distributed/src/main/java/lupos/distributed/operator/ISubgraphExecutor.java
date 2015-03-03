@@ -35,7 +35,7 @@ public interface ISubgraphExecutor<K> {
 	/**
 	 * This method submits a given subgraph and returns the result of the evaluated subgraph
 	 * @param key the key to address the node to which the subgraph is submitted to
-	 * @param subgraphSeriliazedAsJSON the subgraph serialized as JSON string
+	 * @param subgraphSerializedAsJSON the subgraph serialized as JSON string
 	 * @return the retrieved query result
 	 */
 	public QueryResult evaluate(K key, String subgraphSerializedAsJSON, BindingsFactory bindingsFactory);

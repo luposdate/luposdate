@@ -41,7 +41,7 @@ import lupos.engine.operators.messages.Message;
  * A parallel operator implementation which distributes the computation of
  * previous to a helper thread. Uses a {@link BlockingQueue} to communicate with
  * it.
- * 
+ *
  **/
 public class ParallelOperand extends Operator {
 
@@ -54,7 +54,7 @@ public class ParallelOperand extends Operator {
 
 	/**
 	 * Queries the current global queue fill limit.
-	 * 
+	 *
 	 * @return the current queue fill limit
 	 */
 	public static int getQueueLimit() {
@@ -63,8 +63,8 @@ public class ParallelOperand extends Operator {
 
 	/**
 	 * Sets the current global queue limit.
-	 * 
-	 * @param maximum
+	 *
+	 * @param limit
 	 *            number of elements in the queue
 	 */
 	public static void setQueueLimit(final int limit) {
@@ -72,15 +72,15 @@ public class ParallelOperand extends Operator {
 	}
 
 	/**
-	 * Processes a QueryResult; in our case, gets values from the {@link #queue}
+	 * Processes a QueryResult; in our case, gets values from the #queue
 	 * and returns them. Its enclosed in an iterator, so we actually transfer it
 	 * only when necessary (using {@link Iterator#next}).
-	 * 
+	 *
 	 * Since we call a {@link BlockingQueue}, we might experience
 	 * {@link InterruptedException}s, but that's not visible from the signature.
 	 * Actually we circumvent this by rethrowing using {@link Thread#interrupt}
 	 * on the current thread.
-	 * 
+	 *
 	 * @see QueryResult
 	 * @see Iterator
 	 * @see BlockingQueue
@@ -110,7 +110,7 @@ public class ParallelOperand extends Operator {
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
 		// wait until all threads are finished!
-		if (this.threadsList != null)
+		if (this.threadsList != null) {
 			for (final Thread t : this.threadsList) {
 				try {
 					t.join();
@@ -119,16 +119,17 @@ public class ParallelOperand extends Operator {
 					e.printStackTrace();
 				}
 			}
+		}
 		return super.preProcessMessage(msg);
 	}
 
 	/**
 	 * The helper thread for {@link ParallelOperand}. Uses a
 	 * {@link BlockingQueue} to communicate with the main thread.
-	 * 
+	 *
 	 * @see ParallelOperand
 	 * @see BlockingQueue
-	 * 
+	 *
 	 * @author Olof-Joachim Frahm, Yu Huang, Christian Wolters
 	 */
 	public class ParallelOperandThread extends Thread {
@@ -139,14 +140,14 @@ public class ParallelOperand extends Operator {
 
 		/**
 		 * The result we evaluate in this thread.
-		 * 
+		 *
 		 * @see ParallelOperand#process
 		 */
 		private final QueryResult result;
 
 		/**
 		 * Constructs a new thread object.
-		 * 
+		 *
 		 * @see ParallelOperand#process
 		 */
 		ParallelOperandThread(final BoundedBuffer<Bindings> queue,
@@ -158,10 +159,10 @@ public class ParallelOperand extends Operator {
 
 		/**
 		 * Method run when this thread is started. Evaluates the bindings in the
-		 * {@link #result} and puts them on the {@link #queue}.
-		 * 
+		 * #result and puts them on the #queue.
+		 *
 		 * If it's interrupted, we don't do much cleaning up, so better not use
-		 * the {@link #queue} afterwards (there might not be an end marker, so
+		 * the #queue afterwards (there might not be an end marker, so
 		 * you might wait forever to get an element from it.
 		 */
 		@Override
@@ -197,7 +198,7 @@ public class ParallelOperand extends Operator {
 
 		/**
 		 * Constructs a new thread object.
-		 * 
+		 *
 		 * @see ParallelOperand#process
 		 */
 		ParallelOperandStarter(final BoundedBuffer<Bindings> queue) {

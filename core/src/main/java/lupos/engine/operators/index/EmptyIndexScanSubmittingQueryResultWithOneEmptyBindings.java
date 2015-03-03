@@ -67,7 +67,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 	 * Creating a new query result with an empty binding to handle an empty BIND
 	 * statement
 	 *
-	 * @param Dataset
+	 * @param dataset
 	 */
 	@Override
 	public QueryResult process(final Dataset dataset) {

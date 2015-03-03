@@ -29,107 +29,126 @@ import lupos.rif.datatypes.EqualityResult;
 import lupos.rif.datatypes.RuleResult;
 
 public class CollectRIFResult extends CollectResult {
-	
-	public CollectRIFResult(boolean oneTime) {
+
+	public CollectRIFResult(final boolean oneTime) {
 		super(oneTime);
 	}
 
 	protected RuleResult rr;
 	protected EqualityResult er;
 
+	@Override
 	public void call(final QueryResult res) {
 		if (res != null) {
 			if (res instanceof EqualityResult) {
-				if(oneTime){
-					if (er == null){
-						er = (EqualityResult) res;
+				if(this.oneTime){
+					if (this.er == null){
+						this.er = (EqualityResult) res;
 					} else {
-						er.getEqualityResult().addAll(((EqualityResult) res).getEqualityResult());
+						this.er.getEqualityResult().addAll(((EqualityResult) res).getEqualityResult());
 					}
 				} else {
-					if (er == null){
-						er = new EqualityResult();
+					if (this.er == null){
+						this.er = new EqualityResult();
 					}
-					er.getEqualityResult().addAll(((EqualityResult) res).getEqualityResult());
+					this.er.getEqualityResult().addAll(((EqualityResult) res).getEqualityResult());
 				}
 			} else if (res instanceof RuleResult) {
-				if(oneTime){
-					if (rr == null){
-						rr = (RuleResult) res;
+				if(this.oneTime){
+					if (this.rr == null){
+						this.rr = (RuleResult) res;
 					} else {
-						rr.getPredicateResults().addAll(((RuleResult) res).getPredicateResults());
+						this.rr.getPredicateResults().addAll(((RuleResult) res).getPredicateResults());
 					}
 				} else {
-					if (rr == null){
-						rr = new RuleResult();
+					if (this.rr == null){
+						this.rr = new RuleResult();
 					}
-					rr.getPredicateResults().addAll(((RuleResult) res).getPredicateResults());
+					this.rr.getPredicateResults().addAll(((RuleResult) res).getPredicateResults());
 				}
-			} else super.call(res);
+			} else {
+				super.call(res);
+			}
 		}
 	}
 
+	@Override
 	public void start(final Type type) {
 		super.start(type);
-		er = null;
-		rr = null;
+		this.er = null;
+		this.rr = null;
 	}
 
+	@Override
 	public void stop() {
 	}
 
 	/**
 	 * get result, if there are several types of QueryResults, one of them is
 	 * returned...
-	 * 
-	 * @return
 	 */
+	@Override
 	public QueryResult getResult() {
-		QueryResult result = rr;
-		if (result == null)
-			result = er;		
-		if (result == null)
+		QueryResult result = this.rr;
+		if (result == null) {
+			result = this.er;
+		}
+		if (result == null) {
 			return super.getResult();
-		else return result;
+		} else {
+			return result;
+		}
 	}
 
+	@Override
 	public void deleteResult(final QueryResult res) {
 		if (res instanceof EqualityResult) {
-			if (er != null)
-				er.removeAll(res);
+			if (this.er != null) {
+				this.er.removeAll(res);
+			}
 		} else if (res instanceof RuleResult) {
-			if (rr != null)
-				rr.removeAll(res);
+			if (this.rr != null) {
+				this.rr.removeAll(res);
+			}
 		} super.deleteResult(res);
 	}
 
+	@Override
 	public void deleteResult() {
-		if (rr != null)
-			rr.release();
-		if (er != null)
-			er.release();
-		rr = null;
-		er = null;
+		if (this.rr != null) {
+			this.rr.release();
+		}
+		if (this.er != null) {
+			this.er.release();
+		}
+		this.rr = null;
+		this.er = null;
 		super.deleteResult();
 	}
 
+	@Override
 	public QueryResult[] getQueryResults() {
-		final int size = (qr == null ? 0 : 1) + (rr == null ? 0 : 1)
-				+ (er == null ? 0 : 1) + (gr == null ? 0 : 1)
-				+ (br_list == null ? 0 : br_list.size());
+		final int size = (this.qr == null ? 0 : 1) + (this.rr == null ? 0 : 1)
+				+ (this.er == null ? 0 : 1) + (this.gr == null ? 0 : 1)
+				+ (this.br_list == null ? 0 : this.br_list.size());
 		final QueryResult[] result = new QueryResult[size];
 		int index = 0;
-		if (qr != null)
-			result[index++] = qr;
-		if (rr != null)
-			result[index++] = rr;
-		if (gr != null)
-			result[index++] = gr;
-		if (er != null)
-			result[index++] = er;
-		if (br_list != null) {
-			for (final BooleanResult br : br_list)
+		if (this.qr != null) {
+			result[index++] = this.qr;
+		}
+		if (this.rr != null) {
+			result[index++] = this.rr;
+		}
+		if (this.gr != null) {
+			result[index++] = this.gr;
+		}
+		if (this.er != null) {
+			result[index++] = this.er;
+		}
+		if (this.br_list != null) {
+			for (final BooleanResult br : this.br_list) {
 				result[index++] = br;
+			}
 		}
 		return result;
 	}

@@ -25,13 +25,22 @@ package lupos.event.consumer;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsMap;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.event.action.Action;
-import lupos.event.communication.*;
+import lupos.event.communication.ConnectionRequest;
+import lupos.event.communication.IDisconnectedHandler;
+import lupos.event.communication.IMessageReceivedHandler;
+import lupos.event.communication.IMessageTransport;
+import lupos.event.communication.SerializingMessageService;
+import lupos.event.communication.TcpConnectInfo;
+import lupos.event.communication.TcpMessageTransport;
 import lupos.event.pubsub.IQueryResultReceivedHandler;
 import lupos.event.pubsub.PubSubClient;
 import lupos.event.pubsub.Subscription;
@@ -55,7 +64,7 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	private PubSubClient pubSubClient;
 	private TcpConnectInfo connectingSubBroker;
 
-	private Map<Subscription, Action> subscriptionActionMap = new HashMap<Subscription, Action>();
+	private final Map<Subscription, Action> subscriptionActionMap = new HashMap<Subscription, Action>();
 
 	//final List<IResultReceivedHandler> resultReceivedHandlers = new ArrayList<IResultReceivedHandler>();
 
@@ -75,9 +84,9 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	 * @throws Exception if the connection has
 	 * not been built properly
 	 */
-	public void connect(String host, int port) throws Exception {
+	public void connect(final String host, final int port) throws Exception {
 		this.msgService.connect(new TcpConnectInfo(host, port));
-		ConnectionRequest conReq = new ConnectionRequest(ConnectionRequest.REQUESTTYPE_CONSUMER);
+		final ConnectionRequest conReq = new ConnectionRequest(ConnectionRequest.REQUESTTYPE_CONSUMER);
 		this.msgService.sendMessage(conReq);
 		this.msgService.addHandler2(this);
 		this.msgService.addDisconnectHandler(this);
@@ -106,13 +115,13 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	 * @param s
 	 * @throws IOException
 	 */
-	public void subscribe(Subscription s, Action a) throws IOException {
+	public void subscribe(final Subscription s, final Action a) throws IOException {
 		this.pubSubClient.subscribe(s);
 		this.subscriptionActionMap.put(s, a);
 	}
 
 	@Override
-	public void messageReceived(Object src, Serializable msg) {
+	public void messageReceived(final Object src, final Serializable msg) {
 		if(msg instanceof TcpConnectInfo){
 			this.connectingSubBroker = (TcpConnectInfo)msg;
 			this.msgService.disconnect();
@@ -130,18 +139,18 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 
 	/**
 	 * Get the query results for a particular subscription.
-	 * @param The subscription whose query results should be returned.
+	 * @param s The subscription whose query results should be returned.
 	 * @return A list of query results.
 	 */
-	public List<TimedWrapper<QueryResult>> getQueryResults(Subscription s) {
+	public List<TimedWrapper<QueryResult>> getQueryResults(final Subscription s) {
 		return this.pubSubClient.getQueryResults(s);
 	}
 
 	@Override
-	public void queryResultReceived(QueryResult qr, Subscription sub) {
+	public void queryResultReceived(final QueryResult qr, final Subscription sub) {
 		System.out.println("QUERY RESULT RECEIVED");
 		if(this.subscriptionActionMap.containsKey(sub)) {
-			Action action = this.subscriptionActionMap.get(sub);
+			final Action action = this.subscriptionActionMap.get(sub);
 			action.execute(qr);
 		}
 	}
@@ -153,20 +162,21 @@ public class Consumer extends Observable implements IMessageReceivedHandler<Seri
 	 */
 	@Override
 	public void disconnected() {
-		if (this.connectingSubBroker == null)
+		if (this.connectingSubBroker == null) {
 			return;
+		}
 
 		// Connect to the sub broker when disconnected
 		try {
 			this.msgService.connect(this.connectingSubBroker);
-			ConnectionRequest conReq = new ConnectionRequest(ConnectionRequest.REQUESTTYPE_CONSUMER);
+			final ConnectionRequest conReq = new ConnectionRequest(ConnectionRequest.REQUESTTYPE_CONSUMER);
 			conReq.setPort(TcpMessageTransport.SERVER_PORT);
 			this.msgService.sendMessage(conReq);
 			this.pubSubClient.changeMessageService(this.msgService);
 			// resend all former subscriptions
 			this.pubSubClient.resendSubscriptions();
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}

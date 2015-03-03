@@ -119,7 +119,6 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 
 	/**
 	 * the protected constructor
-	 * @see getBufferManager()
 	 */
 	protected BufferManager_RandomAccess() {
 		this.replacementStrategy = new LeastRecentlyUsed<PageAddress>((int)(BufferManager_RandomAccess.MAXBYTESINBUFFER / PageManager.DEFAULTPAGESIZE));
@@ -184,8 +183,8 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	 * loaded from disk and added to the buffer.
 	 *
 	 * @param pagesize the size of the page
-	 * @param pagenumber
-	 *            The number of the page to be retrieved.
+	 * @param pageaddress
+	 *            The address of the page to be retrieved.
 	 * @return The content of the page
 	 *
 	 * @throws IOException
@@ -215,8 +214,8 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	 * This method modifies a page in the buffer. If the page does not exist so
 	 * far in the buffer it is added to the buffer and marked as modified.
 	 * @param pagesize the size of the page
-	 * @param pagenumber
-	 *            The number of the modified page
+	 * @param pageaddress
+	 *            The address of the modified page
 	 * @param pageContent
 	 *            The modified page
 	 *
@@ -360,7 +359,7 @@ public class BufferManager_RandomAccess extends BufferManager_CachedFiles {
 	}
 
 	/**
-	 * @param mAXBYTESINBUFFER the max number of bytes in the buffer
+	 * @param maxBytesInBuffer the max number of bytes in the buffer
 	 */
 	public static void setMaxBytesInBuffer(final long maxBytesInBuffer) {
 		BufferManager_RandomAccess.MAXBYTESINBUFFER = maxBytesInBuffer;

@@ -27,7 +27,37 @@ package lupos.rif.generated.visitor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import lupos.rif.generated.syntaxtree.*;
+import lupos.rif.generated.syntaxtree.CompilationUnit;
+import lupos.rif.generated.syntaxtree.INode;
+import lupos.rif.generated.syntaxtree.INodeList;
+import lupos.rif.generated.syntaxtree.NodeToken;
+import lupos.rif.generated.syntaxtree.RIFAtomic;
+import lupos.rif.generated.syntaxtree.RIFBase;
+import lupos.rif.generated.syntaxtree.RIFClause;
+import lupos.rif.generated.syntaxtree.RIFDocument;
+import lupos.rif.generated.syntaxtree.RIFExternal;
+import lupos.rif.generated.syntaxtree.RIFFloatingPoint;
+import lupos.rif.generated.syntaxtree.RIFFormula;
+import lupos.rif.generated.syntaxtree.RIFFrame;
+import lupos.rif.generated.syntaxtree.RIFGroup;
+import lupos.rif.generated.syntaxtree.RIFImport;
+import lupos.rif.generated.syntaxtree.RIFInteger;
+import lupos.rif.generated.syntaxtree.RIFList;
+import lupos.rif.generated.syntaxtree.RIFLiteralWithLangTag;
+import lupos.rif.generated.syntaxtree.RIFNCName;
+import lupos.rif.generated.syntaxtree.RIFNumericLiteral;
+import lupos.rif.generated.syntaxtree.RIFPrefix;
+import lupos.rif.generated.syntaxtree.RIFQName;
+import lupos.rif.generated.syntaxtree.RIFQuotedURIref;
+import lupos.rif.generated.syntaxtree.RIFRDFLiteral;
+import lupos.rif.generated.syntaxtree.RIFRule;
+import lupos.rif.generated.syntaxtree.RIFString;
+import lupos.rif.generated.syntaxtree.RIFTerm;
+import lupos.rif.generated.syntaxtree.RIFTypedLiteral;
+import lupos.rif.generated.syntaxtree.RIFURI;
+import lupos.rif.generated.syntaxtree.RIFUniterm;
+import lupos.rif.generated.syntaxtree.RIFVar;
+import lupos.rif.generated.syntaxtree.RIFVarOrURI;
 
 /**
  * A skeleton output formatter for your language grammar.<br>
@@ -58,7 +88,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   private static int INDENT_AMT = 2;
 
   /**
-   * Constructor with a default indentation amount of {@link #INDENT_AMT} and no line-wrap.
+   * Constructor with a default indentation amount of #INDENT_AMT and no line-wrap.
    */
   public TreeFormatter() { this(INDENT_AMT, 0); }
 
@@ -75,10 +105,11 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
     this.indentAmt = aIndentAmt;
     this.wrapWidth = aWrapWidth;
 
-    if (wrapWidth > 0)
-       lineWrap = true;
-    else
-       lineWrap = false;
+    if (this.wrapWidth > 0) {
+		this.lineWrap = true;
+	} else {
+		this.lineWrap = false;
+	}
   }
 
   /**
@@ -87,7 +118,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    * @param n the node list to process
    */
   protected void processList(final INodeList n) {
-    processList(n, null);
+    this.processList(n, null);
   }
 
   /**
@@ -100,8 +131,9 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
   protected void processList(final INodeList n, final FormatCommand cmd) {
     for (final Iterator<INode> e = n.elements(); e.hasNext();) {
        e.next().accept(this);
-       if (cmd != null && e.hasNext())
-        cmdQueue.add(cmd);
+       if (cmd != null && e.hasNext()) {
+		this.cmdQueue.add(cmd);
+	}
     }
   }
 
@@ -111,7 +143,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    *
    * @return the corresponding FormatCommand
    */
-  protected FormatCommand force() { return force(1); }
+  protected FormatCommand force() { return this.force(1); }
 
   /**
    * Inserts a given number of line breaks and indents the next line to the current indentation level.<br>
@@ -130,7 +162,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    *
    * @return the corresponding FormatCommand
    */
-  protected FormatCommand indent() { return indent(1); }
+  protected FormatCommand indent() { return this.indent(1); }
 
   /**
    * Increases the indentation level by a given number.<br>
@@ -149,7 +181,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    *
    * @return the corresponding FormatCommand
    */
-  protected FormatCommand outdent() { return outdent(1); }
+  protected FormatCommand outdent() { return this.outdent(1); }
 
   /**
    * Reduces the indentation level by a given number.<br>
@@ -168,7 +200,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    *
    * @return the corresponding FormatCommand
    */
-  protected FormatCommand space() { return space(1); }
+  protected FormatCommand space() { return this.space(1); }
 
   /**
    * Adds a given number of spaces between tokens.<br>
@@ -188,7 +220,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    * @param cmd the FormatCommand to be added
    */
   protected void add(final FormatCommand cmd) {
-    cmdQueue.add(cmd);
+    this.cmdQueue.add(cmd);
   }
 
   /**
@@ -203,49 +235,51 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
    */
   @Override
   public void visit(final NodeToken n) {
-    for (Iterator<FormatCommand> e = cmdQueue.iterator(); e.hasNext();) {
+    for (final Iterator<FormatCommand> e = this.cmdQueue.iterator(); e.hasNext();) {
       final FormatCommand cmd = e.next();
       switch (cmd.getCommand()) {
       case FormatCommand.FORCE :
-        curLine += cmd.getNumCommands();
-        curColumn = curIndent + 1;
+        this.curLine += cmd.getNumCommands();
+        this.curColumn = this.curIndent + 1;
         break;
       case FormatCommand.INDENT :
-        curIndent += indentAmt * cmd.getNumCommands();
+        this.curIndent += this.indentAmt * cmd.getNumCommands();
         break;
       case FormatCommand.OUTDENT :
-        if (curIndent >= indentAmt)
-        curIndent -= indentAmt * cmd.getNumCommands();
+        if (this.curIndent >= this.indentAmt) {
+			this.curIndent -= this.indentAmt * cmd.getNumCommands();
+		}
         break;
       case FormatCommand.SPACE :
-        curColumn += cmd.getNumCommands();
+        this.curColumn += cmd.getNumCommands();
         break;
       default :
         throw new TreeFormatterException("Invalid value in command queue.");
       }
     }
 
-    cmdQueue.removeAll(cmdQueue);
+    this.cmdQueue.removeAll(this.cmdQueue);
 
     //
     // Handle all special tokens preceding this NodeToken
     //
-    if (n.numSpecials() > 0)
-      for (final Iterator<NodeToken> e = n.specialTokens.iterator(); e.hasNext();) {
-       NodeToken special = e.next();
+    if (n.numSpecials() > 0) {
+		for (final Iterator<NodeToken> e = n.specialTokens.iterator(); e.hasNext();) {
+		   final NodeToken special = e.next();
 
-       //
-       // Place the token
-       // Move cursor to next line after the special token
-       // Don't update curColumn - want to keep current indent level
-       //
-       placeToken(special, curLine, curColumn);
-       curLine = special.endLine + 1;
-      }
+		   //
+		   // Place the token
+		   // Move cursor to next line after the special token
+		   // Don't update curColumn - want to keep current indent level
+		   //
+		   this.placeToken(special, this.curLine, this.curColumn);
+		   this.curLine = special.endLine + 1;
+		  }
+	}
 
-    placeToken(n, curLine, curColumn);
-    curLine = n.endLine;
-    curColumn = n.endColumn;
+    this.placeToken(n, this.curLine, this.curColumn);
+    this.curLine = n.endLine;
+    this.curColumn = n.endColumn;
   }
 
   /**
@@ -265,12 +299,12 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
     //
     // Find beginning of token.  Only line-wrap for single-line tokens
     //
-    if (!lineWrap || n.tokenImage.indexOf('\n') != -1 ||
-       column + length <= wrapWidth)
-       n.beginColumn = column;
-    else {
+    if (!this.lineWrap || n.tokenImage.indexOf('\n') != -1 ||
+       column + length <= this.wrapWidth) {
+		n.beginColumn = column;
+	} else {
        ++line;
-       column = curIndent + indentAmt + 1;
+       column = this.curIndent + this.indentAmt + 1;
        n.beginColumn = column;
     }
 
@@ -283,9 +317,9 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
        if (n.tokenImage.charAt(i) == '\n' && i < length - 1) {
         ++line;
         column = 1;
-       }
-       else
-        ++column;
+       } else {
+		++column;
+	}
     }
 
     n.endLine = line;
@@ -323,10 +357,10 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
       n.f2.accept(this);
     }
     if (n.f3.present()) {
-      processList(n.f3);
+      this.processList(n.f3);
     }
     if (n.f4.present()) {
-      processList(n.f4);
+      this.processList(n.f4);
     }
     if (n.f5.present()) {
       n.f5.accept(this);
@@ -394,7 +428,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
     n.f0.accept(this);
     n.f1.accept(this);
     if (n.f2.present()) {
-      processList(n.f2);
+      this.processList(n.f2);
     }
     n.f3.accept(this);
   }
@@ -464,7 +498,7 @@ public class TreeFormatter extends DepthFirstVoidVisitor {
     n.f0.accept(this);
     n.f1.accept(this);
     if (n.f2.present()) {
-      processList(n.f2);
+      this.processList(n.f2);
     }
     n.f3.accept(this);
   }
@@ -680,26 +714,26 @@ class FormatCommand {
   /**
    * @return the command code
    */
-  public int getCommand()  { return command; }
+  public int getCommand()  { return this.command; }
 
   /**
    * @return the command repetition number
    */
-  public int getNumCommands()  { return numCommands; }
+  public int getNumCommands()  { return this.numCommands; }
 
   /**
    * Sets the command code.
    *
    * @param i the command code
    */
-  public void setCommand(final int i)  { command = i; }
+  public void setCommand(final int i)  { this.command = i; }
 
   /**
    * Sets the command repetition number.
    *
    * @param i the command repetition number
    */
-  public void setNumCommands(final int i)  { numCommands = i; }
+  public void setNumCommands(final int i)  { this.numCommands = i; }
 
 }
 

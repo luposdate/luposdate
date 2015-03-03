@@ -64,9 +64,6 @@ public class Group extends SingleInputOperator {
 	/**
 	 * saving the QueryResult
 	 *
-	 * @param QueryResult
-	 * @param int
-	 * @return QueryResult
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult queryResult, final int operandID) {
@@ -115,7 +112,7 @@ public class Group extends SingleInputOperator {
 	/**
 	 * Bindings are compared and split in separate QueryResults
 	 *
-	 * @param EndOfEvaluationMessage
+	 * @param msg
 	 * @return Message
 	 */
 	@Override
@@ -127,7 +124,7 @@ public class Group extends SingleInputOperator {
 	/**
 	 * Bindings are compared and split in separate QueryResults
 	 *
-	 * @param ComputeIntermediateResultMessage
+	 * @param msg
 	 * @return Message
 	 */
 	@Override

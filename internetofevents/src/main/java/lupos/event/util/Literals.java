@@ -33,14 +33,14 @@ import lupos.datastructures.items.literal.URILiteral;
  * Helper class which contains constants for some common literals and methods to create literals.
  */
 public abstract class Literals {
-	
+
 	/**
 	 * Literals from the rdf-namespace.
 	 */
 	public static class RDF {
 		public static final Literal TYPE = createURI(Prefixes.RDF, "type");
 	}
-	
+
 	/**
 	 * Literals from the xsd-namespace.
 	 */
@@ -56,43 +56,43 @@ public abstract class Literals {
 		public static final URILiteral DATETIME = createURI(Prefixes.XSD, "dateTime");
 		public static final URILiteral ANYURI = createURI(Prefixes.XSD, "anyURI");
 	}
-	
+
 	/**
 	 * one anonymousliteral
 	 */
 	public static class AnonymousLiteral{
 		public static final Literal ANONYMOUS = LiteralFactory.createAnonymousLiteral("_:a");
 	}
-	
+
 	/**
 	 * Creates a URILiteral.
 	 * @param uri
 	 * @return
 	 */
-	public static URILiteral createURI(String uri) {
+	public static URILiteral createURI(final String uri) {
 		return LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException(uri);
 	}
-	
+
 	/**
 	 * Creates a URILiteral.
 	 * @param namespace
 	 * @param str
 	 * @return
 	 */
-	public static URILiteral createURI(String namespace, String str) {
-		String uri = Utils.createURIString(namespace, str);
+	public static URILiteral createURI(final String namespace, final String str) {
+		final String uri = Utils.createURIString(namespace, str);
 		return LiteralFactory.createURILiteralWithoutLazyLiteralWithoutException(uri);
 	}
-	
-	public static Literal createTyped(String value, URILiteral typeLiteral) throws URISyntaxException {
-		return LiteralFactory.createTypedLiteral("\"" + value + "\"", typeLiteral);		
+
+	public static Literal createTyped(final String value, final URILiteral typeLiteral) throws URISyntaxException {
+		return LiteralFactory.createTypedLiteral("\"" + value + "\"", typeLiteral);
 	}
-	
+
 	/**
-	 * Create a Literal of type {@link Duration}, encoding the given duration
+	 * Create a Literal of type Duration, encoding the given duration
 	 * values as described in
 	 * http://www.w3schools.com/schema/schema_dtypes_date.asp.
-	 * 
+	 *
 	 * @param years
 	 *            Number of years.
 	 * @param months
@@ -105,7 +105,7 @@ public abstract class Literals {
 	 *            Number of minutes.
 	 * @param seconds
 	 *            Number of seconds.
-	 * @return A new Literal of type {@link Duration}, containing the respective
+	 * @return A new Literal of type Duration, containing the respective
 	 *         encoding of the specified duration.
 	 * @throws URISyntaxException
 	 */
@@ -114,30 +114,37 @@ public abstract class Literals {
 			final int minutes, final int seconds) throws URISyntaxException {
 		String durationStr = "P";
 
-		if (years > 0)
+		if (years > 0) {
 			durationStr += years + "Y";
+		}
 
-		if (months > 0)
+		if (months > 0) {
 			durationStr += months + "M";
+		}
 
-		if (days > 0)
+		if (days > 0) {
 			durationStr += days + "D";
+		}
 
 		if (hours > 0 || minutes > 0 || seconds > 0) {
 			durationStr += "T";
 
-			if (hours > 0)
+			if (hours > 0) {
 				durationStr += hours + "H";
+			}
 
-			if (minutes > 0)
+			if (minutes > 0) {
 				durationStr += minutes + "M";
+			}
 
-			if (seconds > 0)
+			if (seconds > 0) {
 				durationStr += seconds + "S";
+			}
 		}
 
-		if (durationStr.equals("P"))
+		if (durationStr.equals("P")) {
 			durationStr += "T0S";
+		}
 
 		return createTyped(durationStr, Literals.XSD.DURATION);
 	}

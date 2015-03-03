@@ -36,75 +36,74 @@ import lupos.event.util.TimedWrapper;
 import org.jfree.chart.ChartPanel;
 
 /**
- * Class for displaying input elements for chart generation 
- * and displaying the chart itself. 
+ * Class for displaying input elements for chart generation
+ * and displaying the chart itself.
  * @author heidemey
  *
  */
 abstract public class ChartHandler extends JPanel {
-	
+
 	// Panel for displaying the chart
 	protected ChartPanel chartPanel;
 	protected DataModel model;
-	
+
 	/**Constructor using a GridBagLayout-Manager
-	 * 
+	 *
 	 */
-	public ChartHandler(ChartTyp chartType){
+	public ChartHandler(final ChartTyp chartType){
 		this(new GridBagLayout(), chartType);
 	}
-	
+
 	/** Constructor
-	 * 
+	 *
 	 * @param mgr
 	 */
-	public ChartHandler(LayoutManager mgr, ChartTyp chartType){
+	public ChartHandler(final LayoutManager mgr, final ChartTyp chartType){
 		super(mgr);
 	}
-	
+
 	/** Clears all input fields of the chart handler
-	 * 
+	 *
 	 */
 	abstract public void clearFields();
-	
-	/** Reads the QueryResult and fills the dataset according to 
+
+	/** Reads the QueryResult and fills the dataset according to
 	 * chart type
-	 * 
+	 *
 	 * @param l
 	 */
 	abstract public void fillDataset(TimedWrapper<QueryResult> l);
-	
-	/** Delivers the JPanel displaying the chart. This needs to 
-	 * contain all input fields for this chart handler, too. 
-	 * 
-	 * @return
+
+	/** Delivers the JPanel displaying the chart. This needs to
+	 * contain all input fields for this chart handler, too.
+	 *
 	 */
 	public JPanel getChart(){
-		makeChart();
+		this.makeChart();
 		return this;
 	}
-	
+
 	protected DataModel getModel(){
-		return model;
-	}
-	
-	/** Creates the JPanel for displaying the chart. This also needs
-	 * to prepare all input fields for display. 
-	 * 
-	 */
-	protected void makeChart(){
-		chartPanel.setChart(model.makeChart());
+		return this.model;
 	}
 
-	
-	protected static GridBagConstraints createGBC(int gridx, int gridy, int fill) {
-		GridBagConstraints c = new GridBagConstraints();
+	/** Creates the JPanel for displaying the chart. This also needs
+	 * to prepare all input fields for display.
+	 *
+	 */
+	protected void makeChart(){
+		this.chartPanel.setChart(this.model.makeChart());
+	}
+
+
+	protected static GridBagConstraints createGBC(final int gridx, final int gridy, final int fill) {
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(2,2,2,2);
 		c.gridx = gridx;
 		c.gridy = gridy;
 		c.fill= fill;
 		return c;
 	}
-	
-	
+
+
 }

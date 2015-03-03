@@ -23,8 +23,9 @@
  */
 package lupos.geo.deserializer;
 
-import com.vividsolutions.jts.geom.Geometry;
 import lupos.engine.operators.singleinput.TypeErrorException;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Richard Mietz
@@ -36,7 +37,7 @@ public abstract class AbstractDeserializer
      * Creates a geometry object from the given wktLiteral
      *
      *
-     * @param val The wktLiteral
+     * @param content The wktLiteral
      * @return The created geometry
      * @throws TypeErrorException
      */

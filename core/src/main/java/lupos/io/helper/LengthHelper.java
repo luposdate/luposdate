@@ -23,7 +23,6 @@
  */
 package lupos.io.helper;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -103,10 +102,7 @@ public final class LengthHelper {
 	 *
 	 * @param s
 	 * @param previousString
-	 * @param os
 	 * @return the byte array of the just written string (to be kept and used for next call to this method)
-	 * @throws UnsupportedEncodingException
-	 * @throws IOException
 	 */
 	public final static int lengthLuposDifferenceString(final String s, final byte[] previousString) {
 		if (s == null){

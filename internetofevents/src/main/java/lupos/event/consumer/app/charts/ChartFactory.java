@@ -24,7 +24,6 @@
 package lupos.event.consumer.app.charts;
 
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.event.consumer.app.charts.ChartTyp;
 
 /**
  * Class for finding the GUI-Handler and Datamodel for a type of chart
@@ -32,39 +31,44 @@ import lupos.event.consumer.app.charts.ChartTyp;
  *
  */
 public class ChartFactory {
-	
+
 	/**
 	 * Finds and returns the ChartHandler GUI for the given type of chart
 	 * @param typ
-	 * @return
 	 */
-	static public ChartHandler getHandler(ChartTyp typ){
-		if( typ == ChartTyp.PIE_CHART)
+	static public ChartHandler getHandler(final ChartTyp typ){
+		if( typ == ChartTyp.PIE_CHART) {
 			return new CategoryChart(typ);
-		if(typ == ChartTyp.BAR_CHART)
+		}
+		if(typ == ChartTyp.BAR_CHART) {
 			return new CategoryChart(typ);
-		if(typ == ChartTyp.LINE_CHART)
+		}
+		if(typ == ChartTyp.LINE_CHART) {
 			return new CategoryChart(typ);
-		if(typ == ChartTyp.HISTOGRAM_CHART)
+		}
+		if(typ == ChartTyp.HISTOGRAM_CHART) {
 			return new HistogramChart(typ);
-		if(typ == ChartTyp.BUBBLE_CHART)
+		}
+		if(typ == ChartTyp.BUBBLE_CHART) {
 			return new XYChart(typ);
-		if(typ == ChartTyp.TABLE)
+		}
+		if(typ == ChartTyp.TABLE) {
 			return new NonNumericalChart(typ);
-		
+		}
+
 		return null;
 	}
-	
-	/** 
+
+	/**
 	 * Creates a DataModel for given type of chart and fills it with the values of
-	 * the variables in the query result. Then returns the model. 
-	 * 
+	 * the variables in the query result. Then returns the model.
+	 *
 	 * @param typ ChartTyp
 	 * @param vars Array of variable names
-	 * @param queryResult 
-	 * @return DataModel for typ filled with data from the query result  
+	 * @param queryResult
+	 * @return DataModel for typ filled with data from the query result
 	 */
-	static public DataModel getModel(String typ, String[] vars, QueryResult queryResult){
+	static public DataModel getModel(final String typ, final String[] vars, final QueryResult queryResult){
 		DataModel model = null;
 		if(ChartTyp.PIE_CHART.equals(typ)){
 			model = new CategoryChartModel(ChartTyp.PIE_CHART, vars);
@@ -90,7 +94,7 @@ public class ChartFactory {
 			model = new NonNumericalChartModel(ChartTyp.TABLE, vars);
 			model.fillDataset(queryResult);
 		}
-		
+
 		return model;
 	}
 }

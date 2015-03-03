@@ -88,7 +88,7 @@ public class FRACTALTREEENTRY extends DeSerializerConsideringSubClasses<FractalT
 	/**
 	 * Tests if the specified <tt>Object</tt> is a instance of <tt>FractalTreeEntry</tt>.
 	 *
-	 * @param instance A <tt>Object</tt>
+	 * @param o A <tt>Object</tt>
 	 * @return True if <tt>instance</tt> is a instance of <tt>FractalTreeEntry</tt>, else false
 	 */
 	@Override

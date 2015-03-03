@@ -469,7 +469,7 @@ public class MenuSelector<T> {
 		 * Parses an value in a free-text menu-entry.
 		 * @param input The input of the console
 		 * @return the valid menu-entry-type, if correct. Otherwise return {@code null}, so the
-		 * input is not valid by this {@link InputValidator}.
+		 * input is not valid by this InputValidator.
 		 * @throws RuntimeException Throws an exception, so that the error message is shown.
 		 */
 		public S isValid(String input) throws RuntimeException;

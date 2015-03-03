@@ -48,49 +48,49 @@ import org.json.JSONObject;
 
 /**
  * GUI class for creating a template with {@link JButton}s,{@link JComboBox}es
- * and {@link JLists}s.
+ * and JListss.
  */
 public class GeneratePanel implements ActionListener {
 
-	private JPanel generatePanel;
+	private final JPanel generatePanel;
 
 	private JButton activateTemplateButton;
 	private JButton deactivateTemplateButton;
 	private JButton submitButton;
 
-	private JComboBox htmlDesigncBox;
-	private JComboBox sendOptioncBox;
+	private final JComboBox htmlDesigncBox;
+	private final JComboBox sendOptioncBox;
 
 	private JList templateList;
 	private JList newSubscriptionList;
 
 	private DefaultListModel newSubscriptionListModel;
 	private DefaultListModel templateListModel;
-	
+
 	/**
 	 * Constructor for initializing the GUI.
 	 */
 	public GeneratePanel() {
-		initButtons();
-		this.htmlDesigncBox = buildHTMLDesigncBox();
-		String[] options = { "Generate HTML", "Sliding Window", "Send EMail" };
+		this.initButtons();
+		this.htmlDesigncBox = this.buildHTMLDesigncBox();
+		final String[] options = { "Generate HTML", "Sliding Window", "Send EMail" };
 		this.sendOptioncBox = new JComboBox(options);
-		this.generatePanel = buildMainPanel();
+		this.generatePanel = this.buildMainPanel();
 	}
 
 	/**
 	 * Creates the GUI elements of this panel.
-	 * 
+	 *
 	 * @return p as the created panel
 	 */
 	private JPanel buildMainPanel() {
-		JPanel p = new JPanel();
+		final JPanel p = new JPanel();
 
 		p.setLayout(new GridBagLayout());
 		GridBagConstraints c;
 		p.setBorder(BorderFactory.createTitledBorder("Manage Subscriptions:"));
 
-		JPanel activityButtons = new JPanel();
+		final JPanel activityButtons = new JPanel();
 		activityButtons.add(this.activateTemplateButton);
 		activityButtons.add(this.deactivateTemplateButton);
 		activityButtons.setLayout(new BoxLayout(activityButtons,
@@ -103,7 +103,7 @@ public class GeneratePanel implements ActionListener {
 		this.templateList.setLayoutOrientation(JList.VERTICAL);
 		this.templateList.setVisibleRowCount(-1);
 
-		JScrollPane templateListScroller = new JScrollPane(this.templateList);
+		final JScrollPane templateListScroller = new JScrollPane(this.templateList);
 		templateListScroller.setPreferredSize(new Dimension(150, 80));
 
 		this.newSubscriptionListModel = new DefaultListModel();
@@ -114,7 +114,7 @@ public class GeneratePanel implements ActionListener {
 		this.newSubscriptionList.setLayoutOrientation(JList.VERTICAL);
 		this.newSubscriptionList.setVisibleRowCount(-1);
 
-		JScrollPane submitListScroller = new JScrollPane(this.newSubscriptionList);
+		final JScrollPane submitListScroller = new JScrollPane(this.newSubscriptionList);
 		submitListScroller.setPreferredSize(new Dimension(150, 80));
 
 		c = Utils.createGBC(0, 0, GridBagConstraints.NONE,
@@ -171,27 +171,27 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * Builds the box for chosing a HTML template.
-	 * 
+	 *
 	 * @return JComboBox including the HTML template name
 	 */
 	public JComboBox buildHTMLDesigncBox() {
 
 		JComboBox result = null;
 		try {
-			JSONObject loadObject = new JSONObject(
+			final JSONObject loadObject = new JSONObject(
 					Utils.readFile("./src/main/resources/htmlTemplates/" + "HTMLConfig.json"));
-			JSONArray templates = loadObject.getJSONArray("templates");
+			final JSONArray templates = loadObject.getJSONArray("templates");
 
-			String[] templateNames = new String[templates.length()];
+			final String[] templateNames = new String[templates.length()];
 
 			for (int i = 0; i < templates.length(); i++) {
-				JSONObject template = templates.getJSONObject(i);
+				final JSONObject template = templates.getJSONObject(i);
 				templateNames[i] = (String) template.get("name");
 			}
 
 			result = new JComboBox(templateNames);
 
-		} catch (JSONException e1) {
+		} catch (final JSONException e1) {
 			e1.printStackTrace();
 		}
 		return result;
@@ -199,7 +199,7 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * For getting this generatePanel.
-	 * 
+	 *
 	 * @return the generatePanel
 	 */
 	public JPanel getPanel() {
@@ -208,7 +208,7 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * For getting a new and empty subscrition list.
-	 * 
+	 *
 	 * @return newSubscriptionListModel
 	 */
 	public DefaultListModel getSubscriptionListModel() {
@@ -217,11 +217,11 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * Adds a template to templateListModel element.
-	 * 
+	 *
 	 * @param templateName
 	 *            the template to add
 	 */
-	public void addTemplate(String templateName) {
+	public void addTemplate(final String templateName) {
 		this.templateListModel.addElement(templateName);
 	}
 
@@ -229,8 +229,8 @@ public class GeneratePanel implements ActionListener {
 	 * Clears the template and subscriptions list.
 	 */
 	public void clear() {
-		clearTemplateList();
-		clearNewSubscriptionList();
+		this.clearTemplateList();
+		this.clearNewSubscriptionList();
 	}
 
 	/**
@@ -249,11 +249,11 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * For getting the chosen subscriptions in the subscriptionListModel.
-	 * 
+	 *
 	 * @return results as all subscriptions
 	 */
 	public List<String> getSubscriptions() {
-		List<String> results = new ArrayList<String>();
+		final List<String> results = new ArrayList<String>();
 
 		for (int i = 0; i < this.newSubscriptionListModel.size(); i++) {
 			results.add((String) this.newSubscriptionListModel.getElementAt(i));
@@ -264,7 +264,7 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * For getting the selected HTML template.
-	 * 
+	 *
 	 * @return the selected HTML template as String.
 	 */
 	public String getSelectedHTMLTemplate() {
@@ -273,7 +273,7 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * For getting the selected send option.
-	 * 
+	 *
 	 * @return the selected send option
 	 */
 	public String getSelectedSendOption() {
@@ -281,13 +281,13 @@ public class GeneratePanel implements ActionListener {
 	}
 
 	/**
-	 * Handles the actions of the {@link Buttons}
-	 * 
+	 * Handles the actions of the Buttons
+	 *
 	 * @param e
 	 *            the triggered action
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == this.activateTemplateButton) {
 			if (!this.templateList.isSelectionEmpty()) {
 				this.newSubscriptionListModel.addElement(this.templateList.getSelectedValue());
@@ -305,11 +305,11 @@ public class GeneratePanel implements ActionListener {
 
 	/**
 	 * For setting the controller to use.
-	 * 
+	 *
 	 * @param c
 	 *            the controller
 	 */
-	public void useController(Controller c) {
+	public void useController(final Controller c) {
 		this.submitButton.setAction(c.getSubmitAction());
 	}
 }

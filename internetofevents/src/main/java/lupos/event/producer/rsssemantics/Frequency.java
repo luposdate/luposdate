@@ -23,7 +23,7 @@
  */
 package lupos.event.producer.rsssemantics;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Experimental: Calculates the frequency of each substring contained in the
@@ -31,16 +31,16 @@ import java.util.*;
  * for further improving the database results' quality.
  */
 public class Frequency {
-	private ArrayList<String> substring = new ArrayList<String>();
-	private ArrayList<Integer> frequency = new ArrayList<Integer>();
+	private final ArrayList<String> substring = new ArrayList<String>();
+	private final ArrayList<Integer> frequency = new ArrayList<Integer>();
 
 	/**
 	 * increments the substring's frequency value at (index) in ArrayList
 	 * frequency
-	 * 
+	 *
 	 * @param index
 	 */
-	public void incFrequency(int index) {
+	public void incFrequency(final int index) {
 		this.frequency.set(index, this.frequency.get(index) + 1);
 	}
 
@@ -52,11 +52,11 @@ public class Frequency {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param i
 	 * @return Substring at position i in ArrayList substring
 	 */
-	public String getSubstringAt(int i) {
+	public String getSubstringAt(final int i) {
 		return this.substring.get(i);
 	}
 
@@ -76,20 +76,18 @@ public class Frequency {
 
 	/**
 	 * Adds param s to ArrayList substring.
-	 * 
-	 * @param String
-	 *            s
+	 *
 	 */
-	public void addToSubstring(String s) {
+	public void addToSubstring(final String s) {
 		this.substring.add(s);
 	}
 
 	/**
 	 * Adds param i to ArrayList frequency.
-	 * 
+	 *
 	 * @param i
 	 */
-	public void addToFrequency(int i) {
+	public void addToFrequency(final int i) {
 		this.frequency.add(i);
 	}
 

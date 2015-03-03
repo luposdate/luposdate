@@ -31,88 +31,93 @@ import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
 
 public class CollectResult implements Application {
-	
+
 	protected final boolean oneTime;
 	protected QueryResult qr;
 	protected GraphResult gr;
 	protected List<BooleanResult> br_list;
 	protected Application.Type type;
-	
+
 	public CollectResult(final boolean oneTime){
 		this.oneTime = oneTime;
 	}
 
+	@Override
 	public void call(final QueryResult res) {
 		if (res != null) {
 			if (res instanceof GraphResult) {
-				if(oneTime){
-					if (gr == null){
-						gr = (GraphResult) res;
+				if(this.oneTime){
+					if (this.gr == null){
+						this.gr = (GraphResult) res;
 					} else {
-						gr.addAll((GraphResult) res);
+						this.gr.addAll((GraphResult) res);
 					}
 				} else {
-					if (gr == null){
-						gr = new GraphResult(((GraphResult) res).getTemplate());
+					if (this.gr == null){
+						this.gr = new GraphResult(((GraphResult) res).getTemplate());
 					}
-					gr.addAll((GraphResult) res);
+					this.gr.addAll((GraphResult) res);
 				}
 			} else if (res instanceof BooleanResult) {
-				if (br_list == null){
-					br_list = new LinkedList<BooleanResult>();
+				if (this.br_list == null){
+					this.br_list = new LinkedList<BooleanResult>();
 				}
-				if(oneTime){
-					br_list.add((BooleanResult)res);
+				if(this.oneTime){
+					this.br_list.add((BooleanResult)res);
 				} else {
 					final BooleanResult br = new BooleanResult();
 					br.addAll(res);
-					br_list.add(br);
+					this.br_list.add(br);
 				}
 			} else {
-				if(oneTime){
-					if (qr == null){
-						qr = res;
+				if(this.oneTime){
+					if (this.qr == null){
+						this.qr = res;
 					} else {
-						qr.addAll(res);
+						this.qr.addAll(res);
 					}
 				} else {
-					if (qr == null){
-						qr = QueryResult.createInstance();
+					if (this.qr == null){
+						this.qr = QueryResult.createInstance();
 					}
-					qr.addAll(res);
+					this.qr.addAll(res);
 				}
 			}
 		}
 	}
 
+	@Override
 	public void start(final Type type) {
-		qr = null;
+		this.qr = null;
 		final QueryResult qr;
-		gr = null;
-		br_list = null;
+		this.gr = null;
+		this.br_list = null;
 		this.type = type;
 	}
 
+	@Override
 	public void stop() {
 	}
 
 	/**
 	 * get result, if there are several types of QueryResults, one of them is
 	 * returned...
-	 * 
-	 * @return
+	 *
 	 */
 	public QueryResult getResult() {
-		QueryResult result = qr;
-		if (result == null)
-			result = gr;
-		if (result == null && br_list != null)
-			result = br_list.get(0);
+		QueryResult result = this.qr;
+		if (result == null) {
+			result = this.gr;
+		}
+		if (result == null && this.br_list != null) {
+			result = this.br_list.get(0);
+		}
 
 		if (result == null) {
-			if (type == null)
+			if (this.type == null) {
 				return null;
-			switch (type) {
+			}
+			switch (this.type) {
 			case ASK:
 				return new BooleanResult();
 			case CONSTRUCT:
@@ -124,47 +129,56 @@ public class CollectResult implements Application {
 		return result;
 	}
 
+	@Override
 	public void deleteResult(final QueryResult res) {
 		if (res instanceof GraphResult) {
-			if (gr != null)
-				gr.removeAll(res);
-		} else if (res instanceof BooleanResult) {
-			if (br_list != null) {
-				for (final BooleanResult br : br_list)
-					br.removeAll(res);
+			if (this.gr != null) {
+				this.gr.removeAll(res);
 			}
-		} else if (qr != null) {
-			qr.removeAll(res);
+		} else if (res instanceof BooleanResult) {
+			if (this.br_list != null) {
+				for (final BooleanResult br : this.br_list) {
+					br.removeAll(res);
+				}
+			}
+		} else if (this.qr != null) {
+			this.qr.removeAll(res);
 		}
 	}
 
+	@Override
 	public void deleteResult() {
-		if (qr != null)
-			qr.release();
-		if (gr != null)
-			gr.release();
-		if (br_list != null) {
-			for (final BooleanResult br : br_list) {
+		if (this.qr != null) {
+			this.qr.release();
+		}
+		if (this.gr != null) {
+			this.gr.release();
+		}
+		if (this.br_list != null) {
+			for (final BooleanResult br : this.br_list) {
 				br.release();
 			}
 		}
-		qr = null;
-		gr = null;
-		br_list = null;
+		this.qr = null;
+		this.gr = null;
+		this.br_list = null;
 	}
 
 	public QueryResult[] getQueryResults() {
-		final int size = (qr == null ? 0 : 1) + (gr == null ? 0 : 1)
-				+ (br_list == null ? 0 : br_list.size());
+		final int size = (this.qr == null ? 0 : 1) + (this.gr == null ? 0 : 1)
+				+ (this.br_list == null ? 0 : this.br_list.size());
 		final QueryResult[] result = new QueryResult[size];
 		int index = 0;
-		if (qr != null)
-			result[index++] = qr;
-		if (gr != null)
-			result[index++] = gr;
-		if (br_list != null) {
-			for (final BooleanResult br : br_list)
+		if (this.qr != null) {
+			result[index++] = this.qr;
+		}
+		if (this.gr != null) {
+			result[index++] = this.gr;
+		}
+		if (this.br_list != null) {
+			for (final BooleanResult br : this.br_list) {
 				result[index++] = br;
+			}
 		}
 		return result;
 	}

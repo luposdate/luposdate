@@ -52,7 +52,7 @@ public class LinePainter implements Highlighter.HighlightPainter,
 	/**
 	 * The line color will be calculated automatically by attempting to make the
 	 * current selection lighter by a factor of 1.2.
-	 * 
+	 *
 	 * @param component
 	 *            text component that requires background line painting
 	 */
@@ -64,10 +64,10 @@ public class LinePainter implements Highlighter.HighlightPainter,
 
 	/**
 	 * Manually control the line color
-	 * 
+	 *
 	 * @param component
 	 *            text component that requires background line painting
-	 * 
+	 *
 	 * @param color
 	 *            the color of the background line
 	 */
@@ -98,7 +98,7 @@ public class LinePainter implements Highlighter.HighlightPainter,
 
 	/**
 	 * You can reset the line color at any time
-	 * 
+	 *
 	 * @param color
 	 *            the color of the background line
 	 */
@@ -108,8 +108,7 @@ public class LinePainter implements Highlighter.HighlightPainter,
 
 	/**
 	 * Calculate the line color by making the selection color lighter
-	 * 
-	 * @return the color of the background line
+	 *
 	 */
 	public void setLighter(final Color color) {
 		final int red = Math.min(255, (int) (color.getRed() * 1.2));
@@ -121,6 +120,7 @@ public class LinePainter implements Highlighter.HighlightPainter,
 
 	// Paint the background highlight
 
+	@Override
 	public void paint(final Graphics g, final int p0, final int p1,
 			final Shape bounds, final JTextComponent c) {
 		try {
@@ -128,8 +128,9 @@ public class LinePainter implements Highlighter.HighlightPainter,
 			g.setColor(this.color);
 			g.fillRect(0, r.y, c.getWidth(), r.height);
 
-			if (this.lastView == null)
+			if (this.lastView == null) {
 				this.lastView = r;
+			}
 		} catch (final BadLocationException ble) {
 			ble.printStackTrace();
 		}
@@ -142,18 +143,19 @@ public class LinePainter implements Highlighter.HighlightPainter,
 		// Use invokeLater to make sure updates to the Document are completed,
 		// otherwise Undo processing causes the modelToView method to loop.
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
-					final int offset = component.getCaretPosition();
-					final Rectangle currentView = component.modelToView(offset);
+					final int offset = LinePainter.this.component.getCaretPosition();
+					final Rectangle currentView = LinePainter.this.component.modelToView(offset);
 
 					// Remove the highlighting from the previously highlighted
 					// line
-					if (lastView != null && lastView.y != currentView.y) {
-						component.repaint(0, lastView.y, component.getWidth(),
-								lastView.height);
+					if (LinePainter.this.lastView != null && LinePainter.this.lastView.y != currentView.y) {
+						LinePainter.this.component.repaint(0, LinePainter.this.lastView.y, LinePainter.this.component.getWidth(),
+								LinePainter.this.lastView.height);
 					}
-					lastView = currentView;
+					LinePainter.this.lastView = currentView;
 				} catch (final BadLocationException ble) {
 				}
 			}
@@ -161,32 +163,40 @@ public class LinePainter implements Highlighter.HighlightPainter,
 	}
 
 	// Implement CaretListener
+	@Override
 	public void caretUpdate(final CaretEvent e) {
 		this.resetHighlight();
 	}
 
 	// Implement MouseListener
+	@Override
 	public void mousePressed(final MouseEvent e) {
 		this.resetHighlight();
 	}
 
 	// Implement MouseMotionListener
+	@Override
 	public void mouseDragged(final MouseEvent e) {
 		this.resetHighlight();
 	}
 
+	@Override
 	public void mouseClicked(final MouseEvent e) {
 	}
 
+	@Override
 	public void mouseEntered(final MouseEvent e) {
 	}
 
+	@Override
 	public void mouseExited(final MouseEvent e) {
 	}
 
+	@Override
 	public void mouseReleased(final MouseEvent e) {
 	}
 
+	@Override
 	public void mouseMoved(final MouseEvent e) {
 	}
 }

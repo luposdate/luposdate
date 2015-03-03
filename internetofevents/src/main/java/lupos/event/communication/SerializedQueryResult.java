@@ -40,7 +40,7 @@ import lupos.endpoint.server.format.Formatter;
 import lupos.endpoint.server.format.XMLFormatter;
 
 /**
- * This class can be used to serialize a {@ Triple}
+ * This class can be used to serialize a Triple
  */
 public class SerializedQueryResult implements Serializable {
 

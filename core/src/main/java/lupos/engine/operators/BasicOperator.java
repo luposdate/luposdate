@@ -411,7 +411,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	/**
 	 * This method is applied whenever messages are received by this operator.
 	 *
-	 * @param msg
+	 * @param message
 	 *            the message itself
 	 * @param from
 	 *            the operator from which the message has been sent
@@ -643,7 +643,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	/**
 	 * This method merges several received messages
 	 *
-	 * @param messages
+	 * @param messagesParameter
 	 *            the received messages
 	 * @param msg
 	 *            the last received message
@@ -679,7 +679,7 @@ public class BasicOperator implements Cloneable, Serializable {
 	/**
 	 * This method merges several received messages
 	 *
-	 * @param messages
+	 * @param messagesParameter
 	 *            the received messages
 	 * @param msg
 	 *            the last received message

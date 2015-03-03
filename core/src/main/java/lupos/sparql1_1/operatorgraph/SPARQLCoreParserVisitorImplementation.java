@@ -1403,8 +1403,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	 * Checks recursively for ASTExists and ASTNotExists nodes under node and
 	 * sets up a new {@link Root} and {@link Result} for each
 	 * occurrence. This is needed, because we perform new queries for these
-	 * types of nodes. Used by
-	 * {@link #visit(ASTFilterConstraint, OperatorConnection, Item))}.
+	 * types of nodes.
 	 *
 	 * @param node
 	 *            the node
@@ -1584,7 +1583,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	/**
 	 * Extended this method to check if there is an ASTBindings
 	 *
-	 * @param ASTQuery
+	 * @param node
 	 *            ASTQuery-Node
 	 */
 	public void visit(final ASTQuery node) {

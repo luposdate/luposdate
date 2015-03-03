@@ -25,6 +25,7 @@ package lupos.event.producer.rsssemantics;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import lupos.datastructures.bindings.BindingsMap;
 
 
@@ -37,21 +38,21 @@ public class MessageParser {
 	ArrayList<String>[] stoplist;
 	ArrayList<String> tokenstemp = new ArrayList<String>();
 
-	public MessageParser(ArrayList<String>[] stoplist) {
+	public MessageParser(final ArrayList<String>[] stoplist) {
 		this.stoplist = stoplist;
 	}
 
 	/**
 	 * Checks if s is parseable as an Integer
-	 * 
+	 *
 	 * @param s
 	 * @return true if parseable, false if not
 	 */
-	public boolean isInteger(String s) {
+	public boolean isInteger(final String s) {
 		try {
 			Integer.parseInt(s);
 			return true;
-		} catch (NumberFormatException ex) {
+		} catch (final NumberFormatException ex) {
 			return false;
 		}
 	}
@@ -59,14 +60,12 @@ public class MessageParser {
 	/**
 	 * Removes special characters from token list. tokens that contain a hyphen
 	 * are formatted for further processing
-	 * 
-	 * @param ArrayList
-	 *            <String> tokens
+	 *
 	 */
 	public void cleanStrings() {
 
-		Iterator<String> it = this.tokenstemp.iterator();
-		String[] temparray = new String[this.tokenstemp.size()];
+		final Iterator<String> it = this.tokenstemp.iterator();
+		final String[] temparray = new String[this.tokenstemp.size()];
 		// Array füllen
 		for (int i = 0; i < this.tokenstemp.size(); i++) {
 			temparray[i] = it.next();
@@ -106,44 +105,44 @@ public class MessageParser {
 		/**
 		 * fill tokenstemp with cleaned values
 		 */
-		for (String s2 : temparray) {
+		for (final String s2 : temparray) {
 			this.tokenstemp.add(s2);
 		}
 	}
 
-	public DBAnswer parseMessage(FeedMessage message) throws Exception {
-		Frequency freq = new Frequency();
+	public DBAnswer parseMessage(final FeedMessage message) throws Exception {
+		final Frequency freq = new Frequency();
 		String description;
 		description = message.getDescription();
 		if (!(description == null)) {
-			String[] delim = { "[ ]+" };
-			ArrayList<String> tokens = new ArrayList<String>();
-			String languageTag = "de";
+			final String[] delim = { "[ ]+" };
+			final ArrayList<String> tokens = new ArrayList<String>();
+			final String languageTag = "de";
 
 			/**
 			 * Split description String into substrings, fill up tokenList
 			 */
 			for (int i = 0; i < delim.length; i++) {
-				for (String t : description.split(delim[i])) {
+				for (final String t : description.split(delim[i])) {
 					this.tokenstemp.add(t);
 				}
-				cleanStrings();
+				this.cleanStrings();
 
 				/**
 				 * Iterate through cleaned list of substrings and remove words
 				 * contained by stoplist (stoplist.txt)
 				 */
-				Iterator<String> tokenstempit = this.tokenstemp.iterator();
+				final Iterator<String> tokenstempit = this.tokenstemp.iterator();
 				while (tokenstempit.hasNext()) {
-					String t = tokenstempit.next();
+					final String t = tokenstempit.next();
 					if ((!this.stoplist[0].contains(t.toLowerCase()))
-							&& (languageTag == "de") && !isInteger(t)
+							&& (languageTag == "de") && !this.isInteger(t)
 							&& !(t.equals("-"))) {
 						tokens.add(t);
 					}
 
 					else if ((!this.stoplist[1].contains(t.toLowerCase()))
-							&& (languageTag == "en") && !isInteger(t)
+							&& (languageTag == "en") && !this.isInteger(t)
 							&& !(t.equals("-"))) {
 						tokens.add(t);
 					}
@@ -158,9 +157,9 @@ public class MessageParser {
 			 * Experimental: Create frequency list containing each substring's
 			 * frequency (currently not used)
 			 */
-			Iterator<String> it = tokens.iterator();
+			final Iterator<String> it = tokens.iterator();
 			while (it.hasNext()) {
-				String s = it.next();
+				final String s = it.next();
 				if (s != "") {
 					int i = 0;
 					while (i <= freq.getSubstrLength()) {
@@ -185,8 +184,8 @@ public class MessageParser {
 			}
 
 			// initiate interpreting process
-			SemanticInterpretation sem = new SemanticInterpretation(tokens);
-			DBAnswer dbanswer = sem.interpret(message);
+			final SemanticInterpretation sem = new SemanticInterpretation(tokens);
+			final DBAnswer dbanswer = sem.interpret(message);
 
 			// clean up
 			tokens.clear();

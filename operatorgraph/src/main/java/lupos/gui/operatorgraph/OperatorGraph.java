@@ -183,7 +183,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * This is one way to get a OperatorGraph. This method should be used if you
 	 * have a List of root elements.
 	 *
-	 * @param rootList
+	 * @param newRootList
 	 *            the List of root elements
 	 *
 	 * @return the JPanel with the QueryGraph on it
@@ -198,7 +198,7 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * This is one way to get a OperatorGraph. This method should be used if you
 	 * have a List of root elements.
 	 *
-	 * @param rootList
+	 * @param newRootList
 	 *            the List of root elements
 	 *
 	 * @return the JPanel with the QueryGraph on it
@@ -803,8 +803,8 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * This method unsets the context menu of the operator wrapped in the given
 	 * GraphWrapper.
 	 *
-	 * @param graphWrapperthe
-	 *            element to unset the context menu of
+	 * @param graphWrapper
+	 *           the element to unset the context menu of
 	 */
 	public void unsetContextMenuOfOperator(final GraphWrapper graphWrapper) {
 		if (this.boxes.containsKey(graphWrapper)) {

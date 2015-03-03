@@ -31,7 +31,7 @@ import lupos.datastructures.queryresult.QueryResult;
 /**
  * This is almost an abstract class, but as it needs to be
  * instaciated in operatorPipe it is not. Nevertheless it should not be
- * instaniated, as no useful results will be created. 
+ * instaniated, as no useful results will be created.
  * DO ONLY USE EXTENDING CLASSES
  */
 public abstract class CollectionSort extends Sort {
@@ -42,7 +42,7 @@ public abstract class CollectionSort extends Sort {
 
 	/**
 	 * Contructor
-	 * 
+	 *
 	 * @param node
 	 *            the current sort node. From this node all other informations
 	 *            like variables to sort after will be extracted.
@@ -56,8 +56,8 @@ public abstract class CollectionSort extends Sort {
 	 * process, which will be overritten by almost every extending class. If qr
 	 * is already sorted, qr will imediatly returned or merged with an existing
 	 * list.
-	 * 
-	 * @param qr
+	 *
+	 * @param bindings
 	 *            the QueryResult to sort
 	 * @return the sorted and propably merged QueryResult
 	 */
@@ -66,13 +66,13 @@ public abstract class CollectionSort extends Sort {
 			final int operandID) {
 		/*
 		 * if( bindings.getSorted() ) return merge( bindings ); else
-		 */return postProcess(bindings, operandID);
+		 */return this.postProcess(bindings, operandID);
 	}
 
 	/**
 	 * in this method every subclass will have its sorting-algorithms, here
 	 * sorting will be done
-	 * 
+	 *
 	 * @param qr
 	 * @return
 	 */
@@ -92,7 +92,7 @@ public abstract class CollectionSort extends Sort {
 
 	/**
 	 * Do only use in InsertionSort and DiskBasedInsertionSort
-	 * 
+	 *
 	 * @param bind
 	 * @return
 	 */

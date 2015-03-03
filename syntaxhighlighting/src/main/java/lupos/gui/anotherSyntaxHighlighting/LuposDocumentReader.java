@@ -49,7 +49,7 @@ public class LuposDocumentReader extends InputStream {
      * should not be called at the same time as a read) allows
      * the reader to compensate.
      */
-    public void update(final int position_parameter, int adjustment){
+    public void update(final int position_parameter, final int adjustment){
         if (position_parameter < this.position){
             if (this.position < position_parameter - adjustment){
                 this.position = position_parameter;
@@ -73,14 +73,14 @@ public class LuposDocumentReader extends InputStream {
     /**
      * The document that we are working with.
      */
-    private LuposDocument document;
+    private final LuposDocument document;
 
     /**
      * Construct a reader on the given document.
      *
      * @param luposDocument the document to be read.
      */
-    public LuposDocumentReader(LuposDocument luposDocument){
+    public LuposDocumentReader(final LuposDocument luposDocument){
     	super();
         this.document = luposDocument;
     }
@@ -123,10 +123,10 @@ public class LuposDocumentReader extends InputStream {
     public int read(){
         if (this.position < this.document.getLength()){
             try {
-                char c = this.document.getText((int)this.position, 1).charAt(0);
+                final char c = this.document.getText((int)this.position, 1).charAt(0);
                 this.position++;
                 return c;
-            } catch (BadLocationException x){
+            } catch (final BadLocationException x){
                 return -1;
             }
         } else {
@@ -141,8 +141,8 @@ public class LuposDocumentReader extends InputStream {
      * @param cbuf the buffer to fill.
      * @return the number of characters read or -1 if no more characters are available in the document.
      */
-    public int read(char[] cbuf){
-        return read(cbuf, 0, cbuf.length);
+    public int read(final char[] cbuf){
+        return this.read(cbuf, 0, cbuf.length);
     }
 
     /**
@@ -154,7 +154,7 @@ public class LuposDocumentReader extends InputStream {
      * @param len maximum number of characters to put in the buffer.
      * @return the number of characters read or -1 if no more characters are available in the document.
      */
-    public int read(char[] cbuf, int off, int len){
+    public int read(final char[] cbuf, final int off, final int len){
         if (this.position < this.document.getLength()){
             int length = len;
             if (this.position + length >= this.document.getLength()){
@@ -164,13 +164,13 @@ public class LuposDocumentReader extends InputStream {
                 length = cbuf.length - off;
             }
             try {
-                String s = this.document.getText((int)this.position, length);
+                final String s = this.document.getText((int)this.position, length);
                 this.position += length;
                 for (int i=0; i<length; i++){
                     cbuf[off+i] = s.charAt(i);
                 }
                 return length;
-            } catch (BadLocationException x){
+            } catch (final BadLocationException x){
                 return -1;
             }
         } else {
@@ -180,7 +180,7 @@ public class LuposDocumentReader extends InputStream {
 
     /**
      * Reader is always ready.
-     * 
+     *
      * @return true
      */
     public boolean ready() {
@@ -214,7 +214,7 @@ public class LuposDocumentReader extends InputStream {
             this.position += n;
             return n;
         } else {
-            long oldPos = this.position;
+            final long oldPos = this.position;
             this.position = this.document.getLength();
             return (this.document.getLength() - oldPos);
         }
@@ -225,71 +225,71 @@ public class LuposDocumentReader extends InputStream {
      *
      * @param n the offset to which to seek.
      */
-    public void seek(long n){
+    public void seek(final long n){
         if (n <= this.document.getLength()){
         	this.position = n;
         }else{
         	this.position = this.document.getLength();
         }
     }
-    
+
     /**
      * Returns the text written on the LuposDocument. Returns null if the document is bad located.
-     * 
+     *
      * @return Returns the text as a string.
      */
     public String getText(){
     	String text = null;
     	try {
 			text = this.document.getText(0, this.document.getLength());
-		} catch (BadLocationException e) {e.printStackTrace();}
-		
+		} catch (final BadLocationException e) {e.printStackTrace();}
+
 		return text;
     }
-    
-    
+
+
     /**
      * Returns an input stream which contains the defined area within this LuposDocumentReader's stream.
-     * Returns empty stream if begin Offset is greater than the text. Returns stream to end of text if 
+     * Returns empty stream if begin Offset is greater than the text. Returns stream to end of text if
      * endOffset is greater than the text. Returns empty stream if beginOffset is greater than endOffset.
-     * 
-     * @param beginOffset The offset of the beginning of the demanded stream.
-     * @param endOffset The offset of the end of the demanded stream.
+     *
+     * @param beginOffsetParameter The offset of the beginning of the demanded stream.
+     * @param endOffsetParameter The offset of the end of the demanded stream.
      * @return The bounded stream.
      */
     public InputStream getStreamWithOffset(final int beginOffsetParameter, final int endOffsetParameter){
-    	
+
     	int beginOffset = beginOffsetParameter;
     	int endOffset = endOffsetParameter;
     	String str = this.getText();
-    	
+
     	if (beginOffset > str.length() || beginOffset == -1) {
     		beginOffset = str.length();
     	}
-    	
+
     	if (endOffset > str.length() || endOffset == -1) {
     		endOffset = str.length();
     	}
-    	
+
     	if(endOffset < beginOffset){
     		endOffset = beginOffset;
-    	}    		
-    	
+    	}
+
     	str = str.substring(beginOffset, endOffset);
 
-        InputStream stream = new ByteArrayInputStream(str.getBytes());
+        final InputStream stream = new ByteArrayInputStream(str.getBytes());
     	return stream;
 	}
-    
-    
+
+
     /**
      * Returns this stream as a reader.
      * @return The reader.
      */
 	public Reader getReader() {
-		
-		String str = this.getText();
-		Reader reader = new StringReader(str);
+
+		final String str = this.getText();
+		final Reader reader = new StringReader(str);
 		return reader;
 	}
 }

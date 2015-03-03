@@ -33,26 +33,20 @@ public class LuposDocument extends DefaultStyledDocument {
 	protected Colorer colorer;
 	protected volatile boolean ignoreColoring = false;
 	protected final static int WAITINGTIME = 1000;
-	
-	/**
-	 * 
-	 * @param parser
-	 *            The parser fitting to the language used in the document (text
-	 *            area).
-	 */
+
 	public LuposDocument() {
 		super();
-		init();
+		this.init();
 	}
-	
+
 	public void init(final ILuposParser parser, final boolean startColorerThread){
 		this.colorer = new Colorer(this, parser, LuposDocument.WAITINGTIME, startColorerThread);
 	}
-	
+
 	public void init(final ILuposParser parser, final boolean startColorerThread, final int WAITINGTIME_Parameter){
 		this.colorer = new Colorer(this, parser, WAITINGTIME_Parameter, startColorerThread);
 	}
-	
+
 	/**
 	 * Creates a listener which is receiving ranges to be worked with.
 	 */
@@ -78,25 +72,25 @@ public class LuposDocument extends DefaultStyledDocument {
 			}
 
 			@Override
-			public void changedUpdate(DocumentEvent arg0) {
+			public void changedUpdate(final DocumentEvent arg0) {
 				// should not occur
 			}
 		});
-	}	
+	}
 
 	/**
 	 * setting the LuposJTextPane
 	 * @param luposJTextPane the {@link LuposJTextPane} to set
 	 */
-	public void setLuposJTextPane(LuposJTextPane luposJTextPane) {
-		this.text = luposJTextPane;		
+	public void setLuposJTextPane(final LuposJTextPane luposJTextPane) {
+		this.text = luposJTextPane;
 	}
-	
+
 	public void colorOneTimeAll(){
 		this.colorer.colorOneTime();
 	}
 
-	public void setIgnoreColoring(boolean ignoreColoring) {
-		this.ignoreColoring = ignoreColoring; 
+	public void setIgnoreColoring(final boolean ignoreColoring) {
+		this.ignoreColoring = ignoreColoring;
 	}
 }

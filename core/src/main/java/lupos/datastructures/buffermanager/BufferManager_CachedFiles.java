@@ -268,7 +268,7 @@ public abstract class BufferManager_CachedFiles extends BufferManager {
 
 	/**
 	 * This method should be called only if the default replacement strategy is not used and it should be called before the BufferManager is used the first time.
-	 * @param replacementStrategy the replacement strategy to be used
+	 * @param replacementStrategyOpenedFiles the replacement strategy to be used
 	 */
 	public void setReplacementStrategyOpenedFiles(final REPLACEMENTSTRATEGY<String> replacementStrategyOpenedFiles) {
 		this.replacementStrategyOpenedFiles = replacementStrategyOpenedFiles;

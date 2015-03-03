@@ -91,14 +91,15 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		// create JMenuItem to rearrange the QueryGraph...
 		final JMenuItem rearrangeMI = new JMenuItem("Arrange Graph");
 		rearrangeMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				that.statusBar.setText("Arranging query ...");
+				RuleEditorPane.this.that.statusBar.setText("Arranging query ...");
 
-				for(final VisualGraph<Operator> visualGraph : that.getVisualGraphs()) {
+				for(final VisualGraph<Operator> visualGraph : RuleEditorPane.this.that.getVisualGraphs()) {
 					visualGraph.arrange(Arrange.values()[0]);
 				}
 
-				that.statusBar.clear();
+				RuleEditorPane.this.that.statusBar.clear();
 			}
 		});
 
@@ -106,13 +107,14 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		this.startNodeMI = new JMenuItem("Select current node as start node");
 		this.startNodeMI.setEnabled(false);
 		this.startNodeMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				if(that.startNode != null) {
-					that.startNode.setAsStartNode(false);
+				if(RuleEditorPane.this.that.startNode != null) {
+					RuleEditorPane.this.that.startNode.setAsStartNode(false);
 				}
 
-				that.startNode = (RuleOperator) that.selectedOperatorsList.get(0);
-				that.startNode.setAsStartNode(true);
+				RuleEditorPane.this.that.startNode = (RuleOperator) RuleEditorPane.this.that.selectedOperatorsList.get(0);
+				RuleEditorPane.this.that.startNode.setAsStartNode(true);
 			}
 		});
 
@@ -132,24 +134,27 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem addConnectionMI = new JMenuItem("Add connection between two operators");
 		addConnectionMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				that.connectionMode = new RuleConnection(that);
+				RuleEditorPane.this.that.connectionMode = new RuleConnection(RuleEditorPane.this.that);
 			}
 		});
 
 		// create JMenuItem to add Operator...
 		final JMenuItem opMI = new JMenuItem("Operator");
 		opMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				that.prepareOperatorForAdd(RuleOperator.class);
+				RuleEditorPane.this.that.prepareOperatorForAdd(RuleOperator.class);
 			}
 		});
 
 		// create JMenuItem to add JumpOver-Operator...
 		final JMenuItem joMI = new JMenuItem("JumpOverOperator");
 		joMI.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent ae) {
-				that.prepareOperatorForAdd(JumpOverOperator.class);
+				RuleEditorPane.this.that.prepareOperatorForAdd(JumpOverOperator.class);
 			}
 		});
 
@@ -226,7 +231,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	/**
 	 * This method validates both sides of the visual representation of a rule.
 	 * It validates the following things:
-	 * 
+	 *
 	 * Errors:
 	 * - default validation (operator names and so on)
 	 * - Two operators on both sides with the same name must have the same class type!
@@ -234,13 +239,12 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 	 * - The modes ALL_SUCCEEDING and ALL_PRECEDING are not allowed in cycles!
 	 * - It is not allowed to have first ALL_SUCCEEDING and then ALL_PRECEDING!
 	 * - The dimension of the start node must be 0!
-	 * 
+	 *
 	 * Warnings:
 	 * - The connections of equal operators on both sides should have the same mode!
 	 * - The connections of equal operators on both sides should have the same active state!
 	 * - The operandID of active connections of equal operators on both sides should be equal!
-	 * 
-	 * @return
+	 *
 	 */
 	public Triple<Boolean, HashMap<String, VariableContainer>, HashMap<String, VariableContainer>> validateGraphs() {
 		this.connections = null;

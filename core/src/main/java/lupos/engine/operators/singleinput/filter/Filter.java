@@ -193,7 +193,7 @@ public class Filter extends SingleInputOperator {
 	 * This Method processes the incoming Bindings-sequence and forwards the
 	 * Bindings which meet the demands
 	 *
-	 * @param List
+	 * @param bindings
 	 *            : Bindings to evaluate.
 	 * @return List: Bindings which fitted. If there is no such binding NULL
 	 *         will be returned

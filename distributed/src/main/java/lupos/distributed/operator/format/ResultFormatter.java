@@ -55,8 +55,6 @@ public class ResultFormatter implements OperatorFormatter {
 	/**
 	 * Instantiates a new result formatter.
 	 *
-	 * @param dest_ip
-	 *            the dest_ip
 	 * @param request_id
 	 *            the request_id
 	 */

@@ -178,8 +178,6 @@ public abstract class BasicIndexScan extends RootChild {
 	 * Joins the triple pattern using the index maps and returns the result.<br>
 	 * The succeeding operators are passed to the operator pipe to be processed.
 	 *
-	 * @param opt
-	 *            unused parameter
 	 * @return the result of the performed join
 	 */
 	@Override

@@ -26,7 +26,9 @@ package lupos.event.producer;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -49,46 +51,46 @@ import lupos.event.util.Literals;
 public abstract class ProducerBase implements IMessageReceivedHandler<Serializable>, IDisconnectedHandler {
 
 	public static int MIN_INTERVAL = 100;
-	private final Literal TIMESTAMP_LITERAL = LiteralFactory.createURILiteralWithoutException("<timestamp>"); 
-	
+	private final Literal TIMESTAMP_LITERAL = LiteralFactory.createURILiteralWithoutException("<timestamp>");
+
 	private final SerializingMessageService msgService;
 	private TcpConnectInfo connectingSubBroker;
 	private final int interval;
-	
+
 	/**
-	 * 
+	 *
 	 * @param msgService The message service that the producer should use to communicate.
 	 * @param interval Interval in milliseconds
 	 */
-	public ProducerBase(SerializingMessageService msgService, int interval) {
-		
+	public ProducerBase(final SerializingMessageService msgService, final int interval) {
+
 		this.msgService = msgService;
-		this.interval = interval;	
-		
+		this.interval = interval;
+
 		// register message listener
 		msgService.addHandler2(this);
 		msgService.addDisconnectHandler(this);
-	}	
-	
+	}
+
 	/**
-	 * Starts the producer. {@link produce} 
+	 * Starts the producer. produce
 	 */
 	public void start() {
 		try {
 			while (true) {
-				long startTime = System.currentTimeMillis();
+				final long startTime = System.currentTimeMillis();
 
 				// produce triples (implemented in subclasses)
-				List<List<Triple>> triples = produce();
+				final List<List<Triple>> triples = this.produce();
 
 				if (triples != null && !triples.isEmpty()) {
 					// adds timestamp triple if not existent
-					List<List<Triple>> timestampedTriples = addTimestampTriples(triples);
-					
+					final List<List<Triple>> timestampedTriples = this.addTimestampTriples(triples);
+
 					// use one message per event:
-					for(List<Triple> listOfTriples: timestampedTriples){
+					for(final List<Triple> listOfTriples: timestampedTriples){
 						// serialize triples
-						ArrayList<SerializedTriple> serializedTriples = serializeTriples(listOfTriples);
+						final ArrayList<SerializedTriple> serializedTriples = this.serializeTriples(listOfTriples);
 						// send triples to broker
 						this.msgService.sendMessage(serializedTriples);
 					}
@@ -97,73 +99,74 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 					// System.out.println("Producer.produce returned null");
 					System.out.print(".");
 				}
-				waitForEndOfInterval(startTime);
+				this.waitForEndOfInterval(startTime);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 	}
-	
-	private void waitForEndOfInterval(long startTime) throws InterruptedException {
-		long elapsedTime = this.interval - (System.currentTimeMillis() - startTime);
+
+	private void waitForEndOfInterval(final long startTime) throws InterruptedException {
+		final long elapsedTime = this.interval - (System.currentTimeMillis() - startTime);
 		if(elapsedTime>0){
 			Thread.sleep(elapsedTime);
 		}
 	}
 
-	
-	private List<List<Triple>> addTimestampTriples(List<List<Triple>> triples) throws URISyntaxException {
-		
-		List<List<Triple>> triples2 = new ArrayList<List<Triple>>();
-		
-		for(List<Triple> listOfTriples: triples){
+
+	private List<List<Triple>> addTimestampTriples(final List<List<Triple>> triples) throws URISyntaxException {
+
+		final List<List<Triple>> triples2 = new ArrayList<List<Triple>>();
+
+		for(final List<Triple> listOfTriples: triples){
 			triples2.add(this.addTimestampTriple(listOfTriples));
 		}
-		
-		return triples2;		
+
+		return triples2;
 	}
-	
+
 	/**
 	 * Adds a timestamp triple to a list of triples, if it doesn't contain one.
 	 * @param triples
-	 * @throws URISyntaxException 
+	 * @throws URISyntaxException
 	 */
-	private List<Triple> addTimestampTriple(List<Triple> triples) throws URISyntaxException {
-		for(Triple t : triples) {
+	private List<Triple> addTimestampTriple(final List<Triple> triples) throws URISyntaxException {
+		for(final Triple t : triples) {
 			if(0 == this.TIMESTAMP_LITERAL.compareToNotNecessarilySPARQLSpecificationConform(t.getPredicate())){
 				return triples;
 			}
 		}
-		
-		long timestamp = System.currentTimeMillis() / 1000;
-		Literal obj = Literals.createTyped(timestamp+"", Literals.XSD.LONG);
-		Triple timestampTriple = new Triple(triples.get(0).getSubject(), this.TIMESTAMP_LITERAL, obj);
-		
-		List<Triple> triples2 = new ArrayList<Triple>(triples);
+
+		final long timestamp = System.currentTimeMillis() / 1000;
+		final Literal obj = Literals.createTyped(timestamp+"", Literals.XSD.LONG);
+		final Triple timestampTriple = new Triple(triples.get(0).getSubject(), this.TIMESTAMP_LITERAL, obj);
+
+		final List<Triple> triples2 = new ArrayList<Triple>(triples);
 		triples2.add(timestampTriple);
 		return triples2;
 	}
 
-	private ArrayList<SerializedTriple> serializeTriples(List<Triple> triples) throws IOException {
-		ArrayList<SerializedTriple> l = new ArrayList<SerializedTriple>();
-		for(Triple t : triples)
+	private ArrayList<SerializedTriple> serializeTriples(final List<Triple> triples) throws IOException {
+		final ArrayList<SerializedTriple> l = new ArrayList<SerializedTriple>();
+		for(final Triple t : triples) {
 			l.add(new SerializedTriple(t));
+		}
 		return l;
 	}
-	
-	protected static List<List<Triple>> fold(List<Triple> triplesToFold){
-		List<List<Triple>> result = new LinkedList<List<Triple>>();
+
+	protected static List<List<Triple>> fold(final List<Triple> triplesToFold){
+		final List<List<Triple>> result = new LinkedList<List<Triple>>();
 		result.add(triplesToFold);
 		return result;
 	}
 
 	public abstract List<List<Triple>> produce();
-	
+
 	protected static String askForHostOfBroker(){
 		return JOptionPane.showInputDialog("Enter the host of the broker:", "localhost");
 	}
-	
+
 	/**
 	 * Establishes a connection to the master broker
 	 * and afterwards send a connection request message to it
@@ -176,20 +179,20 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 			msgService = new SerializingMessageService(TcpMessageTransport.class);
 			msgService.connect(new TcpConnectInfo(JOptionPane.showInputDialog("Enter the host IP adress of the MasterBroker:", "localhost"), Integer.parseInt(JOptionPane.showInputDialog("Enter the host port of the MasterBroker:", "4444"))));
 			msgService.sendMessage(new ConnectionRequest(ConnectionRequest.REQUESTTYPE_PRODUCER));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		return msgService;
 	}
-	
+
 	@Override
-	public void messageReceived(Object src, Serializable msg){
+	public void messageReceived(final Object src, final Serializable msg){
 		if (msg instanceof TcpConnectInfo){
 			this.connectingSubBroker = (TcpConnectInfo)msg;
 			this.msgService.disconnect();
 		}
 	}
-	
+
 	/**
 	 * This method will be called after the master
 	 * broker has sent a forwarding tcpConnect object.
@@ -202,10 +205,10 @@ public abstract class ProducerBase implements IMessageReceivedHandler<Serializab
 		// which should only occur on handshake
 		try {
 			this.msgService.connect(this.connectingSubBroker);
-			ConnectionRequest conReq = new ConnectionRequest(ConnectionRequest.REQUESTTYPE_PRODUCER);
+			final ConnectionRequest conReq = new ConnectionRequest(ConnectionRequest.REQUESTTYPE_PRODUCER);
 			conReq.setPort(TcpMessageTransport.SERVER_PORT);
 			this.msgService.sendMessage(conReq);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}

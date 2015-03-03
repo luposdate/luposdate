@@ -321,7 +321,7 @@ public class Viewer extends JFrame implements IXPref {
 	 *            the first node of the graph
 	 * @param format
 	 *            the format of the picture (e.g. png, gif or jpg)
-	 * @param output
+	 * @param out
 	 *            the outputstream to save the graph as image to
 	 */
 	public Viewer(final GraphWrapper startGW, final String format, final OutputStream out) {
@@ -334,11 +334,11 @@ public class Viewer extends JFrame implements IXPref {
 	 * This constructor generates the graph for the given filename and saves it
 	 * as image to an outputstream.
 	 *
-	 * @param startGW
+	 * @param startGWs
 	 *            the first node of the graph
 	 * @param format
 	 *            the format of the picture (e.g. png, gif or jpg)
-	 * @param output
+	 * @param out
 	 *            the outputstream to save the graph as image to
 	 */
 	public Viewer(final LinkedList<GraphWrapper> startGWs, final String format, final OutputStream out) {

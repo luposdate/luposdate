@@ -76,9 +76,9 @@ import org.json.JSONException;
  * This is an implementation of {@link ISubgraphExecutor} which is used in
  * P2P-QueryClients for receiving subgraph messages, evaluating these subgraphs
  * and answering the request with the local result.
- * 
+ *
  * @author Bjoern
- * 
+ *
  * @param <T>
  *            The key container type
  */
@@ -93,7 +93,7 @@ public class P2P_SubgraphExecuter<T> implements
 	 * Maximal parall request handling
 	 */
 	public static int NUMBER_OF_PARALLEL_REQUESTS = 20;
-	
+
 	/**
 	 * Displays the current state of open processes for subgraphs
 	 */
@@ -102,34 +102,35 @@ public class P2P_SubgraphExecuter<T> implements
 	/**
 	 * Static helper class for parsing and creating header for input-stream
 	 * message to be sent and received.
-	 * 
+	 *
 	 * @author Bjoern
-	 * 
+	 *
 	 */
 	public static class P2PInputStreamMessage {
 		public static final int HEADING_BYTES = 37;
 
 		/**
 		 * Creates a header for the input stream that is added first
-		 * 
+		 *
 		 * @param messageID
 		 *            the message number (unique)
 		 * @param answer
 		 *            is this a answer message?
 		 * @return the header bytes
 		 */
-		public static byte[] createHeader(String messageID, boolean answer) {
-			byte[] bytes = ((answer ? "1" : "0") + messageID + "").getBytes();
-			if (bytes.length != HEADING_BYTES)
+		public static byte[] createHeader(final String messageID, final boolean answer) {
+			final byte[] bytes = ((answer ? "1" : "0") + messageID + "").getBytes();
+			if (bytes.length != HEADING_BYTES) {
 				throw new RuntimeException(
 						"Headings for inputstream message are not in defined size. Needs a header of "
 								+ HEADING_BYTES + " bytes length.");
+			}
 			return bytes;
 		}
 
 		/**
 		 * Parses an inputstream and removes the header of this steam
-		 * 
+		 *
 		 * @param is
 		 *            the inputstream (should be starting at byte 0)
 		 * @return the tuple containing the message-id and the identifier,
@@ -137,13 +138,14 @@ public class P2P_SubgraphExecuter<T> implements
 		 * @throws IOException
 		 *             error while parsing
 		 */
-		public static Tuple<String, Boolean> parseInputStream(InputStream is)
+		public static Tuple<String, Boolean> parseInputStream(final InputStream is)
 				throws IOException {
-			byte[] b = new byte[HEADING_BYTES];
+			final byte[] b = new byte[HEADING_BYTES];
 			is.read(b);
-			String s = new String(b);
-			if (s == null || s.length() != HEADING_BYTES)
+			final String s = new String(b);
+			if (s == null || s.length() != HEADING_BYTES) {
 				throw new IOException("Message's header is wrong.");
+			}
 			return new Tuple<String, Boolean>(s.substring(1),
 					(s.charAt(0) == '1') ? true : false);
 		}
@@ -151,9 +153,9 @@ public class P2P_SubgraphExecuter<T> implements
 
 	/**
 	 * Java Object for sending subgraphs and other messages
-	 * 
+	 *
 	 * @author Bjoern
-	 * 
+	 *
 	 */
 	public static class P2PMessage {
 		/*
@@ -173,7 +175,7 @@ public class P2P_SubgraphExecuter<T> implements
 
 		/**
 		 * New P2P Message with the given type, id and message
-		 * 
+		 *
 		 * @param type
 		 *            the message type (see constants)
 		 * @param id
@@ -181,7 +183,7 @@ public class P2P_SubgraphExecuter<T> implements
 		 * @param message
 		 *            the message in string representation
 		 */
-		public P2PMessage(String type, String id, String message) {
+		public P2PMessage(final String type, final String id, final String message) {
 			this.type = type;
 			this.id = id;
 			this.message = message;
@@ -189,7 +191,7 @@ public class P2P_SubgraphExecuter<T> implements
 
 		/**
 		 * New P2P Message with the given type, id and message
-		 * 
+		 *
 		 * @param type
 		 *            the message type (see constants)
 		 * @param id
@@ -199,33 +201,32 @@ public class P2P_SubgraphExecuter<T> implements
 		 * @param key
 		 *            the distribution key
 		 */
-		public P2PMessage(String type, String id, String message, String key) {
+		public P2PMessage(final String type, final String id, final String message, final String key) {
 			this(type, id, message);
 			this.key = key;
 		}
 
 		@Override
 		public String toString() {
-			if (this.key == null)
-				return String.format("%s##%s##%s", type, id, message);
-			else
-				return String.format("%s##%s##%s##%s", type, id, message, key);
+			if (this.key == null) {
+				return String.format("%s##%s##%s", this.type, this.id, this.message);
+			} else {
+				return String.format("%s##%s##%s##%s", this.type, this.id, this.message, this.key);
+			}
 		}
 
 		/**
 		 * Function of unmarshalling a P2P-Message from string-representation
 		 * into java object
-		 * 
+		 *
 		 * @param s
 		 *            the string representation of a
-		 *            {@link P2PMessage#toString()}-String
+		 *            P2PMessage#toString()-String
 		 * @return the object or error, if not parseable
-		 * @exception Runtime
-		 *                exception, if not parsable
 		 */
-		public static P2PMessage parse(String s) {
+		public static P2PMessage parse(final String s) {
 			if (s != null) {
-				String[] splitted = s.split("##");
+				final String[] splitted = s.split("##");
 				if (splitted.length == 3) {
 					return new P2PMessage(splitted[0], splitted[1], splitted[2]);
 				} else if (splitted.length == 4) {
@@ -244,26 +245,27 @@ public class P2P_SubgraphExecuter<T> implements
 
 	private AbstractP2PNetwork<?> p2pNetwork;
 	private IStorage storage;
-	private ExecutorService executer;
+	private final ExecutorService executer;
 
-	
+
 		public final Runnable displayMap = new Runnable() {
+			@Override
 			public void run() {
-				StringBuilder b = new StringBuilder();
+				final StringBuilder b = new StringBuilder();
 				b.append("\n");
-				Set<String> set = P2P_SubgraphExecuter.this.waitingResults.keySet();
+				final Set<String> set = P2P_SubgraphExecuter.this.waitingResults.keySet();
 				b.append("SubgraphExecuter - Active processes:");
 				b.append(set.size());
 				b.append("\n");
 				b.append("--------------------------------------------------------------------\n");
 				b.append("#    |    message-id                                    |  done\n");
 				b.append("--------------------------------------------------------------------\n");
-				int before = b.length();
+				final int before = b.length();
 				int counter = 0;
-				for (String s : set) {
-					DelayedResult<?> item = P2P_SubgraphExecuter.this.waitingResults.get(s);
-					boolean done = item.isDone();
-					b.append(toSize(++counter,(""+set.size()).length()) + ">        " + s + "             " + done + "\n");
+				for (final String s : set) {
+					final DelayedResult<?> item = P2P_SubgraphExecuter.this.waitingResults.get(s);
+					final boolean done = item.isDone();
+					b.append(this.toSize(++counter,(""+set.size()).length()) + ">        " + s + "             " + done + "\n");
 				}
 				if (b.length() == before) {
 					b.append("> no active process found\n");
@@ -273,7 +275,7 @@ public class P2P_SubgraphExecuter<T> implements
 				System.out.println(b.toString());
 			}
 
-			private String toSize(int i, int length) {
+			private String toSize(final int i, final int length) {
 				String str = i+"";
 				while (str.length() != length) {
 					str = "0" + str;
@@ -281,9 +283,9 @@ public class P2P_SubgraphExecuter<T> implements
 				return str;
 			}
 		};
-	
-	
-	
+
+
+
 	/**
 	 * New instance of a subgraph executer, conntected with nodes of a
 	 * P2P-network.
@@ -292,44 +294,47 @@ public class P2P_SubgraphExecuter<T> implements
 		this.executer = Executors
 				.newFixedThreadPool(NUMBER_OF_PARALLEL_REQUESTS);
 		if (SHOW_DEBUG_PROCESSINGS_LIST) {
-			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-			
-			scheduler.scheduleAtFixedRate(displayMap, 0, 1, TimeUnit.MINUTES);
+			final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+			scheduler.scheduleAtFixedRate(this.displayMap, 0, 1, TimeUnit.MINUTES);
 		}
 	}
 
-	private Logger l = Logger.getLogger(this.getClass());
+	private final Logger l = Logger.getLogger(this.getClass());
 
 	/**
 	 * This is called by the {@link QueryClient} in LuposDate, because this is
 	 * registered as {@link ISubgraphExecutor}, for evaluation subgraphs.
-	 * 
+	 *
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@Override
-	public QueryResult evaluate(KeyContainer<T> key,
-			String subgraphSerializedAsJSON, BindingsFactory bindingsFactory) {
+	public QueryResult evaluate(final KeyContainer<T> key,
+			final String subgraphSerializedAsJSON, final BindingsFactory bindingsFactory) {
 		/*
 		 * Store bindings factory on first evaluation
 		 */
-		if (this.bindingsFactory == null) this.bindingsFactory = bindingsFactory;
+		if (this.bindingsFactory == null) {
+			this.bindingsFactory = bindingsFactory;
+		}
 		/*
 		 * get unique id
 		 */
-		String id = UUID.randomUUID().toString();
+		final String id = UUID.randomUUID().toString();
 		String p2pKey = "";
 
-		if (!hasP2PNetwork())
+		if (!this.hasP2PNetwork()) {
 			throw new RuntimeException(
 					"No P2P-network connected for sending subgraph-container.");
-		AbstractP2PNetwork<?> network = getP2PNetwork();
+		}
+		final AbstractP2PNetwork<?> network = this.getP2PNetwork();
 
 		/*
 		 * get the node id, where to sent the subgraph by the given key
 		 */
-		if (hasStorage()
-				&& getStorage() instanceof StorageWithDistributionStrategy) {
-			p2pKey = ((StorageWithDistributionStrategy<T>) getStorage())
+		if (this.hasStorage()
+				&& this.getStorage() instanceof StorageWithDistributionStrategy) {
+			p2pKey = ((StorageWithDistributionStrategy<T>) this.getStorage())
 					.getKey(key);
 		} else {
 			/*
@@ -338,52 +343,52 @@ public class P2P_SubgraphExecuter<T> implements
 			p2pKey = String.format("%s%s", key.type, key.key);
 		}
 
-		l.debug(String.format("Sending to node %s subgraph: %s ", p2pKey,
+		this.l.debug(String.format("Sending to node %s subgraph: %s ", p2pKey,
 				subgraphSerializedAsJSON));
 
 		/*
 		 * send subgraph to the corresponding node
 		 */
-		P2PMessage messageToSend = new P2PMessage(P2PMessage.SUBGRAPH_REQUEST,
+		final P2PMessage messageToSend = new P2PMessage(P2PMessage.SUBGRAPH_REQUEST,
 				id, subgraphSerializedAsJSON, p2pKey);
 
 		try {
 
-			l.debug(String.format("Waiting for answer of message-id: %s", id));
+			this.l.debug(String.format("Waiting for answer of message-id: %s", id));
 			DelayedResult<QueryResult> waitingResult;
-			waitingResults.put(id,
+			this.waitingResults.put(id,
 					waitingResult = new DelayedResult<QueryResult>());
 			network.sendMessage(p2pKey, messageToSend.toString());
 
 			QueryResult queryResult = new QueryResult();
 			try {
 				queryResult = waitingResult.get(SLEEP, TimeUnit.SECONDS);
-				l.debug(String.format("Waiting for answer of message-id: %s: finished", id));
-			} catch (ExecutionException e) {
-				l.error(String.format(
+				this.l.debug(String.format("Waiting for answer of message-id: %s: finished", id));
+			} catch (final ExecutionException e) {
+				this.l.error(String.format(
 						"Error waiting for result of message-id %s", id), e);
-				RuntimeException re = new RuntimeException(String.format(
+				final RuntimeException re = new RuntimeException(String.format(
 						"Error waiting for result of message-id %s", id));
 				re.addSuppressed(e);
 				throw re;
-			} catch (TimeoutException e) {
-				l.error(String.format(
+			} catch (final TimeoutException e) {
+				this.l.error(String.format(
 						"Error waiting for result of message-id %s, timeout!",
 						id), e);
-				RuntimeException re = new RuntimeException(String.format(
+				final RuntimeException re = new RuntimeException(String.format(
 						"Error waiting for result of message-id %s, timout!",
 						id));
 				re.addSuppressed(e);
 				throw re;
 			}
 			return queryResult;
-		} catch (InterruptedException e) {
-			l.error(String
+		} catch (final InterruptedException e) {
+			this.l.error(String
 					.format("Error waiting of result for subgraph from node %s",
 							p2pKey), e);
 		}
 		// Wait for answer of message id
-		l.warn(String
+		this.l.warn(String
 				.format("Error waiting of result for subgraph from node %s. So return empty query-result.",
 						p2pKey));
 		return new QueryResult();
@@ -393,9 +398,9 @@ public class P2P_SubgraphExecuter<T> implements
 	 * DelayedResult is a {@link Future}, that waits until the result is set. <br>
 	 * This is internally used for the asynchrony answer of subgraph
 	 * submissions, where this object waits, until the response message arrived.
-	 * 
+	 *
 	 * @author Bjoern
-	 * 
+	 *
 	 * @param <T>
 	 *            The type of the result that is used (in our case,
 	 *            {@link QueryResult}, because the subgraph's answer is always a
@@ -405,37 +410,37 @@ public class P2P_SubgraphExecuter<T> implements
 	private class DelayedResult<T> implements Future<T> {
 
 		private static final long SLEEP = 500;
-		private AtomicBoolean canceled = new AtomicBoolean(false);
-		private AtomicBoolean hasResult = new AtomicBoolean(false);
+		private final AtomicBoolean canceled = new AtomicBoolean(false);
+		private final AtomicBoolean hasResult = new AtomicBoolean(false);
 		private T result = null;
 
 		/**
 		 * Sets the result (if the result is set, the {@link Future} gets its
 		 * answer)
-		 * 
+		 *
 		 * @param result
 		 *            the result which is set
 		 */
-		public void setResult(T result) {
+		public void setResult(final T result) {
 			synchronized (result) {
 				this.result = result;
 			}
-			hasResult.set(true);
+			this.hasResult.set(true);
 		}
 
 		@Override
-		public boolean cancel(boolean mayInterruptIfRunning) {
+		public boolean cancel(final boolean mayInterruptIfRunning) {
 			return false;
 		}
 
 		@Override
 		public boolean isCancelled() {
-			return canceled.get();
+			return this.canceled.get();
 		}
 
 		@Override
 		public boolean isDone() {
-			return hasResult.get();
+			return this.hasResult.get();
 		}
 
 		@Override
@@ -445,14 +450,14 @@ public class P2P_SubgraphExecuter<T> implements
 				 * wait 1 hour, if failed, then another 1 hour ... (yeah, we are
 				 * very pessimistic ... :D )
 				 */
-				return get(1, TimeUnit.HOURS);
-			} catch (TimeoutException e) {
-				return get();
+				return this.get(1, TimeUnit.HOURS);
+			} catch (final TimeoutException e) {
+				return this.get();
 			}
 		}
 
 		@Override
-		public T get(long timeout, TimeUnit unit) throws InterruptedException,
+		public T get(final long timeout, final TimeUnit unit) throws InterruptedException,
 				ExecutionException, TimeoutException {
 			/*
 			 * take the maximum waiting time
@@ -462,8 +467,9 @@ public class P2P_SubgraphExecuter<T> implements
 				/*
 				 * abort, if canceled or result is set
 				 */
-				if (canceled.get() || hasResult.get())
+				if (this.canceled.get() || this.hasResult.get()) {
 					break;
+				}
 				start -= SLEEP;
 				/*
 				 * sleep, only for better CPU usage
@@ -472,99 +478,103 @@ public class P2P_SubgraphExecuter<T> implements
 				/*
 				 * if time is over, throw the error
 				 */
-				if (start < 0)
+				if (start < 0) {
 					throw new TimeoutException(String.format(
 							"Timeout: %d %s are gone!", timeout, unit.name()));
+				}
 			}
 			/*
 			 * if there is a result, return the result!
 			 */
-			if (hasResult.get()) {
+			if (this.hasResult.get()) {
 				final T ret;
-				synchronized (result) {
+				synchronized (this.result) {
 					ret = this.result;
 				}
 				return ret;
-			} else
+			} else {
 				/* otherwise null, so canceled */
 				return null;
+			}
 		}
 	}
 
 	/**
 	 * Is any p2p network ( {@link AbstractP2PNetwork} ) instance connected with
 	 * this {@link ISubgraphExecutor}
-	 * 
+	 *
 	 * @return yes, if p2p conntection established
 	 */
 	protected boolean hasP2PNetwork() {
-		return p2pNetwork != null;
+		return this.p2pNetwork != null;
 	}
 
 	/**
 	 * Is any {@link IStorage} instance connected with this
 	 * {@link ISubgraphExecutor}
-	 * 
+	 *
 	 * @return yes, if p2p conntection established
 	 */
 	protected boolean hasStorage() {
-		return storage != null;
+		return this.storage != null;
 	}
 
 	/**
 	 * Returns the p2p-network conntected, if any instance connected.
-	 * 
+	 *
 	 * @return p2p-network for sending messages
 	 */
 	public AbstractP2PNetwork<?> getP2PNetwork() {
-		return p2pNetwork;
+		return this.p2pNetwork;
 	}
 
 	/**
 	 * Sets a new p2p-network ( {@link AbstractP2PNetwork} ) for this
 	 * {@link ISubgraphExecutor}.
-	 * 
+	 *
 	 * @param p2pNetwork
 	 *            The new network to set.
 	 */
-	public void setP2PNetwork(AbstractP2PNetwork<?> p2pNetwork) {
+	public void setP2PNetwork(final AbstractP2PNetwork<?> p2pNetwork) {
 		/*
 		 * only set if instance given.
 		 */
-		if (p2pNetwork == null)
+		if (p2pNetwork == null) {
 			return;
+		}
 
 		/*
 		 * if overwriting existing connected p2p-implementation network, remove
 		 * old listener and add new listener to actual network.
 		 */
-		if (hasP2PNetwork()) {
-			getP2PNetwork().removeMessageListener(this);
+		if (this.hasP2PNetwork()) {
+			this.getP2PNetwork().removeMessageListener(this);
 		}
 		this.p2pNetwork = p2pNetwork;
-		if (hasP2PNetwork()) {
-			getP2PNetwork().addMessageListener(this);
+		if (this.hasP2PNetwork()) {
+			this.getP2PNetwork().addMessageListener(this);
 		}
 	}
 
 	/**
 	 * Gets the {@link IStorage} for resolving key as node in p2p-network.
-	 * 
+	 *
 	 * @return the storage
 	 */
 	public IStorage getStorage() {
-		return storage;
+		return this.storage;
 	}
 
 	/**
 	 * Sets / Connects the {@link IStorage} used in {@link QueryClient}.
-	 * 
+	 *
 	 * @param storage
 	 *            the new storage
 	 */
-	public void setStorage(IStorage storage) {
-		if (storage == null)
+	public void setStorage(final IStorage storage) {
+		if (storage == null) {
 			return;
+		}
 		this.storage = storage;
 	}
 
@@ -572,64 +582,67 @@ public class P2P_SubgraphExecuter<T> implements
 
 	/**
 	 * Gets the local evaluator of the node (for evaluation incoming subgraphs)
-	 * 
+	 *
 	 * @return the evaluator
 	 */
 	public QueryEvaluator<?> getEvaluator() {
-		return evaluator;
+		return this.evaluator;
 	}
 
 	/**
 	 * Sets the local evaluator for evaluating incoming subgraphs
-	 * 
+	 *
 	 * @param evaluator
 	 *            the local evaluater
 	 */
-	public void setEvaluator(QueryEvaluator<?> evaluator) {
+	public void setEvaluator(final QueryEvaluator<?> evaluator) {
 		this.evaluator = evaluator;
 	}
 
 	/**
 	 * Is any evaluater for evaluating local subgraphs connected with this
 	 * {@link ISubgraphExecutor}?
-	 * 
+	 *
 	 * @return Yes, if evaluator is given/set.
 	 */
 	protected boolean hasEvaluator() {
-		return getEvaluator() != null;
+		return this.getEvaluator() != null;
 	}
 
 	/*
 	 * store results of subgraphs in this map and inform waiting instance, that
 	 * result is back.
 	 */
-	private Map<String, DelayedResult<QueryResult>> waitingResults = Collections
+	private final Map<String, DelayedResult<QueryResult>> waitingResults = Collections
 			.synchronizedMap(new HashMap<String, DelayedResult<QueryResult>>());
 
 	private BindingsFactory bindingsFactory = null;
 
-	
+
 	/*
 	 * If any answer (response) is received with a given id, store the answer
 	 * here. The waiting thread for this message is called internally.
 	 */
-	private void addMessageResult(String id, QueryResult qr) {
-		DelayedResult<QueryResult> result = waitingResults.get(id);
+	private void addMessageResult(final String id, final QueryResult qr) {
+		final DelayedResult<QueryResult> result = this.waitingResults.get(id);
 		if (result != null) {
 			result.setResult(qr);
-		} else
+		} else {
 			throw new RuntimeException("Error in " + this + " - no entry: "
 					+ id);
-		if (SHOW_DEBUG_PROCESSINGS_LIST)displayMap.run();
+		}
+		if (SHOW_DEBUG_PROCESSINGS_LIST) {
+			this.displayMap.run();
+		}
 	}
 
 	/*
 	 * If any answer (response) is received with a given id, store the answer
 	 * here. The waiting thread for this message is called internally.
 	 */
-	private void addMessageResult(String id, String message) {
+	private void addMessageResult(final String id, final String message) {
 
-		MIMEFormatReader reader = new JSONFormatReader();
+		final MIMEFormatReader reader = new JSONFormatReader();
 		// read in the message (JSON message result)
 		Bindings.instanceClass = lupos.datastructures.bindings.BindingsMap.class;
 
@@ -637,23 +650,26 @@ public class P2P_SubgraphExecuter<T> implements
 		try {
 			qr = reader.getQueryResult(
 					new ByteArrayInputStream(message.getBytes("UTF-8")),
-					message,bindingsFactory);
-		} catch (UnsupportedEncodingException e) {
+					message,this.bindingsFactory);
+		} catch (final UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
-		DelayedResult<QueryResult> result = waitingResults.get(id);
+		final DelayedResult<QueryResult> result = this.waitingResults.get(id);
 		if (result != null) {
 			result.setResult(qr);
-		} else
+		} else {
 			throw new RuntimeException("Error in " + this + " - no entry: "
 					+ id);
-		if (SHOW_DEBUG_PROCESSINGS_LIST) displayMap.run();
+		}
+		if (SHOW_DEBUG_PROCESSINGS_LIST) {
+			this.displayMap.run();
+		}
 	}
 
 	@Override
 	public void onMessage(final String message, final String from) {
-		l.debug(String.format(
+		this.l.debug(String.format(
 				"Got message via P2P-network from %s: %s",
 				from,
 				message.substring(0,
@@ -670,8 +686,8 @@ public class P2P_SubgraphExecuter<T> implements
 		P2PMessage msg = null;
 		try {
 			msg = P2PMessage.parse(message);
-		} catch (RuntimeException e) {
-			l.error(String.format(
+		} catch (final RuntimeException e) {
+			this.l.error(String.format(
 					"Error unmarshalling received message from %s: %s", from,
 					message), e);
 		}
@@ -681,7 +697,7 @@ public class P2P_SubgraphExecuter<T> implements
 		 * and inform waiting instance, that result is received.
 		 */
 		if (msg.type != null && msg.type.equals(P2PMessage.SUBGRAPH_RESPONSE)) {
-			l.debug(String.format(
+			this.l.debug(String.format(
 					"Got result from message %s: %s",
 					msg.id,
 					msg.message.substring(0,
@@ -689,7 +705,7 @@ public class P2P_SubgraphExecuter<T> implements
 			/*
 			 * add the result and inform the waiting thread
 			 */
-			addMessageResult(msg.id, msg.message);
+			this.addMessageResult(msg.id, msg.message);
 			return;
 		} else if (msg.type != null
 				&& msg.type.equals(P2PMessage.SUBGRAPH_REQUEST)) {
@@ -700,19 +716,21 @@ public class P2P_SubgraphExecuter<T> implements
 			// Get the subgraph and data for unmarshalling the subgraph into
 			// operator graph.
 			final String subgraphSerializedAsJSONString = msg.message;
-			if (!hasEvaluator())
+			if (!this.hasEvaluator()) {
 				throw new RuntimeException(
 						"No local executer found for evaluation subgraph.");
+			}
 
 			final String _answerId = msg.id;
 			final Runnable task = new Runnable() {
 
+				@Override
 				public void run() {
 					// get the local evaluator and things for unmarshalling data
-					QueryEvaluator<?> eval = getEvaluator();
+					final QueryEvaluator<?> eval = P2P_SubgraphExecuter.this.getEvaluator();
 					Dataset dataset = null;
 					// get the creator
-					IOperatorCreator creater = new QueryClientOperatorCreator();
+					final IOperatorCreator creater = new QueryClientOperatorCreator();
 					// get the dataset
 					if (eval instanceof BasicIndexQueryEvaluator) {
 						dataset = ((BasicIndexQueryEvaluator) eval)
@@ -725,18 +743,18 @@ public class P2P_SubgraphExecuter<T> implements
 						 * result, and the second is the MIME-type (would be
 						 * here: JSON)
 						 */
-						l.debug(String.format(
+						P2P_SubgraphExecuter.this.l.debug(String.format(
 								"Local executing subgraph: %s on %s",
 								subgraphSerializedAsJSONString, this));
 
-						
+
 						LiteralFactory.setType(MapType.NOCODEMAP);
-						
+
 						/*
 						 * this message request is sent via streaming, because
 						 * P2P network does support
 						 */
-						if (getP2PNetwork().supportsStreaming()) {
+						if (P2P_SubgraphExecuter.this.getP2PNetwork().supportsStreaming()) {
 							/*
 							 * for streaming we use XML als formatter
 							 */
@@ -744,26 +762,26 @@ public class P2P_SubgraphExecuter<T> implements
 							/*
 							 * create header and evaluate the subgraph
 							 */
-							byte[] head = P2PInputStreamMessage.createHeader(
+							final byte[] head = P2PInputStreamMessage.createHeader(
 									_answerId, true);
-							InputStream is = LocalExecutor.evaluateSubgraphAndGetStream(
+							final InputStream is = LocalExecutor.evaluateSubgraphAndGetStream(
 											subgraphSerializedAsJSONString,
 											dataset, creater, _formatter,
 											P2P_SubgraphExecuter.this, head);
-							if (hasP2PNetwork()) {
-								l.debug(String.format(
+							if (P2P_SubgraphExecuter.this.hasP2PNetwork()) {
+								P2P_SubgraphExecuter.this.l.debug(String.format(
 										"Sending streaming-result from %s",
 										from));
-								getP2PNetwork().sendMessageTo(from, is);
+								P2P_SubgraphExecuter.this.getP2PNetwork().sendMessageTo(from, is);
 							}
-							l.debug(String.format(
+							P2P_SubgraphExecuter.this.l.debug(String.format(
 									"Sending streaming-result from %s: finished",
 									from));
 							return;
 						}
 						// else: send the result as JSON-String ...
 
-						Tuple<String, String> result = LocalExecutor
+						final Tuple<String, String> result = LocalExecutor
 								.evaluateSubgraphAndReturnSerializedResult(
 										subgraphSerializedAsJSONString,
 										dataset, creater, formatter,
@@ -772,9 +790,9 @@ public class P2P_SubgraphExecuter<T> implements
 						// asked
 						// for this.
 
-						String returnedSubgraph = result.getFirst();
-						if (hasP2PNetwork()) {
-							l.debug(String
+						final String returnedSubgraph = result.getFirst();
+						if (P2P_SubgraphExecuter.this.hasP2PNetwork()) {
+							P2P_SubgraphExecuter.this.l.debug(String
 									.format("Local executed subgraph result \"%s\" for request \"%s\" sent back to node %s",
 											returnedSubgraph.substring(Math
 													.min(returnedSubgraph
@@ -787,11 +805,11 @@ public class P2P_SubgraphExecuter<T> implements
 							 * the request sent, so that the receiver knows,
 							 * that this is the result.
 							 */
-							P2PMessage msg = new P2PMessage(
+							final P2PMessage msg = new P2PMessage(
 									P2PMessage.SUBGRAPH_RESPONSE, _answerId,
 									returnedSubgraph);
-							getP2PNetwork().sendMessageTo(from, msg.toString());
-							l.debug(String
+							P2P_SubgraphExecuter.this.getP2PNetwork().sendMessageTo(from, msg.toString());
+							P2P_SubgraphExecuter.this.l.debug(String
 									.format("Local executed subgraph result \"%s\" for request \"%s\" sent back to node %s: finished",
 											returnedSubgraph.substring(Math
 													.min(returnedSubgraph
@@ -803,7 +821,7 @@ public class P2P_SubgraphExecuter<T> implements
 						// MIME-type, unused here
 						result.getSecond();
 					} catch (JSONException | IOException e) {
-						l.error("Error parsing and creating JSON subgraph", e);
+						P2P_SubgraphExecuter.this.l.error("Error parsing and creating JSON subgraph", e);
 					}
 				}
 			};
@@ -811,7 +829,7 @@ public class P2P_SubgraphExecuter<T> implements
 
 				@Override
 				public void run() {
-					int taskID = taskCounter.getAndIncrement();
+					final int taskID = P2P_SubgraphExecuter.this.taskCounter.getAndIncrement();
 					System.out.println("Starting task: " + taskID + " (total allowed: " + NUMBER_OF_PARALLEL_REQUESTS + ")");
 					task.run();
 					System.out.println("Ending task: " + taskID + " (total allowed: " + NUMBER_OF_PARALLEL_REQUESTS + ")");
@@ -820,56 +838,58 @@ public class P2P_SubgraphExecuter<T> implements
 			/*
 			 * executes the task (parallel, if NUMBER_OF_PARALLISM greater than 1)
 			 */
-			executer.execute(taskWrapper);
-			
+			this.executer.execute(taskWrapper);
+
 		}
 	}
 
 	private final AtomicInteger taskCounter = new AtomicInteger();
-	
+
 	@Override
-	public void onMessage(InputStream in, String from) {
-		
+	public void onMessage(InputStream in, final String from) {
+
 		try {
-			Tuple<String, Boolean> result = P2PInputStreamMessage
+			final Tuple<String, Boolean> result = P2PInputStreamMessage
 					.parseInputStream(in);
 			//read out the rest of the stram as XML ...
 			LiteralFactory.setType(MapType.NOCODEMAP);
-			
-			
-			XMLFormatReader fr = new XMLFormatReader();
+
+
+			final XMLFormatReader fr = new XMLFormatReader();
 			//read in the query result
-			QueryResult qr = fr.getQueryResult(in,this.bindingsFactory);
-			
-			
-			long time = new Date().getTime();
-			int tripelSize = 0;
+			final QueryResult qr = fr.getQueryResult(in,this.bindingsFactory);
+
+
+			final long time = new Date().getTime();
+			final int tripelSize = 0;
 			long difference = new Date().getTime() - time;
-  		    StringBuilder b = new StringBuilder();
-		
+  		    final StringBuilder b = new StringBuilder();
+
   		    b.append(String.format("Statistics: reading %s triples in %s h or %d min or %d sec",
 					  tripelSize, TimeUnit.MILLISECONDS.toHours(difference),TimeUnit.MILLISECONDS.toMinutes(difference),TimeUnit.MILLISECONDS.toSeconds(difference)));
-			if (difference == 0) difference = 1;
-			double triplesPerSecond = (double)tripelSize / (double)(difference / 1000d);
+			if (difference == 0) {
+				difference = 1;
+			}
+			final double triplesPerSecond = tripelSize / (difference / 1000d);
 			b.append(String.format(" -> %.2f triples per second",triplesPerSecond));
-			Logger.getLogger(getClass()).debug(b.toString());
-			
+			Logger.getLogger(this.getClass()).debug(b.toString());
+
 			try {
 				in.close();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			} finally {
 				in = null;
 			}
-			  
+
 			/*
 			 * inform the waiting thread that answer is back for the message
 			 */
-			addMessageResult(/*message id*/result.getFirst(), qr);
-		} catch (IOException e) {
+			this.addMessageResult(/*message id*/result.getFirst(), qr);
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 }

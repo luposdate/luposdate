@@ -37,11 +37,10 @@ public class QueryResultReceivedHandlerList extends ArrayList<IQueryResultReceiv
 
 	/**
 	 * Calls the {IQueryResultReceivedHandler.queryResultReceived} method of all handlers in the list.
-	 * @param src The object from which the call was made.
-	 * @param msg 
 	 */
-	public void callAll(QueryResult qr, Subscription sub) {
-		for(IQueryResultReceivedHandler handler : this)
+	public void callAll(final QueryResult qr, final Subscription sub) {
+		for(final IQueryResultReceivedHandler handler : this) {
 			handler.queryResultReceived(qr, sub);
+		}
 	}
 }

@@ -49,9 +49,6 @@ public class ComputeBindings extends SingleInputOperator {
 	/**
 	 * saving the QueryResult
 	 *
-	 * @param QueryResult
-	 * @param int
-	 * @return QueryResult
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
@@ -62,7 +59,7 @@ public class ComputeBindings extends SingleInputOperator {
 	 * Sets the intersection variables and the union variables for the given
 	 * query result and returns a message with all used variables
 	 *
-	 * @param BoundVariablesMessage msg
+	 * @param msg
 	 * @return Message
 	 */
 	@Override

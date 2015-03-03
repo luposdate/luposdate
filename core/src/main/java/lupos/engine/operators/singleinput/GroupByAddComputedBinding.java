@@ -31,26 +31,26 @@ import lupos.misc.debug.DebugStep;
 public class GroupByAddComputedBinding extends AddComputedBinding {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1787633855746419591L;
 
 	/**
 	 * Modified method of AddComputedBinding which doesn't merge the bindings of
 	 * the QueryResult
-	 * 
-	 * @param QueryResult
-	 * @param int
-	 * @return QueryResult
+	 *
 	 */
+	@Override
 	public QueryResult process(final QueryResult bindings, final int operandID) {
-		return getQueryResultForAggregatedFilter(bindings);
+		return this.getQueryResultForAggregatedFilter(bindings);
 	}
 
+	@Override
 	public Message preProcessMessage(final ComputeIntermediateResultMessage msg) {
 		return msg;
 	}
-	
+
+	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
 		return msg;
 	}

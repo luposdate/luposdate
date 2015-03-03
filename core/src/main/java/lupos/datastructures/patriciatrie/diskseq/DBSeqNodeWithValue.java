@@ -24,16 +24,9 @@
 package lupos.datastructures.patriciatrie.diskseq;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
-import lupos.misc.Tuple;
-import lupos.misc.Triple;
 import lupos.datastructures.patriciatrie.disk.Deserializer;
 import lupos.datastructures.patriciatrie.disk.nodemanager.NodeInputStream;
-import lupos.datastructures.patriciatrie.disk.nodemanager.NodeOutputStream;
 import lupos.datastructures.patriciatrie.diskseq.nodemanager.SeqNodeManager;
 import lupos.datastructures.patriciatrie.node.Node;
 import lupos.datastructures.patriciatrie.node.NodeWithValue;
@@ -43,13 +36,13 @@ import lupos.datastructures.patriciatrie.node.NodeWithValue;
  * This class extends the abstract Node class and implements a disk based behavior for sequential serialization of the whole trie.
  */
 public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
-	
-	
-	public final static DeSerializer deSerializer = new DeSerializer(){ 
+
+
+	public final static DeSerializer deSerializer = new DeSerializer(){
 		/**
 		 * Reads all relevant information for a DBSeqNode from a given InputStream
 		 * and returns a DBSeqNode instance.
-		 * 
+		 *
 		 * @param nodeManager
 		 *            The NodeManager, that handles all read and write requests for
 		 *            this trie.
@@ -65,22 +58,23 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 			if(contentLength<0){
 				return null;
 			}
-			
+
 			node.setContent(new String[contentLength]);
-			
+
 			for (int i = 0; i < contentLength; i++) {
 				final int len = inputStream.readInt();
-				byte[] content = new byte[len];
-				for (int j = 0; j < len; j++)
+				final byte[] content = new byte[len];
+				for (int j = 0; j < len; j++) {
 					content[j] = (byte) inputStream.read();
-				
+				}
+
 				node.getContent()[i] = new String(content, Deserializer.OUTPUT_ENCODING);
 			}
-			
+
 			final int childrenLength = inputStream.readInt();
-			
+
 			node.setChildren(new boolean[childrenLength]);
-			
+
 			for (int i = 0; i < childrenLength; i++) {
 				node.getChildren()[i] = (inputStream.read() == 1);
 			}
@@ -98,23 +92,23 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 				for (int i = 0; i < childrenLength; i++) {
 					if(!node.getChildren()[i]){
 						node.setValue(i, inputStream.readInt());
-					}			
+					}
 				}
 			}
-			
+
 			node.numberOfEntries = inputStream.readInt();
-			
+
 			node.setChanged(false);
-			
+
 			return node;
 		}
-		
+
 		/**
 		 * Serializes this node and writes the output to the OutputStream
-		 * 
+		 *
 		 * @param node
 		 *            node to be serialized...
-		 * @param nodeOutputStream
+		 * @param writer
 		 *            Stream to write the serialized data to
 		 * @throws IOException
 		 */
@@ -122,19 +116,19 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 		public void serialize(final Node node, final Writer writer) throws IOException {
 			final int contentLength = node.getContentLength();
 			final int childrenLength = node.getChildrenLength();
-			
+
 			// Output the content
 			writer.writeInt(contentLength);
-			
+
 			for (int i = 0; i < contentLength; i++) {
 				final String content_local = node.getContent(i);
 				final byte[] output = content_local.getBytes(Deserializer.OUTPUT_ENCODING);
 				writer.writeInt(output.length);
 				writer.write(output);
 			}
-			
+
 			writer.writeInt(childrenLength);
-			
+
 			for (int i = 0; i < childrenLength; i++) {
 				writer.write(node.hasChild(i) ? 1 : 0);
 			}
@@ -142,7 +136,7 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 			// TODO: extend for maps! (not only bags)
 			if(childrenLength==0){
 				// special case leaf node
-				final int length = ((NodeWithValue)node).getValues().length; 
+				final int length = ((NodeWithValue)node).getValues().length;
 				writer.writeInt(length);
 				for(int i=0; i<length; i++){
 					writer.writeInt(((NodeWithValue<Integer>)node).getValue(i));
@@ -160,16 +154,16 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 			node.setChanged(false);
 		}
 	};
-	
+
 	/** The NodeManager, that handles all read and write requests for this trie. */
 	private SeqNodeManager nodeManager;
-	
+
 	/** hasChild flags */
 	private boolean[] children;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param nodeManager
 	 *            The NodeManager, that handles all read and write requests for this trie.
 	 */
@@ -190,10 +184,11 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 
 	@Override
 	public final NodeWithValue<T> getChild(final int i) {
-		if (this.hasChild(i))
+		if (this.hasChild(i)) {
 			return (NodeWithValue<T>) this.getNodeManager().readNextNode(DBSeqNodeWithValue.deSerializer);
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
@@ -202,17 +197,17 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	}
 
 	@Override
-	protected final boolean isFromSameTrie(final Node node) {		
+	protected final boolean isFromSameTrie(final Node node) {
 		return false;
 	}
 
 	@Override
-	protected final void increaseChildrenArraySize(int idx, int amount) {
+	protected final void increaseChildrenArraySize(final int idx, final int amount) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected final void removeChildrenArrayElement(int idx) {
+	protected final void removeChildrenArrayElement(final int idx) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -224,7 +219,7 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	/**
 	 * @param children the children to set
 	 */
-	public final void setChildren(boolean[] children) {
+	public final void setChildren(final boolean[] children) {
 		this.children = children;
 	}
 
@@ -238,7 +233,7 @@ public class DBSeqNodeWithValue<T> extends NodeWithValue<T> {
 	/**
 	 * @param nodeManager the nodeManager to set
 	 */
-	public final void setNodeManager(SeqNodeManager nodeManager) {
+	public final void setNodeManager(final SeqNodeManager nodeManager) {
 		this.nodeManager = nodeManager;
 	}
 

@@ -29,83 +29,82 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import lupos.rif.BasicIndexRuleEvaluator;
-
 import lupos.owl2rl.parser.ParserResults;
 import lupos.owl2rl.parser.TemplatesRuleParser;
+import lupos.rif.BasicIndexRuleEvaluator;
 
 public class InferenceRulesGeneratorSetup {
-	
-	
+
+
 	/**Current Generator**/
 	private static InferenceRulesGenerator gen;
 	/** Whether Information should be printed or not **/
 	private boolean printOn=true;
-	
+
 	/**Saves parsed rules for type of ruleset**/
-	private HashMap<String,ParserResults> parserResultsMap=new HashMap<String, ParserResults>();
-	
-	
+	private final HashMap<String,ParserResults> parserResultsMap=new HashMap<String, ParserResults>();
+
+
 	/**
 	 * Init InferenceRulesGenerator with rule templates from file
 	 * @param ontology
-	 * @param MethodType
 	 * @param file
 	 */
-	public void init(String ontology, String file){
-		init(ontology, createInputStream(file), file);
+	public void init(final String ontology, final String file){
+		this.init(ontology, createInputStream(file), file);
 	}
-	
+
 	/**
 	 * Init InferenceRulesGenerator with rule templates from InputStream
 	 * @param ontology
 	 * @param rules
 	 * @param key
 	 */
-	public  void init(String ontology, InputStream rules, String key){	
+	public  void init(final String ontology, final InputStream rules, final String key){
 		// Reuse old parsed rule set if exists...
 
 		//...if not, create new parser and save results
 		if(!this.parserResultsMap.containsKey(key)){
-			TemplatesRuleParser parser= new TemplatesRuleParser();
+			final TemplatesRuleParser parser= new TemplatesRuleParser();
 			parser.start(rules);
 			this.parserResultsMap.put(key, parser.getResults());
 		}
 
 		//Reuse old generator if exists...
 
-		//..if not create new	
+		//..if not create new
 		if(gen==null){
 			gen=new InferenceRulesGenerator(this.printOn);
 
 		}
 
-		//set the results for the corresponding MethodType 
+		//set the results for the corresponding MethodType
 		gen.setParserResults(this.parserResultsMap.get(key));
 		gen.start(ontology);
 	}
-	
+
 	/**Returns the Initialized Generator
-	 * 
+	 *
 	 * @return initialized Generator
 	 */
 	public InferenceRulesGenerator getGenerator() {
 		return gen;
 	}
-	
+
 	/**Set wether or not debug Information and emitted Rules should be printed on System.out
-	 * 
+	 *
 	 * @param printOn
 	 */
-	
-	public void setPrintOnOrOff(boolean printOn){
+
+	public void setPrintOnOrOff(final boolean printOn){
 		this.printOn=printOn;
-		if(gen!=null)
-		gen.setPrintOnOrOff(this.printOn);
+		if(gen!=null) {
+			gen.setPrintOnOrOff(this.printOn);
+		}
 	}
 
 	/**Create an InputStream from file Contents
-	 * 
+	 *
 	 * @param file
 	 * @return generated InputStream
 	 */
@@ -113,34 +112,34 @@ public class InferenceRulesGeneratorSetup {
 		try {
 			try {
 				return InferenceRulesGeneratorSetup.class.getResource(file).openStream();
-			} catch (IOException e1) {
+			} catch (final IOException e1) {
 				return new FileInputStream(InferenceRulesGeneratorSetup.class.getResource(file).getFile());
 			}
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println("File not found! Could not create  Input Stream in "
 					+ "InferenceRulesGeneratorSetup" + " from file: \"" + file + "\"");
 		}
 		return null;
 	}
-	
-	public void initWithEvaluator(BasicIndexRuleEvaluator ruleEvaluator, String rules, String key) {
+
+	public void initWithEvaluator(final BasicIndexRuleEvaluator ruleEvaluator, final String rules, final String key) {
 		// Reuse old parsed rule set if exists...
 
 		//...if not, create new parser and save results
 		if(!this.parserResultsMap.containsKey(key)){
-			TemplatesRuleParser parser= new TemplatesRuleParser();
+			final TemplatesRuleParser parser= new TemplatesRuleParser();
 			parser.start(createInputStream(rules));
 			this.parserResultsMap.put(key, parser.getResults());
 		}
 
 		//Reuse old generator if exists...
 
-		//..if not create new	
+		//..if not create new
 		if(gen==null){
 			gen=new InferenceRulesGenerator(this.printOn);
 		}
-		//set the results for the corresponding MethodType 
+		//set the results for the corresponding MethodType
 		gen.setParserResults(this.parserResultsMap.get(key));
 		gen.start(ruleEvaluator);
 	}

@@ -77,7 +77,7 @@ public class DBMergeSortedMap<K extends Serializable, V extends Serializable>
 	/**
 	 * Create a new DBMergeSortedMap that sorts using the specified Comparator.
 	 *
-	 * @param comp
+	 * @param comp2
 	 *            The Comparator to use for sorting.
 	 */
 	public DBMergeSortedMap(final SortConfiguration sortConfiguration,

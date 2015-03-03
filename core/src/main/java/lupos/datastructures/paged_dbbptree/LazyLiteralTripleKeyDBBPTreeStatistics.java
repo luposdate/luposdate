@@ -1942,15 +1942,6 @@ public class LazyLiteralTripleKeyDBBPTreeStatistics extends DBBPTree<TripleKey, 
 	 * This constructor is only used for creating a DBBPTree after reading it
 	 * from file!
 	 *
-	 * @param k
-	 * @param k_
-	 * @param size
-	 * @param comp
-	 * @param folder
-	 * @param rootFilename
-	 * @param firstLeafFileName
-	 * @param keyClass
-	 * @param valueClass
 	 */
 	public LazyLiteralTripleKeyDBBPTreeStatistics(final int k, final int k_,
 			final int size, final Comparator comp, final int rootFilename,

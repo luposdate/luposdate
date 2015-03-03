@@ -55,9 +55,6 @@ public class Bind extends AddComputedBinding {
 	/**
 	 * This method filters if needed and calls evalTree
 	 *
-	 * @param QueryResult
-	 * @param int
-	 * @return QueryResult
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings,

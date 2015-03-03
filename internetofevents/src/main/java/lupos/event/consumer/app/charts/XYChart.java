@@ -39,73 +39,72 @@ import org.jfree.chart.ChartPanel;
 
 
 /**
- * Class for displaying input elements for XY charts and display 
+ * Class for displaying input elements for XY charts and display
  * of the chart itself.
  * @author heidemey
  *
  */
 public class XYChart extends ChartHandler{
-	
+
 	protected JTextField value;
 	protected JTextField category;
 	protected JTextField value2;
-	
+
 	/**
-	 * Contructor. Creates an appropiate DataModel and inits all required GUI-Elements.
-	 * @param chartTyp
+	 * Constructor. Creates an appropriate DataModel and initializes all required GUI-Elements.
 	 */
-	public XYChart(ChartTyp type)
+	public XYChart(final ChartTyp type)
 	{
 		super(new GridBagLayout(), type);
-		
+
 		super.add(new JLabel("Y Variable"),createGBC(0,0, GridBagConstraints.HORIZONTAL));
 	    super.add(new JLabel("Z Variable"),createGBC(0,1, GridBagConstraints.HORIZONTAL));
 	    super.add(new JLabel("X Variable"),createGBC(0,2, GridBagConstraints.HORIZONTAL));
-		
-	    value = new JTextField(25);
-	    value.setEditable(true);
-	    value.setMinimumSize(new Dimension(80,25));
-	    super.add(value, createGBC(1,0, GridBagConstraints.HORIZONTAL));
 
-	    value2 = new JTextField(25);
-	    value2.setEditable(true);
-	    value2.setMinimumSize(new Dimension(80,25));
-	    super.add(value2, createGBC(1,1, GridBagConstraints.HORIZONTAL));
+	    this.value = new JTextField(25);
+	    this.value.setEditable(true);
+	    this.value.setMinimumSize(new Dimension(80,25));
+	    super.add(this.value, createGBC(1,0, GridBagConstraints.HORIZONTAL));
 
-	    category = new JTextField(25);
-	    category.setEditable(true);
-	    category.setMinimumSize(new Dimension(80,25));
-	    super.add(category, createGBC(1,2, GridBagConstraints.HORIZONTAL));
-	    
-		chartPanel = new ChartPanel(null);
-		this.add(chartPanel,new GridBagConstraints(0, 3, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2,2,2,2), 1, 1));
-		
-		model = new XYChartModel(type);
+	    this.value2 = new JTextField(25);
+	    this.value2.setEditable(true);
+	    this.value2.setMinimumSize(new Dimension(80,25));
+	    super.add(this.value2, createGBC(1,1, GridBagConstraints.HORIZONTAL));
+
+	    this.category = new JTextField(25);
+	    this.category.setEditable(true);
+	    this.category.setMinimumSize(new Dimension(80,25));
+	    super.add(this.category, createGBC(1,2, GridBagConstraints.HORIZONTAL));
+
+		this.chartPanel = new ChartPanel(null);
+		this.add(this.chartPanel,new GridBagConstraints(0, 3, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2,2,2,2), 1, 1));
+
+		this.model = new XYChartModel(type);
 	}
-	
+
 	@Override
-	public void fillDataset(TimedWrapper<QueryResult> l)
+	public void fillDataset(final TimedWrapper<QueryResult> l)
 	{
 
-		getModel().setXVar(new Variable(category.getText()));
-		getModel().setZ(new Variable(value2.getText()));
-		getModel().setY(new Variable(value.getText()));
-		
-		getModel().fillDataset(l.getWrappedObject());
+		this.getModel().setXVar(new Variable(this.category.getText()));
+		this.getModel().setZ(new Variable(this.value2.getText()));
+		this.getModel().setY(new Variable(this.value.getText()));
+
+		this.getModel().fillDataset(l.getWrappedObject());
 	}
-	
+
 	@Override
 	protected XYChartModel getModel(){
 		return (XYChartModel) super.getModel();
 	}
-	
+
 	@Override
 	public void clearFields(){
-		
-		value.setText(null);
-		category.setText(null);
-		value2.setText(null);
-		
+
+		this.value.setText(null);
+		this.category.setText(null);
+		this.value2.setText(null);
+
 	}
 
 }

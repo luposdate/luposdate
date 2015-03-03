@@ -26,19 +26,19 @@ package lupos.owl2rl.emitter;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import lupos.owl2rl.owlToRif.InferenceRulesGenerator;
 import lupos.owl2rl.owlToRif.BoundVariable;
+import lupos.owl2rl.owlToRif.InferenceRulesGenerator;
 import lupos.owl2rl.owlToRif.TemplateRule;
 
 public class RuleEmitter {
 
-	public static void emitPropertyRules(LinkedList<BoundVariable> boundV, StringBuilder outputString, HashMap<String, TemplateRule> templateRulemap){
+	public static void emitPropertyRules(final LinkedList<BoundVariable> boundV, final StringBuilder outputString, final HashMap<String, TemplateRule> templateRulemap){
 		boolean block =false;
 		String ret="";
 
 		//for each variable: replace variables with value from query result
 		for(int j=0;j<boundV.size();j++){
-			BoundVariable v=boundV.get(j);
+			final BoundVariable v=boundV.get(j);
 
 			if(j==0){//first time
 				ret=("(* "+v.getName()+" *) "+templateRulemap.get(v.getName()).getTemplate()).replace(v.getVariable(), v.getOriginalString());
@@ -46,8 +46,9 @@ public class RuleEmitter {
 				ret=ret.replace(v.getVariable(),v.getOriginalString());
 			}
 			//makes sure rules like (x, rdfs:subClassOf, x) are not emitted
-			if(ret.contains(v.getOriginalString()+"[rdfs:subClassOf->"+v.getOriginalString()+"]"))
+			if(ret.contains(v.getOriginalString()+"[rdfs:subClassOf->"+v.getOriginalString()+"]")) {
 				block=true;
+			}
 		}
 
 		if(!ret.equals("") && !block && !outputString.toString().contains(ret)){
@@ -58,14 +59,14 @@ public class RuleEmitter {
 		}
 	}
 
-	public static void emitSubClassOfRule(LinkedList<BoundVariable> variablesInList, StringBuilder outputString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitSubClassOfRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder outputString, final HashMap<String, TemplateRule> templateRulemap) {
 
-		String c1=variablesInList.getLast().getPartOfList();
+		final String c1=variablesInList.getLast().getPartOfList();
 
 		String rule="";
 		for(int xi=0;xi<variablesInList.size();xi++){
 
-			BoundVariable c3=variablesInList.get(xi);
+			final BoundVariable c3=variablesInList.get(xi);
 
 			rule=("(* "+c3.getName()+" *) "+templateRulemap.get(c3.getName()).getTemplate()).replace("?c1", c1);
 			rule=rule.replace("?c3",c3.getOriginalString());
@@ -77,13 +78,13 @@ public class RuleEmitter {
 		}
 	}
 
-	public static void emitSubPropertyOfRule(LinkedList<BoundVariable> variablesInList, StringBuilder outputString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitSubPropertyOfRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder outputString, final HashMap<String, TemplateRule> templateRulemap) {
 
-		String p1=variablesInList.getLast().getPartOfList();
+		final String p1=variablesInList.getLast().getPartOfList();
 
 		String rule="\n";
 		for(int xi=0;xi<variablesInList.size();xi++){
-			BoundVariable p3=variablesInList.get(xi);
+			final BoundVariable p3=variablesInList.get(xi);
 			rule=("(* "+p3.getName()+" *) "+templateRulemap.get(p3.getName()).getTemplate()).replace("?p1", p1);
 			rule=rule.replace("?p3",p3.getOriginalString());
 			if(!outputString.toString().contains(rule)){
@@ -94,9 +95,9 @@ public class RuleEmitter {
 	}
 
 	/**
-	 * emit Rules for #eq-diff2/diff3 #prp-adp #cax-adc 
+	 * emit Rules for #eq-diff2/diff3 #prp-adp #cax-adc
 	 */
-	public static String emitForEachRules(LinkedList<BoundVariable> variablesInList, StringBuilder output, HashMap<String, TemplateRule> templateRulemap) {
+	public static String emitForEachRules(final LinkedList<BoundVariable> variablesInList, final StringBuilder output, final HashMap<String, TemplateRule> templateRulemap) {
 		String output2="";
 		/*
 		 * for all pairs of x,y element of list, x!=y do:
@@ -105,8 +106,8 @@ public class RuleEmitter {
 		String rule;
 		for(int xi=0;xi<variablesInList.size();xi++){
 			for(int yi=0;yi<variablesInList.size();yi++){
-				BoundVariable x=variablesInList.get(xi);
-				BoundVariable y=variablesInList.get(yi);
+				final BoundVariable x=variablesInList.get(xi);
+				final BoundVariable y=variablesInList.get(yi);
 
 				if(!x.getOriginalString().equals(y.getOriginalString())){
 
@@ -117,7 +118,7 @@ public class RuleEmitter {
 					if(!output2.contains(rule)){
 						/*
 						 * avoid rules that are already implied through symmetry.
-						 * e.g.: 
+						 * e.g.:
 						 * (x sameAs y) and (y sameAs x) in diff2 and diff3.
 						 * And(factA factB) and And(factB factA) in prp-adp and cax adc.
 						 */
@@ -138,51 +139,51 @@ public class RuleEmitter {
 		output.append("\n");
 		return output2;
 	}
-	
+
 	/**
 	 * make template for #prp-key
-	 * 
+	 *
 	 * @param variablesInList
 	 * @param returnString
 	 */
 	@SuppressWarnings("unused")
-	public static void emitHasKeyRule(LinkedList<BoundVariable> variablesInList, StringBuilder returnString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitHasKeyRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 		String rule=("\n(* #prp-key *)");
 
-		String listName /*= type */ = variablesInList.get(0).getPartOfList();
+		final String listName /*= type */ = variablesInList.get(0).getPartOfList();
 
 		rule+=("Forall ?x ?y ?v ( \n"+
 				"?x[owl:sameAs->?y]:-And(\n"+
 				"?x[rdf:type->"+listName +"]\n"+
 				"?y[rdf:type->"+listName +"]\n");
 
-		for(BoundVariable b: variablesInList){
+		for(final BoundVariable b: variablesInList){
 			rule+=("?x["+b.getOriginalString()+"->?v] ?y["+b.getOriginalString()+"->?v]\n");
 		}
-		
+
 		if(!returnString.toString().contains(rule)){
 			returnString.append(rule+"))");
 			InferenceRulesGenerator.rulesEmitted++;
 		}
-	} 
+	}
 
 	/**
 	 * make template for #cls-int1
-	 * 
+	 *
 	 * @param variablesInList
 	 * @param returnString
 	 */
 	@SuppressWarnings("unused")
-	public static void emitIntersectionOfRule1(LinkedList<BoundVariable> variablesInList, StringBuilder returnString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitIntersectionOfRule1(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 
 		String rule=("\n(* #cls-int1 *)");
 
-		String listName /*= type */ = variablesInList.get(0).getPartOfList();
+		final String listName /*= type */ = variablesInList.get(0).getPartOfList();
 
-		rule+=("Forall ?y ( \n"+	
+		rule+=("Forall ?y ( \n"+
 				"?y[rdf:type->"+listName +"] :- And(\n");
 
-		for(BoundVariable b: variablesInList){
+		for(final BoundVariable b: variablesInList){
 			rule+=("?y[rdf:type->"+b.getOriginalString()+"]\n");
 		}
 
@@ -194,20 +195,20 @@ public class RuleEmitter {
 
 	/**
 	 * make template for #scm-int
-	 * 
+	 *
 	 * @param variablesInList
 	 * @param returnString
 	 */
 	@SuppressWarnings("unused")
-	public static void emitIntersectionOfRule2(LinkedList<BoundVariable> variablesInList, StringBuilder returnString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitIntersectionOfRule2(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 
 		returnString.append( "\n(* #scm-int *)");
 
-		String listName /*= type */ = variablesInList.get(0).getPartOfList();
+		final String listName /*= type */ = variablesInList.get(0).getPartOfList();
 		String rule="";
 
-		for(BoundVariable b: variablesInList){
-			rule+=("Forall ?y ("+	
+		for(final BoundVariable b: variablesInList){
+			rule+=("Forall ?y ("+
 					"?y[rdf:type->"+b.getOriginalString()+"]:- And( \n"+
 					"?y[rdf:type->"+listName +"]))\n"+
 
@@ -222,19 +223,19 @@ public class RuleEmitter {
 
 	/**
 	 * make template for #cls-oo
-	 * 
+	 *
 	 * @param variablesInList
 	 * @param returnString
 	 */
 	@SuppressWarnings("unused")
-	public static void emitOneOfRule(LinkedList<BoundVariable> variablesInList, StringBuilder returnString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitOneOfRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 
 		returnString.append("\n(* #cls-oo *)");
 
-		String listName /*= type */ = variablesInList.get(0).getPartOfList();
+		final String listName /*= type */ = variablesInList.get(0).getPartOfList();
 
 		String rule="";
-		for(BoundVariable b: variablesInList){
+		for(final BoundVariable b: variablesInList){
 			rule+=(b.getOriginalString()+"[rdf:type->"+listName +"]\n");
 
 			if(!returnString.toString().contains(rule)){
@@ -246,22 +247,20 @@ public class RuleEmitter {
 
 	/**
 	 * make template for #prp-spo2
-	 * 
-	 * @param variablesInList
-	 * @param returnString
+	 *
 	 */
 	@SuppressWarnings("unused")
-	public static void emitPropertyChainRule(LinkedList<BoundVariable> variablesInList, StringBuilder rule, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitPropertyChainRule(final LinkedList<BoundVariable> variablesInList, final StringBuilder rule, final HashMap<String, TemplateRule> templateRulemap) {
 		rule.append("\n(*#prp-spo2*) ");
 		/*
-		 * this rule needs list members in proper order. 
+		 * this rule needs list members in proper order.
 		 */
 		int index=0;
-		int size=variablesInList.size();
-		BoundVariable[] properties = new BoundVariable[size/2];
+		final int size=variablesInList.size();
+		final BoundVariable[] properties = new BoundVariable[size/2];
 		/*Construct Array with correct sorting through indices*/
 		for(int i=1; i<=size;i+=2){
-			index=(size)/2-Integer.parseInt(""+ variablesInList.get(i).getOriginalString().charAt(1))-1;		
+			index=(size)/2-Integer.parseInt(""+ variablesInList.get(i).getOriginalString().charAt(1))-1;
 			properties[index]=variablesInList.get(i-1);//Every second Listmember is the index
 		}
 
@@ -271,47 +270,47 @@ public class RuleEmitter {
 		for(int k=0; k<=properties.length;k++){
 			rule.append(" ?u"+k);
 		}
-		
-		rule.append(" ( \n");	
+
+		rule.append(" ( \n");
 		rule.append(/*erstes Element*/"?u0[" +/*Der Name der Liste*/properties[0].getPartOfList()+ /*letztes Element*/"->?u"+(properties.length) +"] :- And ( \n");
-		
+
 		/*The Property Chain*/
-		for(int j=0; j<properties.length;j++){		
+		for(int j=0; j<properties.length;j++){
 			rule.append("?u"+j+"["+properties[j].getOriginalString()+"->"+"?u"+(j+1)+"]\n");
 		}
 		rule.append("))");
 		InferenceRulesGenerator.rulesEmitted++;
 	}
-	
+
 	/**
 	 * make template for #cls-uni
-	 * 
+	 *
 	 * @param variablesInList
 	 * @param returnString
 	 */
 	@SuppressWarnings("unused")
-	public static void emitUnionOfRule1(LinkedList<BoundVariable> variablesInList, StringBuilder returnString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitUnionOfRule1(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 		returnString.append("\n(* #cls-uni *)");
-		String listName /*= type */ = variablesInList.get(0).getPartOfList();
-		for(BoundVariable b: variablesInList){
-			returnString.append("Forall ?y ( \n"+	
-					"?y[rdf:type->"+listName +"] :- And(\n");		
+		final String listName /*= type */ = variablesInList.get(0).getPartOfList();
+		for(final BoundVariable b: variablesInList){
+			returnString.append("Forall ?y ( \n"+
+					"?y[rdf:type->"+listName +"] :- And(\n");
 			returnString.append("?y[rdf:type->"+b.getOriginalString()+"]\n))\n");
 		}
 		InferenceRulesGenerator.rulesEmitted++;
 	}
 	/**
 	 * make template for #scm-uni
-	 * 
+	 *
 	 * @param variablesInList
 	 * @param returnString
 	 */
 
 	@SuppressWarnings("unused")
-	public static void emitUnionOfRule2(LinkedList<BoundVariable> variablesInList, StringBuilder returnString, HashMap<String, TemplateRule> templateRulemap) {
+	public static void emitUnionOfRule2(final LinkedList<BoundVariable> variablesInList, final StringBuilder returnString, final HashMap<String, TemplateRule> templateRulemap) {
 		returnString.append("\n(* #scm-uni *)");
-		String listName /*= type */ = variablesInList.get(0).getPartOfList();
-		for(BoundVariable b: variablesInList){
+		final String listName /*= type */ = variablesInList.get(0).getPartOfList();
+		for(final BoundVariable b: variablesInList){
 			returnString.append(b.getOriginalString()+"[rdf:subClassOf->"+listName +"]\n");
 		}
 		InferenceRulesGenerator.rulesEmitted++;

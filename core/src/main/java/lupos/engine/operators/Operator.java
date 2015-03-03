@@ -168,8 +168,6 @@ public class Operator extends BasicOperator {
 	 * forwards the result to the succeeding operators. It further sends debug
 	 * messages for stepwise debugging!
 	 *
-	 * @param queryResult
-	 *            the received QueryResult
 	 * @param operandID
 	 *            the operand number
 	 */

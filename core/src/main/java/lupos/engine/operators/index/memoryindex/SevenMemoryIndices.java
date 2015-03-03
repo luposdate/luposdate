@@ -103,9 +103,6 @@ public class SevenMemoryIndices extends Indices {
 	 * Constructor initializing the Maps in either in the main memory or on the
 	 * local hard disk
 	 *
-	 * @param memorybased
-	 *            indicates whether the maps should be initialized in the main
-	 *            memory (<code>true</code>) or not (<code>false</code>)
 	 */
 	public SevenMemoryIndices(final DATA_STRUCT ds) {
 		this.init(ds);
@@ -157,7 +154,6 @@ public class SevenMemoryIndices extends Indices {
 	 *
 	 * @param e
 	 *            the {@link Triple}
-	 * @return indicates if the operation was performed successfully
 	 */
 
 	@Override
@@ -236,7 +232,6 @@ public class SevenMemoryIndices extends Indices {
 	/**
 	 * Debugging method which "prints" the size of each map
 	 *
-	 * @see LuposLogger
 	 */
 	public void printMapSizes() {
 		System.err.println("subjectMap: " + this.subjectMap.size());

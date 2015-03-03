@@ -54,7 +54,7 @@ public class UnionParallelOperands extends Operator {
 
 	/**
 	 * Queries the current global queue fill limit.
-	 * 
+	 *
 	 * @return the current queue fill limit
 	 */
 	public static int getQueueLimit() {
@@ -63,8 +63,8 @@ public class UnionParallelOperands extends Operator {
 
 	/**
 	 * Sets the current global queue limit.
-	 * 
-	 * @param maximum
+	 *
+	 * @param limit
 	 *            number of elements in the queue
 	 */
 	public static void setQueueLimit(final int limit) {
@@ -110,7 +110,7 @@ public class UnionParallelOperands extends Operator {
 			@Override
 			public void run() {
 				// wait until all threads are finished!
-				if (UnionParallelOperands.this.threadsList != null)
+				if (UnionParallelOperands.this.threadsList != null) {
 					for (final Thread t : UnionParallelOperands.this.threadsList) {
 						try {
 							t.join();
@@ -120,6 +120,7 @@ public class UnionParallelOperands extends Operator {
 							// e.printStackTrace();
 						}
 					}
+				}
 				UnionParallelOperands.this.queue.endOfData();
 			}
 		};
@@ -137,14 +138,14 @@ public class UnionParallelOperands extends Operator {
 
 		/**
 		 * The result we evaluate in this thread.
-		 * 
+		 *
 		 * @see UnionParallelOperands#process
 		 */
 		private final QueryResult result;
 
 		/**
 		 * Constructs a new thread object.
-		 * 
+		 *
 		 * @see UnionParallelOperands#process
 		 */
 		ParallelOperandThread(final QueryResult queryResult) {
@@ -155,10 +156,10 @@ public class UnionParallelOperands extends Operator {
 
 		/**
 		 * Method run when this thread is started. Evaluates the bindings in the
-		 * {@link #result} and puts them on the {@link #queue}.
-		 * 
+		 * #result and puts them on the #queue.
+		 *
 		 * If it's interrupted, we don't do much cleaning up, so better not use
-		 * the {@link #queue} afterwards (there might not be an end marker, so
+		 * the #queue afterwards (there might not be an end marker, so
 		 * you might wait forever to get an element from it.
 		 */
 		@Override

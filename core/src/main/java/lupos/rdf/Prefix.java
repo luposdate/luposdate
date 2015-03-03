@@ -116,12 +116,12 @@ public class Prefix {
 	/**
 	 * Checks whether the given prefix or the given name-space exist in the
 	 * prefixList.
-	 * 
+	 *
 	 * @param prefix
 	 *            prefix to check
 	 * @param namespace
 	 *            name-space to check
-	 * 
+	 *
 	 * @return true, if prefix or name-space exist in the prefixList, false if
 	 *         both are not present
 	 */
@@ -132,15 +132,16 @@ public class Prefix {
 
 	/**
 	 * Public method to add a name-space. This method adds the given name-space.
-	 * 
-	 * @param namespace
+	 *
+	 * @param item
 	 *            name-space to add
-	 * 
+	 *
 	 * @return returns the prefix of the name-space
 	 */
 	public String add(final String item) {
-		if (item == null)
+		if (item == null) {
 			return null;
+		}
 
 		// if prefix class is active and a name space was found in the item...
 		if (this.active && Pattern.matches("<.*://.*(:|#|/).*>", item)) {
@@ -236,7 +237,7 @@ public class Prefix {
 
 	/**
 	 * This method determines whether the internal prefixList is empty or not.
-	 * 
+	 *
 	 * @return true, if internal prefixList is not empty, false if it is
 	 */
 	public boolean hasElements() {
@@ -286,9 +287,10 @@ public class Prefix {
 		namespaces.addAll(this.prefixList.keySet());
 
 		Collections.sort(namespaces, new Comparator<String>() {
+			@Override
 			public int compare(final String ns1, final String ns2) {
-				final String p1 = prefixList.get(ns1);
-				final String p2 = prefixList.get(ns2);
+				final String p1 = Prefix.this.prefixList.get(ns1);
+				final String p2 = Prefix.this.prefixList.get(ns2);
 
 				return p1.compareTo(p2);
 			}
@@ -308,6 +310,7 @@ public class Prefix {
 		this.active = status;
 	}
 
+	@Override
 	public String toString() {
 		return this.getPrefixString("", "").toString();
 	}

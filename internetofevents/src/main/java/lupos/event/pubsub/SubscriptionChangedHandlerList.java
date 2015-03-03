@@ -35,11 +35,10 @@ public class SubscriptionChangedHandlerList extends ArrayList<ISubscriptionChang
 
 	/**
 	 * Calls the {ISubscriptionChangedHandler.subscriptionChanged} method of all handlers in the list.
-	 * @param src The object from which the call was made.
-	 * @param msg 
 	 */
-	public void callAll(Subscription sub, PubSubServer server) {
-		for(ISubscriptionChangedHandler handler : this)
+	public void callAll(final Subscription sub, final PubSubServer server) {
+		for(final ISubscriptionChangedHandler handler : this) {
 			handler.subscriptionChanged(sub, server);
+		}
 	}
 }

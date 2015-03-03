@@ -39,7 +39,7 @@ import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.codemap.CodeMapLiteral;
 import lupos.datastructures.items.literal.string.StringLiteral;
 import lupos.engine.operators.singleinput.TypeErrorException;
- 
+
 import org.apache.xerces.impl.xpath.regex.Match;
 import org.apache.xerces.impl.xpath.regex.RegularExpression;
 
@@ -50,9 +50,9 @@ public class Helper {
 		if(o instanceof LazyLiteral){
 			o = ((LazyLiteral)o).getLiteral();
 		}
-		if (o instanceof Boolean)
+		if (o instanceof Boolean) {
 			return (Boolean) o;
-		else if (o instanceof TypedLiteral) {
+		} else if (o instanceof TypedLiteral) {
 			final String type = ((TypedLiteral) o).getType();
 			final String content = ((TypedLiteral) o).getContent();
 			if (type.compareTo("<http://www.w3.org/2001/XMLSchema#boolean>") == 0) {
@@ -76,19 +76,21 @@ public class Helper {
 	}
 
 	public static boolean isNumeric(final String type) {
-		if (isInteger(type))
+		if (isInteger(type)) {
 			return true;
-		else
+		} else {
 			return isFloatingPoint(type);
+		}
 	}
 
 	public static boolean isFloatingPoint(final String type) {
 		if (type.compareTo("<http://www.w3.org/2001/XMLSchema#double>") == 0
 				|| type.compareTo("<http://www.w3.org/2001/XMLSchema#float>") == 0
-				|| type.compareTo("<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
+				|| type.compareTo("<http://www.w3.org/2001/XMLSchema#decimal>") == 0) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public static boolean isInteger(final String type) {
@@ -116,8 +118,9 @@ public class Helper {
 
 	public static BigInteger getInteger(Object a)
 			throws TypeErrorException {
-		if (a instanceof BigInteger)
+		if (a instanceof BigInteger) {
 			return (BigInteger) a;
+		}
 		if(a instanceof LazyLiteral){
 			a = ((LazyLiteral)a).getLiteral();
 		}
@@ -127,22 +130,27 @@ public class Helper {
 					tl.getContent().length() - 1);
 			while(content.startsWith("+")){
 				content = content.substring(1,content.length());
-			}				
-			if (isInteger(tl.getType()))
+			}
+			if (isInteger(tl.getType())) {
 				return new BigInteger(content);
+			}
 		}
 		throw new TypeErrorException();
 	}
 
 	public static Float getFloat(Object a) throws TypeErrorException {
-		if (a instanceof Float)
+		if (a instanceof Float) {
 			return (Float) a;
-		if (a instanceof BigInteger)
+		}
+		if (a instanceof BigInteger) {
 			return ((BigInteger) a).floatValue();
-		if (a instanceof Double)
+		}
+		if (a instanceof Double) {
 			return ((Double) a).floatValue();
-		if (a instanceof BigDecimal)
+		}
+		if (a instanceof BigDecimal) {
 			return ((BigDecimal) a).floatValue();
+		}
 		if(a instanceof LazyLiteral){
 			a = ((LazyLiteral)a).getLiteral();
 		}
@@ -152,29 +160,35 @@ public class Helper {
 					tl.getContent().length() - 1);
 			while(content.startsWith("+")){
 				content = content.substring(1,content.length());
-			}				
-			if (isInteger(tl.getType()))
+			}
+			if (isInteger(tl.getType())) {
 				return (new BigInteger(content)).floatValue();
+			}
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#float>") == 0
 					|| tl.getType().compareTo(
 							"<http://www.w3.org/2001/XMLSchema#double>") == 0
 					|| tl.getType().compareTo(
-							"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
+							"<http://www.w3.org/2001/XMLSchema#decimal>") == 0) {
 				return Float.parseFloat(content);
+			}
 		}
 		throw new TypeErrorException();
 	}
 
 	public static Double getDouble(Object a) throws TypeErrorException {
-		if (a instanceof Double)
+		if (a instanceof Double) {
 			return (Double) a;
-		if (a instanceof Float)
+		}
+		if (a instanceof Float) {
 			return ((Float) a).doubleValue();
-		if (a instanceof BigInteger)
+		}
+		if (a instanceof BigInteger) {
 			return ((BigInteger) a).doubleValue();
-		if (a instanceof BigDecimal)
+		}
+		if (a instanceof BigDecimal) {
 			return ((BigDecimal) a).doubleValue();
+		}
 		if(a instanceof LazyLiteral){
 			a = ((LazyLiteral)a).getLiteral();
 		}
@@ -184,30 +198,37 @@ public class Helper {
 					tl.getContent().length() - 1);
 			while(content.startsWith("+")){
 				content = content.substring(1,content.length());
-			}				
-			if (isInteger(tl.getType()))
+			}
+			if (isInteger(tl.getType())) {
 				return (new BigInteger(content)).doubleValue();
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#float>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#float>") == 0) {
 				return (double) Float.parseFloat(content);
+			}
 			if (tl.getType().compareTo(
 					"<http://www.w3.org/2001/XMLSchema#double>") == 0
 					|| tl.getType().compareTo(
-							"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
+							"<http://www.w3.org/2001/XMLSchema#decimal>") == 0) {
 				return Double.parseDouble(content);
+			}
 		}
 		throw new TypeErrorException();
 	}
 
 	public static BigDecimal getBigDecimal(Object a) throws TypeErrorException {
-		if (a instanceof BigDecimal)
+		if (a instanceof BigDecimal) {
 			return (BigDecimal) a;
-		if (a instanceof Double)
+		}
+		if (a instanceof Double) {
 			return new BigDecimal((Double) a);
-		if (a instanceof Float)
+		}
+		if (a instanceof Float) {
 			return new BigDecimal((Float) a);
-		if (a instanceof BigInteger)
+		}
+		if (a instanceof BigInteger) {
 			return new BigDecimal((BigInteger) a);
+		}
 		if(a instanceof LazyLiteral){
 			a = ((LazyLiteral)a).getLiteral();
 		}
@@ -217,40 +238,44 @@ public class Helper {
 					tl.getContent().length() - 1);
 			while(content.startsWith("+")){
 				content = content.substring(1,content.length());
-			}				
-			if (isInteger(tl.getType()))
+			}
+			if (isInteger(tl.getType())) {
 				return new BigDecimal(new BigInteger(content));
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#float>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#float>") == 0) {
 				return new BigDecimal(Float.parseFloat(content));
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#double>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#double>") == 0) {
 				return new BigDecimal(Double.parseDouble(content));
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#decimal>") == 0) {
 				return new BigDecimal(content);
+			}
 		}
 		throw new TypeErrorException();
 	}
 
 	public static Date getDate(final String a) throws java.text.ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat();
+		final SimpleDateFormat sdf = new SimpleDateFormat();
 		try {
 			sdf.applyPattern("yyyy-MM-dd'Z'");
 			return sdf.parse(a);
-		} catch (Exception e1) {
+		} catch (final Exception e1) {
 			try {
 				sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 				return sdf.parse(a);
-			} catch (Exception e2) {
+			} catch (final Exception e2) {
 				try {
 					sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
 					return sdf.parse(a);
-				} catch (Exception e3) {
+				} catch (final Exception e3) {
 					try {
 						sdf.applyPattern("yyyy-MM-dd'Z'");
 						return sdf.parse(a);
-					} catch (Exception e4) {
+					} catch (final Exception e4) {
 						sdf.applyPattern("yyyy-MM-dd");
 						return sdf.parse(a);
 					}
@@ -260,30 +285,31 @@ public class Helper {
 	}
 
 	public static String getTz(final String a) throws java.text.ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat();
+		final SimpleDateFormat sdf = new SimpleDateFormat();
 		try {
 			sdf.applyPattern("yyyy-MM-dd'Z'");
 			sdf.parse(a);
 			return "\"Z\"";
-		} catch (Exception e1) {
+		} catch (final Exception e1) {
 			try {
 				sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 				sdf.parse(a);
 				return "\"Z\"";
-			} catch (Exception e2) {
+			} catch (final Exception e2) {
 				try {
 					sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
 					sdf.parse(a);
-					if (a.length() == 19)
+					if (a.length() == 19) {
 						return "\"\"";
-					else
+					} else {
 						return "\"" + a.substring(19) + "\"";
-				} catch (Exception e3) {
+					}
+				} catch (final Exception e3) {
 					try {
 						sdf.applyPattern("yyyy-MM-dd'Z'");
 						sdf.parse(a);
 						return "\"Z\"";
-					} catch (Exception e4) {
+					} catch (final Exception e4) {
 						sdf.applyPattern("yyyy-MM-dd");
 						sdf.parse(a);
 						return "\"\"";
@@ -297,7 +323,7 @@ public class Helper {
 			throws TypeErrorException {
 		try {
 			return getTz(getDateString(a));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore...
 		}
 		throw new TypeErrorException();
@@ -339,7 +365,7 @@ public class Helper {
 				return result;
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore...
 		}
 		throw new TypeErrorException();
@@ -350,20 +376,20 @@ public class Helper {
 		try {
 			if (isDate(a)) {
 				if (a instanceof Date) {
-					SimpleDateFormat sdf = new SimpleDateFormat();
+					final SimpleDateFormat sdf = new SimpleDateFormat();
 					sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
 					return sdf.format((Date) a);
 				} else {
 					return getContent((TypedLiteral) a);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// ignore...
 		}
 		throw new TypeErrorException();
 	}
 
-	public static String getContent(TypedLiteral a) throws TypeErrorException {
+	public static String getContent(final TypedLiteral a) throws TypeErrorException {
 		try {
 			return (a).getContent().substring(1, (a).getContent().length() - 1);
 		} catch (final Exception e) {
@@ -382,20 +408,22 @@ public class Helper {
 	public static Date getDateAndTypeCheck(final Object a)
 			throws TypeErrorException {
 		if (isDate(a)) {
-			if (a instanceof Date)
+			if (a instanceof Date) {
 				return (Date) a;
-			else
+			} else {
 				return getDate((TypedLiteral) a);
-		} else
+			}
+		} else {
 			throw new TypeErrorException();
+		}
 	}
 
 	/**
 	 * compares two values (Strings, ints, or doubles)
-	 * 
-	 * @param a
+	 *
+	 * @param aa
 	 *            : fist value to compare
-	 * @param b
+	 * @param bb
 	 *            : second value to compare
 	 * @return boolean: true if a=b, else false
 	 * @throws TypeErrorException
@@ -410,10 +438,12 @@ public class Helper {
 		} catch (final Exception e) {
 			// if failed just try out the comparisons below!
 		}
-		if (a instanceof LazyLiteral)
+		if (a instanceof LazyLiteral) {
 			a = ((LazyLiteral) a).getLiteral();
-		if (b instanceof LazyLiteral)
+		}
+		if (b instanceof LazyLiteral) {
 			b = ((LazyLiteral) b).getLiteral();
+		}
 		typeCheck(a, b);
 		if ((a instanceof String || a instanceof Character)
 				&& (b instanceof String || b instanceof Character)) {
@@ -433,7 +463,7 @@ public class Helper {
 				if(isNumeric(a) || isNumeric(b)){
 					try{
 						return compareNumeric(a, b);
-					} catch(java.lang.NumberFormatException e){
+					} catch(final java.lang.NumberFormatException e){
 						// just compare the types and the content in the following!
 					}
 				}
@@ -469,7 +499,7 @@ public class Helper {
 			return a == b;
 		}
 	}
-	
+
 	private static boolean compareNumeric(final Object a, final Object b) throws TypeErrorException {
 		final Object type = getCoercionType(a, b);
 		if (type == BigInteger.class) {
@@ -480,8 +510,9 @@ public class Helper {
 			return getDouble(a).compareTo(getDouble(b)) == 0;
 		} else if (type == BigDecimal.class) {
 			return getBigDecimal(a).compareTo(getBigDecimal(b)) == 0;
-		} else
+		} else {
 			throw new TypeErrorException();
+		}
 	}
 
 	public static void typeCheck(final Object a, final Object b)
@@ -491,40 +522,48 @@ public class Helper {
 				&& !(b instanceof BigInteger || b instanceof BigDecimal
 						|| b instanceof Float || b instanceof Double)) {
 			if (b instanceof TypedLiteral) {
-				if (!(isNumeric(((TypedLiteral) b).getType())))
+				if (!(isNumeric(((TypedLiteral) b).getType()))) {
 					throw new TypeErrorException();
-			} else
+				}
+			} else {
 				throw new TypeErrorException();
+			}
 		} else if ((b instanceof BigInteger || b instanceof BigDecimal
 				|| b instanceof Float || b instanceof Double)
 				&& !(a instanceof BigInteger || a instanceof BigDecimal
 						|| a instanceof Float || a instanceof Double)) {
 			if (a instanceof TypedLiteral) {
-				if (!(isNumeric(((TypedLiteral) a).getType())))
+				if (!(isNumeric(((TypedLiteral) a).getType()))) {
 					throw new TypeErrorException();
-			} else
+				}
+			} else {
 				throw new TypeErrorException();
+			}
 		} else if (a instanceof String && !(b instanceof String)) {
 			if (b instanceof TypedLiteral) {
 				if (((TypedLiteral) b).getType().compareTo(
-						"<http://www.w3.org/2001/XMLSchema#string>") != 0)
+						"<http://www.w3.org/2001/XMLSchema#string>") != 0) {
 					throw new TypeErrorException();
-			} else if(!(b instanceof Literal && ((Literal)b).isSimpleLiteral()))
+				}
+			} else if(!(b instanceof Literal && ((Literal)b).isSimpleLiteral())) {
 				throw new TypeErrorException();
+			}
 		} else if (b instanceof String && !(a instanceof String)) {
 			if (a instanceof TypedLiteral) {
 				if (((TypedLiteral) a).getType().compareTo(
-						"<http://www.w3.org/2001/XMLSchema#string>") != 0)
+						"<http://www.w3.org/2001/XMLSchema#string>") != 0) {
 					throw new TypeErrorException();
-			} else if (!(a instanceof Literal && ((Literal)a).isSimpleLiteral()))
+				}
+			} else if (!(a instanceof Literal && ((Literal)a).isSimpleLiteral())) {
 				throw new TypeErrorException();
+			}
 		} else if (a instanceof TypedLiteral && b instanceof TypedLiteral) {
 			final String typea = ((TypedLiteral) a).getType();
 			final String typeb = ((TypedLiteral) b).getType();
 			if (typea.compareTo(typeb) != 0) {
-				if (isNumeric(typea) && isNumeric(typeb))
+				if (isNumeric(typea) && isNumeric(typeb)) {
 					return;
-				else {
+				} else {
 					// check compatible types
 					if (!((typea
 							.compareTo("<http://www.w3.org/2001/XMLSchema#dateTime>") == 0
@@ -534,20 +573,23 @@ public class Helper {
 							.compareTo("<http://www.w3.org/2001/XMLSchema#dateTime>") == 0
 							|| typeb
 									.compareTo("<http://www.w3.org/2001/XMLSchema#time>") == 0 || typeb
-							.compareTo("<http://www.w3.org/2001/XMLSchema#date>") == 0)))
+							.compareTo("<http://www.w3.org/2001/XMLSchema#date>") == 0))) {
 						throw new TypeErrorException();
+					}
 				}
 			}
 		} else if ((a instanceof CodeMapLiteral || a instanceof StringLiteral)
 				&& b instanceof TypedLiteral) {
 			if (((TypedLiteral) b).getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#string>") != 0)
+					"<http://www.w3.org/2001/XMLSchema#string>") != 0) {
 				throw new TypeErrorException();
+			}
 		} else if ((b instanceof CodeMapLiteral || b instanceof StringLiteral)
 				&& a instanceof TypedLiteral) {
 			if (((TypedLiteral) a).getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#string>") != 0)
+					"<http://www.w3.org/2001/XMLSchema#string>") != 0) {
 				throw new TypeErrorException();
+			}
 		}
 	}
 
@@ -555,47 +597,56 @@ public class Helper {
 			throws TypeErrorException {
 		final Object typea = getType(a);
 		final Object typeb = getType(b);
-		if (typea == BigInteger.class && typeb == BigInteger.class)
+		if (typea == BigInteger.class && typeb == BigInteger.class) {
 			return BigInteger.class;
-		else if ((typea == BigDecimal.class || typea == BigInteger.class)
-				&& (typeb == BigDecimal.class || typeb == BigInteger.class))
+		} else if ((typea == BigDecimal.class || typea == BigInteger.class)
+				&& (typeb == BigDecimal.class || typeb == BigInteger.class)) {
 			return BigDecimal.class;
-		else if ((typea == Float.class || typea == BigInteger.class || typea == BigDecimal.class)
-				&& (typeb == Float.class || typeb == BigInteger.class || typeb == BigDecimal.class))
+		} else if ((typea == Float.class || typea == BigInteger.class || typea == BigDecimal.class)
+				&& (typeb == Float.class || typeb == BigInteger.class || typeb == BigDecimal.class)) {
 			return Float.class;
-		else if ((typea == Float.class || typea == Double.class
+		} else if ((typea == Float.class || typea == Double.class
 				|| typea == BigInteger.class || typea == BigDecimal.class)
 				&& (typeb == Float.class || typeb == Double.class
-						|| typeb == BigInteger.class || typeb == BigDecimal.class))
+						|| typeb == BigInteger.class || typeb == BigDecimal.class)) {
 			return Double.class;
+		}
 		throw new TypeErrorException();
 	}
 
 	public static Object getType(Object a) throws TypeErrorException {
-		if (a instanceof BigInteger)
+		if (a instanceof BigInteger) {
 			return BigInteger.class;
-		if (a instanceof Double)
+		}
+		if (a instanceof Double) {
 			return Double.class;
-		if (a instanceof Float)
+		}
+		if (a instanceof Float) {
 			return Float.class;
-		if (a instanceof BigDecimal)
+		}
+		if (a instanceof BigDecimal) {
 			return BigDecimal.class;
+		}
 		if(a instanceof LazyLiteral){
 			a = ((LazyLiteral)a).getLiteral();
 		}
 		if (a instanceof TypedLiteral) {
 			final TypedLiteral tl = (TypedLiteral) a;
-			if (isInteger(tl.getType()))
+			if (isInteger(tl.getType())) {
 				return BigInteger.class;
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#double>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#double>") == 0) {
 				return Double.class;
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#float>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#float>") == 0) {
 				return Float.class;
+			}
 			if (tl.getType().compareTo(
-					"<http://www.w3.org/2001/XMLSchema#decimal>") == 0)
+					"<http://www.w3.org/2001/XMLSchema#decimal>") == 0) {
 				return BigDecimal.class;
+			}
 		}
 		throw new TypeErrorException();
 	}
@@ -607,13 +658,15 @@ public class Helper {
 			if (a.equals(b)){
 				return false;
 			}
-		} catch(Exception e){
+		} catch(final Exception e){
 			// in case of error try below...
 		}
-		if (a instanceof LazyLiteral)
+		if (a instanceof LazyLiteral) {
 			a = ((LazyLiteral) a).getLiteral();
-		if (b instanceof LazyLiteral)
+		}
+		if (b instanceof LazyLiteral) {
 			b = ((LazyLiteral) b).getLiteral();
+		}
 		if ((a instanceof TypedLiteral) && (b instanceof TypedLiteral)) {
 			if (!(((TypedLiteral) a).getType()
 					.startsWith("<http://www.w3.org/2001/XMLSchema#"))
@@ -678,10 +731,12 @@ public class Helper {
 	public static boolean greater(final Object aa, final Object bb) throws TypeErrorException {
 		Object a = aa;
 		Object b = bb;
-		if (a instanceof LazyLiteral)
+		if (a instanceof LazyLiteral) {
 			a = ((LazyLiteral) a).getLiteral();
-		if (b instanceof LazyLiteral)
+		}
+		if (b instanceof LazyLiteral) {
 			b = ((LazyLiteral) b).getLiteral();
+		}
 		typeCheck(a, b);
 		if ((a.getClass() == b.getClass())
 				|| (a instanceof TypedLiteral && b instanceof TypedLiteral)) {
@@ -701,8 +756,9 @@ public class Helper {
 									.compareTo("<http://www.w3.org/2001/XMLSchema#time>") == 0)) {
 
 						if /* The following is questionable */
-						(typea.compareTo(typeb) != 0)
+						(typea.compareTo(typeb) != 0) {
 							throw new TypeErrorException();
+						}
 
 						final Date da = getDate((TypedLiteral) a);
 						final Date db = getDate((TypedLiteral) b);
@@ -796,21 +852,24 @@ public class Helper {
 //			else
 //				return tl.toString();
 		} else if(o instanceof LanguageTaggedLiteral){
-			LanguageTaggedLiteral ltl = (LanguageTaggedLiteral) o;
+			final LanguageTaggedLiteral ltl = (LanguageTaggedLiteral) o;
 			return ltl.getContent().substring(1, ltl.getContent().length() - 1);
 		} else if (o instanceof Literal || o instanceof String) {
 			if ((o.toString().startsWith("\"") && o.toString().endsWith("\""))
-					|| (o.toString().startsWith("'") && o.toString().endsWith("'")))
+					|| (o.toString().startsWith("'") && o.toString().endsWith("'"))) {
 				return o.toString().substring(1, o.toString().length() - 1);
-			else
+			} else {
 				return o.toString();
-		} else
+			}
+		} else {
 			return o.toString();
+		}
 	}
 
 	public static Literal getLiteral(final Object resultOfEvalTree) {
-		if (resultOfEvalTree instanceof Literal)
+		if (resultOfEvalTree instanceof Literal) {
 			return (Literal) resultOfEvalTree;
+		}
 		try {
 			if (resultOfEvalTree instanceof BigInteger
 					|| resultOfEvalTree instanceof Integer) {
@@ -852,31 +911,32 @@ public class Helper {
 	public static boolean matchXerces(final String s, final String pattern,
 			final String flags) {
 		final RegularExpression regexPattern = makePatternXerces(pattern, flags);
-		if (regexPattern == null)
+		if (regexPattern == null) {
 			return false;
-		else
+		} else {
 			return regexPattern.matches(s);
+		}
 	}
-	
+
 	public static String replaceXerces(final String content, final String pattern,
 			final String flags, final String replacement) {
 		String s = content;
 		final RegularExpression regexPattern = makePatternXerces(pattern, flags);
-		if (regexPattern == null)
+		if (regexPattern == null) {
 			return s;
-		else {
-			Match m = new Match();
+		} else {
+			final Match m = new Match();
 			if(regexPattern.matches(s,m)){
 				String result = "";
 				while(regexPattern.matches(s,m)){
-					int numberOfGroups = m.getNumberOfGroups();
+					final int numberOfGroups = m.getNumberOfGroups();
 					if(numberOfGroups>0){
 						String interReplacement = new String(replacement);
 						if(numberOfGroups>1){
 							for(int i=numberOfGroups-1; i>0; i--){ // start at the end to not have problems that $1 is replaced for a string $10 but $10 should be replaced (the same leading prefixes!)
-								int start = m.getBeginning(i);
-								int end = m.getEnd(i);								
-								String r = (start>=0 && end>=0)?s.substring(start, end):"";
+								final int start = m.getBeginning(i);
+								final int end = m.getEnd(i);
+								final String r = (start>=0 && end>=0)?s.substring(start, end):"";
 								interReplacement=interReplacement.replaceFirst("[$]"+i, r);
 							}
 						}
@@ -885,7 +945,9 @@ public class Helper {
 					}
 				}
 				return result+s;
-			} else return s;
+			} else {
+				return s;
+			}
 		}
 	}
 
@@ -913,14 +975,15 @@ public class Helper {
 		if(content instanceof LazyLiteral){
 			content = ((LazyLiteral)content).getLiteral();
 		}
-		if (content instanceof TypedLiteral)
+		if (content instanceof TypedLiteral) {
 			realContent = ((TypedLiteral) content).getContent();
-		else if (content instanceof CodeMapLiteral
-				|| content instanceof StringLiteral)
+		} else if (content instanceof CodeMapLiteral
+				|| content instanceof StringLiteral) {
 			realContent = content.toString();
-		else
+		} else {
 			// e.g. if(content instanceof Number)
 			realContent = "\"" + content.toString() + "\"";
+		}
 
 		final String realContentWithoutDoubleQuote = realContent.substring(1,
 				realContent.length() - 1);
@@ -934,60 +997,61 @@ public class Helper {
 				// == 0
 				if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#nonPositiveInteger>") == 0
-						&& bi.compareTo(new BigInteger("0")) > 0)
+						&& bi.compareTo(new BigInteger("0")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#negativeInteger>") == 0
-						&& bi.compareTo(new BigInteger("0")) >= 0)
+						&& bi.compareTo(new BigInteger("0")) >= 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#long>") == 0
 						&& bi.compareTo(new BigInteger("-9223372036854775808")) < 0
-						&& bi.compareTo(new BigInteger("9223372036854775807")) > 0)
+						&& bi.compareTo(new BigInteger("9223372036854775807")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#int>") == 0
 						&& bi.compareTo(new BigInteger("-2147483648")) < 0
-						&& bi.compareTo(new BigInteger("2147483647")) > 0)
+						&& bi.compareTo(new BigInteger("2147483647")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#short>") == 0
 						&& bi.compareTo(new BigInteger("-32768")) < 0
-						&& bi.compareTo(new BigInteger("32767")) > 0)
+						&& bi.compareTo(new BigInteger("32767")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#byte>") == 0
 						&& bi.compareTo(new BigInteger("-128")) < 0
-						&& bi.compareTo(new BigInteger("127")) > 0)
+						&& bi.compareTo(new BigInteger("127")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>") == 0
-						&& bi.compareTo(new BigInteger("0")) < 0)
+						&& bi.compareTo(new BigInteger("0")) < 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#unsignedLong>") == 0
 						&& bi.compareTo(new BigInteger("0")) < 0
-						&& bi.compareTo(new BigInteger("18446744073709551615")) > 0)
+						&& bi.compareTo(new BigInteger("18446744073709551615")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#unsignedInt>") == 0
 						&& bi.compareTo(new BigInteger("0")) < 0
-						&& bi.compareTo(new BigInteger("4294967295")) > 0)
+						&& bi.compareTo(new BigInteger("4294967295")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#unsignedShort>") == 0
 						&& bi.compareTo(new BigInteger("0")) < 0
-						&& bi.compareTo(new BigInteger("65535")) > 0)
+						&& bi.compareTo(new BigInteger("65535")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#unsignedByte>") == 0
 						&& bi.compareTo(new BigInteger("0")) < 0
-						&& bi.compareTo(new BigInteger("255")) > 0)
+						&& bi.compareTo(new BigInteger("255")) > 0) {
 					throw new TypeErrorException();
-				else if (type
+				} else if (type
 						.compareTo("<http://www.w3.org/2001/XMLSchema#positiveInteger>") == 0
-						&& bi.compareTo(new BigInteger("0")) <= 0)
+						&& bi.compareTo(new BigInteger("0")) <= 0) {
 					throw new TypeErrorException();
+				}
 			} catch (final NumberFormatException nfe) {
 				throw new TypeErrorException();
 			}
@@ -1026,8 +1090,9 @@ public class Helper {
 			if (!(realContentWithoutDoubleQuote.compareTo("true") == 0
 					|| realContentWithoutDoubleQuote.compareTo("false") == 0
 					|| realContentWithoutDoubleQuote.compareTo("0") == 0 || realContentWithoutDoubleQuote
-					.compareTo("1") == 0))
+					.compareTo("1") == 0)) {
 				throw new TypeErrorException();
+			}
 		}
 
 		// created casted TypedLiteral!
@@ -1039,112 +1104,116 @@ public class Helper {
 	}
 
 	public static boolean isDate(final Object a) {
-		if (a instanceof Date)
+		if (a instanceof Date) {
 			return true;
-		else if (a instanceof TypedLiteral) {
+		} else if (a instanceof TypedLiteral) {
 			final String type = ((TypedLiteral) a).getType();
 			if (type.compareTo("<http://www.w3.org/2001/XMLSchema#date>") == 0
 					|| type
 							.compareTo("<http://www.w3.org/2001/XMLSchema#dateTime>") == 0
 					|| type
-							.compareTo("<http://www.w3.org/2001/XMLSchema#time>") == 0)
+							.compareTo("<http://www.w3.org/2001/XMLSchema#time>") == 0) {
 				return true;
+			}
 		} else if (a instanceof String) {
 			final String type = (String) a;
 			if (type.compareTo("<http://www.w3.org/2001/XMLSchema#date>") == 0
 					|| type
 							.compareTo("<http://www.w3.org/2001/XMLSchema#dateTime>") == 0
 					|| type
-							.compareTo("<http://www.w3.org/2001/XMLSchema#time>") == 0)
+							.compareTo("<http://www.w3.org/2001/XMLSchema#time>") == 0) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	public static String trim(final String s) {
-		if (s.startsWith("'''") && s.endsWith("'''"))
+		if (s.startsWith("'''") && s.endsWith("'''")) {
 			return s.substring(3, s.length() - 3);
-		else if (s.startsWith("\"\"\"") && s.endsWith("\"\"\""))
+		} else if (s.startsWith("\"\"\"") && s.endsWith("\"\"\"")) {
 			return s.substring(3, s.length() - 3);
-		else if (s.startsWith("\"") && s.endsWith("\""))
+		} else if (s.startsWith("\"") && s.endsWith("\"")) {
 			return s.substring(1, s.length() - 1);
-		else if (s.startsWith("'") && s.endsWith("'"))
+		} else if (s.startsWith("'") && s.endsWith("'")) {
 			return s.substring(1, s.length() - 1);
-		else
+		} else {
 			return s;
+		}
 	}
 
 	public static String getOriginalValueString(final Object o) {
-		if (o instanceof Literal)
+		if (o instanceof Literal) {
 			return ((Literal) o).originalString();
-		else
+		} else {
 			return o.toString();
+		}
 	}
 
-	public static Object addNumericValues(Object leftObject, Object rightObject)
+	public static Object addNumericValues(final Object leftObject, final Object rightObject)
 			throws TypeErrorException {
-		Object type = Helper.getCoercionType(leftObject, rightObject);
+		final Object type = Helper.getCoercionType(leftObject, rightObject);
 		if (type == BigInteger.class) {
-			BigInteger left = Helper.getInteger(leftObject);
-			BigInteger right = Helper.getInteger(rightObject);
+			final BigInteger left = Helper.getInteger(leftObject);
+			final BigInteger right = Helper.getInteger(rightObject);
 			return left.add(right);
 		} else if (type == BigDecimal.class) {
-			BigDecimal left = Helper.getBigDecimal(leftObject);
-			BigDecimal right = Helper.getBigDecimal(rightObject);
+			final BigDecimal left = Helper.getBigDecimal(leftObject);
+			final BigDecimal right = Helper.getBigDecimal(rightObject);
 			return left.add(right);
 		} else if (type == Float.class) {
-			Float left = Helper.getFloat(leftObject);
-			Float right = Helper.getFloat(rightObject);
+			final Float left = Helper.getFloat(leftObject);
+			final Float right = Helper.getFloat(rightObject);
 			return left + right;
 		} else if (type == Double.class) {
-			Double left = Helper.getDouble(leftObject);
-			Double right = Helper.getDouble(rightObject);
+			final Double left = Helper.getDouble(leftObject);
+			final Double right = Helper.getDouble(rightObject);
 			return left + right;
 		}
 		throw new TypeErrorException();
 	}
 
-	public static Object subtractNumericValues(Object leftObject,
-			Object rightObject) throws TypeErrorException {
-		Object type = Helper.getCoercionType(leftObject, rightObject);
+	public static Object subtractNumericValues(final Object leftObject,
+			final Object rightObject) throws TypeErrorException {
+		final Object type = Helper.getCoercionType(leftObject, rightObject);
 		if (type == BigInteger.class) {
-			BigInteger left = Helper.getInteger(leftObject);
-			BigInteger right = Helper.getInteger(rightObject);
+			final BigInteger left = Helper.getInteger(leftObject);
+			final BigInteger right = Helper.getInteger(rightObject);
 			return left.subtract(right);
 		} else if (type == BigDecimal.class) {
-			BigDecimal left = Helper.getBigDecimal(leftObject);
-			BigDecimal right = Helper.getBigDecimal(rightObject);
+			final BigDecimal left = Helper.getBigDecimal(leftObject);
+			final BigDecimal right = Helper.getBigDecimal(rightObject);
 			return left.subtract(right);
 		} else if (type == Float.class) {
-			Float left = Helper.getFloat(leftObject);
-			Float right = Helper.getFloat(rightObject);
+			final Float left = Helper.getFloat(leftObject);
+			final Float right = Helper.getFloat(rightObject);
 			return left - right;
 		} else if (type == Double.class) {
-			Double left = Helper.getDouble(leftObject);
-			Double right = Helper.getDouble(rightObject);
+			final Double left = Helper.getDouble(leftObject);
+			final Double right = Helper.getDouble(rightObject);
 			return left - right;
 		}
 		throw new TypeErrorException();
 	}
 
-	public static Object multiplyNumericValues(Object leftObject,
-			Object rightObject) throws TypeErrorException {
-		Object type = Helper.getCoercionType(leftObject, rightObject);
+	public static Object multiplyNumericValues(final Object leftObject,
+			final Object rightObject) throws TypeErrorException {
+		final Object type = Helper.getCoercionType(leftObject, rightObject);
 		if (type == BigInteger.class) {
-			BigInteger left = Helper.getInteger(leftObject);
-			BigInteger right = Helper.getInteger(rightObject);
+			final BigInteger left = Helper.getInteger(leftObject);
+			final BigInteger right = Helper.getInteger(rightObject);
 			return left.multiply(right);
 		} else if (type == BigDecimal.class) {
-			BigDecimal left = Helper.getBigDecimal(leftObject);
-			BigDecimal right = Helper.getBigDecimal(rightObject);
+			final BigDecimal left = Helper.getBigDecimal(leftObject);
+			final BigDecimal right = Helper.getBigDecimal(rightObject);
 			return left.multiply(right);
 		} else if (type == Float.class) {
-			Float left = Helper.getFloat(leftObject);
-			Float right = Helper.getFloat(rightObject);
+			final Float left = Helper.getFloat(leftObject);
+			final Float right = Helper.getFloat(rightObject);
 			return left * right;
 		} else if (type == Double.class) {
-			Double left = Helper.getDouble(leftObject);
-			Double right = Helper.getDouble(rightObject);
+			final Double left = Helper.getDouble(leftObject);
+			final Double right = Helper.getDouble(rightObject);
 			return left * right;
 		}
 		throw new TypeErrorException();
@@ -1153,44 +1222,45 @@ public class Helper {
 	/**
 	 * Divide two Values and returns the result as an BigDecimal for BigInteger
 	 * and BigDecimal and as Float for Float and as Double for Double
-	 * 
+	 *
 	 * @param leftObject
 	 * @param rightObject
 	 * @return
 	 * @throws TypeErrorException
 	 */
-	public static Object divideNumericValues(Object leftObject,
-			Object rightObject) throws TypeErrorException {
+	public static Object divideNumericValues(final Object leftObject,
+			final Object rightObject) throws TypeErrorException {
 		try {
-			Object type = Helper.getCoercionType(leftObject, rightObject);
+			final Object type = Helper.getCoercionType(leftObject, rightObject);
 			if (type == BigInteger.class || type == BigDecimal.class) {
-				BigDecimal left = Helper.getBigDecimal(leftObject);
-				BigDecimal right = Helper.getBigDecimal(rightObject);
+				final BigDecimal left = Helper.getBigDecimal(leftObject);
+				final BigDecimal right = Helper.getBigDecimal(rightObject);
 				try{
 					return left.divide(right);
-				} catch(ArithmeticException e){
+				} catch(final ArithmeticException e){
 					return left.divide(right, 5, BigDecimal.ROUND_HALF_UP);
 				}
 			} else if (type == Float.class) {
-				Float left = Helper.getFloat(leftObject);
-				Float right = Helper.getFloat(rightObject);
+				final Float left = Helper.getFloat(leftObject);
+				final Float right = Helper.getFloat(rightObject);
 				return left / right;
 			} else if (type == Double.class) {
-				Double left = Helper.getDouble(leftObject);
-				Double right = Helper.getDouble(rightObject);
+				final Double left = Helper.getDouble(leftObject);
+				final Double right = Helper.getDouble(rightObject);
 				return left / right;
 			}
-		} catch(Exception e){
+		} catch(final Exception e){
 			// ignore...
 		}
 		throw new TypeErrorException();
 	}
 
 	public final static Object unlazy(final Object o) {
-		if (o instanceof LazyLiteral)
+		if (o instanceof LazyLiteral) {
 			return ((LazyLiteral) o).getLiteral();
-		else
+		} else {
 			return o;
+		}
 	}
 
 	public static String getSimpleString(final Object arg0)
@@ -1204,20 +1274,21 @@ public class Helper {
 		return getString(arg0);
 	}
 
-	public static String quote(String s) {
+	public static String quote(final String s) {
 		return "\"" + s + "\"";
 	}
 
-	public static boolean isNumeric(Object o) {
-		if (o instanceof Number)
+	public static boolean isNumeric(final Object o) {
+		if (o instanceof Number) {
 			return true;
+		}
 		if (o instanceof TypedLiteral) {
 			return isNumeric(((TypedLiteral) o).getType());
 		}
 		return false;
 	}
 
-	public static String unquote(String quotedString) {
+	public static String unquote(final String quotedString) {
 		if((quotedString.startsWith("\"\"\"") || quotedString.startsWith("\'\'\'")) &&
 				(quotedString.endsWith("\"\"\"") || quotedString.endsWith("\'\'\'"))){
 			return quotedString.substring(3, quotedString.length() - 3);
@@ -1225,11 +1296,11 @@ public class Helper {
 		return quotedString.substring(1, quotedString.length() - 1);
 	}
 
-	public static String getContent(Object o) throws TypeErrorException {
+	public static String getContent(final Object o) throws TypeErrorException {
 		if (o instanceof String || o instanceof StringLiteral
-				|| o instanceof CodeMapLiteral)
+				|| o instanceof CodeMapLiteral) {
 			return o.toString();
-		else if (o instanceof TypedLiteral) {
+		} else if (o instanceof TypedLiteral) {
 			return ((TypedLiteral) o).getContent();
 		} else if (o instanceof LanguageTaggedLiteral) {
 			return ((LanguageTaggedLiteral) o).getContent();
@@ -1237,13 +1308,13 @@ public class Helper {
 		throw new TypeErrorException();
 	}
 
-	public static Object createWithSameType(String content, Object literal)
+	public static Object createWithSameType(final String content, final Object literal)
 			throws TypeErrorException {
 		if (literal instanceof TypedLiteral) {
 			try {
 				return LiteralFactory.createTypedLiteral(quote(content),
 						((TypedLiteral) literal).getTypeLiteral());
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				throw new TypeErrorException();
 			}
 		} else if (literal instanceof LanguageTaggedLiteral) {
@@ -1254,16 +1325,16 @@ public class Helper {
 		}
 	}
 
-	public static String applyHashFunction(String hashFunction, String inputParameter) {
+	public static String applyHashFunction(final String hashFunction, final String inputParameter) {
 		try {
-			MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
+			final MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
 			messageDigest.reset();
 			messageDigest.update(inputParameter.getBytes());
-			byte[] result = messageDigest.digest();
-			StringBuffer hexString = new StringBuffer();
+			final byte[] result = messageDigest.digest();
+			final StringBuffer hexString = new StringBuffer();
 			hexString.append("\"");
 			for (int i = 0; i < result.length; i++) {
-	
+
 				if ((0xFF & result[i]) < 16) {
 					hexString.append("0"
 							+ Integer.toHexString(0xFF & result[i]));
@@ -1273,20 +1344,20 @@ public class Helper {
 			}
 			hexString.append("\"");
 			return hexString.toString();
-		} catch (NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			throw new Error(e.getMessage());
 		}
-	
+
 	}
-	
-	public static int getLengthOfHashFunction(String hashFunction) {
+
+	public static int getLengthOfHashFunction(final String hashFunction) {
 		try {
-			MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
+			final MessageDigest messageDigest = MessageDigest.getInstance(hashFunction);
 			messageDigest.reset();
 			return messageDigest.getDigestLength()*2;
-		} catch (NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			throw new Error(e.getMessage());
 		}
-	
+
 	}
 }

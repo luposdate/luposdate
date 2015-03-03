@@ -31,21 +31,21 @@ import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
 
 /**
- * This class can be used to serialize a {@ Triple}
+ * This class can be used to serialize a Triple
  */
 public class SerializedTriple implements Serializable {
-	
+
 	private static final long serialVersionUID = -9105841581411911228L;
-	
-	private String subjectStr, predicateStr, objectStr;
-	
-	
+
+	private final String subjectStr, predicateStr, objectStr;
+
+
 	/**
-	 * 
+	 *
 	 * @param t The triple that should be serialized.
 	 * @throws IOException
 	 */
-	public SerializedTriple(Triple t) throws IOException {
+	public SerializedTriple(final Triple t) throws IOException {
 		this.subjectStr = t.getSubject().toString();
 		this.predicateStr = t.getPredicate().toString();
 		this.objectStr = t.getObject().toString();
@@ -57,13 +57,13 @@ public class SerializedTriple implements Serializable {
 	 */
 	public Triple getTriple() {
 
-		try {			
-			Literal s = LazyLiteral.getLiteral(this.subjectStr);
-			Literal p = LazyLiteral.getLiteral(this.predicateStr);
-			Literal o = LazyLiteral.getLiteral(this.objectStr);
+		try {
+			final Literal s = LazyLiteral.getLiteral(this.subjectStr);
+			final Literal p = LazyLiteral.getLiteral(this.predicateStr);
+			final Literal o = LazyLiteral.getLiteral(this.objectStr);
 			return new Triple(s, p, o);
-		
-		} catch(Exception ex) {
+
+		} catch(final Exception ex) {
 			System.err.println(ex);
 			ex.printStackTrace();
 		}

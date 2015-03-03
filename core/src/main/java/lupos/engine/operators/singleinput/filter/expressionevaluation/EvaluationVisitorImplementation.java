@@ -758,8 +758,6 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
-	 * @param result
-	 *            the {@link Result} for the subquery
 	 */
 	public boolean processSubquery(final SimpleNode node, final Bindings bindings,
 			final Map<Node, Object> d, final Root collection,
@@ -814,8 +812,6 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @param evaluator_param
 	 *            the {@link CommonCoreQueryEvaluator} which should be used to
 	 *            process the subquery
-	 * @param result
-	 *            the {@link Result} for the subquery
 	 */
 	public boolean processSubqueryAndGetWholeResult(final SimpleNode node, final Bindings bindings,
 			final Map<Node, Object> d, final Root collection,
@@ -1047,9 +1043,6 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * Method for computing the SAMPLE-statement by returning a random value of
 	 * the given values
 	 *
-	 * @param Iterator
-	 *            <Object>
-	 * @return Object
 	 */
 	@Override
 	public Object applyAggregationSAMPLE(final Iterator<Object> values) {
@@ -1066,10 +1059,6 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * Concatenates the values of a group and inserts between the values a separator
 	 * if given
 	 *
-	 * @param Iterator
-	 *            <Object> values
-	 * @param String
-	 *            separator
 	 */
 	@Override
 	public Object applyAggregationGROUP_CONCAT(final Iterator<Object> values,

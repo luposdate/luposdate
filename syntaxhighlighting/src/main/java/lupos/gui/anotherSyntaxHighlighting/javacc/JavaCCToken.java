@@ -32,24 +32,16 @@ public abstract class JavaCCToken implements ILuposToken {
 
 	protected final int beginChar;
 	protected final int endChar;
-	
+
 	/**
 	 * Create a new token. The constructor is typically called by the parser.
-	 * 
+	 *
 	 * @param ID
 	 *            the id number of the token
 	 * @param contents
 	 *            A string representing the text of the token
-	 * @param beginColumn
-	 *            the line number of the input on which this token started
-	 * @param beginColumn
-	 *            the offset into the input in characters at which this token
-	 *            started
-	 * @param endColumn
-	 *            the offset into the input in characters at which this token
-	 *            ended
 	 */
-	public JavaCCToken(int ID, String contents, int beginChar, int endChar) {
+	public JavaCCToken(final int ID, final String contents, final int beginChar, final int endChar) {
 		this.ID = ID;
 		this.contents = new String(contents);
 		this.beginChar = beginChar;
@@ -57,14 +49,14 @@ public abstract class JavaCCToken implements ILuposToken {
 	}
 
 
-	public JavaCCToken(TYPE_ENUM description, String contents, int beginChar) {
+	public JavaCCToken(final TYPE_ENUM description, final String contents, final int beginChar) {
 		this(description.ordinal(), contents, beginChar, beginChar + contents.length());
 	}
 
 
 	/**
 	 * get a String that explains the error, if this token is an error.
-	 * 
+	 *
 	 * @return a String that explains the error, if this token is an error, null
 	 *         otherwise.
 	 */
@@ -83,7 +75,7 @@ public abstract class JavaCCToken implements ILuposToken {
 	 * get a representation of this token as a human readable string. The format
 	 * of this string is subject to change and should only be used for debugging
 	 * purposes.
-	 * 
+	 *
 	 * @return a string representation of this token
 	 */
 	@Override

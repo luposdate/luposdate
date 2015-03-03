@@ -34,8 +34,8 @@ import lupos.event.communication.SerializingMessageService;
 /**
  * Alternative base class for producers, automatically eliminating all duplicate
  * triples in a new data set (comparing to the previous one). Subclasses must
- * implement {@link #produceNoDuplicates()} instead of produce()!
- * 
+ * implement produceNoDuplicates() instead of produce()!
+ *
  */
 public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 
@@ -45,7 +45,7 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 	 */
 	private class TripleComparator implements Comparator<Triple> {
 		@Override
-		public int compare(Triple o1, Triple o2) {
+		public int compare(final Triple o1, final Triple o2) {
 			int res = o1.getPredicate().compareTo(o2.getPredicate());
 			if (res == 0) {
 				res = o1.getObject().compareTo(o2.getObject());
@@ -59,21 +59,21 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 	 */
 	private List<Integer> prevHashes = new ArrayList<Integer>();
 
-	public ProducerBaseNoDuplicates(SerializingMessageService msgService,
-			int interval) {
+	public ProducerBaseNoDuplicates(final SerializingMessageService msgService,
+			final int interval) {
 		super(msgService, interval);
 	}
 
 	/**
 	 * NOT to be overridden by subclasses anymore!
-	 * 
-	 * @see #produceNoDuplicates()
+	 *
+	 * see #produceNoDuplicates()
 	 */
 	@Override
 	public List<List<Triple>> produce() {
-		List<List<Triple>> curDataSet = produceWithDuplicates();
+		final List<List<Triple>> curDataSet = this.produceWithDuplicates();
 		if(curDataSet!=null){
-			List<List<Triple>> newDataSet = eliminateDuplicates(curDataSet);
+			final List<List<Triple>> newDataSet = this.eliminateDuplicates(curDataSet);
 			return newDataSet;
 		} else {
 			return null;
@@ -82,10 +82,10 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 
 	private List<List<Triple>> eliminateDuplicates(
 			final List<List<Triple>> curDataSet) {
-		List<List<Triple>> cleanDataSet = new ArrayList<List<Triple>>();
+		final List<List<Triple>> cleanDataSet = new ArrayList<List<Triple>>();
 
 		// compute hashes for all current events
-		List<Integer> curHashes = computeEventHashes(curDataSet);
+		final List<Integer> curHashes = this.computeEventHashes(curDataSet);
 
 		// for each event, check if it was contained in the previous data set
 		// (comparison by hash values)
@@ -106,16 +106,16 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 	/**
 	 * Compute hashes for a data set, i.e., a List of events (where an event is
 	 * a List of Triples).
-	 * 
+	 *
 	 * @param curDataSet
 	 *            Data set to compute hashes for.
 	 * @return List of hashes of all events contained in curDataSet, in the same
 	 *         order as the corresponding events occur in curDataSet.
 	 */
 	private List<Integer> computeEventHashes(final List<List<Triple>> curDataSet) {
-		List<Integer> hashes = new ArrayList<Integer>();
-		for (List<Triple> event : curDataSet) {
-			hashes.add(computeEventHash(event));
+		final List<Integer> hashes = new ArrayList<Integer>();
+		for (final List<Triple> event : curDataSet) {
+			hashes.add(this.computeEventHash(event));
 		}
 		return hashes;
 	}
@@ -125,15 +125,15 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 	 * predicate; secondary sort index: object), then concatenating all
 	 * predicate/object pairs in order into a huge string and returning its hash
 	 * code.
-	 * 
+	 *
 	 * @param event
 	 *            Event to be hashed.
 	 * @return The event's hash value.
 	 */
-	private int computeEventHash(List<Triple> event) {
+	private int computeEventHash(final List<Triple> event) {
 		Collections.sort(event, new TripleComparator());
 		String hashStr = new String();
-		for (Triple t : event) {
+		for (final Triple t : event) {
 			hashStr += t.getPredicate().toString() + " "
 					+ t.getObject().toString() + " ";
 		}
@@ -142,7 +142,7 @@ public abstract class ProducerBaseNoDuplicates extends ProducerBase {
 
 	/**
 	 * To be overridden by subclasses for event production.
-	 * 
+	 *
 	 * @return List of produced events, where an event is a List of Triples itself.
 	 */
 	public abstract List<List<Triple>> produceWithDuplicates();

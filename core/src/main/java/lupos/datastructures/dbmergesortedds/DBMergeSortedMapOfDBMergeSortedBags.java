@@ -27,49 +27,43 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 public class DBMergeSortedMapOfDBMergeSortedBags<K extends Serializable,V extends Serializable> extends DBMergeSortedMapOfCollections<K,V, DBMergeSortedBag<V>> {
-	
+
 	protected final SortConfiguration sortConfiguration;
-	
+
 	/**
-	 * Create a new DBMergeSortedMapOfDBMergeSortedBags that sorts according to the elements' natural order. Both the map's and each bag's heap will have the same height. 
-	 * @param heapHeight The height of the heap used to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
+	 * Create a new DBMergeSortedMapOfDBMergeSortedBags that sorts according to the elements' natural order. Both the map's and each bag's heap will have the same height.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfiguration, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfiguration,classOfElements);
 		this.sortConfiguration = sortConfiguration;
 	}
-	
+
 	/**
 	 * Create a new DBMergeSortedMap that sorts using the specified Comparator. Both the map's and each bag's heap will have the same height.
-	 * @param heapHeight The height of the heap used to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
 	 * @param comp The Comparator to use for sorting.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfiguration, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfiguration, comp, classOfElements);
 		this.sortConfiguration = sortConfiguration;
 	}
-	
+
 	/**
 	 * Create a new DBMergeSortedMapOfCollections that sorts according to the elements' natural order.
-	 * @param heapHeightForMap The height of the heap used by the map to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
-	 * @param heapHeightForBag The height of the heap used by each bag.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfigurationForMap, final SortConfiguration sortConfigurationForBag, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfigurationForMap,classOfElements);
 		this.sortConfiguration = sortConfigurationForBag;
 	}
-	
+
 	/**
 	 * Create a new DBMergeSortedMap that sorts using the specified Comparator.
-	 * @param heapHeightForMap The height of the heap used by the map to presort the elements in memory. (The maximum number of elements that are held in memory at any given time will be 2**heapHeight-1)
-	 * @param heap The height of the heap used by each bag.
 	 * @param comp The Comparator to use for sorting.
 	 */
 	public DBMergeSortedMapOfDBMergeSortedBags(final SortConfiguration sortConfigurationForMap, final SortConfiguration sortConfigurationForBag, final Comparator<? super K> comp, final Class<? extends MapEntry<K,V>> classOfElements) {
 		super(null, sortConfigurationForMap, comp,classOfElements);
 		this.sortConfiguration = sortConfigurationForBag;
 	}
-	
+
 	protected DBMergeSortedBag<V> createCollection(final Class<? extends V> classOfElements) {
 		return new DBMergeSortedBag<V>(this.sortConfiguration, classOfElements);
 	}

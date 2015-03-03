@@ -28,6 +28,7 @@ import java.awt.Component;
 import java.util.List;
 
 import javax.swing.JPanel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,27 +38,27 @@ import org.json.JSONObject;
  */
 public class WorkPanel {
 
-	private JPanel workPanel;
+	private final JPanel workPanel;
 	private CardLayout workPanelLayout;
 	private GeneratePanel generatePanel;
-	
+
 	/**
 	 * Constructor for creating the Panel.
 	 */
 	public WorkPanel() {
-		this.workPanel = buildMainPanel();
+		this.workPanel = this.buildMainPanel();
 	}
 
 	/**
 	 * Creates the whole {@link JPanel} including generate panel.
-	 * 
+	 *
 	 * @return the created panel
 	 */
 	private JPanel buildMainPanel() {
 		JPanel p = new JPanel();
 
 		this.generatePanel = new GeneratePanel();
-		JPanel emptyPanel = new JPanel();
+		final JPanel emptyPanel = new JPanel();
 		emptyPanel.setName("empty");
 
 		this.workPanelLayout = new CardLayout();
@@ -69,15 +70,15 @@ public class WorkPanel {
 
 		return p;
 	}
-	
+
 	/**
 	 * Sets the template to show.
-	 * 
+	 *
 	 * @param templateName
 	 *            the template to show
 	 */
-	public void showTemplate(String templateName) {
-		this.workPanelLayout.show(this.workPanel, templateName);		
+	public void showTemplate(final String templateName) {
+		this.workPanelLayout.show(this.workPanel, templateName);
 	}
 
 	/**
@@ -91,173 +92,173 @@ public class WorkPanel {
 	 */
 	public void showGeneratePanel() {
 		this.generatePanel.clear();
-		for (Component component : this.workPanel.getComponents()) {
+		for (final Component component : this.workPanel.getComponents()) {
 			if (component instanceof TemplatePanel) {
 				this.generatePanel.addTemplate(component.getName());
 			}
 		}
 		this.workPanelLayout.show(this.workPanel, "generatePanel");
 	}
-	
+
 	/**
 	 * Creates of chosen templates a config file by given path.
-	 * 
+	 *
 	 * @param path
 	 *            the path to save
-	 * @return {@link} JSONObject to save
+	 * @return JSONObject to save
 	 * @throws JSONException
 	 */
-	public JSONObject toJSON(String path) throws JSONException {
-		JSONObject saveObject = new JSONObject();
-		JSONArray templates = new JSONArray();
+	public JSONObject toJSON(final String path) throws JSONException {
+		final JSONObject saveObject = new JSONObject();
+		final JSONArray templates = new JSONArray();
 
 		TemplatePanel curTemplate;
 
-		for (Component component : this.workPanel.getComponents()) {
+		for (final Component component : this.workPanel.getComponents()) {
 			if (component instanceof TemplatePanel) {
 				curTemplate = (TemplatePanel) component;
-				templates.put(curTemplate.toJSON(path));				
+				templates.put(curTemplate.toJSON(path));
 			}
 		}
 		saveObject.put("templates", templates);
 
 		return saveObject;
 	}
-	
+
 	/**
 	 * Creates a template HTML file by given path.
-	 * 
+	 *
 	 * @param path
 	 *            the path to save the HTML file
 	 */
-	public void saveTemplateHTML(String path){		
-		for (Component component : this.workPanel.getComponents()) {
+	public void saveTemplateHTML(final String path){
+		for (final Component component : this.workPanel.getComponents()) {
 			if (component instanceof TemplatePanel) {
 				((TemplatePanel) component).writeHTML(path);
 			}
 		}
 	}
-	
+
 	/**
 	 * Loads from a given {@link JSONObject} the data for setting them into
 	 * template panel.
-	 * 
+	 *
 	 * @param loadObject
 	 *            the object to load
 	 * @throws JSONException
 	 */
-	public void fromJSON(JSONObject loadObject) throws JSONException {
+	public void fromJSON(final JSONObject loadObject) throws JSONException {
 
-		JSONArray templates = loadObject.getJSONArray("templates");
+		final JSONArray templates = loadObject.getJSONArray("templates");
 
 		for (int i = 0; i < templates.length(); i++) {
-			JSONObject template = templates.getJSONObject(i);
+			final JSONObject template = templates.getJSONObject(i);
 
-			String templateName = template.getString("name");
-			TemplatePanel newTemplatePanel = new TemplatePanel();
+			final String templateName = template.getString("name");
+			final TemplatePanel newTemplatePanel = new TemplatePanel();
 			newTemplatePanel.setName(templateName);
 			newTemplatePanel.fromJSON(template);
 			this.workPanel.add(newTemplatePanel, templateName);
 		}
 	}
-	
+
 	/**
 	 * For getting a template of the template panel.
-	 * 
+	 *
 	 * @param templateName
 	 *            the name of the template
 	 * @return the template panel component
 	 */
-	public TemplatePanel getTemplate(String templateName) {
-		for (Component component : this.workPanel.getComponents()) {
+	public TemplatePanel getTemplate(final String templateName) {
+		for (final Component component : this.workPanel.getComponents()) {
 			if (component.getName().equals(templateName)) {
 				return (TemplatePanel) component;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * For removing a template of the template panel.
-	 * 
+	 *
 	 * @param templateName
 	 *            the template to remove
 	 */
-	public void removeTemplate(String templateName) {
-		for (Component component : this.workPanel.getComponents()) {
+	public void removeTemplate(final String templateName) {
+		for (final Component component : this.workPanel.getComponents()) {
 			if (component.getName().equals(templateName)) {
 				this.workPanel.remove(component);
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds a template to the template panel.
-	 * 
+	 *
 	 * @param templateName
 	 *            the name of the template
 	 */
-	public void addTemplate(String templateName) {
-		TemplatePanel newTemplatePanel = new TemplatePanel();
+	public void addTemplate(final String templateName) {
+		final TemplatePanel newTemplatePanel = new TemplatePanel();
 		newTemplatePanel.setTemplateName(templateName);
 		newTemplatePanel.setName(templateName);
 		this.workPanel.add(newTemplatePanel, templateName);
 	}
-	
+
 	/**
 	 * For getting the selected Subscriptions and creates {@link JSONObject}
-	 * 
+	 *
 	 * @return result as JSONObject
 	 */
 	public JSONObject getSubscriptions() {
-		JSONObject result = new JSONObject();
-		JSONArray templates = new JSONArray();
+		final JSONObject result = new JSONObject();
+		final JSONArray templates = new JSONArray();
 
 		TemplatePanel tmpTemplate = null;
 		JSONObject tmpJSONTemplate = null;
 
-		List<String> subscriptionNames = this.generatePanel.getSubscriptions();
+		final List<String> subscriptionNames = this.generatePanel.getSubscriptions();
 
 		if(subscriptionNames.isEmpty()){
 			return null;
 		}
-		
-		for (String templateName : subscriptionNames) {
 
-			tmpTemplate = getTemplate(templateName);
+		for (final String templateName : subscriptionNames) {
+
+			tmpTemplate = this.getTemplate(templateName);
 			try {
 				tmpJSONTemplate = tmpTemplate.toJSON();
 				tmpJSONTemplate.put("htmlCode", tmpTemplate.getHTMLCode());
 				templates.put(tmpJSONTemplate);
-			} catch (JSONException e) {
+			} catch (final JSONException e) {
 				e.printStackTrace();
 			}
 		}
 
 		try {
 			result.put("templates", templates);
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * Clears the panel completely.
 	 */
-	public void clear() {		
+	public void clear() {
 		this.generatePanel.clear();
-		for (Component component : this.workPanel.getComponents()) {
+		for (final Component component : this.workPanel.getComponents()) {
 			if (component instanceof TemplatePanel) {
 				this.workPanel.remove(component);
 			}
 		}
 	}
-	
+
 	/**
 	 * For getting the selected HTML template.
-	 * 
+	 *
 	 * @return the selected HTML template as String
 	 */
 	public String getSelectedHTMLTemplate() {
@@ -266,16 +267,16 @@ public class WorkPanel {
 
 	/**
 	 * For getting the selected send option.
-	 * 
+	 *
 	 * @return the selected send option as String
 	 */
 	public String getSelectedSendOption(){
 		return this.generatePanel.getSelectedSendOption();
 	}
-	
+
 	/**
 	 * For getting the whole panel.
-	 * 
+	 *
 	 * @return workPanel as the panel
 	 */
 	public JPanel getPanel() {
@@ -284,7 +285,7 @@ public class WorkPanel {
 
 	/**
 	 * For getting the included generate panel.
-	 * 
+	 *
 	 * @return generatePanel used by workPanel
 	 */
 	public GeneratePanel getGeneratePanel(){

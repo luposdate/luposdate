@@ -43,31 +43,31 @@ import org.json.JSONObject;
  */
 public class HTMLOptionsPanel {
 
-	private String outPutFolder;
-	private List<String> subscriptionNames;
+	private final String outPutFolder;
+	private final List<String> subscriptionNames;
 	private final String HTML_TEMPLATES_PATH = "src/main/resources/htmlTemplates/";
 
 	/**
 	 * Constructor for creating HTML template.
-	 * 
+	 *
 	 * @param subscriptionNames
 	 *            the name of a subscription
 	 * @param outPutFolder
 	 *            the outPutFolder to save
 	 */
-	public HTMLOptionsPanel(List<String> subscriptionNames, String outPutFolder) {
+	public HTMLOptionsPanel(final List<String> subscriptionNames, final String outPutFolder) {
 		this.outPutFolder = outPutFolder;
 		this.subscriptionNames = subscriptionNames;
-		buildDialog();
+		this.buildDialog();
 	}
 
 	/**
 	 * Creates the GUI elements for creating HTML templates.
 	 */
 	private void buildDialog() {
-		JPanel p = new JPanel();
-		JComboBox cb_styles = new JComboBox();
-		JCheckBox checkb = new JCheckBox();
+		final JPanel p = new JPanel();
+		final JComboBox cb_styles = new JComboBox();
+		final JCheckBox checkb = new JCheckBox();
 
 		JSONObject jsHTMLConfig;
 		JSONObject jsHTMLTemplate;
@@ -81,7 +81,7 @@ public class HTMLOptionsPanel {
 				jsHTMLTemplate = jsHTMLTemplates.getJSONObject(j);
 				cb_styles.addItem(jsHTMLTemplate.getString("name").toString());
 			}
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
 
@@ -109,9 +109,9 @@ public class HTMLOptionsPanel {
 				JOptionPane.OK_OPTION);
 
 		if (checkb.isSelected()) {
-			generateExtraHTMLPages(cb_styles.getSelectedItem().toString());
+			this.generateExtraHTMLPages(cb_styles.getSelectedItem().toString());
 		} else {
-			File dir = new File(this.outPutFolder + "/HTML");
+			final File dir = new File(this.outPutFolder + "/HTML");
 			dir.mkdir();
 		}
 	}
@@ -119,11 +119,11 @@ public class HTMLOptionsPanel {
 	/**
 	 * Reads the files of a chosen style and creates the needed files to
 	 * outPutFolder.
-	 * 
+	 *
 	 * @param style
 	 *            the chosen style
 	 */
-	public void generateExtraHTMLPages(String style) {
+	public void generateExtraHTMLPages(final String style) {
 
 		JSONObject jsHTMLConfig;
 		JSONObject jsHTMLTemplate;
@@ -131,7 +131,7 @@ public class HTMLOptionsPanel {
 		JSONArray pages;
 		JSONArray linkPages;
 		String indexPage = "";
-		String selectedHTMLTemplate = style;
+		final String selectedHTMLTemplate = style;
 		String content = "";
 		String link = "";
 
@@ -154,7 +154,7 @@ public class HTMLOptionsPanel {
 					linkPages = jsHTMLTemplate.getJSONArray("linkPages");
 
 					for (int x = 0; x < pages.length(); x++) {
-						JSONObject page = pages.getJSONObject(x);
+						final JSONObject page = pages.getJSONObject(x);
 						content = Utils.readFile(this.HTML_TEMPLATES_PATH
 								+ selectedHTMLTemplate + "/"
 								+ page.getString("name"));
@@ -166,24 +166,22 @@ public class HTMLOptionsPanel {
 					}
 
 					for (int y = 0; y < linkPages.length(); y++) {
-						JSONObject linkPage = linkPages.getJSONObject(y);
+						final JSONObject linkPage = linkPages.getJSONObject(y);
 						link = linkPage.getString("name");
 						Utils.createHTMLFile(this.outPutFolder, link, false);
-						createLinkHTML(this.subscriptionNames, selectedHTMLTemplate, link);
+						this.createLinkHTML(this.subscriptionNames, selectedHTMLTemplate, link);
 					}
 				}
 			}
 
-		} catch (JSONException e) {
+		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * Creates a link page for the HTML template.
-	 * 
-	 * @param outPutFolder
-	 *            the outPutFolder to save
+	 *
 	 * @param pages
 	 *            the generated page name
 	 * @param selectedHTMLTemplate
@@ -191,12 +189,12 @@ public class HTMLOptionsPanel {
 	 * @param linkPage
 	 *            the name for reading the file
 	 */
-	public void createLinkHTML(List<String> pages, String selectedHTMLTemplate,
-			String linkPage) {
+	public void createLinkHTML(final List<String> pages, final String selectedHTMLTemplate,
+			final String linkPage) {
 
 		String linksCode = Utils.readFile(this.HTML_TEMPLATES_PATH + selectedHTMLTemplate + "/" + linkPage);
 		String link = "";
-		for (String page : pages) {
+		for (final String page : pages) {
 			link = "<a href=\"" + page + ".html\" " + "target=\"Home\"><b>"
 					+ page + "</b></a><br>";
 			linksCode = linksCode.replaceFirst("%-Link-%", "%-Link-%" + "\n"
