@@ -111,7 +111,7 @@ import lupos.sparql1_1.operatorgraph.helper.IndexScanCreatorInterface;
 public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 
 	/** Constant <code>applySubsumptiveDemandTransformation=true</code> */
-	public static boolean applySubsumptiveDemandTransformation = true; // whether or not the magic sets variant "subsumptive demand transformation" is applied...
+	public static boolean applySubsumptiveDemandTransformation = false; // whether or not the magic sets variant "subsumptive demand transformation" is applied...
 
 	protected final CommonCoreQueryEvaluator<Node> evaluator;
 	private CompilationUnit compilationUnit;

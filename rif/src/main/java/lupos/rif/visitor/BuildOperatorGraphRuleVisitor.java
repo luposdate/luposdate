@@ -953,8 +953,8 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 		// TODO: pr�fen ob Variable nicht anderweitig gebunden, in Validate,
 		// dann irgendwie verf�gbar machen das genau hier
 		// ein IteratorIndex notwendig ist;
-		final URILiteral name = (URILiteral) ((Constant) obj.termName)
-				.getLiteral();
+		final URILiteral name = (URILiteral) ((Constant) obj.termName).getLiteral();
+		this.checkExternal(obj);
 		if (RIFBuiltinFactory.isIterable(name)) {
 			final BasicOperator root = this.indexScanCreator.getRoot();
 			final IteratorIndexScan index = new IteratorIndexScan((root instanceof Root)? (Root) root : null, obj);
@@ -963,6 +963,19 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 			return index;
 		} else {
 			return this.buildRuleFilter(obj, arg);
+		}
+	}
+
+	private void checkExternal(final IExpression obj) throws RIFException {
+		if(obj instanceof External){
+			final External external = (External) obj;
+			final URILiteral name = (URILiteral) ((Constant) external.termName).getLiteral();
+			if(!RIFBuiltinFactory.isDefined(name)){
+				throw new RIFException("The external "+name.toString()+" does not exist!");
+			}
+			for(final IExpression ie: external.termParams){
+				this.checkExternal(ie);
+			}
 		}
 	}
 

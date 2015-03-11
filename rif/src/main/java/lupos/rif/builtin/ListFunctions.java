@@ -443,7 +443,7 @@ public class ListFunctions {
 	 * @return a {@link lupos.rif.model.RuleList} object.
 	 */
 	@Builtin(Name = "intersect")
-	public static RuleList intersect(final Argument arg) {
+	public static Object intersect(final Argument arg) {
 		if (arg.arguments.size() > 0
 				&& arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
@@ -465,6 +465,25 @@ public class ListFunctions {
 			list.getItems().clear();
 			list.getItems().addAll(newList);
 			return list;
+		}
+		if (arg.arguments.size() > 0
+				&& arg.arguments.get(0) instanceof ListLiteral) {
+			final List<Literal> newList = Lists.newArrayList();
+			for (final Item item : arg.arguments) {
+				for (final Literal literal : ((ListLiteral) item).getEntries()) {
+					boolean contained = true;
+					for (final Item item1 : arg.arguments) {
+						if (!((ListLiteral) item1).getEntries().contains(literal)) {
+							contained = false;
+							break;
+						}
+					}
+					if (contained && !newList.contains(literal)) {
+						newList.add(literal);
+					}
+				}
+			}
+			return new ListLiteral(newList);
 		}
 		return null;
 	}

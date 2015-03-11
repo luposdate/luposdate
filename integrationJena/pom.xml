@@ -36,6 +36,11 @@
 			<artifactId>arq</artifactId>
 		</dependency>
 
+	<dependency>
+		<groupId>com.github.ansell.pellet</groupId>
+		<artifactId>pellet-jena</artifactId>
+	</dependency>
+
 	</dependencies>
 
 </project>

@@ -25,6 +25,11 @@
 			<artifactId>luposdate.core</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.rif</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>junit</groupId>

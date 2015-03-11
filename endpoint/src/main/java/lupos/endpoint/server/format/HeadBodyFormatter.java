@@ -29,6 +29,7 @@ package lupos.endpoint.server.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.StringCharacterIterator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -41,11 +42,13 @@ import lupos.datastructures.items.literal.AnonymousLiteral;
 import lupos.datastructures.items.literal.LanguageTaggedLiteral;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.BooleanResult;
 import lupos.datastructures.queryresult.GraphResult;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.rif.datatypes.ListLiteral;
 public abstract class HeadBodyFormatter extends Formatter {
 
 	/**
@@ -416,6 +419,51 @@ public abstract class HeadBodyFormatter extends Formatter {
 	 */
 	public abstract void writeSimpleLiteral(final OutputStream os, Literal literal) throws IOException;
 
+	public void writeListLiteral(final OutputStream os, final Literal literal) throws IOException {
+		final String content = "\""+HeadBodyFormatter.forJSON(literal.originalString())+"\"";
+		this.writeSimpleLiteral(os, LiteralFactory.createLiteralWithoutLazyLiteral(content));
+	}
+
+	public static String forJSON(final String aText){
+	    final StringBuilder result = new StringBuilder();
+	    final StringCharacterIterator iterator = new StringCharacterIterator(aText);
+	    char character = iterator.current();
+	    while (character != StringCharacterIterator.DONE){
+	      if( character == '\"' ){
+	        result.append("\\\"");
+	      }
+	      else if(character == '\\'){
+	        result.append("\\\\");
+	      }
+	      else if(character == '/'){
+	        result.append("\\/");
+	      }
+	      else if(character == '\b'){
+	        result.append("\\b");
+	      }
+	      else if(character == '\f'){
+	        result.append("\\f");
+	      }
+	      else if(character == '\n'){
+	        result.append("\\n");
+	      }
+	      else if(character == '\r'){
+	        result.append("\\r");
+	      }
+	      else if(character == '\t'){
+	        result.append("\\t");
+	      }
+	      else {
+	        //the char is not a special one
+	        //add it to the result as is
+	        result.append(character);
+	      }
+	      character = iterator.next();
+	    }
+	    return result.toString();
+	  }
+
+
 	/**
 	 * <p>writeTypedLiteral.</p>
 	 *
@@ -562,7 +610,11 @@ public abstract class HeadBodyFormatter extends Formatter {
 					if(materializedLiteral instanceof LanguageTaggedLiteral){
 						this.writeLanguageTaggedLiteral(os, (LanguageTaggedLiteral)materializedLiteral);
 					} else {
-						this.writeSimpleLiteral(os, materializedLiteral);
+						if(materializedLiteral instanceof ListLiteral){
+							this.writeListLiteral(os, materializedLiteral);
+						} else {
+							this.writeSimpleLiteral(os, materializedLiteral);
+						}
 					}
 			}
 		}

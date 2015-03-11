@@ -46,6 +46,7 @@ import lupos.misc.util.ImmutableIterator;
 import lupos.rdf.Prefix;
 import lupos.rif.IExpression;
 import lupos.rif.RIFException;
+import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.model.Conjunction;
 import lupos.rif.model.Equality;
 import lupos.rif.model.RuleList;
@@ -168,6 +169,7 @@ public class RuleFilter extends SingleInputOperator {
 				return zNext;
 			}
 
+			@SuppressWarnings("rawtypes")
 			private Bindings computeNext() {
 				if(this.iteratorBindings!=null && this.iteratorBindings.hasNext()){
 					return this.iteratorBindings.next();
@@ -179,30 +181,60 @@ public class RuleFilter extends SingleInputOperator {
 							final Object result = RuleFilter.this.expression.evaluate(bind, null, RuleFilter.this.equalityMap);
 							if(result instanceof Tuple){
 								// deal with bindable externals!
-								@SuppressWarnings("unchecked")
-								final Tuple<Variable, RuleList> resultTuple = (Tuple<Variable, RuleList>) result;
-								this.iteratorBindings = new ImmutableIterator<Bindings>(){
+								final Object second = ((Tuple)result).getSecond();
+								if(second instanceof RuleList){
+									@SuppressWarnings("unchecked")
+									final Tuple<Variable, RuleList> resultTuple = (Tuple<Variable, RuleList>) result;
+									this.iteratorBindings = new ImmutableIterator<Bindings>(){
 
-									final Iterator<IExpression> iteratorRuleList = resultTuple.getSecond().getItems().iterator();
+										final Iterator<IExpression> iteratorRuleList = resultTuple.getSecond().getItems().iterator();
 
-									@Override
-									public boolean hasNext() {
-										return this.iteratorRuleList.hasNext();
-									}
-
-									@Override
-									public Bindings next() {
-										if(this.hasNext()){
-											final Bindings result = bind.clone();
-											result.add(resultTuple.getFirst(), (Literal) this.iteratorRuleList.next().evaluate(result));
-											number++;
-											return result;
-										} else {
-											return null;
+										@Override
+										public boolean hasNext() {
+											return this.iteratorRuleList.hasNext();
 										}
-									}
-								};
-								return this.computeNext();
+
+										@Override
+										public Bindings next() {
+											if(this.hasNext()){
+												final Bindings result = bind.clone();
+												result.add(resultTuple.getFirst(), (Literal) this.iteratorRuleList.next().evaluate(result));
+												number++;
+												return result;
+											} else {
+												return null;
+											}
+										}
+									};
+									return this.computeNext();
+								} else if(second instanceof ListLiteral){
+									@SuppressWarnings("unchecked")
+									final Tuple<Variable, ListLiteral> resultTuple = (Tuple<Variable, ListLiteral>) result;
+									this.iteratorBindings = new ImmutableIterator<Bindings>(){
+
+										final Iterator<Literal> iteratorRuleList = resultTuple.getSecond().getEntries().iterator();
+
+										@Override
+										public boolean hasNext() {
+											return this.iteratorRuleList.hasNext();
+										}
+
+										@Override
+										public Bindings next() {
+											if(this.hasNext()){
+												final Bindings result = bind.clone();
+												result.add(resultTuple.getFirst(), this.iteratorRuleList.next());
+												number++;
+												return result;
+											} else {
+												return null;
+											}
+										}
+									};
+									return this.computeNext();
+								} else {
+									System.err.println("RuleFilter: wrong type!");
+								}
 							} else {
 								final boolean booleanResult = RuleFilter.this.filter(bind, result);
 								if (booleanResult) {
@@ -214,8 +246,10 @@ public class RuleFilter extends SingleInputOperator {
 								}
 							}
 						} catch(final Exception e){
+							System.err.println(e.getMessage());
 							RuleFilter.this.onFilteredOut(bind);
 						} catch(final Error e){
+							System.err.println(e.getMessage());
 							RuleFilter.this.onFilteredOut(bind);
 						}
 					}
