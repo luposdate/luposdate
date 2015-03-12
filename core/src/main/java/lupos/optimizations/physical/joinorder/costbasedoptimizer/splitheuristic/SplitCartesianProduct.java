@@ -44,7 +44,7 @@ public class SplitCartesianProduct implements SplitHeuristic {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<List<LeafNodePlan>> split(List<LeafNodePlan> initialPlans) {
+	public List<List<LeafNodePlan>> split(final List<LeafNodePlan> initialPlans) {
 		// Are there any cartesian products, where we can split the plan?
 		return cartesianProducts(initialPlans);
 	}
@@ -81,8 +81,14 @@ public class SplitCartesianProduct implements SplitHeuristic {
 				mergedInList.add(leafNode);
 				while (intIt.hasNext()) {
 					final Tuple<List<LeafNodePlan>, Integer> toBeMergedTuple = unfold(listOrReferences, intIt.next());
-					mergedInList.addAll(toBeMergedTuple.getFirst());
-					listOrReferences.set(toBeMergedTuple.getSecond(), new ListOrReference(index));
+					if(toBeMergedTuple.getSecond()!=index){
+						for(final LeafNodePlan lnp: toBeMergedTuple.getFirst()){
+							if(!mergedInList.contains(lnp)){
+								mergedInList.add(lnp);
+							}
+						}
+						listOrReferences.set(toBeMergedTuple.getSecond(), new ListOrReference(index));
+					}
 				}
 			} else {
 				// use existing list (if there is only one list already!)
@@ -103,7 +109,7 @@ public class SplitCartesianProduct implements SplitHeuristic {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * This method is used to unfold the element at position index (with possible references to other lists)
 	 *
@@ -114,9 +120,9 @@ public class SplitCartesianProduct implements SplitHeuristic {
 	protected static Tuple<List<LeafNodePlan>, Integer> unfold(final List<ListOrReference> listOrReferences, final int index){
 		return listOrReferences.get(index).unfold(listOrReferences, index);
 	}
-	
+
 	/**
-	 * This class hold either a list of leaf node plans or a reference to another ListOrReference element (expressed by an index position) 
+	 * This class hold either a list of leaf node plans or a reference to another ListOrReference element (expressed by an index position)
 	 */
 	private static class ListOrReference {
 		/**
@@ -127,7 +133,7 @@ public class SplitCartesianProduct implements SplitHeuristic {
 		 * the index position as reference to another ListOrReference element
 		 */
 		private int index = -1;
-		
+
 		/**
 		 * Constructor to store a list of leaf nodes
 		 * @param list the list of leaf nodes
@@ -143,7 +149,7 @@ public class SplitCartesianProduct implements SplitHeuristic {
 		public ListOrReference(final int index){
 			this.index = index;
 		}
-		
+
 		/**
 		 * Is this element a list or reference?
 		 * @return true, if this element is a list, false otherwise
@@ -151,15 +157,15 @@ public class SplitCartesianProduct implements SplitHeuristic {
 		public boolean isList(){
 			return this.list!=null;
 		}
-		
+
 		/**
-		 * This method returns the list of leaf nodes 
+		 * This method returns the list of leaf nodes
 		 * @return the list of leaf nodes
 		 */
 		public List<LeafNodePlan> getList(){
 			return this.list;
 		}
-		
+
 		/**
 		 * Unfolds the list by following the references until finally a list of leaf nodes is found
 		 * @param listOrReferences the list of ListOrReference elements
