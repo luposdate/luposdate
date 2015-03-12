@@ -39,6 +39,8 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
+import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.tripleoperator.TriplePattern;
 import lupos.rdf.Prefix;
 public class BasicIndexScanOptional extends Optional {
@@ -55,13 +57,19 @@ public class BasicIndexScanOptional extends Optional {
 		this.indexScanOperator = indexScanOperator;
 		this.rdfGraph = BasicIndexScanOptional.this.indexScanOperator.getGraphConstraint();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
-	public QueryResult process(QueryResult bindings, int operandID){
+	public Message preProcessMessage(final BindingsFactoryMessage msg) {
+		return this.indexScanOperator.postProcessMessage(msg);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public QueryResult process(final QueryResult bindings, final int operandID){
 		final Iterator<Bindings> it = bindings.oneTimeIterator();
 		return QueryResult.createInstance(new ParallelIterator<Bindings>(){
-			
+
 			ParallelIterator<Bindings> localIterator = this.computeNextIterator();
 
 			@Override
@@ -88,39 +96,39 @@ public class BasicIndexScanOptional extends Optional {
 				}
 				return this.localIterator.next();
 			}
-			
+
 			public ParallelIterator<Bindings> computeNextIterator(){
 				final Bindings currentBindings = it.next();
 				if(currentBindings==null){
 					return null;
 				}
 				if(BasicIndexScanOptional.this.rdfGraph!=null && BasicIndexScanOptional.this.rdfGraph.isVariable()){
-					Literal result = currentBindings.get((Variable)BasicIndexScanOptional.this.rdfGraph);
+					final Literal result = currentBindings.get((Variable)BasicIndexScanOptional.this.rdfGraph);
 					if(result!=null){
 						BasicIndexScanOptional.this.indexScanOperator.setGraphConstraint(result);
 					} else {
 						BasicIndexScanOptional.this.indexScanOperator.setGraphConstraint(BasicIndexScanOptional.this.rdfGraph);
 					}
 				}
-				
-				Collection<TriplePattern> tps = BasicIndexScanOptional.this.indexScanOperator.getTriplePattern();
-				LinkedList<TriplePattern> tps_new = new LinkedList<TriplePattern>();
-				for(TriplePattern tp: tps){
-					Item[] items = new Item[3];
+
+				final Collection<TriplePattern> tps = BasicIndexScanOptional.this.indexScanOperator.getTriplePattern();
+				final LinkedList<TriplePattern> tps_new = new LinkedList<TriplePattern>();
+				for(final TriplePattern tp: tps){
+					final Item[] items = new Item[3];
 					for(int i=0; i<3; i++){
-						Item currentItem = tp.getPos(i);
+						final Item currentItem = tp.getPos(i);
 						if(currentItem.isVariable()){
-							Literal result = currentBindings.get((Variable)currentItem);
+							final Literal result = currentBindings.get((Variable)currentItem);
 							if(result!=null){
 								items[i] = result;
 							} else {
 								items[i] = currentItem;
 							}
 						} else {
-							items[i] = currentItem; 
+							items[i] = currentItem;
 						}
 					}
-					tps_new.add(new TriplePattern(items));					
+					tps_new.add(new TriplePattern(items));
 				}
 				BasicIndexScanOptional.this.indexScanOperator.setTriplePatterns(tps_new);
 				if(BasicIndexScanOptional.this.indexScanOperator instanceof RDF3XIndexScan){
@@ -151,7 +159,7 @@ public class BasicIndexScanOptional extends Optional {
 						@Override
 						public void close() {
 							// nothing to do...
-						}						
+						}
 					};
 				} else {
 					return new AddConstantBindingParallelIterator(currentBindings, queryResult.oneTimeIterator());
@@ -164,25 +172,25 @@ public class BasicIndexScanOptional extends Optional {
 			}
 
 			@Override
-			public void close() {				
+			public void close() {
 				if(it instanceof ParallelIterator){
 					((ParallelIterator<Bindings>)it).close();
 				}
 			}
-			
+
 			@Override
 			public void finalize(){
 				this.close();
-			}			
+			}
 		});
 	}
-	
+
 	public static class AddConstantBindingParallelIterator implements ParallelIterator<Bindings>{
 
 		protected final Bindings bindingsToAdd;
 		protected final Iterator<Bindings> originalIterator;
 		protected Bindings next = null;
-		
+
 		public AddConstantBindingParallelIterator(final Bindings bindingsToAdd, final Iterator<Bindings> originalIterator){
 			this.bindingsToAdd = bindingsToAdd;
 			this.originalIterator = originalIterator;
@@ -190,23 +198,24 @@ public class BasicIndexScanOptional extends Optional {
 
 		@Override
 		public boolean hasNext() {
-			if(this.next!=null)
+			if(this.next!=null) {
 				return true;
-			this.next = computeNext();
+			}
+			this.next = this.computeNext();
 			return (this.next!=null);
 		}
 
 		@Override
 		public Bindings next() {
 			if(this.next!=null){
-				Bindings znext = this.next;
+				final Bindings znext = this.next;
 				this.next = null;
 				return znext;
 			} else {
-				return computeNext();			
+				return this.computeNext();
 			}
 		}
-		
+
 		public Bindings computeNext(){
 			Bindings inter;
 			boolean flag;
@@ -217,11 +226,11 @@ public class BasicIndexScanOptional extends Optional {
 				} else {
 					return null;
 				}
-				for(Variable v: this.bindingsToAdd.getVariableSet()){
-					Literal literal = inter.get(v);
+				for(final Variable v: this.bindingsToAdd.getVariableSet()){
+					final Literal literal = inter.get(v);
 					if(literal!=null){
 						flag = (literal.compareToNotNecessarilySPARQLSpecificationConform(this.bindingsToAdd.get(v))!=0);
-					} 
+					}
 					inter.add(v, this.bindingsToAdd.get(v));
 				}
 				inter.addAllTriples(this.bindingsToAdd.getTriples());
@@ -245,18 +254,18 @@ public class BasicIndexScanOptional extends Optional {
 			this.close();
 		}
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return super.toString() + " on " +this.indexScanOperator.getTriplePattern();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
-	public String toString(Prefix prefixInstance){
+	public String toString(final Prefix prefixInstance){
 		String result = "";
-		for(TriplePattern tp: this.indexScanOperator.getTriplePattern()){
+		for(final TriplePattern tp: this.indexScanOperator.getTriplePattern()){
 			if(result.length()>0){
 				result+=", ";
 			}

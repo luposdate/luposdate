@@ -210,7 +210,7 @@
 			<dependency>
       			<groupId>xerces</groupId>
       			<artifactId>xercesImpl</artifactId>
-      			<version>2.6.0</version> <!-- use this version as Jena requires it! -->
+      			<version>2.11.0</version> <!-- use this version as Jena requires it! -->
     		</dependency>
 
 			<dependency>
