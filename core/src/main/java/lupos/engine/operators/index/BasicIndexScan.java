@@ -409,6 +409,11 @@ public abstract class BasicIndexScan extends RootChild {
 	 */
 	public void setTriplePatterns(final Collection<TriplePattern> triplePatterns) {
 		this.triplePatterns = triplePatterns;
+		if(this.bindingsFactory!=null) {
+			for(final TriplePattern triplePattern: this.triplePatterns){
+				triplePattern.setBindingsFactory(this.bindingsFactory);
+			}
+		}
 		this.recomputeVariables();
 	}
 

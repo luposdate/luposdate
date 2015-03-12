@@ -61,7 +61,7 @@ public class BasicIndexScanOptional extends Optional {
 	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg) {
-		return this.indexScanOperator.postProcessMessage(msg);
+		return this.indexScanOperator.preProcessMessage(msg);
 	}
 
 	/** {@inheritDoc} */
