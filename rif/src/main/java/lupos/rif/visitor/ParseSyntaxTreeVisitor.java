@@ -31,7 +31,6 @@ import java.util.Map;
 
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
-import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.rif.IExpression;
 import lupos.rif.IRuleNode;
@@ -112,6 +111,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final CompilationUnit n, final IRuleNode argu) {
 		final Document resultDoc = (Document) n.f0.accept(this, null);
 		return resultDoc;
@@ -124,6 +124,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFDocument n, final IRuleNode argu) {
 		final Document doc = new Document();
 		doc.setParent(argu);
@@ -131,33 +132,39 @@ public class ParseSyntaxTreeVisitor implements
 		final Constant baseNS = (Constant) n.f2.accept(this, doc);
 		doc.setBaseNamespace(baseNS != null ? ((URILiteral) baseNS.getLiteral())
 				.getString() : null);
-		baseNamespace = doc.getBaseNamespace();
+		this.baseNamespace = doc.getBaseNamespace();
 
 		for (final INode node : (List<INode>) n.f3.accept(this, doc)) {
 			final String[] prefix = (String[]) node.accept(this, doc);
 			doc.getPrefixMap().put(prefix[0], prefix[1]);
 		}
 		// standardprefixe
-		if (!doc.getPrefixMap().containsKey("rif"))
+		if (!doc.getPrefixMap().containsKey("rif")) {
 			doc.getPrefixMap().put("rif", "http://www.w3.org/2007/rif#");
-		if (!doc.getPrefixMap().containsKey("xs"))
+		}
+		if (!doc.getPrefixMap().containsKey("xs")) {
 			doc.getPrefixMap().put("xs", "http://www.w3.org/2001/XMLSchema#");
-		if (!doc.getPrefixMap().containsKey("rdfs"))
+		}
+		if (!doc.getPrefixMap().containsKey("rdfs")) {
 			doc.getPrefixMap().put("rdfs",
 					"http://www.w3.org/2000/01/rdf-schema#");
-		if (!doc.getPrefixMap().containsKey("rdf"))
+		}
+		if (!doc.getPrefixMap().containsKey("rdf")) {
 			doc.getPrefixMap().put("rdf",
 					"http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		prefixMap = new HashMap<String, String>(doc.getPrefixMap());
+		}
+		this.prefixMap = new HashMap<String, String>(doc.getPrefixMap());
 		doc.setConclusion((IExpression) n.f5.accept(this, doc));
 		final List<Rule> ruleList = (List<Rule>) n.f6.accept(this, doc);
 		if (ruleList != null) {
-			for (final Rule rule : ruleList)
+			for (final Rule rule : ruleList) {
 				if (!rule.isImplication()
-						&& rule.getDeclaredVariables().isEmpty())
+						&& rule.getDeclaredVariables().isEmpty()) {
 					doc.getFacts().add(rule.getHead());
-				else
+				} else {
 					doc.getRules().add(rule);
+				}
+			}
 		}
 		return doc;
 	}
@@ -169,6 +176,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFBase n, final IRuleNode argu) {
 		return n.f2.accept(this, argu);
 	}
@@ -180,6 +188,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFPrefix n, final IRuleNode argu) {
 		return new String[] {
 				(String) n.f2.accept(this, argu),
@@ -194,16 +203,19 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFGroup n, final IRuleNode argu) {
 		final List<Rule> ruleList = new ArrayList<Rule>();
-		if (n.f2.present())
+		if (n.f2.present()) {
 			for (final INode node : n.f2.nodes) {
 				final Object sub = node.accept(this, argu);
-				if (sub instanceof Rule)
+				if (sub instanceof Rule) {
 					ruleList.add((Rule) sub);
-				else
+				} else {
 					ruleList.addAll((List<Rule>) sub);
+				}
 			}
+		}
 		return ruleList;
 	}
 
@@ -214,6 +226,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFRule n, final IRuleNode argu) {
 		final Rule rule = new Rule();
 		rule.setParent(argu);
@@ -221,11 +234,13 @@ public class ParseSyntaxTreeVisitor implements
 		// Wenn Variablen vorhanden
 		if (n.f0.which == 0) {
 			final List<INode> seq = (List<INode>) n.f0.choice.accept(this, rule);
-			for (final INode node : ((List<INode>) seq.get(1).accept(this, rule)))
+			for (final INode node : ((List<INode>) seq.get(1).accept(this, rule))) {
 				rule.addVariable((RuleVariable) node.accept(this, rule));
+			}
 			clause = (RIFClause) seq.get(3);
-		} else
+		} else {
 			clause = (RIFClause) n.f0.choice;
+		}
 		clause.accept(this, rule);
 		return rule;
 	}
@@ -237,27 +252,30 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFClause n, final IRuleNode argu) {
 		final Rule parent = (Rule) argu;
 		// nur eine Aussage
-		if (n.f0.which == 0)
+		if (n.f0.which == 0) {
 			parent.setHead((IExpression) n.f0.choice.accept(this, argu));
-		else {
-			// And-verknuepfte Aussagen		
+		} else {
+			// And-verknuepfte Aussagen
 			final Conjunction conj = new Conjunction();
 			conj.setParent(parent);
-			for (final INode node : (List<INode>) ((List<INode>) n.f0.choice.accept(this, argu)).get(2).accept(this, argu))
+			for (final INode node : (List<INode>) ((List<INode>) n.f0.choice.accept(this, argu)).get(2).accept(this, argu)) {
 				conj.addExpr((IExpression) node.accept(this, argu));
-			if (!conj.isEmpty())
+			}
+			if (!conj.isEmpty()) {
 				parent.setHead(conj);
+			}
 		}
 		if (n.f1.present()){
-			List<INode> bodyList = (List<INode>) n.f1.node.accept(this, argu);
+			final List<INode> bodyList = (List<INode>) n.f1.node.accept(this, argu);
 			parent.setBody((IExpression) bodyList.get(1).accept(this, argu));
 			for (final INode node : (List<INode>)(bodyList.get(2).accept(this, argu))){
 				parent.addNot((IExpression)(((NodeSequence) node).nodes.get(1).accept(this, argu)));
 			}
-		}		
+		}
 		return parent;
 	}
 
@@ -268,6 +286,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFTerm n, final IRuleNode argu) {
 		return n.f0.choice.accept(this, argu);
 	}
@@ -279,6 +298,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFFormula n, final IRuleNode argu) {
 		switch (n.f0.which) {
 		case 0:
@@ -287,16 +307,18 @@ public class ParseSyntaxTreeVisitor implements
 			final Conjunction conj = new Conjunction();
 			conj.setParent(argu);
 			for (final INode node : (List<INode>) andFormulas
-					.accept(this, conj))
+					.accept(this, conj)) {
 				conj.addExpr((IExpression) node.accept(this, conj));
+			}
 			return conj;
 		case 1:
 			final NodeListOptional orFormulas = (NodeListOptional) ((List<INode>) n.f0.choice
 					.accept(this, argu)).get(2);
 			final Disjunction disj = new Disjunction();
 			disj.setParent(argu);
-			for (final INode node : (List<INode>) orFormulas.accept(this, disj))
+			for (final INode node : (List<INode>) orFormulas.accept(this, disj)) {
 				disj.addExpr((IExpression) node.accept(this, disj));
+			}
 			return disj;
 		case 2:
 			final List<INode> existINodes = (List<INode>) n.f0.choice.accept(
@@ -304,8 +326,9 @@ public class ParseSyntaxTreeVisitor implements
 			final ExistExpression exists = new ExistExpression();
 			exists.setParent(argu);
 			for (final INode node : (List<INode>) existINodes.get(1).accept(
-					this, exists))
+					this, exists)) {
 				exists.addVariable((RuleVariable) node.accept(this, exists));
+			}
 			exists.expr = (IExpression) existINodes.get(3).accept(this, exists);
 			return exists;
 		case 3:
@@ -322,17 +345,18 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFAtomic n, final IRuleNode argu) {
 		if (n.f1.present()){
-			if(((NodeChoice)n.f1.node).which == 1){			
+			if(((NodeChoice)n.f1.node).which == 1){
 				return ((NodeChoice)n.f1.node).choice.accept(this, argu);
 			}
 		}
 
-		
-		if (n.f1.node==null)
+
+		if (n.f1.node==null) {
 			return n.f0.accept(this, argu);
-		else {
+		} else {
 			final List<INode> seq = ((List<INode>)((NodeChoice) n.f1.node).choice.accept(this, argu));
 			final String operator = (String) seq.get(0).accept(this, null);
 			if (operator.equals("#") || operator.equals("##")) {
@@ -343,18 +367,18 @@ public class ParseSyntaxTreeVisitor implements
 				term.termParams.add(leftTerm);
 				term.termParams.add(rightTerm);
 				try {
-					if (operator.equals("#"))
+					if (operator.equals("#")) {
 						term.termName = new Constant(
 								LiteralFactory
 										.createURILiteralWithoutLazyLiteral("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
 								term);
-					else
-
+					} else {
 						term.termName = new Constant(
 								LiteralFactory
 										.createURILiteralWithoutLazyLiteral("<http://www.w3.org/2000/01/rdf-schema#subClassOf>"),
 								term);
-				} catch (URISyntaxException e) {
+					}
+				} catch (final URISyntaxException e) {
 					throw new RIFException(e.getMessage());
 				}
 				return term;
@@ -374,18 +398,20 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFUniterm n, final IRuleNode argu) {
 		final Uniterm term = new RulePredicate(false);
 		term.setParent(argu);
 		term.termName = (IExpression) n.f0.accept(this, term);
 		for (final INode node : (List<INode>) n.f2.accept(this, term)) {
 			final NodeChoice choice = (NodeChoice) node;
-			if (choice.which == 1)
+			if (choice.which == 1) {
 				term.termParams.add((IExpression) choice.choice.accept(this,
 						term));
-			else
+			} else {
 				term.termParams.add((IExpression) ((List<INode>) choice.choice
 						.accept(this, term)).get(2).accept(this, term));
+			}
 		}
 		return term;
 	}
@@ -397,6 +423,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFFrame n, final IRuleNode argu) {
 		final List<INode> args = (List<INode>) n.f1.accept(this, argu);
 		final AbstractExpressionContainer and = new Conjunction();
@@ -408,10 +435,11 @@ public class ParseSyntaxTreeVisitor implements
 			term.termParams.add((IExpression) ((RIFAtomic)n.getParent().getParent().getParent()).f0.accept(this, term));
 			term.termParams
 					.add((IExpression) nodeSeq.get(2).accept(this, term));
-			if (args.size() == 1)
+			if (args.size() == 1) {
 				return term;
-			else
+			} else {
 				and.addExpr(term);
+			}
 		}
 		return and;
 	}
@@ -423,7 +451,8 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
-	public Object visit(RIFConclusion n, IRuleNode argu) {
+	@Override
+	public Object visit(final RIFConclusion n, final IRuleNode argu) {
 		return n.f2.accept(this, argu);
 	}
 
@@ -434,6 +463,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFExternal n, final IRuleNode argu) {
 		final Uniterm term = (Uniterm) n.f2.accept(this, argu);
 		final External external = new External(term);
@@ -448,6 +478,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFVar n, final IRuleNode argu) {
 		final RuleVariable var = new RuleVariable((String) n.f1.accept(this,
 				argu));
@@ -462,6 +493,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFImport n, final IRuleNode argu) {
 		throw new RIFException("IMPORT not supported!");
 	}
@@ -473,14 +505,16 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFList n, final IRuleNode argu) {
 		final RuleList result = new RuleList();
 		result.setParent(argu);
 		if (n.f2.which == 1) {
-			List<INode> nodes = (List<INode>) n.f2.choice.accept(this, result);
-			List<INode> terms = (List<INode>) nodes.get(0).accept(this, result);
-			for (INode term : terms)
+			final List<INode> nodes = (List<INode>) n.f2.choice.accept(this, result);
+			final List<INode> terms = (List<INode>) nodes.get(0).accept(this, result);
+			for (final INode term : terms) {
 				result.addItem((IExpression) term.accept(this, result));
+			}
 			// Tail anh�ngen
 			if (((NodeOptional) nodes.get(1)).present()) {
 				result.isOpen = true;
@@ -498,6 +532,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFRDFLiteral n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
@@ -509,6 +544,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFTypedLiteral n, final IRuleNode argu) {
 		final Literal content = ((Constant) n.f0.accept(this, argu))
 				.getLiteral();
@@ -530,12 +566,13 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFLiteralWithLangTag n, final IRuleNode argu) {
-		final TypedLiteral content = (TypedLiteral) ((Constant) n.f0.accept(
+		final Literal content = ((Constant) n.f0.accept(
 				this, argu)).getLiteral();
 		final String langTag = (String) n.f1.accept(this, argu);
 		final Literal literal = LiteralFactory.createLanguageTaggedLiteralWithoutLazyLiteral(
-				content.getContent(), langTag);
+				content.originalString(), langTag);
 		return new Constant(literal, argu);
 	}
 
@@ -546,6 +583,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFNumericLiteral n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
@@ -557,6 +595,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFString n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 //		Literal literal = null;
@@ -566,7 +605,7 @@ public class ParseSyntaxTreeVisitor implements
 //		} catch (final URISyntaxException e) {
 //			throw new RIFException(e.getMessage());
 //		}
-		Literal literal = LiteralFactory.createLiteral(content);
+		final Literal literal = LiteralFactory.createLiteral(content);
 		return new Constant(literal, argu);
 	}
 
@@ -577,6 +616,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFVarOrURI n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
@@ -588,6 +628,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFURI n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
@@ -599,26 +640,29 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFQName n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal = null;
 		final String[] parts = content.split(":");
 		if (parts[0].equals("")) {
-			if (baseNamespace == null)
+			if (this.baseNamespace == null) {
 				throw new RIFException("Literal " + content
 						+ " requires Declaration of BASE!");
+			}
 			try {
-				literal = LiteralFactory.createURILiteralWithoutLazyLiteral("<" + baseNamespace
+				literal = LiteralFactory.createURILiteralWithoutLazyLiteral("<" + this.baseNamespace
 						+ parts[1] + ">");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
 			}
 		} else {
-			if (!prefixMap.containsKey(parts[0]))
+			if (!this.prefixMap.containsKey(parts[0])) {
 				throw new RIFException("Undeclared Prefix " + parts[0]);
+			}
 			try {
 				literal = LiteralFactory.createURILiteralWithoutLazyLiteral("<"
-						+ prefixMap.get(parts[0]) + parts[1] + ">");
+						+ this.prefixMap.get(parts[0]) + parts[1] + ">");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
 			}
@@ -633,6 +677,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFInteger n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal;
@@ -652,23 +697,25 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFFloatingPoint n, final IRuleNode argu) {
 		final String content = (String) n.f0.accept(this, argu);
 		Literal literal = null;
-		if (content.contains("e") || content.contains("E"))
+		if (content.contains("e") || content.contains("E")) {
 			try {
 				literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral("\"" + content
 						+ "\"", "<http://www.w3.org/2001/XMLSchema#double>");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
 			}
-		else
+		} else {
 			try {
 				literal = LiteralFactory.createTypedLiteralWithoutLazyLiteral("\"" + content
 						+ "\"", "<http://www.w3.org/2001/XMLSchema#decimal>");
 			} catch (final URISyntaxException e) {
 				throw new RIFException(e.toString());
 			}
+		}
 		return new Constant(literal, argu);
 	}
 
@@ -679,6 +726,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFNCName n, final IRuleNode argu) {
 		return n.f0.accept(this, argu);
 	}
@@ -690,6 +738,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final RIFQuotedURIref n, final IRuleNode argu) {
 		final String uriRef = (String) n.f0.accept(this, argu);
 		Literal literal;
@@ -710,6 +759,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final NodeList n, final IRuleNode argu) {
 		return n.nodes;
 	}
@@ -721,6 +771,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final NodeListOptional n, final IRuleNode argu) {
 		return n.present() ? n.nodes : new ArrayList<INode>();
 	}
@@ -732,6 +783,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final NodeOptional n, final IRuleNode argu) {
 		return n.present() ? n.node.accept(this, argu) : null;
 	}
@@ -743,6 +795,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final NodeSequence n, final IRuleNode argu) {
 		return n.nodes;
 	}
@@ -754,6 +807,7 @@ public class ParseSyntaxTreeVisitor implements
 	 * @param argu a {@link lupos.rif.IRuleNode} object.
 	 * @return a {@link java.lang.Object} object.
 	 */
+	@Override
 	public Object visit(final NodeToken n, final IRuleNode argu) {
 		return n.tokenImage;
 	}

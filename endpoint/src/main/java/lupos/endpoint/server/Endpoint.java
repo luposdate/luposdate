@@ -80,6 +80,11 @@ public class Endpoint {
 
 	private static HTMLForm htmlForm = new StandardHTMLForm();
 
+	/**
+	 * The http server
+	 */
+	public static HttpServer server = null;
+
 	/** Constant <code>defaultBindingsClass</code> */
 	public static Class<? extends Bindings> defaultBindingsClass = Bindings.instanceClass;
 
@@ -263,13 +268,27 @@ public class Endpoint {
 	}
 
 	/**
+	 * Registers a handler which stops the server for any GET/POST to the url /stop.
+	 * Be careful! Misuse is easy!
+	 * @param delay the delay (in seconds) the handler gets time to finish their work, if they take longer, their thread is stopped
+	 */
+	public static void registerStopContext(final int delay){
+		Endpoint.registerHandler("/stop", new HttpHandler(){
+			@Override
+			public void handle(final HttpExchange arg0) throws IOException {
+				server.stop(delay);
+			}
+		});
+	}
+
+	/**
 	 * <p>startServer.</p>
 	 *
 	 * @param port a int.
 	 */
 	public static void startServer(final int port){
 		try {
-			final HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+			Endpoint.server = HttpServer.create(new InetSocketAddress(port), 0);
 
 			for(final Entry<String, HttpHandler> entry: Endpoint.registeredhandler.entrySet()){
 				server.createContext(entry.getKey(), entry.getValue());
@@ -280,6 +299,16 @@ public class Endpoint {
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * To stop the server
+	 * @param delay the delay the server waits for currently busy handler to finish their work. After the delay, the handlers are stopped by stopping their thread...
+	 */
+	public static void stopServer(final int delay){
+		if(Endpoint.server!=null){
+			Endpoint.server.stop(delay);
 		}
 	}
 

@@ -42,6 +42,11 @@
 			
 			<dependency>
 				<groupId>de.uniluebeck.ifis</groupId>
+				<artifactId>luposdate.extendedendpoint</artifactId>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.uniluebeck.ifis</groupId>
 				<artifactId>luposdate.distributed</artifactId>
 			</dependency>
 			
