@@ -35,27 +35,42 @@ public class ExtendedEndpoint {
 		// register the standard luposdate sparql evaluators...
 		EvaluationHelper.registerEvaluators();
 
-		final File f = new File(INDEX_DIR);
-		if (args.length > 0 && args[0].equalsIgnoreCase("--rebuild-index")) {
-			LOGGER.info("Rebuild index requested.");
-			FastRDF3XIndexConstruction.main(new String[] { INDEX_FILE, "N3",
-					"UTF-8", "NONE", INDEX_DIR, "500000" });
-		} else if (!f.exists() || !f.isDirectory()) {
-			LOGGER.info("No index found, so it will be created.");
-			FastRDF3XIndexConstruction.main(new String[] { INDEX_FILE, "N3",
-					"UTF-8", "NONE", INDEX_DIR, "500000" });
-		} else {
-			LOGGER.info("Using index directory: {}", INDEX_DIR);
+		final int port = Endpoint.init(new String[] { INDEX_DIR });
+
+		boolean startW3CEndpoint = false;
+		boolean rebuildIndex = false;
+
+		for(final String par: args){
+			if(par.equalsIgnoreCase("--startW3CEndpoint")){
+				startW3CEndpoint = true;
+			} else if(par.equalsIgnoreCase("--rebuild-index")){
+				rebuildIndex = true;
+			}
 		}
 
-		final int port = Endpoint.init(new String[] { INDEX_DIR });
-		Endpoint.registerStandardFormattersAndContexts(INDEX_DIR);
-		ExtendedEndpoint.registerNonStandardContexts(INDEX_DIR);
+		if(startW3CEndpoint){
+			final File f = new File(INDEX_DIR);
+			if (rebuildIndex) {
+				LOGGER.info("Rebuild index requested.");
+				FastRDF3XIndexConstruction.main(new String[] { INDEX_FILE, "N3",
+						"UTF-8", "NONE", INDEX_DIR, "500000" });
+			} else if (!f.exists() || !f.isDirectory()) {
+				LOGGER.info("No index found, so it will be created.");
+				FastRDF3XIndexConstruction.main(new String[] { INDEX_FILE, "N3",
+						"UTF-8", "NONE", INDEX_DIR, "500000" });
+			} else {
+				LOGGER.info("Using index directory: {}", INDEX_DIR);
+			}
+			Endpoint.registerStandardContexts(INDEX_DIR);
+		}
+
+		Endpoint.registerStandardFormatter();
+		ExtendedEndpoint.registerNonStandardContexts();
 		Endpoint.registerStopContext(ExtendedEndpoint.delayForStoppingInSeconds);
 		Endpoint.initAndStartServer(port);
 	}
 
-	public static void registerNonStandardContexts(final String indexDir) {
+	public static void registerNonStandardContexts() {
 		Endpoint.registerHandler("/nonstandard/sparql",
 				new TimeOutHandler(new ExtendedQueryHandler(false)));
 		Endpoint.registerHandler("/nonstandard/sparql/info",
