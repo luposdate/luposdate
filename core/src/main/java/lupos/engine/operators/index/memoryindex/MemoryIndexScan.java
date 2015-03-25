@@ -418,7 +418,9 @@ public class MemoryIndexScan extends BasicIndexScan {
 
 		// otherwise if it is a literal which is no blank node
 		// use the literal for the key used later on to query the map
-		else if (!((Literal) item).isBlank()) {
+		// the description above is outdated: With CoreSPARQL we do not have any blank nodes in the query any more!
+//		else if (!((Literal) item).isBlank()) {
+		else {
 			key.append(((Literal) item).toString());
 			return true;
 		}

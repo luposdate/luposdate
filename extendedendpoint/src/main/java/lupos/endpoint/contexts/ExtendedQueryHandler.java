@@ -74,8 +74,8 @@ public class ExtendedQueryHandler implements InterruptableHttpHandler {
 			ExecutionParameters parameters = null;
 			try {
 				final String requestBody = IOUtils.toString(t.getRequestBody());
-				parameters = ExecutionParameters
-						.getParametersFromJson(requestBody);
+				LOGGER.info("Handling requestBody {}", requestBody);
+				parameters = ExecutionParameters.getParametersFromJson(requestBody);
 			} catch (final RuntimeException e) {
 				LOGGER.info("Bad request: {}", e.getMessage());
 				if (e.getCause() != null) {
