@@ -20,8 +20,6 @@ public class ExtendedEndpoint {
 	private final static String INDEX_DIR = "luposdate-index";
 	private final static String INDEX_FILE = "src/main/resources/sp2b.n3";
 
-	private static final int delayForStoppingInSeconds = 30; // the time the server gets for stopping to finish its work
-
 	public static void main(final String[] args) throws Exception {
 
 		// init the SPARQL evaluators, the luposdate endpoint could be extended
@@ -66,8 +64,9 @@ public class ExtendedEndpoint {
 
 		Endpoint.registerStandardFormatter();
 		ExtendedEndpoint.registerNonStandardContexts();
-		Endpoint.registerStopContext(ExtendedEndpoint.delayForStoppingInSeconds);
+		// Endpoint.registerStopContext(ExtendedEndpoint.delayForStoppingInSeconds);
 		Endpoint.initAndStartServer(port);
+		Endpoint.listenForStopSignal();
 	}
 
 	public static void registerNonStandardContexts() {

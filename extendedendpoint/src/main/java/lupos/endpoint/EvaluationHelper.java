@@ -104,15 +104,15 @@ public class EvaluationHelper {
 		EvaluationHelper.registerEvaluator("Jena", JenaQueryEvaluator.class);
 		EvaluationHelper.registerEvaluator("Sesame", SesameQueryEvaluator.class);
 	}
-	
+
 	/**
 	 * Returns the index (needed for evaluation methods) of a registered evaluator specified by name
 	 * @param evaluator name of the evaluator
 	 * @return index if it's registered
 	 * @throws Runtime Exception if specified evaluator is not registered
 	 */
-	public static int getEvaluatorIndexByName(String evaluator) {
-		for (lupos.misc.Tuple<String, Class<? extends QueryEvaluator<Node>>> registeredEvaluator : registeredEvaluators) {
+	public static int getEvaluatorIndexByName(final String evaluator) {
+		for (final lupos.misc.Tuple<String, Class<? extends QueryEvaluator<Node>>> registeredEvaluator : registeredEvaluators) {
 			if (registeredEvaluator.getFirst().equalsIgnoreCase(evaluator)) {
 				return registeredEvaluators.indexOf(registeredEvaluator);
 			}

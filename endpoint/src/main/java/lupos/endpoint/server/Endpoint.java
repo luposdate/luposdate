@@ -28,6 +28,8 @@
 package lupos.endpoint.server;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,6 +37,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,6 +83,9 @@ public class Endpoint {
 	private final static Map<String, HttpHandler> registeredhandler = Collections.synchronizedMap(new HashMap<String, HttpHandler>());
 
 	private static HTMLForm htmlForm = new StandardHTMLForm();
+
+	private static final int delayForStoppingInSeconds = 30; // the time the server gets for stopping to finish its work
+	public static final int portForStopping = 4242; // the port on which the server listens for stop signal
 
 	/**
 	 * The http server
@@ -157,6 +164,7 @@ public class Endpoint {
 		final int port = Endpoint.init(args);
 		Endpoint.registerStandardFormattersAndContexts(args[0]);
 		Endpoint.initAndStartServer(port);
+		Endpoint.listenForStopSignal();
 	}
 
 	/**
@@ -309,6 +317,30 @@ public class Endpoint {
 	public static void stopServer(final int delay){
 		if(Endpoint.server!=null){
 			Endpoint.server.stop(delay);
+		}
+	}
+
+	public static void listenForStopSignal() throws IOException {
+		Endpoint.listenForStopSignal("Stop LUPOSDATE Endpoint", Endpoint.portForStopping, Endpoint.delayForStoppingInSeconds);
+	}
+
+	public static void listenForStopSignal(final String signal, final int port, final int delay) throws IOException {
+		final ServerSocket serverSocket = new ServerSocket(port);
+		final Socket clientSocket = serverSocket.accept();
+		final DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+		final DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+		while(true) {
+			final String receivedSignal = in.readUTF();
+			if(receivedSignal.compareTo(signal)==0){
+				final String serverIsStoppingSignal = "Server is stopping in " + delay + " seconds...";
+				out.writeUTF(serverIsStoppingSignal);
+				System.out.println(serverIsStoppingSignal);
+				Endpoint.stopServer(delay);
+				final String serverStoppedSignal = "Server stopped";
+				out.writeUTF(serverStoppedSignal);
+				System.out.println(serverStoppedSignal);
+				break;
+			}
 		}
 	}
 
