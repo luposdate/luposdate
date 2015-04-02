@@ -46,8 +46,6 @@ import lupos.misc.Tuple;
 import lupos.rdf.parser.TurtleParser;
 import lupos.sparql1_1.Node;
 
-import org.mindswap.pellet.jena.PelletReasonerFactory;
-
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -56,6 +54,8 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 
 	private Model model;
@@ -176,9 +176,10 @@ public class JenaQueryEvaluator extends QueryEvaluator<Node> {
 			// TODO: consider all default graphs and named graphs!
 			this.model = ModelFactory.createRDFSModel(this.model);
 		} else if (this.ontology == ONTOLOGY.OWL) {
-			// final Reasoner owlReasoner = ReasonerRegistry.getOWLReasoner();
-			// this.model = ModelFactory.createInfModel(owlReasoner, this.model);
-			this.model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, this.model);
+			final Reasoner owlReasoner = ReasonerRegistry.getOWLReasoner();
+			this.model = ModelFactory.createInfModel(owlReasoner, this.model);
+			// if Pellet would be used: But currently problem with newer Jena api!
+			// this.model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, this.model);
 		}
 
 		return ((new Date()).getTime() - a.getTime());

@@ -103,6 +103,19 @@ public class ExtendedQueryHandler implements InterruptableHttpHandler {
 			}
 			Tuple<String, QueryResult[]> result = null;
 			try {
+				// We first check the query whether or not it is a select, ask, construct or describe query (which is allowed).
+				// For all other types of queries (like update queries) we return an error to prevent misuse (like getting data from the local file system)
+				if(!this.RIF_EVALUATION && !Endpoint.validQuery(parameters.QUERY, EvaluationHelper.getEvaluatorNameByIndex(parameters.EVALUATOR_INDEX).compareTo("Stream")==0)){
+					final String error = "Malformed query: Only SELECT, ASK, CONSTRUCT and DESCRIBE queries are allowed!";
+					LOGGER.info(error);
+					final JSONObject errorJson = new JSONObject();
+					errorJson.put("errorMessage", error);
+					response = new JSONObject();
+					response.put("queryError", errorJson);
+					// We send HTTP_OK, because the actual HTTP request was correct
+					responseStatus = QueryHandlerHelper.HTTP_OK;
+					return true;
+				}
 				// Use the magic getQueryResult method
 				// We get all parameters from the request (or the default
 				// values) except for two.

@@ -62,6 +62,15 @@ import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.singleinput.federated.BitVectorFilterFunction;
+import lupos.sparql1_1.ASTAskQuery;
+import lupos.sparql1_1.ASTConstructQuery;
+import lupos.sparql1_1.ASTDescribeQuery;
+import lupos.sparql1_1.ASTSelectQuery;
+import lupos.sparql1_1.Node;
+import lupos.sparql1_1.ParseException;
+import lupos.sparql1_1.SPARQL1_1Parser;
+import lupos.sparql1_1.SimpleNode;
+import lupos.sparql1_1.StreamSPARQL1_1Parser;
 
 import com.google.common.collect.Sets;
 import com.sun.net.httpserver.HttpExchange;
@@ -320,10 +329,21 @@ public class Endpoint {
 		}
 	}
 
+	/**
+	 * This method listens on the standard port for the message "Stop LUPOSDATE Endpoint" and stops the server after some seconds
+	 * @throws IOException
+	 */
 	public static void listenForStopSignal() throws IOException {
 		Endpoint.listenForStopSignal("Stop LUPOSDATE Endpoint", Endpoint.portForStopping, Endpoint.delayForStoppingInSeconds);
 	}
 
+	/**
+	 * listen on the given port for the message signal and stops the server after delay seconds
+	 * @param signal the message to be received for stopping the server
+	 * @param port the port on which the server listens for the stop signal
+	 * @param delay the number of seconds in which the server is stopped
+	 * @throws IOException
+	 */
 	public static void listenForStopSignal(final String signal, final int port, final int delay) throws IOException {
 		final ServerSocket serverSocket = new ServerSocket(port);
 		final Socket clientSocket = serverSocket.accept();
@@ -342,6 +362,31 @@ public class Endpoint {
 				break;
 			}
 		}
+		in.close();
+		out.close();
+		serverSocket.close();
+	}
+
+	/**
+	 * This methods checks for a select, describe, construct and ask query. In this case the method returns true.
+	 * For all other types of queries (e.g. update queries), the method returns false.
+	 * @param query The query to be checked
+	 * @param streamQuery whether or not it is a query for the StreamQueryEvaluator
+	 * @return true if the query is a select, describe, construct or ask query, otherwise false
+	 * @throws ParseException
+	 */
+	public static boolean validQuery(final String query, final boolean streamQuery) throws ParseException {
+		final SimpleNode root = streamQuery? StreamSPARQL1_1Parser.parse(query) : SPARQL1_1Parser.parse(query);
+		for (int i = 0; i < root.jjtGetNumChildren(); ++i) {
+			final Node child = root.jjtGetChild(i); // get current child
+			if (child instanceof ASTSelectQuery ||
+					child instanceof ASTDescribeQuery ||
+					child instanceof ASTConstructQuery ||
+					child instanceof ASTAskQuery) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -399,6 +444,11 @@ public class Endpoint {
 			try {
 				synchronized(this.evaluator){ // avoid any inference of several queries in parallel!
 					System.out.println("Evaluating query:\n"+queryParameter);
+
+					if(!Endpoint.validQuery(queryParameter, false)){
+						throw new Exception("Only SELECT, ASK, CONSTRUCT and DESCRIBE queryies allowed!");
+					}
+
 					if((this.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){
 						// log query-triples by using BindingsArrayReadTriples as class for storing the query solutions!
 						Bindings.instanceClass = BindingsArrayReadTriples.class;

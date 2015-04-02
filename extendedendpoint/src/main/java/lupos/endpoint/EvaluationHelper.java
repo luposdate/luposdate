@@ -121,6 +121,16 @@ public class EvaluationHelper {
 	}
 
 	/**
+	 * Returns the registered name of an evaluator by index
+	 * @param index the index of the evaluator
+	 * @return name of the evaluator
+	 */
+	public static String getEvaluatorNameByIndex(final int index) {
+		final lupos.misc.Tuple<String, Class<? extends QueryEvaluator<Node>>> evaluator = EvaluationHelper.registeredEvaluators.get(index);
+		return evaluator.getFirst();
+	}
+
+	/**
 	 * This method instantiates a (main memory) query evaluator to be used in the endpoint for proprietary entensions...
 	 * @param evaluatorIndex the index of the evaluator to be instantiated
 	 * @return the instantiated (main memory) query evaluator

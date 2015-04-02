@@ -146,6 +146,7 @@ import xpref.datatypes.IntegerDatatype;
 
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.query.QueryParseException;
+
 public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryEditor {
 	// set webdemo to false in the case that you want to run it under eclipse
 	// webdemo=true => example files are read from the current jar-file
