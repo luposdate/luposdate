@@ -64,7 +64,10 @@ import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.singleinput.federated.BitVectorFilterFunction;
 import lupos.sparql1_1.ASTAskQuery;
 import lupos.sparql1_1.ASTConstructQuery;
+import lupos.sparql1_1.ASTDefaultGraph;
 import lupos.sparql1_1.ASTDescribeQuery;
+import lupos.sparql1_1.ASTGraphConstraint;
+import lupos.sparql1_1.ASTNamedGraph;
 import lupos.sparql1_1.ASTSelectQuery;
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.ParseException;
@@ -383,10 +386,39 @@ public class Endpoint {
 					child instanceof ASTDescribeQuery ||
 					child instanceof ASTConstructQuery ||
 					child instanceof ASTAskQuery) {
+				// check if other graphs than the default graph is addressed:
+				for (int j = 0; j < child.jjtGetNumChildren(); ++j) {
+					final Node childchild = child.jjtGetChild(j);
+					if(childchild instanceof ASTDefaultGraph ||
+							childchild instanceof ASTNamedGraph){
+						return false;
+					}
+				}
+				if(!Endpoint.searchForGraphConstraint(child)){
+					return false;
+				}
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Checks if the query contains a GraphConstraint coming from a Graph URI|Variable { ... } construct!
+	 * @param currentNode The node of the abstract syntax tree of the query to be checked for GraphContraint nodes!
+	 * @return true, if the node or one of its successors is a GraphContraint node, otherwise false!
+	 */
+	private static boolean searchForGraphConstraint(final Node currentNode){
+		if(currentNode instanceof ASTGraphConstraint){
+			return false;
+		}
+		for (int i = 0; i < currentNode.jjtGetNumChildren(); ++i) {
+			final Node child = currentNode.jjtGetChild(i);
+			if(!Endpoint.searchForGraphConstraint(child)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
