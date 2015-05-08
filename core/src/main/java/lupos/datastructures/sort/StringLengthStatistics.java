@@ -12,6 +12,10 @@ import lupos.datastructures.sort.helper.DataToBoundedBuffer;
 
 
 public class StringLengthStatistics {
+
+	// scale used for divisions with BigDecimal numbers...
+	private final static int scale = 256;
+
 	public static void main(final String[] args) throws Exception{
 		System.out.println("Determining string length statistics of a large collection of Strings or RDF terms of large RDF data...");
 		if(args.length<2){
@@ -24,6 +28,8 @@ public class StringLengthStatistics {
 
 		final PagedCollection<Integer> lengths = new PagedCollection<Integer>(Integer.class);
 		final StringLengthAdder stringLengthAdder = new StringLengthAdder(buffer, lengths);
+
+		stringLengthAdder.start();
 
 		// signal that all the data is parsed (and nothing will be put into the buffer any more)
 		buffer.endOfData();
@@ -60,11 +66,11 @@ public class StringLengthStatistics {
 	}
 
 	public static double computeSampleStandardDeviation(final BigDecimal innerTerm, final int length){
-		return Math.sqrt(innerTerm.divide(BigDecimal.valueOf(length-1)).doubleValue());
+		return Math.sqrt(innerTerm.divide(BigDecimal.valueOf(length-1), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP).doubleValue());
 	}
 
 	public static double computeStandardDeviationOfTheSample(final BigDecimal innerTerm, final int length) {
-		return Math.sqrt(innerTerm.divide(BigDecimal.valueOf(length)).doubleValue());
+		return Math.sqrt(innerTerm.divide(BigDecimal.valueOf(length), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP).doubleValue());
 	}
 
 	public static BigDecimal[] computeInnerTerm(final Collection<Integer> lengths) {
@@ -73,11 +79,11 @@ public class StringLengthStatistics {
 			sum = sum.add(BigInteger.valueOf(l));
 		}
 		BigDecimal mean = new BigDecimal(sum);
-		mean = mean.divide(BigDecimal.valueOf(lengths.size()));
-		final BigDecimal innerTerm = BigDecimal.ZERO;
+		mean = mean.divide(BigDecimal.valueOf(lengths.size()), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP);
+		BigDecimal innerTerm = BigDecimal.ZERO;
 		for (final Integer l : lengths) {
 			final BigDecimal diff = BigDecimal.valueOf(l).subtract(mean);
-			innerTerm.add(diff.multiply(diff));
+			innerTerm = innerTerm.add(diff.multiply(diff));
 		}
 		return new BigDecimal[]{mean, innerTerm};
 	}
