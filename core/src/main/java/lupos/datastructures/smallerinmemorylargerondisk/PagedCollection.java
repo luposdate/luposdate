@@ -65,7 +65,7 @@ import lupos.io.helper.OutHelper;
  */
 public class PagedCollection<E> extends AbstractCollection<E> {
 
-	protected int size;
+	protected long size;
 	protected final String filename;
 	protected final PageManager pageManager;
 	protected long endOfCollection;
@@ -86,7 +86,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.filename = DiskCollection.newBaseFilename();
 		this.size=0;
 		this.pageManager = new PageManager(this.filename);
-		this.endOfCollection = 12;
+		this.endOfCollection = 16;
 		this.classname = classname;
 		this.initFirstPage();
 	}
@@ -102,8 +102,8 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		this.filename = filename;
 		this.pageManager = new PageManager(this.filename, false);
 		final byte[] page = this.pageManager.getPage(0);
-		final InputStream in = new ByteArrayInputStream(page, 0, 12);
-		this.size = InputHelper.readLuposInteger(in);
+		final InputStream in = new ByteArrayInputStream(page, 0, 16);
+		this.size = InputHelper.readLuposLong(in);
 		this.endOfCollection = InputHelper.readLuposLong(in);
 		in.close();
 		this.classname = classname;
@@ -121,12 +121,16 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		}
 		this.pageManager.release();
 		this.size = 0;
-		this.endOfCollection = 12;
+		this.endOfCollection = 16;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int size() {
+		return (int) this.size;
+	}
+
+	public long sizeAsLong() {
 		return this.size;
 	}
 
@@ -137,9 +141,9 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 			this.closeOutputStream();
 			return new Iterator<E>(){
 
-				int index = 0;
+				long index = 0;
 
-				final ContinousPagesInputStream in = new ContinousPagesInputStream(0, PagedCollection.this.pageManager, 12);
+				final ContinousPagesInputStream in = new ContinousPagesInputStream(0, PagedCollection.this.pageManager, 16);
 				int currentPageNumber;
 				int currentIndexInPage;
 
@@ -291,7 +295,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	protected final void storeSizeAndEndOfCollection() throws IOException {
 		final byte[] page = this.pageManager.getPage(0);
 		final ExistingByteArrayOutputStream out1 = new ExistingByteArrayOutputStream(page, 0);
-		OutHelper.writeLuposInt(this.size, out1);
+		OutHelper.writeLuposLong(this.size, out1);
 		OutHelper.writeLuposLong(this.endOfCollection, out1);
 		out1.close();
 		this.pageManager.modifyPage(0, page);
@@ -315,7 +319,11 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 		page[8] = (byte) 0;
 		page[9] = (byte) 0;
 		page[10] = (byte) 0;
-		page[11] = (byte) 12;
+		page[11] = (byte) 0;
+		page[12] = (byte) 0;
+		page[13] = (byte) 0;
+		page[14] = (byte) 0;
+		page[15] = (byte) 16;
 		this.pageManager.modifyPage(0, page);
 	}
 

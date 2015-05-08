@@ -23,13 +23,13 @@ public class StringLengthStatistics {
 			return;
 		}
 		final BoundedBuffer<String> buffer = new BoundedBuffer<String>();
-		// read in and parse the data...
-		DataToBoundedBuffer.dataToBoundedBuffer(new BufferedInputStream(new FileInputStream(args[0])), args[1], buffer);
 
 		final PagedCollection<Integer> lengths = new PagedCollection<Integer>(Integer.class);
 		final StringLengthAdder stringLengthAdder = new StringLengthAdder(buffer, lengths);
 
 		stringLengthAdder.start();
+		// read in and parse the data...
+		DataToBoundedBuffer.dataToBoundedBuffer(new BufferedInputStream(new FileInputStream(args[0])), args[1], buffer);
 
 		// signal that all the data is parsed (and nothing will be put into the buffer any more)
 		buffer.endOfData();
@@ -42,7 +42,7 @@ public class StringLengthStatistics {
 			e.printStackTrace();
 		}
 
-		final int length = lengths.size();
+		final long length = lengths.sizeAsLong();
 		System.out.println("Number of strings           : "+length+"\n");
 		// now compute statistics
 		final BigDecimal[] terms = StringLengthStatistics.computeInnerTerm(lengths);
@@ -65,21 +65,22 @@ public class StringLengthStatistics {
 		lengths.release();
 	}
 
-	public static double computeSampleStandardDeviation(final BigDecimal innerTerm, final int length){
+	public static double computeSampleStandardDeviation(final BigDecimal innerTerm, final long length){
 		return Math.sqrt(innerTerm.divide(BigDecimal.valueOf(length-1), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP).doubleValue());
 	}
 
-	public static double computeStandardDeviationOfTheSample(final BigDecimal innerTerm, final int length) {
+	public static double computeStandardDeviationOfTheSample(final BigDecimal innerTerm, final long length) {
 		return Math.sqrt(innerTerm.divide(BigDecimal.valueOf(length), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP).doubleValue());
 	}
 
-	public static BigDecimal[] computeInnerTerm(final Collection<Integer> lengths) {
+	public static BigDecimal[] computeInnerTerm(final PagedCollection<Integer> lengths) {
 		BigInteger sum = BigInteger.ZERO;
 		for (final Integer l : lengths) {
 			sum = sum.add(BigInteger.valueOf(l));
 		}
+		System.out.println(sum);
 		BigDecimal mean = new BigDecimal(sum);
-		mean = mean.divide(BigDecimal.valueOf(lengths.size()), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP);
+		mean = mean.divide(BigDecimal.valueOf(lengths.sizeAsLong()), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP);
 		BigDecimal innerTerm = BigDecimal.ZERO;
 		for (final Integer l : lengths) {
 			final BigDecimal diff = BigDecimal.valueOf(l).subtract(mean);
