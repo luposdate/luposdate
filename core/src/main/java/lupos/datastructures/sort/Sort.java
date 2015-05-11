@@ -181,9 +181,10 @@ public class Sort {
 			final Iterator<String> it = result.iterator();
 			long i=0;
 			while(it.hasNext()){
+				// final String s = it.next();
+				// System.out.println(i+":"+s);
 				it.next();
 				i++;
-				// System.out.println((++i)+":"+it.next());
 			}
 			result.release();
 			final Date end = new Date();

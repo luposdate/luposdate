@@ -39,74 +39,86 @@ public enum SORTTYPE {
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new TrieSetRuns();
 		}
-	}, 
+	},
 	BAG {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new TrieBagRuns();
 		}
-	}, 
+	},
 	SETWITHSTRINGMERGING {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new TrieSetRunsWithStringMerging();
 		}
-	}, 
+	},
 	BAGWITHSTRINGMERGING {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new TrieBagRunsWithStringMerging();
 		}
-	}, 
+	},
+	LSDRADIXSORTSET {
+		@Override
+		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+			return new MemorySortRuns(TOSORT.LSDRADIXSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
+		}
+	},
+	LSDRADIXSORTBAG {
+		@Override
+		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
+			return new MemorySortRuns(TOSORT.LSDRADIXSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
+		}
+	},
 	MERGESORTSET {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.MERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
 		}
-	}, 
+	},
 	MERGESORTBAG {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.MERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
 		}
-	}, 
+	},
 	PARALLELMERGESORTSET {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.PARALLELMERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
 		}
-	}, 
+	},
 	PARALLELMERGESORTBAG {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.PARALLELMERGESORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
 		}
-	}, 
+	},
 	QUICKSORTSET {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.QUICKSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
 		}
-	}, 
+	},
 	QUICKSORTBAG {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.QUICKSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
 		}
-	}, 
+	},
 	HEAPSORTSET {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.HEAPSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, true);
 		}
-	}, 
+	},
 	HEAPSORTBAG {
 		@Override
 		public Runs createRuns(final int NUMBER_ELEMENTS_IN_INITIAL_RUNS){
 			return new MemorySortRuns(TOSORT.HEAPSORT, NUMBER_ELEMENTS_IN_INITIAL_RUNS, false);
 		}
 	};
-	
+
 	/**
 	 * <p>createRuns.</p>
 	 *

@@ -33,7 +33,8 @@ import lupos.datastructures.dbmergesortedds.heap.Heap;
 public abstract class ToSort<E extends Comparable<E>> {
 
 	public enum TOSORT {
-		NONE, MERGESORT, PARALLELMERGESORT, QUICKSORT, HEAPSORT
+		NONE, MERGESORT, PARALLELMERGESORT, QUICKSORT, HEAPSORT,
+		LSDRADIXSORT // Note: LSADRADIXSORT sorts only strings!
 	};
 
 	private static TOSORT tosort = TOSORT.NONE;
@@ -58,7 +59,7 @@ public abstract class ToSort<E extends Comparable<E>> {
 	 * @return a boolean.
 	 */
 	public abstract boolean isEmpty();
-	
+
 	/**
 	 * <p>size.</p>
 	 *
@@ -115,11 +116,13 @@ public abstract class ToSort<E extends Comparable<E>> {
 			return new QuickSort(1 << (height + 1));
 		case HEAPSORT:
 			return new HeapSort(height);
+		case LSDRADIXSORT:
+			return (ToSort<T>) new LSDRadixSort(1 << (height + 1));
 		default:
 			return null;
 		}
 	}
-	
+
 	/**
 	 * <p>createInstanceWithGivenNumberOfElements.</p>
 	 *
@@ -138,6 +141,8 @@ public abstract class ToSort<E extends Comparable<E>> {
 			return new QuickSort(numberOfElements);
 		case HEAPSORT:
 			return new HeapSort(numberOfElements, true);
+		case LSDRADIXSORT:
+			return (ToSort<T>) new LSDRadixSort(numberOfElements);
 		default:
 			return null;
 		}
@@ -163,8 +168,9 @@ public abstract class ToSort<E extends Comparable<E>> {
 	public static<T extends Comparable<T>> ToSort<T> cloneInstance(final ToSort tosort) {
 		if (tosort instanceof Heap) {
 			return Heap.cloneInstance((Heap) tosort);
-		} else
+		} else {
 			return tosort;
+		}
 	}
 
 	/**
