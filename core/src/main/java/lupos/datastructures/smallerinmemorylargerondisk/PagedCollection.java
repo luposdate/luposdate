@@ -281,7 +281,7 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	protected final void closeOutputStream() throws IOException {
 		if(this.out!=null){
 			this.out.close();
-			this.endOfCollection = this.out.getCurrentPageNumber() * PageManager.getDefaultPageSize() + this.out.getPosInCurrentPage();
+			this.endOfCollection = (long) this.out.getCurrentPageNumber() * PageManager.getDefaultPageSize() + this.out.getPosInCurrentPage();
 			this.out = null;
 			this.storeSizeAndEndOfCollection();
 		}
@@ -368,9 +368,15 @@ public class PagedCollection<E> extends AbstractCollection<E> {
 	 * @throws java.io.IOException if any.
 	 */
 	public static void main(final String[] args) throws IOException{
-		final PagedCollection<String> c = new PagedCollection<String>(String.class);
-		c.add("hallo");
-		c.add("hello");
-		System.out.println(c);
+		final PagedCollection<Integer> c = new PagedCollection<Integer>(Integer.class);
+		for(long l=0; l<1024*1024*1024; l++){
+			c.add((int)l);
+		}
+		for(final Integer i: c){
+			if(i==null){
+				break;
+			}
+			System.out.println(i);
+		}
 	}
 }

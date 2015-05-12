@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Iterator;
 
 import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.smallerinmemorylargerondisk.PagedCollection;
@@ -75,10 +76,11 @@ public class StringLengthStatistics {
 
 	public static BigDecimal[] computeInnerTerm(final PagedCollection<Integer> lengths) {
 		BigInteger sum = BigInteger.ZERO;
-		for (final Integer l : lengths) {
-			sum = sum.add(BigInteger.valueOf(l));
+		final Iterator<Integer> it = lengths.iterator();
+		while(it.hasNext()) {
+			sum = sum.add(BigInteger.valueOf(it.next()));
 		}
-		System.out.println(sum);
+		// System.out.println(sum);
 		BigDecimal mean = new BigDecimal(sum);
 		mean = mean.divide(BigDecimal.valueOf(lengths.sizeAsLong()), StringLengthStatistics.scale, BigDecimal.ROUND_HALF_UP);
 		BigDecimal innerTerm = BigDecimal.ZERO;

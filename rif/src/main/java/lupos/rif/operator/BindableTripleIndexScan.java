@@ -53,46 +53,48 @@ public class BindableTripleIndexScan extends BindableIndexScan {
 	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BoundVariablesMessage msg) {
-		final BoundVariablesMessage result = (BoundVariablesMessage) index
+		final BoundVariablesMessage result = (BoundVariablesMessage) this.index
 				.preProcessMessage(msg);
 		result.getVariables().removeAll(msg.getVariables());
-		unionVariables = new HashSet<Variable>(result.getVariables());
-		intersectionVariables = new HashSet<Variable>(unionVariables);
+		this.unionVariables = new HashSet<Variable>(result.getVariables());
+		this.intersectionVariables = new HashSet<Variable>(this.unionVariables);
 		return result;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void processIndexScan(final QueryResult result,
 			final Bindings bind) {
 		final Collection<TriplePattern> pattern = new ArrayList<TriplePattern>(
-				index.getTriplePattern());
+				this.index.getTriplePattern());
 		final Collection<TriplePattern> bindPattern = new ArrayList<TriplePattern>();
 		for (final TriplePattern tp : pattern) {
 			final TriplePattern newPat = new TriplePattern();
 			int i = 0;
 			for (final Item item : tp.getItems()) {
 				Item toSet = null;
-				if (item.isVariable() && bind.getVariableSet().contains(item))
+				if (item.isVariable() && bind.getVariableSet().contains(item)) {
 					toSet = item.getLiteral(bind);
-				else
+				} else {
 					toSet = item;
+				}
 				newPat.setPos(toSet, i++);
 			}
 			bindPattern.add(newPat);
 		}
-		index.getTriplePattern().clear();
-		index.getTriplePattern().addAll(bindPattern);
+		this.index.getTriplePattern().clear();
+		this.index.getTriplePattern().addAll(bindPattern);
 		// Scan durchf�hren
-		QueryResult tempResult = index.process(dataSet);
+		final QueryResult tempResult = this.index.process(this.dataSet);
 		result.add(tempResult);
 		// TriplePattern zur�cksetzen
-		index.getTriplePattern().clear();
-		index.getTriplePattern().addAll(pattern);
+		this.index.getTriplePattern().clear();
+		this.index.getTriplePattern().addAll(pattern);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Collection<TriplePattern> getTriplePattern() {
-		return index.getTriplePattern();
+		return this.index.getTriplePattern();
 	}
 }
