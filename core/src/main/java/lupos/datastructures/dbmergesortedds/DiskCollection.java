@@ -53,6 +53,8 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.LengthHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
+import lupos.misc.IOCostsInputStream;
+import lupos.misc.IOCostsOutputStream;
 
 /**
  * This class implements a collection, which stores its entries on disk and not
@@ -241,8 +243,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 				this.file.delete();
 			}
 			fos = new FileOutputStream(this.file, false);
-			this.out = new LuposObjectOutputStreamWithoutWritingHeader(
-					new BufferedOutputStream(fos));
+			this.out = new LuposObjectOutputStreamWithoutWritingHeader(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(fos)));
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println(e);
@@ -264,16 +265,14 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 			if (this.out == null) {
 				this.file = new File(this.filename + this.numberFiles);
 				final FileOutputStream fos = new FileOutputStream(this.file, true);
-				this.out = new LuposObjectOutputStreamWithoutWritingHeader(
-						new BufferedOutputStream(fos));
+				this.out = new LuposObjectOutputStreamWithoutWritingHeader(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(fos)));
 			}
 			if (this.file.length() > STORAGELIMIT) {
 				this.out.close();
 				this.numberFiles++;
 				this.file = new File(this.filename + this.numberFiles);
 				final FileOutputStream fos = new FileOutputStream(this.file, true);
-				this.out = new LuposObjectOutputStreamWithoutWritingHeader(
-						new BufferedOutputStream(fos));
+				this.out = new LuposObjectOutputStreamWithoutWritingHeader(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(fos)));
 
 			}
 			this.out.writeLuposObject(arg0);
@@ -379,9 +378,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 				this.out = null;
 			}
 			for (int i = 0; i <= this.numberFiles; i++) {
-				final LuposObjectInputStream in = new LuposObjectInputStreamWithoutReadingHeader<E>(
-						new BufferedInputStream(new FileInputStream(this.filename
-								+ this.numberFiles)), (Class<E>) arg0.getClass());
+				final LuposObjectInputStream in = new LuposObjectInputStreamWithoutReadingHeader<E>(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.filename + this.numberFiles))), (Class<E>) arg0.getClass());
 				try {
 					while (true) {
 						final E e = (E) in.readLuposObject();
@@ -430,9 +427,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 				this.out = null;
 			}
 			for (int i = 0; i <= this.numberFiles; i++) {
-				final LuposObjectInputStream in = new LuposObjectInputStreamWithoutReadingHeader<E>(
-						new BufferedInputStream(new FileInputStream(this.filename
-								+ i)), this.classOfElements);
+				final LuposObjectInputStream in = new LuposObjectInputStreamWithoutReadingHeader<E>(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.filename + i))), this.classOfElements);
 				try {
 					while (true) {
 						final E e = (E) in.readLuposObject();
@@ -511,9 +506,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 					private final int numberFilesLocal = DiskCollection.this.numberFiles;
 					private E next;
 					{
-						this.in = new LuposObjectInputStreamWithoutReadingHeader<E>(
-								new BufferedInputStream(new FileInputStream(
-										this.baseFilename + "0")), DiskCollection.this.classOfElements);
+						this.in = new LuposObjectInputStreamWithoutReadingHeader<E>(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.baseFilename + "0"))), DiskCollection.this.classOfElements);
 						this.next();
 					}
 
@@ -569,10 +562,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 							this.currentFile++;
 							try {
 								this.in = new LuposObjectInputStreamWithoutReadingHeader<E>(
-										new BufferedInputStream(
-												new FileInputStream(
-														this.baseFilename
-																+ this.currentFile)),
+										IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.baseFilename + this.currentFile))),
 										DiskCollection.this.classOfElements);
 							} catch (final EOFException e1) {
 								System.err.println(e1);
@@ -834,9 +824,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 	 * @throws java.io.IOException if any.
 	 * @throws java.lang.ClassNotFoundException if any.
 	 */
-	public static DiskCollection readAndCreateLuposObject(
-			final LuposObjectInputStream in) throws IOException,
-			ClassNotFoundException {
+	public static DiskCollection readAndCreateLuposObject(final LuposObjectInputStream in) throws IOException, ClassNotFoundException {
 		final long size = InputHelper.readLuposLong(in);
 		final String filename = InputHelper.readLuposString(in);
 		final int numberFiles = InputHelper.readLuposInt((InputStream) in);

@@ -42,6 +42,8 @@ import lupos.datastructures.sort.sorter.ExternalSorter;
 import lupos.datastructures.sort.sorter.ReplacementSelectionSorter;
 import lupos.datastructures.sort.sorter.Sorter;
 import lupos.engine.evaluators.QueryEvaluator;
+import lupos.misc.IOCostsInputStream;
+import lupos.misc.IOCostsOutputStream;
 import lupos.misc.TimeInterval;
 public class Sort {
 	public enum SORTER {
@@ -144,7 +146,13 @@ public class Sort {
 			System.out.println(Sort.getHelpText());
 			return;
 		}
-		Sorter algo = sorter.createInstance(args, 4);
+		final boolean iocosts = (args[4].compareTo("IOCOSTS")==0);
+		if(iocosts){
+			IOCostsInputStream.LogIOCosts = true;
+			IOCostsOutputStream.LogIOCosts = true;
+		}
+		final int argspos = (iocosts)? 5 : 4;
+		Sorter algo = sorter.createInstance(args, argspos);
 		if(algo==null){
 			System.out.println(Sort.getHelpText());
 			return;
@@ -159,6 +167,10 @@ public class Sort {
 		System.out.println("\nParameters:\n-----------\nMain Strategy:" + sorter.name() + "\n" + algo.parametersToString() + "\n");
 
 		final long[] execution_times = new long[times];
+		final long[] readbytes = new long[times];
+		final long[] writtenbytes = new long[times];
+		long totalreadbytes = 0;
+		long totalwrittenbytes = 0;
 		long total_time = 0;
 		for(int t=0; t<times; t++){
 			sorter = SORTER.valueOf(args[0]);
@@ -166,7 +178,7 @@ public class Sort {
 				System.out.println(Sort.getHelpText());
 				return;
 			}
-			algo = sorter.createInstance(args, 4);
+			algo = sorter.createInstance(args, argspos);
 			if(algo==null){
 				System.out.println(Sort.getHelpText());
 				return;
@@ -175,12 +187,13 @@ public class Sort {
 			final Date start = new Date();
 			System.out.println("\n"+t+": Start processing:"+start+"\n");
 
-			final Run result = algo.sort(new BufferedInputStream(new FileInputStream(args[1])), args[2]);
+			final Run result = algo.sort(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(args[1]))), args[2]);
 
 			// just access all elements in the bag by iterating one time through
 			final Iterator<String> it = result.iterator();
 			long i=0;
 			while(it.hasNext()){
+				// System.out.println(IOCostsInputStream.getNumberOfReadBytes());
 				// final String s = it.next();
 				// System.out.println(i+":"+s);
 				it.next();
@@ -196,6 +209,15 @@ public class Sort {
 			execution_times[t] = end.getTime()-start.getTime();
 			total_time += execution_times[t];
 
+			if(iocosts){
+				readbytes[t] = IOCostsInputStream.getNumberOfReadBytes();
+				writtenbytes[t] = IOCostsOutputStream.getNumberOfWrittenBytes();
+				totalreadbytes += IOCostsInputStream.getNumberOfReadBytes();
+				totalwrittenbytes += IOCostsOutputStream.getNumberOfWrittenBytes();
+				IOCostsInputStream.resetNumberOfReadBytes();
+				IOCostsOutputStream.resetNumberOfWrittenBytes();
+			}
+
 			DiskCollection.removeCollectionsFromDisk();
 			DBMergeSortedBag.removeBagsFromDisk();
 		}
@@ -205,6 +227,15 @@ public class Sort {
 		System.out.println("\nDuration:   " + QueryEvaluator.toString(execution_times) + " = " + (((double) total_time / times) / 1000) + " seconds\n          = " + new TimeInterval(avg));
 		System.out.println("Sample Standard Deviation: " + (QueryEvaluator.computeSampleStandardDeviation(execution_times) / 1000) + " seconds");
 		System.out.println("Standard Deviation of the Sample: " + (QueryEvaluator.computeStandardDeviationOfTheSample(execution_times) / 1000) + " seconds");
+
+		if(iocosts){
+			System.out.println("\n\nRead Bytes:   " + QueryEvaluator.toString(readbytes) + " = " + ((double) totalreadbytes / times) + " bytes\n");
+			System.out.println("Sample Standard Deviation: " + (QueryEvaluator.computeSampleStandardDeviation(readbytes) / 1000) + " bytes");
+			System.out.println("Standard Deviation of the Sample: " + (QueryEvaluator.computeStandardDeviationOfTheSample(readbytes) / 1000) + " bytes");
+			System.out.println("\n\nWritten Bytes:   " + QueryEvaluator.toString(writtenbytes) + " = " + ((double) totalwrittenbytes / times) + " bytes\n");
+			System.out.println("Sample Standard Deviation: " + (QueryEvaluator.computeSampleStandardDeviation(writtenbytes) / 1000) + " bytes");
+			System.out.println("Standard Deviation of the Sample: " + (QueryEvaluator.computeStandardDeviationOfTheSample(writtenbytes) / 1000) + " bytes");
+		}
 	}
 
 	/**
@@ -213,11 +244,12 @@ public class Sort {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public static String getHelpText(){
-		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT TIMES SORTARGS\n\n";
+		String result = "Call Sort in the following way:\n\njava lupos.datastructures.sort.Sort ALGO DATAFILE FORMAT TIMES [IOCOSTS] SORTARGS\n\n";
 		result += "ALGO can be one of " + Arrays.toString(SORTER.values()) + "\n";
 		result += "DATAFILE contains the file with data (containing strings or RDF data)\n";
 		result += "FORMAT can be STRING for a large collection of strings in one file, MULTIPLESTRING for a list of files containing strings to be read, BZIP2STRING and MULTIPLEBZIP2STRING for analogous, but BZIP2 compressed files, or an RDF format like N3\n";
-		result += "TIMES is the number of repetitions to calculate an average execution time\n\n";
+		result += "TIMES is the number of repetitions to calculate an average execution time\n";
+		result += "IOCOSTS is optional. If the parameter is there the number of read and written bytes from/to disk are logged and displayed for measuring the io costs\n\n";
 		result += "ALGO                   | SORTARGS\n";
 		result += "--------------------------------------------------------------------------------------------------------------------------------------------------\n";
 		for(final SORTER sorter: SORTER.values()){

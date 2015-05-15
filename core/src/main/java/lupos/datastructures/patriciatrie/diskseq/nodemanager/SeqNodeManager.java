@@ -37,6 +37,8 @@ import lupos.datastructures.patriciatrie.disk.nodemanager.NodeOutputStream;
 import lupos.datastructures.patriciatrie.diskseq.DeSerializer;
 import lupos.datastructures.patriciatrie.diskseq.DeSerializer.Writer;
 import lupos.datastructures.patriciatrie.node.Node;
+import lupos.misc.IOCostsInputStream;
+import lupos.misc.IOCostsOutputStream;
 
 
 /**
@@ -49,16 +51,16 @@ public class SeqNodeManager {
 
 	/** Name of the file, that contains the actual trie data */
 	protected String fileName;
-	
+
 	/** Flag, if this trie contains the complete metadata */
 	protected boolean completeMetadata;
-	
+
 	/** InputStream */
 	protected NodeInputStream inputStream;
-	
+
 	/** OutputStream */
 	protected NodeOutputStream outputStream;
-	
+
 	/**
 	 * <p>Constructor for SeqNodeManager.</p>
 	 *
@@ -71,7 +73,7 @@ public class SeqNodeManager {
 		this.inputStream = null;
 		this.outputStream = null;
 	}
-	
+
 	/**
 	 * Releases the input stream.
 	 */
@@ -79,13 +81,13 @@ public class SeqNodeManager {
 		if (this.inputStream != null) {
 			try {
 				this.inputStream.close();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 			this.inputStream = null;
 		}
 	}
-	
+
 	/**
 	 * Releases the output stream
 	 */
@@ -93,13 +95,13 @@ public class SeqNodeManager {
 		if (this.outputStream != null) {
 			try {
 				this.outputStream.close();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 			this.outputStream = null;
 		}
 	}
-	
+
 	/**
 	 * Prepares the input stream and reads the first byte from the file, which
 	 * contains the completeMetadata-flag
@@ -108,16 +110,16 @@ public class SeqNodeManager {
 		try {
 			this.releaseInputStream();
 			this.releaseOutputStream();
-			
-			this.inputStream = new NodeInputStream(new BufferedInputStream(new FileInputStream(new File(this.fileName))));
-			
+
+			this.inputStream = new NodeInputStream(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(new File(this.fileName)))));
+
 			// First bit of each file is the completeMetadata flag
 			this.completeMetadata = (this.inputStream.read() == 1);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Prepares the output stream and writes the first byte to the file, which
 	 * contains the completeMetadata-flag
@@ -125,24 +127,25 @@ public class SeqNodeManager {
 	private void prepareOutputStream() {
 		try {
 			final File outputFile = new File(this.fileName);
-			
+
 			this.releaseInputStream();
 			this.releaseOutputStream();
-			
-			if (outputFile.exists())
+
+			if (outputFile.exists()) {
 				outputFile.delete();
-			
+			}
+
 			outputFile.createNewFile();
-			
-			this.outputStream = new NodeOutputStream(new BufferedOutputStream(new FileOutputStream(outputFile)));
-			
+
+			this.outputStream = new NodeOutputStream(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(new FileOutputStream(outputFile))));
+
 			// First bit of each file is the completeMetadata flag
 			this.outputStream.write(this.completeMetadata ? 1 : 0);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Reads the next node from the input stream. If the input stream has not
 	 * been initialized before, it will be initialized first.
@@ -151,18 +154,19 @@ public class SeqNodeManager {
 	 * @param deSerializer a {@link lupos.datastructures.patriciatrie.diskseq.DeSerializer} object.
 	 */
 	public Node readNextNode(final DeSerializer deSerializer) {
-		if (this.inputStream == null)
+		if (this.inputStream == null) {
 			this.prepareInputStream();
-		
+		}
+
 		try {
 			return deSerializer.deserialize(this, this.inputStream);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Removes all entries from the file and resets the output stream
 	 */
@@ -170,25 +174,25 @@ public class SeqNodeManager {
 		this.completeMetadata = true;
 		this.prepareOutputStream();
 	}
-	
+
 	/**
 	 * Resets the input stream to start reading from the beginning of the file
 	 */
 	public void readAgain() {
 		this.prepareInputStream();
 	}
-	
+
 	/**
 	 * This class is just for the next method:
-	 * RandomAccessFile should implement Writer, such that the deSerializer can be called! 
+	 * RandomAccessFile should implement Writer, such that the deSerializer can be called!
 	 */
 	public static class WriterRandomAccessFile extends RandomAccessFile implements Writer {
-		public WriterRandomAccessFile(File file, String mode)
+		public WriterRandomAccessFile(final File file, final String mode)
 				throws FileNotFoundException {
 			super(file, mode);
-		}		
+		}
 	}
-	
+
 	/**
 	 * Writes the root node again to update the numberOfEntries stored in the
 	 * trie.
@@ -200,33 +204,33 @@ public class SeqNodeManager {
 	public void writeRootNodeAgain(final DeSerializer deSerializer, final Node rootNode) {
 		this.releaseInputStream();
 		this.releaseOutputStream();
-		
+
 		try {
 			final WriterRandomAccessFile file = new WriterRandomAccessFile(new File(this.fileName), "rw");
-			
+
 			// Output the content
 			try {
 				file.write(this.completeMetadata ? 1 : 0);
 
 				deSerializer.serialize(rootNode, file);
 
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 
-			
+
 			// ENDE TODO
-			
+
 			file.close();
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Writes the next node to the output stream. If the output stream has not
 	 * been initialized yet, it will be initialized as a new file.
@@ -240,15 +244,15 @@ public class SeqNodeManager {
 		if (this.outputStream == null){
 			this.prepareOutputStream();
 		}
-		
+
 		// Output the content
 		try {
 			deSerializer.serialize(node, this.outputStream);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Writes the given node and all of its children to the output stream.
 	 *
@@ -265,12 +269,13 @@ public class SeqNodeManager {
 		 * can easily be calculated during the merge process.
 		 */
 		int numberOfEntries = 0;
-		
+
 		this.writeNextNode(deSerializer, node);
-		
-		if (node.getChildrenLength() == 0)
+
+		if (node.getChildrenLength() == 0) {
 			numberOfEntries = node.getContentLength();
-		
+		}
+
 		for (int i = 0, j = node.getChildrenLength(); i < j; i++) {
 			if (node.hasChild(i)){
 				numberOfEntries += this.writeNextNodeRecursive(deSerializer, node.getChild(i));
@@ -281,7 +286,7 @@ public class SeqNodeManager {
 
 		return numberOfEntries;
 	}
-	
+
 	/**
 	 * Sets the flag completeMetadata
 	 *
@@ -291,7 +296,7 @@ public class SeqNodeManager {
 	public void setCompleteMetadata(final boolean completeMetadata) {
 		this.completeMetadata = completeMetadata;
 	}
-	
+
 	/**
 	 * <p>hasCompleteMetadata.</p>
 	 *
@@ -301,7 +306,7 @@ public class SeqNodeManager {
 	public boolean hasCompleteMetadata() {
 		return this.completeMetadata;
 	}
-	
+
 	/**
 	 * Closes the NodeManager. Afterwards the NodeManager should not be used
 	 * anymore.
@@ -315,7 +320,7 @@ public class SeqNodeManager {
 	 * deletes the file on disk
 	 */
 	public void release() {
-		File file = new File(this.fileName);
+		final File file = new File(this.fileName);
 		if(file.exists()){
 			file.delete();
 		}

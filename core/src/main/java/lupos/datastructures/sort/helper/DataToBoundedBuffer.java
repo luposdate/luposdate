@@ -38,6 +38,7 @@ import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.misc.FileHelper;
+import lupos.misc.IOCostsInputStream;
 
 /**
  * Helper class to read in and parse different types of data (strings or RDF terms of RDF data).
@@ -53,9 +54,9 @@ public class DataToBoundedBuffer {
 	 * @throws IOException in case of any failure
 	 * @throws InterruptedException in case of any failure
 	 */
-	private static void stringsInFile(final InputStream dataFiles, final BoundedBuffer<String> buffer, Compression compression) throws IOException, InterruptedException{
+	private static void stringsInFile(final InputStream dataFiles, final BoundedBuffer<String> buffer, final Compression compression) throws IOException, InterruptedException{
 		// read in the strings...
-		BufferedReader br = new BufferedReader(new InputStreamReader(compression.createInputStream(new DataInputStream(dataFiles))));
+		final BufferedReader br = new BufferedReader(new InputStreamReader(compression.createInputStream(new DataInputStream(dataFiles))));
 		String strLine;
 		//Read File Line By Line
 		while ((strLine = br.readLine()) != null)   {
@@ -64,7 +65,7 @@ public class DataToBoundedBuffer {
 		//Close the input stream
 		br.close();
 	}
-	
+
 	/**
 	 * Read in and parse RDF terms of triples in an RDF file
 	 * @param dataFiles the data
@@ -74,14 +75,14 @@ public class DataToBoundedBuffer {
 	 */
 	private static void rdfTerms(final InputStream dataFiles, final String format, final BoundedBuffer<String> buffer) throws Exception{
 		// now parse the data...
-		CommonCoreQueryEvaluator.readTriples(format, dataFiles, 
+		CommonCoreQueryEvaluator.readTriples(format, dataFiles,
 				new TripleConsumer(){
 					@Override
-					public void consume(Triple triple) {
-						for(Literal literal: triple){
+					public void consume(final Triple triple) {
+						for(final Literal literal: triple){
 							try {
 								buffer.put(literal.originalString());
-							} catch (InterruptedException e) {
+							} catch (final InterruptedException e) {
 								System.err.println(e);
 								e.printStackTrace();
 							}
@@ -89,7 +90,7 @@ public class DataToBoundedBuffer {
 					}
 		});
 	}
-	
+
 	/**
 	 * Read in and parse strings or RDF terms of RDF data, and put one after the other in the given bounded buffer.
 	 *
@@ -104,17 +105,17 @@ public class DataToBoundedBuffer {
 		} else if(format.toUpperCase().compareTo("MULTIPLESTRING")==0) {
 			for (final String filename : FileHelper.readInputStreamToCollection(dataFiles)) {
 				System.out.println("Reading data from file: " + filename);
-				DataToBoundedBuffer.stringsInFile(new BufferedInputStream(new FileInputStream(filename)), buffer, Compression.NONE);
+				DataToBoundedBuffer.stringsInFile(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(filename))), buffer, Compression.NONE);
 			}
 		} else if(format.toUpperCase().compareTo("BZIP2STRING")==0){
 			DataToBoundedBuffer.stringsInFile(dataFiles, buffer, Compression.BZIP2);
 		} else if(format.toUpperCase().compareTo("MULTIPLEBZIP2STRING")==0) {
 			for (final String filename : FileHelper.readInputStreamToCollection(dataFiles)) {
 				System.out.println("Reading data from file: " + filename);
-				DataToBoundedBuffer.stringsInFile(new BufferedInputStream(new FileInputStream(filename)), buffer, Compression.BZIP2);
+				DataToBoundedBuffer.stringsInFile(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(filename))), buffer, Compression.BZIP2);
 			}
 		} else {
 			DataToBoundedBuffer.rdfTerms(dataFiles, format, buffer);
-		}		
+		}
 	}
 }

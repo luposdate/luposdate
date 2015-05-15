@@ -42,6 +42,8 @@ import java.util.Iterator;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.io.LuposObjectInputStream;
 import lupos.io.LuposObjectOutputStream;
+import lupos.misc.IOCostsInputStream;
+import lupos.misc.IOCostsOutputStream;
 public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 
 	protected final DBMergeSortedBag<E> dbmergesortedbag;
@@ -86,13 +88,14 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	public Run(final DBMergeSortedBag<E> dbmergesortedbag) {
 		this.dbmergesortedbag = dbmergesortedbag;
 		try {
-			runID = this.dbmergesortedbag.getNewId();
-			final File dir = new File(dbmergesortedbag.folder[runID % dbmergesortedbag.folder.length]);
+			this.runID = this.dbmergesortedbag.getNewId();
+			final File dir = new File(dbmergesortedbag.folder[this.runID % dbmergesortedbag.folder.length]);
 			dir.mkdirs();
-			file = new File(dbmergesortedbag.folder[runID % dbmergesortedbag.folder.length] + runID);
-			if (file.exists())
-				file.delete();
-			os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(new BufferedOutputStream(new FileOutputStream(file))));
+			this.file = new File(dbmergesortedbag.folder[this.runID % dbmergesortedbag.folder.length] + this.runID);
+			if (this.file.exists()) {
+				this.file.delete();
+			}
+			this.os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(new FileOutputStream(this.file)))));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -109,24 +112,26 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 		try {
 			final File dir = new File(dbmergesortedbag.folder[0]);
 			dir.mkdirs();
-			file = new File(dbmergesortedbag.folder[0] + tmp);
-			if (file.exists())
-				file.delete();
-			os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(new BufferedOutputStream(
-					new FileOutputStream(file))));
+			this.file = new File(dbmergesortedbag.folder[0] + tmp);
+			if (this.file.exists()) {
+				this.file.delete();
+			}
+			this.os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(new FileOutputStream(this.file)))));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	int indexOf(final E e) {
-		if (max == null)
+		if (this.max == null) {
 			return -1;
-		if (dbmergesortedbag.comp.compare(e, max) >= 0)
-			return e.equals(max) ? size - 1 : -1;
+		}
+		if (this.dbmergesortedbag.comp.compare(e, this.max) >= 0) {
+			return e.equals(this.max) ? this.size - 1 : -1;
+		}
 		int i = 0;
 		for (final Entry<E> entry : this) {
-			if (dbmergesortedbag.comp.compare(e, entry.e) <= 0) {
+			if (this.dbmergesortedbag.comp.compare(e, entry.e) <= 0) {
 				return e.equals(entry.e) ? i : -1;
 			}
 			i++;
@@ -135,24 +140,24 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	}
 
 	void add(final Entry<E> e) {
-		max = e.e;
-		size++;
-		if (file.length() > STORAGELIMIT) {
+		this.max = e.e;
+		this.size++;
+		if (this.file.length() > STORAGELIMIT) {
 			try {
-				os.close();
+				this.os.close();
 			} catch (final IOException e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
 			}
-			numberFiles++;
-			file = new File(dbmergesortedbag.folder[runID
-			                                        % dbmergesortedbag.folder.length]
-			                                        + runID + "_" + numberFiles);
-			if (file.exists())
-				file.delete();
+			this.numberFiles++;
+			this.file = new File(this.dbmergesortedbag.folder[this.runID
+			                                        % this.dbmergesortedbag.folder.length]
+			                                        + this.runID + "_" + this.numberFiles);
+			if (this.file.exists()) {
+				this.file.delete();
+			}
 			try {
-				os = new LuposObjectOutputStream(new BufferedOutputStream(
-						new FileOutputStream(file)));
+				this.os = new LuposObjectOutputStream(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(new FileOutputStream(this.file))));
 			} catch (final FileNotFoundException e1) {
 				System.err.println(e1);
 				e1.printStackTrace();
@@ -162,7 +167,7 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 			}
 		}
 		try {
-			os.writeLuposObject(e);
+			this.os.writeLuposObject(e);
 		} catch (final IOException e1) {
 			e1.printStackTrace();
 		}
@@ -170,12 +175,12 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 
 	Entry<E> remove(final E e) {
 		try {
-			dbmergesortedbag.currentRun.os.close();
+			this.dbmergesortedbag.currentRun.os.close();
 		} catch (final IOException e1) {
 			System.out.println(e1);
 			e1.printStackTrace();
 		}
-		final Run newRun = new Run(dbmergesortedbag, "tmp");
+		final Run newRun = new Run(this.dbmergesortedbag, "tmp");
 		Entry<E> res = null;
 		boolean alreadyRemoved = false;
 		for (final Entry<E> entry : this) {
@@ -186,29 +191,31 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 				newRun.add(entry);
 			}
 		}
-		become(newRun);
+		this.become(newRun);
 		return res;
 	}
 
 	private void deleteAllFiles() {
 		this.file.delete();
-		for (int i = 0; i < numberFiles; i++) {
-			if (i == 0)
-				file = new File(dbmergesortedbag.folder[runID
-				                                        % dbmergesortedbag.folder.length]
-				                                        + runID);
-			else
-				file = new File(dbmergesortedbag.folder[runID
-				                                        % dbmergesortedbag.folder.length]
-				                                        + runID + "_" + i);
-			if (file.exists())
-				file.delete();
+		for (int i = 0; i < this.numberFiles; i++) {
+			if (i == 0) {
+				this.file = new File(this.dbmergesortedbag.folder[this.runID
+				                                        % this.dbmergesortedbag.folder.length]
+				                                        + this.runID);
+			} else {
+				this.file = new File(this.dbmergesortedbag.folder[this.runID
+				                                        % this.dbmergesortedbag.folder.length]
+				                                        + this.runID + "_" + i);
+			}
+			if (this.file.exists()) {
+				this.file.delete();
+			}
 		}
 	}
 
 	void become(final Run<E> run) {
 		try {
-			clear();
+			this.clear();
 		} catch (final FileNotFoundException e2) {
 			e2.printStackTrace();
 		} catch (final IOException e2) {
@@ -239,17 +246,17 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 			System.out.println(e1);
 			e1.printStackTrace();
 		}
-		final Run newRun = new Run(dbmergesortedbag, "tmp");
+		final Run newRun = new Run(this.dbmergesortedbag, "tmp");
 		for (final Entry<E> entry : this) {
 			if (!elements.contains(entry.e)) {
 				newRun.add(entry);
 			}
 		}
-		become(newRun);
+		this.become(newRun);
 	}
 
 	Entry<E> getIndex(final int i) {
-		final Iterator<Entry<E>> iter = iterator();
+		final Iterator<Entry<E>> iter = this.iterator();
 		Entry result = null;
 		for (int j = 0; j <= i; j++) {
 			result = iter.next();
@@ -258,21 +265,22 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	}
 
 	void clear() throws FileNotFoundException, IOException {
-		deleteAllFiles();
-		file = new File(dbmergesortedbag.folder[runID
-		                                        % dbmergesortedbag.folder.length]
-		                                        + runID);
-		os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(new BufferedOutputStream(new FileOutputStream(file))));
+		this.deleteAllFiles();
+		this.file = new File(this.dbmergesortedbag.folder[this.runID
+		                                        % this.dbmergesortedbag.folder.length]
+		                                        + this.runID);
+		this.os = new LuposObjectOutputStream(this.dbmergesortedbag.sortConfiguration.createOutputStream(IOCostsOutputStream.createIOCostsOutputStream(new BufferedOutputStream(new FileOutputStream(this.file)))));
 	}
 
 	boolean contains(final E e) {
-		return indexOf(e) >= 0;
+		return this.indexOf(e) >= 0;
 	}
 
 	boolean containsAny(final Collection<E> elements) {
 		for (final Entry<E> entry : this) {
-			if (elements.contains(entry.e))
+			if (elements.contains(entry.e)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -282,73 +290,76 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	 *
 	 * @return a {@link lupos.datastructures.queryresult.ParallelIterator} object.
 	 */
+	@Override
 	public ParallelIterator<Entry<E>> iterator() {
 		try {
 			this.os.close();
-		} catch (IOException e2) {
+		} catch (final IOException e2) {
 		}
 		try {
 			return new ParallelIterator<Entry<E>>() {
-				File fileLocal = new File(dbmergesortedbag.folder[runID
-				                                                  % dbmergesortedbag.folder.length]
-				                                                  + runID);
+				File fileLocal = new File(Run.this.dbmergesortedbag.folder[Run.this.runID
+				                                                  % Run.this.dbmergesortedbag.folder.length]
+				                                                  + Run.this.runID);
 				int currentFile = 0;
 				LuposObjectInputStream<E> is = new LuposObjectInputStream<E>(
-						Run.this.dbmergesortedbag.sortConfiguration.createInputStream(new BufferedInputStream(new FileInputStream(fileLocal))),
-						dbmergesortedbag.classOfElements);
+						Run.this.dbmergesortedbag.sortConfiguration.createInputStream(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.fileLocal)))),
+						Run.this.dbmergesortedbag.classOfElements);
 				boolean isClosed = false;
 				Entry<E> next = null;
 				int n = 0;
 
+				@Override
 				public boolean hasNext() {
-					if (next == null)
-						next = next();
-					return next != null;
+					if (this.next == null) {
+						this.next = this.next();
+					}
+					return this.next != null;
 				}
 
+				@Override
 				public Entry<E> next() {
-					if (next != null) {
-						final Entry<E> res = next;
-						next = null;
+					if (this.next != null) {
+						final Entry<E> res = this.next;
+						this.next = null;
 						return res;
 					}
-					if (isClosed)
+					if (this.isClosed) {
 						return null;
+					}
 					try {
 						Entry<E> e = null;
 						try {
-							e = is.readLuposEntry();
+							e = this.is.readLuposEntry();
 						} catch (final EOFException e1) {
-							close();
+							this.close();
 						}
 						if (e == null) {
-							if (fileLocal.length() > STORAGELIMIT) {
-								currentFile++;
-								fileLocal = new File(
-										dbmergesortedbag.folder[runID
-										                        % dbmergesortedbag.folder.length]
-										                        + runID + "_" + currentFile);
-								if (fileLocal.exists()) {
+							if (this.fileLocal.length() > STORAGELIMIT) {
+								this.currentFile++;
+								this.fileLocal = new File(
+										Run.this.dbmergesortedbag.folder[Run.this.runID
+										                        % Run.this.dbmergesortedbag.folder.length]
+										                        + Run.this.runID + "_" + this.currentFile);
+								if (this.fileLocal.exists()) {
 									try {
-										is.close();
-									} catch (final IOException ee) {										
+										this.is.close();
+									} catch (final IOException ee) {
 									}
-									is = new LuposObjectInputStream<E>(
-											Run.this.dbmergesortedbag.sortConfiguration.createInputStream(new BufferedInputStream(
-													new FileInputStream(
-															fileLocal))),
-															dbmergesortedbag.classOfElements);
-									e = is.readLuposEntry();
+									this.is = new LuposObjectInputStream<E>(
+											Run.this.dbmergesortedbag.sortConfiguration.createInputStream(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.fileLocal)))),
+															Run.this.dbmergesortedbag.classOfElements);
+									e = this.is.readLuposEntry();
 								}
 							}
 						}
 						if (e != null) {
-							e.comp = dbmergesortedbag.comp;
+							e.comp = Run.this.dbmergesortedbag.comp;
 							e.runMatters = false;
-							e.n = n++;
-							e.run = runID;
+							e.n = this.n++;
+							e.run = Run.this.runID;
 						} else {
-							close();
+							this.close();
 						}
 						return e;
 					} catch (final EOFException e) {
@@ -358,24 +369,26 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 					} catch (final ClassNotFoundException e) {
 						e.printStackTrace();
 					}
-					close();
+					this.close();
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw (new UnsupportedOperationException());
 				}
 
 				@Override
 				public void finalize() {
-					close();
+					this.close();
 				}
 
+				@Override
 				public void close() {
-					if (!isClosed) {
+					if (!this.isClosed) {
 						try {
-							is.close();
-							isClosed = true;
+							this.is.close();
+							this.isClosed = true;
 						} catch (final IOException e) {
 						}
 					}
@@ -383,18 +396,22 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 			};
 		} catch (final EOFException e) {
 			return new ParallelIterator<Entry<E>>() {
+				@Override
 				public boolean hasNext() {
 					return false;
 				}
 
+				@Override
 				public Entry<E> next() {
 					return null;
 				}
 
+				@Override
 				public void remove() {
 					throw (new UnsupportedOperationException());
 				}
 
+				@Override
 				public void close() {
 				}
 			};
@@ -410,18 +427,19 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	 * @return a boolean.
 	 */
 	public boolean isEmpty() {
-		return size == 0;
+		return this.size == 0;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final Iterator<Entry<E>> iter = iterator();
+		final Iterator<Entry<E>> iter = this.iterator();
 		String result = "[";
 		while (iter.hasNext()) {
 			result += iter.next();
-			if (iter.hasNext())
+			if (iter.hasNext()) {
 				result += ", ";
+			}
 		}
 		result += "]";
 		return result;
@@ -431,8 +449,9 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			if (os != null)
-				os.close();
+			if (this.os != null) {
+				this.os.close();
+			}
 		} finally {
 			super.finalize();
 		}
@@ -444,8 +463,9 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	 * @throws java.io.IOException if any.
 	 */
 	public void close() throws IOException {
-		if (os != null)
-			os.close();
+		if (this.os != null) {
+			this.os.close();
+		}
 	}
 
 	/**
@@ -454,7 +474,8 @@ public class Run<E extends Serializable> implements Iterable<Entry<E>> {
 	 * @throws java.io.IOException if any.
 	 */
 	public void flush() throws IOException {
-		if (os != null)
-			os.flush();
+		if (this.os != null) {
+			this.os.flush();
+		}
 	}
 }

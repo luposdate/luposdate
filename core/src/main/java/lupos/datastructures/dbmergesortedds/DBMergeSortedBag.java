@@ -50,6 +50,7 @@ import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.sorteddata.SortedBag;
 import lupos.io.LuposObjectInputStream;
 import lupos.misc.FileHelper;
+import lupos.misc.IOCostsInputStream;
 
 @SuppressWarnings("unchecked")
 public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
@@ -610,7 +611,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 				int currentFile = 0;
 				File fileLocal = file;
 				LuposObjectInputStream is = new LuposObjectInputStream<E>(
-						DBMergeSortedBag.this.sortConfiguration.createInputStream(new BufferedInputStream(new FileInputStream(file))),
+						DBMergeSortedBag.this.sortConfiguration.createInputStream(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(file)))),
 						DBMergeSortedBag.this.classOfElements);
 				int n = 0;
 
@@ -650,10 +651,7 @@ public class DBMergeSortedBag<E extends Serializable> implements SortedBag<E> {
 									} catch (final IOException ee) {
 									}
 									this.is = new LuposObjectInputStream<E>(
-										DBMergeSortedBag.this.sortConfiguration.createInputStream(
-											new BufferedInputStream(
-													new FileInputStream(
-															this.fileLocal))),
+										DBMergeSortedBag.this.sortConfiguration.createInputStream(IOCostsInputStream.createIOCostsInputStream(new BufferedInputStream(new FileInputStream(this.fileLocal)))),
 											DBMergeSortedBag.this.classOfElements);
 									e = this.is.readLuposEntry();
 								}
