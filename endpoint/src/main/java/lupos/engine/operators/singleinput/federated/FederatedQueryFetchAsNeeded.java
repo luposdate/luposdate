@@ -121,48 +121,7 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String toStringQuery(final Bindings bindings) {
-		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper() {
-			@Override
-			public String visit(final ASTSelectQuery node) {
-				String ret = "SELECT ";
-				int i = 0;
-				if (node.isDistinct()) {
-					ret += "DISTINCT ";
-				}
-				if (node.isReduced()) {
-					ret += "REDUCED ";
-				}
-				if (node.isSelectAll()) {
-					ret += "*";
-				} else {
-					while (i < node.jjtGetNumChildren()
-							&& node.jjtGetChild(i) instanceof ASTVar) {
-						// the only difference to its method in the super class:
-						// just ignore the variable if it is in the current bindings...
-						final Variable var = new Variable(((ASTVar)node.jjtGetChild(i)).getName());
-						if ((bindings.get(var) == null)){
-							ret += this.visitChild(node, i) + " ";
-						}
-						i++;
-					}
-				}
-				ret += "\n";
-				while (i < node.jjtGetNumChildren()) {
-					ret += this.visitChild(node, i++);
-				}
-				return ret;
-			}
-			@Override
-			public String visit(final ASTVar node) {
-				final Variable var = new Variable(node.getName());
-				if ((bindings.get(var) != null)) {
-					return bindings.get(var).toString();
-				} else {
-					return "?" + node.getName();
-				}
-			}
-		};
-
+		final SPARQLParserVisitorImplementationDumper dumper = new FetchAsNeededDumper(bindings);
 		return "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
 	}
 
@@ -202,6 +161,58 @@ public class FederatedQueryFetchAsNeeded extends FederatedQueryWithoutSucceeding
 				((ParallelIterator<Bindings>)this.it).close();
 			}
 		}
+	}
 
+	public static class FetchAsNeededDumper extends SPARQLParserVisitorImplementationDumper {
+
+		protected final Bindings bindings;
+
+		public FetchAsNeededDumper(final Bindings bindings){
+			this.bindings = bindings;
+		}
+
+		@Override
+		public String visit(final ASTSelectQuery node) {
+			String ret = "SELECT ";
+			int i = 0;
+			if (node.isDistinct()) {
+				ret += "DISTINCT ";
+			}
+			if (node.isReduced()) {
+				ret += "REDUCED ";
+			}
+			if (node.isSelectAll()) {
+				ret += "*";
+			} else {
+				while (i < node.jjtGetNumChildren()
+						&& node.jjtGetChild(i) instanceof ASTVar) {
+					// the only difference to its method in the super class:
+					// just ignore the variable if it is in the current bindings...
+					final Variable var = new Variable(((ASTVar)node.jjtGetChild(i)).getName());
+					if ((this.bindings.get(var) == null)){
+						ret += this.visitChild(node, i) + " ";
+					}
+					i++;
+				}
+			}
+			ret += "\n";
+			while (i < node.jjtGetNumChildren()) {
+				ret += this.visitChild(node, i++);
+			}
+			return ret;
+		}
+		@Override
+		public String visit(final ASTVar node) {
+			final Variable var = new Variable(node.getName());
+			if ((this.bindings.get(var) != null)) {
+				final Literal lit = this.bindings.get(var);
+				if(lit.isBlank()){
+					System.err.println("Replacing a variable with blank node in Fetch-As-Needed or one of its variants leads to errors in evaluation. Please choose another distributed join approach!");
+				}
+				return lit.toString();
+			} else {
+				return "?" + node.getName();
+			}
+		}
 	}
 }

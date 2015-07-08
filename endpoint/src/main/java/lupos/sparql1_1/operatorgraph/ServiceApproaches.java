@@ -47,6 +47,16 @@ public enum ServiceApproaches {
 		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
 			return ServiceGeneratorFetchAsNeededWithCache.class;
 		}
+	}, Vectored_Fetch_As_Needed(){
+		@Override
+		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
+			return ServiceGeneratorVectoredFetchAsNeeded.class;
+		}
+	}, Vectored_Fetch_As_Needed_With_Cache(){
+		@Override
+		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
+			return ServiceGeneratorVectoredFetchAsNeededWithCache.class;
+		}
 	}, Semijoin_Approach(){
 		@Override
 		public Class<? extends ServiceGenerator> serviceGeneratorClass() {
@@ -71,16 +81,16 @@ public enum ServiceApproaches {
 	 * @return a {@link java.lang.Class} object.
 	 */
 	public abstract Class<? extends ServiceGenerator> serviceGeneratorClass();
-	
+
 	/**
 	 * <p>setup.</p>
 	 */
 	public void setup(){
 		SPARQLCoreParserVisitorImplementation.serviceGeneratorClass = this.serviceGeneratorClass();
 	}
-	
+
 	private static boolean nonStandardSPARQLBitVectorJoin = false;
-	
+
 	/**
 	 * <p>Setter for the field <code>nonStandardSPARQLBitVectorJoin</code>.</p>
 	 *

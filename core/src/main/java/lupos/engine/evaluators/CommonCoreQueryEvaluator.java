@@ -33,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +57,7 @@ import lupos.engine.operators.application.CollectAllResults;
 import lupos.engine.operators.index.BasicIndexScan;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.multiinput.join.parallel.ParallelJoin;
+import lupos.engine.operators.singleinput.Projection;
 import lupos.engine.operators.singleinput.Result;
 import lupos.engine.operators.singleinput.parallel.ParallelOperand;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
@@ -584,7 +584,14 @@ public abstract class CommonCoreQueryEvaluator<A> extends QueryEvaluator<A> {
 	 * @see CommonCoreQueryEvaluator#getAllVariablesOfQuery()
 	 */
 	public Set<Variable> getVariablesOfQuery(){
-		return new HashSet<Variable>(this.getResultOperator().getUnionVariables());
+		BasicOperator bo = this.getResultOperator();
+		while(bo.getPrecedingOperators().size()==1){
+			bo = bo.getPrecedingOperators().get(0);
+			if(bo instanceof Projection){
+				return ((Projection) bo).getProjectedVariables();
+			}
+		}
+		return this.getAllVariablesOfQuery();
 	}
 
 	/**

@@ -478,7 +478,7 @@ public class Endpoint {
 					System.out.println("Evaluating query:\n"+queryParameter);
 
 					if(!Endpoint.validQuery(queryParameter, false)){
-						throw new Exception("Only SELECT, ASK, CONSTRUCT and DESCRIBE queryies allowed!");
+						throw new Exception("Only SELECT, ASK, CONSTRUCT and DESCRIBE queries allowed!");
 					}
 
 					if((this.evaluator instanceof CommonCoreQueryEvaluator) && formatter.isWriteQueryTriples()){

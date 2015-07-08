@@ -33,6 +33,7 @@ import lupos.datastructures.items.Item;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.messages.BindingsFactoryMessage;
+import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.engine.operators.singleinput.SingleInputOperator;
 import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
@@ -55,6 +56,7 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 	protected final Item endpoint;
 	protected final Set<Variable> variablesInServiceCall;
 	protected final Set<Variable> surelyBoundVariablesInServiceCall;
+	protected Set<Variable> variablesBoundFromOutside;
 
 	protected BindingsFactory bindingsFactory;
 
@@ -63,6 +65,15 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 	public Message preProcessMessage(final BindingsFactoryMessage msg){
 		this.bindingsFactory = msg.getBindingsFactory();
 		return msg;
+	}
+
+
+	@Override
+	public Message preProcessMessage(final BoundVariablesMessage msg) {
+		this.variablesBoundFromOutside = new HashSet<Variable>(msg.getVariables());
+		final Set<Variable> variables = new HashSet<Variable>(msg.getVariables());
+		variables.addAll(this.surelyBoundVariablesInServiceCall);
+		return new BoundVariablesMessage();
 	}
 
 	/**
