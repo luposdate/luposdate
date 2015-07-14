@@ -40,31 +40,33 @@ public class CommandLineEvaluator {
 	 *
 	 * @param args an array of {@link java.lang.String} objects.
 	 */
-	public static void main(String[] args) {
-		
-		System.out.println("Usage:\njava upos.endpoint.client.CommandLineEvaluator (ServiceApproaches:No_Support|Trivial_Approach|Fetch_As_Needed|Fetch_As_Needed_With_Cache|Semijoin_Approach|Bitvector_Join_Approach|Join_At_Endpoint) (MD5|SHA1|SHA256|SHA384|SHA512|Value|NonStandardSPARQL) (Size of Bitvector) (MEMORY|RDF3X|STREAM) (command line arguments of underlying evaluator...)");
+	public static void main(final String[] args) {
+
+		System.out.println("Usage:\njava upos.endpoint.client.CommandLineEvaluator (ServiceApproaches:No_Support|Trivial_Approach|Fetch_As_Needed|Fetch_As_Needed_With_Cache|Vectored_Fetch_As_Needed|Vectored_Fetch_As_Needed_With_Cache|Semijoin_Approach|Bitvector_Join_Approach|Join_At_Endpoint) (MD5|SHA1|SHA256|SHA384|SHA512|Value|NonStandardSPARQL) (Size of Bitvector) (MEMORY|RDF3X|STREAM) (command line arguments of underlying evaluator...)");
 		if(args.length<4){
 			return;
 		}
-		ServiceApproaches serviceApproach = ServiceApproaches.valueOf(args[0]);
-		FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = FederatedQueryBitVectorJoin.APPROACH.valueOf(args[1]);
+		final ServiceApproaches serviceApproach = ServiceApproaches.valueOf(args[0]);
+		final FederatedQueryBitVectorJoin.APPROACH bitVectorApproach = FederatedQueryBitVectorJoin.APPROACH.valueOf(args[1]);
 		bitVectorApproach.setup();
 		serviceApproach.setup();
-		int bitvectorsize = Integer.parseInt(args[2]);
+		final int bitvectorsize = Integer.parseInt(args[2]);
 		FederatedQueryBitVectorJoin.substringSize = bitvectorsize;
 		FederatedQueryBitVectorJoinNonStandardSPARQL.bitvectorSize = bitvectorsize;
 
-		String[] args2 = new String[args.length-4];
+		final String[] args2 = new String[args.length-4];
 		System.arraycopy(args, 4, args2, 0, args.length-4);
 
-		String evaluator = args[3].toLowerCase();
+		final String evaluator = args[3].toLowerCase();
 		if(evaluator.compareTo("memory")==0){
 			MemoryIndexQueryEvaluator.main(args2);
 		} else if(evaluator.compareTo("rdf3x")==0){
 			RDF3XQueryEvaluator.main(args2);
 		} else if(evaluator.compareTo("stream")==0){
 			StreamQueryEvaluator.main(args2);
-		} else System.err.println("No support of evaluator: "+evaluator); 
+		} else {
+			System.err.println("No support of evaluator: "+evaluator);
+		}
 	}
 
 }
