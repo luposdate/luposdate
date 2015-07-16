@@ -41,9 +41,8 @@ public class CommandLineEvaluator {
 	 * @param args an array of {@link java.lang.String} objects.
 	 */
 	public static void main(final String[] args) {
-
-		System.out.println("Usage:\njava upos.endpoint.client.CommandLineEvaluator (ServiceApproaches:No_Support|Trivial_Approach|Fetch_As_Needed|Fetch_As_Needed_With_Cache|Vectored_Fetch_As_Needed|Vectored_Fetch_As_Needed_With_Cache|Semijoin_Approach|Bitvector_Join_Approach|Join_At_Endpoint) (MD5|SHA1|SHA256|SHA384|SHA512|Value|NonStandardSPARQL) (Size of Bitvector) (MEMORY|RDF3X|STREAM) (command line arguments of underlying evaluator...)");
 		if(args.length<4){
+			System.out.println("Usage:\njava upos.endpoint.client.CommandLineEvaluator (ServiceApproaches:No_Support|Trivial_Approach|Fetch_As_Needed|Fetch_As_Needed_With_Cache|Vectored_Fetch_As_Needed|Vectored_Fetch_As_Needed_With_Cache|Semijoin_Approach|Bitvector_Join_Approach|Join_At_Endpoint) (MD5|SHA1|SHA256|SHA384|SHA512|Value|NonStandardSPARQL) (Size of Bitvector) (MEMORY|RDF3X|STREAM) (command line arguments of underlying evaluator...)");
 			return;
 		}
 		final ServiceApproaches serviceApproach = ServiceApproaches.valueOf(args[0]);
