@@ -475,8 +475,9 @@ public class Endpoint {
 			}
 			try {
 				synchronized(this.evaluator){ // avoid any inference of several queries in parallel!
-					System.out.println("Evaluating query:\n"+queryParameter);
-
+					if(Endpoint.log){
+						System.out.println("Evaluating query:\n"+queryParameter);
+					}
 					if(!Endpoint.validQuery(queryParameter, false)){
 						throw new Exception("Only SELECT, ASK, CONSTRUCT and DESCRIBE queries allowed!");
 					}
@@ -489,7 +490,9 @@ public class Endpoint {
 					}
 					final QueryResult queryResult = (this.evaluator instanceof CommonCoreQueryEvaluator)?((CommonCoreQueryEvaluator)this.evaluator).getResult(queryParameter, true):this.evaluator.getResult(queryParameter);
 					final String mimeType = formatter.getMIMEType(queryResult);
-					System.out.println("Done, sending response using MIME type "+mimeType);
+					if(Endpoint.log){
+						System.out.println("Done, sending response using MIME type "+mimeType);
+					}
 					t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 					t.getResponseHeaders().add("Content-type", mimeType);
 					t.getResponseHeaders().add("Transfer-encoding", "chunked");
@@ -545,7 +548,9 @@ public class Endpoint {
 
 		@Override
 		public void handle(final HttpExchange t) throws IOException {
-			System.out.println("\n-> Receiving request from: "+t.getRequestHeaders().get("Host"));
+			if(Endpoint.log){
+				System.out.println("\n-> Receiving request from: "+t.getRequestHeaders().get("Host"));
+			}
 			final String response = Endpoint.getResponse(t);
 			final String[] responseParts = response.split("[&]");
 			if(responseParts.length>0){
