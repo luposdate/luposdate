@@ -30,6 +30,7 @@ package lupos.endpoint.client;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,7 +67,11 @@ public class Client {
 	public final static int LIMIT_OF_BYTES_FOR_GET = 4*1024;
 
 	// enable or disable logging into console
-	private final static boolean log = false;
+	public static boolean log = false;
+
+	// for counting bytes sent and received (only done if Client.log=true):
+	public static long sentBytes = 0;
+	public static long receivedBytes = 0;
 
 	/** Constant <code>registeredFormatReaders</code> */
 	protected static HashMap<String, MIMEFormatReader> registeredFormatReaders;
@@ -193,21 +198,19 @@ public class Client {
 		final HttpUriRequest httpurirequest;
 		if(useMethodGET){
 			// first build uri with get parameters...
-			String urlAndParams = url;
-			boolean firstTime = true;
-			for(final NameValuePair param: content){
-				if(firstTime){
-					urlAndParams += "?";
-					firstTime = false;
-				} else {
-					urlAndParams += "&";
-				}
-				urlAndParams += param.getName() + "=" + URLEncoder.encode(param.getValue(), "UTF-8");
+			final String urlAndParams = Client.getURLAndParams(url, content);
+			if(Client.log){
+				System.out.println(Client.getURLAndParamsHumanFriendlyPrinting(url, content));
+				Client.sentBytes += urlAndParams.getBytes().length;
 			}
 			final HttpGet httpget = new HttpGet(urlAndParams);
 			httpget.setHeader("Accept", requestHeader);
 			httpurirequest = httpget;
 		} else {
+			if(Client.log){
+				System.out.println(Client.getURLAndParamsHumanFriendlyPrinting(url, content));
+				Client.sentBytes += Client.getURLAndParams(url, content).getBytes().length;
+			}
 			final HttpPost httppost = new HttpPost(url);
 			httppost.setHeader("Accept", requestHeader);
 			httppost.setEntity(new UrlEncodedFormEntity(content, org.apache.commons.lang.CharEncoding.UTF_8));
@@ -222,6 +225,30 @@ public class Client {
 		return new Tuple<String, InputStream>(entity.getContentType().getValue(), new BufferedInputStream(in));
 	}
 
+	private final static String getURLAndParams(final String url, final List<NameValuePair> content) throws UnsupportedEncodingException {
+		String urlAndParams = url;
+		boolean firstTime = true;
+		for(final NameValuePair param: content){
+			if(firstTime){
+				urlAndParams += "?";
+				firstTime = false;
+			} else {
+				urlAndParams += "&";
+			}
+			urlAndParams += param.getName() + "=" + URLEncoder.encode(param.getValue(), "UTF-8");
+		}
+		return urlAndParams;
+	}
+
+	private final static String getURLAndParamsHumanFriendlyPrinting(final String url, final List<NameValuePair> content) throws UnsupportedEncodingException {
+		String urlAndParams = "Submitting request to url:"+url+"\n\n";
+		final boolean firstTime = true;
+		for(final NameValuePair param: content){
+			urlAndParams += param.getName() + "=\n" + param.getValue()+"\n\n";
+		}
+		return urlAndParams;
+	}
+
 	/**
 	 * Sends an {@link java.io.InputStream} to a Endpoint-URL
 	 *
@@ -231,12 +258,17 @@ public class Client {
 	 * @return Tuple with content type and the answer as stream
 	 * @throws java.io.IOException if any.
 	 */
-	public static Tuple<String, InputStream> doSubmitStream(final String url, final InputStream stream, final String requestHeader) throws IOException {
+	public static Tuple<String, InputStream> doSubmitStream(final String url, InputStream stream, final String requestHeader) throws IOException {
 		final HttpClient httpclient = new DefaultHttpClient();
 		final HttpUriRequest httpurirequest;
 
 		final HttpPost httppost = new HttpPost(url);
 		httppost.setHeader("Accept", requestHeader);
+		if(Client.log){
+			System.out.println("Submitting stream to url: "+url);
+			Client.sentBytes += url.getBytes().length;
+			stream = new InputStreamLogger(stream, false);
+		}
 		final InputStreamEntity ise = new InputStreamEntity(stream,-1);
 		httppost.setEntity(ise);
 		httpurirequest = httppost;
@@ -255,14 +287,26 @@ public class Client {
 
 		private final InputStream piped;
 
+		private final boolean receiving;
+
 		public InputStreamLogger(final InputStream piped){
+			this(piped, true);
+		}
+
+		public InputStreamLogger(final InputStream piped, final boolean receiving){
 			this.piped = piped;
+			this.receiving = receiving;
 		}
 
 		@Override
 		public int read() throws IOException {
 			final int result = this.piped.read();
 			if(result>=0){
+				if(this.receiving){
+					Client.receivedBytes++;
+				} else {
+					Client.sentBytes++;
+				}
 				for(final char c: Character.toChars(result)){
 					System.out.print(c);
 				}
