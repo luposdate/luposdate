@@ -1429,15 +1429,27 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 		if (Helper.isNumeric(wholeString)) {
 			return null;
 		}
-		final int start = Helper.getInteger(
+		int start = Helper.getInteger(
 				Helper.unlazy(node.jjtGetChild(1).accept(this, b, d))).intValue() - 1;
 		final String content = Helper.unquote(Helper.getContent(wholeString));
 		final String resultantContent;
+		if(start<0){
+			start = 0;
+		}
+		if(start>=content.length()){
+			return Helper.createWithSameType("", wholeString);
+		}
 		if (node.jjtGetNumChildren() == 2) {
 			resultantContent = content.substring(start);
 		} else {
-			final int end = Helper.getInteger(
+			int end = Helper.getInteger(
 					Helper.unlazy(node.jjtGetChild(2).accept(this, b, d))).intValue();
+			if(end<0){
+				return Helper.createWithSameType("", wholeString);
+			}
+			if(start+end>content.length()){
+				end = content.length() - start;
+			}
 			resultantContent = content.substring(start, start + end);
 		}
 		return Helper.createWithSameType(resultantContent, wholeString);

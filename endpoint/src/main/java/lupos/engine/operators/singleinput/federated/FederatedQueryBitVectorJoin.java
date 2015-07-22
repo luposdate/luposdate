@@ -42,19 +42,19 @@ import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationD
 import lupos.sparql1_1.Node;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoin {
-	
+
 	private IToStringHelper toStringHelper;
-	
+
 	/**
 	 * <p>Constructor for FederatedQueryBitVectorJoin.</p>
 	 *
 	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
 	 */
-	public FederatedQueryBitVectorJoin(Node federatedQuery) {
+	public FederatedQueryBitVectorJoin(final Node federatedQuery) {
 		super(federatedQuery);
 		try {
 			this.toStringHelper = approachClass.newInstance();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 			System.err.println("Use BitVectorJoinToStringHelper as default!");
@@ -68,7 +68,7 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 	public static HASHFUNCTION hashFunction = HASHFUNCTION.MD5;
 	/** Constant <code>approachClass</code> */
 	public static Class<? extends IToStringHelper> approachClass = BitVectorJoinToStringHelper.class;
-	
+
 	public static enum HASHFUNCTION {
 		MD5, SHA1, SHA256 {
 			@Override
@@ -87,13 +87,13 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 			}
 		};
 		public String getName(){
-			return toString();
+			return this.toString();
 		}
 	}
-	
+
 	public static enum APPROACH {
-		// the hashfunctions must be declared in the same order as in HASHFUNCTION! 
-		MD5, SHA1, SHA256, SHA384, SHA512, Value, NonStandardSPARQL;
+		// the hashfunctions must be declared in the same order as in HASHFUNCTION!
+		MD5, SHA1, SHA256, SHA384, SHA512, Value, ValueSubstring, NonStandardSPARQL;
 		public void setup(){
 			if(this==NonStandardSPARQL){
 				ServiceApproaches.setNonStandardSPARQLBitVectorJoin(true);
@@ -101,6 +101,8 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 				ServiceApproaches.setNonStandardSPARQLBitVectorJoin(false);
 				if(this==Value){
 					FederatedQueryBitVectorJoin.approachClass = SemiJoinToStringHelper.class;
+				} if(this==ValueSubstring){
+					FederatedQueryBitVectorJoin.approachClass = SubstringValueToStringHelper.class;
 				} else {
 					FederatedQueryBitVectorJoin.approachClass = BitVectorJoinToStringHelper.class;
 					FederatedQueryBitVectorJoin.hashFunction = HASHFUNCTION.values()[this.ordinal()];
@@ -108,61 +110,75 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 			}
 		}
 	}
-	
+
 	public static interface IToStringHelper{
-		public String functionCallBeginning();
-		public String functionCallEnd();
+		public String functionCall(Variable variable);
 		public String valueConverter(final Literal value);
 	}
-	
+
 	public static class BitVectorJoinToStringHelper implements IToStringHelper {
-		
-		@Override
-		public String functionCallBeginning() {
-			return "substr("+hashFunction.toString()+"(str(";
-		}
 
 		@Override
-		public String functionCallEnd() {
-			return ")),1,"+FederatedQueryBitVectorJoin.substringSize+")";
+		public String functionCall(final Variable variable) {
+			return "substr("+hashFunction.toString()+"(str(" + variable + ")),1,"+FederatedQueryBitVectorJoin.substringSize+")";
 		}
 
 		@Override
 		public String valueConverter(final Literal value){
-			Object o = Helper.unlazy(value);
+			final Object o = Helper.unlazy(value);
 			final String parameter;
 			if (o instanceof TypedLiteral) {
 				parameter = ((TypedLiteral) o).getOriginalContent().toString();
 			} else if (o instanceof LanguageTaggedLiteral) {
 				parameter = ((LanguageTaggedLiteral) o).getContentLiteral().toString();
-			} else parameter = o.toString();
+			} else {
+				parameter = o.toString();
+			}
 			return "\""+Helper.applyHashFunction(hashFunction.getName(), Helper.unquote(parameter)).substring(1,FederatedQueryBitVectorJoin.substringSize+1)+"\"";
 		}
-		
-		public int getStartOfSubstring(final int substringSizeOfHashValue){
-			final int result = Helper.getLengthOfHashFunction(hashFunction.getName()) - substringSizeOfHashValue + 1; // + 1 for character " in the beginning of the string!
-			return (result>0)? result : 0; 
-		}
 	}
-	
+
 	public static class SemiJoinToStringHelper implements IToStringHelper {
 
 		@Override
-		public String functionCallBeginning() {
-			return "";
+		public String functionCall(final Variable variable) {
+			return variable.toString();
 		}
 
-		@Override
-		public String functionCallEnd() {
-			return "";
-		}
 
 		@Override
 		public String valueConverter(final Literal value) {
 			return value.toString();
-		}		
+		}
 	}
-	
+
+	public static class SubstringValueToStringHelper implements IToStringHelper {
+
+		@Override
+		public String functionCall(final Variable variable) { // begin at the end of the string as there are most likely the most significant characters (e.g. in the case of iris)
+			return "substr(str(" + variable + "),strlen(str(" + variable + "))-"+(FederatedQueryBitVectorJoin.substringSize-1)+","+FederatedQueryBitVectorJoin.substringSize+")";
+		}
+
+		@Override
+		public String valueConverter(final Literal value){
+			final Object o = Helper.unlazy(value);
+			final String parameter;
+			if (o instanceof TypedLiteral) {
+				parameter = ((TypedLiteral) o).getOriginalContent().toString();
+			} else if (o instanceof LanguageTaggedLiteral) {
+				parameter = ((LanguageTaggedLiteral) o).getContentLiteral().toString();
+			} else {
+				parameter = o.toString();
+			}
+			final String unquotetString = Helper.unquote(parameter);
+			int start = unquotetString.length() - FederatedQueryBitVectorJoin.substringSize;
+			if(start<0){
+				start = 0;
+			}
+			return "\""+unquotetString.substring(start, unquotetString.length())+"\"";
+		}
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toStringQuery(final QueryResult queryResult) {
@@ -173,37 +189,37 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 			result = result.substring(0, result.length()-2);
 			result += "}Filter(";
 			// determine all variables in the bindings
-			Set<Variable> allVars = new HashSet<Variable>();
-			for(Bindings b: queryResult){
+			final Set<Variable> allVars = new HashSet<Variable>();
+			for(final Bindings b: queryResult){
 				allVars.addAll(b.getVariableSet());
 			}
 			allVars.retainAll(this.variablesInServiceCall);
-			Iterator <Variable> it = allVars.iterator();
+			final Iterator <Variable> it = allVars.iterator();
 			boolean oneOrMoreResults=false;
 			if(it.hasNext()){
 				result += "(";
 				while (it.hasNext()) {
-					Variable variable = it.next();
+					final Variable variable = it.next();
 					if(!this.surelyBoundVariablesInServiceCall.contains(variable)){
 						result += "((bound("+variable+") && ";
 					}
-					result +="("+this.toStringHelper.functionCallBeginning()+variable+this.toStringHelper.functionCallEnd();
+					result +="("+this.toStringHelper.functionCall(variable);
 					result +=" IN (";
-					HashSet<String> results = new HashSet<String>();
+					final HashSet<String> results = new HashSet<String>();
 					while (bindingsIterator.hasNext()) {
-						Bindings b = bindingsIterator.next();
-						Literal literal = variable.getLiteral(b);
+						final Bindings b = bindingsIterator.next();
+						final Literal literal = variable.getLiteral(b);
 						if(literal!=null){
 							oneOrMoreResults=true;
-							String hashResult = this.toStringHelper.valueConverter(literal);
+							final String hashResult = this.toStringHelper.valueConverter(literal);
 							results.add(hashResult);
 						}
 					}
-					Iterator<String > resultsIterator = results.iterator();
+					final Iterator<String > resultsIterator = results.iterator();
 					while (resultsIterator.hasNext()) {
 						result+=resultsIterator.next();
 						if (resultsIterator.hasNext()) {
-							result+=",";	
+							result+=",";
 						}
 					}
 					if(this.surelyBoundVariablesInServiceCall.contains(variable)) {
@@ -212,10 +228,11 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 						result += " )))||";
 						result += " !bound("+variable+") ";
 					}
-					if(it.hasNext())
+					if(it.hasNext()) {
 						result+=" )&&";
-					else
+					} else {
 						result +=" ))";
+					}
 					bindingsIterator = queryResult.iterator();
 				}
 			}
