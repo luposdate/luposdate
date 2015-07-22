@@ -101,7 +101,7 @@ public class FederatedQueryBitVectorJoin extends FederatedQueryWithSucceedingJoi
 				ServiceApproaches.setNonStandardSPARQLBitVectorJoin(false);
 				if(this==Value){
 					FederatedQueryBitVectorJoin.approachClass = SemiJoinToStringHelper.class;
-				} if(this==ValueSubstring){
+				} else if(this==ValueSubstring){
 					FederatedQueryBitVectorJoin.approachClass = SubstringValueToStringHelper.class;
 				} else {
 					FederatedQueryBitVectorJoin.approachClass = BitVectorJoinToStringHelper.class;
