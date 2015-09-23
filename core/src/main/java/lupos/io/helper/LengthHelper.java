@@ -146,7 +146,8 @@ public final class LengthHelper {
 			System.err.println(e);
 			e.printStackTrace();
 			return 0;
-		}	}
+		}
+	}
 
 	/**
 	 * <p>lengthLuposString.</p>

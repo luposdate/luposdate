@@ -49,6 +49,7 @@ import lupos.io.serializer.PAGEDCOLLECTION;
 import lupos.io.serializer.SETIMPLEMENTATION;
 import lupos.io.serializer.SORTEDMAP;
 import lupos.io.serializer.STRING;
+import lupos.io.serializer.STRINGARRAY;
 import lupos.io.serializer.SUPERLITERAL;
 import lupos.io.serializer.TRIPLE;
 import lupos.io.serializer.TRIPLEKEY;
@@ -1302,6 +1303,7 @@ public class Registration {
 				new VARBUCKETARRAY(),
 				new COMPARATOR(),
 				new NODEDESERIALIZER(),
-				new INTARRAY());
+				new INTARRAY(),
+				new STRINGARRAY());
 	}
 }

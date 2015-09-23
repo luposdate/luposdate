@@ -39,6 +39,7 @@ import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralDBBP
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringArrayNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XIndexScan;
 import lupos.io.Registration;
@@ -81,7 +82,9 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 				new DSLazyLiteralDBBPTreeStatisticsNodeDeSerializer(),
 				new DSStringIntegerNodeDeSerializer(),
 				new DSIntArrayNodeDeSerializer(),
-				new DSIntArrayDBBPTreeStatisticsNodeDeSerializer());
+				new DSIntArrayDBBPTreeStatisticsNodeDeSerializer(),
+				new DSStringArrayNodeDeSerializer()
+		);
 	}
 
 	/** {@inheritDoc} */
@@ -273,6 +276,31 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 		@Override
 		public Class<? extends NodeDeSerializer<int[], int[]>>[] getRegisteredClasses() {
 			return new Class[]{ IntArrayDBBPTreeStatisticsNodeDeSerializer.class };
+		}
+	}
+
+	public static class DSStringArrayNodeDeSerializer implements DSNodeDeSerializer<String[], String[]>{
+
+		@Override
+		public int length(final NodeDeSerializer<String[], String[]> t) {
+			return LengthHelper.lengthLuposByte();
+		}
+
+		@Override
+		public void serialize(final NodeDeSerializer<String[], String[]> t, final OutputStream out) throws IOException {
+			final StringArrayNodeDeSerializer tc = (StringArrayNodeDeSerializer) t;
+			OutHelper.writeLuposByte((byte) tc.getCollationOrder().ordinal(), out);
+		}
+
+		@Override
+		public  NodeDeSerializer<String[], String[]> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+			return new StringArrayNodeDeSerializer(RDF3XIndexScan.CollationOrder.values()[InputHelper.readLuposByte(in)]);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<? extends NodeDeSerializer<String[], String[]>>[] getRegisteredClasses() {
+			return new Class[]{ StringArrayNodeDeSerializer.class };
 		}
 	}
 

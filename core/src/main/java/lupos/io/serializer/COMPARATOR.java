@@ -33,6 +33,7 @@ import java.util.HashMap;
 
 import lupos.datastructures.dbmergesortedds.StandardComparator;
 import lupos.datastructures.items.IntArrayComparator;
+import lupos.datastructures.items.StringArrayComparator;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.io.Registration.DeSerializerConsideringSubClasses;
@@ -71,7 +72,8 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		COMPARATOR.registerDeSerializer(
 				new StandardComparatorDeSerializer(),
 				new TripleComparatorDeSerializer(),
-				new IntArrayComparatorDeSerializer());
+				new IntArrayComparatorDeSerializer(),
+				new StringArrayComparatorDeSerializer());
 	}
 
 	/** {@inheritDoc} */
@@ -212,6 +214,31 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		@Override
 		public Class<? extends Comparator<int[]>>[] getRegisteredClasses() {
 			return new Class[]{ IntArrayComparator.class };
+		}
+	}
+
+	public static class StringArrayComparatorDeSerializer implements ComparatorDeSerializer<String[]>{
+
+		@Override
+		public int length(final Comparator<String[]> t) {
+			return LengthHelper.lengthLuposByte();
+		}
+
+		@Override
+		public void serialize(final Comparator<String[]> t, final OutputStream out) throws IOException {
+			final StringArrayComparator tc = (StringArrayComparator) t;
+			OutHelper.writeLuposByte(tc.getBytePattern(), out);
+		}
+
+		@Override
+		public Comparator<String[]> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+			return new StringArrayComparator(InputHelper.readLuposByte(in));
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<? extends Comparator<String[]>>[] getRegisteredClasses() {
+			return new Class[]{ StringArrayComparator.class };
 		}
 	}
 }

@@ -2603,8 +2603,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				} else {
 					K lastKey = null;
 					while (true) {
-						final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(
-								lastKey, in);
+						final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in);
 						if (nextEntry == null || nextEntry.getSecond() == 0
 								|| nextEntry.getSecond() < 0) {
 							in.close();
